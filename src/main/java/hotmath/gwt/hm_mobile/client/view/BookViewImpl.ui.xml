@@ -5,7 +5,7 @@
 	<ui:style>
 	</ui:style>
 
-	<g:HTMLPanel id='BookViewImpl'>
+	<g:HTMLPanel styleName='bookViewImpl'>
 		<div class='book-item'>
 			<img ui:field="bookImage" />
 			<div>
@@ -25,22 +25,38 @@
 		</div>
 
 		<div>
-			<div style='float: left'>
-				Page:
+		    <span>Page: </span>
+            <g:Button styleName='sexybutton' ui:field="getPrevProblems">
+				<span>
+					<span>&lt;</span>
+				</span>
+			</g:Button>
+			<span>
 				<g:TextBox ui:field='pageNumber' />
-			</div>
+			</span>
+            <g:Button styleName='sexybutton' ui:field="getNextProblems">
+				<span>
+					<span>&gt;</span>
+				</span>
+			</g:Button>
 			<g:Button styleName='sexybutton' ui:field="getProblems">
 				<span>
 					<span>Go</span>
 				</span>
 			</g:Button>
+						
 		</div>
 		<br style='clear: both;' />
-		<g:HTMLPanel ui:field="problemNumberDiv">
+		<g:HTMLPanel ui:field="messageDiv">
 			<h2>
+				<span ui:field="messageText" />
+			</h2>
+		</g:HTMLPanel>
+		<g:HTMLPanel ui:field="problemNumberDiv">
+			<h1>
 				Problems on page:
 				<span ui:field="pageProbNums" />
-			</h2>
+			</h1>
 			<g:HTMLPanel ui:field="problemNumberList"></g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:HTMLPanel>

@@ -7,7 +7,7 @@ import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 
 public interface BookView  {
-	void showBook(BookModel book, BookInfoModel infoModel);
+	void showBook(BookModel book, BookInfoModel infoModel, int page);
 	void showProblemNumbers(CmList<ProblemNumber> problems);
 	void setPresenter(Presenter presenter);
 	

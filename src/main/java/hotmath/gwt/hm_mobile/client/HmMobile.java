@@ -5,6 +5,8 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
@@ -15,6 +17,8 @@ import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEventHandler;
+import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEvent;
+import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookViewEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowCategoryListEvent;
@@ -23,6 +27,8 @@ import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEventHandler;
+import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
+import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
@@ -71,6 +77,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         _rootPanel = RootPanel.get("main-content");
         try {
             
+        	Controller.installEventBus(__clientFactory.getEventBus());
             
             GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
                 @Override
@@ -93,10 +100,12 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             setupGlobalEventHandlers();
     
             History.addValueChangeHandler(new HmMobileHistoryListener());
-            
+
             initializeExternalJs();
             
+            /** just once */
             CatchupMathMobileShared.__instance.hideBusyPanel();
+            
             History.fireCurrentHistoryState();
         }
         catch(Exception e) {
@@ -136,6 +145,20 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     private void setupGlobalEventHandlers() {
         EventBus eb = __clientFactory.getEventBus();
 
+        /** Event to provide UI info about server activity
+         * 
+         */
+        eb.addHandler(SystemIsBusyEvent.TYPE, new SystemIsBusyEventHandler() {
+			@Override
+			public void showIsBusy(boolean trueFalse) {
+				_controlPanel.showBusy(trueFalse);
+			}
+        });
+
+        
+        /** events to handle mapping to GWT history listener
+         * 
+         */
         eb.addHandler(ShowTutorViewEvent.TYPE, new ShowTutorViewEventHandler() {
             @Override
             public void showTutor(ProblemNumber problem) {
@@ -169,7 +192,25 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 History.newItem("HomeViewPlace");
             }
         });
-
+        
+        eb.addHandler(ShowBookSearchEvent.TYPE,new ShowBookSearchEventHandler() {
+			@Override
+			public void showBookSearch() {
+				History.newItem("BookSearchPlace");
+			}
+        });
+        
+        
+        
+        
+        
+        
+        eb.addHandler(BackDiscoveryEvent.TYPE,new BackDiscoveryEventHandler() {
+			@Override
+			public void discoverBack() {
+				History.back();
+			}
+		});
         
         
         /** Provide central place to insert into IPage system 
@@ -181,6 +222,12 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 _pageStack.push(page);
             }
         });
+        
+        
+        
+        
+        
+        
     }
 
     /**
@@ -241,7 +288,7 @@ class MyControlPanel extends ControlPanel {
         __defaultList.add(new ControlAction("Text Search") {
             @Override
             public void doAction() {
-                Controller.navigateToTopicList();
+            	 HmMobile.__clientFactory.getEventBus().fireEvent(new ShowBookSearchEvent());
             }
         });
         __defaultList.add(new ControlAction("Help") {

@@ -32,6 +32,8 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 		
 		initWidget(sp);
         addStyleName("bookListViewImpl");
+        
+        listItems.addStyleName("touch");
 	}
 	
     class MyGenericTextTag extends GenericTextTag<String> {
@@ -49,17 +51,13 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 		this.books = books;
 		listItems.clear();
 		for(BookModel bm: books) {
-			ListItem li = new ListItem();
-			String bookImage = "";
+			String image = "";
 			if(bm.getImage() != null) {
-				bookImage = "http://hotmath.com/images/books/" + bm.getImage();
-			}
-			else {
-				bookImage = "/assets/images/spacer.gif";
+				image = "<img src='http://hotmath.com/images/books/" + bm.getImage() + "'/>";
 			}
 			String html = 
 				"<div class='book-item'>" +
-				"  <img src='" + bookImage + "'/>" +
+			    image + 
 				"  <div class='book-item-box'" +
 				"      <div>" + bm.getTitle() + "</div>" +
 				"      <div>" + 
@@ -75,6 +73,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 			
 			GenericTextTag<String> tt = new MyGenericTextTag(bm);
 			tt.getElement().setInnerHTML(html);
+			tt.addStyleName("group");
 			
 			tt.addHandler(new TouchClickHandler<String>() {
 			    @Override

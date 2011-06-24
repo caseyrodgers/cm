@@ -1,5 +1,7 @@
 package hotmath.gwt.hm_mobile.client.persist;
 
+import java.util.Map;
+
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 
 import com.google.code.gwt.storage.client.Storage;
@@ -25,6 +27,27 @@ public class HmMobilePersistedPropertiesManager {
 						__instance.getLastBook().setPage(Integer.parseInt(p[PAGENUM]));
 					}
 				}
+				
+				/** read list of last viewed book page numbers stored as
+				 * book=PAGE|book2=PAGE|.etc..
+				 */
+				String config2 = Storage.getLocalStorage().getItem("book_views");
+				if(config2 != null && config2.length() > 0) {
+					String p[] = config2.split("\\|");
+					String bookPages="";
+					for(String bookPagePair: p) {
+						String bpp[] = bookPagePair.split("=");
+						if(bpp.length==2) {
+							try {
+								__instance.getBookPages().put(bpp[0],Integer.parseInt(bpp[1]));
+							}
+							catch(Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+				}
+
 			}
 
 			if (__instance == null)
@@ -55,6 +78,18 @@ public class HmMobilePersistedPropertiesManager {
 			        + "|" + b.getCopyRight() + "|" + b.getImage() + "|" + b.getPage() + "|" + b.getAuthor() + "|"
 			        + b.getPubDate();
 			Storage.getLocalStorage().setItem("config", config);
+			
+			
+			String bookViews = "";
+			for(String book: p.getBookPages().keySet()) {
+				int page = p.getBookPages().get(book);
+				
+				if(bookViews.length() > 0) {
+					bookViews += "|";
+				}
+				bookViews += book+"="+page;
+			}
+			Storage.getLocalStorage().setItem("book_views", bookViews);
 		}
 	}
 }

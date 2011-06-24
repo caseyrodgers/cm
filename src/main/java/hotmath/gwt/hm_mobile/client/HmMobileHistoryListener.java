@@ -3,16 +3,19 @@ package hotmath.gwt.hm_mobile.client;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.hm_mobile.client.activity.BookListActivity;
+import hotmath.gwt.hm_mobile.client.activity.BookSearchActivity;
 import hotmath.gwt.hm_mobile.client.activity.BookViewActivity;
 import hotmath.gwt.hm_mobile.client.activity.CategoryListActivity;
 import hotmath.gwt.hm_mobile.client.activity.TutorViewActivity;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.place.BookListPlace;
+import hotmath.gwt.hm_mobile.client.place.BookSearchPlace;
 import hotmath.gwt.hm_mobile.client.place.BookViewPlace;
 import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
+import hotmath.gwt.hm_mobile.client.view.BookSearchView;
 import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.CategoryListView;
 import hotmath.gwt.hm_mobile.client.view.HomeView;
@@ -74,6 +77,13 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 else if(type.equals("HomeViewPlace")) {
                     HomeView view = HmMobile.__clientFactory.getHomeView();
                     HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                }
+                else if(type.equals("BookSearchPlace")) {
+                	BookSearchView view = HmMobile.__clientFactory.getBookSearchView();
+                	BookSearchActivity act = new BookSearchActivity(new BookSearchPlace(""), HmMobile.__clientFactory);
+                	view.setPresenter(act);
+                	
+                	HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 
                 else {

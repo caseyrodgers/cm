@@ -60,7 +60,12 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 	}
 	
 	
+	BookInfoModel _lastModel;
+	
 	public BookInfoModel getBookInfo(final BookModel book) throws Exception {
+	    if(_lastModel != null && _lastModel.getBook().getTextCode().equals(book.getTextCode())) {
+	    	return _lastModel;
+	    }
 	    
 	    final BookModel fullBookModel;
 	    if(book.getTitle() == null)
@@ -81,6 +86,11 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					    return new BookInfoModel(fullBookModel, rs.getInt("minPage"), rs.getInt("maxPage"));
 					}
 				});
+                
+                
+                
+        _lastModel = bookInfo;
+                
 		return bookInfo;
 	}
 	

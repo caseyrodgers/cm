@@ -1,5 +1,7 @@
 package hotmath.gwt.hm_mobile.client;
 
+import com.google.gwt.user.client.Window;
+
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
@@ -52,6 +54,7 @@ public class PagePanelFactory {
 //                return new TestPagePanel((TestPage)page);
 //            }
     		
+	        Window.alert("Requested page '" + page.getClass().getName() + " either does not exist or does not extend AbstractPagePanel.");
     		throw new IllegalArgumentException("The page is unknown:" + page.getClass().getName());
     		
 	    }

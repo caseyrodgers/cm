@@ -31,7 +31,7 @@ public class ObservableStack<E> implements Iterable<E> {
 		    firePushEvent(new ObservableStackPushEvent<E>(e));
 		}
 		catch(Exception ex) {
-		    Window.alert("Error firing event: " + e.toString());
+		    Window.alert("Error firing event: " + ex.getMessage());
 		}
 	}
 	
@@ -51,6 +51,10 @@ public class ObservableStack<E> implements Iterable<E> {
 		return mStack.peek();
 	}
 
+	public int getCount() {
+		return mStack.size();
+	}
+	
 	public final HandlerRegistration addHandler(
 			final ObservableStackPushEvent.ObservableStackPushHandler<E> handler) {
 		return ensureHandlers()

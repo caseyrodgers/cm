@@ -4,6 +4,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
+import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 import hotmath.gwt.hm_mobile.client.place.BookListPlace;
@@ -53,7 +54,7 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
 
     @Override
     public void doLoadBookForSubject(String subject) {
-        CatchupMathMobileShared.__instance.showBusyPanel();
+        clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 
         try {
             GetBooksAction action = new GetBooksAction(new CategoryModel(subject));
@@ -62,12 +63,12 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
                 public void onSuccess(CmList<BookModel> books) {
                     BookListView bookView = clientFactory.getBookListView();
                     bookView.showBookList(books);
-                    CatchupMathMobileShared.__instance.hideBusyPanel();
+                    clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
                 }
 
                 @Override
                 public void onFailure(Throwable arg0) {
-                    CatchupMathMobileShared.__instance.hideBusyPanel();
+                	clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 
                     arg0.printStackTrace();
                     Window.alert("Server error: " + arg0);

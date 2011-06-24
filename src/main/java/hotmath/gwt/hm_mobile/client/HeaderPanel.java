@@ -1,6 +1,8 @@
 package hotmath.gwt.hm_mobile.client;
 
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
@@ -94,7 +96,7 @@ public class HeaderPanel extends Composite {
             @Override
             public void touchClick(TouchClickEvent<String> tag) {
                 if (!ViewSettings.AnimationRunning) {
-                    Controller.navigateBack();
+                	Controller.navigateBack();
                 }
             }
         });

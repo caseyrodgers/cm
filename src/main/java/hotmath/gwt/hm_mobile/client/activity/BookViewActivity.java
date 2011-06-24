@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
+import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
@@ -65,7 +66,7 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
     public void loadBookInfo(final BookModel book) {
 		
 		
-		CatchupMathMobileShared.__instance.showBusyPanel();
+		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 
 		GetBookInfoAction action = new GetBookInfoAction(book);
 		HmMobile.getCmService().execute(action,new AsyncCallback<BookInfoModel>() {
@@ -74,16 +75,23 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 			     HmMobilePersistedPropertiesManager.getInstance().setLastBook(bookInfo.getBook());
 			     HmMobilePersistedPropertiesManager.save();
 
+			     int page=book.getPage();
+			     if(page == 0) {
+			    	 Integer opage = HmMobilePersistedPropertiesManager.getInstance().getBookPages().get(book.getTextCode());
+			    	 if(opage != null) {
+			    		 page = opage;
+			    	 }
+			     }
 			        
 				BookView bookView = clientFactory.getBookView();
-				bookView.showBook(bookInfo.getBook(), bookInfo);		
-				CatchupMathMobileShared.__instance.hideBusyPanel();
+				bookView.showBook(bookInfo.getBook(), bookInfo, page);		
+				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 			}
 			
 			
 			@Override
 			public void onFailure(Throwable arg0) {
-			    CatchupMathMobileShared.__instance.hideBusyPanel();
+				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 
 				arg0.printStackTrace();
 				Window.alert(arg0.getMessage());
@@ -93,18 +101,18 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 
 	@Override
     public void getProblemNumbers(BookModel book, int page) {
-	    CatchupMathMobileShared.__instance.showBusyPanel();
+		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 
 		GetProblemNumbersAction action = new GetProblemNumbersAction(book, page);
 		HmMobile.getCmService().execute(action,new AsyncCallback<CmList<ProblemNumber>>() {
 			public void onSuccess(CmList<ProblemNumber> problems) {
 				clientFactory.getBookView().showProblemNumbers(problems);
-				CatchupMathMobileShared.__instance.hideBusyPanel();
+				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 			}
 			
 			@Override
 			public void onFailure(Throwable arg0) {
-			    CatchupMathMobileShared.__instance.hideBusyPanel();
+				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 
 				arg0.printStackTrace();
 				Window.alert(arg0.getMessage());

@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.hm_mobile.client.HmMobile;
+import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowCategoryListEvent;
 
 import java.util.List;
@@ -74,6 +75,12 @@ public class HomeViewImpl extends AbstractPagePanel implements HomeView,IPage {
     public void doNavigate(ClickEvent ce) {
         HmMobile.__clientFactory.getEventBus().fireEvent(new ShowCategoryListEvent());
     }
+    
+    @UiHandler("searchTo")
+    public void doSearch(ClickEvent ce) {
+        HmMobile.__clientFactory.getEventBus().fireEvent(new ShowBookSearchEvent());
+    }
+
     
     @Override
     public String getTitle() {

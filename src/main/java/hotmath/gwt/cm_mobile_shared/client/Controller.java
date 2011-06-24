@@ -1,5 +1,9 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
@@ -10,10 +14,14 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
 public class Controller {
     private static ObservableStack<IPage> mPageStack;
+    private static EventBus __eventBus;
 
     private Controller() {
     }
 
+    public static void installEventBus(EventBus eventBus) {
+    	__eventBus = eventBus;
+    }
     /** Always go to topic list on init
      *
      * @param pageStack
@@ -33,7 +41,17 @@ public class Controller {
     }
 
     public static void navigateBack() {
-        mPageStack.pop();
+    	if(mPageStack.getCount() > 1) {
+    		mPageStack.pop();
+    	}
+    	else {
+    		if(__eventBus == null) {
+    			Window.alert("No back history and no eventBus installed");
+    		}
+    		else {
+    			__eventBus.fireEvent(new BackDiscoveryEvent());
+    		}
+    	}
     }
 
     public static void navigateToWelcome(IPage currentPage) {

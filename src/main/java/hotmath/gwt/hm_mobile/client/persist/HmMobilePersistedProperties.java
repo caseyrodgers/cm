@@ -2,10 +2,14 @@ package hotmath.gwt.hm_mobile.client.persist;
 
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HmMobilePersistedProperties {
 
     String searchTerm = "";
     BookModel lastBook = new BookModel();
+    Map<String,Integer> bookPages = new HashMap<String, Integer>();
 
     public HmMobilePersistedProperties() {
     }
@@ -26,8 +30,17 @@ public class HmMobilePersistedProperties {
         this.lastBook = lastBook;
     }
 
-    @Override
-    public String toString() {
-        return "HmMobilePersistedProperties [searchTerm=" + searchTerm + ", lastBook=" + lastBook + "]";
-    }
+    public Map<String,Integer> getBookPages() {
+		return bookPages;
+	}
+
+	public void setBookPages(Map<String,Integer> bookPages) {
+		this.bookPages = bookPages;
+	}
+
+	@Override
+	public String toString() {
+		return "HmMobilePersistedProperties [searchTerm=" + searchTerm
+				+ ", lastBook=" + lastBook + ", bookPages=" + bookPages + "]";
+	}
 }
