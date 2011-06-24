@@ -54,7 +54,7 @@ public class CmMainPanel extends LayoutContainer {
 	 * Each time the context is changed, updateGui(context) must be called to
 	 * keep the UI in sync.
 	 * 
-	 * @param cmModel
+	 * @param cmGuiDef
 	 *            The GUI model to use
 	 */
 	public CmMainPanel(final CmGuiDefinition cmGuiDef) {
@@ -130,7 +130,7 @@ public class CmMainPanel extends LayoutContainer {
 		for (Component c : comps) {
 			lc.add(c);
 		}
-		_westPanel.add(lc, new BorderLayoutData(LayoutRegion.NORTH, 50));
+		_westPanel.add(lc, new BorderLayoutData(LayoutRegion.NORTH, 65));
 	}
 
 	/**
