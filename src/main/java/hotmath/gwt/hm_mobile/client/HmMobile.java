@@ -164,48 +164,48 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         eb.addHandler(ShowTutorViewEvent.TYPE, new ShowTutorViewEventHandler() {
             @Override
             public void showTutor(ProblemNumber problem) {
-                History.newItem("TutorViewPlace:" + problem.getPid());
+                History.newItem("TutorViewPlace:" + problem.getPid() + uniq());
             }
         });
         eb.addHandler(ShowBookViewEvent.TYPE, new ShowBookViewEventHandler() {
             @Override
             public void showBook(BookModel book) {
-                History.newItem("BookViewPlace:" + book.getTextCode());
+                History.newItem("BookViewPlace:" + book.getTextCode() + uniq());
             }
         });
         
         eb.addHandler(ShowCategoryListEvent.TYPE, new ShowCategoryListEventHandler() {
             @Override
             public void showCategoryList() {
-                History.newItem("CategoryListPlace");
+                History.newItem("CategoryListPlace + uniq()");
             }
         });
 
         eb.addHandler(ShowBookListEvent.TYPE, new ShowBookListEventHandler() {
             @Override
             public void showBookList(CategoryModel category) {
-                History.newItem("BookListPlace:" + category.getCategory());
+                History.newItem("BookListPlace:" + category.getCategory() + uniq());
             }
         });
         
         eb.addHandler(ShowHomeViewEvent.TYPE, new ShowHomeViewEventHandler() {
             @Override
             public void showHome() {
-                History.newItem("HomeViewPlace");
+                History.newItem("HomeViewPlace" + uniq());
             }
         });
         
         eb.addHandler(ShowBookSearchEvent.TYPE,new ShowBookSearchEventHandler() {
 			@Override
 			public void showBookSearch() {
-				History.newItem("BookSearchPlace");
+				History.newItem("BookSearchPlace" + uniq());
 			}
         });
         
         eb.addHandler(ShowHelpEvent.TYPE,new ShowHelpEventHandler() {
 			@Override
 			public void showHelp() {
-				History.newItem("HelpPlace");
+				History.newItem("HelpPlace" + uniq());
 			}
 		});
         
@@ -228,11 +228,10 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             }
         });
         
-        
-        
-        
-        
-        
+    }
+    
+    private String uniq() {
+    	return ":" + System.currentTimeMillis();
     }
 
     /**
