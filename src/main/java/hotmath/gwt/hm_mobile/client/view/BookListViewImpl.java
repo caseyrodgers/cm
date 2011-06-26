@@ -33,6 +33,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
         addStyleName("bookListViewImpl");
         
         listItems.addStyleName("touch");
+        listItems.addStyleName("large");
 	}
 	
     class MyGenericTextTag extends GenericTextTag<String> {

@@ -24,16 +24,14 @@
 			</div>
 		</div>
 
-		<div>
-		    <span>Page: </span>
+		<div class='book-button-bar'>
+		    Page: 
             <g:Button styleName='sexybutton' ui:field="getPrevProblems">
 				<span>
 					<span>&lt;</span>
 				</span>
 			</g:Button>
-			<span>
-				<g:TextBox ui:field='pageNumber' />
-			</span>
+			<g:TextBox ui:field='pageNumber' />
             <g:Button styleName='sexybutton' ui:field="getNextProblems">
 				<span>
 					<span>&gt;</span>
@@ -44,7 +42,6 @@
 					<span>Go</span>
 				</span>
 			</g:Button>
-						
 		</div>
 		<br style='clear: both;' />
 		<g:HTMLPanel ui:field="messageDiv">
@@ -53,10 +50,8 @@
 			</h2>
 		</g:HTMLPanel>
 		<g:HTMLPanel ui:field="problemNumberDiv">
-			<h1>
-				Problems on page:
-				<span ui:field="pageProbNums" />
-			</h1>
+			<div style='prob-nums-title' ui:field="probNumsTitle">
+			</div>
 			<g:HTMLPanel ui:field="problemNumberList"></g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:HTMLPanel>

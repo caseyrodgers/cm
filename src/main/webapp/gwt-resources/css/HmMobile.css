@@ -1,3 +1,7 @@
+/** Core styles 
+*
+*/
+
 body {
   margin: 0px;
   padding: 0px;
@@ -80,6 +84,13 @@ h3 {
 
 
 
+
+/** Form specific styles */
+
+.prob-nums-title {
+	font-bold;
+	fong-size: 1.2em;
+}
 .bookViewImpl .touch {
 	font-style: italic;
 
@@ -92,9 +103,6 @@ h3 {
 }
 
 
-
-
-
 .bookListViewImpl li {
 	text-align: left;
 }
@@ -103,6 +111,7 @@ h3 {
     clear: both;
     height: 83px;
     margin-bottom: 15px;
+    padding: 5px;
 }
 
 .book-item img {
@@ -116,19 +125,6 @@ h3 {
 .bookViewImpl li {
     list-style-type: none;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 .mainPage {
@@ -176,25 +172,9 @@ h3 {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/** global CSS loading styles
+*
+*/
 
 #startup {
     display: table-cell;
@@ -206,6 +186,15 @@ h3 {
     width: 320px;
     text-align: center;
 }
+
+
+
+
+
+
+/** GUI Framework sytles for sliding/hiding content
+*
+*/
 
 #header {
     position: relative;
@@ -286,8 +275,6 @@ div.landscape #header .backButton {
   white-space : nowrap;
   overflow : hidden;
   text-overflow: ellipsis;
-
-
 }
 
 div.portrait #header .title.button-off {
@@ -326,9 +313,6 @@ div.landscape #header .title.button-on.landscape-overflow-on {
 
 
 
-
-
-
 div.page 
 {
     #width: 320px;
@@ -339,8 +323,11 @@ div.landscape div.page
 {
     #width: 480px;
     min-height: 228px;
-    
 }
+
+
+
+
 
 
 
@@ -584,12 +571,16 @@ div.page ul.touch li.group {
 }
 
 div.landscape div.page ul.touch li.group {
-  background-position: 440px 18px;
+  background-position: 280px 18px;
 }
 
 /* this is for the touched state of list items */
-div.page ul.touch li.group:active {
+div.page ul.touch li.large:active {
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched.png');
+}
+
+div.page ul.touch li.group:active {
+  background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched_large.png');
   background-position: 280px 18px, 0 0;
   background-repeat: no-repeat, repeat-x;
   color: white;

@@ -18,6 +18,7 @@ import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.ImageElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -41,7 +42,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     ImageElement bookImage;
 
     @UiField
-    SpanElement minPage, maxPage, pageProbNums, title, author;
+    SpanElement minPage, maxPage, title, author;
 
     @UiField
     TextBox pageNumber;
@@ -58,6 +59,10 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     @UiField
     SpanElement messageText;
+    
+    
+    @UiField
+    DivElement probNumsTitle;
 
 
     GenericContainerTag listItems = new GenericContainerTag("ul");
@@ -67,9 +72,12 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     interface BookViewImplUiBinder extends UiBinder<Widget, BookViewImpl> {
     }
 
+
+    
     public BookViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-
+        pageNumber.getElement().setAttribute("type","number");
+        
         problemNumberList.add(listItems);
         pageNumber.addKeyPressHandler(new KeyPressHandler() {
             @Override
@@ -196,14 +204,19 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     public void showProblemNumbers(CmList<ProblemNumber> problems) {
         listItems.clear();
 
-        pageProbNums.setInnerHTML(pageNumber.getValue());
-        
         if(problems.size() == 0) {
         	messageText.setInnerHTML("No problems found on page '" + pageNumber.getValue() + "'.");
         	messageDiv.getElement().setAttribute("style", "display: block");
         	problemNumberDiv.getElement().setAttribute("style", "display: none");
         }
         else {
+        	
+
+        	
+            String pageNumsTitle=(problems.size()==1?"Problem":"Problems");
+            pageNumsTitle += problems.size() + " on page: " + pageNumber.getValue();
+            probNumsTitle.setInnerHTML(pageNumsTitle);
+            
         	messageDiv.getElement().setAttribute("style", "display: none");
 	        problemNumberDiv.getElement().setAttribute("style", "display: block");
 	        String problemSet = "___";

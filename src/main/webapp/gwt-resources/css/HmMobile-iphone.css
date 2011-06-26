@@ -53,8 +53,6 @@ div.page.animate
 
   -webkit-transform: translate(5px, 5px);
   opacity: 1;
-  
-
 }
 
 
@@ -159,6 +157,3 @@ div.landscape #header .title.pos-right {
 	-webkit-transition-property: none;
 	-webkit-transition-duration: 0s;
 }
-
-
-<
