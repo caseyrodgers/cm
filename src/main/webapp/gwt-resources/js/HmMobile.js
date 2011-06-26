@@ -1,9 +1,10 @@
-/** Main Mobile JS
- *
- *
- *
- *
- * */
+/**
+ * Main Mobile JS
+ * 
+ * 
+ * 
+ * 
+ */
 
 var _productionMode=false;
 
@@ -27,8 +28,9 @@ function $get(name) {
 }
 
 
-/** Process MathJAX asynchronously
- *
+/**
+ * Process MathJAX asynchronously
+ * 
  */
 HmEvents.eventTutorInitialized.subscribe(function() {
     try {
@@ -40,7 +42,7 @@ HmEvents.eventTutorInitialized.subscribe(function() {
 });
 
 
-/** Tutor routines  */
+/** Tutor routines */
 function setStepsInfoHelp() {}
 function resetStepsInfo() {}
 function getNextMoveTo() {}
@@ -98,7 +100,7 @@ var TutorManager = {
                 TutorManager.currentStepUnit--;
             }
             if(TutorManager.currentStepUnit == 0) {
-                //. move back one to signal not
+                // . move back one to signal not
                 // curent in a step, only problem def
                 TutorManager.currentStepUnit = -1;
                 // reposition at top
@@ -117,26 +119,27 @@ var TutorManager = {
                 }
         },
 
-        /** read loaded tutor html and create meta data used
-         *  to drive the solution.
-         *
-         *  The stepUnits are individual parts of a step.
-         *
-         *  Stepunit contains these attribute:
-         *  id, steprole, steptype, realstep
-         *
-         *  steps are the complete steps consisting of two stepUnits.
-         *
-         *   Return count of stepUnits loaded
-         *
-         */
+        /**
+		 * read loaded tutor html and create meta data used to drive the
+		 * solution.
+		 * 
+		 * The stepUnits are individual parts of a step.
+		 * 
+		 * Stepunit contains these attribute: id, steprole, steptype, realstep
+		 * 
+		 * steps are the complete steps consisting of two stepUnits.
+		 * 
+		 * Return count of stepUnits loaded
+		 * 
+		 */
         analyzeLoadedData : function() {
                 TutorManager.stepUnits = [];
                 TutorManager.steps = [];
 
-                /** for each step unit div on page
-                 *
-                 */
+                /**
+				 * for each step unit div on page
+				 * 
+				 */
                 var maxStepUnits = 100;
                 for ( var s = 0; s < maxStepUnits; s++) {
                         var stepUnit = _getStepUnit(s);
@@ -163,15 +166,16 @@ var TutorManager = {
        return TutorManager.stepUnits.length;
     },
     backToLesson:function() {
-        /** Move back to lesson that called tutor
-         *
-         *  TODO: need gotoLessonForPid(currentPid);
-         *  */
+        /**
+		 * Move back to lesson that called tutor
+		 * 
+		 * TODO: need gotoLessonForPid(currentPid);
+		 */
         gwt_backToLesson();
     }
 }
 
-//StepUnit is a basic unit
+// StepUnit is a basic unit
 function StepUnit(id, stepUnitNum, type, roleType, realNum, ele) {
         this.id = id;
         this.stepUnitNum = stepUnitNum;
@@ -182,7 +186,7 @@ function StepUnit(id, stepUnitNum, type, roleType, realNum, ele) {
 }
 
 // StepUnit is one or more units that makeup a
-// complete step.  Each Step shares the share 'number'
+// complete step. Each Step shares the share 'number'
 // and theme of the step.
 function Step(realNum) {
         this.realNum = realNum;
@@ -214,21 +218,21 @@ function findPreviousFigureUnit(s) {
         return null;
 }
 
-//mark this step unit as current
+// mark this step unit as current
 function setAsNotCurrent(ele) {
         ele.style.backgroundColor = '#E2E2E2';
 }
 
 /**
  * Return requested element
- *
+ * 
  */
 function _getElement(tag, num) {
         var step = tag + "-" + num;
         return document.getElementById(step);
 }
 
-//Show the next available step unit
+// Show the next available step unit
 function showStepUnit(num) {
         if(num < 0)
                 return;
@@ -245,7 +249,7 @@ function showStepUnit(num) {
 
                 setStepTitle(num, stepElement);
 
-                // determine if figure should be displayed.  Only display
+                // determine if figure should be displayed. Only display
                 // if is the first one or different than the previous.
                 var figureUnit = _getFigureUnit(num);
                 if (figureUnit != null) {
@@ -297,7 +301,7 @@ function showStepUnit(num) {
         return true;
 }
 
-//mark this step unit as current
+// mark this step unit as current
 function setAsCurrent(ele) {
         ele.style.backgroundColor = '#F1F1F1';
 }
@@ -321,10 +325,10 @@ function setStepTitle(num, stepElement) {
         }
 }
 
-//find the previous figure unit
-//and either return the element
-//or return null if not previous
-//image exists.
+// find the previous figure unit
+// and either return the element
+// or return null if not previous
+// image exists.
 function findPreviousFigureUnit(s) {
         for (p = s - 1; p > -1; p--) {
                 fu = _getFigureUnit(p);
@@ -334,40 +338,61 @@ function findPreviousFigureUnit(s) {
         return null;
 }
 
-//Set the state of the toolbar buttons
+// Set the state of the toolbar buttons
 function setState(n, onoff) {
 }
 
 
-/** Attempt to scroll the document so the
- *  tutor bar rests on the bottom line exposing
- *  the largest portion of solution.
+/**
+ * Attempt to scroll the document so the tutor bar rests on the bottom line
+ * exposing the largest portion of solution.
+ * 
+ * 
+ * gwt_scrollToBottomOfScrollPanel();
+ * 
  * @param num
  * @return
  */
-function scrollToStep(num) {
-    
-    if(true) {
-        setTimeout("window.scrollTo(0,10000);",0);
-        return;
-    }
 
-        if(false) {
-                gwt_scrollToBottomOfScrollPanel();
-                return;
-        }
-        
-    var visibleSize = getViewableSize();
-    var scrollXy = getScrollXY();
-    var visTop = scrollXy[1];
-    var visHeight = visibleSize[1];
-    var visBot = visHeight + visTop;
-    var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
-    if(buttonBar < visTop || buttonBar > visBot) {
-        var st = Number(buttonBar) - visHeight;
-        setTimeout("alert(window.scrollTo(0,10000);",0);
-    }
+function scrollToStep(num) {
+	
+	setTimeout("window.scrollTo(0,10000);",0);
+	return;
+
+//	
+//	$get('scrollTo-button').scrollIntoView();
+//	alert('scrolled to');
+//	return;
+//	
+//	alert('scroll to bottom in GWT');
+//	gwt_scrollToBottomOfScrollPanel();
+//	return;
+	
+	
+//	javascript:scroll(0,document.getElementsByTagName('body')[0].scrollHeight);
+//	return;
+
+//	
+//	if(true)
+//		return;
+
+	
+//    var visibleSize = getViewableSize();
+//    var scrollXy = getScrollXY();
+//    var visTop = scrollXy[1];
+//    var visHeight = visibleSize[1];
+//    var visBot = visHeight + visTop;
+//    var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
+//    
+//    alert('visibleSize: ' + visibleSize + '  scrollXy: ' + scrollXy + ' visTop: ' + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: ' + buttonBar);
+//    
+//    if(buttonBar < visTop || buttonBar > visBot) { 
+//        var st = Number(buttonBar) - visHeight;
+//        setTimeout("alert(window.scrollTo(0,10000);",0);
+//    }
 }
+
+
 function hideAllSteps() {
     for(var s=0;s<TutorManager.stepUnits.length;s++) {
         var step = TutorManager.stepUnits[s].ele;
@@ -381,8 +406,9 @@ function hideAllSteps() {
     window.scrollTo(0,0);
 }
 
-/** called after control-floater inserted in ControlPanel
- *
+/**
+ * called after control-floater inserted in ControlPanel
+ * 
  */
 function initializeExternalJs() {
     var divName = 'control-floater';
@@ -430,22 +456,21 @@ HmEvents.eventTutorInitialized.subscribe(function() {
     var divs = tutor.getElementsByTagName("div");
     var len = divs.length;
 
-    /* Mobile does not have onmoueover,
-     * so convert the mouseover to onclick
-     * on all hint question_guess elements.
-     *
-     * We rename the onmouseover to onmouseoverDeferred
-     * and the call the deffered event onclick.
-     *
-     * The event will call doQuestionResponse to be called
-     * passing in the proper key to use to lookup the actual
-     * response text.  The text is kept in a JSON array to
-     * provide easy embedding of HTML.
-     *
-     * In the mobile version this call is caught and passed to
-     * and question answer is added to existing question div.
-     *
-     */
+    /*
+	 * Mobile does not have onmoueover, so convert the mouseover to onclick on
+	 * all hint question_guess elements.
+	 * 
+	 * We rename the onmouseover to onmouseoverDeferred and the call the
+	 * deffered event onclick.
+	 * 
+	 * The event will call doQuestionResponse to be called passing in the proper
+	 * key to use to lookup the actual response text. The text is kept in a JSON
+	 * array to provide easy embedding of HTML.
+	 * 
+	 * In the mobile version this call is caught and passed to and question
+	 * answer is added to existing question div.
+	 * 
+	 */
     for(var d=0;d<len;d++) {
         var div = divs.item(d);
         if(div.className == 'question_guess') {
@@ -473,23 +498,25 @@ HmEvents.eventTutorInitialized.subscribe(function() {
 
 
 
-/** CM CORE
- *
- *
- *
- *
- *
- *  */
-
-
-/** core Catchup Math routines
- *
+/**
+ * CM CORE
+ * 
+ * 
+ * 
+ * 
+ * 
  */
 
-/** Find list of questions and for each
- *  one call func to and pass the question div
- *  to supplied func.
- *
+
+/**
+ * core Catchup Math routines
+ * 
+ */
+
+/**
+ * Find list of questions and for each one call func to and pass the question
+ * div to supplied func.
+ * 
  */
 window.showCorrectAnswers = function(func) {
     var td = document.getElementById('testset_div');
@@ -503,16 +530,18 @@ window.showCorrectAnswers = function(func) {
     }
 }
 
-/** called by generated quiz HTML when a given question is selected
- *
+/**
+ * called by generated quiz HTML when a given question is selected
+ * 
  */
 function setQuizQuestionActive(x) {
         /** empty */
 }
 
-/** Search parents looking for guid attribute
-
- return null if not found
+/**
+ * Search parents looking for guid attribute
+ * 
+ * return null if not found
  */
 
 function findQuestionGuid(o) {
@@ -526,8 +555,9 @@ function findQuestionGuid(o) {
 }
 
 
-/** Find question with problem identifier
- *
+/**
+ * Find question with problem identifier
+ * 
  * @param pid
  * @return
  */
@@ -549,8 +579,9 @@ function findQuestionByPid(pid) {
         return null;
 }
 
-/** Return the question number identified by problem number
- *
+/**
+ * Return the question number identified by problem number
+ * 
  * @param pid
  * @return
  */
@@ -631,8 +662,8 @@ function setSolutionQuestionAnswerIndexByNumber(questionNum, which) {
         });
 }
 
-//call from JSNI when new question has been loaded in order to set
-//the selected question answer
+// call from JSNI when new question has been loaded in order to set
+// the selected question answer
 window.setSolutionQuestionAnswerIndex = function(pid, which, disabled) {
         ulNode = findQuestionByPid(pid);
         if (ulNode) {
@@ -644,15 +675,16 @@ window.setSolutionQuestionAnswerIndex = function(pid, which, disabled) {
                         cb.disabled = disabled ? true : false;
 
                         if (i == which) {
-                                //cb.style.background = 'red';
+                                // cb.style.background = 'red';
                                 cb.checked = true;
                         }
                 }
         }
 }
 
-/** Call into GWT to display the requested resource
- *
+/**
+ * Call into GWT to display the requested resource
+ * 
  * @param type
  * @param file
  * @return
@@ -668,8 +700,9 @@ window.markAllCorrectAnswers = function() {
         showCorrectAnswers(markCorrectResponse);
 }
 
-/** Return the count of correct answers
- *
+/**
+ * Return the count of correct answers
+ * 
  */
 window.getQuizResultsCorrect = function() {
         var count = 0;
@@ -687,8 +720,9 @@ window.getQuizResultsCorrect = function() {
         return count;
 }
 
-/** Return total count of questions
- *
+/**
+ * Return total count of questions
+ * 
  */
 window.getQuizQuestionCount = function() {
         var count = 0;
@@ -698,10 +732,10 @@ window.getQuizQuestionCount = function() {
         return count;
 }
 
-/** Find list of questions and for each
- *  one call func to and pass the question div
- *  to supplied func.
- *
+/**
+ * Find list of questions and for each one call func to and pass the question
+ * div to supplied func.
+ * 
  */
 window.showCorrectAnswers = function(func) {
         var testSet = document.getElementById('testset_div').getElementsByTagName(
@@ -713,9 +747,9 @@ window.showCorrectAnswers = function(func) {
         }
 }
 
-/** Given a list of question guesses, mark the correct
- *  one.
- *
+/**
+ * Given a list of question guesses, mark the correct one.
+ * 
  */
 window.markCorrectResponse = function(questionList) {
         var inputList = questionList.getElementsByTagName("input");
@@ -734,9 +768,10 @@ function checkQuiz_Gwt() {
         alert('Checking quiz ...');
 }
 
-/** Called from GWT to set the quiz question with the appropriate image
-*
-*/
+/**
+ * Called from GWT to set the quiz question with the appropriate image
+ * 
+ */
 window.setQuizQuestionResult = function(pid, result) {
 
        var ql = findQuestionByPid(pid);
@@ -767,15 +802,17 @@ function getQuestionMarkText(questionIndex) {
 }
 
 
-/** dummy, empty implementation
- *
+/**
+ * dummy, empty implementation
+ * 
  * @return
  */
 function log() {
         //
 }
 
-/** define empty implementation as place holder
+/**
+ * define empty implementation as place holder
  */
 InmhButtons = {};
 
@@ -786,68 +823,87 @@ InmhButtons = {};
 
 
 
-/** DOM UTILS
- *
- *
- *
- *
- *
- *
- *  */
+/**
+ * DOM UTILS
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 
 function DL_GetElementLeft(eElement)
 {
     if (!eElement && this)                    // if argument is invalid
-    {                                         // (not specified, is null or is 0)
+    {                                         // (not specified, is null or is
+												// 0)
         eElement = this;                       // and function is a method
-    }                                         // identify the element as the method owner
+    }                                         // identify the element as the
+												// method owner
 
     var DL_bIE = document.all ? true : false; // initialize var to identify IE
 
-    var nLeftPos = eElement.offsetLeft;       // initialize var to store calculations
-    var eParElement = eElement.offsetParent;  // identify first offset parent element
+    var nLeftPos = eElement.offsetLeft;       // initialize var to store
+												// calculations
+    var eParElement = eElement.offsetParent;  // identify first offset parent
+												// element
 
     while (eParElement != null)
-    {                                         // move up through element hierarchy
+    {                                         // move up through element
+												// hierarchy
         if(DL_bIE)
         {
-            if(eParElement.tagName == "TD")     // if parent a table cell, then...
+            if(eParElement.tagName == "TD")     // if parent a table cell,
+												// then...
             {
-                nLeftPos += eParElement.clientLeft; // append cell border width to calcs
+                nLeftPos += eParElement.clientLeft; // append cell border width
+													// to calcs
             }
         }
 
         nLeftPos += eParElement.offsetLeft;    // append left offset of parent
-        eParElement = eParElement.offsetParent; // and move up the element hierarchy
-    }                                         // until no more offset parents exist
+        eParElement = eParElement.offsetParent; // and move up the element
+												// hierarchy
+    }                                         // until no more offset parents
+												// exist
     return nLeftPos;                          // return the number calculated
 }
 
 function DL_GetElementTop(eElement)
 {
     if (!eElement && this)                    // if argument is invalid
-    {                                         // (not specified, is null or is 0)
+    {                                         // (not specified, is null or is
+												// 0)
         eElement = this;                       // and function is a method
-    }                                         // identify the element as the method owner
+    }                                         // identify the element as the
+												// method owner
 
     var DL_bIE = document.all ? true : false; // initialize var to identify IE
 
-    var nTopPos = eElement.offsetTop;       // initialize var to store calculations
-    var eParElement = eElement.offsetParent;  // identify first offset parent element
+    var nTopPos = eElement.offsetTop;       // initialize var to store
+											// calculations
+    var eParElement = eElement.offsetParent;  // identify first offset parent
+												// element
 
     while (eParElement != null)
-    {                                         // move up through element hierarchy
+    {                                         // move up through element
+												// hierarchy
         if(DL_bIE)
         {
-            if(eParElement.tagName == "TD")     // if parent a table cell, then...
+            if(eParElement.tagName == "TD")     // if parent a table cell,
+												// then...
             {
-                nTopPos += eParElement.clientTop; // append cell border width to calcs
+                nTopPos += eParElement.clientTop; // append cell border width
+													// to calcs
             }
         }
 
         nTopPos += eParElement.offsetTop;    // append top offset of parent
-        eParElement = eParElement.offsetParent; // and move up the element hierarchy
-    }                                         // until no more offset parents exist
+        eParElement = eParElement.offsetParent; // and move up the element
+												// hierarchy
+    }                                         // until no more offset parents
+												// exist
     return nTopPos;                          // return the number calculated
 }
 
@@ -857,15 +913,15 @@ function DL_GetElementTop(eElement)
 function getViewableSize() {
     var myWidth = 0, myHeight = 0;
     if( typeof( window.innerWidth ) == 'number' ) {
-        //Non-IE
+        // Non-IE
         myWidth = window.innerWidth;
         myHeight = window.innerHeight;
     } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
-        //IE 6+ in 'standards compliant mode'
+        // IE 6+ in 'standards compliant mode'
         myWidth = document.documentElement.clientWidth;
         myHeight = document.documentElement.clientHeight;
     } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
-        //IE 4 compatible
+        // IE 4 compatible
         myWidth = document.body.clientWidth;
         myHeight = document.body.clientHeight;
     }
@@ -877,15 +933,15 @@ function getViewableSize() {
 function getScrollXY() {
     var scrOfX = 0, scrOfY = 0;
     if( typeof( window.pageYOffset ) == 'number' ) {
-        //Netscape compliant
+        // Netscape compliant
         scrOfY = window.pageYOffset;
         scrOfX = window.pageXOffset;
     } else if( document.body && ( document.body.scrollLeft || document.body.scrollTop ) ) {
-        //DOM compliant
+        // DOM compliant
         scrOfY = document.body.scrollTop;
         scrOfX = document.body.scrollLeft;
     } else if( document.documentElement && ( document.documentElement.scrollLeft || document.documentElement.scrollTop ) ) {
-        //IE6 standards compliant mode
+        // IE6 standards compliant mode
         scrOfY = document.documentElement.scrollTop;
         scrOfX = document.documentElement.scrollLeft;
     }
@@ -932,12 +988,14 @@ function hideDivOnMouseOut(event) {
         related = event.relatedTarget;
     }
 
-    // log('hideHelpDiv related: ' + related.nodeName + ' (' + related.innerHTML.length + ') value: ' + related.nodeValue + '   current: ' + current.nodeName + ' (' + current.innerHTML.length + ')');
+    // log('hideHelpDiv related: ' + related.nodeName + ' (' +
+	// related.innerHTML.length + ') value: ' + related.nodeValue + ' current: '
+	// + current.nodeName + ' (' + current.innerHTML.length + ')');
 
     if (current != related) {
-        //log('current != related');
+        // log('current != related');
         if( !contains(current, related)) {
-            //log('related is not in current');
+            // log('related is not in current');
 
             // dojo.lfx.wipeOut(current,200).play();
             // fadeOut s
@@ -1022,17 +1080,18 @@ function grabComputedWidth(_14)
 
 
 
-/** FLOATER
- *
- *
- *
- *
- *
- *  */
+/**
+ * FLOATER
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 
 
-//keep element floating in vertical column, using
-//anchor (help_icon) as right position
+// keep element floating in vertical column, using
+// anchor (help_icon) as right position
 var _leftAnchor=null;
 var _leftAnchorElement;
 var _maxTop=null;
@@ -1050,7 +1109,7 @@ function detach(divName,leftAnchorElement,doNotDetach){
      lay.style.position='absolute';
 
  // if function passed in allow it to
- // handle the moving element.  This is to
+ // handle the moving element. This is to
  // get around compound eles linke in YUI
  if(_funcToCallOnRePosition) {
      _funcToCallOnRePosition(lay, l, t);
@@ -1062,7 +1121,7 @@ function detach(divName,leftAnchorElement,doNotDetach){
  getFloatLayer(divName).initialize();
 }
 
-/////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////
 
 var FloatLayers       = new Array();
 var FloatLayersByName = new Array();
@@ -1120,7 +1179,7 @@ function getYCoord(el) {
  return y;
 }
 
-/////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////
 
 FloatLayer.prototype.setFloatToTop=setTopFloater;
 FloatLayer.prototype.setFloatToBottom=setBottomFloater;
@@ -1148,7 +1207,7 @@ function FloatLayer(n, offX, offY, spd,funcToCallOnRePosition) {
  this.ifloatY = Math.abs(offY);
 }
 
-/////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////
 
 function defineFloater(){
         if(!this.layer)
@@ -1238,13 +1297,14 @@ function alignFloater(){
 
 
 
-/** tutor_flash_widget.js
- *
- *
- *
- *
- *
- * */
+/**
+ * tutor_flash_widget.js
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
 
 // version 1.1
 var _json;
@@ -1379,7 +1439,7 @@ function _setupTutorMultiChoice() {
 /**
  * Register with the HM Solution event system to be notified after the Tutor has
  * been fully initialized
- *
+ * 
  */
 HmEvents.eventTutorInitialized.subscribe(
     function(x) {
@@ -1441,9 +1501,11 @@ function showWidgetSubmit(yesNo) {
     }
 }
 
-/** Set main widget message.
- *
- *  If null msg then clears any messages and shows the Submit button.
+/**
+ * Set main widget message.
+ * 
+ * If null msg then clears any messages and shows the Submit button.
+ * 
  * @param msg
  */
 function setWidgetMessage(msg) {
@@ -1465,8 +1527,8 @@ function setWidgetMessage(msg) {
 }
 
 
-/** Copy prototype from one class to another.
- *  Allows for JS inheritance.
+/**
+ * Copy prototype from one class to another. Allows for JS inheritance.
  */
 function copyPrototype(descendant, parent) {
     var sConstructor = parent.toString();
@@ -1478,8 +1540,9 @@ function copyPrototype(descendant, parent) {
 };
 
 
-/** Utility Methods
- *
+/**
+ * Utility Methods
+ * 
  */
 var restrictionType_digitsOnly = /[1234567890-]/g;
 var restrictionType_digitsOnlyWithSlash = /[1234567890\/]/g;
@@ -1528,7 +1591,7 @@ function isABackSpaceCharacter(event) {
 
 /**
  * Class to define a single flash widget
- *
+ * 
  * @param widgetDiv
  * @return
  */
@@ -1545,13 +1608,12 @@ function HmFlashWidget(jsonObj) {
 
 /**
  * Class HmFlashWidget base class
- *
- * - Takes a widget and assigns a key listener on field widget_input_field_1-n.
- * - Each key press will call the method widgetKeyPress on the attached listener.
- * - The form submit is assigned to the proper wigetObject handler.
- *
+ *  - Takes a widget and assigns a key listener on field widget_input_field_1-n. -
+ * Each key press will call the method widgetKeyPress on the attached listener. -
+ * The form submit is assigned to the proper wigetObject handler.
+ * 
  * @param widgetDiv
- *
+ * 
  */
 HmFlashWidget.prototype.initializeWidget = function() {
     /** put value in widget */
@@ -1586,8 +1648,9 @@ HmFlashWidget.prototype.drawGui = function() {
     return this.drawGuiDefault();
 }
 
-/** Define GUI for basic widget
- *
+/**
+ * Define GUI for basic widget
+ * 
  */
 HmFlashWidget.prototype.drawGuiDefault = function() {
     var widget = this.createWidgetForm();
@@ -1599,14 +1662,13 @@ HmFlashWidget.prototype.drawGuiDefault = function() {
 }
 
 
-/** Default processWidget functionality.
- *
- *   This will take the value from single
- *   field and matches it with jsonObj.value.
- *
- *   If it is equal, then show correct
- *   image else show error image.
- *
+/**
+ * Default processWidget functionality.
+ * 
+ * This will take the value from single field and matches it with jsonObj.value.
+ * 
+ * If it is equal, then show correct image else show error image.
+ * 
  */
 HmFlashWidget.prototype.processWidget = function() {
     this.processWidgetDefault();
@@ -1627,13 +1689,14 @@ HmFlashWidget.prototype.processWidgetDefault = function() {
     showWidgetSubmit(false);
 }
 
-/** Default process validation method (equality)
- *
- *  This method will be overridden by subclasses
- *  to provide widget specific validation.
- *
- *  It must return either true, or false.  Any
- *  widget specific errors should throw an exception.
+/**
+ * Default process validation method (equality)
+ * 
+ * This method will be overridden by subclasses to provide widget specific
+ * validation.
+ * 
+ * It must return either true, or false. Any widget specific errors should throw
+ * an exception.
  */
 HmFlashWidget.prototype.processWidgetValidation = function() {
         var d = $get('widget_input_field_1');
@@ -1642,22 +1705,25 @@ HmFlashWidget.prototype.processWidgetValidation = function() {
 }
 
 
-/** Default functionality is to allow any key
- *
+/**
+ * Default functionality is to allow any key
+ * 
  */
 HmFlashWidget.prototype.processKey = function() {
-    //allow all
+    // allow all
 }
 
 
-/** Add the head and control box for indicator/submit button
- *
+/**
+ * Add the head and control box for indicator/submit button
+ * 
  */
 _createGuiWrapper = function() {
 
-    /** FIX, this must be specified ...
-     *
-     */
+    /**
+	 * FIX, this must be specified ...
+	 * 
+	 */
     var guiWrapper = $get('hm_flash_widget');
 
     guiWrapper.setAttribute("style", "position: relative;");
@@ -1691,8 +1757,9 @@ HmFlashWidget.prototype.markWidgetIncorrect = function() {
    indicator.style.display = 'block';
 }
 
-/** Create base widget form object
- *
+/**
+ * Create base widget form object
+ * 
  */
 HmFlashWidget.prototype.createWidgetForm = function() {
     var widgetForm = document.createElement("form");
@@ -1706,13 +1773,14 @@ HmFlashWidget.prototype.createWidgetForm = function() {
 
 
 
-/** Start of widget specific classes
- *
- *  Order is important!
- *
- * */
-/** Number integer entry
- *  test: cmextras_1_1_1_1_1
+/**
+ * Start of widget specific classes
+ * 
+ * Order is important!
+ * 
+ */
+/**
+ * Number integer entry test: cmextras_1_1_1_1_1
  */
 function HmFlashWidgetImplNumberInteger(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -1732,8 +1800,9 @@ copyPrototype(HmFlashWidgetImplNumberInteger, HmFlashWidget);
 
 
 
-/** Class for Money entry
- *
+/**
+ * Class for Money entry
+ * 
  * test: cmextras_1_1_1_11_1
  */
 function HmFlashWidgetImplNumberMoney(jsonObj) {
@@ -1753,10 +1822,11 @@ copyPrototype(HmFlashWidgetImplNumberMoney, HmFlashWidget);
 
 
 
-/** Define Class for Fraction entry
- *
+/**
+ * Define Class for Fraction entry
+ * 
  * test: cmextras_1_2_1_56_1
- *
+ * 
  */
 function HmFlashWidgetImplNumberIntegerFraction(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -1778,9 +1848,10 @@ HmFlashWidget.prototype.drawGui = function() {
                    "<input name='widget_input_field_2' id='widget_input_field_2' type='text'/>" +
                "</div>";
 
-    /** should a simplified choice been added?
-     *
-     */
+    /**
+	 * should a simplified choice been added?
+	 * 
+	 */
     if(this._jsonObj.format == 'text_simplified') {
         this.hasSimplified=true;
 
@@ -1794,10 +1865,11 @@ HmFlashWidget.prototype.drawGui = function() {
 }
 copyPrototype(HmFlashWidgetImplNumberIntegerFraction, HmFlashWidget);
 
-/** Define class for Number Simple Fraction
- *
+/**
+ * Define class for Number Simple Fraction
+ * 
  * test: genericprealg_3_5_NumberTheory_29_320
- *
+ * 
  * inherit all from IntegerFraction
  */
 function HmFlashWidgetImplSimpleFraction(jsonObj) {
@@ -1827,8 +1899,9 @@ function prepareSimpleFraction(jsonObj, obj) {
 
 
 
-/** Define class for Integer with Angle Deg
- *
+/**
+ * Define class for Integer with Angle Deg
+ * 
  */
 
 function HmFlashWidgetImplNumberIntegerAngleDeg(jsonObj) {
@@ -1856,10 +1929,11 @@ copyPrototype(HmFlashWidgetImplNumberIntegerAngleDeg, HmFlashWidget);
 
 
 
-/** Define class for Multi entry
- *
+/**
+ * Define class for Multi entry
+ * 
  * test:
- *
+ * 
  */
 function HmFlashWidgetImplMulti(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -1905,10 +1979,11 @@ copyPrototype(HmFlashWidgetImplMulti, HmFlashWidget);
 
 
 
-/** Define class for Rational
- *
+/**
+ * Define class for Rational
+ * 
  * test: cmextras_1_1_1_83_1
- *
+ * 
  */
 function HmFlashWidgetImplRational(jsonObj) {
     this.isFraction=false;
@@ -1958,8 +2033,9 @@ HmFlashWidget.prototype.configureAsFraction = function(yesNo) {
     }
 }
 
-/** Builds UI and places measure text to right of main input field
- *
+/**
+ * Builds UI and places measure text to right of main input field
+ * 
  */
 HmFlashWidget.prototype.drawGui = function() {
     var measure = '';
@@ -2017,7 +2093,7 @@ HmFlashWidget.prototype.drawGui = function() {
             symbols = '&pi;';
         }
         else {
-            /** square root ?*/
+            /** square root ? */
             symbols = '&radic;';
         }
 
@@ -2037,10 +2113,11 @@ copyPrototype(HmFlashWidgetImplRational, HmFlashWidget);
 
 
 
-/** Define class for Inequality
- *
+/**
+ * Define class for Inequality
+ * 
  * test: cmextras_1_2_1_43_1
- *
+ * 
  */
 function HmFlashWidgetImplInequality(jsonObj) {
     this.isFraction=false;
@@ -2096,8 +2173,9 @@ copyPrototype(HmFlashWidgetImplInequality, HmFlashWidget);
 
 
 
-/** Define class for Coord
- *
+/**
+ * Define class for Coord
+ * 
  */
 function HmFlashWidgetImplCoord(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2142,8 +2220,9 @@ copyPrototype(HmFlashWidgetImplCoord, HmFlashWidget);
 
 
 
-/** Define class for number_mixed_fraction: cmextras_1_4_1_1_4
- *
+/**
+ * Define class for number_mixed_fraction: cmextras_1_4_1_1_4
+ * 
  */
 function HmFlashWidgetImplMixedFraction(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2177,10 +2256,11 @@ copyPrototype(HmFlashWidgetImplMixedFraction, HmFlashWidget);
 
 
 
-/** Define class for Power Form
- *
+/**
+ * Define class for Power Form
+ * 
  * test: genericprealg_1_6_Operations,ExpressionsandVariables_15_125
- *
+ * 
  */
 function HmFlashWidgetImplPowerForm(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2221,8 +2301,8 @@ copyPrototype(HmFlashWidgetImplPowerForm, HmFlashWidget);
 
 
 
-/** type = 'science notation'
- *  test = genericprealg_3_8_NumberTheory_1_335
+/**
+ * type = 'science notation' test = genericprealg_3_8_NumberTheory_1_335
  */
 function HmFlashWidgetImplSciNotation(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2255,8 +2335,9 @@ copyPrototype(HmFlashWidgetImplSciNotation, HmFlashWidget);
 
 
 
-/** type = letter
- *  test = 'genericprealg_10_1_LinearEquationsandInequalities_5_900'
+/**
+ * type = letter test =
+ * 'genericprealg_10_1_LinearEquationsandInequalities_5_900'
  */
 function HmFlashWidgetImplLetter(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2282,8 +2363,8 @@ copyPrototype(HmFlashWidgetImplLetter, HmFlashWidget);
 
 
 
-/** Type = Odds
- *  test = genericalg1_13_1_DiscreteMathematicsandProbability_13_1200
+/**
+ * Type = Odds test = genericalg1_13_1_DiscreteMathematicsandProbability_13_1200
  */
 function HmFlashWidgetImplOdds(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2305,8 +2386,8 @@ copyPrototype(HmFlashWidgetImplOdds, HmFlashWidget);
 
 
 
-/** Type = point_slope_form
- *  test = genericalg1_2_7_GraphingLinearEquations_1_130
+/**
+ * Type = point_slope_form test = genericalg1_2_7_GraphingLinearEquations_1_130
  */
 function HmFlashWidgetImplPointSlopeForm(jsonObj) {
     this.HmFlashWidget(jsonObj);
@@ -2360,23 +2441,24 @@ copyPrototype(HmFlashWidgetImplInequalityExact, HmFlashWidget);
 
 
 
-/** tutor_flash_widget_validation.js
- *
- *
- *
- *
- * */
+/**
+ * tutor_flash_widget_validation.js
+ * 
+ * 
+ * 
+ * 
+ */
 
 
 /**
  * tutor flash widget validations
- *
+ * 
  * validation functions are assigned to specific widgets defiend in
  * tutor_flash_widget.js.
- *
+ * 
  * Each validation method is made an instance method of the assigned class. This
  * makes the instance vars (like _jsonObj) to be available.
- *
+ * 
  */
 
 var widget_answer;
@@ -2525,7 +2607,7 @@ function toMathFormat(_str) {
                 }
         }
                 }
-                //alert('fstr '+fstr+":"+closeB)
+                // alert('fstr '+fstr+":"+closeB)
         var end = false;
         for (var i = 0; i < rstr.length; i++) {
             uchar = rstr.charAt(i);
@@ -2540,7 +2622,7 @@ function toMathFormat(_str) {
         if (!end) {
             fstr += closeB;
         }
-                //alert('fstr '+fstr)
+                // alert('fstr '+fstr)
         return fstr;
     }
     return str;
@@ -2551,7 +2633,7 @@ function toMathFormat(_str) {
 /**
  * Each validation function has access to this._jsonObj which is the JSON
  * configuration object (ie, this._jsonObj.value)
- *
+ * 
  */
 // VALIDATION FUNCTIONS START
 // /////////////////////////////////////////////////////////////////////
@@ -2638,9 +2720,10 @@ function validateNumberSimpleFraction()
     var expectedValue=cm_unescape(this._jsonObj.value);
         var simplified = $get('widget_input_simplified');
 
-    /** isSimplified field avaialbe and checked?
-     *
-     */
+    /**
+	 * isSimplified field avaialbe and checked?
+	 * 
+	 */
     var isSimplified = simplified && simplified.checked;
         var ans_isSimplified=expectedValue.split("|")[1]=='simplified'
     if(expectedValue.indexOf("[")>-1){
@@ -2694,18 +2777,18 @@ HmFlashWidgetImplSimpleFraction.prototype.processWidgetValidation = validateNumb
 // -! type=number_fraction
 /**
  * TODO: need widget for this
- *
- * widget_input_simplified is avaiable
- * on text_simple.
- *
+ * 
+ * widget_input_simplified is avaiable on text_simple.
+ * 
  */
 function validateNumberFraction()
 {
     var simplified = $get('widget_input_simplified');
 
-    /** isSimplified field avaialbe and checked?
-     *
-     */
+    /**
+	 * isSimplified field avaialbe and checked?
+	 * 
+	 */
     var isSimplified = simplified && simplified.checked;
 
     var expectedValue=cm_unescape(this._jsonObj.value);
@@ -2862,11 +2945,10 @@ function validateNumberMixedFraction()
         inputValue=num+"/"+den
     }
     if(isMixed){
-        /** todo:
-         *   If a mixed fraction, then inputValue
-         *   here would always be a string, ie. 1/5 ...
-         *   because it is also a isFrac.
-         */
+        /**
+		 * todo: If a mixed fraction, then inputValue here would always be a
+		 * string, ie. 1/5 ... because it is also a isFrac.
+		 */
         whole=$get('widget_input_field_1').value;
         num=$get('widget_input_field_2').value;
         den=$get('widget_input_field_3').value;
@@ -2930,7 +3012,7 @@ function validateCoordinates()
     }
 }
 // -! type=string&letter
-//  ignore case
+// ignore case
 function validateString()
 {
     var expectedValue=cm_unescape(this._jsonObj.value);

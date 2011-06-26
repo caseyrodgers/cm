@@ -80,7 +80,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 
 	@Override
 	public String getBackButtonText() {
-		return "Back";
+		return "";
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 
 	@Override
 	public String getTitle() {
-		return "Available Subjects";
+		return "Hotmath Mobile";
 	}
 }
 
@@ -111,7 +111,7 @@ class MyListItem extends ListItem {
 class MyTextTag extends GenericTextTag<String> {
 	String category;
 	public MyTextTag(String category) {
-		super("span");
+		super("div");
 		setText(category);
 		this.category = category;
 		addHandler(new TouchClickHandler<String>() {

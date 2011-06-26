@@ -34,7 +34,7 @@ import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
-import hotmath.gwt.hm_mobile.client.place.HomePlace;
+import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +69,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
 
-    Place defaultPlace = new HomePlace("");
+    Place defaultPlace = new CategoryListPlace("");
     ControlPanel _controlPanel;
 
     public static HmMobile __instance;
@@ -285,7 +285,7 @@ class MyControlPanel extends ControlPanel {
         __defaultList.add(new ControlAction("Home") {
             @Override
             public void doAction() {
-                HmMobile.__clientFactory.getEventBus().fireEvent(new ShowHomeViewEvent());
+                HmMobile.__clientFactory.getEventBus().fireEvent(new ShowCategoryListEvent());
             }
         });        
         

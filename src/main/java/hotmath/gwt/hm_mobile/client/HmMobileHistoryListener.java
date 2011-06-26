@@ -37,12 +37,7 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 final TokenParserGeneric token = new TokenParserGeneric(historyToken);
     
                 final String type = token.getToken(0);
-                
-                if(type == null || type.length() == 0 || type.equals("home")) {
-                    HomeView view = HmMobile.__clientFactory.getHomeView();
-                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
-                }
-                else if(type.equals("CategoryListPlace")) {
+                if(type == null || type.length() == 0 || type.equals("CategoryListPlace")) {
                     CategoryListActivity a = new CategoryListActivity(new CategoryListPlace(historyToken), HmMobile.__clientFactory);
                     CategoryListView view = HmMobile.__clientFactory.getCategoryListView();
                     view.setPresenter(a);
