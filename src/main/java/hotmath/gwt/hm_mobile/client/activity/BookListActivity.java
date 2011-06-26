@@ -53,7 +53,7 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
     }
 
     @Override
-    public void doLoadBookForSubject(String subject) {
+    public void doLoadBookForSubject(String subject, final CallbackOnComplete callback) {
         clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 
         try {
@@ -64,6 +64,8 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
                     BookListView bookView = clientFactory.getBookListView();
                     bookView.showBookList(books);
                     clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
+                    
+                    callback.isComplete();
                 }
 
                 @Override

@@ -49,7 +49,7 @@ public class Controller {
     			Window.alert("No back history and no eventBus installed");
     		}
     		else {
-    			__eventBus.fireEvent(new BackDiscoveryEvent());
+    			__eventBus.fireEvent(new BackDiscoveryEvent(mPageStack.getCount()==1?mPageStack.peek():null));
     		}
     	}
     }

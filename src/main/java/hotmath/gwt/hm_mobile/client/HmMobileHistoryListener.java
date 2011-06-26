@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.hm_mobile.client.activity.BookListActivity;
 import hotmath.gwt.hm_mobile.client.activity.BookSearchActivity;
 import hotmath.gwt.hm_mobile.client.activity.BookViewActivity;
+import hotmath.gwt.hm_mobile.client.activity.CallbackOnComplete;
 import hotmath.gwt.hm_mobile.client.activity.CategoryListActivity;
 import hotmath.gwt.hm_mobile.client.activity.TutorViewActivity;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
@@ -45,21 +46,27 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 }
                 else if(type.equals("BookListPlace")) {
                     BookListActivity activity = new BookListActivity(new BookListPlace(token.getToken(1)),HmMobile.__clientFactory);
-                    BookListView view = HmMobile.__clientFactory.getBookListView();
+                    final BookListView view = HmMobile.__clientFactory.getBookListView();
                     view.setPresenter(activity);
-                    activity.doLoadBookForSubject(token.getToken(1));
+                    activity.doLoadBookForSubject(token.getToken(1), new CallbackOnComplete() {
+                    	public void isComplete() {
+                    		HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                    	}
+                    });
                     
-                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                    
                 }
                 else if(type.equals("BookViewPlace")) {
                     String textCode = token.getToken(1);
                     BookViewActivity act = new BookViewActivity(new BookViewPlace(textCode), HmMobile.__clientFactory);
     
-                    BookView view = HmMobile.__clientFactory.getBookView();
+                    final BookView view = HmMobile.__clientFactory.getBookView();
                     view.setPresenter(act);
-                    act.loadBookInfo(new BookModel(textCode));
-                    
-                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                    act.loadBookInfo(new BookModel(textCode), new CallbackOnComplete() {
+						@Override
+						public void isComplete() {
+		                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));						}
+					});
                 }
                 else if(type.equals("TutorViewPlace")) {
                     String pid = token.getToken(1);

@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage {
 
     
+	ProblemNumber problem;
 	
     SimplePanel tutorPanel;
     
@@ -35,6 +36,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 
 	@Override
     public void loadSolution(final ProblemNumber problem, final SolutionResponse solution) {
+		this.problem = problem;
 		setupJsni();
 		
 		tutorPanel.clear();
@@ -47,6 +49,11 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 			}
 		});
     }
+	
+	@Override
+	public ProblemNumber getLoadedProblem() {
+		return problem;
+	}
 	
 	/** Scroll to bottom of scroll panel 
 	 * 

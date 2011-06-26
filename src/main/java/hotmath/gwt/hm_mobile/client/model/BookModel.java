@@ -4,11 +4,11 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class BookModel implements Response {
 
-	String textCode, title, image, publisher,copyRight,author,pubDate;
+	String textCode, title, image, publisher,copyRight,author,pubDate,subject;;
 	int page=0;
 	
 	public BookModel() {}
-	public BookModel(String textCode, String title, String image, String publisher, String copyRight,String author,String pubDate) {
+	public BookModel(String textCode, String title, String image, String publisher, String copyRight,String author,String pubDate,String subject) {
 		this.textCode = textCode;
 		this.title = title;
 		this.image = image;
@@ -16,6 +16,7 @@ public class BookModel implements Response {
 		this.copyRight = copyRight;
 		this.author = author;
 		this.pubDate = pubDate;
+		this.subject = subject;
 	}
 	
 	public String getPubDate() {
@@ -71,9 +72,18 @@ public class BookModel implements Response {
 	public void setPage(int page) {
     	this.page = page;
     }
+	public String getSubject() {
+		return subject;
+	}
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
 	@Override
-    public String toString() {
-	    return "BookModel [textCode=" + textCode + ", title=" + title + ", image=" + image + ", publisher=" + publisher
-	            + ", copyRight=" + copyRight + ", author=" + author + ", pubDate=" + pubDate + ", page=" + page + "]";
-    }
+	public String toString() {
+		return "BookModel [textCode=" + textCode + ", title=" + title
+				+ ", image=" + image + ", publisher=" + publisher
+				+ ", copyRight=" + copyRight + ", author=" + author
+				+ ", pubDate=" + pubDate + ", subject=" + subject + ", page="
+				+ page + "]";
+	}
 }

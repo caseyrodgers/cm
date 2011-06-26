@@ -47,7 +47,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 
 	@Override
     public void showBookList(CmList<BookModel> books) {
-		
+		getWidget().getElement().setAttribute("style","display:none");
 		this.books = books;
 		listItems.clear();
 		for(BookModel bm: books) {
@@ -112,6 +112,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 			listItems.add(tt);
 		}
 		
+		getWidget().getElement().setAttribute("style","display:block");
 		
     }
 //	

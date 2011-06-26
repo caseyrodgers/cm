@@ -13,6 +13,8 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.hm_mobile.client.event.GoBackEvent;
+import hotmath.gwt.hm_mobile.client.event.GoBackEventHandler;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
@@ -35,6 +37,9 @@ import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
+import hotmath.gwt.hm_mobile.client.view.BookListView;
+import hotmath.gwt.hm_mobile.client.view.BookView;
+import hotmath.gwt.hm_mobile.client.view.TutorView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -210,13 +215,19 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 		});
         
         
+        
         eb.addHandler(BackDiscoveryEvent.TYPE,new BackDiscoveryEventHandler() {
 			@Override
-			public void discoverBack() {
-				History.back();
+			public void discoverBack(IPage last) {
+				if(last != null) {
+					determineBackDestination(last);
+				}
+				else {
+					History.back();
+				}
 			}
 		});
-        
+
         
         /** Provide central place to insert into IPage system 
          * 
@@ -229,6 +240,36 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         });
         
     }
+    
+    
+    
+    
+    /** Look at current page and try to determine the proper thing 
+     *   to do for the 'back' action.
+     *   
+     * @param page
+     */
+    private void determineBackDestination(IPage page) {
+    	if(page instanceof TutorView) {
+    		TutorView view = (TutorView)page;
+    		ProblemNumber pn = view.getLoadedProblem();
+    		String textCode = pn.getTextCode(); 
+    		__clientFactory.getEventBus().fireEvent(new ShowBookViewEvent(new BookModel(textCode)));
+    	}
+    	else if(page instanceof BookView) {
+    		BookView view = (BookView)page;
+    		BookModel book = view.getLoadedBookModel();
+    		__clientFactory.getEventBus().fireEvent(new ShowBookListEvent(new CategoryModel(book.getSubject())));
+    	}
+    	else if(page instanceof BookListView) {
+    		__clientFactory.getEventBus().fireEvent(new ShowCategoryListEvent());
+    	}
+    	else {
+    		History.back();
+    	}
+    }
+    
+    
     
     private String uniq() {
     	return ":" + System.currentTimeMillis();
@@ -287,7 +328,14 @@ class MyControlPanel extends ControlPanel {
             public void doAction() {
                 HmMobile.__clientFactory.getEventBus().fireEvent(new ShowCategoryListEvent());
             }
+        });  
+        __defaultList.add(new ControlAction("Back") {
+            @Override
+            public void doAction() {
+                Controller.navigateBack();
+            }
         });        
+
         
         __defaultList.add(new ControlAction("Text Search") {
             @Override

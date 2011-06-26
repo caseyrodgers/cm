@@ -53,7 +53,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					public BookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
 					    return new BookModel(rs.getString("textcode"), rs.getString("textname"), 
 					    		rs.getString("imagefile"), rs.getString("publisher"), 
-					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"));
+					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
 					}
 				});
 		return list;
@@ -102,9 +102,11 @@ public class BooksDao extends SimpleJdbcDaoSupport {
             "       b.PUBLISHER, " +
             "       b.COPYRIGHT, " +
             "       b.AUTHOR, " +
-            "       b.PUBDATE " +          
+            "       b.PUBDATE, " +
+            "       c.category " +
             "from   BOOKINFO b " +
-            " where textcode = ?";
+            "  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
+            " where b.textcode = ?";
         
         BookModel book = getJdbcTemplate().queryForObject(
                 sql,
@@ -114,7 +116,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
                     public BookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new BookModel(rs.getString("textcode"), rs.getString("textname"), 
                                 rs.getString("imagefile"), rs.getString("publisher"), 
-                                rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"));
+                                rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
                     }
                 });
         return book;
@@ -159,7 +161,9 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 			"       b.COPYRIGHT, " +
 			"       b.AUTHOR, " +
 			"       b.PUBDATE " +			
+			"       c.category " +
 			"from   BOOKINFO b " +
+			"  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
 			"where  EXISTS (select 'x' from SOLUTIONS where booktitle = b.textcode limit 1) " +
 			"AND ( " +
 			"        textname like ? " +
@@ -183,7 +187,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					public BookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
 					    return new BookModel(rs.getString("textcode"), rs.getString("textname"), 
 					    		rs.getString("imagefile"), rs.getString("publisher"), 
-					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"));
+					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
 					}
 				});
 		return list;

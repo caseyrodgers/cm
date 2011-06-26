@@ -10,6 +10,10 @@ public class ProblemNumber implements Response {
 	
 	public ProblemNumber() {}
 	
+	public ProblemNumber(String pid) {
+		this.pid = pid;
+	}
+	
 	public ProblemNumber(String problem, String problemSet, String pid) {
 		this.problem = problem;
 		this.problemSet = problemSet;
@@ -39,6 +43,15 @@ public class ProblemNumber implements Response {
 	public void setProblemSet(String problemSet) {
     	this.problemSet = problemSet;
     }
+	
+	/** assuming standard pid layout
+	 * 
+	 * @return
+	 */
+	public String getTextCode() {
+		String p[] = pid.split("_");
+		return p[0];
+	}
 
 	@Override
     public String toString() {

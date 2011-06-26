@@ -11,7 +11,7 @@ public class HmMobilePersistedPropertiesManager {
 	static private HmMobilePersistedProperties __instance;
 
 	static final int SEARCH_TERM = 0, TEXTCODE = 1, TITLE = 2, PUBLISHER = 3, COPYRIGHT = 4, IMAGE = 5, PAGENUM = 6,
-	        AUTHOR = 7, PUBDATE = 8;
+	        AUTHOR = 7, PUBDATE = 8,CATEGORY = 9;
 
 	static public HmMobilePersistedProperties getInstance() {
 		if (__instance == null) {
@@ -19,11 +19,11 @@ public class HmMobilePersistedPropertiesManager {
 				String config = Storage.getLocalStorage().getItem("config");
 				if (config != null) {
 					String p[] = config.split("\\|");
-					if (p.length == 9) {
+					if (p.length == 10) {
 						__instance = new HmMobilePersistedProperties();
 						__instance.setSearchTerm(p[SEARCH_TERM]);
 						__instance.setLastBook(new BookModel(p[TEXTCODE], p[TITLE], ifn(p[IMAGE]), ifn(p[PUBLISHER]),
-						        ifn(p[COPYRIGHT]), ifn(p[AUTHOR]), p[PUBDATE]));
+						        ifn(p[COPYRIGHT]), ifn(p[AUTHOR]), p[PUBDATE], p[CATEGORY]));
 						__instance.getLastBook().setPage(Integer.parseInt(p[PAGENUM]));
 					}
 				}
@@ -76,7 +76,7 @@ public class HmMobilePersistedPropertiesManager {
 			BookModel b = p.getLastBook();
 			String config = p.getSearchTerm() + "|" + b.getTextCode() + "|" + b.getTitle() + "|" + b.getPublisher()
 			        + "|" + b.getCopyRight() + "|" + b.getImage() + "|" + b.getPage() + "|" + b.getAuthor() + "|"
-			        + b.getPubDate();
+			        + b.getPubDate() + "|" + b.getSubject();
 			Storage.getLocalStorage().setItem("config", config);
 			
 			

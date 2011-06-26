@@ -1,8 +1,6 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
@@ -12,15 +10,11 @@ import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import hotmath.gwt.hm_mobile.client.place.BookViewPlace;
-import hotmath.gwt.hm_mobile.client.place.MobilePlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetBookInfoAction;
 import hotmath.gwt.hm_mobile.client.rpc.GetProblemNumbersAction;
-import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.BookView;
-import hotmath.gwt.hm_mobile.client.view.TutorView;
 
-import com.gargoylesoftware.htmlunit.Page;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
@@ -63,7 +57,7 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 	}
 
 	@Override
-    public void loadBookInfo(final BookModel book) {
+    public void loadBookInfo(final BookModel book, final CallbackOnComplete callback) {
 		
 		
 		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
@@ -85,6 +79,9 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 			        
 				BookView bookView = clientFactory.getBookView();
 				bookView.showBook(bookInfo.getBook(), bookInfo, page);		
+				
+				
+				callback.isComplete();
 				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 			}
 			

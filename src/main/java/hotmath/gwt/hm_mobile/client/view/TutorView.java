@@ -7,6 +7,7 @@ public interface TutorView {
 	
 	void loadSolution(ProblemNumber problem, SolutionResponse solution);
 	void setPresenter(Presenter p);
+	ProblemNumber getLoadedProblem();
 	
 	static public interface Presenter {
 		void getTutor(String pid);

@@ -101,8 +101,18 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         this.presenter = presenter;
     }
 
+    
+    @Override
+    public BookModel getLoadedBookModel() {
+    	return this.book;
+    }
+    
+    
     @Override
     public void showBook(BookModel bookModel, BookInfoModel infoModel, int page) {
+    	
+    	//getWidget().getElement().setAttribute("style","display:none");
+    	
         problemNumberDiv.getElement().setAttribute("style", "display: none");
 
         this.book = bookModel;
@@ -129,6 +139,9 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         }
         pageNumber.setValue("" + page);
         doGetProblems(null);
+        
+    	
+    	// getWidget().getElement().setAttribute("style","display:block");
     }
     
     private void setPageNumber(int page) {
@@ -167,6 +180,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     			Window.alert("Error getting problems: " + e.getMessage());
     		}
     	}
+
     }
     
     @UiHandler("getNextProblems")
