@@ -225,10 +225,11 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         }
         else {
         	
+        	int page = Integer.parseInt(pageNumber.getValue());
 
         	
-            String pageNumsTitle=(problems.size()==1?"Problem":"Problems");
-            pageNumsTitle += problems.size() + " on page: " + pageNumber.getValue();
+            String pageNumsTitle=(problems.size()==1?"problem":"problems");
+            pageNumsTitle = problems.size() + " " + pageNumsTitle + " on pages: " + (page-1) + "-" + (page + 1);
             probNumsTitle.setInnerHTML(pageNumsTitle);
             
         	messageDiv.getElement().setAttribute("style", "display: none");

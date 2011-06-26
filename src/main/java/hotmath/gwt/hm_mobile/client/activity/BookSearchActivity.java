@@ -76,13 +76,18 @@ public class BookSearchActivity extends AbstractActivity implements BookSearchVi
 				
 				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 				
-				BookListView bookListView = clientFactory.getBookListView();
-				BookListActivity act = new BookListActivity(new BookListPlace(""), clientFactory);
-				bookListView.setPresenter(act);
-				
-				bookListView.showBookList(bookList);
-				
-				clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)bookListView));
+				if(bookList.size() == 0) {
+					Window.alert("No matches");
+				}
+				else {
+					BookListView bookListView = clientFactory.getBookListView();
+					BookListActivity act = new BookListActivity(new BookListPlace(""), clientFactory);
+					bookListView.setPresenter(act);
+					
+					bookListView.showBookList(bookList);
+					
+					clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)bookListView));
+				}
 			}
 			
 			@Override

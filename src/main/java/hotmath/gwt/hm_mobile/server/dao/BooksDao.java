@@ -160,22 +160,22 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 			"       b.PUBLISHER, " +
 			"       b.COPYRIGHT, " +
 			"       b.AUTHOR, " +
-			"       b.PUBDATE " +			
+			"       b.PUBDATE, " +			
 			"       c.category " +
 			"from   BOOKINFO b " +
 			"  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
 			"where  EXISTS (select 'x' from SOLUTIONS where booktitle = b.textcode limit 1) " +
 			"AND ( " +
-			"        textname like ? " +
+			"        b.textname like ? " +
 			"        or publisher like ? " +
 			"        or pubdate like ? " +
 			"        or ISBN like ? " +
-			"        or textcode like ? " +
+			"        or b.textcode like ? " +
 			"        or author like ? " +
 			")        " +
-			"order  by textname, " +
-			"          publisher, " +
-			"          pubdate ";
+			"order  by b.textname, " +
+			"          b.publisher, " +
+			"          b.pubdate ";
 
 		
 		String sf = "%" + searchFor + "%";
