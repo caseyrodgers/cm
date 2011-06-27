@@ -13,8 +13,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.hm_mobile.client.event.GoBackEvent;
-import hotmath.gwt.hm_mobile.client.event.GoBackEventHandler;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
@@ -71,6 +69,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
     
     RootPanel _rootPanel;
+    RootPanel _loadingDiv;
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
 
@@ -81,7 +80,9 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
     public void onModuleLoad() {
         __instance = this;
+        _loadingDiv = RootPanel.get("loading");
         _rootPanel = RootPanel.get("main-content");
+        
         try {
             
         	Controller.installEventBus(__clientFactory.getEventBus());
@@ -109,9 +110,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             History.addValueChangeHandler(new HmMobileHistoryListener());
 
             //initializeExternalJs();
-            
-            /** just once */
-            CatchupMathMobileShared.__instance.hideBusyPanel();
             
             History.fireCurrentHistoryState();
         }
@@ -158,16 +156,12 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         eb.addHandler(SystemIsBusyEvent.TYPE, new SystemIsBusyEventHandler() {
 			@Override
 			public void showIsBusy(boolean trueFalse) {
-				if(true)
-					return;
-				
-				RootPanel rp = RootPanel.get("loading");
-				if(rp != null) {
+				if(_loadingDiv != null) {
 					if(trueFalse) {
-						rp.getElement().setAttribute("style", "display:block");
+						_loadingDiv.getElement().setAttribute("style", "display:block");
 					}
 					else {
-						rp.getElement().setAttribute("style", "display:none");
+						_loadingDiv.getElement().setAttribute("style", "display:none");
 					}
 				}
 			}

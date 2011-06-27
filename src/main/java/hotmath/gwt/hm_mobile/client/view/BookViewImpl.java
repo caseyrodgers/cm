@@ -157,10 +157,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         else {
         	book.setPage(Integer.parseInt(pageNumber.getValue()));
         	
-            HmMobilePersistedPropertiesManager.getInstance().setLastBook(book);
-            HmMobilePersistedPropertiesManager.getInstance().getBookPages().put(book.getTextCode(), page);
-            
-            HmMobilePersistedPropertiesManager.save();
+        	HmMobilePersistedPropertiesManager.setLastBookPlace(book, page);
             
         	pageNumber.setValue("" + page);
         	book.setPage(page);

@@ -58,15 +58,7 @@ public class BookSearchActivity extends AbstractActivity implements BookSearchVi
 
 	@Override
     public void doBookSearch(String searchFor) {
-		
-		try {
-			HmMobilePersistedPropertiesManager.getInstance().setSearchTerm(searchFor);
-			HmMobilePersistedPropertiesManager.save();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-			Window.alert("Error saving history: " + e.getMessage());
-		}
+		HmMobilePersistedPropertiesManager.setSearchTerm(searchFor);
 		
 		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 		

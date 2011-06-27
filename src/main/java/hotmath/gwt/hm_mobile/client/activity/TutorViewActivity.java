@@ -3,6 +3,7 @@ package hotmath.gwt.hm_mobile.client.activity;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
+import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
@@ -53,14 +54,17 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 
 	@Override
     public void getTutor(final String pid) {
+		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 		GetSolutionAction action = new GetSolutionAction(pid);
 		HmMobile.getCmService().execute(action,new AsyncCallback<SolutionResponse>() {
 			public void onSuccess(SolutionResponse solutionResponse) {
+				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 				clientFactory.getTutorView().loadSolution(new ProblemNumber(pid), solutionResponse);
 			}
 			
 			@Override
 			public void onFailure(Throwable arg0) {
+				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 				arg0.printStackTrace();
 				Window.alert(arg0.getMessage());
 			}

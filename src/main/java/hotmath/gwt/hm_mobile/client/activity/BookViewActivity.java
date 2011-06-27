@@ -66,9 +66,6 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 		HmMobile.getCmService().execute(action,new AsyncCallback<BookInfoModel>() {
 			public void onSuccess(BookInfoModel bookInfo) {
 
-			     HmMobilePersistedPropertiesManager.getInstance().setLastBook(bookInfo.getBook());
-			     HmMobilePersistedPropertiesManager.save();
-
 			     int page=book.getPage();
 			     if(page == 0) {
 			    	 Integer opage = HmMobilePersistedPropertiesManager.getInstance().getBookPages().get(book.getTextCode());
@@ -81,6 +78,9 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 				bookView.showBook(bookInfo.getBook(), bookInfo, page);		
 				
 				
+			     HmMobilePersistedPropertiesManager.setLastBookPlace(book,page);
+
+
 				callback.isComplete();
 				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 			}

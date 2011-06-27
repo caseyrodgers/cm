@@ -63,9 +63,7 @@ public class BookSearchViewImpl extends AbstractPagePanel implements BookSearchV
 	public void doSearch(ClickEvent e) {
 		String searchFor = textBox.getText();
 		if(searchFor.length() > 0) {
-			HmMobilePersistedPropertiesManager.getInstance().setSearchTerm(searchFor);
-			HmMobilePersistedPropertiesManager.save();
-			
+			HmMobilePersistedPropertiesManager.setSearchTerm(searchFor);
 			presenter.doBookSearch(searchFor);
 		}
 	}

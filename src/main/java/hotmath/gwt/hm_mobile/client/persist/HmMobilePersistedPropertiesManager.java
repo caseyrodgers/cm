@@ -1,10 +1,9 @@
 package hotmath.gwt.hm_mobile.client.persist;
 
-import java.util.Map;
-
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 
 import com.google.code.gwt.storage.client.Storage;
+import com.google.gwt.user.client.Window;
 
 public class HmMobilePersistedPropertiesManager {
 
@@ -55,7 +54,35 @@ public class HmMobilePersistedPropertiesManager {
 		}
 		return __instance;
 	}
+	
+	/** Set the book and current page number (if page>-1)
+	 * 
+	 * @param book
+	 * @param page
+	 */
+	static public void setLastBookPlace(BookModel book, int page) {
+        getInstance().setLastBook(book);
+        if(page > -1) {
+        	getInstance().getBookPages().put(book.getTextCode(), page);
+        }
+        
+        save();
+	}
 
+	/** Convenience method to set search term and persist.
+	 * 
+	 * @param term
+	 */
+	static public void setSearchTerm(String term) {
+		try {
+			getInstance().setSearchTerm(term);
+			save();
+		}
+		catch(Exception e) {
+			Window.alert("There was a problem saving local storage: " + e.getMessage());
+		}
+	}
+	
 	/** If string is any type of null return null.
 	 *   
 	 * @param s
@@ -70,7 +97,7 @@ public class HmMobilePersistedPropertiesManager {
 		}
 	}
 	
-	static public void save() {
+	static private void save() {
 		if (Storage.isSupported()) {
 			HmMobilePersistedProperties p = __instance;
 			BookModel b = p.getLastBook();

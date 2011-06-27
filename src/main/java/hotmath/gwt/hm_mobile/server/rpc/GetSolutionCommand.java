@@ -68,7 +68,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             map.put("solution_html", solutionHtml);
             map.put("pid", pid);
 
-            String runTimeDir = HotMathProperties.getInstance().getProperty("hm.runtime",".");
+            String runTimeDir = HotMathProperties.getInstance().getProperty("cm.runtime",".");
             String tutorWrapper = new SbFile(runTimeDir + "/" + "mobile_tutor_wrapper.vm").getFileContents().toString("\n");
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
             
