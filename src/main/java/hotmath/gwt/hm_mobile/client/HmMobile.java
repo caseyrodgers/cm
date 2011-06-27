@@ -112,6 +112,8 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             //initializeExternalJs();
             
             History.fireCurrentHistoryState();
+            
+            __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
         }
         catch(Exception e) {
             e.printStackTrace();
