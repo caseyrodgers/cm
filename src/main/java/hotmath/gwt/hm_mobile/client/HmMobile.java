@@ -75,7 +75,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
 
     Place defaultPlace = new CategoryListPlace("");
-    ControlPanel _controlPanel;
+    // ControlPanel _controlPanel;
 
     public static HmMobile __instance;
     
@@ -94,8 +94,8 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 }
             });
             
-            _controlPanel = new MyControlPanel();
-            _rootPanel.add(_controlPanel);     
+//            _controlPanel = new MyControlPanel();
+//            _rootPanel.add(_controlPanel);     
             _rootPanel.add(createApplicationPanel());
     
             _rootPanel.getElement().getStyle().setProperty("display", "inline");
@@ -108,7 +108,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
             History.addValueChangeHandler(new HmMobileHistoryListener());
 
-            initializeExternalJs();
+            //initializeExternalJs();
             
             /** just once */
             CatchupMathMobileShared.__instance.hideBusyPanel();
@@ -158,7 +158,18 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         eb.addHandler(SystemIsBusyEvent.TYPE, new SystemIsBusyEventHandler() {
 			@Override
 			public void showIsBusy(boolean trueFalse) {
-				_controlPanel.showBusy(trueFalse);
+				if(true)
+					return;
+				
+				RootPanel rp = RootPanel.get("loading");
+				if(rp != null) {
+					if(trueFalse) {
+						rp.getElement().setAttribute("style", "display:block");
+					}
+					else {
+						rp.getElement().setAttribute("style", "display:none");
+					}
+				}
 			}
         });
 
