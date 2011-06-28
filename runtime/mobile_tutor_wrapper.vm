@@ -22,6 +22,9 @@
 	        <a class='sexybutton' id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
 	            <span><span>Next</span></span>
 	        </a>
+	        <a class='sexybutton' id='steps_next' href="#" onclick="TutorManager.newProblem();return false;" accesskey="s">
+	            <span><span>New Problem</span></span>
+	        </a>
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
 	           <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
 	       </div>
