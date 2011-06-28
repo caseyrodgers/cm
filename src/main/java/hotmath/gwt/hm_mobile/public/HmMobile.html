@@ -24,14 +24,11 @@
     
   </head>
   <body>
-
-   
-      
+   <div id='debug-panel'></div>   
+   <div id='loading'><span>Loading ...</span></div>    
    <div id='main-content' class='landscape'>
    <!-- OPTIONAL: include this if you want history support -->
    <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-   
-    <div id='loading'><span>Loading ...</span></div>    
     <div id="browser" style="display: none;">
       <!--
         this is the container for the header, the area at the top of the screen with the title and back button:
@@ -53,4 +50,14 @@
 
     <script src='/gwt-resources/js/HmMobile.js'></script>
   </body>
+  
+  <script type="text/javascript" language="javascript">
+      var stats = window.__stats = [];
+          window.__gwtStatsEvent = function(evt) {
+              stats[stats.length] = evt;
+              var listener = window.__stats_listener;
+              listener && listener(evt);
+              return true;
+          }
+</script>
 </html>

@@ -23,4 +23,5 @@ public interface ClientFactory {
     TutorView getTutorView();
     BookSearchView getBookSearchView();
     HelpView getHelpView();
+    PagesContainerPanel getPagesContainer();
 }

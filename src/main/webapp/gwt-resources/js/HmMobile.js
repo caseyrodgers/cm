@@ -356,8 +356,14 @@ function setState(n, onoff) {
 
 function scrollToStep(num) {
 	
-	setTimeout("window.scrollTo(0,10000);",0);
-	return;
+	/** do nothing for now ... */
+	if(true)
+		return;
+	
+	
+	
+	//setTimeout("window.scrollTo(0,10000);",0);
+	// return;
 
 //	
 //	$get('scrollTo-button').scrollIntoView();

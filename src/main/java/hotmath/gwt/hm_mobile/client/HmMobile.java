@@ -1,6 +1,5 @@
 package hotmath.gwt.hm_mobile.client;
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -42,9 +41,11 @@ import hotmath.gwt.hm_mobile.client.view.TutorView;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.History;
@@ -79,24 +80,50 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     public static HmMobile __instance;
     
     public void onModuleLoad() {
+		 /*
+		 * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
+		 */
+		Log.setUncaughtExceptionHandler();
+		
+		// use deferred command to catch initialization exceptions in onModuleLoad2
+		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+		  @Override
+		  public void execute() {
+		    onModuleLoad2();
+		  }
+		});        	
+    }
+    
+    public void onModuleLoad2() {
+    	
+    	long startTimeMillis=0;
+    	 /*
+         * Use a <code>if (Log.isDebugEnabled()) {...}</code> guard to ensure that
+         * <code>System.currentTimeMillis()</code> is compiled out when <code>log_level=OFF</code>, or
+         * any <code>log_level</code> higher than <code>DEBUG</code>.
+         */
+        if (Log.isDebugEnabled()) {
+          startTimeMillis = System.currentTimeMillis();
+        }
+
+        /*
+         * Again, we need a guard here, otherwise <code>log_level=OFF</code> would still produce the
+         * following useless JavaScript: <pre> var durationSeconds, endTimeMillis; endTimeMillis =
+         * currentTimeMillis_0(); durationSeconds = (endTimeMillis - this$static.startTimeMillis) /
+         * 1000.0; </pre>
+         */
+        if (Log.isDebugEnabled()) {
+          long endTimeMillis = System.currentTimeMillis();
+          float durationSeconds = (endTimeMillis - startTimeMillis) / 1000F;
+          Log.debug("Duration: " + durationSeconds + " seconds");
+        }
+    	
         __instance = this;
         _loadingDiv = RootPanel.get("loading");
         _rootPanel = RootPanel.get("main-content");
         
         try {
-            
         	Controller.installEventBus(__clientFactory.getEventBus());
-            
-            GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-                @Override
-                public void onUncaughtException(Throwable e) {
-                    e.printStackTrace();
-                    Window.alert(e.getMessage());
-                }
-            });
-            
-//            _controlPanel = new MyControlPanel();
-//            _rootPanel.add(_controlPanel);     
             _rootPanel.add(createApplicationPanel());
     
             _rootPanel.getElement().getStyle().setProperty("display", "inline");
@@ -119,6 +146,9 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
         }
+        
+        
+        Log.info("Hotmath Mobile Initialized");
 
     }
 
@@ -133,13 +163,13 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
          * 
          */
         HeaderPanel headerPanel = new HeaderPanel();
-        PagesContainerPanel pagesPanel = new PagesContainerPanel();
+        PagesContainerPanel pagesPanel = __clientFactory.getPagesContainer();
 
         FlowPanel fp = new FlowPanel();
         fp.setStyleName("app-panel");
 
         fp.add(headerPanel);
-        fp.add(pagesPanel);
+        fp.add(pagesPanel.getPanel());
 
         _pageStack = new ObservableStack<IPage>();
         pagesPanel.bind(_pageStack);

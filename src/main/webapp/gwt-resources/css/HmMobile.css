@@ -229,8 +229,7 @@ h3 {
 }
 
 #header .backButton {
-
-  
+   
   /* the buttons should be displayed on top of the titles so that they can always receive touches */
   z-index: 1;
 
@@ -520,7 +519,7 @@ question_head_text {
 
 
 div.page ul.touch {
-  width: 300px;
+  width: 100%;
   padding: 0px;
   margin: 0;
 }
@@ -573,12 +572,9 @@ further down and therefore need an arrow in the background to indicate that
 div.page ul.touch li.group {
   background-image: url('/gwt-resources/images/mobile/chevron.png');
   background-repeat: no-repeat;
-  background-position: 280px 18px;
+  background-position: 99% 18px;
 }
 
-div.landscape div.page ul.touch li.group {
-  background-position: 280px 18px;
-}
 
 /* this is for the touched state of list items */
 div.page ul.touch li.large:active {
@@ -587,7 +583,7 @@ div.page ul.touch li.large:active {
 
 div.page ul.touch li.group:active {
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched_large.png');
-  background-position: 280px 18px, 0 0;
+  background-position: 99% 18px, 0 0;
   background-repeat: no-repeat, repeat-x;
   color: white;
 
@@ -597,7 +593,7 @@ div.page ul.touch li.group:active {
 }
 
 div.landscape div.page ul.touch li.group:active {
-  background-position: 440px 18px, 0 0;
+  background-position: 99% 18px, 0 0;
 }
 
 

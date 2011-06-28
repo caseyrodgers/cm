@@ -11,10 +11,12 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -95,6 +97,8 @@ public class HeaderPanel extends Composite {
         mActiveButtonHandlerRegistration = mActiveButton.addHandler(new TouchClickEvent.TouchClickHandler<String>() {
             @Override
             public void touchClick(TouchClickEvent<String> tag) {
+            	Log.debug("TouchClick event fired: " + ViewSettings.AnimationRunning);
+            	
                 if (!ViewSettings.AnimationRunning) {
                 	Controller.navigateBack();
                 }
