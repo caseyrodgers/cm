@@ -53,13 +53,15 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 	}
 
 	@Override
-    public void getTutor(final String pid) {
+    public void getTutor(final String pid, final CallbackOnComplete callback) {
 		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 		GetSolutionAction action = new GetSolutionAction(pid);
 		HmMobile.getCmService().execute(action,new AsyncCallback<SolutionResponse>() {
 			public void onSuccess(SolutionResponse solutionResponse) {
 				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
 				clientFactory.getTutorView().loadSolution(new ProblemNumber(pid), solutionResponse);
+				
+				callback.isComplete();
 			}
 			
 			@Override

@@ -1,6 +1,7 @@
 package hotmath.gwt.hm_mobile.client.view;
 
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.hm_mobile.client.activity.CallbackOnComplete;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 
 public interface TutorView {
@@ -10,7 +11,7 @@ public interface TutorView {
 	ProblemNumber getLoadedProblem();
 	
 	static public interface Presenter {
-		void getTutor(String pid);
+		void getTutor(String pid, CallbackOnComplete callback);
 	}
 
 }

@@ -71,11 +71,14 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 else if(type.equals("TutorViewPlace")) {
                     String pid = token.getToken(1);
                     TutorViewActivity act = new TutorViewActivity(new TutorViewPlace(pid),HmMobile.__clientFactory);
-                    TutorView view = HmMobile.__clientFactory.getTutorView();
+                    final TutorView view = HmMobile.__clientFactory.getTutorView();
                     view.setPresenter(act);
-                    act.getTutor(pid);
-                    
-                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                    act.getTutor(pid, new CallbackOnComplete() {
+						@Override
+						public void isComplete() {
+		                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+						}
+					});
                 }
                 else if(type.equals("HomeViewPlace")) {
                     HomeView view = HmMobile.__clientFactory.getHomeView();
