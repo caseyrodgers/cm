@@ -77,7 +77,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 			}
 			
 			String author="";
-			if(bm.getAuthor() == null) {
+			if(bm.getAuthor() != null) {
 				author = bm.getAuthor();
 			}
 			
