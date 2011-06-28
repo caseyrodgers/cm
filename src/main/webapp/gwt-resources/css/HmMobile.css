@@ -133,6 +133,10 @@ h3 {
 }
 
 
+.bookViewImpl .bookMessage {
+	color: red;
+}
+
 .mainPage {
     padding: 15px;
 }
@@ -234,11 +238,12 @@ h3 {
   z-index: 1;
 
   font-size: 12px;
-  font-weight: bold;
+  
   text-align: center;
   color: white;
   text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
   /* set up the chrome background */
+  font-weight: bold;
   -webkit-border-image : url('/gwt-resources/images/back_button.png') 0 4 0 13;
   border-width : 0 4px 0 13px;
   padding-top: 7px;
@@ -405,7 +410,6 @@ question_head_text {
 
 #tutoroutput {
         font: 12pt "Times New Roman", Times, serif;
-        width: 500px;
 }
 
 

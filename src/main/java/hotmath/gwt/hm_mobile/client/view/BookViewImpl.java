@@ -4,12 +4,14 @@ import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
@@ -58,7 +60,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     
     @UiField
-    SpanElement messageText;
+    SpanElement messageText,bookMessage;
     
     
     @UiField
@@ -144,17 +146,22 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     	// getWidget().getElement().setAttribute("style","display:block");
     }
     
+    /** TODO: should be in presenter!
+     * 
+     * @param page
+     */
     private void setPageNumber(int page) {
         
         if(page > this.info.getMaxPageNumber() ) {
-        	Window.alert("No more pages");
-        	 pageNumber.setText(info.getMaxPageNumber() + "");
+        	bookMessage.setInnerHTML("No more pages");
+       	    pageNumber.setText(info.getMaxPageNumber() + "");
         }
         else if(page < info.getMinPageNumber()) {
-        	Window.alert("No previous pages");
+        	bookMessage.setInnerHTML("No previous pages");
         	pageNumber.setText(info.getMinPageNumber() + "");
         }
         else {
+        	bookMessage.setInnerHTML("");
         	book.setPage(Integer.parseInt(pageNumber.getValue()));
         	
         	HmMobilePersistedPropertiesManager.setLastBookPlace(book, page);
@@ -247,6 +254,18 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     @Override
     public String getBackButtonText() {
         return "Back";
+    }
+    
+    @Override
+    public BackAction getBackAction() {
+    	BackAction ba = new BackAction() {
+    		@Override
+    		public void goBack() {
+    			HmMobile.__clientFactory.getEventBus().fireEvent(new BackDiscoveryEvent((IPage)BookViewImpl.this));
+    		}
+    	};
+    	
+    	return ba;
     }
 
     @Override

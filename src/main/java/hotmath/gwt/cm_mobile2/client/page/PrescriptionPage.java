@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile2.client.page;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import java.util.List;
@@ -35,4 +36,10 @@ public class PrescriptionPage implements IPage {
     public TokenParser getBackButtonLocation() {
         return null;
     }
+    
+    @Override
+    public BackAction getBackAction() {
+    	return null;
+    }    
+    
 }

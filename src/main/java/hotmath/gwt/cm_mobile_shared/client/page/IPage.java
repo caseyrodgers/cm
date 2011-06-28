@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface IPage {
 
+	static public interface BackAction { void goBack(); }
 	String getTitle();
 
 	String getBackButtonText();
@@ -14,4 +15,6 @@ public interface IPage {
 	List<ControlAction> getControlFloaterActions();
 	
 	TokenParser getBackButtonLocation();
+	
+	BackAction getBackAction();
 }

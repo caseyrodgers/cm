@@ -81,9 +81,8 @@ var TutorManager = {
         else {
                   TutorManager.showMessage('no more steps');
         }
-     },
-     showPreviousStep:function() {
-
+    },
+    showPreviousStep:function() {
         if(TutorManager.currentStepUnit<0) {
                 TutorManager.showMessage('No previous step');
             return;
@@ -111,7 +110,7 @@ var TutorManager = {
             return false;
         }
       },
-        loadTutorData : function(solutionData) {
+      loadTutorData : function(solutionData) {
                 try {
                     TutorManager.tutorData = eval("(" + solutionData + ")");
                 } catch (e) {
@@ -172,6 +171,10 @@ var TutorManager = {
 		 * TODO: need gotoLessonForPid(currentPid);
 		 */
         gwt_backToLesson();
+    }
+    ,
+    newProblem:function() {
+    	gwt_tutorNewProblem();
     }
 }
 
@@ -362,40 +365,42 @@ function scrollToStep(num) {
 	
 	
 	
-	//setTimeout("window.scrollTo(0,10000);",0);
+	// setTimeout("window.scrollTo(0,10000);",0);
 	// return;
 
 //	
-//	$get('scrollTo-button').scrollIntoView();
-//	alert('scrolled to');
-//	return;
+// $get('scrollTo-button').scrollIntoView();
+// alert('scrolled to');
+// return;
 //	
-//	alert('scroll to bottom in GWT');
-//	gwt_scrollToBottomOfScrollPanel();
-//	return;
+// alert('scroll to bottom in GWT');
+// gwt_scrollToBottomOfScrollPanel();
+// return;
 	
 	
-//	javascript:scroll(0,document.getElementsByTagName('body')[0].scrollHeight);
-//	return;
+// javascript:scroll(0,document.getElementsByTagName('body')[0].scrollHeight);
+// return;
 
 //	
-//	if(true)
-//		return;
+// if(true)
+// return;
 
 	
-//    var visibleSize = getViewableSize();
-//    var scrollXy = getScrollXY();
-//    var visTop = scrollXy[1];
-//    var visHeight = visibleSize[1];
-//    var visBot = visHeight + visTop;
-//    var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
+// var visibleSize = getViewableSize();
+// var scrollXy = getScrollXY();
+// var visTop = scrollXy[1];
+// var visHeight = visibleSize[1];
+// var visBot = visHeight + visTop;
+// var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
 //    
-//    alert('visibleSize: ' + visibleSize + '  scrollXy: ' + scrollXy + ' visTop: ' + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: ' + buttonBar);
+// alert('visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
+// + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
+// + buttonBar);
 //    
-//    if(buttonBar < visTop || buttonBar > visBot) { 
-//        var st = Number(buttonBar) - visHeight;
-//        setTimeout("alert(window.scrollTo(0,10000);",0);
-//    }
+// if(buttonBar < visTop || buttonBar > visBot) {
+// var st = Number(buttonBar) - visHeight;
+// setTimeout("alert(window.scrollTo(0,10000);",0);
+// }
 }
 
 
@@ -1613,10 +1618,10 @@ function HmFlashWidget(jsonObj) {
 }
 
 /**
- * Class HmFlashWidget base class
- *  - Takes a widget and assigns a key listener on field widget_input_field_1-n. -
- * Each key press will call the method widgetKeyPress on the attached listener. -
- * The form submit is assigned to the proper wigetObject handler.
+ * Class HmFlashWidget base class - Takes a widget and assigns a key listener on
+ * field widget_input_field_1-n. - Each key press will call the method
+ * widgetKeyPress on the attached listener. - The form submit is assigned to the
+ * proper wigetObject handler.
  * 
  * @param widgetDiv
  * 

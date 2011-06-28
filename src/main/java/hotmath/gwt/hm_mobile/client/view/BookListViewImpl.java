@@ -3,6 +3,7 @@ package hotmath.gwt.hm_mobile.client.view;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
@@ -136,6 +137,16 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     public String getBackButtonText() {
         return "Back";
     }
+    
+    @Override
+    public BackAction getBackAction() {
+    	return new BackAction() {
+			@Override
+			public void goBack() {
+				HmMobile.__clientFactory.getEventBus().fireEvent(new BackDiscoveryEvent((IPage)BookListViewImpl.this));
+			}
+		};
+    }
 
     @Override
     public List<ControlAction> getControlFloaterActions() {
@@ -151,4 +162,6 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     public String getTitle() {
         return "Available Books";
     }
+    
+    
 }

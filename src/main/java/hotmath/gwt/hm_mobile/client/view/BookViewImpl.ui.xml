@@ -42,6 +42,7 @@
 					<span>Go</span>
 				</span>
 			</g:Button>
+			<span class='bookMessage' ui:field="bookMessage"/>
 		</div>
 		<br style='clear: both;' />
 		<g:HTMLPanel ui:field="messageDiv">

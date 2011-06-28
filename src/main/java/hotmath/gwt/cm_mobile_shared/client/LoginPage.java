@@ -28,4 +28,9 @@ public class LoginPage implements IPage {
     public TokenParser getBackButtonLocation() {
         return null;
     }
+    
+    @Override
+    public BackAction getBackAction() {
+    	return null;
+    }
 }

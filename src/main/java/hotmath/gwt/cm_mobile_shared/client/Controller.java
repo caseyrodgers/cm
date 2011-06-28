@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 
@@ -41,16 +42,27 @@ public class Controller {
     }
 
     public static void navigateBack() {
-    	if(mPageStack.getCount() > 1) {
-    		mPageStack.pop();
+    	
+    	/** allow current page an override to normal back
+    	 * 
+    	 */
+    	IPage pageCurrent = mPageStack.peek();
+    	if(pageCurrent != null && pageCurrent.getBackAction() != null) {
+    		Log.info("Back override for '" + pageCurrent + "'");
+    		pageCurrent.getBackAction().goBack();
     	}
     	else {
-    		if(__eventBus == null) {
-    			Window.alert("No back history and no eventBus installed");
-    		}
-    		else {
-    			__eventBus.fireEvent(new BackDiscoveryEvent(mPageStack.getCount()==1?mPageStack.peek():null));
-    		}
+	    	if(mPageStack.getCount() > 1) {
+	    		mPageStack.pop();
+	    	}
+	    	else {
+	    		if(__eventBus == null) {
+	    			Window.alert("No back history and no eventBus installed");
+	    		}
+	    		else {
+	    			__eventBus.fireEvent(new BackDiscoveryEvent(mPageStack.getCount()==1?mPageStack.peek():null));
+	    		}
+	    	}
     	}
     }
 

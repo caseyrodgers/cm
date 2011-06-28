@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile_shared.client.page;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.QuizPanel;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,5 +45,11 @@ public class QuizPage implements IPage {
     @Override
     public TokenParser getBackButtonLocation() {
         return null;
+    }    
+    
+    
+    @Override
+    public BackAction getBackAction() {
+    	return null;
     }    
 }

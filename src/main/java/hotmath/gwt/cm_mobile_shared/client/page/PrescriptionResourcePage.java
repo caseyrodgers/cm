@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile_shared.client.page;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.ArrayList;
@@ -54,5 +55,11 @@ public class PrescriptionResourcePage implements IPage {
     @Override
     public TokenParser getBackButtonLocation() {
         return new TokenParser("lesson", lesson, 0);
+    }    
+    
+    
+    @Override
+    public BackAction getBackAction() {
+    	return null;
     }    
 }
