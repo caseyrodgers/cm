@@ -15,7 +15,7 @@
 				<div class='field'>
 					<span ui:field="author" />
 				</div>
-				<div class='field'>
+				<div class='field' style='display: none'>
 					<span>Pages: </span>
 					<span ui:field="minPage" />
 					-

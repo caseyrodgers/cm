@@ -36,6 +36,12 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 String historyToken = event.getValue();
     
                 final TokenParserGeneric token = new TokenParserGeneric(historyToken);
+                
+                
+                /** reset display/viewport to top of page
+                 * 
+                 */
+                resetViewPort();
     
                 final String type = token.getToken(0);
                 if(type == null || type.length() == 0 || type.equals("CategoryListPlace")) {
@@ -53,8 +59,6 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                     		HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
                     	}
                     });
-                    
-                    
                 }
                 else if(type.equals("BookViewPlace")) {
                     String textCode = token.getToken(1);
@@ -112,4 +116,10 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 Window.alert("Error processing history: [" + causes + "]" + ", " + event.getValue());
             }
         }
+        
+        private native void resetViewPort() /*-{
+            $wnd.scrollTo(0);
+            $wnd.pageXOffset = 0;
+            $wnd.pageYOffset = 0;
+        }-*/;
 }
