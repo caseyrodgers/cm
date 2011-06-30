@@ -355,12 +355,13 @@
 			<artifactId>selenium</artifactId>
 			<version>2.0rc3</version>
 		</dependency>
-
+<!--
 <dependency>
     <groupId>org.apache.httpcomponents</groupId>
     <artifactId>httpcomponents-client</artifactId>
     <version>4.1.0</version>
 </dependency>
+-->
 
 		<dependency>
 			<groupId>com.google.code.gwt-mobile-webkit</groupId>
@@ -585,7 +586,7 @@
 					<disableClassMetadata>true</disableClassMetadata>
 					<compileReport>false</compileReport>
 					<outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
-					<logLevel>ERROR</logLevel>
+					<logLevel>INFO</logLevel>
 					<style>OBF</style>
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>

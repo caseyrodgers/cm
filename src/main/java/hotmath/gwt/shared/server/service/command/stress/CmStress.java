@@ -138,7 +138,6 @@ public class CmStress extends Thread {
 					+ " JOIN HA_USER u on u.admin_id = a.aid "
 					+ " JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id "
 					+ " where u.is_active = 1 " + " and u.admin_id != 13 "
-					+ " and u.uid = 1185 "
 					+ " and is_auto_create_template = 0 " + " order by rand() "
 					+ " limit " + count;
 			conn = HMConnectionPool.getConnection();
@@ -152,6 +151,8 @@ public class CmStress extends Thread {
 				new CmStress(uName, uPass, delay).startTest();
 			}
 			
+			
+			int cnt = __instances.size();
 			
 			/** create exit watcher that will perform exit
 			 * when all threads have completed.
