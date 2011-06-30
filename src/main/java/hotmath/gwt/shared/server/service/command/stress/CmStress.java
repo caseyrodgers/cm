@@ -138,6 +138,7 @@ public class CmStress extends Thread {
 					+ " JOIN HA_USER u on u.admin_id = a.aid "
 					+ " JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id "
 					+ " where u.is_active = 1 " + " and u.admin_id != 13 "
+					+ " and u.uid = 3899 "
 					+ " and is_auto_create_template = 0 " + " order by rand() "
 					+ " limit " + count;
 			conn = HMConnectionPool.getConnection();
