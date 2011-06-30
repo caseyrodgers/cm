@@ -13,6 +13,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -31,6 +33,8 @@ import sb.util.SbUtilities;
  * 
  */
 public class CmStress extends Thread {
+	
+	static List<CmStress> __instances = new ArrayList<CmStress>();
 
 	String user, pass;
 	int delay;
@@ -38,12 +42,14 @@ public class CmStress extends Thread {
 	
 	static int __counter;
 	
-	Logger __logger = Logger.getLogger(CmStress.class);
+	final static Logger __logger = Logger.getLogger(CmStress.class);
 
 	public CmStress(String user, String pass, int delay) {
 		this.user = user;
 		this.pass = pass;
 		this.delay = delay;
+		
+		__instances.add(this);
 	}
 
 	int id = __counter++;
@@ -68,7 +74,6 @@ public class CmStress extends Thread {
 
 		long start = System.currentTimeMillis();
 		try {
-
 			int delayTime = SbUtilities.getRandomNumber(10) * delay;
 
 			__logger.info(id + " test start (delay=" + delayTime + ")");
@@ -111,6 +116,7 @@ public class CmStress extends Thread {
 			/** only log error, do not throw exception */
 			__logger.error("Error during CmStress test: " + this, e);
 		} finally {
+			__instances.remove(this);
 		}
 	}
 
@@ -145,6 +151,29 @@ public class CmStress extends Thread {
 
 				new CmStress(uName, uPass, delay).startTest();
 			}
+			
+			
+			/** create exit watcher that will perform exit
+			 * when all threads have completed.
+			 * 
+			 * TODO: why do I have to do this?
+			 */
+			Thread exitWatcher = new Thread() {
+				public void run() {
+					try {
+						while(__instances.size() > 0) {
+							sleep(1000);
+						}
+						__logger.info("Exiting");
+						System.exit(0);
+					}
+					catch(Exception e) {
+						__logger.error(e);
+					}
+				}
+			};
+			exitWatcher.start();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
