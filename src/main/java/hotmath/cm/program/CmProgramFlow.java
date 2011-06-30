@@ -63,6 +63,21 @@ public class CmProgramFlow {
            this.activeInfo.setActiveSegment(1);
            sdao.setActiveInfo(conn, userId, activeInfo);
        }
+       
+       /** make sure the current state is valid, if not
+        *  try to synchronize.
+        *  
+        */
+       isValid();
+    }
+    
+    private void isValid() {
+    	try {
+    		sdao.verifyActiveProgram(getActiveInfo().getActiveTestId());
+    	}
+    	catch(Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     /**
