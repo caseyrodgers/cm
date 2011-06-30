@@ -242,7 +242,7 @@ public class HaUserFactory {
 		} catch (CmException cme) {
 			throw cme;
 		} catch (Exception e) {
-			throw new CmException("Error logging in: " + user, e);
+			throw new CmException("Error logging in: " + user + "/" + pwd, e);
 		}
 	}
 
