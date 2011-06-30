@@ -3,7 +3,7 @@ package hotmath.gwt.cm_rpc.client.model;
 
 public enum CmProgramType {
 
-    AUTOENROLL("Auth-Enroll", "AUTOENROLL"),
+    AUTOENROLL("Auto-Enroll", "AUTOENROLL"),
     CHAP("Chap", "CHAP"),
     CUSTOM("Custom","CUSTOM"),
     CUSTOMQUIZ("Custom Quiz", "CUSTOMQUIZ"),
@@ -40,7 +40,8 @@ public enum CmProgramType {
     static public CmProgramType lookup(String name) throws IllegalArgumentException {
         boolean found = false;
         for (CmProgramType e : values()) {
-            if (e.toString().equalsIgnoreCase(name)) {
+        	String tag=e.type;
+            if (tag.equalsIgnoreCase(name)) {
                 return e;
             }
         }

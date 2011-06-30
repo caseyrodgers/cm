@@ -136,6 +136,7 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
     
 
     static int __login_key_uniquer=0;
+    static String lock="";
     
     /** 
      *  Create new login record.
@@ -156,8 +157,12 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
              * 
              * TODO: make thread-safe.
              */
-            String key = "cm_" + System.currentTimeMillis() + "_" + (__login_key_uniquer++);
-            
+        	String key=null;
+            synchronized(lock) {
+            	__login_key_uniquer++;
+            	key = "cm_" + System.currentTimeMillis() + "_" + __login_key_uniquer;
+            }
+             
             // first see if user is in admin
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_LOGIN_INFO");
             pstat = conn.prepareStatement(sql);

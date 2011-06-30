@@ -95,15 +95,18 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                  if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                      new SystemSyncChecker(version);
                  }
-                 else if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
-                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
-                             
-                             new Button("Logout", new SelectionListener<ButtonEvent>() {
-                                 @Override
-                                 public void componentSelected(ButtonEvent ce) {
-                                     Window.Location.assign("/login.html");
-                                 }
-                             }));
+                 else if(UserInfo.getInstance() != null) {
+                	 /** only for CM Student */
+                	 if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
+	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
+	                             
+	                             new Button("Logout", new SelectionListener<ButtonEvent>() {
+	                                 @Override
+	                                 public void componentSelected(ButtonEvent ce) {
+	                                     Window.Location.assign("/login.html");
+	                                 }
+	                             }));
+                	 }
                  }
             }
              @Override
