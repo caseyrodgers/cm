@@ -103,6 +103,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 sm.getProgram().setProgramType(program.getProgramType());
                 sm.getProgram().setSubjectId(program.getSubject());
                 sm.setProgramChanged(true);
+                sm.setSectionNum(0);
                 
                 startTime = System.currentTimeMillis();
                 dao.updateStudent(conn, sm, true, false, true, false, false);
