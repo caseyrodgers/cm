@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
@@ -26,10 +27,15 @@ public class EndOfProgramHander_Test extends CmDbTestCase {
         // assign chapter test to test student (last chapter)
         dao.assignProgramToStudent(conn, userId, CmProgram.ALG2_PROF, null);
         
+        new CmProgramFlow(conn, userId).getActiveInfo().setActiveSegment(5);
+        new CmProgramFlow(conn, userId).saveActiveInfo(conn);
+        
         EndOfProgramHandler eop = new EndOfProgramHandler();
         eop.loadStudent(conn, userId);
         StudentUserProgramModel nextProgram = eop.getNextProgram(conn);
         
+        CmProgramFlow flow = new CmProgramFlow(conn, userId);
+        assertTrue(flow.getActiveInfo().getActiveSegment() == 1);
         // this should just loop around
         assertTrue(nextProgram.getTestDefId() == CmProgram.NATIONAL.getDefId());
     } 

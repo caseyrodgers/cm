@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
-import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
+import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
@@ -33,7 +33,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     
     
     public void testAddStudent() throws Exception  {
-        StudentModelI sm = new StudentModelBasic();
+        StudentModelI sm = new StudentModelBase();
         sm.setName("name_" + System.currentTimeMillis());
         sm.setAdminUid(_user.getAid());
         sm.getProgram().setProgramType(CmProgram.PREALG_PROF.getProgramType());

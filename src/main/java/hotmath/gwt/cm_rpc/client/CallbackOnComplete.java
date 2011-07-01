@@ -1,4 +1,4 @@
-package hotmath.gwt.hm_mobile.client.activity;
+package hotmath.gwt.cm_rpc.client;
 
 /** Interface used to provide callback when 
  *  asynchronous operations complete.

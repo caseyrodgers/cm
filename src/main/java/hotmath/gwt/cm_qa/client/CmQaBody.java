@@ -3,6 +3,9 @@ package hotmath.gwt.cm_qa.client;
 import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
+import hotmath.gwt.cm_qa.client.model.QaEntryModelGxt;
+import hotmath.gwt.cm_qa.client.view.EditQaItemView;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.QaEntryModel;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQaItemsAction;
@@ -16,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BaseModel;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
@@ -27,7 +29,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -176,6 +177,23 @@ public class CmQaBody extends ContentPanel {
                 });
             }
           });
+        
+        
+        grid.addListener(Events.CellDoubleClick, new Listener<GridEvent>() {
+            public void handleEvent(GridEvent e) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                    	new EditQaItemView(grid.getSelectionModel().getSelectedItem(),new CallbackOnComplete() {
+							@Override
+							public void isComplete() {
+								_grid.getStore().update(grid.getSelectionModel().getSelectedItem());
+							}
+						});
+                    }
+                });
+            }
+          });
 
 
         return grid;
@@ -248,31 +266,3 @@ public class CmQaBody extends ContentPanel {
 }
 
 
-class QaEntryModelGxt extends BaseModel {
-
-    public QaEntryModelGxt(String item, String description, Boolean verified,Boolean problem) {
-        set("item",item );
-        set("description", description);
-        set("verified", verified);
-        set("problem", problem);
-    }
-
-    public <X extends Object> X set(String name, X value) {
-        X x = super.set(name, value);
-        return x;
-    }
-
-    public QaEntryModel convertTo() {
-        return new QaEntryModel((String)get("item"), (String)get("description"), (Boolean)get("verified"), (Boolean)get("problem"));
-    }
-    static List<QaEntryModelGxt> convert(CmList<QaEntryModel> fromServer) {
-        List<QaEntryModelGxt> models = new ArrayList<QaEntryModelGxt>();
-        for(int i=0,t=fromServer.size();i<t;i++) {
-            QaEntryModel o = fromServer.get(i);
-            models.add(new QaEntryModelGxt(o.getItem(), o.getDescription(), o.isVerified(), o.isProblem()));
-        }
-        return models;
-    }
-
-
-}

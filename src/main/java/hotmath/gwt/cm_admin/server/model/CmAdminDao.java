@@ -14,7 +14,7 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
+import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
@@ -791,7 +791,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     public void createSelfRegistrationGroup(final Connection conn, Integer aid, String groupName, CmProgram program,
             Boolean tutoringEnabled, Boolean showWorkRequired) throws Exception {
         try {
-            StudentModelI sm = new StudentModelBasic();
+            StudentModelI sm = new StudentModelBase();
             sm.setName(groupName);
             sm.setGroup(groupName);
             sm.setAdminUid(aid);

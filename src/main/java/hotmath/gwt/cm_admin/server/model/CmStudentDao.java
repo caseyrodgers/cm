@@ -8,8 +8,8 @@ import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
-import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -25,7 +25,6 @@ import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
-import hotmath.gwt.cm_tools.client.model.StudentModelBasic;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
@@ -1606,78 +1605,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             return students;
         } finally {
             SqlUtilities.releaseResources(rs, null, null);
-        }
-    }
-
-
-    /**
-     * Return a basic student object that only contains the most important data.
-     *
-     * The other pieces of info will be loaded lazily.
-     *
-     *
-     * @param conn
-     * @param uid
-     * @return
-     * @throws Exception
-     */
-    @Deprecated
-    public StudentModelI getStudentModelBasic(final Connection conn, Integer uid) throws Exception {
-        /*
-         * TODO: should be able to use:
-         *
-        return getStudentModelBase(conn, uid, true);
-        */
-        String sql = "select u.*, " +
-                     " ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required, " +
-                     " ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available " +
-                     " from HA_USER u left join HA_USER_SETTINGS s on s.user_id = u.uid where uid = " + uid;
-
-        long timeStart = System.currentTimeMillis();
-        Statement ps = null;
-        ResultSet rs = null;
-        try {
-            ps = conn.createStatement();
-            rs = ps.executeQuery(sql);
-            if(!rs.first())
-                throw new CmException("No such student id: " + uid);
-
-            StudentModelI sm = new StudentModelBasic();
-            sm.setUid(uid);
-            sm.setUid(rs.getInt("uid"));
-            sm.setAdminUid(rs.getInt("admin_id"));
-            sm.setName(rs.getString("user_name"));
-            sm.setPasscode(rs.getString("user_passcode"));
-            sm.setEmail(rs.getString("user_email"));
-            sm.setGroupId(rs.getString("group_id"));
-            sm.getProgram().setProgramId(rs.getInt("user_prog_id"));
-            sm.setBackgroundStyle(rs.getString("gui_background_style"));
-            sm.setIsDemoUser(rs.getInt("is_demo")==0?false:true);
-
-            StudentSettingsModel mdl = sm.getSettings();
-            mdl.setShowWorkRequired(rs.getInt("show_work_required")==0?false:true);
-            mdl.setTutoringAvailable(rs.getInt("tutoring_available")==0?false:true);
-            mdl.setLimitGames(rs.getInt("limit_games")==0?false:true);
-            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end")==0?false:true);
-
-            /** Check for tutoring available.
-             *
-             * If the student has been enabled, make sure the admin has it
-             * enabled.  This is to allow for tighter messaging and not send
-             * the user to LWL if the admin has not registered.
-             */
-            if (mdl.getTutoringAvailable()) {
-                mdl.setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
-            }
-
-            return sm;
-
-        } catch (Exception e) {
-            __logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
-            throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-            __logger.info(String.format("End getStudentModelBasic(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
         }
     }
 

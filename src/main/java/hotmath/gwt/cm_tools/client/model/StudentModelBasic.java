@@ -2,7 +2,7 @@ package hotmath.gwt.cm_tools.client.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class StudentModelBasic implements StudentModelI, IsSerializable{
+class StudentModelBasic implements StudentModelI, IsSerializable{
 
     Integer adminUid;
     Integer userProgramId;
