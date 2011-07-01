@@ -174,6 +174,7 @@ public class EndOfProgramHandler {
     private void updateProgram(final Connection conn, String subId, String progId, String chapter) throws Exception {
         student.getProgram().setProgramType(progId);
         student.getProgram().setSubjectId(subId);
+        student.setSectionNum(0);
         student.setChapter(chapter);
         student.setProgramChanged(true);
         
