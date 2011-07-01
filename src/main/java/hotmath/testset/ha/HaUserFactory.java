@@ -241,7 +241,10 @@ public class HaUserFactory {
             throw new CmUserException(CmMessagePropertyReader.getInstance().getProperty("LOGIN_NAME_NOT_RECOGNIZED"));
 		} catch (CmException cme) {
 			throw cme;
-		} catch (Exception e) {
+		} 
+		catch(CmUserException cme) {
+			throw cme;
+		}catch (Exception e) {
 			throw new CmException("Error logging in: " + user + "/" + pwd, e);
 		}
 	}
