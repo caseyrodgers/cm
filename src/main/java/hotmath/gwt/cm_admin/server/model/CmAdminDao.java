@@ -803,6 +803,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             sm.setProgram(studentProgram);
 
             sm.setPassPercent("70%");
+            sm.setSectionNum(0);
 
             sm.getSettings().setTutoringAvailable(tutoringEnabled);
             sm.getSettings().setShowWorkRequired(showWorkRequired);
