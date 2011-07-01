@@ -38,6 +38,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
         sm.setAdminUid(_user.getAid());
         sm.getProgram().setProgramType(CmProgram.PREALG_PROF.getProgramType());
         sm.getProgram().setSubjectId(CmProgram.PREALG_PROF.getSubject());
+        sm.setSectionNum(0);
         sm.setGroupId("1");
         sm.setPasscode("pass_" + System.currentTimeMillis());
         StudentModelI sm2 = _dao.addStudent(conn,sm);
@@ -51,7 +52,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
         spm.setSubjectId("");
         _dao.assignProgramToStudent(conn, _user.getUid(), spm,null,null);
         
-        StudentModelI sm = _dao.getStudentModel(_user.getUid());
+        StudentModelI sm = _dao.getStudentModelBase(conn, _user.getUid());
         assertTrue(sm.getProgram().getCustom().getCustomProgramId() == spm.getCustom().getCustomProgramId());
     }
     
@@ -76,7 +77,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
     public void testupdateStudentMainProperties() throws Exception {
         _dao.updateStudentMainProperties(conn, _user.getUid(), true,true,90);
         
-        StudentModelI sm = _dao.getStudentModel(_user.getUid());
+        StudentModelI sm = _dao.getStudentModelBase(conn, _user.getUid());
         assertTrue(sm.getSettings().getTutoringAvailable() == false);
     }
     
