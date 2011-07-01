@@ -40,10 +40,16 @@ public enum CmProgramType {
     static public CmProgramType lookup(String name) throws IllegalArgumentException {
         boolean found = false;
         for (CmProgramType e : values()) {
-        	String tag=e.type;
-            if (tag.equalsIgnoreCase(name)) {
+        	String type=e.type;
+            if (type.equalsIgnoreCase(name)) {
                 return e;
             }
+            
+        	String ename=e.name;
+            if (ename.equalsIgnoreCase(name)) {
+                return e;
+            }
+
         }
         throw new IllegalArgumentException("No such CmProgramType: " + name);
     }
