@@ -350,6 +350,7 @@ public class HaUserFactory {
 					CmProgram.PREALG_PROF.getProgramType());
 			student.getProgram().setSubjectId(
 					CmProgram.PREALG_PROF.getSubject());
+			student.setSectionNum(0);
 			student.setPassPercent("70%");
 			student.getSettings().setTutoringAvailable(false);
 			student.getSettings().setShowWorkRequired(false);
