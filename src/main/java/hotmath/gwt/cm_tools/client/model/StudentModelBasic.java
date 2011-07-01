@@ -16,6 +16,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     Integer notPassingCount;
     Integer passingCount;
     Integer tutoringUse;
+    Integer sectionNum=0;
 
     String progId;
     String subjId;
@@ -124,7 +125,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
     @Override
     public Integer getSectionNum() {
         // TODO Auto-generated method stub
-        return null;
+    	return sectionNum;
     }
 
     @Override
@@ -219,8 +220,7 @@ public class StudentModelBasic implements StudentModelI, IsSerializable{
 
     @Override
     public void setSectionNum(Integer sectionNum) {
-        // TODO Auto-generated method stub
-        
+    	this.sectionNum = sectionNum;
     }
 
     @Override

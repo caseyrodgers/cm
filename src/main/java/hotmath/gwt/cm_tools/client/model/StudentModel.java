@@ -6,7 +6,7 @@ public class StudentModel implements StudentModelI {
     String group;
     String groupId;
     Integer sectionCount;
-    Integer sectionNum;
+    Integer sectionNum=0;
     String chapter;
     String lastQuiz;
     String lastLogin;
