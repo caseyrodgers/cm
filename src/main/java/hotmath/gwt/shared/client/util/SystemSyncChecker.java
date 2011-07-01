@@ -95,8 +95,8 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                  if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                      new SystemSyncChecker(version);
                  }
-                 else if(UserInfo.getInstance() != null) {
-                	 /** only for CM Student */
+                 else if(UserInfo.getInstance() != null && CmShared.getQueryParameter("debug") == null) {
+                	 /** only for CM Student not in debug mode */
                 	 if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
 	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
 	                             
