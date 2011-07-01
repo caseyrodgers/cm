@@ -72,6 +72,8 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         
         student.setPasscode(student.getGroup() + "_" + System.currentTimeMillis());  // make unique
         
+        if (student.getSectionNum() == null) student.setSectionNum(0);
+        
         StudentModelI sm = CmStudentDao.getInstance().addStudent(conn, student);
         
         

@@ -549,7 +549,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
 
         try {
-                sm.setBackgroundStyle(getBackgroundImageRamdom());
+            sm.setBackgroundStyle(getBackgroundImageRamdom());
 
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_STUDENT_SQL"));
             ps.setString(1, sm.getName());
@@ -1733,6 +1733,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 //TODO: incorporate Admin tutoring value in Summary SQL
                 sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
             }
+            if (sm.getSectionNum() == null) sm.setSectionNum(0);
             return sm;
         } catch (Exception e) {
             __logger.error(String.format("*** Error obtaining data for student UID: %d, includeSelfRegTemplate: %s", uid, includeSelfRegTemplate), e);
