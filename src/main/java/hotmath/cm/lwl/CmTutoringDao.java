@@ -54,7 +54,7 @@ public class CmTutoringDao {
         
         logger.info("Getting tutor information for: " + uid);
         
-        StudentModelI student = CmStudentDao.getInstance().getStudentModelBasic(conn, uid);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModelBase(conn, uid);
         Integer adminId = student.getAdminUid();
         AccountInfoModel accountInfo = CmAdminDao.getInstance().getAccountInfo(adminId);
         
@@ -168,7 +168,7 @@ public class CmTutoringDao {
         HotMathSubscriber sub = new HotMathSubscriber();
         sub.setId(uid.toString());
 
-        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBasic(conn, uid);
+        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, uid);
         
         
         /** Setup a default LWL account to act as placeholder
@@ -209,7 +209,7 @@ public class CmTutoringDao {
      */
     public void addTutoring(final Connection conn, Integer uid) throws Exception {
         
-        StudentModelI student = CmStudentDao.getInstance().getStudentModelBasic(conn, uid);
+        StudentModelI student = CmStudentDao.getInstance().getStudentModelBase(conn, uid);
         Integer adminId = student.getAdminUid();
         AccountInfoModel accountInfo = CmAdminDao.getInstance().getAccountInfo(adminId);
         String subId = accountInfo.getSubscriberId();
