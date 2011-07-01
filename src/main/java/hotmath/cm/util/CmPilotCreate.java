@@ -221,6 +221,7 @@ public class CmPilotCreate {
         
         student.getProgram().setProgramType("Prof");
         student.getProgram().setSubjectId("Pre-Alg");
+        student.setSectionNum(0);
         student.setPassPercent("70%");
         student.getSettings().setTutoringAvailable(tutoringEnabled);
         student.getSettings().setShowWorkRequired(showWorkEnabled);
