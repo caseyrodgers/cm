@@ -77,4 +77,4 @@ cp src/main/webapp/ROOT.xml ~/dist/cm_tomcat/conf/Catalina/localhost
 # be rough
 #
 echo Restarting all java processes
-killall -9 java
+#killall -9 java
