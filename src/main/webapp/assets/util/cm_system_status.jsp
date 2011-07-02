@@ -1,5 +1,5 @@
 <%@ page import="hotmath.util.*" %>
-<%@ page import="hotmath.cm.server.listener.ContextListener" %>
+<%@ page import="hotmath.gwt.cm_rpc.server.rpc.ContextListener" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%
     String dbPoolStatus = HMConnectionPool.getInstance().getStatus();
