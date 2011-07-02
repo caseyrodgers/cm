@@ -343,7 +343,7 @@ h1, h2, h3, h4 {
     padding-top: 5px;
     width: 219px;
     height: 20px;
-    background-color: #43464B
+    background-color: #43464B;
 }
 .cm-main-panel-next-quiz {
         background: url(/gwt-resources/images/check_quiz.png) no-repeat center
@@ -357,6 +357,17 @@ h1, h2, h3, h4 {
 .cm-main-panel-next-quiz-over {
         background: url(/gwt-resources/images/check_quiz-over.png) no-repeat
                 center left !important;
+}
+.cm-main-panel-quiz-text {
+    position: relative;
+    left: 0;
+    top: 50;
+    color: yellow;
+    padding-left: 5px;
+    padding-top: 5px;
+    width: 219px;
+    height: 20px;
+    background-color: #43464B;
 }
 .resource-wrapper {
 }
