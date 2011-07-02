@@ -23,16 +23,20 @@ import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
+import com.extjs.gxt.ui.client.event.BaseEvent;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -47,6 +51,7 @@ public class QuizContext implements CmContext {
 
     QuizCmGuiDefinition guiDef;
     String title;
+    Text   text;
 
     public QuizContext(QuizCmGuiDefinition guiDef) {
         this.guiDef = guiDef;
@@ -93,8 +98,12 @@ public class QuizContext implements CmContext {
     public List<Component> getTools() {
         List<Component> list = new ArrayList<Component>();
 
-        IconButton btn = new IconButton("cm-main-panel-next-quiz");
-        btn.setToolTip("Done taking the quiz");
+        text = new Text();
+        text.setText(" ");
+        text.addStyleName("cm-main-panel-quiz-text");
+        text.setEnabled(true);
+
+        IconButtonWithTooltip btn = new IconButtonWithTooltip("cm-main-panel-next-quiz", "Done taking the quiz");
 
         btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
@@ -103,6 +112,9 @@ public class QuizContext implements CmContext {
         });
 
         list.add(btn);
+        list.add(text);
+        text.enable();
+        
         return list;
     }
 
@@ -239,6 +251,32 @@ public class QuizContext implements CmContext {
         doCheckTest();
     }
 
+    /**
+     * IconButton that has text tooltip
+     * 
+     * @author bob
+     * 
+     */
+    class IconButtonWithTooltip extends IconButton {
+    	
+        public IconButtonWithTooltip(String style, final String tipText) {
+            super(style);
+
+            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+
+                    text.setText(tipText);
+                }
+            });
+            addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                	text.setText("");
+                }
+            });
+        }
+    }
 }
 
 class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
@@ -264,4 +302,6 @@ class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
                         + "review and practice problems to guide you through " + " your trouble spots.</p>"));
         return cp;
     }
+
+
 }
