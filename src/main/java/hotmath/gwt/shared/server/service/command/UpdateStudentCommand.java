@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -33,6 +34,10 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
         	info.setActiveRunId(0);
         	info.setActiveTestId(0);
         	cmpFlow.saveActiveInfo(conn);
+
+        	// passing false marks Program as incomplete
+        	CmUserProgramDao pDao = CmUserProgramDao.getInstance();
+        	pDao.setProgramAsComplete(conn, student.getProgram().getProgramId(), false);
         }
         return student;
     }
