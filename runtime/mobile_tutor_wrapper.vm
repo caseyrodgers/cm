@@ -28,7 +28,7 @@
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
 	           <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
 	       </div>
-	       <div id='tutor_message' style='position: static;left: 100px;color: red;'float: right'/>
+	       <div id='tutor_message' style='position: static;left: 100px;color: red;'float: right'>&nbsp;</div>
         <img id='scrollTo-button' src='/assets/images/spacer.gif'>
     </div>
     <!-- HOTMATH BODY END -->

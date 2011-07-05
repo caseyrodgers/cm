@@ -359,50 +359,23 @@ function setState(n, onoff) {
 
 function scrollToStep(num) {
 	
-	gwt_scrollToBottomOfScrollPanel();
-	
-	
-	if(true)
-		return;
-	
-	
-	
-	// setTimeout("window.scrollTo(0,10000);",0);
-	// return;
-
-//	
-// $get('scrollTo-button').scrollIntoView();
-// alert('scrolled to');
-// return;
-//	
-// alert('scroll to bottom in GWT');
-// gwt_scrollToBottomOfScrollPanel();
-// return;
-	
-	
-// javascript:scroll(0,document.getElementsByTagName('body')[0].scrollHeight);
-// return;
-
-//	
-// if(true)
-// return;
-
-	
-// var visibleSize = getViewableSize();
-// var scrollXy = getScrollXY();
-// var visTop = scrollXy[1];
-// var visHeight = visibleSize[1];
-// var visBot = visHeight + visTop;
-// var buttonBar = DL_GetElementTop(document.getElementById('scrollTo-button'));
-//    
-// alert('visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
-// + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
-// + buttonBar);
-//    
-// if(buttonBar < visTop || buttonBar > visBot) {
-// var st = Number(buttonBar) - visHeight;
-// setTimeout("alert(window.scrollTo(0,10000);",0);
-// }
+	var stb=document.getElementById('scrollTo-button');
+	if(stb) {
+	    var top = DL_GetElementTop(stb);
+	    var visibleSize = getViewableSize();
+	    var scrollXy = getScrollXY();
+        var visTop = scrollXy[1];
+	    var visHeight = visibleSize[1];
+	    var visBot = visHeight + visTop;
+	    
+	    if(top < visTop || top > visBot) {
+// 	        alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
+//	          + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
+//	          + stb);
+ 	        
+ 	       gwt_scrollToBottomOfScrollPanel(top-visHeight);
+	    }
+	}
 }
 
 

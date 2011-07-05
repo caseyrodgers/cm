@@ -59,8 +59,8 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 	/** Scroll to bottom of scroll panel 
 	 * 
 	 * */
-	static private native void scrollToBottom()  /*-{
-	    $wnd.scrollTo(0,10000);
+	static private native void scrollToBottom(int top)  /*-{
+	    $wnd.scrollTo(0,top);
     }-*/;
 	
 	static private void tutorNewProblem() {
@@ -77,7 +77,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
                                           }-*/;
 
     native private void setupJsni() /*-{
-    	$wnd.gwt_scrollToBottomOfScrollPanel = @hotmath.gwt.hm_mobile.client.view.TutorViewImpl::scrollToBottom();
+    	$wnd.gwt_scrollToBottomOfScrollPanel = @hotmath.gwt.hm_mobile.client.view.TutorViewImpl::scrollToBottom(I);
     	$wnd.gwt_tutorNewProblem = @hotmath.gwt.hm_mobile.client.view.TutorViewImpl::tutorNewProblem();
     }-*/;
 
