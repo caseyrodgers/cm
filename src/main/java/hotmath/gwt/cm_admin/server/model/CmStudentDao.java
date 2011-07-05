@@ -2209,6 +2209,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     activeInfo.getActiveSegmentSlot(),
                     activeInfo.getActiveRunSession(),
                     userId});
+        
     }
 
 

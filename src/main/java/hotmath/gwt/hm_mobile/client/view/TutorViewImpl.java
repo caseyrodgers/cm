@@ -58,11 +58,10 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 	
 	/** Scroll to bottom of scroll panel 
 	 * 
-	 * TODO: find generic method
 	 * */
-	static private void scrollToBottom() {
-		//((TutorViewImpl)HmMobile.__clientFactory.getTutorView()).scrollPanel.setScrollPosition(1000);
-	}
+	static private native void scrollToBottom()  /*-{
+	    $wnd.scrollTo(0,10000);
+    }-*/;
 	
 	static private void tutorNewProblem() {
 		HmMobile.__clientFactory.getEventBus().fireEvent(new BackDiscoveryEvent((IPage)HmMobile.__clientFactory.getTutorView()));

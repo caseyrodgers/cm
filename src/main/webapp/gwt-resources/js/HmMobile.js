@@ -359,7 +359,9 @@ function setState(n, onoff) {
 
 function scrollToStep(num) {
 	
-	/** do nothing for now ... */
+	gwt_scrollToBottomOfScrollPanel();
+	
+	
 	if(true)
 		return;
 	
@@ -3212,4 +3214,7 @@ function validateOdds()
     }
 }
 HmFlashWidgetImplOdds.prototype.processWidgetValidation = validateOdds;
+
+
+
 

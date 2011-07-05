@@ -272,13 +272,19 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         eb.addHandler(LoadNewPageEvent.TYPE, new LoadNewPageEventHandler() {
             @Override
             public void loadPage(IPage page) {
+            	Log.info("LoadNewPageEvent fire: " + page.getClass().getName());
+            	resetViewPort();
                 _pageStack.push(page);
             }
         });
         
     }
+
     
-    
+    private native void resetViewPort() /*-{
+        $wnd.scrollTo(0,0);
+    }-*/;
+
     
     
     /** Look at current page and try to determine the proper thing 

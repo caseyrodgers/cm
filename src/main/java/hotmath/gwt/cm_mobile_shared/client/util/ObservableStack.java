@@ -3,7 +3,6 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 import java.util.Iterator;
 import java.util.Stack;
 
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;

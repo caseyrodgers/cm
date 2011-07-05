@@ -180,8 +180,6 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             }
 
             
-            
-            
             /** set if either custom Quiz or custom program
              * 
              */
