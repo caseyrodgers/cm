@@ -372,9 +372,9 @@ function scrollToStep(num) {
 	    var visBot = visHeight + visTop;
 	    
 	    if(true || top < visTop || top > visBot) {
- 	        alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
-	          + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
-	          + stb);
+// 	        alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
+//	          + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
+//	          + stb);
  	        
  	       gwt_scrollToBottomOfScrollPanel(top-visHeight);
 	    }
