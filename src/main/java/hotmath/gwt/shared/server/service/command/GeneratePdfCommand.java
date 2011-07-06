@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.cm.util.FileUtil;
 import hotmath.cm.util.report.GroupAssessmentReport;
 import hotmath.cm.util.report.StudentDetailReport;
 import hotmath.cm.util.report.StudentListReport;
@@ -106,7 +107,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
 			 String unique = Long.toString(System.currentTimeMillis());
 
 			 outputBase = outputBase + "/" + adminId;
-			 String outputDir = ensureOutputDir(outputBase, unique);
+			 String outputDir = FileUtil.ensureOutputDir(outputBase, unique);
 
 			 File filePath = new File(outputDir, reportName + ".pdf");
 			 logger.info("Writing PDF output: " + filePath);
@@ -122,8 +123,8 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
 			 }
     	}
     	catch(Throwable th) {
-    	    /** we want to throw an exception to be able track the excpetion and
-    	     * return an approriate error message.  Not just null.
+    	    /** we want to throw an exception to be able track the exception and
+    	     * return an appropriate error message.  Not just null.
     	     */
     	    throw new CmRpcException("*** Error generating pdfType: " + action.getPdfType(), th);
     	}
@@ -133,14 +134,5 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     public Class<? extends Action<? extends Response>> getActionType() {
         // TODO Auto-generated method stub
         return GeneratePdfAction.class;
-    }
-
-    private String ensureOutputDir(String outputBase, String unique) {
-
-        File file = new File(outputBase, unique);
-    	if (! file.exists()) {
-    		file.mkdirs();
-    	}
-    	return file.getPath();
     }
 } 
