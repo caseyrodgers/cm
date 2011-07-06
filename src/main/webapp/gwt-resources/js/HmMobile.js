@@ -105,8 +105,12 @@ var TutorManager = {
                 // reposition at top
                 window.scrollTo(0,0);
             }
-            if(TutorManager.currentStepUnit > -1)
+            if(TutorManager.currentStepUnit > -1) {
                 setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele);
+            }
+            
+            scrollToStep(TutorManager.currentStepUnit);
+
             return false;
         }
       },
@@ -358,7 +362,6 @@ function setState(n, onoff) {
  */
 
 function scrollToStep(num) {
-	
 	var stb=document.getElementById('scrollTo-button');
 	if(stb) {
 	    var top = DL_GetElementTop(stb);
@@ -368,10 +371,10 @@ function scrollToStep(num) {
 	    var visHeight = visibleSize[1];
 	    var visBot = visHeight + visTop;
 	    
-	    if(top < visTop || top > visBot) {
-// 	        alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
-//	          + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
-//	          + stb);
+	    if(true || top < visTop || top > visBot) {
+ 	        alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
+	          + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
+	          + stb);
  	        
  	       gwt_scrollToBottomOfScrollPanel(top-visHeight);
 	    }
