@@ -1,8 +1,6 @@
 package hotmath.gwt.hm_mobile.client;
 
 import hotmath.gwt.cm_mobile_shared.client.Controller;
-import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
@@ -13,10 +11,13 @@ import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -59,6 +60,17 @@ public class HeaderPanel extends Composite {
         mInactiveTitle.setStyleName("title");
         basePanel.add(mInactiveTitle);
 
+        Button feedback = new Button("Feedback");
+        feedback.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.alert("Will be a feedback entry form");
+			}
+		});
+        feedback.addStyleName("sexybutton");
+        feedback.addStyleName("feedback-button");
+        feedback.getElement().setInnerHTML("<span><span>Feedback</span></span>");
+        basePanel.add(feedback);
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
 
@@ -98,6 +110,8 @@ public class HeaderPanel extends Composite {
             @Override
             public void touchClick(TouchClickEvent<String> tag) {
             	Log.debug("TouchClick event fired: " + ViewSettings.AnimationRunning);
+            	
+            	mActiveButton.addStyleName("backClicked");
             	
                 if (!ViewSettings.AnimationRunning) {
                 	Controller.navigateBack();

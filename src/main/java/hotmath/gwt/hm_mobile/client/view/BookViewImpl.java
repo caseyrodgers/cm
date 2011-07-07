@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
+import hotmath.gwt.cm_mobile_shared.client.util.ToolTipListener;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -39,34 +40,8 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     BookModel book;
     BookInfoModel info;
-
-    @UiField
-    ImageElement bookImage;
-
-    @UiField
-    SpanElement minPage, maxPage, title, author;
-
-    @UiField
-    TextBox pageNumber;
-
-    @UiField
-    Button getProblems;
-
-    @UiField
-    HTMLPanel problemNumberDiv, messageDiv;
-
-    @UiField
-    HTMLPanel problemNumberList;
     
-    
-    @UiField
-    SpanElement messageText,bookMessage;
-    
-    
-    @UiField
-    DivElement probNumsTitle;
-
-
+    ToolTipListener _toolTipListener = new ToolTipListener("", 3000);
     GenericContainerTag listItems = new GenericContainerTag("ul");
 
     private static BookViewImplUiBinder uiBinder = GWT.create(BookViewImplUiBinder.class);
@@ -75,7 +50,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     }
 
 
-    
     public BookViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         pageNumber.getElement().setAttribute("type","number");
@@ -94,6 +68,17 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         
         pageNumber.setWidth("50px");
         addStyleName("bookViewImpl");
+
+        /** only allow numeric entry */
+        pageNumber.addKeyPressHandler(new KeyPressHandler() {
+            public void onKeyPress(KeyPressEvent event) {
+              if (!Character.isDigit(event.getCharCode())) {
+                ((TextBox) event.getSource()).cancelKey();
+              }
+            }
+          });
+        
+    	pageNumber.addMouseListener(_toolTipListener);
     }
 
     Presenter presenter;
@@ -112,13 +97,13 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     @Override
     public void showBook(BookModel bookModel, BookInfoModel infoModel, int page) {
-    	
-    	//getWidget().getElement().setAttribute("style","display:none");
-    	
-        problemNumberDiv.getElement().setAttribute("style", "display: none");
+
+    	problemNumberDiv.getElement().setAttribute("style", "display: none");
 
         this.book = bookModel;
         this.info = infoModel;
+
+        _toolTipListener.setToolTip("Enter a page number between " + info.getMinPageNumber() + " and " + info.getMaxPageNumber() + ".");
 
         String imagePath = null;
         if (bookModel.getImage() != null) {
@@ -152,13 +137,10 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
      */
     private void setPageNumber(int page) {
         
-        if(page > this.info.getMaxPageNumber() ) {
-        	bookMessage.setInnerHTML("No more pages");
-       	    pageNumber.setText(info.getMaxPageNumber() + "");
-        }
-        else if(page < info.getMinPageNumber()) {
-        	bookMessage.setInnerHTML("No previous pages");
-        	pageNumber.setText(info.getMinPageNumber() + "");
+        if(page < this.info.getMinPageNumber() || page > this.info.getMaxPageNumber() ) {
+        	bookMessage.setInnerHTML(
+        			"Page not found.  Only pages " + this.info.getMinPageNumber() +
+        			" through " + info.getMaxPageNumber() + " included.");
         }
         else {
         	bookMessage.setInnerHTML("");
@@ -189,12 +171,22 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     @UiHandler("getNextProblems")
     public void doGetNextProblems(ClickEvent ce) {
-        setPageNumber(book.getPage()+1);
+    	if(book.getPage() + 1 > info.getMaxPageNumber()) {
+    		bookMessage.setInnerHTML("Last problem");
+    	}
+    	else {
+    		setPageNumber(book.getPage()+1);
+    	}
     }
     
     @UiHandler("getPrevProblems")
     public void doGetPrevProblems(ClickEvent ce) {
-        setPageNumber(book.getPage()-1);
+    	if(book.getPage() - 1 > info.getMinPageNumber()) {
+    		bookMessage.setInnerHTML("First problem");
+    	}
+    	else {
+    		setPageNumber(book.getPage()-1);
+    	}
     }
 
     
@@ -284,6 +276,33 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     public String getTitle() {
         return "Book Problem Index";
     }
+    
+
+    @UiField
+    ImageElement bookImage;
+
+    @UiField
+    SpanElement minPage, maxPage, title, author;
+
+    @UiField
+    TextBox pageNumber;
+
+    @UiField
+    Button getProblems;
+
+    @UiField
+    HTMLPanel problemNumberDiv, messageDiv;
+
+    @UiField
+    HTMLPanel problemNumberList;
+    
+    
+    @UiField
+    SpanElement messageText,bookMessage;
+    
+    
+    @UiField
+    DivElement probNumsTitle;
 }
 
 

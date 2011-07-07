@@ -40,10 +40,25 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 		listItems.add(new MyListItem("Calculus"));
 
 		listItems.addStyleName("CategoryListViewImpl");
-
 		fp.add(listItems);
+		fp.add(createInfoBox());
 		initWidget(fp);
 	}
+	
+	
+	private HTML createInfoBox() {
+		HTML html = new HTML();
+		
+		String text = 
+				"<div class='home-info'>" +
+				"<h1>Welcome to Hotmath Mobile - Free Beta</h1>" +
+		        "<p>Password needed soon for some textbooks.  " +
+                "<br/>Send feedback to support@hotmath.com.</p>" +
+		        "</div>";
+		html.setHTML(text);
+		return html;
+	}
+		
 
 	@Override
 	public void setCategoryList(List<CategoryModel> categories) {
@@ -58,21 +73,6 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 	@Override
 	public void setWidget(IsWidget arg0) {
 	}
-
-	// @UiHandler("list")
-	// public void onListSelection(SelectionChangedEvent event) {
-	// int selection = event.getSelection();
-	// String sn =
-	// ((Label)((ListItem)list.getWidget(selection)).getWidget(0)).getText();
-	// CategoryModel subject = new CategoryModel(sn);
-	// presenter.doSubjectSelected(subject, new Callback() {
-	//
-	// @Override
-	// public void doBooksFind(CmList<BookModel> books) {
-	//
-	// }
-	// });
-	// }
 
 	public void setPresenter(Presenter presenter) {
 		this.presenter = presenter;

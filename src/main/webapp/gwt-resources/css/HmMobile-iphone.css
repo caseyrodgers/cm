@@ -12,7 +12,8 @@ div.page
         
         -webkit-transform: translate(0px,0px); 
 */
-	position: absolute;	
+	position: absolute;
+	
 }
 
 div.page.left 
@@ -46,6 +47,8 @@ div.page.animate
 
 
 #header .backButton {
+		font-size: 100px;	
+	
 
   /* use absolute positioning and transforms as these will be subject to hardware transitions */
   position: absolute;
