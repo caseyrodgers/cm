@@ -2223,6 +2223,14 @@ order  by u.user_name
 ### CmQuizzesDao 
 #########################
 
+###############
+# Get the solutions that are associated with a
+# INMH lesson.  Make sure only solutions from 
+# textcodes that should be used with Custom Quizzes
+# are returned.
+#
+# TODO: generalize this query by removing hard-coded textcodes
+
 .key=GET_LESSON_QUIZZES
 
 select guid, d.test_name as program_name
@@ -2234,6 +2242,18 @@ where m.file = ?
 and b.grade_level <= ?
 and d.is_active = 1
 and solutionxml like '%<question>%'
+and b.textcode in (
+    'alg1ptests',
+    'alg1ptests3',
+    'alg2ptests',
+    'alg2ptests3',
+    'cahseehm2',
+    'essptests2',
+    'geoptests',
+    'geoptests2',
+    'prealgptests',
+    'prealgptests2',
+    'taks11hm')
 order by guid
           
 
