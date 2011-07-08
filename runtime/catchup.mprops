@@ -413,6 +413,7 @@ from     HA_TEST_RUN_WHITEBOARD a,
 where    a.user_id = ?
          and b.pid = a.pid
          and b.user_id = a.user_id
+		 and  a.pid <> 'quiz:quiz'
 order by insert_time_mills desc
 
 
