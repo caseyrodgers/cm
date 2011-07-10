@@ -13,16 +13,16 @@
         </div>
         
         <div id='steps_tail' style='position: relative'>
-	        <a class='sexybutton sexylarge' id='steps_prev' href="#"
+	        <a class='sexybutton ' id='steps_prev' href="#"
 	            onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
 	            <span><span>
 	            Previous
 	            </span></span>
 	        </a>
-	        <a class='sexybutton sexylarge' id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
+	        <a class='sexybutton' id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
 	            <span><span>Next</span></span>
 	        </a>
-	        <a class='sexybutton sexylarge' id='steps_next' href="#" onclick="TutorManager.newProblem();return false;" accesskey="s">
+	        <a class='sexybutton' id='steps_next' href="#" onclick="TutorManager.newProblem();return false;" accesskey="s">
 	            <span><span>New Problem</span></span>
 	        </a>
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>

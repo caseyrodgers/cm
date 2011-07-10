@@ -77,7 +77,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
               }
             }
           });
-        
+
     	pageNumber.addMouseListener(_toolTipListener);
     }
 
@@ -127,6 +127,8 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         pageNumber.setValue("" + page);
         doGetProblems(null);
         
+        
+        
     	
     	// getWidget().getElement().setAttribute("style","display:block");
     }
@@ -172,7 +174,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     @UiHandler("getNextProblems")
     public void doGetNextProblems(ClickEvent ce) {
     	if(book.getPage() + 1 > info.getMaxPageNumber()) {
-    		bookMessage.setInnerHTML("Last problem");
+    		bookMessage.setInnerHTML("Last page");
     	}
     	else {
     		setPageNumber(book.getPage()+1);
@@ -182,7 +184,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     @UiHandler("getPrevProblems")
     public void doGetPrevProblems(ClickEvent ce) {
     	if(book.getPage() - 1 > info.getMinPageNumber()) {
-    		bookMessage.setInnerHTML("First problem");
+    		bookMessage.setInnerHTML("First page");
     	}
     	else {
     		setPageNumber(book.getPage()-1);
@@ -298,11 +300,16 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     
     @UiField
-    SpanElement messageText,bookMessage;
+    SpanElement messageText;
     
+    @UiField
+    DivElement bookMessage;
     
     @UiField
     DivElement probNumsTitle;
+    
+    @UiField 
+    Button getPrevProblems;
 }
 
 

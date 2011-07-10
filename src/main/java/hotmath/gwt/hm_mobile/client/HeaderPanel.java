@@ -60,17 +60,19 @@ public class HeaderPanel extends Composite {
         mInactiveTitle.setStyleName("title");
         basePanel.add(mInactiveTitle);
 
-        Button feedback = new Button("Feedback");
-        feedback.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				Window.alert("Will be a feedback entry form");
-			}
-		});
-        feedback.addStyleName("sexybutton");
-        feedback.addStyleName("feedback-button");
-        feedback.getElement().setInnerHTML("<span><span>Feedback</span></span>");
-        basePanel.add(feedback);
+//        Button feedback = new Button("Feedback");
+//        feedback.addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				new FeedbackDialog().showCentered();
+//			}
+//		});
+//        feedback.addStyleName("sexybutton");
+//        feedback.addStyleName("feedback-button");
+//        feedback.getElement().setInnerHTML("<span><span>Feedback</span></span>");
+//        basePanel.add(feedback);
+        
+        
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
 

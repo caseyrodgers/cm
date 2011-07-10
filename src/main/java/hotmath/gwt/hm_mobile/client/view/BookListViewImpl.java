@@ -21,15 +21,15 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class BookListViewImpl extends AbstractPagePanel implements BookListView,IPage {
 
 	CmList<BookModel> books;
-	
+
 	Presenter presenter;
-	
-    GenericContainerTag listItems = new GenericContainerTag("ul");
+
+	GenericContainerTag listItems = new GenericContainerTag("ul");
 	
 	public BookListViewImpl() {
 		SimplePanel sp = new SimplePanel();
 		sp.add(listItems);
-		
+	
 		initWidget(sp);
         addStyleName("bookListViewImpl");
         

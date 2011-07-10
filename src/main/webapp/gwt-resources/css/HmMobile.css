@@ -17,95 +17,105 @@ body {
 }
 
 ul {
-	padding: 0;
+    padding: 0;
 }
 
 ul li {
-	text-align: left;
+    text-align: left;
 }
 h1 {
-	font-size:2em;
-	color: #1C97D1;
+    font-size:2em;
+    color: #1C97D1;
     margin:10px 0 10px 0px;
 }
 
 h2 {
-	font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     font-size:1.5em;
-	font-weight: bold;
+    font-weight: bold;
     color: #f94701;
-	text-decoration: none;
-	margin: 0px;
+    text-decoration: none;
+    margin: 0px;
 }
 
 h3 {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size:1.3em;
-	font-weight: bold;
-	color: #76B900;
-	text-decoration: none;
-	margin: 0px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:1.3em;
+    font-weight: bold;
+    color: #76B900;
+    text-decoration: none;
+    margin: 0px;
 }
 
  p { 
-	font-size:1em; 
-	color:#000000; 
-	margin: 0 0 10px 0px;
+    font-size:1em; 
+    color:#000000; 
+    margin: 0 0 10px 0px;
  }
 
 
 #loading {
     -moz-border-radius:10px;
     border-radius: 10px;
-}	
+}   
 
 #loading {
-	position: absolute;
-	left: 45%;
-	top: 40%;
-	margin-left: -45px;
-	padding: 2px;
-	z-index: 20001;
-	width: 100px;
-	height: 50px;
-	border: 1px solid #6f87a3;
-	background: #99aabe;
-	text-align: center;
-	color: white;
-	font-weight: bold;
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    margin-left: -45px;
+    padding: 2px;
+    z-index: 20001;
+    width: 100px;
+    height: 50px;
+    border: 1px solid #6f87a3;
+    background: #99aabe;
+    text-align: center;
+    color: white;
+    font-weight: bold;
     line-height: 50px;
     vertical-align: middle;
 }
 
 #loading span {
-	margin-top: 15px;
-	margin-top: 10px;
+    margin-top: 15px;
+    margin-top: 10px;
 }
 
 
+
+/** Main dialog box styles */
+
+.gwt-DialogBox { 
+    background: yellow;
+    border: 1px solid black;
+}
+
+.gwt-DialogBox .Caption { 
+}
 
 
 
 /** Form specific styles */
 
 .prob-nums-title {
-	font-bold;
-	fong-size: 1.2em;
+    font-bold;
+    fong-size: 1.2em;
 }
 .bookViewImpl .touch {
-	font-style: italic;
+    font-style: italic;
 
 }
 
 .bookViewImpl .touch li.group {
-	padding-left: 40px;
-	font-weight: normal;
-	font-style: normal;
+    padding-left: 40px;
+    font-weight: normal;
+    font-style: normal;
 }
 
 
 .bookListViewImpl li {
-	text-align: left;
+    text-align: left;
 }
 
 .book-item {
@@ -125,7 +135,7 @@ h3 {
 
 
 .bookViewImpl .book-item {
-	background: white;
+    background: white;
 }
 
 
@@ -135,8 +145,17 @@ h3 {
 
 
 .bookViewImpl .bookMessage {
-	color: red;
+    color: red;
 }
+
+
+.book-button-bar {
+
+}
+
+
+
+
 
 .mainPage {
     padding: 15px;
@@ -183,30 +202,23 @@ h3 {
 
 /** Home Page Info Box */
 .home-info {
-	font-size: .9em;
-    margin: auto;
-    margin-top: 15px;
-    width: 350px;
-    border: 1px solid #99aabe;
+    font-size: .9em;
+    margin-top: 10px;
+    font-style: italic;
 }
-
-.home-info span {
-	font-size .8em;
-}
-
 
 /** Tooltip styles */
 .TooltipPopup {
-	background: yellow;
+    background: yellow;
 }
 
 
 
 /** The feedback back button */
 .feedback-button {
-	position: absolute;
-	right: 3px;
-	top: 7px;
+    position: absolute;
+    right: 3px;
+    top: 7px;
 }
 
 
@@ -287,7 +299,7 @@ h3 {
 }
 
 #header .backClicked {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 

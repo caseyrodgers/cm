@@ -24,25 +24,26 @@
 			</div>
 		</div>
 
+
 		<div class='book-button-bar'>
 		    Page: 
-            <g:Button styleName='sexybutton sexylarge' ui:field="getPrevProblems">
+            <g:Button ui:field="getPrevProblems">
 				<span>
-					<span>&lt;</span>
+					<span>Prev</span>
 				</span>
 			</g:Button>
 			<g:TextBox ui:field='pageNumber' />
-            <g:Button styleName='sexybutton sexylarge' ui:field="getNextProblems">
+            <g:Button ui:field="getNextProblems">
 				<span>
-					<span>&gt;</span>
+					<span>Next</span>
 				</span>
 			</g:Button>
-			<g:Button styleName='sexybutton sexylarge' ui:field="getProblems">
+			<g:Button ui:field="getProblems">
 				<span>
 					<span>Go</span>
 				</span>
 			</g:Button>
-			<span class='bookMessage' ui:field="bookMessage"/>
+			<div class='bookMessage' ui:field="bookMessage"></div>
 		</div>
 		<br style='clear: both;' />
 		<g:HTMLPanel ui:field="messageDiv">

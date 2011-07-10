@@ -29,32 +29,32 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 	public CategoryListViewImpl() {
 
 		FlowPanel fp = new FlowPanel();
-		fp.add(new HTML("<h1>Select Subject</h1>"));
 		GenericContainerTag listItems = new GenericContainerTag("ul");
 		listItems.addStyleName("touch");
 
+		fp.add(new HTML("<h1>Select Subject</h1>"));
 		listItems.add(new MyListItem("Pre-Algebra"));
 		listItems.add(new MyListItem("Algebra 1"));
 		listItems.add(new MyListItem("Geometry"));
 		listItems.add(new MyListItem("Algebra 2"));
 		listItems.add(new MyListItem("Calculus"));
-
 		listItems.addStyleName("CategoryListViewImpl");
+		
 		fp.add(listItems);
 		fp.add(createInfoBox());
+
 		initWidget(fp);
 	}
 	
 	
 	private HTML createInfoBox() {
 		HTML html = new HTML();
-		
+
 		String text = 
-				"<div class='home-info'>" +
-				"<h1>Welcome to Hotmath Mobile - Free Beta</h1>" +
-		        "<p>Password needed soon for some textbooks.  " +
-                "<br/>Send feedback to support@hotmath.com.</p>" +
-		        "</div>";
+				"<p class='home-info'>" +
+		        "Password needed soon for some textbooks.  " +
+                "<br/>Send feedback to support@hotmath.com." +
+		        "</p>";
 		html.setHTML(text);
 		return html;
 	}
@@ -95,7 +95,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 
 	@Override
 	public String getTitle() {
-		return "Hotmath Mobile";
+		return "Hotmath Mobile - Free Beta";
 	}
 }
 
