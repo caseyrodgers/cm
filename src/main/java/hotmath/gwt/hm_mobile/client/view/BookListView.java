@@ -10,7 +10,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface BookListView extends IsWidget  {
-	void showBookList(CmList<BookModel> books);
+	void showBookList(String subject, CmList<BookModel> books);
 	
 	void setPresenter(Presenter presenter);
 	

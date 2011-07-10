@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile_shared.server.rpc;
 
 import hotmath.ProblemID;
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
@@ -10,8 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.util.VelocityTemplateFromStringManager;
 
-import org.apache.log4j.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
@@ -19,6 +18,8 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.log4j.Logger;
 
 import sb.util.SbFile;
 
@@ -65,7 +66,9 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
             int i = 1;
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
             
-            SolutionResponse rs = new SolutionResponse(solutionHtml, solutionData, false);
+            ProblemNumber problem = new ProblemNumber(pid.getProblemNumber(), pid.getProblemSet(),pid.getGUID(),pid.getPage());
+            
+            SolutionResponse rs = new SolutionResponse(problem, solutionHtml, solutionData, false);
             return rs;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

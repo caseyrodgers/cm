@@ -2,10 +2,10 @@ package hotmath.gwt.hm_mobile.client.view;
 
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
-import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 
 public interface BookView  {
 	void showBook(BookModel book, BookInfoModel infoModel, int page);

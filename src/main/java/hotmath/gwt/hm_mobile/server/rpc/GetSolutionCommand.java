@@ -4,6 +4,7 @@ import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -51,7 +52,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             SolutionParts parts = __creator.getSolutionHTML(null,__tutorProps, pid);
             String solutionHtml = parts.getMainHtml();
 
-            ProblemID ppid = new ProblemID(pid);
+            ProblemID ppid = new ProblemID(action.getPid());
             String path = ppid.getSolutionPath_DirOnly("solutions");
 
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
@@ -72,8 +73,8 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String tutorWrapper = new SbFile(runTimeDir + "/" + "mobile_tutor_wrapper.vm").getFileContents().toString("\n");
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
             
-            
-            SolutionResponse rs = new SolutionResponse(solutionHtml, parts.getData(), false);
+            ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()	);
+            SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false);
             return rs;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

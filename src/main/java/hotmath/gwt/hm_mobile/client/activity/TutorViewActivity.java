@@ -5,9 +5,9 @@ import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
-import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
+import hotmath.gwt.hm_mobile.client.rpc.MobileSolutionResponse;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
 
@@ -35,7 +35,7 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 	public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
 		BookListView view = clientFactory.getBookListView();
 		containerWidget.setWidget(view.asWidget());
-		view.showBookList(null);		
+		view.showBookList(null,null);		
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 		HmMobile.getCmService().execute(action,new AsyncCallback<SolutionResponse>() {
 			public void onSuccess(SolutionResponse solutionResponse) {
 				clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
-				clientFactory.getTutorView().loadSolution(new ProblemNumber(pid), solutionResponse);
+				clientFactory.getTutorView().loadSolution(solutionResponse);
 				
 				callback.isComplete();
 			}

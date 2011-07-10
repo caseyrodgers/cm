@@ -6,9 +6,9 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.HmMobile;
-import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 
 import java.util.List;
 
@@ -36,8 +36,8 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
     }
 
 	@Override
-    public void loadSolution(final ProblemNumber problem, final SolutionResponse solution) {
-		this.problem = problem;
+    public void loadSolution(final SolutionResponse solution) {
+		this.problem = solution.getProblem();
 		setupJsni();
 		
 		tutorPanel.clear();
@@ -98,6 +98,6 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
     
     @Override
     public String getTitle() {
-        return "Tutor View";
+        return problem.getLabel();
     }
 }

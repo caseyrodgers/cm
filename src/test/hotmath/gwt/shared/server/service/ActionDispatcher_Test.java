@@ -79,7 +79,8 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testActionDoesNotExist() throws Exception {
         try {
-            class TestAction implements Action{};
+            @SuppressWarnings("rawtypes")
+			class TestAction implements Action{};
             ActionDispatcher.getInstance().execute(new TestAction());
             assert(false);
         }

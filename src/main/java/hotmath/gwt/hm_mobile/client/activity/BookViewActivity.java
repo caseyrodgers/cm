@@ -1,6 +1,7 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
@@ -8,7 +9,6 @@ import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
 import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
-import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import hotmath.gwt.hm_mobile.client.place.BookViewPlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetBookInfoAction;
@@ -39,7 +39,7 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 	public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
 		BookListView view = clientFactory.getBookListView();
 		containerWidget.setWidget(view.asWidget());
-		view.showBookList(null);		
+		view.showBookList(null, null);		
 	}
 
 	/**

@@ -22,6 +22,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 
 	CmList<BookModel> books;
 
+	String _subject;
 	Presenter presenter;
 
 	GenericContainerTag listItems = new GenericContainerTag("ul");
@@ -47,7 +48,8 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 	
 
 	@Override
-    public void showBookList(CmList<BookModel> books) {
+    public void showBookList(String subject, CmList<BookModel> books) {
+		_subject = subject;
 		getWidget().getElement().setAttribute("style","display:none");
 		this.books = books;
 		listItems.clear();
@@ -114,7 +116,6 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 		}
 		
 		getWidget().getElement().setAttribute("style","display:block");
-		
     }
 //	
 //	@UiHandler("list")
@@ -160,8 +161,6 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     
     @Override
     public String getTitle() {
-        return "Available Books";
+        return "Subject " + _subject + " Textbooks";
     }
-    
-    
 }

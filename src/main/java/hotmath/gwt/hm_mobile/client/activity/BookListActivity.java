@@ -1,6 +1,5 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
@@ -35,7 +34,7 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         BookListView view = clientFactory.getBookListView();
         containerWidget.setWidget(view.asWidget());
-        view.showBookList(null);
+        view.showBookList(null,null);
     }
 
     /**
@@ -54,7 +53,7 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
     }
 
     @Override
-    public void doLoadBookForSubject(String subject, final CallbackOnComplete callback) {
+    public void doLoadBookForSubject(final String subject, final CallbackOnComplete callback) {
         clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 
         try {
@@ -63,7 +62,7 @@ public class BookListActivity extends AbstractActivity implements BookListView.P
                 @Override
                 public void onSuccess(CmList<BookModel> books) {
                     BookListView bookView = clientFactory.getBookListView();
-                    bookView.showBookList(books);
+                    bookView.showBookList(subject, books);
                     clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
                     
                     callback.isComplete();

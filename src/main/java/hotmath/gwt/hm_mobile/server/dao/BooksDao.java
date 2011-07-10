@@ -1,8 +1,8 @@
 package hotmath.gwt.hm_mobile.server.dao;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
-import hotmath.gwt.hm_mobile.client.model.ProblemNumber;
 import hotmath.spring.SpringManager;
 
 import java.sql.ResultSet;
@@ -134,7 +134,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 	 */
 	public List<ProblemNumber> getProblemNumbers(BookModel book, int page) throws Exception {
 		String sql = 
-			"select PROBLEMNUMBER, PROBLEMINDEX, PROBLEMSET " +
+			"select PROBLEMNUMBER, PROBLEMINDEX, PROBLEMSET, PAGENUMBER " +
 			" from SOLUTIONS " +
 			" where booktitle = ? " +
 			" and PAGENUMBER between ? and ? " +
@@ -146,7 +146,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 				new RowMapper<ProblemNumber>() {
 					@Override
 					public ProblemNumber mapRow(ResultSet rs, int rowNum) throws SQLException {
-					    return new ProblemNumber(rs.getString("problemnumber"), rs.getString("problemset"),rs.getString("problemindex"));
+					    return new ProblemNumber(rs.getString("problemnumber"), rs.getString("problemset"),rs.getString("problemindex"),rs.getInt("pagenumber"));
 					}
 				});
 		return list;

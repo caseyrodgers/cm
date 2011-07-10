@@ -38,7 +38,7 @@ public class BookSearchActivity extends AbstractActivity implements BookSearchVi
 	public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
 		BookListView view = clientFactory.getBookListView();
 		containerWidget.setWidget(view.asWidget());
-		view.showBookList(null);		
+		view.showBookList(null, null);		
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class BookSearchActivity extends AbstractActivity implements BookSearchVi
 					BookListActivity act = new BookListActivity(new BookListPlace(""), clientFactory);
 					bookListView.setPresenter(act);
 					
-					bookListView.showBookList(bookList);
+					bookListView.showBookList("Seached", bookList);
 					
 					clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)bookListView));
 				}

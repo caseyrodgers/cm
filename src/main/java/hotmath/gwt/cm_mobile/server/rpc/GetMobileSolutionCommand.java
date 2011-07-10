@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile.server.rpc;
 import hotmath.HotMathLogger;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
+import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetMobileSolutionAction;
@@ -70,7 +71,7 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
             tutorWrapper = sb.toString();
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
             
-            SolutionResponse rs = new SolutionResponse(solutionHtml, parts.getData(), false);
+            SolutionResponse rs = new SolutionResponse(new ProblemNumber(pid),solutionHtml, parts.getData(), false);
             return rs;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

@@ -91,7 +91,10 @@ h3 {
     border: 1px solid black;
 }
 
-.gwt-DialogBox .Caption { 
+.gwt-DialogBox .Caption {
+	padding-left: 5px;
+	background: black;
+	color: white;
 }
 
 
@@ -221,6 +224,11 @@ h3 {
     top: 7px;
 }
 
+.about-dialog {
+	position: absolute;
+	right: 3px;
+	top: 7px;
+}
 
 /** global CSS loading styles
 *

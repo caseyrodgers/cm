@@ -11,13 +11,9 @@ import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -59,6 +55,18 @@ public class HeaderPanel extends Composite {
         mInactiveTitle = new Label();
         mInactiveTitle.setStyleName("title");
         basePanel.add(mInactiveTitle);
+        
+
+//        Anchor about = new Anchor("?");
+//        about.addStyleName("about-dialog");
+//        about.addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				new AboutDialog().showCentered();
+//			}
+//		});
+//        basePanel.add(about);
+        
 
 //        Button feedback = new Button("Feedback");
 //        feedback.addClickHandler(new ClickHandler() {
