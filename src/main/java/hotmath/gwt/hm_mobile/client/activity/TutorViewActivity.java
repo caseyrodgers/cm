@@ -7,7 +7,6 @@ import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
-import hotmath.gwt.hm_mobile.client.rpc.MobileSolutionResponse;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
 
