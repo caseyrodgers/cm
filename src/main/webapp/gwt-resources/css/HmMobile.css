@@ -53,6 +53,11 @@ h3 {
     margin: 0 0 10px 0px;
  }
 
+a {
+	text-decoration: none;
+}
+
+
 
 #loading {
     -moz-border-radius:10px;
@@ -102,8 +107,9 @@ h3 {
 /** Form specific styles */
 
 .prob-nums-title {
-    font-bold;
-    fong-size: 1.2em;
+    font-weight: bold;
+    color: red;
+    font-size: 1.2em;
 }
 .bookViewImpl .touch {
     font-style: italic;
@@ -222,6 +228,10 @@ h3 {
     position: absolute;
     right: 3px;
     top: 7px;
+}
+
+.more-info {
+	font-size: .8em;
 }
 
 .about-dialog {
@@ -525,6 +535,18 @@ question_head_text {
    border-radius: 0 0 15px 15px;
    
    padding: 10px;
+}
+
+
+.problemIndex {
+	background: #A8B5C6;
+	background: white;
+	padding: 10px;
+}
+
+
+.graphimgstatic {
+	margin: 15px;
 }
 
 #control-floater {

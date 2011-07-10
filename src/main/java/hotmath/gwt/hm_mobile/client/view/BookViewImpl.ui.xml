@@ -52,7 +52,7 @@
 			</h2>
 		</g:HTMLPanel>
 		<g:HTMLPanel ui:field="problemNumberDiv">
-			<div style='prob-nums-title' ui:field="probNumsTitle">
+			<div class='prob-nums-title' ui:field="probNumsTitle">
 			</div>
 			<g:HTMLPanel ui:field="problemNumberList"></g:HTMLPanel>
 		</g:HTMLPanel>

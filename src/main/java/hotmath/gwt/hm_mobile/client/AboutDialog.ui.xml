@@ -21,7 +21,7 @@
 	    </p>
 	    <h2>More Information</h2>
 	    <p>
-	       For more information please visit <a href='http://hotmath.com'>Hotmath.com</a> from your desktop.
+	       For more information please visit Hotmath.com from your desktop.
 	    </p>
 	    <div class='{style.footer}'> 
 	       <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
