@@ -2,6 +2,7 @@ package hotmath.cm.util.export;
 
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 
 import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -35,9 +36,8 @@ public class ExportStudentsInExcelFormat {
 	public ExportStudentsInExcelFormat() {
 	}
 	
-	public ExportStudentsInExcelFormat(List<StudentModelExt> studentList, Integer adminId) {
+	public ExportStudentsInExcelFormat(List<StudentModelExt> studentList) {
 		this.studentList = studentList;
-		this.adminId = adminId;
 	}
 
 	public List<StudentModelExt> getStudentList() {
@@ -57,7 +57,8 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	private static String[] titles = {
-		"Row", "Student", "Password", "Group", "Program", "Status", "Quizzes", "Last Quiz", "Last Login"
+		"Student", "Password", "Group", "Program", "Status", "% Complete", "Quizzes",
+		"Last Quiz", "Last Login", "Total Lessons"
 	};
 	
 	public ByteArrayOutputStream export() throws Exception {
@@ -72,8 +73,6 @@ public class ExportStudentsInExcelFormat {
 	    PrintSetup printSetup = sheet.getPrintSetup();
 	    printSetup.setLandscape(true);
 
-	    LOGGER.debug("+++ in export()");
-
 	    //the following three statements are required only for HSSF
 	    sheet.setAutobreaks(true);
 	    printSetup.setFitHeight((short)1);
@@ -84,53 +83,77 @@ public class ExportStudentsInExcelFormat {
 	    //the header row: centered text in 48pt font
 	    Row headerRow = sheet.createRow(0);
 	    headerRow.setHeightInPoints(12.75f);
+	    int[] charCount = new int[titles.length];
+
 	    for (int i = 0; i < titles.length; i++) {
 	        Cell cell = headerRow.createCell(i);
 	        cell.setCellValue(titles[i]);
 	        cell.setCellStyle(styles.get("header"));
+	        charCount[i] = titles[i].length();
 	    }
 		
 	    int idx = 1;
+
 	    for (StudentModelI sm : studentList) {
 	        Row row = sheet.createRow(idx++);
 		    int col = 0;
 
 		    Cell cell = row.createCell(col++);
-	        cell.setCellValue(idx-1);
-	        cell.setCellStyle(styles.get("data"));
-	        
-		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getName());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[0] < sm.getName().length()) charCount[0] = sm.getName().length();
 
 		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getPasscode());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[1] < sm.getPasscode().length()) charCount[1] = sm.getPasscode().length();
 
 		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getGroup());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[2] < sm.getGroup().length()) charCount[2] = sm.getGroup().length();
 
 		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getProgram().getProgramDescription());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[3] < sm.getProgram().getProgramDescription().length())
+	        	charCount[3] = sm.getProgram().getProgramDescription().length();
 
 		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getStatus());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[4] < sm.getStatus().length()) charCount[4] = sm.getStatus().length();
 
 		    cell = row.createCell(col++);
-	        cell.setCellValue(defineQuizzesColumn(sm));
+		    String percentComplete = getPercentComplete(sm);
+	        cell.setCellValue(percentComplete);
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[5] < percentComplete.length()) charCount[5] = percentComplete.length();
+
+		    cell = row.createCell(col++);
+		    String quizzes = defineQuizzesColumn(sm);
+	        cell.setCellValue(quizzes);
+	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[6] < quizzes.length()) charCount[6] = quizzes.length();
 
 		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getLastQuiz());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[7] < sm.getLastQuiz().length()) charCount[7] = sm.getLastQuiz().length();
 
 		    cell = row.createCell(col++);
 	        cell.setCellValue(sm.getLastLogin());
 	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[8] < sm.getLastLogin().length()) charCount[8] = sm.getLastLogin().length();
 
+		    cell = row.createCell(col++);
+	        cell.setCellValue(0);
+	        cell.setCellStyle(styles.get("data"));
+	        
+	    }
+
+	    for (int i = 0; i < titles.length; i++) {
+            sheet.setColumnWidth(i, 256*charCount[i]);
 	    }
 
 	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -186,5 +209,35 @@ public class ExportStudentsInExcelFormat {
         } else {
             return "";
         }
+	}
+	
+	private String getPercentComplete(StudentModelI sm) {
+		if (!sm.getProgram().isCustom()) {
+			float sectionCount = (sm.getSectionCount() == null) ? 0 : sm.getSectionCount();
+			float sectionNum   = (sm.getSectionNum() == null) ? 0 : sm.getSectionNum();
+			if (sectionCount != 0.0f) {
+				float percent = (sectionNum * 100.0f)/ sectionCount;
+				String percentComplete = String.format("%3.0f%s", percent, "%");
+				return percentComplete;
+			}
+        } else if(sm.getProgram().getCustom().getType() == Type.LESSONS) {
+        	String[] tokens = sm.getStatus().split(" ");
+        	if (tokens[0].equalsIgnoreCase("NOT")) {
+    		    return "0%"; 
+    	    }
+        	else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
+        		return "100%";
+        	}
+        	else {
+        		float currentLesson = Integer.parseInt(tokens[1]);
+        		float totalLessons = Integer.parseInt(tokens[3]);
+        		if (totalLessons != 0.0f) {
+    				float percent = (currentLesson * 100.0f) / totalLessons;
+	    			String percentComplete = String.format("%3.0f%s", percent, "%");
+					return percentComplete;
+        		}
+        	}
+        }
+		return "";
 	}
 }
