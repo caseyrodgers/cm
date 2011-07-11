@@ -46,7 +46,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 		fp.add(listItems);
 		fp.add(createInfoBox());
 		
-		Anchor moreInfo = new Anchor("More Info>>");
+		Anchor moreInfo = new Anchor("More Info");
 		moreInfo.addStyleName("more-info");
 		moreInfo.addClickHandler(new ClickHandler() {
 			@Override

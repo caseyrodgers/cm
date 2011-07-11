@@ -74,7 +74,7 @@ var TutorManager = {
     showMessage:function(msg) {
         var tm = $get('tutor_message');
         tm.innerHTML = msg;
-        setTimeout(function(){tm.innerHTML = '&nbsp;';},5000);
+        setTimeout(function(){tm.innerHTML = '&nbsp;';},2000);
     },
     showNextStep:function() {
         if(TutorManager.currentStepUnit+1 < TutorManager.stepUnits.length) {
@@ -91,7 +91,7 @@ var TutorManager = {
             return;
         }
         else {
-            while(TutorManager.currentStepUnit > 0) {
+            while(TutorManager.currentStepUnit > -1) {
 
                 var step = TutorManager.stepUnits[TutorManager.currentStepUnit].ele;
                 if(TutorManager.stepUnits[TutorManager.currentStepUnit].realNum != TutorManager.currentRealStep) {
@@ -102,8 +102,8 @@ var TutorManager = {
                 TutorManager.currentStepUnit--;
             }
             if(TutorManager.currentStepUnit == 0) {
-                // . move back one to signal not
-                // curent in a step, only problem def
+                //  move back one to signal not
+                // current in a step, only problem def
                 TutorManager.currentStepUnit = -1;
                 // reposition at top
                 window.scrollTo(0,0);
@@ -111,9 +111,8 @@ var TutorManager = {
             if(TutorManager.currentStepUnit > -1) {
                 setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele);
             }
-            
-            setState('step',TutorManager.currentStepUnit < TutorManager.stepUnits.length)
-            setState('back',TutorManager.currentStepUnit > 0);
+
+            setButtonState();
             
             scrollToStep(TutorManager.currentStepUnit);
 
@@ -187,6 +186,12 @@ var TutorManager = {
     	gwt_tutorNewProblem();
     }
 }
+
+function setButtonState() {
+   setState('step',TutorManager.currentStepUnit < TutorManager.stepUnits.length)
+   setState('back',TutorManager.currentStepUnit > -1);
+}
+
 function enabledPrevious(yesNo) {
 	enabledButton('steps_prev',yesNo);
 }
@@ -311,15 +316,8 @@ function showStepUnit(num) {
 
                 TutorManager.currentStepUnit = num;
                 TutorManager.currentRealStep = TutorManager.stepUnits[num].realNum;
-
-                // Turn off next if no more steps
-                if (TutorManager.stepUnits[num + 1] == null) {
-                        setState("step", false);
-                } else {
-                        setState("step", true);
-                }
                 
-                setState("back", num>0);
+                setButtonState();
 
                 scrollToStep(num);
         }
