@@ -160,11 +160,12 @@ a {
 .book-button-bar,
 .book-button-bar .gwt-TextBox,
 .book-button-bar button span {
-	font-size: 1.2em;
+	font-size: 1.1em;
 }
 
-
-
+.book-button-bar .gwt-TextBox {
+	width: 65px;
+}
 
 
 .mainPage {

@@ -66,7 +66,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         
         listItems.addStyleName("touch");
         
-        pageNumber.setWidth("50px");
         addStyleName("bookViewImpl");
 
         /** only allow numeric entry */
