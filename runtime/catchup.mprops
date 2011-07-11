@@ -743,7 +743,18 @@ from   SUBSCRIBERS s
 where a.aid = ?
 
 
+.key=ADMIN_BY_AID_SQL
 
+select *
+from HA_ADMIN
+where aid = ?
+
+
+.key=ADMIN_BY_SUBSCRIBER_ID_SQL
+
+select *
+from HA_ADMIN
+where subscriber_id = ?
 
 
 .key=TRENDING_DATA_SQL

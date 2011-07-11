@@ -581,41 +581,35 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
 
     /**
      * Return the Admin object associated with the specified  adminId or null
-     * 
      * @param adminId
      *            the admin (id) to lookup
+     * 
      * @return HaAdmin record, or null if no such record exists
      * 
      * @throws Exception
      *             on db errors
      */
-    public HaAdmin getAdmin(final Connection conn, int adminId) throws Exception {
+    public HaAdmin getAdmin(final int adminId) throws Exception {
 
-        String GET_ADMIN_SQL = "select * from HA_ADMIN where aid = ?";
-
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            ps = conn.prepareStatement(GET_ADMIN_SQL);
-            ps.setInt(1, adminId);
-
-            rs = ps.executeQuery();
-            if (!rs.first())
-                return null;
-
-            HaAdmin haAdmin = new HaAdmin();
-            haAdmin.setAdminId(rs.getInt("aid"));
-            haAdmin.setUserName(rs.getString("user_name"));
-            haAdmin.setPassword(rs.getString("passcode"));
-
-            return haAdmin;
-        } catch (Exception e) {
-            logger.error(String.format("*** Error obtaining admin for admin ID: %d", adminId), e);
-            throw new Exception(String.format("*** Error obtaining admin for admin Id: %s", adminId));
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
-        }
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADMIN_BY_AID_SQL");
+        
+        HaAdmin admin = this.getJdbcTemplate().queryForObject(sql, new Object[] { adminId },
+                new RowMapper<HaAdmin>() {
+                public HaAdmin mapRow(ResultSet rs, int rowNum) throws SQLException {
+                	try {
+                        HaAdmin haAdmin = new HaAdmin();
+                        haAdmin.setAdminId(rs.getInt("aid"));
+                        haAdmin.setUserName(rs.getString("user_name"));
+                        haAdmin.setPassword(rs.getString("passcode"));
+                        return haAdmin;
+                	}
+                	catch (Exception e) {
+                        logger.error(String.format("*** Error obtaining admin for admin ID: %d", adminId), e);
+                        throw new SQLException(String.format("*** Error obtaining admin for admin Id: %s", adminId), e);
+                    }
+                }
+        });
+        return admin;
     }
 
     /**
