@@ -64,8 +64,11 @@ var TutorManager = {
         TutorManager.analyzeLoadedData();
 
 
+        /* mark next button as active*/ 
+        enabledNext(true);
+        
+        
         /** hookup any question steps */
-
         HmEvents.eventTutorInitialized.fire();
     },
     showMessage:function(msg) {
@@ -79,12 +82,12 @@ var TutorManager = {
             showStepUnit(TutorManager.currentStepUnit);
         }
         else {
-                  TutorManager.showMessage('no more steps');
+            TutorManager.showMessage('no more steps');
         }
     },
     showPreviousStep:function() {
         if(TutorManager.currentStepUnit<0) {
-                TutorManager.showMessage('No previous step');
+            TutorManager.showMessage('No previous step');
             return;
         }
         else {
@@ -108,6 +111,9 @@ var TutorManager = {
             if(TutorManager.currentStepUnit > -1) {
                 setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele);
             }
+            
+            setState('step',TutorManager.currentStepUnit < TutorManager.stepUnits.length)
+            setState('back',TutorManager.currentStepUnit > 0);
             
             scrollToStep(TutorManager.currentStepUnit);
 
@@ -180,6 +186,21 @@ var TutorManager = {
     newProblem:function() {
     	gwt_tutorNewProblem();
     }
+}
+function enabledPrevious(yesNo) {
+	enabledButton('steps_prev',yesNo);
+}
+
+function enabledNext(yesNo) {
+	enabledButton('steps_next',yesNo);	
+}
+
+function enabledButton(btn, yesNo) {
+	var clazz = 'sexybutton ';
+	if(!yesNo) {
+		clazz += ' disabled';
+	}
+	$get(btn).className = clazz;
 }
 
 // StepUnit is a basic unit
@@ -297,8 +318,8 @@ function showStepUnit(num) {
                 } else {
                         setState("step", true);
                 }
-                // back is on
-                setState("back", true);
+                
+                setState("back", num>0);
 
                 scrollToStep(num);
         }
@@ -347,6 +368,12 @@ function findPreviousFigureUnit(s) {
 
 // Set the state of the toolbar buttons
 function setState(n, onoff) {
+	if(n == 'step') {
+		enabledNext(onoff);
+	}
+	else if(n == 'back') {
+		enabledPrevious(onoff);
+	}
 }
 
 

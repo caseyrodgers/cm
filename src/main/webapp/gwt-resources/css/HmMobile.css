@@ -157,9 +157,10 @@ a {
     color: red;
 }
 
-
-.book-button-bar {
-
+.book-button-bar,
+.book-button-bar .gwt-TextBox,
+.book-button-bar button span {
+	font-size: 1.2em;
 }
 
 
