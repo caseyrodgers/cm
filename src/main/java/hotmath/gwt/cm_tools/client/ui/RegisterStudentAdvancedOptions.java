@@ -274,9 +274,14 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
                  * return "0" as the selected value.
                  * 
                  */
-                SectionNumber sn = sectionCombo.getValue();
-                Integer sectionNum = (sn != null) ? Integer.parseInt(sn.getSectionNumber()) : 0;
-                if (sectionNum == 1 && currentSection.equals("0")) sectionNum = 0;
+                Integer sectionNum = 0;
+                if(sectionIsSettable) {
+	                SectionNumber sn = sectionCombo.getValue();
+	                sectionNum = (sn != null) ? Integer.parseInt(sn.getSectionNumber()) : 0;
+	                if (sectionNum == 1 && currentSection.equals("0")) {
+	                	sectionNum = 0;
+	                }
+                }
                 
                 Map<String, Object> optionMap = new HashMap<String, Object>();
                 
