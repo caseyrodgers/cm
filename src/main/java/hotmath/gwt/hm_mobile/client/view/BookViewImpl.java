@@ -183,10 +183,10 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     @UiHandler("getPrevProblems")
     public void doGetPrevProblems(ClickEvent ce) {
     	if(book.getPage() - 1 > info.getMinPageNumber()) {
-    		bookMessage.setInnerHTML("First page");
-    	}
-    	else {
     		setPageNumber(book.getPage()-1);
+    	}
+    	else { 
+    		bookMessage.setInnerHTML("First page");
     	}
     }
 
@@ -246,7 +246,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     @Override
     public String getBackButtonText() {
-        return "Back";
+        return "<<";
     }
     
     @Override
@@ -275,7 +275,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     @Override
     public String getTitle() {
-        return "Select Page & Problem";
+        return "Page & Problem";
     }
     
 

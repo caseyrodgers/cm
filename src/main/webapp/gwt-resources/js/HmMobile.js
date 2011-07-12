@@ -188,7 +188,7 @@ var TutorManager = {
 }
 
 function setButtonState() {
-   setState('step',TutorManager.currentStepUnit < TutorManager.stepUnits.length)
+   setState('step',TutorManager.currentStepUnit < (TutorManager.stepUnits.length-1));
    setState('back',TutorManager.currentStepUnit > -1);
 }
 

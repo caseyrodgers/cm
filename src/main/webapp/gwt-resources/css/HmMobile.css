@@ -164,7 +164,11 @@ a {
 }
 
 .book-button-bar .gwt-TextBox {
-	width: 65px;
+	width: 75px;
+}
+
+.book-button-bar button {
+	width: 50px;
 }
 
 
@@ -324,11 +328,11 @@ a {
 
 
 div.portrait #header .backButton {
-    width: 60px;
+    width: 30px;
 }
 
 div.landscape #header .backButton {
-    width: 90px;
+    width: 30px;
 }
 
 
@@ -345,7 +349,7 @@ div.landscape #header .backButton {
   font-weight: bold;
   color: white;
   text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
-  /* enfore trimming if the label is too long */
+  /* enforce trimming if the label is too long */
   white-space : nowrap;
   overflow : hidden;
   text-overflow: ellipsis;
@@ -368,15 +372,14 @@ div.portrait #header .title.button-on.portrait-overflow-on {
 
 
 
-
 div.landscape #header .title.button-off {
     width: 470px;
-    text-align: center;
+    text-align: left;
 }
 
 div.landscape #header .title.button-on.landscape-overflow-off {
     width: 470px;
-    text-align: center;
+    text-align: left;
 }
 
 div.landscape #header .title.button-on.landscape-overflow-on {
@@ -468,6 +471,7 @@ question_head_text {
 }
 
 /** Tutor styles */
+
 #tutor_embedded {
   width: 100%;
 }

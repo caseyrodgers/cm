@@ -71,7 +71,7 @@ public class BookSearchViewImpl extends AbstractPagePanel implements BookSearchV
 	@Override
 	public String getBackButtonText() {
 		// TODO Auto-generated method stub
-		return "Back";
+		return "<<";
 	}
 
 	@Override

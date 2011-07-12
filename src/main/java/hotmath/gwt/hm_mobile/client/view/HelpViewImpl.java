@@ -38,7 +38,7 @@ public class HelpViewImpl extends AbstractPagePanel implements HelpView, IPage {
 
     @Override
     public String getBackButtonText() {
-        return "Back";
+        return "<<";
     }
 
     @Override
