@@ -220,24 +220,37 @@ public class ExportStudentsInExcelFormat {
 				String percentComplete = String.format("%3.0f%s", percent, "%");
 				return percentComplete;
 			}
-        } else if(sm.getProgram().getCustom().getType() == Type.LESSONS) {
-        	String[] tokens = sm.getStatus().split(" ");
-        	if (tokens[0].equalsIgnoreCase("NOT")) {
-    		    return "0%"; 
-    	    }
-        	else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
-        		return "100%";
-        	}
-        	else {
-        		float currentLesson = Integer.parseInt(tokens[1]);
-        		float totalLessons = Integer.parseInt(tokens[3]);
-        		if (totalLessons != 0.0f) {
-    				float percent = (currentLesson * 100.0f) / totalLessons;
-	    			String percentComplete = String.format("%3.0f%s", percent, "%");
+		} else if(sm.getProgram().getCustom().getType() == Type.LESSONS) {
+			String[] tokens = sm.getStatus().split(" ");
+			if (tokens[0].equalsIgnoreCase("NOT")) {
+				return "0%"; 
+			}
+			else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
+				return "100%";
+			}
+			else {
+				float currentLesson = Integer.parseInt(tokens[1]);
+				float totalLessons = Integer.parseInt(tokens[3]);
+				if (totalLessons != 0.0f) {
+					// set percent complete to 90 if on last lesson but not 'COMPLETED'
+					float percent = (currentLesson != totalLessons) ?
+							(currentLesson * 100.0f) / totalLessons : 90.0f;
+					String percentComplete = String.format("%3.0f%s", percent, "%");
 					return percentComplete;
-        		}
-        	}
-        }
+				}
+			}
+		} else if(sm.getProgram().getCustom().getType() == Type.QUIZ) {
+			String[] tokens = sm.getStatus().split(" ");
+			if (tokens[0].equalsIgnoreCase("NOT")) {
+				return "0%"; 
+			}
+			else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
+				return "100%";
+			}
+			else {
+				return "50%";
+			}
+		}
 		return "";
 	}
 }
