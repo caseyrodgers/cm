@@ -176,14 +176,12 @@ background-color: black;
 
 
 /** Button arrows */
-.book-button-bar .arrows {
-    font-size:1.5em
-    margin:0.2em;
-	
-	width:5em;
+.book-button-bar span.arrows {
+    font-size:20px;
+    font-weight: bold;
+    height: auto;
     text-align:center;
     white-space:nowrap;
-	
 }
 
 
