@@ -16,6 +16,7 @@ public class StudentActivityModel extends BaseModel implements Response {
 	public static final String RUN_ID_KEY = "run-id";
 	public static final String TEST_ID_KEY = "test-id";
 	public static final String IS_CUSTOM_QUIZ_KEY = "is-custom-quiz";
+	public static final String TIME_ON_TASK_KEY = "time-on-task";
 	
 	public String getActivity() {
 		return get(ACTIVITY_KEY);
@@ -99,6 +100,14 @@ public class StudentActivityModel extends BaseModel implements Response {
 	
 	public Integer getTestId() {
 	    return get(TEST_ID_KEY);
+	}
+	
+	public Integer timeOnTask() {
+		return get(TIME_ON_TASK_KEY);
+	}
+	
+	public void setTimeOnTask(Integer tot) {
+		set(TIME_ON_TASK_KEY,tot);
 	}
 	
 	public StudentActivityModel() {

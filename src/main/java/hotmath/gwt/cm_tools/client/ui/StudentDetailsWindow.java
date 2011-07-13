@@ -390,6 +390,14 @@ public class StudentDetailsWindow extends CmWindow {
         result.setSortable(false);
         result.setMenuDisabled(true);
         configs.add(result);
+        
+        ColumnConfig timeOnTask = new ColumnConfig();
+        timeOnTask.setId(StudentActivityModel.TIME_ON_TASK_KEY);
+        timeOnTask.setHeader("Time-on-task");
+        timeOnTask.setWidth(100);
+        timeOnTask.setSortable(true);
+        timeOnTask.setMenuDisabled(true);
+        configs.add(timeOnTask);
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
