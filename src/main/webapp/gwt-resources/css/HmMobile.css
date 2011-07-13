@@ -98,18 +98,21 @@ a {
 
 .gwt-DialogBox .Caption {
 	padding-left: 5px;
-	background: black;
 	color: white;
 }
 
+
+.dialogTop {
+	background: black;
+}
 
 
 /** Form specific styles */
 
 .prob-nums-title {
     font-weight: bold;
-    color: red;
-    font-size: 1.2em;
+    color: black;
+    font-size: 1.1em;
 }
 .bookViewImpl .touch {
     font-style: italic;
@@ -168,17 +171,15 @@ a {
 }
 
 .book-button-bar button {
-	width: 50px;
+	vertical-align:middle;
 }
-
 
 .mainPage {
     padding: 15px;
 }
 .bookInfoBox {
     clear: both;
-    width:
-    300;
+    width:300;
     height: 90px;
 }
 .pageInfo {

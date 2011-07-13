@@ -7,8 +7,7 @@
 	    	padding: 10px;
 	    }
 	    .main .footer {
-	        text-align: right;
-	        padding-right: 10px;
+	        padding-left: 10px;
 	        padding-bottom: 5px;
 	    }
 	</ui:style>
