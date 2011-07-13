@@ -91,6 +91,12 @@ a {
 
 /** Main dialog box styles */
 
+.gwt-PopupPanelGlass {
+background-color: black;
+    filter: alpha(opacity=50);
+    opacity: .50;
+}
+
 .gwt-DialogBox { 
     background: yellow;
     border: 1px solid black;
@@ -101,10 +107,13 @@ a {
 	color: white;
 }
 
-
 .dialogTop {
 	background: black;
 }
+
+
+
+
 
 
 /** Form specific styles */
@@ -160,19 +169,24 @@ a {
     color: red;
 }
 
-.book-button-bar,
-.book-button-bar .gwt-TextBox,
-.book-button-bar button span {
-	font-size: 1.1em;
-}
 
 .book-button-bar .gwt-TextBox {
 	width: 75px;
 }
 
-.book-button-bar button {
-	vertical-align:middle;
+
+/** Button arrows */
+.book-button-bar .arrows {
+    font-size:1.5em
+    margin:0.2em;
+	
+	width:5em;
+    text-align:center;
+    white-space:nowrap;
+	
 }
+
+
 
 .mainPage {
     padding: 15px;
@@ -663,7 +677,9 @@ div.page ul.touch li.group {
 
 /* this is for the touched state of list items */
 div.page ul.touch li.large:active {
+	/*
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched.png');
+  **/
 }
 
 div.page ul.touch li.group:active {

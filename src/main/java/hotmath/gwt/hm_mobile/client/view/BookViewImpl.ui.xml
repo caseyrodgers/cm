@@ -28,18 +28,14 @@
 		<div class='book-button-bar'>
 		    Page: 
             <g:Button ui:field="getPrevProblems">
-				<span>
-					<span>
-					    <span class='prev after'></span>
-					</span>
+				<span class='arrows'>
+				    &#171;&nbsp;
 				</span>
 			</g:Button>
 			<g:TextBox ui:field='pageNumber' />
             <g:Button ui:field="getNextProblems">
-				<span>
-				    <span>
-					    <span class='next after'></span>
-                    </span>					    
+				<span class='arrows'>
+				    &nbsp;&#187;
 				</span>
 			</g:Button>
 			<g:Button ui:field="getProblems">

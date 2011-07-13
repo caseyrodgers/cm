@@ -81,8 +81,8 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     	
     	
     
-    	getNextProblems.addStyleName("sexybutton");
-    	getPrevProblems.addStyleName("sexybutton");
+    	//getNextProblems.addStyleName("sexybutton");
+    	//sgetPrevProblems.addStyleName("sexybutton");
     }
 
     

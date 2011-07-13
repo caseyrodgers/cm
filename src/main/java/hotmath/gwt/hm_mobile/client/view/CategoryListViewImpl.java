@@ -66,7 +66,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 		String text = 
 				"<p class='home-info'>" +
 		        "Password needed soon for some textbooks.  " +
-                "<br/>Send feedback to support@hotmath.com." +
+                "<br/>Email feedback to support@hotmath.com." +
 		        "</p>";
 		html.setHTML(text);
 		return html;
