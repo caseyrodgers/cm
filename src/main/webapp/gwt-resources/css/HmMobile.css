@@ -177,7 +177,6 @@ background-color: black;
 
 /** Button arrows */
 .book-button-bar span.arrows {
-    font-size:20px;
     font-weight: bold;
     height: auto;
     text-align:center;

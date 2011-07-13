@@ -29,13 +29,13 @@
 		    Page: 
             <g:Button ui:field="getPrevProblems">
 				<span class='arrows'>
-				    &#171;&nbsp;
+				    &nbsp;&lt;&nbsp;
 				</span>
 			</g:Button>
 			<g:TextBox ui:field='pageNumber' />
             <g:Button ui:field="getNextProblems">
 				<span class='arrows'>
-				    &nbsp;&#187;
+				    &nbsp;&gt;&nbsp;
 				</span>
 			</g:Button>
 			<g:Button ui:field="getProblems">

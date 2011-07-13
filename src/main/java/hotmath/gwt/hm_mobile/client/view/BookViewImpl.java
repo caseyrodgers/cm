@@ -80,6 +80,9 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     	pageNumber.addMouseListener(_toolTipListener);
     	
     	
+    	//getNextProblems.addMouseListener(new ToolTipListener("Move to next problem",3000));
+    	//getPrevProblems.addMouseListener(new ToolTipListener("Move to previous problem",3000));
+    	
     
     	//getNextProblems.addStyleName("sexybutton");
     	//sgetPrevProblems.addStyleName("sexybutton");
