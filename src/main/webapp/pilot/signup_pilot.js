@@ -26,12 +26,11 @@
 	          haveError = true;
 	      }
 	  }
-	  if(isNaN(fld.value) || Number(fld.value) < 1) {
-	      if(showError(fld, "Please specify a valid number of students greater than zero.")) {
+	  if(isNaN(fld.value) || Number(fld.value) < 50) {
+	      if(showError(fld, "Sorry, Catchup Math pilots are only available to schools and colleges with total enrollment over 200.")) {
 	          haveError = true;
 	      }
 	  }
-
 	  fld = $get('fld_zip');
 	  if(fld.value == "") {
 	      if(showError(fld, "Please specify your zip code.")) {
