@@ -72,30 +72,16 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     // TODO add Subject selection by school type (non-college, college)
 
     public List<SubjectModel> getSubjectDefinitions(String progId) throws Exception {
-        List<SubjectModel> l = null;
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            conn = HMConnectionPool.getConnection();
-
-            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SELECT_SUBJECTS_SQL"));
-            ps.setString(1, progId);
-            // TODO: separate queries for schools and colleges
-            ps.setInt(2, 1);
-
-            rs = ps.executeQuery();
-
-            l = loadSubjectDefinitions(rs);
-        } catch (Exception e) {
-            logger.error(String.format("*** Error getting subject definitions for school type: %s", "any"), e);
-            throw new Exception("*** Error getting subject definitions ***");
-        } finally {
-            SqlUtilities.releaseResources(rs, ps, conn);
-        }
-        return l;
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("SELECT_SUBJECTS_SQL");
+    	return getJdbcTemplate().query(
+    			sql,
+    			new Object[]{progId,1},
+    			new RowMapper<SubjectModel>() {
+    				@Override
+    				public SubjectModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+    					return new SubjectModel(rs.getString("title"), rs.getString("id"));
+    				}
+    			});
     }
     
     public void setAdminPassword(final Connection conn, int adminId, String email) throws Exception {

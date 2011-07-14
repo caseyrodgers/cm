@@ -33,7 +33,8 @@ public enum CmProgram {
     NATIONAL(44,"National Practice Test","","Grad Prep National",true, 8),
     CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false, 0),
     ESSENTIALS_V1(41,"Essentials Program (version 1)","Ess","Prof", false, 6),
-    ESSENTIALS(42,"Essentials Program","Ess","Prof", true, 6);
+    ESSENTIALS(42,"Essentials Program","Ess","Prof", true, 6),
+    OTHER(47,"Other", "", "Other",false,1);
 
     private final int     defId;
     private final String  title;

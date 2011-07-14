@@ -90,7 +90,10 @@ public class EndOfProgramHandler {
     	else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
     		// reset/repeat
     		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
-    	}            
+    	}   
+    	else if(programCurr.getTestDefId() == CmProgram.OTHER.getDefId()) {
+    		updateProgram(conn, CmProgram.OTHER.getSubject(), CmProgram.OTHER.getProgramType(),null);
+    	}
     	else {
     		// if is a chapter test, then we must find the currently assigned
     		// chapter number.  If there are additional chapters, then move to 

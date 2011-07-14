@@ -315,7 +315,7 @@ public class AssessmentPrescription {
 				// subject filter solutions
 				int gradeLevel = pid.getGradeLevel();
 				if (filter && gradeLevel > getGradeLevel()) {
-					logger.warn("AssessmentPrescriptionSession: "
+					logger.info("AssessmentPrescriptionSession: "
 					        + itemData.getInmhItem() 
 							+ testRun.getRunId()
 							+ ", level: "

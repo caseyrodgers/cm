@@ -101,8 +101,11 @@ public class PrescriptionReport {
                  * 
                  */
                 for (CmProgram progDef : CmProgram.values()) {
+                	if(!progDef.getTitle().equals("Other"))
+                		continue;
+                	
                     try {
-                        if(!progDef.isActive())
+                        if(!progDef.isActive() && !progDef.getTitle().equals("Other"))
                             continue;
                         if (progDef.getProgramType().equals("Chap")) {
                             testProgramChapterTests(progDef);
