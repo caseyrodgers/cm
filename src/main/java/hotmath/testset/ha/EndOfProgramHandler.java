@@ -91,8 +91,8 @@ public class EndOfProgramHandler {
     		// reset/repeat
     		updateProgram(conn, CmProgram.ALG2_PROF.getSubject(), CmProgram.ALG2_PROF.getProgramType(),null);
     	}   
-    	else if(programCurr.getTestDefId() == CmProgram.OTHER.getDefId()) {
-    		updateProgram(conn, CmProgram.OTHER.getSubject(), CmProgram.OTHER.getProgramType(),null);
+    	else if(programCurr.getTestDefId() == CmProgram.OTHER_ESS.getDefId()) {
+    		updateProgram(conn, CmProgram.OTHER_ESS.getSubject(), CmProgram.OTHER_ESS.getProgramType(),null);
     	}
     	else {
     		// if is a chapter test, then we must find the currently assigned
