@@ -531,7 +531,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             add(listView);
             
             if(showFilter)
-                getHeader().addTool(new Button("Test"));
+                getHeader().addTool(new MyFilterBox(listView));
         }
     }
     
