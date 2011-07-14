@@ -1140,6 +1140,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps.setString(6, sm.getJson());
                 ps.setNull(7, Types.INTEGER);  /** custom program is null */
             }
+            __logger.info(ps);
+            
             int result = ps.executeUpdate();
             if (result == 1) {
                 // now get value of auto-increment id from CM_USER_PROGRAM
