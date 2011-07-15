@@ -36,10 +36,15 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 		listItems.addStyleName("touch");
 
 		fp.add(new HTML("<h1>Select Subject</h1>"));
+		listItems.add(new MyListItem("Middle Math Series"));
 		listItems.add(new MyListItem("Pre-Algebra"));
 		listItems.add(new MyListItem("Algebra 1"));
 		listItems.add(new MyListItem("Geometry"));
 		listItems.add(new MyListItem("Algebra 2"));
+		listItems.add(new MyListItem("Science"));
+		listItems.add(new MyListItem("Trigonometry"));
+		listItems.add(new MyListItem("Precalculus"));
+		listItems.add(new MyListItem("College Algebra"));
 		listItems.add(new MyListItem("Calculus"));
 		listItems.addStyleName("CategoryListViewImpl");
 		

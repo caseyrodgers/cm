@@ -282,7 +282,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     
     private native void resetViewPort() /*-{
-        $wnd.scrollTo(0,0);
+       $wnd.scrollTo(0,0);
     }-*/;
 
     
