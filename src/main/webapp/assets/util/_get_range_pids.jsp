@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
+<%@page import="hotmath.util.HMConnectionPool"%>
 <%@page import="hotmath.util.sql.SqlUtilities"%>
 <%@page import="java.sql.Connection"%>
 <%@page import="hotmath.assessment.InmhAssessment"%><html><!-- InstanceBegin template="/Templates/hm_core_layout.dwt" codeOutsideHTMLIsLocked="false" -->
@@ -14,6 +15,7 @@
     
     Connection conn=null;
     try {
+    	conn = HMConnectionPool.getConnection();
 	    if(_range != null) {
 	    	_matches = new ConcordanceEntry(conn, _range).getGUIDs();
 	    }
