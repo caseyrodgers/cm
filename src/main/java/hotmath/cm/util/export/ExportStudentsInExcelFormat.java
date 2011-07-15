@@ -294,7 +294,8 @@ public class ExportStudentsInExcelFormat {
 			float sectionCount = (sm.getSectionCount() == null) ? 0 : sm.getSectionCount();
 			float sectionNum   = (sm.getSectionNum() == null) ? 0 : sm.getSectionNum();
 			if (sectionCount != 0.0f) {
-				float percent = (sectionNum * 100.0f)/ sectionCount;
+				float percent = (sectionNum != sectionCount) ?
+						(sectionNum * 100.0f) / sectionCount : 90.0f;
 				String percentComplete = String.format("%3.0f%s", percent, "%");
 				return percentComplete;
 			}
