@@ -6,11 +6,11 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 
 import org.apache.log4j.Logger;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.ByteArrayOutputStream;
@@ -172,9 +173,10 @@ public class ExportStudentsInExcelFormat {
 	        if (charCount[col] < quizzes.length()) charCount[col] = quizzes.length();
 
 		    cell = row.createCell(++col);
-	        cell.setCellValue(sm.getLastQuiz());
+		    String lastQuiz = defineLastQuizColumn(sm);
+	        cell.setCellValue(lastQuiz);
 	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < sm.getLastQuiz().length()) charCount[col] = sm.getLastQuiz().length();
+	        if (charCount[col] < lastQuiz.length()) charCount[col] = lastQuiz.length();
 
 		    cell = row.createCell(++col);
 	        cell.setCellValue(sm.getLastLogin());
@@ -292,47 +294,45 @@ public class ExportStudentsInExcelFormat {
             return "";
         }
 	}
-	
+
+	private String defineLastQuizColumn(StudentModelI sm) {
+        if (sm.getProgram().getCustom().isCustomLessons()) {
+            return "";
+        } else {
+            return sm.getLastQuiz();
+        }
+	}
+
 	private String getPercentComplete(StudentModelI sm) {
+		String[] tokens = sm.getStatus().split(" ");
+		if (tokens[0].equalsIgnoreCase("NOT")) {
+			return "0%"; 
+		}
+		else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
+			return "100%";
+		}
+		
 		if (!sm.getProgram().isCustom()) {
 			float sectionCount = (sm.getSectionCount() == null) ? 0 : sm.getSectionCount();
 			float sectionNum   = (sm.getSectionNum() == null) ? 0 : sm.getSectionNum();
 			if (sectionCount != 0.0f) {
 				float percent = (sectionNum != sectionCount) ?
 						(sectionNum * 100.0f) / sectionCount : 90.0f;
-				String percentComplete = String.format(PCNT_FMT, percent, "%");
-				return percentComplete;
+						String percentComplete = String.format(PCNT_FMT, percent, "%");
+						return percentComplete;
 			}
 		} else if(sm.getProgram().getCustom().getType() == Type.LESSONS) {
-			String[] tokens = sm.getStatus().split(" ");
-			if (tokens[0].equalsIgnoreCase("NOT")) {
-				return "0%"; 
-			}
-			else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
-				return "100%";
-			}
-			else {
-				float currentLesson = Integer.parseInt(tokens[1]);
-				float totalLessons = Integer.parseInt(tokens[3]);
-				if (totalLessons != 0.0f) {
-					// set percent complete to 90 if on last lesson but not 'COMPLETED'
-					float percent = (currentLesson != totalLessons) ?
-							(currentLesson * 100.0f) / totalLessons : 90.0f;
-					String percentComplete = String.format(PCNT_FMT, percent, "%");
-					return percentComplete;
-				}
+			float currentLesson = Integer.parseInt(tokens[1]);
+			float totalLessons = Integer.parseInt(tokens[3]);
+			if (totalLessons != 0.0f) {
+				// set percent complete to 90 if on last lesson but not 'COMPLETED'
+				float percent = (currentLesson != totalLessons) ?
+						(currentLesson * 100.0f) / totalLessons : 90.0f;
+						String percentComplete = String.format(PCNT_FMT, percent, "%");
+						return percentComplete;
 			}
 		} else if(sm.getProgram().getCustom().getType() == Type.QUIZ) {
-			String[] tokens = sm.getStatus().split(" ");
-			if (tokens[0].equalsIgnoreCase("NOT")) {
-				return "0%"; 
-			}
-			else if (tokens[0].equalsIgnoreCase("COMPLETED")) {
-				return "100%";
-			}
-			else {
-				return "50%";
-			}
+			return "50%";
 		}
 		return "";
 	}
