@@ -29,7 +29,11 @@ import java.util.Map;
 
 public class ExportStudentsInExcelFormat {
 	
-	Logger LOGGER = Logger.getLogger(ExportStudentsInExcelFormat.class);
+	private static final Logger LOGGER = Logger.getLogger(ExportStudentsInExcelFormat.class);
+	
+	private static final String DATE_FMT = "%1$tY-%1$tm-%1$td";
+	
+	private static final String PCNT_FMT = "%3.0f%s";
 	
 	private List<StudentModelExt> studentList;
 	
@@ -186,7 +190,7 @@ public class ExportStudentsInExcelFormat {
 	        
 		    cell = row.createCell(++col);
 			Date actDate = rc.getLastActivityDate();
-			String activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
+			String activityDate = (actDate != null) ? String.format(DATE_FMT, actDate) : " ";
 	        cell.setCellValue(activityDate);
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < activityDate.length()) charCount[col] = activityDate.length();
@@ -217,7 +221,7 @@ public class ExportStudentsInExcelFormat {
 
 		    cell = row.createCell(++col);
 			actDate = rc.getFirstActivityDate();
-			activityDate = (actDate != null) ? String.format("%1$tY-%1$tm-%1$td", actDate) : " ";
+			activityDate = (actDate != null) ? String.format(DATE_FMT, actDate) : " ";
 	        cell.setCellValue(activityDate);
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < activityDate.length()) charCount[col] = activityDate.length();
@@ -296,7 +300,7 @@ public class ExportStudentsInExcelFormat {
 			if (sectionCount != 0.0f) {
 				float percent = (sectionNum != sectionCount) ?
 						(sectionNum * 100.0f) / sectionCount : 90.0f;
-				String percentComplete = String.format("%3.0f%s", percent, "%");
+				String percentComplete = String.format(PCNT_FMT, percent, "%");
 				return percentComplete;
 			}
 		} else if(sm.getProgram().getCustom().getType() == Type.LESSONS) {
@@ -314,7 +318,7 @@ public class ExportStudentsInExcelFormat {
 					// set percent complete to 90 if on last lesson but not 'COMPLETED'
 					float percent = (currentLesson != totalLessons) ?
 							(currentLesson * 100.0f) / totalLessons : 90.0f;
-					String percentComplete = String.format("%3.0f%s", percent, "%");
+					String percentComplete = String.format(PCNT_FMT, percent, "%");
 					return percentComplete;
 				}
 			}
