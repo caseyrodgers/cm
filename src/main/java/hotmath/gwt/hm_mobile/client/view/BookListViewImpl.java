@@ -56,7 +56,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 		for(BookModel bm: books) {
 			String image = "";
 			if(bm.getImage() != null) {
-				image = "<img src='http://hotmath.com/images/books/" + bm.getImage() + "'/>";
+				image = "<img src='/images/books/" + bm.getImage() + "'/>";
 			}
 			
 			String pubDate = "";
