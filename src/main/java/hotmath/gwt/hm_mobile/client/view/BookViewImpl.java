@@ -115,7 +115,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
         String imagePath = null;
         if (bookModel.getImage() != null) {
-            imagePath = "http://hotmath.com/images/books/" + bookModel.getImage();
+            imagePath = "/images/books/" + bookModel.getImage();
             bookImage.setSrc(imagePath);
             bookImage.setAttribute("style", "display:block");
         } else {
