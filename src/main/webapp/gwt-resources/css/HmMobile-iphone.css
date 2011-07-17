@@ -4,7 +4,12 @@ body div {
 }
 */
 
-
+div.page ul.touch li,
+div.page ul.touch li.group {
+	width: 100%;
+	min-width: 240px !important;
+	overflow: hidden;
+}
 
 div.page 
 {
@@ -40,9 +45,6 @@ div.page.animate
 	-webkit-transition-property: -webkit-transform;
 	-webkit-transition-duration: 0.35s;
 } 
-
-
-
 
 
 

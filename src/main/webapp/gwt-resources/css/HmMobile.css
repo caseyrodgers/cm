@@ -115,9 +115,6 @@ background-color: black;
 
 
 /** Form specific styles */
-body {
-	width: 330px;
-}
 
 .prob-nums-title {
     font-weight: bold;
@@ -129,7 +126,7 @@ body {
 
 }
 
-.bookViewImpl .touch li.group {
+.bookViewImpl .touch li.group span {
     padding-left: 40px;
     font-weight: normal;
     font-style: normal;
@@ -145,8 +142,6 @@ li {
     height: 83px;
     margin-bottom: 15px;
     padding: 5px;
-    
-    width: 270px;
 }
 
 .book-item img {
@@ -682,7 +677,7 @@ div.page ul.touch li.large:active {
   **/
 }
 
-div.page ul.touch li.group:active {
+div.page ul.touch li.is_selected {
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched_large.png');
   background-position: 99% 18px, 0 0;
   background-repeat: no-repeat, repeat-x;

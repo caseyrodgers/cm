@@ -129,7 +129,6 @@ public class GenericTextTag<E> extends Widget implements HasText {
 		if (mMovedAfterTouch) {
 			return;
 		}
-
 		fireTouchClick();
 	}
 

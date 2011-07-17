@@ -211,7 +211,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
             super("li");
             addStyleName("group");
             addHandler(touchHandler);
-            getElement().setInnerHTML(pr.getProblem());
+            getElement().setInnerHTML("<span>" + pr.getProblem() + "</span>");
             this.pr = pr;
         }
     }
