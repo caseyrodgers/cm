@@ -23,3 +23,5 @@ mkdir util
 cd util
 ln -s ../../../../../hotmath2/web/util/input_widgets ./
 cd ..
+
+ln -s HmMobile.html ./index.html
