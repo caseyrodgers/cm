@@ -114,9 +114,10 @@ background-color: black;
 
 
 
-
-
 /** Form specific styles */
+body {
+	width: 330px;
+}
 
 .prob-nums-title {
     font-weight: bold;
@@ -135,7 +136,7 @@ background-color: black;
 }
 
 
-.bookListViewImpl li {
+li {
     text-align: left;
 }
 
@@ -144,6 +145,8 @@ background-color: black;
     height: 83px;
     margin-bottom: 15px;
     padding: 5px;
+    
+    width: 270px;
 }
 
 .book-item img {

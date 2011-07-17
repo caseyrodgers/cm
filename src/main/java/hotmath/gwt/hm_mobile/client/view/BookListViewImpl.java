@@ -86,7 +86,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 			String html = 
 				"<div class='book-item'>" +
 			    image + 
-				"  <div class='book-item-box'" +
+				"  <div class='book-item-box'>" +
 				"      <div>" + title + "</div>" +
 				"      <div>" + 
 				           publisher + pubDate + 
