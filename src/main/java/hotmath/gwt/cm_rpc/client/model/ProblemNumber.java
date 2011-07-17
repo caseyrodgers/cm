@@ -55,7 +55,7 @@ public class ProblemNumber implements Response {
     }
 	
 	public String getLabel() {
-		return "Problem: " + getProblem() + "   Page: " + getPage();
+		return "Prob: " + getProblem() + "   Pg: " + getPage();
 	}
 	
 	/** assuming standard pid layout

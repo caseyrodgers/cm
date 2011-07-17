@@ -161,6 +161,6 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     
     @Override
     public String getTitle() {
-        return  _subject + " Books";
+        return  _subject;
     }
 }
