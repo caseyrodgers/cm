@@ -2,10 +2,10 @@ package hotmath.gwt.hm_mobile.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.HmMobileWindow;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.ResetListSelectionsEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
@@ -15,10 +15,12 @@ import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandle
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.HmMobile;
+import hotmath.gwt.hm_mobile.client.event.ResetListSelections;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -40,6 +42,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     BookModel book;
     BookInfoModel info;
+    boolean inited=false;
     
     ToolTipListener _toolTipListener = new ToolTipListener("", 3000);
     GenericContainerTag listItems = new GenericContainerTag("ul");
@@ -80,12 +83,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     	pageNumber.addMouseListener(_toolTipListener);
     	
     	
-    	//getNextProblems.addMouseListener(new ToolTipListener("Move to next problem",3000));
-    	//getPrevProblems.addMouseListener(new ToolTipListener("Move to previous problem",3000));
-    	
-    
-    	//getNextProblems.addStyleName("sexybutton");
-    	//sgetPrevProblems.addStyleName("sexybutton");
     }
 
     
@@ -105,6 +102,16 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     @Override
     public void showBook(BookModel bookModel, BookInfoModel infoModel, int page) {
+    	
+    	if(!inited) {
+        	HmMobile.__clientFactory.getEventBus().addHandler(ResetListSelections.TYPE,new ResetListSelectionsEventHandler() {
+    			@Override
+    			public void resetSelections(IPage page) {
+    				resetListSelections();
+    			}
+    		});
+        	inited=true;
+    	}
 
     	problemNumberDiv.getElement().setAttribute("style", "display: none");
 
@@ -139,6 +146,16 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         
     	
     	// getWidget().getElement().setAttribute("style","display:block");
+    }
+    
+    private void resetListSelections() {
+    	Iterator<Widget> it = listItems.iterator();
+    	while(it.hasNext()) {
+    		Widget w = it.next();
+    		if(w instanceof MyGenericTextTag) {
+    			((MyGenericTextTag)w).markUnSelected();
+    		}
+    	}
     }
     
     /** TODO: should be in presenter!

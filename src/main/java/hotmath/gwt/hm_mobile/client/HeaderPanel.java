@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
+import hotmath.gwt.hm_mobile.client.event.ResetListSelections;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
@@ -124,6 +125,8 @@ public class HeaderPanel extends Composite {
             	mActiveButton.addStyleName("backClicked");
             	
                 if (!ViewSettings.AnimationRunning) {
+                	HmMobile.__clientFactory.getEventBus().fireEvent(new ResetListSelections());
+                	tag.getTarget().markSelected();
                 	Controller.navigateBack();
                 }
             }
