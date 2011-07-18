@@ -111,7 +111,7 @@ public class ExportStudentsInExcelFormat {
 	    Row titleRow = sheet.createRow(0);
 	    Cell titleCell = titleRow.createCell(0);
 	    titleCell.setCellValue(title);
-        titleCell.setCellStyle(styles.get("header"));
+        titleCell.setCellStyle(styles.get("title"));
         
 	    //the header row: centered text in 48pt font
 	    Row headerRow = sheet.createRow(1);
@@ -266,6 +266,13 @@ public class ExportStudentsInExcelFormat {
 		style.setAlignment(CellStyle.ALIGN_LEFT);
 		style.setWrapText(true);
 		styles.put("data", style);
+
+		style = createBorderedStyle(wb);
+		style.setAlignment(CellStyle.ALIGN_LEFT);
+		style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+		style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		style.setFont(headerFont);
+		styles.put("title", style);
 
 		return styles;
 	}
