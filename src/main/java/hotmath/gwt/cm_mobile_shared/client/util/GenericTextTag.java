@@ -129,6 +129,9 @@ public class GenericTextTag<E> extends Widget implements HasText {
 		if (mMovedAfterTouch) {
 			return;
 		}
+
+        addStyleName("is_selected");
+
 		fireTouchClick();
 	}
 
