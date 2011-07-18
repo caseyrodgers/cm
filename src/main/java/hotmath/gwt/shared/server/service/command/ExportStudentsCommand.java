@@ -53,7 +53,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	
     	StringBuilder titleBuff = new StringBuilder();
     	titleBuff.append(acctInfo.getSchoolName()).append(" (");
-    	titleBuff.append(acctInfo.getSchoolUserName()).append(") ");
+    	titleBuff.append(acctInfo.getAdminUserName()).append(") ");
     	titleBuff.append("Student Data Export on ").append(todaysDate);    	
     	
     	ByteArrayOutputStream baos = null;
