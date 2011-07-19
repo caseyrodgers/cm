@@ -11,6 +11,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -166,7 +167,7 @@ public class CatchupMath implements EntryPoint {
 	    	if (UserInfo.getInstance().isSingleUser())
 	    		Window.setTitle("Catchup Math: Student");
 	    	
-            if(firstLocation.getPlace() == CmPlace.END_OF_PROGRAM) {
+            if(firstLocation.getPlace() == CmPlace.END_OF_PROGRAM && UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
                 showEndOfProgramPanel();
                 return;
             }
