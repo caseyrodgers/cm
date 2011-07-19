@@ -2,12 +2,15 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 
 //based on Label.java source code that comes with GWT
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -134,6 +137,11 @@ public class GenericTextTag<E> extends Widget implements HasText {
 	private void fireTouchClick() {
 		addStyleName("is_selected");
 		fireEvent(new TouchClickEvent<E>(this));
+		new Timer() {
+			public void run() {
+				removeStyleName("is_selected");				
+			}
+		}.schedule(3000);
 	}
 
 	public String getText() {

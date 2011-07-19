@@ -5,9 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.ResetListSelectionsEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ToolTipListener;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
@@ -15,7 +13,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandle
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.HmMobile;
-import hotmath.gwt.hm_mobile.client.event.ResetListSelections;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
@@ -23,7 +20,6 @@ import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import java.util.Iterator;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.ImageElement;
@@ -46,7 +42,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     boolean inited=false;
     
     ToolTipListener _toolTipListener = new ToolTipListener("", 3000);
-    GenericContainerTag listItems = new GenericContainerTag("ul");
 
     private static BookViewImplUiBinder uiBinder = GWT.create(BookViewImplUiBinder.class);
 
@@ -101,18 +96,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     
     @Override
     public void showBook(BookModel bookModel, BookInfoModel infoModel, int page) {
-    	
-    	if(!inited) {
-    		/** done here to avoid null with __clientFactory during constructor */
-        	HmMobile.__clientFactory.getEventBus().addHandler(ResetListSelections.TYPE,new ResetListSelectionsEventHandler() {
-    			@Override
-    			public void resetSelections(GenericTextTag<String> tag) {
-    				resetListSelections(tag);
-    			}
-    		});
-        	inited=true;
-    	}
-
     	problemNumberDiv.getElement().setAttribute("style", "display: none");
 
         this.book = bookModel;
@@ -142,15 +125,9 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         doGetProblems(null);
     }
     
-    private void resetListSelections(GenericTextTag<String> tag) {
-    	Log.debug("Resetting list selections: " + tag.getClass().getName());
-    	Iterator<Widget> it = listItems.iterator();
-    	while(it.hasNext()) {
-    		Widget w = it.next();
-    		if(w instanceof MyGenericTextTag) {
-    			((MyGenericTextTag)w).removeStyleName("is_selected");
-    		}
-    	}
+    @Override
+    public void resetView() {
+    	super.resetListSelections();
     }
     
     /** TODO: should be in presenter!

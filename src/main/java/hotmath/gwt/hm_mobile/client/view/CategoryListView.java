@@ -1,5 +1,6 @@
 package hotmath.gwt.hm_mobile.client.view;
 
+import hotmath.gwt.cm_mobile_shared.client.util.ResettablePage;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
@@ -10,7 +11,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface CategoryListView extends AcceptsOneWidget, IsWidget {
+public interface CategoryListView extends ResettablePage, AcceptsOneWidget, IsWidget {
 
     public void setCategoryList(List<CategoryModel> categories);
 
@@ -23,4 +24,7 @@ public interface CategoryListView extends AcceptsOneWidget, IsWidget {
 	public interface Callback {
 		void doBooksFind(CmList<BookModel> books);
 	}
+	
+	
+	public void resetView();
 }

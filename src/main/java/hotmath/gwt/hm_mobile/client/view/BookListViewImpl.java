@@ -163,4 +163,9 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     public String getTitle() {
         return  _subject;
     }
+    
+    @Override
+    public void resetView() {
+    	super.resetListSelections();
+    }
 }

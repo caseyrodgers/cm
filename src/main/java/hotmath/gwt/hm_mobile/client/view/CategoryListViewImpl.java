@@ -2,10 +2,8 @@ package hotmath.gwt.hm_mobile.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
@@ -26,26 +24,49 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 	Presenter presenter;
 
 	public CategoryListViewImpl() {
-
 		FlowPanel fp = new FlowPanel();
-		GenericContainerTag listItems = new GenericContainerTag("ul");
 		listItems.addStyleName("touch");
-
-		listItems.add(new MyListItem("Middle Math Series"));
-		listItems.add(new MyListItem("Pre-Algebra"));
-		listItems.add(new MyListItem("Algebra 1"));
-		listItems.add(new MyListItem("Geometry"));
-		listItems.add(new MyListItem("Algebra 2"));
-		listItems.add(new MyListItem("Science"));
-		listItems.add(new MyListItem("Trigonometry"));
-		listItems.add(new MyListItem("Precalculus"));
-		listItems.add(new MyListItem("College Algebra"));
-		listItems.add(new MyListItem("Calculus"));
+		
+		TouchClickHandler<String> touchHandler = new TouchClickHandler<String>() {
+			@Override
+			public void touchClick(TouchClickEvent<String> event) {
+				MyGenericTextTag m = (MyGenericTextTag) event.getSource();
+					String category = m.getCategory();
+					HmMobile.__clientFactory.getEventBus().fireEvent(
+							new ShowBookListEvent(new CategoryModel(category)));
+			}
+		};
+		
+		listItems.add(new MyGenericTextTag("Middle Math Series",touchHandler));
+		listItems.add(new MyGenericTextTag("Pre-Algebra",touchHandler));
+		listItems.add(new MyGenericTextTag("Algebra 1",touchHandler));
+		listItems.add(new MyGenericTextTag("Geometry",touchHandler));
+		listItems.add(new MyGenericTextTag("Algebra 2",touchHandler));
+		listItems.add(new MyGenericTextTag("Science",touchHandler));
+		listItems.add(new MyGenericTextTag("Trigonometry",touchHandler));
+		listItems.add(new MyGenericTextTag("Precalculus",touchHandler));
+		listItems.add(new MyGenericTextTag("College Algebra",touchHandler));
+		listItems.add(new MyGenericTextTag("Calculus",touchHandler));
 		listItems.addStyleName("CategoryListViewImpl");
 		
 		fp.add(listItems);
 		initWidget(fp);
 	}
+	
+	
+    class MyGenericTextTag extends GenericTextTag<String> {
+        String category;
+        public MyGenericTextTag(String category,TouchClickHandler<String> touchHandler) {
+            super("li");
+            addStyleName("group");
+            addHandler(touchHandler);
+            getElement().setInnerHTML("<span>" + category + "</span>");
+            this.category = category;
+        }
+    	public String getCategory() {
+    		return category;
+    	}        
+    }
 
 	@Override
 	public void setCategoryList(List<CategoryModel> categories) {
@@ -84,35 +105,9 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 	public String getTitle() {
 		return "Hotmath Mobile - Free Beta";
 	}
-}
 
-class MyListItem extends ListItem {
-
-	public MyListItem(String category) {
-		super();
-		addStyleName("group");
-		add(new MyTextTag(category));
-	}
-}
-
-class MyTextTag extends GenericTextTag<String> {
-	String category;
-	public MyTextTag(String category) {
-		super("div");
-		setText(category);
-		this.category = category;
-		addHandler(new TouchClickHandler<String>() {
-			@Override
-			public void touchClick(TouchClickEvent<String> event) {
-				MyTextTag m = (MyTextTag) event.getSource();
-				String category = m.getCategory();
-				HmMobile.__clientFactory.getEventBus().fireEvent(
-						new ShowBookListEvent(new CategoryModel(category)));
-			}
-		});
-	}
-
-	public String getCategory() {
-		return category;
+	@Override
+	public void resetView() {
+		super.resetListSelections();
 	}
 }

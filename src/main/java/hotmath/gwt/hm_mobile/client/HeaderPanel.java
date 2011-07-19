@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
-import hotmath.gwt.hm_mobile.client.event.ResetListSelections;
+import hotmath.gwt.hm_mobile.client.event.ResetListSelectionsEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
@@ -110,13 +110,9 @@ public class HeaderPanel extends Composite {
             @Override
             public void touchClick(TouchClickEvent<String> tag) {
             	Log.debug("TouchClick event fired: " + ViewSettings.AnimationRunning);
-            	
             	mActiveButton.addStyleName("backClicked");
             	
                 if (!ViewSettings.AnimationRunning) {
-                	GenericTextTag<String> item = (GenericTextTag<String>)tag.getTarget();
-                	Log.info("Back handling: tag: " + item.getClass().getName());
-                	HmMobile.__clientFactory.getEventBus().fireEvent(new ResetListSelections(item));
                 	Controller.navigateBack();
                 }
             }
