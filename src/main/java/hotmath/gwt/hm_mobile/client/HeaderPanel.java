@@ -61,7 +61,8 @@ public class HeaderPanel extends Composite {
         basePanel.add(mInactiveTitle);
         
 
-        Anchor about = new Anchor("?");
+        Anchor about = new Anchor();
+        about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
         about.addStyleName("about-dialog");
         about.addClickHandler(new ClickHandler() {
 			@Override

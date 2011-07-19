@@ -59,37 +59,37 @@ div.page li.group {
 
 
 #header .backButton {
-	color: #FFFFFF;
+	
 }
 
 div.portrait #header .backButton.pos-left {
-	color: #FFFFFF;
+	
 }
 div.landscape #header .backButton.pos-left {
-	color: #FFFFFF;
+	
 }
 
 
 div.portrait #header .backButton.pos-right {
-	color: #FFFFFF;
+	
 }
 div.landscape #header .backButton.pos-right {
-	color: #FFFFFF;
+	
 }
 
 
 
 #header .backButton.animate-on {
-	color: #FFFFFF;
+	
 }
 
 #header .backButton.animate-off {
-	color: #FFFFFF;
+	
 }
 
 /* touched state for the buttons */
 #header .backButton:active {
-	color: #FFFFFF;
+	
 }
 
 
