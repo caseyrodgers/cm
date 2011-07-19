@@ -5,7 +5,10 @@
 body {
   margin: 0px;
   padding: 0px;
-  background-image: url('/gwt-resources/images/mobile/default_bkg.png');
+  /*background-image: url('/gwt-resources/images/mobile/default_bkg.png');*/
+
+  background-color: #c5ccd4;
+
   background-repeat: repeat;
   font-family: Helvetica;
   /* ensure that we don't get the default callout following a long touch on
@@ -14,6 +17,8 @@ body {
   /* disable the Mobile Safari default behavior to adjust font size automatically
   to improve readability */
   -webkit-text-size-adjust: none;
+
+  font-size: .9em;
 }
 
 ul {
@@ -127,7 +132,6 @@ background-color: black;
 }
 
 .bookViewImpl .touch li.group span {
-    padding-left: 40px;
     font-weight: normal;
     font-style: normal;
 }
@@ -140,7 +144,6 @@ li {
 .book-item {
     clear: both;
     height: 83px;
-    margin-bottom: 15px;
     padding: 5px;
 }
 
@@ -167,6 +170,9 @@ li {
     color: red;
 }
 
+.book-button-bar {
+  margin-top: 20px;
+}
 
 .book-button-bar .gwt-TextBox {
 	width: 75px;
@@ -281,7 +287,6 @@ li {
     z-index: 5;
     height: 40px;
     background-image: url('/gwt-resources/images/mobile/header_middle.png');
-    border-bottom: 1px solid rgb(45, 54, 66);
 }
 #pad1 {
     display: block;
@@ -562,6 +567,7 @@ question_head_text {
 }
 
 #control-floater {
+    display: none;
     width: 25px;
     background: yellow;
     z-index: 10;
@@ -625,9 +631,7 @@ div.page ul.touch li {
   border-width: 1px 1px 0px 1px;
   border-color: rgb(171,173,176);  
   margin: 0px;
-  padding-top: 14px;
-  padding-left: 10px;
-  padding-right: 20px;
+  padding: 15px;
   /* ensure that long pieces of text get trimmed */
   overflow: hidden;
   text-overflow: ellipsis;
