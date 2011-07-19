@@ -9,7 +9,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
-import hotmath.gwt.hm_mobile.client.AboutDialog;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
@@ -18,10 +17,7 @@ import hotmath.gwt.hm_mobile.client.place.BookListPlace;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public class CategoryListViewImpl extends AbstractPagePanel implements
@@ -35,7 +31,6 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 		GenericContainerTag listItems = new GenericContainerTag("ul");
 		listItems.addStyleName("touch");
 
-		fp.add(new HTML("<h1>Select Subject</h1>"));
 		listItems.add(new MyListItem("Middle Math Series"));
 		listItems.add(new MyListItem("Pre-Algebra"));
 		listItems.add(new MyListItem("Algebra 1"));
@@ -49,34 +44,8 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 		listItems.addStyleName("CategoryListViewImpl");
 		
 		fp.add(listItems);
-		fp.add(createInfoBox());
-		
-		Anchor moreInfo = new Anchor("More Info");
-		moreInfo.addStyleName("more-info");
-		moreInfo.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				new AboutDialog().showCentered();
-			}
-		});
-		fp.add(moreInfo);
-
 		initWidget(fp);
 	}
-	
-	
-	private HTML createInfoBox() {
-		HTML html = new HTML();
-
-		String text = 
-				"<p class='home-info'>" +
-		        "Password needed soon for some textbooks.  " +
-                "<br/>Email feedback to support@hotmath.com." +
-		        "</p>";
-		html.setHTML(text);
-		return html;
-	}
-		
 
 	@Override
 	public void setCategoryList(List<CategoryModel> categories) {

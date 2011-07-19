@@ -15,8 +15,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.sun.xml.internal.rngom.digested.DDataPattern;
-
 /** Update Sections Passed stats
  * 
  * Provide basic routines used to update db

@@ -9,10 +9,6 @@
     
     <inherits name='hotmath.gwt.hm_mobile.FormFactor' />
     
-    
-    <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
-    <!--  <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" /> -->
-    
     <!-- Use ClientFactoryImpl by default -->
     <replace-with class="hotmath.gwt.hm_mobile.client.ClientFactoryImplMobile">
         <when-type-is class="hotmath.gwt.hm_mobile.client.ClientFactory" />

@@ -23,6 +23,7 @@ import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import java.util.Iterator;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.ImageElement;
@@ -81,8 +82,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
           });
 
     	pageNumber.addMouseListener(_toolTipListener);
-    	
-    	
     }
 
     
@@ -104,10 +103,11 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     public void showBook(BookModel bookModel, BookInfoModel infoModel, int page) {
     	
     	if(!inited) {
+    		/** done here to avoid null with __clientFactory during constructor */
         	HmMobile.__clientFactory.getEventBus().addHandler(ResetListSelections.TYPE,new ResetListSelectionsEventHandler() {
     			@Override
-    			public void resetSelections(IPage page) {
-    				resetListSelections();
+    			public void resetSelections(GenericTextTag<String> tag) {
+    				resetListSelections(tag);
     			}
     		});
         	inited=true;
@@ -132,7 +132,6 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         title.setInnerHTML(bookModel.getTitle());
         author.setInnerHTML(book.getAuthor());
 
-
         minPage.setInnerHTML("" + info.getMinPageNumber());
         maxPage.setInnerHTML("" + info.getMaxPageNumber());
 
@@ -141,19 +140,15 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
         }
         pageNumber.setValue("" + page);
         doGetProblems(null);
-        
-        
-        
-    	
-    	// getWidget().getElement().setAttribute("style","display:block");
     }
     
-    private void resetListSelections() {
+    private void resetListSelections(GenericTextTag<String> tag) {
+    	Log.debug("Resetting list selections: " + tag.getClass().getName());
     	Iterator<Widget> it = listItems.iterator();
     	while(it.hasNext()) {
     		Widget w = it.next();
     		if(w instanceof MyGenericTextTag) {
-    			((MyGenericTextTag)w).markUnSelected();
+    			((MyGenericTextTag)w).removeStyleName("is_selected");
     		}
     	}
     }

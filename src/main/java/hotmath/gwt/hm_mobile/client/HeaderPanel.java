@@ -12,9 +12,12 @@ import hotmath.gwt.hm_mobile.client.event.ResetListSelections;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -58,29 +61,15 @@ public class HeaderPanel extends Composite {
         basePanel.add(mInactiveTitle);
         
 
-//        Anchor about = new Anchor("?");
-//        about.addStyleName("about-dialog");
-//        about.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				new AboutDialog().showCentered();
-//			}
-//		});
-//        basePanel.add(about);
-        
-
-//        Button feedback = new Button("Feedback");
-//        feedback.addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				new FeedbackDialog().showCentered();
-//			}
-//		});
-//        feedback.addStyleName("sexybutton");
-//        feedback.addStyleName("feedback-button");
-//        feedback.getElement().setInnerHTML("<span><span>Feedback</span></span>");
-//        basePanel.add(feedback);
-        
+        Anchor about = new Anchor("?");
+        about.addStyleName("about-dialog");
+        about.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				new AboutDialog().showCentered();
+			}
+		});
+        basePanel.add(about);
         
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
@@ -125,8 +114,9 @@ public class HeaderPanel extends Composite {
             	mActiveButton.addStyleName("backClicked");
             	
                 if (!ViewSettings.AnimationRunning) {
-                	HmMobile.__clientFactory.getEventBus().fireEvent(new ResetListSelections());
-                	tag.getTarget().markSelected();
+                	GenericTextTag<String> item = (GenericTextTag<String>)tag.getTarget();
+                	Log.info("Back handling: tag: " + item.getClass().getName());
+                	HmMobile.__clientFactory.getEventBus().fireEvent(new ResetListSelections(item));
                 	Controller.navigateBack();
                 }
             }
