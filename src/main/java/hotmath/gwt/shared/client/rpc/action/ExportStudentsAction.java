@@ -1,15 +1,17 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 import java.util.Map;
 
-public class ExportStudentsAction implements Action<CmWebResource>{
+public class ExportStudentsAction implements Action<StringHolder>{
 
     Integer adminId;
     GetStudentGridPageAction pageAction;
+    String  emailAddress;
 	Map<FilterType,String> filterMap;
     
 	public ExportStudentsAction() {
@@ -18,6 +20,7 @@ public class ExportStudentsAction implements Action<CmWebResource>{
     public ExportStudentsAction(Integer adminId, GetStudentGridPageAction pageAction) {
         this.pageAction = pageAction;
         this.adminId = adminId;
+        this.pageAction.setAdminId(adminId);
     }
 
     public Integer getAdminId() {
@@ -32,7 +35,15 @@ public class ExportStudentsAction implements Action<CmWebResource>{
         this.pageAction = pageAction;
     }
 
-    public void setAdminId(Integer adminId) {
+    public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public void setAdminId(Integer adminId) {
         this.adminId = adminId;
     }
 
