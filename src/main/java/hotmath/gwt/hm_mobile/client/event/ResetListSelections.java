@@ -21,6 +21,6 @@ public class ResetListSelections extends GwtEvent<ResetListSelectionsEventHandle
 
 	@Override
 	protected void dispatch(ResetListSelectionsEventHandler handler) {
-		handler.resetSelections(tag);
+		//handler.resetSelections(tag);
 	}
 }

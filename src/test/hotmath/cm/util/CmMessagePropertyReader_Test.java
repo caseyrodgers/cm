@@ -12,5 +12,8 @@ public class CmMessagePropertyReader_Test extends TestCase {
         CmMessagePropertyReader mr = CmMessagePropertyReader.getInstance();
         assertTrue(mr != null);
     }
+    
+    public void testReadProp() throws Exception {
+    }
 
 }

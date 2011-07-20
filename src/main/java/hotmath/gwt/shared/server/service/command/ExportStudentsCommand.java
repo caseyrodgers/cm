@@ -132,8 +132,11 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			msgBuff.append(acctInfo.getSchoolName()).append(" (");
     			msgBuff.append(acctInfo.getAdminUserName()).append(") ").append(" is attached.");
 
-    			SbMailManager.getInstance().sendFile(filePath.getPath(), titleBuff.toString(), msgBuff.toString(),
-    					emailAddr, "no-reply@catchupmath.com");
+    			
+    			if(emailAddr != null) {
+	    			SbMailManager.getInstance().sendFile(filePath.getPath(), titleBuff.toString(), msgBuff.toString(),
+	    					emailAddr, "no-reply@catchupmath.com");
+    			}
     		}
     		catch (Exception e) {
     			LOG.error("*** Exception generating / mailing student data export ***", e);

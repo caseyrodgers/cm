@@ -107,7 +107,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         if (Log.isDebugEnabled()) {
           startTimeMillis = System.currentTimeMillis();
         }
-
+        
         /*
          * Again, we need a guard here, otherwise <code>log_level=OFF</code> would still produce the
          * following useless JavaScript: <pre> var durationSeconds, endTimeMillis; endTimeMillis =
@@ -139,8 +139,9 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             History.addValueChangeHandler(new HmMobileHistoryListener());
 
             //initializeExternalJs();
-            
+
             History.fireCurrentHistoryState();
+
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
         }
@@ -283,7 +284,12 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     
     private native void resetViewPort() /*-{
-       $wnd.scrollTo(0,0);
+       try {
+           $wnd.scrollTo(0,0);
+       }
+       catch(e) {
+           alert('error restting view: ' + e);
+       }
     }-*/;
 
     

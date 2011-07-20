@@ -582,17 +582,11 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
         HaAdmin admin = this.getJdbcTemplate().queryForObject(sql, new Object[] { adminId },
                 new RowMapper<HaAdmin>() {
                 public HaAdmin mapRow(ResultSet rs, int rowNum) throws SQLException {
-                	try {
                         HaAdmin haAdmin = new HaAdmin();
                         haAdmin.setAdminId(rs.getInt("aid"));
                         haAdmin.setUserName(rs.getString("user_name"));
                         haAdmin.setPassword(rs.getString("passcode"));
                         return haAdmin;
-                	}
-                	catch (Exception e) {
-                        logger.error(String.format("*** Error obtaining admin for admin ID: %d", adminId), e);
-                        throw new SQLException(String.format("*** Error obtaining admin for admin Id: %s", adminId), e);
-                    }
                 }
         });
         return admin;

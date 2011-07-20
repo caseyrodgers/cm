@@ -41,7 +41,7 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                 /** reset display/viewport to top of page
                  * 
                  */
-                resetViewPort();
+                //resetViewPort();
     
                 final String type = token.getToken(0);
                 if(type == null || type.length() == 0 || type.equals("CategoryListPlace")) {
@@ -118,7 +118,7 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
         }
         
         private native void resetViewPort() /*-{
-            $wnd.scrollTo(0);
+            $wnd.scrollTo(0,0);
             $wnd.pageXOffset = 0;
             $wnd.pageYOffset = 0;
         }-*/;
