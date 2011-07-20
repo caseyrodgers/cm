@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.ExportStudentData;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
@@ -499,6 +500,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         // }
 
         toolbar.add(new FillToolItem());
+        toolbar.add(exportStudentsToolItem(_grid));
         toolbar.add(displayPrintableReportToolItem(_grid));
 
         return toolbar;
@@ -736,6 +738,23 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 new StudentDetailsWindow(sm);
             }
         });
+    }
+
+    private Button exportStudentsToolItem(final Grid<StudentModelExt> grid) {
+    	Button ti = new StudentPanelButton("Export");
+    	ti.setToolTip("Export student data to an Excel spreadsheet.");
+
+    	ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    		public void componentSelected(ButtonEvent ce) {
+    			GWT.runAsync(new CmRunAsyncCallback() {
+    				@Override
+    				public void onSuccess() {
+    					new ExportStudentData(_cmAdminMdl.getId());
+    				}
+    			});
+    		}
+    	});
+    	return ti;
     }
 
     private Button displayPrintableReportToolItem(final Grid<StudentModelExt> grid) {
