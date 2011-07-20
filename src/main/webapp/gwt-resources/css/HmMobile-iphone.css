@@ -111,6 +111,10 @@ div.landscape #header .title {
 	  margin-left: 65px;	
 }
 
+div.portrait #header .title {
+   margin-left: 15px;
+}
+
 #header .title.pos-center.button-off {
   -webkit-transform: translate(0px, 5px);
 }

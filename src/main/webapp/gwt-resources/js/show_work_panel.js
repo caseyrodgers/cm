@@ -1,3 +1,6 @@
+//alert('loading whiteboard JS hooks');
+	       
+
 // setup hooks back to the GWT engine
 // these are needed due to how Flash is 
 // handled when loaded dynamically. The 

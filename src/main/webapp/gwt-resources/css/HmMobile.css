@@ -132,8 +132,6 @@ background-color: black;
 }
 
 .bookViewImpl .touch li.group span {
-    font-weight: normal;
-    font-style: normal;
 }
 
 
@@ -221,7 +219,9 @@ li {
 }
 
 
-.CategoryListViewImpl li {
+.CategoryListViewImpl li,
+.bookViewImpl li {
+   font-weight: bold;
 }
 
 .CategoryListViewImpl button.sexybutton {
@@ -258,7 +258,7 @@ li {
 
 .about-dialog {
 	position: absolute;
-	right: 3px;
+	right: 10px;
 	top: 7px;
 }
 
@@ -307,16 +307,22 @@ li {
     height: 50px;
 }
 
+
+#header .backButton {
+}
+
+
 #header .backButton {
    
   /* the buttons should be displayed on top of the titles so that they can always receive touches */
   z-index: 1;
 
-  font-size: 12px;
+  font-size: 13px;
   
   text-align: center;
   color: #212224;
-  text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
+
+/*   text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px; */
   /* set up the chrome background */
   font-weight: bold;
   -webkit-border-image : url('/gwt-resources/images/mobile/back_button.png') 0 4 0 13;
@@ -324,9 +330,9 @@ li {
   padding-top: 7px;
   padding-right: 4px;
   /* base metrics used to ensure a minumum size and specify a max size that can be used to trim the contents */
-  //min-width: 40px;
-  //max-width: 60px;
-  height: 23px; 
+
+  height: 30px; 
+  width: 44px;
   /* enfore trimming if the label is too long */
   white-space : nowrap;
   overflow : hidden;
@@ -339,11 +345,9 @@ li {
 
 
 div.portrait #header .backButton {
-    width: 30px;
 }
 
 div.landscape #header .backButton {
-    width: 30px;
 }
 
 
