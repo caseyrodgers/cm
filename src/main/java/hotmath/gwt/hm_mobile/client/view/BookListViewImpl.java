@@ -136,7 +136,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 
     @Override
     public String getBackButtonText() {
-        return "<<";
+        return "back";
     }
     
     @Override

@@ -249,7 +249,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     @Override
     public String getBackButtonText() {
-        return "<<";
+        return "back";
     }
     
     @Override

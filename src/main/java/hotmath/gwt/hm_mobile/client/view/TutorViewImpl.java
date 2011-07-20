@@ -83,7 +83,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 
     @Override
     public String getBackButtonText() {
-        return "<<";
+        return "back";
     }
 
     @Override
