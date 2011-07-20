@@ -55,9 +55,11 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	    sb.append(action.getEmailAddress());
 	    
 	    sh.setResponse(sb.toString());
-	    
-	    exportAndMailStudentData(action.getPageAction().getAdminId(), studentList, action.getEmailAddress());
-	    
+
+	    ExportStudentDataRunnable exportRunnable = new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress());
+        Thread t = new Thread(exportRunnable);
+        t.start();
+
 	    return sh;
     }
 
@@ -66,72 +68,80 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
         return ExportStudentsAction.class;
     }
 
-    private void exportAndMailStudentData(final Integer adminUid, final List<StudentModelExt> studentList, final String emailAddr) {
-    	new Thread() {
-    		public void run() {
+    class ExportStudentDataRunnable implements Runnable {
 
-    			List<StudentReportCardModelI> rcList = new ArrayList<StudentReportCardModelI>();
-    			Connection conn = null;
-    			try {
-                    conn = HMConnectionPool.getConnection();
+    	private Integer adminUid;
+    	private List<StudentModelExt> studentList;
+    	private String emailAddr;
 
-        			CmReportCardDao rcDao = CmReportCardDao.getInstance();
+    	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelExt> studentList, final String emailAddr) {
+    		this.adminUid = adminUid;
+    		this.studentList = studentList;
+    		this.emailAddr = emailAddr;
+    	}
 
-    				for (StudentModelExt sm : studentList) {
-    					StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
-    					rcList.add(rc);
-    				}
+    	public void run() {
+    		List<StudentReportCardModelI> rcList = new ArrayList<StudentReportCardModelI>();
+    		Connection conn = null;
+    		try {
+    			conn = HMConnectionPool.getConnection();
 
-    				HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
+    			CmReportCardDao rcDao = CmReportCardDao.getInstance();
 
-    				AccountInfoModel acctInfo = CmAdminDao.getInstance().getAccountInfo(adminUid);
-    				String todaysDate = sdf.format(new Date());
-
-    				StringBuilder titleBuff = new StringBuilder();
-    				titleBuff.append(acctInfo.getSchoolName()).append(" (");
-    				titleBuff.append(acctInfo.getAdminUserName()).append(") ");
-    				titleBuff.append("Student Data Export on ").append(todaysDate);    	
-
-    				ByteArrayOutputStream baos = null;
-
-    				ExportStudentsInExcelFormat exporter =
-    					new ExportStudentsInExcelFormat(studentList);
-    				exporter.setReportCardList(rcList);
-    				exporter.setTitle(titleBuff.toString());
-
-    				baos = exporter.export();
-
-    				// write to temporary file to be cleaned up later
-    				String outputBase = CmWebResourceManager.getInstance().getFileBase();
-
-    				// if outputBase/adminId directory doesn't exist, create it
-    				String unique = Long.toString(System.currentTimeMillis());
-    				outputBase = outputBase + "/" + adminUid;
-    				String outputDir = FileUtil.ensureOutputDir(outputBase, unique);
-
-    				File filePath = new File(outputDir, "CM-" + haAdmin.getUserName().toUpperCase() + "-" + todaysDate + ".xls");
-    				LOG.info("Writing XLS output: " + filePath);
-    				FileOutputStream fos = null;
-
-    				fos = new FileOutputStream(filePath);
-    				baos.writeTo(fos);
-    				
-    				StringBuilder msgBuff = new StringBuilder();
-    				msgBuff.append("The student data export you requested for ");
-    				msgBuff.append(acctInfo.getSchoolName()).append(" (");
-    				msgBuff.append(acctInfo.getAdminUserName()).append(") ").append(" is attached.");
-    				
-    				SbMailManager.getInstance().sendFile(filePath.getPath(), titleBuff.toString(), msgBuff.toString(),
-    			            emailAddr, "no-reply@catchupmath.com");
+    			for (StudentModelExt sm : studentList) {
+    				StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
+    				rcList.add(rc);
     			}
-    			catch (Exception e) {
-    				LOG.error("*** Exception generating / mailing student data export ***", e);
-    			}
-    			finally {
-                    SqlUtilities.releaseResources(null, null, conn);
-    			}
+
+    			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
+
+    			AccountInfoModel acctInfo = CmAdminDao.getInstance().getAccountInfo(adminUid);
+    			String todaysDate = sdf.format(new Date());
+
+    			StringBuilder titleBuff = new StringBuilder();
+    			titleBuff.append(acctInfo.getSchoolName()).append(" (");
+    			titleBuff.append(acctInfo.getAdminUserName()).append(") ");
+    			titleBuff.append("Student Data Export on ").append(todaysDate);    	
+
+    			ByteArrayOutputStream baos = null;
+
+    			ExportStudentsInExcelFormat exporter =
+    				new ExportStudentsInExcelFormat(studentList);
+    			exporter.setReportCardList(rcList);
+    			exporter.setTitle(titleBuff.toString());
+
+    			baos = exporter.export();
+
+    			// write to temporary file to be cleaned up later
+    			String outputBase = CmWebResourceManager.getInstance().getFileBase();
+
+    			// if outputBase/adminId directory doesn't exist, create it
+    			String unique = Long.toString(System.currentTimeMillis());
+    			outputBase = outputBase + "/" + adminUid;
+    			String outputDir = FileUtil.ensureOutputDir(outputBase, unique);
+
+    			File filePath = new File(outputDir, "CM-" + haAdmin.getUserName().toUpperCase() + "-" + todaysDate + ".xls");
+    			LOG.info("Writing XLS output: " + filePath);
+    			FileOutputStream fos = null;
+
+    			fos = new FileOutputStream(filePath);
+    			baos.writeTo(fos);
+
+    			StringBuilder msgBuff = new StringBuilder();
+    			msgBuff.append("The student data export you requested for ");
+    			msgBuff.append(acctInfo.getSchoolName()).append(" (");
+    			msgBuff.append(acctInfo.getAdminUserName()).append(") ").append(" is attached.");
+
+    			SbMailManager.getInstance().sendFile(filePath.getPath(), titleBuff.toString(), msgBuff.toString(),
+    					emailAddr, "no-reply@catchupmath.com");
     		}
-    	}.run();
+    		catch (Exception e) {
+    			LOG.error("*** Exception generating / mailing student data export ***", e);
+    		}
+    		finally {
+    			SqlUtilities.releaseResources(null, null, conn);
+    		}
+    	}
     }
-
 }
+
