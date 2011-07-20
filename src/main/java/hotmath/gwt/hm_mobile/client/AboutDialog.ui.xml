@@ -13,7 +13,7 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
-	    <p>Hotmath Mobile is the mobile version of the award winning math tutorial site Hotmath.com.</p>
+	    <p>Hotmath Mobile (free beta) is the mobile version of the award winning math tutorial site Hotmath.com.</p>
 	    <h2>To Use</h2>
 	    <p>
 	       First, identify the subject.  Then choose your book and page number.

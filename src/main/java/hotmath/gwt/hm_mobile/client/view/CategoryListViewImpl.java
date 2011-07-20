@@ -103,7 +103,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements
 
 	@Override
 	public String getTitle() {
-		return "Hotmath Mobile - Free Beta";
+		return "Hotmath Mobile";
 	}
 
 	@Override
