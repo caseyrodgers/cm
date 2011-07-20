@@ -663,7 +663,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             pstat = conn.prepareStatement(sqlWithTestIds);
             rs = pstat.executeQuery();
             if (!rs.first()) {
-                __logger.warn("Could not load pids for testIds: " + testIds);
+                __logger.debug("Could not load pids for testIds: " + testIds);
             } else {
                 int lastId = -1;
                 while (rs.next()) {
