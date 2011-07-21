@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import java.util.Date;
+
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
@@ -12,6 +14,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
@@ -19,6 +22,8 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+
+import com.google.gwt.user.client.Cookies;
 
 /**
  * Export Student Data UI
@@ -35,7 +40,7 @@ public class ExportStudentData extends LayoutContainer {
 
 	private FieldSet exportFlds;
 	private Integer adminUid;
-	private int formHeight = 140;
+	private int formHeight = 190;
 	private int formWidth  = 340;
 
 	private TextField<String> emailAddr;
@@ -70,19 +75,18 @@ public class ExportStudentData extends LayoutContainer {
 		fl.setDefaultWidth(200);
 		
 		exportFlds.setLayout(fl);
-        //exportFlds.addStyleName("export-students-fieldset");
 
         emailAddr = new TextField<String>();  
         emailAddr.setFieldLabel("Email");
         emailAddr.setAllowBlank(false);
         emailAddr.setId("email");
         emailAddr.setEmptyText("-- email address --");
-		if (false) {
-			//TODO use non-expiring Cookie to persist email addr
-		    emailAddr.setValue("emailaddr@cookie.com");
+		if (haveEmailAddrCookie()) {
+		    emailAddr.setValue(readEmailAddrCookie());
 		}
 		emailAddr.setValidator(new ValidTypeValidator(ValidType.EMAIL));
 		emailAddr.setToolTip("spreadsheet will be emailed to this address");
+		emailAddr.setMaxLength(300);
 		exportFlds.add(emailAddr);
 
 		exportWindow.setHeading("Export Student Data");
@@ -95,6 +99,8 @@ public class ExportStudentData extends LayoutContainer {
 
 		fp.add(exportFlds);
 		
+		fp.add(getDescription());
+
 		Button cancelBtn = cancelButton();
         cancelBtn.addStyleName("cancel-button");
         
@@ -121,18 +127,31 @@ public class ExportStudentData extends LayoutContainer {
 	}
 
 	private Button exportButton(final FieldSet fs, final FormPanel fp) {
-		Button saveBtn = new Button("Export", new SelectionListener<ButtonEvent>() {  
+		Button exportBtn = new Button("Export", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
 
 	    		String emailAddress = emailAddr.getValue();
 	    		
+	    		if (emailAddr.isValid() == false) {
+	    			emailAddr.focus();
+	    			return;
+	    		}
+	    		saveEmailAddrCookie(emailAddress);
+
 	    		exportStudentDataRPC(adminUid, emailAddress);
 	    		
 	        }
 	    });
-		return saveBtn;
+		return exportBtn;
 	}
 	
+	private LayoutContainer getDescription() {
+		LayoutContainer lc = new LayoutContainer();
+        lc.add(new Html("An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent to the email address you provide."));
+        //lc.setStyleAttribute("padding-right", String.valueOf(width-230));
+        return lc;
+	}
+
 	private void exportStudentDataRPC(final Integer adminUid, final String emailAddr) {
 		new RetryAction<StringHolder> () {
 		    @Override
@@ -154,5 +173,21 @@ public class ExportStudentData extends LayoutContainer {
         }.register();
 
 	}
+
+    private String readEmailAddrCookie() {
+        String emailAddr = Cookies.getCookie("cm_export_email");
+        return emailAddr;
+    }
+
+    private boolean haveEmailAddrCookie() {
+    	return readEmailAddrCookie() != null;
+    }
+
+    private void saveEmailAddrCookie(String email) {
+    	Date date = new Date();
+        long time = date.getTime() + (1000 * 60 * 60 * 24 * 3000);
+        date.setTime(time);
+        Cookies.setCookie("cm_export_email", email, date);
+    }
 
 }
