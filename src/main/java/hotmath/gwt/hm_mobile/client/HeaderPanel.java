@@ -252,6 +252,9 @@ public class HeaderPanel extends Composite {
 
             setCssClass(mActiveTitle, getLandscapeOverflow(width, mHasLeftButton));
             setCssClass(mActiveTitle, getPortraitOverflow(width, mHasLeftButton));
+            
+            
+            mActiveButton.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/back_button.png'/><span>" + backButtonText + "</span>");
 
             mInitialized = true;
         } else {
@@ -281,6 +284,10 @@ public class HeaderPanel extends Composite {
 
             setCssClass(newTitle, getLandscapeOverflow(width, mHasLeftButton));
             setCssClass(newTitle, getPortraitOverflow(width, mHasLeftButton));
+            
+            
+            
+            newButton.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/back_button.png'/><span>" + backButtonText + "</span>");
 
             DeferredCommand.addCommand(new Command() {
                 @Override

@@ -59,7 +59,7 @@ h3 {
  }
 
 a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 
@@ -108,12 +108,12 @@ background-color: black;
 }
 
 .gwt-DialogBox .Caption {
-	padding-left: 5px;
-	color: white;
+    padding-left: 5px;
+    color: white;
 }
 
 .dialogTop {
-	background: black;
+    background: black;
 }
 
 
@@ -173,7 +173,7 @@ li {
 }
 
 .book-button-bar .gwt-TextBox {
-	width: 75px;
+    width: 75px;
 }
 
 
@@ -253,13 +253,13 @@ li {
 }
 
 .more-info {
-	font-size: .8em;
+    font-size: .8em;
 }
 
 .about-dialog {
-	position: absolute;
-	right: 10px;
-	top: 7px;
+    position: absolute;
+    right: 10px;
+    top: 7px;
 }
 
 /** global CSS loading styles
@@ -287,6 +287,8 @@ li {
     z-index: 5;
     height: 40px;
     background-image: url('/gwt-resources/images/mobile/header_middle.png');
+    text-align: center;
+    line-height:  40px;
 }
 #pad1 {
     display: block;
@@ -311,7 +313,6 @@ li {
 #header .backButton {
 }
 
-
 #header .backButton {
    
   /* the buttons should be displayed on top of the titles so that they can always receive touches */
@@ -319,24 +320,32 @@ li {
 
   font-size: 13px;
   
-  text-align: center;
-  color: #212224;
+  text-align: right;
+  
 
-/*   text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px; */
-  /* set up the chrome background */
   font-weight: bold;
-  -webkit-border-image : url('/gwt-resources/images/mobile/back_button.png') 0 4 0 13;
-  border-width : 0 4px 0 13px;
-  padding-top: 7px;
-  padding-right: 4px;
-  /* base metrics used to ensure a minumum size and specify a max size that can be used to trim the contents */
-
-  height: 30px; 
+  display: inline;
   width: 44px;
-  /* enfore trimming if the label is too long */
-  white-space : nowrap;
-  overflow : hidden;
-  text-overflow: ellipsis;
+  height: 30px;
+}
+
+#header .backButton span {
+
+    display: block;
+    
+
+    float:  left;
+
+    color: black;
+
+    margin-left:  -40px;
+    color: #212224;
+}
+
+#header .backButton img {
+    float: left;
+    margin-right: 5px;
+    margin-top:  5px;
 }
 
 #header .backClicked {
@@ -368,6 +377,7 @@ div.landscape #header .backButton {
   white-space : nowrap;
   overflow : hidden;
   text-overflow: ellipsis;
+  margin-top:  5px;
 }
 
 div.portrait #header .title.button-off {
@@ -560,14 +570,14 @@ question_head_text {
 
 
 .problemIndex {
-	background: #A8B5C6;
-	background: white;
-	padding: 10px;
+    background: #A8B5C6;
+    background: white;
+    padding: 10px;
 }
 
 
 .graphimgstatic {
-	margin: 15px;
+    margin: 15px;
 }
 
 #control-floater {
@@ -670,20 +680,20 @@ further down and therefore need an arrow in the background to indicate that
 div.page ul.touch li.group {
   background-image: url('/gwt-resources/images/mobile/chevron.png');
   background-repeat: no-repeat;
-  background-position: 99% 18px;
+  background-position: 95% 18px;
 }
 
 
 /* this is for the touched state of list items */
 div.page ul.touch li.large:active {
-	/*
+    /*
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched.png');
   **/
 }
 
 div.page ul.touch li.is_selected {
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched_large.png');
-  background-position: 99% 18px, 0 0;
+  background-position: 95% 18px, 0 0;
   background-repeat: no-repeat, repeat-x;
   color: white;
 
