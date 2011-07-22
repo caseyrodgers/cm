@@ -132,7 +132,7 @@ background-color: black;
 }
 
 .bookListViewImpl {
-	width: 270px;
+	
 }
 .bookViewImpl .touch li.group span {
 }
@@ -145,6 +145,12 @@ li {
 .book-item-box {
 	max-width: 90%;
 }
+
+.book-item-box div:first-child {
+   	font-weight: bold;
+}
+
+
 .book-item {
     clear: both;
     height: 83px;
@@ -292,7 +298,7 @@ li {
     position: relative;
     z-index: 5;
     height: 40px;
-    background-image: url('/gwt-resources/images/mobile/header_middle.png');
+    background-image: url('/gwt-resources/images/mobile/header_back.png');
     text-align: center;
     line-height:  40px;
 }
@@ -707,7 +713,7 @@ div.page ul.touch li.is_selected {
 }
 
 div.landscape div.page ul.touch li.group:active {
-  background-position: 99% 18px, 0 0;
+  background-position: 95% 18px, 0 0;
 }
 
 
