@@ -18,7 +18,7 @@ public class AboutDialog extends DialogBox  {
 	public AboutDialog() {
 		super(true);
 		setSize("300px", "250px");
-		setText("About Hotmath Mobile");		
+		setText("Math Homework Help");		
 		setGlassEnabled(true);
 		setWidget(uiBinder.createAndBindUi(this));
 		
