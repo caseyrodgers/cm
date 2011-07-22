@@ -131,6 +131,9 @@ background-color: black;
 
 }
 
+.bookListViewImpl {
+	width: 270px;
+}
 .bookViewImpl .touch li.group span {
 }
 
@@ -139,6 +142,9 @@ li {
     text-align: left;
 }
 
+.book-item-box {
+	max-width: 90%;
+}
 .book-item {
     clear: both;
     height: 83px;
@@ -399,12 +405,10 @@ div.portrait #header .title.button-on.portrait-overflow-on {
 
 div.landscape #header .title.button-off {
     width: 470px;
-    text-align: left;
 }
 
 div.landscape #header .title.button-on.landscape-overflow-off {
     width: 470px;
-    text-align: left;
 }
 
 div.landscape #header .title.button-on.landscape-overflow-on {

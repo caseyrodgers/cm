@@ -107,11 +107,10 @@ div.landscape #header .backButton.pos-right {
 }
 
 div.landscape #header .title {
-	  margin-left: 65px;	
 }
 
 div.portrait #header .title {
-   margin-left: 15px;
+
 }
 
 #header .title.pos-center.button-off {
@@ -120,19 +119,19 @@ div.portrait #header .title {
 
 
 div.portrait #header .title.pos-center.button-on.portrait-overflow-off {
-	-webkit-transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, -5px);
 }
 
 div.portrait #header .title.pos-center.button-on.portrait-overflow-on {
-	-webkit-transform: translate(60px, 0px);
+	-webkit-transform: translate(60px, -5px);
 }
 
 div.landscape #header .title.pos-center.button-on.landscape-overflow-off {
-	-webkit-transform: translate(0px, 0px);
+	-webkit-transform: translate(0px, -5px);
 }
 
 div.landscape #header .title.pos-center.button-on.landscape-overflow-on {
-	-webkit-transform: translate(120px, 0px);
+	-webkit-transform: translate(120px, -5px);
 }
 
 
