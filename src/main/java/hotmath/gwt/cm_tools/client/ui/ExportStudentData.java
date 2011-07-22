@@ -147,8 +147,7 @@ public class ExportStudentData extends LayoutContainer {
 	
 	private LayoutContainer getDescription() {
 		LayoutContainer lc = new LayoutContainer();
-        lc.add(new Html("An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent to the email address you provide."));
-        //lc.setStyleAttribute("padding-right", String.valueOf(width-230));
+        lc.add(new Html("An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide."));
         return lc;
 	}
 
