@@ -132,10 +132,13 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			msgBuff.append(acctInfo.getSchoolName()).append(" (");
     			msgBuff.append(acctInfo.getAdminUserName()).append(") ").append(" is attached.");
 
+    			String[] toEmailAddrs = new String[2];
+    			toEmailAddrs[0] = emailAddr;
+    			toEmailAddrs[1] = "admin@hotmath.com";
     			
     			if(emailAddr != null) {
-	    			SbMailManager.getInstance().sendFile(filePath.getPath(), titleBuff.toString(), msgBuff.toString(),
-	    					emailAddr, "no-reply@catchupmath.com");
+	    			SbMailManager.getInstance().sendFile(filePath.getPath(), "Your Catchup Math Export File",
+	    					msgBuff.toString(), toEmailAddrs, "registration@hotmath.com");
     			}
     		}
     		catch (Exception e) {
