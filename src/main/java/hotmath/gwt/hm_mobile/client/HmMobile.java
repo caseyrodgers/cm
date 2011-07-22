@@ -6,7 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
-import hotmath.gwt.cm_mobile_shared.client.event.ResetListSelectionsEventHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.ResetDisplayEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
@@ -16,7 +16,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEventHandler;
-import hotmath.gwt.hm_mobile.client.event.ResetListSelectionsEvent;
+import hotmath.gwt.hm_mobile.client.event.ResetDisplayEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEvent;
@@ -199,6 +199,8 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 						_loadingDiv.getElement().setAttribute("style", "display:none");
 					}
 				}
+				
+				__clientFactory.getEventBus().fireEvent(new ResetDisplayEvent());
 			}
         });
 
@@ -251,6 +253,13 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 			@Override
 			public void showHelp() {
 				History.newItem("HelpPlace" + uniq());
+			}
+		});
+        
+        
+        eb.addHandler(ResetDisplayEvent.TYPE, new ResetDisplayEventHandler() {
+			@Override
+			public void resetView() {
 			}
 		});
         
