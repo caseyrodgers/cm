@@ -485,7 +485,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
         toolbar.add(customButton);
 
-        // if (CmShared.getQueryParameter("debug") != null) {
         toolbar.add(new StudentPanelButton("Program Details", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -497,7 +496,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 });
             }
         }));
-        // }
 
         toolbar.add(new FillToolItem());
         toolbar.add(exportStudentsToolItem(_grid));
