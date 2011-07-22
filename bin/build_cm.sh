@@ -8,7 +8,16 @@ if [ -e target ]
      exit
 fi
 
-
+#
+# n=0 perform CVS and MVN updates
+# n=1 don't perform CVS and MVN updates
+#
+n=0
+if [ "X$1" != "X" ]; then
+    if [ "$1" = "noupdate" ]; then
+        n=1;
+    fi
+fi
 
 # Build the hotmath JS files used by CM GWT
 #
@@ -21,11 +30,12 @@ cd ../../cm
 
 
 # Update the CM CVS repostiory
-echo Updating CM CVS
-cvs -q update -d -P
-
-
-
+if [ $n -eq 0 ]; then
+    echo Updating CM CVS
+    cvs -q update -d -P
+else
+    echo Not updating CM CVS
+fi
 
 # build the cm_mobile JS combined files
 #
@@ -35,8 +45,13 @@ ant
 
 # build the CM package
 #
-echo Building full CM package
-mvn package minify:minify
+if [ $n -eq 1 ]; then
+    echo Building full CM package w/o mvn update
+    mvn -o package minify:minify
+else
+    echo Building full CM package
+    mvn package minify:minify
+fi
 
 
 
