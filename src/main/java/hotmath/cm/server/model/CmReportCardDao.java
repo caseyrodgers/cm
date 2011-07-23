@@ -79,9 +79,17 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 else {
     			 rval.setInitialProgramName(testName);
     			 StringBuilder sb = new StringBuilder();
-    			 HaTestDef td = pm.getTestDef();
-    			 sb.append(td.getSubjectId()).append(" ").append(td.getProgId());
-    			 rval.setInitialProgramShortName(sb.toString());
+    			 if (pm.isCustom() == false) {
+        			 HaTestDef td = pm.getTestDef();
+        			 if (td.getSubjectId().trim().length() > 0)
+            			 sb.append(td.getSubjectId()).append(" ").append(td.getProgId());
+        			 else
+        				 sb.append(td.getProgId());
+    	    		 rval.setInitialProgramShortName(sb.toString());
+    			 }
+    			 else {
+    				 rval.setInitialProgramShortName(getTestName(pm));
+    			 }
 			 }
 			 rval.setInitialProgramDate(pm.getCreateDate());
 			 
