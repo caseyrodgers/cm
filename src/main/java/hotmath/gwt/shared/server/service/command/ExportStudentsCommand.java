@@ -43,6 +43,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	private static Log LOG = LogFactory.getLog(ExportStudentsCommand.class);
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private boolean runInSeparateThread = true;
 
     @Override
     public StringHolder execute(Connection conn, ExportStudentsAction action) throws Exception {
@@ -57,8 +59,13 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	    sh.setResponse(sb.toString());
 
 	    ExportStudentDataRunnable exportRunnable = new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress());
-        Thread t = new Thread(exportRunnable);
-        t.start();
+	    if (runInSeparateThread) {
+            Thread t = new Thread(exportRunnable);
+            t.start();
+	    }
+	    else {
+	    	exportRunnable.run();
+	    }
 
 	    return sh;
     }
@@ -68,7 +75,15 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
         return ExportStudentsAction.class;
     }
 
-    class ExportStudentDataRunnable implements Runnable {
+    public void setRunInSeparateThread(boolean runInSeparateThread) {
+		this.runInSeparateThread = runInSeparateThread;
+	}
+
+	public boolean isRunInSeparateThread() {
+		return runInSeparateThread;
+	}
+
+	class ExportStudentDataRunnable implements Runnable {
 
     	private Integer adminUid;
     	private List<StudentModelExt> studentList;
