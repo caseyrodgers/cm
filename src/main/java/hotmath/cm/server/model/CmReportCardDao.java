@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.sql.SqlUtilities;
@@ -71,11 +72,16 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 				 // getChapters() returns a List - using only the first one
 				 String chapter = chapList.get(0).trim();
 				 
-				 String progLongName = buildProgramName(conn, pm, chapter, testName);
-				 rval.setInitialProgramName(progLongName);
+				 String[] progNames = buildProgramNames(conn, pm, chapter, testName);
+				 rval.setInitialProgramName(progNames[0]);
+				 rval.setInitialProgramShortName(progNames[1]);
 			 }
 			 else {
     			 rval.setInitialProgramName(testName);
+    			 StringBuilder sb = new StringBuilder();
+    			 HaTestDef td = pm.getTestDef();
+    			 sb.append(td.getSubjectId()).append(" ").append(td.getProgId());
+    			 rval.setInitialProgramShortName(sb.toString());
 			 }
 			 rval.setInitialProgramDate(pm.getCreateDate());
 			 
@@ -151,6 +157,32 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 return (chapNumb != null) ?
 				 String.format("%s, [%s] %s", testName, chapNumb, chapter) :
                  String.format("%s, %s", testName, chapter);
+	 }
+
+	 private String[] buildProgramNames(final Connection conn, StudentUserProgramModel pm, String chapter, String testName) throws Exception {
+
+		 CmAdminDao adminDao = CmAdminDao.getInstance();
+		 String subjectId = pm.getTestDef().getSubjectId();
+		 String progId = pm.getTestDef().getProgId();
+		 pm.getTestDef().getTotalSegmentCount();
+		 
+		 List<ChapterModel> cmList = adminDao.getChaptersForProgramSubject(progId, subjectId);
+		 String chapNumb = null;
+		 for (ChapterModel cm : cmList) {
+		     if (chapter.equalsIgnoreCase(cm.getTitle().trim())) {
+                 chapNumb = cm.getNumber().trim();
+			 }
+		 }
+		 String[] progNames = new String[2];
+		 if (chapNumb != null) {
+			 progNames[0] = String.format("%s, [%s] %s", testName, chapNumb, chapter);
+			 progNames[1] = String.format("%s %s %s", subjectId, progId, chapNumb);
+		 }
+		 else {
+             progNames[0] = String.format("%s, %s", testName, chapter);
+             progNames[1] = String.format("%s %s", subjectId, progId);
+		 }
+		 return progNames;
 	 }
 
 	 private void setFirstLastProgramStatus(final Connection conn, StudentReportCardModelI rval,
