@@ -11,6 +11,7 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 	private String groupName;
 	private Date initialProgramDate;
 	private String initialProgramName;
+	private String initialProgramShortName;
 	private String initialProgramStatus;
 	private Date lastActivityDate;
 	private Date lastProgramDate;
@@ -46,6 +47,11 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 
 	public String getInitialProgramName() {
 		return initialProgramName;
+	}
+
+	@Override
+	public String getInitialProgramShortName() {
+		return initialProgramShortName;
 	}
 
 	public String getInitialProgramStatus() {
@@ -126,6 +132,11 @@ public class StudentReportCardModel implements StudentReportCardModelI {
 
 	public void setInitialProgramName(String name) {
         initialProgramName = name;
+	}
+
+	@Override
+	public void setInitialProgramShortName(String name) {
+		this.initialProgramShortName = name; 
 	}
 
 	public void setInitialProgramStatus(String status) {

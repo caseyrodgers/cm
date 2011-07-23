@@ -38,6 +38,10 @@ public interface StudentReportCardModelI {
 
 	public void setInitialProgramName(String name);
 
+	public String getInitialProgramShortName();
+
+	public void setInitialProgramShortName(String name);
+
 	public String getInitialProgramStatus();
 
 	public void setInitialProgramStatus(String status);
