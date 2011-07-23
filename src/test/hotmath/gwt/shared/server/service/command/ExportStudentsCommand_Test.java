@@ -25,7 +25,9 @@ public class ExportStudentsCommand_Test extends CmDbTestCase {
 
         ExportStudentsAction exportAction = new ExportStudentsAction(71, pageAction);
         exportAction.setEmailAddress("bobhall@hotmath.com");
-        StringHolder sh = new ExportStudentsCommand().execute(conn, exportAction);
+        ExportStudentsCommand cmd = new ExportStudentsCommand();
+        cmd.setRunInSeparateThread(false);
+        StringHolder sh = cmd.execute(conn, exportAction);
         assertTrue(sh != null);
         //assertTrue(new URL(wResource.getUrl()).getHost() != null);
     }
