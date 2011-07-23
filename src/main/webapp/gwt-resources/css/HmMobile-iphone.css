@@ -4,6 +4,11 @@ body div {
 }
 */
 
+
+div.landscape {
+}
+
+
 div.page ul.touch li,
 div.page ul.touch li.group {
 	width: 100%;

@@ -374,7 +374,7 @@ public class HeaderPanel extends Composite {
         setCssClass(newButton, CssPos.Left);
         setCssClass(newButton, CssAnimate.Off);
         newButton.setText(backButtonText);
-
+        newButton.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/back_button.png'/><span>" + backButtonText + "</span>");
         setCssClass(newTitle, CssPos.Left);
         setCssClass(newTitle, CssAnimate.Off);
         setCssClass(newTitle, toCssButton(mHasLeftButton));

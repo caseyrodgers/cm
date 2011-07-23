@@ -6,7 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
-import hotmath.gwt.cm_mobile_shared.client.event.ResetDisplayEventHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.EnableDisplayZoomEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
@@ -14,9 +14,9 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.event.LoadNewPageEventHandler;
-import hotmath.gwt.hm_mobile.client.event.ResetDisplayEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEvent;
@@ -141,9 +141,10 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             //initializeExternalJs();
 
             History.fireCurrentHistoryState();
-
-            
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
+            
+            
+            __clientFactory.getEventBus().fireEvent(new EnableDisplayZoomEvent(false));
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -199,8 +200,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 						_loadingDiv.getElement().setAttribute("style", "display:none");
 					}
 				}
-				
-				__clientFactory.getEventBus().fireEvent(new ResetDisplayEvent());
 			}
         });
 
@@ -257,9 +256,19 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 		});
         
         
-        eb.addHandler(ResetDisplayEvent.TYPE, new ResetDisplayEventHandler() {
-			@Override
-			public void resetView() {
+        eb.addHandler(EnableDisplayZoomEvent.TYPE, new EnableDisplayZoomEventHandler() {
+        	@Override
+        	public void enableZoom(boolean trueFalse) {		
+				RootPanel rp = RootPanel.get("head_view");
+				if(rp != null) {
+					if(trueFalse) {
+						rp.getElement().setAttribute("content", "width=device-width, user_scalable = yes, initial-scale = 1");
+					}
+					else {
+						rp.getElement().setAttribute("content", "width=device-width, user_scalable = no");
+					}
+
+				}
 			}
 		});
         
@@ -292,12 +301,13 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     }
 
     
+    
     private native void resetViewPort() /*-{
        try {
            $wnd.scrollTo(0,0);
        }
        catch(e) {
-           alert('error restting view: ' + e);
+           alert('error resetting view: ' + e);
        }
     }-*/;
 

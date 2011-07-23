@@ -114,6 +114,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
         title.setInnerHTML(bookModel.getTitle());
         author.setInnerHTML(book.getAuthor());
+        publisher.setInnerHTML(bookModel.getPublisher());
 
         minPage.setInnerHTML("" + info.getMinPageNumber());
         maxPage.setInnerHTML("" + info.getMaxPageNumber());
@@ -284,6 +285,9 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     @UiField
     ImageElement bookImage;
+    
+    @UiField
+    SpanElement publisher;
 
     @UiField
     SpanElement minPage, maxPage, title, author;

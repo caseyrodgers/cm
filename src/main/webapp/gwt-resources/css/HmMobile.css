@@ -143,18 +143,21 @@ li {
 }
 
 .book-item-box {
-	max-width: 90%;
 }
 
 .book-item-box div:first-child {
    	font-weight: bold;
 }
 
+.book-item {
+}
 
 .book-item {
     clear: both;
     height: 83px;
-    padding: 5px;
+}
+
+.book-item {
 }
 
 .book-item img {
@@ -162,7 +165,9 @@ li {
     margin-right: 10px;
 }
 
-.book-item div {
+.book-item>div>div {
+	max-width: 230px;
+	overflow: hidden;
 }
 
 
@@ -645,7 +650,7 @@ div.page ul.touch {
 }
 
 div.landscape div.page ul.touch {
- h width: 460px;
+ 
 }
 
 div.page ul.touch li {
@@ -690,7 +695,7 @@ further down and therefore need an arrow in the background to indicate that
 div.page ul.touch li.group {
   background-image: url('/gwt-resources/images/mobile/chevron.png');
   background-repeat: no-repeat;
-  background-position: 95% 18px;
+  background-position: 98% 18px;
 }
 
 
@@ -703,7 +708,7 @@ div.page ul.touch li.large:active {
 
 div.page ul.touch li.is_selected {
   background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched_large.png');
-  background-position: 95% 18px, 0 0;
+  background-position: 98% 18px, 0 0;
   background-repeat: no-repeat, repeat-x;
   color: white;
 
@@ -713,7 +718,7 @@ div.page ul.touch li.is_selected {
 }
 
 div.landscape div.page ul.touch li.group:active {
-  background-position: 95% 18px, 0 0;
+  background-position: 98% 18px, 0 0;
 }
 
 

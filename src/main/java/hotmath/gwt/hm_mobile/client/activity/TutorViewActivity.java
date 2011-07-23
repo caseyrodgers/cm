@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
+import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
 import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
@@ -62,6 +63,8 @@ public class TutorViewActivity extends AbstractActivity implements TutorView.Pre
 				clientFactory.getTutorView().loadSolution(solutionResponse);
 				
 				callback.isComplete();
+				
+				HmMobile.__clientFactory.getEventBus().fireEvent(new EnableDisplayZoomEvent(true));
 			}
 			
 			@Override
