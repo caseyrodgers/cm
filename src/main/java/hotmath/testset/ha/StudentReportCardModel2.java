@@ -254,5 +254,17 @@ public class StudentReportCardModel2 implements StudentReportCardModelI {
         // TODO Auto-generated method stub
         
     }
+
+	@Override
+	public String getInitialProgramShortName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setInitialProgramShortName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
     
 }
