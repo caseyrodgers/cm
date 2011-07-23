@@ -28,6 +28,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Export Student detail and report card data in Excel format
+ * 
+ * @author bob
+ *
+ */
+
 public class ExportStudentsInExcelFormat {
 	
 	private static final Logger LOGGER = Logger.getLogger(ExportStudentsInExcelFormat.class);
@@ -85,8 +92,8 @@ public class ExportStudentsInExcelFormat {
 
 	private static String[] headings = {
 		"Student", "Password", "Group", "Program", "Status", "% Complete", "Quizzes",
-		"Last Quiz", "Last Login", "Total Lessons", "Last Activity", "Quizzes Attempted",
-		"Quizzes Passed", "Passed Quiz Avg Score", "Total Logins", "First Activity", "First Program"
+		"Last Quiz", "Last Login", "Total Lessons", "Quizzes Attempted", "Quizzes Passed",
+		"Passed Quiz Avg Score", "Total Logins", "First Login", "First Program"
 	};
 	
 	public ByteArrayOutputStream export() throws Exception {
@@ -191,13 +198,6 @@ public class ExportStudentsInExcelFormat {
 	        if (charCount[col] < lessonCount.length()) charCount[col] = lessonCount.length();
 	        
 		    cell = row.createCell(++col);
-			Date actDate = rc.getLastActivityDate();
-			String activityDate = (actDate != null) ? String.format(DATE_FMT, actDate) : " ";
-	        cell.setCellValue(activityDate);
-	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < activityDate.length()) charCount[col] = activityDate.length();
-
-		    cell = row.createCell(++col);
 		    String quizAtmpt = String.valueOf(rc.getQuizCount());
 	        cell.setCellValue(rc.getQuizCount());
 	        cell.setCellStyle(styles.get("data"));
@@ -222,23 +222,27 @@ public class ExportStudentsInExcelFormat {
 	        if (charCount[col] < totalLogins.length()) charCount[col] = totalLogins.length();
 
 		    cell = row.createCell(++col);
-			actDate = rc.getFirstActivityDate();
-			activityDate = (actDate != null) ? String.format(DATE_FMT, actDate) : " ";
+			Date actDate = rc.getFirstActivityDate();
+			String activityDate = (actDate != null) ? String.format(DATE_FMT, actDate) : " ";
 	        cell.setCellValue(activityDate);
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < activityDate.length()) charCount[col] = activityDate.length();
 
 		    cell = row.createCell(++col);
-	        cell.setCellValue(rc.getInitialProgramName());
+	        cell.setCellValue(rc.getInitialProgramShortName());
 	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < rc.getInitialProgramName().length())
-	        	charCount[col] = rc.getInitialProgramName().length();
+	        if (charCount[col] < rc.getInitialProgramShortName().length())
+	        	charCount[col] = rc.getInitialProgramShortName().length();
 
 	    }
 
 	    for (int i = 0; i < headings.length; i++) {
             sheet.setColumnWidth(i, 256*charCount[i]);
 	    }
+	    
+	    // add legend
+	    addLegend(idx, sheet, styles);
+	    
 
 	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	    wb.write(bos);
@@ -247,7 +251,36 @@ public class ExportStudentsInExcelFormat {
 	    return bos;
 	}
 
+    private void addLegend(int idx, Sheet sheet, Map<String, CellStyle> styles) {
+    	idx = idx + 3;
+	    int col = 0;
 
+        Row row = sheet.createRow(idx++);
+	    Cell cell = row.createCell(col);
+        cell.setCellValue("% Complete - percentage of completion in current program");
+        cell.setCellStyle(styles.get("data"));
+    	
+        row = sheet.createRow(idx++);
+	    cell = row.createCell(col);
+        cell.setCellValue("Last Quiz - status or score for most recent Quiz");
+        cell.setCellStyle(styles.get("data"));
+
+        row = sheet.createRow(idx++);
+	    cell = row.createCell(col);
+        cell.setCellValue("Last Login - date of most recent CM activity");
+        cell.setCellStyle(styles.get("data"));
+
+        row = sheet.createRow(idx++);
+        cell = row.createCell(col);
+        cell.setCellValue("Total Logins - number of times the student has logged in");
+        cell.setCellStyle(styles.get("data"));
+
+        row = sheet.createRow(idx++);
+        cell = row.createCell(col);
+        cell.setCellValue("First Login - date of Students first activity in CM");
+        cell.setCellStyle(styles.get("data"));
+}
+    
 	private Map<String, CellStyle> createStyles(Workbook wb) {
 
 		Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
