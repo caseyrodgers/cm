@@ -91,7 +91,7 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	private static String[] headings = {
-		"Student", "Password", "Group", "Program", "Status", "% Complete", "Quizzes",
+		"Student", "Password", "Group", "Current Program", "Status", "% Complete", "Quizzes",
 		"Last Quiz", "Last Login", "Total Lessons", "Quizzes Attempted", "Quizzes Passed",
 		"Passed Quiz Avg Score", "Total Logins", "First Login", "First Program"
 	};
@@ -144,7 +144,7 @@ public class ExportStudentsInExcelFormat {
 		    Cell cell = row.createCell(col);
 	        cell.setCellValue(sm.getName());
 	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < sm.getName().length()) charCount[col] = sm.getName().length();
+	        if (charCount[col] < (sm.getName().length() + 5)) charCount[col] = sm.getName().length() + 5;
 
 		    cell = row.createCell(++col);
 	        cell.setCellValue(sm.getPasscode());
@@ -188,7 +188,7 @@ public class ExportStudentsInExcelFormat {
 		    cell = row.createCell(++col);
 	        cell.setCellValue(sm.getLastLogin());
 	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < sm.getLastLogin().length()) charCount[col] = sm.getLastLogin().length();
+	        if (charCount[col] < (sm.getLastLogin().length() + 5)) charCount[col] = sm.getLastLogin().length() + 5;
 
 		    Map<String, Integer> usageMap = rc.getResourceUsage();
 		    cell = row.createCell(++col);
