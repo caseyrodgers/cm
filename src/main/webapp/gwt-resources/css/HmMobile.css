@@ -304,6 +304,7 @@ li {
     z-index: 5;
     height: 40px;
     background-image: url('/gwt-resources/images/mobile/header_back.png');
+    background-repeat: repeat-x;
     text-align: center;
     line-height:  40px;
 }
@@ -344,6 +345,8 @@ li {
   display: inline;
   width: 44px;
   height: 30px;
+  
+  float: left;
 }
 
 #header .backButton span {
@@ -360,7 +363,6 @@ li {
 }
 
 #header .backButton img {
-    float: left;
     margin-right: 5px;
     margin-top:  5px;
 }

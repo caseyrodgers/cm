@@ -12,23 +12,23 @@
             $solution_html
         </div>
         
-        <div id='steps_tail' style='position: relative'>
-	        <a class='sexybutton disabled' id='steps_prev' href="#"
+        <div id='steps_tail' style='position: relative;height: 70px;'>
+	        <button class='sexybutton disabled' id='steps_prev' href="#" style='position: absolute;left: 0'
 	            onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
 	            <span><span>
 	            Previous
 	            </span></span>
-	        </a>
-	        <a class='sexybutton disabled' id='steps_next' href="#" onclick="TutorManager.showNextStep();return false;" accesskey="s">
+	        </button>
+	        <button class='sexybutton disabled' id='steps_next' style='position: absolute; left: 85px;' onclick="TutorManager.showNextStep();return false;" accesskey="s">
 	            <span><span>Next</span></span>
-	        </a>
-	        <a class='sexybutton' id='steps_next' href="#" onclick="TutorManager.newProblem();return false;" accesskey="s">
+	        </button>
+	        <button class='sexybutton' id='steps_next' style='position: absolute; left:145px;' onclick="TutorManager.newProblem();return false;" accesskey="s">
 	            <span><span>New Problem</span></span>
-	        </a>
+	        </button>
 	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
 	           <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
 	       </div>
-	       <div id='tutor_message' style='position: static;left: 100px;color: red;'float: right'>&nbsp;</div>
+	       <div id='tutor_message' style='position: absolute;left: 5px;top: 35px;color: red;'>&nbsp;</div>
         <img id='scrollTo-button' src='/assets/images/spacer.gif'>
     </div>
     <!-- HOTMATH BODY END -->

@@ -1,4 +1,6 @@
 package hotmath.gwt.hm_mobile.server.dao;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
@@ -28,6 +30,12 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 	}
 	
 	public List<BookModel> getBooksForCategory(CategoryModel category) throws Exception {
+
+		@SuppressWarnings("unchecked")
+		List<BookModel> books = (List<BookModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.CATEGORY_BOOKS, category.getCategory());
+		if(books != null) {
+			return books;
+		}
 		
 		String sql = 
 			"select b.TEXTCODE, " +
@@ -56,6 +64,9 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
 					}
 				});
+		
+		CmCacheManager.getInstance().addToCache(CacheName.CATEGORY_BOOKS, category.getCategory(), list);
+		
 		return list;
 	}
 	

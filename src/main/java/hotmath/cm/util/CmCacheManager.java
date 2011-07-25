@@ -2,6 +2,7 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.hm_mobile.client.model.BookModel;
 
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +71,10 @@ public class CmCacheManager  {
 		WOOKBOOK_POOL,
 		
 		/** Map of lesson files and their sort rankings */
-		LESSON_RANKINGS
+		LESSON_RANKINGS,
+		
+		/** list of books in a given category */
+		CATEGORY_BOOKS
 	};
 
 	private void flushCache() {

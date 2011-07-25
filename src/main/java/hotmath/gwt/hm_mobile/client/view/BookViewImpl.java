@@ -51,7 +51,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     public BookViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        pageNumber.getElement().setAttribute("type","number");
+        //pageNumber.getElement().setAttribute("type","number");
         
         problemNumberList.add(listItems);
         pageNumber.addKeyPressHandler(new KeyPressHandler() {
@@ -93,10 +93,12 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     	return this.book;
     }
     
+    private native void hideProblemNumberDiv() /*-{document.getElement('problemNumberDiv').style.display = 'block';}-*/;
     
     @Override
     public void showBook(BookModel bookModel, BookInfoModel infoModel, int page) {
-    	problemNumberDiv.getElement().setAttribute("style", "display: none");
+    	//problemNumberDiv.getElement().setAttribute("style", "display: none");
+    	//hideProblemNumberDiv();
 
         this.book = bookModel;
         this.info = infoModel;

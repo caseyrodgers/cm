@@ -4,6 +4,7 @@ package hotmath.gwt.hm_mobile.server.dao;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
+import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class BooksDao_Test extends TestCase {
 
     BookModel book = new BookModel("brown97");
 
+    public void testCategoryBooks() throws Exception {
+    	assertTrue(BooksDao.getInstance().getBooksForCategory(new CategoryModel("geometry")).size() > 0);
+    }
     public void testSearchBook() throws Exception {
         List<BookModel> books = BooksDao.getInstance().searchForBooks("test");
         assertTrue(books.size() > 0 && books.get(0).getTextCode() != null);

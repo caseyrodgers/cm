@@ -66,7 +66,7 @@ var TutorManager = {
 
         /* mark next button as active*/ 
         enabledNext(true);
-        
+       
         
         /** hookup any question steps */
         HmEvents.eventTutorInitialized.fire();
@@ -205,7 +205,7 @@ function enabledButton(btn, yesNo) {
 	if(!yesNo) {
 		clazz += ' disabled';
 	}
-	$get(btn).className = clazz;
+    $get(btn).className = clazz;
 }
 
 // StepUnit is a basic unit
@@ -316,7 +316,7 @@ function showStepUnit(num) {
 
                 TutorManager.currentStepUnit = num;
                 TutorManager.currentRealStep = TutorManager.stepUnits[num].realNum;
-                
+
                 setButtonState();
 
                 scrollToStep(num);
