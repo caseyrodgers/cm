@@ -5,7 +5,8 @@
     String name = request.getParameter("fld_name");
     String school = request.getParameter("fld_school");
     String zip = request.getParameter("fld_zip");
-    String email = request.getParameter("fld_email");
+    String email = request.getParameter("fld_email").trim();
+    email = (email != null) ? email.trim() : "";
     String phone = request.getParameter("fld_phone");
     String comments = request.getParameter("fld_comments");
     String phoneWhen = request.getParameter("fld_phone_when");
