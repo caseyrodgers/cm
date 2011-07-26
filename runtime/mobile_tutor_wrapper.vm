@@ -19,7 +19,7 @@
 	            </span></span>
 	        </button>
 	        <button class='sexybutton disabled' id='steps_next'  onclick="TutorManager.showNextStep();return false;" accesskey="s">
-	            <span><span>Next</span></span>
+	            <span><span>&nbsp;&nbsp;Next&nbsp;&nbsp;</span></span>
 	        </button>
 	        <button class='sexybutton' id='new_problem' onclick="TutorManager.newProblem();return false;" accesskey="s">
 	            <span><span>New Problem</span></span>

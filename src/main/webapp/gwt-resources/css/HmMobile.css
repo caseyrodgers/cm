@@ -141,7 +141,7 @@ background-color: black;
 }
 
 div.page .bookListViewImpl ul.touch li {
-    padding: 5px;
+
 }
 
 
@@ -213,7 +213,7 @@ li {
 
 .book-button-bar,
 .book-button-bar button {
-    font-size: 1em;
+    font-size: 1.1em;
 }
 
 
@@ -634,21 +634,20 @@ question_head_text {
 #steps_prev {
     position: absolute;
     top: 20px;        
-    left: 10px;
-    width: 100px;
+    left: 0px;
 }
 
 #steps_next {
     position: absolute;
     top: 20px;        
-    left: 115px;
-    width: 70px;
+    left: 85px;
 }
+
 
 #new_problem {
     position: absolute;
     top: 20px;
-    left: 200px;
+    left: 170px;
 }
 
 #tutor_message {
