@@ -23,7 +23,6 @@
 
 
 		<div class='book-button-bar'>
-		    Page: 
             <g:Button ui:field="getPrevProblems">
 				<span class='arrows'>
 				    &nbsp;&lt;&nbsp;
