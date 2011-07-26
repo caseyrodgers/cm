@@ -4,6 +4,7 @@ import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.FileUtil;
 import hotmath.cm.util.export.ExportStudentsInExcelFormat;
+import hotmath.cm.util.report.ReportUtils;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -50,15 +51,31 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     public StringHolder execute(Connection conn, ExportStudentsAction action) throws Exception {
 
     	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
-    	
+
 		StringHolder sh = new StringHolder();
 	    StringBuilder sb = new StringBuilder();
-	    sb.append("Student data export for ").append(studentList.size()).append(" students will be emailed to ");
-	    sb.append(action.getEmailAddress());
 	    
+	    if (studentList.size() > 0) {
+    	    sb.append("Student data export for ").append(studentList.size()).append(" students will be emailed to ");
+	        sb.append(action.getEmailAddress());
+	    }
+	    else {
+	    	sb.append("Sorry, nothing to Export.");
+	    }
 	    sh.setResponse(sb.toString());
 
-	    ExportStudentDataRunnable exportRunnable = new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress());
+	    // if nothing to Export, return
+	    if (studentList.size() < 1) return sh;
+	    
+	    String filterDescr = null;
+	    if (action.getFilterMap() != null) {
+	    	filterDescr =
+	    		ReportUtils.getFilterDescription(conn, action.getPageAction().getAdminId(), CmAdminDao.getInstance(), action.getFilterMap());
+	    }
+
+	    ExportStudentDataRunnable exportRunnable =
+	    	new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress(), filterDescr);
+
 	    if (runInSeparateThread) {
             Thread t = new Thread(exportRunnable);
             t.start();
@@ -88,11 +105,14 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	private Integer adminUid;
     	private List<StudentModelExt> studentList;
     	private String emailAddr;
+    	private String filterDescr;
 
-    	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelExt> studentList, final String emailAddr) {
+    	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelExt> studentList,
+    			final String emailAddr, final String filterDescr) {
     		this.adminUid = adminUid;
     		this.studentList = studentList;
     		this.emailAddr = emailAddr;
+    		this.filterDescr = filterDescr;
     	}
 
     	public void run() {
@@ -120,10 +140,14 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			ByteArrayOutputStream baos = null;
 
-    			ExportStudentsInExcelFormat exporter =
-    				new ExportStudentsInExcelFormat(studentList);
+    			StringBuilder sb = new StringBuilder();
+    			if (filterDescr != null)
+    				sb.append("Filter: ( ").append(filterDescr).append(" )");
+
+    			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
     			exporter.setTitle(titleBuff.toString());
+    			exporter.setFilterDescr(sb.toString());
 
     			baos = exporter.export();
 
@@ -145,7 +169,11 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			StringBuilder msgBuff = new StringBuilder();
     			msgBuff.append("The student data export you requested for ");
     			msgBuff.append(acctInfo.getSchoolName()).append(" (");
-    			msgBuff.append(acctInfo.getAdminUserName()).append(") ").append(" is attached.");
+    			msgBuff.append(acctInfo.getAdminUserName()).append(") ");
+    			if (filterDescr != null) {
+    				msgBuff.append("with ").append(sb.toString());
+    			}
+				msgBuff.append(" is attached.");
 
     			String[] toEmailAddrs = new String[2];
     			toEmailAddrs[0] = emailAddr;

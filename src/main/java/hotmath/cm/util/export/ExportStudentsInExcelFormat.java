@@ -46,7 +46,9 @@ public class ExportStudentsInExcelFormat {
 	private List<StudentModelExt> studentList;
 	
 	private List<StudentReportCardModelI> rcList;
-	
+
+	private String filterDescr;
+
 	private String title;
 	
 	private Integer adminId;
@@ -72,6 +74,14 @@ public class ExportStudentsInExcelFormat {
 
 	public void setReportCardList(List<StudentReportCardModelI> rcList) {
 		this.rcList = rcList;
+	}
+
+	public String getFilterDescr() {
+		return filterDescr;
+	}
+
+	public void setFilterDescr(String filterDescr) {
+		this.filterDescr = filterDescr;
 	}
 
 	public Integer getAdminId() {
@@ -119,6 +129,14 @@ public class ExportStudentsInExcelFormat {
 	    Cell titleCell = titleRow.createCell(0);
 	    titleCell.setCellValue(title);
         titleCell.setCellStyle(styles.get("title"));
+        
+        if (filterDescr != null && filterDescr.trim().length() > 0) {
+        	titleRow.createCell(1);
+        	titleRow.createCell(2);
+        	Cell filterCell = titleRow.createCell(3);
+        	filterCell.setCellValue(filterDescr);
+        	filterCell.setCellStyle(styles.get("title"));
+        }
         
 	    //the header row: centered text in 48pt font
 	    Row headerRow = sheet.createRow(1);
