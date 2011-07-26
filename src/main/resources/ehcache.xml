@@ -139,4 +139,19 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="BOOK_INFO_MODEL"
+       maxElementsInMemory="20"
+       overflowToDisk="false">
+</cache>
+
+<cache name="BOOK_MODEL"
+       maxElementsInMemory="20"
+       overflowToDisk="false">
+</cache>
+
+<cache name="PROBLEM_NUMBERS"
+       maxElementsInMemory="50"
+       overflowToDisk="false">
+</cache>
+
 </ehcache>

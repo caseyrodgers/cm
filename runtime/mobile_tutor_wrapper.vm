@@ -1,9 +1,8 @@
 <!--  Tutor GUTS go here -->
 <style>
-    #tutoroutput .step {
-       color: black;
-    }
+
 </style>
+
 <div id='tutor_embedded' style='display: block'>
   </div>
     <!-- HOTMATH BODY START -->
@@ -13,25 +12,25 @@
         </div>
         
         <div id='steps_tail' style='position: relative;height: 70px;'>
-	        <button class='sexybutton disabled' id='steps_prev' href="#" style='position: absolute;left: 0'
+	        <button class='sexybutton disabled' id='steps_prev' href="#" 
 	            onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
 	            <span><span>
 	            Previous
 	            </span></span>
 	        </button>
-	        <button class='sexybutton disabled' id='steps_next' style='position: absolute; left: 85px;' onclick="TutorManager.showNextStep();return false;" accesskey="s">
+	        <button class='sexybutton disabled' id='steps_next'  onclick="TutorManager.showNextStep();return false;" accesskey="s">
 	            <span><span>Next</span></span>
 	        </button>
-	        <button class='sexybutton' id='steps_next' style='position: absolute; left:145px;' onclick="TutorManager.newProblem();return false;" accesskey="s">
+	        <button class='sexybutton' id='new_problem' onclick="TutorManager.newProblem();return false;" accesskey="s">
 	            <span><span>New Problem</span></span>
 	        </button>
-	        <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
+	        <div class='cm-tutor-button-bar-bottom'  style='display: none;float: right;' >
 	           <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand</a>
 	       </div>
-	       <div id='tutor_message' style='position: absolute;left: 5px;top: 35px;color: red;'>&nbsp;</div>
-        <img id='scrollTo-button' src='/assets/images/spacer.gif'>
+	       <div id='tutor_message'>&nbsp;</div>
     </div>
     <!-- HOTMATH BODY END -->
+    <img id='scrollTo-button' src='/assets/images/spacer.gif'>
 </div>
 <!--  END TUTOR GUTS  -->
 <div class='debug-hide'>$pid</div>

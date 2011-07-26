@@ -88,10 +88,10 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 			    image + 
 				"  <div class='book-item-box'>" +
 				"      <div>" + title + "</div>" +
-				"      <div>" + 
+				"      <div class='pub'>" + 
 				           publisher + pubDate + 
 			    "      </div>" +
-				"      <div>" + 
+				"      <div class='author'>" + 
   		                   author + 
 	            "      </div>" +
 			    

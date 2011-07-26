@@ -71,14 +71,14 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 	}
 	
 	
-	BookInfoModel _lastModel;
-	
 	public BookInfoModel getBookInfo(final BookModel book) throws Exception {
-	    if(_lastModel != null && _lastModel.getBook().getTextCode().equals(book.getTextCode())) {
-	    	return _lastModel;
-	    }
-	    
-	    final BookModel fullBookModel;
+		@SuppressWarnings("unchecked")
+		BookInfoModel bookInfoModel = (BookInfoModel)CmCacheManager.getInstance().retrieveFromCache(CacheName.BOOK_INFO_MODEL, book.getTextCode());
+		if(bookInfoModel != null) {
+			return bookInfoModel;
+		}
+		
+		final BookModel fullBookModel;
 	    if(book.getTitle() == null)
 	        fullBookModel = getBookModel(book.getTextCode());
 	    else {
@@ -98,14 +98,18 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					}
 				});
                 
-                
-                
-        _lastModel = bookInfo;
-                
+        CmCacheManager.getInstance().addToCache(CacheName.BOOK_INFO_MODEL,fullBookModel.getTextCode(), bookInfo);                 
 		return bookInfo;
 	}
 	
    public BookModel getBookModel(String textCode) throws Exception {
+	   
+		@SuppressWarnings("unchecked")
+		BookModel bookModel = (BookModel)CmCacheManager.getInstance().retrieveFromCache(CacheName.BOOK_MODEL, textCode);
+		if(bookModel != null) {
+			return bookModel;
+		}	   
+	   
         String sql = 
             "select b.TEXTCODE, " +
             "       b.TEXTNAME, " +
@@ -130,6 +134,8 @@ public class BooksDao extends SimpleJdbcDaoSupport {
                                 rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
                     }
                 });
+        
+        CmCacheManager.getInstance().addToCache(CacheName.BOOK_MODEL, textCode, book);
         return book;
     }
 	
@@ -144,6 +150,16 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 	 * @throws Exception
 	 */
 	public List<ProblemNumber> getProblemNumbers(BookModel book, int page) throws Exception {
+		
+		   
+		String key = book.getTextCode() + "_" + page;
+		List<ProblemNumber> probNums = (List<ProblemNumber>)CmCacheManager.getInstance().retrieveFromCache(CacheName.PROBLEM_NUMBERS, key);
+		 
+		if(probNums != null) {
+			return probNums;
+		}	   
+
+		
 		String sql = 
 			"select PROBLEMNUMBER, PROBLEMINDEX, PROBLEMSET, PAGENUMBER " +
 			" from SOLUTIONS " +
@@ -160,6 +176,8 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					    return new ProblemNumber(rs.getString("problemnumber"), rs.getString("problemset"),rs.getString("problemindex"),rs.getInt("pagenumber"));
 					}
 				});
+		
+		CmCacheManager.getInstance().addToCache(CacheName.PROBLEM_NUMBERS, key, list);
 		return list;
 	}
 	

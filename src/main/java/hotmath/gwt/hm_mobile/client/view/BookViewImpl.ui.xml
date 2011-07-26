@@ -8,16 +8,10 @@
 	<g:HTMLPanel styleName='bookViewImpl'>
 		<div class='book-item'>
 			<img ui:field="bookImage" />
-			<div>
-				<div class='field'>
-					<span ui:field="title" />
-				</div>
-				<div class='field'>
-					<span ui:field="author" />
-				</div>
-				<div class='field'>
-					<span ui:field="publisher" />
-				</div>				
+			<div class='book-item-box'>
+				<div ui:field='title'>&nbsp;</div>
+				<div class='pub' ui:field="publisher">&nbsp;</div>				
+				<div class='author' ui:field="author" >&nbsp;</div>
 				<div class='field' style='display: none'>
 					<span>Pages: </span>
 					<span ui:field="minPage" />

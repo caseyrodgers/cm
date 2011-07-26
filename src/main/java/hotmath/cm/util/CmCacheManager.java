@@ -74,7 +74,17 @@ public class CmCacheManager  {
 		LESSON_RANKINGS,
 		
 		/** list of books in a given category */
-		CATEGORY_BOOKS
+		CATEGORY_BOOKS,
+		
+		
+		/** Book Info Model used by HmMobile */
+		BOOK_INFO_MODEL,
+		
+		/** Book Model for HM Mobile */
+		BOOK_MODEL,
+		
+		/** Problem number lists used in Hm Mobile */
+		PROBLEM_NUMBERS
 	};
 
 	private void flushCache() {

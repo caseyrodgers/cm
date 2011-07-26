@@ -17,7 +17,6 @@ import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -289,10 +288,10 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     ImageElement bookImage;
     
     @UiField
-    SpanElement publisher;
-
+    SpanElement minPage, maxPage;
+    
     @UiField
-    SpanElement minPage, maxPage, title, author;
+    DivElement title, author, publisher;
 
     @UiField
     TextBox pageNumber;

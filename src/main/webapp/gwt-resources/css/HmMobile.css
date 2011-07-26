@@ -131,10 +131,8 @@ background-color: black;
 
 }
 
-.bookListViewImpl {
-	
-}
-.bookViewImpl .touch li.group span {
+div.page .bookListViewImpl ul.touch li {
+	padding: 5px;
 }
 
 
@@ -148,6 +146,21 @@ li {
 .book-item-box div:first-child {
    	font-weight: bold;
 }
+
+
+.book-item-box .pub {
+	margin-top: 5px;
+	color: #827F92;
+	font-size: 95%;
+}
+
+
+.book-item-box .author {
+	font-size: 70%;
+	color: #CDCDCD;
+}
+
+
 
 .book-item {
 }
@@ -189,7 +202,14 @@ li {
   margin-top: 20px;
 }
 
+.book-button-bar,
+.book-button-bar button {
+	font-size: 1.4em;
+}
+
+
 .book-button-bar .gwt-TextBox {
+	font-size: 1.5em;
     width: 75px;
 }
 
@@ -308,6 +328,7 @@ li {
     text-align: center;
     line-height:  40px;
 }
+
 #pad1 {
     display: block;
     width: 18px;
@@ -596,6 +617,44 @@ question_head_text {
 .graphimgstatic {
     margin: 15px;
 }
+
+#tutoroutput .step {
+   color: black;
+}
+
+#steps_prev {
+    position: absolute;
+    top: 20px;        
+    left: 10px;
+    width: 100px;
+}
+
+#steps_next {
+    position: absolute;
+    top: 20px;        
+    left: 115px;
+    width: 70px;
+}
+
+#new_problem {
+    position: absolute;
+    top: 20px;
+    left: 200px;
+}
+
+#tutor_message {
+    position: absolute;
+    left: 5px;
+    top: 45px;
+    color: red;
+}
+
+
+
+
+
+
+
 
 #control-floater {
     display: none;
