@@ -213,13 +213,13 @@ li {
 
 .book-button-bar,
 .book-button-bar button {
-    font-size: 1.4em;
+    font-size: 1em;
 }
 
 
 .book-button-bar .gwt-TextBox {
-    font-size: 1.5em;
-    width: 75px;
+    font-size: 1em;
+    width: 95px;
 }
 
 

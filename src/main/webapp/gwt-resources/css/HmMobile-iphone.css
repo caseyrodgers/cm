@@ -12,7 +12,7 @@ div.landscape {
 div.page ul.touch li,
 div.page ul.touch li.group {
 	width: 100%;
-	min-width: 240px !important;
+	min-width: 238px !important;
 	overflow: hidden;
 }
 
