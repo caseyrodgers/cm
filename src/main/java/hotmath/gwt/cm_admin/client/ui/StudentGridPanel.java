@@ -1100,6 +1100,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     GetStudentGridPageAction _pageAction = null;
 
+    public GetStudentGridPageAction getPageAction() {
+    	return _pageAction;
+    }
+
     /**
      * Create proxy to handle the paged student grid RPC calls
      * 
