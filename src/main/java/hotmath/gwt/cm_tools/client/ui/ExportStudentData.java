@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import java.util.Date;
 
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
@@ -9,7 +10,6 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -157,8 +157,9 @@ public class ExportStudentData extends LayoutContainer {
 		    public void attempt() {
 		        CmBusyManager.setBusy(true);
 		        ExportStudentsAction action =
-		        	new ExportStudentsAction(adminUid, new GetStudentGridPageAction());
+		        	new ExportStudentsAction(adminUid, StudentGridPanel.instance.getPageAction());
 		        action.setEmailAddress(emailAddr);
+            	action.setFilterMap(StudentGridPanel.instance.getPageAction().getFilterMap());
 		        setAction(action);
 		        CmShared.getCmService().execute(action,this);
 		    }
