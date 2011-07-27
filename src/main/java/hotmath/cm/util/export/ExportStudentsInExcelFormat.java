@@ -127,16 +127,10 @@ public class ExportStudentsInExcelFormat {
 		
 	    Row titleRow = sheet.createRow(0);
 	    Cell titleCell = titleRow.createCell(0);
-	    titleCell.setCellValue(title);
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(title).append(" ").append(filterDescr);
+	    titleCell.setCellValue(sb.toString());
         titleCell.setCellStyle(styles.get("title"));
-        
-        if (filterDescr != null && filterDescr.trim().length() > 0) {
-        	titleRow.createCell(1);
-        	titleRow.createCell(2);
-        	Cell filterCell = titleRow.createCell(3);
-        	filterCell.setCellValue(filterDescr);
-        	filterCell.setCellStyle(styles.get("title"));
-        }
         
 	    //the header row: centered text in 48pt font
 	    Row headerRow = sheet.createRow(1);
@@ -249,8 +243,8 @@ public class ExportStudentsInExcelFormat {
 		    cell = row.createCell(++col);
 	        cell.setCellValue(rc.getInitialProgramShortName());
 	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < rc.getInitialProgramShortName().length())
-	        	charCount[col] = rc.getInitialProgramShortName().length();
+	        if (charCount[col] < (rc.getInitialProgramShortName().length() + 5))
+	        	charCount[col] = rc.getInitialProgramShortName().length() + 5;
 
 	    }
 
