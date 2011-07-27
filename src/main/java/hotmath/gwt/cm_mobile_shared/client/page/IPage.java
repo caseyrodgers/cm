@@ -17,4 +17,5 @@ public interface IPage {
 	TokenParser getBackButtonLocation();
 	
 	BackAction getBackAction();
+
 }

@@ -1,13 +1,10 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
+import hotmath.gwt.cm_rpc.client.rpc.ActionType;
+
 import java.util.HashMap;
 
 public class ActionTypeMap {
-	
-	static public enum ActionType {
-		ADMIN, STUDENT, ANY, TEST, OTHER,UNKNOWN
-	}
-
 	static HashMap<String,ActionType> actionTypeMap;
 	
 	/** TODO: We should use the actual class (*.class) 

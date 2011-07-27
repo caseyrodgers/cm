@@ -1,14 +1,12 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 /** Return solution information for a given user and pid
  * 
  * @author casey
  *
  */
-public class GetSolutionAction implements Action<SolutionInfo> {
+public class GetSolutionAction extends ActionBase implements Action<SolutionInfo> {
     
     String pid;
     int uid;
@@ -18,6 +16,8 @@ public class GetSolutionAction implements Action<SolutionInfo> {
     public GetSolutionAction(int uid, String pid) {
         this.uid = uid;
         this.pid = pid;
+        
+        setActionInfo(new ActionInfo(ActionType.STUDENT));
     }
 
     public int getUid() {

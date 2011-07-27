@@ -168,4 +168,5 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     public void resetView() {
     	super.resetListSelections();
     }
+    
 }

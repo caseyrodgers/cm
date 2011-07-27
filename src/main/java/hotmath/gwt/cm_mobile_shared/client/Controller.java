@@ -1,10 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
-
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PrescriptionResourcePage;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
@@ -12,6 +9,10 @@ import hotmath.gwt.cm_mobile_shared.client.page.WelcomePage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
 
 public class Controller {
     private static ObservableStack<IPage> mPageStack;
@@ -54,6 +55,8 @@ public class Controller {
     	else {
 	    	if(mPageStack.getCount() > 1) {
 	    		mPageStack.pop();
+	    		IPage currPage = mPageStack.peek();
+	    		__eventBus.fireEvent(new BackPageLoadedEvent(currPage));
 	    	}
 	    	else {
 	    		if(__eventBus == null) {

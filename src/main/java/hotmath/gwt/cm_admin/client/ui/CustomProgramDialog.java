@@ -18,10 +18,9 @@ import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
-import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
+import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
 import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
-import hotmath.gwt.shared.server.service.command.DeleteCustomQuizCommand;
 
 import java.util.ArrayList;
 import java.util.List;

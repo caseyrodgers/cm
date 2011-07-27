@@ -6,6 +6,8 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.EnableDisplayZoomEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
@@ -39,9 +41,12 @@ import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
+import hotmath.gwt.hm_mobile.client.view.TutorViewImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -51,6 +56,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -186,7 +192,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
 
     private void setupGlobalEventHandlers() {
-        EventBus eb = __clientFactory.getEventBus();
+        final EventBus eb = __clientFactory.getEventBus();
 
         /** Event to provide UI info about server activity
          * 
@@ -305,20 +311,56 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             @Override
             public void loadPage(IPage page) {
             	Log.info("LoadNewPageEvent fire: " + page.getClass().getName());
-            	resetViewPort();
+            	int currentScrollPos = resetViewPort();
+            	IPage currentPage = _pageStack.getCount()>0?_pageStack.peek():null;
+            	if(currentPage != null) {
+            		pageScroll.put(currentPage,  new Integer(currentScrollPos));
+            	}
                 _pageStack.push(page);
+                
+                if(!(page instanceof TutorViewImpl)) {
+                	eb.fireEvent(new BackPageLoadedEvent(page));
+                }
             }
         });
+        
+        eb.addHandler(BackPageLoadedEvent.TYPE, new BackPageLoadedEventHandler() {
+        	@Override
+        	public void movedBack(final IPage page) {
+        		if(true)
+        			return;
+        		
+            	Log.info("LoadNewPageEvent fire: " + page.getClass().getName());
+            	if(pageScroll.containsKey(page)) {
+            		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							setViewScrollPosition(pageScroll.get(page));						}
+					});
+            		
+            	}
+            }
+        });        
+        
     }
-
     
     
-    private native void resetViewPort() /*-{
+    private native void setViewScrollPosition(int position) /*-{
+       $wnd.scrollTo(position, position);
+    }-*/;
+    
+    
+    public Map<IPage,Integer> pageScroll = new HashMap<IPage,Integer>();     
+    
+    private native int resetViewPort() /*-{
        try {
-           $wnd.scrollTo(0,0);
+           var scrollHeight = $wnd.f_scrollTop();
+           scrollTo(0,0);
+           return scrollHeight;
        }
        catch(e) {
            alert('error resetting view: ' + e);
+           return 0;
        }
     }-*/;
 

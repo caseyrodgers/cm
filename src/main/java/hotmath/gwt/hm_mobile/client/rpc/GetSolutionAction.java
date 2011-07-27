@@ -1,9 +1,10 @@
 package hotmath.gwt.hm_mobile.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.HmMobileActionBase;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
-public class GetSolutionAction implements Action<SolutionResponse> {
+public class GetSolutionAction extends HmMobileActionBase implements Action<SolutionResponse> {
     
     String pid;
 
