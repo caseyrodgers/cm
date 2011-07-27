@@ -1293,6 +1293,15 @@ from (
 
 select item_count, s.item_type
 from (
+  select count(*) as item_count, 'review' as item_type
+  from HA_TEST_RUN_LESSON iu,
+    (select tr.run_id from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+     where p.id in (XXX)
+       and t.user_prog_id = p.id
+       and tr.test_id = t.test_id) tt
+  where iu.run_id = tt.run_id
+    and iu.lesson_viewed is not null
+  union
   select count(*) as item_count, iu.item_type
   from HA_TEST_RUN_INMH_USE iu,
     (select tr.run_id from HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
@@ -1300,7 +1309,7 @@ from (
        and t.user_prog_id = p.id
        and tr.test_id = t.test_id) tt
   where iu.run_id = tt.run_id
-    and iu.item_type != 'activity_standard'
+    and iu.item_type != 'activity_standard' and iu.item_type != 'review'
   group by item_type
   union
   select count(*) as item_count, 'game' as item_type
