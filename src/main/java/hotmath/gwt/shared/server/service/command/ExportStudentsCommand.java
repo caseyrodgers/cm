@@ -143,6 +143,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			StringBuilder sb = new StringBuilder();
     			if (filterDescr != null)
     				sb.append("Filter: ( ").append(filterDescr).append(" )");
+    			else
+    				sb.append("Filter: (All Students)");
 
     			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
