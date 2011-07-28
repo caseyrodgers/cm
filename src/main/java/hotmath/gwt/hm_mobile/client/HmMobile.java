@@ -355,7 +355,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     private native int resetViewPort() /*-{
        try {
            var scrollHeight = $wnd.f_scrollTop();
-           scrollTo(0,0);
+           $wnd.scrollTo(0,0);
            return scrollHeight;
        }
        catch(e) {
