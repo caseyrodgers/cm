@@ -497,8 +497,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         }));
 
-        toolbar.add(new FillToolItem());
         toolbar.add(exportStudentsToolItem(_grid));
+
+        toolbar.add(new FillToolItem());
+
         toolbar.add(displayPrintableReportToolItem(_grid));
 
         return toolbar;
