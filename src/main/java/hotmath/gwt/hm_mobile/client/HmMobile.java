@@ -318,9 +318,9 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             	}
                 _pageStack.push(page);
                 
-                if(!(page instanceof TutorViewImpl)) {
-                	eb.fireEvent(new BackPageLoadedEvent(page));
-                }
+//                if(!(page instanceof TutorViewImpl)) {
+//                	eb.fireEvent(new BackPageLoadedEvent(page));
+//                }
             }
         });
         
