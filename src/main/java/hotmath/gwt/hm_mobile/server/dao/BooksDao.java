@@ -121,7 +121,8 @@ public class BooksDao extends SimpleJdbcDaoSupport {
             "       c.category " +
             "from   BOOKINFO b " +
             "  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
-            " where b.textcode = ?";
+            " where b.textcode = ?" +
+            " and c.category <> 'Workbooks'";
         
         BookModel book = getJdbcTemplate().queryForObject(
                 sql,
