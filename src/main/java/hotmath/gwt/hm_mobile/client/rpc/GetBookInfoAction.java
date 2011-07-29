@@ -1,10 +1,11 @@
 package hotmath.gwt.hm_mobile.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.HmMobileActionBase;
 import hotmath.gwt.hm_mobile.client.model.BookInfoModel;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 
-public class GetBookInfoAction implements Action<BookInfoModel>{
+public class GetBookInfoAction extends HmMobileActionBase implements Action<BookInfoModel>{
 	
 	BookModel bookModel;
 	public GetBookInfoAction() {}

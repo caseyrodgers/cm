@@ -3,10 +3,11 @@ package hotmath.gwt.hm_mobile.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.HmMobileActionBase;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 
-public class GetBooksAction implements Action<CmList<BookModel>>{
+public class GetBooksAction extends HmMobileActionBase implements Action<CmList<BookModel>>{
 	
 	CategoryModel subject;
 	public GetBooksAction() {}
