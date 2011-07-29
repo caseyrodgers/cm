@@ -595,7 +595,7 @@ public class ActionDispatcher {
 	 * @param type
 	 * @return
 	 */
-	public long getMonitoredData(MonitorData type) {
+	public long getMonitoredData(MonitorDataPoints type) {
 		switch (type) {
 		case ActionsExecuted:
 			return totalMonitorData.monitorCountActionsExecuted;
@@ -656,7 +656,7 @@ public class ActionDispatcher {
 		}
 	}
 
-	public static enum MonitorData {
+	public static enum MonitorDataPoints {
 		ActionsExecuted, ActionsCompleted, ProcessingTime, ExceptionCount, StudentActionsExecuted, 
 		StudentActionsCompleted, StudentActionsException, AdminActionsExcecuted, AdminActionsCompleted, 
 		AdminActionsException, AnyActionsExecuted, AnyActionsCompleted, AnyActionsException, 

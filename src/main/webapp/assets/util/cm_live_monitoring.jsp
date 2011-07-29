@@ -1,66 +1,64 @@
-<%@page import="hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher.MonitorData"%><%@page import="hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher"%><%@ page import="hotmath.util.*" %><%
-
-    String typeData = request.getParameter("data");
+<%@page import="hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher"%><%@ page import="hotmath.util.*" %><%String typeData = request.getParameter("data");
     if(typeData == null)
         throw new Exception("'data' must be specified");
 
     long dataValue = -1;
     if(typeData.equals("actions.executed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.ActionsExecuted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.ActionsExecuted);
     }
     else if(typeData.equals("actions.completed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.ActionsCompleted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.ActionsCompleted);
     }
     else if(typeData.equals("actions.time")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.ProcessingTime);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.ProcessingTime);
     }
 
     else if(typeData.equals("student.actions.time")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.StudentProcessingTime);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.StudentProcessingTime);
     }
     if(typeData.equals("student.actions.executed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.StudentActionsExecuted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.StudentActionsExecuted);
     }
     else if(typeData.equals("student.actions.completed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.StudentActionsCompleted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.StudentActionsCompleted);
     }
 
 
     if(typeData.equals("admin.actions.executed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AdminActionsExcecuted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AdminActionsExcecuted);
     }
     else if(typeData.equals("admin.actions.completed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AdminActionsCompleted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AdminActionsCompleted);
     }
     else if(typeData.equals("admin.actions.time")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AdminProcessingTime);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AdminProcessingTime);
     }
 
 
     else if(typeData.equals("any.actions.executed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AnyActionsExecuted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AnyActionsExecuted);
     }
     else if(typeData.equals("any.actions.completed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AnyActionsCompleted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AnyActionsCompleted);
     }
     else if(typeData.equals("any.actions.time")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AnyProcessingTime);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AnyProcessingTime);
     }
 
     else if(typeData.equals("admin.actions.exception")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AdminActionsException);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AdminActionsException);
     }
     else if(typeData.equals("student.actions.exception")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.StudentActionsException);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.StudentActionsException);
     }
     else if(typeData.equals("any.actions.exception")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.AnyActionsException);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.AnyActionsException);
     }
     else if(typeData.equals("other.actions.exception")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.OtherActionsException);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.OtherActionsException);
     }
     else if(typeData.equals("actions.errors")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.ExceptionCount);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.ExceptionCount);
     }
 
     else if(typeData.equals("db.connections")) {
@@ -84,17 +82,14 @@
     
     
     else if(typeData.equals("hm_mobile.actions.executed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileActionsExecuted);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.HmMobileActionsExecuted);
     }
-    else if(typeData.equals("hm_mobileactions.completed")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileActionsCompleted);
+    else if(typeData.equals("hm_mobile.actions.completed")) {
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.HmMobileActionsCompleted);
     }
     else if(typeData.equals("hm_mobile.actions.time")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileProcessingTime);
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.HmMobileProcessingTime);
     }
     else if(typeData.equals("hm_mobile.actions.exception")) {
-        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileActionsException);
-    }
-
-    
-%><%= dataValue %>
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorDataPoints.HmMobileActionsException);
+    }%><%= dataValue %>
