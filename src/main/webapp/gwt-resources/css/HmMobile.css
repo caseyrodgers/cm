@@ -334,7 +334,7 @@ li {
     height: 40px;
     background-image: url('/gwt-resources/images/mobile/header_back.png');
     background-repeat: repeat-x;
-    text-align: left;
+    text-align: center;
     line-height:  40px;
 }
 
@@ -634,20 +634,20 @@ question_head_text {
 #steps_prev {
     position: absolute;
     top: 20px;        
-    left: 0px;
+    left: 2px;
 }
 
 #steps_next {
     position: absolute;
     top: 20px;        
-    left: 85px;
+    left: 83px;
 }
 
 
 #new_problem {
     position: absolute;
     top: 20px;
-    left: 170px;
+    left: 165px;
 }
 
 #tutor_message {
