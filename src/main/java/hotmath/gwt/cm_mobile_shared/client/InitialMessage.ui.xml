@@ -1,0 +1,22 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+	    .main {
+	    	padding: 10px;
+	    }
+	    .main .footer {
+	        padding-left: 10px;
+	        padding-bottom: 5px;
+	    }
+	</ui:style>
+
+	<g:HTMLPanel styleName="{style.main}">
+	    <p>This version of Hotmath Mobile is designed for IPhone and IPad devices.</p>
+	    <p>Other devices may work but have not been verified.  We will be adding additional supported devices in the coming months.</p>
+	   <div class='{style.footer}'> 
+	      <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
+	   </div>
+	</g:HTMLPanel>
+</ui:UiBinder> 

@@ -3,6 +3,7 @@ package hotmath.gwt.hm_mobile.client;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.InitialMessage;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
@@ -41,7 +42,6 @@ import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
-import hotmath.gwt.hm_mobile.client.view.TutorViewImpl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,13 +56,11 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -148,10 +146,14 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             //initializeExternalJs();
 
             History.fireCurrentHistoryState();
+            
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
             
-            
             __clientFactory.getEventBus().fireEvent(new EnableDisplayZoomEvent(false));
+            
+            if(!InitialMessage.hasBeenSeen()) {
+            	new InitialMessage().showCentered();
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -163,9 +165,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     }
 
-    class MyAcceptsOneWidget extends SimplePanel {
-
-    }
 
     private Widget createApplicationPanel() {
         /**
@@ -191,6 +190,9 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     }
 
 
+    /** TODO: Move to a central Controller 
+     * 
+     */
     private void setupGlobalEventHandlers() {
         final EventBus eb = __clientFactory.getEventBus();
 

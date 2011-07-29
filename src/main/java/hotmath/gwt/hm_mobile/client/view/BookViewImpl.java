@@ -50,7 +50,9 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
 
     public BookViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        //pageNumber.getElement().setAttribute("type","number");
+        
+        
+        pageNumber.getElement().setAttribute("type","number");
         
         problemNumberList.add(listItems);
         pageNumber.addKeyPressHandler(new KeyPressHandler() {
