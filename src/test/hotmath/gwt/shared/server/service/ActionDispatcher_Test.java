@@ -54,9 +54,9 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     /** @TODO: create temp values for testing
      * 
      */
-    static final int TEST_RUN_ID=13351;
-    static final int TEST_ID = 2057;
-    static final String TEST_PID="genericalg1_2_4_GraphingLinearEquations_5_115";
+    static int TEST_RUN_ID;
+    static int TEST_ID ;
+    static final String TEST_PID="samples_1_1_SampleExercises_1-Algebra_1";
     
     public ActionDispatcher_Test(String name) {
         super(name);
@@ -73,6 +73,10 @@ public class ActionDispatcher_Test extends CmDbTestCase {
             setupDemoAccountTestRun();
         
         uid = _user.getUid();
+        
+        
+        TEST_RUN_ID = _testRun.getRunId();
+        TEST_ID = _test.getTestId();
     }
     
     
@@ -341,7 +345,6 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         List<RpcData> data = ActionDispatcher.getInstance().execute(action).getRpcData();
         
         assertNotNull(data);
-        assertTrue(data.size() > 0);
     }
 
     

@@ -113,6 +113,7 @@ background-color: black;
 .gwt-DialogBox .Caption {
     padding-left: 5px;
     color: white;
+    font-weight: bold;
     background: #EA4505;
     text-align: center;
     height: 2em;
@@ -160,12 +161,12 @@ li {
 .book-item-box .pub {
     margin-top: 5px;
     color: #827F92;
-    font-size: 95%;
+    font-size: 80%;
 }
 
 
 .book-item-box .author {
-    font-size: 70%;
+    font-size: 80%;
     color: #CDCDCD;
 }
 

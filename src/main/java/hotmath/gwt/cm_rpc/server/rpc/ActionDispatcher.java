@@ -385,10 +385,10 @@ public class ActionDispatcher {
 	private void incrementActionsExecuted(ActionType actionType) {
 		switch (actionType) {
 		case ADMIN:
-			monitorCountAdminActionsExecuted++;
+			adminMonitorData.monitorCountActionsExecuted++;
 			break;
 		case STUDENT:
-			monitorCountStudentActionsExecuted++;
+			studentMonitorData.monitorCountActionsExecuted++;
 			break;
 		case ANY:
 			monitorCountAnyActionsExecuted++;
@@ -402,8 +402,8 @@ public class ActionDispatcher {
 
 		logger.debug(String
 				.format("+++ incrementActionsExecuted(): admin: %d, student: %d, any: %d, other: %d, all: %d",
-						monitorCountAdminActionsExecuted,
-						monitorCountStudentActionsExecuted,
+						adminMonitorData.monitorCountActionsExecuted,
+						studentMonitorData.monitorCountActionsExecuted,
 						monitorCountAnyActionsExecuted,
 						monitorCountOtherActionsExecuted,
 						monitorCountActionsExecuted));
@@ -413,10 +413,10 @@ public class ActionDispatcher {
 			long executeTimeMillis) {
 		switch (actionType) {
 		case ADMIN:
-			monitorAdminProcessingTime += executeTimeMillis;
+			adminMonitorData.monitorProcessingTime += executeTimeMillis;
 			break;
 		case STUDENT:
-			monitorStudentProcessingTime += executeTimeMillis;
+			studentMonitorData.monitorProcessingTime += executeTimeMillis;
 			break;
 		case ANY:
 			monitorAnyProcessingTime += executeTimeMillis;
@@ -432,10 +432,10 @@ public class ActionDispatcher {
 	private void incrementActionsCompleted(ActionType actionType) {
 		switch (actionType) {
 		case ADMIN:
-			monitorCountAdminActionsCompleted++;
+			adminMonitorData.monitorCountActionsCompleted++;
 			break;
 		case STUDENT:
-			monitorCountStudentActionsCompleted++;
+			studentMonitorData.monitorCountActionsCompleted++;
 			break;
 		case ANY:
 			monitorCountAnyActionsCompleted++;
@@ -449,18 +449,18 @@ public class ActionDispatcher {
 
 		logger.debug(String
 				.format("+++ incrementActionsCompleted(): admin: %d, student: %d, all: %d",
-						monitorCountAdminActionsCompleted,
-						monitorCountStudentActionsCompleted,
+						adminMonitorData.monitorCountActionsCompleted,
+						studentMonitorData.monitorCountActionsCompleted,
 						monitorCountActionsCompleted));
 	}
 
 	private void incrementActionsException(ActionType actionType) {
 		switch (actionType) {
 		case ADMIN:
-			monitorCountAdminActionsException++;
+			adminMonitorData.monitorCountActionsException++;
 			break;
 		case STUDENT:
-			monitorCountStudentActionsException++;
+			studentMonitorData.monitorCountActionsException++;
 			break;
 		case ANY:
 			monitorCountAnyActionsException++;
@@ -473,8 +473,8 @@ public class ActionDispatcher {
 
 		logger.debug(String
 				.format("+++ incrementActionsException(): admin: %d, student: %d, all: %d",
-						monitorCountAdminActionsException,
-						monitorCountStudentActionsException,
+						adminMonitorData.monitorCountActionsException,
+						studentMonitorData.monitorCountActionsException,
 						monitorCountOfExceptions));
 	}
 
@@ -590,31 +590,31 @@ public class ActionDispatcher {
 			return monitorCountActionsCompleted;
 
 		case StudentActionsExecuted:
-			return monitorCountStudentActionsExecuted;
+			return studentMonitorData.monitorCountActionsExecuted;
 
 		case StudentActionsCompleted:
-			return monitorCountStudentActionsCompleted;
+			return studentMonitorData.monitorCountActionsCompleted;
 
 		case StudentActionsException:
-			return monitorCountStudentActionsException;
+			return studentMonitorData.monitorCountActionsException;
 
 		case AdminActionsExcecuted:
-			return monitorCountAdminActionsExecuted;
+			return adminMonitorData.monitorCountActionsExecuted;
 
 		case AdminActionsCompleted:
-			return monitorCountAdminActionsCompleted;
+			return adminMonitorData.monitorCountActionsCompleted;
 
 		case AdminActionsException:
-			return monitorCountAdminActionsException;
+			return adminMonitorData.monitorCountActionsException;
 
 		case ProcessingTime:
 			return monitorTotalProcessingTime;
 
 		case AdminProcessingTime:
-			return monitorAdminProcessingTime;
+			return adminMonitorData.monitorProcessingTime;
 
 		case StudentProcessingTime:
-			return monitorStudentProcessingTime;
+			return studentMonitorData.monitorProcessingTime;
 
 		case AnyProcessingTime:
 			return monitorAnyProcessingTime;
@@ -632,7 +632,12 @@ public class ActionDispatcher {
 	}
 
 	public static enum MonitorData {
-		ActionsExecuted, ActionsCompleted, ProcessingTime, ExceptionCount, StudentActionsExecuted, StudentActionsCompleted, StudentActionsException, AdminActionsExcecuted, AdminActionsCompleted, AdminActionsException, AnyActionsExecuted, AnyActionsCompleted, AnyActionsException, OtherActionsExecuted, OtherActionsCompleted, OtherActionsException, AdminProcessingTime, StudentProcessingTime, AnyProcessingTime, OtherProcessingTime
+		ActionsExecuted, ActionsCompleted, ProcessingTime, ExceptionCount, StudentActionsExecuted, 
+		StudentActionsCompleted, StudentActionsException, AdminActionsExcecuted, AdminActionsCompleted, 
+		AdminActionsException, AnyActionsExecuted, AnyActionsCompleted, AnyActionsException, 
+		OtherActionsExecuted, OtherActionsCompleted, OtherActionsException, AdminProcessingTime, 
+		StudentProcessingTime, AnyProcessingTime, OtherProcessingTime,
+		HmMobileActionsExecuted, HmMobileActionsCompleted,HmMobileActionsException
 	}
 
 	/** for zabbix logging see CmMonitor */
@@ -641,21 +646,42 @@ public class ActionDispatcher {
 	int monitorCountOfExceptions;
 	long monitorTotalProcessingTime;
 
-	int monitorCountStudentActionsExecuted;
-	int monitorCountStudentActionsCompleted;
-	int monitorCountStudentActionsException;
+	
+
+    MonitorType studentMonitorData = new MonitorType(MonitorTypeItem.STUDENT);
+
+    MonitorType adminMonitorData = new MonitorType(MonitorTypeItem.ADMIN);
+
+    /*
+	long adminMonitorData.monitorProcessingTime;
 	int monitorCountAdminActionsExecuted;
 	int monitorCountAdminActionsCompleted;
 	int monitorCountAdminActionsException;
+	*/
+	long monitorAnyProcessingTime;
 	int monitorCountAnyActionsExecuted;
 	int monitorCountAnyActionsCompleted;
 	int monitorCountAnyActionsException;
+	
+	long monitorOtherProcessingTime;
 	int monitorCountOtherActionsExecuted;
 	int monitorCountOtherActionsCompleted;
 	int monitorCountOtherActionsException;
+	
+}
 
-	long monitorAdminProcessingTime;
-	long monitorStudentProcessingTime;
-	long monitorAnyProcessingTime;
-	long monitorOtherProcessingTime;
+
+enum MonitorTypeItem {
+	STUDENT,ADMIN,ANY,OTHER
+}
+class MonitorType {
+	MonitorTypeItem type;
+	long monitorProcessingTime;
+	int monitorCountActionsExecuted;
+	int monitorCountActionsCompleted;
+	int monitorCountActionsException;
+	
+	public MonitorType(MonitorTypeItem type) {
+		this.type = type;
+	}
 }
