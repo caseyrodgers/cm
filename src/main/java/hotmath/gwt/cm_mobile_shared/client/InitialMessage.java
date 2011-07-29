@@ -21,7 +21,7 @@ public class InitialMessage extends DialogBox {
 	
 	public InitialMessage() {
 		super(true);
-		setSize("300px", "250px");
+		setSize("300px", "200px");
 		setText("Welcome to Hotmath Mobile!");		
 		setGlassEnabled(true);
 		setWidget(uiBinder.createAndBindUi(this));
@@ -53,6 +53,9 @@ public class InitialMessage extends DialogBox {
 	 * @return
 	 */
 	static public boolean hasBeenSeen() {
+		if(true)
+			return false;
+		
 		Storage storage = Storage.getLocalStorage();
 		String im = storage.getItem("initial_message");
 		return (im != null) ;
