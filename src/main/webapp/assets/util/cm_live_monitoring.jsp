@@ -80,5 +80,21 @@
     }
     else if(typeData.equals("cpool.connection.create.time")) {
         dataValue = HMConnectionPool.getInstance().getConnectionCreateTime();
-    }    
+    }
+    
+    
+    else if(typeData.equals("hm_mobile.actions.executed")) {
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileActionsExecuted);
+    }
+    else if(typeData.equals("hm_mobileactions.completed")) {
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileActionsCompleted);
+    }
+    else if(typeData.equals("hm_mobile.actions.time")) {
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileProcessingTime);
+    }
+    else if(typeData.equals("hm_mobile.actions.exception")) {
+        dataValue = ActionDispatcher.getInstance().getMonitoredData(ActionDispatcher.MonitorData.HmMobileActionsException);
+    }
+
+    
 %><%= dataValue %>

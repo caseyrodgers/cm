@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.HasActionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcherListener.ActionExecutionType;
+import hotmath.gwt.cm_rpc.server.rpc.MonitorType.MonitorTypeItem;
 import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.gwt.cm_rpc.server.service.ClientInfoHolder;
 import hotmath.util.HMConnectionPool;
@@ -283,7 +284,7 @@ public class ActionDispatcher {
 		} catch (Exception e) {
 			if ((e instanceof CmExceptionDoNotNotify) == false) {
 				incrementActionsException(actionType);
-				monitorCountOfExceptions++;
+				totalMonitorData.monitorCountActionsException++;
 
 				sendEmailNotifications(e, clientInfo);
 
@@ -391,22 +392,25 @@ public class ActionDispatcher {
 			studentMonitorData.monitorCountActionsExecuted++;
 			break;
 		case ANY:
-			monitorCountAnyActionsExecuted++;
+			anyMonitorData.monitorCountActionsExecuted++;
 			break;
 		case OTHER:
-			monitorCountOtherActionsExecuted++;
+			otherMonitorData.monitorCountActionsExecuted++;
 			break;
+		case HM_MOBILE:
+			hmMobileMonitorData.monitorCountActionsExecuted++;
+			break;			
 		}
 
-		monitorCountActionsExecuted++;
+		totalMonitorData.monitorCountActionsExecuted++;
 
 		logger.debug(String
 				.format("+++ incrementActionsExecuted(): admin: %d, student: %d, any: %d, other: %d, all: %d",
 						adminMonitorData.monitorCountActionsExecuted,
 						studentMonitorData.monitorCountActionsExecuted,
-						monitorCountAnyActionsExecuted,
-						monitorCountOtherActionsExecuted,
-						monitorCountActionsExecuted));
+						anyMonitorData.monitorCountActionsExecuted,
+						otherMonitorData.monitorCountActionsExecuted,
+						totalMonitorData.monitorCountActionsExecuted));
 	}
 
 	private void incrementProcessingTime(ActionType actionType,
@@ -419,14 +423,17 @@ public class ActionDispatcher {
 			studentMonitorData.monitorProcessingTime += executeTimeMillis;
 			break;
 		case ANY:
-			monitorAnyProcessingTime += executeTimeMillis;
+			anyMonitorData.monitorProcessingTime += executeTimeMillis;
 			break;
 		case OTHER:
-			monitorOtherProcessingTime += executeTimeMillis;
+			otherMonitorData.monitorProcessingTime += executeTimeMillis;
+			break;
+		case HM_MOBILE:
+			hmMobileMonitorData.monitorProcessingTime += executeTimeMillis;
 			break;
 		}
 
-		monitorTotalProcessingTime += executeTimeMillis;
+		totalMonitorData.monitorProcessingTime += executeTimeMillis;
 	}
 
 	private void incrementActionsCompleted(ActionType actionType) {
@@ -438,20 +445,23 @@ public class ActionDispatcher {
 			studentMonitorData.monitorCountActionsCompleted++;
 			break;
 		case ANY:
-			monitorCountAnyActionsCompleted++;
+			anyMonitorData.monitorCountActionsCompleted++;
 			break;
 		case OTHER:
-			monitorCountOtherActionsCompleted++;
+			otherMonitorData.monitorCountActionsCompleted++;
+			break;
+		case HM_MOBILE:
+			hmMobileMonitorData.monitorCountActionsCompleted++;
 			break;
 		}
 
-		monitorCountActionsCompleted++;
+		totalMonitorData.monitorCountActionsCompleted++;
 
 		logger.debug(String
 				.format("+++ incrementActionsCompleted(): admin: %d, student: %d, all: %d",
 						adminMonitorData.monitorCountActionsCompleted,
 						studentMonitorData.monitorCountActionsCompleted,
-						monitorCountActionsCompleted));
+						totalMonitorData.monitorCountActionsCompleted));
 	}
 
 	private void incrementActionsException(ActionType actionType) {
@@ -463,19 +473,23 @@ public class ActionDispatcher {
 			studentMonitorData.monitorCountActionsException++;
 			break;
 		case ANY:
-			monitorCountAnyActionsException++;
+			anyMonitorData.monitorCountActionsException++;
 			break;
 		case OTHER:
-			monitorCountOtherActionsException++;
+			otherMonitorData.monitorCountActionsException++;
+			break;
+			
+		case HM_MOBILE:
+			hmMobileMonitorData.monitorCountActionsException++;
 			break;
 		}
-		monitorCountOfExceptions++;
+		totalMonitorData.monitorCountActionsException++;
 
 		logger.debug(String
 				.format("+++ incrementActionsException(): admin: %d, student: %d, all: %d",
 						adminMonitorData.monitorCountActionsException,
 						studentMonitorData.monitorCountActionsException,
-						monitorCountOfExceptions));
+						totalMonitorData.monitorCountActionsException));
 	}
 
 	/**
@@ -576,7 +590,7 @@ public class ActionDispatcher {
 	}
 
 	/**
-	 * Used by CmMonitor get get individual stats from running ActionDispatcher.
+	 * Used by CmMonitor get individual stats from running ActionDispatcher.
 	 * 
 	 * @param type
 	 * @return
@@ -584,10 +598,10 @@ public class ActionDispatcher {
 	public long getMonitoredData(MonitorData type) {
 		switch (type) {
 		case ActionsExecuted:
-			return monitorCountActionsExecuted;
+			return totalMonitorData.monitorCountActionsExecuted;
 
 		case ActionsCompleted:
-			return monitorCountActionsCompleted;
+			return totalMonitorData.monitorCountActionsCompleted;
 
 		case StudentActionsExecuted:
 			return studentMonitorData.monitorCountActionsExecuted;
@@ -608,7 +622,7 @@ public class ActionDispatcher {
 			return adminMonitorData.monitorCountActionsException;
 
 		case ProcessingTime:
-			return monitorTotalProcessingTime;
+			return totalMonitorData.monitorProcessingTime;
 
 		case AdminProcessingTime:
 			return adminMonitorData.monitorProcessingTime;
@@ -617,17 +631,28 @@ public class ActionDispatcher {
 			return studentMonitorData.monitorProcessingTime;
 
 		case AnyProcessingTime:
-			return monitorAnyProcessingTime;
+			return anyMonitorData.monitorProcessingTime;
 
 		case OtherProcessingTime:
-			return monitorOtherProcessingTime;
+			return otherMonitorData.monitorProcessingTime;
 
 		case ExceptionCount:
-			return monitorCountOfExceptions;
-
+			return totalMonitorData.monitorCountActionsException;
+			
+		case HmMobileActionsExecuted:
+			return hmMobileMonitorData.monitorCountActionsExecuted;
+			
+		case HmMobileActionsCompleted:
+			return hmMobileMonitorData.monitorCountActionsCompleted;
+			
+		case HmMobileActionsException:
+			return hmMobileMonitorData.monitorCountActionsException;
+			
+		case HmMobileProcessingTime:
+			return hmMobileMonitorData.monitorProcessingTime;
+			
 		default:
 			return -1;
-
 		}
 	}
 
@@ -637,51 +662,16 @@ public class ActionDispatcher {
 		AdminActionsException, AnyActionsExecuted, AnyActionsCompleted, AnyActionsException, 
 		OtherActionsExecuted, OtherActionsCompleted, OtherActionsException, AdminProcessingTime, 
 		StudentProcessingTime, AnyProcessingTime, OtherProcessingTime,
-		HmMobileActionsExecuted, HmMobileActionsCompleted,HmMobileActionsException
+		HmMobileActionsExecuted, HmMobileActionsCompleted,HmMobileActionsException,HmMobileProcessingTime
 	}
 
-	/** for zabbix logging see CmMonitor */
-	int monitorCountActionsExecuted;
-	int monitorCountActionsCompleted;
-	int monitorCountOfExceptions;
-	long monitorTotalProcessingTime;
-
-	
-
+	/** for zabbix logging see CmMonitor 
+	 * 
+	 * */
+	MonitorType totalMonitorData = new MonitorType(MonitorTypeItem.TOTAL);
     MonitorType studentMonitorData = new MonitorType(MonitorTypeItem.STUDENT);
-
     MonitorType adminMonitorData = new MonitorType(MonitorTypeItem.ADMIN);
-
-    /*
-	long adminMonitorData.monitorProcessingTime;
-	int monitorCountAdminActionsExecuted;
-	int monitorCountAdminActionsCompleted;
-	int monitorCountAdminActionsException;
-	*/
-	long monitorAnyProcessingTime;
-	int monitorCountAnyActionsExecuted;
-	int monitorCountAnyActionsCompleted;
-	int monitorCountAnyActionsException;
-	
-	long monitorOtherProcessingTime;
-	int monitorCountOtherActionsExecuted;
-	int monitorCountOtherActionsCompleted;
-	int monitorCountOtherActionsException;
-	
-}
-
-
-enum MonitorTypeItem {
-	STUDENT,ADMIN,ANY,OTHER
-}
-class MonitorType {
-	MonitorTypeItem type;
-	long monitorProcessingTime;
-	int monitorCountActionsExecuted;
-	int monitorCountActionsCompleted;
-	int monitorCountActionsException;
-	
-	public MonitorType(MonitorTypeItem type) {
-		this.type = type;
-	}
+    MonitorType anyMonitorData = new MonitorType(MonitorTypeItem.ANY);
+    MonitorType otherMonitorData = new MonitorType(MonitorTypeItem.OTHER);
+    MonitorType hmMobileMonitorData = new MonitorType(MonitorTypeItem.HM_MOBILE);
 }

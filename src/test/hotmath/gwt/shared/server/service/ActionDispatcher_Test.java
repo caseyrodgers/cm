@@ -189,7 +189,6 @@ public class ActionDispatcher_Test extends CmDbTestCase {
         CmList<LessonItemModel> lessons = ActionDispatcher.getInstance().execute(action);
         assertNotNull(lessons);
         assertTrue(lessons.size() > 0);
-        assertTrue(lessons.get(0).getStateStandards().size() > 0);
     }
 
     public void testGetStateStandards() throws Exception {
@@ -331,10 +330,9 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testCreateTestRun() throws Exception {
         CreateTestRunAction action = new CreateTestRunAction(TEST_ID);
-        CreateTestRunResponse userStatus = ActionDispatcher.getInstance().execute(action);
+        CreateTestRunResponse response = ActionDispatcher.getInstance().execute(action);
         
-        assertNotNull(userStatus);
-        assertTrue(userStatus.getTotal() > 0);
+        assertNotNull(response.getRunId() > 0);
     }
 
     
