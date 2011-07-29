@@ -19,6 +19,7 @@ import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.ImageElement;
@@ -51,8 +52,12 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     public BookViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         
-        
-        pageNumber.getElement().setAttribute("type","number");
+        try {
+        	pageNumber.getElement().setAttribute("type","number");
+        }
+        catch(Exception e) {
+        	Log.error("Error setting input field type",e);
+        }
         
         problemNumberList.add(listItems);
         pageNumber.addKeyPressHandler(new KeyPressHandler() {

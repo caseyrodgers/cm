@@ -13,8 +13,7 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
-	    <p>This version of Hotmath Mobile is designed for IPhone and IPad devices.</p>
-	    <p>Other devices may work but have not been verified.  We will be adding additional supported devices in the coming months.</p>
+	    <p>Thank you for trying this beta version.  We will appreciate your comments emailed to support@hotmath.com.</p>
 	   <div class='{style.footer}'> 
 	      <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
 	   </div>
