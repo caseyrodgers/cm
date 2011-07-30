@@ -53,9 +53,6 @@ public class InitialMessage extends DialogBox {
 	 * @return
 	 */
 	static public boolean hasBeenSeen() {
-		if(true)
-			return false;
-		
 		Storage storage = Storage.getLocalStorage();
 		String im = storage.getItem("initial_message");
 		return (im != null) ;
