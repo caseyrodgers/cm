@@ -33,7 +33,7 @@
 	    	if(runId == null)
 	    	    throw new Exception("'run_id' must be specified");
 
-	    	runGradeLevel = new HaTestRunDao().lookupTestRun(conn, Integer.parseInt(runId)).getHaTest().getTestDef().getGradeLevel();
+	    	runGradeLevel = HaTestRunDao.getInstance().lookupTestRun(Integer.parseInt(runId)).getHaTest().getTestDef().getGradeLevel();
     	}
 	}
    	finally {

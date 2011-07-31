@@ -152,6 +152,20 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
+    
+    
+    /** Remove all associated test runs from named test
+     * 
+     */
+    public void removeTestRuns(final HaTest test) throws Exception {
+    	getJdbcTemplate().update(new PreparedStatementCreator() {
+    		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    			PreparedStatement ps = con.prepareStatement("delete from HA_TEST_RUN where test_id = ?");
+    			ps.setInt(1, test.getTestId());
+    			return ps;
+    		}
+    	});
+    }
 
     /**
      * Convenience method used to create a new HaTest from raw data
