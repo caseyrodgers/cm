@@ -482,9 +482,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(1, uid);
             ps.setInt(2, uid);
             ps.setInt(3, uid);
-            ps.setInt(4,uid);
-            ps.setInt(5,uid);
-            ps.setInt(6,uid);
+            ps.setInt(4, uid);
+            ps.setInt(5, uid);
+            ps.setInt(6, uid);
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);
@@ -1910,6 +1910,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             m.setTestId(rs.getInt("test_id"));
             int sectionNum = rs.getInt("test_segment");
             String progId = rs.getString("prog_id");
+            m.setTimeOnTask(rs.getInt("time_on_task"));
 
             if (progId.equalsIgnoreCase("chap")) {
                 String subjId = rs.getString("subj_id");
