@@ -1,13 +1,11 @@
 package hotmath.assessment;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.inmh.INeedMoreHelpResourceType;
-import hotmath.testset.ha.HaTest;
+import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.testset.ha.HaTestDao;
-import hotmath.testset.ha.HaTestDef;
-import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRun;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AssessmentPrescription_Test extends CmDbTestCase {
@@ -48,6 +46,18 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     	if(_test == null) {
     		setupDemoAccountTest();
     	}
+    }
+    
+    
+    public void testCreatePrescription() throws Exception {
+    	HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn,_user.getUid(), _test.getTestId(), 0, 1,0);
+    	
+    	String file = "topics/simplifying-radical-expressions.html";
+    	String title = "simplifying-radical-expressions";
+    	InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));    	
+    	List<RppWidget> workBookPids = inmhData.getWookBookSolutionPool(conn,testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
+
+    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
     }
     
 

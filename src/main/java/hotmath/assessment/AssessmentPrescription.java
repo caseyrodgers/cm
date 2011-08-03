@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
 public class AssessmentPrescription {
 
 	static final Logger logger = Logger.getLogger(AssessmentPrescription.class);
-	
+
 	protected Connection conn;
 
 	final static public int TOTAL_SESSION_SOLUTIONS = 3;
@@ -49,17 +49,14 @@ public class AssessmentPrescription {
 
 	InmhAssessment _assessment;
 
-
 	List<AssessmentPrescriptionSession> _sessions = new ArrayList<AssessmentPrescriptionSession>();
 	int missed, totalPrescription;
 
 	HaTestRun testRun;
 
-	
 	protected AssessmentPrescription(final Connection conn) {
-	    this.conn = conn;
-	}	
-	
+		this.conn = conn;
+	}
 
 	/**
 	 * Create an assessment prescription based on comma separated list of
@@ -85,13 +82,14 @@ public class AssessmentPrescription {
 	 * @param pids
 	 * @throws Exception
 	 */
-	public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
-	    this(conn);
+	public AssessmentPrescription(final Connection conn, HaTestRun testRun)
+			throws Exception {
+		this(conn);
 		logger.debug("Creating prescription for run: " + testRun);
 		this.testRun = testRun;
-		
+
 		readAssessment();
-		
+
 		missed = _assessment.getPids().length;
 
 		List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
@@ -123,15 +121,18 @@ public class AssessmentPrescription {
 				continue; // nothing to see here.
 			}
 
-			AssessmentPrescriptionSession session = createSession(sessNum,rppWidgets, itemData, true);
+			AssessmentPrescriptionSession session = createSession(sessNum,
+					rppWidgets, itemData, true);
 
 			// assert that there is at least one
 			if (session.getSessionItems().size() == 0) {
 				// this session has no items, so it is invalid and will be
 				// skipped
-			    logger.warn("AssessmentPrescriptionSession: session has no items: "	+ session);
+				logger.warn("AssessmentPrescriptionSession: session has no items: "
+						+ session);
 			} else {
-				//TOOD: should sessNum be incremented if session not actually added?
+				// TOOD: should sessNum be incremented if session not actually
+				// added?
 				// add this session, and move to next
 				_sessions.add(session);
 				sessNum++;
@@ -140,97 +141,108 @@ public class AssessmentPrescription {
 
 		sortLessonsByRanking(conn, _sessions);
 
-		HaTestRunDao.getInstance().addLessonsToTestRun(conn, testRun, _sessions);
+		HaTestRunDao.getInstance()
+				.addLessonsToTestRun(conn, testRun, _sessions);
 		logger.debug("Finished creating prescription for run: " + testRun);
 	}
-	
 
-    /**
-     * Return the grade level of this current program
-     * 
-     * This will be determined by the textcode's subject's grade_level found in
-     * textcode assigned to the test_def
-     * 
-     * @return
-     */
-    public int getGradeLevel() {
-        if (testRun == null)
-            return 99;
+	/**
+	 * Return the grade level of this current program
+	 * 
+	 * This will be determined by the textcode's subject's grade_level found in
+	 * textcode assigned to the test_def
+	 * 
+	 * @return
+	 */
+	public int getGradeLevel() {
+		if (testRun == null)
+			return 99;
 
-        return getTestRun().getHaTest().getTestDef().getGradeLevel();
-    }
+		return getTestRun().getHaTest().getTestDef().getGradeLevel();
+	}
 
-    public HaTestRun getTestRun() {
-        return testRun;
-    }
+	public HaTestRun getTestRun() {
+		return testRun;
+	}
 
-    public void setTestRun(HaTestRun testRun) {
-        this.testRun = testRun;
-    }
+	public void setTestRun(HaTestRun testRun) {
+		this.testRun = testRun;
+	}
 
-    
-    /** Read and set _assessment variable 
-     * 
-     * @throws CmException
-     */
-    protected void readAssessment() throws CmException  {
-        _assessment = new InmhAssessment(conn, testRun.getHaTest().getUser().getUid(), testRun.getPidList());       
-    }
-    
-    public InmhAssessment getAssessment() {
-        return _assessment;
-    }
-	
+	/**
+	 * Read and set _assessment variable
+	 * 
+	 * @throws CmException
+	 */
+	protected void readAssessment() throws CmException {
+		_assessment = new InmhAssessment(conn, testRun.getHaTest().getUser()
+				.getUid(), testRun.getPidList());
+	}
 
-	private void sortLessonsByRanking(final Connection conn, List<AssessmentPrescriptionSession> sessions) throws Exception {
+	public InmhAssessment getAssessment() {
+		return _assessment;
+	}
+
+	private void sortLessonsByRanking(final Connection conn,
+			List<AssessmentPrescriptionSession> sessions) throws Exception {
 		final Map<String, Integer> sortMap = getLessonRankings(conn);
-		Collections.sort(sessions, new Comparator<AssessmentPrescriptionSession>() {
-			@Override
-			public int compare(AssessmentPrescriptionSession o1, AssessmentPrescriptionSession o2) {
-				String l1 = o1.getSessionItems().get(0).getItem().getFile();
-				String l2 = o2.getSessionItems().get(0).getItem().getFile();
-				int rank1 = getLessonRank(sortMap, l1);
-				int rank2 = getLessonRank(sortMap, l2);
-				
-			    int comp = rank1 - rank2;
-			    if(comp == 0) {
-			    	return l1.compareTo(l2);
-			    }
-			    return comp;
-			}
-		});
+		Collections.sort(sessions,
+				new Comparator<AssessmentPrescriptionSession>() {
+					@Override
+					public int compare(AssessmentPrescriptionSession o1,
+							AssessmentPrescriptionSession o2) {
+						String l1 = o1.getSessionItems().get(0).getItem()
+								.getFile();
+						String l2 = o2.getSessionItems().get(0).getItem()
+								.getFile();
+						int rank1 = getLessonRank(sortMap, l1);
+						int rank2 = getLessonRank(sortMap, l2);
+
+						int comp = rank1 - rank2;
+						if (comp == 0) {
+							return l1.compareTo(l2);
+						}
+						return comp;
+					}
+				});
 	}
 
 	static public int getLessonRank(Map<String, Integer> map, String name) {
 		Integer rank = map.get(name);
-		if(rank == null)
-			rank = 999999;  /** end of list */
+		if (rank == null)
+			rank = 999999;
+		/** end of list */
 		return rank;
 	}
-	static public  Map<String, Integer> getLessonRankings(final Connection conn) throws Exception {
-		String key="lesson_ranking";
+
+	static public Map<String, Integer> getLessonRankings(final Connection conn)
+			throws Exception {
+		String key = "lesson_ranking";
 		@SuppressWarnings("unchecked")
-		Map<String,Integer> map = (Map<String,Integer>)CmCacheManager.getInstance().retrieveFromCache(CacheName.LESSON_RANKINGS, key);
-		if(map != null) {
+		Map<String, Integer> map = (Map<String, Integer>) CmCacheManager
+				.getInstance()
+				.retrieveFromCache(CacheName.LESSON_RANKINGS, key);
+		if (map != null) {
 			return map;
 		}
-		
+
 		PreparedStatement stmt = null;
 		try {
 			map = new HashMap<String, Integer>();
-			stmt = conn.prepareStatement("select * from HA_LESSON_RANK ORDER BY RANK");
+			stmt = conn
+					.prepareStatement("select * from HA_LESSON_RANK ORDER BY RANK");
 			ResultSet rs = stmt.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				map.put(rs.getString("lesson_file"), rs.getInt("rank"));
 			}
-			CmCacheManager.getInstance().addToCache(CacheName.LESSON_RANKINGS, key, map);
+			CmCacheManager.getInstance().addToCache(CacheName.LESSON_RANKINGS,
+					key, map);
 			return map;
-		}
-		finally {
-			SqlUtilities.releaseResources(null,stmt,null);
+		} finally {
+			SqlUtilities.releaseResources(null, stmt, null);
 		}
 	}
-	
+
 	public AssessmentPrescription(final Connection conn,
 			List<TestRunLesson> lessons, HaTestRun testRun) throws CmException {
 
@@ -244,9 +256,10 @@ public class AssessmentPrescription {
 		// create sessions from persistent data
 		int sessNum = 0;
 		for (TestRunLesson lesson : lessons) {
-			logger.debug("Creating AssessmentPrescription for lesson '" + lesson
-					+ "': " + testRun.getRunId());
-			AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
+			logger.debug("Creating AssessmentPrescription for lesson '"
+					+ lesson + "': " + testRun.getRunId());
+			AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(
+					this);
 			for (RppWidget pid : lesson.getPids()) {
 				List<SessionData> si = session.getSessionItems();
 
@@ -259,9 +272,9 @@ public class AssessmentPrescription {
 				si.add(new SessionData(item, pid.getFile(), 3, 1, pid
 						.getWidgetJsonArgs()));
 			}
-			if (! _sessions.contains(session)) {
+			if (!_sessions.contains(session)) {
 				_sessions.add(session);
-    			sessNum++;
+				sessNum++;
 			}
 		}
 		logger.debug("Finished creating AssessmentPrescription from lessons: "
@@ -277,8 +290,11 @@ public class AssessmentPrescription {
 	 * @return
 	 * @throws Exception
 	 */
-	protected AssessmentPrescriptionSession createSession(int sessNum,List<RppWidget> rppWidgets, InmhItemData itemData, boolean filter) throws Exception {
-		AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
+	public AssessmentPrescriptionSession createSession(int sessNum,
+			List<RppWidget> rppWidgets, InmhItemData itemData, boolean filter)
+			throws Exception {
+		AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(
+				this);
 		List<SessionData> sessionItems = session.getSessionItems();
 
 		/**
@@ -309,28 +325,74 @@ public class AssessmentPrescription {
 			 * show only pid widgets
 			 * 
 			 */
-			for (RppWidget rpp : rppWidgets) {
+			session.getSessionItems().addAll(
+					filterRppsByGradeLevel(getGradeLevel(), rppWidgets,
+							itemData));
+		}
+		return session;
+	}
 
-				ProblemID pid = new ProblemID(rpp.getFile());
-				// subject filter solutions
-				int gradeLevel = pid.getGradeLevel();
-				if (filter && gradeLevel > getGradeLevel()) {
-					logger.info("AssessmentPrescriptionSession: "
-					        + itemData.getInmhItem() 
-							+ testRun.getRunId()
-							+ ", level: "
-							+ getGradeLevel()
-							+ ", inmh item not included due to higher grade level:  "
-							+ pid + ", level: " + gradeLevel);
-					continue;
-				}
-				sessionItems.add(new SessionData(itemData.getInmhItem(), pid
+	/**
+	 * implement the grade_level filter.
+	 * 
+	 * create list of possible PIDS looking at grade level.
+	 * 
+	 * 1. favor exact match 2. do not consider higher grade levels 3. choose top
+	 * three.
+	 * 
+	 */
+	private List<SessionData> filterRppsByGradeLevel(int testDefGradeLevel,
+			List<RppWidget> rppWidgets, InmhItemData itemData) throws Exception {
+
+		List<SessionData> session = new ArrayList<AssessmentPrescription.SessionData>();
+
+		List<RppWidget> maybeList = new ArrayList<RppWidget>();
+		for (RppWidget rpp : rppWidgets) {
+			ProblemID pid = new ProblemID(rpp.getFile());
+
+			int pidGradeLevel = pid.getGradeLevel();
+			if (pidGradeLevel == testDefGradeLevel) {
+				logger.debug("adding exact grade level match: " + rpp); 
+				session.add(new SessionData(itemData.getInmhItem(), pid
 						.getGUID(), PID_COUNT, itemData.getWeight()));
 
-				if (sessionItems.size() > TOTAL_SESSION_SOLUTIONS - 1)
+				if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)
 					break;
+
+			} else if (pidGradeLevel < testDefGradeLevel) {
+				/**
+				 * might be used
+				 */
+				maybeList.add(rpp);
+			} else if (pidGradeLevel > testDefGradeLevel) {
+				/**
+				 * completely filtered out
+				 * 
+				 */
+				logger.debug("AssessmentPrescriptionSession: "
+						+ itemData.getInmhItem()
+						+ testRun.getRunId()
+						+ ", level: "
+						+ testDefGradeLevel
+						+ ", inmh item not included due to higher grade level:  "
+						+ pid + ", level: " + pid.getGradeLevel());
+				continue;
 			}
 		}
+
+		if (session.size() < TOTAL_SESSION_SOLUTIONS && maybeList.size() > 0) {
+			logger.debug("finding best match from: " + maybeList.size());
+			/**
+			 * take first three from maybe list
+			 * 
+			 */
+			for (int i = 0; i < 3; i++) {
+				ProblemID pid = new ProblemID(maybeList.get(i).getFile());
+				session.add(new SessionData(itemData.getInmhItem(), pid
+						.getGUID(), PID_COUNT, itemData.getWeight()));
+			}
+		}
+
 		return session;
 	}
 
@@ -364,8 +426,8 @@ public class AssessmentPrescription {
 	}
 
 	/**
-	 * Return the sum of all the weights for the inmh items
-	 * associated with this assessment.
+	 * Return the sum of all the weights for the inmh items associated with this
+	 * assessment.
 	 * 
 	 * @return
 	 */

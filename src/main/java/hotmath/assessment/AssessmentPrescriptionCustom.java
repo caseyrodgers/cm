@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.ProblemID;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -58,6 +59,17 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                     logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                     continue; // nothing to see here.
                 }
+                
+                // find the highest grade level
+                for(RppWidget w: workBookPids) {
+                	if(w.isSolution()) {
+                		int gl = new ProblemID(w.getFile()).getGradeLevel();
+                		if(gl > gradeLevel) {
+                			gradeLevel = gl;
+                		}
+                	}
+                }
+                
                 session = createSession(sessNum,workBookPids,itemData,true);
                 
                 // assert that there is at least one
@@ -86,5 +98,22 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     @Override
     public CmProgramFlowAction getNextAction() throws Exception {
         return new CmProgramFlowAction(CmPlace.PRESCRIPTION);
+    }
+    
+    
+    /** Return the grade level for this custom program 
+     * 
+     */
+    int gradeLevel;
+    @Override
+    public int getGradeLevel() {
+    	if(gradeLevel == 0) {
+    		gradeLevel = inferProgramGradeLevel();
+    	}
+    	return gradeLevel;
+    }
+    
+    private int inferProgramGradeLevel() {
+    	return 99;
     }
 }

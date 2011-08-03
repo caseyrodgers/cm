@@ -30,6 +30,7 @@ public class AssessmentPrescriptionFactory {
 	    List<TestRunLesson> lessons = HaTestRunDao.getInstance().loadTestRunLessonsAndPids(conn, testRun.getRunId());
 	    if(lessons.size() == 0) {
 	        
+	    	/** new prescriptions (or empty) */
 	        if(testRun.getHaTest().getTestDef().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId()) {
 	            return new AssessmentPrescriptionCustom(conn, testRun);
 	        }
