@@ -29,6 +29,7 @@ public class HaTest_Test extends CmDbTestCase {
         HaTest test = HaTestDao.getInstance().createTest(_test.getUser().getUid(), HaTestDefDao.getInstance().getTestDef(
                 CHAP_TEST), 1);
         assertTrue(test != null);
+        assertTrue(test.getGradeLevel() > 0);
     }
 
     public void testCreateTestRun() throws Exception {
@@ -46,12 +47,14 @@ public class HaTest_Test extends CmDbTestCase {
 
     public void testCreateTestDef() throws Exception {
         HaTestDef htd = HaTestDefDao.getInstance().getTestDef(PROF_TEST);
-        assertTrue(htd.getTestIdsForSegment(userProgram, 2, new HaTestConfig(null), 0).size() == 10);
+        
+        HaTest test = HaTestDao.getInstance().loadTest( _test.getTestId());
+        assertTrue(htd.getTestIdsForSegment(test.getProgramInfo(), 2, new HaTestConfig(null), 0).size() > 0);
     }
 
     public void testCreateTestDef4() throws Exception {
         HaTestDef htd = HaTestDefDao.getInstance().getTestDef(PROF_TEST);
-        assertTrue(htd.getTestIdsForSegment(userProgram, 4, new HaTestConfig(null), 0).size() == 10);
+        assertTrue(htd.getTestIdsForSegment(userProgram, 4, new HaTestConfig(null), 0).size() > 0);
     }
 
     public void testLookupTestRun1() throws Exception {
@@ -91,8 +94,8 @@ public class HaTest_Test extends CmDbTestCase {
     public void testCreateTestDefOrder() throws Exception {
         HaTestDef htd1 = HaTestDefDao.getInstance().getTestDef(CHAP_TEST);
 
-        List<String> list1 = htd1.getTestIdsForSegment(userProgram, 1, null, 0);
-        List<String> list2 = htd1.getTestIdsForSegment(userProgram, 1, null, 0);
+        List<String> list1 = htd1.getTestIdsForSegment(_test.getProgramInfo(), 1, null, 0);
+        List<String> list2 = htd1.getTestIdsForSegment(_test.getProgramInfo(), 1, null, 0);
 
         assertTrue(list1.get(5).equals(list2.get(5)));
     }

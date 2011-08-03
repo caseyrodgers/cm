@@ -298,39 +298,50 @@ public class AssessmentPrescription {
 		List<SessionData> sessionItems = session.getSessionItems();
 
 		/**
-		 * if any widgets are Flash then only show the Flash widgets
+		 * if any widgets are RPA then only show the RPA widgets
 		 * 
 		 */
-		boolean hasNonPid = false;
+		boolean hasRPA = false;
 		for (RppWidget rpp : rppWidgets) {
 			if (!rpp.isSolution()) {
-				hasNonPid = true;
+				hasRPA = true;
 				break;
 			}
 		}
-		if (hasNonPid) {
+		if (hasRPA) {
 			/**
-			 * only show nonPid widgets
+			 * only show RPA widgets (filtered)
 			 * 
 			 */
 			for (RppWidget rpp : rppWidgets) {
 				if (!rpp.isSolution()) {
-					sessionItems.add(new SessionData(itemData.getInmhItem(),
-							rpp.getFile(), (int) PID_COUNT, itemData
-									.getWeight(), rpp.getWidgetJsonArgs()));
+					sessionItems.add(new SessionData(itemData.getInmhItem(),rpp.getFile(), (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
 				}
 			}
 		} else {
 			/**
-			 * show only pid widgets
+			 * show only RPP widgets (filtered)
 			 * 
 			 */
-			session.getSessionItems().addAll(
-					filterRppsByGradeLevel(getGradeLevel(), rppWidgets,
-							itemData));
+			sessionItems.addAll(filterRppsByGradeLevel(getGradeLevel(), rppWidgets,itemData));
 		}
 		return session;
 	}
+	
+	
+    
+    protected int getHighestGradeLevel(List<RppWidget> rpps) throws Exception {
+    	int heighestLevel=0;
+    	for(RppWidget w: rpps) {
+        	if(w.isSolution()) {
+        		int level = new ProblemID(w.getFile()).getGradeLevel();
+        		if(level > heighestLevel) {
+        			heighestLevel = level;
+        		}
+        	}
+        }    	
+    	return heighestLevel;
+    }	
 
 	/**
 	 * implement the grade_level filter.

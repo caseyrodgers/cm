@@ -1085,8 +1085,8 @@ ORDER BY cast(title_number as unsigned)
 
 .key=CREATE_NEW_TEST
 
-insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)
-values(?,?,?,?,?,?,?,?)
+insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count,grade_level)
+values(?,?,?,?,?,?,?,?,?)
  
 
 ##

@@ -30,8 +30,9 @@ public class HaTest {
 	int totalSegments;
 	int numTestQuestions;
 	Timestamp createTime;
-	
-    List<HaTestRun> testRuns;
+	int gradeLevel;
+
+	List<HaTestRun> testRuns;
 	
 
     public List<HaTestRun> getTestRuns() {
@@ -159,7 +160,23 @@ public class HaTest {
 		return getUser().getActiveTestRunId();
 	}	
 	
+	@Override
 	public String toString() {
-		return user + "," + testId;
+		return "HaTest [user=" + user + ", testId=" + testId + ", pids=" + pids
+				+ ", testDef=" + testDef + ", segment=" + segment
+				+ ", segmentSlot=" + segmentSlot + ", totalSegments="
+				+ totalSegments + ", numTestQuestions=" + numTestQuestions
+				+ ", createTime=" + createTime + ", gradeLevel=" + gradeLevel
+				+ ", testRuns=" + testRuns + ", programInfo=" + programInfo
+				+ ", TEST_SIZE=" + TEST_SIZE + "]";
 	}
+	
+    public int getGradeLevel() {
+		return gradeLevel;
+	}
+
+	public void setGradeLevel(int gradeLevel) {
+		this.gradeLevel = gradeLevel;
+	}
+	
 }

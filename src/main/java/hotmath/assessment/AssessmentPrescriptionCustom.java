@@ -1,6 +1,5 @@
 package hotmath.assessment;
 
-import hotmath.ProblemID;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -60,15 +59,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                     continue; // nothing to see here.
                 }
                 
-                // find the highest grade level
-                for(RppWidget w: workBookPids) {
-                	if(w.isSolution()) {
-                		int gl = new ProblemID(w.getFile()).getGradeLevel();
-                		if(gl > gradeLevel) {
-                			gradeLevel = gl;
-                		}
-                	}
-                }
+                gradeLevel = getHighestGradeLevel(workBookPids);
                 
                 session = createSession(sessNum,workBookPids,itemData,true);
                 
@@ -94,6 +85,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         }
         HaTestRunDao.getInstance().addLessonsToTestRun(conn,testRun, _sessions);
     }
+
     
     @Override
     public CmProgramFlowAction getNextAction() throws Exception {
@@ -107,13 +99,6 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     int gradeLevel;
     @Override
     public int getGradeLevel() {
-    	if(gradeLevel == 0) {
-    		gradeLevel = inferProgramGradeLevel();
-    	}
     	return gradeLevel;
-    }
-    
-    private int inferProgramGradeLevel() {
-    	return 99;
     }
 }

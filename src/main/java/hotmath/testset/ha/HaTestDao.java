@@ -200,6 +200,8 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         final List<String> testIds = (List<String>)(segment == EMPTY_TEST?new ArrayList<String>():testDef.getTestIdsForSegment(userProgram, segment, config, segmentSlot));
 
+        
+        
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -230,11 +232,12 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                     ps.setInt(7, segmentCount);
 
                     ps.setInt(8, testIds.size());
+                    ps.setInt(9, testDef.getGradeLevel());
 
                     return ps;
                 } catch (Exception e) {
                     __logger.error(e.getMessage(), e);
-                    throw new SQLException("Error creating test run", e);
+                    throw new SQLException("Error creating test", e);
                 }
             }
         }, keyHolder);
@@ -291,6 +294,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                                 test.setSegmentSlot(rs.getInt("test_segment_slot"));
                                 test.setNumTestQuestions(rs.getInt("test_question_count"));
                                 test.setTotalSegments(rs.getInt("total_segments"));
+                                test.setGradeLevel(rs.getInt("grade_level"));
                                 
             
                                 test.setProgramInfo(new StudentUserProgramModel());

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class SystemSyncChecker extends StandardSystemRefreshWindow {
 
-    static final int CHECK_EVERY = 1000 * 60; //  * 15;
+    static final int CHECK_EVERY = 1000 * 60 * 15;
     static SystemSyncChecker _theWindow;
 
     public SystemSyncChecker() {
@@ -95,7 +95,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                  if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
                      new SystemSyncChecker(version);
                  }
-                 else if(UserInfo.getInstance() != null && CmShared.getQueryParameter("debug") == null) {
+                 else if(!UserInfoBase.getInstance().getCmStartType().equals("ADMIN") && CmShared.getQueryParameter("debug") == null) {
                 	 /** only for CM Student not in debug mode */
                 	 if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
 	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",

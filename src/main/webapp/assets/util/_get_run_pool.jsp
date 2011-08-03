@@ -53,14 +53,9 @@
            		      <li> <%= s %></li>
            		  <%
         	  }
-        	  else if(new ProblemID(s).getGradeLevel() > runGradeLevel) {
-		          %>
-		              <li> <a href='/tutor/?pid=<%= s %>'><%= s %></a> (filtered out)</li>
-		          <%
-		      }
               else {
 		          %>
-	              <li> <a href='/tutor/?pid=<%= s %>'><%= s %></a> </li>
+	              <li> <a href='/tutor/?pid=<%= s %>'><%= s %></a> (level: <%= new ProblemID(s).getGradeLevel() %>)</li>
   	              <%
               }
           }

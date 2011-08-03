@@ -255,7 +255,7 @@ public class CmShared implements EntryPoint {
                         needToValidate = false;
                     }
                     String cmStartType = o.get("type").isString().stringValue();
-                    if(cmStartType != null && cmStartType.equals("AUTO_CREATE")) {
+                    if(cmStartType != null) {
                     	UserInfoBase.getInstance().setCmStartType(cmStartType);
                     }
 

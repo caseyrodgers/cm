@@ -173,9 +173,9 @@ public class CatchupMath implements EntryPoint {
             }
             
             
-	    	String ac = UserInfoBase.getInstance().getCmStartType();
-	    	if(ac == null)ac = "";
-	    	if (ac.equals("AUTO_CREATE")) {
+	    	String startType = UserInfoBase.getInstance().getCmStartType();
+	    	if(startType == null)startType = "";
+	    	if (startType.equals("AUTO_CREATE")) {
 	    		/**
 	    		 * self registration
 	    		 * 
