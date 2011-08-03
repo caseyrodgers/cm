@@ -226,9 +226,12 @@ public class StudentDetailsWindow extends CmWindow {
                 
                 if(sam.getIsQuiz() && sam.getRunId() > 0) {
                     _showQuizResults.enable();
+                    _showWorkButton.disable();
                 }
-                else 
+                else {
                     _showQuizResults.disable();
+                   _showWorkButton.enable();
+                }
             }
         }
     }
