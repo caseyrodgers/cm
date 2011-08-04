@@ -80,7 +80,7 @@ public class StudentDetailsWindow extends CmWindow {
     public StudentDetailsWindow(final StudentModelExt studentModel) {
         addStyleName("student-details-window");
         this.studentModel = studentModel;
-        setSize(580, 410);
+        setSize(645, 410);
         setModal(true);
         setResizable(false);
         setHeading("Student Details For: " + studentModel.getName());
