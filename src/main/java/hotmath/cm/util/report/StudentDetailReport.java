@@ -4,6 +4,7 @@ import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -52,8 +53,10 @@ public class StudentDetailReport {
             if (info == null) return null;
 
         	CmStudentDao studentDao = CmStudentDao.getInstance();
-        	List<StudentActivityModel> sList = studentDao.getStudentActivity(conn, stuUid);
         	StudentModelI sm = studentDao.getStudentModelBase(conn, stuUid, false);
+        	
+        	StudentActivityDao activityDao = StudentActivityDao.getInstance();
+        	List<StudentActivityModel> sList = activityDao.getStudentActivity(conn, stuUid);
 						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();

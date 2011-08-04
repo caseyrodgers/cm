@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -16,7 +16,7 @@ public class GetStudentActivityCommand implements ActionHandler<GetStudentActivi
 
     @Override
     public CmList<StudentActivityModel>  execute(Connection conn, GetStudentActivityAction action) throws Exception {
-       CmStudentDao dao = CmStudentDao.getInstance();
+       StudentActivityDao dao = StudentActivityDao.getInstance();
        List<StudentActivityModel> activity = dao.getStudentActivity(conn, action.getStudent().getUid());
 
        CmList<StudentActivityModel> list = new CmArrayList<StudentActivityModel>();
@@ -25,10 +25,8 @@ public class GetStudentActivityCommand implements ActionHandler<GetStudentActivi
        return list;
     }
 
-    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
         return GetStudentActivityAction.class;
     }
 
