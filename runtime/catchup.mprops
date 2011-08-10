@@ -2245,6 +2245,19 @@ where  u.uid in( $$UID_LIST$$ )
 order  by u.user_name 
           
           
+.key=HIGHLIGHT_REPORT_TIME_ON_TASK
+
+
+select u.user_name, t.user_id, iu.item_type, count(*)
+from HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_INMH_USE iu, HA_USER u
+where t.user_id in ( $$UID_LIST$$ )
+  and t.test_id = tr.test_id
+  and iu.run_id = tr.run_id
+  and iu.view_time between ? and ?
+  and t.user_id = u.uid
+group by t.user_id, iu.item_type
+order by u.user_name, iu.item_type
+          
           
           
 #########################
