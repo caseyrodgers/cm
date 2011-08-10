@@ -1,21 +1,27 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.JsonUtil;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.SubjectModel;
+import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 /**
@@ -202,7 +208,70 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     private boolean isCustomQuiz(StudentActivityModel sm) {
         return sm.getProgramDescr().startsWith("CQ:");
     }
+    
+    public enum ActivityTypeEnum {ACTIVITY, ACTIVITY_STANDARD, CMEXTRA, FLASHCARD, FLASHCARD_SPAN,
+    	PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB, EPP_WB, SOLUTION, VIDEO, WOOKBOOK, UNKNOWN};
 
+    class ActivityTime {
+
+    	ActivityTypeEnum type;
+
+    	int timeOnTask;
+
+    	String description;
+    	
+    	ActivityTime(ActivityTypeEnum type, int timeOnTask, String description) {
+    		this.type = type;
+    		this.description = description;
+    		this.timeOnTask = timeOnTask;
+    	}
+    }
+
+    public Map<ActivityTypeEnum, ActivityTime> getActivityTimeMap() {
+		@SuppressWarnings("unchecked")
+    	Map<ActivityTypeEnum, ActivityTime> activityTimeMap =
+    		(Map<ActivityTypeEnum, ActivityTime>) CmCacheManager.getInstance().retrieveFromCache(CacheName.ACTIVITY_TIMES, CacheName.ACTIVITY_TIMES);
+
+		if(activityTimeMap != null) {
+            return activityTimeMap;
+		}
+
+        activityTimeMap = new HashMap<ActivityTypeEnum, ActivityTime>();
+        
+        String sql = "select type, name, task_time from HA_ACTIVITY_TIME";
+
+    	List<ActivityTime> activityTimeList = getJdbcTemplate().query(
+    			sql,
+    			new Object[]{},
+    			new RowMapper<ActivityTime>() {
+    				@Override
+    				public ActivityTime mapRow(ResultSet rs, int rowNum) throws SQLException {
+    					ActivityTypeEnum type = ActivityTypeEnum.valueOf(rs.getString("type").toUpperCase());
+    					int timeOnTask;
+    					String description;
+    					if (type == null) {
+    						type = ActivityTypeEnum.valueOf("UNKNOWN");
+    						timeOnTask = 0;
+    						description = "Unknown Activity Type";
+    					}
+    					else {
+    						timeOnTask = rs.getInt("task_time");
+    						description = rs.getString("name");
+    					}
+    					return new ActivityTime(type, timeOnTask, description);
+    				}
+    			});
+
+    	// transfer List to Map
+    	for (ActivityTime at : activityTimeList) {
+    		activityTimeMap.put(at.type, at);
+    	}
+
+        CmCacheManager.getInstance().addToCache(CacheName.ACTIVITY_TIMES, CacheName.ACTIVITY_TIMES, activityTimeMap);
+
+    	return activityTimeMap;
+    }
+    
 
 
 }
