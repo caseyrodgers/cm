@@ -154,4 +154,9 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="ACTIVITY_TIMES"
+       maxElementsInMemory="20"
+       overflowToDisk="false">
+</cache>
+
 </ehcache>
