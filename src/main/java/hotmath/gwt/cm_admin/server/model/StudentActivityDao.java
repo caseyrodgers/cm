@@ -209,8 +209,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return sm.getProgramDescr().startsWith("CQ:");
     }
     
-    public enum ActivityTypeEnum {ACTIVITY, ACTIVITY_STANDARD, CMEXTRA, FLASHCARD, FLASHCARD_SPAN,
-    	PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB, EPP_WB, SOLUTION, VIDEO, WOOKBOOK, UNKNOWN};
+    public enum ActivityTypeEnum {ACTIVITY, ACTIVITY_STANDARD, CMEXTRA, EPP_WB,
+    	FLASHCARD, FLASHCARD_SPAN, PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB,
+    	SOLUTION, VIDEO, WOOKBOOK, UNKNOWN};
 
     class ActivityTime {
 
