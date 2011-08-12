@@ -210,7 +210,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     }
     
     public enum ActivityTypeEnum {ACTIVITY, ACTIVITY_STANDARD, CMEXTRA, EPP_WB,
-    	FLASHCARD, FLASHCARD_SPAN, PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB,
+    	FLASHCARD, FLASHCARD_SPANISH, PRACTICE, QUIZ, RESULTS, REVIEW, RPP_WB,
     	SOLUTION, VIDEO, WOOKBOOK, UNKNOWN};
 
     class ActivityTime {
