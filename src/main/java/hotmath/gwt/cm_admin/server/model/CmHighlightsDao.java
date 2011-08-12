@@ -2,6 +2,8 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao.ActivityTime;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao.ActivityTypeEnum;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -342,6 +344,54 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         return list;
     }
     
+    /*return students' time-on-task
+     * 
+     */
+    public CmList<HighlightReportData>  getReportTimeOnTask(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+
+        String sql =
+        	CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_TIME_ON_TASK", createInListMap(createInList(uids)) );
+
+        CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+
+        PreparedStatement ps=null;
+        try {
+            ps = conn.prepareStatement(sql);
+            String[] vals = QueryHelper.getDateTimeRange(from, to);
+            ps.setString(1, vals[0]);
+            ps.setString(2, vals[1]);
+
+            __logger.info("report sql: " + ps);
+
+            Map<ActivityTypeEnum, ActivityTime> map = StudentActivityDao.getInstance().getActivityTimeMap();
+            ResultSet rs = ps.executeQuery();
+            int userId = -1;
+            int totalTime = 0;
+            String userName = null;
+            while(rs.next()) {
+            	int count = rs.getInt("activity_count");
+            	String type = rs.getString("activity_type");
+            	int time = map.get(ActivityTypeEnum.valueOf(type.toUpperCase())).timeOnTask;
+                            	
+            	if (userId != rs.getInt("user_id") && userId > 0) {
+            		// new student, add previous and reset total time
+                    list.add(new HighlightReportData(userId, userName, String.valueOf(totalTime)));
+                    totalTime = 0;
+            	}
+            	userId = rs.getInt("user_id");
+            	userName = rs.getString("user_name");
+            	totalTime = totalTime + count * time;
+            }
+            // add last student
+            list.add(new HighlightReportData(userId, userName, String.valueOf(totalTime)));
+
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps,null);
+        }
+        return list;
+    }
+
     public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
 
         Map<String,String> tokenMap = new HashMap<String,String>()
