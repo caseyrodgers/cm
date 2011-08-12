@@ -95,6 +95,10 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     list = dao.getReportZeroLogins(conn, uids, fromDate, toDate);
                     break;
                     
+                case TIME_ON_TASK:
+                    list = dao.getReportTimeOnTask(conn, uids, fromDate, toDate);
+                    break;             
+                    
                     
                     default:
                         throw new Exception("Unknown report type: " + action);
