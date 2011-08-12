@@ -360,6 +360,8 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             String[] vals = QueryHelper.getDateTimeRange(from, to);
             ps.setString(1, vals[0]);
             ps.setString(2, vals[1]);
+            ps.setString(3, vals[0]);
+            ps.setString(4, vals[1]);            
 
             __logger.info("report sql: " + ps);
 
