@@ -84,7 +84,10 @@ public class CmCacheManager  {
 		BOOK_MODEL,
 		
 		/** Problem number lists used in Hm Mobile */
-		PROBLEM_NUMBERS
+		PROBLEM_NUMBERS,
+		
+		/** Activity Times for Time-on-task */
+		ACTIVITY_TIMES
 	};
 
 	private void flushCache() {
