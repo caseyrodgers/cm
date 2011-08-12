@@ -113,6 +113,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
         s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
         s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
         s.add(new ReportModel(new HighlightImplZeroLogins()));
+        s.add(new ReportModel(new HighlightImplTimeOnTask()));
         // s.add(new ReportModel(new HighlightImplComparePerformance()));
         
         /** mark these two reports as not using the summary page selection */
@@ -458,6 +459,24 @@ class HighlightImplZeroLogins extends HighlightImplBase {
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:100"};
+        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
+        rl.setTitle(title);
+        return rl;
+    }    
+}
+
+class HighlightImplTimeOnTask extends HighlightImplBase {
+    HighlightImplTimeOnTaskPanel panel = new HighlightImplTimeOnTaskPanel(this);
+    static String title = "Time-on-Task";
+    public HighlightImplTimeOnTask() {
+        super(title,"Estimated time-on-task");
+    }
+    public Widget prepareWidget() {
+        return panel;
+    }
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+        String cols[] = {"Name:75", "Time-on-Task:25"};
         HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
         rl.setTitle(title);
         return rl;
