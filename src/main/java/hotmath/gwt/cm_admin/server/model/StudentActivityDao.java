@@ -137,7 +137,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
 				int lessonsViewed = rs.getInt("session_number") + 1;
 				
-				m.setTimeOnTask(m.getTimeOnTask() * lessonsViewed);
+				m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
 
 				if (lessonsViewed >= 0) {
 					if (totalSessions < 1) {
