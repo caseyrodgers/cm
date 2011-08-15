@@ -3,10 +3,10 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 import java.util.Iterator;
 import java.util.Stack;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Window;
 
 /** A stack object that tracks and notifies
  *  listeners when objects are added or popped.
@@ -30,7 +30,7 @@ public class ObservableStack<E> implements Iterable<E> {
 		    firePushEvent(new ObservableStackPushEvent<E>(e));
 		}
 		catch(Exception ex) {
-		    Window.alert("Error firing event: " + ex.getMessage());
+		    Log.error("Error pushing event: " + ex.getMessage(), ex);
 		}
 	}
 	

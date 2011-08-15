@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_mobile_shared.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-
-import java.util.List;
 
 public class CmMobileUser implements Response {
     
@@ -15,8 +15,32 @@ public class CmMobileUser implements Response {
     int testSlot;
     int runId;
     CmList<Topic> prescribedLessons;
-
     
+    
+    
+    /** composite with normal CM login */
+    UserLoginResponse baseLoginResponse;
+
+
+    public CmMobileUser() {}
+    
+    public CmMobileUser(int uid, int testId, int testSegment, int testSlot, int runId) {
+        this.userId = uid;
+        this.testId = testId;
+        this.testSegment = testSegment;
+        this.testSlot = testSlot;
+    }
+    
+    
+    
+    public UserLoginResponse getBaseLoginResponse() {
+        return baseLoginResponse;
+    }
+
+    public void setBaseLoginResponse(UserLoginResponse baseLoginResponse) {
+        this.baseLoginResponse = baseLoginResponse;
+    }
+
     public CmList<Topic> getPrescribedLessons() {
         return prescribedLessons;
     }
@@ -36,15 +60,6 @@ public class CmMobileUser implements Response {
         this.prescripion = prescripion;
     }
 
-    public CmMobileUser() {}
-    
-    public CmMobileUser(int uid, int testId, int testSegment, int testSlot, int runId) {
-        this.userId = uid;
-        this.testId = testId;
-        this.testSegment = testSegment;
-        this.testSlot = testSlot;
-    }
-    
 
     public int getTestId() {
         return testId;

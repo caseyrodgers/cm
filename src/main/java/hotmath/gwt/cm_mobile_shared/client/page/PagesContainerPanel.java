@@ -1,7 +1,6 @@
-package hotmath.gwt.hm_mobile.client;
+package hotmath.gwt.cm_mobile_shared.client.page;
 
 
-import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 
 import com.google.gwt.user.client.ui.Widget;

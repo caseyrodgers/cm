@@ -1,0 +1,65 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+	    .formLayout {
+	    	margin: 20px;
+	    	color: white;
+	    	height: 200px;
+	     }
+	     
+		.heading {
+			color: #738AA6;
+			font-weight: bold;
+			font-size: 1.1em;
+			margin-top: 10px;
+		}
+		.tableLayout {
+			color: white;
+			margin: 20px 0 15px 10px;
+		}
+		
+		.fieldLabel {
+		     width: 85px;
+		 }
+		 
+		 .formLayout button {
+		     margin-left: 100px;
+	      }
+	      
+	      .errorMessage {
+	         color: red;
+	         font-weight: bold;
+	         margin-left: 40px;
+	      }
+	</ui:style>
+	
+	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
+		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
+		<g:HTMLPanel styleName="{style.heading}">
+		   <h2 class="{style.heading}">Catchup Math Mobile</h2>
+			<table class='{style.tableLayout}' >
+				<tr>
+					<td class='{style.fieldLabel}'>Username:</td>
+					<td>
+						<g:TextBox ui:field='usernameBox' />
+					</td>
+				</tr>
+				<tr style='margin-top: 5px'>
+					<td>Password:</td>
+					<td>
+						<g:PasswordTextBox ui:field='passwordBox' />
+					</td>
+				</tr>
+				<tr>
+				    <td class='{style.errorMessage}' colspan="2">
+				        <g:Label ui:field='errorMessage'/>
+				    </td>
+				</tr>
+			</table>
+            <g:Button styleName="sexyButton sexylarge" ui:field='loginButton'><span><span>Log In</span></span></g:Button>			
+		</g:HTMLPanel>
+
+	</g:DialogBox>
+
+</ui:UiBinder> 

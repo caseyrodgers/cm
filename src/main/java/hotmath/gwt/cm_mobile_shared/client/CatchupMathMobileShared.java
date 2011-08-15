@@ -2,7 +2,6 @@ package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
-import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventType;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
@@ -43,7 +42,9 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
     }
 
     public void onModuleLoad() {
+    
     }
+    
     
     static public CmMobileUser getUser() {
         return __instance.user;
@@ -139,6 +140,24 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
         }
     }
 
+    
+    static public native int resetViewPort() /*-{
+       var scrollHeight=0;
+       try {
+           if($wnd.f_scrollTop) {
+              scrollHeight = $wnd.f_scrollTop();
+              $wnd.scrollTo(0,0);
+              return scrollHeight;
+           }
+           return scrollHeight;
+       }
+       catch(e) {
+           alert('error resetting view: ' + e);
+           return 0;
+       }
+    }-*/;
+
+    
 
     
     static private native void scrollToTop()  /*-{
@@ -147,8 +166,7 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
 
     
     static {
-        EventBus.getInstance().addEventListener(new CmEventListener() {
-            
+        hotmath.gwt.cm_mobile_shared.client.event.EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
             public void handleEvent(CmEvent event) {
                 EventType type = event.getEventType();

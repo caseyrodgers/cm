@@ -4,16 +4,20 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
@@ -54,6 +58,10 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
                ptopics.add(new Topic(rs.getString("lesson_name"), rs.getString("lesson_file")));
            }
            mobileUser.setPrescribedLessons(ptopics);
+           
+           UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn,new GetUserInfoAction(mobileUser.getUserId(), null));
+           mobileUser.setBaseLoginResponse(userLoginResponse);
+           
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);

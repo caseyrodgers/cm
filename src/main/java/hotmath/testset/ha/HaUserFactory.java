@@ -87,8 +87,8 @@ public class HaUserFactory {
 			try {
 				pstat = conn.prepareStatement(adminLoginSQL);
 
-				pstat.setString(1, user);
-				pstat.setString(2, pwd);
+				pstat.setString(1, user.trim());
+				pstat.setString(2, pwd.trim());
 
 				rs = pstat.executeQuery();
 				if (rs.first()) {

@@ -2,6 +2,7 @@ package hotmath.gwt.hm_mobile.client;
 
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 
 import com.allen_sauer.gwt.log.client.Log;

@@ -8,7 +8,12 @@ public class GetCmMobileLoginAction implements Action<CmMobileUser>{
     String password;
 
     public GetCmMobileLoginAction() {
-    }    
+    }
+    
+    public GetCmMobileLoginAction(String name, String pass) {
+        this.name = name;
+        this.password = pass;
+    }
     
     public String getPassword() {
         return password;

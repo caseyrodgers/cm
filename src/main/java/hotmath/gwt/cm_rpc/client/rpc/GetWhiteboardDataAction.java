@@ -1,8 +1,5 @@
-package hotmath.gwt.shared.client.rpc.action;
+package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.shared.client.rpc.result.WhiteboardCommand;
 
 /** Returns the whiteboard data for a given user/pid/run
  * 

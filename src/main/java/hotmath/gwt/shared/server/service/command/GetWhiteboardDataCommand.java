@@ -5,16 +5,15 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.rpc.action.GetWhiteboardDataAction;
-import hotmath.gwt.shared.client.rpc.result.WhiteboardCommand;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.List;
 
 /** Get all whiteboard data for given user/pid
  * 
@@ -38,7 +37,6 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
 
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {
-                List<String> ln = new CmArrayList<String>();
                 WhiteboardCommand rd = new WhiteboardCommand(rs.getString("command"), rs.getString("command_data"));
                 data.add(rd);
             }

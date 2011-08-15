@@ -1,5 +1,7 @@
 package hotmath.gwt.hm_mobile.client;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -10,7 +12,12 @@ import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.EnableDisplayZoomEventHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
@@ -18,8 +25,6 @@ import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
-import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
-import hotmath.gwt.hm_mobile.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEvent;
@@ -34,8 +39,6 @@ import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEventHandler;
-import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEvent;
-import hotmath.gwt.hm_mobile.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
 import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
@@ -313,7 +316,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             @Override
             public void loadPage(IPage page) {
             	Log.info("LoadNewPageEvent fire: " + page.getClass().getName());
-            	int currentScrollPos = resetViewPort();
+            	int currentScrollPos = CatchupMathMobileShared.resetViewPort();
             	IPage currentPage = _pageStack.getCount()>0?_pageStack.peek():null;
             	if(currentPage != null) {
             		pageScroll.put(currentPage,  new Integer(currentScrollPos));
@@ -353,19 +356,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
     
     public Map<IPage,Integer> pageScroll = new HashMap<IPage,Integer>();     
-    
-    private native int resetViewPort() /*-{
-       try {
-           var scrollHeight = $wnd.f_scrollTop();
-           $wnd.scrollTo(0,0);
-           return scrollHeight;
-       }
-       catch(e) {
-           alert('error resetting view: ' + e);
-           return 0;
-       }
-    }-*/;
-
     
     
     /** Look at current page and try to determine the proper thing 

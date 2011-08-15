@@ -1,0 +1,31 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+		<g:HTMLPanel>
+		<div id="wb-container">
+		    <div id="tools">
+		        <button id="button_text"  title="Text"></button>
+		        <button id="button_pencil"  title="Draw or write"></button>     
+		        <button id="button_line"  title="Lines"></button>
+		        <button id="button_rect"  title="Rectangles"></button>
+		        <button id="button_oval" title="Circles/Ellipses"></button>
+		        <button id="button_eraser" title="Erase"></button>     
+		        <button id="button_gr2D" title="2D Graph"></button>
+		        <button id="button_nL" title="Number line"></button>
+		        <button id="button_clear" title="Clear Whiteboard">Clear</button>
+		        <!--<button id="button_load" type="button" onclick="renderWhiteBoard()">Load Data</button>-->
+		    </div> <!-- /tools -->
+		    <div id="drawsection">
+		        <div id="canvas-container">
+		            <canvas id="ocanvas" width="800" height="500">(Your browser doesn't support canvas)</canvas>
+		            <canvas id="gcanvas" width="800" height="500"></canvas>
+		            <canvas id="tcanvas" width="800" height="500"></canvas>
+		            <canvas id="canvas" width="800" height="500"></canvas>
+		            <div id="inputBox">
+		                <textarea id="content"></textarea>
+		                <button id="done_btn" type="button">Done</button> 
+		            </div>
+		        </div>
+		    </div><!-- /drawsection -->
+		</div> <!-- /wb-container -->
+		</g:HTMLPanel>
+</ui:UiBinder> 

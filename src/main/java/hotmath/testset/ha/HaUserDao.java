@@ -1,9 +1,13 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
@@ -138,4 +142,163 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
             throw new HotMathException("Could not update user record: " + user.getUid());
 
     }
+    
+    
+    
+    
+    /** what is the first thing the user is shown?
+     *  
+     *  This is based on the user's current active state.
+     *  
+     *  If user's program is complete:
+     *     If stopAfterComplete, then 
+     *        set firstAction to END_OF_PROGRAM
+     *     else 
+     *        // this should not happen ..?
+     *        // unless error/corrupted ..?
+     *        
+     *  Else
+     *      if runId > 0
+     *          set firstAction to PRESCRIPTION
+     *      else if testId > 0)
+     *          set firstAction to QUIZ
+     *                
+     *      else
+     *          set firstAction to WELCOME    
+     *          
+     *     
+     */
+    CmDestination firstDestination = null;
+    public CmDestination determineFirstDestination(final Connection conn, UserInfo userInfo, CmProgramFlow programFlow) throws Exception {
+        CmDestination destination = new CmDestination();
+        
+        
+        /** Special cases 
+         * 
+         */
+        if(programFlow.getUserProgram().isCustom() 
+                && programFlow.getActiveFlowAction(conn).getPlace() == CmPlace.END_OF_PROGRAM) {
+            /** is a custom quiz, so we must check separately.
+             * 
+             */
+            destination.setPlace(CmPlace.END_OF_PROGRAM);
+        }
+        else if(userInfo.getRunId() > 0 && hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+            
+            /** did the user pass this segment, if not
+             *  then they must repeat it .. so program 
+             *  is not complete.
+             */
+
+            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(userInfo.getRunId());
+            if(!testRun.isPassing()) {
+                
+                programFlow.getActiveInfo().setActiveRunId(0);
+                programFlow.getActiveInfo().setActiveTestId(0);
+                programFlow.saveActiveInfo(conn);
+                
+                /** repeat the segment
+                 * 
+                 */
+                destination.setPlace(CmPlace.QUIZ);
+            }
+            else {
+                if(hasUserCompletedProgram(conn, userInfo, programFlow)) {
+                    destination.setPlace(CmPlace.END_OF_PROGRAM);
+                }
+                else {
+                    //programFlow.moveToNextProgramSegment(conn);
+                    
+                    //destination.setPlace(CmPlace.QUIZ);
+                }
+            }
+        }
+        else if(userInfo.getRunId() > 0) {
+            
+            if(programFlow.getActiveInfo().getActiveRunSession() == 0) {
+                destination.setPlace(CmPlace.WELCOME);    
+            }
+            else {
+                destination.setPlace(CmPlace.PRESCRIPTION);
+            }
+        }
+        else if(userInfo.getTestId() > 0) {
+            destination.setPlace(CmPlace.QUIZ);
+        }
+        else {
+            destination.setPlace(CmPlace.WELCOME);
+        }
+        
+        return destination;
+    }
+    
+    
+    /** Has this user completed the current active program ?
+     * 
+     * 
+     *  NOTE: segment is 1 based.
+     *  
+     * @param userInfo
+     * @return
+     * @throws Exception
+     */
+    private boolean hasUserCompletedProgram(final Connection conn, UserInfo userInfo, CmProgramFlow cmProgram) throws Exception {
+        int totalSegments = userInfo.getProgramSegmentCount();
+        int thisSegment = userInfo.getTestSegment();
+        
+        //assert(thisSegment > 0);
+        
+        /** program segments are 1 based
+         * 
+         */
+        if(thisSegment <= totalSegments) {
+            
+            /** we know it is valid
+             * 
+             */
+            if(thisSegment == totalSegments) {
+                /** on last segment
+                 * 
+                 */
+                
+                /** has the user viewed each lesson in active prescription?
+                 * 
+                 */
+                if(userInfo.getRunId() > 0) {
+                    if(hasUserCompletedTestRun(conn, userInfo.getRunId())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        else {
+            return true;  // over the end, bug?
+        }
+
+        /** default is not completed 
+         * 
+         */
+        return false;
+    }
+
+    /** This test run is fully completed
+    */
+
+    private boolean hasUserCompletedTestRun(final Connection conn, int runId) throws Exception {
+        PreparedStatement ps=null;
+        try {
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_COUNT_UNCOMPLETED_TEST_RUN_LESSONS_PROGRAM");
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, runId);
+            ResultSet rs = ps.executeQuery();
+            rs.first();
+            int cntToView = rs.getInt(1);
+            
+            return (cntToView == 0);
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps, null);
+        }
+    }
+    
 }

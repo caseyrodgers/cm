@@ -1,5 +1,6 @@
 package hotmath.gwt.hm_mobile.client;
 
+import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.BookListViewImpl;
 import hotmath.gwt.hm_mobile.client.view.BookSearchView;

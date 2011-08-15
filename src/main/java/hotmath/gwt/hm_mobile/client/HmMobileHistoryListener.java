@@ -1,6 +1,7 @@
 package hotmath.gwt.hm_mobile.client;
 
 import hotmath.gwt.cm_mobile_shared.client.TokenParserGeneric;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.hm_mobile.client.activity.BookListActivity;
@@ -8,7 +9,6 @@ import hotmath.gwt.hm_mobile.client.activity.BookSearchActivity;
 import hotmath.gwt.hm_mobile.client.activity.BookViewActivity;
 import hotmath.gwt.hm_mobile.client.activity.CategoryListActivity;
 import hotmath.gwt.hm_mobile.client.activity.TutorViewActivity;
-import hotmath.gwt.hm_mobile.client.event.LoadNewPageEvent;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.place.BookListPlace;
 import hotmath.gwt.hm_mobile.client.place.BookSearchPlace;
