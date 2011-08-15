@@ -2267,6 +2267,22 @@ where t.user_id in ( $$UID_LIST$$ )
   and t.user_id = u.uid
 group by t.user_id
 
+union
+
+select u.user_name, t.user_id, 'WHITEBOARD' as activity_type, count(*) as activity_count
+from HA_TEST t, HA_TEST_RUN tr, HA_USER u, 
+     (
+       select tw.run_id as run_id from HA_TEST_RUN_WHITEBOARD tw
+       where  tw.user_id in ( $$UID_LIST$$ )
+       group by run_id
+     ) s
+where t.user_id in ( $$UID_LIST$$ )
+  and t.test_id = tr.test_id
+  and tr.run_id = s.run_id
+  and tr.run_time between ? and ?
+  and t.user_id = u.uid
+group by t.user_id, tr.run_id
+
 order by user_name, activity_type
 
           
