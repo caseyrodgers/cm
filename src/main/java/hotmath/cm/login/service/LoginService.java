@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.CmExceptionDoNotNotify;
 import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc.server.rpc.ContextListener;
