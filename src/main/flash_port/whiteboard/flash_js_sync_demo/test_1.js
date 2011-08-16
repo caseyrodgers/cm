@@ -585,11 +585,13 @@
 		//-!scricpt for flash JS sync demo
 		if(boo){
 			var flashObject=getFlashMovie('sw_wb');
+			
 			data=data.split("\\").join("")
 			data=data.substring(1,data.length-1);
 			flashObject.updateWhiteboard([["draw",[data]]]);
 			//renderFlashWhiteBoard(data);
 		}else{
+		//alert(data);
 			renderJSWhiteBoard(data)
 		}
 	}
