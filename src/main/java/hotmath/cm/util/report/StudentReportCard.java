@@ -4,10 +4,13 @@ import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -54,6 +57,7 @@ public class StudentReportCard {
         labelMap = new HashMap<String, String>();
 
         labelMap.put("login", "Logins: ");
+        labelMap.put("timeontask", "Estimated Time-onTask: ");
         labelMap.put("activity", "Learning Activities: ");
         labelMap.put("cmextra", "Extra Practice Problems: ");
         labelMap.put("review", "Prescribed Lessons Reviewed: ");
@@ -65,6 +69,7 @@ public class StudentReportCard {
         orderList = new ArrayList<String>();
         
         orderList.add("login");
+        orderList.add("timeontask");
         orderList.add("review");
         orderList.add("practice");
         orderList.add("cmextra");
@@ -119,10 +124,17 @@ public class StudentReportCard {
         document.open();
         document.add(Chunk.NEWLINE);
 
+        Calendar now = Calendar.getInstance();
+        now.add(Calendar.DATE, 1);
+
+    	Map<Integer, Integer> totMap = getTimeOnTaskMap(conn, smList, info.getAccountCreateDate(), now.getTime());
+
     	int idx = 0;
+    	
         for (StudentModelI sm : smList) {
         	
             StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
+            rc.getResourceUsage().put("timeontask", totMap.get(sm.getUid()));
 
         	addStudentInfo(school, sm, rc, document);
         	
@@ -195,6 +207,23 @@ public class StudentReportCard {
     	return reportName;
     }
 
+    private Map<Integer, Integer> getTimeOnTaskMap(final Connection conn, List<StudentModelI> smList, Date from, Date to) throws Exception {
+        List<String> uidList = new ArrayList<String>();
+    	for (StudentModelI sm : smList) {
+    		uidList.add(sm.getUid().toString());
+    	}
+    	
+    	CmList<HighlightReportData> totList = CmHighlightsDao.getInstance().getReportTimeOnTask(conn, uidList, from, to);
+
+    	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
+    	for (HighlightReportData tot : totList) {
+    		totMap.put(tot.getUid(), Integer.valueOf(tot.getData()));
+    		logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getData());
+    	}
+
+    	return totMap;
+    }
+    
     private void addPrescribedLessons(StudentReportCardModelI rc, boolean isCustomProgram, Document document) throws DocumentException {
         PdfPTable lessonTbl = new PdfPTable(1);
         lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
