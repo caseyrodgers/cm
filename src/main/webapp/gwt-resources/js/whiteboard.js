@@ -391,10 +391,9 @@ function initWhiteboard(mainDocIn) {
         canvas.addEventListener("mouseup", ev_onmouseup, false);
         canvas.addEventListener("mousemove", ev_onmousemove, false);
 
-
         // touchscreen specific - to prevent web page being scrolled while drawing
-        //mainDoc.body.addEventListener('touchstart', touchStartFunction, false);
-        //mainDoc.body.addEventListener('touchmove', touchMoveFunction, false);
+        canvas.addEventListener('touchstart', touchStartFunction, false);
+        canvas.addEventListener('touchmove', touchMoveFunction, false);
 
         // attach the touchstart, touchmove, touchend event listeners.
         canvas.addEventListener('touchstart', ev_onmousedown, false);
