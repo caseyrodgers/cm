@@ -97,7 +97,7 @@ function touchStartFunction(event) {
 var touchMoveFunction = touchStartFunction;
 
 
-function disconnectWhiteboard(mainDocIn) {
+wb.disconnectWhiteboard=function(mainDocIn) {
     if (touchStartFunction) {
         mainDocIn.body.removeEventListener('touchstart', touchStartFunction, false);
         mainDocIn.body.removeEventListener('touchmove', touchMoveFunction, false);
