@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 		<g:HTMLPanel>
-		<div id="wb-container">
+		<div id="wb-container" class='wb-container'>
 		    <div id="tools">
 		        <button id="button_text"  title="Text"></button>
 		        <button id="button_pencil"  title="Draw or write"></button>     

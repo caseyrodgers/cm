@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="minify" name="build_resource_combine">
+
+    <target name="minify" depends="doCombines"/>
+    <property name="src.ant-tasks.dir" value="../src/ant" />
+    
+    <property name='web.dir' value='src/main/webapp'/>
+    <property name="yui-compressor" value="tools/yuicompressor-2.3.1/build/yuicompressor-2.3.1.jar" />
+
+    <path id="local.classpath.run">
+        <fileset file="${yui-compressor}"/>
+    </path>
+
+	
+	<target name='doCombines' depends='combine-js_CatchupMathMobile3, combine-css_CatchupMathMobile3'/>
+	
+    <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
+        <!-- Combine CM JS into a single download
+        -->
+        <delete file="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" />
+        <concat destfile="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" append="true">
+            <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
+                   cm_core-min.js
+                   swfobject-min.js
+            	   browser_info_tools-min.js            	
+            	   excanvas-min.js
+            	   whiteboard-min.js
+                   CatchupMathMobile3-min.js
+              " />
+        </concat>
+    </target>
+	
+	
+    <target name="combine-css_CatchupMathMobile3">
+        <delete file="${web.dir}/gwt-resources/css/CatchupMathMobile3_combined.css" />
+        <concat destfile="${web.dir}/gwt-resources/css/CatchupMathMobile3_combined.css" append="true">
+            <filelist dir="${web.dir}" files="
+                assets/css/reset.css
+                css/tutor_widget.css
+                gwt-resources/css/CatchupMathMobile3.css
+                gwt-resources/css/page_layout.css
+            	gwt-resources/css/quiz.css
+                assets/css/local_sexybuttons.css
+            	gwt-resources/css/whiteboard.css
+             " />
+        </concat>
+    </target>
+
+	
+	
+	
+    <!-- Minifiy all JS Code -->
+    <target name="javascript-minify">
+        <taskdef resource="net/sf/antcontrib/antlib.xml" />
+
+        <taskdef name="minifyJavaScript" classname="hotmath.task.MinifyJavaScript">
+            <classpath>
+                <pathelement location="../hotmath2/build/classes" />
+            </classpath>
+        </taskdef>
+
+        <!-- Process all JS files.
+             The minifyJavaScript task minifies JS files as needed -
+             new/modified JS file or no matching -min.js file
+        -->
+        <for param="file">
+            <path>
+                <fileset dir="${web.dir}/gwt-resources/js" includes="*.js" excludes="*-min.js, *_combined.js" />
+            </path>
+            <sequential>
+                <minifyJavaScript file1='@{file}' />
+            </sequential>
+        </for>
+    </target>
+
+    <!-- Compresses css file inplace (overwrites) -->
+    <macrodef name="css_compress-do">
+        <attribute name="cssfile"/>
+        <sequential>
+            <echo>CSS_COMPRESS: processing @{cssfile}</echo>
+            <java jar="${yui-compressor}" fork="true" failonerror="true" classpathref="local.classpath.run" >
+                <arg value="@{cssfile}"/>
+                <arg value="-o"/>
+                <arg value="@{cssfile}"/>
+            </java>
+        </sequential>
+    </macrodef>
+
+
+    <property name='css.dir' value='${web.dir}/css'/>
+
+    <target name='css_compress' depends="combine-css_CatchupMathMobile3">
+        <echo>Running CSS_COMPRESS on core combined files</echo>
+        <css_compress-do cssfile='${css.dir}/core_combined.css'/>
+        <css_compress-do cssfile='${css.dir}/bookindex_with_tutor_combined.css'/>
+    </target>
+
+</project>

@@ -61,7 +61,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     }
     
     protected void flashWhiteboardOut_Gwt(String data, boolean boo) {
-        MessageBox.showMessage(data);
+        Log.debug(data);
     }
     
     protected void whitebaordSave_Gwt(String command) {
@@ -75,10 +75,10 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     */
     static public native void updateWhiteboard(String flashId, String command, String commandData) /*-{
        if(command == 'draw') {
-           $wnd.updateWhiteboard([['draw',[commandData]]]);
+           $wnd.gwt_updatewhiteboard([['draw',[commandData]]]);
        }
        else if(command == 'clear') {
-           $wnd.updateWhiteboard([['clear',[]]]);
+           $wnd.gwt_updatewhiteboard([['clear',[]]]);
        }
     }-*/;
     

@@ -6,9 +6,6 @@ var graphicData, tool_id
 var scope = this
 var isTouchEnabled = false
 
-var mainDoc;
-
-
 function renderText(xt, xp, yp) {
     var txt = xt ? xt : $get_Element("#content").value;
     // alert(txt);
@@ -104,6 +101,9 @@ function disconnectWhiteboard(mainDocIn) {
         mainDocIn.body.removeEventListener('touchmove', touchMoveFunction, false);
     }
 }
+
+/** main HTML document object */
+var mainDoc;
 
 function initWhiteboard(mainDocIn) {
     mainDoc = mainDocIn;
@@ -406,8 +406,8 @@ function initWhiteboard(mainDocIn) {
 
 
         // touchscreen specific - to prevent web page being scrolled while drawing
-        mainDoc.body.attachEvent('touchstart', touchStartFunction);
-        mainDoc.body.attachEvent('touchmove', touchMoveFunction);
+        canvas.attachEvent('touchstart', touchStartFunction);
+        canvas.attachEvent('touchmove', touchMoveFunction);
 
         // attach the touchstart, touchmove, touchend event listeners.
         canvas.attachEvent('touchstart', ev_onmousedown);

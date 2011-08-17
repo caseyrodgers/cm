@@ -123,6 +123,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             Controller.installEventBus(__clientFactory.getEventBus());
             _rootPanel.add(createApplicationPanel());
 
+            
+            /** allow each display panel to flow left-to-right. 
+             * 
+             */
             _rootPanel.getElement().getStyle().setProperty("display", "inline");
 
             Screen screen = new Screen();
@@ -137,15 +141,15 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             // History.fireCurrentHistoryState();
             __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
-
-            __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
-
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
+        }
+        finally {
+            __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
         }
 
         Log.info("Hotmath Mobile Initialized");
