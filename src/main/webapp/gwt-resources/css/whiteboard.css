@@ -61,10 +61,9 @@
 		to(#ffffff) );
 	-webkit-box-shadow: 2px 2px 3px rgba(51, 51, 51, 0.7);
 	-moz-box-shadow: 2px 3px 3px rgba(51, 51, 51, 0.7);
-	box-shadow: 2px 2px 3px rgba(51, 51, 51, 0.7); <!--
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
-		endColorstr='#ffffff' );
-	-->
+	box-shadow: 2px 2px 3px rgba(51, 51, 51, 0.7);
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#ffffff' );*/
 }
 
 .btnType1 {
