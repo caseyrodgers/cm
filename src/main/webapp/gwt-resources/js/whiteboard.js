@@ -638,8 +638,8 @@ function sendData() {
             return;
         }
         render = false;
-        var jsonStr = convertObjToString(graphicData);
-        sendDataToSERVER(jsonStr);
+       // var jsonStr = convertObjToString(graphicData);
+        sendDataToSERVER(graphicData);
         textRendering = false;
     }
     resetArrays();
