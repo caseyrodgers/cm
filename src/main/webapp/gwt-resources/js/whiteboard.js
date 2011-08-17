@@ -416,6 +416,7 @@ wb.initWhiteboard=function(mainDocIn) {
         canvas.attachEvent('touchmove', ev_onmousemove);
         canvas.attachEvent('touchend', ev_onmouseup);
     }
+	canvas.focus()
 }
 
 function $get_Element(n) {
