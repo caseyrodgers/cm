@@ -223,10 +223,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         eb.addHandler(BackPageLoadedEvent.TYPE, new BackPageLoadedEventHandler() {
             @Override
             public void movedBack(final IPage page) {
+                Log.info("BackPageLoadedEvent fire: " + page.getClass().getName());
+                /** these are app/panel specific hooks
+                 * 
+                 * TODO: find a more general way for specific hooks
+                 */
                 if(page instanceof QuizViewImpl) {
-                    ShowWorkActivity.disconnectWhiteboard();
+                    ShowWorkActivity.saveWhiteboard();
                 }
-                Log.info("LoadNewPageEvent fire: " + page.getClass().getName());
             }
         });        
 

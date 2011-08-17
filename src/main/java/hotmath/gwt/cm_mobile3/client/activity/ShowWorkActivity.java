@@ -6,6 +6,10 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -19,8 +23,10 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     
     EventBus eventBus;
     
+    static ShowWorkActivity __lastInstance;
     public ShowWorkActivity(EventBus eventBus) {
         this.eventBus = eventBus;
+        __lastInstance = this;
     }
 
     @Override
@@ -52,6 +58,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         });
             
         
+        /** execute initialize only after HTML is loaded */
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
@@ -60,41 +67,99 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         });
     }
     
-    protected void flashWhiteboardOut_Gwt(String data, boolean boo) {
-        Log.debug(data);
-    }
-    
-    protected void whitebaordSave_Gwt(String command) {
-        MessageBox.showMessage("Show Work: " + command);
+    static public void saveWhiteboard() {
+        __lastInstance.saveWhiteboardToServer();
     }
 
+    MultiActionRequestAction whiteboardActions = new MultiActionRequestAction();
+    boolean eatNextWhiteboardOut=false;
+    protected void whiteboardOut_Gwt(String json, boolean boo) {
+        Log.debug("whiteboardOut: " + json);
+        
+        if (eatNextWhiteboardOut) {
+            eatNextWhiteboardOut = false;
+            return;
+        }
+
+        String pid="quiz:quiz";
+        
+        /**
+         * If json is simple string 'clear', then force a full clear and
+         * remove all chart data for this user/pid. Otherwise, it is a
+         * normal draw command.
+         */
+        CommandType commandType = json.equals("clear") ? CommandType.CLEAR : CommandType.DRAW;
+        int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getRunId();
+        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(),runId, pid, commandType, json);
+        whiteboardActions.getActions().add(action);
+    }
+    
+    private void saveWhiteboardToServer() {
+        
+        if(whiteboardActions.getActions().size() == 0)
+            return;
+        
+        eventBus.fireEvent(new SystemIsBusyEvent(true));
+        CatchupMathMobileShared.getCmService().execute(whiteboardActions,new AsyncCallback<CmList<Response>>() {
+            public void onSuccess(hotmath.gwt.cm_rpc.client.rpc.CmList<Response> result) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                whiteboardActions.getActions().clear();
+            }
+            public void onFailure(Throwable caught) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                Log.error("Error saving whiteboard", caught);
+                MessageBox.showError(caught.getMessage());
+            }
+        });
+        
+    }
+    
+    protected void whiteboardSave_Gwt() {
+        saveWhiteboardToServer();
+    }
+    
 
     /** send an array of commands.  Each element in array
         is a command and an array of data.  For example, one
         draw', but a bunch of draw requests.
     */
     static public native void updateWhiteboard(String flashId, String command, String commandData) /*-{
+
+       var cmdArray = [];
        if(command == 'draw') {
-           $wnd.gwt_updatewhiteboard([['draw',[commandData]]]);
+           cmdArray = [['draw',[commandData]]];
        }
        else if(command == 'clear') {
-           $wnd.gwt_updatewhiteboard([['clear',[]]]);
+           cmdArray = [['clear',[]]];
        }
+        
+        var realArray = [];
+        for (var i = 0, t = cmdArray.length; i < t; i++) {
+            var ele = [];
+            ele[0] = cmdArray[i][0];
+            ele[1] = cmdArray[i][1];
+            realArray[i] = ele;
+        }
+       $wnd.Whiteboard.updateWhiteboard(realArray);
     }-*/;
     
     
     private native void initializeWhiteboard()/*-{
-        $wnd.initWhiteboard($doc);
+        $wnd.Whiteboard.initWhiteboard($doc);
     }-*/;
     
     static public native void disconnectWhiteboard()/*-{
-        $wnd.disconnectWhiteboard($doc);
+        $wnd.Whiteboard.disconnectWhiteboard($doc);
     }-*/;
     
     
     private native void setExternalJsniHooks(ShowWorkActivity x) /*-{
-        $wnd.flashWhiteboardOut = function(data, boo) {
-            x.@hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity::flashWhiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
+        $wnd.Whiteboard.whiteboardOut = function(data, boo) {
+            x.@hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
+        }
+        
+        $wnd.Whiteboard.saveWhiteboard = function() {
+            x.@hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity::whiteboardSave_Gwt()();
         }
     }-*/;
     

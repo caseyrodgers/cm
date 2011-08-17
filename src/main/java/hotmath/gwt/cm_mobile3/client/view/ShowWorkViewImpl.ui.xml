@@ -12,6 +12,7 @@
 		        <button id="button_gr2D" title="2D Graph"></button>
 		        <button id="button_nL" title="Number line"></button>
 		        <button id="button_clear" title="Clear Whiteboard">Clear</button>
+		        <button id="button_save" title="Save Whiteboard">Save</button>
 		        <!--<button id="button_load" type="button" onclick="renderWhiteBoard()">Load Data</button>-->
 		    </div> <!-- /tools -->
 		    <div id="drawsection">
