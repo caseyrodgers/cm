@@ -1,10 +1,12 @@
+var Whiteboard=(function(){
+var wb={};
 var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
 var origcanvas, origcontext, currentTool = 'pencil';
 var graphcanvas, graphcontext, topcanvas, topcontext, gr2D, nL, graphMode, gr2D_xp, gr2D_yp, nL_xp, nL_yp;
 var offX, offY, x0, y0, w0, h0, drawingLayer, drawcolor, rendering;
-var graphicData, tool_id
-var scope = this
-var isTouchEnabled = false
+var graphicData, tool_id;
+var scope = this;
+var isTouchEnabled = false;
 
 function renderText(xt, xp, yp) {
     var txt = xt ? xt : $get_Element("#content").value;
@@ -105,7 +107,7 @@ function disconnectWhiteboard(mainDocIn) {
 /** main HTML document object */
 var mainDoc;
 
-function initWhiteboard(mainDocIn) {
+wb.initWhiteboard=function(mainDocIn) {
     mainDoc = mainDocIn;
     canvas = $get_Element("#canvas");
     var siz = viewport()
@@ -800,7 +802,9 @@ function gwt_updatewhiteboard(cmdArray) {
         }
         updateWhiteboard(realArray);
 }
-
+wb.updateWhiteboard=function(cmdArray) {
+        gwt_updatewhiteboard(cmdArray);
+}
 
 // function receives jsonData and renders it to the screen
 draw = function (json_str) {
@@ -834,4 +838,6 @@ function flashWhiteboardOut(data, boo) {
      * //renderFlashWhiteBoard(data); }else{ renderJSWhiteBoard(data) }
      */
 }
+return wb;
+}());
 // --!
