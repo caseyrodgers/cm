@@ -1,0 +1,577 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  /*background-image: url('/gwt-resources/images/mobile/default_bkg.png');*/
+
+  background-color: #c5ccd4;
+
+  background-repeat: no-repeat;
+  
+  font-family: Helvetica;
+  
+  /* ensure that we don't get 
+     the default callout following
+     a long touch on an element, 
+     which is a default behavior in Mobile Safari
+  */
+  -webkit-touch-callout: none;
+  
+  
+  /* disable the Mobile Safari default behavior
+     to adjust font size automatically
+     to improve readability 
+  */
+  -webkit-text-size-adjust: none;
+  
+
+  /* default font size */
+  font-size: .9em;
+}
+
+ul {
+    padding: 0;
+}
+
+ul li {
+    text-align: left;
+}
+h1 {
+    font-size:2em;
+    color: #1C97D1;
+    margin:10px 0 10px 0px;
+}
+
+h2 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:1.5em;
+    font-weight: bold;
+    color: #f94701;
+    text-decoration: none;
+    margin: 0px;
+}
+
+h3 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size:1.3em;
+    font-weight: bold;
+    color: #76B900;
+    text-decoration: none;
+    margin: 0px;
+}
+
+ p { 
+    font-size:1em; 
+    color:#000000; 
+    margin: 0 0 10px 0px;
+ }
+
+a {
+    text-decoration: none;
+}
+
+
+
+#loading {
+    -moz-border-radius:10px;
+    border-radius: 10px;
+}   
+
+#loading {
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    margin-left: -45px;
+    padding: 2px;
+    z-index: 20001;
+    width: 100px;
+    height: 50px;
+    border: 1px solid #6f87a3;
+    background: #99aabe;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    line-height: 50px;
+    vertical-align: middle;
+}
+
+#loading span {
+    margin-top: 15px;
+    margin-top: 10px;
+}
+
+
+
+/** Main dialog box styles */
+
+.gwt-PopupPanelGlass {
+background-color: black;
+    filter: alpha(opacity=50);
+    opacity: .50;
+}
+
+.gwt-DialogBox { 
+    background: white;
+    border: 1px solid #EA4505;
+}
+
+.gwt-DialogBox p {
+    font-size: .9em;
+}
+.gwt-DialogBox .Caption {
+    padding-left: 5px;
+    color: white;
+    font-weight: bold;
+    background: #EA4505;
+    text-align: center;
+    height: 2em;
+    line-height: 2em;
+}
+
+.dialogTop {
+   background: #EA4505; 
+}
+
+
+
+.popup-message {
+    background: white;
+    -moz-border-radius:10px;
+    border-radius: 10px;
+    border: 2px solid #6E84A2;
+    padding: 10px;
+    font-size: 1.2em;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+}
+
+.popup-message.error {
+    color: red;
+}
+
+
+
+
+
+
+/** Form specific styles */
+
+.prob-nums-title {
+    font-weight: bold;
+    color: black;
+    font-size: 1.1em;
+    margin: 0 0px 15px 15px;
+}
+
+.bookViewImpl .touch {
+    font-style: italic;
+
+}
+
+div.page .bookListViewImpl ul.touch li {
+
+}
+
+
+li {
+    text-align: left;
+}
+
+.book-item-box {
+}
+
+.book-item-box div:first-child {
+    font-weight: bold;
+}
+
+
+.book-item-box .pub {
+    margin-top: 5px;
+    color: #827F92;
+    font-size: 80%;
+}
+
+
+.book-item-box .author {
+    font-size: 80%;
+    color: #CDCDCD;
+}
+
+
+
+.book-item {
+}
+
+.book-item {
+    clear: both;
+    height: 83px;
+}
+
+.book-item {
+}
+
+.book-item img {
+    float: left;
+    margin-right: 10px;
+}
+
+.book-item>div>div {
+    max-width: 230px;
+    overflow: hidden;
+}
+
+
+.bookViewImpl .book-item {
+    background: white;
+}
+
+
+.bookViewImpl li {
+    list-style-type: none;
+}
+
+
+.bookViewImpl .bookMessage {
+    color: red;
+}
+
+.book-button-bar {
+  margin-top: 20px;
+}
+
+.book-button-bar,
+.book-button-bar button {
+    font-size: 1.1em;
+}
+
+
+.book-button-bar .gwt-TextBox {
+    font-size: 1em;
+    width: 95px;
+}
+
+
+/** Button arrows */
+.book-button-bar span.arrows {
+    font-weight: bold;
+    height: auto;
+    text-align:center;
+    white-space:nowrap;
+}
+
+
+
+.mainPage {
+    padding: 15px;
+}
+.bookInfoBox {
+    clear: both;
+    width:300;
+    height: 90px;
+}
+.pageInfo {
+    text-align: center;
+    float: left;
+    margin-right: 10px;
+}
+.pageNumberDiv {
+    clear: both;
+    margin-top: 10px;
+}
+
+.slider {
+    float: right;
+    width: 90%;
+}
+
+.bookInfoBox img {
+    float: left;
+}
+
+.p-num-div {
+  display: none;
+}
+
+
+.CategoryListViewImpl li,
+.bookViewImpl li {
+   font-weight: bold;
+}
+
+.CategoryListViewImpl button.sexybutton {
+    width: 250px;
+    margin-bottom: 15px;
+    color: black !important;
+}
+
+
+/** Home Page Info Box */
+.home-info {
+    font-size: .9em;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+/** Tooltip styles */
+.TooltipPopup {
+    background: yellow;
+}
+
+
+
+/** The feedback back button */
+.feedback-button {
+    position: absolute;
+    right: 3px;
+    top: 7px;
+}
+
+.more-info {
+    font-size: .8em;
+}
+
+.about-dialog {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+}
+
+/** global CSS loading styles
+*
+*/
+
+#startup {
+    display: table-cell;
+    vertical-align: middle;
+    height: 356px;
+ }
+
+#startup > div {
+    width: 320px;
+    text-align: center;
+}
+
+
+/** GUI Framework sytles for sliding/hiding content
+*
+*/
+
+#header {
+    position: relative;
+    z-index: 5;
+    height: 40px;
+    background-image: url('/gwt-resources/images/mobile/header_back.png');
+    background-repeat: repeat-x;
+    text-align: center;
+    line-height:  40px;
+}
+
+#pad1 {
+    display: block;
+    width: 18px;
+    height: 50px;
+    float: left;
+}
+
+#pad3 {
+    display: block;
+    width: 18px;
+    height: 50px;
+    float: left;
+}
+
+.pad2 {
+    display: block;
+    height: 50px;
+}
+
+
+#header .backButton {
+}
+
+#header .backButton {
+   
+  /* the buttons should be displayed on top of the titles so that they can always receive touches */
+  z-index: 1;
+
+  font-size: 13px;
+  
+  text-align: right;
+  
+
+  font-weight: bold;
+  display: inline;
+  width: 44px;
+  height: 30px;
+  
+  float: left;
+}
+
+#header .backButton span {
+
+    display: block;
+    
+
+    float:  left;
+
+    color: black;
+
+    margin-left:  -40px;
+    color: #212224;
+}
+
+#header .backButton img {
+    margin-right: 5px;
+    margin-top:  5px;
+}
+
+#header .backClicked {
+    font-weight: bold;
+}
+
+
+div.portrait #header .backButton {
+}
+
+div.landscape #header .backButton {
+}
+
+
+#header .title {
+  /* base metrics */
+  height: 31px;
+  margin-top: 3px;
+  margin-left: 5px;
+  margin-right: 5px;
+  /* the titles should be displayed below the button so that they don't receive touches */
+  z-index: 0;
+  /* set up the font appearance */
+  font-size: 16pt;
+  font-weight: bold;
+  color: white;
+  text-shadow: rgba(0, 0, 0, .6) 0px -1px 0px;
+  /* enforce trimming if the label is too long */
+  white-space : nowrap;
+  overflow : hidden;
+  text-overflow: ellipsis;
+  margin-top:  5px;
+}
+
+div.portrait #header .title.button-off {
+    width: 310px;
+    text-align: center;
+}
+
+div.portrait #header .title.button-on.portrait-overflow-off {
+    width: 310px;
+    text-align: center;
+}
+
+div.portrait #header .title.button-on.portrait-overflow-on {
+    width: 218px;
+    text-align: left;
+}
+
+
+
+div.landscape #header .title.button-off {
+    width: 470px;
+}
+
+div.landscape #header .title.button-on.landscape-overflow-off {
+    width: 470px;
+}
+
+div.landscape #header .title.button-on.landscape-overflow-on {
+    /*width: 355px;*/
+    width: 310px;
+    text-align: left;
+}
+
+
+
+div.page 
+{
+    #width: 320px;
+    min-height: 376px;
+}
+
+div.landscape div.page 
+{
+    #width: 480px;
+    min-height: 228px;
+}
+
+
+
+
+
+
+
+#main-content {
+}
+
+table {
+  width: 100%;
+}
+
+
+
+
+
+
+
+#control-floater {
+    display: none;
+    width: 25px;
+    background: yellow;
+    z-index: 10;
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
+#control-floater.hide {
+    visibility: hidden;
+}
+
+#control-floater.control-panel-expanded {
+    background: green;
+}
+#control-panel-expanded button {
+    width: 150px;
+    margin-bottom: 3px;
+}
+
+#control-panel-expanded {
+    display: none;
+    position: absolute;
+    top: 40;
+    width: 250px;
+    z-index: 999;
+    background: yellow;
+    padding: 10px;
+}
+
+#control-panel-expanded.show {
+    display: block;
+}
+
+
+
+
+
+
+.quizViewImpl {
+	padding: 15px;
+}
+
+
+.welcomeViewImpl {
+	padding: 15px;
+}
+
+.welcomeViewImpl div {
+	margin-bottom: 25px;
+}
