@@ -227,7 +227,7 @@ select load_order,is_custom_quiz, max(s.use_date) as use_date, date_format(min(s
   s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json,
   s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id,
   s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number,
-  s.total_sessions, s.time_on_task
+  s.total_sessions
 from (
 
  select 1 as load_order,0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
@@ -238,11 +238,9 @@ from (
    l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id,
    0 as test_run_id,
    0 as total_sessions,
-   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
-   hat.task_time as time_on_task
+   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join HA_ACTIVITY_TIME hat on hat.code = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
  where u.uid = ?
   and u.active_test_id = l.test_id
@@ -256,13 +254,11 @@ from (
    concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, td.subj_id, p.test_config_json,
    l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id,
    r.run_id as test_run_id, 0 as total_sessions,
-   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
-   hat.task_time as time_on_task
+   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number
  from  HA_TEST l 
  join HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join HA_ACTIVITY_TIME hat on hat.code = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and (p.custom_program_id is null && p.custom_quiz_id is null)
  where u.uid = ?
 
@@ -275,8 +271,7 @@ from (
   if (p.custom_program_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CP: ', cp.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
   r.run_id as test_run_id, r.total_sessions as total_sessions,
-  if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
-  hat.task_time as time_on_task
+  if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join (
@@ -291,7 +286,6 @@ from (
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
- join HA_ACTIVITY_TIME hat on hat.code = 'LESSON'
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
  where u.uid = ?
 
@@ -304,8 +298,7 @@ from (
   if (p.custom_quiz_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CQ: ', q.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
   r.run_id as test_run_id, r.total_sessions as total_sessions,
-  if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
-  hat.task_time as time_on_task
+  if (p.custom_quiz_id is null, 'Review-', 'Review') as activity, 1 as is_quiz, iu.session_number as session_number
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  left join (
@@ -320,7 +313,6 @@ from (
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
- join HA_ACTIVITY_TIME hat on hat.code = 'QUIZ'
  join HA_CUSTOM_QUIZ q on q.qid = p.custom_quiz_id
  where u.uid = ?
 
@@ -1085,8 +1077,8 @@ ORDER BY cast(title_number as unsigned)
 
 .key=CREATE_NEW_TEST
 
-insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count,grade_level)
-values(?,?,?,?,?,?,?,?,?)
+insert into HA_TEST(user_id,user_prog_id,test_def_id,create_time,test_segment,test_segment_slot, total_segments,test_question_count)
+values(?,?,?,?,?,?,?,?)
  
 
 ##
@@ -2245,46 +2237,7 @@ where  u.uid in( $$UID_LIST$$ )
 order  by u.user_name 
           
           
-.key=HIGHLIGHT_REPORT_TIME_ON_TASK
-
-
-select u.user_name, t.user_id, iu.item_type as activity_type, count(*) as activity_count
-from HA_TEST t, HA_TEST_RUN tr, HA_TEST_RUN_INMH_USE iu, HA_USER u
-where t.user_id in ( $$UID_LIST$$ )
-  and t.test_id = tr.test_id
-  and iu.run_id = tr.run_id
-  and iu.view_time between ? and ?
-  and t.user_id = u.uid
-group by t.user_id, activity_type
-
-union
-
-select u.user_name, t.user_id, 'QUIZ' as activity_type, count(*) as activity_count
-from HA_TEST t, HA_TEST_RUN tr, HA_USER u
-where t.user_id in ( $$UID_LIST$$ )
-  and t.test_id = tr.test_id
-  and tr.run_time between ? and ?
-  and t.user_id = u.uid
-group by t.user_id
-
-union
-
-select u.user_name, t.user_id, 'WHITEBOARD' as activity_type, count(*) as activity_count
-from HA_TEST t, HA_TEST_RUN tr, HA_USER u, 
-     (
-       select tw.run_id as run_id from HA_TEST_RUN_WHITEBOARD tw
-       where  tw.user_id in ( $$UID_LIST$$ )
-       group by run_id
-     ) s
-where t.user_id in ( $$UID_LIST$$ )
-  and t.test_id = tr.test_id
-  and tr.run_id = s.run_id
-  and tr.run_time between ? and ?
-  and t.user_id = u.uid
-group by t.user_id, tr.run_id
-
-order by user_name, activity_type
-
+          
           
 #########################
 ### CmQuizzesDao 
