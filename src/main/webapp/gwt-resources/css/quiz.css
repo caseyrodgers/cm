@@ -1,0 +1,68 @@
+/** hide the default header/footer
+    CM mobile provides a custom ones.
+*/
+#testset_head_wrapper,#testset_footer {
+	display: none;
+}
+
+#testset_div {
+	
+}
+
+.question_solution_link {
+	display: none;
+}
+
+#testset_div p {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 12pt;
+}
+
+#testset_div li {
+	line-height: 2em;
+}
+
+#testset_div li {
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+}
+
+#testset_div ul {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 12pt;
+	text-align: left;
+}
+
+#testset_div .question_div {
+	padding: 10px;
+}
+
+.debug-hide {
+	display: none;
+}
+
+.question_responses p {
+	display: inline;
+	margin: 0;
+}
+
+.question_head {
+	background: red;
+	text-align: center;
+}
+
+.question_head_text {
+	font-weight: bold;
+	font-size: large;
+	font-family: sans-serif;
+}
+
+.quizViewImpl .buttonBar-top {
+	text-align: center;
+	border-top: 1px solid black;
+}
+
+.quizViewImpl .buttonBar-bottom {
+	background-color: yellow;
+}
