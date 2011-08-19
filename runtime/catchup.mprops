@@ -2547,17 +2547,20 @@ select max(login_time) from HA_USER_LOGIN where user_id = ?
 .key=ACCOUNT_OVERAGE
 ###
 
-select a.aid, a.subscriber_id, s.student_count, sc.max_students,
-       (s.student_count - sc.max_students) as overage, ss.status, ss.date_expire
+select a.user_name, s.school_type as school_name, sz.zone_manager as rep_name, c.student_count, sc.max_students,
+       (c.student_count - sc.max_students) as overage, ss.status, ss.date_expire
 from HA_ADMIN a, SUBSCRIBERS_SERVICES ss, SUBSCRIBERS_SERVICES_CONFIG_CATCHUP sc,
+     SUBSCRIBERS s, SUBSCRIBERS_ZONE sz,
   (select admin_id, count(*) as student_count
    from HA_USER u
    where u.is_active = 1
      and u.is_auto_create_template = 0
-   group by u.admin_id ) s
+   group by u.admin_id ) c
 where a.subscriber_id = sc.subscriber_id
-  and a.aid = s.admin_id
-  and sc.max_students < s.student_count
+  and a.subscriber_id = s.id
+  and a.aid = c.admin_id
+  and sc.max_students < c.student_count
   and ss.subscriber_id = a.subscriber_id
   and sc.subscriber_svc_id = ss.ssid
+  and s.sales_zone = sz.zone_id
 order by overage desc
