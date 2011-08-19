@@ -23,8 +23,8 @@
     String today = sdf.format(new java.util.Date());
 
 	String header =
-        String.format("%s\t%s\t%s\t%s\t%s\t%s\t%s\n\n", 
-        		"ID", "Subscriber ID", "Count", "Max", "Overage", "Status", "Expires");
+        String.format("%-15s\t%-50s\t%-15s\t%6s\t%6s\t%7s\t%6s\t%12s\n\n", 
+        		"User Name", "School Name", "Rep", "Count", "Max", "Overage", "Status", "Expires");
 
 	StringBuilder sb = new StringBuilder();
 
@@ -44,10 +44,10 @@
 			String expireDateStr = sdf.format(expireDate);
 
 			sb.append(
-            String.format("%d\t%s\t%d\t%d\t%d\t%s\t%s\n", 
-            		rs.getInt("aid"), rs.getString("subscriber_id"), rs.getInt("student_count"),
-            		rs.getInt("max_students"), rs.getInt("overage"), rs.getString("status"),
-					expireDateStr));
+            String.format("%-15s\t%-50s\t%-15s\t%6d\t%6d\t%7d\t%6s\t%12s\n", 
+            		rs.getString("user_name"), rs.getString("school_name"), rs.getString("rep_name"), 
+            		rs.getInt("student_count"), rs.getInt("max_students"), rs.getInt("overage"),
+            	    rs.getString("status"), expireDateStr));
 		 }
     }
     catch (Exception e){
