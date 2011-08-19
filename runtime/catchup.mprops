@@ -328,7 +328,25 @@ from (
 group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.session_number asc
 
+######
 
+.key=STUDENT_ACTIVITY_TIME_ON_TASK
+
+select iu.run_id, iu.item_type as activity_type, count(*) as activity_count
+from HA_TEST_RUN_INMH_USE iu
+where iu.run_id = in ( $$RUNID_LIST$$ )
+group by iu.run_id, activity_type
+
+union
+
+select tw.run_id as run_id, 'WHITEBOARD' as activity_type, 1 as activity_count
+from HA_TEST_RUN_WHITEBOARD tw
+where  tw.run_id in ( $$RUNID_LIST$$ )
+group by run_id
+
+order by run_id, activity_type
+
+#####
 
 ##################
 ## Reset student history (remove) from named test_id
