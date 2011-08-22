@@ -94,9 +94,20 @@ a {
     vertical-align: middle;
 }
 
-#loading span {
-    margin-top: 15px;
-    margin-top: 10px;
+
+#spinner {
+    position: absolute;
+    left: 45%;
+    top: 40%;
+    margin-left: -45px;
+    padding: 2px;
+    z-index: 20002;
+    width: 100px;
+    height: 50px;
+    text-align: center;
+    font-weight: bold;
+    line-height: 50px;
+    vertical-align: middle;
 }
 
 
@@ -560,6 +571,11 @@ table {
 
 
 
+.buttonBar {
+    background: #C8EEDB;
+    margin: 10px 0;
+    padding: 3px;
+}
 
 
 
@@ -574,4 +590,44 @@ table {
 
 .welcomeViewImpl div {
 	margin-bottom: 25px;
+}
+
+
+
+
+
+.prescriptionLessonViewImpl,
+.prescriptionLessonResourceVideoImpl,
+.prescriptionLessonResourceTutorViewImpl,
+.prescriptionLessonResourceResultsViewImpl {
+	padding: 15px;
+}
+
+.prescriptionLessonViewImpl .resourceType span {
+	font-style: italic;
+	font-size: .8em;
+}
+
+
+
+.prescriptionLessonResourceVideoImpl .video_wrapper {
+	margin: auto;
+    margin-top: 25px;
+    text-align: center;
+    width: 500px;
+    height: 200px;
+}
+
+
+
+.prescriptionLessonViewImpl .correct_image {
+	float: right;
+	margin-right: 10px;
+}
+
+
+#show_whiteboard_button {
+    position: absolute;
+    top: 20px;
+    left: 290px;
 }

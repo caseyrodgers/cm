@@ -1,0 +1,77 @@
+div.page ul.touch {
+  width: 100%;
+  padding: 0px;
+  margin: 0;
+}
+
+div.landscape div.page ul.touch {
+ 
+}
+
+div.page ul.touch li {
+  list-style-type: none;
+  background-color: white;
+  border-style: solid;
+  border-width: 1px 1px 0px 1px;
+  border-color: rgb(171,173,176);  
+  margin: 0px;
+  padding: 15px;
+  /* ensure that long pieces of text get trimmed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*
+this matches the first list item, which needs rounding in the top corners
+and no bottom border as the item below will already draw a border at its top
+*/
+div.page ul.touch li:first-child {
+  -webkit-border-top-left-radius: 8px;
+  -webkit-border-top-right-radius: 8px;
+  border: 1px solid rgb(171,173,176);
+  border-bottom-width: 0;
+}
+
+/*
+this matches the last list item, which needs rounding in the bottom corners
+and a bottom border
+*/
+div.page ul.touch li:last-child {
+  -webkit-border-bottom-left-radius: 8px;
+  -webkit-border-bottom-right-radius: 8px;
+  border: 1px solid rgb(171,173,176);
+  margin-bottom: 5px;
+}
+
+/*
+list items with the .group class are those that can be tapped to drill
+further down and therefore need an arrow in the background to indicate that
+*/
+div.page ul.touch li.group {
+  background-image: url('/gwt-resources/images/mobile/chevron.png');
+  background-repeat: no-repeat;
+  background-position: 98% 18px;
+}
+
+
+/* this is for the touched state of list items */
+div.page ul.touch li.large:active {
+    /*
+  background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched.png');
+  **/
+}
+
+div.page ul.touch li.is_selected {
+  background-image: url('/gwt-resources/images/mobile/chevron_touched.png'), url('/gwt-resources/images/mobile/item_background_touched_large.png');
+  background-position: 98% 18px, 0 0;
+  background-repeat: no-repeat, repeat-x;
+  color: white;
+
+  /* why is this needed background-image should take care of it
+  background: #0082F0;
+ */
+}
+
+div.landscape div.page ul.touch li.group:active {
+  background-position: 98% 18px, 0 0;
+}

@@ -1,0 +1,126 @@
+#tutor_embedded {
+  width: 100%;
+}
+
+#tutoroutput {
+        font: 12pt "Times New Roman", Times, serif;
+}
+
+#steps_head {
+	display: none;
+}
+
+.check-quiz-link {
+  display: none;
+}
+
+.percent-complete {
+        background: green;
+        border: 1px solid red;
+        font-weight: bold;
+        text-align: right;
+}
+.percent-complete-wrapper {
+        background-color: red;
+        height: 6px;
+        width: 100%;
+}
+.percent-complete-wrapper img {
+        height: 4px;
+}
+.percent-complete-title {
+        display: block;
+        position: absolute;
+        right: 0;
+        width: 200px;
+}
+
+
+/** tutor sytles */
+#show-work-force,#tutoring_button {
+   display: none;
+}
+
+
+#steps_next {
+  margin-right: 10px;
+}
+
+.step_title_step {
+   background: #E7C2AA;
+   -moz-border-radius:0 0 15px 0;
+   border-radius: 0 0 15px 0;
+   width: 100px;
+}
+
+.hint {
+   background: #DEFF66;
+}
+.step_title_hint {
+  background: #6F7F33;
+  color: white;
+  width: 100px;
+  padding-left: 2px;
+   -moz-border-radius:0 0 15px 0;
+   border-radius: 0 0 15px 0;
+}
+
+.step_content {
+   -moz-border-radius:0 0 15px 15px;
+   border-radius: 0 0 15px 15px;
+   
+   padding: 10px;
+}
+
+
+.problemIndex {
+    background: #A8B5C6;
+    background: white;
+    padding: 10px;
+}
+
+
+.graphimgstatic {
+    margin: 15px;
+}
+
+#tutoroutput .step {
+   color: black;
+}
+
+#steps_prev {
+    position: absolute;
+    top: 20px;        
+    left: 2px;
+}
+
+#steps_next {
+    position: absolute;
+    top: 20px;        
+    left: 83px;
+}
+
+
+#new_problem {
+    position: absolute;
+    top: 20px;
+    left: 165px;
+}
+
+#tutor_message {
+    position: absolute;
+    left: 5px;
+    top: 45px;
+    color: red;
+}
+
+
+
+            
+.is_rpp {
+	background-image: url(/gwt-resources/images/check_notanswered.png) !important;
+}
+
+.is_rpp.is_viewed {
+    background-image: url(/gwt-resources/images/check_correct.png) !important;
+}

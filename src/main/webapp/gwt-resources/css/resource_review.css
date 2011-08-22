@@ -1,0 +1,122 @@
+.prescriptionLessonResourceReviewImpl {
+	padding: 10px;
+	font: 12pt "Times New Roman", Times, serif;
+}
+
+
+.prescriptionLessonResourceReviewImpl hm-content {
+	font-size: 1.1em;
+}
+
+
+.prescriptionLessonResourceReviewImpl p {
+    margin: 0 0 12px 0;
+    font-size: 12pt;
+}
+
+.prescriptionLessonResourceReviewImpl p.example {
+    margin: 0 0 12px 0;
+    font-size: 12pt;
+    color:#FF0000
+}
+
+.prescriptionLessonResourceReviewImpl h2 {
+    margin: 10px 0 15px 0;
+    font-family: "Times New Roman", Times, serif;
+}
+
+.prescriptionLessonResourceReviewImpl h3 {
+    margin: 10px 0 10px 0;
+    font-family:"Times New Roman", Times, serif;
+}
+
+.prescriptionLessonResourceReviewImpl ul {
+    margin: 5px 5px 10px 15px;
+}
+
+.prescriptionLessonResourceReviewImpl ul li {
+    list-style-type: none;
+}
+
+.prescriptionLessonResourceReviewImpl div.box250 {
+    border-left:1px solid #000000; 
+    border-right:1px solid #000000; 
+    border-top:1px solid #000000; 
+    border-bottom:1px solid #000000;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:5px;
+    padding-bottom:0;
+    margin: 0 0 10px 30px;
+    width: 250px
+}
+
+.prescriptionLessonResourceReviewImpl div.box300 {
+    border-left:1px solid #000000; 
+    border-right:1px solid #000000; 
+    border-top:1px solid #000000; 
+    border-bottom:1px solid #000000;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:5px;
+    padding-bottom:0;
+    margin: 0 0 10px 30px;
+    width: 300px
+}
+
+.prescriptionLessonResourceReviewImpl div.box350 {
+    border-left:1px solid #000000; 
+    border-right:1px solid #000000; 
+    border-top:1px solid #000000; 
+    border-bottom:1px solid #000000;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:5px;
+    padding-bottom:0;
+    margin: 0 0 10px 30px;
+    width: 350px
+}
+
+.prescriptionLessonResourceReviewImpl div.box400 {
+    border-left:1px solid #000000; 
+    border-right:1px solid #000000; 
+    border-top:1px solid #000000; 
+    border-bottom:1px solid #000000;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:5px;
+    padding-bottom:0;
+    margin: 0 0 10px 30px;
+    width: 400px
+}
+
+.prescriptionLessonResourceReviewImpl div.box450 {
+    border-left:1px solid #000000; 
+    border-right:1px solid #000000; 
+    border-top:1px solid #000000; 
+    border-bottom:1px solid #000000;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:5px;
+    padding-bottom:0;
+    margin: 0 0 10px 30px;
+    width: 450px
+}
+
+
+#link_to_review_index {
+    float: right;
+    width: 100px;
+    text-align: right;
+    margin-right: 20px;
+}
+
+p img {
+    vertical-align:middle;
+}
+
+
+
+.prescriptionLessonResourceReviewImpl strong {
+    font-weight: bold;
+}

@@ -1,0 +1,73 @@
+/** Quiz Panel definition */
+
+#testset_div {
+        position: relative;
+        margin: 0;
+        padding: 0;
+}
+
+#testset_footer .check-quiz-link {
+        display: block;
+        text-align: center;
+}
+
+
+.prescriptionLessonResourceResultsViewImpl .check-quiz-link {
+    display: none !important;
+}
+
+
+#testset_div #hm_flash_widget {
+    display: none;
+}
+
+.resource-viewer-impl-results p {
+    margin-right: 10px;  /** add margin on right to show when scrollbar is visible */
+}
+    
+#testset_div a.check-quiz-link:link,#testset_div a.check-quiz-link:active,#testset_div a.check-quiz-link:visited,#testset_div a.check-quiz-link:hover {
+        color: black;
+        text-decoration: underline;
+}
+#testset_div {
+        background-color: transparent;
+}
+
+#testset_div .question_wrapper {
+}
+
+#testset_head {
+        background: none;
+        display: none;
+}
+
+#testset_footer {
+    display: block;
+    background: #F1F1F1;
+    width: auto;
+}
+
+#testset_div .question_head {
+        font-size: 11px;
+}
+
+#testset_div h1 {
+        margin-bottom: 15px;
+}
+
+#testset_div {
+        width: auto;
+}
+
+#testset_div .question_head {
+   width: auto;
+}
+
+.response_div {
+   margin-right: 17px;
+}
+
+
+.question_head img {
+    float: right;
+}
