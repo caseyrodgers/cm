@@ -48,15 +48,17 @@ public class Controller {
     	 * 
     	 */
     	IPage pageCurrent = mPageStack.peek();
+    	boolean normalProcess = true;
     	if(pageCurrent != null && pageCurrent.getBackAction() != null) {
     		Log.info("Back override for '" + pageCurrent + "'");
-    		pageCurrent.getBackAction().goBack();
+    		normalProcess = pageCurrent.getBackAction().goBack();
     	}
-    	else {
+    	
+    	if(normalProcess) {
 	    	if(mPageStack.getCount() > 1) {
 	    		mPageStack.pop();
-	    		IPage currPage = mPageStack.peek();
-	    		__eventBus.fireEvent(new BackPageLoadedEvent(currPage));
+	    		IPage prevPage = mPageStack.peek();
+	    		__eventBus.fireEvent(new BackPageLoadedEvent(prevPage));
 	    	}
 	    	else {
 	    		if(__eventBus == null) {

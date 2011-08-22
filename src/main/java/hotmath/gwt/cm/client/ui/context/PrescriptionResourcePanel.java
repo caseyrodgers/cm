@@ -5,13 +5,13 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.SetLessonCompletedAction;
 import hotmath.gwt.shared.client.util.StatusImagePanel;
 
 import java.util.ArrayList;
@@ -234,8 +234,9 @@ public class PrescriptionResourcePanel extends LayoutContainer {
 
     static {
         /**
-         * Setup a listen for solution view completions to all the updating of
-         * GUI accordingly.  Also update DB via PRC when Lesson is complete
+         * Setup a listener for solution view completions.
+         * 
+         *  Also update DB via PRC when Lesson is complete
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
@@ -248,26 +249,6 @@ public class PrescriptionResourcePanel extends LayoutContainer {
                     if (isComplete) {
                     	setLessonCompleted(id.getTitle());
                     }
-                    
-                	/** if first time completing this RPP/RPA display message to user
-                	 * 
-                	 */
-                    /*
-                     * TODO: it looks like the code below can be removed?
-                    String title=null;
-                    String msg=null;
-                    if(id.getWidgetJsonArgs() != null) {
-                    	title = "Activity Complete";
-                    	msg = "You have completed this practice activity.";
-                    }
-                    else {
-                    	title = "Problem Complete";
-                    	msg = "You have completed this practice problem.";
-                    }
-                    InfoPopupBox.display(title, msg);
-                    new RequiredPracticeCompleteDialog(title, msg);            	
-                    */
-
             	}
             }
         });

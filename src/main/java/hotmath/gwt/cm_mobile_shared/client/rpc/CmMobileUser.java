@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
@@ -16,11 +16,13 @@ public class CmMobileUser implements Response {
     int runId;
     CmList<Topic> prescribedLessons;
     
-    
-    
     /** composite with normal CM login */
     UserLoginResponse baseLoginResponse;
 
+    /** composite with next flow action
+     * 
+     */
+    CmProgramFlowAction flowAction;
 
     public CmMobileUser() {}
     
@@ -31,8 +33,14 @@ public class CmMobileUser implements Response {
         this.testSlot = testSlot;
     }
     
-    
-    
+    public CmProgramFlowAction getFlowAction() {
+        return flowAction;
+    }
+
+    public void setFlowAction(CmProgramFlowAction flowAction) {
+        this.flowAction = flowAction;
+    }
+
     public UserLoginResponse getBaseLoginResponse() {
         return baseLoginResponse;
     }
@@ -108,4 +116,14 @@ public class CmMobileUser implements Response {
     public void setName(String name) {
         this.name = name;
     }
+    
+    
+    @Override
+    public String toString() {
+        return "CmMobileUser [name=" + name + ", userId=" + userId + ", testId=" + testId + ", testSegment="
+                + testSegment + ", testSlot=" + testSlot + ", runId=" + runId + ", prescribedLessons="
+                + prescribedLessons + ", baseLoginResponse=" + baseLoginResponse + ", flowAction=" + flowAction
+                + ", prescripion=" + prescripion + "]";
+    }
+    
 }

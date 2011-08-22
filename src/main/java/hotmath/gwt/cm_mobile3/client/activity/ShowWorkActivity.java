@@ -22,19 +22,24 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class ShowWorkActivity implements ShowWorkView.Presenter {
     
     EventBus eventBus;
+    String pid;
     
     static ShowWorkActivity __lastInstance;
-    public ShowWorkActivity(EventBus eventBus) {
+    public ShowWorkActivity(EventBus eventBus, String pid) {
         this.eventBus = eventBus;
         __lastInstance = this;
+        if(pid == null)
+            pid = "quiz:quiz";
+        this.pid = pid;
     }
 
     @Override
     public void prepareShowWorkView(ShowWorkView view) {
         setExternalJsniHooks(this);
         
-        String pid = "quiz:quiz";
-        int runId = 0;
+        /** TODO: why use global? */
+        int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
+
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, runId);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
@@ -80,9 +85,6 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
             eatNextWhiteboardOut = false;
             return;
         }
-
-        String pid="quiz:quiz";
-        
         /**
          * If json is simple string 'clear', then force a full clear and
          * remove all chart data for this user/pid. Otherwise, it is a
@@ -92,7 +94,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         if(commandType == CommandType.CLEAR) {
             whiteboardActions.getActions().clear();
         }
-        int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getRunId();
+        int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
         SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(),runId, pid, commandType, json);
         whiteboardActions.getActions().add(action);
     }

@@ -7,7 +7,14 @@ import java.util.List;
 
 public interface IPage {
 
-	static public interface BackAction { void goBack(); }
+	static public interface BackAction {
+	    /** provide back processing, if return true
+	     *  then normal processing will continue.
+	     *  
+	     * @return
+	     */
+	    boolean goBack(); 
+	}
 	String getTitle();
 
 	String getBackButtonText();

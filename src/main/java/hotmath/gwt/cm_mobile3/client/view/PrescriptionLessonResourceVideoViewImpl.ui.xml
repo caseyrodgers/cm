@@ -1,0 +1,9 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel styleName="prescriptionLessonResourceVideoImpl">
+	    <h1 ui:field="videoTitle">The Video Title</h1>
+	    <g:HTMLPanel ui:field="mainPanel"></g:HTMLPanel>
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

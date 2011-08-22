@@ -1,13 +1,13 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.ClientFactory;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
-import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
 

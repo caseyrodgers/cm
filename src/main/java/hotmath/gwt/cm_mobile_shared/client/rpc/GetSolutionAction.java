@@ -1,4 +1,4 @@
-package hotmath.gwt.hm_mobile.client.rpc;
+package hotmath.gwt.cm_mobile_shared.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.HmMobileActionBase;

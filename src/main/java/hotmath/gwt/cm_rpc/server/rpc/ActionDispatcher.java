@@ -105,6 +105,18 @@ public class ActionDispatcher {
 			startDate = sdf.format(ContextListener.getStartDate());
 		else
 			startDate = sdf.format(System.currentTimeMillis());
+		
+		
+		
+		/** startup GUI log watcher if possible
+		 * 
+		 */
+		try {
+		    new ActionDispatcherLoggerGui();
+		}
+		catch(Throwable th) {
+		    logger.debug("Cannot start logger GUI", th);
+		}
 	}
 
 	/**

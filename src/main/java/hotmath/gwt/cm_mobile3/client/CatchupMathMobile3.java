@@ -2,15 +2,10 @@ package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
-import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewHandler;
-import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
-import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewHandler;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -22,6 +17,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadingSpinner;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
@@ -38,7 +34,6 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -55,6 +50,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     RootPanel _rootPanel;
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
+    FormLoaderListeners formLoaders = new FormLoaderListenersImplHistory();
+    LoadingSpinner _spinner;
 
     public CatchupMathMobile3() {
         /*
@@ -118,11 +115,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         __instance = this;
         _loadingDiv = RootPanel.get("loading");
+        _loadingDiv.getElement().setAttribute("style", "display:none");
+        _spinner = new LoadingSpinner("spinner");
+        
         _rootPanel = RootPanel.get("main-content");
         try {
             Controller.installEventBus(__clientFactory.getEventBus());
             _rootPanel.add(createApplicationPanel());
 
+            
+            
+            formLoaders.setupListeners(__clientFactory.getEventBus());
             
             /** allow each display panel to flow left-to-right. 
              * 
@@ -144,6 +147,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
+            
+            
+            
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
@@ -172,20 +178,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         eb.addHandler(SystemIsBusyEvent.TYPE, new SystemIsBusyEventHandler() {
             @Override
             public void showIsBusy(boolean trueFalse) {
-                if (_loadingDiv != null) {
+                if (_spinner != null) {
                     if (trueFalse) {
-                        _loadingDiv.getElement().setAttribute("style", "display:block");
+                        _spinner.startSpinner();
                     } else {
-                        showLoadingMessage(_loadingDiv.getElement(), false);
-                        _loadingDiv.getElement().setAttribute("style", "display:none");
+                        _spinner.stopSpinner();
                     }
                 }
             }
-
-            private native void showLoadingMessage(Element el, boolean doShow) /*-{
-                                                                               el.style.display = doShow?'block':'none';
-                                                                               }-*/;
-
         });
 
         /**
@@ -228,43 +228,11 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                  * 
                  * TODO: find a more general way for specific hooks
                  */
-                if(page instanceof QuizViewImpl) {
+                if(page instanceof QuizViewImpl || page instanceof PrescriptionLessonResourceTutorView) {
                     ShowWorkActivity.saveWhiteboard();
                 }
             }
         });        
-
-
-        /**
-         * events to handle mapping to GWT history listener
-         * 
-         * Define listeners that will load the appropriate 
-         * view into the history stack.
-         */
-        eb.addHandler(ShowWelcomeViewEvent.TYPE, new ShowWelcomeViewHandler() {
-            @Override
-            public void showWelcomeView() {
-                History.newItem("welcome:" + System.currentTimeMillis());
-            }
-        });
-        eb.addHandler(ShowLoginViewEvent.TYPE, new ShowLoginViewHandler() {
-            @Override
-            public void showLoginView() {
-                History.newItem("login:" + System.currentTimeMillis());
-            }
-        });
-        eb.addHandler(ShowQuizViewEvent.TYPE, new ShowQuizViewHandler() {
-            @Override
-            public void showQuizView() {
-                History.newItem("quiz:" + System.currentTimeMillis());
-            }
-        });
-        eb.addHandler(ShowWorkViewEvent.TYPE, new ShowWorkViewHandler() {
-            @Override
-            public void showWorkView() {
-                History.newItem("show_work:" + + System.currentTimeMillis());
-            }
-        });
     }
 
     /** Look at current page and try to determine the proper thing 
@@ -276,7 +244,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         if(page instanceof WelcomeView) {
             __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
         }
-        else if(page instanceof ShowWorkViewEvent) {
+        else if(page instanceof ShowWorkView) {
             ShowWorkActivity.disconnectWhiteboard();
         }
         else {

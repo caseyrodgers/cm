@@ -3,8 +3,8 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.rpc.action.SetLessonCompletedAction;
 import hotmath.testset.ha.HaTestRunDao;
 
 import java.sql.Connection;

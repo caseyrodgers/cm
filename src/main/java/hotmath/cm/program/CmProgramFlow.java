@@ -6,11 +6,11 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
@@ -53,31 +53,31 @@ public class CmProgramFlow {
 
     public CmProgramFlow(final Connection conn, int userId) throws Exception {
         this.activeInfo = sdao.loadActiveInfo(userId);
-        
-        this.userProgram = updao.loadProgramInfoCurrent( userId);
-        this.student = sdao.getStudentModel(conn, userProgram.getUserId(),true);
-        
-        /** make the program segment 1 based
-        */
-       if(this.activeInfo.getActiveSegment() < 1) {
-           this.activeInfo.setActiveSegment(1);
-           sdao.setActiveInfo(conn, userId, activeInfo);
-       }
-       
-       /** make sure the current state is valid, if not
-        *  try to synchronize.
-        *  
-        */
-       isValid();
+
+        this.userProgram = updao.loadProgramInfoCurrent(userId);
+        this.student = sdao.getStudentModel(conn, userProgram.getUserId(), true);
+
+        /**
+         * make the program segment 1 based
+         */
+        if (this.activeInfo.getActiveSegment() < 1) {
+            this.activeInfo.setActiveSegment(1);
+            sdao.setActiveInfo(conn, userId, activeInfo);
+        }
+
+        /**
+         * make sure the current state is valid, if not try to synchronize.
+         * 
+         */
+        isValid();
     }
-    
+
     private void isValid() {
-    	try {
-    		sdao.verifyActiveProgram(getActiveInfo().getActiveTestId());
-    	}
-    	catch(Exception e) {
-    		e.printStackTrace();
-    	}
+        try {
+            sdao.verifyActiveProgram(getActiveInfo().getActiveTestId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -95,14 +95,14 @@ public class CmProgramFlow {
     public CmProgramFlowAction getActiveFlowAction(final Connection conn) throws Exception {
 
         if (userProgram.isComplete()) {
-            if(student.getSettings().getStopAtProgramEnd() || userProgram.isCustom()) {
+            if (student.getSettings().getStopAtProgramEnd() || userProgram.isCustom()) {
                 return new CmProgramFlowAction(CmPlace.END_OF_PROGRAM);
-            }
-            else 
+            } else
                 return new CmProgramFlowAction(CmPlace.AUTO_ADVANCED_PROGRAM);
         }
 
         if (activeInfo.getActiveRunId() > 0) {
+            // is in a prescription
             return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, new GetPrescriptionAction(
                     activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true)));
         } else {
@@ -112,7 +112,8 @@ public class CmProgramFlow {
             if (activeInfo.getActiveTestId() == 0) {
                 activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
             }
-            return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,new GetQuizHtmlAction(activeInfo.getActiveTestId())));
+            return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,
+                    new GetQuizHtmlAction(activeInfo.getActiveTestId())));
         }
     }
 
@@ -142,9 +143,8 @@ public class CmProgramFlow {
      */
     public CmProgramFlowAction moveToNextFlowItem(final Connection conn) throws Exception {
 
-        
         // verifyProgramFlowIsStillActive();
-        
+
         CmProgramFlowAction action = null;
         /**
          * if active testRun and more lessons
@@ -152,10 +152,11 @@ public class CmProgramFlow {
          */
         if (activeInfo.getActiveRunId() > 0) {
 
-            /** mark segment as completed?
+            /**
+             * mark segment as completed?
              * 
              */
-            
+
             /**
              * prescription is complete
              * 
@@ -164,7 +165,7 @@ public class CmProgramFlow {
                 moveToNextProgramSegment(conn);
 
                 action = getActiveFlowAction(conn);
-                assert(action.getPlace() == CmPlace.QUIZ);
+                assert (action.getPlace() == CmPlace.QUIZ);
             } else {
                 /**
                  * End of program has been reached
@@ -174,56 +175,54 @@ public class CmProgramFlow {
 
                 if (student.getSettings().getStopAtProgramEnd()) {
                     action = getActiveFlowAction(conn);
-                    assert(action.getPlace() == CmPlace.END_OF_PROGRAM);
+                    assert (action.getPlace() == CmPlace.END_OF_PROGRAM);
                 } else {
                     action = getActiveFlowAction(conn);
-                    assert(action.getPlace() == CmPlace.AUTO_ADVANCED_PROGRAM);
+                    assert (action.getPlace() == CmPlace.AUTO_ADVANCED_PROGRAM);
                 }
             }
-        }
-        else if(activeInfo.getActiveTestId() > 0) {
-            
-            /** we should create the prescription
+        } else if (activeInfo.getActiveTestId() > 0) {
+
+            /**
+             * we should create the prescription
              * 
-             *  NOTE: this changes the active info
-             *  
-             *  */
+             * NOTE: this changes the active info
+             * 
+             * */
             CreateTestRunAction testRunAction = new CreateTestRunAction(activeInfo.getActiveTestId());
             CreateTestRunResponse testRunResponse = new CreateTestRunCommand().execute(conn, testRunAction);
             action = testRunResponse.getNextAction();
-            if(testRunResponse.getSessionCount() > 0) {
-                assert(action.getPlace() == CmPlace.PRESCRIPTION);
+            if (testRunResponse.getSessionCount() > 0) {
+                assert (action.getPlace() == CmPlace.PRESCRIPTION);
+            } else {
+                assert (action.getPlace() == CmPlace.PRESCRIPTION || action.getPlace() == CmPlace.QUIZ || action
+                        .getPlace() == CmPlace.AUTO_ADVANCED_PROGRAM);
             }
-            else {
-                assert(action.getPlace() == CmPlace.PRESCRIPTION
-                       || action.getPlace() == CmPlace.QUIZ
-                       || action.getPlace() == CmPlace.AUTO_ADVANCED_PROGRAM);
-            }
-        }
-        else {
-            /** brand new program, create the first segment
+        } else {
+            /**
+             * brand new program, create the first segment
              * 
              */
             createNewProgramSegment();
             action = getActiveFlowAction(conn);
-            assert(action.getPlace() == CmPlace.PRESCRIPTION
-                    || action.getPlace() == CmPlace.QUIZ);
+            assert (action.getPlace() == CmPlace.PRESCRIPTION || action.getPlace() == CmPlace.QUIZ);
         }
 
-        assert(action != null);
+        assert (action != null);
         return action;
     }
 
-    /** Setup so the active item is to retake the current segment
+    /**
+     * Setup so the active item is to retake the current segment
      */
     public CmProgramFlowAction retakeActiveProgramSegment(final Connection conn) throws Exception {
         activeInfo.setActiveRunId(0);
         activeInfo.setActiveTestId(0);
         sdao.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
-        
+
         return getActiveFlowAction(conn);
     }
-    
+
     /**
      * create a brand new test for the current segment
      * 
@@ -289,23 +288,23 @@ public class CmProgramFlow {
 
     public void markSessionAsActive(final Connection conn, int session) throws CmProgramFlowException {
         try {
-            if(session < 0 || session > getNumberOfSessionsInPrescription(conn, activeInfo.getActiveRunId())) {
+            if (session < 0 || session > getNumberOfSessionsInPrescription(conn, activeInfo.getActiveRunId())) {
                 throw new CmProgramFlowException("session number not valid: " + session + ", " + activeInfo);
-            }            
+            }
             activeInfo.setActiveRunSession(session);
             sdao.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
-            
-            /** Mark this lesson as being viewed
-            *
-            */
-            HaTestRunDao.getInstance().setLessonViewed(conn,activeInfo.getActiveRunId(),session);
 
-        }
-        catch (Exception e) {
+            /**
+             * Mark this lesson as being viewed
+             * 
+             */
+            HaTestRunDao.getInstance().setLessonViewed(conn, activeInfo.getActiveRunId(), session);
+
+        } catch (Exception e) {
             throw new CmProgramFlowException("Error advancing program", e);
         }
-    }    
-    
+    }
+
     /**
      * Move to next segment only if available.
      * 

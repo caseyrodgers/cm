@@ -7,6 +7,8 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
+import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
@@ -16,7 +18,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
@@ -66,7 +67,23 @@ public class QuizActivity implements QuizView.Presenter {
 
     @Override
     public void checkQuiz() {
-        MessageBox.showMessage("Checking Quiz");
+        eventBus.fireEvent(new SystemIsBusyEvent(true));
+
+        CmMobileUser user = CatchupMathMobileShared.getUser();
+        CreateTestRunAction checkTestAction = new CreateTestRunAction(user.getTestId(), user.getUserId());
+        CatchupMathMobileShared.getCmService().execute(checkTestAction, new AsyncCallback<CreateTestRunResponse>() {
+            @Override
+            public void onSuccess(CreateTestRunResponse result) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                MessageBox.showMessage("Quiz Check, test run created: " + result);
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                Log.error("Error checking quiz", caught);
+            }
+        });
     }
 
     @Override
@@ -84,17 +101,15 @@ public class QuizActivity implements QuizView.Presenter {
     private native void setSolutionQuestionAnswerIndex(String pid, String which) /*-{
          try {
              $wnd.setSolutionQuestionAnswerIndex(pid,which);
-             }
-             catch(x) {
-                 alert(x);
-             }
+         }
+         catch(x) {
+             alert(x);
+         }
     }-*/;
 
     
     boolean _isOffline=false;
     MultiActionRequestAction answerAction = new MultiActionRequestAction();
-    
-    
     
     
     /** Called by external JS JSNI
@@ -143,16 +158,4 @@ public class QuizActivity implements QuizView.Presenter {
         };
 
     }-*/;
-    
-    
-    static public void checkQuiz_Gwt() {
-        Window.alert("IN GWT: checking quiz");
-    }
-  
-  static {
-      publishNative();
-  }
-  static private native void publishNative() /*-{
-    $wnd.checkQuiz_Gwt = @hotmath.gwt.cm_mobile3.client.activity.QuizActivity::checkQuiz_Gwt();
-  }-*/;    
 }

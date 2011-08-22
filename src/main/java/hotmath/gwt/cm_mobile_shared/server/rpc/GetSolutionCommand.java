@@ -1,9 +1,10 @@
-package hotmath.gwt.hm_mobile.server.rpc;
+package hotmath.gwt.cm_mobile_shared.server.rpc;
 
 import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -11,7 +12,6 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
-import hotmath.gwt.hm_mobile.client.rpc.GetSolutionAction;
 import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSystem;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;

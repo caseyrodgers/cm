@@ -1,21 +1,20 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
+import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-public class LoginActivity  implements LoginView.Presenter {
+public class LoginActivity implements LoginView.Presenter {
     
     private com.google.gwt.event.shared.EventBus eventBus;
 
@@ -49,9 +48,9 @@ public class LoginActivity  implements LoginView.Presenter {
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmMobileUser>() {
             @Override
             public void onSuccess(CmMobileUser result) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
                 Log.info("Login successful: " + result);
                 CatchupMathMobileShared.__instance.user = result;
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
                 eventBus.fireEvent(new ShowWelcomeViewEvent());
             }
 

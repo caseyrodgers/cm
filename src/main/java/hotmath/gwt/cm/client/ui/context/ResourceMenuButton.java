@@ -125,17 +125,18 @@ class ResourceMenuButton extends Button {
         
         boolean isComplete=true;
         int viewed=0;
-        // make sure each MenuItem is show correct state
+        // make sure each MenuItem shows correct state
         for(int i=0,t=resource.getItems().size();i<t;i++) {
-            InmhItemData id = resource.getItems().get(i);
-            if(!id.isViewed())
+            // for each RPP
+            InmhItemData rpp = resource.getItems().get(i);
+            if(!rpp.isViewed())
                 isComplete=false;
             else 
                 viewed++;
             if(getMenu() != null) {
                 MenuItem mi = (MenuItem)getMenu().getItem(i);
                 if(mi instanceof CheckMenuItem) {
-                    ((CheckMenuItem)mi).setChecked( id.isViewed() );
+                    ((CheckMenuItem)mi).setChecked( rpp.isViewed() );
                 }
             }
         }   

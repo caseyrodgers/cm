@@ -25,8 +25,8 @@ public class CmResourceViewerImplVideo extends Composite implements CmMobileReso
         // String html = "<iframe height='335' width='360' src='/gwt-resources/mobile_view_video.html'></iframe>";
         // String html = "<iframe class='youtube-player' type='text/html' width='320' height='190' src='http://www.youtube.com/v/HcYVjwqm7rA' frameborder='0'></iframe>";
         String html = 
-            "  <object width='320' height='190'>" +
-            "    <param name='movie' value='http://www.youtube.com/v/gB7MxBIN6Ok' />" +
+            "  <object>" +
+            "    <param name='movie' value='http://www.youtube.com/v/gB7MxBIN6Ok' />" + 
             "    <param name='allowFullScreen' value='true' />" +
             "" +
             "    <param name='allowscriptaccess' value='always' />" +

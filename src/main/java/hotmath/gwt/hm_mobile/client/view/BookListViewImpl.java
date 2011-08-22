@@ -143,8 +143,9 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     public BackAction getBackAction() {
     	return new BackAction() {
 			@Override
-			public void goBack() {
+			public boolean goBack() {
 				HmMobile.__clientFactory.getEventBus().fireEvent(new BackDiscoveryEvent((IPage)BookListViewImpl.this));
+				return false;
 			}
 		};
     }

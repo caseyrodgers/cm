@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -19,10 +21,10 @@ public class WelcomeActivity implements WelcomeView.Presenter{
 
     public void prepareView(WelcomeView view) {
         
-        UserLoginResponse userResponse = CatchupMathMobileShared.getUser().getBaseLoginResponse();
+        CmMobileUser user = CatchupMathMobileShared.getUser();
         
         String firstThing=null;
-        CmPlace firstPlace = userResponse.getNextAction().getPlace();
+        CmPlace firstPlace = user.getFlowAction().getPlace();
         if(firstPlace == null || firstPlace == CmPlace.QUIZ) {
             firstThing = "You will continue from your previous quiz.";
         }
@@ -43,7 +45,8 @@ public class WelcomeActivity implements WelcomeView.Presenter{
         if(firstPlace == null || firstPlace == CmPlace.QUIZ) {
             eventBus.fireEvent(new ShowQuizViewEvent());
         }
-        else if(firstPlace == CmPlace.PRESCRIPTION) {
+        else if(firstPlace == CmPlace.PRESCRIPTION || userResponse.getUserInfo().getRunId() > 0) {
+            eventBus.fireEvent(new ShowPrescriptionLessonViewEvent());
         }
         else {
             MessageBox.showError("Error: unknown first place: " + firstPlace);
