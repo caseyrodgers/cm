@@ -13,6 +13,7 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -67,6 +68,11 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			rs = ps.executeQuery();
 
 			l = loadStudentActivity(conn, rs);
+			
+			Map<Integer, Integer> totMap = getTimeOnTaskForRunIDs(conn, l, uid);
+			
+			updateTimeOnTask(totMap, l);
+			
 		} catch (Exception e) {
 			LOGGER.error(String.format("*** Error getting student details for student uid: %d", uid), e);
 			throw new Exception("*** Error getting student details ***");
@@ -74,6 +80,64 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			SqlUtilities.releaseResources(rs, ps, null);
 		}
 		return l;
+	}
+
+	public  Map<Integer, Integer> getTimeOnTaskForRunIDs(final Connection conn, List<StudentActivityModel> samList,
+			int uid) throws Exception {
+
+		if (samList == null || samList.size() == 0) {
+			throw new Exception("student model list is null or empty");
+		}
+
+		Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
+		
+        Map<ActivityTypeEnum, ActivityTime> map = getActivityTimeMap();
+
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY_TIME_ON_TASK");
+			StringBuilder sb = new StringBuilder();
+			
+			boolean first = true;
+			int runId = -1;
+			int prevRunId = -1;
+			for (StudentActivityModel sam : samList) {
+				runId = sam.getRunId();
+				if (runId < 1 || runId == prevRunId) continue;
+				if (! first) sb.append(", ");
+			    first = false;
+			    prevRunId = runId;
+				sb.append(runId);
+			}
+			stmt = conn.createStatement();
+			
+			rs = stmt.executeQuery(sql.replace("$$RUNID_LIST$$", sb.toString()));
+			
+			runId = -1;
+			int totalTime = 0;
+			while (rs.next()) {
+				
+				if (runId > 0 && runId != rs.getInt("run_id")) {
+					totMap.put(runId, totalTime);
+					totalTime = 0;
+				}
+				runId = rs.getInt("run_id");
+				int count = rs.getInt("activity_count");
+				String type = rs.getString("activity_type");
+				int time = map.get(ActivityTypeEnum.valueOf(type.toUpperCase())).timeOnTask;
+				totalTime += time * count;
+			}
+			totMap.put(runId, totalTime);
+			
+		} catch (Exception e) {
+			LOGGER.error(String.format("*** Error getting time-on-task for student uid: %d", uid), e);
+			throw new Exception("*** Error getting time-on-task ***");
+		} finally {
+			SqlUtilities.releaseResources(rs, stmt, null);
+		}
+		
+		return totMap;
 	}
 
 	private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
@@ -172,6 +236,16 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		}
 
 		return m;
+	}
+
+	private void updateTimeOnTask(Map<Integer, Integer> totMap, List<StudentActivityModel> samList) {
+		
+		for (StudentActivityModel sam : samList) {
+			if (sam.getIsQuiz() || sam.getIsCustomQuiz()) continue;
+			int totalTime = sam.getTimeOnTask() + ((totMap.get(sam.getRunId()) == null) ? 0 : totMap.get(sam.getRunId()));
+			sam.setTimeOnTask(totalTime);
+		}
+		
 	}
 
 	private void fixReviewSectionNumbers(List<StudentActivityModel> l) {
