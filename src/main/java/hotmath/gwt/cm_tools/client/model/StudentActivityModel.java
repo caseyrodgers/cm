@@ -102,12 +102,12 @@ public class StudentActivityModel extends BaseModel implements Response {
 	    return get(TEST_ID_KEY);
 	}
 	
-	public Integer timeOnTask() {
+	public Integer getTimeOnTask() {
 		return get(TIME_ON_TASK_KEY);
 	}
 	
 	public void setTimeOnTask(Integer tot) {
-		set(TIME_ON_TASK_KEY,tot);
+		set(TIME_ON_TASK_KEY, tot);
 	}
 	
 	public StudentActivityModel() {
