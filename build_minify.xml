@@ -22,9 +22,13 @@
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
                    cm_core-min.js
                    swfobject-min.js
-                   browser_info_tools-min.js                    
+            	   browser_info_tools-min.js            	
+            	   tutor_tablet-min.js
+               	   dom_utils-min.js            	
                    excanvas-min.js
                    whiteboard-min.js
+                   ../../../../../../hotmath2/web/js/tutor_flash_widget.js
+                   spin-min.js
                    CatchupMathMobile3-min.js
               " />
         </concat>
@@ -39,8 +43,14 @@
                 ../../../../hotmath2/web/css/tutor_widget.css
                 gwt-resources/css/CatchupMathMobile3.css
                 gwt-resources/css/page_layout.css
+            	gwt-resources/css/group_touch.css
+            	gwt-resources/css/quiz.css
                 gwt-resources/css/quiz.css
                 assets/css/local_sexybuttons.css
+            	gwt-resources/css/whiteboard.css
+            	gwt-resources/css/resource_review.css
+                gwt-resources/css/tutor_layout_tablet.css
+            	gwt-resources/css/testset.css
                 gwt-resources/css/whiteboard.css
              " />
         </concat>

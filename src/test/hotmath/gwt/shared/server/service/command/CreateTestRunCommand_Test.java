@@ -2,8 +2,8 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
-import hotmath.gwt.shared.client.rpc.action.CreateTestRunAction;
 
 public class CreateTestRunCommand_Test extends CmDbTestCase {
     
