@@ -112,6 +112,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			}
 			stmt = conn.createStatement();
 			
+			if (sb.length() == 0) return totMap;
+			
 			rs = stmt.executeQuery(sql.replace("$$RUNID_LIST$$", sb.toString()));
 			
 			runId = -1;
