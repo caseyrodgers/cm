@@ -25,7 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class SystemSyncChecker extends StandardSystemRefreshWindow {
 
-    static final int CHECK_EVERY = 1000 * 60 * 1500;
+    static final int CHECK_EVERY = 1000 * 60 * 15;
     static SystemSyncChecker _theWindow;
 
     public SystemSyncChecker() {
