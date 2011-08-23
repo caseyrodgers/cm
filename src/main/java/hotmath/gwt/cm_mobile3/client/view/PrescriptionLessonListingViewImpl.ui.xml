@@ -1,0 +1,11 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <g:HTMLPanel>
+        <h1>Available Lessons!</h1>
+        <p>Choose a lesson to study.  You can jump around and study the lessons in any order you wish.  
+         However, before you can continue to the next quiz you will have to complete all lessons.  
+         A completed lesson will show a check next its name.</p>
+        <g:HTMLPanel ui:field="lessonLising"></g:HTMLPanel>
+    </g:HTMLPanel>
+</ui:UiBinder> 

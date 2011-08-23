@@ -14,13 +14,12 @@
 
 	<g:HTMLPanel styleName="{style.main}">
 		<p>
-			This Smartphone edition of Catchupmath.com
+			This tablet edition of Catchupmath.com
 			allows access to your Catchup Math session
 			from a tablet interface such as the IPad.
 		</p>
 		<p>
-			Our Catchupmath.com desktop edition also has math videos,
-			activities, and games in addition to textbook answers.
+			Our Catchupmath.com desktop edition has games in addition to textbook answers.
 		</p>
 		<p>
 			Passwords may be purchased by going to Catchupmath.com on a desktop.

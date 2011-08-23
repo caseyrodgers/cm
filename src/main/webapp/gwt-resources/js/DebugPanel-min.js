@@ -1,0 +1,1 @@
+var stats=window.__stats=[];window.__gwtStatsEvent=function(A){stats[stats.length]=A;var B=window.__stats_listener;B&&B(A);return true};

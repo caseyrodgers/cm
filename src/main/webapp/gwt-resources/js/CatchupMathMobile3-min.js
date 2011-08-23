@@ -1,0 +1,1 @@
+function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});

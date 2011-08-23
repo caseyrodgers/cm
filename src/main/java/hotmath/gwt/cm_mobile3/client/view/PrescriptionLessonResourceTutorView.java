@@ -14,6 +14,5 @@ public interface PrescriptionLessonResourceTutorView extends IPage {
         void setupView(PrescriptionLessonResourceTutorView view);
         void showWhiteboard();
         void markSolutionAsComplete();
-        void markLessonAsComplete();
     }
 }

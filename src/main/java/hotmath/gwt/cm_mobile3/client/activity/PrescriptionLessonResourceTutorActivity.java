@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
@@ -63,7 +64,7 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
         String pid=resourceItem.getFile();
         int runId = ui.getRunId();
         int sessionNum = ui.getSessionNumber();
-        SetInmhItemAsViewedAction action = new SetInmhItemAsViewedAction(runId,resourceItem.getType(),pid,sessionNum);
+        Action<RpcData> action = new SetInmhItemAsViewedAction(runId,resourceItem.getType(),pid,sessionNum);
         CatchupMathMobileShared.getCmService().execute(action,  new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
@@ -83,24 +84,4 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     }
 
 
-    @Override
-    public void markLessonAsComplete() {
-        UserInfo ui = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
-        String lesson=resourceItem.getFile();
-        int runId = ui.getRunId();
-        int sessionNum = ui.getSessionNumber();
-        SetLessonCompletedAction action = new SetLessonCompletedAction(lesson,runId,sessionNum);
-        CatchupMathMobileShared.getCmService().execute(action,  new AsyncCallback<RpcData>() {
-            @Override
-            public void onSuccess(RpcData result) {
-                resourceItem.setViewed(true);
-                MessageBox.showMessage("Lesson marked as complete!");
-            }
-            @Override
-            public void onFailure(Throwable caught) {
-                Log.error("Error marking lesson as complete", caught);
-                Window.alert(caught.getMessage());
-            }
-        });
-    }
 }

@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
+import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonListingActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceResultsActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceReviewActivity;
@@ -11,6 +12,7 @@ import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
@@ -71,11 +73,17 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 eb.fireEvent(new LoadNewPageEvent((IPage)view));
             }
             else if(type.equals("lesson")) {
-                PrescriptionLessonActivity activity = new PrescriptionLessonActivity(eb);
+                PrescriptionLessonActivity activity = new PrescriptionLessonActivity(cf,eb);
                 PrescriptionLessonView view = cf.getPrescriptionLessonView();
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage)view));
             }    
+            else if(type.equals("listing")) {
+                PrescriptionLessonListingActivity activity = new PrescriptionLessonListingActivity(eb);
+                PrescriptionLessonListingView view = cf.getPrescriptionLessonListingView();
+                view.setPresenter(activity);
+                eb.fireEvent(new LoadNewPageEvent((IPage)view));
+            }
             else if(type.equals("resource")) {
                 
                 /** token the ordinal position of resource in list.  We do

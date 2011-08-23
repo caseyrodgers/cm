@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
@@ -14,5 +15,6 @@ public interface PrescriptionLessonView extends IPage {
         void moveToNextLesson(PrescriptionLessonView view);
         void moveToPreviousLesson(PrescriptionLessonView view);
         void showLessonChooser();
+        void markLessonAsComplete(SessionTopic topic);
     }
 }

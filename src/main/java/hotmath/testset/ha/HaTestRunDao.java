@@ -6,6 +6,7 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
@@ -106,6 +107,29 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
         finally {
             SqlUtilities.releaseResources(null,pstat,null);
         }
+    }
+    
+    
+    /** Return the list of lessons in this test run along with their statues
+     * 
+     * @param runId
+     * @return
+     * @throws Exception
+     */
+    public List<SessionTopic> getLessonStatuses(int runId) throws Exception {
+        String sql = "select lesson_name,date_completed FROM HA_TEST_RUN_LESSON where run_id = ?";
+        List<SessionTopic> list =  getJdbcTemplate().query(
+                sql,
+                new Object[]{runId},
+                new RowMapper<SessionTopic>() {
+                    @Override
+                    public SessionTopic mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Date dc = rs.getDate("date_completed");
+                        return new SessionTopic(rs.getString("lesson_name"),dc!=null);
+                    } 
+                });
+        
+        return list;
     }
     
     

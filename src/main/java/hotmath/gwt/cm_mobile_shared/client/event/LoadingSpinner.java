@@ -14,7 +14,7 @@ public class LoadingSpinner {
        
        var opts = {
            lines: 10, // The number of lines to draw
-           length: 10, // The length of each line
+           length: 20, // The length of each line
            width: 2, // The line thickness
            radius: 15, // The radius of the inner circle
            color: '#000', // #rbg or #rrggbb

@@ -2,6 +2,8 @@ package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.LoginViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
@@ -40,7 +42,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     PrescriptionLessonResourceVideoView videoView = new PrescriptionLessonResourceVideoViewImpl();
     PrescriptionLessonResourceTutorView tutorView = new PrescriptionLessonResourceTutorViewImpl();
     PrescriptionLessonResourceResultsView resultsView = new PrescriptionLessonResourceResultsViewImpl();
-    
+    PrescriptionLessonListingView lessonListingView = new PrescriptionLessonListingViewImpl();    
     @Override
     public EventBus getEventBus() {
         return eventBus;
@@ -99,5 +101,10 @@ public class ClientFactoryImplBase implements ClientFactory {
     @Override
     public PrescriptionLessonResourceResultsView getPrescriptionLessonResourceResultsView() {
         return resultsView;
+    }
+
+    @Override
+    public PrescriptionLessonListingView getPrescriptionLessonListingView() {
+        return lessonListingView;
     }
 }

@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.rpc.action.GetViewedInmhItemsAction;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaTestRunDao;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -27,15 +28,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-
-
-/** Read an existing prescription based on a test run
+/**
+ * Read an existing prescription based on a test run
  * 
- *  and return data that represents a single program
- *  prescription lesson.
- *  
+ * and return data that represents a single program prescription lesson.
+ * 
  * @author casey
- *
+ * 
  */
 public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionAction, PrescriptionSessionResponse> {
 
@@ -130,9 +129,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             __logger.debug("creating list of session names: " + action);
             PrescriptionSessionData sessionData = new PrescriptionSessionData();
             sessionData.setSessionRpa(isActivity);
-            for (AssessmentPrescriptionSession s : prescription.getSessions()) {
-                presData.getSessionTopics().add(s.getTopic());
-            }
+            presData.setSessionTopics(HaTestRunDao.getInstance().getLessonStatuses(runId));
             presData.setCurrSession(sessionData);
 
             
@@ -218,7 +215,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         }
     }
 
-    
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetPrescriptionAction.class;
@@ -229,17 +225,16 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
      * 
      * @param inmhTypes
      */
-    static public List<PrescriptionSessionDataResource> fixupInmhResources(List<PrescriptionSessionDataResource> inmhTypes) {
+    static public List<PrescriptionSessionDataResource> fixupInmhResources(
+            List<PrescriptionSessionDataResource> inmhTypes) {
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
-        String types[][] = {
-                { "Lesson", "review", "Review lesson on the current topic" },
+        String types[][] = { { "Lesson", "review", "Review lesson on the current topic" },
                 { "Video", "video", "Math videos related to the current topic" },
-                { "Activities", "activity", "Math activities and games related to the current topic" },                
+                { "Activities", "activity", "Math activities and games related to the current topic" },
                 { null, "practice", "Practice problems you must complete before advancing" },
                 { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
-                { "Quiz Results", "results", "The current quiz's results" },
-        };
+                { "Quiz Results", "results", "The current quiz's results" }, };
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];
@@ -249,7 +244,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             for (PrescriptionSessionDataResource r : inmhTypes) {
                 if (r.getType().equals(type[1])) {
                     // exists, so add it
-                    if(type[0]!=null)
+                    if (type[0] != null)
                         r.setLabel(type[0]);
                     r.setDescription(type[2]);
                     newTypes.add(r);
@@ -273,15 +268,11 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         }
         return newTypes;
     }
-    
-    
-    
-    
 
     /**
      * Return the percent of correct from total
      * 
-     * @TODO:  find a home ...
+     * @TODO: find a home ...
      * 
      * @param total
      * @param correct
@@ -293,16 +284,16 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
         int ipercent = (int) Math.round(percent);
         return ipercent;
-    }    
+    }
 
 }
-
 
 class FC {
     public FC(String t, String f) {
         this.title = t;
         this.file = f;
     }
+
     String title;
     String file;
 }

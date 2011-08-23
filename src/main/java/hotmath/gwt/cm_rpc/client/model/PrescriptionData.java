@@ -1,7 +1,7 @@
-package hotmath.gwt.cm_rpc.client.rpc;
+package hotmath.gwt.cm_rpc.client.model;
 
 
-import hotmath.gwt.cm_rpc.client.model.SessionTopic;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,6 @@ public class PrescriptionData implements IsSerializable {
 	PrescriptionSessionData currSession;
 
 	public PrescriptionData() {
-		// 
 	}
 
 	public List<SessionTopic> getSessionTopics() {

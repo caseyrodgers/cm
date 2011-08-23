@@ -6,6 +6,7 @@ import hotmath.assessment.AssessmentPrescriptionCustomMobile;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileLessonInfoAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.MobileLessonInfo;
+import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
@@ -97,7 +98,8 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         PrescriptionSessionData sessionData = new PrescriptionSessionData();
         sessionData.setSessionRpa(isActivity);
         for (AssessmentPrescriptionSession s : pres1.getSessions()) {
-            presData.getSessionTopics().add(s.getTopic());
+            boolean complete = true;
+            presData.getSessionTopics().add(new SessionTopic(s.getTopic(),complete));
         }
         presData.setCurrSession(sessionData);
 
