@@ -591,10 +591,6 @@ table {
 .welcomeViewImpl div {
 	margin-bottom: 25px;
 }
-<<<<<<< CatchupMathMobile3.css
-
-
-
 
 
 .prescriptionLessonViewImpl,
@@ -602,47 +598,6 @@ table {
 .prescriptionLessonResourceTutorViewImpl,
 .prescriptionLessonResourceResultsViewImpl,
 .prescriptionLessonListingViewImpl {
-	padding: 15px;
-}
-
-.prescriptionLessonViewImpl .resourceType span {
-	font-style: italic;
-	font-size: .8em;
-}
-
-
-
-.prescriptionLessonResourceVideoImpl .video_wrapper {
-	margin: auto;
-    margin-top: 25px;
-    text-align: center;
-    width: 500px;
-    height: 200px;
-}
-
-
-
-.prescriptionLessonViewImpl .correct_image {
-	float: right;
-	margin-right: 10px;
-}
-
-
-#show_whiteboard_button {
-    position: absolute;
-    top: 20px;
-    left: 290px;
-}
-
-.prescriptionLessonListingViewImpl .is_complete {
-	background: green !important;
-}
-
-
-.prescriptionLessonViewImpl,
-.prescriptionLessonResourceVideoImpl,
-.prescriptionLessonResourceTutorViewImpl,
-.prescriptionLessonResourceResultsViewImpl {
 	padding: 15px;
 }
 

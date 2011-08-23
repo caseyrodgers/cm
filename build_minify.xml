@@ -52,6 +52,7 @@
                 gwt-resources/css/tutor_layout_tablet.css
             	gwt-resources/css/testset.css
                 gwt-resources/css/whiteboard.css
+            	gwt-resources/css/menubar_layout.css
              " />
         </concat>
     </target>
