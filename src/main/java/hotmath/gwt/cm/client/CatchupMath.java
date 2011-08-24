@@ -9,6 +9,7 @@ import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
+import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -325,6 +326,10 @@ public class CatchupMath implements EntryPoint {
                         showEndOfProgramPanel();
                         break;
                         
+                    case AUTO_ADVANCED_PROGRAM:
+                        QuizCheckResultsWindow.autoAdvanceUser();
+                        break;
+                            
                      default:
                          CmLogger.error("Unknown NextAction type: " + flowResponse);
                             
