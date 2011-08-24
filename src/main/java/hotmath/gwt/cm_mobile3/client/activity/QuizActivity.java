@@ -35,34 +35,50 @@ public class QuizActivity implements QuizView.Presenter {
 
     @Override
     public void prepareQuizView(final QuizView quizView) {
+
+        eventBus.fireEvent(new SystemIsBusyEvent(true));
         
         quizView.clearQuizHtml();
-        eventBus.fireEvent(new SystemIsBusyEvent(true));
-        GetQuizHtmlAction action = new GetQuizHtmlAction(CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getTestId());
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
-            public void onSuccess(QuizHtmlResult result) {
+        
+        /** if the initial quiz has been send during login, retrieve it, use it and then clear it
+         * 
+         */
+        QuizHtmlResult intialQuizResult=CatchupMathMobileShared.getUser().getFlowAction().getQuizResult();
+        if(intialQuizResult != null) {
+                CatchupMathMobileShared.getUser().getFlowAction();
+                processQuizResult(quizView, intialQuizResult);
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-                
-                testQuestionAnswers = result.getAnswers();
-                
-                CatchupMathMobileShared.__instance.user.setTestId(result.getTestId());
-                
-                quizView.setQuizHtml(result.getQuizHtml(), testQuestionAnswers.size());
-                
-                /** mark the correct selections */
-                CmList<RpcData> al = result.getCurrentSelections(); 
-                for(RpcData rd: al) {
-                    setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
+        }
+        else {
+            GetQuizHtmlAction action = new GetQuizHtmlAction(CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getTestId());
+            CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
+                public void onSuccess(QuizHtmlResult result) {
+                    processQuizResult(quizView, result);
+                    eventBus.fireEvent(new SystemIsBusyEvent(false));
                 }
-                
-            }
-            @Override
-            public void onFailure(Throwable caught) {
-                Log.error("Error preparing quiz view", caught);
-                MessageBox.showError(caught.getMessage());
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
-            }
-        });
+                @Override
+                public void onFailure(Throwable caught) {
+                    Log.error("Error preparing quiz view", caught);
+                    MessageBox.showError(caught.getMessage());
+                    eventBus.fireEvent(new SystemIsBusyEvent(false));
+                }
+            });
+        }
+    }
+    
+    private void processQuizResult(QuizView quizView, QuizHtmlResult result) {
+        
+        testQuestionAnswers = result.getAnswers();
+        
+        CatchupMathMobileShared.__instance.user.setTestId(result.getTestId());
+        
+        quizView.setQuizHtml(result.getQuizHtml(), testQuestionAnswers.size());
+        
+        /** mark the correct selections */
+        CmList<RpcData> al = result.getCurrentSelections(); 
+        for(RpcData rd: al) {
+            setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
+        }
     }
 
     @Override

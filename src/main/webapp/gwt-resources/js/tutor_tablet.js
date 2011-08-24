@@ -35,7 +35,22 @@ var HmEvents = {
                     	  hel[i]();
                       }
                   }
+              },
+              
+              eventTutorWidgetComplete: {
+                  listeners:[],
+                  subscribe:function(callBack) {
+                	  var hel=HmEvents.eventTutorWidgetComplete.listeners;
+                	  hel[hel.length] = callBack;
+                  },
+                  fire:function() {
+                	  var hel=HmEvents.eventTutorWidgetComplete.listeners;
+                      for(var i=0;i<hel.length;i++) {
+                    	  hel[i]();
+                      }
+                  }
               }
+
 }
 
 function $get(name) {

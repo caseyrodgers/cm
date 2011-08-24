@@ -49,7 +49,12 @@ public class WelcomeActivity implements WelcomeView.Presenter{
             eventBus.fireEvent(new ShowPrescriptionLessonViewEvent());
         }
         else {
-            MessageBox.showError("Error: unknown first place: " + firstPlace);
+            if(CatchupMathMobileShared.getUser().getFlowAction().getQuizResult() != null) {
+                eventBus.fireEvent(new ShowQuizViewEvent(CatchupMathMobileShared.getUser().getFlowAction().getQuizResult()));
+            }
+            else {
+                MessageBox.showError("Error: unknown first place: " + firstPlace);
+            }
         }
     }
 }

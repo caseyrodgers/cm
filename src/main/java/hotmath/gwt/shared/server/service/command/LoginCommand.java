@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.sql.Connection;

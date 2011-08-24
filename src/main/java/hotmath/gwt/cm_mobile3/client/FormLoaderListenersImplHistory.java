@@ -13,6 +13,7 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
@@ -45,8 +46,10 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         });
         eb.addHandler(ShowQuizViewEvent.TYPE, new ShowQuizViewHandler() {
             @Override
-            public void showQuizView() {
-                History.newItem("quiz:" + System.currentTimeMillis());
+            public void showQuizView(QuizHtmlResult quizResult) {
+                String initial =  quizResult!=null?"initial":"";
+                String token = "quiz:" + initial + ":" + System.currentTimeMillis();
+                History.newItem(token);
             }
         });
         eb.addHandler(ShowWorkViewEvent.TYPE, new ShowWorkViewHandler() {

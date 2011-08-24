@@ -348,9 +348,14 @@ public class AssessmentPrescription {
 	 * 
 	 * create list of possible PIDS looking at grade level.
 	 * 
-	 * 1. favor exact match 2. do not consider higher grade levels 3. choose top
-	 * three.
+	 * 1. favor exact match 
+	 * 2. do not consider higher grade levels 
+	 * 3. choose top three.
 	 * 
+	 * 
+	 * do this is possible two passes.  First pass looks for three 
+	 * that have the exact grade_level match.  If that fails, then 
+	 * select the rest from 
 	 */
 	private List<SessionData> filterRppsByGradeLevel(int testDefGradeLevel,
 			List<RppWidget> rppWidgets, InmhItemData itemData) throws Exception {
@@ -397,10 +402,15 @@ public class AssessmentPrescription {
 			 * take first three from maybe list
 			 * 
 			 */
-			for (int i = 0; i < 3; i++) {
-				ProblemID pid = new ProblemID(maybeList.get(i).getFile());
-				session.add(new SessionData(itemData.getInmhItem(), pid
-						.getGUID(), PID_COUNT, itemData.getWeight()));
+			try {
+    			for (int i = 0; i < maybeList.size(); i++) {
+    				ProblemID pid = new ProblemID(maybeList.get(i).getFile());
+    				session.add(new SessionData(itemData.getInmhItem(), pid
+    						.getGUID(), PID_COUNT, itemData.getWeight()));
+    			}
+			}
+			catch(Exception e) {
+			    e.printStackTrace();
 			}
 		}
 

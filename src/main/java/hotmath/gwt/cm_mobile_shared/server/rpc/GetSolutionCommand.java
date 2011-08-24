@@ -46,7 +46,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String pid = action.getPid();
             
             /** LOOK HERE! */
-            pid = "cmextras_1_1_1_101_1";
+            //pid = "cmextras_1_1_1_101_1";
 
 
             SolutionParts parts = __creator.getSolutionHTML(null,__tutorProps, pid);
