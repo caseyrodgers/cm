@@ -276,7 +276,7 @@ from (
   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
   r.run_id as test_run_id, r.total_sessions as total_sessions,
   if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
-  hat.task_time as time_on_task
+  0 as time_on_task
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join (
@@ -305,7 +305,7 @@ from (
   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
   r.run_id as test_run_id, r.total_sessions as total_sessions,
   if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
-  hat.task_time as time_on_task
+  if (p.custom_quiz_id is null, 0, hat.task_time) as time_on_task
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  left join (
