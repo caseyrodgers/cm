@@ -318,7 +318,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         activityTimeMap = new HashMap<ActivityTypeEnum, ActivityTime>();
         
-        String sql = "select type, name, task_time from HA_ACTIVITY_TIME";
+        String sql = "select type, description, task_time from HA_ACTIVITY_TIME";
 
     	List<ActivityTime> activityTimeList = getJdbcTemplate().query(
     			sql,
@@ -336,7 +336,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     					}
     					else {
     						timeOnTask = rs.getInt("task_time");
-    						description = rs.getString("name");
+    						description = rs.getString("description");
     					}
     					return new ActivityTime(type, timeOnTask, description);
     				}

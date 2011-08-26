@@ -242,7 +242,7 @@ from (
    hat.task_time as time_on_task
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join HA_ACTIVITY_TIME hat on hat.code = 'QUIZ'
+ join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
  where u.uid = ?
   and u.active_test_id = l.test_id
@@ -262,7 +262,7 @@ from (
  join HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join HA_ACTIVITY_TIME hat on hat.code = 'QUIZ'
+ join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and (p.custom_program_id is null && p.custom_quiz_id is null)
  where u.uid = ?
 
@@ -291,7 +291,7 @@ from (
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
- join HA_ACTIVITY_TIME hat on hat.code = 'LESSON'
+ join HA_ACTIVITY_TIME hat on hat.type = 'REVIEW'
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
  where u.uid = ?
 
@@ -320,7 +320,7 @@ from (
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
- join HA_ACTIVITY_TIME hat on hat.code = 'QUIZ'
+ join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join HA_CUSTOM_QUIZ q on q.qid = p.custom_quiz_id
  where u.uid = ?
 
