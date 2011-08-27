@@ -129,6 +129,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			for (StudentModelExt sm : studentList) {
     				StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
+    				rc.setStudentUid(sm.getUid());
     				rcList.add(rc);
     				uidList.add(String.valueOf(sm.getUid()));
     			}
