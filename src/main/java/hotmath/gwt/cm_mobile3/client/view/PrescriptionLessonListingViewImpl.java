@@ -11,8 +11,11 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,6 +24,9 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     
     @UiField
     HTMLPanel lessonLising;
+    
+    @UiField 
+    Button segmentCompleteTop, segmentCompleteBottom;
     
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonListingViewImpl> {
     }
@@ -37,6 +43,9 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     public PrescriptionLessonListingViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         addStyleName("prescriptionLessonListingViewImpl");
+        
+        segmentCompleteTop.setVisible(false);
+        segmentCompleteBottom.setVisible(false);
     }
 
 
@@ -71,13 +80,44 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
 
     @Override
     public void setLessonListing(List<SessionTopic> lessons) {
+        
+        boolean isSegmentComplete = true;
+        
         listItems.clear();
         listItems.addStyleName("touch");
         for(int i=0,t=lessons.size();i<t;i++) {
             MyGenericTextTag2 tt = new MyGenericTextTag2(lessons.get(i),i,touchHandler);
             listItems.add(tt);
+            
+            if(!lessons.get(i).isComplete()) {
+                isSegmentComplete = false;
+            }
         }
         lessonLising.add(listItems);
+        
+        
+        if(isSegmentComplete) {
+            segmentCompleteTop.setVisible(true);
+            segmentCompleteBottom.setVisible(true);
+        }
+        else {
+            segmentCompleteTop.setVisible(false);
+            segmentCompleteBottom.setVisible(false);
+        }
+    }
+    
+    
+    @UiHandler("segmentCompleteTop")
+    protected void onSegmentCompleteTop(ClickEvent ce) {
+        onSegmentComplete();
+    }
+    @UiHandler("segmentCompleteBottom")
+    protected void onSegmentCompleteBottom(ClickEvent ce) {
+        onSegmentComplete();
+    }    
+    
+    private void onSegmentComplete() {
+        presenter.moveToNextSegment();
     }
 }
 

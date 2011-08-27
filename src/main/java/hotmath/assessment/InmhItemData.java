@@ -1,6 +1,7 @@
 package hotmath.assessment;
 
 import hotmath.SolutionManager;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.concordance.ConcordanceEntry;
@@ -96,34 +97,23 @@ public class InmhItemData {
         this.pidsReferenced = pids;
     }
 
-    /**
-     * Return pool of solutions that can be used for this INMH item
+    @SuppressWarnings("unchecked")
+    /** Return pool of RppWidgets that will make up the prescription
+     *  for this INMH item.
      * 
      * 
      * NOTE: deal with RPPs as widgets or as solutions
      * 
-     * Default is RPP as solution ... If any widgets are specified for a lesson,
+     * If flash-supported-environment then Flash based RPAs can be used.
+     * If non-flash-supported-enviorment then only NON flash content (ie, RPP) are returned
+     * 
+     * Default is RPP as solution ... If any widgets are specified and allowed for a lesson,
      * it trumps all .. and only widgets will be shown. Meaning, solutions and
      * widgets will not be shown together.
-     * 
-     * 
-     * @return
-     */
-    public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag) {
-        return getWookBookSolutionPool(conn,logTag,true);
-    }
-    
-    @SuppressWarnings("unchecked")
-    /** Return pool of solutions that will make up this prescription's
-     *  required problems (RP).  Which consist of either Required Practice Activities 
-     *  or RequiredPracticeProblems.  If RPAs are available, then only they will be used
-     *  ignoring all RPPs.
-     *  
-     *  You can specify if RPAs are to be considered, thus guaranteeing only RPPs are returned.
-     * 
-     */
-    public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag,boolean allowRpa) {
 
+     * 
+     */
+    public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag,ClientEnvironment clientEnvironment) {
         /** check if in cache and return.  Side effect is if browserType changes no new pool will be created
          *  I'm not sure that is problem ... but, I think it is.
          *  
@@ -151,12 +141,12 @@ public class InmhItemData {
                     continue;
 
                 if (rangeOrJson.startsWith("{")) {
-                    if(allowRpa) {
-                        /** is widget defined in JSON */
+                    if(clientEnvironment.isSupportsFlash()) {
+                        /** RPA widget defined in JSON */
                         widgets.add(new RppWidget(rangeOrJson));
                     }
                 } else {
-                    /** is a solution PID */
+                    /** is a RPP */
                 	logger.debug("find solutions in range " + logTag);
                     List<String> related = findSolutionsMatchingRange(conn, rangeOrJson);
                     logger.debug("finished finding solutions in range " + logTag);

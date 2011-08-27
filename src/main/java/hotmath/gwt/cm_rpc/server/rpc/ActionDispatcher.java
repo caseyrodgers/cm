@@ -686,4 +686,11 @@ public class ActionDispatcher {
     MonitorType anyMonitorData = new MonitorType(MonitorTypeItem.ANY);
     MonitorType otherMonitorData = new MonitorType(MonitorTypeItem.OTHER);
     MonitorType hmMobileMonitorData = new MonitorType(MonitorTypeItem.HM_MOBILE);
+    
+    
+    /** define format here to allow sharing
+     * 
+     */
+    static public String LOG_FORMAT_BEGIN="^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ .*executing\\:(.*)\\.*toString.*";
+    static public String LOG_FORMAT_END="^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ (.*)\\.*toString:(.*)elapsed time\\:\\ (.*) msec$";
 }

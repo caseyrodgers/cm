@@ -16,7 +16,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Casey
  * 
  */
-public class PrescriptionData implements IsSerializable {
+ class PrescriptionData implements IsSerializable {
 	List<SessionTopic> sessionTopics = new ArrayList<SessionTopic>();
 	PrescriptionSessionData currSession;
 

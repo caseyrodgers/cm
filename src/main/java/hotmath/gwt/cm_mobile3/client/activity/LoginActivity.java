@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
@@ -51,6 +52,10 @@ public class LoginActivity implements LoginView.Presenter {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 Log.info("Login successful: " + result);
                 CatchupMathMobileShared.__instance.user = result;
+                
+                SharedData.setUserInfo(result.getBaseLoginResponse().getUserInfo());
+                SharedData.setFlowAction(result.getFlowAction());
+                
                 eventBus.fireEvent(new ShowWelcomeViewEvent());
             }
 

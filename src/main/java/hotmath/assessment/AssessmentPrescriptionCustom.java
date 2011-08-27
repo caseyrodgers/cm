@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUserDao;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -53,7 +54,11 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 InmhItemData itemData = new InmhItemData(item);
             
                 // now choose pids from the pool for this item
-                List<RppWidget> workBookPids = itemData.getWookBookSolutionPool(conn,testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
+                int uid = testRun.getHaTest().getUser().getUid();
+                List<RppWidget> workBookPids = itemData.getWookBookSolutionPool(
+                        conn,
+                        uid + "/" + testRun.getRunId(),
+                        HaUserDao.getInstance().getLatestClientEnvironment(uid));
                 if (workBookPids.size() == 0) {
                     logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                     continue; // nothing to see here.

@@ -1,4 +1,5 @@
 package hotmath.gwt.cm_rpc.client.rpc;
+import hotmath.gwt.cm_tools.client.ui.ui.PrescriptionResource;
 
 /** Provides an abstraction over a single CM Program Item.
  * 
@@ -73,6 +74,10 @@ public class CmProgramFlowAction implements Response {
 
     public PrescriptionSessionResponse getPrescriptionResponse() {
         return prescriptionResponse;
+    }
+    
+    public void setPrescriptionResponse(PrescriptionSessionResponse prescriptionResponse) {
+        this.prescriptionResponse = prescriptionResponse;
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,6 +58,19 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
         return "Back";
     }
 
+    @Override
+    public BackAction getBackAction() {
+        return new BackAction() {
+            
+            @Override
+            public boolean goBack() {
+                History.newItem("login");
+                return false;
+            }
+        };
+        
+    }
+    
     @Override
     public List<ControlAction> getControlFloaterActions() {
         return null;

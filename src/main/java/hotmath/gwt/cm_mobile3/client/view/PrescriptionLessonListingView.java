@@ -13,5 +13,6 @@ public interface PrescriptionLessonListingView extends IPage {
     static public interface Presenter {
         void setupView(PrescriptionLessonListingView view);
         void loadLesson(int sessionNum);
+        void moveToNextSegment();
     }
 }

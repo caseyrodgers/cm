@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.testset.ha.HaTestRun;
@@ -25,7 +26,7 @@ public class AssessmentPrescriptionCustomMobile extends AssessmentPrescription {
             InmhItemData itemData = new InmhItemData(item);
             
             // now choose pids from the pool for this item
-            List<RppWidget> workBookPids = itemData.getWookBookSolutionPool(conn,testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId(),false);
+            List<RppWidget> workBookPids = itemData.getWookBookSolutionPool(conn,testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId(),new ClientEnvironment("",false));
             if (workBookPids.size() == 0) {
                 logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
             }

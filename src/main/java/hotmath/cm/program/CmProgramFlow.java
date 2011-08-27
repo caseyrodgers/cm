@@ -34,9 +34,11 @@ import org.apache.log4j.Logger;
  * And most importantly, how to advance the program.
  * 
  * 
- * Each program is made of one or more segments. Each segment is one quiz
- * followed by zero or more lessons. Either the quiz or the lessons can be
- * missing (but not both)
+ * Each program is made up of one or more segments. Each segment is one quiz
+ * followed by zero or more lessons depending on how many correct questions are
+ * entered. 
+ * 
+ * Either the quiz or the lessons can be missing (but not both).
  * 
  * @author casey
  * 
@@ -76,7 +78,7 @@ public class CmProgramFlow {
         try {
             sdao.verifyActiveProgram(getActiveInfo().getActiveTestId());
         } catch (Exception e) {
-            e.printStackTrace();
+            __logger.error("Error validating test id: " + getActiveInfo().getActiveTestId());
         }
     }
 

@@ -2,6 +2,7 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
+import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -96,7 +97,7 @@ public class LogMonitor {
     private void processActionLog(String line) {
         linesProcessed++;
 
-        String start = "^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ .*executing\\:(.*)\\.*toString.*";
+        String start = ActionDispatcher.LOG_FORMAT_BEGIN;
 
         Pattern startPattern = Pattern.compile(start);
         Matcher matcher = startPattern.matcher(line);
@@ -126,7 +127,7 @@ public class LogMonitor {
              * may be end of action
              * 
              */
-            String end = "^(.*),.*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ (.*)\\.*toString:(.*)elapsed time\\:\\ (.*) msec$";
+            String end = ActionDispatcher.LOG_FORMAT_BEGIN;
             Pattern endPattern = Pattern.compile(end);
             matcher = endPattern.matcher(line);
             if (matcher.find()) {

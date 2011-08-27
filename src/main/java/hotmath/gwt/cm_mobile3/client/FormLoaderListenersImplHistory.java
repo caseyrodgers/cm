@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
@@ -68,7 +69,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
             @Override
             public void showResource(InmhItemData resourceItem) {
                 History.newItem("resource:" + resourceItem.getType() + ":" + resourceItem.getFile() + ":"
-                        + resourceItem.getWidgetJsonArgs() + ":" + CatchupMathMobileHistoryListener.findOrdinalPositionOfResource(resourceItem) + ":"
+                        + resourceItem.getWidgetJsonArgs() + ":" + SharedData.findOrdinalPositionOfResource(resourceItem) + ":"
                         + resourceItem.getTitle() + ":" + System.currentTimeMillis());
             }
         });

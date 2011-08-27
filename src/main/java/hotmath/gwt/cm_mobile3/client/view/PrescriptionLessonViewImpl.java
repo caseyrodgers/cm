@@ -121,22 +121,25 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         }
 
         if(viewedCount == rppItems.size()) {
-            
             SessionTopic topic = getSessionTopic(lessonData.getTopic());
             if(!topic.isComplete()) {
                 /** not currently marked as correct, so update server and
                  *  data structure and label
                  */
                 presenter.markLessonAsComplete(topic);
+                topic.setComplete(true);
             }
             
-            correctImage.setInnerHTML("Completed");
+            
+            if(topic.isComplete())
+                correctImage.setInnerHTML("Completed");
+                lessonTitle.setInnerHTML("<img src='/gwt-resources/images/check_correct.png'/>" + lessonData.getTopic());
+            }
+            else {
+                correctImage.setInnerHTML("Not Completed");
+            }
         }
-        else {
-            correctImage.setInnerHTML("Not Completed");
-        }
-        
-    }
+
     
     @Override
     public String getTitle() {

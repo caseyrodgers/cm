@@ -5,13 +5,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -23,6 +29,8 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
+import sb.util.SbUtilities;
+
 /**
  * Swing class used to monitor ActionDispatcher log messages
  * 
@@ -31,7 +39,7 @@ import org.apache.log4j.spi.LoggingEvent;
  */
 public class ActionDispatcherLoggerGui extends JFrame {
 
-    JTextArea _logArea = new JTextArea();
+    JTextArea _logArea = new JTextArea(), _requestsArea = new JTextArea();
     JTextField _filter = new JTextField();
     List<String> _fullLog = new ArrayList<String>();
     JToggleButton _disabled = new JToggleButton("Enable");
@@ -67,11 +75,20 @@ public class ActionDispatcherLoggerGui extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 _fullLog.clear();
                 _logArea.setText("");
+                _requestsArea.setText("");
             }
         });
         footer.add("East", clear);
         footer.add("West", _disabled);
-        getContentPane().add("Center", new JScrollPane(_logArea));
+        
+        JPanel logPanel = new JPanel();
+        logPanel.setLayout(new BorderLayout());
+        logPanel.add("Center", new JScrollPane(_logArea));
+        logPanel.add("South", _filter);
+        JTabbedPane tabPane = new JTabbedPane();
+        tabPane.add("Log", logPanel);
+        tabPane.add("Requests Only", new JScrollPane(_requestsArea));
+        getContentPane().add("Center", tabPane);
         getContentPane().add("South", footer);
         setVisible(true);
     }
@@ -95,7 +112,9 @@ public class ActionDispatcherLoggerGui extends JFrame {
                     return;
                 
                 setVisible(true);
+                
                 String logMsg = logEvent.getMessage() + " \n";
+                processRequestActionLog(logEvent.timeStamp, logMsg);
                 _logArea.append(logMsg);
                 _logArea.setCaretPosition(_logArea.getDocument().getLength());
 
@@ -103,6 +122,88 @@ public class ActionDispatcherLoggerGui extends JFrame {
             }
         });
 
+    }
+    
+    private RequestInfo  getRequestInfo() {
+        return null;
+    }
+    
+    static class RequestInfo {
+        String name;
+        String params;
+    }
+
+    
+    int linesProcessed;
+    private void processRequestActionLog(long timeStampIn, String line) {
+        linesProcessed++;
+
+        DateFormat df = new SimpleDateFormat();
+        String timeStamp = df.format(new Date(timeStampIn));
+        
+        String LOG_FORMAT_BEGIN="^(.*).*RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ .*executing\\:(.*)\\.*toString.*";
+        String LOG_FORMAT_END="^(.*)RPC Action\\ \\(userId:(.*),userType:(.*)\\)\\ \\(ID:(.*)\\)\\ (.*)\\.*toString:(.*)elapsed time\\:\\ (.*) msec.*$";
+
+        Pattern startPattern = Pattern.compile(LOG_FORMAT_BEGIN);
+        Matcher matcher = startPattern.matcher(line);
+        if (matcher.find()) {
+            /**
+             * is start of an Action
+             */
+            int userId = SbUtilities.getInt(matcher.group(2).trim());
+            String userType = matcher.group(3).trim();
+            String id = matcher.group(4).trim();
+            String actionName = matcher.group(5).trim();
+
+            // see if there are args
+            String argString = "toString.*\\[(.*)\\]";
+            Pattern argPattern = Pattern.compile(argString);
+            Matcher argMatcher = argPattern.matcher(line);
+            String args="";
+            if (argMatcher.find()) {
+                args = argMatcher.group(1);
+            }
+            
+            writeDatabaseRecord("start", timeStamp, actionName, args, -1, userId, userType, id);
+            
+        } else {
+            /**
+             * may be end of action
+             * 
+             */
+            Pattern endPattern = Pattern.compile(LOG_FORMAT_END);
+            matcher = endPattern.matcher(line);
+            if (matcher.find()) {
+                /**
+                 * is end of action or failed action
+                 */
+                int userId = SbUtilities.getInt(matcher.group(2).trim());
+                String userType = matcher.group(3).trim();
+                String id = matcher.group(4).trim();
+                String actionName = matcher.group(5).trim();
+                String mills = matcher.group(7).trim();
+                int elapsedTime = Integer.parseInt(mills);
+                
+                if (line.indexOf("FAILED") < 0) {
+                    writeDatabaseRecord("end", timeStamp, actionName, null, elapsedTime, userId, userType, id);                 
+                }
+                else {
+                    String msg = matcher.group(6).trim();
+                    // trim "FAILED" if present
+                    int idx;
+                    if ((idx = msg.indexOf("FAILED")) > 0) {
+                        msg = msg.substring(0, idx);
+                    }
+                    
+                    writeDatabaseRecord("fail", timeStamp, actionName, msg, elapsedTime, userId, userType, id);
+                }
+            }
+        }
+    }
+    
+    private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime,int userId, String userType,String actionId) {
+        _requestsArea.append("type: " + type + "\ntime: " + timeStamp + "\nname:  " + actionName + "\nelapsed:  " + elapseTime + "\nargs: " + args + "\nactionId: " + actionId + "\n\n");
+        _requestsArea.setCaretPosition(_requestsArea.getDocument().getLength());
     }
 
     static public void main(String as[]) {

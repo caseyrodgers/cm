@@ -224,9 +224,6 @@ public class PrescriptionContext implements CmContext {
                 return;
             }
 
-            String msg = "";
-            int testSegmentToLoad = 0;
-
             CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
 
             if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {

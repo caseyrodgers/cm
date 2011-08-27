@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.HotMathException;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
@@ -15,7 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -141,6 +142,35 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         if (count == 0)
             throw new HotMathException("Could not update user record: " + user.getUid());
 
+    }
+    
+    
+    /** Return the ClientEnvironment last known about the given
+     *  userid.  If no entry has been made return a default object.
+     *  
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public ClientEnvironment getLatestClientEnvironment(int userId) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_CLIENT_ENVIRONMENT");
+        List<ClientEnvironment> list =  getJdbcTemplate().query(
+                sql
+                ,
+                new Object[]{userId},
+                new RowMapper<ClientEnvironment>() {
+                    @Override
+                    public ClientEnvironment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new ClientEnvironment(rs.getString("browser_info"), rs.getInt("no_flash_support")==0);
+                    }
+                });
+        
+        if(list.size() > 0) {
+            return list.get(0);
+        }
+        else {
+            return new ClientEnvironment();  // default
+        }
     }
     
     

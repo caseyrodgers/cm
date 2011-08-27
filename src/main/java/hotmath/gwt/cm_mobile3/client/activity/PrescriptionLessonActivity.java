@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -10,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
@@ -27,8 +27,6 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     List<Integer> testQuestionAnswers;
 
     private com.google.gwt.event.shared.EventBus eventBus;
-
-    static PrescriptionData prescriptionData;
     UserInfo userInfo;
     ClientFactory clientFactory;
 
@@ -36,13 +34,12 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.userInfo = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
-        prescriptionData = CatchupMathMobileShared.getUser().getFlowAction().getPrescriptionResponse()
-                .getPrescriptionData();
+        SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData();
     }
 
     @Override
     public void prepareView(final PrescriptionLessonView view) {
-        view.setLesson(prescriptionData.getCurrSession());
+        view.setLesson(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
     }
 
     @Override
@@ -62,20 +59,16 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         moveToLesson(view, sessionNumber - 1);
     }
 
-    static public PrescriptionData getPrescriptionData() {
-        return prescriptionData;
-    }
-
     public void moveToLesson(final PrescriptionLessonView view, int sessionNumber) {
 
         if (sessionNumber < 0) {
             MessageBox.showMessage("No previous lesson");
-        } else if (sessionNumber > userInfo.getSessionCount()) {
+        } else if (sessionNumber > SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size()) {
             MessageBox.showMessage("No more lessons"); // move to next segment?
         }
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        int runId = userInfo.getRunId();
+        int runId = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
         GetPrescriptionAction action = new GetPrescriptionAction(runId, sessionNumber, true);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<PrescriptionSessionResponse>() {
             public void onSuccess(PrescriptionSessionResponse result) {
@@ -85,9 +78,9 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
                  * install new data ..
                  * 
                  */
-                prescriptionData = result.getPrescriptionData();
-                userInfo.setSessionNumber(prescriptionData.getCurrSession().getSessionNumber());
-                view.setLesson(prescriptionData.getCurrSession());
+                SharedData.getFlowAction().getPrescriptionResponse().setPrescriptionData(result.getPrescriptionData());
+                userInfo.setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
+                view.setLesson(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
             }
 
             @Override
@@ -108,7 +101,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     public void markLessonAsComplete(final SessionTopic topic) {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         UserInfo ui = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
-        String lesson = prescriptionData.getCurrSession().getTopic();
+        String lesson = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getTopic();
         int runId = ui.getRunId();
         int sessionNum = ui.getSessionNumber();
         SetLessonCompletedAction action = new SetLessonCompletedAction(lesson, runId, sessionNum);

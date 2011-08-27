@@ -16,8 +16,9 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
  *   Each quiz is defined by a test_segment (0-n) and a test_segment_slot
  *   The slot is between 0 and N.  The slot is updated each time the user does not pass a segment.
  *   
- *   Each quiz's solutions are taken from the given slot, so if a user repeats a segment they 
- *   get different questions.
+ *   Each quiz's solutions are taken from the given slot that is incremented each time a segment is 
+ *   failed.  In this case the user will repeat the segment, but given a new quiz from a different slot.
+ *   
  *  
  * @author casey
  *

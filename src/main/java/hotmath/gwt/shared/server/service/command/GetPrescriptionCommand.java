@@ -42,6 +42,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
     @Override
     public PrescriptionSessionResponse execute(final Connection conn, GetPrescriptionAction action) throws Exception {
+        
+        assert(action.getRunId() > 0);
 
         __logger.debug("getting prescription: " + action);
         int runId = action.getRunId();

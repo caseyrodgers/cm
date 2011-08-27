@@ -6,7 +6,8 @@ public class GetUserInfoAction implements Action<UserLoginResponse>{
     
     int userId;
     String loginName;
-    
+    boolean flashSupported=true;
+
     public GetUserInfoAction() {}
     
     public GetUserInfoAction(int userId, String loginName) {
@@ -27,4 +28,19 @@ public class GetUserInfoAction implements Action<UserLoginResponse>{
 	public void setLoginName(String loginName) {
 		this.loginName = loginName;
 	}
+    
+    public boolean isFlashSupported() {
+        return flashSupported;
+    }
+
+    public void setFlashSupported(boolean flashSupported) {
+        this.flashSupported = flashSupported;
+    }
+
+    @Override
+    public String toString() {
+        return "GetUserInfoAction [userId=" + userId + ", loginName=" + loginName + ", flashSupported="
+                + flashSupported + "]";
+    }
+
 }

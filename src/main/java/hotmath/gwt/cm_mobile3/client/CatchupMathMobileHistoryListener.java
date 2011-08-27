@@ -11,6 +11,7 @@ import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceVideoAct
 import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
@@ -25,7 +26,6 @@ import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -94,7 +94,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 
 
                 String resourceType = token.getResourceType();
-                InmhItemData itemData = findInmhDataInPrescriptionByOrdinal(resourceType, ordinal);
+                InmhItemData itemData = SharedData.findInmhDataInPrescriptionByOrdinal(resourceType, ordinal);
                 itemData.setTitle(token.getResourceTitle());
                 if(resourceType.equals("review")) {
                     PrescriptionLessonResourceReviewActivity activity = new PrescriptionLessonResourceReviewActivity(eb, itemData);
@@ -140,41 +140,6 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
     }
     
     
-    
-    /** Search through prescription data and return the InmhItemData that is 
-     * in the ordinal position of the named resource type.
-     * 
-     * @param type
-     * @param ordinal
-     */
-    public static InmhItemData findInmhDataInPrescriptionByOrdinal(String type, int ordinal) throws Exception  {
-        for(PrescriptionSessionDataResource dr: PrescriptionLessonActivity.getPrescriptionData().getCurrSession().getInmhResources()) {
-            if(type.equals(dr.getType())) {
-                for(int i=0,t=dr.getItems().size();i<t;i++) {
-                    if(i == ordinal) {
-                        return dr.getItems().get(i);
-                    }
-                }
-            }
-        }
-        throw new Exception("No " + type + " resource at ordinal position '" + ordinal + "'");
-    }
-    
-    public static int findOrdinalPositionOfResource(InmhItemData itemIn) {
-        String type = itemIn.getType();
-        for(PrescriptionSessionDataResource dr: PrescriptionLessonActivity.getPrescriptionData().getCurrSession().getInmhResources()) {
-            if(type.equals(dr.getType())) {
-                for(int i=0,t=dr.getItems().size();i<t;i++) {
-                    InmhItemData item = dr.getItems().get(i);
-                    if(item.getTitle().equals(itemIn.getTitle())) {
-                        return i;
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
     
     static public class TokenParser {
         String type;

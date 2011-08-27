@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -7,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
@@ -18,6 +22,9 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
@@ -40,14 +47,22 @@ public class QuizActivity implements QuizView.Presenter {
         
         quizView.clearQuizHtml();
         
-        /** if the initial quiz has been send during login, retrieve it, use it and then clear it
+        /** if the initial quiz, then the quiz html will
+         *  be directly available in the login return.
          * 
          */
-        QuizHtmlResult intialQuizResult=CatchupMathMobileShared.getUser().getFlowAction().getQuizResult();
+        final QuizHtmlResult intialQuizResult=CatchupMathMobileShared.getUser().getFlowAction().getQuizResult();
         if(intialQuizResult != null) {
-                CatchupMathMobileShared.getUser().getFlowAction();
-                processQuizResult(quizView, intialQuizResult);
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
+            /** execute in timer to make sure dom is ready
+             *  to be read by external quiz JS.
+             */
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                @Override
+                public void execute() {
+                    processQuizResult(quizView, intialQuizResult);
+                    eventBus.fireEvent(new SystemIsBusyEvent(false));
+                }
+            });
         }
         else {
             GetQuizHtmlAction action = new GetQuizHtmlAction(CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getTestId());
@@ -70,6 +85,9 @@ public class QuizActivity implements QuizView.Presenter {
         
         testQuestionAnswers = result.getAnswers();
         
+        /** update global user data
+         *  TODO: create abstraction for this data
+         */
         CatchupMathMobileShared.__instance.user.setTestId(result.getTestId());
         
         quizView.setQuizHtml(result.getQuizHtml(), testQuestionAnswers.size());
@@ -90,8 +108,44 @@ public class QuizActivity implements QuizView.Presenter {
         CatchupMathMobileShared.getCmService().execute(checkTestAction, new AsyncCallback<CreateTestRunResponse>() {
             @Override
             public void onSuccess(CreateTestRunResponse result) {
+                
+                CmProgramFlowAction nextAction = result.getNextAction();
+                SharedData.setFlowAction(nextAction);
+                SharedData.getUserInfo().setRunId(result.getRunId());
+                
+                switch(nextAction.getPlace()) {
+                    case PRESCRIPTION:
+                        eventBus.fireEvent(new ShowPrescriptionLessonViewEvent());
+                        break;
+                        
+                    case QUIZ:
+                        MessageBox.showMessage("Loading new Quiz");
+                        eventBus.fireEvent(new ShowQuizViewEvent());
+                        break;
+                        
+                    case WELCOME:
+                        Window.alert("Welcome!");
+                        break;
+                        
+                    case AUTO_ADVANCED_PROGRAM:
+                        Window.alert("Advance");
+                        break;
+                        
+                    case END_OF_PROGRAM:
+                        Window.alert("End of Program");
+                        break;
+                        
+                    case AUTO_PLACEMENT:
+                        Window.alert("auto placement");
+                        break;
+                        
+                        
+                        default:
+                            Window.alert("Unknown place: " + nextAction.getPlace());
+                            break;
+                }
+                
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-                MessageBox.showMessage("Quiz Check, test run created: " + result);
             }
 
             @Override
@@ -119,7 +173,7 @@ public class QuizActivity implements QuizView.Presenter {
              $wnd.setSolutionQuestionAnswerIndex(pid,which);
          }
          catch(x) {
-             alert(x);
+             alert("setSolutionQuestionAnswerIndex" + x);
          }
     }-*/;
 

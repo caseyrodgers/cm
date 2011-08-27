@@ -43,12 +43,20 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), active.getActiveRunId());
 
         /**
-         * get list of previous prescribed lessons?
+         * get list of previous prescribed lessons
          * 
          */
         PreparedStatement ps = null;
         try {
-            UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(mobileUser.getUserId(), null));
+            GetUserInfoAction loginAction = new GetUserInfoAction(mobileUser.getUserId(), null);
+            
+            /** turn off Flash support for this login session.  
+             * This will make sure that only Non-Flash RPPs are 
+             * used in prescriptions.
+             */
+            loginAction.setFlashSupported(false);
+            
+            UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, loginAction);
             mobileUser.setBaseLoginResponse(userLoginResponse);
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
