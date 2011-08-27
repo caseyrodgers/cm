@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.testset.ha.HaTestDao;
@@ -47,18 +48,33 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     		setupDemoAccountTest();
     	}
     }
+
+    public void testCreatePrescriptionWithOutFlash() throws Exception {
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn,_user.getUid(), _test.getTestId(), 0, 1,0);
+        
+        String file = "topics/simplifying-radical-expressions.html";
+        String title = "simplifying-radical-expressions";
+        InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
+        int uid = testRun.getHaTest().getUser().getUid();
+        List<RppWidget> workBookPids = inmhData.getWookBookSolutionPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
+
+        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
+    }
+
     
-    
-    public void testCreatePrescription() throws Exception {
+    public void testCreatePrescriptionWithFlash() throws Exception {
+        HaTestDao.getInstance().removeTestRuns(_test);
     	HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn,_user.getUid(), _test.getTestId(), 0, 1,0);
     	
     	String file = "topics/simplifying-radical-expressions.html";
     	String title = "simplifying-radical-expressions";
-    	InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));    	
-    	List<RppWidget> workBookPids = inmhData.getWookBookSolutionPool(conn,testRun.getHaTest().getUser().getUid() + "/" + testRun.getRunId());
+    	InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
+    	int uid = testRun.getHaTest().getUser().getUid();
+    	List<RppWidget> workBookPids = inmhData.getWookBookSolutionPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(true));
 
     	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
     }
+    
     
 
     public void testCreateNew1() throws Exception {

@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.inmh.INeedMoreHelpItem;
 
@@ -19,7 +20,7 @@ public class InmhItemData_Test extends CmDbTestCase {
          */
         INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
-        List<RppWidget> rpps = itemData.getWookBookSolutionPool(conn,"testing");
+        List<RppWidget> rpps = itemData.getWookBookSolutionPool(conn,"testing",new ClientEnvironment(true));
         assertTrue(!hasDuplicates(rpps));
     }
 

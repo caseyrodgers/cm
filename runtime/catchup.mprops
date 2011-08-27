@@ -2582,3 +2582,20 @@ where a.subscriber_id = sc.subscriber_id
   and sc.subscriber_svc_id = ss.ssid
   and s.sales_zone = sz.zone_id
 order by overage desc
+
+
+
+#################################
+#### HaUserDao ##################
+
+###
+.key=GET_USER_CLIENT_ENVIRONMENT
+
+ 
+select browser_info, no_flash_support
+from HA_USER_LOGIN
+where user_id = ?
+order by login_time desc
+limit 1
+
+

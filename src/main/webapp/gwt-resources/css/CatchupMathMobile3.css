@@ -624,6 +624,12 @@ table {
 }
 
 
+.prescriptionLessonListingViewImpl button {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+
 #show_whiteboard_button {
     position: absolute;
     top: 20px;

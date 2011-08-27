@@ -123,4 +123,5 @@
 
 .is_rpp.is_viewed {
     background-image: url(/gwt-resources/images/check_correct.png) !important;
+    background-position: 1px 18px !important;
 }

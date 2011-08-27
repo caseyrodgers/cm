@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.shared.server.service.CmTestUtils;
 
 public class HaUserDao_Test extends CmDbTestCase {
     
@@ -20,5 +20,10 @@ public class HaUserDao_Test extends CmDbTestCase {
     public void testReadByIdNoCache() throws Exception {
         HaUser user = HaUserDao.getInstance().lookUser(_user.getUid(), false);
         assertTrue(user != null);
+    }
+    
+    public void testClientEnvironment() throws Exception {
+        ClientEnvironment ce = HaUserDao.getInstance().getLatestClientEnvironment(_user.getUserKey());
+        assert(ce.isSupportsFlash());
     }
 }

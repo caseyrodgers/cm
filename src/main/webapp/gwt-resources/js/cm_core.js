@@ -151,7 +151,7 @@ function setSolutionQuestionAnswerIndexByNumber(questionNum, which) {
 //call from JSNI when new question has been loaded in order to set
 //the selected question answer
 window.setSolutionQuestionAnswerIndex = function(pid, which, disabled) {
-	ulNode = findQuestionByPid(pid);
+	var ulNode = findQuestionByPid(pid);
 	if (ulNode) {
 		var inputElements = ulNode.getElementsByTagName("input");
 		for ( var i = 0, t = inputElements.length; i < t; i++) {
