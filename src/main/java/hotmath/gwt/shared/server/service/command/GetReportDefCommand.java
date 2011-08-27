@@ -13,7 +13,7 @@ import hotmath.gwt.shared.client.rpc.action.GetReportDefAction;
 /**
  * Get the report def key for the specified <code>List<Integer></code> of student UIDs
  *
- * @author rfhall
+ * @author bob
  *
  */
 
