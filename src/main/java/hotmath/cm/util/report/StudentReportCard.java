@@ -127,7 +127,7 @@ public class StudentReportCard {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DATE, 1);
 
-    	Map<Integer, Integer> totMap = getTimeOnTaskMap(conn, smList, info.getAccountCreateDate(), now.getTime());
+    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMap(conn, smList, info.getAccountCreateDate(), now.getTime());
 
     	int idx = 0;
     	
@@ -207,23 +207,6 @@ public class StudentReportCard {
     	return reportName;
     }
 
-    private Map<Integer, Integer> getTimeOnTaskMap(final Connection conn, List<StudentModelI> smList, Date from, Date to) throws Exception {
-        List<String> uidList = new ArrayList<String>();
-    	for (StudentModelI sm : smList) {
-    		uidList.add(sm.getUid().toString());
-    	}
-    	
-    	CmList<HighlightReportData> totList = CmHighlightsDao.getInstance().getReportTimeOnTask(conn, uidList, from, to);
-
-    	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
-    	for (HighlightReportData tot : totList) {
-    		totMap.put(tot.getUid(), Integer.valueOf(tot.getData()));
-    		logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getData());
-    	}
-
-    	return totMap;
-    }
-    
     private void addPrescribedLessons(StudentReportCardModelI rc, boolean isCustomProgram, Document document) throws DocumentException {
         PdfPTable lessonTbl = new PdfPTable(1);
         lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);

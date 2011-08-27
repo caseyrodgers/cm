@@ -6,6 +6,7 @@ import hotmath.cm.util.FileUtil;
 import hotmath.cm.util.export.ExportStudentsInExcelFormat;
 import hotmath.cm.util.report.ReportUtils;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -29,8 +30,10 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Export student data Command
@@ -122,10 +125,12 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			conn = HMConnectionPool.getConnection();
 
     			CmReportCardDao rcDao = CmReportCardDao.getInstance();
+    			List<String> uidList = new ArrayList<String> ();
 
     			for (StudentModelExt sm : studentList) {
     				StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
     				rcList.add(rc);
+    				uidList.add(String.valueOf(sm.getUid()));
     			}
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
@@ -138,6 +143,11 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			titleBuff.append(acctInfo.getAdminUserName()).append(") ");
     			titleBuff.append("Student Data Export on ").append(todaysDate);    	
 
+    	        Calendar now = Calendar.getInstance();
+    	        now.add(Calendar.DATE, 1);
+
+    	    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMapForUids(conn, uidList, acctInfo.getAccountCreateDate(), now.getTime());
+
     			ByteArrayOutputStream baos = null;
 
     			StringBuilder sb = new StringBuilder();
@@ -148,6 +158,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
+    			exporter.setTimeOnTaskMap(totMap);
     			exporter.setTitle(titleBuff.toString());
     			exporter.setFilterDescr(sb.toString());
 

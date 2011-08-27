@@ -46,6 +46,8 @@ public class ExportStudentsInExcelFormat {
 	private List<StudentModelExt> studentList;
 	
 	private List<StudentReportCardModelI> rcList;
+	
+	private Map<Integer, Integer> timeOnTaskMap;
 
 	private String filterDescr;
 
@@ -76,6 +78,14 @@ public class ExportStudentsInExcelFormat {
 		this.rcList = rcList;
 	}
 
+	public Map<Integer, Integer> getTimeOnTaskMap() {
+		return timeOnTaskMap;
+	}
+
+	public void setTimeOnTaskMap(Map<Integer, Integer> timeOnTaskMap) {
+		this.timeOnTaskMap = timeOnTaskMap;
+	}
+
 	public String getFilterDescr() {
 		return filterDescr;
 	}
@@ -103,7 +113,7 @@ public class ExportStudentsInExcelFormat {
 	private static String[] headings = {
 		"Student", "Password", "Group", "Current Program", "Status", "% Complete", "Quizzes",
 		"Last Quiz", "Last Login", "Total Lessons", "Quizzes Attempted", "Quizzes Passed",
-		"Passed Quiz Avg Score", "Total Logins", "First Login", "First Program"
+		"Passed Quiz Avg Score", "Time-on-Task", "Total Logins", "First Login", "First Program"
 	};
 	
 	public ByteArrayOutputStream export() throws Exception {
@@ -226,6 +236,13 @@ public class ExportStudentsInExcelFormat {
 	        cell.setCellValue(quizAvg);
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < quizAvg.length()) charCount[col] = quizAvg.length();
+
+		    cell = row.createCell(++col);
+		    Integer tot = timeOnTaskMap.get(rc.getStudentUid());
+		    String timeOnTask = (tot != null) ? String.format("%d", tot) : "0";
+	        cell.setCellValue(timeOnTask);
+	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[col] < timeOnTask.length()) charCount[col] = timeOnTask.length();
 
 		    cell = row.createCell(++col);
 		    String totalLogins = String.valueOf((usageMap.get("login") != null) ? usageMap.get("login") : 0);

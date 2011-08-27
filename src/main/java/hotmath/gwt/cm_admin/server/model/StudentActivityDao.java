@@ -6,8 +6,6 @@ import hotmath.cm.util.JsonUtil;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.SubjectModel;
-import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 

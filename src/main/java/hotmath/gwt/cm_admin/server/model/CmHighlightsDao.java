@@ -8,6 +8,7 @@ import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
@@ -18,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -347,7 +349,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     /*return students' time-on-task
      * 
      */
-    public CmList<HighlightReportData>  getReportTimeOnTask(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
+    public CmList<HighlightReportData> getReportTimeOnTask(final Connection conn, List<String> uids, Date from, Date to) throws Exception {
 
         String sql =
         	CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_TIME_ON_TASK", createInListMap(createInList(uids)) );
@@ -524,8 +526,39 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         }
         return list;
     }    
-            
-    
+   
+    public Map<Integer, Integer> getTimeOnTaskMap(final Connection conn, List<StudentModelI> smList, Date from, Date to) throws Exception {
+        List<String> uidList = new ArrayList<String>();
+    	for (StudentModelI sm : smList) {
+    		uidList.add(sm.getUid().toString());
+    	}
+    	
+    	CmList<HighlightReportData> totList = getReportTimeOnTask(conn, uidList, from, to);
+
+    	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
+    	for (HighlightReportData tot : totList) {
+    		totMap.put(tot.getUid(), Integer.valueOf(tot.getData()));
+    		if (logger.isDebugEnabled())
+    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getData());
+    	}
+
+    	return totMap;
+    }
+
+    public Map<Integer, Integer> getTimeOnTaskMapForUids(final Connection conn, List<String> uidList, Date from, Date to) throws Exception {
+    	
+    	CmList<HighlightReportData> totList = getReportTimeOnTask(conn, uidList, from, to);
+
+    	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
+    	for (HighlightReportData tot : totList) {
+    		totMap.put(tot.getUid(), Integer.valueOf(tot.getData()));
+    		if (logger.isDebugEnabled())
+    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getData());
+    	}
+
+    	return totMap;
+    }
+
     private Map<String,String> createInListMap(String list) {
         Map<String,String> map = new HashMap<String, String>();
         map.put("UID_LIST", list);
