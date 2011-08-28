@@ -1,20 +1,12 @@
 <html>
 <head>
+   <script src='/gwt-resources/js/test.js'></script>
 </head>
 <body>
-
-
-  <iframe id='testFrame' width='600' height='500'></iframe>
-  <textarea id='test' onclick='test()'>
-      &#x2212;
-  </textarea>
-  
-  <script>
-      function test() {
-          var val = document.getElementById('testFrame');
-          val.contentWindow.document.body.innerText = "THIS IS A &nbsp; TEST";
-      }
-  
-  </script>
+   Test
+   <script>
+      var animal = new Parrot();
+      alert(animal.dead());
+   </script>
 </body>
 </html>

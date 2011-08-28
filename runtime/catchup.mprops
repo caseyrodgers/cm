@@ -2435,8 +2435,8 @@ where lid = ?
 
 .key=INSERT_LOGIN_INFO
 
-insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name, browser_info, is_real_login)
-values(?,?,?,?,?,?,?)
+insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name, browser_info, is_real_login,is_html5_only)
+values(?,?,?,?,?,?,?,?)
 
 
 .key=GET_LOGIN_INFO_KEY
@@ -2592,7 +2592,7 @@ order by overage desc
 .key=GET_USER_CLIENT_ENVIRONMENT
 
  
-select browser_info, no_flash_support
+select browser_info, is_html5_only
 from HA_USER_LOGIN
 where user_id = ?
 order by login_time desc

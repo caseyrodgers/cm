@@ -14,6 +14,7 @@ public class CmMobileUser implements Response {
     int testSegment;
     int testSlot;
     int runId;
+    String securityKey;
     CmList<Topic> prescribedLessons;
     
     /** composite with normal CM login */
@@ -118,12 +119,20 @@ public class CmMobileUser implements Response {
     }
     
     
+    public String getSecurityKey() {
+        return securityKey;
+    }
+
+    public void setSecurityKey(String securityKey) {
+        this.securityKey = securityKey;
+    }
+
     @Override
     public String toString() {
         return "CmMobileUser [name=" + name + ", userId=" + userId + ", testId=" + testId + ", testSegment="
-                + testSegment + ", testSlot=" + testSlot + ", runId=" + runId + ", prescribedLessons="
-                + prescribedLessons + ", baseLoginResponse=" + baseLoginResponse + ", flowAction=" + flowAction
-                + ", prescripion=" + prescripion + "]";
+                + testSegment + ", testSlot=" + testSlot + ", runId=" + runId + ", securityKey=" + securityKey
+                + ", prescribedLessons=" + prescribedLessons + ", baseLoginResponse=" + baseLoginResponse
+                + ", flowAction=" + flowAction + ", prescripion=" + prescripion + "]";
     }
     
 }

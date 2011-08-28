@@ -92,6 +92,8 @@ public class AssessmentPrescription {
         readAssessment();
 
         missed = _assessment.getPids().length;
+        
+        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
         int sumOfWeights = 0;
@@ -110,7 +112,7 @@ public class AssessmentPrescription {
 
             // now choose pids from the pool for this item
             int uid = testRun.getHaTest().getUser().getUid();
-            ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
+            
             List<RppWidget> rppWidgets = itemData.getWookBookSolutionPool(conn, uid + "/" + testRun.getRunId(),clientEnvironment);
             if (rppWidgets.size() == 0) {
                 logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");

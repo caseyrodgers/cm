@@ -120,7 +120,8 @@ public class InmhItemData {
          *  TODO: We could save the browser type with the cached object and verify.
          *  
          */
-    	List<RppWidget> widgets = (List<RppWidget>)CmCacheManager.getInstance().retrieveFromCache(CacheName.WOOKBOOK_POOL, this.item.getFile());
+        String cacheKey = this.item.getFile() + "_" + clientEnvironment.isSupportsFlash();
+    	List<RppWidget> widgets = (List<RppWidget>)CmCacheManager.getInstance().retrieveFromCache(CacheName.WOOKBOOK_POOL, cacheKey);
     	if(widgets != null)
     		return widgets;
     	
@@ -173,7 +174,7 @@ public class InmhItemData {
             logger.debug("finished getting solution pool " + logTag);
         }
         
-        CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, this.item.getFile(), widgets);
+        CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, cacheKey, widgets);
         return widgets;
     }
 

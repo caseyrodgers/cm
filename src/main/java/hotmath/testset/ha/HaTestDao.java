@@ -4,6 +4,7 @@ import hotmath.HotMathException;
 import hotmath.HotMathProperties;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
@@ -518,6 +519,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             int testCorrectPercent = GetPrescriptionCommand.getTestPassPercent(answeredCorrect + answeredIncorrect
                     + notAnswered, answeredCorrect);
 
+            ClientEnvironment clientEnv = HaUserDao.getInstance().getLatestClientEnvironment(studentUid);
             /**
              * if user passed quiz or if the custom program which always is
              * passing
@@ -526,7 +528,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
             HaTest test = HaTestDao.getInstance().loadTest(testId);
             String sql = "insert into HA_TEST_RUN(test_id, run_time, answered_correct, " +
-                         " answered_incorrect, not_answered,run_session,is_passing)values(?,?,?,?,?,1,?)";
+                         " answered_incorrect, not_answered,run_session,is_passing,is_html5_only)values(?,?,?,?,?,1,?,?)";
             pstat = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             HaTestRun testRun = new HaTestRun();
 
@@ -537,6 +539,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             pstat.setInt(4, answeredIncorrect);
             pstat.setInt(5, notAnswered);
             pstat.setInt(6, passedQuiz ? 1 : 0);
+            pstat.setInt(7, clientEnv.isSupportsFlash()?0:0);
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)

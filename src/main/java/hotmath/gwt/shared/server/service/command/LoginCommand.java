@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.dao.HaLoginInfoDao;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -8,7 +9,6 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.testset.ha.HaUserFactory;
 
 import java.sql.Connection;
@@ -66,7 +66,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		}
 		assert(cmUser != null);
 
-		HaLoginInfo loginInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, cmUser, action.getBrowserInfo(),isRealLogin);
+		HaLoginInfo loginInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, cmUser, new ClientEnvironment(action.getBrowserInfo()),isRealLogin);
 
 		return new HaUserLoginInfo(cmUser, loginInfo);
 	}

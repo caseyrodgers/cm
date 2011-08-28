@@ -21,6 +21,11 @@ public class ClientEnvironment {
         this.supportsFlash = supportsFlash;
     }
     
+    public ClientEnvironment(String userAgent) {
+        this();
+        this.userAgent = userAgent;
+    }
+    
     public ClientEnvironment(String userAgent, boolean supportsFlash) {
         this.userAgent = userAgent;
         this.supportsFlash = supportsFlash;

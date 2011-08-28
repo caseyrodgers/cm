@@ -5,7 +5,7 @@
         <h1>Available Lessons!</h1>
         <p>Choose a lesson to study.  You can jump around and study the lessons in any order you wish.  
          However, before you can continue to the next quiz you will have to complete all lessons.  
-         A completed lesson will show a check next its name.</p>
+         A completed lesson will show a check next to its name.</p>
         <g:Button ui:field="segmentCompleteTop" styleName="sexyButton"><span><span>I'm Ready To Move On!</span></span></g:Button>
         <g:HTMLPanel ui:field="lessonLising"></g:HTMLPanel>
         <g:Button ui:field="segmentCompleteBottom" styleName="sexyButton"><span><span>I'm Ready To Move On!</span></span></g:Button>

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile3.server.rpc;
 
+import hotmath.cm.dao.HaLoginInfoDao;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
@@ -35,6 +37,8 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         HaBasicUser basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
         if (basicUser.getUserType() != UserType.STUDENT)
             throw new CmException("Invalid user type: " + basicUser.getUserType());
+        
+        
 
         CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
         
@@ -42,6 +46,10 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         StudentActiveInfo active = programFlow.getActiveInfo();
         CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), active.getActiveRunId());
 
+        
+        /** create new security key for this login sesssion */
+        String securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false), true);
+        
         /**
          * get list of previous prescribed lessons
          * 
@@ -49,15 +57,9 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         PreparedStatement ps = null;
         try {
             GetUserInfoAction loginAction = new GetUserInfoAction(mobileUser.getUserId(), null);
-            
-            /** turn off Flash support for this login session.  
-             * This will make sure that only Non-Flash RPPs are 
-             * used in prescriptions.
-             */
-            loginAction.setFlashSupported(false);
-            
             UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, loginAction);
             mobileUser.setBaseLoginResponse(userLoginResponse);
+            mobileUser.setSecurityKey(securityKey);
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
             mobileUser.setFlowAction(nextAction);

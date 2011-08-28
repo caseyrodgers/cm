@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.dao.HaLoginInfoDao;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -25,7 +26,7 @@ public class LogUserInCommand implements ActionHandler<LogUserInAction, RpcData>
         RpcData rdata = new RpcData();
         try {
             HaUser huser = HaUser.lookupUserByPasscode(conn, action.getPassword());
-            rdata.putData("key", HaLoginInfoDao.getInstance().addLoginInfo(conn, huser, action.getBrowserInfo(),true));
+            rdata.putData("key", HaLoginInfoDao.getInstance().addLoginInfo(conn, huser, new ClientEnvironment(action.getBrowserInfo()),true));
         }
         catch(Exception e) {
             rdata.putData("message", e.getMessage());

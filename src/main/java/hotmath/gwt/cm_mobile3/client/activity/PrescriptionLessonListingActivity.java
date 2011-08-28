@@ -33,7 +33,7 @@ public class PrescriptionLessonListingActivity implements PrescriptionLessonList
     public PrescriptionLessonListingActivity(com.google.gwt.event.shared.EventBus eventBus) {
         this.eventBus = eventBus;
         this.userInfo = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
-        prescriptionData = CatchupMathMobileShared.getUser().getFlowAction().getPrescriptionResponse().getPrescriptionData();
+        prescriptionData = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData();
     }
 
     @Override

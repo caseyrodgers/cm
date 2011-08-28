@@ -1,5 +1,6 @@
 package hotmath.cm.dao;
 
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
@@ -34,10 +35,10 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
     private HaLoginInfoDao(){}
 
     
-    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, String browserInfo, boolean isRealLogin) throws Exception {
+    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, ClientEnvironment clientEnv, boolean isRealLogin) throws Exception {
         
         HaLoginInfo loginInfo = new HaLoginInfo();
-        loginInfo.setKey(addLoginInfo(conn, user, browserInfo,isRealLogin));
+        loginInfo.setKey(addLoginInfo(conn, user, clientEnv,isRealLogin));
         loginInfo.setUserId(user.getUserKey());
         loginInfo.setType(user.getUserType().toString());
         loginInfo.setLoginName(user.getLoginName());
@@ -145,10 +146,11 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
      * @param user
      * @param browserInfo
      * @param isRealLogin  Is this login a real login from the login page.
+     * @param ClientEnvironment the client enviornment.
      * @return
      * @throws Exception
      */
-    public String addLoginInfo(final Connection conn, HaBasicUser user, String browserInfo, boolean isRealLogin) throws Exception {
+    public String addLoginInfo(final Connection conn, HaBasicUser user, ClientEnvironment clientEnv, boolean isRealLogin) throws Exception {
         PreparedStatement pstat = null;
 
         try {
@@ -172,8 +174,9 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
             pstat.setString(3, user.getUserType().toString());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             pstat.setString(5,user.getLoginName());
-            pstat.setString(6, browserInfo);
+            pstat.setString(6, clientEnv.getUserAgent());
             pstat.setInt(7, isRealLogin?1:0);
+            pstat.setInt(8, clientEnv.isSupportsFlash()?0:1);
     
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");

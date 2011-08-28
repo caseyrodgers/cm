@@ -82,6 +82,10 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         rppItems.clear();
         
         for(PrescriptionSessionDataResource resource: lessonData.getInmhResources()) {
+            
+            if(resource.getType().equals("activity"))
+                continue;
+            
             ListItem li = new ListItem();
             li.setStyleName("resourceType");
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));

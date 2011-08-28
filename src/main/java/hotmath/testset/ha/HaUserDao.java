@@ -161,7 +161,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 new RowMapper<ClientEnvironment>() {
                     @Override
                     public ClientEnvironment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new ClientEnvironment(rs.getString("browser_info"), rs.getInt("no_flash_support")==0);
+                        return new ClientEnvironment(rs.getString("browser_info"), rs.getInt("is_html5_only")==0);
                     }
                 });
         
