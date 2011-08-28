@@ -116,12 +116,32 @@
 
 
 
+.questionResponseAnswer {
+	background: #DDDDDD;
+	padding: 5px;
+	margin-bottom: 10px;
+}
+
+.questionResponseAnswer p {
+	margin: 0;
+}
+
             
 .is_rpp {
 	background-image: url(/gwt-resources/images/check_notanswered.png) !important;
 }
 
 .is_rpp.is_viewed {
+	/**
     background-image: url(/gwt-resources/images/check_correct.png) !important;
     background-position: 1px 18px !important;
+     color: #AAA; */
+}
+
+
+.is_complete {
+	color: green;
+}
+
+
 }

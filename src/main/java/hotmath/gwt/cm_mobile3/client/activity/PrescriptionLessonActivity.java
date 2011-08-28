@@ -34,7 +34,6 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.userInfo = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
-        SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData();
     }
 
     @Override
@@ -49,8 +48,29 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
 
     @Override
     public void moveToNextLesson(final PrescriptionLessonView view) {
-        int sessionNumber = userInfo.getSessionNumber();
+        int sessionNumber = findNextSessionNumber();
         moveToLesson(view, sessionNumber + 1);
+    }
+    
+
+    /** return the next available session that is not complete */
+    private int findNextSessionNumber() {
+        List<SessionTopic> topics = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics();
+        /** search for current position */
+        for(int i=userInfo.getSessionNumber()+1,t=topics.size();i<t;i++) {
+            SessionTopic topic = topics.get(i);
+            if(!topic.isComplete()) {
+                return i-1;
+            }
+        }
+        /** search from beginning */
+        for(int i=0,t=topics.size();i<t;i++) {
+            SessionTopic topic = topics.get(i);
+            if(!topic.isComplete()) {
+                return i-1;
+            }
+        }        
+        return -1;
     }
 
     @Override

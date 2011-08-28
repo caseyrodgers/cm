@@ -102,6 +102,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             }
         }    
         
+        refreshRppIndicators();
         indicateIfAllRppsViewed();
     }
     
@@ -137,10 +138,12 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             
             if(topic.isComplete())
                 correctImage.setInnerHTML("Completed");
+                correctImage.addClassName("is_complete");            
                 lessonTitle.setInnerHTML("<img src='/gwt-resources/images/check_correct.png'/>" + lessonData.getTopic());
             }
             else {
                 correctImage.setInnerHTML("Not Completed");
+                correctImage.removeClassName("is_complete");
             }
         }
 
@@ -174,7 +177,10 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         for(MyGenericTextTag tt: rppItems) {
             tt.removeStyleName("is_viewed");
             if(tt.resourceItem.isViewed()) {
-                tt.addStyleName("is_viewed");
+                if(tt.getStyleName().indexOf("is_viewed") == -1) {
+                    tt.addStyleName("is_viewed");
+                    tt.getElement().setInnerHTML("<img src='/gwt-resources/images/check_correct.png'/> " + tt.getText());
+                }
             }
         }
         indicateIfAllRppsViewed();
