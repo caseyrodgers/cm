@@ -168,7 +168,14 @@ public class SolutionEditor implements EntryPoint {
             public void componentSelected(ButtonEvent ce) {
                 showAllResources();
             }
-        }),td); 
+        }),td);
+        
+        tb.add(new Button("Help",new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new ShowHelpWindow();
+            }
+        }));
         
         return tb;
     }

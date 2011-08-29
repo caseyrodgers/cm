@@ -1,0 +1,17 @@
+<h1>Solution Editor Help</h1>
+
+<h1>Events</h1>
+
+widget_correct
+  <onevent type='widget_correct'>gotoStepUnit(4)</onevent>
+  
+  widget_incorrect
+  <onevent type='widget_incorrect'>gotoStepUnit(0)</onevent>
+  
+  
+  step_changed (args == step number)
+  <onevent type='step_changed'>
+        if(args == 2) {
+            alert('showing step 2: z == ' + $z&lt;2);
+         }
+  </onevent>
