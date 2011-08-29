@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>Html5 widget demo</title>
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<script src="js/graph.js"></script>
+		<script src="js/plotter.js"></script>
+		
+		<script language="JavaScript">
+		var graph;
+			function createGraph() {
+				if(graph){
+graph.clearGraph();
+}
+				var docObj = document;
+				var s = document.getElementById("gtype")
+				var board = docObj.getElementById("canvas_container");
+				var gtype = s.options[s.selectedIndex].value;
+				var xmin = docObj.getElementById("xmin").value;
+				var xmax = docObj.getElementById("xmax").value;
+				var ymin = docObj.getElementById("ymin").value;
+				var ymax = docObj.getElementById("ymax").value;
+				var xinc = docObj.getElementById("xinc").value;
+				var yinc = docObj.getElementById("yinc").value;
+				var plot_data=docObj.getElementById("plot_data").value;
+				graph = new Graph(docObj, board, gtype, xmin, xmax, ymin, ymax, xinc, yinc);
+				var plot=new Plotter(graph,'point',{data:plot_data});
+				
+			}
+		</script>
+	</head>
+	<body>
+		<div>
+			<div>--------------------------------------------------------------------------------</div>
+			<div>HTML5 WIDGET:</div>
+			<div>-------- Graph Settings ---------------------------------------------------</div>
+			Graph-type:
+			<select id="gtype">
+				<option value="xy">2D</option>
+				<option value="x">Number Line</option>
+			</select>
+			<BR/>
+			x-min:
+			<input type="text" name="x-min" value="-5" id="xmin" />
+			<BR/>
+			x-max:
+			<input type="text" name="x-max" value="5" id="xmax" />
+			<BR/>
+			y-min:
+			<input type="text" name="y-min" value="-5" id="ymin" />
+			<BR/>
+			y-max:
+			<input type="text" name="y-max" value="5" id="ymax" />
+			<BR/>
+			x-inc:
+			<input type="text" name="x-inc" value="1" id="xinc" />
+			<BR/>
+			y-inc:
+			<input type="text" name="y-inc" value="1" id="yinc" />
+			<BR/>
+			<div>-------- Plot Settings ---------------------------------------------------</div>
+			<input style="width: 300px" type="text" name="plot-data" value="[[1,2],true,'red']|[[-1,2],false]" id="plot_data" />
+			input format:[points format:[[x1,y1],show_label,color]|[[x2,y2],show_label,color]
+			<BR/>
+			<div>--------------------------------------------------------------------------------</div>
+			<button type="button" onclick="createGraph()">Create Graph</button>
+			<div>--------------------------------------------------------------------------------</div>
+		</div>
+		
+		<div id="canvas_container" style="position: relative;"></div>
+	</body>
+</html>
