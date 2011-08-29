@@ -16,7 +16,7 @@ var HmFlashWidgetFactory = {
                 return new HmFlashWidgetImplNumberMoney(jsonObj);
             }
             else {
-                return new HmFlashWidgetImplNumberInteger(jsonObj);
+                return new HmFlashWidgetImplNumberDecimal(jsonObj);
             }
         }
         else if(jsonObj.type == 'inequality') {
@@ -234,9 +234,10 @@ function copyPrototype(descendant, parent) {
  *
  */
 var restrictionType_digitsOnly = /[1234567890-]/g;
+var restrictionType_decimals = /[1234567890\-\+\.]/g;
 var restrictionType_digitsOnlyWithSlash = /[1234567890\/]/g;
 var restrictionType_digitsOnlyWithColon = /[1234567890:]/g;
-var restrictionType_integerOnly = /[0-9\.]/g;
+var restrictionType_integerOnly = /[0-9]/g;
 var restrictionType_alphaOnly = /[A-Z]/g;
 
 function restrictCharacters(myfield, e, restrictionType) {
@@ -483,6 +484,21 @@ HmFlashWidget.prototype.processWidget = function() {
         return this.processWidgetDefault();
 }
 copyPrototype(HmFlashWidgetImplNumberInteger, HmFlashWidget);
+
+
+
+/** Class for simple decimal values
+ * 
+ */
+function HmFlashWidgetImplNumberDecimal(jsonObj) {
+	this.HmFlashWidget(jsonObj); // super 
+}
+HmFlashWidget.prototype.processKey = function(ele, event) {
+    return restrictCharacters(ele, event, restrictionType_decimals);
+}
+copyPrototype(HmFlashWidgetImplNumberDecimal,HmFlashWidget);
+
+
 
 
 
@@ -1111,4 +1127,766 @@ HmFlashWidget.prototype.processWidget = function() {
 }
 copyPrototype(HmFlashWidgetImplInequalityExact, HmFlashWidget);
 
+/**
+ * tutor flash widget validations
+ * 
+ * validation functions are assigned to specific widgets defiend in
+ * tutor_flash_widget.js.
+ * 
+ * Each validation method is made an instance method of the assigned class. This
+ * makes the instance vars (like _jsonObj) to be available.
+ * 
+ */
+
+var widget_answer;
+var widget_format;
+var MESSAGE_CORRECT='Correct!';
+var MESSAGE_INCORRECT='Try Again!';
+var ERROR_UNITS='Enter correct units!'
+var ERROR_SIMPLE_FRACTION = "Not in lowest terms!";
+var ERROR_SCI_NOT = "The first number has to be between 1 and 10";
+var ERROR_ODDS="The problem asks for the odds not probability"
+var PI_SYM = '\u03c0';
+var SQUARE_ROOT_SYM = '\u221A';
+    
+function regExpMatch(reg,str) {
+  var re = new RegExp(reg);
+  if (str.match(re)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+function regExpReplace(reg,str,repstr) {
+  var re = new RegExp(reg, "g");
+  return str.replace(re, repstr);
+}
+var revSymb = {};
+revSymb['<'] = '>';
+revSymb['>'] = '<';
+revSymb['='] = '=';
+revSymb['!='] = '!=';
+revSymb['<='] = '>=';
+revSymb['>='] = '<=';
+
+// unicode:
+// less-than-or-equals-to = \u2264
+// greater-than-or-equals-to = \u2265
+// not-equals-to = \u2260
+
+function splitAtInEq(str) {
+    var syArr = ["<=", "<", "&lt;", "\u2264", "&le;", ">=", ">", "&gt;", "\u2265", "&ge;", "=", "&eq;", "\u2260", "&ne;"];
+    var ieq = null;
+    for (var i = 0; i < syArr.length; i++) {
+        if (str.indexOf(syArr[i]) != -1) {
+            ieq = syArr[i];
+            break;
+        }
+    }
+    var exp = str.split(ieq);
+    if (exp.length > 2) {
+        var texp0 = exp.pop();
+        var texp1 = exp.join("");
+        exp = [texp0, texp1];
+    }
+    var _ieq = ieq;
+    ieq = ieq == '&lt;' ? '<' : ieq == "\u2264" ? '<=' : ieq == '&le;' ? '<=' : ieq;
+    ieq = ieq == '&gt;' ? '>' : ieq == "\u2265" ? '>=' : ieq == '&ge;' ? '>=' : ieq;
+    ieq = ieq == "&eq;" ? '=' : ieq;
+    ieq = ieq == "&ne;" || ieq == "\u2260" ? '!=' : ieq;
+    return {ueq:_ieq, syeq:ieq, lexp:exp[0], rexp:exp[1]};
+}
+function applyUniqueVarX(str){
+        if(!str) {
+            return str;
+        }
+        
+        var inputValue=str
+        if(regExpMatch('\\*[a-z()]|[a-z()]\\*',inputValue)){
+            inputValue=(regExpReplace('[a-z]',inputValue,'x'))
+        }else if(regExpMatch('[0-9]\\([a-z]\\)',inputValue)){
+            inputValue=(regExpReplace('\\([',inputValue,'*('))
+        }else if(regExpMatch('[a-z]\\([0-9]',inputValue)){
+            inputValue=(regExpReplace('\\(',inputValue,'*('))
+        }else if(regExpMatch('[0-9][a-z]',inputValue)){
+            inputValue=(regExpReplace('[a-z]',inputValue,'*x'))
+        }
+        return inputValue
+}
+function applyUniqueVarXForEval(str){
+        if(!str)
+            return str;
+        
+        var inputValue=str
+        if(regExpMatch('\\*[a-z()]|[a-z()]\\*',inputValue)){
+            inputValue=(regExpReplace('[a-z]',inputValue,'x'))
+        }else if(regExpMatch('[0-9]\\([a-z]\\)',inputValue)){
+            inputValue=(regExpReplace('\\([',inputValue,'*('))
+        }else if(regExpMatch('[a-z]\\([0-9]',inputValue)){
+            inputValue=(regExpReplace('\\(',inputValue,'*('))
+        }else if(regExpMatch('[0-9][a-z]',inputValue)){
+            inputValue=(regExpReplace('[a-z]',inputValue,'*x'))
+        }
+        return inputValue
+}
+function cm_unescape(str){
+return unescape(decodeURI(str));
+}
+// unicode used:
+// divide = \u00f7
+// subscript_minus = \u208B (verify correct?)---->\u2013
+// plus_minus = \u00B1
+// asterisk = \u002A (verify correct?)----->correct
+function toMathFormat(_str) {
+    var str = _str;
+    var opStr='/\u00f7*+-\u2013<=>][^\u00B1()\u002A';
+    var hasPiSymb = str.indexOf(PI_SYM)>-1;
+    if (hasPiSymb) {
+        // str = str.split("\u03a0").join("pi");
+        if(regExpMatch('\\*\\(?\u03c0|\u03c0\\)?\\*',str)){
+        str=regExpReplace('\u03a0',str,'Math.PI')
+        }else{
+        if(regExpMatch('[0-9)]\u03c0',str)){
+        str=regExpReplace('\u03c0',str,'*Math.PI')
+        }
+        if(regExpMatch('\u03c0[(0-9]',str)){
+        str=regExpReplace('\u03c0',str,'Math.PI*')
+        }
+        }
+    }
+    var hasSqrtSymb = str.indexOf(SQUARE_ROOT_SYM);
+    var strL = str.length;
+    var lstr, rstr, uchar, fstr;
+    fstr = "";
+	var closeB=")"
+    if (hasSqrtSymb > -1) {
+        lstr = str.substring(0, hasSqrtSymb);
+        rstr = str.substring(hasSqrtSymb + 1);
+        if (rstr.length < 1) {
+            return lstr;
+        }
+		if(lstr.length<1){
+		fstr= "Math.sqrt("
+		}else{
+        if(lstr.charAt(lstr.length-1)=='*'){
+       if(rstr.charAt(0)=="("){
+		fstr = lstr + "Math.sqrt"
+		closeB=""
+		}else{
+		fstr = lstr + "Math.sqrt("
+		}
+        }else{
+       if(rstr.charAt(0)=="("){
+		fstr = lstr + "*Math.sqrt"
+		closeB=""
+		}else{
+		fstr = lstr + "*Math.sqrt("
+		}
+        }
+		}
+		//alert('fstr '+fstr+":"+closeB)
+        var end = false;
+        for (var i = 0; i < rstr.length; i++) {
+            uchar = rstr.charAt(i);
+            if (opStr.indexOf(uchar) != -1&&i!=0) {
+                fstr += closeB+ rstr.substring(i);
+                end = true;
+                break;
+            } else {
+                fstr += uchar;
+            }
+        }
+        if (!end) {
+            fstr += closeB;
+        }
+		//alert('fstr '+fstr)
+        return fstr;
+    }
+    return str;
+}
+// utility functions ends
+
+
+/**
+ * Each validation function has access to this._jsonObj which is the JSON
+ * configuration object (ie, this._jsonObj.value)
+ * 
+ */
+// VALIDATION FUNCTIONS START
+// /////////////////////////////////////////////////////////////////////
+// -! type=number_integer
+function validateNumberInteger()
+{
+    var expectedValue = cm_unescape(this._jsonObj.value);
+    var format = this._jsonObj.format;
+    
+    var inputValue=$get('widget_input_field_1').value;
+    if(inputValue==expectedValue){
+        return true;
+    }else{
+        if(format=="money"){
+            if(Number(inputValue)==Number(expectedValue.substring(1))){
+                throw (ERROR_UNITS);
+            }else{
+                return false;
+            }
+        }else{
+            return false
+        }
+    }
+}
+HmFlashWidgetImplNumberInteger.prototype.processWidgetValidation = validateNumberInteger;
+
+
+
+// -! type=number_decimal format=money
+function validateNumberMoney()
+{
+    var inputValue=$get('widget_input_field_1').value;
+    var expectedValue=cm_unescape(this._jsonObj.value);
+
+    var numVal = 0;
+    var hasUnits = false;
+    if(inputValue.substring(0,1) == '$') {
+        numVal = Number(inputValue.substring(1));
+        hasUnits = true;
+    }
+    else 
+        numVal = Number(inputValue);
+
+    /** strip off leading $ */
+    var numExpect = Number(expectedValue.substring(1));
+    if(numVal==numExpect){
+        if(!hasUnits)
+            throw(ERROR_UNITS);
+        return true;
+    }else{
+        return false;
+    }
+}
+HmFlashWidgetImplNumberMoney.prototype.processWidgetValidation = validateNumberMoney;
+
+
+// -! type=number_decimal
+function validateNumberDecimal()
+{
+    var inputValue=$get('widget_input_field_1').value;
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    if(inputValue==expectedValue){
+        return true;
+    }else{
+        if(widget_format=="money"){
+            if(Number(inputValue)==Number(expectedValue.substring(1))){
+                throw Exception(ERROR_UNITS);
+            }else{
+                return false;
+            }
+        }else{
+            return false
+        }
+    }
+}
+
+
+
+
+
+// -! type=number_simple_fraction
+function validateNumberSimpleFraction()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+	var simplified = $get('widget_input_simplified');
+
+    /** isSimplified field avaialbe and checked?
+     * 
+     */
+    var isSimplified = simplified && simplified.checked;
+	var ans_isSimplified=expectedValue.split("|")[1]=='simplified'
+    if(expectedValue.indexOf("[")>-1){
+        var splitVal=expectedValue.split("]")
+        var ewhole=splitVal[0].split("[")[1];
+        splitVal=splitVal[1].split("/")
+        var enumero=splitVal[0]
+        var eden=splitVal[1]
+        expectedValue=((ewhole*eden)+Number(enumero))+"/"+eden;
+    }
+	var eAns=eval(expectedValue);
+    var inputValue=$get('widget_input_field_1').value;
+    var isFrac=$get('widget_input_field_2').value!="";
+    var fld3 = $get('widget_input_field_3');
+    var isMixed=(fld3 != null && fld3.value!="");
+    // alert($get('widget_input_field_2').value)
+    isFrac=isMixed?false:isFrac
+    var num,den,whole
+    if(isFrac){
+        num=inputValue
+        den=$get('widget_input_field_2').value
+        inputValue=num+"/"+den
+    }
+    if(isMixed){
+        num=inputValue;
+        den=$get('widget_input_field_2').value;
+        whole=fld3.value;
+        inputValue=((whole*den)+Number(num))+"/"+den
+    }
+    
+    if(inputValue==expectedValue){
+        return true;
+    }else{
+		if(eAns==inputValue){
+		return true
+		}
+		if(isSimplified&&ans_isSimplified){
+		return true;
+		}
+        if(eval(inputValue)==eval(expectedValue)){            
+                throw(ERROR_SIMPLE_FRACTION);            
+        }else{
+            return false
+        }
+    }
+}
+HmFlashWidgetImplSimpleFraction.prototype.processWidgetValidation = validateNumberSimpleFraction;
+
+
+
+// -! type=number_fraction
+/**
+ * TODO: need widget for this
+ * 
+ * widget_input_simplified is avaiable
+ * on text_simple.
+ * 
+ */
+function validateNumberFraction()
+{
+    var simplified = $get('widget_input_simplified');
+
+    /** isSimplified field avaialbe and checked?
+     * 
+     */
+    var isSimplified = simplified && simplified.checked;
+    
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    
+    if(expectedValue.indexOf("[")>-1){
+        var splitVal=expectedValue.split("]")
+        var ewhole=splitVal[0].split("[")[1];
+        splitVal=splitVal[1].split("/")
+        var enumero=splitVal[0]
+        var eden=splitVal[1]
+        expectedValue=((ewhole*eden)+Number(enumero))+"/"+eden;
+    }
+    var inputValue=$get('widget_input_field_1').value;
+    var isFrac=$get('widget_input_field_2').value!="";
+    var fld3 = $get('widget_input_field_3');
+    var isMixed=false;
+    if(fld3)
+        isMixed=fld3.value!="";
+    
+    
+    isFrac=isMixed?false:isFrac
+    var num,den,whole
+    if(isFrac){
+        num=inputValue
+        den=$get('widget_input_field_2').value
+        inputValue=num+"/"+den
+    }
+    if(isMixed){
+        num=inputValue;
+        den=$get('widget_input_field_2').value;
+        whole=fld3.value;
+        inputValue=((whole*den)+Number(num))+"/"+den
+    }
+    
+    if(inputValue==expectedValue){
+        return true;
+    }else{
+        if(eval(inputValue)==eval(expectedValue)){
+            return true;            
+        }else{
+            return false;
+        }
+    }
+}
+HmFlashWidgetImplNumberIntegerFraction.prototype.processWidgetValidation = validateNumberFraction;
+
+
+
+
+
+// -! type=number_rational
+function validateNumberRational()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    if(expectedValue.indexOf("[")>-1){
+        var splitVal=expectedValue.split("]")
+        var ewhole=splitVal[0].split("[")[1];
+        splitVal=splitVal[1].split("/")
+        var enumero=splitVal[0]
+        var eden=splitVal[1]
+        expectedValue=((ewhole*eden)+Number(enumero))+"/"+eden;
+    }
+    var inputValue=$get('widget_input_field_1').value;
+    var isFrac=$get('widget_input_field_2').value!="";
+    var fld3 = $get('widget_input_field_3');
+    var isMixed=fld3 != null && fld3.value!="";
+    // alert($get('widget_input_field_2').value)
+    isFrac=isMixed?false:isFrac
+    var num,den,whole
+    if(isFrac){
+        num=inputValue
+        den=$get('widget_input_field_2').value
+        inputValue=num+"/"+den;
+        
+    }
+    if(isMixed){
+        num=inputValue;
+        den=$get('widget_input_field_2').value;
+        whole=fld3.value;
+        inputValue=((whole*den)+Number(num))+"/"+den
+    }
+    // alert(inputValue+":"+num+":"+den)\
+    //
+    // Regular expressions do not support unicode chars
+    // unicode:
+    // pi = \u03a0
+    // sroot = \u221A
+
+    var isExpression_input=regExpMatch('[a-z\u221A\u03c0]',inputValue)
+    var isExpression_ans=regExpMatch('[a-z\u221A\u03c0]',expectedValue)
+    
+    try {
+        if(isExpression_input){
+            var x=2
+            inputValue=applyUniqueVarX(inputValue)
+            inputValue=toMathFormat(inputValue)
+            inputValue=eval(inputValue);
+        }else{
+            inputValue=eval(inputValue)
+        }
+        if(isExpression_ans){
+            var x=2
+            expectedValue=expectedValue.replace("pi",PI_SYM)
+            expectedValue=expectedValue.replace("sqrt",SQUARE_ROOT_SYM)
+            expectedValue=applyUniqueVarX(expectedValue)
+            expectedValue=toMathFormat(expectedValue)
+            // alert(expectedValue)
+            expectedValue=eval(expectedValue);
+        }else{
+            expectedValue=eval(expectedValue)
+        }
+        // alert(expectedValue+":"+inputValue)
+        if(inputValue==expectedValue){
+            return true;
+        }else{        
+            return false;        
+        }
+    }
+    catch(ex) {
+        // report error?
+        // alert(ex);
+        return false;
+    }
+}
+HmFlashWidgetImplRational.prototype.processWidgetValidation = validateNumberRational;
+
+
+
+
+
+
+
+
+// -! type=number_mixed_fraction
+function validateNumberMixedFraction()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    
+    if(expectedValue.indexOf("[")>-1){
+        var splitVal=expectedValue.split("]")
+        var ewhole=splitVal[0].split("[")[1];
+        splitVal=splitVal[1].split("/")
+        var enumero=splitVal[0]
+        var eden=splitVal[1]
+        expectedValue=((ewhole*eden)+Number(enumero))+"/"+eden;
+    }
+    var inputValue=$get('widget_input_field_1').value;
+    var isFrac=$get('widget_input_field_2')!=undefined;
+    var isMixed=$get('widget_input_field_3')!=undefined;
+    var num,den,whole
+    if(isFrac){
+        num=inputValue
+        den=$get('widget_input_field_2').value
+        inputValue=num+"/"+den
+    }
+    if(isMixed){
+        /** todo:
+         *   If a mixed fraction, then inputValue 
+         *   here would always be a string, ie. 1/5 ...
+         *   because it is also a isFrac.
+         */
+        whole=$get('widget_input_field_1').value;
+        num=$get('widget_input_field_2').value;
+        den=$get('widget_input_field_3').value;
+        inputValue=((Number(whole)*Number(den))+Number(num))+"/"+den
+    }
+    
+    if(inputValue==expectedValue){
+        return true;
+    }else{        
+        return false;        
+    }
+}
+HmFlashWidgetImplMixedFraction.prototype.processWidgetValidation = validateNumberMixedFraction;
+
+
+
+
+
+
+
+
+// -! type=mChoice
+function validateMChoice()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value).split("|");
+    expectedValue=eval(expectedValue[expectedValue.length-1])-1;
+    var inputControls=$get('hm_widget_form');
+    var inputValue=null;
+    for(var i=0,l=inputControls.length;i<l;i++) {
+        if(inputControls[i].checked) {
+            inputValue = i;
+            break;
+        }
+    }    
+    if(inputValue==expectedValue){
+        return true;
+    }else{        
+        return false;    
+    }    
+}
+HmFlashWidgetImplMulti.prototype.processWidgetValidation = validateMChoice;
+
+
+
+
+
+
+
+
+
+// -! type=coordinates
+function validateCoordinates()
+{
+	widget_answer=cm_unescape(this._jsonObj.value);
+    var expectedValue=widget_answer.indexOf(",")>-1?widget_answer.split(","):widget_answer.split("|");
+    var inputValue=[$get('widget_input_field_1').value,$get('widget_input_field_2').value]    
+    if(inputValue[0]==expectedValue[0]&&inputValue[1]==expectedValue[1]){
+        return true;
+    }else{        
+        return false;    
+    }    
+}
+// -! type=string&letter
+//  ignore case 
+function validateString()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    var inputValue=$get('widget_input_field_1').value  
+    if(inputValue.toLowerCase() == expectedValue.toLowerCase()){
+        return true;
+    }else{        
+        return false;    
+    }    
+}
+HmFlashWidgetImplLetter.prototype.processWidgetValidation = validateString;
+
+
+// -! type=inequality
+function validateInequality()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    var inputValue=$get('widget_input_field_1').value 
+    var inIEq=splitAtInEq(inputValue);
+    var outIEq=splitAtInEq(expectedValue);
+    var olex = applyUniqueVarX(outIEq.lexp);
+    var ilex = applyUniqueVarX(inIEq.lexp);
+    var orex = applyUniqueVarX(outIEq.rexp);
+    var irex = applyUniqueVarX(inIEq.rexp);
+    if (outIEq.syeq == inIEq.syeq) {            
+            if (olex == ilex) {
+                if (orex == irex) {
+                    return true;
+                }
+            } else {
+                //
+                var x=2;
+                var ole = eval(olex);
+                var ile = eval(ilex);
+                var ore = eval(orex);
+                var ire = eval(irex);
+                if (ole == ile) {
+                    if (ore == ire) {
+                        return true;
+                    }
+                }
+            }
+    } else if (revSymb[outIEq.syeq] == inIEq.syeq) {
+            if (orex == ilex) {
+                if (olex == irex) {
+                    return true;
+                }
+            } else {
+                var x=2;
+                var ole = eval(olex);
+                var ile = eval(ilex);
+                var ore = eval(orex);
+                var ire = eval(irex);
+                if (ore == ile) {
+                    if (ole == ire) {
+                        return true;
+                    }
+                }
+            }
+    }
+    return false;
+}
+HmFlashWidgetImplInequality.prototype.processWidgetValidation = validateInequality;
+
+
+
+
+
+
+// -! type=inequality_exact
+function validateInequalityExact()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    var inputValue=$get('widget_input_field_1').value  
+    inputValue=inptValue.replace(/[*()]/g,"");
+    if(inputValue==expectedValue){
+        return true;
+    }else{        
+        return false;    
+    }
+}
+HmFlashWidgetImplInequalityExact.prototype.processWidgetValidation = validateInequalityExact;
+
+
+
+// -! type=power
+function validatePower()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value).split("^");
+    var inputValue=[$get('widget_input_field_1').value,$get('widget_input_field_2').value];
+    var x=2;
+    var obex = applyUniqueVarX(expectedValue[0]);
+    var ibex = applyUniqueVarX(inputValue[0]);
+    var oeex = applyUniqueVarX(expectedValue[1]);
+    var ieex = applyUniqueVarX(inputValue[1]);
+    var obe = eval(obex);
+    var ibe = eval(ibex);
+    var oee = eval(oeex);
+    var iee = eval(ieex);
+    if(obe==ibe&&oee==iee){
+        return true;
+    }else{        
+        return false;    
+    }
+}
+HmFlashWidgetImplPowerForm.prototype.processWidgetValidation = validatePower;
+
+
+
+
+// -! type=scientific_notation
+function validateScientificNotation()
+{
+    var fld1 = $get('widget_input_field_1');
+    var fld2 = $get('widget_input_field_2');
+    widget_answer = cm_unescape(this._jsonObj.value);
+    
+    var expectedValue=widget_answer.indexOf("x10^")?widget_answer.split("x10^"):widget_answer.split("|");
+    var inputValue=[$get('widget_input_field_1').value,$get('widget_input_field_2').value];
+    if (inputValue[0]<1||inputValue[0]>9) {
+                throw (ERROR_SCI_NOT);
+    }else{
+        if(inputValue[0]==expectedValue[0]&&inputValue[1]==expectedValue[1]){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+HmFlashWidgetImplSciNotation.prototype.processWidgetValidation = validateScientificNotation;
+
+
+
+
+
+
+// -! type=point_slope
+function validtePointSlope()
+{
+var expectedValue=cm_unescape(this._jsonObj.value);
+var yval=$get('widget_input_field_1').value
+var slope=$get('widget_input_field_2').value
+var xval=$get('widget_input_field_3').value
+var inputValue=yval+"|"+slope+"|"+xval;
+if(inputValue==expectedValue){
+    return true;
+}else{        
+    return false;    
+}
+}
+HmFlashWidgetImplPointSlopeForm.prototype.processWidgetValidation = validtePointSlope;
+
+
+// -! type=odds
+function validateOdds()
+{
+    var expectedValue=cm_unescape(this._jsonObj.value);
+    var inputValue=$get('widget_input_field_1').value;
+    var ans={};
+    var inp={};
+    if (expectedValue.indexOf("/") != -1) {
+        ans = expectedValue.split("/");
+    } else if (expectedValue.indexOf(":") != -1) {
+        ans = expectedValue.split(":");
+    } else if (expectedValue.indexOf("to") != -1) {
+        ans = expectedValue.split("to");
+    }
+    var prob = eval(ans[0]) + eval(ans[1]);
+    if (inputValue.indexOf("/") != -1) {
+        inp = inputValue.split("/");
+    } else if (inputValue.indexOf(":") != -1) {
+        inp = inputValue.split(":");
+    } else if (inputValue.indexOf("to") != -1) {
+        inp = inputValue.split("to");
+    }
+    if (inputValue == expectedValue) {
+        return true;
+    } else {
+        if (eval(ans[0]) == eval(inp[0]) && eval(ans[1]) == eval(inp[1])) {
+            return true;
+        } else if (eval(ans[0]) == eval(inp[0]) && (eval(inp[1]) == prob)) {
+            throw Exception(ERROR_ODDS)
+        } else {
+            return false;
+        }
+    }
+}
+HmFlashWidgetImplOdds.prototype.processWidgetValidation = validateOdds;/** 
+ * defines global methods that can be called in real time 
+ * by the solution infrastructure authors.  
+ */
+var AuthorApi = (function () {
+    var local = {};
+    var theApi = {}
+    theApi.sayHello = function (from) {
+        alert('say hello: ' + from);
+    }
+    return theApi;
+}());
 (function(D,K){var A="width",P="length",d="radius",Y="lines",R="trail",U="color",n="opacity",f="speed",Z="shadow",h="style",C="height",E="left",F="top",G="px",S="childNodes",m="firstChild",H="parentNode",c="position",I="relative",a="absolute",r="animation",V="transform",M="Origin",O="coord",j="#000",W=h+"Sheets",L="webkit0Moz0ms0O".split(0),q={},l;function p(t,v){var s=~~((t[P]-1)/2);for(var u=1;u<=s;u++){v(t[u*2-1],t[u*2])}}function k(s){var t=D.createElement(s||"div");p(arguments,function(v,u){t[v]=u});return t}function b(s,u,t){if(t&&!t[H]){b(s,t)}s.insertBefore(u,t||null);return s}b(D.getElementsByTagName("head")[0],k(h));var N=D[W][D[W][P]-1];function B(x,s){var u=[n,s,~~(x*100)].join("-"),t="{"+n+":"+x+"}",v;if(!q[u]){for(v=0;v<L[P];v++){try{N.insertRule("@"+(L[v]&&"-"+L[v].toLowerCase()+"-"||"")+"keyframes "+u+"{0%{"+n+":1}"+s+"%"+t+"to"+t+"}",N.cssRules[P])}catch(w){}}q[u]=1}return u}function Q(w,x){var v=w[h],t,u;if(v[x]!==K){return x}x=x.charAt(0).toUpperCase()+x.slice(1);for(u=0;u<L[P];u++){t=L[u]+x;if(v[t]!==K){return t}}}function e(s){p(arguments,function(u,t){s[h][Q(s,u)||u]=t});return s}function X(s){p(arguments,function(u,t){if(s[u]===K){s[u]=t}});return s}var T=function T(s){this.el=this[Y](this.opts=X(s||{},Y,12,R,100,P,7,A,5,d,10,U,j,n,1/4,f,1))},J=T.prototype={spin:function(y){var AA=this,t=AA.el;if(y){b(y,e(t,E,~~(y.offsetWidth/2)+G,F,~~(y.offsetHeight/2)+G),y[m])}AA.on=1;if(!l){var s=AA.opts,v=0,w=20/s[f],x=(1-s[n])/(w*s[R]/100),z=w/s[Y];(function u(){v++;for(var AB=s[Y];AB;AB--){var AC=Math.max(1-(v+AB*z)%w*x,s[n]);AA[n](t,s[Y]-AB,AC,s)}if(AA.on){setTimeout(u,50)}})()}return AA},stop:function(){var s=this,t=s.el;s.on=0;if(t[H]){t[H].removeChild(t)}return s}};J[Y]=function(x){var v=e(k(),c,I),u=B(x[n],x[R]),t=0,s;function w(y,z){return e(k(),c,a,A,(x[P]+x[A])+G,C,x[A]+G,"background",y,"boxShadow",z,V+M,E,V,"rotate("+~~(360/x[Y]*t)+"deg) translate("+x[d]+G+",0)","borderRadius","100em")}for(;t<x[Y];t++){s=e(k(),c,a,F,1+~(x[A]/2)+G,V,"translate3d(0,0,0)",r,u+" "+1/x[f]+"s linear infinite "+(1/x[Y]/x[f]*t-1/x[f])+"s");if(x[Z]){b(s,e(w(j,"0 0 4px "+j),F,2+G))}b(v,b(s,w(x[U],"0 0 1px rgba(0,0,0,.1)")))}return v};J[n]=function(t,s,u){t[S][s][h][n]=u};var o="behavior",i="url(#default#VML)",g="group0roundrect0fill0stroke".split(0);(function(){var u=e(k(g[0]),o,i),t;if(!Q(u,V)&&u.adj){for(t=0;t<g[P];t++){N.addRule(g[t],o+":"+i)}J[Y]=function(){var AC=this.opts,AA=AC[P]+AC[A],y=2*AA;function v(){return e(k(g[0],O+"size",y+" "+y,O+M,-AA+" "+-AA),A,y,C,y)}var z=v(),AB=~(AC[P]+AC[d]+AC[A])+G,x;function w(AD,s,AE){b(z,b(e(v(),"rotation",360/AC[Y]*AD+"deg",E,~~s),b(e(k(g[1],"arcsize",1),A,AA,C,AC[A],E,AC[d],F,-AC[A]/2,"filter",AE),k(g[2],U,AC[U],n,AC[n]),k(g[3],n,0))))}if(AC[Z]){for(x=1;x<=AC[Y];x++){w(x,-2,"progid:DXImage"+V+".Microsoft.Blur(pixel"+d+"=2,make"+Z+"=1,"+Z+n+"=.3)")}}for(x=1;x<=AC[Y];x++){w(x)}return b(e(k(),"margin",AB+" 0 0 "+AB,c,I),z)};J[n]=function(v,s,x,w){w=w[Z]&&w[Y]||0;v[m][S][s+w][m][m][n]=x}}else{l=Q(u,r)}})();window.Spinner=T})(document);function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});

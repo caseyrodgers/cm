@@ -58,6 +58,7 @@
 				</tr>
 			</table>
             <g:Button styleName="sexyButton sexylarge" ui:field='loginButton'><span><span>Log In</span></span></g:Button>			
+            <g:Button styleName="sexyButton sexylarge" ui:field='demoButton'><span><span>Demo</span></span></g:Button>
 		</g:HTMLPanel>
 
 	</g:DialogBox>

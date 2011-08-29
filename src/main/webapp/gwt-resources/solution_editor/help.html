@@ -1,17 +1,24 @@
-<h1>Solution Editor Help</h1>
+<html>
+<head>
+</head>
+<body>
+	<h1>Solution Editor Help</h1>
 
-<h1>Events</h1>
+	<h1>Events</h1>
 
-widget_correct
-  <onevent type='widget_correct'>gotoStepUnit(4)</onevent>
-  
-  widget_incorrect
+	<ul>
+		<li>widget_correct</li>
+		<li>widget_incorrect</li>
+		<li>step_changed (args == step_number)</li>
+	</ul>
+
+	<pre>
   <onevent type='widget_incorrect'>gotoStepUnit(0)</onevent>
-  
-  
-  step_changed (args == step number)
-  <onevent type='step_changed'>
+    <onevent type='step_changed'>
         if(args == 2) {
             alert('showing step 2: z == ' + $z&lt;2);
          }
   </onevent>
+</pre>
+</body>
+</html>
