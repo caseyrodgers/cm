@@ -464,14 +464,14 @@ var Whiteboard = (function () {
         }
     }
 
-    function showHideGraph(flag, x, y) {
+    function showHideGraph(flag, x, y,boo) {
         graphcanvas.width = graphcanvas.width;
         graphcanvas.height = graphcanvas.height;
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphicData.dataArr = [];
         graphicData.id = tool_id[currentTool];
         var addGraph = false
-        if ((graphMode == 'gr2D' && flag == 'gr2D') || (graphMode == 'nL' && flag == 'nL')) {
+        if (!boo&&((graphMode == 'gr2D' && flag == 'gr2D') || (graphMode == 'nL' && flag == 'nL'))) {
             graphMode = "";
             drawingLayer = '1'
             $get_Element("#button_gr2D").style.border = '1px solid #000000';
@@ -771,7 +771,7 @@ var Whiteboard = (function () {
         }
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
-            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y);
+            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y,graphic_data[0].addImage);
         }
     }
     updateWhiteboard = function (cmdArray) {
