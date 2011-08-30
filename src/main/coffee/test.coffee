@@ -11,3 +11,4 @@ class Parrot extends Animal
   dead: ->
     not @alive()
 
+g

@@ -28,7 +28,7 @@ import sb.util.SbFile;
 
 public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionResponse>, ActionHandlerManualConnectionManagement{
 
-	private static Logger logger = Logger.getLogger(GetSolutionCommand.class);
+        private static Logger logger = Logger.getLogger(GetSolutionCommand.class);
     public static SolutionHTMLCreator __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     static {
@@ -37,14 +37,14 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         } catch (Exception hme) {
             HotMathLogger.logMessage(hme, "Error creating solution creator: " + hme);
         }
-    }	
-	
-    
+    }
+
+
     @Override
     public SolutionResponse execute(final Connection conn, GetSolutionAction action) throws Exception {
         try {
             String pid = action.getPid();
-            
+
             /** LOOK HERE! */
             //pid = "cmextras_1_1_1_101_1";
 
@@ -56,14 +56,14 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String path = ppid.getSolutionPath_DirOnly("solutions");
 
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
-            
+
             /** Replace local server to one with static images
-             * 
+             *
              */
             //String match = "/help/solutions";
             //String imageServer = "http://m.hotmath.com/help/solutions";
             //solutionHtml = solutionHtml.replaceAll(match, imageServer);
-            
+
 
             Map<String, String> map = new HashMap<String, String>();
             map.put("solution_html", solutionHtml);
@@ -72,18 +72,18 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String runTimeDir = HotMathProperties.getInstance().getProperty("cm.runtime",".");
             String tutorWrapper = new SbFile(runTimeDir + "/" + "mobile_tutor_wrapper.vm").getFileContents().toString("\n");
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
-            
-            ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()	);
+
+            ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()       );
             SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false);
             return rs;
         } catch (Exception e) {
-        	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
+                logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
         }
     }
-	
-	@Override
+
+        @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-	    return GetSolutionAction.class;
+            return GetSolutionAction.class;
     }
 }
