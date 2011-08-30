@@ -58,6 +58,7 @@
 				</tr>
 			</table>
             <g:Button ui:field='loginButton'>Sign In</g:Button>			
+            
 		</g:HTMLPanel>
 
 	</g:DialogBox>

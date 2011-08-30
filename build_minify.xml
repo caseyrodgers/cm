@@ -29,6 +29,8 @@
                    whiteboard-min.js
                    ../../../../../../hotmath2/web/js/tutor_widget.js
             	   ../../../../../../hotmath2/web/js/tutor_widget_validation.js
+            	   ../../../../../../hotmath2/web/js/tutor_widget_plotter.js
+            	   ../../../../../../hotmath2/web/js/tutor_widget_graph.js
             	   ../../../../../../hotmath2/web/js/tutor_author_api.js
                    spin-min.js
                    CatchupMathMobile3-min.js

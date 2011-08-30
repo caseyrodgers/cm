@@ -35,6 +35,9 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     @UiField
     Button loginButton;
     LoginPage loginPage;
+    
+    @UiField
+    Button demoButton;
 
     Presenter presenter;
     

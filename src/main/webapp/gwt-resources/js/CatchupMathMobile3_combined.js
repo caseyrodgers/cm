@@ -1877,7 +1877,260 @@ function validateOdds()
         }
     }
 }
-HmFlashWidgetImplOdds.prototype.processWidgetValidation = validateOdds;/** 
+HmFlashWidgetImplOdds.prototype.processWidgetValidation = validateOdds;/**
+ * @author sathesh
+ */
+var Plotter=function(graphObj,plot_type,plot_input)
+{
+	this.graphObj=graphObj;
+	this.plot_type=plot_type;
+	this.plot_input=plot_input;
+	this.graph_type=this.graphObj.graph_type;
+	//
+	this.canvas = this.graphObj.document.createElement("canvas");
+	this.canvas.width = this.graphObj.width;
+	this.canvas.height = this.graphObj.height;
+	//
+	this.canvas.style.position='absolute';
+	this.canvas.style.top=0;
+	this.canvas.style.left=0;
+	//
+	this.graphObj.board.appendChild(this.canvas);
+	this.context = this.canvas.getContext('2d');
+	
+	//
+	this.drawPlot();
+}
+Plotter.prototype.drawPlot=function()
+{
+	this.getPlotInputs();
+	if(this.plot_type=='point'){
+		this.plotPoints();
+	}else if(this.plot_type=='function')
+	{
+		this.plotFunction();
+	}
+}
+Plotter.prototype.getPlotInputs=function(){	
+	this.plot_data=this.plot_input.data;	
+	this.fn_color=this.plot_input.fn_color;
+	this.fn_color=this.fn_color?this.fn_color:'#0000ff';
+}
+Plotter.prototype.plotPoints=function(){
+	var temp1=this.plot_data.split("|");
+	for(var i=0;i<temp1.length;i++){
+		var pointdata=eval(temp1[i]);
+		console.log("i:"+i+"  "+pointdata[0].length)
+		if(pointdata[0].length==1){
+			this.plotPoint(pointdata[0][0],0,pointdata[1],pointdata[2]);
+		}else{
+			this.plotPoint(pointdata[0][0],pointdata[0][1],pointdata[1],pointdata[2]);
+		}
+		
+	}
+}
+Plotter.prototype.plotPoint=function(x,y,label,color){
+	var pt=this.coordToCanvasPoint(x,this.graph_type=='xy'?y:0);
+	var xp=pt[0];
+	var yp=pt[1];
+	this.drawPoint(xp,yp,color?color:this.fn_color);
+	if(label){
+		
+		this.context.textBaseline = 'bottom';
+		this.context.font="bold 12px sans-serif";
+		if(this.graph_type=='xy'){
+			this.context.fillText("("+x+", "+y+")",xp+3,yp-6);
+		}else{
+			this.context.fillText(x,xp-3,yp-6);
+		}
+		
+	}
+}
+Plotter.prototype.plotFunctions=function(x,y,color){
+	var temp1=this.plot_data.split("|");
+	/*var ctx=this.context;
+	ctx.lineStyle=color?color:this.fn_color;
+	ctx.lineWidth=2.0;*/
+	for(var i=0;i<temp1.length;i++){
+		var fndata=eval(temp1[i]);
+		this.plotFunction(fndata);
+	}
+	
+}
+Plotter.prototype.plotFunction=function(data){
+	var fn=data[0];
+}
+//
+Plotter.prototype.drawPoint=function (x, y, color) {
+	var ctx=this.context;  
+	//alert(ctx);  
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, 2 * Math.PI, false);
+    ctx.fill();
+   ctx.closePath();
+}
+Plotter.prototype.coordToCanvasPoint=function(x,y){
+	var xp=this.graphObj.axisYpos+x*this.graphObj.scaleX;
+	var yp=this.graphObj.axisXpos-y*this.graphObj.scaleY;
+	return [xp,yp];
+}
+/**
+ * @author sathesh
+ */
+
+var Graph = function(doc, canvas_cont, graph_type, xmin, xmax, ymin, ymax, xinc, yinc, show_axis, show_axis_label, show_grid, show_half_grid, width, height) {
+	//console.log(doc + ":" + canvas_cont + ":" + graph_type + ":" + xmin + ":" + xmax + ":" + ymin + ":" + ymax + ":" + xinc + ":" + yinc)
+	this.document = doc;
+	this.board = canvas_cont;
+	this.graph_type = graph_type ? graph_type : 'xy';
+	this.width = width ? width : 300;
+	this.height = height ? height : (this.graph_type == 'xy' ? 300 : 150);
+	this.xmin = xmin ? xmin * 1 : -5;
+	this.xmax = xmax ? xmax * 1 : 5;
+	this.ymin = ymin ? ymin * 1 : -5;
+	this.ymax = ymax ? ymax * 1 : 5;
+	this.xinc = xinc ? (xinc == 'pi' ? 1 : xinc * 1) : 1;
+	this.yinc = yinc ? (yinc == 'pi' ? 1 : yinc * 1) : 1;
+	this.show_axis = show_axis ? show_axis : true;
+	this.show_axis_label = show_axis_label ? show_axis_label : true;
+	this.show_grid = show_grid ? show_grid : true;
+	this.show_half_grid = show_half_grid ? show_half_grid : false;
+	//
+	this.scaleX = this.width / ((Math.abs((this.xmax + this.xinc) - (this.xmin - this.xinc))) / this.xinc);
+	this.scaleY = this.height / ((Math.abs((this.ymax + this.yinc) - (this.ymin - this.yinc))) / this.yinc);
+	this.axisYpos = (this.width) - (((this.xmax + this.xinc) / this.xinc) * (this.scaleX));
+	this.axisXpos = (this.height) - (((this.ymax + this.yinc) / this.yinc) * (this.scaleY));
+	//
+	this.canvas = this.document.createElement("canvas");
+	this.canvas.width = this.width;
+	this.canvas.height = this.height;
+	this.board.appendChild(this.canvas);
+	this.context = this.canvas.getContext('2d');
+	this.canvas.style.position='absolute';
+	this.canvas.style.top=0;
+	this.canvas.style.left=0;	
+	//
+	
+	this.drawGraph();
+}
+/**Drawing Methods*/
+Graph.prototype.drawGraph = function() {
+
+	/**Draw grid lines*/
+	var scope = this.context;
+	var alab = 0;
+	var i;
+	var label;
+	var label_dx=this.graph_type=='xy'?0:3;
+	var grid_s=this.graph_type=='xy'?0:this.axisXpos-5;
+	var grid_len=this.graph_type=='xy'?this.height:this.axisXpos+5;
+	scope.lineWidth = 1.0;
+	scope.strokeStyle = this.graph_type=='xy'?"rgb(150, 150, 150)":"BLACK";
+	scope.beginPath();
+	console.log(this.axisYpos + ":" + this.width + ":" + this.scaleX)
+	for( i = this.axisYpos; i <= this.width; i += this.scaleX) {
+		scope.moveTo(i, grid_s);
+		scope.lineTo(i, grid_len);
+		if(alab > 0 && (i < this.width)) {
+			label = alab * this.xinc;
+			scope.fillText(label, i-label_dx, this.axisXpos + 12)
+		}
+		//console.log(i+":"+label)
+		alab++;
+	}
+	//scope.stroke();
+	alab = 0;
+	for( i = this.axisYpos; i > 0; i -= this.scaleX) {
+		scope.moveTo(i, grid_s);
+		scope.lineTo(i, grid_len);
+		if(alab > 0 && (i > 0)) {
+			label = -alab * this.xinc;
+			scope.fillText(label, i-label_dx, this.axisXpos + 12)
+		}
+		alab++;
+	}
+	if(this.graph_type=='xy'){
+	alab = 0;
+	for( i = this.axisXpos; i <= this.height; i += this.scaleY) {
+		scope.moveTo(0, i);
+		scope.lineTo(this.width, i);
+		if(alab > 0 && (i < this.height)) {
+			label = -alab * this.yinc;
+			scope.fillText(label, this.axisYpos + 3, i)
+		}
+		alab++;
+	}
+	alab = 0;
+	for( i = this.axisXpos; i > 0; i -= this.scaleY) {
+		scope.moveTo(0, i);
+		scope.lineTo(this.width, i);
+		if(alab > 0 && (i > 0)) {
+			label = alab * this.yinc;
+			scope.fillText(label, this.axisYpos + 3, i)
+		}
+		alab++;
+	}
+	}else{
+		scope.fillText('0', this.axisYpos-label_dx, this.axisXpos+12)
+	}
+	scope.stroke();
+	/**Draw Axes Lines*/
+	scope.lineWidth = this.graph_type=='xy'?2.0:1.0;
+	scope.strokeStyle = "BLACK";
+	scope.beginPath();
+	scope.moveTo(0, this.axisXpos);
+	scope.lineTo(this.width, this.axisXpos);
+	scope.moveTo(this.axisYpos, grid_s);
+	scope.lineTo(this.axisYpos, grid_len);
+	scope.stroke();
+	/**Draw Arrows for Axes*/
+	//!- arrow at west end
+	scope.beginPath();
+	scope.moveTo((this.width), this.axisXpos);
+	scope.lineTo((this.width) - 10, this.axisXpos + 4);
+	scope.lineTo((this.width) - 10, this.axisXpos - 4);
+	scope.lineTo((this.width), this.axisXpos);
+	scope.fill();
+	//!- arrow at east end
+	scope.beginPath();
+	scope.moveTo((0), this.axisXpos);
+	scope.lineTo((0) + 10, this.axisXpos + 4);
+	scope.lineTo((0) + 10, this.axisXpos - 4);
+	scope.lineTo((0), this.axisXpos);
+	scope.fill();
+	if(this.graph_type=='xy'){
+	//!- arrow at north end
+	scope.beginPath();
+	scope.moveTo(this.axisYpos, (0));
+	scope.lineTo(this.axisYpos + 4, (0) + 10);
+	scope.lineTo(this.axisYpos - 4, (0) + 10);
+	scope.lineTo(this.axisYpos, (0));
+	scope.fill();
+	//!- arrow at south end
+	scope.beginPath();
+	scope.moveTo(this.axisYpos, (this.height));
+	scope.lineTo(this.axisYpos + 4, (this.width) - 10);
+	scope.lineTo(this.axisYpos - 4, (this.width) - 10);
+	scope.lineTo(this.axisYpos, (this.height));
+	scope.fill();
+	}
+
+	/**Draw Graph Border*/
+	scope.strokeRect(0, 0, this.width, this.height);
+
+}
+Graph.prototype.clearGraph=function(){
+	//this.canvas.clearRect(0, 0, this.width, this.height);
+	var cn = this.board.getElementsByTagName("canvas");
+  for (var i = 0; i < cn.length; i++) 
+  {
+     console.log(cn[i]);  
+     cn[i].getContext('2d').clearRect(0, 0, this.width, this.height);
+  }
+
+}
+/** 
  * defines global methods that can be called in real time 
  * by the solution infrastructure authors.  
  */
@@ -1886,6 +2139,9 @@ var AuthorApi = (function () {
     var theApi = {}
     theApi.sayHello = function (from) {
         alert('say hello: ' + from);
+    }
+    theApi.getRandomInt = function(amount) {
+        return Math.floor(Math.random()*Number(amount))
     }
     return theApi;
 }());

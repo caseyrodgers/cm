@@ -73,11 +73,11 @@
 	</repositories>
 
 	<dependencies>
-<dependency>
-      <groupId>com.theoryinpractise</groupId>
-      <artifactId>coffee-maven-plugin</artifactId>
-      <version>1.1.1</version>
-    </dependency>
+		<dependency>
+			<groupId>com.theoryinpractise</groupId>
+			<artifactId>coffee-maven-plugin</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 
 
 
@@ -475,24 +475,24 @@
 
 
 
- <plugin>
-      <groupId>com.theoryinpractise</groupId>
-      <artifactId>coffee-maven-plugin</artifactId>
-      <version>1.1.3</version>
-      <configuration>
-        <coffeeDir>src/main/coffee</coffeeDir>
-        <outputDirectory>${project.build.directory}/coffee</outputDirectory>
-        <bare>false</bare>
-      </configuration>
-      <executions>
-        <execution>
-          <id>coffee</id>
-          <goals>
-            <goal>coffee</goal>
-          </goals>
-        </execution>
-      </executions>
-    </plugin>
+			<plugin>
+				<groupId>com.theoryinpractise</groupId>
+				<artifactId>coffee-maven-plugin</artifactId>
+				<version>1.1.3</version>
+				<configuration>
+					<coffeeDir>src/main/webapp/coffee</coffeeDir>
+					<outputDirectory>src/main/webapp/coffee</outputDirectory>
+					<bare>false</bare>
+				</configuration>
+				<executions>
+					<execution>
+						<id>coffee</id>
+						<goals>
+							<goal>coffee</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 
 
@@ -576,13 +576,8 @@
 				</configuration>
 			</plugin>
 
-			<!-- 
-			    Minimize JS/CSS for CM and CM_MOBILE. 
-			   All HM resources come from HM dir, not CM. 
-			    
-			   Note use of executions/execution block to allow
-			    
-			   -->
+			<!-- Minimize JS/CSS for CM and CM_MOBILE. All HM resources come from 
+				HM dir, not CM. Note use of executions/execution block to allow -->
 			<plugin>
 				<groupId>com.samaxes.maven</groupId>
 				<artifactId>maven-minify-plugin</artifactId>
@@ -614,7 +609,7 @@
 					</execution>
 					<execution>
 						<id>execution_cm_mobile</id>
-                                                <phase>process-resources</phase>
+						<phase>process-resources</phase>
 						<configuration>
 							<cssSourceDir>gwt-resources/css</cssSourceDir>
 							<jsSourceDir>gwt-resources/js</jsSourceDir>
