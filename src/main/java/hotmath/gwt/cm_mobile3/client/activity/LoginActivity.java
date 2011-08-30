@@ -67,6 +67,14 @@ public class LoginActivity implements LoginView.Presenter {
         });
     }
 
+    @Override
+    public void createDemo() {
+        Log.info("Create demo account");
+        String userName="catchup_demo";
+        String passWord = "demo";
+        doLogin(userName, passWord);
+    }
+
     
     public static class UserInfo {
         

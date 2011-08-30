@@ -11,6 +11,7 @@ public interface LoginView extends IPage {
     
     static public interface Presenter {
         void doLogin(String userName, String passWord);
+        void createDemo();
     }
 
 }

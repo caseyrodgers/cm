@@ -2,18 +2,10 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.LoginPage;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
-import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
-import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -21,9 +13,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Cookies;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
@@ -32,12 +21,6 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LoginViewImpl extends AbstractPagePanel implements LoginView {
-    @UiField
-    Button loginButton;
-    LoginPage loginPage;
-    
-    @UiField
-    Button demoButton;
 
     Presenter presenter;
     
@@ -50,22 +33,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-    @UiField
-    DialogBox loginBox;
 
-    @UiField
-    TextBox usernameBox;
-
-    @UiField
-    PasswordTextBox passwordBox;
-    
-    @UiField
-    Label errorMessage;
-
-    @UiHandler("loginButton")
-    void handleClick(ClickEvent e) {
-        doLogin();
-    }
 
     private void doLogin() {
         String uName = usernameBox.getValue();
@@ -106,4 +74,36 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
             passwordBox.setText(userInfo.getPassWord());
         }   
     }
+    
+
+    @UiHandler("loginButton")
+    void handleLogin(ClickEvent ce) {
+        doLogin();
+    }
+    
+    
+    @UiHandler("demoButton")
+    void handleDemo(ClickEvent ce) {
+        presenter.createDemo();
+    }
+    
+    
+    @UiField
+    Button loginButton;
+    LoginPage loginPage;
+    
+    @UiField
+    Button demoButton;
+
+    @UiField
+    DialogBox loginBox;
+
+    @UiField
+    TextBox usernameBox;
+
+    @UiField
+    PasswordTextBox passwordBox;
+    
+    @UiField
+    Label errorMessage;
 }
