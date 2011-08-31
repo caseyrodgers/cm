@@ -2,7 +2,9 @@ package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
+import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -83,8 +85,10 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
 
         if (sessionNumber < 0) {
             MessageBox.showMessage("No previous lesson");
+            return;
         } else if (sessionNumber > SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size()) {
             MessageBox.showMessage("No more lessons"); // move to next segment?
+            return;
         }
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
@@ -140,5 +144,10 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
                 Window.alert(caught.getMessage());
             }
         });
+    }
+
+    @Override
+    public void goBack() {
+        eventBus.fireEvent(new ShowLoginViewEvent());
     }
 }

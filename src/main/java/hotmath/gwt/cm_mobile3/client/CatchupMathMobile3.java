@@ -22,6 +22,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
+import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
@@ -51,7 +52,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
     FormLoaderListeners formLoaders = new FormLoaderListenersImplHistory();
-    LoadingSpinner _spinner;
 
     public CatchupMathMobile3() {
         /*
@@ -88,6 +88,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         }
     }
 
+    LoadingDialog loadingDialog = null;
     private void onModuleLoadAux() {
         long startTimeMillis = 0;
         /*
@@ -116,8 +117,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         __instance = this;
         _loadingDiv = RootPanel.get("loading");
         _loadingDiv.getElement().setAttribute("style", "display:none");
-        _spinner = new LoadingSpinner("spinner");
         
+        
+        
+        new LoadingDialog(__clientFactory.getEventBus());   
         _rootPanel = RootPanel.get("main-content");
         try {
             Controller.installEventBus(__clientFactory.getEventBus());
@@ -170,23 +173,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
      */
     public void setupGlobalEventHandlers(EventBus eventBus) {
         final EventBus eb = eventBus;
-
-        /**
-         * Event to provide UI info about server activity
-         * 
-         */
-        eb.addHandler(SystemIsBusyEvent.TYPE, new SystemIsBusyEventHandler() {
-            @Override
-            public void showIsBusy(boolean trueFalse) {
-                if (_spinner != null) {
-                    if (trueFalse) {
-                        _spinner.startSpinner();
-                    } else {
-                        _spinner.stopSpinner();
-                    }
-                }
-            }
-        });
 
         /**
          * Provide central place to insert into IPage system

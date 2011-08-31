@@ -163,6 +163,17 @@ background-color: black;
 
 
 
+/** busy/loading indicator */
+.loadingDialog {
+	background: transparent;
+    border:none; 
+}
+
+.loadingDialog .Caption,
+.loadingDialog .dialogTop {
+	display: none;
+}
+
 
 
 /** Form specific styles */

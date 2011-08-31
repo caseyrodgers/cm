@@ -2,13 +2,10 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
-import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import java.util.List;
@@ -23,6 +20,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	ProblemNumber problem;
 	
     SimplePanel tutorPanel;
+    String _title;
     
     static {
         setupJsniStatic();
@@ -156,6 +154,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     
     @Override
     public String getTitle() {
-        return "Required Practice Problem";
+        return _title;
+    }
+    
+    @Override
+    public void setTitle(String title) {
+        _title = title;
     }
 }

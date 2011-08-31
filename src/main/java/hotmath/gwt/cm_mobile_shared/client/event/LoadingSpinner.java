@@ -1,17 +1,18 @@
 package hotmath.gwt.cm_mobile_shared.client.event;
 
+import com.google.gwt.dom.client.Element;
+
 
 public class LoadingSpinner {
     String nodeId;
-    public LoadingSpinner(String nodeId) {
+    public LoadingSpinner(Element element, String nodeId) {
         this.nodeId = nodeId;
-        initializeSpinner(nodeId);
+        initializeSpinner(element, nodeId);
     }
     
-    private native void initializeSpinner(String nodeId) /*-{
+    private native void initializeSpinner(Element el, String nodeId) /*-{
        _loadingSpinner = null;  // global
-       _loadingDiv = $doc.getElementById(nodeId); 
-       
+       _loadingDiv = el;
        var opts = {
            lines: 10, // The number of lines to draw
            length: 20, // The length of each line

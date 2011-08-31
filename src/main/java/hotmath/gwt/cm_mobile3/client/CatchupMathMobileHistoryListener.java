@@ -110,9 +110,17 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     activity.setupView(view);
                     eb.fireEvent(new LoadNewPageEvent((IPage)view));
                 }
-                else if(resourceType.equals("practice") || resourceType.equals("cmextra")) {
+                else if(resourceType.equals("practice")) {
                     PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb, itemData);
                     PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
+                    view.setTitle("Required Practice Problems");
+                    view.setPresenter(activity);
+                    eb.fireEvent(new LoadNewPageEvent((IPage)view));
+                }
+                else if(resourceType.equals("cmextra")) {
+                    PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb, itemData);
+                    PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
+                    view.setTitle("Extra Practice Problems");
                     view.setPresenter(activity);
                     eb.fireEvent(new LoadNewPageEvent((IPage)view));
                 }
@@ -130,7 +138,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 }
             }
             else {
-                Window.alert("NOT IMPLEMENTED: " + token.getHistoryTag());
+                Log.error("NOT IMPLEMENTED: " + token.getHistoryTag());
             }
         }
         catch(Exception e) {

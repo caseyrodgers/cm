@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -107,7 +107,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     }
     
     private SessionTopic getSessionTopic(String topicName) {
-        List<SessionTopic> topics = CatchupMathMobileShared.getUser().getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics();
+        List<SessionTopic> topics = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics();
         for(SessionTopic t: topics) {
             if(t.getTopic().equals(topicName)) {
                 return t;
@@ -169,6 +169,18 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     @Override
     public TokenParser getBackButtonLocation() {
         return null;
+    }
+    
+    @Override
+    public BackAction getBackAction() {
+        return new BackAction() {
+            @Override
+            public boolean goBack() {
+                presenter.goBack();
+                return false;
+            }
+        };
+        
     }
 
     List<MyGenericTextTag> rppItems = new ArrayList<MyGenericTextTag>();

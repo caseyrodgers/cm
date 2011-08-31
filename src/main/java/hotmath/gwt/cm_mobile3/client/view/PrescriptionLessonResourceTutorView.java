@@ -8,6 +8,7 @@ public interface PrescriptionLessonResourceTutorView extends IPage {
     void loadSolution(SolutionResponse solution);
     void setPresenter(Presenter p);
     ProblemNumber getLoadedProblem();
+    void setTitle(String title);
     
     
     static public interface Presenter {

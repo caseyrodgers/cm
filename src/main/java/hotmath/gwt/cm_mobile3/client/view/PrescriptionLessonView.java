@@ -16,5 +16,6 @@ public interface PrescriptionLessonView extends IPage {
         void moveToPreviousLesson(PrescriptionLessonView view);
         void showLessonChooser();
         void markLessonAsComplete(SessionTopic topic);
+        void goBack();
     }
 }

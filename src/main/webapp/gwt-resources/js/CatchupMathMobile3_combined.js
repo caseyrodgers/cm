@@ -1971,8 +1971,8 @@ Plotter.prototype.drawPoint=function (x, y, color) {
    ctx.closePath();
 }
 Plotter.prototype.coordToCanvasPoint=function(x,y){
-	var xp=this.graphObj.axisYpos+x*this.graphObj.scaleX;
-	var yp=this.graphObj.axisXpos-y*this.graphObj.scaleY;
+	var xp=this.graphObj.axisYpos+x*(this.graphObj.scaleX/this.graphObj.xinc);
+	var yp=this.graphObj.axisXpos-y*(this.graphObj.scaleY/this.graphObj.yinc);
 	return [xp,yp];
 }
 /**
@@ -2130,19 +2130,104 @@ Graph.prototype.clearGraph=function(){
   }
 
 }
-/** 
- * defines global methods that can be called in real time 
- * by the solution infrastructure authors.  
+/**
+ * Install any widgets
+ * 
+ * Each widget is registered with the AuthorApi.
+ * 
+ * Each widget must have a name property and an initialize method. The name
+ * property returns the 'type' of the widget, referenced via the type property
+ * (ie, <widget type='NAME'/?\>). Also each widget must have an initialize
+ * method that accepts two params: the domElement where the widget is referenced
+ * and a configuration object evaled from the contents of the widget div.
+ * It is up to the widget to use the JSON as it sees fit.
+ * 
  */
-var AuthorApi = (function () {
-    var local = {};
-    var theApi = {}
-    theApi.sayHello = function (from) {
-        alert('say hello: ' + from);
-    }
-    theApi.getRandomInt = function(amount) {
-        return Math.floor(Math.random()*Number(amount))
-    }
-    return theApi;
+
+/** configuration:
+ * 
+ *    gtype
+ *    xmin
+ *    xmax
+ *    ymin
+ *    ymax
+ *    xinc
+ *    yinc
+ *    
+ *    
+ */
+var GraphWidget = {
+	name : "graph",
+	initialize : function(widgetDom, config) {
+		
+		if(config.gtype == 'x') {
+		    widgetDom.className = "widget_graph_x";
+		}
+		else {
+			widgetDom.className = "widget_graph_xy";
+		}
+		
+		// prepare the dom widget to contain the graph
+		var board = widgetDom;
+		var graph = new Graph(document, board, config.gtype, config.xmin, config.xmax, 
+				config.ymin, config.ymax,config.xinc, config.yinc);
+		var plot = new Plotter(graph, 'point', {data : config.plot_data});
+	}
+};
+
+/**
+ * defines global methods that can be called in real time by the solution
+ * infrastructure authors.
+ */
+var AuthorApi = (function() {
+	var theApi = {}
+
+	theApi.sayHello = function(from) {
+		alert('say hello: ' + from);
+	}
+
+	theApi.getRandomInt = function(amount) {
+		return Math.floor(Math.random() * Number(amount))
+	}
+
+	/**
+	 * register widget that can be called with <widget> only widgets matching a
+	 * type will be created.
+	 */
+	theApi.widgets = [ GraphWidget ];
+
+	function initializeWidgets() {
+		// look for widget definitions
+		var tutorHead = $get('tutoroutput');
+		if (tutorHead) {
+			var widgets = tutorHead.getElementsByTagName("widget");
+			for ( var i = 0, t = widgets.length; i < t; i++) {
+				var widgetDom = widgets[i];
+				var type = widgetDom.getAttribute('type');
+				var args = widgetDom.innerHTML;
+				widgetDom.innerHTML = "";
+				for ( var w = 0, wt = theApi.widgets.length; w < wt; w++) {
+					if (theApi.widgets[w].name === type) {
+						var config='';
+						try {
+							if(args && args.length > 1) {
+								config = eval('(' + args + ')');
+							}
+						}
+						catch(e) {
+							alert('Error creating widget configuration: ' + e);
+						}
+						theApi.widgets[w].initialize(widgetDom, config);
+					}
+				}
+			}
+		}
+	}
+
+	HmEvents.eventTutorInitialized.subscribe(function(x) {
+		initializeWidgets();
+	});
+
+	return theApi;
 }());
 (function(D,K){var A="width",P="length",d="radius",Y="lines",R="trail",U="color",n="opacity",f="speed",Z="shadow",h="style",C="height",E="left",F="top",G="px",S="childNodes",m="firstChild",H="parentNode",c="position",I="relative",a="absolute",r="animation",V="transform",M="Origin",O="coord",j="#000",W=h+"Sheets",L="webkit0Moz0ms0O".split(0),q={},l;function p(t,v){var s=~~((t[P]-1)/2);for(var u=1;u<=s;u++){v(t[u*2-1],t[u*2])}}function k(s){var t=D.createElement(s||"div");p(arguments,function(v,u){t[v]=u});return t}function b(s,u,t){if(t&&!t[H]){b(s,t)}s.insertBefore(u,t||null);return s}b(D.getElementsByTagName("head")[0],k(h));var N=D[W][D[W][P]-1];function B(x,s){var u=[n,s,~~(x*100)].join("-"),t="{"+n+":"+x+"}",v;if(!q[u]){for(v=0;v<L[P];v++){try{N.insertRule("@"+(L[v]&&"-"+L[v].toLowerCase()+"-"||"")+"keyframes "+u+"{0%{"+n+":1}"+s+"%"+t+"to"+t+"}",N.cssRules[P])}catch(w){}}q[u]=1}return u}function Q(w,x){var v=w[h],t,u;if(v[x]!==K){return x}x=x.charAt(0).toUpperCase()+x.slice(1);for(u=0;u<L[P];u++){t=L[u]+x;if(v[t]!==K){return t}}}function e(s){p(arguments,function(u,t){s[h][Q(s,u)||u]=t});return s}function X(s){p(arguments,function(u,t){if(s[u]===K){s[u]=t}});return s}var T=function T(s){this.el=this[Y](this.opts=X(s||{},Y,12,R,100,P,7,A,5,d,10,U,j,n,1/4,f,1))},J=T.prototype={spin:function(y){var AA=this,t=AA.el;if(y){b(y,e(t,E,~~(y.offsetWidth/2)+G,F,~~(y.offsetHeight/2)+G),y[m])}AA.on=1;if(!l){var s=AA.opts,v=0,w=20/s[f],x=(1-s[n])/(w*s[R]/100),z=w/s[Y];(function u(){v++;for(var AB=s[Y];AB;AB--){var AC=Math.max(1-(v+AB*z)%w*x,s[n]);AA[n](t,s[Y]-AB,AC,s)}if(AA.on){setTimeout(u,50)}})()}return AA},stop:function(){var s=this,t=s.el;s.on=0;if(t[H]){t[H].removeChild(t)}return s}};J[Y]=function(x){var v=e(k(),c,I),u=B(x[n],x[R]),t=0,s;function w(y,z){return e(k(),c,a,A,(x[P]+x[A])+G,C,x[A]+G,"background",y,"boxShadow",z,V+M,E,V,"rotate("+~~(360/x[Y]*t)+"deg) translate("+x[d]+G+",0)","borderRadius","100em")}for(;t<x[Y];t++){s=e(k(),c,a,F,1+~(x[A]/2)+G,V,"translate3d(0,0,0)",r,u+" "+1/x[f]+"s linear infinite "+(1/x[Y]/x[f]*t-1/x[f])+"s");if(x[Z]){b(s,e(w(j,"0 0 4px "+j),F,2+G))}b(v,b(s,w(x[U],"0 0 1px rgba(0,0,0,.1)")))}return v};J[n]=function(t,s,u){t[S][s][h][n]=u};var o="behavior",i="url(#default#VML)",g="group0roundrect0fill0stroke".split(0);(function(){var u=e(k(g[0]),o,i),t;if(!Q(u,V)&&u.adj){for(t=0;t<g[P];t++){N.addRule(g[t],o+":"+i)}J[Y]=function(){var AC=this.opts,AA=AC[P]+AC[A],y=2*AA;function v(){return e(k(g[0],O+"size",y+" "+y,O+M,-AA+" "+-AA),A,y,C,y)}var z=v(),AB=~(AC[P]+AC[d]+AC[A])+G,x;function w(AD,s,AE){b(z,b(e(v(),"rotation",360/AC[Y]*AD+"deg",E,~~s),b(e(k(g[1],"arcsize",1),A,AA,C,AC[A],E,AC[d],F,-AC[A]/2,"filter",AE),k(g[2],U,AC[U],n,AC[n]),k(g[3],n,0))))}if(AC[Z]){for(x=1;x<=AC[Y];x++){w(x,-2,"progid:DXImage"+V+".Microsoft.Blur(pixel"+d+"=2,make"+Z+"=1,"+Z+n+"=.3)")}}for(x=1;x<=AC[Y];x++){w(x)}return b(e(k(),"margin",AB+" 0 0 "+AB,c,I),z)};J[n]=function(v,s,x,w){w=w[Z]&&w[Y]||0;v[m][S][s+w][m][m][n]=x}}else{l=Q(u,r)}})();window.Spinner=T})(document);function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});
