@@ -6,12 +6,26 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 public class GetCmMobileLoginAction implements Action<CmMobileUser> {
     
     String name,password;
+    int uid;
     
     public GetCmMobileLoginAction(){}
     
     public GetCmMobileLoginAction(String user, String pass) {
         this.name = user;
         this.password = pass;
+    }
+    
+    public GetCmMobileLoginAction(int uid) {
+        this.uid = uid;
+    }
+
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getName() {
@@ -32,6 +46,6 @@ public class GetCmMobileLoginAction implements Action<CmMobileUser> {
 
     @Override
     public String toString() {
-        return "GetCmMobileLoginAction [name=" + name + ", password=" + password + "]";
+        return "GetCmMobileLoginAction [name=" + name + ", password=" + password + ", uid=" + uid + "]";
     }
 }

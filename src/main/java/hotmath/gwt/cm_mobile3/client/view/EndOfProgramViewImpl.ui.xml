@@ -1,0 +1,9 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+    <g:HTMLPanel>
+        <h1>Your Program is Complete</h1>
+        <p>You should inform your teacher you are ready for additional lessons.</p>
+    </g:HTMLPanel>
+</ui:UiBinder> 

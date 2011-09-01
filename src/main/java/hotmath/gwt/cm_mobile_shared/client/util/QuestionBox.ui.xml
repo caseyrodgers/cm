@@ -1,0 +1,15 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <g:HTMLPanel>
+        <p ui:field="questionContent"></p>
+        <div class='footer'>
+            <g:Button styleName='sexybutton sexylarge' ui:field="yesButton">
+                <span><span>Yes</span></span>
+            </g:Button>
+            <g:Button styleName='sexybutton sexylarge' ui:field="noButton">
+                <span><span>No</span></span>
+            </g:Button>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder> 

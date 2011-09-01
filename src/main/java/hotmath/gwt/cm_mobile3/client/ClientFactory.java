@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client;
 
+import hotmath.gwt.cm_mobile3.client.view.EndOfProgramView;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
@@ -29,4 +30,5 @@ public interface ClientFactory {
     PrescriptionLessonResourceTutorView getPrescriptionLessonResourceTutorView();
     PrescriptionLessonResourceResultsView getPrescriptionLessonResourceResultsView();
     PrescriptionLessonListingView getPrescriptionLessonListingView();
+    EndOfProgramView getEndOfProgramView();
 }

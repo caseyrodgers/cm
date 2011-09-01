@@ -1,6 +1,9 @@
 package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
+import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
+import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
+import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
@@ -17,9 +20,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
-import hotmath.gwt.cm_mobile_shared.client.event.LoadingSpinner;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
@@ -52,13 +53,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
     FormLoaderListeners formLoaders = new FormLoaderListenersImplHistory();
-
     public CatchupMathMobile3() {
         /*
          * Install an UncaughtExceptionHandler which will produce
          * <code>FATAL</code> log messages
          */
         Log.setUncaughtExceptionHandler();
+
+        /** register the main Flow listener that handle
+         *  the transisions from one CM program flow to the next.
+         */
+        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE,new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
     }
 
     @Override
@@ -152,6 +157,16 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             }
             
             
+//            CreateTestRunResponse testRunResponse = new CreateTestRunResponse(null,0,0,0,false);
+//            testRunResponse.setTestCorrectPercent(50);
+//            new QuizCheckInfoDialog(__clientFactory.getEventBus(),
+//                   testRunResponse);
+//            
+//            QuestionBox.askYesNoQuestion("Test title", "Test question", new QuestionBox.CallBack() {
+//                @Override
+//                public void onSelectYes() {
+//                }
+//            });
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,8 +175,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         finally {
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
         }
+        
+        __clientFactory.getEventBus().addHandler(AutoAdvanceUserEvent.TYPE, new AutoAdvanceUserEventHandlerImpl());
 
-        Log.info("Hotmath Mobile Initialized");
+        Log.info("Catchup Math Mobile Initialized");
 
     }
 

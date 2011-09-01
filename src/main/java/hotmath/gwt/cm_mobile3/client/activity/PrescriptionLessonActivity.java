@@ -111,6 +111,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
             public void onFailure(Throwable caught) {
                 Log.error("Error moving to lesson", caught);
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
+                MessageBox.showError("Error moving to next lesson: " + caught.getMessage());                
             }
         });
 
@@ -118,6 +119,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
 
     @Override
     public void showLessonChooser() {
+        /** Bypass adding to history */
         History.newItem("listing:" + System.currentTimeMillis());
     }
 
@@ -141,13 +143,14 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 Log.error("Error marking lesson as complete", caught);
-                Window.alert(caught.getMessage());
+                MessageBox.showError("Error marking lesson as complete: " +  caught.getMessage());
             }
         });
     }
 
     @Override
     public void goBack() {
+        /** force back to Login view */
         eventBus.fireEvent(new ShowLoginViewEvent());
     }
 }

@@ -84,6 +84,9 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage)view));
             }
+            else if(type.equals("end_of_program")) {
+                eb.fireEvent(new LoadNewPageEvent((IPage)cf.getEndOfProgramView()));
+            }
             else if(type.equals("resource")) {
                 
                 /** token the ordinal position of resource in list.  We do

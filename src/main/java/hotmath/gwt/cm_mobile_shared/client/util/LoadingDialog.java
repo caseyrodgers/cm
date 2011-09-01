@@ -46,7 +46,9 @@ public class LoadingDialog extends DialogBox  {
 		    }
 		});
 		
-		
+		/** install the spinner only widget added to DOM
+		 * 
+		 */
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {

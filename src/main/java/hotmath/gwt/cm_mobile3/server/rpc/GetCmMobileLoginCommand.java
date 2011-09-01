@@ -34,8 +34,12 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
     @Override
     public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
 
+       int uid = action.getUid();
        HaBasicUser basicUser=null;
-       if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
+       if(uid > 0) {
+           basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
+       }
+       else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
            basicUser = HaUserFactory.createDemoUser(conn);
         }
        else {
@@ -55,7 +59,10 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
 
         
         /** create new security key for this login sesssion */
-        String securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false), true);
+        String securityKey="";
+        if(uid == 0) {
+            securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
+        }
         
         /**
          * get list of previous prescribed lessons

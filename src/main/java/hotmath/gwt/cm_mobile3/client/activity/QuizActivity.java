@@ -1,14 +1,14 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
-import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
+import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
@@ -24,7 +24,6 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
@@ -51,7 +50,7 @@ public class QuizActivity implements QuizView.Presenter {
          *  be directly available in the login return.
          * 
          */
-        final QuizHtmlResult intialQuizResult=CatchupMathMobileShared.getUser().getFlowAction().getQuizResult();
+        final QuizHtmlResult intialQuizResult=SharedData.getFlowAction().getQuizResult();
         if(intialQuizResult != null) {
             /** execute in timer to make sure dom is ready
              *  to be read by external quiz JS.
@@ -65,7 +64,7 @@ public class QuizActivity implements QuizView.Presenter {
             });
         }
         else {
-            GetQuizHtmlAction action = new GetQuizHtmlAction(CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getTestId());
+            GetQuizHtmlAction action = new GetQuizHtmlAction(SharedData.getUserInfo().getTestId());
             CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
                 public void onSuccess(QuizHtmlResult result) {
                     processQuizResult(quizView, result);
@@ -101,57 +100,37 @@ public class QuizActivity implements QuizView.Presenter {
 
     @Override
     public void checkQuiz() {
-        eventBus.fireEvent(new SystemIsBusyEvent(true));
-
-        CmMobileUser user = CatchupMathMobileShared.getUser();
-        CreateTestRunAction checkTestAction = new CreateTestRunAction(user.getTestId(), user.getUserId());
-        CatchupMathMobileShared.getCmService().execute(checkTestAction, new AsyncCallback<CreateTestRunResponse>() {
+        
+        QuestionBox.askYesNoQuestion("Check Quiz?","Are you sure you are ready to check this quiz?", new CallBack() {
             @Override
-            public void onSuccess(CreateTestRunResponse result) {
-                
-                CmProgramFlowAction nextAction = result.getNextAction();
-                SharedData.setFlowAction(nextAction);
-                SharedData.getUserInfo().setRunId(result.getRunId());
-                
-                switch(nextAction.getPlace()) {
-                    case PRESCRIPTION:
-                        eventBus.fireEvent(new ShowPrescriptionLessonViewEvent());
-                        break;
-                        
-                    case QUIZ:
-                        MessageBox.showMessage("Loading new Quiz");
-                        eventBus.fireEvent(new ShowQuizViewEvent());
-                        break;
-                        
-                    case WELCOME:
-                        Window.alert("Welcome!");
-                        break;
-                        
-                    case AUTO_ADVANCED_PROGRAM:
-                        Window.alert("Advance");
-                        break;
-                        
-                    case END_OF_PROGRAM:
-                        Window.alert("End of Program");
-                        break;
-                        
-                    case AUTO_PLACEMENT:
-                        Window.alert("auto placement");
-                        break;
-                        
-                        
-                        default:
-                            Window.alert("Unknown place: " + nextAction.getPlace());
-                            break;
-                }
-                
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
-            }
+            public void onSelectYes() {
+                eventBus.fireEvent(new SystemIsBusyEvent(true));
 
-            @Override
-            public void onFailure(Throwable caught) {
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
-                Log.error("Error checking quiz", caught);
+                CmMobileUser user = CatchupMathMobileShared.getUser();
+                CreateTestRunAction checkTestAction = new CreateTestRunAction(user.getTestId(), user.getUserId());
+                CatchupMathMobileShared.getCmService().execute(checkTestAction, new AsyncCallback<CreateTestRunResponse>() {
+                    @Override
+                    public void onSuccess(CreateTestRunResponse result) {
+                        eventBus.fireEvent(new SystemIsBusyEvent(false));
+                        
+                        /** Transfer results into global shared data instance
+                         *  used to encapsulate all 'meta' data access. Used as
+                         *  a super DAO, which high level access methods.
+                         */
+                        CmProgramFlowAction nextAction = result.getNextAction();
+                        SharedData.setFlowAction(nextAction);
+                        SharedData.getUserInfo().setRunId(result.getRunId());
+                        
+                        new QuizCheckInfoDialog(eventBus,result);
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        eventBus.fireEvent(new SystemIsBusyEvent(false));
+                        MessageBox.showError("Error checking quiz: " + caught.getMessage());
+                        Log.error("Error checking quiz", caught);
+                    }
+                });
             }
         });
     }
@@ -191,10 +170,9 @@ public class QuizActivity implements QuizView.Presenter {
      */
     public String questionGuessChanged_Gwt(String sQuestionIndex, String answerIndex, String pid) {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        CmMobileUser user = CatchupMathMobileShared.__instance.user;
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
-        SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(user.getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
+        SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(SharedData.getUserInfo().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
 
         if(_isOffline) {
             answerAction.getActions().add(action);

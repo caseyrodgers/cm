@@ -1,6 +1,9 @@
 package hotmath.gwt.cm_mobile3.client;
 
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
+import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
+import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
+import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEventHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
@@ -13,11 +16,18 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewHandler;
+import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * handle the form routing by using the history tags
@@ -31,7 +41,7 @@ import com.google.gwt.user.client.History;
 public class FormLoaderListenersImplHistory implements FormLoaderListeners {
 
     @Override
-    public void setupListeners(EventBus eb) {
+    public void setupListeners(final EventBus eb) {
 
         eb.addHandler(ShowWelcomeViewEvent.TYPE, new ShowWelcomeViewHandler() {
             @Override
@@ -71,6 +81,29 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                 History.newItem("resource:" + resourceItem.getType() + ":" + resourceItem.getFile() + ":"
                         + resourceItem.getWidgetJsonArgs() + ":" + SharedData.findOrdinalPositionOfResource(resourceItem) + ":"
                         + resourceItem.getTitle() + ":" + System.currentTimeMillis());
+            }
+        });
+        
+        eb.addHandler(LoadActiveProgramFlowEvent.TYPE,new LoadActiveProgramFlowEventHandler() {
+            @Override
+            public void loadActiveProgramFlow() {
+                
+                eb.fireEvent(new SystemIsBusyEvent(true));
+                CatchupMathMobileShared.getCmService().execute(
+                        new GetCmMobileLoginAction(SharedData.getUserInfo().getUid()),
+                        new AsyncCallback<CmMobileUser>() {
+                            public void onSuccess(CmMobileUser result) {
+                                eb.fireEvent(new SystemIsBusyEvent(false));
+                                SharedData.setFlowAction(result.getFlowAction());
+                                eb.fireEvent(new HandleNextFlowEvent());
+                            }
+                            @Override
+                            public void onFailure(Throwable caught) {
+                                eb.fireEvent(new SystemIsBusyEvent(false));
+                                MessageBox.showError("Error loading active program flow: " + caught.getMessage());
+                                Log.error("Error getting user information: " + caught.getMessage(), caught);
+                            }
+                        });
             }
         });
 

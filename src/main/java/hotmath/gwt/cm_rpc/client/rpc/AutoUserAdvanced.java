@@ -1,8 +1,7 @@
-package hotmath.gwt.cm_tools.client.model;
+package hotmath.gwt.cm_rpc.client.rpc;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Represents a Catchup program that has been
  *  automatically advanced based on user's 

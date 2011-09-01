@@ -1,0 +1,47 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<ui:style>
+	
+	    .main {
+	       padding: 10px;
+	    }
+		.infoTable {
+		}
+
+        .main p {
+           margin: 0 0 10px 0;
+           padding: 0;
+        }
+        
+        
+		.col {
+		   width: 15%;
+		   text-align: right;
+		   padding-right: 10px;
+		}
+
+		.score {
+		   font-size: 115%;
+		   font-weight: bold;
+		}
+
+	</ui:style>
+	<g:HTMLPanel styleName='{style.main}'>
+		<p>
+			You scored:
+			<span ui:field="score" class='{style.score}'></span>
+		</p>
+		<p>
+			You	<span ui:field="passed"></span>.
+		</p>
+		<p ui:field="whatToDo"></p>
+		<div class='footer'>
+			<g:Button styleName='sexybutton sexylarge' ui:field="continueButton">
+				<span>
+					<span>Continue</span>
+				</span>
+			</g:Button>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder> 
