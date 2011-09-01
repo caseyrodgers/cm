@@ -608,7 +608,8 @@ table {
 .prescriptionLessonResourceVideoImpl,
 .prescriptionLessonResourceTutorViewImpl,
 .prescriptionLessonResourceResultsViewImpl,
-.prescriptionLessonListingViewImpl {
+.prescriptionLessonListingViewImpl,
+.endOfProgramViewImpl {
 	padding: 15px;
 }
 
@@ -646,3 +647,138 @@ table {
     top: 20px;
     left: 290px;
 }
+
+
+
+
+
+.quizCheckInfoDialog.gwt-PopupPanelGlass {
+    background-color: black;
+    filter: alpha(opacity=50);
+    opacity: .50;
+}
+
+.quizCheckInfoDialog.gwt-DialogBox { 
+    background: white;
+    border: 1px solid #EA4505;
+    position: relative;
+}
+
+.quizCheckInfoDialog .dialogTop {
+    height: 30px;
+}
+
+.quizCheckInfoDialog.gwt-DialogBox p {
+    font-size: .9em;
+}
+.quizCheckInfoDialog .gwt-DialogBox .Caption {
+    padding-left: 5px;
+    color: white;
+    font-weight: bold;
+    background: #EA4505;
+    text-align: center;
+    height: 2em;
+    line-height: 2em;
+}
+
+.quizCheckInfoDialog .dialogTop {
+   background: #EA4505; 
+}
+
+
+.quizCheckInfoDialog .popup-message {
+    background: white;
+    -moz-border-radius:10px;
+    border-radius: 10px;
+    border: 2px solid #6E84A2;
+    padding: 10px;
+    font-size: 1.2em;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+}
+
+
+.quizCheckInfoDialog .footer {
+    position: absolute;
+    left: 10px;
+    top: 140px;
+    margin-top: 25px;
+    height: 50px;
+    text-align: left;
+}
+
+.quizCheckInfoDialog p {
+    margin: 5px;
+    padding: 10px;
+}
+
+
+
+
+
+
+
+
+.autoAdvanceInfoWindow.gwt-PopupPanelGlass {
+    background-color: black;
+    filter: alpha(opacity=50);
+    opacity: .50;
+}
+
+.autoAdvanceInfoWindow.gwt-DialogBox { 
+    background: white;
+    border: 1px solid #EA4505;
+    position: relative;
+}
+
+.autoAdvanceInfoWindow .dialogTop {
+    height: 30px;
+}
+
+.autoAdvanceInfoWindow.gwt-DialogBox p {
+    font-size: .9em;
+}
+.autoAdvanceInfoWindow .gwt-DialogBox .Caption {
+    padding-left: 5px;
+    color: white;
+    font-weight: bold;
+    background: #EA4505;
+    text-align: center;
+    height: 2em;
+    line-height: 2em;
+}
+
+.autoAdvanceInfoWindow .dialogTop {
+   background: #EA4505; 
+}
+
+
+.autoAdvanceInfoWindow .popup-message {
+    background: white;
+    -moz-border-radius:10px;
+    border-radius: 10px;
+    border: 2px solid #6E84A2;
+    padding: 10px;
+    font-size: 1.2em;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+}
+
+
+.autoAdvanceInfoWindow .footer {
+    position: absolute;
+    left: 10px;
+    top: 140px;
+    margin-top: 25px;
+    height: 50px;
+    text-align: left;
+}
+
+.autoAdvanceInfoWindow p {
+    margin: 5px;
+    padding: 10px;
+}
+
+

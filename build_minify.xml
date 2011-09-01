@@ -57,6 +57,7 @@
             	gwt-resources/css/testset.css
                 gwt-resources/css/whiteboard.css
             	gwt-resources/css/menubar_layout.css
+            	gwt-resources/css/mobile_question_box.css
              " />
         </concat>
     </target>

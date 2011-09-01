@@ -1,0 +1,68 @@
+ {
+	
+}
+
+
+
+/** Main dialog box styles */
+
+.questionBox.gwt-PopupPanelGlass {
+    background-color: black;
+    filter: alpha(opacity=50);
+    opacity: .50;
+}
+
+.questionBox.gwt-DialogBox { 
+    background: white;
+    border: 1px solid #EA4505;
+    position: relative;
+}
+
+.questionBox .dialogTop {
+	height: 30px;
+}
+
+.questionBox.gwt-DialogBox p {
+    font-size: .9em;
+}
+.questionBox .gwt-DialogBox .Caption {
+    padding-left: 5px;
+    color: white;
+    font-weight: bold;
+    background: #EA4505;
+    text-align: center;
+    height: 2em;
+    line-height: 2em;
+}
+
+.questionBox .dialogTop {
+   background: #EA4505; 
+}
+
+
+.questionBox .popup-message {
+    background: white;
+    -moz-border-radius:10px;
+    border-radius: 10px;
+    border: 2px solid #6E84A2;
+    padding: 10px;
+    font-size: 1.2em;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+}
+
+
+.questionBox .footer {
+	position: absolute;
+	left: 10px;
+	top: 130px;
+	margin-top: 25px;
+	height: 50px;
+	text-align: left;
+}
+
+.questionBox p {
+	margin: 5px;
+	padding: 10px;
+}
