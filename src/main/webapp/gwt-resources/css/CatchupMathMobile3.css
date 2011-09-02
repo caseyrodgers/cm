@@ -782,3 +782,26 @@ table {
 }
 
 
+
+/** quiz bottom footer showing 'check quiz' link 
+    TODO: move to more logical place
+*/    
+#testset_footer {
+	display: none;
+}
+
+
+
+
+
+
+
+.question_head {
+	position: relative;
+}
+
+.question_head button {
+	position: absolute;
+	top: 2px;
+	left: 2px;
+}

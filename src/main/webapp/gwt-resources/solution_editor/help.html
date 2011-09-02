@@ -39,6 +39,39 @@ Graph Widget
 </widget>
 
 
+updated 'Plotter' with option to draw: functions(limited support),circle on a graph, rectangle on a graph, polygon on a graph, path on a graph
+
+Also now we have to define the plot_type [like 'point','function',etc.,] in plot_data value itself to allow multi type of plotting...
+
+for example:test_dynamic_graphs_1_1_2
+<widget type='graph'>
+  { 
+    gtype:"xy", 
+    xmin:-50, 
+    xmax: 50, 
+    ymin:-50,
+    ymax: 50, 
+    xinc: 10, 
+    yinc: 10, 
+    plot_data: "['function','x^2',false,'red']|['function','x+2',false,'blue']|['point',[-1,1],true,'black']|['point',[2,4],true,'black']"
+  }
+</widget>
+
+Plot types and related value to be passed in 'plot_data':
+Point - ['point',[x,y],showLabel,point_color]
+
+Function - ['function',f(x),showLabel,func_color] ;//ShowLabel wont work for now
+
+Circle -  ['circle',[cx,cy,radius],showLabel,[stroke_color,fill_color,fill_alpha]];//ShowLabel wont work for now
+
+Rectangle -  ['rectangle',[cx,cy,width,height],showLabel,[stroke_color,fill_color,fill_alpha]];//ShowLabel wont work for now
+
+Polygon - ['polygon',[[x1,y1],[x2,y2],[x3,y3]...[xn,yn]],showLabel,[stroke_color,fill_color,fill_alpha]]
+
+Path - ['path',[[x1,y1],[x2,y2],[x3,y3]...[xn,yn]],showLabel,path_color]
+
+have to add support for inequalities[also for numberline]
+
 </pre>
 </body>
 </html>
