@@ -28,8 +28,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     public ShowWorkActivity(EventBus eventBus, String pid) {
         this.eventBus = eventBus;
         __lastInstance = this;
-        if(pid == null)
+        if(pid == null || pid.length() == 0) {
             pid = "quiz:quiz";
+        }
         this.pid = pid;
     }
 

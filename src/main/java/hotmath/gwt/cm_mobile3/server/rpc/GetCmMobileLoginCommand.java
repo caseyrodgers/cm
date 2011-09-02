@@ -31,10 +31,19 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         return GetCmMobileLoginAction.class;
     }
 
+    static CmMobileUser __lastUser;
     @Override
     public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
 
        int uid = action.getUid();
+       
+       
+       
+       // for debugging
+       if(__lastUser != null && __lastUser.getUserId() == action.getUid()) {
+           return __lastUser;
+       }
+       
        HaBasicUser basicUser=null;
        if(uid > 0) {
            basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
@@ -80,6 +89,8 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
+        
+        __lastUser = mobileUser;
         return mobileUser;
     }
 

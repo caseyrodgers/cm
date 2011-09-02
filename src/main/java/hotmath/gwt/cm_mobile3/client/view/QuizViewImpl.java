@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -51,7 +52,9 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
 
     @Override
     public String getTitle() {
-        return "Catchup Math Quiz";
+        int segNum = SharedData.getUserInfo().getTestSegment();
+        int segCount = SharedData.getUserInfo().getProgramSegmentCount();
+        return "Catchup Math Quiz: " + segNum + " of " + segCount;
     }
     @Override
     public String getBackButtonText() {

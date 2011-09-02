@@ -2,13 +2,15 @@ package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
+import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
+import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
@@ -21,7 +23,6 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class PrescriptionLessonActivity implements PrescriptionLessonView.Presenter {
@@ -51,6 +52,16 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     @Override
     public void moveToNextLesson(final PrescriptionLessonView view) {
         int sessionNumber = findNextSessionNumber();
+        
+        if(sessionNumber == -1) {
+            QuestionBox.askYesNoQuestion("Ready To Move On", "Are you ready for the next quiz?", new CallBack() {
+                @Override
+                public void onSelectYes() {
+                    eventBus.fireEvent(new MoveToNextSegmentEvent());
+                }
+            });
+        }
+        
         moveToLesson(view, sessionNumber + 1);
     }
     

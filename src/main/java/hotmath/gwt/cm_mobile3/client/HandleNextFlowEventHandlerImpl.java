@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile3.client;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEventHandler;
+import hotmath.gwt.cm_mobile3.client.event.ShowEndOfProgramEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
@@ -12,7 +13,6 @@ import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.History;
 
 public class HandleNextFlowEventHandlerImpl implements HandleNextFlowEventHandler {
 
@@ -59,7 +59,7 @@ public class HandleNextFlowEventHandlerImpl implements HandleNextFlowEventHandle
             break;
 
         case END_OF_PROGRAM:
-            History.newItem("end_of_program");
+            eventBus.fireEvent(new ShowEndOfProgramEvent());
             break;
 
         case AUTO_PLACEMENT:

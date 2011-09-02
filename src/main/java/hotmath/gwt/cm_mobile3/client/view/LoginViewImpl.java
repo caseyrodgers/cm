@@ -8,8 +8,10 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -85,6 +87,12 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     @UiHandler("demoButton")
     void handleDemo(ClickEvent ce) {
         presenter.createDemo();
+    }
+    
+    
+    @UiHandler("passwordBox")
+    protected void doChangeValue(ValueChangeEvent<String> event) {
+      Log.info(event.toDebugString());
     }
     
     

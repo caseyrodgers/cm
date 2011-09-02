@@ -96,7 +96,28 @@ public class QuizActivity implements QuizView.Presenter {
         for(RpcData rd: al) {
             setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         }
+        
+        
+        enableQuizToolbarButtons();
     }
+    
+    private  native void enableQuizToolbarButtons() /*-{
+    try {
+        var td = $doc.getElementById("testset_div");
+        if(td) {
+            var questHeads = td.getElementsByTagName("div");
+            for(var qh=0,qt=questHeads.length;qh<qt;qh++) {
+                if(questHeads[qh].className == 'question_head') {
+                   var d=questHeads[qh];
+                   d.innerHTML = d.innerHTML + "<button onclick='showWhiteboard_Gwt();'>WB</button>";
+                }
+            }
+        }
+    }
+    catch(e) {
+           alert(e);
+     }
+    }-*/;
 
     @Override
     public void checkQuiz() {
@@ -196,6 +217,10 @@ public class QuizActivity implements QuizView.Presenter {
         return "";
     }
     
+    private void showWhiteboard_Gwt(String pid) {
+        eventBus.fireEvent(new ShowWorkViewEvent(pid));
+    }
+    
     /** Glue code between external HM testset code and GWT.
      * 
      * @param x
@@ -204,6 +229,13 @@ public class QuizActivity implements QuizView.Presenter {
         $wnd.questionGuessChanged_Gwt = function (question, answer, pid) {
             x.@hotmath.gwt.cm_mobile3.client.activity.QuizActivity::questionGuessChanged_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(question,answer,pid);
         };
+        
+        
+        $wnd.showWhiteboard_Gwt = function (pid) {
+            x.@hotmath.gwt.cm_mobile3.client.activity.QuizActivity::showWhiteboard_Gwt(Ljava/lang/String;)(pid);
+        };
 
     }-*/;
+    
+
 }

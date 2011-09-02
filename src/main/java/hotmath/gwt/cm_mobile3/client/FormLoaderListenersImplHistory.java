@@ -4,6 +4,10 @@ import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEventHandler;
+import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEvent;
+import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEventHandler;
+import hotmath.gwt.cm_mobile3.client.event.ShowEndOfProgramEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowEndOfProgramEventHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
@@ -21,6 +25,9 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 
@@ -58,7 +65,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         eb.addHandler(ShowQuizViewEvent.TYPE, new ShowQuizViewHandler() {
             @Override
             public void showQuizView(QuizHtmlResult quizResult) {
-                String initial =  quizResult!=null?"initial":"";
+                String initial = quizResult != null ? "initial" : "";
                 String token = "quiz:" + initial + ":" + System.currentTimeMillis();
                 History.newItem(token);
             }
@@ -66,6 +73,9 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         eb.addHandler(ShowWorkViewEvent.TYPE, new ShowWorkViewHandler() {
             @Override
             public void showWorkView(String pid) {
+                if (pid == null) {
+                    pid = "";
+                }
                 History.newItem("show_work:" + pid + ":" + System.currentTimeMillis());
             }
         });
@@ -79,15 +89,49 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
             @Override
             public void showResource(InmhItemData resourceItem) {
                 History.newItem("resource:" + resourceItem.getType() + ":" + resourceItem.getFile() + ":"
-                        + resourceItem.getWidgetJsonArgs() + ":" + SharedData.findOrdinalPositionOfResource(resourceItem) + ":"
-                        + resourceItem.getTitle() + ":" + System.currentTimeMillis());
+                        + resourceItem.getWidgetJsonArgs() + ":"
+                        + SharedData.findOrdinalPositionOfResource(resourceItem) + ":" + resourceItem.getTitle() + ":"
+                        + System.currentTimeMillis());
             }
         });
         
-        eb.addHandler(LoadActiveProgramFlowEvent.TYPE,new LoadActiveProgramFlowEventHandler() {
+        eb.addHandler(ShowEndOfProgramEvent.TYPE, new ShowEndOfProgramEventHandler() {
+            @Override
+            public void showView() {
+                History.newItem("end_of_program");
+            }
+        });
+        
+        
+        
+        eb.addHandler(MoveToNextSegmentEvent.TYPE, new MoveToNextSegmentEventHandler() {
+            @Override
+            public void loadNextSegment() {
+                eb.fireEvent(new SystemIsBusyEvent(true));
+                GetCmProgramFlowAction action = new GetCmProgramFlowAction(SharedData.getUserInfo().getUid(),
+                        FlowType.NEXT);
+                CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmProgramFlowAction>() {
+                    @Override
+                    public void onSuccess(CmProgramFlowAction result) {
+                        eb.fireEvent(new SystemIsBusyEvent(false));
+                        SharedData.setFlowAction(result);
+
+                        eb.fireEvent(new HandleNextFlowEvent(result));
+                    }
+
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        eb.fireEvent(new SystemIsBusyEvent(false));
+                        Log.error("Error moving to next segment", caught);
+                    }
+                });
+            }
+        });
+
+        eb.addHandler(LoadActiveProgramFlowEvent.TYPE, new LoadActiveProgramFlowEventHandler() {
             @Override
             public void loadActiveProgramFlow() {
-                
+
                 eb.fireEvent(new SystemIsBusyEvent(true));
                 CatchupMathMobileShared.getCmService().execute(
                         new GetCmMobileLoginAction(SharedData.getUserInfo().getUid()),
@@ -97,6 +141,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                                 SharedData.setFlowAction(result.getFlowAction());
                                 eb.fireEvent(new HandleNextFlowEvent());
                             }
+
                             @Override
                             public void onFailure(Throwable caught) {
                                 eb.fireEvent(new SystemIsBusyEvent(false));
