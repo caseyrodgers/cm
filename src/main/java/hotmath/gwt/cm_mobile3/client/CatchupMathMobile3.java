@@ -6,12 +6,12 @@ import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
-import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
@@ -52,6 +52,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
     FormLoaderListeners formLoaders = new FormLoaderListenersImplHistory();
+
     public CatchupMathMobile3() {
         /*
          * Install an UncaughtExceptionHandler which will produce
@@ -59,10 +60,12 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          */
         Log.setUncaughtExceptionHandler();
 
-        /** register the main Flow listener that handle
-         *  the transisions from one CM program flow to the next.
+        /**
+         * register the main Flow listener that handle the transisions from one
+         * CM program flow to the next.
          */
-        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE,new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
+        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE,
+                new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
     }
 
     @Override
@@ -93,6 +96,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     }
 
     LoadingDialog loadingDialog = null;
+
     private void onModuleLoadAux() {
         long startTimeMillis = 0;
         /*
@@ -121,20 +125,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         __instance = this;
         _loadingDiv = RootPanel.get("loading");
         _loadingDiv.getElement().setAttribute("style", "display:none");
-        
-        
-        
-        new LoadingDialog(__clientFactory.getEventBus());   
+
+        new LoadingDialog(__clientFactory.getEventBus());
         _rootPanel = RootPanel.get("main-content");
         try {
             Controller.installEventBus(__clientFactory.getEventBus());
             _rootPanel.add(createApplicationPanel());
 
-            
-            
             formLoaders.setupListeners(__clientFactory.getEventBus());
-            
-            /** allow each display panel to flow left-to-right. 
+
+            /**
+             * allow each display panel to flow left-to-right.
              * 
              */
             _rootPanel.getElement().getStyle().setProperty("display", "inline");
@@ -154,27 +155,27 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
-            
-            
-//            CreateTestRunResponse testRunResponse = new CreateTestRunResponse(null,0,0,0,false);
-//            testRunResponse.setTestCorrectPercent(50);
-//            new QuizCheckInfoDialog(__clientFactory.getEventBus(),
-//                   testRunResponse);
-//            
-//            QuestionBox.askYesNoQuestion("Test title", "Test question", new QuestionBox.CallBack() {
-//                @Override
-//                public void onSelectYes() {
-//                }
-//            });
-            
+
+            // CreateTestRunResponse testRunResponse = new
+            // CreateTestRunResponse(null,0,0,0,false);
+            // testRunResponse.setTestCorrectPercent(50);
+            // new QuizCheckInfoDialog(__clientFactory.getEventBus(),
+            // testRunResponse);
+            //
+            // QuestionBox.askYesNoQuestion("Test title", "Test question", new
+            // QuestionBox.CallBack() {
+            // @Override
+            // public void onSelectYes() {
+            // }
+            // });
+
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
-        }
-        finally {
+        } finally {
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
         }
-        
+
         __clientFactory.getEventBus().addHandler(AutoAdvanceUserEvent.TYPE, new AutoAdvanceUserEventHandlerImpl());
 
         Log.info("Catchup Math Mobile Initialized");
@@ -211,13 +212,12 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 }
             }
         });
-        eb.addHandler(BackDiscoveryEvent.TYPE,new BackDiscoveryEventHandler() {
+        eb.addHandler(BackDiscoveryEvent.TYPE, new BackDiscoveryEventHandler() {
             @Override
             public void discoverBack(IPage last) {
-                if(last != null) {
+                if (last != null) {
                     determineBackDestination(last);
-                }
-                else {
+                } else {
                     History.back();
                 }
             }
@@ -226,34 +226,51 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             @Override
             public void movedBack(final IPage page) {
                 Log.info("BackPageLoadedEvent fire: " + page.getClass().getName());
-                /** these are app/panel specific hooks
+                /**
+                 * these are app/panel specific hooks
                  * 
                  * TODO: find a more general way for specific hooks
                  */
-                if(page instanceof QuizViewImpl || page instanceof PrescriptionLessonResourceTutorView) {
+                if (page instanceof HasWhiteboard) {
                     ShowWorkActivity.saveWhiteboard();
                 }
+
+                if (page instanceof QuizViewImpl) {
+                    final int scrollTo = pageScroll.get(page);
+                    if (scrollTo > 0) {
+                        scrollWindowTo(scrollTo);
+                    }
+                }
             }
-        });        
+        });
     }
 
-    /** Look at current page and try to determine the proper thing 
-     *   to do for the 'back' action.
-     *   
+    /**
+     * Look at current page and try to determine the proper thing to do for the
+     * 'back' action.
+     * 
      * @param page
      */
     private void determineBackDestination(IPage page) {
-        if(page instanceof WelcomeView) {
+        if (page instanceof WelcomeView) {
             __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
-        }
-        else if(page instanceof ShowWorkView) {
+        } else if (page instanceof ShowWorkView) {
             ShowWorkActivity.disconnectWhiteboard();
-        }
-        else {
+        } else {
             History.back();
         }
     }
-        
+
+    native private void scrollWindowTo(int position) /*-{
+        try {
+            $wnd.scrollTo(0,position);
+        }
+        catch(e) {
+            alert(e);
+        }
+    }-*/;
+
+    
     
     private Widget createApplicationPanel() {
         /**

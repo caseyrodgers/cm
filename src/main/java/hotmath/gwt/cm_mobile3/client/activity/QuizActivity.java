@@ -96,6 +96,9 @@ public class QuizActivity implements QuizView.Presenter {
         for(RpcData rd: al) {
             setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         }
+        
+        
+        enableQuizToolbarButtons();
     }
     
     private  native void enableQuizToolbarButtons() /*-{
@@ -106,7 +109,7 @@ public class QuizActivity implements QuizView.Presenter {
             for(var qh=0,qt=questHeads.length;qh<qt;qh++) {
                 if(questHeads[qh].className == 'question_head') {
                    var d=questHeads[qh];
-                   d.innerHTML = d.innerHTML + "<button onclick='showWhiteboard_Gwt();'>WB</button>";
+                   d.innerHTML = d.innerHTML + "<a class='show_work_icon' href='#' onclick='showWhiteboardActive(this);'><img src='/gwt-resources/images/icon_show_work.png'/></a>";
                 }
             }
         }
