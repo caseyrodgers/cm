@@ -1,4 +1,4 @@
-gpackage hotmath.gwt.cm_mobile3.client;
+package hotmath.gwt.cm_mobile3.client;
 
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.GWT;
