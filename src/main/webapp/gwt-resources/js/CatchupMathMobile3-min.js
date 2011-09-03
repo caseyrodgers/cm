@@ -1,1 +1,1 @@
-function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});
+function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});function showWhiteboardActive(B){var A=B.parentNode.parentNode.getAttribute("pid");showWhiteboard_Gwt(A)};

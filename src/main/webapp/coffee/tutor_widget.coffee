@@ -1,5 +1,7 @@
-class WidgetBase
-  constructor: (@name) ->
+
+
+class HmFlashWidget
+  constructor: (@jsonObj) ->
 
   alive: ->
     false

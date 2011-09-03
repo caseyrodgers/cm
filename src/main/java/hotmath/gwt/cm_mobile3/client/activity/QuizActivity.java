@@ -96,9 +96,6 @@ public class QuizActivity implements QuizView.Presenter {
         for(RpcData rd: al) {
             setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
         }
-        
-        
-        enableQuizToolbarButtons();
     }
     
     private  native void enableQuizToolbarButtons() /*-{
@@ -221,6 +218,11 @@ public class QuizActivity implements QuizView.Presenter {
         eventBus.fireEvent(new ShowWorkViewEvent(pid));
     }
     
+    String _activePid;
+    private void setQuizQuestionActive(String pid) {
+        _activePid = pid;
+    }
+    
     /** Glue code between external HM testset code and GWT.
      * 
      * @param x
@@ -229,11 +231,16 @@ public class QuizActivity implements QuizView.Presenter {
         $wnd.questionGuessChanged_Gwt = function (question, answer, pid) {
             x.@hotmath.gwt.cm_mobile3.client.activity.QuizActivity::questionGuessChanged_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(question,answer,pid);
         };
-        
+
         
         $wnd.showWhiteboard_Gwt = function (pid) {
             x.@hotmath.gwt.cm_mobile3.client.activity.QuizActivity::showWhiteboard_Gwt(Ljava/lang/String;)(pid);
         };
+        
+        $wnd.setQuizQuestionActive = function (pid) {
+            x.@hotmath.gwt.cm_mobile3.client.activity.QuizActivity::setQuizQuestionActive(Ljava/lang/String;)(pid);
+        };
+
 
     }-*/;
     

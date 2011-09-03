@@ -14,7 +14,7 @@
         </ui:style>
 
         <g:HTMLPanel styleName="{style.main}">
-            <p>Thank you for trying this beta version.  We will appreciate your comments emailed to support@hotmath.com.</p>
+            <p>Thank you for trying this beta version.  We will appreciate your comments emailed to support@catchupmath.com</p>
            <div class='{style.footer}'>
               <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
            </div>

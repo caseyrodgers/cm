@@ -11,3 +11,11 @@ function initStartCmMobile() {}
 HmEvents.eventTutorLastStep.subscribe(function(x) {
 	gwt_solutionHasBeenViewed();
 });
+
+
+
+
+function showWhiteboardActive(domEl) {
+	var pid = domEl.parentNode.parentNode.getAttribute("pid");
+	showWhiteboard_Gwt(pid);
+}

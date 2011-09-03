@@ -20,7 +20,7 @@ window.showCorrectAnswers = function(func) {
     }
 }
 
-/** called by generated quiz HTML when a given question is selected
+/** called by generated quiz HTML when a given question is selected/activated.
  * 
  */
 function setQuizQuestionActive(x) {

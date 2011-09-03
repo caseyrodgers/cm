@@ -582,10 +582,6 @@
 				<groupId>com.samaxes.maven</groupId>
 				<artifactId>maven-minify-plugin</artifactId>
 				<version>1.3.1</version>
-				<executions>
-					<execution>
-						<id>execution_cm</id>
-						<phase>process-resources</phase>
 						<configuration>
 							<cssSourceDir>gwt-resources/css</cssSourceDir>
 							<jsSourceDir>gwt-resources/js</jsSourceDir>
@@ -606,29 +602,6 @@
 								<param>swfobject/swfobject.js</param>
 							</jsSourceFiles>
 						</configuration>
-					</execution>
-					<execution>
-						<id>execution_cm_mobile</id>
-						<phase>process-resources</phase>
-						<configuration>
-							<cssSourceDir>gwt-resources/css</cssSourceDir>
-							<jsSourceDir>gwt-resources/js</jsSourceDir>
-							<cssFinalFile>CatchupMathMobile3_combined.css</cssFinalFile>
-							<jsFinalFile>CatchupMathMobile3_combined.js</jsFinalFile>
-							<cssSourceFiles>
-								<param>../../../../../../hotmath2/web/css/tutor_widget.css</param>
-								<param>CatchupMathMobile3.css</param>
-								<param>loading_image.css</param>
-							</cssSourceFiles>
-							<jsSourceFiles>
-								<param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
-								<param>cm_core.js</param>
-								<param>CatchupMathMobile3.js</param>
-								<param>swfobject/swfobject.js</param>
-							</jsSourceFiles>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 
