@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.ExportStudentData;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
@@ -519,6 +520,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         menu.add(defineSelfRegItem());
 
+        if (CmShared.getQueryParameter("debug") != null)
+            menu.add(defineParallelProgramItem());
+
         btn.setMenu(menu);
 
         return btn;
@@ -600,6 +604,21 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 });
             }
         });
+    }
+
+    private MyMenuItem defineParallelProgramItem() {
+        return new MyMenuItem("Parallel Program", "Define a Parallel Program group.",
+                new SelectionListener<MenuEvent>() {
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        GWT.runAsync(new CmRunAsyncCallback() {
+                            @Override
+                            public void onSuccess() {
+                                new ParallelProgramSetup(null, _cmAdminMdl);
+                            }
+                        });
+                    }
+                });
     }
 
     static class MyMenuItem extends MenuItem {
