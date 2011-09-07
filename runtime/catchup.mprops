@@ -391,13 +391,24 @@ and t.test_def_id = td.test_def_id and im.guid = rr.pid
 
 .key=CHECK_DUPLICATE_PASSCODE
 
-select 1 as dup from HA_USER u where u.user_passcode = ? and u.uid <> ? and u.admin_id = ?
+select 'student' as dup
+from   HA_USER u
+where  u.user_passcode = ?
+  and  u.uid <> ?
+  and  u.admin_id = ?
 union
-select 1 as dup
-from      CM_GROUP g
-where     g.admin_id = ?
-  and     g.name = ?
-  and     g.id in (select group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
+select 'auto-reg' as dup
+from   CM_GROUP g
+where  g.admin_id = ?
+  and  g.name = ?
+  and  g.id in (select group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
+union
+select t.type as dup
+from   CM_GROUP g, HA_USER_TEMPLATE t
+where  g.admin_id = ?
+  and  g.name = ?
+  and  g.id in (select group_id from HA_USER_TEMPLATE where admin_id = ?)
+  and  t.group_id = g.id
   
 
 .key=CHECK_DUPLICATE_NAME
@@ -2598,4 +2609,16 @@ where user_id = ?
 order by login_time desc
 limit 1
 
+############################
+#### ParallelProgramDao ####
 
+.key=IS_PARALLEL_PROGRAM_GROUP
+
+select count(*) as is_parallel_prog_group
+from CM_GROUP g, HA_USER_TEMPLATE t
+where g.admin_id = ?
+  and g.name = ?
+  and g.id = t.group_id
+  and t.admin_id = g.admin_id
+  
+  
