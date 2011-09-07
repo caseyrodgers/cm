@@ -564,6 +564,27 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return sm;
     }
 
+    public StudentModelI addStudentTemplate(StudentModelI sm, String templateType) throws Exception {
+
+    	__logger.info("+++ progId: " + sm.getProgram().getProgramId());
+    	__logger.info("+++ prog type: " + sm.getProgram().getProgramType());
+
+        getJdbcTemplate().update(
+    	        "insert into HA_USER_TEMPLATE (name, password, admin_id, group_id, test_def_id, type, limit_games, show_work_required, stop_at_program_end, create_date) " +
+    	        " values (?, ?, ?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?, now())", 
+    	        new Object[] {sm.getName(), sm.getPasscode(), sm.getAdminUid(), sm.getGroupId(), sm.getProgram().getProgramType().getType(),
+    	        		      sm.getProgram().getSubjectId(), templateType, sm.getSettings().getLimitGames()?1:0, sm.getSettings().getShowWorkRequired()?1:0,
+    	        		      sm.getSettings().getStopAtProgramEnd()?1:0});
+        
+        /*
+         *             ps.setString(5, sm.getProgram().getProgramType().getType());
+            ps.setString(6, sm.getProgram().getSubjectId());
+
+         */
+    	
+    	return null;
+    }
+
     /** Return two dim array showing registered
      *  and available background wallpapers.
      * @return
@@ -776,6 +797,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(4, sm.getAdminUid());
             ps.setString(5, sm.getPasscode());
             ps.setInt(6, sm.getAdminUid());
+            ps.setInt(7, sm.getAdminUid());
+            ps.setString(8, sm.getPasscode());
+            ps.setInt(9, sm.getAdminUid());
 
             rs = ps.executeQuery();
             return (rs.next());
@@ -1963,7 +1987,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
     public StudentActiveInfo loadActiveInfo(final Integer userId) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_ACTIVE_INFO");
-         StudentActiveInfo activeInfo = this.getJdbcTemplate().queryForObject(
+        StudentActiveInfo activeInfo = this.getJdbcTemplate().queryForObject(
                 sql,
                 new Object[]{userId},
                 new RowMapper<StudentActiveInfo>() {
