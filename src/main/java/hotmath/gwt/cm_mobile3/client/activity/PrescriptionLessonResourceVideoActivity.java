@@ -12,7 +12,7 @@ public class PrescriptionLessonResourceVideoActivity implements PrescriptionLess
     List<Integer> testQuestionAnswers;
 
     private com.google.gwt.event.shared.EventBus eventBus;
-    
+
     InmhItemData resourceItem;
 
     public PrescriptionLessonResourceVideoActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
@@ -23,7 +23,7 @@ public class PrescriptionLessonResourceVideoActivity implements PrescriptionLess
     @Override
     public void setupView(final PrescriptionLessonResourceVideoView view) {
         String video = resourceItem.getFile();
-        String nonFlashUrl = "/video_convert/flvs/tw/" + video;
+        String nonFlashUrl = "/help/flvs/tw/" + video;
         view.setVideoUrlWithOutExtension(nonFlashUrl);
         view.setVideoTitle(resourceItem.getTitle());
     }
