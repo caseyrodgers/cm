@@ -110,7 +110,6 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     PrescriptionLessonResourceVideoActivity activity = new PrescriptionLessonResourceVideoActivity(eb, itemData);
                     PrescriptionLessonResourceVideoView view = cf.getPrescriptionLessonResourceVideoView();
                     view.setPresenter(activity);
-                    activity.setupView(view);
                     eb.fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 else if(resourceType.equals("practice")) {

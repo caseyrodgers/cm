@@ -7,9 +7,14 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.HeadingElement;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -57,8 +62,77 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     @UiField
     HTMLPanel mainPanel;
 
-    @Override
-    public void setVideoUrl(String nonFlashVideoUrl) {
+    public void setVideoUrlWithOutExtension(String videoUrl) {
+        int width = 340;
+        int height = 274;
+        
+        String mp4File = videoUrl + ".mp4";
+        String oggFile = videoUrl + ".ogv";
+        String videoHtml = 
+                "<video width='" + width + "' height='" + height + "' controls='controls' autoplay='autoplay'> " +
+                    "<source src='" + mp4File + "' type='video/mp4' />" +
+                    "<source src='" + oggFile + "' type='video/ogg' />" +
+                "</video>";
+        
+        videoContainer.setInnerHTML(videoHtml);
+        
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                showVideo(videoContainer);
+            }
+        });
+        
+    }
+    
+     private native void showVideo(Element videoC) /*-{
+         try {
+            var con = videoC.getElementsByTagName('video');
+            if(con.length > 0) {
+                var videoEl = con[0];
+                if(videoEl.paused) {
+                    videoEl.play();
+                }
+             }
+         }
+         catch(e) {
+            alert('could not start video: ' + e);
+         }
+            
+     }-*/;
+     
+
+     private native void stopVideo(Element videoC) /*-{
+         try {
+            var con = videoC.getElementsByTagName('video');
+            if(con.length > 0) {
+                var videoEl = con[0];
+                videoEl.pause();
+            }
+            
+            videoC.innerHTML = '';
+         }
+         catch(e) {
+            alert('could not stop video: ' + e);
+         }
+     }-*/;
+     
+     private native void resetVideo(Element videoC) /*-{
+         try {
+            var con = videoC.getElementsByTagName('video');
+            if(con.length > 0) {
+                var videoEl = con[0];
+                videoEl.currentTime = 0;
+                videoEl.play();
+            }
+         }
+         catch(e) {
+            alert('could not stop video: ' + e);
+         }
+     }-*/;
+          
+
+    public void setVideoUrlFlash(String nonFlashVideoUrl) {
         String width = "390px";
         int height = 390;
 
@@ -89,12 +163,13 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         return new BackAction() {
             @Override
             public boolean goBack() {
-                mainPanel.clear();
+                stopVideo(videoContainer);
                 return true;
             }
         };
     }
-
+    
+    
     @UiField
-    HeadingElement videoTitle;
+    Element videoTitle, videoContainer;
 }

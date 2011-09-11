@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
@@ -240,6 +241,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     if (scrollTo > 0) {
                         scrollWindowTo(scrollTo);
                     }
+                }
+                else if (page instanceof PrescriptionLessonResourceVideoView) {
+                    eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
                 }
             }
         });

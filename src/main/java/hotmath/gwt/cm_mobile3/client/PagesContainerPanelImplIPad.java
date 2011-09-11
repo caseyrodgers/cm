@@ -33,5 +33,8 @@ public class PagesContainerPanelImplIPad extends PagesContainerPanelImplIPhone i
          */
         ViewSettings.AnimationRunning = false;
     }
+    
+    
+    
 
 }
