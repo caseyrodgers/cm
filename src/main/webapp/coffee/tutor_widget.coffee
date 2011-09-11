@@ -1,20 +1,26 @@
 
 
-class HmFlashWidget
+class HmWidget
   constructor: (@jsonObj) ->
 
-  alive: ->
-    false
+  initializeWidget: ->
+    alert "base initializeWidget"
 
-class WidgetInteger extends WidgetBase
+class WidgetInteger extends HmWidget
   constructor: ->
-    super("Integer")
+    super("{}")
 
-  dead: ->
-    not @alive()
+  initializeWidget: ->
+    alert "initializeWidget in Integer"
+    super.initializeWidget
+    
+    
+
+
+# how to register each class for Factory creation?
 
 window.widgets = {}
-window.widgets.WidgetBase = WidgetBase
+window.widgets.HmWidget = HmWidget
 window.widgets.WidgetInteger = WidgetInteger
 
 

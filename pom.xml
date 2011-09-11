@@ -70,9 +70,27 @@
 			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
 		</repository>
 
+
+		<repository>
+			<id>bramosystems-releases</id>
+			<name>Bramosystems Release Repository</name>
+			<url>http://downloads.bramosystems.com/maven2/releases</url>
+		</repository>
+
+
+
 	</repositories>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.bramosystems.oss.player</groupId>
+			<artifactId>bst-player-api</artifactId>
+			<version>1.2.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<dependency>
 			<groupId>com.theoryinpractise</groupId>
 			<artifactId>coffee-maven-plugin</artifactId>
@@ -582,26 +600,26 @@
 				<groupId>com.samaxes.maven</groupId>
 				<artifactId>maven-minify-plugin</artifactId>
 				<version>1.3.1</version>
-						<configuration>
-							<cssSourceDir>gwt-resources/css</cssSourceDir>
-							<jsSourceDir>gwt-resources/js</jsSourceDir>
-							<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
-							<jsFinalFile>CatchupMath_combined.js</jsFinalFile>
-							<cssSourceFiles>
-								<param>../../../../../../hotmath2/web/css/testset.css</param>
-								<param>../../../../../../hotmath2/web/css/default.css</param>
-								<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
-								<param>../../../../../../hotmath2/web/css/bookindex_with_tutor_combined.css</param>
-								<param>CatchupMath.css</param>
-								<param>loading_image.css</param>
-							</cssSourceFiles>
-							<jsSourceFiles>
-								<param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
-								<param>cm_core.js</param>
-								<param>CatchupMath.js</param>
-								<param>swfobject/swfobject.js</param>
-							</jsSourceFiles>
-						</configuration>
+				<configuration>
+					<cssSourceDir>gwt-resources/css</cssSourceDir>
+					<jsSourceDir>gwt-resources/js</jsSourceDir>
+					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
+					<jsFinalFile>CatchupMath_combined.js</jsFinalFile>
+					<cssSourceFiles>
+						<param>../../../../../../hotmath2/web/css/testset.css</param>
+						<param>../../../../../../hotmath2/web/css/default.css</param>
+						<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
+						<param>../../../../../../hotmath2/web/css/bookindex_with_tutor_combined.css</param>
+						<param>CatchupMath.css</param>
+						<param>loading_image.css</param>
+					</cssSourceFiles>
+					<jsSourceFiles>
+						<param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
+						<param>cm_core.js</param>
+						<param>CatchupMath.js</param>
+						<param>swfobject/swfobject.js</param>
+					</jsSourceFiles>
+				</configuration>
 			</plugin>
 
 

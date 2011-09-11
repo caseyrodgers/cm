@@ -1215,10 +1215,10 @@ img.resource-item-complete {
 /** the question text */
 .hm_question_def>div {
   margin:10px 0;
-  background-color: #EBEBEB;
   padding: 5px;
 }
 
+.hm_question_defdiv
 #hm_flash_widget.not_used {
    width: 325px;
 }

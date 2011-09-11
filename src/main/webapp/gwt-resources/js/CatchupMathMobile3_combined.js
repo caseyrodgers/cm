@@ -85,7 +85,7 @@ function _createQuestionStep(el) {
          }
          else if((d%2)!=0){
              // a choice
-             var html = "<img src='/images/tutor5/hint_question-16x16.gif' onmouseover='showMouseAnswer(this)' onmouseout='nd()'/>";
+             var html = "<img class='ques_icon' src='/images/tutor5/hint_question-16x16.gif' onmouseover='showMouseAnswer(this)' onmouseout='nd()'/>";
              del.innerHTML = html + del.innerHTML;
          }
          else {
@@ -488,10 +488,10 @@ copyPrototype(HmFlashWidgetImplNumberInteger, HmFlashWidget);
 
 
 /** Class for simple decimal values
- * 
+ *
  */
 function HmFlashWidgetImplNumberDecimal(jsonObj) {
-	this.HmFlashWidget(jsonObj); // super 
+        this.HmFlashWidget(jsonObj); // super
 }
 HmFlashWidget.prototype.processKey = function(ele, event) {
     return restrictCharacters(ele, event, restrictionType_decimals);

@@ -72,6 +72,50 @@ Path - ['path',[[x1,y1],[x2,y2],[x3,y3]...[xn,yn]],showLabel,path_color]
 
 have to add support for inequalities[also for numberline]
 
+
+
+
+
+
+Inequalities usage : to enable inequalities there is little change in function command
+
+Functions ---> ['function',['function string','functionof','inequality',isAndFunction],showLabel,func_color] ;
+
+for example:
+i) to render f(x)<x^2 ['function',['x^2','x','lt',false],false,'blue']
+ii) to render f(y)=y+2 ['function',['y+2','y'],false,'blue']
+
+NumberLine:
+i) to render x<3 ['function',['3','x','lt',false],false,'red']
+ii)to render -3<x<3 ['function',['-3_3','x','gt_lt',true],false,'red'] 
+
+
+
+
+
+<div class='hm_question_def'>
+    <div><p class=MsoNormal >A positive number increased by two is equal to the square of that number. What is the number?</p></div>
+    <ul>
+        <li correct='no'>
+            <div><p class=MsoNormal >A. 1</p></div>
+            <div>&nbsp;</div>
+        </li>
+        <li correct='yes'>
+            <div><p class=MsoNormal >B. 2</p></div>
+            <div>&nbsp;</div>
+        </li>
+        <li correct='no'>
+            <div><p class=MsoNormal >C. 3</p></div>
+            <div>&nbsp;</div>
+        </li>
+        <li correct='no'>
+            <div><p class=MsoNormal >D. 4</p></div>
+            <div>&nbsp;</div>
+        </li>
+    </ul>
+</div>
+
+
 </pre>
 </body>
 </html>
