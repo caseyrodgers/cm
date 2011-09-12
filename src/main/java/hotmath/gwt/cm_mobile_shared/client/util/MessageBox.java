@@ -29,5 +29,4 @@ public class MessageBox {
         popup.center();
         popup.show();        
     }
-
 }

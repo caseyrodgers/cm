@@ -642,6 +642,11 @@ table {
 }
 
 
+.prescriptionLessonResourceVideoImpl div {
+	text-align: center;
+}
+
+
 #show_whiteboard_button {
     position: absolute;
     top: 20px;
@@ -807,3 +812,17 @@ table {
 }
 
 
+
+
+.video-is-complete-dialog {
+	height: 100px;
+	width: 260px;
+}
+
+.video-is-complete-dialog .gwt-HTML {
+	margin-bottom: 20px;
+}
+
+.video-is-complete-dialog button {
+	margin-right: 15px;
+}

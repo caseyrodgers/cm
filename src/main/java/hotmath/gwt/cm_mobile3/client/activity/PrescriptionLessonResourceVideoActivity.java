@@ -5,6 +5,8 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
+
 
 public class PrescriptionLessonResourceVideoActivity implements PrescriptionLessonResourceVideoView.Presenter {
 
@@ -26,6 +28,11 @@ public class PrescriptionLessonResourceVideoActivity implements PrescriptionLess
         String nonFlashUrl = "/help/flvs/tw/" + video;
         view.setVideoUrlWithOutExtension(nonFlashUrl);
         view.setVideoTitle(resourceItem.getTitle());
+    }
+    
+    @Override
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
 }

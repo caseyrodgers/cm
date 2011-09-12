@@ -1,22 +1,24 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel implements
@@ -76,23 +78,67 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         
         videoContainer.setInnerHTML(videoHtml);
         
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        setupVideoListeners(videoContainer, this);
+    }
+    
+    private void gwt_videoIsComplete() {
+        final PopupPanel popup = new PopupPanel();
+        popup.addStyleName("popup-message");
+        popup.addStyleName("video-is-complete-dialog");
+        popup.setAutoHideEnabled(true);
+        popup.setModal(true);
+        FlowPanel fp = new FlowPanel();
+        String msg="Your video is complete.<br/>Choose one of the following options:";
+        fp.add(new HTML(msg));
+        
+        Button btnAgain = new Button("",new ClickHandler() {
             @Override
-            public void execute() {
-                showVideo(videoContainer);
+            public void onClick(ClickEvent event) {
+                popup.hide();
+                resetVideo(videoContainer);
             }
         });
+        btnAgain.getElement().setInnerHTML("<span><span>Reset Video</span></span>");
+        btnAgain.addStyleName("sexybutton");
+        Button btnReturn = new Button("",new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                popup.hide();
+                presenter.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+            }
+        });
+        btnReturn.getElement().setInnerHTML("<span><span>Return to Lesson</span></span>");
+        btnReturn.addStyleName("sexybutton");
+        fp.add(btnAgain);
+        fp.add(btnReturn);
         
+        popup.setWidget(fp);
+
+        popup.center();
+        popup.show();   
     }
+    
+    private native void setupVideoListeners(Element videoC, PrescriptionLessonResourceVideoViewImpl instance) /*-{
+    
+        var videos = videoC.getElementsByTagName('video');
+        if(videos.length > 0) {
+            var videoEl = videos[0]; // just first
+            var autoPlay = function() {
+                videoEl.play();
+            }
+            var videoEnded = function() {
+                     instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsComplete()();
+            }
+            videoEl.addEventListener('canplaythrough',autoPlay,false);
+            videoEl.addEventListener('ended',videoEnded,false);
+         }        
+    }-*/;
     
      private native void showVideo(Element videoC) /*-{
          try {
-            var con = videoC.getElementsByTagName('video');
-            if(con.length > 0) {
-                var videoEl = con[0];
-                if(videoEl.paused) {
-                    videoEl.play();
-                }
+            var videoEl = videoC.getElementsByTagName('video')[0];
+            if(videoEl.paused) {
+                videoEl.play();
              }
          }
          catch(e) {
