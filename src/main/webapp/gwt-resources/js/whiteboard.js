@@ -147,6 +147,23 @@ var Whiteboard = (function () {
         offX = $get_Element("#canvas-container").offsetLeft
         offY = $get_Element("#canvas-container").offsetTop;
         // alert(offX+":"+offY);
+		var getCanvasPos = function(){
+			var obj = $get_Element("#canvas-container");
+			var top = 0;
+			var left = 0;
+			while (obj.tagName != "BODY") {
+				top += obj.offsetTop;
+				left += obj.offsetLeft;
+				obj = obj.offsetParent;
+			}
+			offX=left;
+			offY=top;
+			return {
+				top: top,
+				left: left
+			};
+		};
+		getCanvasPos();
         graphicData = {}
         tool_id = {};
         tool_id['eraser'] = 0;
@@ -248,7 +265,7 @@ var Whiteboard = (function () {
                     dy = event.clientY - offY
                 }
                 // alert(dx+":"+event.clientX)
-				console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY+":"+canvas.y);
+				console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY);
                 context.lineWidth = 2.0
                 context.strokeStyle = "rgb(0, 0, 0)";
 
