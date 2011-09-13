@@ -248,6 +248,7 @@ var Whiteboard = (function () {
                     dy = event.clientY - offY
                 }
                 // alert(dx+":"+event.clientX)
+				console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY+":"+event.screenY);
                 context.lineWidth = 2.0
                 context.strokeStyle = "rgb(0, 0, 0)";
 
