@@ -812,7 +812,9 @@ table {
 }
 
 
-
+.question_responses li {
+   margin-bottom: 10px;
+}
 
 .video-is-complete-dialog {
 	height: 100px;
@@ -826,3 +828,5 @@ table {
 .video-is-complete-dialog button {
 	margin-right: 15px;
 }
+
+
