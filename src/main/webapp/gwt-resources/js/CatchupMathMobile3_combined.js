@@ -1881,6 +1881,9 @@ HmFlashWidgetImplOdds.prototype.processWidgetValidation = validateOdds;/**
  * @author sathesh
  */
 var Plotter = function(graphObj, plot_type, plot_input) {
+	this.pInf = Number.POSITIVE_INFINITY;
+	this.nInf = Number.NEGATIVE_INFINITY;
+	this.fArr = ["sin", "cos", "tan", "asin", "acos", "atan", "log", "abs", "sqrt", "ln", "cot", "sec", "csc"];
 	this.graphObj = graphObj;
 	this.plot_type = plot_type;
 	this.plot_input = plot_input;
@@ -1902,6 +1905,64 @@ var Plotter = function(graphObj, plot_type, plot_input) {
 	//console.log(this.context.strokeStyle);
 	EqParser.init();
 	this.getPlots();
+}
+Plotter.prototype.validateFunc = function() {
+	var boo = true;
+	var veqn = this.fn;
+	var pos, len, brac;
+	for(var f = 0; f < this.fArr.length; f++) {
+		len = this.fArr[f].length;
+		pos = veqn.indexOf(this.fArr[f]);
+		if(pos == -1) {
+			continue;
+		} else {
+			brac = veqn.substr(pos + len, 1);
+			if(brac != "(") {
+				boo = false;
+				break;
+			}
+		}
+	}
+	return boo;
+}
+Plotter.prototype.getDval = function(eqO, v, dv) {
+	
+	var dval = this.fixTo(v + dv, 4);
+	return this.evalFor(eqO, dval);
+}
+Plotter.prototype.sign = function(val) {
+	if(val * 1 < 0) {
+		return '-';
+	} else {
+		return '+';
+	}
+}
+Plotter.prototype.setFunctionDatas = function() {
+	this.fn = this.funcObj[0][0];
+	this.fncol = this.funcObj[2];
+	this.fneql = this.funcObj[0][2];
+	this.fand = this.funcObj[0][3];
+	this.fof = this.funcObj[0][1];
+	this.fof = this.fof ? this.fof : 'x';
+	this.fneql = this.fneql ? this.fneql : 'eq';
+	if(this.fand===undefined){
+		if(this.fneql.indexOf("_")>-1&&this.fn.indexOf("_")>-1){
+			this.fand=true;
+		}
+	}
+	//alert(this.fncol);
+}
+Plotter.prototype.coordToCanvasPoint = function(x, y) {
+	var xp = this.graphObj.axisYpos + x * (this.graphObj.scaleX / this.graphObj.xinc);
+	var yp = this.graphObj.axisXpos - y * (this.graphObj.scaleY / this.graphObj.yinc);
+	return [xp, yp];
+}
+Plotter.prototype.fixTo = function(v, p) {
+	var p10 = Math.pow(10, p);
+	return Math.round(p10 * v) / p10;
+}
+Plotter.prototype.evalFor = function(ev, fr) {
+	return EqParser.evalEq(ev, fr);
 }
 Plotter.prototype.getPlots = function() {
 	this.getPlotInputs();
@@ -2034,7 +2095,7 @@ Plotter.prototype.plotPolygon = function() {
 		} else {
 			scope.lineTo(pt[0], pt[1]);
 		}
-		console.log(pt[0] + ":" + pt[1] + ":" + scolor + ":" + fcolor)
+		//console.log(pt[0] + ":" + pt[1] + ":" + scolor + ":" + fcolor)
 	}
 	if(close) {
 		pt = this.coordToCanvasPoint(pts[0][0], pts[0][1]);
@@ -2093,120 +2154,36 @@ Plotter.prototype.plotPoint = function(data) {
 }
 Plotter.prototype.plotFunctions = function() {
 	var temp1 = this.plot_data.split("|");
-	/*var ctx=this.context;
-	ctx.lineStyle=color?color:this.fn_color;
-	ctx.lineWidth=2.0;*/
-	//console.log(temp1)
 	for(var i = 0; i < temp1.length; i++) {
 		var fndata = eval(temp1[i]);
 		this.plotFunction(fndata);
 	}
 
 }
+
 Plotter.prototype.plotFunction = function() {
-	var pInf = Number.POSITIVE_INFINITY;
-	var nInf = Number.NEGATIVE_INFINITY;
 	this.funcObj = this.plot_data;
-	this.setFunctionDatas();
-	this.setAxisDatas();
-	var eqnObj = this.fn;
-	var eqSy = this.fneql;
-	var acc = 1;
-	var xscale = this.xscale;
-	var yscale = this.yscale;
-	var xaxis = this.xaxis;
-	var yaxis = this.yaxis;
-	var scope = this.context;
-	var y, x0, y0, x1;
-	var xPix, yPix, x0Pix, y0Pix, x1Pix, y1Pix, ycomp, dy0, dy1;
-	var q = 0;
-	var xLow = this.xMin;
-	var xHi = this.xMax;
-	var yLow = this.yMin;
-	var yHi = this.yMax;
-	this.doPlot = true;
-	//
-	scope.lineWidth = 2.0;
-	scope.strokeStyle = this.fncol ? this.fncol : "BLUE";
-	scope.beginPath();
-	acc = Math.abs(xHi - xLow) / 150;
-	//
-	for(var x = xLow; x <= xHi; x += acc) {
-		x = this.fixTo(x, 4);
-		y = -this.evalFor(eqnObj, x);
-		x0 = x - acc;
-		y0 = -this.evalFor(eqnObj, x0);
-		x1 = x + acc;
-		y1 = -this.evalFor(eqnObj, x1);
-
-		if(Number(y)) {
-			xPix = x * xscale + xaxis;
-			yPix = y * yscale + yaxis;
-			x0Pix = x0 * xscale + xaxis;
-			y0Pix = y0 * yscale + yaxis;
-			x1Pix = x1 * xscale + xaxis;
-			y1Pix = y1 * yscale + yaxis;
-			if(yPix > -2880 && yPix < 2880) {
-				xPix = this.fixTo(xPix, 2);
-				yPix = this.fixTo(yPix, 2);
-				if(q == 0) {
-					scope.moveTo(xPix, yPix);
-				} else {
-					scope.lineTo(xPix, yPix);
-				}
-
-			}
-			q++;
-		}
-	}
-	scope.stroke();
-	scope.closePath();
+	this.getPointsFromEq();
 }
-Plotter.prototype.setFunctionDatas = function() {
-	this.fn = this.funcObj[0];
-	this.fnLab = this.funcObj[1];
-	this.fncol = this.funcObj[2];
-	this.fneql = this.funcObj[4];
-	this.fand = this.funcObj[5];
-	this.fof = this.funcObj[3];
-}
-Plotter.prototype.setAxisDatas = function() {
-	var mygraphObj = this.graphObj;
-	this.numbLine = mygraphObj.graph_type == "x" ? true : false;
-	this.midX = mygraphObj.width / 2;
-	this.midY = mygraphObj.height / 2;
-	this.xMin = (mygraphObj.xmin - mygraphObj.xinc);
-	this.xMax = (mygraphObj.xmax + mygraphObj.xinc);
-	this.yMin = (mygraphObj.ymin - mygraphObj.yinc);
-	this.yMax = (mygraphObj.ymax + mygraphObj.yinc);
-	this.xscale = mygraphObj.scaleX / mygraphObj.xinc;
-	this.yscale = mygraphObj.scaleY / mygraphObj.yinc;
-	this.xaxis = mygraphObj.axisYpos;
-	this.yaxis = mygraphObj.axisXpos;
-	if(mygraphObj.labType == "pi") {
-		this.xMin = Math.round((xMin) * Math.PI);
-		this.xMax = Math.round((xMax) * Math.PI);
-		this.xscale = xscale / Math.PI;
-	}
-	if(mygraphObj.ylabType == "pi") {
-		this.yMin = Math.round((yMin) * Math.PI);
-		this.yMax = Math.round((yMax) * Math.PI);
-		this.yscale = yscale / Math.PI;
-	}
-	this.xl = 0;
-	this.xh = this.midX * 2;
-	this.yl = 0;
-	this.yh = this.midY * 2;
-}
-//
-Plotter.prototype.drawPoint = function(x, y, color, r) {
+//--------------------------------------------------------------------------------------//
+Plotter.prototype.drawPoint = function(x, y, color, r, _open) {
 	var ctx = this.context;
-	//alert(ctx);
+	var open = _open ? _open : false;
 	var rad = r ? r : 4;
-	ctx.fillStyle = color;
+	if(!open) {
+		ctx.fillStyle = color;
+	} else {
+		ctx.strokeStyle = color;
+	}
+
 	ctx.beginPath();
 	ctx.arc(x, y, rad, 0, 2 * Math.PI, false);
-	ctx.fill();
+
+	if(!open) {
+		ctx.fill();
+	} else {
+		ctx.stroke();
+	}
 	ctx.closePath();
 }
 Plotter.prototype.drawCircle = function(x, y, rad, stroke, stroke_color, fill, fill_color) {
@@ -2255,30 +2232,1138 @@ Plotter.prototype.drawRect = function(x, y, w, h, stroke, stroke_color, fill, fi
 	}
 	context.closePath();
 }
-Plotter.prototype.coordToCanvasPoint = function(x, y) {
-	var xp = this.graphObj.axisYpos + x * (this.graphObj.scaleX / this.graphObj.xinc);
-	var yp = this.graphObj.axisXpos - y * (this.graphObj.scaleY / this.graphObj.yinc);
-	return [xp, yp];
-}
-Plotter.prototype.fixTo = function(v, p) {
-	var p10 = Math.pow(10, p);
-	return Math.round(p10 * v) / p10
-}
-Plotter.prototype.evalFor = function(ev, fr) {
-
-	//var x = fr;
-	return EqParser.evalEq(ev, fr);
-}
-Plotter.prototype.getDval = function(eqO, v, dv) {
-	var dval = this.fixTo(v + dv, 4);
-	return evalFor(eqO, dval);
-}
-Plotter.prototype.sign = function(val) {
-	if(val * 1 < 0) {
-		return '-';
-	} else {
-		return '+';
+//--------------------------------------------------------------------------------------//
+Plotter.prototype.getPointsFromEq = function() {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	this.setFunctionDatas();
+	this.setAxisDatas();
+	if(this.numbLine) {
+		return this.plotNumberLine();
 	}
+	var fn = this.fn;
+	var fneql = this.fneql;
+	var f = this.fof;
+	if(f == "y") {
+		return this.getPointsFromEqY();
+	}
+	this.graph_color = this.fncol;
+	if(fn == "" || fn == undefined) {
+		return null;
+	}
+	var buffrArr = [];
+	var eqnObj = this.eqnObj = this.fn;
+	var eqSy = this.eqSy = fneql;
+	var acc = .1;
+	var xscale = this.graphObj.scaleX;
+	var yscale = this.graphObj.scaleY;
+	var xaxis = this.graphObj.axisYpos;
+	var yaxis = this.graphObj.axisXpos;
+	var ptsArr = [];
+	var xLow = this.xMin;
+	var xHi = this.xMax;
+	var yLow = this.yMin;
+	var yHi = this.yMax;
+	var y, x0, y0, x1, y1;
+	var xPix, yPix, x0Pix, y0Pix, x1Pix, y1Pix, ycomp, dy0, dy1;
+	this.doPlot = true;
+	var fixTo = this.fixTo;
+	var getDval=this.getDval;
+	acc = Math.abs(xHi - xLow) / 300;
+	for(var x = xLow; x <= xHi; x += acc) {
+		x = fixTo(x, 4);
+		y = -this.evalFor(eqnObj, x);
+		x0 = x - acc;
+		y0 = -this.evalFor(eqnObj, x0);
+		x1 = x + acc;
+		y1 = -this.evalFor(eqnObj, x1);
+		//console.log(x + " <> " + y);
+		if(Number(y)) {
+			//var xpts=this.
+			xPix = x * xscale + xaxis;
+			yPix = y * yscale + yaxis;
+			x0Pix = x0 * xscale + xaxis;
+			y0Pix = y0 * yscale + yaxis;
+			x1Pix = x1 * xscale + xaxis;
+			y1Pix = y1 * yscale + yaxis;
+
+			if(yPix > -2880 && yPix < 2880) {
+				xPix = fixTo(xPix, 2);
+				yPix = fixTo(yPix, 2);
+				ptsArr.push({
+					x : xPix,
+					y : yPix,
+					l : "line"
+				});
+			} else if(yPix == nInf) {
+				if(y0Pix != nInf && y1Pix != nInf && y0Pix != pInf && y1Pix != pInf && Number(y0Pix)!=Number.NaN && Number(y1Pix)!=Number.NaN) {
+					dy0 = this.getDval(eqnObj, x0, acc / 10);
+					if(y0Pix < this.yh && y0Pix > this.yl) {
+						if(dy0 > y0) {
+							ycomp = this.yh;
+						} else {
+							ycomp = this.yl;
+						}
+					} else {
+						ycomp = y0Pix;
+					}
+					ptsArr.push({
+						x : x0Pix,
+						y : ycomp,
+						l : "line"
+					});
+					ptsArr.push({
+						x : xPix,
+						y : ycomp,
+						l : "line"
+					});
+					ptsArr.push({
+						x : xPix,
+						y : -ycomp,
+						l : "move"
+					});
+					dy1 = this.getDval(eqnObj, x1, -acc / 10);
+					if(y1Pix < this.yh && y1Pix > this.yl) {
+						if(dy1 > y1) {
+							ycomp = this.yh;
+						} else {
+							ycomp = this.yl;
+						}
+					} else {
+						ycomp = y1Pix;
+					}
+					ptsArr.push({
+						x : x1Pix,
+						y : ycomp,
+						l : "move"
+					});
+				} else {
+					ptsArr.push({
+						x : xPix,
+						y : nInf,
+						l : "move"
+					});
+				}
+			} else if(yPix == pInf) {
+				if(y0Pix != nInf && y1Pix != nInf && y0Pix != pInf && y1Pix != pInf && Number(y0Pix) != Number.NaN && Number(y1Pix) != Number.NaN) {
+					dy0 = this.getDval(eqnObj, x0, acc / 10);
+					if(y0Pix < this.yh && y0Pix > this.yl) {
+						if(dy0 > y0) {
+							ycomp = this.yh;
+						} else {
+							ycomp = this.yl;
+						}
+					} else {
+						ycomp = y0Pix;
+					}
+					ptsArr.push({
+						x : x0Pix,
+						y : ycomp,
+						l : "line"
+					});
+					ptsArr.push({
+						x : xPix,
+						y : ycomp,
+						l : "line"
+					});
+					ptsArr.push({
+						x : xPix,
+						y : -ycomp,
+						l : "move"
+					});
+					dy1 = this.getDval(eqnObj, x1, -acc / 10);
+					if(y1Pix < this.yh && y1Pix > this.yl) {
+						if(dy1 > y1) {
+							ycomp = this.yh;
+						} else {
+							ycomp = this.yl;
+						}
+					} else {
+						ycomp = y1Pix;
+					}
+					ptsArr.push({
+						x : x1Pix,
+						y : ycomp,
+						l : "line"
+					});
+				} else {
+					ptsArr.push({
+						x : xPix,
+						y : pInf,
+						l : "move"
+					});
+				}
+			} else {
+				buffrArr.push(y);
+			}
+		}
+	}
+	ptsArr = this.asymFix(ptsArr);
+	var n;
+	if(ptsArr.length < 2) {
+		if(buffrArr.length < 2) {
+			if(this.validateFunc()) {
+				alert("Error in function!");
+			} else {
+				alert("Check your input function!");
+			}
+		} else {
+			alert("Cannot plot the given function!");
+		}
+		return null;
+	} else {
+		n = this.getNodeDetails(ptsArr);
+		return this.drawFunction(n, ptsArr);
+	}
+}
+Plotter.prototype.getNodeDetails = function(arr) {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var sNode = {};
+	var eNode = {};
+	var nodes = {};
+	
+	for(var q = 0; q < arr.length; q++) {
+		if(q == 0) {
+			if(this.fof == "x") {
+				if(arr[q].y == this.pInf) {
+					arr[q].y = yh;
+					arr[q].l = "line";
+				}
+				if(arr[q].y == this.nInf) {
+					arr[q].y = yl;
+					arr[q].l = "line";
+				}
+			}
+			if(this.fof == "y") {
+				if(arr[q].x == this.pInf) {
+					arr[q].x = xh;
+					arr[q].l = "line";
+				}
+				if(arr[q].x == this.nInf) {
+					arr[q].x = xl;
+					arr[q].l = "line";
+				}
+			}
+		} else {
+			if(this.fof == "x") {
+				if(arr[q].y == this.pInf || arr[q].y == this.nInf) {
+					arr[q].l = "move";
+					arr[q + 1].l = "move";
+				}
+			}
+			if(this.fof == "y") {
+				if(arr[q].x == this.pInf || arr[q].x == this.nInf) {
+					arr[q].l = "move";
+					arr[q + 1].l = "move";
+				}
+			}
+		}
+	}
+	sNode.pt = arr[0];
+	sNode.dir = this.getDir(sNode.pt);
+	eNode.pt = arr[arr.length - 1];
+	eNode.dir = this.getDir(eNode.pt);
+	//alert("INF:"+sNode.dir+":"+eNode.dir);
+	nodes.s = sNode;
+	nodes.e = eNode;
+	return nodes;
+}
+Plotter.prototype.setAxisDatas = function() {
+	var mygraphObj = this.graphObj;
+	this.numbLine = mygraphObj.graph_type == "x" ? true : false;
+	this.midX = mygraphObj.width / 2;
+	this.midY = mygraphObj.height / 2;
+	this.xMin = (mygraphObj.xmin - mygraphObj.xinc);
+	this.xMax = (mygraphObj.xmax + mygraphObj.xinc);
+	this.yMin = (mygraphObj.ymin - mygraphObj.yinc);
+	this.yMax = (mygraphObj.ymax + mygraphObj.yinc);
+	this.xscale = mygraphObj.scaleX / mygraphObj.xinc;
+	this.yscale = mygraphObj.scaleY / mygraphObj.yinc;
+	this.xaxis = mygraphObj.axisYpos;
+	this.yaxis = mygraphObj.axisXpos;
+	if(mygraphObj.labType == "pi") {
+		this.xMin = Math.round((xMin) * Math.PI);
+		this.xMax = Math.round((xMax) * Math.PI);
+		this.xscale = xscale / Math.PI;
+	}
+	if(mygraphObj.ylabType == "pi") {
+		this.yMin = Math.round((yMin) * Math.PI);
+		this.yMax = Math.round((yMax) * Math.PI);
+		this.yscale = yscale / Math.PI;
+	}
+	this.xl = 0;
+	this.xh = this.midX * 2;
+	this.yl = 0;
+	this.yh = this.midY * 2;
+}
+Plotter.prototype.getDir = function(pt) {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var xscale = this.xscale;
+	var yscale = this.yscale;
+	var xaxis = this.xaxis;
+	var yaxis = this.yaxis;
+	var xh = this.xh;
+	var xl = this.xl;
+	var yh = this.yh;
+	var yl = this.yl;
+	var dir = "C";
+	if(pt.y >= yh && (pt.x <= xh && pt.x >= xl)) {
+		dir = "N";
+	}
+	if(pt.y <= yl && (pt.x <= xh && pt.x >= xl)) {
+		dir = "S";
+	}
+	if(pt.x >= xh && (pt.y <= yh && pt.y >= yl)) {
+		dir = "E";
+	}
+	if(pt.x <= xl && (pt.y <= yh && pt.y >= yl)) {
+		dir = "W";
+	}
+	if(pt.y >= yh && pt.x >= xh) {
+		dir = "NE";
+	}
+	if(pt.y <= yl && pt.x >= xh) {
+		dir = "SE";
+	}
+	if(pt.y >= yh && pt.x <= xl) {
+		dir = "NW";
+	}
+	if(pt.y <= yl && pt.x <= xl) {
+		dir = "SW";
+	}
+	return dir;
+}
+Plotter.prototype.plotPath = function(sN, eN, mc) {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var pathString, pathArr, rot;
+	var eqS = this.eqSy;
+	var xh = this.xh;
+	var xl = this.xl;
+	var yh = this.yh;
+	var yl = this.yl;
+	var fof=this.fof;
+	if(eqS == "eq" || eN.dir == "C" || sN.dir == "C") {
+		return false;
+	}
+	if(eqS == "ge" || eqS == "gt") {
+		if(fof == "y") {
+			pathString = "S-SE-E-NE-N-NW-W-SW-S";
+			rot = "+";
+		} else {
+			pathString = "N-NE-E-SE-S-SW-W-NW-N";
+			rot = "-";
+		}
+	}
+	if(eqS == "le" || eqS == "lt") {
+		if(fof == "y") {
+			pathString = "N-NE-E-SE-S-SW-W-NW-N";
+			rot = "-";
+		} else {
+			pathString = "S-SE-E-NE-N-NW-W-SW-S";
+			rot = "+";
+		}
+	}
+	pathArr = pathString.split("-");
+	var xp, yp;
+	var flag = false;
+	var dir = "C";
+	for(var p = 0; p < pathArr.length; p++) {
+		dir = pathArr[p];
+		
+		if(eN.dir == dir) {
+			xp = eN.pt.x;
+			yp = eN.pt.y;
+			mc.moveTo(xp, yp);
+			//console.log('move:'+xp+":"+yp);
+			flag = true;
+			if(eN.dir == sN.dir) {
+				if((rot == "-" && dir == "S") || (rot == "+" && dir == "N")) {
+					xp = sN.pt.x;
+					yp = sN.pt.y;
+					mc.lineTo(xp, yp);
+					//console.log('line:'+xp+":"+yp);
+					flag = !true;
+					break;
+				}
+			}
+			continue;
+		}
+		if(flag && dir.length == 2) {
+			if(pathArr[p] == sN.dir) {
+				//trace("DD:"+dir+":"+dir.length+":"+flag+":"+sN.pt.x+":"+sN.pt.y);
+				mc.lineTo(sN.pt.x, sN.pt.y);
+				//console.log('line0:'+dir+":"+sN.pt.x+":"+sN.pt.y);
+				flag = false;
+				break;
+			} else {
+				switch (dir) {
+					case "NE" :
+						if(rot == "-") {
+							xp = xh;
+						} else {
+							if(sN.dir == "N") {
+								yp = sN.pt.y;
+							} else {
+								yp = yh;
+							}
+						}
+						//trace("DD:"+dir+":"+dir.length+":"+xp+":"+yp);
+						mc.lineTo(xp, yp);
+					//	console.log('line:'+dir+":"+xp+":"+yp);
+						break;
+					case "SE" :
+						if(rot == "-") {
+							yp = yl;
+						} else {
+							xp = xh;
+						}
+						mc.lineTo(xp, yp);
+						//console.log('line:'+dir+":"+xp+":"+yp);
+						break;
+					case "SW" :
+						if(rot == "-") {
+							xp = xl;
+						} else {
+							yp = yl;
+						}
+						mc.lineTo(xp, yp);
+					//	console.log('line:'+dir+":"+xp+":"+yp);
+						break;
+					case "NW" :
+						if(rot == "-") {
+							yp = yh;
+						} else {
+							xp = xl;
+						}
+						mc.lineTo(xp, yp);
+						//console.log('line:'+dir+":"+xp+":"+yp);
+						break;
+				}
+			}
+		} else if(flag) {
+			if(pathArr[p] == sN.dir) {
+				mc.lineTo(sN.pt.x, sN.pt.y);
+				//console.log('line1:'+dir+":"+sN.pt.x+":"+sN.pt.y);
+				flag = false;
+				break;
+			}
+		}
+	}
+	return true;
+}
+Plotter.prototype.drawFunction = function(nodes, arr) {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var eqSy = this.eqSy;
+	var lalpha = 1.0;
+	var fHold = this.context;
+	var fill;
+	var xh = this.xh;
+	var xl = this.xl;
+	var yh = this.yh;
+	var yl = this.yl;
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var fof = this.fof;
+	var pathBegin=false;
+	var sign=this.sign;
+	this.overFlowObj={};
+	if(eqSy == "lt" || eqSy == "gt" || eqSy == "neq") {
+		lalpha = 0;
+	}
+	if(eqSy != "eq" && eqSy != "neq") {
+		fHold.lineWidth = 0.0;
+		fHold.strokeStyle = this.hex2rgb(this.graph_color, 0);
+		fHold.fillStyle = this.hex2rgb(this.graph_color, 0.15);
+		fHold.beginPath();
+		this.fill = this.plotPath(nodes.s, nodes.e, fHold);
+		pathBegin=true;
+		fHold.stroke();
+		if(!this.fill) {
+			pathBegin=false;
+			fHold.fill();
+			fHold.closePath();
+		}
+		
+	} else if(eqSy == "neq") {
+		//fHold.lineWidth = 0.0;
+		//fHold.strokeStyle = this.hex2rgb(this.graph_color, 0);
+		fHold.fillStyle = this.hex2rgb(this.graph_color, 0.15);
+		fHold.beginPath();
+		fHold.moveTo(xl, yl);
+		fHold.lineTo(xh, yl);
+		fHold.lineTo(xh, yh);
+		fHold.lineTo(xl, yh);
+		fHold.lineTo(xl, yl);
+		fHold.fill();
+		fHold.closePath();
+	}
+	var pPt;
+	if(eqSy != "neq") {
+		fHold.lineWidth = 2.0;
+		fHold.strokeStyle = this.hex2rgb(this.graph_color, lalpha);
+		//fHold.fillStyle=this.hex2rgb(this.graph_color,0.15);
+		//alert(this.hex2rgb(this.graph_color, lalpha));
+		if(!pathBegin){
+			fHold.beginPath();
+		}
+		
+		for(var q = 0; q < arr.length; q++) {
+			if(q > 0) {
+				var p1 = {
+					x : arr[q].x,
+					y : arr[q].y
+				};
+				var p2 = pPt;
+				
+				if(p1.x == pInf || p1.x == nInf || p1.y == pInf || p1.y == nInf || p2.x == pInf || p2.x == nInf || p2.y == pInf || p2.y == nInf) {
+					//fHold.lineStyle(1, 0xff0000, lalpha);
+					
+					fHold.lineWidth = 2.0;
+					fHold.strokeStyle = this.hex2rgb('#ff0000', lalpha);
+					if(eqSy == "eq") {
+						fHold.lineWidth = 2.0;
+						fHold.strokeStyle = this.hex2rgb('#ff0000', 0);
+					}
+				} else {
+					var dp = (this.distance(p1, p2));
+					if(fof == "x") {
+						if(dp >= (this.xh) && sign(p1.y) != sign(p2.y)) {
+							fHold.lineWidth = 2.0;
+							fHold.strokeStyle = this.hex2rgb('#ff0000', lalpha);
+							if(eqSy == "eq") {
+								fHold.lineWidth = 2.0;
+								fHold.strokeStyle = this.hex2rgb('#ff0000', 0);
+								fHold.moveTo(arr[q].x, arr[q].y);
+								console.log('INFI:'+p1.x+":"+p1.y+":"+p2.x+":"+p2.y);
+							}
+						} else {
+							fHold.lineWidth = 2.0;
+							fHold.strokeStyle = this.hex2rgb(this.graph_color, lalpha);
+						}
+					}
+					if(fof == "y") {
+						if(dp >= (this.yh) && this.sign(p1.x) != this.sign(p2.x)) {
+							fHold.lineWidth = 2.0;
+							fHold.strokeStyle = this.hex2rgb(this.graph_color, lalpha);
+							if(eqSy == "eq") {
+								fHold.lineWidth = 2.0;
+								fHold.strokeStyle = this.hex2rgb(this.graph_color, 0);
+								fHold.moveTo(arr[q].x, arr[q].y);
+							}
+						} else {
+							fHold.lineWidth = 2.0;
+							fHold.strokeStyle = this.hex2rgb(this.graph_color, lalpha);
+						}
+					}
+					pPt = {
+						x : arr[q].x,
+						y : arr[q].y
+					};
+				}
+			} else {
+				pPt = {
+					x : arr[q].x,
+					y : arr[q].y
+				};
+			}
+			
+			if(q == 0 && (eqSy == "eq" || !this.fill)) {
+				//
+				console.log("FUNCTION_PATH_START:");
+				fHold.moveTo(arr[q].x, arr[q].y);
+			} else {
+
+				if(eqSy == "eq") {
+					if(arr[q].l == "line") {
+						fHold.lineTo(arr[q].x, arr[q].y);
+					} else if(arr[q].l == "move") {
+						fHold.moveTo(arr[q].x, arr[q].y);
+					}
+				} else {
+					//console.log("FUNCTION_PATH_LINE:"+fHold.strokeStyle);
+					fHold.lineTo(arr[q].x, arr[q].y);
+				}
+			}
+		}
+		fHold.stroke();
+		//fHold.closePath();
+	}
+	if(eqSy != "eq") {
+		//alert(fHold.paths);
+		fHold.fill();
+		
+	}
+	fHold.closePath();
+	
+	if(lalpha == 0) {
+		fHold.beginPath();
+		for(var q = 0; q < arr.length; q++) {
+			if(q < arr.length - 1) {
+				var p1 = {
+					x : arr[q].x,
+					y : arr[q].y
+				};
+				var p2 = {
+					x : arr[q + 1].x,
+					y : arr[q + 1].y
+				};
+				if(p1.x == pInf) {
+					p1.x = xh;
+				} else if(p1.x == nInf) {
+					p1.x = xl;
+				}
+				if(p1.y == pInf) {
+					p1.y = yh;
+				} else if(p1.y == nInf) {
+					p1.y = yl;
+				}
+				if(p2.x == pInf) {
+					p2.x = xh;
+				} else if(p2.x == nInf) {
+					p2.x = xl;
+				}
+				if(p2.y == pInf) {
+					p2.y = yh;
+				} else if(p2.y == nInf) {
+					p2.y = yl;
+				}
+				var dp = (this.distance(p1, p2));
+				var sL, gL;
+				//fHold.lineStyle(2, graph_color, 100, false);
+				fHold.lineWidth = 1;
+				fHold.strokeStyle = this.hex2rgb(this.graph_color, 1.0);
+				
+				if(dp >= 4) {
+					sL = 1;
+					gL = 3;
+					if(fof == "x") {
+						if(dp >= (this.xh) && this.sign(p1.y) != this.sign(p2.y)) {
+							//fHold.lineStyle(2, 0xff0000, 100);
+							fHold.lineWidth = 1;
+							fHold.strokeStyle = this.hex2rgb('#ff0000', 1.0);
+						}
+					}
+					if(fof == "y") {
+						if(dp >= (this.yh) && this.sign(p1.x) != this.sign(p2.x)) {
+							//fHold.lineStyle(2, 0xff0000, 100);
+							fHold.lineWidth = 1;
+							fHold.strokeStyle = this.hex2rgb('#ff0000', 1.0);
+						}
+					}
+				} else {
+					sL = 3;
+					gL = 3;
+				}
+				sL = 3;
+					gL = 3;
+				fHold.dashTo(p1.x, p1.y, p2.x, p2.y, sL, gL,this);
+				fHold.stroke();
+			}
+		}
+	}
+	fHold.closePath();
+	return fHold;
+}
+Plotter.prototype.getPointsFromEqY = function() {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var isNaN = function(n) {
+		return Number(n) == Number.NaN;
+	}
+	this.setFunctionDatas();
+	this.setAxisDatas();
+	this.graph_color = this.fncol;
+	var fn=this.fn;
+	var fneql=this.fneql;
+	var fncol=this.fncol;
+	if(fn == "" || fn == undefined) {
+		return null;
+	}
+	var buffrArr = [];
+	var eqnObj=this.eqnObj = this.fn;
+	this.eqSy = this.fneql;
+	var acc = .1;
+	var xscale = this.xscale;
+	var yscale = this.yscale;
+	var xaxis = this.xaxis;
+	var yaxis = this.yaxis;
+	var ptsArr = [];
+	var xLow = this.xMin;
+	var xHi = this.xMax;
+	var yLow = this.yMin;
+	var yHi = this.yMax;
+	var xh=this.xh;
+	var xl=this.xl;
+	var yh=this.yh;
+	var yl=this.yl;
+	var y, x0, y0, x1, y1;
+	var xPix, yPix, x0Pix, y0Pix, x1Pix, y1Pix, ycomp, dy0, dy1;
+	this.doPlot = true;
+	var fixTo = this.fixTo;
+	acc = (yHi - yLow) / 300;
+	acc=this.fixTo(acc,4);
+	console.log(yLow+":"+yHi+":"+acc)
+	for(var y = yLow; y <= yHi; y += acc) {
+		y = fixTo(y, 4);
+		x = this.evalFor(eqnObj, -y);
+		y0 = -(y - acc);
+		x0 = this.evalFor(eqnObj, y0);
+		y1 = -(y + acc);
+		x1 = this.evalFor(eqnObj, y1);
+		
+		if(Number(x)) {
+			xPix = x * xscale + xaxis;
+			yPix = y * yscale + yaxis;
+			x0Pix = x0 * xscale + xaxis;
+			y0Pix = y0 * yscale + yaxis;
+			x1Pix = x1 * xscale + xaxis;
+			y1Pix = y1 * yscale + yaxis;
+			if(xPix > -2880 && xPix < 2880) {
+				xPix = fixTo(xPix, 2);
+				yPix = fixTo(yPix, 2);
+				ptsArr.push({
+					x : xPix,
+					y : yPix,
+					l : "line"
+				});
+			} else if(xPix == nInf) {
+				if(x0Pix != nInf && x1Pix != nInf && x0Pix != pInf && x1Pix != pInf && !isNaN(x0Pix) && !isNaN(x1Pix)) {
+					dx0 = this.getDval(eqnObj, y0, acc / 10);
+					if(x0Pix < xh && x0Pix > xl) {
+						if(dx0 > x0) {
+							xcomp = xh;
+						} else {
+							xcomp = xl;
+						}
+					} else {
+						xcomp = x0Pix;
+					}
+					ptsArr.push({
+						y : y0Pix,
+						x : xcomp,
+						l : "line"
+					});
+					ptsArr.push({
+						y : yPix,
+						x : xcomp,
+						l : "line"
+					});
+					ptsArr.push({
+						y : yPix,
+						x : -xcomp,
+						l : "move"
+					});
+					dx1 = this.getDval(eqnObj, y1, -acc / 10);
+					//trace(y1+":::::"+dy1);
+					if(x1Pix < xh && x1Pix > xl) {
+						if(dx1 > x1) {
+							xcomp = xh;
+						} else {
+							xcomp = xl;
+						}
+					} else {
+						xcomp = x1Pix;
+					}
+					ptsArr.push({
+						y : y1Pix,
+						x : xcomp,
+						l : "move"
+					});
+					//ptsArr.push({x:x1Pix, y:yh, l:"move"});
+				} else {
+					ptsArr.push({
+						y : yPix,
+						x : nInf,
+						l : "move"
+					});
+				}
+				//ptsArr.push({x:xPix, y:nInf, l:"move"});
+			} else if(xPix == pInf) {
+				if(x0Pix != nInf && x1Pix != nInf && x0Pix != pInf && x1Pix != pInf && !isNaN(x0Pix) && !isNaN(x1Pix)) {
+					dx0 = this.getDval(eqnObj, y0, acc / 10);
+					//trace(y0+":::::"+dy0);
+					if(x0Pix < midX && x0Pix > -midX) {
+						if(dx0 > x0) {
+							xcomp = xh;
+						} else {
+							xcomp = xl;
+						}
+					} else {
+						xcomp = x0Pix;
+					}
+					//trace("P0:"+y0Pix+":"+xcomp+":"+yPix);
+					ptsArr.push({
+						y : y0Pix,
+						x : xcomp,
+						l : "line"
+					});
+					ptsArr.push({
+						y : yPix,
+						x : xcomp,
+						l : "line"
+					});
+					ptsArr.push({
+						y : yPix,
+						x : -xcomp,
+						l : "move"
+					});
+					//ptsArr.push({x:xPix, y:pInf, l:"move"});
+					dx1 = this.getDval(eqnObj, y1, -acc / 10);
+					if(x1Pix < xh && x1Pix > xl) {
+						if(dx1 > x1) {
+							xcomp = xh;
+						} else {
+							xcomp = xl;
+						}
+					} else {
+						xcomp = x1Pix;
+					}
+					ptsArr.push({
+						y : y1Pix,
+						x : xcomp,
+						l : "line"
+					});
+
+				} else {
+					ptsArr.push({
+						y : yPix,
+						x : pInf,
+						l : "move"
+					});
+				}
+
+			} else {
+
+				buffrArr.push(x);
+			}
+		}
+		//ptsArr.push({x:x, y:y});
+	}
+	ptsArr = this.asymFix(ptsArr);
+	var n;
+	if(ptsArr.length < 2) {
+		if(buffrArr.length < 2) {
+			if(this.validateFunc()) {
+				//alert("Not a valid function!");
+			} else {
+				alert("Check your input function!");
+			}
+		} else {
+			alert("Cannot plot the given function!");
+		}
+		return null;
+	} else {
+		n = this.getNodeDetails(ptsArr);
+		return this.drawFunction(n, ptsArr);
+	}
+}
+Plotter.prototype.plotNumberLine=function() {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var gmc = this.context;
+	this.setAxisDatas();
+	if(this.fand) {
+		return this.plotNumberLineAnd();
+	}
+	var eqn = this.fn;
+	var eql = this.fneql;
+	if(eqn == "" || eqn == undefined) {
+		return null;
+	}
+	var dx = 4;
+	var eqnObj = eqn;
+	var eqSy = eql;
+	var x0 = this.evalFor(eqnObj, 0);
+	var y0 = 0;
+	var point;
+	point = this.coordToCanvasPoint(x0, y0);
+	var pty = eqSy == 'lt' || eqSy == 'gt';
+	var fncol = this.fncol ? this.fncol : "RED";
+	gmc.lineWidth = 2.0;
+	this.drawPoint(point[0], point[1], fncol, dx, pty);
+	var xpos = point[0];
+	gmc.closePath();
+	
+	gmc.lineWidth = 3.0;
+	gmc.strokeStyle = fncol;
+	gmc.fillStyle = fncol;
+	//gmc.beginPath();
+	var xs, ys, xe, ye;
+	ys = this.yaxis;
+	ye = this.yaxis;
+	var ad;
+	if(eqSy == "eq") {
+
+	} else if(eqSy == "le") {
+		xs = xpos - dx;
+		xe = 0+10;
+		ad = 'w';
+	} else if(eqSy == "lt") {
+		xs = xpos - dx;
+		xe = 0+10;
+		ad = 'w';
+	} else if(eqSy == "ge") {
+		xs = xpos + dx;
+		xe = this.xh-10;
+		ad = 'e';
+	} else if(eqSy == "gt") {
+		xs = xpos + dx;
+		xe = this.xh-10;
+		ad = 'e';
+	}
+	gmc.beginPath();
+	gmc.moveTo(xs, ys);
+	gmc.lineTo(xe, ye);
+	gmc.stroke();
+	gmc.closePath();
+	//
+	if(ad == 'e') {
+		//!- arrow at east end
+		gmc.beginPath();
+		gmc.moveTo((this.xh), this.yaxis);
+		gmc.lineTo((this.xh) - 10, this.yaxis + 4);
+		gmc.lineTo((this.xh) - 10, this.yaxis - 4);
+		gmc.lineTo((this.xh), this.yaxis);
+		gmc.fill();
+	} else if(ad == 'w') {
+		//!- arrow at west end
+		gmc.beginPath();
+		gmc.moveTo((0), this.yaxis);
+		gmc.lineTo((0) + 10, this.yaxis + 4);
+		gmc.lineTo((0) + 10, this.yaxis - 4);
+		gmc.lineTo((0), this.yaxis);
+		gmc.fill();
+	}
+gmc.closePath();
+}
+
+Plotter.prototype.plotNumberLineAnd=function() {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var gmc = this.context;
+	this.setAxisDatas();
+	this.xscale = this.fixTo(this.xscale, 8);
+	var eqDatas = this.fn.split("_");
+	var leqn = eqDatas[0];
+	var reqn = eqDatas[1];
+	if(leqn == "" || leqn == undefined || reqn == "" || reqn == undefined) {
+		return null;
+	}
+	var eqSy=this.eqSy = this.fneql.split("_");
+	var leqSy = eqSy[0];
+	var reqSy = eqSy[1];
+	var x0 = this.evalFor(leqn, 0);
+	var y0 = 0;
+	var x1 = this.evalFor(reqn, 0);
+	var y1 = 0;
+	var dx = 4;
+	var point0 = this.coordToCanvasPoint(x0, y0);
+	var point1 = this.coordToCanvasPoint(x1, y1);
+	var pty0 = leqSy == 'lt' || leqSy == 'gt';
+	var pty1 = reqSy == 'lt' || reqSy == 'gt';
+	var fncol = this.fncol ? this.fncol : "RED";
+	gmc.lineWidth = 2.0;
+	this.drawPoint(point0[0], point0[1], fncol, dx, pty0);
+	this.drawPoint(point1[0], point1[1], fncol, dx, pty1);
+	var xpos = point0[0];
+	gmc.closePath();
+	gmc.lineWidth = 3.0;
+	gmc.strokeStyle = fncol;
+	gmc.fillStyle = fncol;
+	var xs, ys, xe, ye;
+	ys = this.yaxis;
+	ye = this.yaxis;
+	var ad;
+	//
+	x0=point0[0];
+	x1=point1[0];
+	if(x0 < x1) {
+		xs = x0 + dx;
+		xe = x1 - dx;
+	} else {
+		xs = x1 + dx;
+		xe = x0 - dx;
+	}
+	gmc.beginPath();
+	gmc.moveTo(xs, ys);
+	gmc.lineTo(xe, ye);
+	gmc.stroke();
+	gmc.closePath();
+};
+
+Plotter.prototype.checkAsym = function(x1, x2) {
+	var asYm;
+	for(var i = x1 + .01; i < x2; i = this.fixTo(i + .01, 2)) {
+		asYm = this.getDval(this.eqnObj, i, 0);
+		console.log("ASYM_CHECK:"+asYm);
+		if(Math.abs(asYm) > 10000) {
+			return i;
+		}
+	}
+	return null;
+}
+
+Plotter.prototype.fixAsym = function(arr, p) {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var xscale = this.xscale;
+	var yscale = this.yscale;
+	var xaxis = this.xaxis;
+	var yaxis = this.yaxis;
+	var xh = this.xh;
+	var xl = this.xl;
+	var yh = this.yh;
+	var yl = this.yl;
+	var l = arr.length;
+	var x0Pix = arr[l - 2].x;
+	var y0Pix = arr[l - 2].y;
+	var x1Pix = arr[l - 1].x;
+	var y1Pix = arr[l - 1].y;
+	var x0 = (x0Pix - xaxis) / xscale;
+	var y0 = (y0Pix - yaxis) / yscale;
+	var x1 = (x1Pix - xaxis) / xscale;
+	var y1 = (y1Pix - yaxis) / yscale;
+	var asymX = p * xscale + xaxis;
+	var asymY = p * yscale + yaxis;
+	var dy0, dy1, ycomp, dx0, dx1, xcomp;
+	if(fof == "x") {
+		dy0 = this.getDval(this.eqnObj, x0, .01);
+		if(y0Pix < yh && y0Pix > yl) {
+			if(dy0 > y0) {
+				ycomp = yh;
+			} else {
+				ycomp = yl;
+			}
+		} else {
+			ycomp = y0Pix;
+		}
+		arr.splice(l - 1, 0, {
+			x : x0Pix,
+			y : ycomp,
+			l : "line"
+		});
+		arr.splice(l, 0, {
+			x : asymX,
+			y : ycomp,
+			l : "line"
+		});
+		arr.splice(l + 1, 0, {
+			x : asymX,
+			y : -ycomp,
+			l : "line"
+		});
+		dy1 = this.getDval(this.eqnObj, x1, -.01);
+		if(y1Pix < yh && y1Pix > yl) {
+			if(dy1 > y1) {
+				ycomp = yh;
+			} else {
+				ycomp = yl;
+			}
+		} else {
+			ycomp = y1Pix;
+		}
+		arr.splice(l + 2, 0, {
+			x : x1Pix,
+			y : ycomp,
+			l : "move"
+		});
+	}
+	if(fof == "y") {
+		dx0 = this.getDval(this.eqnObj, y0, .01);
+		if(x0Pix < xh && x0Pix > xl) {
+			if(dx0 > x0) {
+				xcomp = xh;
+			} else {
+				xcomp = xl;
+			}
+		} else {
+			xcomp = x0Pix;
+		}
+		arr.splice(l - 1, 0, {
+			y : y0Pix,
+			x : xcomp,
+			l : "line"
+		});
+		arr.splice(l, 0, {
+			y : asymY,
+			x : xcomp,
+			l : "line"
+		});
+		arr.splice(l + 1, 0, {
+			y : asymY,
+			x : -xcomp,
+			l : "line"
+		});
+		dx1 = this.getDval(this.eqnObj, y1, -.01);
+		if(x1Pix < xh && x1Pix > xl) {
+			if(dx1 > x1) {
+				xcomp = xh;
+			} else {
+				xcomp = xl;
+			}
+		} else {
+			xcomp = x1Pix;
+		}
+		arr.splice(l + 2, 0, {
+			y : y1Pix,
+			x : xcomp,
+			l : "move"
+		});
+	}
+}
+
+Plotter.prototype.asymFix = function(arr) {
+	var pInf = this.pInf;
+	var nInf = this.nInf;
+	var xscale = this.xscale;
+	var yscale = this.yscale;
+	var xaxis = this.xaxis;
+	var yaxis = this.yaxis;
+	var xh = this.xh;
+	var xl = this.xl;
+	var yh = this.yh;
+	var yl = this.yl;
+	var sign = this.sign;
+	var aL = arr.length;
+	var nArr = [];
+	var asymP;
+	var fof = this.fof;
+	//var c = funcOf == "x" ? "y" : "x";
+	for(var a = 0; a < arr.length; a++) {
+		var pt = arr[a];
+		var axX = (pt.x - xaxis) / xscale;
+		var axY = (pt.y - yaxis) / yscale;
+		nArr.push(arr[a]);
+		if(a != 0) {
+			if(fof == "x") {
+				console.log("ASYM_SIGN:"+pPt.y+":"+pt.y);
+				if(pPt&&(sign(pPt.y) != sign(pt.y))) {
+					asymP = this.checkAsym(axPX, axX);
+					console.log("ASYM_FIX:"+axX+":"+axPX);
+					if(asymP != null) {
+						this.fixAsym(nArr, asymP);
+					}
+				}
+			}
+			if(fof == "y") {
+
+				if(pPt&&(sign(pPt.x) != sign(pt.x))) {
+					asymP = this.checkAsym(axPY, axY);
+					if(asymP != null) {
+						this.fixAsym(nArr, asymP);
+					}
+				}
+			}
+		}
+		var pPt = arr[a];
+		var axPX = axX;
+		var axPY = axY;
+	}
+	return nArr;
 }
 
 Plotter.prototype.hex2rgb = function(col, alp) {
@@ -2297,13 +3382,204 @@ Plotter.prototype.hex2rgb = function(col, alp) {
 	r = parseInt(r, 16);
 	g = parseInt(g, 16);
 	b = parseInt(b, 16);
-	if(alp) {
+	if(alp!==undefined) {
 		return "rgba(" + r + "," + g + "," + b + "," + alp + ")";
 	} else {
 		return "rgb(" + r + "," + g + "," + b + ")";
 	}
 
 }
+Plotter.prototype.distance = function(p1, p2) {
+	var x1 = p1.x;
+	var x2 = p2.x;
+	var y1 = p1.y;
+	var y2 = p2.y;
+	var sq = Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2);
+	return Math.sqrt(sq);
+}
+Plotter.prototype.angle = function() {
+	var var1 = {};
+	var var2 = arguments;
+	var var3 = arguments.length;
+	var x1, x2, y1, y2;
+	var pt = {};
+	var dx, dy;
+	if(var3 == 2) {
+		x1 = var2[0].x;
+		x2 = var2[1].x;
+		y1 = var2[0].y;
+		y2 = var2[1].y;
+		dx = x2 - x1;
+		dy = y2 - y1;
+		var r = Math.sqrt((dx) * (dx) + (dy) * (dy));
+		var t = Math.atan2((dy), (dx));
+		pt.r = r;
+		pt.ra = t;
+		pt.a = t * 180 / Math.PI;
+	}
+
+	return pt;
+}
+CanvasRenderingContext2D.prototype.dashTo = function(sx, sy, ex, ey, lW, gW, scope) {
+	if(arguments.length < 6) {
+		return;
+	}
+	var startPt = {
+		x : sx,
+		y : sy
+	};
+	var endPt = {
+		x : ex,
+		y : ey
+	};
+	var segLength = scope.distance(startPt, endPt);
+	segLength = scope.fixTo(segLength, 2);
+	var segAngle = scope.angle(startPt, endPt).ra;
+	var dashLength = lW + gW;
+	var oLen = 0;
+	this.moveTo(sx, sy);
+	var xp, yp, nseg, overFlow, deltax, deltay, __mx, __my, lx, ly;
+	var buffer = false;
+	xp = sx;
+	yp = sy;
+	//console.log(scope.overFlowObj.boo+":"+scope.overFlowObj.type+":"+scope.overFlowObj.len)
+	if(scope.overFlowObj.boo) {
+		oLen = scope.overFlowObj.len;
+		buffer = (oLen - segLength) >= 0;
+		if(buffer) {
+			segL = segLength;
+		} else {
+			segL = scope.overFlowObj.len;
+		}
+		xp = sx + segL * Math.cos(segAngle);
+		yp = sy + segL * Math.sin(segAngle);
+		xp = scope.fixTo(xp, 2);
+		yp = scope.fixTo(yp, 2);
+		if(scope.overFlowObj.type == "gap") {
+			this.moveTo(xp, yp);
+			if(buffer) {
+				scope.overFlowObj.boo = true;
+				scope.overFlowObj.type = "gap";
+				scope.overFlowObj.len = oLen - segLength;
+				if(scope.overFlowObj.len < 0) {
+					scope.overFlowObj.boo = !true;
+					scope.overFlowObj.len = 0;
+				}
+				return;
+			}
+		} else {
+			this.lineTo(xp, yp);
+			if(buffer) {
+				scope.overFlowObj.boo = true;
+				scope.overFlowObj.type = "line";
+				scope.overFlowObj.len = oLen - segLength;
+				if(scope.overFlowObj.len < 0) {
+					scope.overFlowObj.boo = !true;
+					scope.overFlowObj.len = 0;
+				}
+				return;
+			} else {
+				segL = segLength - segL
+				if(segL > gW) {
+					oLen += gW;
+					xp = xp + gW * Math.cos(segAngle);
+					yp = yp + gW * Math.sin(segAngle);
+					xp = scope.fixTo(xp, 2);
+					yp = scope.fixTo(yp, 2);
+					this.moveTo(xp, yp);
+					scope.overFlowObj.type = "gap";
+				} else {
+					scope.overFlowObj.boo = true;
+					scope.overFlowObj.type = "gap";
+					scope.overFlowObj.len = gW - segL
+					if(scope.overFlowObj.len <= 0) {
+						scope.overFlowObj.boo = !true;
+						scope.overFlowObj.len = 0;
+					}
+					return;
+				}
+			}
+		}
+	}
+	segLength = scope.distance({
+		x : xp,
+		y : yp
+	}, endPt);
+	segLength = scope.fixTo(segLength, 2);
+	nseg = (segLength) / dashLength;
+	overFlow = Math.abs(nseg - parseInt(nseg)) * dashLength;
+	nseg = Math.floor(nseg);
+	deltax = Math.cos(segAngle) * dashLength;
+	deltay = Math.sin(segAngle) * dashLength;
+	deltax = scope.fixTo(deltax, 2);
+	deltay = scope.fixTo(deltay, 2);
+	__mx = xp;
+	__my = yp;
+	for(var n = 0; n < nseg; n++) {
+		this.moveTo(__mx, __my);
+		lx = __mx + Math.cos(segAngle) * lW;
+		ly = __my + Math.sin(segAngle) * lW;
+		lx = scope.fixTo(lx, 2);
+		ly = scope.fixTo(ly, 2);
+		this.lineTo(lx, ly);
+		__mx += deltax;
+		__my += deltay;
+		remLength = scope.distance({
+			x : __mx,
+			y : __my
+		}, endPt);
+		scope.overFlowObj.boo = true;
+		scope.overFlowObj.type = "gap";
+	}
+	if(overFlow >= 0.1) {
+		if(!scope.overFlowObj.boo) {
+			scope.overFlowObj.type = "gap";
+		}
+		scope.overFlowObj.boo = true;
+		if(scope.overFlowObj.type == "gap") {
+			scope.overFlowObj.type = overFlow >= lW ? "gap" : "line";
+			scope.overFlowObj.len = scope.overFlowObj.type == "gap" ? gW - (overFlow - lW) : (lW - overFlow);
+			if(scope.overFlowObj.type == "line") {
+				this.moveTo(__mx, __my);
+				lx = __mx + Math.cos(segAngle) * overFlow;
+				ly = __my + Math.sin(segAngle) * overFlow;
+				lx = scope.fixTo(lx, 2);
+				ly = scope.fixTo(ly, 2);
+				this.lineTo(__mx + Math.cos(segAngle) * overFlow, __my + Math.sin(segAngle) * overFlow);
+			} else {
+				this.moveTo(__mx, __my);
+				lx = __mx + Math.cos(segAngle) * lW;
+				ly = __my + Math.sin(segAngle) * lW;
+				lx = scope.fixTo(lx, 2);
+				ly = scope.fixTo(ly, 2);
+				this.lineTo(__mx + Math.cos(segAngle) * lW, __my + Math.sin(segAngle) * lW);
+			}
+		} else if(scope.overFlowObj.type == "line") {
+			scope.overFlowObj.type = overFlow >= gW ? "line" : "gap";
+			scope.overFlowObj.len = scope.overFlowObj.type == "line" ? lW - (overFlow - gW) : (gW - overFlow);
+			if(scope.overFlowObj.type == "line") {
+				lx = __mx + Math.cos(segAngle) * overFlow;
+				ly = __my + Math.sin(segAngle) * overFlow;
+				lx1 = __mx + Math.cos(segAngle) * gW;
+				ly1 = __my + Math.sin(segAngle) * gW;
+				lx = scope.fixTo(lx, 2);
+				ly = scope.fixTo(ly, 2);
+				lx1 = scope.fixTo(lx1, 2);
+				ly1 = scope.fixTo(ly1, 2);
+				this.moveTo(lx1, ly1);
+				this.lineTo(lx, ly);
+			} else {
+				this.moveTo(__mx, __my);
+				lx1 = __mx + Math.cos(segAngle) * overFlow;
+				ly1 = __my + Math.sin(segAngle) * overFlow;
+				lx1 = scope.fixTo(lx1, 2);
+				ly1 = scope.fixTo(ly1, 2);
+			}
+		}
+	} else {
+		scope.overFlowObj.boo = !true;
+	}
+};
 /**
  * @author sathesh
  * formats input math equation string, so that it can be evaluated by JS
@@ -2646,6 +3922,14 @@ var EqParser = ( function() {
 		var E = Math.E;
 		var e = Math.E;
 		var x = val;
+		var y=val;
+		var inequ = str;
+		//
+		function findandreplace(inputVal, searchVal, replaceVal) {
+			var mystr = inputVal.split(searchVal).join(replaceVal);
+			return mystr;
+		}
+
 		//------------------------------------------------------------------------//
 		//trig
 		function sin(x) {
@@ -2723,29 +4007,30 @@ var EqParser = ( function() {
 		}
 
 		function pow(ba, p) {
-			pchek = Math.pow(ba, p);
+			var pchek = Math.pow(ba, p);
+			var estr, pstr, psub, psup, ba;
+
 			if(isFinite(pchek)) {
 				return pchek;
 			} else {
-				//alert(inequ)
 				estr = inequ;
 				estr = estr.split('^');
 				pstr = estr[1].split('/');
 				psub = parseInt(pstr[1]);
 				psup = findandreplace(pstr[0], '(', "");
-				//base=findandreplace(estr[0],'(',"")
+
 				if(psub % 2 == 1 && psup % 2 == 1) {
 					if(ba < 0) {
 						ba = -ba;
 						pchek = -Math.pow(ba, p);
 					} else {
-						pchek = NaN;
+						pchek = Number.NaN;
 					}
 				} else if(psub % 2 == 1 && psup % 2 == 0) {
 					ba = -ba;
 					pchek = Math.pow(ba, p);
 				} else {
-					pchek = NaN;
+					pchek = Number.NaN;
 				}
 				return pchek;
 			}
@@ -2772,6 +4057,7 @@ var EqParser = ( function() {
 
 
 		this.convertTo_JSEq(str);
+		//alert(this.input_str)
 		return eval(this.input_str);
 	}
 	return parser;
@@ -2990,6 +4276,42 @@ var AuthorApi = (function() {
 	theApi.getRandomInt = function(amount) {
 		return Math.floor(Math.random() * Number(amount))
 	}
+	theApi.formatFractionDisplay=function(n,d,ntype){
+		var node=ntype?ntype:'full';
+		var str_s=node=='part'?'':"<math><mrow>";
+		var str_e=node=='part'?'':"</math></mrow>";
+		var str="";
+		if(d==1||d==undefined||d==""){
+			str="<mtext>"+n+"</mtext>";
+		}else{
+			str="<mfrac><mtext>"+n+"</mtext><mtext>"+d+"</mtext></mfrac>"
+		}
+		return str_s+str+str_e;
+	}
+	theApi.getMathML=function(val,type,ntype){
+		var node=ntype?ntype:'full';
+		var str_s=node=='part'?'':"<math><mrow>";
+		var str_e=node=='part'?'':"</math></mrow>";
+		var str="";
+		if(type=='text'){
+			str="<mtext>"+val+"</mtext>";
+		}else if(type=='op'){
+			str="<mo>"+val+"</mo>";
+		}else if(type=='frac'){
+			var arr=val.split("/");
+			arr[1]=arr[1]==undefined?'1':arr[1];
+			str="<mfrac><mtext>"+arr[0]+"</mtext><mtext>"+arr[1]+"</mtext></mfrac>"
+		}
+		return str_s+str+str_e;
+	}
+	/**
+	*Flash cards specific methods
+	*
+	*/
+	theApi.getFlashCardProblem = function(id) {
+		//console.log('GET_FLASH_CARD_PROBLEM FOR '+id);
+		Flashcard_mngr.getProblem(id);
+	}
 
 	/**
 	 * register widget that can be called with <widget> only widgets matching a
@@ -3031,4 +4353,680 @@ var AuthorApi = (function() {
 
 	return theApi;
 }());
-(function(D,K){var A="width",P="length",d="radius",Y="lines",R="trail",U="color",n="opacity",f="speed",Z="shadow",h="style",C="height",E="left",F="top",G="px",S="childNodes",m="firstChild",H="parentNode",c="position",I="relative",a="absolute",r="animation",V="transform",M="Origin",O="coord",j="#000",W=h+"Sheets",L="webkit0Moz0ms0O".split(0),q={},l;function p(t,v){var s=~~((t[P]-1)/2);for(var u=1;u<=s;u++){v(t[u*2-1],t[u*2])}}function k(s){var t=D.createElement(s||"div");p(arguments,function(v,u){t[v]=u});return t}function b(s,u,t){if(t&&!t[H]){b(s,t)}s.insertBefore(u,t||null);return s}b(D.getElementsByTagName("head")[0],k(h));var N=D[W][D[W][P]-1];function B(x,s){var u=[n,s,~~(x*100)].join("-"),t="{"+n+":"+x+"}",v;if(!q[u]){for(v=0;v<L[P];v++){try{N.insertRule("@"+(L[v]&&"-"+L[v].toLowerCase()+"-"||"")+"keyframes "+u+"{0%{"+n+":1}"+s+"%"+t+"to"+t+"}",N.cssRules[P])}catch(w){}}q[u]=1}return u}function Q(w,x){var v=w[h],t,u;if(v[x]!==K){return x}x=x.charAt(0).toUpperCase()+x.slice(1);for(u=0;u<L[P];u++){t=L[u]+x;if(v[t]!==K){return t}}}function e(s){p(arguments,function(u,t){s[h][Q(s,u)||u]=t});return s}function X(s){p(arguments,function(u,t){if(s[u]===K){s[u]=t}});return s}var T=function T(s){this.el=this[Y](this.opts=X(s||{},Y,12,R,100,P,7,A,5,d,10,U,j,n,1/4,f,1))},J=T.prototype={spin:function(y){var AA=this,t=AA.el;if(y){b(y,e(t,E,~~(y.offsetWidth/2)+G,F,~~(y.offsetHeight/2)+G),y[m])}AA.on=1;if(!l){var s=AA.opts,v=0,w=20/s[f],x=(1-s[n])/(w*s[R]/100),z=w/s[Y];(function u(){v++;for(var AB=s[Y];AB;AB--){var AC=Math.max(1-(v+AB*z)%w*x,s[n]);AA[n](t,s[Y]-AB,AC,s)}if(AA.on){setTimeout(u,50)}})()}return AA},stop:function(){var s=this,t=s.el;s.on=0;if(t[H]){t[H].removeChild(t)}return s}};J[Y]=function(x){var v=e(k(),c,I),u=B(x[n],x[R]),t=0,s;function w(y,z){return e(k(),c,a,A,(x[P]+x[A])+G,C,x[A]+G,"background",y,"boxShadow",z,V+M,E,V,"rotate("+~~(360/x[Y]*t)+"deg) translate("+x[d]+G+",0)","borderRadius","100em")}for(;t<x[Y];t++){s=e(k(),c,a,F,1+~(x[A]/2)+G,V,"translate3d(0,0,0)",r,u+" "+1/x[f]+"s linear infinite "+(1/x[Y]/x[f]*t-1/x[f])+"s");if(x[Z]){b(s,e(w(j,"0 0 4px "+j),F,2+G))}b(v,b(s,w(x[U],"0 0 1px rgba(0,0,0,.1)")))}return v};J[n]=function(t,s,u){t[S][s][h][n]=u};var o="behavior",i="url(#default#VML)",g="group0roundrect0fill0stroke".split(0);(function(){var u=e(k(g[0]),o,i),t;if(!Q(u,V)&&u.adj){for(t=0;t<g[P];t++){N.addRule(g[t],o+":"+i)}J[Y]=function(){var AC=this.opts,AA=AC[P]+AC[A],y=2*AA;function v(){return e(k(g[0],O+"size",y+" "+y,O+M,-AA+" "+-AA),A,y,C,y)}var z=v(),AB=~(AC[P]+AC[d]+AC[A])+G,x;function w(AD,s,AE){b(z,b(e(v(),"rotation",360/AC[Y]*AD+"deg",E,~~s),b(e(k(g[1],"arcsize",1),A,AA,C,AC[A],E,AC[d],F,-AC[A]/2,"filter",AE),k(g[2],U,AC[U],n,AC[n]),k(g[3],n,0))))}if(AC[Z]){for(x=1;x<=AC[Y];x++){w(x,-2,"progid:DXImage"+V+".Microsoft.Blur(pixel"+d+"=2,make"+Z+"=1,"+Z+n+"=.3)")}}for(x=1;x<=AC[Y];x++){w(x)}return b(e(k(),"margin",AB+" 0 0 "+AB,c,I),z)};J[n]=function(v,s,x,w){w=w[Z]&&w[Y]||0;v[m][S][s+w][m][m][n]=x}}else{l=Q(u,r)}})();window.Spinner=T})(document);function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});function showWhiteboardActive(B){var A=B.parentNode.parentNode.getAttribute("pid");showWhiteboard_Gwt(A)};
+/**
+* Global utility methods
+*/
+Array.prototype.shuffle = function(n) {
+	var len = this.length;
+	var i = n ? n : len;
+	while (i--) {
+		var p = parseInt(String(Math.random()*len));
+		var t = this[i];
+		this[i] = this[p];
+		this[p] = t;
+	}
+};
+Array.prototype.pushUnique = function(ele, prop) {
+	var push = true;
+	var arrVal;
+	var eleVal;
+	var array = this;
+	for (var i = 0; i<array.length; i++) {
+		if (prop) {
+			arrVal = array[i][prop];
+			eleVal = ele[prop];
+		} else {
+			arrVal = array[i];
+			eleVal = ele;
+		}
+		if (eleVal == arrVal) {
+			push = !true;
+			break;
+		}
+	}
+	push ? array.push(ele) : "";
+	return push;
+};
+Array.prototype.randomNumbers = function(from, to, count, unique) {
+	var num;
+	var boo;
+	var unq = unique == undefined ? true : unique;
+	while (this.length<count) {
+		num = Math.round(Math.random()*(from-to))+to;
+		if (unq) {
+			boo = this.pushUnique(num);
+		} else {
+			this.push(num);
+		}
+	}
+	return this;
+};
+Array.randomNumberArray = function(from, to, count, unique) {
+	var num;
+	var boo;
+	var unq = unique == undefined ? true : unique;
+	var a=[];
+	while (a.length<count) {
+		num = Math.round(Math.random()*(from-to))+to;
+		if (unq) {
+			boo = a.pushUnique(num);
+		} else {
+			a.push(num);
+		}
+	}
+	return a;
+};
+Array.shuffleArray = function(arr, count) {
+	var len = arr.length;
+	var shuf = [];
+	var a=[];
+	shuf.randomNumbers(0, len-1, len, true);
+	if (count == undefined) {
+		count = len;
+	}
+	for (var i = 0; i<count; i++) {
+		a.push(arr[shuf[i]]);
+	}
+	return a;
+};
+Array.prototype.getIndex=function(indexObj, prop) {
+		for (var i = 0; i<this.length; i++) {
+			var arrE = prop == undefined ? this[i] : this[i][prop];
+			if (arrE == indexObj) {
+				return i;
+			}
+		}
+		return null;
+};
+Math.randomNumber = function(from, to) {
+	var num;
+	var boo;
+	var unq = true;
+	var arr=[];
+	var count=to-from;
+	while (arr.length<count) {
+		num = Math.round(Math.random()*(from-to))+to;
+		if (unq) {
+			boo = arr.pushUnique(num);
+		} else {
+			arr.push(num);
+		}
+	}
+	arr.shuffle();
+	return arr[0];
+};
+Math.fixTo = function(n, pl, round) {
+	if (Number(n) == Number.NaN) {
+		return n;
+	}
+	if (round == undefined) {
+		round = true;
+	}
+	var fixed;
+	fixed = Math.pow(10, pl)*n;
+	if (round) {
+		fixed = Math.round(fixed);
+	} else {
+		fixed = Math.floor(fixed);
+	}
+	fixed = fixed/Math.pow(10, pl);
+	return fixed;
+};
+Math.addFrac = function(f1, f2) {
+	var num1 = f1.split("/");
+	var num2 = f2.split("/");
+	var n, d, lcm, n0, n1, d0, d1;
+	n0 = num1[0];
+	n1 = num2[0];
+	d0 = num1[1] ? num1[1] : 1;
+	d1 = num2[1] ? num2[1] : 1;
+	lcm = Math.getLCM(d0*1, d1*1);
+	d = lcm;
+	n0 = (lcm/d0)*n0;
+	n1 = (lcm/d1)*n1;
+	n = n0+n1;
+	var frac = n+"/"+d;
+	var sfrac = Math.simpleFrac(frac);
+	return {frac:frac, val:sfrac};
+};
+Math.simpleFrac = function(frac) {
+	var itsfrac = String(frac).indexOf('/') != -1 ? true : false;
+	var itsDeci = String(frac).indexOf('.') != -1 ? true : false;
+	var n, d;
+	var _frac = frac;
+	if (itsfrac) {
+	} else if (itsDeci) {
+		_frac = Math.convertToFrac(frac).val;
+	} else {
+		return frac;
+	}
+	var splitVal = String(_frac).split("/");
+	n = splitVal[0];
+	d = splitVal[1];
+	var s1 = n.indexOf("-")>-1 ? "-" : "";
+	var s2 = d.indexOf("-")>-1 ? "-" : "";
+	n = n.split("-").join("");
+	d = d.split("-").join("");
+	gcd = Math.getGCD(n, d);
+	n = n/gcd;
+	d = d/gcd;
+	var s = (s1 == "-" && s2 == "-") ? "" : (s1 == "-" || s2 == "-" ? "-" : "");
+	if(d==1){
+		return s+""+n;
+	}
+	return s+""+n+"/"+d;
+};
+Math.convertToFrac = function(n) {
+	var n0, d0;
+	var fracObj = {};
+	var itsfrac = String(n).indexOf('/') != -1 ? true : false;
+	var itsDeci = String(n).indexOf('.') != -1 ? true : false;
+	if (itsfrac) {
+		var splitVal = String(n).split("/");
+		fracObj.n = splitVal[0];
+		fracObj.d = splitVal[1];
+		fracObj.val = String(n);
+		return fracObj;
+	}
+	if (!itsDeci) {
+		fracObj.n = n;
+		fracObj.d = 1;
+		fracObj.val = String(n);
+	} else {
+		var deciNum = String(n).split(".")[1].length;
+		var process = true;
+		var a = 0;
+		var b;
+		while (process) {
+			a++;
+			b = (n*a);
+			if (deciNum>=4) {
+				b = Math.fixTo(b, 3);
+			} else {
+				b = Math.fixTo(b, 8);
+			}
+			if (b == parseInt(b) || a>10000) {
+				fracObj.n = b;
+				fracObj.d = a;
+				fracObj.val = b+"/"+a;
+				process = false;
+			}
+		}
+	}
+	return fracObj;
+};
+Math.getGCD = function() {
+	var argL = arguments.length;
+	var gcd;
+	if (argL<2) {
+		var mystr = String(arguments[0]);
+		if (Number(mystr) != Number.NaN) {
+			return arguments[0];
+		} else {
+			if (mystr.indexOf("/") == -1) {
+				return arguments[0];
+			} else {
+				var myvars = mystr.split("/");
+				var n = myvars[0];
+				var d = myvars[1];
+				return Math.getGCD(n, d);
+			}
+		}
+	} else if (argL>2) {
+		return null;
+	} else {
+		if (arguments[1] == 0) {
+			return arguments[0];
+		} else {
+			return Math.getGCD(arguments[1], Math.fixTo(arguments[0]%arguments[1], 8));
+		}
+	}
+};
+Math.getLCM = function() {
+	var argL = arguments.length;
+	var lcm;
+	var gcd;
+	if (argL<2) {
+		var mystr = String(arguments[0]);
+		if (Number(mystr) != Number.NaN) {
+			return arguments[0];
+		} else {
+			if (mystr.indexOf("/") == -1) {
+				return arguments[0];
+			} else {
+				var myvars = mystr.split("/");
+				var n = myvars[0];
+				var d = myvars[1];
+				return getLCM(n, d);
+			}
+		}
+	} else if (argL>2) {
+		return null;
+	} else {
+		if (arguments[1] == 0) {
+			return arguments[0];
+		} else {
+			gcd = Math.getGCD(arguments[0], arguments[1]);
+			lcm = (arguments[0]*arguments[1])/gcd;
+			return lcm;
+		}
+	}
+};
+Math.getProduct=function(arr){
+	var prod=1;
+	for(var i=0;i<arr.length;i++){
+		prod=prod*arr[i];
+	}
+	return prod;
+}
+Math.primeStr = "~2~3~5~7~11~13~17~19~23~29~31~37~41~43~47~53~59~61~67~71~73~79~83~89~97~101~103~107~109~113~127~131~137~139~149~151~157~163~167~173~179~181~191~193~197~199~211~223~227~229~233~239~241~251~257~263~269~271~277~281~283~293~307~311~313~317~331~337~347~349~353~359~367~373~379~383~389~397~401~409~419~421~431~433~439~443~449~457~461~463~467~479~487~491~499~503~509~521~523~541~547~557~563~569~571~577~587~593~599~601~607~613~617~619~631~641~643~647~653~659~661~673~677~683~691~701~709~719~727~733~739~743~751~757~761~769~773~787~797~809~811~821~823~827~829~839~853~857~859~863~877~881~883~887~907~911~919~929~937~941~947~953~967~971~977~983~991~997~";
+Math.primeArr = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997];
+Math.isPrime=function(n) {
+	var cStr = "~" + n + "~";
+	return Math.primeStr.indexOf(cStr) != -1;
+}
+Math.getFirstPrimeFact=function (n) {
+	var pLen=Math.primeArr.length;
+	for (var i = 0; i < pLen; i++) {
+		if (n % Math.primeArr[i] == 0) {
+			return Math.primeArr[i];
+		}
+	}
+}
+Math.getPrimeFactors=function(n) {
+	var pF = [];
+	var f;
+	if(n<2){
+		return [n];
+	}
+	while (!Math.isPrime(n)) {
+		f = Math.getFirstPrimeFact(n);
+		pF.push(f);
+		n = n / f;
+	}
+	pF.push(n);
+	return pF;
+}
+Math.getCommonPrimeFactors=function(n, d,gcf) {
+	function getString(d,ex, arr) {
+	var tarr = [].concat(arr);
+	var str = d+" = ";
+	var boo;
+	for (var i = 0; i < ex.length; i++) {
+		boo=false
+		for (var g = 0; g < tarr.length; g++) {
+			if (ex[i] == tarr[g]) {
+				boo=true
+				tarr.splice(g,1)
+				break
+			}
+		}
+		if(i==ex.length-1){
+			op=""
+		}else{
+			op="*"
+		}
+		if(boo){
+			str+="<b>"+ex[i]+"</b>"+op
+		}else{
+			str+=ex[i]+op
+		}
+	}
+	str=str.split("*").join(" * ")
+	return str
+}
+	var npf = Math.getPrimeFactors(n);
+	var dpf = Math.getPrimeFactors(d);
+	var cpf = Math.getPrimeFactors(gcf);
+	var cpf_n=getString(n,npf,cpf);
+	var cpf_d=getString(d,dpf,cpf);
+	if(npf.length==1){
+	cpf_n=cpf_n+" <b>("+n+" is prime)</b>";
+	}
+	if(dpf.length==1){
+	cpf_d=cpf_d+" <b>("+d+" is prime)</b>";
+	}
+	return [cpf_n, cpf_d,npf, dpf, cpf];
+}
+/** END OF GLOBAL UTILITY METHODS*/
+/**
+* tempororily adding the flash card manager class for testing purpose
+*/
+var Flashcard_mngr=(function(){
+    var mngr={};
+    mngr.topic_id=0;
+    mngr.current_pblm_index=0;
+    mngr.completed_pblms=0;
+    mngr.limit=3;
+    mngr.initialized=false;
+    mngr.quest_data={};
+	mngr.current_quest=null;
+	mngr.current_ans=null;
+    mngr.init=function(id,lim){
+	//console.log("FLASH_CARD_MNGR_INITED FOR TOPIC ID:"+id)
+		this.limit=lim?lim:this.limit;
+        this.topic_id=id;
+        this.initialized=true;
+        this.genProblems();
+        
+    };
+    mngr.reset=function(){
+        this.initialized=false;
+        this.current_pblm_index=0;
+        this.completed_pblms=0;
+    }
+	mngr.getMultiplesDisplay=function(a,b){
+	var str='';
+		for(var i=1;i<b;i++){
+		str+=a*i+',';
+		}
+		str+='<b>'+(a*b)+'</b>';
+		return str;
+	}
+	mngr.getGCFExplain=function(num,den,gcf){
+		var pfData = Math.getCommonPrimeFactors(num, den, gcf);
+		var neq = pfData[0];
+		var deq = pfData[1];
+		var prodStr = pfData[4].length > 1 ? " = " + Math.getProduct(pfData[4]) : "";
+		var geq = "<b>GCF = " + pfData[4].join(" * ") + prodStr + "</b>";
+		var exp="To find the greatest common factor (GCF) of two numbers, first write out their prime factorizations.<br/>";
+		var exp_sub="";
+		if(gcf == 1){
+			exp_sub="In this case there are no common prime factors. The GCF is 1."
+		}
+		exp+="\t"+neq+"<br/>";
+		exp+="\t"+deq+"<br/>";
+		exp+="The GCF is the product of all common factors. "+exp_sub+"<br/>";
+		exp+="\t"+geq+".";
+		return exp
+	}
+	mngr.getIndexArr=function(f){
+	var l=this['arr_'+f].length
+	return Array.randomNumberArray(0,l-1,100,true)
+}
+mngr.genMultiFracProb=function(type) {
+	var ind, indT;
+	var arr;
+	switch (type) {
+	case 'pp' :
+		ind = ++this.pp_ind;
+		indT = this.arr_pp_l;
+		if (ind == indT) {
+			ind = this.pp_ind=0;
+			this.arr_pp_i = this.getIndexArr('pp');
+		}
+		break;
+	case 'pw' :
+		ind = ++this.pw_ind;
+		indT = this.arr_pw_l;
+		if (ind == indT) {
+			ind = this.pw_ind=0;
+			this.arr_pw_i = this.getIndexArr('pw');
+		}
+		break;
+	case 'pi' :
+		ind = ++this.pi_ind;
+		indT = this.arr_pi_l;
+		if (ind == indT) {
+			ind = this.pi_ind=0;
+			this.arr_pi_i = this.getIndexArr('pi');
+		}
+		break;
+	case 'ii' :
+		ind = ++this.ii_ind;
+		indT = this.arr_ii_l;
+		if (ind == indT) {
+			ind = this.ii_ind=0;
+			this.arr_ii_i = this.getIndexArr('ii');
+		}
+		break;
+	case 'iw' :
+		ind = ++this.iw_ind;
+		indT = this.arr_iw_l;
+		if (ind == indT) {
+			ind = this.iw_ind=0;
+			this.arr_iw_i = this.getIndexArr('iw');
+		}
+		break;
+	}
+	var arr = this['arr_'+type];
+	var arri = this['arr_'+type+"_i"];
+	var p = arr[arri[ind]].split("|");
+	var l = Math.floor(Math.random()*2);
+	var r = (l+1)%2;
+	var pl = p[l];
+	var pr = p[r];
+	var strL = pl.split("/");
+	var strR = pr.split("/");
+	strL[1]=strL[1]?strL[1]:1;
+	strR[1]=strR[1]?strR[1]:1;
+	var n = strL[0]*strR[0];
+	var d = (strL[1] ? strL[1] : 1)*(strR[1] ? strR[1] : 1);
+	var ans1 = Math.simpleFrac(n+"/"+d);
+	var nr = ans1.split("/");
+	n = nr[0]*1;
+	d = nr[1]*1;
+	var ans2 = n>d ? "["+Math.floor(n/d)+"]"+((n%d)+"/"+d) : undefined;
+	if (d === 1) {
+		ans1 = String(n);
+		ans2 = undefined;
+	}
+	var a = [[pl, pr,[strL,strR],nr], {frac:n+"/"+d,val:ans1}, {frac:ans2,val:ans2}];	
+	return a
+}
+    mngr.genProblems=function(){
+		if(this.topic_id==0){
+			var gdata = [];
+			gdata.randomNumbers(0, 12, 13, true)
+			var i = 0;
+			var l = gdata.length;
+			var c = 0;
+			var ldata = [];
+			var rdata = [];
+			while (gdata.length) {
+				ldata[i] = gdata[c];
+				rdata[i] = gdata[Math.floor(Math.random()*gdata.length)];
+				gdata.shift();
+				if (ldata[i] != rdata[i]) {
+					ind = gdata.getIndex(rdata[i]);
+					gdata.splice(ind, 1);
+					gdata.unshift(rdata[i]);
+				}                                                                         
+				if (i>(20)) {
+					break;
+				}
+				i++;
+			}
+			var _data = [];
+			for (var i = 0; i<ldata.length; i++) {
+				//console.log("MULTI_DATA:"+ldata[i]+":"+rdata[i])
+				_data.push([[ldata[i], rdata[i]], ldata[i]*rdata[i]]);
+			}
+			_data.shuffle();
+		}
+	if(this.topic_id==1||this.topic_id==2||this.topic_id==6){
+		var dataStr_like = "1/3 + 1/3,1/3 + 2/3,2/3 + 1/3,1/4 + 1/4,1/4 + 2/4,2/4 + 1/4,1/4 + 3/4,1/5 + 1/5,2/5 + 2/5,3/5 + 1/5,3/5 + 2/5,1/6 + 1/6,1/6 + 2/6,1/6 + 3/6,1/6 + 5/6,2/6 + 1/6,5/6 + 1/6,1/7 + 4/7,2/7 + 4/7,3/7 + 1/7,1/7 + 6/7,1/8 + 1/8,2/8 + 1/8,2/8 + 2/8,3/8 + 1/8,5/8 + 1/8,3/8 + 4/8,3/8 + 5/8,1/9 + 1/9,1/9 + 5/9,2/9 + 1/9,4/9 + 2/9,4/9 + 4/9,5/9 + 3/9,7/9 + 2/9,8/9 + 1/9,1/10 + 3/10,1/10 + 4/10,2/10 + 3/10,3/10 + 3/10,3/10 + 5/10,3/10 + 7/10,1/11 + 1/11,2/11 + 3/11,4/11 + 5/11,7/11 + 2/11,8/11 + 3/11,1/12 + 2/12,2/12 + 3/12,5/12 + 5/12,5/12 + 7/12";
+		var dataStr_unlike="1/2 + 1/3,1/2 + 1/4,1/2 + 3/4,1/2 + 1/5,1/2 + 2/5,1/2 + 1/6,1/2 + 1/8,1/2 + 3/8,1/2 + 1/9,1/2 + 4/9,1/2 + 1/10,1/2 + 3/10,1/3 + 1/2,1/3 + 1/4,1/3 + 1/5,1/3 + 2/5,1/3 + 1/6,2/3 + 1/4,2/3 + 1/5,2/3 + 1/6,2/3 + 1/8,1/4 + 1/2,1/4 + 1/3,1/4 + 1/5,1/4 + 2/5,1/4 + 3/5,1/4 + 1/6,1/4 + 1/8,1/4 + 3/8,3/4 + 1/8,3/4 + 3/8,1/4 + 3/10,1/4 + 1/12,1/4 + 5/12,1/4 + 7/12,1/4 + 11/12,3/4 + 1/12,3/4 + 5/12,3/4 + 7/12,1/5 + 1/2,1/5 + 1/3,1/5 + 1/4,1/5 + 3/4,1/5 + 1/6,1/5 + 1/10,1/5 + 3/10,1/5 + 7/10,1/5 + 1/11,1/5 + 3/11,2/5 + 3/10,2/5 + 7/10,3/5 + 1/10,3/5 + 3/10,4/5 + 1/10,1/6 + 1/2,1/6 + 1/3,1/6 + 2/3,1/6 + 1/4,1/6 + 3/4,1/6 + 1/5,1/6 + 3/5,1/6 + 4/5,1/6 + 1/7,1/6 + 2/7,1/6 + 6/7,1/6 + 1/8,1/6 + 3/8,1/6 + 5/8,1/6 + 7/8,1/6 + 1/9,1/6 + 2/9,1/6 + 4/9,1/6 + 5/9,1/6 + 7/9,1/6 + 8/9,1/6 + 1/10,1/6 + 3/10,1/6 + 7/10,1/6 + 1/12,1/6 + 5/12,1/6 + 7/12,5/6 + 1/2,5/6 + 3/4,5/6 + 1/5,5/6 + 2/5,5/6 + 3/5,5/6 + 4/7,5/6 + 6/7,5/6 + 1/8,5/6 + 3/8,5/6 + 5/8,5/6 + 1/10,5/6 + 3/10,5/6 + 7/10,5/6 + 1/12,5/6 + 5/12,5/6 + 7/12,1/7 + 1/2,1/7 + 1/3,1/7 + 1/4,1/7 + 1/5,1/7 + 1/6,1/7 + 1/8,1/7 + 3/8,1/7 + 5/8,1/7 + 1/9,1/7 + 2/9,1/7 + 4/9,1/7 + 5/9,1/7 + 7/9,2/7 + 2/8,3/7 + 3/4,4/7 + 1/8,5/7 + 1/8,1/8 + 1/2,1/8 + 1/3,1/8 + 2/3,1/8 + 1/4,1/8 + 3/4,1/8 + 1/5,1/8 + 3/5,1/8 + 4/5,1/8 + 1/6,1/8 + 5/6,1/8 + 1/7,1/8 + 2/7,1/8 + 3/7,1/8 + 4/7,1/8 + 1/9 ,1/8 + 2/9,1/8 + 1/10,1/8 + 7/10,1/8 + 1/11,1/8 + 2/11,1/8 + 9/11,1/8 + 10/11,1/8 + 1/12,1/8 + 5/12,1/8 + 7/12,1/8 + 11/12,3/8 + 1/2,3/8 + 1/3,3/8 + 2/3,3/8 + 1/4,3/8 + 3/4,3/8 + 1/5,3/8 + 3/5,3/8 + 4/5,3/8 + 1/6,3/8 + 5/6,3/8 + 1/7,3/8 + 2/7,3/8 + 3/7,3/8 + 4/7,3/8 + 1/9 ,3/8 + 2/9,3/8 + 1/10,3/8 + 7/10,3/8 + 1/11,3/8 + 2/11,3/8 + 9/11,3/8 + 10/11,3/8 + 1/12,3/8 + 5/12,3/8 + 7/12,1/9 + 1/2,1/9 + 1/3,1/9 + 2/3,1/9 + 1/4,1/9 + 3/4,1/9 + 1/5,2/9 + 1/3,2/9 + 2/3,2/9 + 4/5,2/9 + 1/6,2/9 + 3/4,2/9 + 5/6,4/9 + 1/3,4/9 + 2/3,5/9 + 1/3,5/9 + 1/6,5/9 + 5/6,1/10 + 1/2,1/10 + 1/3,1/10 + 2/3,1/10 + 1/4,1/10 + 3/4,1/10 + 1/5,1/10 + 2/5,1/10 + 3/5,1/10 + 4/5,1/10 + 1/6,1/10 + 1/8,1/10 + 7/8,1/10 + 1/12,1/10 + 7/12,3/10 + 1/2,3/10 + 1/3,3/10 + 1/4,3/10 + 3/4,3/10 + 1/5,3/10 + 2/5,3/10 + 3/5,3/10 + 4/5,7/10 + 1/2,7/10 + 1/3,7/10 + 1/4,7/10 + 1/5,7/10 + 2/5,7/10 + 1/11,7/10 + 3/11,7/11 + 1/4,1/12 + 1/2,1/12 + 1/3,1/12 + 2/3,1/12 + 1/4,1/12 + 3/4,1/12 + 1/5,1/12 + 2/5,1/12 + 1/6,1/12 + 5/6,1/12 + 1/8,1/12 + 3/8,1/12 + 5/8,1/12 + 7/8,5/12 + 1/2,5/12 + 1/3,5/12 + 2/3,5/12 + 1/4,5/12 + 3/4,5/12 + 1/6,5/12 + 5/6,5/12 + 1/7,5/12 + 1/8,5/12 + 7/8,7/12 + 1/3,7/12 + 1/5,11/12 + 1/4,11/12 + 3/4,11/12 + 1/6,11/12 + 5/6,11/12 + 1/8,11/12 + 3/7";
+		var dataStr_redfrac="6/8,22/55,24/96,2/5,3/20,12/28,26/39,6/15,14/35,200/250,8/10,75/300,3/9,19/30,2/7,28/40,5/6,4/17,5/8,9/11,7/12,8/15,15/18,6/10,9/21,44/60,32/80,27/99,45/100,38/100,42/50,10/25,9/14,16/36,16/28,6/12,9/18,6/24,15/20,32/40,17/34,23/31,7/51,39/52,50/90,36/120,108/120,70/77,28/100,1/16,3/25,44/48,32/56,24/54,20/64,48/60,54/72,36/45,49/70,32/44,150/225,80/340";
+		var dataStr
+		//dataStr=this.topic_id==1?dataStr_like:dataStr_unlike;
+		switch (this.topic_id){
+			case 1:
+			dataStr=dataStr_like;
+			break;
+			case 2:
+			dataStr=dataStr_unlike;
+			break;
+			case 6:
+			dataStr=dataStr_redfrac;
+			break;
+		}
+		var dataArr = dataStr.split(" ").join("").split(",");
+		var _data = [];
+		var ldata;
+		var rdata;
+		var dataEl;
+		var elL,elR,ans,dans;
+		for (var i = 0; i<dataArr.length; i++) {
+			dataEl = this.topic_id==6?dataArr[i]:dataArr[i].split("+");
+			ldata = this.topic_id==6?dataEl:dataEl[0];
+			rdata = dataEl[1];
+			elL=ldata.split("/");
+			elR=rdata?rdata.split("/"):null;
+			if (ldata != "" && ldata != undefined) {
+			/*if(console){
+			console.log("ADDFRAC_DATA:"+ldata+":"+rdata);
+			}*/
+			ans=this.topic_id==6?Math.simpleFrac(ldata):Math.addFrac(ldata, rdata);
+			ans=this.topic_id==6?{frac:ans,val:ans}:ans;
+			dans=(ans.val).split('/');
+				_data.push([[ldata, rdata,[elL,elR],dans], ans]);
+			}
+		}
+		_data.shuffle();
+	}
+       if(this.topic_id==3){
+        var dataStr= "The result of an addition problem	sum,The result of a subtraction problem	difference,The result of a multiplication problem	product,The result of a division problem	quotient,The top number in a fraction	numerator,The bottom number in a fraction	denominator,A polygon with 5 sides	pentagon,A polygon with 6 sides	hexagon,A polygon with 8 sides	octagon,An angle measuring between 0 and 90 degrees	acute,An angle measuring between 90 and 180 degrees	obtuse,A triangle with two congruent sides	isosceles,A triangle with three congruent sides	equilateral,The distance from the center of a circle to the boundary of the circle	radius,The distance across a circle through its center	diameter,A quadrilateral with four congruent sides	rhombus,A quadrilateral with two pairs of parallel sides	parallelogram,A solid figure with two circular bases that are congruent and parallel	cylinder,A solid figure with 6 square faces	cube,A solid figure with 4 triangular faces	tetrahedron,A whole number with exactly two divisors	prime,A whole number with more than two divisors	composite";
+		var dataArr = dataStr.split(",");
+		var _data = [];
+		var ldata;
+		var rdata;
+		var dataEl;
+		for (var i = 0; i<dataArr.length; i++) {
+		dataEl = dataArr[i].split("\t");
+		ldata = dataEl[0];
+		rdata = dataEl[1];
+		cdata = ldata.split(" ").join("");
+		if (cdata != "" && ldata != undefined) {
+			_data.push([[ldata], rdata]);
+		}
+		}
+		_data.shuffle();
+       }
+	   if(this.topic_id==10){
+	   mngr.arr_pp = ['1/11|7/12', '7/9|7/12', '4/7|7/8', '1/12|2/9', '1/10|4/11', '1/10|3/8', '1/4|1/5', '6/7|8/11', '1/2|9/11', '3/10|7/8', '3/8|3/10', '1/11|5/8', '2/7|5/6', '4/5|4/9', '3/4|4/11', '1/5|6/7', '1/4|1/8', '1/6|5/11', '3/4|8/9', '7/9|8/11', '6/11|9/10', '1/5|8/9', '1/6|7/11', '2/9|3/4', '3/4|5/11', '1/8|4/5', '7/12|8/11', '5/9|7/9', '3/5|8/9', '1/2|5/6', '1/3|4/11', '2/11|7/9', '1/2|3/11', '1/3|5/8', '3/11|5/8', '1/3|7/12', '2/9|6/11', '3/4|3/8', '2/5|3/5', '2/11|5/12', '4/11|5/8', '1/2|1/12', '6/11|8/9', '1/5|6/11', '4/9|6/11', '1/10|2/9', '1/9|2/11', '2/3|7/8', '2/3|3/10', '1/10|8/11', '1/7|7/8', '5/7|5/9', '2/5|5/12', '2/9|4/5', '1/6|9/11', '8/9|9/10', '1/5|1/6', '1/12|3/5', '2/11|9/10', '1/8|2/9', '1/5|3/10', '2/9|4/11', '3/7|11/12', '4/7|8/9', '3/8|5/9', '3/4|3/5', '2/3|11/12', '6/7|11/12', '3/5|3/11', '1/4|3/5', '2/3|4/11', '2/5|6/7', '1/9|9/10', '1/6|1/7', '1/10|5/8', '1/5|2/3', '1/2|8/11', '1/5|5/12', '1/4|3/4', '1/4|7/10', '5/7|8/11', '1/10|1/11', '6/11|7/12', '1/12|4/5', '5/8|9/10', '1/11|6/7', '5/9|9/10', '1/9|1/12', '5/9|7/10', '1/6|1/10', '1/12|7/12', '1/12|2/5', '1/10|7/8', '3/7|3/11', '2/9|3/11', '1/2|4/7', '1/5|3/4', '2/9|8/9', '3/11|9/10', '7/10|9/10', '1/7|1/8', '1/3|3/5', '7/11|8/9', '1/2|7/11', '5/9|7/12', '3/4|3/10', '1/6|7/10', '6/7|8/9', '1/4|3/10', '1/3|2/5', '5/7|7/10', '3/4|7/12', '1/2|2/7', '2/9|4/9', '5/12|11/12', '1/6|1/8', '1/11|2/5', '3/4|9/11', '5/6|5/12', '3/4|11/12', '1/8|5/11', '2/3|2/11', '3/10|4/5', '1/10|3/7', '1/12|9/11', '3/5|7/10', '1/5|7/9', '1/4|7/11', '7/9|9/10', '5/12|7/9', '1/8|7/12', '1/7|1/11', '2/7|3/5', '3/11|4/11', '1/11|4/11', '1/5|4/9', '1/5|3/7', '3/10|9/10', '1/6|3/4', '1/7|5/8', '1/11|5/7', '2/11|4/5', '2/11|3/11', '8/11|9/10', '1/11|1/12', '6/7|9/10', '2/11|7/12', '3/5|3/7', '5/12|7/12', '1/6|3/5', '1/10|11/12', '4/11|7/11', '2/5|3/4', '1/9|5/7', '3/11|4/7', '1/8|11/12', '1/12|5/6', '1/8|6/7', '1/9|5/12', '4/11|6/11', '2/7|5/7', '2/11|8/9', '5/7|5/12', '1/6|5/7', '1/12|3/8', '1/11|5/11', '1/12|8/11', '5/8|7/10', '5/6|8/11', '3/4|5/8', '2/7|5/8', '1/5|2/9', '1/2|1/11', '3/7|7/8', '3/5|3/10', '1/3|7/11', '1/6|5/8', '2/9|3/8', '3/8|4/11', '1/9|2/3', '3/11|5/7', '1/4|8/9', '4/9|7/9', '3/11|8/9', '3/11|5/12', '3/7|5/12', '1/11|7/11', '2/3|4/5', '1/11|9/10', '8/11|9/11', '2/11|5/11', '2/3|2/7', '1/3|8/9', '4/5|9/10', '4/7|5/11', '1/12|11/12', '2/3|7/10', '4/11|5/6', '1/11|2/7', '1/4|2/7', '5/8|6/7', '1/11|8/9', '1/8|9/11', '1/4|4/9', '4/7|5/8', '2/7|2/9', '3/8|4/9', '1/4|1/6', '2/9|3/10', '8/9|11/12', '1/2|7/8', '2/9|5/12', '3/4|8/11', '4/7|6/11', '1/12|4/9', '1/11|7/10', '5/8|7/9', '5/7|6/11', '1/7|5/11', '1/5|1/12', '1/7|2/5', '4/9|7/8', '1/10|9/10', '1/11|5/9', '8/9|9/11', '3/11|6/7', '1/5|1/10', '3/8|4/5', '2/7|6/7', '1/12|7/8', '2/5|3/10', '4/5|7/11', '3/4|7/8', '2/5|5/8', '1/5|9/10', '9/10|11/12', '4/5|7/9', '4/11|7/10', '3/7|4/11', '4/7|5/7', '1/5|1/11', '1/12|5/12', '5/6|7/10', '1/9|5/6', '1/8|3/11', '1/7|4/9', '3/5|9/11', '2/3|7/9', '1/11|5/6', '1/9|3/8', '1/8|4/9', '1/3|5/7', '1/5|1/7', '1/2|1/7', '7/12|8/9', '5/9|8/9', '5/8|7/12', '3/11|4/9', '1/2|1/5', '2/3|5/8', '3/5|6/11', '4/9|5/8', '2/5|2/11', '5/8|6/11', '1/2|1/10', '3/4|6/11', '1/5|2/5', '3/8|3/11', '3/4|5/9', '3/11|6/11', '5/8|9/11', '3/10|8/11', '2/9|7/10', '1/11|2/11', '1/2|3/8', '2/9|7/9', '2/5|11/12', '4/5|5/7', '2/3|9/11', '1/12|6/11', '3/5|3/8', '2/3|9/10', '1/2|4/9', '1/3|3/10', '3/5|4/7', '1/2|7/9', '3/10|7/10', '3/7|4/7', '1/11|4/7', '2/11|3/8', '2/11|3/5', '1/3|9/10', '3/7|9/11', '1/12|5/9', '4/9|8/9', '5/8|5/9', '3/11|7/8', '3/8|9/11', '1/7|5/9', '1/7|3/10', '1/7|9/11', '1/6|9/10', '3/11|7/9', '5/11|9/10', '3/5|7/9', '3/4|5/6', '2/3|3/5', '2/11|4/11', '1/8|3/8', '1/6|2/3', '1/8|4/7', '1/10|2/11', '4/9|4/11', '1/7|3/8', '2/5|5/11', '4/11|8/11', '1/5|7/8', '3/7|7/12', '2/7|4/5', '1/2|2/11', '3/7|5/9', '1/9|5/9', '1/3|1/4', '1/4|2/3', '2/5|7/12', '7/8|9/10', '3/7|7/11', '1/9|9/11', '1/3|7/10', '1/7|11/12', '1/8|6/11', '2/5|4/5', '5/7|8/9', '1/9|2/9', '1/10|2/7', '1/5|3/5', '3/10|11/12', '5/11|7/11', '3/8|8/9', '5/11|7/10', '5/7|7/12', '1/5|9/11', '1/7|7/10', '5/12|8/9', '5/11|5/12', '1/7|6/11', '7/10|7/11', '2/3|2/9', '2/11|11/12', '5/7|9/11', '4/5|9/11', '4/7|8/11', '1/3|3/7', '1/6|7/12', '1/5|7/11', '1/5|2/11', '1/2|8/9', '6/11|11/12', '5/6|9/10', '1/10|3/5', '2/7|5/9', '1/7|7/11', '4/7|5/12', '1/4|4/5', '5/6|5/11', '3/8|8/11', '1/2|4/5', '4/9|7/11', '3/10|7/12', '2/3|3/4', '1/12|7/10', '1/10|1/12', '1/7|3/11', '5/9|7/8', '3/10|6/7', '4/7|7/12', '1/3|8/11', '1/8|7/8', '3/5|5/11', '1/3|5/11', '6/7|7/10', '1/8|3/10', '1/6|5/12', '1/12|3/11', '1/2|4/11', '3/4|3/11', '1/6|2/11', '4/11|11/12', '2/5|4/7', '2/5|3/7', '3/5|5/7', '5/9|6/11', '3/5|7/8', '3/10|7/11', '2/7|3/8', '4/7|7/10', '1/12|3/7', '5/6|5/8', '1/9|7/12', '1/4|1/9', '5/9|11/12', '7/11|11/12', '5/6|8/9', '1/7|4/11', '5/8|8/9', '1/2|3/4', '1/3|7/9', '7/10|7/12', '1/3|2/3', '2/7|8/9', '5/12|6/7', '3/10|6/11', '3/10|5/12', '1/4|9/10', '3/11|5/9', '7/8|7/9', '7/8|9/11', '5/12|9/11', '3/7|7/10', '3/5|9/10', '1/6|4/11', '1/6|2/7', '4/9|9/11', '3/5|4/11', '1/7|2/7', '2/11|8/11', '1/3|2/7', '1/4|2/9', '2/3|2/5', '1/11|4/5', '1/6|8/11', '1/5|4/11', '2/7|7/8', '3/4|7/11', '2/7|2/11', '1/11|6/11', '1/4|2/5', '7/8|8/9', '1/10|5/6', '3/8|7/9', '5/6|7/8', '2/7|3/11', '5/11|11/12', '2/11|5/9', '1/7|5/12', '1/8|4/11', '4/9|7/10', '2/5|5/6', '4/11|9/10', '1/12|4/7', '1/8|7/11', '2/5|8/11', '4/11|9/11', '7/10|8/9', '1/10|2/5', '3/11|7/12', '6/11|7/10', '2/7|7/10', '1/5|7/12', '1/7|8/11', '1/11|9/11', '5/6|11/12', '1/8|1/10', '1/5|5/11', '3/8|7/11', '1/10|5/9', '7/11|8/11', '2/5|5/9', '1/7|4/7', '1/3|5/9', '4/5|5/9', '1/5|1/8', '2/5|9/10', '2/11|6/7', '4/11|5/12', '1/4|4/7', '5/6|5/9', '2/3|3/11', '1/6|1/11', '7/9|11/12', '1/7|2/3', '1/5|4/7', '1/7|1/10', '1/10|3/10', '7/11|7/12', '1/8|3/5', '3/11|11/12', '1/4|5/6', '1/3|4/5', '2/11|3/7', '3/7|3/8', '2/7|9/11', '2/7|4/9', '2/9|2/11', '4/5|6/7', '1/3|3/4', '1/2|6/7', '1/2|2/5', '1/3|1/12', '1/10|7/11', '2/9|4/7', '1/7|1/9', '1/7|8/9', '1/2|1/8', '7/9|7/10', '3/7|5/8', '7/9|7/11', '7/9|8/9', '1/9|8/11', '1/11|3/4', '2/11|7/8', '6/11|8/11', '2/11|5/6', '5/11|6/7', '5/9|7/11', '2/5|7/10', '1/9|4/9', '1/4|1/11', '1/3|3/11', '1/4|9/11', '6/7|7/11', '1/6|4/7', '1/4|6/7', '1/10|5/11', '3/7|9/10', '1/6|7/8', '1/4|7/8', '3/10|3/11', '1/4|5/7', '1/11|3/5', '4/9|5/11', '1/12|4/11', '2/3|5/12', '1/7|3/5', '1/2|1/9', '1/11|8/11', '2/7|3/7', '7/12|11/12', '1/8|5/12', '2/11|3/4', '1/5|1/9', '1/3|3/8', '1/3|1/10', '1/2|7/10', '1/12|2/11', '5/12|7/10', '7/10|9/11', '1/2|5/9', '3/10|9/11', '7/11|9/10', '2/11|3/10', '5/7|7/11', '3/7|4/5', '4/7|9/10', '2/3|7/12', '6/7|7/9', '1/9|7/11', '1/3|6/11', '1/6|3/10', '1/7|9/10', '1/9|3/10', '5/6|9/11', '1/4|5/11', '1/12|5/11', '3/8|6/7', '4/5|8/9', '1/3|1/11', '4/7|5/6', '2/9|5/11', '4/9|5/6', '1/2|2/3', '1/3|6/7', '1/7|2/11', '2/11|5/8', '1/10|7/12', '4/5|4/7', '3/11|4/5', '2/9|7/8', '5/12|7/11', '1/3|7/8', '1/4|1/12', '1/9|7/10', '5/6|6/11', '3/4|4/9', '3/4|5/12', '3/8|6/11', '4/7|7/9', '2/9|9/10', '1/3|1/8', '3/5|11/12', '5/8|5/11', '3/11|9/11', '1/9|4/7', '3/10|7/9', '1/9|8/9', '5/12|9/10', '1/12|7/9', '4/11|8/9', '2/9|3/7', '4/11|5/7', '1/3|1/7', '1/11|4/9', '1/12|5/7', '2/5|4/9', '3/8|9/10', '1/9|11/12', '1/3|2/11', '3/8|4/7', '1/10|8/9', '2/7|11/12', '4/9|9/10', '5/6|6/7', '2/7|8/11', '3/10|5/7', '1/5|5/9', '3/11|7/11', '1/5|7/10', '7/8|7/12', '1/9|3/11', '6/11|9/11', '1/9|7/8', '1/10|5/12', '4/7|7/11', '1/8|2/3', '2/5|3/11', '1/8|2/5', '1/5|3/8', '2/9|11/12', '1/4|7/9', '4/5|6/11', '1/4|8/11', '4/9|5/9', '6/7|6/11', '3/5|4/5', '3/8|7/12', '2/9|3/5', '4/7|9/11', '8/11|11/12', '2/11|4/7', '1/6|7/9', '1/5|3/11', '1/8|2/11', '5/11|7/9', '2/11|7/10', '3/4|9/10', '4/5|5/6', '2/11|7/11', '4/11|7/8', '1/8|1/12', '1/10|4/5', '6/11|7/11', '3/5|7/12', '1/8|1/9', '5/8|11/12', '4/11|5/11', '2/3|8/11', '2/5|4/11', '1/7|6/7', '3/11|8/11', '1/3|5/12', '3/7|5/7', '5/11|7/12', '1/4|5/9', '1/12|3/4', '1/11|2/9', '5/6|5/7', '1/8|5/9', '1/10|4/7', '3/8|5/6', '1/3|9/11', '3/5|4/9', '4/9|5/7', '1/9|2/7', '1/8|5/7', '1/8|7/9', '1/11|2/3', '1/12|3/10', '2/9|5/8', '1/11|3/7', '3/10|8/9', '3/4|3/7', '2/7|4/7', '3/5|5/12', '1/2|5/7', '2/3|6/7', '1/9|3/7', '1/12|2/7', '4/5|8/11', '3/4|4/7', '1/3|4/9', '1/11|3/10', '1/12|8/9', '1/4|11/12', '1/2|3/10', '1/3|5/6', '1/7|1/12', '3/10|4/11', '2/7|7/11', '1/8|5/8', '2/5|7/8', '3/10|4/9', '1/11|11/12', '7/10|11/12', '5/7|5/8', '1/4|1/10', '2/9|6/7', '1/9|7/9', '1/9|6/11', '3/5|5/6', '1/2|5/11', '4/7|4/9', '3/11|7/10', '1/10|3/11', '2/7|6/11', '2/3|7/11', '3/10|5/11', '3/8|5/12', '1/4|3/7', '6/11|7/9', '5/12|8/11', '7/12|9/11', '1/7|2/9', '1/3|11/12', '1/9|3/4', '3/8|5/11', '1/7|3/7', '2/5|7/11', '5/8|8/11', '5/7|7/9', '2/7|7/12', '1/2|1/4', '2/11|4/9', '3/5|5/8', '2/3|3/8', '1/7|4/5', '1/11|3/8', '1/2|1/6', '5/9|5/12', '2/7|7/9', '1/10|3/4', '1/6|3/11', '3/7|6/7', '1/6|6/11', '5/6|7/9', '2/5|5/7', '3/4|4/5', '1/8|8/9', '4/7|5/9', '1/2|5/8', '3/5|8/11', '3/7|8/9', '1/7|3/4', '1/7|5/7', '1/11|3/11', '3/7|6/11', '1/3|4/7', '7/11|9/11', '2/3|4/7', '3/4|6/7', '9/10|9/11', '2/3|3/7', '1/6|6/7', '1/8|3/4', '4/9|5/12', '3/10|4/7', '2/7|3/10', '1/8|9/10', '7/8|7/11', '6/7|9/11', '2/9|8/11', '2/7|3/4', '5/12|6/11', '1/8|2/7', '5/11|6/11', '5/12|7/8', '2/3|8/9', '1/4|5/8', '1/7|7/9', '1/10|9/11', '1/6|4/9', '6/11|7/8', '5/11|9/11', '1/10|7/10', '3/7|4/9', '1/2|9/10', '5/6|7/11', '1/5|5/7', '4/11|7/12', '4/5|5/11', '5/7|5/11', '1/9|4/5', '1/3|1/9', '1/10|6/11', '4/5|7/8', '4/5|5/12', '2/11|9/11', '3/8|5/8', '5/9|5/11', '1/9|3/5', '3/5|7/11', '2/7|5/12', '3/5|6/7', '1/2|2/9', '1/10|5/7', '1/8|1/11', '5/7|11/12', '2/5|7/9', '5/6|7/12', '4/7|6/7', '4/5|11/12', '1/4|7/12', '3/7|7/9', '3/5|5/9', '1/4|5/12', '1/5|5/6', '1/4|3/8', '5/11|7/8', '1/6|2/5', '2/7|4/11', '3/7|8/11', '1/2|3/5', '1/4|6/11', '1/6|4/5', '1/6|11/12', '2/5|3/8', '4/11|7/9', '1/12|6/7', '2/9|5/9', '1/6|5/9', '1/11|7/8', '1/12|7/11', '1/9|1/10', '1/6|3/8', '5/7|6/7', '5/11|8/11', '1/6|1/9', '1/10|4/9', '1/10|2/3', '3/10|5/8', '1/9|6/7', '5/11|8/9', '2/9|5/7', '2/5|6/11', '2/11|6/11', '3/7|5/11', '5/9|9/11', '1/11|5/12', '5/7|9/10', '1/2|3/7', '9/11|11/12', '1/10|7/9', '4/9|11/12', '2/5|9/11', '1/12|5/8', '5/9|6/7', '2/9|7/11', '1/2|5/12', '4/5|5/8', '1/9|5/11', '3/7|3/10', '2/9|7/12', '1/5|2/7', '1/9|1/11', '4/5|7/12', '3/8|7/10', '1/2|6/11', '3/11|5/6', '6/7|7/12', '7/8|11/12', '1/2|11/12', '4/9|8/11', '4/9|6/7', '2/3|5/9', '2/3|5/7', '7/9|9/11', '1/7|7/12', '1/6|3/7', '1/12|2/3', '1/8|5/6', '7/8|8/11', '4/5|4/11', '1/3|1/5', '6/7|7/8', '3/4|7/9', '4/7|4/11', '1/12|9/10', '3/4|5/7', '3/8|7/8', '1/4|3/11', '1/4|2/11', '5/8|5/12', '2/3|6/11', '1/3|1/6', '1/6|2/9', '1/9|5/8', '1/5|11/12', '7/12|9/10', '1/8|7/10', '1/4|4/11', '2/7|9/10', '2/5|8/9', '2/9|9/11', '1/8|8/11', '3/10|5/9', '1/5|8/11', '5/8|7/11', '2/11|5/7', '4/7|11/12', '4/5|7/10', '1/7|5/6', '2/5|2/9', '1/3|2/9', '3/11|5/11', '1/9|4/11', '1/6|5/6', '4/11|6/7', '2/7|5/11', '1/8|3/7', '2/5|2/7', '3/7|5/6', '1/2|1/3', '2/3|5/11', '4/11|5/9', '1/6|1/12', '2/3|4/9', '1/4|1/7', '7/10|8/11', '3/10|5/6', '1/10|6/7', '2/9|5/6', '3/4|7/10', '1/2|7/12', '7/8|7/10', '3/8|5/7', '8/9|8/11', '1/11|7/9', '5/7|7/8', '2/3|5/6', '1/6|8/9', '1/9|2/5', '1/5|5/8', '1/5|4/5', '5/9|8/11', '4/9|7/12', '3/8|11/12', '5/8|7/8'];
+//
+mngr.arr_pi=['3/5|11/2','1/2|7/3','2/5|11/2','1/2|6/5','1/2|5/4','3/4|11/2','2/3|7/3','1/6|9/2','3/4|7/2','1/2|9/5','3/5|3/2','2/3|5/3','1/2|9/4','2/3|11/2','1/6|11/2','2/3|11/4','4/5|11/2','1/5|3/2','2/5|5/2','3/5|7/2','1/2|11/3','1/3|8/3','1/4|4/3','2/3|8/3','1/6|3/2','2/3|7/2','1/3|4/3','1/4|3/2','1/3|11/4','2/3|3/2','1/2|5/2','1/3|5/4','1/4|9/2','5/6|3/2','2/3|11/3','1/2|5/3','1/2|7/5','1/4|8/3','1/3|11/2','3/4|3/2','1/3|3/2','2/3|7/4','1/5|7/2','3/4|9/2','1/2|7/4','2/5|3/2','1/2|8/3','1/2|12/5','1/2|11/6','4/5|7/2','2/3|9/2','1/5|11/2','1/2|8/5','4/5|3/2','1/2|3/2','2/5|7/2','3/4|4/3','1/4|11/2','1/3|7/3','1/2|7/6','5/6|9/2','3/4|11/3','1/2|11/5','1/3|11/3','1/2|4/3','2/3|9/4','3/5|5/2','5/6|5/2','1/3|7/4','3/4|7/3','3/4|5/3','1/3|9/2','1/4|5/2','1/4|5/3','4/5|5/2','1/2|11/2','1/2|9/2','1/6|5/2','2/5|9/2','1/3|5/3','1/4|11/3','3/5|9/2','1/3|9/4','1/4|7/2','1/2|7/2','2/3|5/2','2/3|5/4','3/4|8/3','3/4|5/2','1/5|9/2','5/6|11/2','2/3|4/3','1/3|5/2','1/2|11/4','1/6|7/2','4/5|9/2','5/6|7/2','1/3|7/2','1/4|7/3','1/5|5/2']
+//
+mngr.arr_pw=['5|7/10','5|1/6','1|8/9','3|9/10','6|2/9','5|3/5','5|1/4','3|9/11','7|3/11','9|3/8','1|2/9','7|1/9','11|3/5','8|5/9','1|5/6','2|8/11','9|5/9','4|5/6','1|2/11','2|2/9','1|5/7','7|8/9','11|5/12','3|7/12','8|2/3','1|7/11','5|1/5','10|9/10','2|3/8','2|1/6','6|1/7','9|1/3','8|1/12','8|6/11','3|7/11','4|1/7','4|7/12','7|6/11','4|1/2','5|7/11','3|3/5','3|2/11','12|5/12','4|8/9','11|8/11','8|1/10','1|7/8','12|3/4','8|6/7','2|2/3','4|5/12','6|4/9','7|5/8','8|5/11','6|7/11','6|1/8','4|1/8','9|3/11','8|1/11','6|1/5','9|5/11','6|1/4','10|5/6','2|3/5','8|1/8','7|3/8','5|1/8','6|6/7','9|1/5','7|1/6','5|5/11','2|4/5','2|5/6','11|7/9','12|7/10','2|7/11','6|3/10','4|1/12','8|3/5','6|2/5','9|4/5','6|1/11','12|4/11','9|11/12','4|1/11','12|5/9','2|1/10','7|4/7','4|5/7','12|2/9','5|1/10','2|3/4','9|2/5','3|1/5','4|2/5','5|2/11','5|5/8','8|3/8','11|9/10','12|1/12','4|5/9','8|2/5','9|6/11','6|7/12','1|7/10','11|8/9','10|1/6','11|7/8','5|1/9','7|3/5','12|8/11','4|4/11','1|1/4','10|2/9','1|1/8','1|3/7','11|5/9','10|1/11','3|4/5','1|3/4','7|4/9','12|5/8','6|5/8','3|1/12','9|5/8','4|9/11','7|1/11','11|5/6','7|9/11','10|8/11','9|1/9','5|6/7','1|2/7','9|8/9','3|2/7','6|5/9','10|7/10','11|1/6','2|5/12','8|5/7','12|2/3','7|1/10','12|1/4','12|5/7','11|7/11','2|9/10','3|1/4','8|3/10','5|3/11','2|8/9','9|1/7','10|2/3','8|2/7','9|1/4','12|1/9','3|2/5','3|3/4','7|11/12','12|1/11','8|8/9','12|1/3','2|2/11','1|7/12','3|1/9','6|8/9','9|2/9','9|5/12','8|4/7','5|4/7','3|5/8','12|6/7','1|5/11','11|3/7','8|3/11','11|1/7','8|4/5','3|4/11','11|1/10','2|4/11','5|3/10','10|1/5','5|9/10','4|1/4','9|8/11','1|6/7','4|9/10','2|3/11','7|7/12','2|1/2','6|1/9','8|1/3','1|8/11','8|5/8','10|8/9','6|3/7','6|9/10','12|3/10','8|11/12','12|5/6','11|2/7','9|3/7','3|7/10','1|1/9','8|1/2','12|1/7','6|3/8','9|3/4','4|7/9','7|1/3','1|5/9','11|1/5','5|8/9','12|4/7','5|8/11','6|5/11','6|11/12','1|11/12','3|4/7','1|1/11','6|7/9','4|6/7','7|2/5','11|5/7','6|1/6','7|4/5','7|6/7','10|4/7','5|3/7','3|1/2','8|7/8','11|4/9','1|1/7','10|3/5','10|1/9','4|3/11','9|1/11','10|2/7','11|11/12','7|1/4','5|1/11','2|11/12','12|2/5','2|6/11','1|2/5','7|5/12','7|1/2','7|1/7','11|7/10','5|4/9','11|1/8','3|1/6','10|1/7','11|3/8','3|1/7','4|2/3','10|6/11','3|1/10','10|1/4','11|2/11','12|4/5','6|1/3','5|1/2','7|2/11','3|3/10','4|4/5','9|3/5','12|9/10','1|3/10','3|2/3','1|4/7','11|1/3','3|6/7','12|1/5','2|1/9','3|5/7','8|7/10','7|4/11','12|4/9','4|1/9','8|1/4','3|1/11','5|4/5','1|5/8','10|6/7','10|7/8','9|1/6','9|2/3','10|5/7','1|1/3','11|4/7','11|1/12','2|1/7','11|3/11','4|3/4','9|3/10','8|3/7','7|5/11','5|2/9','4|1/6','4|5/8','9|1/10','3|5/12','12|11/12','11|4/5','1|9/11','5|5/6','9|1/2','10|5/11','7|3/7','11|5/8','7|1/5','5|1/7','2|1/5','3|1/3','9|7/10','2|5/9','12|3/7','5|2/7','12|8/9','3|1/8','2|6/7','10|3/4','10|7/11','9|5/7','3|11/12','9|2/11','5|6/11','6|3/5','7|7/10','11|6/7','12|7/8','9|6/7','6|4/5','2|1/11','4|11/12','9|7/9','10|1/3','10|9/11','2|4/7','6|5/6','7|1/8','10|5/12','9|4/11','1|4/11','6|1/12','12|7/9','7|3/10','10|1/12','8|2/11','7|3/4','11|2/9','6|3/11','2|3/7','5|7/12','2|5/8','3|4/9','2|7/12','10|3/10','9|1/12','1|1/5','8|4/9','3|7/8','8|4/11','8|2/9','8|5/12','8|9/11','8|5/6','1|9/10','11|6/11','12|1/8','7|2/3','2|1/8','4|4/9','7|5/9','4|1/10','8|7/12','9|7/8','8|1/6','1|1/6','12|3/5','3|7/9','2|1/12','11|2/3','6|4/7','6|4/11','8|1/9','10|3/8','12|7/12','11|7/12','6|9/11','12|1/6','1|3/5','10|1/8','1|3/11','9|9/11','7|7/8','4|5/11','1|1/10','2|7/10','2|7/9','3|8/9','1|5/12','1|2/3','10|1/2','8|3/4','5|3/4','12|5/11','9|5/6','12|2/7','8|7/9','4|7/11','4|7/10','10|3/11','3|5/9','11|9/11','8|1/7','11|1/4','12|6/11','11|2/5','5|5/9','2|1/4','7|5/6','6|3/4','8|7/11','6|5/7','4|2/9','10|5/8','2|5/7','2|7/8','2|9/11','9|4/7','4|3/5','10|11/12','10|4/5','3|5/11','7|7/11','5|2/5','5|1/12','3|6/11','9|7/12','11|4/11','1|3/8','6|6/11','5|9/11','10|2/11','4|3/7','3|3/11','4|3/8','11|3/4','1|4/5','12|3/11','4|6/11','4|2/7','12|2/11','9|1/8','9|4/9','6|5/12','3|3/8','2|2/7','7|9/10','1|1/12','5|2/3','2|1/3','5|11/12','10|4/11','9|9/10','2|4/9','7|7/9','1|1/2','5|3/8','7|8/11','3|8/11','12|1/10','2|5/11','9|2/7','10|1/10','10|2/5','11|5/11','5|1/3','7|2/9','1|7/9','6|7/8','3|5/6','5|4/11','3|3/7','4|1/3','4|2/11','3|2/9','11|1/2','7|5/7','4|3/10','10|5/9','6|1/10','4|4/7','4|8/11','5|5/12','2|3/10','9|7/11','5|7/8','6|2/7','4|1/5','5|7/9','8|9/10','6|1/2','2|2/5','12|7/11','7|2/7','1|4/9','10|4/9','12|9/11','6|2/11','8|1/5','11|3/10','11|1/11','7|1/12','10|7/9','12|3/8','6|8/11','6|7/10','4|7/8','6|2/3','12|1/2','1|6/11','10|7/12','5|5/7','8|8/11','11|1/9','10|3/7']
+//
+mngr.arr_ii=['11/2|11/6','5/2|9/2','8/3|11/3','7/2|4/3','11/3|5/4','9/2|7/6','4/3|5/4','11/3|9/4','3/2|11/2','5/2|11/3','8/3|7/4','5/2|11/5','11/2|8/5','11/2|5/4','11/3|7/4','11/2|6/5','7/2|11/5','3/2|6/5','9/2|7/5','3/2|4/3','5/3|7/4','3/2|11/4','3/2|9/2','3/2|7/2','3/2|9/4','7/2|7/5','5/2|7/3','11/3|11/4','7/2|5/3','5/3|9/4','9/2|11/5','7/2|7/4','7/2|8/5','9/2|7/4','9/2|11/6','5/2|8/3','5/2|11/6','7/2|7/6','9/2|4/3','5/2|5/4','7/3|11/3','5/2|4/3','5/3|11/3','8/3|9/4','4/3|9/4','7/2|11/4','9/2|9/4','11/2|7/4','5/3|11/4','3/2|11/6','3/2|9/5','7/3|7/4','5/2|11/4','7/2|11/6','9/2|9/5','4/3|7/4','7/3|9/4','3/2|11/3','3/2|8/5','3/2|5/3','7/3|11/4','9/2|8/5','11/2|7/6','5/2|7/5','3/2|5/4','9/2|5/3','5/2|7/4','7/3|5/4','5/2|5/3','4/3|7/3','9/2|8/3','5/3|7/3','5/3|8/3','7/2|8/3','11/2|4/3','11/2|5/3','7/2|6/5','3/2|7/6','3/2|7/4','3/2|12/5','5/2|8/5','7/2|5/4','4/3|11/3','5/3|5/4','7/2|9/5','3/2|7/5','5/2|9/5','5/2|12/5','7/2|7/3','8/3|11/4','11/2|9/5','3/2|11/5','9/2|7/3','3/2|7/3','7/2|12/5','8/3|5/4','4/3|8/3','5/2|6/5','11/2|7/5','9/2|5/4','9/2|6/5','4/3|5/3','9/2|12/5','5/2|7/2','5/2|7/6','3/2|5/2','5/2|9/4','7/2|9/4','4/3|11/4','3/2|8/3','7/3|8/3']
+//
+mngr.arr_iw=['6|8/5','6|11/9','7|11/7','1|11/10','1|7/6','2|8/3','2|11/2','5|11/10','2|11/6','3|11/5','1|5/4','5|3/2','1|12/11','5|8/7','1|7/4','4|12/11','2|7/6','3|8/5','5|5/4','1|9/8','6|7/5','1|8/3','8|5/4','6|5/4','6|11/7','3|11/3','7|9/7','3|4/3','2|3/2','3|8/3','4|11/6','2|12/11','6|11/10','4|5/4','5|9/7','2|9/2','2|12/5','8|11/8','8|9/7','10|6/5','10|11/10','4|11/8','1|11/2','7|8/5','1|9/7','6|11/8','3|12/11','3|3/2','8|3/2','4|12/7','3|11/4','10|12/11','3|5/3','5|11/6','2|7/3','8|4/3','3|7/4','5|7/5','2|11/4','7|5/4','3|12/5','3|8/7','4|7/5','4|9/4','5|11/9','4|11/10','2|5/3','1|5/2','5|12/5','6|7/4','8|8/7','4|8/7','4|7/6','2|9/4','5|7/4','1|7/3','1|11/7','4|5/2','5|9/4','2|11/10','5|7/3','4|5/3','10|7/6','3|9/8','9|11/10','5|6/5','4|7/3','5|11/5','7|5/3','9|9/8','8|11/10','4|11/9','9|12/11','9|5/4','6|12/7','5|7/6','3|5/4','4|9/7','1|11/4','6|4/3','4|11/7','3|12/7','9|11/9','4|7/4','1|7/5','1|3/2','7|11/8','9|4/3','2|7/2','1|11/5','4|3/2','2|11/5','1|11/8','3|5/2','1|6/5','7|12/11','4|9/8','6|9/7','3|11/9','2|11/3','7|8/7','2|9/7','5|11/7','4|11/5','2|5/4','1|5/3','10|9/8','7|6/5','5|9/5','1|12/5','5|12/11','1|11/3','4|6/5','2|12/7','6|9/5','3|11/7','5|8/5','2|8/5','6|6/5','4|12/5','5|5/3','3|11/8','6|7/6','1|11/9','1|9/2','7|11/10','7|7/5','1|8/5','7|7/6','4|8/3','3|11/6','3|6/5','1|11/6','6|8/7','7|12/7','2|11/8','8|11/9','6|9/8','3|11/10','10|8/7','1|9/5','8|7/6','2|11/7','3|7/3','1|7/2','9|8/7','3|7/5','2|5/2','2|6/5','3|7/6','7|9/8','8|12/11','2|11/9','3|9/5','4|9/5','4|11/4','2|8/7','7|4/3','1|4/3','5|12/7','2|7/4','6|12/11','5|4/3','3|9/7','9|7/6','8|6/5','7|3/2','9|9/7','2|9/8','3|9/4','4|8/5','8|9/8','1|8/7','7|11/9','11|12/11','1|12/7','5|11/8','3|7/2','2|9/5','6|3/2','1|9/4','2|7/5','6|5/3','4|4/3','8|7/5','9|6/5','5|9/8','6|11/6','2|4/3']
+//
+mngr.arr_pp_i=mngr.getIndexArr('pp')
+mngr.arr_pw_i=mngr.getIndexArr('pw')
+mngr.arr_pi_i=mngr.getIndexArr('pi')
+mngr.arr_ii_i=mngr.getIndexArr('ii')
+mngr.arr_iw_i=mngr.getIndexArr('iw')
+//
+mngr.arr_pp_l=mngr.arr_pp_i.length
+mngr.arr_pw_l=mngr.arr_pw_i.length
+mngr.arr_pi_l=mngr.arr_pi_i.length
+mngr.arr_ii_l=mngr.arr_ii_i.length
+mngr.arr_iw_l=mngr.arr_iw_i.length
+//
+mngr.pp_ind = 0;
+mngr.pw_ind = 0;
+mngr.pi_ind = 0;
+mngr.ii_ind = 0;
+mngr.iw_ind = 0;
+
+
+	_data = [];
+	var tarr = ['pp', 'pp', 'pp', 'pp', 'pp', 'pw', 'pw', 'pi', 'ii', 'iw'];
+	for (var i = 0; i<10; i++) {
+		_data.push(this.genMultiFracProb(tarr[i]));
+	}
+	_data.shuffle();
+	   }
+	   if(this.topic_id==18){
+	   var de_pair=["1/2","1/3","1/4","1/5","1/6","1/7","1/8","1/9","1/10","2/3","1/4","3/4","1/5","2/5","3/5","4/5","1/6","5/6","1/7","3/7","5/7","1/8","3/8","5/8","7/8","1/9","2/9","4/9","5/9","7/9","8/9","1/10","3/10","7/10","9/10","1/20","3/20","1/25","1/40","1/50","1/100"]
+var gh_pair=["2/1","3/1","4/1","5/1","6/1","7/1","8/1","9/1","10/1","20/1","25/1","40/1","50/1","100/1","3/2","5/2","7/2","9/2","11/2","4/3","5/3","7/3","8/3","5/4","7/4","9/4","11/4","6/5","9/5","12/5","9/8","11/8"]
+mngr.totalQuest=mngr.totalQuest?mngr.totalQuest:10;
+var l1 = 4*mngr.totalQuest/10;
+	var l2 = 3*mngr.totalQuest/10;
+	var l3 = 3*mngr.totalQuest/10;
+	l1 = Math.round(l1);
+	l2 = Math.round(l2);
+	l3 = mngr.totalQuest-(l1+l2);
+	var _data = [];
+	var ld1 = Array.shuffleArray(de_pair, l1);
+	var rd1 = Array.shuffleArray(de_pair, l1);
+	//
+	var ld2 = Array.shuffleArray(gh_pair, l2);
+	var rd2 = Array.shuffleArray(de_pair, l2);
+	//
+	var ld3 = Array.shuffleArray(de_pair, l3);
+	var rd3 = Array.shuffleArray(gh_pair, l3);
+	var ldata0, ldata1, rdata, type, s1, s2, ans;
+	for (var i = 0; i<mngr.totalQuest; i++) {
+		if (i<l1) {
+			type = 1;
+			ldata0 = ld1[i];
+			ldata1 = rd1[i];
+		}
+		if (i>=l1 && i<l1+l2) {
+			type = 2;
+			ldata0 = ld2[i-l1];
+			ldata1 = rd2[i-l1];
+		}
+		if (i>=l1+l2 && i<mngr.totalQuest) {
+			type = 3;
+			ldata0 = ld3[i-(l1+l2)];
+			ldata1 = rd3[i-(l1+l2)];
+		}
+		s1 = ldata0.split("/");
+		s2 = ldata1.split("/");
+		ansn = s1[0]*s2[1]+"/"+s1[1]*s2[0];
+		ans = Math.simpleFrac(ansn);
+		var ans0 = ans.split("/");
+		ans0[1]=ans0[1]==undefined?'1':ans0[1];
+		rdata = ans0[1] == '1' ? ans0[0] : ans;
+		ldata0 = s1[1] == '1' ? s1[0] : ldata0;
+		ldata1 = s2[1] == '1' ? s2[0] : ldata1;
+		_data.push([[ldata0, ldata1,[s1,s2],ans0,type], {frac:ansn,val:rdata,uans:ans}]);
+		
+	}
+	_data.shuffle();
+	   }
+       this.quest_data=_data;
+    }
+	
+	
+	
+    mngr.getProblem=function(id){
+        if(this.initialized){
+            //
+        }else{
+           this.init(id);
+        }
+		//console.log("FLASH_CARD_MNGR_INFO:GET PROB")
+        if(this.current_pblm_index>=this.quest_data.length){
+			this.genProblems();
+            this.current_pblm_index=0;
+        }
+        var indx=this.current_pblm_index;
+        this.current_pblm_index++;
+		this.completed_pblms++;
+		
+		var q=this.quest_data[indx]
+		//console.log("FLASH_CARD_MNGR_INFO:"+this.current_pblm_index+":"+q[0])
+		this.current_qobj=q;
+		this.current_quest=q[0];
+		this.current_ans=q[1];
+        return q;
+    }
+    mngr.checkForLimit=function(){
+        var boo=false;
+        if(this.limit==this.completed_pblms){
+            boo=true;
+        }
+        return boo;
+    }
+    mngr.checkAnswer=function(){
+        //
+    }
+    return mngr;
+}());
+/** End of flashcard manager class */(function(D,K){var A="width",P="length",d="radius",Y="lines",R="trail",U="color",n="opacity",f="speed",Z="shadow",h="style",C="height",E="left",F="top",G="px",S="childNodes",m="firstChild",H="parentNode",c="position",I="relative",a="absolute",r="animation",V="transform",M="Origin",O="coord",j="#000",W=h+"Sheets",L="webkit0Moz0ms0O".split(0),q={},l;function p(t,v){var s=~~((t[P]-1)/2);for(var u=1;u<=s;u++){v(t[u*2-1],t[u*2])}}function k(s){var t=D.createElement(s||"div");p(arguments,function(v,u){t[v]=u});return t}function b(s,u,t){if(t&&!t[H]){b(s,t)}s.insertBefore(u,t||null);return s}b(D.getElementsByTagName("head")[0],k(h));var N=D[W][D[W][P]-1];function B(x,s){var u=[n,s,~~(x*100)].join("-"),t="{"+n+":"+x+"}",v;if(!q[u]){for(v=0;v<L[P];v++){try{N.insertRule("@"+(L[v]&&"-"+L[v].toLowerCase()+"-"||"")+"keyframes "+u+"{0%{"+n+":1}"+s+"%"+t+"to"+t+"}",N.cssRules[P])}catch(w){}}q[u]=1}return u}function Q(w,x){var v=w[h],t,u;if(v[x]!==K){return x}x=x.charAt(0).toUpperCase()+x.slice(1);for(u=0;u<L[P];u++){t=L[u]+x;if(v[t]!==K){return t}}}function e(s){p(arguments,function(u,t){s[h][Q(s,u)||u]=t});return s}function X(s){p(arguments,function(u,t){if(s[u]===K){s[u]=t}});return s}var T=function T(s){this.el=this[Y](this.opts=X(s||{},Y,12,R,100,P,7,A,5,d,10,U,j,n,1/4,f,1))},J=T.prototype={spin:function(y){var AA=this,t=AA.el;if(y){b(y,e(t,E,~~(y.offsetWidth/2)+G,F,~~(y.offsetHeight/2)+G),y[m])}AA.on=1;if(!l){var s=AA.opts,v=0,w=20/s[f],x=(1-s[n])/(w*s[R]/100),z=w/s[Y];(function u(){v++;for(var AB=s[Y];AB;AB--){var AC=Math.max(1-(v+AB*z)%w*x,s[n]);AA[n](t,s[Y]-AB,AC,s)}if(AA.on){setTimeout(u,50)}})()}return AA},stop:function(){var s=this,t=s.el;s.on=0;if(t[H]){t[H].removeChild(t)}return s}};J[Y]=function(x){var v=e(k(),c,I),u=B(x[n],x[R]),t=0,s;function w(y,z){return e(k(),c,a,A,(x[P]+x[A])+G,C,x[A]+G,"background",y,"boxShadow",z,V+M,E,V,"rotate("+~~(360/x[Y]*t)+"deg) translate("+x[d]+G+",0)","borderRadius","100em")}for(;t<x[Y];t++){s=e(k(),c,a,F,1+~(x[A]/2)+G,V,"translate3d(0,0,0)",r,u+" "+1/x[f]+"s linear infinite "+(1/x[Y]/x[f]*t-1/x[f])+"s");if(x[Z]){b(s,e(w(j,"0 0 4px "+j),F,2+G))}b(v,b(s,w(x[U],"0 0 1px rgba(0,0,0,.1)")))}return v};J[n]=function(t,s,u){t[S][s][h][n]=u};var o="behavior",i="url(#default#VML)",g="group0roundrect0fill0stroke".split(0);(function(){var u=e(k(g[0]),o,i),t;if(!Q(u,V)&&u.adj){for(t=0;t<g[P];t++){N.addRule(g[t],o+":"+i)}J[Y]=function(){var AC=this.opts,AA=AC[P]+AC[A],y=2*AA;function v(){return e(k(g[0],O+"size",y+" "+y,O+M,-AA+" "+-AA),A,y,C,y)}var z=v(),AB=~(AC[P]+AC[d]+AC[A])+G,x;function w(AD,s,AE){b(z,b(e(v(),"rotation",360/AC[Y]*AD+"deg",E,~~s),b(e(k(g[1],"arcsize",1),A,AA,C,AC[A],E,AC[d],F,-AC[A]/2,"filter",AE),k(g[2],U,AC[U],n,AC[n]),k(g[3],n,0))))}if(AC[Z]){for(x=1;x<=AC[Y];x++){w(x,-2,"progid:DXImage"+V+".Microsoft.Blur(pixel"+d+"=2,make"+Z+"=1,"+Z+n+"=.3)")}}for(x=1;x<=AC[Y];x++){w(x)}return b(e(k(),"margin",AB+" 0 0 "+AB,c,I),z)};J[n]=function(v,s,x,w){w=w[Z]&&w[Y]||0;v[m][S][s+w][m][m][n]=x}}else{l=Q(u,r)}})();window.Spinner=T})(document);function initStartCmMobile(){}HmEvents.eventTutorLastStep.subscribe(function(A){gwt_solutionHasBeenViewed()});function showWhiteboardActive(B){var A=B.parentNode.parentNode.getAttribute("pid");showWhiteboard_Gwt(A)};

@@ -49,7 +49,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="hotmath.cm.dao.HaLoginInfoDao" class="hotmath.cm.dao.HaLoginInfoDao" parent="abstractJdbcDao"/>
     <bean id="StudentActivityDao" class="hotmath.gwt.cm_admin.server.model.StudentActivityDao" parent="abstractJdbcDao"/>
     <bean id="parallelProgramDao" class="hotmath.gwt.cm_admin.server.model.ParallelProgramDao" parent="abstractJdbcDao"/>
-
+    <bean id="hotmath.cm.server.model.CmTemplateDao" class="hotmath.cm.server.model.CmTemplateDao" parent="abstractJdbcDao"/>
 
     <!-- DAOs used by HM Mobile -->    
     <bean id="hotmath.gwt.hm_mobile.server.dao.BooksDao" class="hotmath.gwt.hm_mobile.server.dao.BooksDao" parent="abstractJdbcDao"/>
