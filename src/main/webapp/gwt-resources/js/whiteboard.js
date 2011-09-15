@@ -154,6 +154,7 @@ var Whiteboard = (function () {
 			while (obj.tagName != "BODY") {
 				top += obj.offsetTop;
 				left += obj.offsetLeft;
+				console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
                                 if(obj.offsetParent === null)
                                     break;
 				obj = obj.offsetParent;
