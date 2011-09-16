@@ -480,6 +480,9 @@ var Whiteboard = (function () {
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         topcontext.clearRect(0, 0, canvas.width, canvas.height);
         context.clearRect(0, 0, canvas.width, canvas.height);
+        drawingLayer = '1'
+        $get_Element("#button_gr2D").style.border = '1px solid #000000';
+        $get_Element("#button_nL").style.border = '1px solid #000000';
         if (boo) {
             clear(true);
         }
