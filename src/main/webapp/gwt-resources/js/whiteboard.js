@@ -147,7 +147,7 @@ var Whiteboard = (function () {
         offX = $get_Element("#canvas-container").offsetLeft
         offY = $get_Element("#canvas-container").offsetTop;
         // alert(offX+":"+offY);
-		var getCanvasPos = function(){
+		/*var getCanvasPos = function(){
 			var obj = $get_Element("#canvas-container");
 			var top = 0;
 			var left = 0;
@@ -165,7 +165,21 @@ var Whiteboard = (function () {
 				top: top,
 				left: left
 			};
-		};
+		};*/
+		function getCanvasPos() {
+	var box = $get_Element("#canvas-container").getBoundingClientRect();    
+	var body = mainDoc.body;
+	var docElem = mainDoc.documentElement;
+    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+    var clientTop = docElem.clientTop || body.clientTop || 0;
+    var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+    var top  = box.top +  scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+    offX=Math.round(left);
+	offY=Math.round(top);
+    return { top: offY, left: offX }
+	}
 		getCanvasPos();
         graphicData = {}
         tool_id = {};
