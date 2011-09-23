@@ -68,25 +68,11 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String path = ppid.getSolutionPath_DirOnly("solutions");
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("solution_html", solutionHtml);
-            map.put("pid", pid);
-            logger.debug(String.format("+++ execute(): solution_html done in: %d msec",
-            	System.currentTimeMillis()-startTime));
+            logger.debug(String.format("+++ execute(): solution_html done in: %d msec",	System.currentTimeMillis()-startTime));
             
             startTime = System.currentTimeMillis();
-            InputStream is = getClass().getResourceAsStream("tutor_wrapper.vm");
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String tutorWrapper = null;
-            StringBuilder sb = new StringBuilder();
-            while ((tutorWrapper = br.readLine()) != null) {
-                sb.append(tutorWrapper);
-            }
-            tutorWrapper = sb.toString();
 
-            solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
-            logger.debug(String.format("+++ execute(): solutionHtml (Velocity) done in: %d msec",
-                	System.currentTimeMillis()-startTime));
+            logger.debug(String.format("+++ execute(): solutionHtml (Velocity) done in: %d msec",System.currentTimeMillis()-startTime));
             
             startTime = System.currentTimeMillis();
             boolean hasShowWork = getHasShowWork(conn, uid, pid);

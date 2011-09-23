@@ -138,7 +138,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      * 
      */
     
-    Widget tutorPanel;
+    TutorWrapperPanel tutorPanel;
     public void showSolution() {
 
     	CmLogger.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
@@ -172,8 +172,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                  */
                 boolean hasShowWork = true; 
                 
-                tutorPanel = new Html(html);
-                tutorPanel.setStyleName("tutor_solution_wrapper");
+                tutorPanel = new TutorWrapperPanel();
+                tutorPanel.addStyleName("tutor_solution_wrapper");
                 addResource(tutorPanel, getResourceItem().getTitle());
                 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
@@ -193,7 +193,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         shouldExpandSolution = true;
                         // showWorkDialog();
                     }
-                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(),hasShowWork,shouldExpandSolution,result.getJs());
+                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(),hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs());
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {
@@ -313,8 +313,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      * @param pid
      */
     static private native void initializeTutor(String pid, String title, boolean hasShowWork,
-            boolean shouldExpandSolution,String solutionData) /*-{
-                                          $wnd.doLoad_Gwt(pid, title,hasShowWork,shouldExpandSolution,solutionData);
+            boolean shouldExpandSolution,String solutionHtml,String solutionData) /*-{
+                                          $wnd.doLoad_Gwt(pid, title,hasShowWork,shouldExpandSolution,solutionHtml,solutionData);
                                           }-*/;
 
     static private native void expandAllSteps() /*-{
