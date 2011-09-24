@@ -167,7 +167,7 @@ var Whiteboard = (function () {
 			};
 		};*/
 		function getCanvasPos() {
-	var box = $get_Element("#canvas-container").getBoundingClientRect();    
+	var box = canvas.getBoundingClientRect();    
 	var body = mainDoc.body;
 	var docElem = mainDoc.documentElement;
     var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
@@ -272,11 +272,11 @@ var Whiteboard = (function () {
                  */
                 var event = _event ? _event : window.event;
 
-                event = isTouchEnabled ? _event.targetTouches[0] : event;
+                event = isTouchEnabled ? _event.changedTouches[0] : event;
                 var dx, dy, dist;
-                if (event.layerX || event.pageX) {
-                    dx = event.layerX ? event.layerX : event.pageX - offX;
-                    dy = event.layerY ? event.layerY : event.pageY - offY;
+                if (event.pageX!=undefined) {
+                    dx = event.pageX - offX;
+                    dy = event.pageY - offY;
                 } else {
                     dx = event.clientX - offX
                     dy = event.clientY - offY
@@ -375,7 +375,7 @@ var Whiteboard = (function () {
 
         var ev_onmousemove = function (_event) {
                 var event = _event ? _event : window.event;
-                event = _event.type.indexOf('touch') > -1 ? _event.targetTouches[0] : event;
+                event = _event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
                 if (penDown) {
                     rendering = true;
                     if (currentTool != 'pencil' && currentTool != 'text') {
@@ -385,9 +385,10 @@ var Whiteboard = (function () {
 
                     // x = event.layerX?event.layerX:event.pageX-offX;
                     // y = event.layerY?event.layerY:event.pageY-offY;
-                    if (event.layerX || event.pageX) {
-                        x = event.layerX ? event.layerX : event.pageX - offX;
-                        y = event.layerY ? event.layerY : event.pageY - offY;
+					
+                    if (event.pageX!=undefined) {
+                        x = event.pageX - offX;
+                        y = event.pageY - offY;
                     } else {
                         x = event.clientX - offX
                         y = event.clientY - offY
