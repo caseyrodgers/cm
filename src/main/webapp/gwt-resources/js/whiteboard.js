@@ -112,6 +112,7 @@ var Whiteboard = (function () {
     /** main HTML document object */
     var mainDoc;
     wb.initWhiteboard = function (mainDocIn) {
+		console.log("WHITEBOARD_INITIATED! - document object:"+mainDocIn);
         mainDoc = mainDocIn;
         canvas = $get_Element("#canvas");
         var siz = viewport()
@@ -167,20 +168,26 @@ var Whiteboard = (function () {
 			};
 		};*/
 		function getCanvasPos() {
-	var box = canvas.getBoundingClientRect();    
+		console.log("getCanvasPos processing!");
+	var box = canvas.getBoundingClientRect(); 
+console.log("canvas bound= top: "+box.top+" left:"+box.left);
 	var body = mainDoc.body;
 	var docElem = mainDoc.documentElement;
     var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
     var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
     var clientTop = docElem.clientTop || body.clientTop || 0;
     var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+	console.log("offset_datas: scrollTop="+scrollTop+" scrollLeft="+scrollLeft+" clientTop="+clientTop+" clientLeft="+clientLeft);
     var top  = box.top +  scrollTop - clientTop;
     var left = box.left + scrollLeft - clientLeft;
     offX=Math.round(left);
 	offY=Math.round(top);
+	console.log("OFFSET: top="+offY+" left="+offX);
     return { top: offY, left: offX }
 	}
+	console.log("getCanvasPos calling!");
 		getCanvasPos();
+		console.log("getCanvasPos CALL END!");
         graphicData = {}
         tool_id = {};
         tool_id['eraser'] = 0;
@@ -265,6 +272,7 @@ var Whiteboard = (function () {
                     canvas.removeEventListener("mouseup", ev_onmouseup, false);
                     canvas.removeEventListener("mousemove", ev_onmousemove, false);
                 }
+					getCanvasPos();
                 /*
                  * else{ canvas.removeEventListener('touchstart',ev_onmousedown, false);
                  * canvas.removeEventListener('touchmove',ev_onmousemove, false);
@@ -274,6 +282,7 @@ var Whiteboard = (function () {
 
                 event = isTouchEnabled ? _event.changedTouches[0] : event;
                 var dx, dy, dist;
+			
                 if (event.pageX!=undefined) {
                     dx = event.pageX - offX;
                     dy = event.pageY - offY;
