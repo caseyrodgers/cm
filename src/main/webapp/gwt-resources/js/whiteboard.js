@@ -560,6 +560,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
     }
 
     function mouseOverGraph() {
+	getCanvasPos();
         var mx = event.layerX ? event.layerX : event.pageX - offX;
         var my = event.layerY ? event.layerY : event.pageY - offY;
         var xp, yp, wi, hi
