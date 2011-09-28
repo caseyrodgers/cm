@@ -9,6 +9,7 @@ public class CmProgramInfo implements Response {
     String programName;
     int segmentCount;
     CmProgramType programType;
+    String   subjectId;
     
     public CmProgramInfo() {/* empty */}
     
@@ -51,9 +52,17 @@ public class CmProgramInfo implements Response {
 		this.programType = programType;
 	}
 
-    @Override
+    public String getSubjectId() {
+		return subjectId;
+	}
+
+	public void setSubjectId(String subjectId) {
+		this.subjectId = subjectId;
+	}
+
+	@Override
     public String toString() {
         return "CmProgramInfo [testDefId=" + testDefId + ", programName=" + programName + ", segmentCount="
-                + segmentCount + "]";
+                + segmentCount + ", subjectId= " + subjectId + "]";
     }
 }
