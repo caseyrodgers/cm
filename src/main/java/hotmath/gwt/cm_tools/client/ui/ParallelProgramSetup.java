@@ -29,7 +29,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class ParallelProgramSetup extends RegisterStudent {
 	
-    TextField<String> _groupTag;
+    TextField<String> _nameTag;
     TextField<String> _passwordTag;
     
 	public ParallelProgramSetup(StudentModel sm, CmAdminModel cm) {
@@ -40,17 +40,17 @@ public class ParallelProgramSetup extends RegisterStudent {
 
 	    _window.setHeight(350);
         
-        _groupTag = new TextField<String>();  
-        _groupTag.setFieldLabel("Group Name");
-        _groupTag.setAllowBlank(false);
-        _groupTag.setId("groupTag");
-        _groupTag.setEmptyText("-- Enter group name --");
-        _fsProfile.add(_groupTag);
+        _nameTag = new TextField<String>();  
+        _nameTag.setFieldLabel("Name");
+        _nameTag.setAllowBlank(false);
+        _nameTag.setId("nameTag");
+        _nameTag.setEmptyText("-- Enter Parallel Program name --");
+        _fsProfile.add(_nameTag);
         
-        _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this Group name as a password.</p>"));
+        _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this name as a password.</p>"));
 
         
-        _fsProgram.setHeading("Assign Program for This Group");
+        _fsProgram.setHeading("Assign Program for This Parallel Program");
 	    _formPanel.layout();
 	    showWindow();
 	}
@@ -69,8 +69,9 @@ public class ParallelProgramSetup extends RegisterStudent {
                         
                         @Override
                         public void afterValidation(StudentModel student) {
-                            student.setName(_groupTag.getValue());
-                            student.setGroup(_groupTag.getValue());
+                            student.setName(_nameTag.getValue());
+                            student.setGroup(_nameTag.getValue());
+                            student.setPasscode(_nameTag.getValue());
                             
                             saveParallelProgramSetup(student);
                         }

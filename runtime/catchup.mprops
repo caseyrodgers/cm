@@ -90,10 +90,8 @@ LEFT JOIN HA_USER_EXTENDED ux
    on ux.user_id = h.uid
 LEFT JOIN HA_CUSTOM_QUIZ q
   on q.qid = p.custom_quiz_id
-  
-  
 
-
+  
 .key=STUDENT_SUMMARY_EXTENDED
 
 SELECT h.uid, h.admin_id as admin_uid, h.user_prog_id,
@@ -110,6 +108,36 @@ LEFT JOIN (SELECT uid, count(*) as tutoring_use
            GROUP by uid) ut on ut.uid = h.uid
 WHERE h.uid in (XXX) 
 ORDER BY h.user_name
+
+
+.key=STUDENT_TEMPLATE_BASE
+
+SELECT h.id, upper(h.name) as name, h.password as passcode, null as email, h.admin_id as admin_uid,
+       h.user_prog_id, 0 as is_show_work_required, 0 as is_tutoring_available, 0 as active_segment,  null as gui_background_style, 0 as is_demo, 0 as active_test_id,
+       p.test_def_id, p.create_date, p.pass_percent, p.test_config_json, p.date_completed,
+       ifnull(h.limit_games, 0) as limit_games, ifnull(h.show_work_required, 0) as show_work_required,
+       ifnull(h.stop_at_program_end, 0) as stop_at_program_end, 0 as tutoring_available,
+       trim(concat(ifnull(d.subj_id,''), ' ', d.prog_id)) as program, d.prog_id, d.subj_id,
+       ifnull(g.id, 0) as group_id, ifnull(g.name, 'none') as group_name, g.is_active, g.is_self_reg,
+       0 as current_lesson, 0 as lesson_count,
+       0 as lessons_completed,
+       cp.id as custom_program_id, cp.name as custom_program_name,
+       q.qid as custom_quiz_id, q.name as custom_quiz_name
+FROM  HA_ADMIN a 
+INNER JOIN HA_USER_TEMPLATE h 
+   on a.aid = h.admin_id  
+INNER JOIN CM_USER_PROGRAM p 
+   on p.user_id = h.id and p.id = h.user_prog_id
+LEFT JOIN HA_TEST_DEF d 
+   on d.test_def_id = p.test_def_id 
+LEFT JOIN CM_GROUP g 
+   on g.id = h.group_id
+LEFT JOIN HA_CUSTOM_PROGRAM cp 
+   on cp.id = p.custom_program_id
+LEFT JOIN HA_CUSTOM_QUIZ q
+  on q.qid = p.custom_quiz_id
+where h.id = ?
+
 
 .key=INSERT_STUDENT_EXTENDED
 
@@ -403,12 +431,10 @@ where  g.admin_id = ?
   and  g.name = ?
   and  g.id in (select group_id from HA_USER where admin_id = ? and is_auto_create_template = 1)
 union
-select t.type as dup
-from   CM_GROUP g, HA_USER_TEMPLATE t
-where  g.admin_id = ?
-  and  g.name = ?
-  and  g.id in (select group_id from HA_USER_TEMPLATE where admin_id = ?)
-  and  t.group_id = g.id
+select 'parallel-program' as dup
+from   CM_PARALLEL_PROGRAM p
+where  p.admin_id = ?
+  and  p.password = ?
   
 
 .key=CHECK_DUPLICATE_NAME
@@ -468,18 +494,28 @@ values(?, ?, ?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF wher
 .key=INSERT_STUDENT_PROGRAM_SQL
 
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json,custom_program_id)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?,?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?)
+
+.key=INSERT_STUDENT_PARALLEL_PROGRAM_DEF_SQL
+
+insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json, custom_program_id, is_parallel_program_def)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?, 1)
 
 
 .key=INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json,custom_program_id)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?)
+
+
+.key=INSERT_STUDENT_PARALLEL_PROGRAM_DEF_NULL_PASS_PERCENT_SQL
+insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, create_date,test_config_json,custom_program_id,is_parallel_program_def)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, 1)
 
 
 .key=INSERT_STUDENT_PROGRAM_CUSTOM_QUIZ
 
 insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_date, test_config_json,custom_quiz_id)
-values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?,?,?)
+values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?)
 
 
 
@@ -1709,6 +1745,19 @@ where  s.student_email = ?
 
 
   
+.key=USER_LOGIN_PARALLEL_PROGRAM
+
+select ut.id, a.partner_key
+from HA_USER_TEMPLATE ut
+JOIN CM_GROUP g ON ut.group_id = g.id
+JOIN HA_ADMIN a ON ut.admin_id = a.aid
+JOIN SUBSCRIBERS s ON a.subscriber_id = s.id
+where s.type = 'ST'
+  and s.password = ?
+  and g.name = ?
+  and ut.type = 'parallel-program'
+
+  
 .key=USER_LOGIN_AUTOREG
 
 select u.uid,a.partner_key
@@ -2620,5 +2669,34 @@ where g.admin_id = ?
   and g.name = ?
   and g.id = t.group_id
   and t.admin_id = g.admin_id
+
+
+.key=IS_PARALLEL_PROGRAM_STUDENT
+
+select count(*) as is_parallel_prog_student
+from HA_USER u, HA_USER_TEMPLATE t
+where t.id = ?
+  and t.admin_id = u.admin_id
+  and u.user_passcode = ?
   
-  
+
+.key=CREATE_CM_PROGRAM
+
+insert into CM_PROGRAM
+(admin_id, pass_percent, custom_prog_id, custom_quiz_id, create_date, test_def_id, test_config_json)
+values
+(?, ?, ?, ?, now(),
+ (select test_def_id
+ from HA_TEST_DEF
+ where test_def_id = (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1)),
+ (select test_config_json
+ from HA_TEST_DEF
+ where test_def_id = (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1)) 
+)
+
+.key=CREATE_CM_PARALLEL_PROGRAM
+
+insert into CM_PARALLEL_PROGRAM
+(admin_id, prog_inst_id, password, name, create_date) 
+values
+(?, ?, ?, ?, now())
