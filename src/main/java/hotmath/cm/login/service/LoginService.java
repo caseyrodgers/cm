@@ -8,8 +8,11 @@ import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.CmExceptionDoNotNotify;
 import hotmath.gwt.cm_rpc.client.CmUserException;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_rpc.server.rpc.ContextListener;
@@ -20,6 +23,7 @@ import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.LoginCommand;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaUserParallelProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
 import hotmath.util.sql.SqlUtilities;
@@ -223,6 +227,20 @@ public class LoginService extends HttpServlet {
 
 					req.getSession().setAttribute("loginInfo", loginInfo);
 					req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
+				}
+				else if (cmUser instanceof HaUserParallelProgram) {
+					clientInfo.setUserType(UserType.STUDENT);
+					
+					UserLoginResponse response = new UserLoginResponse();
+					UserInfo userInfo = new UserInfo();
+					userInfo.setUid(loginInfo.getUserId());
+					userInfo.setLoginName(loginInfo.getLoginName());
+					response.setUserInfo(userInfo);
+					CmDestination dest = new CmDestination(CmPlace.WELCOME);
+					response.setNextAction(dest);
+					String jsonizedUserInfo = Jsonizer.toJson(response);			
+					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
+					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
 				}
 				else {
 					clientInfo.setUserType(UserType.STUDENT);
