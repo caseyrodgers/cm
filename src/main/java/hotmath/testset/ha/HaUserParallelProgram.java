@@ -1,6 +1,6 @@
 package hotmath.testset.ha;
 
-/** Defines an account that will provide access to a Parallel Program
+/** Defines an "account" that will provide access to a Parallel Program
  *  
  * @author bob
  *
