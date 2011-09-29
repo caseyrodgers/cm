@@ -188,6 +188,46 @@ public class HaUserFactory {
 				SqlUtilities.releaseResources(rs, pstat, null);
 			}
 
+			// Check for a Parallel Program Login
+			// If the username matches a School password and the password matches the Password of
+			// of a Parallel Program that belongs to an Admin associated with that School (password) then
+			// the user must enter their own password to begin or resume a 'Parallel Program Path'.
+			// The Admin ID associated with the CM_PARALLEL_PROGRAM and the HA_USER must be the same.
+			String userLoginParallelProgSQL = CmMultiLinePropertyReader
+					.getInstance().getProperty("USER_LOGIN_PARALLEL_PROGRAM");
+
+			try {
+				pstat = conn.prepareStatement(userLoginParallelProgSQL);
+
+				pstat.setString(1, user);
+				pstat.setString(2, pwd);
+				
+				__logger.info("PP login sql: " + pstat.toString());
+
+				rs = pstat.executeQuery();
+				if (rs.first()) {
+					int parallelProgId = rs.getInt("id");
+					String parallelProgName = rs.getString("name");
+					__logger.info(String.format("ppID: %d, ppName: %s", parallelProgId, parallelProgName));
+					
+					HaUserParallelProgram student = new HaUserParallelProgram(parallelProgId);
+					student.setPartner("partner");
+					student.setLoginName(parallelProgName);
+					student.setUserName(parallelProgName);  // this is the Parallel Program Name
+					student.setPassword("parallel");
+					student.setAccountType("ST");
+					student.setExpireDate(new Date(System.currentTimeMillis()
+							+ (1000 * 3600 * 24)));
+
+					__logger.info("Logging in user (parallel program ID: "
+							+ parallelProgId + "): " + user);
+
+					return student;
+				}
+			} finally {
+				SqlUtilities.releaseResources(rs, pstat, null);
+			}
+
 			// The final possibility is an Auto Registration match on the
 			// userName and passcode.
 			// If the passcode matches the GROUP_NAME of the HA_USER record that
