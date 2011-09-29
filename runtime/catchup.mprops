@@ -1743,20 +1743,17 @@ where  s.student_email = ?
        and replace(u.user_passcode, ' ', '') = replace(?, ' ', '')
        and u.is_active = 1 
 
-
   
 .key=USER_LOGIN_PARALLEL_PROGRAM
 
-select ut.id, a.partner_key
-from HA_USER_TEMPLATE ut
-JOIN CM_GROUP g ON ut.group_id = g.id
-JOIN HA_ADMIN a ON ut.admin_id = a.aid
+select pp.id, pp.name
+from CM_PARALLEL_PROGRAM pp
+JOIN HA_ADMIN a ON pp.admin_id = a.aid
 JOIN SUBSCRIBERS s ON a.subscriber_id = s.id
 where s.type = 'ST'
   and s.password = ?
-  and g.name = ?
-  and ut.type = 'parallel-program'
-
+  and pp.password = ?
+    
   
 .key=USER_LOGIN_AUTOREG
 
@@ -2674,9 +2671,9 @@ where g.admin_id = ?
 .key=IS_PARALLEL_PROGRAM_STUDENT
 
 select count(*) as is_parallel_prog_student
-from HA_USER u, HA_USER_TEMPLATE t
-where t.id = ?
-  and t.admin_id = u.admin_id
+from HA_USER u, CM_PARALLEL_PROGRAM pp
+where pp.id = ?
+  and pp.admin_id = u.admin_id
   and u.user_passcode = ?
   
 
