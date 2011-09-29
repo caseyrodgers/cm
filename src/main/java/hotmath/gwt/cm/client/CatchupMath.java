@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -160,7 +161,12 @@ public class CatchupMath implements EntryPoint {
     private void processLoginComplete(final Integer uid) {
     	try {
 	    	String jsonUserInfo = getUserInfoFromExtenalJs();
-	    	CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
+	    	String startType = UserInfoBase.getInstance().getCmStartType();
+	    	if(startType == null)startType = "";
+
+	    	//Window.alert("jsonUserInfo: " + jsonUserInfo);
+	    	
+	        CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
 	
 	    	if (CmShared.getQueryParameterValue("type").equals("su")) {
 	    		UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
@@ -174,8 +180,6 @@ public class CatchupMath implements EntryPoint {
             }
             
             
-	    	String startType = UserInfoBase.getInstance().getCmStartType();
-	    	if(startType == null)startType = "";
 	    	if (startType.equals("AUTO_CREATE")) {
 	    		/**
 	    		 * self registration
@@ -183,19 +187,33 @@ public class CatchupMath implements EntryPoint {
 	    		 * mark as not owner, since this is templated.
 	    		 */
 	    		UserInfo.getInstance().setActiveUser(false);
-	    		CatchupMath.__thisInstance.showAutoRegistration_gwt();
-	    	} else if (CmShared.getQueryParameterValue("type").equals("auto_test")) {
-	    		__thisInstance.startNormalOperation();
-	    	} else if (CmShared.getQueryParameter("debug_info") != null) {
+	    		showAutoRegistration_gwt();
+	    	}
+	    	if (startType.equals("PARALLEL_PROGRAM")) {
+		    	/**
+		    	 * Parallel Program - need student's password which must be associated
+		    	 * with same account as Parallel Program
+		    	 * 
+	    		 */
+	    		UserInfo.getInstance().setActiveUser(false);
+		    	showParallelProgramPasswordPanel();
+		    	return;
+	    	}
+	    	else if (CmShared.getQueryParameterValue("type").equals("auto_test")) {
+	    		startNormalOperation();
+	    	}
+	    	else if (CmShared.getQueryParameter("debug_info") != null) {
 	    		setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
-	    		__thisInstance.startNormalOperation();
-	    	} else if (firstLocation.getPlace() == CmPlace.PRESCRIPTION || firstLocation.getPlace() == CmPlace.QUIZ) {
+	    		startNormalOperation();
+	    	}
+	    	else if (firstLocation.getPlace() == CmPlace.PRESCRIPTION || firstLocation.getPlace() == CmPlace.QUIZ) {
 	    		/**
 	    		 * already has active session, just move to current
 	    		 * position.
 	    		 */
 	    		startNormalOperation();
-	    	} else {
+	    	}
+	    	else {
 	    		/**
 	    		 * Otherwise, show the welcome screen to new visits
 	    		 * 
@@ -265,7 +283,7 @@ public class CatchupMath implements EntryPoint {
         
         History.addValueChangeHandler(new CatchupMathHistoryListener());
         
-        /** Don't allow bookmark to move paste server's location
+        /** Don't allow bookmark to move past server's location
          * 
          */
         // History.fireCurrentHistoryState();
@@ -476,6 +494,18 @@ public class CatchupMath implements EntryPoint {
         });
     }
 
+    public void showParallelProgramPasswordPanel() {
+        GWT.runAsync(new CmRunAsyncCallback() {
+        	
+            @Override
+            public void onSuccess() {
+                _mainContainer.removeAll();
+                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.add(new ParallelProgramPasswordPanel());
+                _mainContainer.layout();
+            }
+        });
+    }
     
     public void showEndOfProgramPanel() {
         GWT.runAsync(new CmRunAsyncCallback() {
