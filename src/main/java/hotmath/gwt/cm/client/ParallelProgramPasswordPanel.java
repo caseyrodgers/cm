@@ -284,6 +284,33 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         w.addButton(close);        
         w.setVisible(true);
     }
+    
+    private void showForgotPassword() {
+        
+        final CmWindow w = new CmWindow();
+        w.setHeading("Forgot Your Password");
+        w.setStyleName("auto-student-registration-forgot-password");
+        w.setLayout(new FitLayout());
+        
+        
+        String html = "<p>Perhaps your password is something like Smith-John-0304.";
+        
+        w.setModal(true);
+        w.add(new Html(html));
+        w.setSize(300,170);
+        
+        Button close = new Button("Go");
+        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                Window.Location.replace(CmShared.CM_HOME_URL);
+            }
+        });
+        
+        w.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+        w.addButton(close);        
+        w.setVisible(true);
+    }
  
 }
 
