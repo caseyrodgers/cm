@@ -53,6 +53,8 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
     
     TextField<String> password;
     
+    String parallelProgName;
+    
     public ParallelProgramPasswordPanel() {
 
         _formPanel = new FormPanel();
@@ -68,7 +70,7 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         _formPanel.setButtonAlign(HorizontalAlignment.CENTER);
         _formPanel.setLayout(new FormLayout());
         
-        String parallelProgName = UserInfo.getInstance().getLoginName();
+        parallelProgName = UserInfo.getInstance().getLoginName();
         _formPanel.setHeading("Parallel Program Login for [ " + parallelProgName + " ]");
         
         FieldSet fsLogin = new FieldSet();
@@ -190,7 +192,7 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         	public void onSuccess(RpcData rdata) {
                 CmBusyManager.setBusy(false);
              
-                /** check for build-in error message
+                /** check for error message
                  * 
                  * @TODO: move to specific object away from RpcData
                  * 
@@ -208,7 +210,8 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
                 }
                 else {
                 	// complete login
-                	completeLogin("x", "x");
+                	String key = rdata.getDataAsString("key");
+                	completeLogin(key);
                 }
         	}
         	@Override
@@ -221,22 +224,20 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
 		});
     }
 
-    private void completeLogin(String password, final String key) {
+    private void completeLogin(final String key) {
         
         final CmWindow win = new CmWindow();
         win.setSize(320,200);
         win.setModal(true);
         win.setClosable(false);
         
-        String ln = UserInfo.getInstance().getLoginName();
         String html = "<div style='margin: 10px;'>" +
-                      "<p>Your personal password is: <br/><b>" + password + "</b></p>" +
-                      "<p style='margin-top: 10px;'>In the future, your Login Name will be <b>" + ln + "</b> along with the above password, so please write them both down!</p>" +
+                      "<p>Your current program is<br/><b>" + parallelProgName + "</b></p>" +
                       "</div>";
         
         win.add(new Html(html));
         
-        win.setHeading("Your personal password for Catchup Math");
+        win.setHeading("Catchup Math");
         
         Button close = new Button("Begin Catchup Math");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -265,8 +266,8 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         
         
         String html = "<p>The selected Parallel Program, " + UserInfo.getInstance().getLoginName() + 
-                      " is not available to the password you entered, " + password +
-                      " Perhaps your password is something like Smith-Susie-0705.";
+                      ", is not available to the password you entered, " + password +
+                      ". Perhaps your password is something like Smith-John-0304.";
         
         w.setModal(true);
         w.add(new Html(html));

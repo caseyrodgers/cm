@@ -22,7 +22,6 @@ import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -65,8 +64,11 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import sb.util.SbUtilities;
 
@@ -567,22 +569,43 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public StudentModelI addStudentTemplate(StudentModelI sm, String templateType) throws Exception {
 
     	__logger.info("+++ progId: " + sm.getProgram().getProgramId());
-    	__logger.info("+++ prog type: " + sm.getProgram().getProgramType());
-
-        getJdbcTemplate().update(
-    	        "insert into HA_USER_TEMPLATE (name, password, admin_id, group_id, test_def_id, type, limit_games, show_work_required, stop_at_program_end, create_date) " +
-    	        " values (?, ?, ?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?, now())", 
-    	        new Object[] {sm.getName(), sm.getPasscode(), sm.getAdminUid(), sm.getGroupId(), sm.getProgram().getProgramType().getType(),
-    	        		      sm.getProgram().getSubjectId(), templateType, sm.getSettings().getLimitGames()?1:0, sm.getSettings().getShowWorkRequired()?1:0,
-    	        		      sm.getSettings().getStopAtProgramEnd()?1:0});
-        
-        /*
-         *             ps.setString(5, sm.getProgram().getProgramType().getType());
-            ps.setString(6, sm.getProgram().getSubjectId());
-
-         */
     	
-    	return null;
+    	/*
+    	KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("CREATE_HA_USER_TEMPLATE");
+                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+
+    	 */
+
+        int count = getJdbcTemplate().update(
+    	        "insert into HA_USER_TEMPLATE (name, password, admin_id, group_id, prog_inst_id, type, limit_games, show_work_required, stop_at_program_end, create_date) " +
+    	        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, now())", 
+    	        new Object[] {sm.getName(), sm.getPasscode(), sm.getAdminUid(), sm.getGroupId(), sm.getProgram().getProgramId(), templateType, sm.getSettings().getLimitGames()?1:0,
+    	        		      sm.getSettings().getShowWorkRequired()?1:0, sm.getSettings().getStopAtProgramEnd()?1:0});
+
+        String sql = "select id from HA_USER_TEMPLATE where admin_id = ? and password = ?";
+        Integer uid = getJdbcTemplate().queryForObject(sql, new Object[] { sm.getAdminUid(), sm.getPasscode() },
+                new RowMapper<Integer>() {
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            Integer id = rs.getInt("id");
+                            return id;
+                        }
+                        catch (Exception e) {
+                            __logger.error("Error loading new ID", e);
+                            throw new SQLException(e.getMessage(), e);
+                        }
+                    }
+        });
+        
+        if (count == 1) {
+            sm.setUid(uid);
+        }
+        
+    	return sm;
     }
 
     /** Return two dim array showing registered
@@ -799,7 +822,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(6, sm.getAdminUid());
             ps.setInt(7, sm.getAdminUid());
             ps.setString(8, sm.getPasscode());
-            ps.setInt(9, sm.getAdminUid());
 
             rs = ps.executeQuery();
             return (rs.next());
@@ -1171,7 +1193,94 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return sm;
     }
 
-    /** add a new custom program based on contents of StudyProgram in StudentModel
+    /**
+    *
+    * @param sm
+    * @return
+    * @throws Exception
+    */
+   public StudentModelI addStudentProgramForTemplate(StudentModelI sm) throws Exception {
+	   
+       Connection conn = null;
+       PreparedStatement ps = null;
+       long startTime = System.currentTimeMillis();
+
+       try {
+           conn = HMConnectionPool.getConnection();
+
+           /** check for setting of StudyProgram, and implement override
+            *  We should deprecate using instance vars to identify the program
+            */
+           if (sm.getProgram().isCustom()) {
+               return addStudentProgramCustomForTemplate(conn, sm);
+           }
+
+           StudentProgramModel sp = sm.getProgram();
+
+           setTestConfig(conn, sm);
+           String pp = sm.getPassPercent();
+           if (pp != null) {
+               int passPcnt = getPercentFromString(pp);
+               ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PARALLEL_PROGRAM_DEF_SQL"));
+               ps.setInt(1, sm.getUid());
+               ps.setInt(2, sm.getAdminUid());
+               ps.setString(3, sp.getProgramType().getType());
+               ps.setString(4, sp.getSubjectId());
+               ps.setInt(5, passPcnt);
+               ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+               ps.setString(7, sm.getJson());
+               ps.setNull(8, Types.INTEGER);  /** custom program is null */
+           } else {
+               ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PARALLEL_PROGRAM_DEF_NULL_PASS_PERCENT_SQL"));
+               ps.setInt(1, sm.getUid());
+               ps.setInt(2, sm.getAdminUid());
+               ps.setString(3, sp.getProgramType().getType());
+               ps.setString(4, sp.getSubjectId());
+               ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+               ps.setString(6, sm.getJson());
+               ps.setNull(7, Types.INTEGER);  /** custom program is null */
+           }
+           __logger.info("--- addStudentProgramForTemplate(): SQL: " + ps.toString());
+           
+           int result = ps.executeUpdate();
+           if (result == 1) {
+               // now get value of auto-increment id from CM_USER_PROGRAM
+               int newKey = SqlUtilities.getLastInsertId(conn);
+               sp.setProgramId(newKey);
+           }
+
+           if (sm.getSectionNum() == null) sm.setSectionNum(0);
+
+           /** Setup random first quiz, if supported
+            *
+            */
+           StudentActiveInfo info = new StudentActiveInfo();
+           HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(conn,sp.getProgramType().getType(), sp.getSubjectId() );
+           if(testDef.getNumAlternateTests() > 0) {
+               int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
+               info.setActiveSegmentSlot(randStartSeg);
+           }
+           __logger.info("Setting Active Info: " + info);
+           setActiveInfo(conn, sm.getUid(), info);
+       } catch (Exception e) {
+           String m = String.format("*** Error adding student program for student template with id: %d", sm.getUid());
+           __logger.error(m, e);
+           throw new Exception(m, e);
+       } finally {
+           SqlUtilities.releaseResources(null, ps, null);
+           ClientInfo ci = ClientInfoHolder.get();
+           if (ci == null) {
+               ci = new ClientInfo();
+               ci.setUserId(0);
+               ci.setUserType(UserType.UNKNOWN);
+           }
+           __logger.info(String.format("+++ addStudentProgramForTemplate(): (userId:%d,userType:%s), elapsed time: %d",
+                       ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
+       }
+       return sm;
+   }
+
+   /** add a new custom program based on contents of StudyProgram in StudentModel
      *
      *
      * A custom program is defined in HA_CUSTOM_PROGRAM with a 'id' that represents
@@ -1242,6 +1351,76 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return sm;
     }
 
+    /** add a new custom program based on contents of StudyProgram in StudentModel
+    *
+    *
+    * A custom program is defined in HA_CUSTOM_PROGRAM with a 'id' that represents
+    * a distinct custom program.  The test_config_json points to this id via its configuration:
+    *
+    * {custom_program_id:XXX}
+    *
+    * Where XXX is the actual custom program id.
+    *
+    *
+    *
+    * @param conn
+    * @param sm
+    * @return
+    * @throws Exception
+    */
+   public StudentModelI addStudentProgramCustomForTemplate(final Connection conn, StudentModelI sm) throws Exception {
+
+       StudentProgramModel studyProgram = sm.getProgram();
+       if(studyProgram == null)
+           throw new CmException("StudentProgramModel cannot be null: " + sm);
+
+	   if(sm.getProgram().getCustom().getType() == Type.QUIZ) {
+           return addStudentProgramCustomQuiz(conn, sm);
+       }
+
+       PreparedStatement ps = null;
+       try {
+           String pp = sm.getPassPercent();
+           if (pp != null) {
+               int passPcnt = getPercentFromString(pp);
+               ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_SQL"));
+               ps.setInt(1, sm.getUid());
+               ps.setInt(2, sm.getAdminUid());
+               ps.setString(3, studyProgram.getProgramType().getType());
+               ps.setString(4, studyProgram.getSubjectId());
+               ps.setInt(5, passPcnt);
+               ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+               ps.setString(7, sm.getJson());
+               ps.setInt(8, sm.getProgram().getCustom().getCustomProgramId());
+           } else {
+               ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_NULL_PASS_PERCENT_SQL"));
+               ps.setInt(1, sm.getUid());
+               ps.setInt(2, sm.getAdminUid());
+               ps.setString(3, studyProgram.getProgramType().getType());
+               ps.setString(4, studyProgram.getSubjectId());
+               ps.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+               ps.setString(6, sm.getJson());
+               ps.setInt(7, sm.getProgram().getCustom().getCustomProgramId());
+           }
+           int result = ps.executeUpdate();
+           if (result == 1) {
+               // now get value of auto-increment id from CM_USER_PROGRAM
+               int newKey = SqlUtilities.getLastInsertId(conn);
+               studyProgram.setProgramId(newKey);
+           }
+
+           sm.setSectionNum(0);
+           setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
+       } catch (Exception e) {
+           String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
+           __logger.error(m, e);
+           throw new Exception(m, e);
+       } finally {
+           SqlUtilities.releaseResources(null, ps, null);
+       }
+       return sm;
+   }
+
 
     public StudentModelI addStudentProgramCustomQuiz(final Connection conn, StudentModelI sm) throws Exception {
 
@@ -1285,6 +1464,48 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     }
 
+
+    public StudentModelI addStudentProgramCustomQuizForTemplate(final Connection conn, StudentModelI sm) throws Exception {
+
+
+        StudentProgramModel studyProgram = sm.getProgram();
+        if(studyProgram == null)
+            throw new CmException("StudentProgramModel cannot be null: " + sm);
+
+
+        PreparedStatement ps = null;
+        try {
+            String pp = sm.getPassPercent();
+            int passPcnt = getPercentFromString(pp);
+            ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("INSERT_STUDENT_PROGRAM_CUSTOM_QUIZ"));
+            ps.setInt(1, sm.getUid());
+            ps.setInt(2, sm.getAdminUid());
+            ps.setString(3, studyProgram.getProgramType().getType());
+            ps.setString(4, studyProgram.getSubjectId());
+            ps.setInt(5, passPcnt);
+            ps.setTimestamp(6, new Timestamp(System.currentTimeMillis()));
+            ps.setString(7, sm.getJson());
+            ps.setInt(8, sm.getProgram().getCustom().getCustomQuizId());
+
+            int result = ps.executeUpdate();
+            if (result == 1) {
+                // now get value of auto-increment id from CM_USER_PROGRAM
+                int newKey = SqlUtilities.getLastInsertId(conn);
+                studyProgram.setProgramId(newKey);
+            }
+
+            sm.setSectionNum(0);
+            setActiveInfo(conn, sm.getUid(), new StudentActiveInfo());
+        } catch (Exception e) {
+            String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
+            __logger.error(m, e);
+            throw new Exception(m, e);
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        return sm;
+
+    }
 
     /** Set the test config json for this student by reading
      *  the template json from HA_TEST_DEF and parsing/setting.
@@ -1660,9 +1881,58 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
-            __logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+            __logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed msecs: %d", uid, (System.currentTimeMillis() - timeStart)));
         }
     }
+
+    /** Return student model for template named by uid
+    *
+    * @param conn
+    * @param uid
+    * @return
+    *
+    * @throws Exception
+    */
+   public StudentModelI getStudentModelBaseForTemplate(final Connection conn, Integer uid) throws Exception {
+
+       long timeStart = System.currentTimeMillis();
+       PreparedStatement ps = null;
+       ResultSet rs = null;
+
+       try {
+           ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.SINGLE_STUDENT, false));
+           ps.setInt(1, uid);
+           ps.setInt(2, 1);
+           rs = ps.executeQuery();
+
+           List<StudentModelI> l = null;
+           l = loadStudentBaseSummaries(rs, null);
+           if (l.size() == 0)
+               throw new Exception(String.format("Student with UID: %d was not found", uid));
+           if (l.size() > 1)
+               throw new Exception(String.format("Student with UID: %d matches more than one row", uid));
+
+           loadChapterInfo(conn, l);
+
+           StudentModelI sm = l.get(0);
+
+           if(sm.getSettings().getTutoringAvailable()) {
+               /**
+                * make sure the admin has tutoring enabled
+                */
+               //TODO: incorporate Admin tutoring value in Summary SQL
+               sm.getSettings().setTutoringAvailable(isTutoringEnabledForAdmin(conn, sm.getAdminUid()));
+           }
+           if (sm.getSectionNum() == null) sm.setSectionNum(0);
+           return sm;
+       } catch (Exception e) {
+           __logger.error(String.format("*** Error obtaining data for student UID: %d", uid), e);
+           throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
+       } finally {
+           SqlUtilities.releaseResources(rs, ps, null);
+           __logger.info(String.format("End getStudentModelBaseForTemplate(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+       }
+   }
 
     private List<StudentModelI> loadStudentSummaries(ResultSet rs) throws Exception {
 
@@ -2145,7 +2415,51 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         HaUserExtendedDao.resetUserExtendedLessonStatusForUid(conn, program, uid);
     }
 
-    private int getPercentFromString(String passPercent) {
+    /** Assign program to student template.
+    *
+    * @param conn
+    * @param uid
+    * @param program
+    * @param chapter
+    * @param passPercent
+    * @param settings
+    * @param sectionNum
+    * @throws Exception
+    */
+   public void assignProgramToStudentTemplate(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,
+   		StudentSettingsModel settings, Integer sectionNum) throws Exception {
+
+       StudentModelI sm = getStudentModelBaseForTemplate(conn, uid);
+
+       sm.getProgram().setProgramType(program.getProgramType());
+       sm.getProgram().setSubjectId(program.getSubjectId());
+       CustomProgramComposite cpComp = sm.getProgram().getCustom();
+       if(program.getCustom().getCustomQuizId() > 0) {
+           cpComp.setCustomQuiz(program.getCustom().getCustomQuizId(), program.getCustom().getCustomQuizName());
+       }
+       else if(program.getCustom().getCustomProgramId() > 0) {
+           cpComp.setCustomProgram(program.getCustom().getCustomProgramId(), program.getCustom().getCustomProgramName());
+       }
+       else {
+           /** make sure no custom assigned */
+           sm.getProgram().setCustom(new CustomProgramComposite());
+       }
+       sm.setProgramChanged(true);
+       sm.setChapter(chapter);
+       sm.setPassPercent(passPercent);
+       sm.setSectionNum(sectionNum);
+
+       setTestConfig(conn, sm);
+
+       int percent = getPercentFromString(passPercent);
+       
+       if (passPercent != null) {
+           CmUserProgramDao.getInstance().setProgramPassPercent(conn, sm.getProgram().getProgramId(), percent);
+       }
+
+   }
+
+    public int getPercentFromString(String passPercent) {
         try {
             if(passPercent != null) {
                 if(passPercent.endsWith("%")) {

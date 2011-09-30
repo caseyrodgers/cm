@@ -10,6 +10,7 @@ import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
+import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -81,13 +82,43 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         boolean isParallelProgramStudent = dao.isParallelProgramStudent(action.getParallelProgId(), action.getPassword());
 
         if (! isParallelProgramStudent) {
-        	__logger.warn("Selected Parallel Program is not available for your password: " + action.getPassword());
+        	__logger.warn(String.format("Selected Parallel Program, ID: %d, is not available for password: %s",
+        			action.getParallelProgId(), action.getPassword()));
             throw new CmUserException("Selected Parallel Program is not available for your password.");
         }
 
         /**
-         * If Student is not currently assigned to selected parallel program, perform assignment / re-assignment
+         * Check if selected parallel program is currently assigned to Student
          */
+        boolean isAssigned = dao.isParallelProgramAssignedToStudent(action.getParallelProgId(), action.getPassword());
+        __logger.debug("+++ isAssigned: " + isAssigned);
+
+        if (isAssigned == false) {
+        	// selected Parallel Program not currently assigned to Student
+        	// determine if previously assigned
+        	boolean prevAssigned = dao.parallelProgramPrevAssignedToStudent(action.getParallelProgId(), action.getPassword());
+
+        	if (prevAssigned == false) {
+        		// add assignment, and start as with any new Program using "CmStudentDao.assignProgramToStudent()"
+
+        		
+        		CmProgramAssign cmProgAssign = new CmProgramAssign();
+        		
+        		dao.addProgramAssignment(cmProgAssign);
+        	}
+        	
+        	else {
+        		// restore state from CM_PROGRAM_ASSIGN to HA_USER and CM_USER_PROGRAM and...
+        	}
+        	
+        	
+        	
+        	
+        	
+        	
+        }
+        // return "key"
+        
         /*
         PreparedStatement stmt = null;
         ResultSet rs = null;
