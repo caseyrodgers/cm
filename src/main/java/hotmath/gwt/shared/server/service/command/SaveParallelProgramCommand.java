@@ -43,6 +43,9 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
         if (isPasscodeTaken == true) {
             throw new CmUserException("Parallel Program name cannot be the same as the password of a student, the name of a Self Registration Group, or the name of another Parallel Program.");
         }
+
+        // set test config JSON
+        CmStudentDao.getInstance().setTestConfig(conn, student);
         
         // Parallel Program with the supplied password does not exist, create it
         // first add CmProgram (CM_PROGRAM)
@@ -56,6 +59,7 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
 
         progInfo.setProgramType(progMdl.getProgramType());
         progInfo.setSubjectId(progMdl.getSubjectId());
+        prog.setTestConfigJson(student.getJson());
 
         int passPercent = CmStudentDao.getInstance().getPercentFromString(student.getPassPercent());
         prog.setPassPercent(passPercent);
