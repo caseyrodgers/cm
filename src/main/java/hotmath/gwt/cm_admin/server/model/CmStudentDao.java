@@ -1523,7 +1523,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @param sm
      * @throws Exception
      */
-    private void setTestConfig(final Connection conn, StudentModelI sm) throws Exception {
+    public void setTestConfig(final Connection conn, StudentModelI sm) throws Exception {
 
         ResultSet rs = null;
         PreparedStatement ps2 = null;
