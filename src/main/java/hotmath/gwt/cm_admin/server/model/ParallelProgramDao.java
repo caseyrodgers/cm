@@ -4,6 +4,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
+import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -105,6 +106,55 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return prevAssigned;
     }
 
+    public int getStudentUserId(final Integer parallelProgId, final String studentPassword) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_UID");
+        int studentUserId = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{studentPassword, parallelProgId},
+                new RowMapper<Integer>() {
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Integer studentUserId;
+                        try {
+                            studentUserId = rs.getInt("student_uid");
+
+                            return studentUserId;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Student UID, parallelProgId: %d, password: %s", parallelProgId, studentPassword), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return studentUserId;
+    }
+
+    public CmProgram getCmProgramForParallelProgramId(final Integer parallelProgId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CM_PROGRAM_FOR_PP");
+        CmProgram cmProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{parallelProgId},
+                new RowMapper<CmProgram>() {
+                    public CmProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmProgram cmProg;
+                        try {
+                        	cmProg = new CmProgram();
+                        	CmProgramInfo progInfo = cmProg.getCmProgInfo();
+                        	cmProg.setAdminId(rs.getInt("admin_id"));
+                            progInfo.setTestDefId(rs.getInt("test_def_id"));
+                            cmProg.setCustomProgId(rs.getInt("customn_prog_id"));
+                            cmProg.setCustomQuizId(rs.getInt("customn_quiz_id"));
+
+                            return cmProg;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting TestDef ID, parallelProgId: %d", parallelProgId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return cmProg;
+    }
+
     public void addProgram(final CmProgram model) {
     	
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -117,10 +167,9 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setInt(2, model.getPassPercent());
                     ps.setInt(3, model.getCustomProgId());
                     ps.setInt(4, model.getCustomQuizId());
-                    ps.setString(5, model.getCmProgInfo().getProgramType().getType());
-                    ps.setString(6, model.getCmProgInfo().getSubjectId());
-                    ps.setString(7, model.getCmProgInfo().getProgramType().getType());
-                    ps.setString(8, model.getCmProgInfo().getSubjectId());
+                    ps.setString(5, model.getTestConfigJson());
+                    ps.setString(6, model.getCmProgInfo().getProgramType().getType());
+                    ps.setString(7, model.getCmProgInfo().getSubjectId());
 
                     return ps;
                 } catch (Exception e) {
