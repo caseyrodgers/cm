@@ -2713,7 +2713,7 @@ values
 (?, ?, ?, ?, ?, now(),
  (select test_def_id
  from HA_TEST_DEF
- where test_def_id = (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1)),
+ where test_def_id = (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1))
 )
 
 .key=CREATE_CM_PARALLEL_PROGRAM
