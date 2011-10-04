@@ -80,7 +80,7 @@ public class QuizActivity implements QuizView.Presenter {
         }
     }
     
-    private void processQuizResult(QuizView quizView, QuizHtmlResult result) {
+    private void processQuizResult(QuizView quizView, final QuizHtmlResult result) {
         
         testQuestionAnswers = result.getAnswers();
         
@@ -90,29 +90,25 @@ public class QuizActivity implements QuizView.Presenter {
         CatchupMathMobileShared.__instance.user.setTestId(result.getTestId());
         
         quizView.setQuizHtml(result.getQuizHtml(), testQuestionAnswers.size());
+
+        initializeQuiz();
         
-        /** mark the correct selections */
-        CmList<RpcData> al = result.getCurrentSelections(); 
-        for(RpcData rd: al) {
-            setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
-        }
-        
-        
-        enableQuizToolbarButtons();
-    }
-    
-    private  native void enableQuizToolbarButtons() /*-{
-    try {
-        var td = $doc.getElementById("testset_div");
-        if(td) {
-            var questHeads = td.getElementsByTagName("div");
-            for(var qh=0,qt=questHeads.length;qh<qt;qh++) {
-                if(questHeads[qh].className == 'question_head') {
-                   var d=questHeads[qh];
-                   d.innerHTML = d.innerHTML + "<a class='show_work_icon' href='#' onclick='showWhiteboardActive(this);'><img src='/gwt-resources/images/icon_show_work.png'/></a>";
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            
+            @Override
+            public void execute() {
+                /** mark the correct selections */
+                CmList<RpcData> al = result.getCurrentSelections(); 
+                for(RpcData rd: al) {
+                    setSolutionQuestionAnswerIndex(rd.getDataAsString("pid"),rd.getDataAsString("answer"));
                 }
             }
-        }
+        });        
+    }
+    
+    private  native void initializeQuiz() /*-{
+    try {
+        $wnd.initializeQuiz();
     }
     catch(e) {
            alert(e);
@@ -192,7 +188,7 @@ public class QuizActivity implements QuizView.Presenter {
     public String questionGuessChanged_Gwt(String sQuestionIndex, String answerIndex, String pid) {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
-        Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
+        Boolean isCorrect = (correctIndex == Integer.parseInt(answerIndex));        
         SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(SharedData.getUserInfo().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
 
         if(_isOffline) {
@@ -213,7 +209,6 @@ public class QuizActivity implements QuizView.Presenter {
             });
         }
         answerAction.getActions().add(action);
-        
         return "";
     }
     

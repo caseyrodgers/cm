@@ -112,7 +112,7 @@ function questionGuessChanged(o) {
 			// .. go to parent, and look for child that matches this
 			// TODO: remove dependency on structure
 			// 
-			var parentUl = o.parentNode.parentNode.parentNode;
+			var parentUl = o.parentNode.parentNode.parentNode.parentNode;
 			var ndItems = parentUl.getElementsByTagName("input");
 			for ( var i = 0; i < ndItems.length; i++) {
 				if (ndItems.item(i) == o) {

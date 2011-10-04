@@ -115,7 +115,53 @@ ii)to render -3<x<3 ['function',['-3_3','x','gt_lt',true],false,'red']
     </ul>
 </div>
 
+</pre>
+
+<h1>How to add arbitrary JavaScript code to a solution:</h1>
+<pre>
+
+ <code>
+       window.getVariable = function() {
+            return new Date();
+       }
+   </code>
+
+   <var name='fromCode'>
+           window.getVariable();
+   </var>
 
 </pre>
+
+
+<h1>Questions</h1>
+<p>Questions/responses should be in the following format</p>
+<pre>
+<div class='hm_question_def'>
+  <div>The Full question text</div>
+  </div>
+    <ul>
+    <li correct='no'>
+      <div>The choice</div>
+      <div>The ressponse</div>
+    </li>
+    <li correct='no'>
+      <div>The choice</div>
+      <div>The ressponse</div>
+    </li>
+    <li correct='yes'>
+      <div>The choice</div>
+      <div>The ressponse</div>
+    </li>
+    <li correct='no'>
+      <div>The choice</div>
+      <div>The ressponse</div>
+    </li>
+    <li>
+      <div>The choice</div>
+      <div>The ressponse</div>
+    </li>
+  </ul>
+</pre>
+
 </body>
 </html>

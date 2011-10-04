@@ -173,13 +173,6 @@ public class QuizPage extends LayoutContainer {
         
         UserInfo.getInstance().setProgramSegmentCount(_quizInfo.getQuizSegmentCount());
         
-        if(_quizInfo.getUserId() != UserInfo.getInstance().getUid()) {
-            System.out.println("Not active user!");
-//            UserInfo.getInstance().setActiveUser(false);
-//            UserInfo.getInstance().setUserName("Guest user on account: " + _quizInfo.getUserId());
-//            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USERCHANGED));
-        }
-        
         displayQuizHtml(_quizInfo.getQuizHtml());
         
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
