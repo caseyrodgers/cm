@@ -93,7 +93,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Boolean prevAssigned;
                         try {
-                            prevAssigned = (rs.getInt("was_assigned") > 0);
+                            prevAssigned = (rs.getInt("prev_assigned") > 0);
 
                             return prevAssigned;
                         }
@@ -110,7 +110,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_UID");
         int studentUserId = this.getJdbcTemplate().queryForObject(
                 sql,
-                new Object[]{studentPassword, parallelProgId},
+                new Object[]{parallelProgId, studentPassword},
                 new RowMapper<Integer>() {
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Integer studentUserId;
@@ -139,10 +139,12 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         try {
                         	cmProg = new CmProgram();
                         	CmProgramInfo progInfo = cmProg.getCmProgInfo();
+                        	cmProg.setId(rs.getInt("id"));
                         	cmProg.setAdminId(rs.getInt("admin_id"));
                             progInfo.setTestDefId(rs.getInt("test_def_id"));
-                            cmProg.setCustomProgId(rs.getInt("customn_prog_id"));
-                            cmProg.setCustomQuizId(rs.getInt("customn_quiz_id"));
+                            cmProg.setTestConfigJson(rs.getString("rtest_config_json"));
+                            cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
+                            cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
 
                             return cmProg;
                         }
@@ -238,4 +240,96 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         final int id = keyHolder.getKey().intValue();
         model.setId(id);
     }
+    
+    /**
+     * is User's current Program in CM_PROGRAM?
+     * 
+     * @param userId
+     */
+    public boolean currentProgramExistsForStudent(final int userId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CM_PROGRAM_EXISTS_FOR_STUDENT");
+        boolean progExists = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId},
+                new RowMapper<Boolean>() {
+                    public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Boolean progExists;
+                        try {
+                            progExists = (rs.getInt("prog_exists") > 0);
+
+                            return progExists;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error checking for CM Program existence, userId: %d", userId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return progExists;
+    }
+
+    /**
+     * add User's current Program to CM_PROGRAM?
+     * 
+     * @param userId
+     */
+    public CmProgram addCurrentProgramForStudent(final int userId) throws Exception {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADD_CM_PROGRAM_FOR_STUDENT");
+                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+                    ps.setInt(1, userId);
+
+                    return ps;
+                } catch (Exception e) {
+                    LOGGER.error("Error adding CM Program for userId: " + userId, e);
+                    throw new SQLException("Error adding CM_PROGRAM", e);
+                }
+            }
+        }, keyHolder);
+
+        // extract the auto created pk
+        final int id = keyHolder.getKey().intValue();
+
+        return getCmProgramForId(id);
+    }
+    
+    /**
+     * get CM Program for specified ID
+     * 
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    public CmProgram getCmProgramForId(final int id) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CM_PROGRAM_FOR_ID");
+        CmProgram cmProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{id},
+                new RowMapper<CmProgram>() {
+                    public CmProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmProgram cmProg;
+                        try {
+                        	cmProg = new CmProgram();
+                        	CmProgramInfo progInfo = cmProg.getCmProgInfo();
+                        	cmProg.setId(rs.getInt("id"));
+                        	cmProg.setAdminId(rs.getInt("admin_id"));
+                            progInfo.setTestDefId(rs.getInt("test_def_id"));
+                            cmProg.setTestConfigJson(rs.getString("rtest_config_json"));
+                            cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
+                            cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
+
+                            return cmProg;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting CM Program for ID: %d", id), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return cmProg;
+    }
+
 }
