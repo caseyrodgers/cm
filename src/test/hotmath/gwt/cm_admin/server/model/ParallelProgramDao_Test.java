@@ -44,7 +44,6 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
 
         progInstId = prog.getId();
     	assert(prog.getId() > 0);
-    	
     }
 
     @Test
@@ -60,7 +59,34 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
         _dao.addParallelProgram(prog);
     	
     	assert(prog.getId() > 0);
-    	
     }
 
+    @Test
+    public void testIsParallelProgramAssignedToStudent() throws Exception  {
+
+        boolean isAssigned = _dao.isParallelProgramAssignedToStudent(2, "188580");
+    	
+    	assert(isAssigned);
+    }
+    
+    @Test
+    public void testIsParallelProgramStudent() throws Exception {
+    	boolean isParallelProgramStudent = _dao.isParallelProgramStudent(2, "188581");
+    	
+    	assert(isParallelProgramStudent);
+    }
+
+    @Test
+    public void testParallelProgramPrevAssignedToStudent() throws Exception {
+    	boolean prevAssigned = _dao.parallelProgramPrevAssignedToStudent(2, "cm425c");
+    	
+    	assert(prevAssigned == false);
+    }
+
+    @Test
+    public void testGetStudentUserId() throws Exception {
+    	int userId = _dao.getStudentUserId(2, "188580");
+    	
+    	assert (userId == 9456);
+    }
  }
