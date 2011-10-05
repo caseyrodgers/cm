@@ -2679,9 +2679,19 @@ where pp.id = ?
 .key=GET_CM_PROGRAM_FOR_PP
 
 select p.id, p.admin_id, p.test_def_id, p.pass_percent,
+       p.custom_prog_id, p.pustom_quiz_id, p.test_config_json, p.pass_percent
 from CM_PARALLEL_PROGRAM pp
 JOIN CM_PROGRAM p on p.id = pp.prog_inst_id 
 where pp.id = ?
+
+
+.key=GET_CM_PROGRAM_FOR_ID
+
+select p.id, p.admin_id, p.test_def_id, p.pass_percent,
+       p.custom_prog_id, p.pustom_quiz_id, p.test_config_json, p.pass_percent
+from CM_PROGRAM p 
+where p.id = ?
+
 
 .key=IS_PARALLEL_PROGRAM_ASSIGNED
 
@@ -2705,6 +2715,29 @@ join CM_PROGRAM_ASSIGN pa on pp.prog_inst_id = pa.prog_inst_id
 where pp.id = ?
 
 
+.key=CM_PROGRAM_EXISTS_FOR_STUDENT
+
+select count(*) from CM_PROGRAM cp
+join HA_USER u on u.uid = ?
+join CM_USER_PROGRAM up on up.id = u.user_prog_id
+where u.admin_id = cp.admin_id
+  and up.test_def_id = cp.test_def_id
+  and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
+  and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
+  and (ifnull(cp.test_config_json,' ')) = (ifnull(up.test_config_json,' '))
+  and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
+
+.key=ADD_CM_PROGRAM_FOR_STUDENT
+
+insert into CM_PROGRAM
+(admin_id, test_def_id, test_config_json, custom_prog_id, custom_quiz_id, pass_percent, create_date)
+( select up.admin_id, up.test_def_id, up.test_config_json, ifnull(up.custom_program_id,0),
+         ifnull(up.custom_quiz_id,0), pass_percent, now()
+  from CM_USER_PROGRAM up
+  join HA_USER u on u.uid = ?
+  where u.user_prog_id = up.id )
+ 
+ 
 .key=CREATE_CM_PROGRAM
 
 insert into CM_PROGRAM
