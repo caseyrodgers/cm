@@ -142,7 +142,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	cmProg.setId(rs.getInt("id"));
                         	cmProg.setAdminId(rs.getInt("admin_id"));
                             progInfo.setTestDefId(rs.getInt("test_def_id"));
-                            cmProg.setTestConfigJson(rs.getString("rtest_config_json"));
+                            cmProg.setTestConfigJson(rs.getString("test_config_json"));
                             cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                             cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
 
@@ -317,7 +317,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	cmProg.setId(rs.getInt("id"));
                         	cmProg.setAdminId(rs.getInt("admin_id"));
                             progInfo.setTestDefId(rs.getInt("test_def_id"));
-                            cmProg.setTestConfigJson(rs.getString("rtest_config_json"));
+                            cmProg.setTestConfigJson(rs.getString("test_config_json"));
                             cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                             cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
 
