@@ -52,6 +52,10 @@ public class ParallelProgramSetup extends RegisterStudent {
         
         _fsProgram.setHeading("Assign Program for This Parallel Program");
 	    _formPanel.layout();
+
+	    // Don't allow Advanced Options (for now?)
+	    hideAdvancedOptionsButton();
+	    
 	    showWindow();
 	}
 	

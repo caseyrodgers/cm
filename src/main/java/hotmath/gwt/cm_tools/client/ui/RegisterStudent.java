@@ -165,6 +165,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         return list;
 	}
 	
+	protected void hideAdvancedOptionsButton() {
+		advOptionsBtn.hide();
+	}
+	
 	public FieldSet _fsProfile, _fsProgram;
 
 	GroupSelectorWidget _groupSelector;
