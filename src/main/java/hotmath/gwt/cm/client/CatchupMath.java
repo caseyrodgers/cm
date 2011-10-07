@@ -164,8 +164,6 @@ public class CatchupMath implements EntryPoint {
 	    	String startType = UserInfoBase.getInstance().getCmStartType();
 	    	if(startType == null)startType = "";
 
-	    	//Window.alert("jsonUserInfo: " + jsonUserInfo);
-	    	
 	        CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
 	
 	    	if (CmShared.getQueryParameterValue("type").equals("su")) {
