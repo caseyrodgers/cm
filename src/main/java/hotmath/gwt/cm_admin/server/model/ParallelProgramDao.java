@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -141,7 +142,11 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	CmProgramInfo progInfo = cmProg.getCmProgInfo();
                         	cmProg.setId(rs.getInt("id"));
                         	cmProg.setAdminId(rs.getInt("admin_id"));
+                        	cmProg.setPassPercent(rs.getInt("pass_percent"));
                             progInfo.setTestDefId(rs.getInt("test_def_id"));
+                            progInfo.setSubjectId(rs.getString("subj_id"));
+                            progInfo.setSegmentCount(rs.getInt("segment_count"));
+                            progInfo.setProgramType(CmProgramType.lookup(rs.getString("prog_id")));
                             cmProg.setTestConfigJson(rs.getString("test_config_json"));
                             cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                             cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
@@ -316,7 +321,11 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	CmProgramInfo progInfo = cmProg.getCmProgInfo();
                         	cmProg.setId(rs.getInt("id"));
                         	cmProg.setAdminId(rs.getInt("admin_id"));
+                        	cmProg.setPassPercent(rs.getInt("pass_percent"));
                             progInfo.setTestDefId(rs.getInt("test_def_id"));
+                            progInfo.setSubjectId(rs.getString("subj_id"));
+                            progInfo.setSegmentCount(rs.getInt("segment_count"));
+                            progInfo.setProgramType(CmProgramType.lookup(rs.getString("prog_id")));
                             cmProg.setTestConfigJson(rs.getString("test_config_json"));
                             cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                             cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
