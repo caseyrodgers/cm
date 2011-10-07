@@ -63,6 +63,6 @@ public class CmProgramInfo implements Response {
 	@Override
     public String toString() {
         return "CmProgramInfo [testDefId=" + testDefId + ", programName=" + programName + ", segmentCount="
-                + segmentCount + ", subjectId= " + subjectId + "]";
+                + segmentCount + ", subjectId= " + subjectId + ", programType= " + programType + "]";
     }
 }

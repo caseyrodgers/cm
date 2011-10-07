@@ -2678,18 +2678,20 @@ where pp.id = ?
 
 .key=GET_CM_PROGRAM_FOR_PP
 
-select p.id, p.admin_id, p.test_def_id, p.pass_percent,
-       p.custom_prog_id, p.custom_quiz_id, p.test_config_json, p.pass_percent
+select p.id, p.admin_id, p.test_def_id, p.pass_percent, td.subj_id, td.prog_id,
+       p.custom_prog_id, p.custom_quiz_id, td.segment_count, p.test_config_json
 from CM_PARALLEL_PROGRAM pp
 JOIN CM_PROGRAM p on p.id = pp.prog_inst_id 
+JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
 where pp.id = ?
 
 
 .key=GET_CM_PROGRAM_FOR_ID
 
-select p.id, p.admin_id, p.test_def_id, p.pass_percent,
-       p.custom_prog_id, p.custom_quiz_id, p.test_config_json
-from CM_PROGRAM p 
+select p.id, p.admin_id, p.test_def_id, p.pass_percent, td.subj_id, td.prog_id,
+       p.custom_prog_id, p.custom_quiz_id, td.segment_count, p.test_config_json
+from CM_PROGRAM p
+JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
 where p.id = ?
 
 
@@ -2717,7 +2719,7 @@ where pp.id = ?
 
 .key=CM_PROGRAM_EXISTS_FOR_STUDENT
 
-select count(*) from CM_PROGRAM cp
+select count(*) as prog_exists from CM_PROGRAM cp
 join HA_USER u on u.uid = ?
 join CM_USER_PROGRAM up on up.id = u.user_prog_id
 where u.admin_id = cp.admin_id

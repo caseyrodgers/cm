@@ -110,12 +110,16 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     	CmProgram cmProg = _dao.getCmProgramForId(18);
     	
     	assert (cmProg != null);
+    	
+    	System.out.println("CmProgram: " + cmProg);
     }
-    
+
     @Test
     public void testGetCmProgramForParallelProgramId() throws Exception {
     	CmProgram cmProg = _dao.getCmProgramForParallelProgramId(2);
     	
     	assert (cmProg != null);
+    	
+    	System.out.println("CmProgram: " + cmProg);
     }
  }
