@@ -1548,6 +1548,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             }
 
         } catch (Exception e) {
+        	logger.error(String.format("Could not configure test for subj_id: %s, prog_id: %s",
+        			sm.getProgram().getSubjectId(), sm.getProgram().getProgramType().getType()), e);
             throw new CmException("Could not configure test",e);
         } finally {
             SqlUtilities.releaseResources(rs, ps2, null);
@@ -2365,6 +2367,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         assignProgramToStudent(conn, uid, progToAssign, testDef.getChapter(), null);
     }
 
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentUserProgramModel userProgram, String chapter) throws Exception {
+        StudentProgramModel progToAssign = new StudentProgramModel();
+        HaTestDef testDef = HaTestDefDao.getInstance().getTestDef(userProgram.getTestDefId());
+        progToAssign.setProgramType(testDef.getProgId());
+        progToAssign.setSubjectId(testDef.getSubjectId());
+        assignProgramToStudent(conn, uid, progToAssign, chapter, null);
+    }
+
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
         assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0);
     }
@@ -2406,6 +2416,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         setTestConfig(conn, sm);
         updateStudent(conn, sm, true, false, true, false, false);
+        
+        // need to set user Prog Id for CM_PROGRAM_ASSIGN
+        program.setProgramId(sm.getProgram().getProgramId());
 
         int percent = getPercentFromString(passPercent);
         if(settings != null) {
