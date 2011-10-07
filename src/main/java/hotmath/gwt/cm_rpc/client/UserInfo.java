@@ -371,7 +371,7 @@ public class UserInfo implements  Response {
      *  userid... The state of that user will change: diff topic,resource,etc.
      *  
      *
-     *  It is an error is getInstance is called before being set.
+     *  It is an error if getInstance is called before being set.
      *   
      * @return
      */
