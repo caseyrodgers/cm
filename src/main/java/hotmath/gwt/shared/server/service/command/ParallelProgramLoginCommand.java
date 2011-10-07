@@ -3,7 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.server.model.CmUserProgramDao;
-import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.JsonUtil;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
@@ -16,18 +16,18 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc.client.model.CmProgram;
+import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.shared.client.rpc.action.ParallelProgramLoginAction;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 
@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
 
 public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgramLoginAction, RpcData> {
 
-    static Logger __logger = Logger.getLogger(ParallelProgramLoginCommand.class);
+    static final Logger LOGGER = Logger.getLogger(ParallelProgramLoginCommand.class);
     
     /** Return RpcData with fields:
      *
@@ -62,7 +62,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
             return executeAux(conn, action);
         }
         catch(CmUserException ue) {
-            __logger.warn("User exception handled", ue);
+            LOGGER.warn("User exception handled", ue);
             RpcData rdata = new RpcData();
             rdata.putData("error_message", ue.getLocalizedMessage());
             return rdata;
@@ -71,18 +71,20 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
     
     private RpcData executeAux(Connection conn, ParallelProgramLoginAction action) throws Exception {
         
+    	CmStudentDao stuDao;
     	
         long millis = 0;
+		int userId; 
 
         /** 
          * supplied password must be for Student that is assigned to Admin that 'owns' the Parallel Program
          * identified by "parallelProgId" 
          */
-        ParallelProgramDao dao = ParallelProgramDao.getInstance();
-        boolean isParallelProgramStudent = dao.isParallelProgramStudent(action.getParallelProgId(), action.getPassword());
+        ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+        boolean isParallelProgramStudent = ppDao.isParallelProgramStudent(action.getParallelProgId(), action.getPassword());
 
         if (! isParallelProgramStudent) {
-        	__logger.warn(String.format("Selected Parallel Program, ID: %d, is not available for password: %s",
+        	LOGGER.warn(String.format("Selected Parallel Program, ID: %d, is not available for password: %s",
         			action.getParallelProgId(), action.getPassword()));
             throw new CmUserException("Selected Parallel Program is not available for your password.");
         }
@@ -90,106 +92,103 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         /**
          * Check if selected parallel program is currently assigned to Student
          */
-        boolean isAssigned = dao.isParallelProgramAssignedToStudent(action.getParallelProgId(), action.getPassword());
-        __logger.debug("+++ isAssigned: " + isAssigned);
+        boolean isAssigned = ppDao.isParallelProgramAssignedToStudent(action.getParallelProgId(), action.getPassword());
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ isAssigned: " + isAssigned);
+
+    	userId = ppDao.getStudentUserId(action.getParallelProgId(), action.getPassword());
+
+    	stuDao = CmStudentDao.getInstance();
+    	StudentModelI stuMdl = stuDao.getStudentModelBase(conn, userId);
 
         if (isAssigned == false) {
+
+        	// if current Program not in CM_PROGRAM / CM_PROGRAM_ASSIGN add it
+            boolean progExists = ppDao.currentProgramExistsForStudent(userId);
+            if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progExists: " + progExists);
+            if (progExists == false) {
+            	CmProgram cmProg = ppDao.addCurrentProgramForStudent(userId);
+            	
+            	// also add CM Program Assignment for Student
+        		CmProgramAssign cmProgAssign = new CmProgramAssign();
+        		cmProgAssign.setCmProgram(cmProg);
+        		cmProgAssign.setUserId(userId);
+        		cmProgAssign.setUserProgId(stuMdl.getProgram().getProgramId());
+				ppDao.addProgramAssignment(cmProgAssign);
+            }
+
         	// selected Parallel Program not currently assigned to Student
         	// determine if previously assigned
-        	boolean prevAssigned = dao.parallelProgramPrevAssignedToStudent(action.getParallelProgId(), action.getPassword());
-
+        	boolean prevAssigned = ppDao.parallelProgramPrevAssignedToStudent(action.getParallelProgId(), action.getPassword());
+        	if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
+        	
         	if (prevAssigned == false) {
         		// add assignment, and start as with any new Program using "CmStudentDao.assignProgramToStudent()"
+        		CmProgram cmProg = ppDao.getCmProgramForParallelProgramId(action.getParallelProgId());
+        		if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format("+++ cmProg: ppID: %d: %s", action.getParallelProgId(), cmProg));
 
-        		
+        		StudentProgramModel spMdl = new StudentProgramModel();
+
+        		if (LOGGER.isDebugEnabled())
+        			LOGGER.debug(String.format("+++ programType: %s, subjectId: %s",
+                                 cmProg.getCmProgInfo().getProgramType().getType(), cmProg.getCmProgInfo().getSubjectId()));
+
+        		spMdl.setProgramType(cmProg.getCmProgInfo().getProgramType());
+        		spMdl.setSubjectId(cmProg.getCmProgInfo().getSubjectId());
+        		if (cmProg.getCustomProgId() > 0 || cmProg.getCustomQuizId() > 0) {
+            		CustomProgramComposite cpComp = spMdl.getCustom();
+         			cpComp.setCustomProgramId(cmProg.getCustomProgId());
+         			cpComp.setCustomQuizId(cmProg.getCustomQuizId());
+        		}
+        		String chapter = JsonUtil.getChapter(cmProg.getTestConfigJson());
+        		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ chapter: " + chapter);
+                stuDao.assignProgramToStudent(conn, userId, spMdl, chapter, null);
+
         		CmProgramAssign cmProgAssign = new CmProgramAssign();
-        		
-        		dao.addProgramAssignment(cmProgAssign);
+        		cmProgAssign.setCmProgram(cmProg);
+        		cmProgAssign.setUserId(userId);
+        		cmProgAssign.setUserProgId(spMdl.getProgramId());
+        		ppDao.addProgramAssignment(cmProgAssign);
         	}
         	
         	else {
         		// restore state from CM_PROGRAM_ASSIGN to HA_USER and CM_USER_PROGRAM and...
         	}
         	
-        	
-        	
-        	
-        	
-        	
         }
-        // return "key"
-        
-        /*
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-        
-        CmStudentDao dao = CmStudentDao.getInstance();
-        millis = System.currentTimeMillis();
-        StudentModelI studentModel = dao.getStudentModelBase(conn, action.getUserId(), true);
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC getStudentModel took: " + (System.currentTimeMillis()-millis) + " msec");
-
-        String sqlCheck = CmMultiLinePropertyReader.getInstance().getProperty("AUTO_CREATE_TEMPLATE_CHECK");
-        try {
-            stmt = conn.prepareStatement(sqlCheck);
-            stmt.setInt(1, studentModel.getAdminUid());
-            stmt.setString(2, action.getPassword());
-            
-            millis = System.currentTimeMillis();
-            rs = stmt.executeQuery();
-            if(rs.first()) {
-            	//TODO: different message since password is generated not selected?
-                __logger.error("self registration password '" + action.getPassword() + "' cannot match any existing self-registration template group names.");
-                throw new CmUserException("Please choose a different password");
-            }
-        }
-        finally {
-        	if (__logger.isDebugEnabled())
-            	__logger.debug("+++ CARAC check password took: " + (System.currentTimeMillis()-millis) + " msec");
-            SqlUtilities.releaseResources(rs, stmt, null);
-        }
-
-        studentModel.setPasscode(action.getPassword());
-        studentModel.setName(action.getUser());
-        millis = System.currentTimeMillis();
-        studentModel = dao.addStudent(conn, studentModel);
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC addStudent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
         CmUserProgramDao upDao = CmUserProgramDao.getInstance();
         millis = System.currentTimeMillis();
         // TODO: make ProgramInfo an attribute of Student Model and skip this lookup
-        StudentUserProgramModel si = upDao.loadProgramInfoCurrent(studentModel.getUid());
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC loadProgramInfoCurrent() took: " + (System.currentTimeMillis()-millis) + " msec");
+        StudentUserProgramModel stuUserProgMdl = upDao.loadProgramInfoCurrent(userId);
+    	if (LOGGER.isDebugEnabled())
+        	LOGGER.debug("+++ PP loadProgramInfoCurrent() took: " + (System.currentTimeMillis()-millis) + " msec");
 
-    	// TODO: student was just created, shouldn't  all active info be 0
         millis = System.currentTimeMillis();
-        StudentActiveInfo activeInfo = dao.loadActiveInfo(studentModel.getUid());
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC loadActiveInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
+        StudentActiveInfo activeInfo = stuDao.loadActiveInfo(userId);
+    	if (LOGGER.isDebugEnabled())
+        	LOGGER.debug("+++ PP loadActiveInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
                 
         HaTestDefDao hdao = HaTestDefDao.getInstance();
         millis = System.currentTimeMillis();
-        HaTestDef testDef = hdao.getTestDef(si.getTestDefId());
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC getTestDef() took: " + (System.currentTimeMillis()-millis) + " msec");
+        HaTestDef testDef = hdao.getTestDef(stuUserProgMdl.getTestDefId());
+    	if (LOGGER.isDebugEnabled())
+        	LOGGER.debug("+++ PP getTestDef() took: " + (System.currentTimeMillis()-millis) + " msec");
         
         millis = System.currentTimeMillis();
-        ChapterInfo chapterInfo = hdao.getChapterInfo(conn, si);
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC getChapterInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
+        ChapterInfo chapterInfo = hdao.getChapterInfo(conn, stuUserProgMdl);
+    	if (LOGGER.isDebugEnabled())
+        	LOGGER.debug("+++ PP getChapterInfo() took: " + (System.currentTimeMillis()-millis) + " msec");
         
         millis = System.currentTimeMillis();
-        AccountType accountType = CmAdminDao.getInstance().getAccountType(conn,studentModel.getAdminUid());
-    	if (__logger.isDebugEnabled())
-        	__logger.debug("+++ CARAC getAccountType() took: " + (System.currentTimeMillis()-millis) + " msec");
-*/
+        AccountType accountType = CmAdminDao.getInstance().getAccountType(conn, stuMdl.getAdminUid());
+    	if (LOGGER.isDebugEnabled())
+        	LOGGER.debug("+++ PP getAccountType() took: " + (System.currentTimeMillis()-millis) + " msec");
+
         /** Create title sections.  The main title
          *  will contain the chapter # (if any).  The
          *  subtitle will contain the chapter title (if any)
           */
-/*
+
         String testTitle = testDef.getName();
         String subTitle=null;
         if(chapterInfo != null) {
@@ -198,28 +197,26 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         }
 
         UserInfo userInfo = new UserInfo();
-        userInfo.setUid(studentModel.getUid());
+        userInfo.setUid(userId);
 
-        //TODO: default all of these to 0?
         userInfo.setTestId(activeInfo.getActiveTestId());
         userInfo.setRunId(activeInfo.getActiveRunId());
         userInfo.setProgramSegment(activeInfo.getActiveSegment());
         userInfo.setSessionNumber(activeInfo.getActiveRunSession());
 
-        userInfo.setUserName(studentModel.getName());
-        userInfo.setBackgroundStyle(studentModel.getBackgroundStyle());
+        userInfo.setUserName(stuMdl.getName());
+        userInfo.setBackgroundStyle(stuMdl.getBackgroundStyle());
         userInfo.setProgramName(testTitle);
         userInfo.setSubTitle(subTitle);
-        userInfo.setShowWorkRequired(studentModel.getSettings().getShowWorkRequired());
-        userInfo.setTutoringAvail(studentModel.getSettings().getTutoringAvailable());
+        userInfo.setShowWorkRequired(stuMdl.getSettings().getShowWorkRequired());
+        userInfo.setTutoringAvail(stuMdl.getSettings().getTutoringAvailable());
 
         userInfo.setUserAccountType(accountType);
 
-        userInfo.setPassPercentRequired(si.getConfig().getPassPercent());
+        userInfo.setPassPercentRequired(stuUserProgMdl.getConfig().getPassPercent());
         userInfo.setProgramSegmentCount(testDef.getTotalSegmentCount());
 
-        //TODO: shouldn't this be 0 and why use action.getUserId()?
-        userInfo.setViewCount(dao.getTotalInmHViewCount(conn,action.getUserId()));
+        userInfo.setViewCount(stuDao.getTotalInmHViewCount(conn, userId));
 
         // Make a new HA_USER_LOGIN entry and return key
         HaUser huser = new HaUser();
@@ -227,10 +224,8 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         huser.setLoginName(action.getUser());
         
         RpcData rdata = new RpcData();
-        rdata.putData("key", HaLoginInfoDao.getInstance().addLoginInfo(conn, huser, new ClientEnvironment(),true));
-*/
-        RpcData rdata = new RpcData();
-        rdata.putData("key", "1234567890");
+        rdata.putData("key", HaLoginInfoDao.getInstance().addLoginInfo(conn, huser, new ClientEnvironment(), true));
+
         return rdata;
     }
 
