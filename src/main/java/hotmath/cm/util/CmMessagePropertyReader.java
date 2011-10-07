@@ -24,8 +24,8 @@ import org.apache.log4j.Logger;
  * 
  * EOF
  * 
- * loads property file: src/main/resources/hotmath/cm/util/cm-messages.mprops
- * (note it lives in resources, not java)
+ * loads property file: src/runtime/cm-messages.mprops
+ * (note it lives in runtime/)
  * 
  * You can cause a re-read of the propertes by flushing the server via
  * loading resources/util/cm_system_flush.jsp.
