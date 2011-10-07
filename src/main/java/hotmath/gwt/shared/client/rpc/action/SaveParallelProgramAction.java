@@ -28,4 +28,10 @@ public class SaveParallelProgramAction implements Action<RpcData>{
     public void setStudent(StudentModelI student) {
         this.student = student;
     }
+    
+    @Override
+    public String toString() {
+        return "adminId: " + adminId + ", student: " + ((student != null) ? "Not NULL" : "NULL");	
+    }
 }
+
