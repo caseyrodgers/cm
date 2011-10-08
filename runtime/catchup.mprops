@@ -2665,7 +2665,15 @@ from HA_USER u, CM_PARALLEL_PROGRAM pp
 where pp.id = ?
   and pp.admin_id = u.admin_id
   and u.user_passcode = ?
-  
+
+
+.key=IS_IN_PARALLEL_PROGRAM
+
+select count(*) as is_in_parallel_program from CM_PARALLEL_PROGRAM pp
+join HA_USER u on u.uid = ?
+JOIN CM_PROGRAM_ASSIGN pa on pa.user_id = u.uid and pa.user_prog_id = u.user_prog_id
+where pp.prog_inst_id = pa.prog_inst_id
+
 
 .key=GET_STUDENT_UID
 

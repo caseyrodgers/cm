@@ -122,4 +122,15 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     	
     	System.out.println("CmProgram: " + cmProg);
     }
+    
+    @Test
+    public void testIsStudentInParallelProgram() throws Exception {
+    	boolean inParallelProgram = _dao.isStudentInParallelProgram(9456);
+
+    	assert (inParallelProgram == true);
+
+    	inParallelProgram = _dao.isStudentInParallelProgram(9457);
+
+    	assert (inParallelProgram == false);
+}
  }

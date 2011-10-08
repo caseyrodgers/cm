@@ -85,6 +85,28 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return isAssigned;
     }
 
+    public boolean isStudentInParallelProgram(final Integer userId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("IS_IN_PARALLEL_PROGRAM");
+        boolean isInParallelProgram = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId},
+                new RowMapper<Boolean>() {
+                    public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Boolean isInParallelProgram;
+                        try {
+                            isInParallelProgram = (rs.getInt("is_in_parallel_program") > 0);
+
+                            return isInParallelProgram;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error checking in Parallel Program, userId: %d", userId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return isInParallelProgram;
+    }
+
     public boolean parallelProgramPrevAssignedToStudent(final Integer parallelProgId, final String studentPassword) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PREV_ASSIGNED");
         boolean prevAssigned = this.getJdbcTemplate().queryForObject(
