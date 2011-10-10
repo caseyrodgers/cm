@@ -6,6 +6,13 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/** A HaTestRun represents a single 
+ * checked test.  It contains meta data about the 
+ * test, the choices made and the results.
+ *  
+ * @author casey
+ *
+ */
 public class HaTestRun {
 
     static Logger __logger = Logger.getLogger(HaTestRun.class);

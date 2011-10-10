@@ -1,8 +1,10 @@
 package hotmath.gwt.solution_editor.server.solution;
 
 import hotmath.HotMathException;
+import hotmath.HotMathTokenReplacements;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.solution.SolutionResources;
 import hotmath.util.HtmlCleanser;
 
 import java.io.File;
@@ -220,9 +222,9 @@ public class TutorSolutionParser {
         for(Object og: children) {
             Element guess = (Element)og;
             String correct = guess.getAttributeValue("correct");
-            String guessText = HtmlCleanser.getInstance().cleanseHtml(guess.getTextNormalize());
+            String guessText = HtmlCleanser.getInstance().cleanseHtml(replaceHotmathTokens(guess.getTextNormalize()));
             Element response = (Element)guess.getChild("response");
-            String responseText = HtmlCleanser.getInstance().cleanseHtml(response.getTextNormalize());
+            String responseText = HtmlCleanser.getInstance().cleanseHtml(replaceHotmathTokens(response.getTextNormalize()));
             
             questionPieces.add(new QuestionPiece(correct, guessText, responseText));
         }
@@ -247,6 +249,13 @@ public class TutorSolutionParser {
 
         return newHtml;
     }
+     
+     
+     static private String replaceHotmathTokens(String html) throws Exception {
+         SolutionResources resources = new SolutionResources();
+         html = HotMathTokenReplacements.doReplacements(resources, html);
+         return html;
+     }
     
      static private String convertOldTestQuestionFormatToNew(Element oldQuesEl) throws Exception {
          List<QuestionPiece> questionPieces = new ArrayList<QuestionPiece>();
