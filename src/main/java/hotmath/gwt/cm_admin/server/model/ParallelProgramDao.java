@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -322,7 +323,72 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
 
         return getCmProgramForId(id);
     }
+
+    /**
+     * reassign User to Main Program
+     * 
+     * @param userId
+     */
+    public CmProgram getMainProgramForStudent(final int userId) throws Exception {
+
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_MAIN_PROGRAM_FOR_STUDENT");
+        CmProgram cmProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId},
+                new RowMapper<CmProgram>() {
+                    public CmProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmProgram cmProg = new CmProgram();
+                        try {
+                        	//CmProgramInfo cpInfo = cmProg.getCmProgInfo();
+                        	StudentActiveInfo activeInfo = cmProg.getActiveInfo();
+
+                        	activeInfo.setActiveRunId(rs.getInt("run_id"));
+                        	activeInfo.setActiveRunSession(rs.getInt("run_session"));
+                        	activeInfo.setActiveSegment(rs.getInt("prog_segment"));
+                        	
+                        	cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
+                        	cmProg.setCustomProgId(rs.getInt("custom_quiz_id"));
+                        	cmProg.setUserProgId(rs.getInt("user_prog_id"));                        	
+
+                        	return cmProg;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting CM Main Program, userId: %d", userId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+    	
+    	return cmProg;
+
+    }
     
+    /**
+     * reassign User to Main Program
+     * 
+     * @param userId
+     */
+    public void reassignMainProgram(final int userId) throws Exception {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADD_CM_PROGRAM_FOR_STUDENT");
+                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+                    ps.setInt(1, userId);
+
+                    return ps;
+                } catch (Exception e) {
+                    LOGGER.error("Error adding CM Program for userId: " + userId, e);
+                    throw new SQLException("Error adding CM_PROGRAM", e);
+                }
+            }
+        }, keyHolder);
+
+        // extract the auto created pk
+        final int id = keyHolder.getKey().intValue();
+    }
+
     /**
      * get CM Program for specified ID
      * 
