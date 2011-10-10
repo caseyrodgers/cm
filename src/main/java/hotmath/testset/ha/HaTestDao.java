@@ -539,7 +539,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             pstat.setInt(4, answeredIncorrect);
             pstat.setInt(5, notAnswered);
             pstat.setInt(6, passedQuiz ? 1 : 0);
-            pstat.setInt(7, clientEnv.isSupportsFlash()?0:0);
+            pstat.setInt(7, clientEnv.isFlashEnabled()?0:0);
 
             int cnt = pstat.executeUpdate();
             if (cnt != 1)

@@ -88,7 +88,9 @@ public class AssessmentPrescription {
         this(conn);
         logger.debug("Creating prescription for run: " + testRun);
         this.testRun = testRun;
-
+        
+        int uid = testRun.getHaTest().getUser().getUid();
+        
         readAssessment();
 
         missed = _assessment.getPids().length;
@@ -107,16 +109,15 @@ public class AssessmentPrescription {
         int sessNum = 0;
         for (InmhItemData itemData : itemsData) {
 
-            if (itemData.getInmhItem().getFile().equals("/hotmath_help/topics/index_hotmath_review_full.html"))
+            if (itemData.getInmhItem().getFile().equals(DEFAULT_LESSON)) {
+                // no widgets needed for default lesson
                 continue;
-
-            // now choose pids from the pool for this item
-            int uid = testRun.getHaTest().getUser().getUid();
+            }
             
-            List<RppWidget> rppWidgets = itemData.getWookBookSolutionPool(conn, uid + "/" + testRun.getRunId(),clientEnvironment);
+            List<RppWidget> rppWidgets = itemData.getWidgetPool(conn, uid + "/" + testRun.getRunId(),clientEnvironment);
             if (rppWidgets.size() == 0) {
-                logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
-                continue; // nothing to see here.
+                logger.warn("No RP Widgets found for + '" + itemData.getInmhItem().toString() + "'");
+                continue;
             }
 
             AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true);
@@ -141,6 +142,8 @@ public class AssessmentPrescription {
         logger.debug("Finished creating prescription for run: " + testRun);
     }
 
+    String DEFAULT_LESSON="/hotmath_help/topics/index_hotmath_review_full.html";
+    
     /**
      * Return the grade level of this current program
      * 
@@ -275,7 +278,7 @@ public class AssessmentPrescription {
         List<SessionData> sessionItems = session.getSessionItems();
 
         /**
-         * if any widgets are RPA then only show the RPA widgets
+         * if ANY widgets are RPA then only show the RPA widgets
          * 
          */
         boolean hasRPA = false;
@@ -319,12 +322,14 @@ public class AssessmentPrescription {
         return heighestLevel;
     }
 
+    
+    
     /**
      * implement the grade_level filter.
      * 
      * create list of possible PIDS looking at grade level.
      * 
-     * 1. favor exact match 2. do not consider higher grade levels 3. choose top
+     * favor exact match 2. do not consider higher grade levels 3. choose top
      * three.
      * 
      * 
@@ -375,6 +380,11 @@ public class AssessmentPrescription {
                 for (int i = 0; i < maybeList.size(); i++) {
                     ProblemID pid = new ProblemID(maybeList.get(i).getFile());
                     session.add(new SessionData(itemData.getInmhItem(), pid.getGUID(), PID_COUNT, itemData.getWeight()));
+                    
+                    
+                    if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)
+                        break;
+                    
                 }
             } catch (Exception e) {
                 e.printStackTrace();

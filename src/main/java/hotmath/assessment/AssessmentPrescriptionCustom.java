@@ -55,7 +55,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
             
                 // now choose pids from the pool for this item
                 int uid = testRun.getHaTest().getUser().getUid();
-                List<RppWidget> workBookPids = itemData.getWookBookSolutionPool(
+                List<RppWidget> workBookPids = itemData.getWidgetPool(
                         conn,
                         uid + "/" + testRun.getRunId(),
                         HaUserDao.getInstance().getLatestClientEnvironment(uid));

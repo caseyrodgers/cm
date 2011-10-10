@@ -102,10 +102,12 @@ public class InmhItemData {
      *  for this INMH item.
      * 
      * 
-     * NOTE: deal with RPPs as widgets or as solutions
+     * NOTE: A RppWidget can be either a RPP or an RPA
      * 
      * If flash-supported-environment then Flash based RPAs can be used.
-     * If non-flash-supported-enviorment then only NON flash content (ie, RPP) are returned
+     * If non-flash-supported-enviorment then only NON flash content (ie, RPP) are returned.
+     * 
+     * Flash capability is defined in ClientEnvironment
      * 
      * Default is RPP as solution ... If any widgets are specified and allowed for a lesson,
      * it trumps all .. and only widgets will be shown. Meaning, solutions and
@@ -113,14 +115,14 @@ public class InmhItemData {
 
      * 
      */
-    public List<RppWidget> getWookBookSolutionPool(final Connection conn, String logTag,ClientEnvironment clientEnvironment) {
+    public List<RppWidget> getWidgetPool(final Connection conn, String logTag,ClientEnvironment clientEnvironment) {
         /** check if in cache and return.  Side effect is if browserType changes no new pool will be created
          *  I'm not sure that is problem ... but, I think it is.
          *  
          *  TODO: We could save the browser type with the cached object and verify.
          *  
          */
-        String cacheKey = this.item.getFile() + "_" + clientEnvironment.isSupportsFlash();
+        String cacheKey = this.item.getFile() + "_" + clientEnvironment.isFlashEnabled();
     	List<RppWidget> widgets = (List<RppWidget>)CmCacheManager.getInstance().retrieveFromCache(CacheName.WOOKBOOK_POOL, cacheKey);
     	if(widgets != null)
     		return widgets;
@@ -142,7 +144,7 @@ public class InmhItemData {
                     continue;
 
                 if (rangeOrJson.startsWith("{")) {
-                    if(clientEnvironment.isSupportsFlash()) {
+                    if(clientEnvironment.isFlashEnabled()) {
                         /** RPA widget defined in JSON */
                         widgets.add(new RppWidget(rangeOrJson));
                     }
@@ -179,7 +181,7 @@ public class InmhItemData {
     }
 
     /**
-     * Given a range, return all solutions matching the range
+     * Given a range, return all solution PIDS matching the range
      * 
      * @param range
      * @return

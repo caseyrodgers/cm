@@ -56,7 +56,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         String title = "simplifying-radical-expressions";
         InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
         int uid = testRun.getHaTest().getUser().getUid();
-        List<RppWidget> workBookPids = inmhData.getWookBookSolutionPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
+        List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
 
         new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
     }
@@ -70,7 +70,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     	String title = "simplifying-radical-expressions";
     	InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
     	int uid = testRun.getHaTest().getUser().getUid();
-    	List<RppWidget> workBookPids = inmhData.getWookBookSolutionPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(true));
+    	List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(true));
 
     	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
     }

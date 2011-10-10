@@ -24,6 +24,6 @@ public class HaUserDao_Test extends CmDbTestCase {
     
     public void testClientEnvironment() throws Exception {
         ClientEnvironment ce = HaUserDao.getInstance().getLatestClientEnvironment(_user.getUserKey());
-        assert(ce.isSupportsFlash());
+        assert(ce.isFlashEnabled());
     }
 }

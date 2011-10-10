@@ -9,16 +9,16 @@ package hotmath.cm.login;
  */
 public class ClientEnvironment {
     String userAgent;
-    boolean supportsFlash;
+    boolean flashEnabled;
     
     public ClientEnvironment() {
         this.userAgent="";
-        this.supportsFlash = true;
+        this.flashEnabled = true;
     }
     
     public ClientEnvironment(boolean supportsFlash) {
         this();
-        this.supportsFlash = supportsFlash;
+        this.flashEnabled = supportsFlash;
     }
     
     public ClientEnvironment(String userAgent) {
@@ -28,7 +28,7 @@ public class ClientEnvironment {
     
     public ClientEnvironment(String userAgent, boolean supportsFlash) {
         this.userAgent = userAgent;
-        this.supportsFlash = supportsFlash;
+        this.flashEnabled = supportsFlash;
     }
 
     public String getUserAgent() {
@@ -39,16 +39,16 @@ public class ClientEnvironment {
         this.userAgent = userAgent;
     }
 
-    public boolean isSupportsFlash() {
-        return supportsFlash;
+    public boolean isFlashEnabled() {
+        return flashEnabled;
     }
 
-    public void setSupportsFlash(boolean supportsFlash) {
-        this.supportsFlash = supportsFlash;
+    public void setFlashEnabled(boolean flashEnabled) {
+        this.flashEnabled = flashEnabled;
     }
 
     @Override
     public String toString() {
-        return "ClientEnvironment [userAgent=" + userAgent + ", supportsFlash=" + supportsFlash + "]";
+        return "ClientEnvironment [userAgent=" + userAgent + ", flashEnabled=" + flashEnabled + "]";
     }
 }

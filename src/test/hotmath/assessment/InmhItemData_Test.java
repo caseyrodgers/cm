@@ -20,8 +20,20 @@ public class InmhItemData_Test extends CmDbTestCase {
          */
         INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
-        List<RppWidget> rpps = itemData.getWookBookSolutionPool(conn,"testing",new ClientEnvironment(true));
+        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing",new ClientEnvironment(true));
         assertTrue(!hasDuplicates(rpps));
+    }
+    
+    
+    public void testCreateNoFLash() throws Exception {
+        /** create with known duplicate
+         * TODO: generalize
+         * 
+         */
+        INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
+        InmhItemData itemData = new InmhItemData(item);
+        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing",new ClientEnvironment(false));
+        assertTrue(rpps.get(0).getFile() != null);
     }
 
     private boolean hasDuplicates(List<RppWidget> rpps) {
