@@ -109,10 +109,14 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
             	CmProgram cmProg = ppDao.addCurrentProgramForStudent(userId);
             	
             	// also add CM Program Assignment for Student
+            	StudentActiveInfo stuActiveInfo = stuDao.loadActiveInfo(userId);
         		CmProgramAssign cmProgAssign = new CmProgramAssign();
         		cmProgAssign.setCmProgram(cmProg);
         		cmProgAssign.setUserId(userId);
         		cmProgAssign.setUserProgId(stuMdl.getProgram().getProgramId());
+        		cmProgAssign.setProgSegment(stuActiveInfo.getActiveSegment());
+        		cmProgAssign.setRunId(stuActiveInfo.getActiveRunId());
+        		cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
 				ppDao.addProgramAssignment(cmProgAssign);
             }
 
