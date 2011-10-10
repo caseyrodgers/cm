@@ -2709,8 +2709,9 @@ select pq.*, p.custom_prog_id, p.custom_quiz_id from
 (select pa.*, ifnull(pp.id, 0) as parallel_prog_id
  from CM_PROGRAM_ASSIGN pa
 left outer join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = pa.prog_inst_id
- where pa.user_id = ?s) pq
+ where pa.user_id = ?) pq
 join CM_PROGRAM p on p.id = pq.prog_inst_id
+where pq.parallel_prog_id = 0
 
 
 .key=IS_PARALLEL_PROGRAM_ASSIGNED
