@@ -130,7 +130,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         assertNotNull(activeInfo);
     }
 
-    public void testRestStudentActiveInfo() throws Exception {
+    public void testResetStudentActiveInfo() throws Exception {
         StudentActiveInfo activeInfo = new StudentActiveInfo();
         activeInfo.setActiveTestId(100);
         _dao.setActiveInfo(conn, TEST_ID, activeInfo);
