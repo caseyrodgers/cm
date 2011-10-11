@@ -2,6 +2,7 @@ package hotmath.gwt.solution_editor.server.rpc;
 
 import hotmath.HotMathException;
 import hotmath.HotMathTokenReplacements;
+import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -47,8 +48,8 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         
         _pid = action.getPid();
         String solutionBase = CatchupMathProperties.getInstance().getSolutionBase();
-        
-        TutorSolution tutorSolution = new CmSolutionManagerDao().getTutorSolution(conn, action.getPid());
+        ProblemID pid = new ProblemID(action.getPid());
+        TutorSolution tutorSolution = new CmSolutionManagerDao().getTutorSolution(conn, _pid);
         SolutionMeta meta = new SolutionMeta(action.getPid());
         
         /** Save MD5, and if different on save the user must confirm overwrite
@@ -56,7 +57,18 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
          */
         meta.setMd5OnRead(new CmSolutionManagerDao().getSolutionMd5(conn, action.getPid()));
         
-        meta.setProblemStatement(postProcessHtml(solutionBase, tutorSolution.getProblem().getStatement()));
+        
+        
+        
+        String problemStatement = tutorSolution.getProblem().getStatement();
+        
+        // if figure attribute then add as normal HTML block
+        String figure = tutorSolution.getProblem().getStatementFigure();
+        if(figure != null && figure.length() > 0) {
+            String figurePath = "/help/solutions/" + pid.getSolutionPath() + "/" + pid.getGUID() + "/" + figure;
+            problemStatement = "<div class='problemstatement_figure'><img src='"  + figurePath + "/>\n" + "</div>" + problemStatement;
+        }
+        meta.setProblemStatement(postProcessHtml(solutionBase,problemStatement ));
         List<TutorStepUnit> units = tutorSolution.getProblem().getStepUnits();
         for(int u=0,t=units.size();u<t;u++) {
 
