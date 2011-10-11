@@ -255,6 +255,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setInt(5, model.getRunId());
                     ps.setInt(6, model.getRunSession());
                     ps.setInt(7, model.getTestId());
+                    ps.setInt(8, model.getSegmentSlot());
 
                     return ps;
                 } catch (Exception e) {
@@ -325,7 +326,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * reassign User to Main Program
+     * get Main Program for Student
      * 
      * @param userId
      */
@@ -340,11 +341,13 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         CmProgram cmProg = new CmProgram();
                         try {
                         	//CmProgramInfo cpInfo = cmProg.getCmProgInfo();
-                        	StudentActiveInfo activeInfo = cmProg.getActiveInfo(userId);
+                        	StudentActiveInfo activeInfo = cmProg.getActiveInfo();
 
                         	activeInfo.setActiveRunId(rs.getInt("run_id"));
                         	activeInfo.setActiveRunSession(rs.getInt("run_session"));
                         	activeInfo.setActiveSegment(rs.getInt("prog_segment"));
+                        	activeInfo.setActiveSegmentSlot(rs.getInt("segment_slot"));
+                        	activeInfo.setActiveTestId(rs.getInt("test_id"));
                         	
                         	cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                         	cmProg.setCustomProgId(rs.getInt("custom_quiz_id"));
@@ -368,25 +371,15 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      * 
      * @param userId
      */
+    // TODO: move to Action / Command ?
     public void reassignMainProgram(final int userId) throws Exception {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        getJdbcTemplate().update(new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
-                try {
-                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADD_CM_PROGRAM_FOR_STUDENT");
-                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
-                    ps.setInt(1, userId);
 
-                    return ps;
-                } catch (Exception e) {
-                    LOGGER.error("Error adding CM Program for userId: " + userId, e);
-                    throw new SQLException("Error adding CM_PROGRAM", e);
-                }
-            }
-        }, keyHolder);
+    	CmProgram cmProg = getMainProgramForStudent(userId);
+    	
+    	CmStudentDao stuDao = CmStudentDao.getInstance();
+    	stuDao.setActiveInfo(null, userId, cmProg.getActiveInfo());
 
-        // extract the auto created pk
-        final int id = keyHolder.getKey().intValue();
+        stuDao.setUserProgId(userId, cmProg.getUserProgId());
     }
 
     /**
@@ -429,4 +422,43 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return cmProg;
     }
 
+    /**
+     * get CM Program for specified UserId
+     * 
+     * @param userId
+     * @return
+     * @throws Exception
+     */
+    public CmProgram getCmProgramForUserId(final int userId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CM_PROGRAM_FOR_USERID");
+        CmProgram cmProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId},
+                new RowMapper<CmProgram>() {
+                    public CmProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmProgram cmProg;
+                        try {
+                        	cmProg = new CmProgram();
+                        	CmProgramInfo progInfo = cmProg.getCmProgInfo();
+                        	cmProg.setId(rs.getInt("id"));
+                        	cmProg.setAdminId(rs.getInt("admin_id"));
+                        	cmProg.setPassPercent(rs.getInt("pass_percent"));
+                            progInfo.setTestDefId(rs.getInt("test_def_id"));
+                            progInfo.setSubjectId(rs.getString("subj_id"));
+                            progInfo.setSegmentCount(rs.getInt("segment_count"));
+                            progInfo.setProgramType(CmProgramType.lookup(rs.getString("prog_id")));
+                            cmProg.setTestConfigJson(rs.getString("test_config_json"));
+                            cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
+                            cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
+
+                            return cmProg;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting CM Program for UserId: %d", userId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return cmProg;
+    }
 }

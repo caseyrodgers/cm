@@ -605,6 +605,13 @@ update HA_USER
 set active_run_id = ?, active_test_id = ?, active_segment = ?, active_segment_slot = ?, active_run_session = ? 
 where uid = ?
 
+
+.key=SAVE_USER_PROG_ID
+
+update HA_USER 
+set user_prog_id = ? 
+where uid = ?
+
         
 #############
 ##
@@ -2703,6 +2710,17 @@ JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
 where p.id = ?
 
 
+.key=GET_CM_PROGRAM_FOR_USERID
+
+select p.id, p.admin_id, p.test_def_id, p.pass_percent, td.subj_id, td.prog_id,
+       p.custom_prog_id, p.custom_quiz_id, td.segment_count, p.test_config_json
+from HA_USER u
+JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
+JOIN CM_PROGRAM p on p.id = pa.prog_inst_id
+JOIN CM_PROGRAM_ASSIGN pa on pa.user_id = u.uid and ps.user_prog_id = u.user_prog_id
+where u.uid = ?
+
+
 .key=GET_MAIN_PROGRAM_FOR_STUDENT
 
 select pq.*, p.custom_prog_id, p.custom_quiz_id from
@@ -2781,6 +2799,6 @@ values
 .key=CREATE_CM_PROGRAM_ASSIGN
 
 insert into CM_PROGRAM_ASSIGN
-(user_id, user_prog_id, prog_inst_id, prog_segment, test_id, run_id, run_session, create_date) 
+(user_id, user_prog_id, prog_inst_id, prog_segment, test_id, run_id, run_session, segment_slot, create_date) 
 values
-(?, ?, ?, ?, ?, ?, ?, now())
+(?, ?, ?, ?, ?, ?, ?, ?, now())
