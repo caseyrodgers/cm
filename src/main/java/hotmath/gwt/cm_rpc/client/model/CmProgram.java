@@ -1,20 +1,18 @@
 package hotmath.gwt.cm_rpc.client.model;
 
-import hotmath.cm.program.CmProgramFlow;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 @SuppressWarnings("serial")
 public class CmProgram implements Response {
     
     CmProgramInfo cmProgInfo = new CmProgramInfo();
+    StudentActiveInfo activeInfo = new StudentActiveInfo();
     int id;
     int adminId;
     int passPercent;
     String testConfigJson;
     int customProgId;
     int customQuizId;
-
     int userProgId;
     
     public CmProgram() {/* empty */}
@@ -26,10 +24,6 @@ public class CmProgram implements Response {
         this.customProgId = customProgId;
         this.customQuizId = customQuizId;
     }
-    
-    public StudentActiveInfo getActiveInfo(int userId) throws Exception {
-        return CmStudentDao.getInstance().loadActiveInfo(userId);
-    }
 
     public CmProgramInfo getCmProgInfo() {
 		return cmProgInfo;
@@ -37,6 +31,14 @@ public class CmProgram implements Response {
 
 	public void setCmProgInfo(CmProgramInfo cmProgInfo) {
 		this.cmProgInfo = cmProgInfo;
+	}
+
+	public StudentActiveInfo getActiveInfo() {
+		return activeInfo;
+	}
+
+	public void setActiveInfo(StudentActiveInfo activeInfo) {
+		this.activeInfo = activeInfo;
 	}
 
 	public int getId() {
@@ -88,14 +90,14 @@ public class CmProgram implements Response {
 	}
 
 	public int getUserProgId() {
-        return userProgId;
-    }
+		return userProgId;
+	}
 
-    public void setUserProgId(int userProgId) {
-        this.userProgId = userProgId;
-    }
+	public void setUserProgId(int userProgId) {
+		this.userProgId = userProgId;
+	}
 
-    @Override
+	@Override
     public String toString() {
         return "CmProgram [passPercent=" + passPercent + ", testConfigJson=" + testConfigJson + ", customProgId="
                 + customProgId + ", customQuizId=" + customQuizId + ", " + cmProgInfo.toString() + "]";
