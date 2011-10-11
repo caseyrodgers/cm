@@ -2715,9 +2715,9 @@ where p.id = ?
 select p.id, p.admin_id, p.test_def_id, p.pass_percent, td.subj_id, td.prog_id,
        p.custom_prog_id, p.custom_quiz_id, td.segment_count, p.test_config_json
 from HA_USER u
-JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
+JOIN CM_PROGRAM_ASSIGN pa on pa.user_id = u.uid and pa.user_prog_id = u.user_prog_id
 JOIN CM_PROGRAM p on p.id = pa.prog_inst_id
-JOIN CM_PROGRAM_ASSIGN pa on pa.user_id = u.uid and ps.user_prog_id = u.user_prog_id
+JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
 where u.uid = ?
 
 
