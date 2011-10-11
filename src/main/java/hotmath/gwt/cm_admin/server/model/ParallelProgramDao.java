@@ -340,7 +340,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         CmProgram cmProg = new CmProgram();
                         try {
                         	//CmProgramInfo cpInfo = cmProg.getCmProgInfo();
-                        	StudentActiveInfo activeInfo = cmProg.getActiveInfo();
+                        	StudentActiveInfo activeInfo = cmProg.getActiveInfo(userId);
 
                         	activeInfo.setActiveRunId(rs.getInt("run_id"));
                         	activeInfo.setActiveRunSession(rs.getInt("run_session"));

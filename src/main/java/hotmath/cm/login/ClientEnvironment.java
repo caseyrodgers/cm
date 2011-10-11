@@ -40,7 +40,8 @@ public class ClientEnvironment {
     }
 
     public boolean isFlashEnabled() {
-        return flashEnabled;
+        // return flashEnabled;
+        return false;
     }
 
     public void setFlashEnabled(boolean flashEnabled) {

@@ -120,7 +120,7 @@ public class AssessmentPrescription {
                 continue;
             }
 
-            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true);
+            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true,clientEnvironment);
 
             // assert that there is at least one
             if (session.getSessionItems().size() == 0) {
@@ -273,7 +273,7 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData,
-            boolean filter) throws Exception {
+            boolean filter,ClientEnvironment clientEnvironment) throws Exception {
         AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
         List<SessionData> sessionItems = session.getSessionItems();
 
@@ -288,7 +288,7 @@ public class AssessmentPrescription {
                 break;
             }
         }
-        if (hasRPA) {
+        if (clientEnvironment.isFlashEnabled() && hasRPA) {
             /**
              * only show RPA widgets (filtered)
              * 

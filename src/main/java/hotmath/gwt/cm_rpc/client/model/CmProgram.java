@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc.client.model;
 
+import hotmath.cm.program.CmProgramFlow;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 @SuppressWarnings("serial")
@@ -12,6 +14,8 @@ public class CmProgram implements Response {
     String testConfigJson;
     int customProgId;
     int customQuizId;
+
+    int userProgId;
     
     public CmProgram() {/* empty */}
     
@@ -21,6 +25,10 @@ public class CmProgram implements Response {
         this.testConfigJson = testConfigJson;
         this.customProgId = customProgId;
         this.customQuizId = customQuizId;
+    }
+    
+    public StudentActiveInfo getActiveInfo(int userId) throws Exception {
+        return CmStudentDao.getInstance().loadActiveInfo(userId);
     }
 
     public CmProgramInfo getCmProgInfo() {
@@ -79,7 +87,15 @@ public class CmProgram implements Response {
 		this.customQuizId = customQuizId;
 	}
 
-	@Override
+	public int getUserProgId() {
+        return userProgId;
+    }
+
+    public void setUserProgId(int userProgId) {
+        this.userProgId = userProgId;
+    }
+
+    @Override
     public String toString() {
         return "CmProgram [passPercent=" + passPercent + ", testConfigJson=" + testConfigJson + ", customProgId="
                 + customProgId + ", customQuizId=" + customQuizId + ", " + cmProgInfo.toString() + "]";

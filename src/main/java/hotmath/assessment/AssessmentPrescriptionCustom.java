@@ -1,5 +1,6 @@
 package hotmath.assessment;
 
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -40,6 +41,11 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         }
         
         readAssessment();        
+
+        
+        // now choose pids from the pool for this item
+        int uid = testRun.getHaTest().getUser().getUid();
+        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
         
         int segment=testRun.getHaTest().getSegment();
         CmList<CustomLessonModel> progLessons = CmCustomProgramDao.getInstance().getCustomProgramLessons(conn, custProgId, segment);
@@ -52,13 +58,11 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                  */
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review",cpProgItem.getFile(),cpProgItem.getLesson());
                 InmhItemData itemData = new InmhItemData(item);
-            
-                // now choose pids from the pool for this item
-                int uid = testRun.getHaTest().getUser().getUid();
+
                 List<RppWidget> workBookPids = itemData.getWidgetPool(
                         conn,
                         uid + "/" + testRun.getRunId(),
-                        HaUserDao.getInstance().getLatestClientEnvironment(uid));
+                        clientEnvironment);
                 if (workBookPids.size() == 0) {
                     logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                     continue; // nothing to see here.
@@ -66,7 +70,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 
                 gradeLevel = getHighestGradeLevel(workBookPids);
                 
-                session = createSession(sessNum,workBookPids,itemData,true);
+                session = createSession(sessNum,workBookPids,itemData,true,clientEnvironment);
                 
                 // assert that there is at least one
                 if(session.getSessionItems().size() == 0) {

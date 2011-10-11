@@ -53,8 +53,6 @@ function doLoad_Gwt(pid, title, hasShowWork, shouldExpandSteps, solutionHtml, so
             swf.style.display = 'none';
         }
     }
-
-    processMathJax();
 }
 
 

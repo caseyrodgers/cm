@@ -5,6 +5,7 @@ import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
+import hotmath.testset.ha.HaUserDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,9 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         int uid = testRun.getHaTest().getUser().getUid();
         List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
 
-        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
+        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
+
+        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, clientEnvironment);
     }
 
     
@@ -72,7 +75,9 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     	int uid = testRun.getHaTest().getUser().getUid();
     	List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(true));
 
-    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
+    	ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
+    	
+    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, clientEnvironment);
     }
     
     

@@ -38,13 +38,21 @@ import sb.util.SbUtilities;
  * 
  */
 public class ActionDispatcherLoggerGui extends JFrame {
+    
+    private static ActionDispatcherLoggerGui __instance;
+    public static ActionDispatcherLoggerGui getInstance() {
+        if(__instance == null) {
+            __instance = new ActionDispatcherLoggerGui();
+        }
+        return __instance;
+    }
 
     JTextArea _logArea = new JTextArea(), _requestsArea = new JTextArea();
     JTextField _filter = new JTextField();
     List<String> _fullLog = new ArrayList<String>();
     JToggleButton _disabled = new JToggleButton("Enable");
 
-    public ActionDispatcherLoggerGui() {
+    private ActionDispatcherLoggerGui() {
 
         setupLog4JAppender();
 

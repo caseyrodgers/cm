@@ -112,7 +112,7 @@ public class ActionDispatcher {
 		 * 
 		 */
 		try {
-		    new ActionDispatcherLoggerGui();
+		    ActionDispatcherLoggerGui.getInstance();
 		}
 		catch(Throwable th) {
 		    logger.debug("Cannot start logger GUI", th);
