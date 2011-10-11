@@ -22,6 +22,7 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     ParallelProgramDao _dao;
 
     int progInstId;
+    CmProgram cmProg;
 
     protected void setUp() throws Exception {
     	super.setUp();
@@ -140,6 +141,19 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
 
     	assert (cmProg != null);
 
+    }
+    
+    @Test
+    public void testReassignMainProgram() throws Exception {
+    	CmProgram cmProg = _dao.getCmProgramForUserId(9456);
+    	
+    	_dao.reassignMainProgram(9456);
+    	
+    	//_dao.reassignProgram(cmProg, 9456);
+    }
+    
+    @Test void testReassignParallelProgram() throws Exception {
+    	
     }
 
 }
