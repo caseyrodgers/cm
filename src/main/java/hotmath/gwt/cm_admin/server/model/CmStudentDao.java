@@ -2343,6 +2343,23 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         
     }
 
+    /**
+     * Set the user program ID for the named user
+     *
+     * @param userId
+     * @param userProgId
+     * @throws Exception If record cannot be updated
+     *
+     */
+    public void setUserProgId(Integer userId, Integer userProgId) throws Exception {
+
+        getSimpleJdbcTemplate().update(
+                CmMultiLinePropertyReader.getInstance().getProperty("SAVE_USER_PROG_ID"),
+                new Object[]{
+                    userProgId,
+                    userId});
+    }
+
 
     /** Helper function to assign the named program/subject to the student identified by uid
      *
