@@ -66,7 +66,7 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         String figure = tutorSolution.getProblem().getStatementFigure();
         if(figure != null && figure.length() > 0) {
             String figurePath = "/help/solutions/" + pid.getSolutionPath() + "/" + pid.getGUID() + "/" + figure;
-            problemStatement = "<div class='problemstatement_figure'><img src='"  + figurePath + "/>\n" + "</div>" + problemStatement;
+            problemStatement = "<div class='problemstatement_figure'><img src='"  + figurePath + "'/>\n" + "</div>" + problemStatement;
         }
         meta.setProblemStatement(postProcessHtml(solutionBase,problemStatement ));
         List<TutorStepUnit> units = tutorSolution.getProblem().getStepUnits();
