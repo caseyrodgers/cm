@@ -10,6 +10,7 @@ public class CmProgramAssign implements Response {
     int progSegment;
     int runId;
     int runSession;
+    int segmentSlot;
     int testId;
     int userId;
     int userProgId;
@@ -60,6 +61,14 @@ public class CmProgramAssign implements Response {
 
 	public void setRunSession(int runSession) {
 		this.runSession = runSession;
+	}
+
+	public int getSegmentSlot() {
+		return segmentSlot;
+	}
+
+	public void setSegmentSlot(int segmentSlot) {
+		this.segmentSlot = segmentSlot;
 	}
 
 	public int getTestId() {
