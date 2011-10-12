@@ -2799,6 +2799,6 @@ values
 .key=CREATE_CM_PROGRAM_ASSIGN
 
 insert into CM_PROGRAM_ASSIGN
-(user_id, user_prog_id, prog_inst_id, prog_segment, test_id, run_id, run_session, segment_slot, create_date) 
+(user_id, user_prog_id, prog_inst_id, prog_segment, run_id, run_session, test_id, segment_slot, create_date) 
 values
 (?, ?, ?, ?, ?, ?, ?, ?, now())
