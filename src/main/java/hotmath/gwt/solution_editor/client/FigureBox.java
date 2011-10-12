@@ -23,7 +23,7 @@ class FigureBox extends LayoutContainer {
         this.pid = pid;
         this.figure = figure;
         this.callback = callback;
-        
+
         addStyleName("FigureBox");
 
         add(figureImage);
@@ -36,24 +36,24 @@ class FigureBox extends LayoutContainer {
                        if(val != null) {
                            setFigure(FigureBox.this.pid,be.getValue());
                            FigureBox.this.callback.figureChanged(be.getValue());
-                           
+
                            EventBus.getInstance().fireEvent(new CmEvent(EventTypes.SOLUTION_EDITOR_CHANGED));
                        }
                    }
                });
             }
         }));
-        
+
         setFigure(pid, figure);
     }
-    
+
     protected void setFigure(String pid, String figure) {
         this.figure = figure;
         if(figure == null) {
             figureImage.setVisible(false);
             return;
         }
-            
+
         String base = "/help/solutions/";
         String ps[] = pid.split("_");
         for (int i=0,t=ps.length;i<t-2;i++) {
@@ -65,7 +65,7 @@ class FigureBox extends LayoutContainer {
         figureImage.getElement().setAttribute("src", base);
         figureImage.setVisible(true);
     }
-    
+
     static public interface Callback {
         void figureChanged(String figure);
     }
