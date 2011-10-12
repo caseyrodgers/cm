@@ -1,10 +1,10 @@
 package hotmath.cm.login.service;
 
-import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
 import hotmath.cm.util.CmMessagePropertyReader;
+import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.CmExceptionDoNotNotify;
 import hotmath.gwt.cm_rpc.client.CmUserException;
@@ -244,6 +244,14 @@ public class LoginService extends HttpServlet {
 				}
 				else {
 					clientInfo.setUserType(UserType.STUDENT);
+					
+					// if this is a "real login" and Student is currently in a "Parallel Program",
+					// then need to reassign to "Main Program" before calling getUserInfoAction
+					ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+					if (isRealLogin && ppDao.isStudentInParallelProgram(loginInfo.getUserId()) == true) {
+						ppDao.reassignMainProgram(loginInfo.getUserId());
+					}
+
 					UserLoginResponse response = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
 					//UserInfo userInfo = response.getUserInfo();
 					String jsonizedUserInfo = Jsonizer.toJson(response);
