@@ -2766,6 +2766,21 @@ where u.admin_id = cp.admin_id
   and (ifnull(cp.test_config_json,' ')) = (ifnull(up.test_config_json,' '))
   and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
 
+
+.key=CM_PROGRAM_ASSIGN_EXISTS_FOR_STUDENT
+
+select count(*) as prog_exists from CM_PROGRAM cp
+join HA_USER u on u.uid = ?
+join CM_USER_PROGRAM up on up.id = u.user_prog_id
+join CM_PROGRAM_ASSIGN pa on pa.user_id = u.uid and pa.prog_inst_id = cp.id
+where u.admin_id = cp.admin_id
+  and up.test_def_id = cp.test_def_id
+  and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
+  and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
+  and (ifnull(cp.test_config_json,' ')) = (ifnull(up.test_config_json,' '))
+  and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
+  
+  
 .key=ADD_CM_PROGRAM_FOR_STUDENT
 
 insert into CM_PROGRAM
