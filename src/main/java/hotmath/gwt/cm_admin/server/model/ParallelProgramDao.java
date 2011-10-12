@@ -248,6 +248,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                 try {
                     String sql = CmMultiLinePropertyReader.getInstance().getProperty("CREATE_CM_PROGRAM_ASSIGN");
                     PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+
                     ps.setInt(1, model.getUserId());
                     ps.setInt(2, model.getUserProgId());
                     ps.setInt(3, model.getCmProgram().getId());
@@ -290,6 +291,33 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         }
                         catch(Exception e) {
                             LOGGER.error(String.format("Error checking for CM Program existence, userId: %d", userId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return progExists;
+    }
+
+    /**
+     * is User's current Program in CM_PROGRAM_ASSIGN?
+     * 
+     * @param userId
+     */
+    public boolean programAssignmentExistsForStudent(final int userId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CM_PROGRAM_ASSIGN_EXISTS_FOR_STUDENT");
+        boolean progExists = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId},
+                new RowMapper<Boolean>() {
+                    public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Boolean progExists;
+                        try {
+                            progExists = (rs.getInt("prog_exists") > 0);
+
+                            return progExists;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error checking for CM Program Assign existence, userId: %d", userId), e);
                             throw new SQLException(e.getMessage());
                         }
                     }
