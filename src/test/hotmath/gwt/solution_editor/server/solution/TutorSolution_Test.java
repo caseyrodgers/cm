@@ -10,6 +10,16 @@ public class TutorSolution_Test extends TestCase {
     }
     SolutionDef def = new SolutionDef("MYBOOK_MYCHAP_MYSEC_MYSET_MYPN_MYPAGE");
     
+    
+    public void testCreateSolutionWithFigure() throws Exception {
+        TutorSolution ts = new TutorSolution("test", def,"The Statement");
+        ts.addStep("The Hint", "The Step","theFigure");
+        
+        String xml = ts.toXml();
+        System.out.println(xml);
+        assertTrue(xml.contains("theFigure"));
+    }
+    
     public void testCreateSolutionXml() throws Exception {
         TutorSolution ts = new TutorSolution("test",def,"The Statement");
         String xml = ts.toXml();
@@ -20,7 +30,7 @@ public class TutorSolution_Test extends TestCase {
     
     public void testCreateSolutionXml2() throws Exception {
         TutorSolution ts = new TutorSolution("test", def,"The Statement");
-        ts.addStep("The Hint", "The Step");
+        ts.addStep("The Hint", "The Step",null);
         
         String xml = ts.toXml();
         assertTrue(xml.contains("The Hint"));

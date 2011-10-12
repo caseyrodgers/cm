@@ -8,7 +8,6 @@ import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.solution_editor.client.WidgetListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionStepsAdminAction;
@@ -98,7 +97,7 @@ public class SolutionStepEditor extends ContentPanel {
     
     private void addNewStep() {
         flushChanges();
-        _meta.getSteps().add(new SolutionMetaStep("A New Hint", "A New Step"));
+        _meta.getSteps().add(new SolutionMetaStep(_meta,"A New Hint", "A New Step",null));
         buildSolutionEditor(_meta);
         
         fireChanged();
@@ -160,10 +159,10 @@ public class SolutionStepEditor extends ContentPanel {
         removeAll();
 
         setHeading("Solution Step Editor");
-        add(new StepUnitWrapper("Problem Statement", new ProblemStatement(meta)));
+        add(new StatementContainer("Problem Statement", new ProblemStatement(meta)));
         
         for(int s=0,t=meta.getSteps().size();s<t;s++) {
-            add(new StepContainer((s+1), meta.getSteps().get(s)));
+            add(new StepContainer(meta.getPid(),(s+1), meta,meta.getSteps().get(s),meta.getSteps().get(s).getFigure()));
         }
         layout();
         
@@ -201,7 +200,7 @@ public class SolutionStepEditor extends ContentPanel {
             }
             else if(comp instanceof StepContainer) {
                 StepContainer sc = (StepContainer)comp;
-                steps.add(new SolutionMetaStep(sc.getHintText(),sc.getStepText()));
+                steps.add(new SolutionMetaStep(_meta,sc.getHintText(),sc.getStepText(), sc.getFigure()));
             }
         }
         _meta.setSteps(steps );
@@ -215,18 +214,19 @@ public class SolutionStepEditor extends ContentPanel {
         List<Component> items = getItems();
         for(int i=0,t=items.size();i<t;i++) {
             Component comp = items.get(i);
-            if(comp instanceof StepUnitWrapper) {
-                String text = ((StepUnitWrapper)comp).getItem().getEditorText();
+            if(comp instanceof StatementContainer) {
+                String text = ((StatementContainer)comp).getStepUnitWrapper().getItem().getEditorText();
                 statement = text;            
             }
             else if(comp instanceof StepContainer) {
                 StepContainer sc = (StepContainer)comp;
-                StepUnitPair  su = new StepUnitPair(sc.getHintText(), sc.getStepText());
+                StepUnitPair  su = new StepUnitPair(sc.getHintText(), sc.getStepText(), sc.getFigure());
                 stepPairs.add(su);
             }
         }
         
-        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,stepPairs);
+        String statementFigure = _meta.getFigure();
+        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs);
         saveSolution(action, asPid);
     }
     

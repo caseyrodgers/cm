@@ -64,11 +64,9 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         
         // if figure attribute then add as normal HTML block
         String figure = tutorSolution.getProblem().getStatementFigure();
-        if(figure != null && figure.length() > 0) {
-            String figurePath = "/help/solutions/" + pid.getSolutionPath() + "/" + pid.getGUID() + "/" + figure;
-            problemStatement = "<img class=\"figure\" src=\""  + figurePath + "\"/>\n" + problemStatement;
-        }
         meta.setProblemStatement(postProcessHtml(solutionBase,problemStatement ));
+        meta.setFigure(figure);
+        
         List<TutorStepUnit> units = tutorSolution.getProblem().getStepUnits();
         for(int u=0,t=units.size();u<t;u++) {
 
@@ -82,8 +80,9 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
             }
             String hint = postProcessHtml(solutionBase, units.get(u++).getContentAsString());
             String text = postProcessHtml(solutionBase, units.get(u).getContentAsString());
-        
-            SolutionMetaStep step = new SolutionMetaStep(hint,text);
+            
+            String stepFigure = units.get(u).getFigures().size() > 0?units.get(u).getFigures().get(0):null;
+            SolutionMetaStep step = new SolutionMetaStep(meta,hint,text,stepFigure);
             meta.getSteps().add(step);
         }
         return meta;

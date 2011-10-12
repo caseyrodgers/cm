@@ -11,13 +11,29 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class SolutionMetaStep implements Response {
     String hint;
     String text;
+    String figure;
+    SolutionMeta parent;
     
     public SolutionMetaStep() {
+        /** for RPC */
+    }
+    public SolutionMetaStep(SolutionMeta parent) {
+        this.parent = parent;
     }
     
-    public SolutionMetaStep(String hint, String text) {
+    public SolutionMetaStep(SolutionMeta parent,String hint, String text, String figure) {
+        this.parent = parent;
         this.hint = hint;
         this.text = text;
+        this.figure = figure;
+    }
+
+    public SolutionMeta getParent() {
+        return parent;
+    }
+
+    public void setParent(SolutionMeta parent) {
+        this.parent = parent;
     }
 
     public String getHint() {
@@ -36,6 +52,14 @@ public class SolutionMetaStep implements Response {
         this.text = text;
     }
     
+    public String getFigure() {
+        return figure;
+    }
+
+    public void setFigure(String figure) {
+        this.figure = figure;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof SolutionMetaStep) {
@@ -45,5 +69,10 @@ public class SolutionMetaStep implements Response {
         else {
             return super.equals(obj);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "SolutionMetaStep [hint=" + hint + ", text=" + text + ", figure=" + figure + "]";
     }
 }

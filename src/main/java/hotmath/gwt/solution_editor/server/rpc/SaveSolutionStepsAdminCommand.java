@@ -17,7 +17,7 @@ public class SaveSolutionStepsAdminCommand implements ActionHandler<SaveSolution
     @Override
     public RpcData execute(Connection conn, SaveSolutionStepsAdminAction action) throws Exception {
         SolutionDef def = new SolutionDef(action.getPid());
-        TutorSolution ts = new TutorSolution("sm", def, action.getStatement(), action.getSteps());
+        TutorSolution ts = new TutorSolution("sm", def, action.getStatement(), action.getStatementFigure(),action.getSteps());
         
         /** make sure it has not been changed since read
          * 

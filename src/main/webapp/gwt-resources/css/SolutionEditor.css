@@ -127,3 +127,22 @@ solution-searcher-dialog button {
 	width: 500px;
     content: "Question Definition";
 }
+
+
+.FigureBox {
+    margin: 10px;
+    padding: 10px;
+}
+
+.FigureBox img {
+	display: block;
+}
+
+
+.statement-container {
+    border: 1px solid blue;
+    margin: 5px;
+    border-radius: 6px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+}

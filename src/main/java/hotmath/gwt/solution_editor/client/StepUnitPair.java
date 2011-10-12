@@ -11,12 +11,14 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class StepUnitPair implements Response {
     String hint;
     String text;
+    String figure;
 
     public StepUnitPair() {}
     
-    public StepUnitPair(String hint, String text) {
+    public StepUnitPair(String hint, String text, String figure) {
         this.hint = hint;
         this.text = text;
+        this.figure = figure;
     }
 
     public String getHint() {
@@ -33,5 +35,13 @@ public class StepUnitPair implements Response {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getFigure() {
+        return figure;
+    }
+
+    public void setFigure(String figure) {
+        this.figure = figure;
     }
 }

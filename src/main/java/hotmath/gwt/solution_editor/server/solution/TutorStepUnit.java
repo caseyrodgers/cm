@@ -10,8 +10,17 @@ import org.simpleframework.xml.Root;
 @Root (name="stepunit")
 abstract public class TutorStepUnit {
     List<String> figures = new ArrayList<String>();
+    String figure;
     
     public TutorStepUnit() {
+    }
+
+    public String getFigure() {
+        return figure;
+    }
+
+    public void setFigure(String figure) {
+        this.figure = figure;
     }
 
     public List<String> getFigures() {
@@ -21,7 +30,6 @@ abstract public class TutorStepUnit {
     public void setFigures(List<String> figures) {
         this.figures = figures;
     }
-    
     public abstract String getContentAsString();
     
     

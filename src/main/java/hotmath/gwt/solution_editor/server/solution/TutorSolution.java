@@ -4,14 +4,10 @@ import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.solution_editor.client.StepUnitPair;
 
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.Root;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -34,37 +30,36 @@ import sb.util.SbTestImpl;
  * @author casey
  *
  */
-@Root(name="hmsl")
 public class TutorSolution implements SbTestImpl {
     
-    @Attribute (required=false)
     String version="2.0";
     
-    @Attribute (required=false)
     String date;
     
-    @Attribute (required=false)
     String createdBy;
 
-    @Element
     TutorProblem problem = null;
 
     public TutorSolution(){}
     
-    public TutorSolution(String createdBy,SolutionDef def,String statement, List<StepUnitPair> steps) {
-        this(createdBy, def, statement);
+    public TutorSolution(String createdBy,SolutionDef def,String statement, String statementFigure, List<StepUnitPair> steps) {
+        this(createdBy, def, statement, statementFigure);
         
         for(StepUnitPair step: steps) {
-            addStep(step.getHint(), step.getText());
+            addStep(step.getHint(), step.getText(), step.getFigure());
         }
     }
   
     SimpleDateFormat _dateFormat = new SimpleDateFormat("MM/dd/yy");
     public TutorSolution(String createdBy, SolutionDef def, String statement) {
+        this(createdBy,def,statement,null);
+    }
+    
+    public TutorSolution(String createdBy, SolutionDef def, String statement, String statementFigure) {
         Identification id = new Identification(def.getBook(), def.getChapter(), 
                 def.getSection(), def.getSet(), def.getProblemNumber(), def.getPage());
         
-        problem = new TutorProblem(createdBy, id, statement);
+        problem = new TutorProblem(createdBy, id, statement, statementFigure);
         
         this.date = _dateFormat.format(new Date());
     }
@@ -74,19 +69,18 @@ public class TutorSolution implements SbTestImpl {
      * @param hint
      * @param text
      */
-    public void addStep(String hint, String text) {
+    public void addStep(String hint, String text, String figure) {
         TutorStepUnit hintSu = new TutorStepUnitImplHint(hint);
         TutorStepUnit textSu = new TutorStepUnitImplStep(text);
+        ((TutorStepUnitImplStep)textSu).setFigure(figure);
         
         problem.stepUnits.add(hintSu);
         problem.stepUnits.add(textSu);
     }
     
     public String toXml() throws Exception {
-        Serializer serializer = new Persister();
-        StringWriter sw = new StringWriter();
-        serializer.write(this,sw);
-        return sw.toString();
+        return new TutorSolutionXmlWriter(this).toXml();
+    
     }
 
     @Override
@@ -130,7 +124,7 @@ public class TutorSolution implements SbTestImpl {
     static public void main(String as[]) {
         try {
             SolutionDef def = new SolutionDef("MYBOOK_MYCHAP_MYSEC_MYSET_MYPN_MYPAGE");
-            new SbTesterFrameGeneric(new TutorSolution("me", def, "This is the statement"));
+            new SbTesterFrameGeneric(new TutorSolution("me", def, "This is the statement","figure"));
         }
         catch(Exception e) {
             e.printStackTrace();

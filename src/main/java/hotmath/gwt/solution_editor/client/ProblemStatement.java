@@ -10,9 +10,12 @@ public class ProblemStatement extends EditableStepUnit implements StepUnitItem {
     SolutionMeta meta;
     public ProblemStatement(SolutionMeta meta) {
         this.meta = meta;
-        
         addStyleName("problem-statement");
         setEditorText(meta.getProblemStatement());
+    }
+    
+    public SolutionMeta getMeta() {
+        return meta;
     }
     
     public Widget getWidget() {
@@ -25,4 +28,5 @@ public class ProblemStatement extends EditableStepUnit implements StepUnitItem {
         super.setEditorText(text);
         meta.setProblemStatement(text);
     }
+
 }

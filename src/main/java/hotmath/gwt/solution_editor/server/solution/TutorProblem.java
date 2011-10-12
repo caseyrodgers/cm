@@ -3,39 +3,31 @@ package hotmath.gwt.solution_editor.server.solution;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.simpleframework.xml.Attribute;
-import org.simpleframework.xml.Element;
-import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Root;
-
-
-@Root (name="problem")
 public class TutorProblem {
+    
+    String statementFigure;
     
     public TutorProblem(){}
     
-    public TutorProblem(String createdBy, Identification id, String statement) {
+    public TutorProblem(String createdBy, Identification id, String statement, String statementFigure) {
         this.identification = id;
         this.statement = statement;
         this.createdBy = createdBy;
+        this.statementFigure = statementFigure;
     }
     
-    @Attribute(name="createdby")
     String createdBy;
 
-    @Element
     Identification identification;
     
-    @Element (data=true,required=false)
     String statement;
     
-    @ElementList (inline=true,required=false)
     List<TutorStepUnit> stepUnits = new ArrayList<TutorStepUnit>();
 
     /** TODO: integrate into SimpleXML as annotation
      *  move String to Statement object with figure attirubte
      */
-    String statementFigure;
+
     
     
     public String getCreatedBy() {

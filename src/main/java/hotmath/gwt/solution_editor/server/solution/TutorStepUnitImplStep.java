@@ -2,20 +2,24 @@ package hotmath.gwt.solution_editor.server.solution;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.convert.Convert;
 
 
 
 @Root (name="stepunit")
 public class TutorStepUnitImplStep extends TutorStepUnit {
     
-    @Element (required=false,data=true)
-    String step;
+    
+    @Element
+    @Convert(StepConverter.class)
+    private String step;
+
     
     public TutorStepUnitImplStep() {
     }
     
     public TutorStepUnitImplStep(String text) {
-        step = text;
+        this.step = text;
     }
 
     public String getStep() {
@@ -30,7 +34,6 @@ public class TutorStepUnitImplStep extends TutorStepUnit {
     public String getContentAsString() {
         return step;
     }
-    
 
     @Override
     public Role getRole() {
@@ -38,4 +41,3 @@ public class TutorStepUnitImplStep extends TutorStepUnit {
         return Role.STEP;
     }
 }
-

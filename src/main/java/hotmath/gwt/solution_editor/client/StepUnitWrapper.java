@@ -1,5 +1,7 @@
 package hotmath.gwt.solution_editor.client;
 
+import hotmath.gwt.solution_editor.client.rpc.SolutionMeta;
+
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.BoxComponentEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -18,7 +20,7 @@ import com.google.gwt.user.client.Event;
  */
 class StepUnitWrapper extends LayoutContainer {
     StepUnitItem item;
-    public StepUnitWrapper(String title, StepUnitItem w) {
+    public StepUnitWrapper(String title, final SolutionMeta meta, StepUnitItem w) {
         this.item = w;
 
         setStyleAttribute("position", "relative");
@@ -34,7 +36,7 @@ class StepUnitWrapper extends LayoutContainer {
         edit.setStyleAttribute("top", "-5px");
         edit.setToolTip("Edit");
         add(edit);
-        
+
         add(w.getWidget());
         addListener(Events.OnDoubleClick, new Listener<BaseEvent>(){
             
