@@ -105,10 +105,20 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         	// if current Program not in CM_PROGRAM / CM_PROGRAM_ASSIGN add it
             boolean progExists = ppDao.currentProgramExistsForStudent(userId);
             if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progExists: " + progExists);
+            
+            boolean progAssignmentExists = false;
+            CmProgram cmProg;
             if (progExists == false) {
-            	CmProgram cmProg = ppDao.addCurrentProgramForStudent(userId);
-            	
-            	// also add CM Program Assignment for Student
+            	// current Program not in CM_PROGRAM
+            	cmProg = ppDao.addCurrentProgramForStudent(userId);
+            }
+            else {
+            	cmProg = ppDao.getCmProgramForUserId(userId);
+            	progAssignmentExists = ppDao.programAssignmentExistsForStudent(userId);
+            }
+            
+            if (progAssignmentExists == false) {
+            	// add CM Program Assignment for Student
             	StudentActiveInfo stuActiveInfo = stuDao.loadActiveInfo(userId);
         		CmProgramAssign cmProgAssign = new CmProgramAssign();
         		cmProgAssign.setCmProgram(cmProg);
@@ -118,7 +128,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         		cmProgAssign.setRunId(stuActiveInfo.getActiveRunId());
         		cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
         		cmProgAssign.setSegmentSlot(stuActiveInfo.getActiveSegmentSlot());
-				ppDao.addProgramAssignment(cmProgAssign);
+				ppDao.addProgramAssignment(cmProgAssign);            	
             }
 
         	// selected Parallel Program not currently assigned to Student
@@ -128,7 +138,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         	
         	if (prevAssigned == false) {
         		// add assignment, and start as with any new Program using "CmStudentDao.assignProgramToStudent()"
-        		CmProgram cmProg = ppDao.getCmProgramForParallelProgramId(action.getParallelProgId());
+        		cmProg = ppDao.getCmProgramForParallelProgramId(action.getParallelProgId());
         		if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format("+++ cmProg: ppID: %d: %s", action.getParallelProgId(), cmProg));
 
         		StudentProgramModel spMdl = new StudentProgramModel();
