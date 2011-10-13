@@ -227,6 +227,7 @@ public class SolutionStepEditor extends ContentPanel {
         
         String statementFigure = _meta.getFigure();
         final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs);
+        action.setFromPid(_meta.getPid());
         saveSolution(action, asPid);
     }
     
@@ -255,7 +256,7 @@ public class SolutionStepEditor extends ContentPanel {
                         
                         @Override
                         public void handleEvent(MessageBoxEvent be) {
-                            if(!be.isCancelled()) {
+                            if(be.getButtonClicked().getText().equals("Yes")) {
                                 action.setForceWrite(true);
                                 saveSolution(action, asPid);
                             }

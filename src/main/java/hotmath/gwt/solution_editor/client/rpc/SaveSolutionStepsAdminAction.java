@@ -8,7 +8,12 @@ import hotmath.gwt.solution_editor.client.StepUnitPair;
 import java.util.List;
 
 public class SaveSolutionStepsAdminAction implements Action<RpcData>{
+    
+    /** the pid to save it to */
     String pid;
+    
+    /** the pid original loaded */
+    String originalPid; 
     String statement;
     String statementFigure;
     String md5OnRead;
@@ -24,6 +29,14 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
         this.pid = pid;
         this.steps = steps;
     }
+    public String getOriginalPid() {
+        return originalPid;
+    }
+
+    public void setFromPid(String originalPid) {
+        this.originalPid = originalPid;
+    }
+
     public String getPid() {
         return pid;
     }

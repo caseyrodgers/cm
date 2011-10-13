@@ -88,7 +88,6 @@ public class TutorSolutionXmlWriter {
         catch (IOException e) {
           System.err.println(e);
         }        
-        System.out.println(out.toString());
         return out.toString();        
     }
 }
