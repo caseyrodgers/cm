@@ -30,7 +30,7 @@ class FigureBox extends LayoutContainer {
         add(new Button("Figure",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-               MessageBox.prompt("Current Figure: " + FigureBox.this.figure, "Enter Figure (cancel for no change)").addCallback(new Listener<MessageBoxEvent>() {
+               MessageBox.prompt("Current Figure (cancel for no change)", "Enter Figure (current: " + figure + ")" ).addCallback(new Listener<MessageBoxEvent>() {
                    public void handleEvent(MessageBoxEvent be) {
                        String val = be.getValue();
                        if(val != null) {
@@ -60,8 +60,6 @@ class FigureBox extends LayoutContainer {
             base += "/" + ps[i];
         }
         base += "/" + pid + "/" + figure;
-        setSize("100%", "50px");
-
         figureImage.getElement().setAttribute("src", base);
         figureImage.setVisible(true);
     }
