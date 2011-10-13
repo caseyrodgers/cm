@@ -19,7 +19,7 @@ public class GetQuizHtmlCommand_Test extends CmDbTestCase {
 		if(_test== null)
 			setupDemoAccountTest();
 		
-		CmWebResourceManager.setFileBase(CatchupMathProperties.getInstance().getProperty("web.base.path","/dev/local/gwt2/cm/src/main/webapp/cm_temp"));
+		CmWebResourceManager.setFileBase(CatchupMathProperties.getInstance().getProperty("web.base.path","/dev/work/cm/src/main/webapp/cm_temp"));
 	}
 	
     public void testAlwaysTheSame() throws Exception {

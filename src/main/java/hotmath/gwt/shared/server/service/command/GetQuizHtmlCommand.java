@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.test.HaTestSet;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmWebResourceManager;
@@ -23,11 +24,8 @@ import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 import hotmath.util.VelocityTemplateFromStringManager;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
@@ -177,15 +175,9 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
      * @return
      * @throws IOException
      */
-    static public String readQuizHtmlTemplate() throws IOException {
-        InputStream is = GetQuizHtmlCommand.class.getResourceAsStream("quiz_template.vm");
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        String line = null;
-        StringBuilder sb = new StringBuilder();
-        while ((line = br.readLine()) != null) {
-            sb.append(line);
-        }
-        return sb.toString();
+    static public String readQuizHtmlTemplate() throws Exception {
+        String file = CatchupMathProperties.getInstance().getCatchupRuntime() + "/quiz_template.vm";
+        return new SbFile(file).getFileContents().toString("\n");
     }
 }
 

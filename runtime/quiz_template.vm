@@ -8,8 +8,9 @@
         pid='$question.problemIndex' 
         onclick='setQuizQuestionActive(this)'>
         <a name='$question.questionTag' id='$question.questionTag'>&nbsp;</a>
-        <div class='question_head'>
-            <button onclick='showWhiteBoard(this)'>WB</button>
+        <div class='question_head not_debug'>
+            <button onclick='showWhiteboard_Gwt(&quot;$question.problemIndex&quot;)'>WB</button>
+            <button onclick="editQuizQuestion(&quot;$question.problemIndex&quot;)";>edit</button>
             <div class='question_head_text'> Problem $probNum </div>
             <div class='response_div' style='display: none;'>
                 <img id='response_image_$question.problemIndex' src='/images/tutor/spacer.gif'/>

@@ -267,7 +267,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     native private void scrollWindowTo(int position) /*-{
         try {
-            $wnd.scrollTo(0,position);
+            setTimeout(function() {
+                $wnd.scrollTo(0,position);
+            },0);
         }
         catch(e) {
             alert(e);

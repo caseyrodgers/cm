@@ -3,7 +3,6 @@ package hotmath.gwt.cm_mobile.client.page;
 import hotmath.gwt.cm_mobile.client.CatchupMathMobile;
 import hotmath.gwt.cm_mobile.client.ControlAction;
 import hotmath.gwt.cm_mobile.client.ControlPanel;
-import hotmath.gwt.cm_mobile.client.Controller;
 import hotmath.gwt.cm_mobile.client.QuizPanel;
 
 import java.util.ArrayList;

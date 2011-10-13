@@ -6,9 +6,6 @@ function initializeQuiz() {
         for ( var i = 0, t = divs.length; i < t; i++) {
             var d = divs[i];
             if (d.className == 'hm_question_def') {
-
-                var inputElement = "<button class='edit-button' onclick='editQuizQuestion(this);'>!</button>";
-                d.innerHTML = inputElement + d.innerHTML;
                 initializeQuizQuestion(d);
             }
         }
@@ -66,8 +63,7 @@ function hideQuestionResult(question) {
     }
 }
 
-function editQuizQuestion(o) {
-    var pid = o.parentNode.parentNode.getAttribute('guid');
+function editQuizQuestion(pid) {
     if (pid) {
         var w = window.open('/solution_editor/SolutionEditor.html?pid=' + pid);
     }
