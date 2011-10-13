@@ -30,10 +30,12 @@ class FigureBox extends LayoutContainer {
         add(new Button("Figure",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-               MessageBox.prompt("Current Figure (cancel for no change)", "Enter Figure (current: " + figure + ")" ).addCallback(new Listener<MessageBoxEvent>() {
+               MessageBox.prompt("Current Figure (cancel for no change)", "Enter Figure (" + FigureBox.this.figure + ")" ).addCallback(new Listener<MessageBoxEvent>() {
                    public void handleEvent(MessageBoxEvent be) {
+                       int keyCode = be.getKeyCode();
+                       String button = be.getButtonClicked().getText();
                        String val = be.getValue();
-                       if(val != null) {
+                       if(button.equals("OK") ) {
                            setFigure(FigureBox.this.pid,be.getValue());
                            FigureBox.this.callback.figureChanged(be.getValue());
 
