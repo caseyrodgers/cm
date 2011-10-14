@@ -145,15 +145,30 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     
     @Test
     public void testReassignMainProgram() throws Exception {
-    	CmProgram cmProg = _dao.getCmProgramForUserId(9456);
     	
     	_dao.reassignMainProgram(9456);
     	
-    	//_dao.reassignProgram(cmProg, 9456);
     }
     
-    @Test void testReassignParallelProgram() throws Exception {
+    @Test
+    public void testGetProgramAssignForParallelProgIdAndUserId() throws Exception {
+        CmProgramAssign cpa = _dao.getProgramAssignForParallelProgIdAndUserId(2, 9450);
+        
+        assert(cpa != null);
+    }
+
+    @Test
+    public void testUpdateProgramAssign() throws Exception {
+    	CmProgram cmProg = _dao.getMainProgramForStudent(9456);
+
+    	_dao.updateProgramAssign(9456, cmProg);
+    }
+
+    @Test
+    public void testReassignParallelProgram() throws Exception {
+    	CmProgram cmProg = _dao.getCmProgramForUserId(9456);
     	
+    	_dao.reassignProgram(9456, cmProg);
     }
 
 }
