@@ -102,7 +102,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 
         if (isAssigned == false) {
 
-        	// if current Program not in CM_PROGRAM / CM_PROGRAM_ASSIGN add it
+        	// if current Program not in CM_PROGRAM or CM_PROGRAM_ASSIGN add it
             boolean progExists = ppDao.currentProgramExistsForStudent(userId);
             if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progExists: " + progExists);
             
@@ -129,6 +129,9 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         		cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
         		cmProgAssign.setSegmentSlot(stuActiveInfo.getActiveSegmentSlot());
 				ppDao.addProgramAssignment(cmProgAssign);            	
+            }
+            else {
+            	//nothing to do
             }
 
         	// selected Parallel Program not currently assigned to Student
@@ -166,7 +169,20 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
         	}
         	
         	else {
-        		// restore state from CM_PROGRAM_ASSIGN to HA_USER and CM_USER_PROGRAM and...
+        		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
+        		CmProgramAssign progAssign = ppDao.getProgramAssignForParallelProgIdAndUserId(action.getParallelProgId(), userId);
+        		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progAssign: " + progAssign);
+        		
+        		// Update HA_USER
+        		StudentActiveInfo activeInfo = new StudentActiveInfo();
+        		activeInfo.setActiveRunId(progAssign.getRunId());
+        		activeInfo.setActiveRunSession(progAssign.getRunSession());
+        		activeInfo.setActiveSegment(progAssign.getProgSegment());
+        		activeInfo.setActiveSegmentSlot(progAssign.getSegmentSlot());
+        		activeInfo.setActiveTestId(progAssign.getTestId());
+        		
+        		stuDao.setActiveInfoAndUserProgId(userId, activeInfo, progAssign.getUserProgId());
+        		
         	}
         	
         }

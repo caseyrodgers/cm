@@ -130,6 +130,33 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return prevAssigned;
     }
 
+    public CmProgramAssign getProgramAssignForParallelProgIdAndUserId(final int parallelProgId, final int userId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CM_PROGRAM_ASSIGN_FOR_PPID_AND_USERID");
+        CmProgramAssign cmProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{userId, parallelProgId},
+                new RowMapper<CmProgramAssign>() {
+                    public CmProgramAssign mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmProgramAssign cmProgAssign;
+                        try {
+                        	cmProgAssign = new CmProgramAssign();
+                        	cmProgAssign.setId(rs.getInt("id"));
+                        	cmProgAssign.setProgSegment(rs.getInt("prog_segment"));
+                        	cmProgAssign.setRunId(rs.getInt("run_id"));
+                        	cmProgAssign.setRunSession(rs.getInt("run_session"));
+                        	cmProgAssign.setTestId(rs.getInt("test_id"));
+                        	cmProgAssign.setSegmentSlot(rs.getInt("segment_slot"));
+
+                            return cmProgAssign;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting CM Program Assign, parallelProgId: %d", parallelProgId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return cmProg;    }
+
     public int getStudentUserId(final Integer parallelProgId, final String studentPassword) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_UID");
         int studentUserId = this.getJdbcTemplate().queryForObject(
@@ -326,7 +353,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * add User's current Program to CM_PROGRAM?
+     * add User's current Program to CM_PROGRAM
      * 
      * @param userId
      */
@@ -368,7 +395,6 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     public CmProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
                         CmProgram cmProg = new CmProgram();
                         try {
-                        	//CmProgramInfo cpInfo = cmProg.getCmProgInfo();
                         	StudentActiveInfo activeInfo = cmProg.getActiveInfo();
 
                         	activeInfo.setActiveRunId(rs.getInt("run_id"));
@@ -377,8 +403,9 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	activeInfo.setActiveSegmentSlot(rs.getInt("segment_slot"));
                         	activeInfo.setActiveTestId(rs.getInt("test_id"));
                         	
+                        	cmProg.setId(rs.getInt("prog_inst_id"));
                         	cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
-                        	cmProg.setCustomProgId(rs.getInt("custom_quiz_id"));
+                        	cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
                         	cmProg.setUserProgId(rs.getInt("user_prog_id"));                        	
 
                         	return cmProg;
@@ -398,16 +425,65 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      * reassign User to Main Program
      * 
      * @param userId
+     * 
+     * @throws Exception
      */
-    // TODO: move to Action / Command ?
     public void reassignMainProgram(final int userId) throws Exception {
-
+    	
     	CmProgram cmProg = getMainProgramForStudent(userId);
+
+    	reassignProgram(userId, cmProg);
+    }
+
+    /**
+     * reassign User to a Program
+     * 
+     * @param userId
+     * @param cmProg
+     * 
+     * @throws Exception
+     */
+    public void reassignProgram(int userId, CmProgram cmProg) throws Exception {
+    	
+    	updateProgramAssign(userId, cmProg);
     	
     	CmStudentDao stuDao = CmStudentDao.getInstance();
-    	stuDao.setActiveInfo(null, userId, cmProg.getActiveInfo());
+    	stuDao.setActiveInfoAndUserProgId(userId, cmProg.getActiveInfo(),cmProg.getUserProgId());
+    }
 
-        stuDao.setUserProgId(userId, cmProg.getUserProgId());
+    /**
+     * update Active Info in CM_PROGRAM_ASSIGN
+     * 
+     * @param userId
+     * @param cmProg
+     *
+     * @throws Exception
+     */
+    public void updateProgramAssign(final int userId, final CmProgram cmProg) throws Exception {
+
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                	String sql = CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_CM_PROGRAM_ASSIGN");
+                    PreparedStatement ps = connection.prepareStatement(sql);
+
+                    StudentActiveInfo activeInfo = cmProg.getActiveInfo();
+                	
+                    ps.setInt(1, activeInfo.getActiveTestId());
+                    ps.setInt(2, activeInfo.getActiveRunId());
+                    ps.setInt(3, activeInfo.getActiveRunSession());
+                    ps.setInt(4, activeInfo.getActiveSegment());
+                    ps.setInt(5, activeInfo.getActiveSegmentSlot());
+                    ps.setInt(6, cmProg.getId());
+
+                    return ps;
+                } catch (Exception e) {
+                    LOGGER.error("Error updating CM Program Assign for userId: " + userId, e);
+                    throw new SQLException("Error updating CM_PROGRAM_ASSIGN", e);
+                }
+            }
+        });
+    	
     }
 
     /**
