@@ -606,6 +606,14 @@ set active_run_id = ?, active_test_id = ?, active_segment = ?, active_segment_sl
 where uid = ?
 
 
+.key=SAVE_ACTIVE_INFO_AND_USER_PROG_ID
+
+update HA_USER 
+set active_run_id = ?, active_test_id = ?, active_segment = ?, active_segment_slot = ?,
+    active_run_session = ?, user_prog_id = ?
+where uid = ?
+
+
 .key=SAVE_USER_PROG_ID
 
 update HA_USER 
@@ -2754,6 +2762,16 @@ join CM_PROGRAM_ASSIGN pa on pp.prog_inst_id = pa.prog_inst_id
 where pp.id = ?
 
 
+.key=GET_CM_PROGRAM_ASSIGN_FOR_PPID_AND_USERID
+
+select pa.*
+from CM_PROGRAM_ASSIGN pa
+join HA_USER u on u.uid = ?
+join CM_PARALLEL_PROGRAM pp on pp.id = ?
+where pa.user_id = u.uid
+  and pa.prog_inst_id = pp.prog_inst_id
+  
+
 .key=CM_PROGRAM_EXISTS_FOR_STUDENT
 
 select count(*) as prog_exists from CM_PROGRAM cp
@@ -2817,3 +2835,11 @@ insert into CM_PROGRAM_ASSIGN
 (user_id, user_prog_id, prog_inst_id, prog_segment, run_id, run_session, test_id, segment_slot, create_date) 
 values
 (?, ?, ?, ?, ?, ?, ?, ?, now())
+
+
+.key=UPDATE_CM_PROGRAM_ASSIGN
+
+update CM_PROGRAM_ASSIGN
+set test_id=?, run_id=?, run_session=?, prog_segment=?, segment_slot=?
+where id=?
+
