@@ -64,11 +64,11 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return isParallelProgramStudent;
     }
 
-    public boolean isParallelProgramAssignedToStudent(final Integer parallelProgId, final String studentPassword) throws Exception {
+    public boolean isParallelProgramAssignedToStudent(final Integer parallelProgId, final Integer userId) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("IS_PARALLEL_PROGRAM_ASSIGNED");
         boolean isAssigned = this.getJdbcTemplate().queryForObject(
                 sql,
-                new Object[]{studentPassword, parallelProgId},
+                new Object[]{userId, parallelProgId},
                 new RowMapper<Boolean>() {
                     public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Boolean isAssigned;
@@ -78,7 +78,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                             return isAssigned;
                         }
                         catch(Exception e) {
-                            LOGGER.error(String.format("Error checking for Parallel Program assignment, parallelProgId: %d, password: %s", parallelProgId, studentPassword), e);
+                            LOGGER.error(String.format("Error checking for Parallel Program assignment, parallelProgId: %d, userId: %s", parallelProgId, userId), e);
                             throw new SQLException(e.getMessage());
                         }
                     }
@@ -108,11 +108,11 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return isInParallelProgram;
     }
 
-    public boolean parallelProgramPrevAssignedToStudent(final Integer parallelProgId, final String studentPassword) throws Exception {
+    public boolean parallelProgramPrevAssignedToStudent(final Integer parallelProgId, final Integer userId) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PREV_ASSIGNED");
         boolean prevAssigned = this.getJdbcTemplate().queryForObject(
                 sql,
-                new Object[]{studentPassword, parallelProgId},
+                new Object[]{userId, parallelProgId},
                 new RowMapper<Boolean>() {
                     public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Boolean prevAssigned;
@@ -122,7 +122,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                             return prevAssigned;
                         }
                         catch(Exception e) {
-                            LOGGER.error(String.format("Error checking for Previous Program assignment, parallelProgId: %d, password: %s", parallelProgId, studentPassword), e);
+                            LOGGER.error(String.format("Error checking for Previous Program assignment, parallelProgId: %d, userId: %d", parallelProgId, userId), e);
                             throw new SQLException(e.getMessage());
                         }
                     }
