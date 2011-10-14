@@ -35,7 +35,7 @@ public class ProgramReassignment_Test extends CmDbTestCase {
     int progInstId;
     CmProgram cmProg;
     
-    static final int TEST_ID = 9450;
+    static final int TEST_ID = 25828;
 
     protected void setUp() throws Exception {
     	super.setUp();
@@ -58,7 +58,7 @@ public class ProgramReassignment_Test extends CmDbTestCase {
         //activeInfoMainProg = stuDao.loadActiveInfo(TEST_ID); 
         
         // "login" to 1st PP
-        loginCmd.assignParallelProgram(conn, 2, TEST_ID, null);
+        loginCmd.assignParallelProgram(conn, 34, TEST_ID, null);
         //activeInfoParallelProg1 = stuDao.loadActiveInfo(TEST_ID);
 
         // reassign Main Program
@@ -67,11 +67,11 @@ public class ProgramReassignment_Test extends CmDbTestCase {
         // TODO: compare Active Info
         
         // "login" to 2nd PP
-        loginCmd.assignParallelProgram(conn, 7, TEST_ID, null);
+        loginCmd.assignParallelProgram(conn, 35, TEST_ID, null);
         //activeInfoParallelProg2 = stuDao.loadActiveInfo(TEST_ID);
         
         // "login" to 1st PP
-        loginCmd.assignParallelProgram(conn, 2, TEST_ID, null);
+        loginCmd.assignParallelProgram(conn, 34, TEST_ID, null);
         //testAI = stuDao.loadActiveInfo(TEST_ID);
         // TODO: compare Active Info
         
@@ -81,7 +81,7 @@ public class ProgramReassignment_Test extends CmDbTestCase {
         // TODO: compare Active Info
         
         // "login" to 2nd PP
-        loginCmd.assignParallelProgram(conn, 7, TEST_ID, null);
+        loginCmd.assignParallelProgram(conn, 35, TEST_ID, null);
         //testAI = stuDao.loadActiveInfo(TEST_ID);
         // TODO: compare Active Info
         
