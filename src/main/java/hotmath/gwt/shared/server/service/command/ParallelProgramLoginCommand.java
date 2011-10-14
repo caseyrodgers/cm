@@ -89,102 +89,19 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
             throw new CmUserException("Selected Parallel Program is not available for your password.");
         }
 
-        /**
-         * Check if selected parallel program is currently assigned to Student
-         */
-        boolean isAssigned = ppDao.isParallelProgramAssignedToStudent(action.getParallelProgId(), action.getPassword());
-        if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ isAssigned: " + isAssigned);
-
     	userId = ppDao.getStudentUserId(action.getParallelProgId(), action.getPassword());
 
     	stuDao = CmStudentDao.getInstance();
     	StudentModelI stuMdl = stuDao.getStudentModelBase(conn, userId);
 
+        /**
+         * Check if selected parallel program is currently assigned to Student
+         */
+        boolean isAssigned = ppDao.isParallelProgramAssignedToStudent(action.getParallelProgId(), userId);
+        if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ isAssigned: " + isAssigned);
+
         if (isAssigned == false) {
-
-        	// if current Program not in CM_PROGRAM or CM_PROGRAM_ASSIGN add it
-            boolean progExists = ppDao.currentProgramExistsForStudent(userId);
-            if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progExists: " + progExists);
-            
-            boolean progAssignmentExists = false;
-            CmProgram cmProg;
-            if (progExists == false) {
-            	// current Program not in CM_PROGRAM
-            	cmProg = ppDao.addCurrentProgramForStudent(userId);
-            }
-            else {
-            	cmProg = ppDao.getCmProgramForUserId(userId);
-            	progAssignmentExists = ppDao.programAssignmentExistsForStudent(userId);
-            }
-            
-            if (progAssignmentExists == false) {
-            	// add CM Program Assignment for Student
-            	StudentActiveInfo stuActiveInfo = stuDao.loadActiveInfo(userId);
-        		CmProgramAssign cmProgAssign = new CmProgramAssign();
-        		cmProgAssign.setCmProgram(cmProg);
-        		cmProgAssign.setUserId(userId);
-        		cmProgAssign.setUserProgId(stuMdl.getProgram().getProgramId());
-        		cmProgAssign.setProgSegment(stuActiveInfo.getActiveSegment());
-        		cmProgAssign.setRunId(stuActiveInfo.getActiveRunId());
-        		cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
-        		cmProgAssign.setSegmentSlot(stuActiveInfo.getActiveSegmentSlot());
-				ppDao.addProgramAssignment(cmProgAssign);            	
-            }
-            else {
-            	//nothing to do
-            }
-
-        	// selected Parallel Program not currently assigned to Student
-        	// determine if previously assigned
-        	boolean prevAssigned = ppDao.parallelProgramPrevAssignedToStudent(action.getParallelProgId(), action.getPassword());
-        	if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
-        	
-        	if (prevAssigned == false) {
-        		// add assignment, and start as with any new Program using "CmStudentDao.assignProgramToStudent()"
-        		cmProg = ppDao.getCmProgramForParallelProgramId(action.getParallelProgId());
-        		if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format("+++ cmProg: ppID: %d: %s", action.getParallelProgId(), cmProg));
-
-        		StudentProgramModel spMdl = new StudentProgramModel();
-
-        		if (LOGGER.isDebugEnabled())
-        			LOGGER.debug(String.format("+++ programType: %s, subjectId: %s",
-                                 cmProg.getCmProgInfo().getProgramType().getType(), cmProg.getCmProgInfo().getSubjectId()));
-
-        		spMdl.setProgramType(cmProg.getCmProgInfo().getProgramType());
-        		spMdl.setSubjectId(cmProg.getCmProgInfo().getSubjectId());
-        		if (cmProg.getCustomProgId() > 0 || cmProg.getCustomQuizId() > 0) {
-            		CustomProgramComposite cpComp = spMdl.getCustom();
-         			cpComp.setCustomProgramId(cmProg.getCustomProgId());
-         			cpComp.setCustomQuizId(cmProg.getCustomQuizId());
-        		}
-        		String chapter = JsonUtil.getChapter(cmProg.getTestConfigJson());
-        		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ chapter: " + chapter);
-                stuDao.assignProgramToStudent(conn, userId, spMdl, chapter, null);
-
-        		CmProgramAssign cmProgAssign = new CmProgramAssign();
-        		cmProgAssign.setCmProgram(cmProg);
-        		cmProgAssign.setUserId(userId);
-        		cmProgAssign.setUserProgId(spMdl.getProgramId());
-        		ppDao.addProgramAssignment(cmProgAssign);
-        	}
-        	
-        	else {
-        		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
-        		CmProgramAssign progAssign = ppDao.getProgramAssignForParallelProgIdAndUserId(action.getParallelProgId(), userId);
-        		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progAssign: " + progAssign);
-        		
-        		// Update HA_USER
-        		StudentActiveInfo activeInfo = new StudentActiveInfo();
-        		activeInfo.setActiveRunId(progAssign.getRunId());
-        		activeInfo.setActiveRunSession(progAssign.getRunSession());
-        		activeInfo.setActiveSegment(progAssign.getProgSegment());
-        		activeInfo.setActiveSegmentSlot(progAssign.getSegmentSlot());
-        		activeInfo.setActiveTestId(progAssign.getTestId());
-        		
-        		stuDao.setActiveInfoAndUserProgId(userId, activeInfo, progAssign.getUserProgId());
-        		
-        	}
-        	
+        	assignParallelProgram(conn, action.getParallelProgId(), userId, stuMdl);
         }
 
         CmUserProgramDao upDao = CmUserProgramDao.getInstance();
@@ -259,6 +176,101 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 
         return rdata;
     }
+
+	public void assignParallelProgram(final Connection conn,
+			int parallelProgId, int userId,
+			StudentModelI stuMdl) throws Exception {
+
+		CmStudentDao stuDao = CmStudentDao.getInstance();
+		ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+		
+		if (stuMdl == null) {
+			stuMdl = stuDao.getStudentModelBase(conn, userId);
+		}
+		
+		// if current Program not in CM_PROGRAM or CM_PROGRAM_ASSIGN add it
+		boolean progExists = ppDao.currentProgramExistsForStudent(userId);
+		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progExists: " + progExists);
+		
+		boolean progAssignmentExists = false;
+		CmProgram cmProg;
+		if (progExists == false) {
+			// current Program not in CM_PROGRAM
+			cmProg = ppDao.addCurrentProgramForStudent(userId);
+		}
+		else {
+			cmProg = ppDao.getCmProgramForUserId(userId);
+			progAssignmentExists = ppDao.programAssignmentExistsForStudent(userId);
+		}
+		
+		if (progAssignmentExists == false) {
+			// add CM Program Assignment for Student
+			StudentActiveInfo stuActiveInfo = stuDao.loadActiveInfo(userId);
+			CmProgramAssign cmProgAssign = new CmProgramAssign();
+			cmProgAssign.setCmProgram(cmProg);
+			cmProgAssign.setUserId(userId);
+			cmProgAssign.setUserProgId(stuMdl.getProgram().getProgramId());
+			cmProgAssign.setProgSegment(stuActiveInfo.getActiveSegment());
+			cmProgAssign.setRunId(stuActiveInfo.getActiveRunId());
+			cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
+			cmProgAssign.setSegmentSlot(stuActiveInfo.getActiveSegmentSlot());
+			ppDao.addProgramAssignment(cmProgAssign);            	
+		}
+		else {
+			//nothing to do
+		}
+
+		// selected Parallel Program not currently assigned to Student
+		// determine if previously assigned
+		boolean prevAssigned = ppDao.parallelProgramPrevAssignedToStudent(parallelProgId, userId);
+		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
+		
+		if (prevAssigned == false) {
+			// add assignment, and start as with any new Program using "CmStudentDao.assignProgramToStudent()"
+			cmProg = ppDao.getCmProgramForParallelProgramId(parallelProgId);
+			if (LOGGER.isDebugEnabled()) LOGGER.debug(String.format("+++ cmProg: ppID: %d: %s", parallelProgId, cmProg));
+
+			StudentProgramModel spMdl = new StudentProgramModel();
+
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug(String.format("+++ programType: %s, subjectId: %s",
+		                     cmProg.getCmProgInfo().getProgramType().getType(), cmProg.getCmProgInfo().getSubjectId()));
+
+			spMdl.setProgramType(cmProg.getCmProgInfo().getProgramType());
+			spMdl.setSubjectId(cmProg.getCmProgInfo().getSubjectId());
+			if (cmProg.getCustomProgId() > 0 || cmProg.getCustomQuizId() > 0) {
+				CustomProgramComposite cpComp = spMdl.getCustom();
+				cpComp.setCustomProgramId(cmProg.getCustomProgId());
+				cpComp.setCustomQuizId(cmProg.getCustomQuizId());
+			}
+			String chapter = JsonUtil.getChapter(cmProg.getTestConfigJson());
+			if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ chapter: " + chapter);
+		    stuDao.assignProgramToStudent(conn, userId, spMdl, chapter, null);
+
+			CmProgramAssign cmProgAssign = new CmProgramAssign();
+			cmProgAssign.setCmProgram(cmProg);
+			cmProgAssign.setUserId(userId);
+			cmProgAssign.setUserProgId(spMdl.getProgramId());
+			ppDao.addProgramAssignment(cmProgAssign);
+		}
+		
+		else {
+			if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
+			CmProgramAssign progAssign = ppDao.getProgramAssignForParallelProgIdAndUserId(parallelProgId, userId);
+			if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ progAssign: " + progAssign);
+			
+			// Update HA_USER
+			StudentActiveInfo activeInfo = new StudentActiveInfo();
+			activeInfo.setActiveRunId(progAssign.getRunId());
+			activeInfo.setActiveRunSession(progAssign.getRunSession());
+			activeInfo.setActiveSegment(progAssign.getProgSegment());
+			activeInfo.setActiveSegmentSlot(progAssign.getSegmentSlot());
+			activeInfo.setActiveTestId(progAssign.getTestId());
+			
+			stuDao.setActiveInfoAndUserProgId(userId, activeInfo, progAssign.getUserProgId());
+			
+		}
+	}
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
