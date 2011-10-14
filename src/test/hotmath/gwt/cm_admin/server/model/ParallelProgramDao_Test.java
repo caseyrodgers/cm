@@ -68,7 +68,7 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     @Test
     public void testIsParallelProgramAssignedToStudent() throws Exception  {
 
-        boolean isAssigned = _dao.isParallelProgramAssignedToStudent(2, "188580");
+        boolean isAssigned = _dao.isParallelProgramAssignedToStudent(2, 9456);
     	
     	assert(isAssigned);
     }
@@ -82,7 +82,7 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
 
     @Test
     public void testParallelProgramPrevAssignedToStudent() throws Exception {
-    	boolean prevAssigned = _dao.parallelProgramPrevAssignedToStudent(2, "cm425c");
+    	boolean prevAssigned = _dao.parallelProgramPrevAssignedToStudent(2, 28198);
     	
     	assert(prevAssigned == false);
     }

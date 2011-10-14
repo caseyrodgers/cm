@@ -2743,8 +2743,7 @@ where pq.parallel_prog_id = 0
 .key=IS_PARALLEL_PROGRAM_ASSIGNED
 
 select count(*) as is_assigned from CM_PARALLEL_PROGRAM pp
-join HA_USER u on u.user_passcode = ?
-     and u.admin_id = pp.admin_id
+join HA_USER u on u.uid = ?
 join CM_PROGRAM_ASSIGN pa on pp.prog_inst_id = pa.prog_inst_id
      and u.uid = pa.user_id
      and u.user_prog_id = pa.user_prog_id
@@ -2754,8 +2753,7 @@ where pp.id = ?
 .key=PROGRAM_PREV_ASSIGNED
 
 select count(*) as prev_assigned from CM_PARALLEL_PROGRAM pp
-join HA_USER u on u.user_passcode = ?
-     and u.admin_id = pp.admin_id
+join HA_USER u on u.uid = ?
 join CM_PROGRAM_ASSIGN pa on pp.prog_inst_id = pa.prog_inst_id
      and u.uid = pa.user_id
      and u.user_prog_id <> pa.user_prog_id
