@@ -2344,6 +2344,31 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     /**
+     * Set the active information for the named user
+     *
+     * @TODO: Move to 1-to-1 table HA_USER_ACTIVE, or set is_active flag in CM_USER_PROGRAM
+     * @TODO: move all active info to here (including the studentModel.getSection)
+     * @param conn
+     * @param userId
+     * @param activeInfo
+     * @throws Exception If record cannot be updated
+     *
+     */
+    public void setActiveInfoAndUserProgId(Integer userId, StudentActiveInfo activeInfo, int userProgId) throws Exception {
+
+        getSimpleJdbcTemplate().update(
+                CmMultiLinePropertyReader.getInstance().getProperty("SAVE_ACTIVE_INFO_AND_USER_PROG_ID"),
+                new Object[]{
+                    activeInfo.getActiveRunId(),
+                    activeInfo.getActiveTestId(),
+                    activeInfo.getActiveSegment(),
+                    activeInfo.getActiveSegmentSlot(),
+                    activeInfo.getActiveRunSession(),
+                    userProgId,
+                    userId});
+    }
+
+    /**
      * Set the user program ID for the named user
      *
      * @param userId
