@@ -45,7 +45,7 @@ public class ProgramReassignment_Test extends CmDbTestCase {
     }
 
     @Test
-    public void testReassignMainProgram() throws Exception  {
+    public void testReassignProgram() throws Exception  {
 
         boolean isStudentInParallelProg = ppDao.isStudentInParallelProgram(TEST_ID);
         
