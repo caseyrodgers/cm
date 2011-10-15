@@ -146,6 +146,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	cmProgAssign.setRunSession(rs.getInt("run_session"));
                         	cmProgAssign.setTestId(rs.getInt("test_id"));
                         	cmProgAssign.setSegmentSlot(rs.getInt("segment_slot"));
+                        	cmProgAssign.setUserId(rs.getInt("user_id"));
+                        	cmProgAssign.setUserProgId(rs.getInt("user_prog_id"));
 
                             return cmProgAssign;
                         }

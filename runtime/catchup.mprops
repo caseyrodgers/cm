@@ -2720,13 +2720,18 @@ where p.id = ?
 
 .key=GET_CM_PROGRAM_FOR_USERID
 
-select p.id, p.admin_id, p.test_def_id, p.pass_percent, td.subj_id, td.prog_id,
-       p.custom_prog_id, p.custom_quiz_id, td.segment_count, p.test_config_json
-from HA_USER u
-JOIN CM_PROGRAM_ASSIGN pa on pa.user_id = u.uid and pa.user_prog_id = u.user_prog_id
-JOIN CM_PROGRAM p on p.id = pa.prog_inst_id
-JOIN HA_TEST_DEF td on td.test_def_id = p.test_def_id
-where u.uid = ?
+select cp.id, cp.admin_id, cp.test_def_id, cp.pass_percent, td.subj_id, td.prog_id,
+       cp.custom_prog_id, cp.custom_quiz_id, td.segment_count, cp.test_config_json
+from CM_PROGRAM cp
+join HA_USER u on u.uid = ?
+join CM_USER_PROGRAM up on up.id = u.user_prog_id
+JOIN HA_TEST_DEF td on td.test_def_id = cp.test_def_id
+where u.admin_id = cp.admin_id
+  and up.test_def_id = cp.test_def_id
+  and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
+  and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
+  and (ifnull(cp.test_config_json,' ')) = (ifnull(up.test_config_json,' '))
+  and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
 
 
 .key=GET_MAIN_PROGRAM_FOR_STUDENT
