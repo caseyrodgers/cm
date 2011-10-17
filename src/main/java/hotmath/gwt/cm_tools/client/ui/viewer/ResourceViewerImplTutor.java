@@ -61,6 +61,29 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             });
             sinkEvents(Event.ONDBLCLICK);
         }
+        
+        
+        addExternTutorHooks(this);
+    }
+    private native void  addExternTutorHooks(ResourceViewerImplTutor tutor) /*-{
+    
+         // override global functions defined in tutor_dynamic
+         //
+         $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionSetComplete(II);
+         
+         
+         $wnd.TutorDynamic.setSolutionTitle = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionTitle(II);
+    }-*/;
+    
+    static private void setSolutionTitle(int progNum, int limit) {
+        String title = "Problem " + progNum + " of " + limit;
+        InfoPopupBox.display(new CmInfoConfig("Problem Set Status",title));
+        CmMainPanel.__lastInstance._mainContent.currentContainer.setHeading(title);
+    }
+    
+    static private void setSolutionSetComplete(int numCorrect, int limit) {
+        String title = "Correct " + numCorrect + " out of " + limit;
+        InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
     }
     
     private native void showSolutionEditorForPid(String pid) /*-{

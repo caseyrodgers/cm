@@ -84,7 +84,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
                     for(SessionData sd: s.getSessionItems()) {
                         pstat2.setString(1, sd.getRpp().getFile());
                         pstat2.setInt(2, lid);
-                        pstat2.setString(3, sd.getWidgetArgs());
+                        pstat2.setString(3, sd.getRpp().getWidgetJsonArgs());
                         pstat2.setInt(4, testRun.getRunId());
                         
                         if( pstat2.executeUpdate() != 1)
