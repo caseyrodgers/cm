@@ -33,11 +33,11 @@ public class AssessmentPrescriptionSession {
         this.prescription = prescription;
     }
 
-    public void addSolution(String pid, INeedMoreHelpItem item) {
+    public void addSolution(String pid, INeedMoreHelpItem item) throws Exception {
     	if (logger.isDebugEnabled())
             logger.debug(String.format("in addSolution(): pid: %s, item title: ", pid, item.getTitle()));
 
-        _pids.add(new SessionData(item, pid, 0, 0));
+        _pids.add(new SessionData(item, new RppWidget(pid,null), 0, 0));
     }
 
     public List<SessionData> getSessionItems() {
@@ -63,7 +63,7 @@ public class AssessmentPrescriptionSession {
     public List<ProblemID> getSessionProblemIds() {
         List<ProblemID> list = new ArrayList<ProblemID>();
         for (SessionData sessData : _pids) {
-            list.add(new ProblemID(sessData.getPid()));
+            list.add(new ProblemID(sessData.getRpp().getFile()));
         }
         return list;
     }
@@ -82,7 +82,7 @@ public class AssessmentPrescriptionSession {
      */
     public INeedMoreHelpItem getHelpItemFor(ProblemID pid) throws Exception {
         for (SessionData sessData : _pids) {
-            if (sessData.getPid().equals(pid.getGUID())) {
+            if (sessData.getRpp().getFile().equals(pid.getGUID())) {
                 return sessData.getItem();
             }
         }

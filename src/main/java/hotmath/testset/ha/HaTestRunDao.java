@@ -82,7 +82,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
                     pstat2 = conn.prepareStatement("insert into HA_TEST_RUN_LESSON_PID(pid, lid,config,run_id)values(?,?,?,?)");
                     
                     for(SessionData sd: s.getSessionItems()) {
-                        pstat2.setString(1, sd.getPid());
+                        pstat2.setString(1, sd.getRpp().getFile());
                         pstat2.setInt(2, lid);
                         pstat2.setString(3, sd.getWidgetArgs());
                         pstat2.setInt(4, testRun.getRunId());

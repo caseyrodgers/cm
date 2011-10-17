@@ -329,12 +329,12 @@ public class PrescriptionReport {
 							 * */
 						} else {
 							if (!SolutionManager.getInstance()
-									.doesSolutionExist(conn, p.getPid())) {
+									.doesSolutionExist(conn, p.getRpp().getFile())) {
 								logMessage(
 										prescription.getTestRun().getRunId(),
 										"WARNING: Session " + i
 												+ ": RPP does not exist '"
-												+ p.getPid() + "'");
+												+ p.getRpp().getFile() + "'");
 							}
 						}
 					}

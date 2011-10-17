@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.util.CmInfoConfig;
+
 
 public class CmLogger  {
     

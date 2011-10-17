@@ -18,12 +18,13 @@ var LoginInfo = {
 // ///////////////////
 // called by GWT to allow proper external setup of tutor
 var _shouldExpandSteps;
-function doLoad_Gwt(pid, title, hasShowWork, shouldExpandSteps, solutionHtml, solutionJs) {
+function doLoad_Gwt(pid, title, jsonConfig, hasShowWork, shouldExpandSteps, solutionHtml, solutionJs) {
     // store in var, registered listener will be notified
     // after solution has been fully initialized
     _shouldExpandSteps = shouldExpandSteps;
-    var mc = createNewSolutionMessageContext(pid);
+    var mc = createNewSolutionMessageContext(pid,jsonConfig);
     mc.solutionData = solutionJs;
+    mc.jsonConfig = jsonConfig?eval('(' + jsonConfig + ')'):null;
 
     var loc = mc.messageLocation;
     if (loc.type != 'solution') {
@@ -88,7 +89,7 @@ function scrollToStep(num) {
 
 /**
  * register a listener with Tutor to be notified when last step is reached. This
- * is used to only advance when the solution has actually been viewed.
+ * is used to only advance when the solution has actually been completed.
  *
  *
  * solutionHasBeenViewed_Gwt is defined GWT source: PrescriptionCmGuiDefinition

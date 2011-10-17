@@ -34,7 +34,7 @@
                   <%
                       for(AssessmentPrescription.SessionData sessionData: s.getSessionItems()) {
                     	  %>
-                    	  <li><a href='/tutor/?pid=<%= sessionData.getPid() %>'><%= sessionData.getPid() %></a>
+                    	  <li><a href='/tutor/?pid=<%= sessionData.getRpp().getFile() %>'><%= sessionData.getRpp().getFile() %></a>
                     	      (<%= sessionData.getItem().getTitle() %> weight: <%= sessionData.getWeight() %>, include: <%= sessionData.getNumPids() %>)
                     	      <a href='_get_run_pool.jsp?run_id=<%= inmhList.getTestRun().getRunId() %>&item=<%= sessionData.getItem().getFile() %>'>pool</a>
                     	  </li>

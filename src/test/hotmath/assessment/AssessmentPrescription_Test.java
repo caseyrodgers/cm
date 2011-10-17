@@ -7,7 +7,6 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUserDao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AssessmentPrescription_Test extends CmDbTestCase {
@@ -19,29 +18,6 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     
     String CA_STATE_TEST="California State Exit Exam";
 
-    public void testGetInmhItemsForSession() throws Exception {
-
-        // int ct=0;
-        // int _inmhCntVideo=0;
-        //        
-        // _prescriptionNumber = 181;
-        //
-        // AssessmentPrescription pres =
-        // AssessmentPrescriptionManager.getInstance().getPrescription(_prescriptionNumber);
-        // AssessmentPrescriptionSession session = pres.getSessions().get(0);
-        //              
-        // int cnt = 0;
-        // int _inmhCntLesson = 0;
-        // for(INeedMoreHelpResourceType moreHelp: pres.readInmhItems()) {
-        // for(INeedMoreHelpItem item:moreHelp.getResources()) {
-        // if(moreHelp.getTypeDef().getType().equals("video"))
-        // _inmhCntVideo++;
-        // else
-        // _inmhCntLesson++;
-        // }
-        // }
-    }
-
     @Override
     protected void setUp() throws Exception {
     	super.setUp();
@@ -49,8 +25,29 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     		setupDemoAccountTest();
     	}
     }
+    
+    int testRunId=161269;
+    public void testCreatePrescriptionRppWithJson() throws Exception {
+        HaTestDao.getInstance().removeTestRuns(_test);
+        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn,_user.getUid(), _test.getTestId(), 0, 1,0);
+        
+        String file = "topics/mixed-numbers.html";
+        String title = "mixed-numbers.html";
+        InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
+        int uid = testRun.getHaTest().getUser().getUid();
+        List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
+
+        assertTrue(!workBookPids.get(0).isFlashRequired());
+        
+        ClientEnvironment clientEnvironment = new ClientEnvironment(false);
+
+        AssessmentPrescriptionSession ap = new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, clientEnvironment);
+        
+        assertTrue(ap.getSessionItems().get(0).getRpp().getWidgetJsonArgs() != null);
+    }
 
     public void testCreatePrescriptionWithOutFlash() throws Exception {
+        HaTestDao.getInstance().removeTestRuns(_test);
         HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn,_user.getUid(), _test.getTestId(), 0, 1,0);
         
         String file = "topics/simplifying-radical-expressions.html";

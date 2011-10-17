@@ -144,12 +144,13 @@ public class InmhItemData {
                     continue;
 
                 if (rangeOrJson.startsWith("{")) {
-                    if(clientEnvironment.isFlashEnabled()) {
+                    RppWidget rpa = new RppWidget(rangeOrJson);
+                    if(!rpa.isFlashRequired() || clientEnvironment.isFlashEnabled()) {
                         /** RPA widget defined in JSON */
-                        widgets.add(new RppWidget(rangeOrJson));
+                        widgets.add(rpa);
                     }
                 } else {
-                    /** is a RPP */
+                    /** is a normal RPP */
                 	logger.debug("find solutions in range " + logTag);
                     List<String> related = findSolutionsMatchingRange(conn, rangeOrJson);
                     logger.debug("finished finding solutions in range " + logTag);

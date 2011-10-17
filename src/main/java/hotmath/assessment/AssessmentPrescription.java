@@ -253,7 +253,7 @@ public class AssessmentPrescription {
                  * 
                  */
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review", lesson.getFile(), lesson.getLesson());
-                si.add(new SessionData(item, pid.getFile(), 3, 1, pid.getWidgetJsonArgs()));
+                si.add(new SessionData(item, pid, 3, 1, pid.getWidgetJsonArgs()));
             }
             if (!_sessions.contains(session)) {
                 _sessions.add(session);
@@ -295,7 +295,7 @@ public class AssessmentPrescription {
              */
             for (RppWidget rpp : rppWidgets) {
                 if (!rpp.isSolution()) {
-                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp.getFile(), (int) PID_COUNT, itemData
+                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData
                             .getWeight(), rpp.getWidgetJsonArgs()));
                 }
             }
@@ -348,7 +348,7 @@ public class AssessmentPrescription {
             int pidGradeLevel = pid.getGradeLevel();
             if (pidGradeLevel == testDefGradeLevel) {
                 logger.debug("adding exact grade level match: " + rpp);
-                session.add(new SessionData(itemData.getInmhItem(), pid.getGUID(), PID_COUNT, itemData.getWeight()));
+                session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
 
                 if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)
                     break;
@@ -378,8 +378,8 @@ public class AssessmentPrescription {
              */
             try {
                 for (int i = 0; i < maybeList.size(); i++) {
-                    ProblemID pid = new ProblemID(maybeList.get(i).getFile());
-                    session.add(new SessionData(itemData.getInmhItem(), pid.getGUID(), PID_COUNT, itemData.getWeight()));
+                    RppWidget rpp = maybeList.get(i);
+                    session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
                     
                     
                     if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)
@@ -407,8 +407,7 @@ public class AssessmentPrescription {
         List<INeedMoreHelpItem> items = new ArrayList<INeedMoreHelpItem>();
 
         for (SessionData sd : sessionData) {
-            INeedMoreHelpItem inmhItems[] = INeedMoreHelpManager.getInstance().getHelpItems(conn, "runId=" + runId,
-                    sd.getPid());
+            INeedMoreHelpItem inmhItems[] = INeedMoreHelpManager.getInstance().getHelpItems(conn, "runId=" + runId, sd.getRpp().getFile());
             for (INeedMoreHelpItem inmhItem : inmhItems) {
                 if (inmhItem.getType().equals(type)) {
                     items.add(inmhItem);
@@ -487,7 +486,7 @@ public class AssessmentPrescription {
                     List<AssessmentPrescription.SessionData> sessionData = session.getSessionDataFor(item.getTitle());
                     boolean found = false;
                     for (AssessmentPrescription.SessionData sdata : sessionData) {
-                        String sdataPid = sdata.getPid();
+                        String sdataPid = sdata.getRpp().getFile();
                         // at least one of these solutions should be been viewed
                         for (String pid : pids) {
                             if (pid.equals(sdataPid)) {
@@ -567,20 +566,20 @@ public class AssessmentPrescription {
 
     /** Represents a single item in a given session */
     static public class SessionData {
-        String pid;
+        RppWidget rpp;
         INeedMoreHelpItem item;
         int numPids, weight;
         String widgetArgs;
 
-        public SessionData(INeedMoreHelpItem item, String pid, int numPids, int weight) {
+        public SessionData(INeedMoreHelpItem item, RppWidget rpp, int numPids, int weight) {
             this.item = item;
-            this.pid = pid;
+            this.rpp = rpp;
             this.numPids = numPids;
             this.weight = weight;
         }
 
-        public SessionData(INeedMoreHelpItem item, String pid, int numPids, int weight, String widgetArgs) {
-            this(item, pid, numPids, weight);
+        public SessionData(INeedMoreHelpItem item, RppWidget rpp, int numPids, int weight, String widgetArgs) {
+            this(item, rpp, numPids, weight);
             this.widgetArgs = widgetArgs;
         }
 
@@ -608,8 +607,8 @@ public class AssessmentPrescription {
             this.weight = weight;
         }
 
-        public String getPid() {
-            return pid;
+        public RppWidget getRpp() {
+            return rpp;
         }
 
         /**
@@ -618,12 +617,12 @@ public class AssessmentPrescription {
          * @return
          */
         public int getGradeLevel() throws Exception {
-            return BookInfoManager.getInstance().getBookInfo(new ProblemID(this.pid).getBook()).getGradeLevel();
+            return BookInfoManager.getInstance().getBookInfo(new ProblemID(this.getRpp().getFile()).getBook()).getGradeLevel();
 
         }
 
-        public void setPid(String pid) {
-            this.pid = pid;
+        public void setRpp(RppWidget rpp) {
+            this.rpp = rpp;
         }
 
         public INeedMoreHelpItem getItem() {
@@ -637,9 +636,9 @@ public class AssessmentPrescription {
         @Override
         public boolean equals(Object obj) {
             if (obj instanceof String)
-                return this.pid.equals(obj);
+                return this.getRpp().getFile().equals(obj);
             else if (obj instanceof SessionData)
-                return this.pid.equals(((SessionData) obj).getPid());
+                return this.getRpp().getFile().equals(((SessionData) obj).getRpp().getFile());
             else
                 return super.equals(obj);
         }

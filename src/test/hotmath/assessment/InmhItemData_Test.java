@@ -13,6 +13,16 @@ public class InmhItemData_Test extends CmDbTestCase {
         super(name);
     }
     
+    public void testCreateMixedNumbers() throws Exception {
+        String file = "topics/mixed-numbers.html";
+        INeedMoreHelpItem item = new INeedMoreHelpItem("practice", file, "Test");  
+        InmhItemData itemData = new InmhItemData(item);
+        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing",new ClientEnvironment(false));
+        assertTrue(rpps.size() == 1);
+        assertTrue(rpps.get(0).getWidgetJsonArgs() != null);
+    }
+    
+    
     public void testCreateWithDupRpp() throws Exception {
         /** create with known duplicate
          * TODO: generalize

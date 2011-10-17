@@ -103,9 +103,9 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 InmhItemData id = new InmhItemData();
                 String type = isActivity?"Activity ":"Problem ";
                 id.setTitle(type + cnt++);
-                id.setFile(sdata.getPid());
+                id.setFile(sdata.getRpp().getFile());
                 id.setType("practice");
-                id.setWidgetJsonArgs(sdata.getWidgetArgs());
+                id.setWidgetJsonArgs(sdata.getRpp().getWidgetJsonArgs());
                 
                 problemsResource.getItems().add(id);
             }

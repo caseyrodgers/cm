@@ -240,7 +240,7 @@ public class HaTestDefDescription {
                         file = sessionData.getItem().getFile();
                     }
 
-                    lessonData.getPids().add(sessionData.getPid());
+                    lessonData.getPids().add(sessionData.getRpp().getFile());
                 }
 
                 item.setFile(file);

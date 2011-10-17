@@ -30,6 +30,10 @@ public class RppWidget {
         /* empty */
     }
     
+    public boolean isFlashRequired() {
+        return widetKey.indexOf("swf") > -1?true:false;
+    }
+    
     /**
      * form of [PATH_TO_WIDGET|TITLE_OF_WIDGET]
      * 
@@ -46,7 +50,15 @@ public class RppWidget {
         setJsonRecord(jsonRecord);
     }
     
+    public RppWidget(String pid, String json) throws Exception {
+        this.widetKey = pid;
+        setJsonRecord(json);
+    }
+    
     public void setJsonRecord(String jsonRecord) throws Exception {
+        if(jsonRecord==null)
+            return;
+        
         JSONParser parser = new JSONParser(new StringReader(jsonRecord));
         final JSONValue value = parser.nextValue();
         if(value.isComplex()) {
@@ -83,7 +95,7 @@ public class RppWidget {
     }
     
     public boolean isSolution() {
-        return this.widgetJsonArgs == null;
+        return !this.getFile().contains(".swf");
     }
     
     @Override
