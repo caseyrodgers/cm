@@ -1241,3 +1241,9 @@ img.resource-item-complete {
    margin: 10px;
    padding: 5px;
 }
+
+
+SolutionSetCompleteDialog .results{
+	padding: 15px;
+	font-size: 1.3em;
+}

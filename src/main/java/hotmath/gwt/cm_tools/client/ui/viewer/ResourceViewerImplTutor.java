@@ -84,6 +84,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static private void setSolutionSetComplete(int numCorrect, int limit) {
         String title = "Correct " + numCorrect + " out of " + limit;
         InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
+        
+        new SolutionSetCompleteDialog(numCorrect, limit);
     }
     
     private native void showSolutionEditorForPid(String pid) /*-{
