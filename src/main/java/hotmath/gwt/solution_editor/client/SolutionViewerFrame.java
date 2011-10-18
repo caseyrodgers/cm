@@ -30,7 +30,7 @@ public class SolutionViewerFrame extends Window {
     public SolutionViewerFrame(String pid) {
         this.pid = pid;
         setSize(600,600);
-        setHeading("Solution Viewer: " + pid);
+        setTitleLocal();
         
         getHeader().addTool(new Button("Configure",new SelectionListener<ButtonEvent>() {
             @Override
@@ -40,6 +40,7 @@ public class SolutionViewerFrame extends Window {
                     @Override
                     public void handleEvent(MessageBoxEvent be) {
                         _config = be.getValue();
+                        setTitleLocal();
                         showFrame();
                     }
                 });
@@ -56,6 +57,10 @@ public class SolutionViewerFrame extends Window {
         flushServerThenShowFrame();
         
         setVisible(true);
+    }
+    
+    private void setTitleLocal() {
+        setHeading("Solution Viewer: " + pid + "(config=" + _config + ")");
     }
     
     
