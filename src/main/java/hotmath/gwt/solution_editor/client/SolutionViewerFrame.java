@@ -40,6 +40,7 @@ public class SolutionViewerFrame extends Window {
                     @Override
                     public void handleEvent(MessageBoxEvent be) {
                         _config = be.getValue();
+                        showFrame();
                     }
                 });
             }
