@@ -25,11 +25,13 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -56,7 +58,15 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         if(CmShared.getQueryParameter("debug") != null) {
             addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
                 public void handleEvent(BaseEvent be) {
-                    CatchupMathTools.showAlert("solution pid: " + getPid());
+                    final String pid = getResourceItem().getFile();
+                    MessageBox.confirm("Edit Solution", "Edit solution " +  pid + " with Solution Editor?", new Listener<MessageBoxEvent>() {
+                        public void handleEvent(MessageBoxEvent be) {
+                            if(be.getButtonClicked().getText().equals("Yes")) {
+                                String url = CmShared.CM_HOME_URL + "/solution_editor/SolutionEditor.html?pid=" + pid;
+                                com.google.gwt.user.client.Window.open(url, "_blank", "height=480,width=640,status=yes,scrollbars=1");
+                            }
+                        }
+                    });
                 }
             });
             sinkEvents(Event.ONDBLCLICK);
