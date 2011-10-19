@@ -873,6 +873,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 groupId = g.getId().toString();
                 group = g.getName();
             }
+            // dead code
             else {
                 groupId = "1";
                 group = "none";

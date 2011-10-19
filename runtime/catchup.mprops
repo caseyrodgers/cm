@@ -2721,7 +2721,7 @@ where p.id = ?
 .key=GET_CM_PROGRAM_FOR_USERID
 
 select cp.id, cp.admin_id, cp.test_def_id, cp.pass_percent, td.subj_id, td.prog_id,
-       cp.custom_prog_id, cp.custom_quiz_id, td.segment_count, cp.test_config_json
+       cp.custom_prog_id, cp.custom_quiz_id, td.segment_count, cp.test_config_json, u.user_prog_id
 from CM_PROGRAM cp
 join HA_USER u on u.uid = ?
 join CM_USER_PROGRAM up on up.id = u.user_prog_id
@@ -2734,15 +2734,12 @@ where u.admin_id = cp.admin_id
   and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
 
 
-.key=GET_MAIN_PROGRAM_FOR_STUDENT
+.key=GET_MAIN_PROGRAM_FOR_USERID
 
-select pq.*, p.custom_prog_id, p.custom_quiz_id from
-(select pa.*, ifnull(pp.id, 0) as parallel_prog_id
- from CM_PROGRAM_ASSIGN pa
-left outer join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = pa.prog_inst_id
- where pa.user_id = ?) pq
-join CM_PROGRAM p on p.id = pq.prog_inst_id
-where pq.parallel_prog_id = 0
+select pa.*, p.custom_prog_id, p.custom_quiz_id
+from CM_PROGRAM_ASSIGN pa
+join CM_PROGRAM p on p.id = pa.prog_inst_id
+where pa.user_id = ? and pa.is_parallel_prog = 0
 
 
 .key=IS_PARALLEL_PROGRAM_ASSIGNED
@@ -2755,13 +2752,14 @@ join CM_PROGRAM_ASSIGN pa on pp.prog_inst_id = pa.prog_inst_id
 where pp.id = ?
 
 
-.key=PROGRAM_PREV_ASSIGNED
+.key=PARALLEL_PROGRAM_PREV_ASSIGNED
 
 select count(*) as prev_assigned from CM_PARALLEL_PROGRAM pp
 join HA_USER u on u.uid = ?
 join CM_PROGRAM_ASSIGN pa on pp.prog_inst_id = pa.prog_inst_id
      and u.uid = pa.user_id
      and u.user_prog_id <> pa.user_prog_id
+     and pa.is_parallel_prog = 1
 where pp.id = ?
 
 
@@ -2769,10 +2767,10 @@ where pp.id = ?
 
 select pa.*
 from CM_PROGRAM_ASSIGN pa
-join HA_USER u on u.uid = ?
 join CM_PARALLEL_PROGRAM pp on pp.id = ?
-where pa.user_id = u.uid
+where pa.user_id = ?
   and pa.prog_inst_id = pp.prog_inst_id
+  and pa.is_parallel_prog = 1  
   
 
 .key=CM_PROGRAM_EXISTS_FOR_STUDENT
@@ -2835,14 +2833,13 @@ values
 .key=CREATE_CM_PROGRAM_ASSIGN
 
 insert into CM_PROGRAM_ASSIGN
-(user_id, user_prog_id, prog_inst_id, prog_segment, run_id, run_session, test_id, segment_slot, create_date) 
+(user_id, user_prog_id, prog_inst_id, prog_segment, run_id, run_session, test_id, segment_slot, is_parallel_prog, create_date) 
 values
-(?, ?, ?, ?, ?, ?, ?, ?, now())
+(?, ?, ?, ?, ?, ?, ?, ?, ?, now())
 
 
 .key=UPDATE_CM_PROGRAM_ASSIGN
 
 update CM_PROGRAM_ASSIGN
-set test_id=?, run_id=?, run_session=?, prog_segment=?, segment_slot=?
-where id=?
-
+set test_id=?, run_id=?, run_session=?, prog_segment=?, segment_slot=?, update_date=now()
+where user_id=? and user_prog_id = ?

@@ -279,8 +279,8 @@ public class LoginService extends HttpServlet {
 			    req.getSession().setAttribute("error-msg",   msg);
 			}
 			
-			req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
 			LOGGER.error(String.format("*** Login failed for user: %s, pwd: %s", user, pwd), e);
+			req.getRequestDispatcher("/gwt-resources/login_error.jsp").forward(req, resp);
 		}
 		finally {
 		    SqlUtilities.releaseResources(null, null, conn);

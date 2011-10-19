@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -147,9 +148,16 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             //String passPercent = studentTemplate.getPassPercent();
             
             CmStudentDao dao = CmStudentDao.getInstance();
+			ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                dao.assignProgramToStudent(conn, rs.getInt("uid"), studentTemplate.getProgram(), studentTemplate.getChapter(),
+            	int userId = rs.getInt("uid");
+    			if (ppDao.isStudentInParallelProgram(userId) == true) {
+    				// update Active Info in CM_PROGRAM_ASSIGN before assigning new Program
+    				ppDao.updateProgramAssign(userId);
+    			}
+                dao.assignProgramToStudent(conn, userId, studentTemplate.getProgram(), studentTemplate.getChapter(),
                 		studentTemplate.getPassPercent(), studentTemplate.getSettings(), isSelfReg, studentTemplate.getSectionNum());
             }
         }

@@ -787,8 +787,14 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 throw new CmUserException("The passcode you entered is already in use, please try again.");
             }
         }
-        if (progIsNew)
+        if (progIsNew) {
+        	// if Student is in Parallel Program, save Active Info before changing Program
+        	ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+        	if (ppDao.isStudentInParallelProgram(sm.getUid()) == true) {
+        		ppDao.updateProgramAssign(sm.getUid());
+        	}
             addStudentProgram(conn, sm);
+        }
         if (studentChanged)
             updateStudent(conn, sm);
         if (programChanged)
@@ -1118,7 +1124,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public StudentModelI addStudentProgram(final Connection conn, StudentModelI sm) throws Exception {
 
         /** check for setting of StudyProgram, and implement override
-         *  We should depreciate using instance vars to identify the program
+         *  We should deprecate using instance vars to identify the program
          */
         if(sm.getProgram().isCustom()) {
             return addStudentProgramCustom(conn, sm);

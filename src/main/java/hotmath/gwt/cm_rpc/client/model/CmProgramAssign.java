@@ -14,6 +14,7 @@ public class CmProgramAssign implements Response {
     int testId;
     int userId;
     int userProgId;
+    boolean isParallelProg;
     
     public CmProgramAssign() {/* empty */}
     
@@ -93,6 +94,14 @@ public class CmProgramAssign implements Response {
 
 	public void setUserProgId(int userProgId) {
 		this.userProgId = userProgId;
+	}
+
+	public boolean isParallelProg() {
+		return isParallelProg;
+	}
+
+	public void setParallelProg(boolean isParallelProg) {
+		this.isParallelProg = isParallelProg;
 	}
 
 	@Override

@@ -203,9 +203,9 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 			progAssignmentExists = ppDao.programAssignmentExistsForStudent(userId);
 		}
 		
+		StudentActiveInfo stuActiveInfo = stuDao.loadActiveInfo(userId);
 		if (progAssignmentExists == false) {
-			// add CM Program Assignment for Student
-			StudentActiveInfo stuActiveInfo = stuDao.loadActiveInfo(userId);
+			// add CM Program Assignment
 			CmProgramAssign cmProgAssign = new CmProgramAssign();
 			cmProgAssign.setCmProgram(cmProg);
 			cmProgAssign.setUserId(userId);
@@ -214,16 +214,19 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 			cmProgAssign.setRunId(stuActiveInfo.getActiveRunId());
 			cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
 			cmProgAssign.setSegmentSlot(stuActiveInfo.getActiveSegmentSlot());
+			cmProgAssign.setParallelProg(false);
 			ppDao.addProgramAssignment(cmProgAssign);            	
 		}
 		else {
-			//nothing to do
+			// update exiting CM_PROGRAM_ASSIGN record
+			cmProg.setActiveInfo(stuActiveInfo);
+			ppDao.updateProgramAssign(userId, cmProg);
 		}
 
 		// selected Parallel Program not currently assigned to Student
 		// determine if previously assigned
 		boolean prevAssigned = ppDao.parallelProgramPrevAssignedToStudent(parallelProgId, userId);
-		if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ prevAssigned: " + prevAssigned);
+		if (LOGGER.isDebugEnabled()) LOGGER.debug("prevAssigned: " + prevAssigned);
 		
 		if (prevAssigned == false) {
 			// add assignment, and start as with any new Program using "CmStudentDao.assignProgramToStudent()"
@@ -251,6 +254,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 			cmProgAssign.setCmProgram(cmProg);
 			cmProgAssign.setUserId(userId);
 			cmProgAssign.setUserProgId(spMdl.getProgramId());
+			cmProgAssign.setParallelProg(true);
 			ppDao.addProgramAssignment(cmProgAssign);
 		}
 		

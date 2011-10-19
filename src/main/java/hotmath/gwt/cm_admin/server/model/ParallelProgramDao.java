@@ -109,7 +109,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     }
 
     public boolean parallelProgramPrevAssignedToStudent(final Integer parallelProgId, final Integer userId) throws Exception {
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PREV_ASSIGNED");
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("PARALLEL_PROGRAM_PREV_ASSIGNED");
         boolean prevAssigned = this.getJdbcTemplate().queryForObject(
                 sql,
                 new Object[]{userId, parallelProgId},
@@ -131,10 +131,15 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     }
 
     public CmProgramAssign getProgramAssignForParallelProgIdAndUserId(final int parallelProgId, final int userId) throws Exception {
+    	
+    	if (LOGGER.isDebugEnabled())
+    		LOGGER.debug(String.format("+++ getProgramAssignForParallelProgIdAndUserId(): ppID: %d, userId: %d",
+    			parallelProgId, userId));
+
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CM_PROGRAM_ASSIGN_FOR_PPID_AND_USERID");
         CmProgramAssign cmProg = this.getJdbcTemplate().queryForObject(
                 sql,
-                new Object[]{userId, parallelProgId},
+                new Object[]{parallelProgId, userId},
                 new RowMapper<CmProgramAssign>() {
                     public CmProgramAssign mapRow(ResultSet rs, int rowNum) throws SQLException {
                         CmProgramAssign cmProgAssign;
@@ -157,7 +162,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         }
                     }
                 });
-        return cmProg;    }
+        return cmProg;
+    }
 
     public int getStudentUserId(final Integer parallelProgId, final String studentPassword) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_UID");
@@ -286,6 +292,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setInt(6, model.getRunSession());
                     ps.setInt(7, model.getTestId());
                     ps.setInt(8, model.getSegmentSlot());
+                    ps.setInt(9, model.isParallelProg()?1:0);
 
                     return ps;
                 } catch (Exception e) {
@@ -389,7 +396,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      */
     public CmProgram getMainProgramForStudent(final int userId) throws Exception {
 
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_MAIN_PROGRAM_FOR_STUDENT");
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_MAIN_PROGRAM_FOR_USERID");
         CmProgram cmProg = this.getJdbcTemplate().queryForObject(
                 sql,
                 new Object[]{userId},
@@ -431,9 +438,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void reassignMainProgram(final int userId) throws Exception {
-    	
-    	CmProgram cmProg = getMainProgramForStudent(userId);
 
+    	CmProgram cmProg = getMainProgramForStudent(userId);
     	reassignProgram(userId, cmProg);
     }
 
@@ -446,11 +452,26 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void reassignProgram(int userId, CmProgram cmProg) throws Exception {
-    	
+
+    	CmProgram existingCP = getCmProgramForUserId(userId);
+    	updateProgramAssign(userId, existingCP);
+
     	updateProgramAssign(userId, cmProg);
     	
     	CmStudentDao stuDao = CmStudentDao.getInstance();
     	stuDao.setActiveInfoAndUserProgId(userId, cmProg.getActiveInfo(),cmProg.getUserProgId());
+    }
+
+    /**
+     * update Active Info in CM_PROGRAM_ASSIGN
+     * 
+     * @param userId
+     *
+     * @throws Exception
+     */
+    public void updateProgramAssign(final int userId) throws Exception {
+        CmProgram cmProg = getCmProgramForUserId(userId);
+        updateProgramAssign(userId, cmProg);
     }
 
     /**
@@ -462,6 +483,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void updateProgramAssign(final int userId, final CmProgram cmProg) throws Exception {
+
+        LOGGER.debug(String.format("Updating CM Program Assign; userId: %d, user_progId: %d", userId, cmProg.getUserProgId()));
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -476,7 +499,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setInt(3, activeInfo.getActiveRunSession());
                     ps.setInt(4, activeInfo.getActiveSegment());
                     ps.setInt(5, activeInfo.getActiveSegmentSlot());
-                    ps.setInt(6, cmProg.getId());
+                    ps.setInt(6, userId);
+                    ps.setInt(7, cmProg.getUserProgId());
 
                     return ps;
                 } catch (Exception e) {
@@ -556,6 +580,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                             cmProg.setTestConfigJson(rs.getString("test_config_json"));
                             cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                             cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
+                            cmProg.setUserProgId(rs.getInt("user_prog_id"));
 
                             return cmProg;
                         }
