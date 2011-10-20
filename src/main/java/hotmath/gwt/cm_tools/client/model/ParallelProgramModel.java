@@ -7,13 +7,26 @@ public class ParallelProgramModel extends BaseModel implements Response {
 	public ParallelProgramModel(){
         /** empty */
     }
+	
+	/**
+	 * @param name
+	 * @param id
+	 * @param adminId
+	 * @param password
+	 * @param cmProgId
+	 * @param cmProgId
+	 * @param isActive
+	 */
 
-    public ParallelProgramModel(String name, Integer id, Integer adminId, String password, Integer cmProgId) {
+    public ParallelProgramModel(String name, Integer id, Integer adminId, String password, Integer cmProgId,
+    		Integer studentCount, Boolean isActive) {
         setName(name);
         setId(id);
         setAdminId(adminId);
         setPassword(password);
         setCmProgId(cmProgId);
+        setStudentCount(studentCount);
+        setIsActive(isActive);
     }
 
     public void setName(String name) {
@@ -55,4 +68,21 @@ public class ParallelProgramModel extends BaseModel implements Response {
     public Integer getPassword() {
         return get("password");
     }
+
+    public void setStudentCount(Integer count) {
+        set("studentCount", count);
+    }
+
+    public Integer getStudentCount() {
+        return get("studentCount");
+    }
+
+    public void setIsActive(Boolean isActive) {
+        set("isActive", isActive);
+    }
+
+    public Boolean getIsActive() {
+        return get("isActive");
+    }
+
 }
