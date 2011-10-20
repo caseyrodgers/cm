@@ -1,4 +1,4 @@
-window.showCorrectAnswers=function(B){var D=document.getElementById("testset_div");if(D){var A=document.getElementById("testset_div").getElementsByTagName("div");for(var C=0;C<A.length;C++){if(A[C].className=="question_wrapper"){B(A[C])}}}};function setQuizQuestionActive(A){}function findQuestionGuid(B){while(B){var A=B.getAttribute("guid");if(A){return A}B=B.parentNode}return null}function findQuestionByPid(B){var D=document.getElementById("testset_div").getElementsByTagName("div");try{for(var C=0;C<D.length;C++){var E=D[C].getAttribute("guid");if(E==B){return D[C]}}}catch(A){alert("Error while setting selected question response: "+A)}alert("findQuestionByPid: pid not found: "+B);return null}function findQuestionNumberByPid(B){var E=document.getElementById("testset_div").getElementsByTagName("div");var C=0;try{for(var D=0;D<E.length;D++){var F=E[D].getAttribute("guid");if(F){if(F==B){return C}else{C++}}}}catch(A){alert("Error while question index: "+A)}alert("findQuestionByPid: pid not found: "+B);return null}function questionGuessChanged(H){try{var B=findQuestionGuid(H);var G=-1;if(H.id=="optionSkipped"){G="-2"}else{var D=H.parentNode.parentNode.parentNode.parentNode;var A=D.getElementsByTagName("input");for(var C=0;C<A.length;C++){if(A.item(C)==H){G=C;break}}}var E=findQuestionNumberByPid(B);questionGuessChanged_Gwt(""+E,""+G,B)}catch(F){alert("Error answering question in external JS: "+F)}}function setSolutionQuestionAnswerIndexByNumber(B,C){var A=0;showCorrectAnswers(function(H){var G=H.getElementsByTagName("input");if(A==B){for(var F=0,E=G.length;F<E;F++){if(F==C){G[F].checked=true;var D=G[F];questionGuessChanged(D)}else{G[F].checked=false}}}A++})}window.setSolutionQuestionAnswerIndex=function(B,H,E){var G=findQuestionByPid(B);if(G){var F=G.getElementsByTagName("input");for(var D=0,C=F.length;D<C;D++){var A=F.item(D);A.disabled=E?true:false;if(D==H){A.checked=true}}}};function doLoadResource(B,A){doLoadResource_Gwt(B,A);return false}window.markAllCorrectAnswers=function(){showCorrectAnswers(markCorrectResponse)};window.getQuizResultsCorrect=function(){var A=0;showCorrectAnswers(function(E){var D=E.getElementsByTagName("input");for(var C=0,B=D.length;C<B;C++){var F=D[C].parentNode.getElementsByTagName("div");if(F[0].innerHTML=="Correct"){if(D[C].checked){A++}}}});return A};window.getQuizQuestionCount=function(){var A=0;showCorrectAnswers(function(B){A++});return A};window.showCorrectAnswers=function(B){var A=document.getElementById("testset_div").getElementsByTagName("div");for(var C=0;C<A.length;C++){if(A[C].className=="question_wrapper"){B(A[C])}}};window.markCorrectResponse=function(D){var E=D.getElementsByTagName("input");for(var C=0,B=E.length;C<B;C++){var F=E[C].parentNode.getElementsByTagName("div");if(F[0].innerHTML=="Correct"){E[C].checked=true;var A=E[C];questionGuessChanged(A);break}}};function checkQuiz_Gwt(){alert("Checking quiz ...")}window.setQuizQuestionResult=function(C,A){var E=findQuestionByPid(C);var D=getQuestionMarkImage(C);var B=getQuestionMarkText(C);if(A=="Correct"){D.src="/gwt-resources/images/check_correct.png";B.innerHTML="Correct"}else{if(A=="Incorrect"){D.src="/gwt-resources/images/check_incorrect.png";B.innerHTML="Incorrect"}else{D.src="/gwt-resources/images/check_notanswered.png";B.innerHTML="Not answered"}}D.parentNode.style.display="block"};function getQuestionMarkImage(A){return document.getElementById("response_image_"+A)}function getQuestionMarkText(A){return document.getElementById("response_text_"+A)}function log(){}InmhButtons={};if(typeof deconcept=="undefined"){var deconcept=new Object()}if(typeof deconcept.util=="undefined"){deconcept.util=new Object()}if(typeof deconcept.SWFObjectUtil=="undefined"){deconcept.SWFObjectUtil=new Object()}deconcept.SWFObject=function(K,B,L,D,H,I,F,E,C,J){if(!document.getElementById){return }this.DETECT_KEY=J?J:"detectflash";this.skipDetect=deconcept.util.getRequestParameter(this.DETECT_KEY);this.params=new Object();this.variables=new Object();this.attributes=new Array();if(K){this.setAttribute("swf",K)}if(B){this.setAttribute("id",B)}if(L){this.setAttribute("width",L)}if(D){this.setAttribute("height",D)}if(H){this.setAttribute("version",new deconcept.PlayerVersion(H.toString().split(".")))}this.installedVer=deconcept.SWFObjectUtil.getPlayerVersion();if(!window.opera&&document.all&&this.installedVer.major>7){deconcept.SWFObject.doPrepUnload=true}if(I){this.addParam("bgcolor",I)}var A=F?F:"high";this.addParam("quality",A);this.setAttribute("useExpressInstall",false);this.setAttribute("doExpressInstall",false);var G=(E)?E:window.location;this.setAttribute("xiRedirectUrl",G);this.setAttribute("redirectUrl","");if(C){this.setAttribute("redirectUrl",C)}};deconcept.SWFObject.prototype={useExpressInstall:function(A){this.xiSWFPath=!A?"expressinstall.swf":A;this.setAttribute("useExpressInstall",true)},setAttribute:function(A,B){this.attributes[A]=B},getAttribute:function(A){return this.attributes[A]},addParam:function(B,A){this.params[B]=A},getParams:function(){return this.params},addVariable:function(B,A){this.variables[B]=A},getVariable:function(A){return this.variables[A]},getVariables:function(){return this.variables},getVariablePairs:function(){var C=new Array();var B;var A=this.getVariables();for(B in A){C[C.length]=B+"="+A[B]}return C},getSWFHTML:function(){var B="";if(navigator.plugins&&navigator.mimeTypes&&navigator.mimeTypes.length){if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","PlugIn");this.setAttribute("swf",this.xiSWFPath)}B='<embed type="application/x-shockwave-flash" src="'+this.getAttribute("swf")+'" width="'+this.getAttribute("width")+'" height="'+this.getAttribute("height")+'" style="'+this.getAttribute("style")+'"';B+=' id="'+this.getAttribute("id")+'" name="'+this.getAttribute("id")+'" ';var F=this.getParams();for(var E in F){B+=[E]+'="'+F[E]+'" '}var D=this.getVariablePairs().join("&");if(D.length>0){B+='flashvars="'+D+'"'}B+="/>"}else{if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","ActiveX");this.setAttribute("swf",this.xiSWFPath)}B='<object id="'+this.getAttribute("id")+'" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="'+this.getAttribute("width")+'" height="'+this.getAttribute("height")+'" style="'+this.getAttribute("style")+'">';B+='<param name="movie" value="'+this.getAttribute("swf")+'" />';var C=this.getParams();for(var E in C){B+='<param name="'+E+'" value="'+C[E]+'" />'}var A=this.getVariablePairs().join("&");if(A.length>0){B+='<param name="flashvars" value="'+A+'" />'}B+="</object>"}return B},write:function(B){if(this.getAttribute("useExpressInstall")){var A=new deconcept.PlayerVersion([6,0,65]);if(this.installedVer.versionIsValid(A)&&!this.installedVer.versionIsValid(this.getAttribute("version"))){this.setAttribute("doExpressInstall",true);this.addVariable("MMredirectURL",escape(this.getAttribute("xiRedirectUrl")));document.title=document.title.slice(0,47)+" - Flash Player Installation";this.addVariable("MMdoctitle",document.title)}}if(this.skipDetect||this.getAttribute("doExpressInstall")||this.installedVer.versionIsValid(this.getAttribute("version"))){var C=(typeof B=="string")?document.getElementById(B):B;C.innerHTML=this.getSWFHTML();return true}else{if(this.getAttribute("redirectUrl")!=""){document.location.replace(this.getAttribute("redirectUrl"))}}return false}};deconcept.SWFObjectUtil.getPlayerVersion=function(){var E=new deconcept.PlayerVersion([0,0,0]);if(navigator.plugins&&navigator.mimeTypes.length){var A=navigator.plugins["Shockwave Flash"];if(A&&A.description){E=new deconcept.PlayerVersion(A.description.replace(/([a-zA-Z]|\s)+/,"").replace(/(\s+r|\s+b[0-9]+)/,".").split("."))}}else{if(navigator.userAgent&&navigator.userAgent.indexOf("Windows CE")>=0){var B=1;var C=3;while(B){try{C++;B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash."+C);E=new deconcept.PlayerVersion([C,0,0])}catch(D){B=null}}}else{try{var B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7")}catch(D){try{var B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");E=new deconcept.PlayerVersion([6,0,21]);B.AllowScriptAccess="always"}catch(D){if(E.major==6){return E}}try{B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash")}catch(D){}}if(B!=null){E=new deconcept.PlayerVersion(B.GetVariable("$version").split(" ")[1].split(","))}}}return E};deconcept.PlayerVersion=function(A){this.major=A[0]!=null?parseInt(A[0]):0;this.minor=A[1]!=null?parseInt(A[1]):0;this.rev=A[2]!=null?parseInt(A[2]):0};deconcept.PlayerVersion.prototype.versionIsValid=function(A){if(this.major<A.major){return false}if(this.major>A.major){return true}if(this.minor<A.minor){return false}if(this.minor>A.minor){return true}if(this.rev<A.rev){return false}return true};deconcept.util={getRequestParameter:function(C){var D=document.location.search||document.location.hash;if(C==null){return D}if(D){var B=D.substring(1).split("&");for(var A=0;A<B.length;A++){if(B[A].substring(0,B[A].indexOf("="))==C){return B[A].substring((B[A].indexOf("=")+1))}}}return""}};deconcept.SWFObjectUtil.cleanupSWFs=function(){var B=document.getElementsByTagName("OBJECT");for(var C=B.length-1;C>=0;C--){B[C].style.display="none";for(var A in B[C]){if(typeof B[C][A]=="function"){B[C][A]=function(){}}}}};if(deconcept.SWFObject.doPrepUnload){if(!deconcept.unloadSet){deconcept.SWFObjectUtil.prepUnload=function(){__flash_unloadHandler=function(){};__flash_savedUnloadHandler=function(){};window.attachEvent("onunload",deconcept.SWFObjectUtil.cleanupSWFs)};window.attachEvent("onbeforeunload",deconcept.SWFObjectUtil.prepUnload);deconcept.unloadSet=true}}if(!document.getElementById&&document.all){document.getElementById=function(A){return document.all[A]}}var getQueryParamValue=deconcept.util.getRequestParameter;var FlashObject=deconcept.SWFObject;var SWFObject=deconcept.SWFObject;function f_clientWidth(){return f_filterResults(window.innerWidth?window.innerWidth:0,document.documentElement?document.documentElement.clientWidth:0,document.body?document.body.clientWidth:0)}function f_clientHeight(){return f_filterResults(window.innerHeight?window.innerHeight:0,document.documentElement?document.documentElement.clientHeight:0,document.body?document.body.clientHeight:0)}function f_scrollLeft(){return f_filterResults(window.pageXOffset?window.pageXOffset:0,document.documentElement?document.documentElement.scrollLeft:0,document.body?document.body.scrollLeft:0)}function f_scrollTop(){return f_filterResults(window.pageYOffset?window.pageYOffset:0,document.documentElement?document.documentElement.scrollTop:0,document.body?document.body.scrollTop:0)}function f_filterResults(D,B,A){var C=D?D:0;if(B&&(!C||(C>B))){C=B}return A&&(!C||(C>A))?A:C};var _productionMode=false;var HmEvents={eventTutorInitialized:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorInitialized.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorInitialized.listeners;for(var A=0;A<B.length;A++){B[A]()}}},eventTutorLastStep:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorLastStep.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorLastStep.listeners;for(var A=0;A<B.length;A++){B[A]()}}},eventTutorWidgetComplete:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorWidgetComplete.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorWidgetComplete.listeners;for(var A=0;A<B.length;A++){B[A]()}}}};function $get(A){return document.getElementById(A)}HmEvents.eventTutorInitialized.subscribe(function(){try{MathJax.Hub.Queue(["Typeset",MathJax.Hub])}catch(A){alert("MathJAX processing failed: "+A)}});function setStepsInfoHelp(){}function resetStepsInfo(){}function getNextMoveTo(){}var TutorManager={currentRealStep:-1,currentStepUnit:-1,stepUnitsMo:[],stepUnits:[],steps:[],pid:"",stepUnit:null,tutorData:null,initializeTutor:function(A,D,C,B){TutorManager.pid=A;TutorManager.currentRealStep=-1;TutorManager.currentStepUnit=-1;TutorManager.loadTutorData(D);TutorManager.analyzeLoadedData();enabledNext(true);HmEvents.eventTutorInitialized.fire()},showMessage:function(B){var A=$get("tutor_message");A.innerHTML=B;setTimeout(function(){A.innerHTML="&nbsp;"},2000)},showNextStep:function(){if(TutorManager.currentStepUnit+1<TutorManager.stepUnits.length){TutorManager.currentStepUnit++;showStepUnit(TutorManager.currentStepUnit)}else{TutorManager.showMessage("no more steps")}},showPreviousStep:function(){if(TutorManager.currentStepUnit<0){TutorManager.showMessage("No previous step");return }else{while(TutorManager.currentStepUnit>-1){var A=TutorManager.stepUnits[TutorManager.currentStepUnit].ele;if(TutorManager.stepUnits[TutorManager.currentStepUnit].realNum!=TutorManager.currentRealStep){TutorManager.currentRealStep=TutorManager.stepUnits[TutorManager.currentStepUnit].realNum;break}A.style.display="none";TutorManager.currentStepUnit--}if(TutorManager.currentStepUnit==0){TutorManager.currentStepUnit=-1;window.scrollTo(0,0)}if(TutorManager.currentStepUnit>-1){setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele)}setButtonState();scrollToStep(TutorManager.currentStepUnit);return false}},loadTutorData:function(solutionData){try{TutorManager.tutorData=eval("("+solutionData+")")}catch(e){alert(e)}},analyzeLoadedData:function(){TutorManager.stepUnits=[];TutorManager.steps=[];var I=100;for(var J=0;J<I;J++){var E=_getStepUnit(J);if(E==null){break}var B=E.getAttribute("id");var A=TutorManager.stepUnits.length;var C=E.getAttribute("steprole");var F=E.getAttribute("steptype");var G=parseInt(E.getAttribute("realstep"));var H=new StepUnit(B,A,F,C,G,E);TutorManager.stepUnits[TutorManager.stepUnits.length]=H;var D=TutorManager.steps[G];if(D==null){D=new Step(G);TutorManager.steps[G]=D}D.stepUnits[D.stepUnits.length]=H}return TutorManager.stepUnits.length},backToLesson:function(){gwt_backToLesson()},newProblem:function(){gwt_tutorNewProblem()}};function setButtonState(){setState("step",TutorManager.currentStepUnit<(TutorManager.stepUnits.length-1));setState("back",TutorManager.currentStepUnit>-1)}function enabledPrevious(A){enabledButton("steps_prev",A)}function enabledNext(A){enabledButton("steps_next",A)}function enabledButton(B,C){var A="sexybutton ";if(!C){A+=" disabled"}$get(B).className=A}function StepUnit(F,E,B,A,D,C){this.id=F;this.stepUnitNum=E;this.type=B;this.roleType=A;this.realNum=D;this.ele=C}function Step(A){this.realNum=A;this.stepUnits=new Array()}function _getStepUnit(A){return _getElement("stepunit",A)}function _getHintUnit(A){return _getElement("hintunit",A)}function _getFigureUnit(A){return _getElement("figure",A)}function findPreviousFigureUnit(A){for(p=A-1;p>-1;p--){fu=_getFigureUnit(p);if(fu!=null){return fu}}return null}function setAsNotCurrent(A){A.style.backgroundColor="#E2E2E2"}function _getElement(A,B){var C=A+"-"+B;return document.getElementById(C)}function showStepUnit(A){if(A<0){return }try{var B=TutorManager.stepUnits[A].ele;if(B==null){return false}B.style.display="block";if(B.getAttribute("steprole")=="step"){setAsCurrent(B)}setStepTitle(A,B);var D=_getFigureUnit(A);if(D!=null){if(A==0){D.style.display="block"}else{var E=findPreviousFigureUnit(A);if(E!=null&&E.src==D.src){D.style.display="none"}else{D.style.display="block"}}}for(i=A-1;i>-1;i--){if(TutorManager.stepUnits[i].roleType=="hint"){TutorManager.stepUnits[i].ele.style.display="none"}else{setAsNotCurrent(TutorManager.stepUnits[i].ele)}}TutorManager.currentStepUnit=A;TutorManager.currentRealStep=TutorManager.stepUnits[A].realNum;setButtonState();scrollToStep(A)}catch(C){alert("Error showing step: "+C)}return true}function setAsCurrent(A){A.style.backgroundColor="#F1F1F1"}function setStepTitle(A,C){stepTitle=document.getElementById("step_title-"+A);if(stepTitle){var B=C.getAttribute("steprole");if(B&&B=="step"){stepTitle.innerHTML="Step "+(parseInt(C.getAttribute("realstep"))+1);stepTitle.className="step_title_step"}else{stepTitle.innerHTML="Hint";stepTitle.className="step_title_hint"}}}function findPreviousFigureUnit(A){for(p=A-1;p>-1;p--){fu=_getFigureUnit(p);if(fu!=null){return fu}}return null}function setState(B,A){if(B=="step"){enabledNext(A);if(!A){HmEvents.eventTutorLastStep.fire()}}else{if(B=="back"){enabledPrevious(A)}}}function scrollToStep(C){var B=document.getElementById("scrollTo-button");if(B){var G=DL_GetElementTop(B);var E=getViewableSize();var A=getScrollXY();var F=A[1];var D=E[1];var H=D+F;if(true||G<F||G>H){gwt_scrollToBottomOfScrollPanel(G-D)}}}function hideAllSteps(){for(var A=0;A<TutorManager.stepUnits.length;A++){var B=TutorManager.stepUnits[A].ele;if(B==null){return }if(B.style.display!="none"){B.style.display="none"}}window.scrollTo(0,0)}function initializeExternalJs(){var A="control-floater";new FloatLayer(A,150,15,10);detach(A);alignControlFloater()}function alignControlFloater(){alignFloatLayers();setTimeout(alignControlFloater,2000)}function doQuestionResponseEnd(){}var _activeQuestion;function doQuestionResponse(A,D){var C=TutorManager.tutorData._strings_moArray[A];if(_activeQuestion){var B=document.createElement("div");B.className="questionResponseAnswer";B.innerHTML=C;_activeQuestion.parentNode.appendChild(B)}else{gwt_showMessage(C)}}HmEvents.eventTutorInitialized.subscribe(function(){var H=document.getElementById("tutor_raw_steps_wrapper");if(H==null){return }var B=H.getElementsByTagName("div");var A=B.length;for(var E=0;E<A;E++){var G=B.item(E);if(G.className=="question_guess"){var F=G.getElementsByTagName("img");var D=F.item(0);var C=D.onmouseout=null;D.onmouseoverDeferred=D.onmouseover;D.onmouseover=null;D.onclick=function(I){var J=(I)?I:window.event;var K=J.srcElement?J.srcElement:J.target;_activeQuestion=K;if(!K.onmouseoverDeferred){alert("error: no deferred move event");return }K.onclick=null;K.onmouseoverDeferred()}}}});function DL_GetElementLeft(B){if(!B&&this){B=this}var C=document.all?true:false;var A=B.offsetLeft;var D=B.offsetParent;while(D!=null){if(C){if(D.tagName=="TD"){A+=D.clientLeft}}A+=D.offsetLeft;D=D.offsetParent}return A}function DL_GetElementTop(B){if(!B&&this){B=this}var C=document.all?true:false;var A=B.offsetTop;var D=B.offsetParent;while(D!=null){if(C){if(D.tagName=="TD"){A+=D.clientTop}}A+=D.offsetTop;D=D.offsetParent}return A}function getViewableSize(){var B=0,A=0;if(typeof (window.innerWidth)=="number"){B=window.innerWidth;A=window.innerHeight}else{if(document.documentElement&&(document.documentElement.clientWidth||document.documentElement.clientHeight)){B=document.documentElement.clientWidth;A=document.documentElement.clientHeight}else{if(document.body&&(document.body.clientWidth||document.body.clientHeight)){B=document.body.clientWidth;A=document.body.clientHeight}}}a=[B,A];return a}function getScrollXY(){var B=0,A=0;if(typeof (window.pageYOffset)=="number"){A=window.pageYOffset;B=window.pageXOffset}else{if(document.body&&(document.body.scrollLeft||document.body.scrollTop)){A=document.body.scrollTop;B=document.body.scrollLeft}else{if(document.documentElement&&(document.documentElement.scrollLeft||document.documentElement.scrollTop)){A=document.documentElement.scrollTop;B=document.documentElement.scrollLeft}}}return[B,A]}function _addEvent(E,D,B,A){if(E.addEventListener){E.addEventListener(D,B,A);return true}else{if(E.attachEvent){var C=E.attachEvent("on"+D,B);return C}else{alert("Handler could not be attached")}}}function _removeEvent(E,D,B,A){if(E.removeEventListener){E.removeEventListener(D,B,A);return true}else{if(E.detachEvent){var C=E.detachEvent("on"+D,B);return C}else{alert("Handler could not be removed")}}}function hideDivOnMouseOut(A){var C,B;if(window.event){C=this;B=window.event.toElement}else{C=A.currentTarget;B=A.relatedTarget}if(C!=B){if(!contains(C,B)){C.style.display="none"}}}function contains(B,A){while(A.parentNode){A=A.parentNode;if(A==B){return true}}return false}function grabComputedStyle(B,A){if(document.defaultView&&document.defaultView.getComputedStyle){return document.defaultView.getComputedStyle(B,null).getPropertyValue(A)}else{if(B.currentStyle){return B.currentStyle[A]}else{return null}}}function grabComputedHeight(B){var A=grabComputedStyle(B,"height");if(A!=null){if(A=="auto"){if(B.offsetHeight){A=B.offsetHeight}}A=parseInt(A)}return A}function grabComputedWidth(B){var A=grabComputedStyle(B,"width");if(A!=null){if(A.indexOf("px")!=-1){A=A.substring(0,A.indexOf("px"))}if(A=="auto"){if(B.offsetWidth){A=B.offsetWidth}}}return A};if(!document.createElement("canvas").getContext){(function(){var AB=Math;var K=AB.round;var J=AB.sin;var W=AB.cos;var e=AB.abs;var n=AB.sqrt;var D=10;var F=D/2;var V=+navigator.userAgent.match(/MSIE ([\d.]+)?/)[1];function U(){return this.context_||(this.context_=new a(this))}var P=Array.prototype.slice;function G(i,j,m){var Z=P.call(arguments,2);return function(){return i.apply(j,Z.concat(P.call(arguments)))}}function AF(Z){return String(Z).replace(/&/g,"&amp;").replace(/"/g,"&quot;")}function z(j,i,Z){if(!j.namespaces[i]){j.namespaces.add(i,Z,"#default#VML")}}function s(i){z(i,"g_vml_","urn:schemas-microsoft-com:vml");z(i,"g_o_","urn:schemas-microsoft-com:office:office");if(!i.styleSheets.ex_canvas_){var Z=i.createStyleSheet();Z.owningElement.id="ex_canvas_";Z.cssText="canvas{display:inline-block;overflow:hidden;text-align:left;width:300px;height:150px}"}}s(document);var E={init:function(Z){var i=Z||document;i.createElement("canvas");i.attachEvent("onreadystatechange",G(this.init_,this,i))},init_:function(m){var j=m.getElementsByTagName("canvas");for(var Z=0;Z<j.length;Z++){this.initElement(j[Z])}},initElement:function(i){if(!i.getContext){i.getContext=U;s(i.ownerDocument);i.innerHTML="";i.attachEvent("onpropertychange",T);i.attachEvent("onresize",x);var Z=i.attributes;if(Z.width&&Z.width.specified){i.style.width=Z.width.nodeValue+"px"}else{i.width=i.clientWidth}if(Z.height&&Z.height.specified){i.style.height=Z.height.nodeValue+"px"}else{i.height=i.clientHeight}}return i}};function T(i){var Z=i.srcElement;switch(i.propertyName){case"width":Z.getContext().clearRect();Z.style.width=Z.attributes.width.nodeValue+"px";Z.firstChild.style.width=Z.clientWidth+"px";break;case"height":Z.getContext().clearRect();Z.style.height=Z.attributes.height.nodeValue+"px";Z.firstChild.style.height=Z.clientHeight+"px";break}}function x(i){var Z=i.srcElement;if(Z.firstChild){Z.firstChild.style.width=Z.clientWidth+"px";Z.firstChild.style.height=Z.clientHeight+"px"}}E.init();var I=[];for(var AE=0;AE<16;AE++){for(var AD=0;AD<16;AD++){I[AE*16+AD]=AE.toString(16)+AD.toString(16)}}function X(){return[[1,0,0],[0,1,0],[0,0,1]]}function g(m,j){var i=X();for(var Z=0;Z<3;Z++){for(var AH=0;AH<3;AH++){var p=0;for(var AG=0;AG<3;AG++){p+=m[Z][AG]*j[AG][AH]}i[Z][AH]=p}}return i}function R(i,Z){Z.fillStyle=i.fillStyle;Z.lineCap=i.lineCap;Z.lineJoin=i.lineJoin;Z.lineWidth=i.lineWidth;Z.miterLimit=i.miterLimit;Z.shadowBlur=i.shadowBlur;Z.shadowColor=i.shadowColor;Z.shadowOffsetX=i.shadowOffsetX;Z.shadowOffsetY=i.shadowOffsetY;Z.strokeStyle=i.strokeStyle;Z.globalAlpha=i.globalAlpha;Z.font=i.font;Z.textAlign=i.textAlign;Z.textBaseline=i.textBaseline;Z.arcScaleX_=i.arcScaleX_;Z.arcScaleY_=i.arcScaleY_;Z.lineScale_=i.lineScale_}var B={aliceblue:"#F0F8FF",antiquewhite:"#FAEBD7",aquamarine:"#7FFFD4",azure:"#F0FFFF",beige:"#F5F5DC",bisque:"#FFE4C4",black:"#000000",blanchedalmond:"#FFEBCD",blueviolet:"#8A2BE2",brown:"#A52A2A",burlywood:"#DEB887",cadetblue:"#5F9EA0",chartreuse:"#7FFF00",chocolate:"#D2691E",coral:"#FF7F50",cornflowerblue:"#6495ED",cornsilk:"#FFF8DC",crimson:"#DC143C",cyan:"#00FFFF",darkblue:"#00008B",darkcyan:"#008B8B",darkgoldenrod:"#B8860B",darkgray:"#A9A9A9",darkgreen:"#006400",darkgrey:"#A9A9A9",darkkhaki:"#BDB76B",darkmagenta:"#8B008B",darkolivegreen:"#556B2F",darkorange:"#FF8C00",darkorchid:"#9932CC",darkred:"#8B0000",darksalmon:"#E9967A",darkseagreen:"#8FBC8F",darkslateblue:"#483D8B",darkslategray:"#2F4F4F",darkslategrey:"#2F4F4F",darkturquoise:"#00CED1",darkviolet:"#9400D3",deeppink:"#FF1493",deepskyblue:"#00BFFF",dimgray:"#696969",dimgrey:"#696969",dodgerblue:"#1E90FF",firebrick:"#B22222",floralwhite:"#FFFAF0",forestgreen:"#228B22",gainsboro:"#DCDCDC",ghostwhite:"#F8F8FF",gold:"#FFD700",goldenrod:"#DAA520",grey:"#808080",greenyellow:"#ADFF2F",honeydew:"#F0FFF0",hotpink:"#FF69B4",indianred:"#CD5C5C",indigo:"#4B0082",ivory:"#FFFFF0",khaki:"#F0E68C",lavender:"#E6E6FA",lavenderblush:"#FFF0F5",lawngreen:"#7CFC00",lemonchiffon:"#FFFACD",lightblue:"#ADD8E6",lightcoral:"#F08080",lightcyan:"#E0FFFF",lightgoldenrodyellow:"#FAFAD2",lightgreen:"#90EE90",lightgrey:"#D3D3D3",lightpink:"#FFB6C1",lightsalmon:"#FFA07A",lightseagreen:"#20B2AA",lightskyblue:"#87CEFA",lightslategray:"#778899",lightslategrey:"#778899",lightsteelblue:"#B0C4DE",lightyellow:"#FFFFE0",limegreen:"#32CD32",linen:"#FAF0E6",magenta:"#FF00FF",mediumaquamarine:"#66CDAA",mediumblue:"#0000CD",mediumorchid:"#BA55D3",mediumpurple:"#9370DB",mediumseagreen:"#3CB371",mediumslateblue:"#7B68EE",mediumspringgreen:"#00FA9A",mediumturquoise:"#48D1CC",mediumvioletred:"#C71585",midnightblue:"#191970",mintcream:"#F5FFFA",mistyrose:"#FFE4E1",moccasin:"#FFE4B5",navajowhite:"#FFDEAD",oldlace:"#FDF5E6",olivedrab:"#6B8E23",orange:"#FFA500",orangered:"#FF4500",orchid:"#DA70D6",palegoldenrod:"#EEE8AA",palegreen:"#98FB98",paleturquoise:"#AFEEEE",palevioletred:"#DB7093",papayawhip:"#FFEFD5",peachpuff:"#FFDAB9",peru:"#CD853F",pink:"#FFC0CB",plum:"#DDA0DD",powderblue:"#B0E0E6",rosybrown:"#BC8F8F",royalblue:"#4169E1",saddlebrown:"#8B4513",salmon:"#FA8072",sandybrown:"#F4A460",seagreen:"#2E8B57",seashell:"#FFF5EE",sienna:"#A0522D",skyblue:"#87CEEB",slateblue:"#6A5ACD",slategray:"#708090",slategrey:"#708090",snow:"#FFFAFA",springgreen:"#00FF7F",steelblue:"#4682B4",tan:"#D2B48C",thistle:"#D8BFD8",tomato:"#FF6347",turquoise:"#40E0D0",violet:"#EE82EE",wheat:"#F5DEB3",whitesmoke:"#F5F5F5",yellowgreen:"#9ACD32"};function l(i){var m=i.indexOf("(",3);var Z=i.indexOf(")",m+1);var j=i.substring(m+1,Z).split(",");if(j.length!=4||i.charAt(3)!="a"){j[3]=1}return j}function C(Z){return parseFloat(Z)/100}function N(i,j,Z){return Math.min(Z,Math.max(j,i))}function f(AG){var Z,AI,AJ,AH,AK,m;AH=parseFloat(AG[0])/360%360;if(AH<0){AH++}AK=N(C(AG[1]),0,1);m=N(C(AG[2]),0,1);if(AK==0){Z=AI=AJ=m}else{var i=m<0.5?m*(1+AK):m+AK-m*AK;var j=2*m-i;Z=A(j,i,AH+1/3);AI=A(j,i,AH);AJ=A(j,i,AH-1/3)}return"#"+I[Math.floor(Z*255)]+I[Math.floor(AI*255)]+I[Math.floor(AJ*255)]}function A(i,Z,j){if(j<0){j++}if(j>1){j--}if(6*j<1){return i+(Z-i)*6*j}else{if(2*j<1){return Z}else{if(3*j<2){return i+(Z-i)*(2/3-j)*6}else{return i}}}}var Y={};function c(Z){if(Z in Y){return Y[Z]}var AG,p=1;Z=String(Z);if(Z.charAt(0)=="#"){AG=Z}else{if(/^rgb/.test(Z)){var m=l(Z);var AG="#",AH;for(var j=0;j<3;j++){if(m[j].indexOf("%")!=-1){AH=Math.floor(C(m[j])*255)}else{AH=+m[j]}AG+=I[N(AH,0,255)]}p=+m[3]}else{if(/^hsl/.test(Z)){var m=l(Z);AG=f(m);p=m[3]}else{AG=B[Z]||Z}}}return Y[Z]={color:AG,alpha:p}}var L={style:"normal",variant:"normal",weight:"normal",size:10,family:"sans-serif"};var k={};function b(Z){if(k[Z]){return k[Z]}var m=document.createElement("div");var j=m.style;try{j.font=Z}catch(i){}return k[Z]={style:j.fontStyle||L.style,variant:j.fontVariant||L.variant,weight:j.fontWeight||L.weight,size:j.fontSize||L.size,family:j.fontFamily||L.family}}function Q(j,i){var Z={};for(var AH in j){Z[AH]=j[AH]}var AG=parseFloat(i.currentStyle.fontSize),m=parseFloat(j.size);if(typeof j.size=="number"){Z.size=j.size}else{if(j.size.indexOf("px")!=-1){Z.size=m}else{if(j.size.indexOf("em")!=-1){Z.size=AG*m}else{if(j.size.indexOf("%")!=-1){Z.size=(AG/100)*m}else{if(j.size.indexOf("pt")!=-1){Z.size=m/0.75}else{Z.size=AG}}}}}Z.size*=0.981;return Z}function AC(Z){return Z.style+" "+Z.variant+" "+Z.weight+" "+Z.size+"px "+Z.family}var O={butt:"flat",round:"round"};function t(Z){return O[Z]||"square"}function a(Z){this.m_=X();this.mStack_=[];this.aStack_=[];this.currentPath_=[];this.strokeStyle="#000";this.fillStyle="#000";this.lineWidth=1;this.lineJoin="miter";this.lineCap="butt";this.miterLimit=D*1;this.globalAlpha=1;this.font="10px sans-serif";this.textAlign="left";this.textBaseline="alphabetic";this.canvas=Z;var j="width:"+Z.clientWidth+"px;height:"+Z.clientHeight+"px;overflow:hidden;position:absolute";var i=Z.ownerDocument.createElement("div");i.style.cssText=j;Z.appendChild(i);var m=i.cloneNode(false);m.style.backgroundColor="red";m.style.filter="alpha(opacity=0)";Z.appendChild(m);this.element_=i;this.arcScaleX_=1;this.arcScaleY_=1;this.lineScale_=1}var M=a.prototype;M.clearRect=function(){if(this.textMeasureEl_){this.textMeasureEl_.removeNode(true);this.textMeasureEl_=null}this.element_.innerHTML=""};M.beginPath=function(){this.currentPath_=[]};M.moveTo=function(i,Z){var j=w(this,i,Z);this.currentPath_.push({type:"moveTo",x:j.x,y:j.y});this.currentX_=j.x;this.currentY_=j.y};M.lineTo=function(i,Z){var j=w(this,i,Z);this.currentPath_.push({type:"lineTo",x:j.x,y:j.y});this.currentX_=j.x;this.currentY_=j.y};M.bezierCurveTo=function(j,i,AK,AJ,AI,AG){var Z=w(this,AI,AG);var AH=w(this,j,i);var m=w(this,AK,AJ);h(this,AH,m,Z)};function h(Z,m,j,i){Z.currentPath_.push({type:"bezierCurveTo",cp1x:m.x,cp1y:m.y,cp2x:j.x,cp2y:j.y,x:i.x,y:i.y});Z.currentX_=i.x;Z.currentY_=i.y}M.quadraticCurveTo=function(AI,j,i,Z){var AH=w(this,AI,j);var AG=w(this,i,Z);var AJ={x:this.currentX_+2/3*(AH.x-this.currentX_),y:this.currentY_+2/3*(AH.y-this.currentY_)};var m={x:AJ.x+(AG.x-this.currentX_)/3,y:AJ.y+(AG.y-this.currentY_)/3};h(this,AJ,m,AG)};M.arc=function(AL,AJ,AK,AG,i,j){AK*=D;var AP=j?"at":"wa";var AM=AL+W(AG)*AK-F;var AO=AJ+J(AG)*AK-F;var Z=AL+W(i)*AK-F;var AN=AJ+J(i)*AK-F;if(AM==Z&&!j){AM+=0.125}var m=w(this,AL,AJ);var AI=w(this,AM,AO);var AH=w(this,Z,AN);this.currentPath_.push({type:AP,x:m.x,y:m.y,radius:AK,xStart:AI.x,yStart:AI.y,xEnd:AH.x,yEnd:AH.y})};M.rect=function(j,i,Z,m){this.moveTo(j,i);this.lineTo(j+Z,i);this.lineTo(j+Z,i+m);this.lineTo(j,i+m);this.closePath()};M.strokeRect=function(j,i,Z,m){var p=this.currentPath_;this.beginPath();this.moveTo(j,i);this.lineTo(j+Z,i);this.lineTo(j+Z,i+m);this.lineTo(j,i+m);this.closePath();this.stroke();this.currentPath_=p};M.fillRect=function(j,i,Z,m){var p=this.currentPath_;this.beginPath();this.moveTo(j,i);this.lineTo(j+Z,i);this.lineTo(j+Z,i+m);this.lineTo(j,i+m);this.closePath();this.fill();this.currentPath_=p};M.createLinearGradient=function(i,m,Z,j){var p=new v("gradient");p.x0_=i;p.y0_=m;p.x1_=Z;p.y1_=j;return p};M.createRadialGradient=function(m,AG,j,i,p,Z){var AH=new v("gradientradial");AH.x0_=m;AH.y0_=AG;AH.r0_=j;AH.x1_=i;AH.y1_=p;AH.r1_=Z;return AH};M.drawImage=function(AR,m){var AK,AI,AM,AY,AP,AN,AT,Aa;var AL=AR.runtimeStyle.width;var AQ=AR.runtimeStyle.height;AR.runtimeStyle.width="auto";AR.runtimeStyle.height="auto";var AJ=AR.width;var AW=AR.height;AR.runtimeStyle.width=AL;AR.runtimeStyle.height=AQ;if(arguments.length==3){AK=arguments[1];AI=arguments[2];AP=AN=0;AT=AM=AJ;Aa=AY=AW}else{if(arguments.length==5){AK=arguments[1];AI=arguments[2];AM=arguments[3];AY=arguments[4];AP=AN=0;AT=AJ;Aa=AW}else{if(arguments.length==9){AP=arguments[1];AN=arguments[2];AT=arguments[3];Aa=arguments[4];AK=arguments[5];AI=arguments[6];AM=arguments[7];AY=arguments[8]}else{throw Error("Invalid number of arguments")}}}if(AR.tagName=="canvas"){var i=document.createElement("div");i.style.position="absolute";i.style.left=AK+"px";i.style.top=AI+"px";i.innerHTML=AR.outerHTML;this.element_.insertAdjacentHTML("BeforeEnd",i.outerHTML);return }var AZ=w(this,AK,AI);var p=AT/2;var j=Aa/2;var AX=[];var Z=10;var AH=10;AX.push(" <g_vml_:group",' coordsize="',D*Z,",",D*AH,'"',' coordorigin="0,0"',' style="width:',Z,"px;height:",AH,"px;position:absolute;");if(this.m_[0][0]!=1||this.m_[0][1]||this.m_[1][1]!=1||this.m_[1][0]){var AG=[];AG.push("M11=",this.m_[0][0],",","M12=",this.m_[1][0],",","M21=",this.m_[0][1],",","M22=",this.m_[1][1],",","Dx=",K(AZ.x/D),",","Dy=",K(AZ.y/D),"");var AV=AZ;var AU=w(this,AK+AM,AI);var AS=w(this,AK,AI+AY);var AO=w(this,AK+AM,AI+AY);AV.x=AB.max(AV.x,AU.x,AS.x,AO.x);AV.y=AB.max(AV.y,AU.y,AS.y,AO.y);AX.push("padding:0 ",K(AV.x/D),"px ",K(AV.y/D),"px 0;filter:progid:DXImageTransform.Microsoft.Matrix(",AG.join(""),", sizingmethod='clip');")}else{AX.push("top:",K(AZ.y/D),"px;left:",K(AZ.x/D),"px;")}AX.push(' ">','<g_vml_:image src="',AR.src,'"',' style="width:',D*AM,"px;"," height:",D*AY,'px"',' cropleft="',AP/AJ,'"',' croptop="',AN/AW,'"',' cropright="',(AJ-AP-AT)/AJ,'"',' cropbottom="',(AW-AN-Aa)/AW,'"'," />","</g_vml_:group>");this.element_.insertAdjacentHTML("BeforeEnd",AX.join(""))};M.stroke=function(AL){var AJ=[];var m=false;var j=10;var AM=10;AJ.push("<g_vml_:shape",' filled="',!!AL,'"',' style="position:absolute;width:',j,"px;height:",AM,'px;"',' coordorigin="0,0"',' coordsize="',D*j,",",D*AM,'"',' stroked="',!AL,'"',' path="');var AN=false;var AG={x:null,y:null};var AK={x:null,y:null};for(var AH=0;AH<this.currentPath_.length;AH++){var Z=this.currentPath_[AH];var AI;switch(Z.type){case"moveTo":AI=Z;AJ.push(" m ",K(Z.x),",",K(Z.y));break;case"lineTo":AJ.push(" l ",K(Z.x),",",K(Z.y));break;case"close":AJ.push(" x ");Z=null;break;case"bezierCurveTo":AJ.push(" c ",K(Z.cp1x),",",K(Z.cp1y),",",K(Z.cp2x),",",K(Z.cp2y),",",K(Z.x),",",K(Z.y));break;case"at":case"wa":AJ.push(" ",Z.type," ",K(Z.x-this.arcScaleX_*Z.radius),",",K(Z.y-this.arcScaleY_*Z.radius)," ",K(Z.x+this.arcScaleX_*Z.radius),",",K(Z.y+this.arcScaleY_*Z.radius)," ",K(Z.xStart),",",K(Z.yStart)," ",K(Z.xEnd),",",K(Z.yEnd));break}if(Z){if(AG.x==null||Z.x<AG.x){AG.x=Z.x}if(AK.x==null||Z.x>AK.x){AK.x=Z.x}if(AG.y==null||Z.y<AG.y){AG.y=Z.y}if(AK.y==null||Z.y>AK.y){AK.y=Z.y}}}AJ.push(' ">');if(!AL){S(this,AJ)}else{d(this,AJ,AG,AK)}AJ.push("</g_vml_:shape>");this.element_.insertAdjacentHTML("beforeEnd",AJ.join(""))};function S(j,AG){var i=c(j.strokeStyle);var m=i.color;var p=i.alpha*j.globalAlpha;var Z=j.lineScale_*j.lineWidth;if(Z<1){p*=Z}AG.push("<g_vml_:stroke",' opacity="',p,'"',' joinstyle="',j.lineJoin,'"',' miterlimit="',j.miterLimit,'"',' endcap="',t(j.lineCap),'"',' weight="',Z,'px"',' color="',m,'" />')}function d(AQ,AI,Aj,AR){var AJ=AQ.fillStyle;var Aa=AQ.arcScaleX_;var AZ=AQ.arcScaleY_;var Z=AR.x-Aj.x;var m=AR.y-Aj.y;if(AJ instanceof v){var AN=0;var Ae={x:0,y:0};var AW=0;var AM=1;if(AJ.type_=="gradient"){var AL=AJ.x0_/Aa;var j=AJ.y0_/AZ;var AK=AJ.x1_/Aa;var Al=AJ.y1_/AZ;var Ai=w(AQ,AL,j);var Ah=w(AQ,AK,Al);var AG=Ah.x-Ai.x;var p=Ah.y-Ai.y;AN=Math.atan2(AG,p)*180/Math.PI;if(AN<0){AN+=360}if(AN<0.000001){AN=0}}else{var Ai=w(AQ,AJ.x0_,AJ.y0_);Ae={x:(Ai.x-Aj.x)/Z,y:(Ai.y-Aj.y)/m};Z/=Aa*D;m/=AZ*D;var Ac=AB.max(Z,m);AW=2*AJ.r0_/Ac;AM=2*AJ.r1_/Ac-AW}var AU=AJ.colors_;AU.sort(function(Am,i){return Am.offset-i.offset});var AP=AU.length;var AT=AU[0].color;var AS=AU[AP-1].color;var AY=AU[0].alpha*AQ.globalAlpha;var AX=AU[AP-1].alpha*AQ.globalAlpha;var Ad=[];for(var Ag=0;Ag<AP;Ag++){var AO=AU[Ag];Ad.push(AO.offset*AM+AW+" "+AO.color)}AI.push('<g_vml_:fill type="',AJ.type_,'"',' method="none" focus="100%"',' color="',AT,'"',' color2="',AS,'"',' colors="',Ad.join(","),'"',' opacity="',AX,'"',' g_o_:opacity2="',AY,'"',' angle="',AN,'"',' focusposition="',Ae.x,",",Ae.y,'" />')}else{if(AJ instanceof u){if(Z&&m){var AH=-Aj.x;var Ab=-Aj.y;AI.push("<g_vml_:fill",' position="',AH/Z*Aa*Aa,",",Ab/m*AZ*AZ,'"',' type="tile"',' src="',AJ.src_,'" />')}}else{var Ak=c(AQ.fillStyle);var AV=Ak.color;var Af=Ak.alpha*AQ.globalAlpha;AI.push('<g_vml_:fill color="',AV,'" opacity="',Af,'" />')}}}M.fill=function(){this.stroke(true)};M.closePath=function(){this.currentPath_.push({type:"close"})};function w(i,p,j){var Z=i.m_;return{x:D*(p*Z[0][0]+j*Z[1][0]+Z[2][0])-F,y:D*(p*Z[0][1]+j*Z[1][1]+Z[2][1])-F}}M.save=function(){var Z={};R(this,Z);this.aStack_.push(Z);this.mStack_.push(this.m_);this.m_=g(X(),this.m_)};M.restore=function(){if(this.aStack_.length){R(this.aStack_.pop(),this);this.m_=this.mStack_.pop()}};function H(Z){return isFinite(Z[0][0])&&isFinite(Z[0][1])&&isFinite(Z[1][0])&&isFinite(Z[1][1])&&isFinite(Z[2][0])&&isFinite(Z[2][1])}function AA(i,Z,j){if(!H(Z)){return }i.m_=Z;if(j){var p=Z[0][0]*Z[1][1]-Z[0][1]*Z[1][0];i.lineScale_=n(e(p))}}M.translate=function(j,i){var Z=[[1,0,0],[0,1,0],[j,i,1]];AA(this,g(Z,this.m_),false)};M.rotate=function(i){var m=W(i);var j=J(i);var Z=[[m,j,0],[-j,m,0],[0,0,1]];AA(this,g(Z,this.m_),false)};M.scale=function(j,i){this.arcScaleX_*=j;this.arcScaleY_*=i;var Z=[[j,0,0],[0,i,0],[0,0,1]];AA(this,g(Z,this.m_),true)};M.transform=function(p,m,AH,AG,i,Z){var j=[[p,m,0],[AH,AG,0],[i,Z,1]];AA(this,g(j,this.m_),true)};M.setTransform=function(AG,p,AI,AH,j,i){var Z=[[AG,p,0],[AI,AH,0],[j,i,1]];AA(this,Z,true)};M.drawText_=function(AM,AK,AJ,AP,AI){var AO=this.m_,AS=1000,i=0,AR=AS,AH={x:0,y:0},AG=[];var Z=Q(b(this.font),this.element_);var j=AC(Z);var AT=this.element_.currentStyle;var p=this.textAlign.toLowerCase();switch(p){case"left":case"center":case"right":break;case"end":p=AT.direction=="ltr"?"right":"left";break;case"start":p=AT.direction=="rtl"?"right":"left";break;default:p="left"}switch(this.textBaseline){case"hanging":case"top":AH.y=Z.size/1.75;break;case"middle":break;default:case null:case"alphabetic":case"ideographic":case"bottom":AH.y=-Z.size/2.25;break}switch(p){case"right":i=AS;AR=0.05;break;case"center":i=AR=AS/2;break}var AQ=w(this,AK+AH.x,AJ+AH.y);AG.push('<g_vml_:line from="',-i,' 0" to="',AR,' 0.05" ',' coordsize="100 100" coordorigin="0 0"',' filled="',!AI,'" stroked="',!!AI,'" style="position:absolute;width:1px;height:1px;">');if(AI){S(this,AG)}else{d(this,AG,{x:-i,y:0},{x:AR,y:Z.size})}var AN=AO[0][0].toFixed(3)+","+AO[1][0].toFixed(3)+","+AO[0][1].toFixed(3)+","+AO[1][1].toFixed(3)+",0,0";var AL=K(AQ.x/D)+","+K(AQ.y/D);AG.push('<g_vml_:skew on="t" matrix="',AN,'" ',' offset="',AL,'" origin="',i,' 0" />','<g_vml_:path textpathok="true" />','<g_vml_:textpath on="true" string="',AF(AM),'" style="v-text-align:',p,";font:",AF(j),'" /></g_vml_:line>');this.element_.insertAdjacentHTML("beforeEnd",AG.join(""))};M.fillText=function(j,Z,m,i){this.drawText_(j,Z,m,i,false)};M.strokeText=function(j,Z,m,i){this.drawText_(j,Z,m,i,true)};M.measureText=function(j){if(!this.textMeasureEl_){var Z='<span style="position:absolute;top:-20000px;left:0;padding:0;margin:0;border:none;white-space:pre;"></span>';this.element_.insertAdjacentHTML("beforeEnd",Z);this.textMeasureEl_=this.element_.lastChild}var i=this.element_.ownerDocument;this.textMeasureEl_.innerHTML="";this.textMeasureEl_.style.font=this.font;this.textMeasureEl_.appendChild(i.createTextNode(j));return{width:this.textMeasureEl_.offsetWidth}};M.clip=function(){};M.arcTo=function(){};M.createPattern=function(i,Z){return new u(i,Z)};function v(Z){this.type_=Z;this.x0_=0;this.y0_=0;this.r0_=0;this.x1_=0;this.y1_=0;this.r1_=0;this.colors_=[]}v.prototype.addColorStop=function(i,Z){Z=c(Z);this.colors_.push({offset:i,color:Z.color,alpha:Z.alpha})};function u(i,Z){r(i);switch(Z){case"repeat":case null:case"":this.repetition_="repeat";break;case"repeat-x":case"repeat-y":case"no-repeat":this.repetition_=Z;break;default:o("SYNTAX_ERR")}this.src_=i.src;this.width_=i.width;this.height_=i.height}function o(Z){throw new q(Z)}function r(Z){if(!Z||Z.nodeType!=1||Z.tagName!="IMG"){o("TYPE_MISMATCH_ERR")}if(Z.readyState!="complete"){o("INVALID_STATE_ERR")}}function q(Z){this.code=this[Z];this.message=Z+": DOM Exception "+this.code}var y=q.prototype=new Error;y.INDEX_SIZE_ERR=1;y.DOMSTRING_SIZE_ERR=2;y.HIERARCHY_REQUEST_ERR=3;y.WRONG_DOCUMENT_ERR=4;y.INVALID_CHARACTER_ERR=5;y.NO_DATA_ALLOWED_ERR=6;y.NO_MODIFICATION_ALLOWED_ERR=7;y.NOT_FOUND_ERR=8;y.NOT_SUPPORTED_ERR=9;y.INUSE_ATTRIBUTE_ERR=10;y.INVALID_STATE_ERR=11;y.SYNTAX_ERR=12;y.INVALID_MODIFICATION_ERR=13;y.NAMESPACE_ERR=14;y.INVALID_ACCESS_ERR=15;y.VALIDATION_ERR=16;y.TYPE_MISMATCH_ERR=17;G_vmlCanvasManager=E;CanvasRenderingContext2D=a;CanvasGradient=v;CanvasPattern=u;DOMException=q})()};var Whiteboard=(function(){var wb={};var canvas,context,pencil_btn,rect_btn,width,height,x,y,clickX,clickY,penDown=false;var origcanvas,origcontext,currentTool="pencil";var graphcanvas,graphcontext,topcanvas,topcontext,gr2D,nL,graphMode,gr2D_xp,gr2D_yp,nL_xp,nL_yp;var offX,offY,x0,y0,w0,h0,drawingLayer,drawcolor,rendering;var graphicData,tool_id;var scope=this;var isTouchEnabled=false;function renderText(xt,xp,yp){var txt=xt?xt:$get_Element("#content").value;var str=txt.split("\n");var x0=xp?xp:clickX;var y0=yp?yp:clickY;var ht=15;for(var i=0;i<str.length;i++){context.fillText(str[i],x0,y0);y0+=ht}updateCanvas();if(!xt){updateText(txt);sendData();$get_Element("#content").value="";$get_Element("#inputBox").style.display="none"}}function onkeyupHandler(){}function onkeydownHandler(_event){var event=_event?_event:window.event;if(currentTool=="text"&&event.keyCode==13){if(!event.shiftKey){if(event.preventDefault){event.preventDefault()}else{event.returnValue=false}renderText()}}}function resetButtonHighlite(){$get_Element("#button_text").style.border="1px solid #000000";$get_Element("#button_pencil").style.border="1px solid #000000";$get_Element("#button_line").style.border="1px solid #000000";$get_Element("#button_rect").style.border="1px solid #000000";$get_Element("#button_oval").style.border="1px solid #000000";$get_Element("#button_eraser").style.border="1px solid #000000"}function buttonHighlite(t){resetButtonHighlite();$get_Element("#button_"+t).style.border="2px solid #ff9900"}function viewport(){var e=window,a="inner";if(!("innerWidth" in window)){a="client";e=document.documentElement||document.body}return{width:e[a+"Width"],height:e[a+"Height"]}}function getDocHeight(){var D=document;return Math.max(Math.max(D.body.scrollHeight,D.documentElement.scrollHeight),Math.max(D.body.offsetHeight,D.documentElement.offsetHeight),Math.max(D.body.clientHeight,D.documentElement.clientHeight))}function touchStartFunction(event){event.preventDefault()}var touchMoveFunction=touchStartFunction;var _imageBaseDir="/gwt-resources/images/whiteboard/";var mainDoc;wb.initWhiteboard=function(mainDocIn){console.log("WHITEBOARD_INITIATED! - document object:"+mainDocIn);mainDoc=mainDocIn;canvas=$get_Element("#canvas");var siz=viewport();var docWidth=siz.width;var docHeight=siz.height;var topOff=$get_Element("#tools").offsetHeight+$get_Element("#tools").offsetTop+15;var leftOff=$get_Element("#tools").offsetLeft+15;origcanvas=$get_Element("#ocanvas");graphcanvas=$get_Element("#gcanvas");topcanvas=$get_Element("#tcanvas");canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=docWidth-leftOff;canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=docHeight-topOff;context=canvas.getContext("2d");origcontext=origcanvas.getContext("2d");graphcontext=graphcanvas.getContext("2d");topcontext=topcanvas.getContext("2d");width=canvas.width;height=canvas.height;context.font=origcontext.font=topcontext.font="12px sans-serif";gr2D=new Image();gr2D.src=_imageBaseDir+"gr2D.png";nL=new Image();nL.src=_imageBaseDir+"nL.png";graphMode="";gr2D_xp=nL_xp=(width-300)/2;gr2D_yp=(height-300)/2;nL_yp=(height-100)/2;gr2D_w=300;gr2D_h=300;nL_w=300;nL_h=100;offX=$get_Element("#canvas-container").offsetLeft;offY=$get_Element("#canvas-container").offsetTop;function getCanvasPos(){console.log("getCanvasPos processing!");var box=canvas.getBoundingClientRect();console.log("canvas bound= top: "+box.top+" left:"+box.left);var body=mainDoc.body;var docElem=mainDoc.documentElement;var scrollTop=window.pageYOffset||docElem.scrollTop||body.scrollTop;var scrollLeft=window.pageXOffset||docElem.scrollLeft||body.scrollLeft;var clientTop=docElem.clientTop||body.clientTop||0;var clientLeft=docElem.clientLeft||body.clientLeft||0;console.log("offset_datas: scrollTop="+scrollTop+" scrollLeft="+scrollLeft+" clientTop="+clientTop+" clientLeft="+clientLeft);var top=box.top+scrollTop-clientTop;var left=box.left+scrollLeft-clientLeft;offX=Math.round(left);offY=Math.round(top);console.log("OFFSET: top="+offY+" left="+offX);return{top:offY,left:offX}}console.log("getCanvasPos calling!");getCanvasPos();console.log("getCanvasPos CALL END!");graphicData={};tool_id={};tool_id.eraser=0;tool_id.pencil=1;tool_id.text=2;tool_id.line=3;tool_id.rect=4;tool_id.oval=5;tool_id.gr2D=11;tool_id.nL=12;drawingLayer="1";$get_Element("#button_pencil").style.border="2px solid #ff9900";$get_Element("#button_text").onclick=function(event){currentTool="text";buttonHighlite(currentTool)};$get_Element("#button_pencil").onclick=function(event){currentTool="pencil";buttonHighlite(currentTool)};$get_Element("#button_rect").onclick=function(event){currentTool="rect";buttonHighlite(currentTool)};$get_Element("#button_line").onclick=function(event){currentTool="line";buttonHighlite(currentTool)};$get_Element("#button_oval").onclick=function(event){currentTool="oval";buttonHighlite(currentTool)};$get_Element("#button_gr2D").onclick=function(event){currentTool="gr2D";showHideGraph("gr2D");buttonHighlite("pencil")};$get_Element("#button_nL").onclick=function(event){currentTool="nL";showHideGraph("nL");buttonHighlite("pencil")};$get_Element("#button_clear").onclick=function(event){currentTool="pencil";buttonHighlite(currentTool);resetWhiteBoard(true)};$get_Element("#button_eraser").onclick=function(event){currentTool="eraser";buttonHighlite(currentTool)};$get_Element("#done_btn").onclick=function(event){renderText()};$get_Element("#button_save").onclick=function(event){wb.saveWhiteboard()};var ev_onmousedown=function(_event){isTouchEnabled=_event.type.indexOf("touch")>-1;if(isTouchEnabled){canvas.removeEventListener("mousedown",ev_onmousedown,false);canvas.removeEventListener("mouseup",ev_onmouseup,false);canvas.removeEventListener("mousemove",ev_onmousemove,false)}getCanvasPos();var event=_event?_event:window.event;event=isTouchEnabled?_event.changedTouches[0]:event;var dx,dy,dist;if(event.pageX!=undefined){dx=event.pageX-offX;dy=event.pageY-offY}else{dx=event.clientX-offX;dy=event.clientY-offY}console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY);context.lineWidth=2;context.strokeStyle="rgb(0, 0, 0)";if(dx>=0&&dx<width){penDown=true;rendering=false;clickX=dx;clickY=dy;x=dx;y=dy;if(!graphicData.dataArr){graphicData.dataArr=[]}graphicData.id=tool_id[currentTool];if(currentTool=="pencil"){context.beginPath();context.moveTo(clickX,clickY)}else{if(currentTool=="eraser"){erase(x,y)}}drawcolor=colorToNumber(context.strokeStyle);if(currentTool=="text"){penDown=false;graphicData.dataArr[0]={x:x,y:y,text:"",color:drawcolor,name:"",layer:drawingLayer};showTextBox()}else{graphicData.dataArr[graphicData.dataArr.length]={x:x,y:y,id:"move",color:drawcolor,name:"",layer:drawingLayer}}}else{penDown=false}if(event.preventDefault){event.preventDefault()}};var ev_onmouseup=function(_event){var event=_event?_event:window.event;event=_event.type.indexOf("touch")>-1?_event.targetTouches[0]:event;if(rendering){penDown=false;if(currentTool=="rect"||currentTool=="oval"){graphicData.dataArr[0].w=w0;graphicData.dataArr[0].h=h0;graphicData.dataArr[0].xs=w0/400;graphicData.dataArr[0].ys=h0/400}else{if(currentTool=="line"||currentTool=="pencil"||currentTool=="eraser"){var xp=x-clickX;var yp=y-clickY;xp=currentTool=="eraser"?x:xp;yp=currentTool=="eraser"?y:yp;graphicData.dataArr[graphicData.dataArr.length]={x:xp,y:yp,id:"line"}}}if(currentTool!="eraser"){updateCanvas();context.beginPath()}sendData();rendering=false}};var ev_onmousemove=function(_event){var event=_event?_event:window.event;event=_event.type.indexOf("touch")>-1?_event.changedTouches[0]:event;if(penDown){rendering=true;if(currentTool!="pencil"&&currentTool!="text"){context.clearRect(0,0,canvas.width,canvas.height)}if(event.pageX!=undefined){x=event.pageX-offX;y=event.pageY-offY}else{x=event.clientX-offX;y=event.clientY-offY}if(currentTool=="rect"||currentTool=="oval"){x0=clickX;y0=clickY;w0=x-clickX;h0=y-clickY;if(currentTool=="rect"){drawRect(x0,y0,w0,h0)}if(currentTool=="oval"){drawOval(x0,y0,w0,h0)}}else{if(currentTool=="line"){context.beginPath();context.moveTo(clickX,clickY);drawLine()}else{if(currentTool=="eraser"){erase(x,y);graphicData.dataArr[graphicData.dataArr.length]={x:x,y:y,id:"line"}}else{graphicData.dataArr[graphicData.dataArr.length]={x:x-clickX,y:y-clickY,id:"line"};drawLine()}}}}if(event.preventDefault){event.preventDefault()}};if(document.addEventListener){canvas.addEventListener("mousedown",ev_onmousedown,false);canvas.addEventListener("mouseup",ev_onmouseup,false);canvas.addEventListener("mousemove",ev_onmousemove,false);canvas.addEventListener("touchstart",touchStartFunction,false);canvas.addEventListener("touchmove",touchMoveFunction,false);canvas.addEventListener("touchstart",ev_onmousedown,false);canvas.addEventListener("touchmove",ev_onmousemove,false);canvas.addEventListener("touchend",ev_onmouseup,false)}else{canvas.attachEvent("onmousedown",ev_onmousedown);canvas.attachEvent("onmouseup",ev_onmouseup);canvas.attachEvent("onmousemove",ev_onmousemove);canvas.attachEvent("touchstart",touchStartFunction);canvas.attachEvent("touchmove",touchMoveFunction);canvas.attachEvent("touchstart",ev_onmousedown);canvas.attachEvent("touchmove",ev_onmousemove);canvas.attachEvent("touchend",ev_onmouseup)}canvas.focus()};function $get_Element(n){var str=n.indexOf("#")>-1?n.split("#")[1]:n;return mainDoc.getElementById(str)}function updateText(txt){graphicData.dataArr[0].text=txt}function showTextBox(){$get_Element("#inputBox").style.display="block";$get_Element("#inputBox").style.top=clickY+"px";$get_Element("#inputBox").style.left=clickX+"px";$get_Element("#content").focus()}function resetWhiteBoard(boo){penDown=false;graphMode="";origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;origcontext.clearRect(0,0,canvas.width,canvas.height);graphcontext.clearRect(0,0,canvas.width,canvas.height);topcontext.clearRect(0,0,canvas.width,canvas.height);context.clearRect(0,0,canvas.width,canvas.height);drawingLayer="1";$get_Element("#button_gr2D").style.border="1px solid #000000";$get_Element("#button_nL").style.border="1px solid #000000";if(boo){clear(true)}}function showHideGraph(flag,x,y,boo){graphcanvas.width=graphcanvas.width;graphcanvas.height=graphcanvas.height;graphcontext.clearRect(0,0,canvas.width,canvas.height);graphicData.dataArr=[];graphicData.id=tool_id[currentTool];var addGraph=false;if(!boo&&((graphMode=="gr2D"&&flag=="gr2D")||(graphMode=="nL"&&flag=="nL"))){graphMode="";drawingLayer="1";$get_Element("#button_gr2D").style.border="1px solid #000000";$get_Element("#button_nL").style.border="1px solid #000000"}else{$get_Element("#button_gr2D").style.border="1px solid #000000";$get_Element("#button_nL").style.border="1px solid #000000";var gr,xp,yp,xs,ys;graphMode=flag;if(flag=="gr2D"){gr=gr2D;xp=x?x-(gr2D_w/2):gr2D_xp;yp=y?y-(gr2D_h/2):gr2D_yp;xs=x?x:gr2D_xp+(gr2D_w/2);ys=y?y:gr2D_yp+(gr2D_h/2);$get_Element("#button_gr2D").style.border="2px solid #ff0000"}else{gr=nL;xp=x?x-(nL_w/2):nL_xp;yp=y?y-(nL_h/2):nL_yp;xs=x?x:nL_xp+(nL_w/2);ys=y?y:nL_yp+(nL_h/2);$get_Element("#button_nL").style.border="2px solid #ff0000"}drawingLayer="3";addGraph=true;graphcontext.drawImage(gr,xp,yp)}graphicData.dataArr.push({x:xs,y:ys,name:"graphImage",addImage:addGraph});sendData()}function mouseOverGraph(){getCanvasPos();var mx=event.layerX?event.layerX:event.pageX-offX;var my=event.layerY?event.layerY:event.pageY-offY;var xp,yp,wi,hi;if(graphMode=="gr2D"){gr=gr2D;xp=gr2D_xp;yp=gr2D_yp;wi=300;hi=300}else{if(graphMode=="nL"){gr=nL;xp=nL_xp;yp=nL_yp;wi=300;hi=100}}if((mx>=xp&&mx<=xp+wi)&&(my>=yp&&my<=yp+hi)){return true}return false}function updateCanvas(){var cntxt=drawingLayer=="1"?origcontext:topcontext;cntxt.drawImage(canvas,0,0);context.clearRect(0,0,canvas.width,canvas.height);context.beginPath()}function erase(x,y){var ew=10;var ep=ew/2;origcontext.clearRect(x-ep,y-ep,ew,ew);topcontext.clearRect(x-ep,y-ep,ew,ew)}function drawLine(){context.lineTo(x,y);context.stroke()}function drawRect(x,y,w,h,color){if(color!=undefined){context.strokeStyle=color}context.strokeRect(x,y,w,h)}function drawOval(x,y,w,h,color){if(color!=undefined){context.strokeStyle=color}var kappa=0.5522848;var ox=(w/2)*kappa;var oy=(h/2)*kappa;var xe=x+w;var ye=y+h;var xm=x+w/2;var ym=y+h/2;context.beginPath();context.moveTo(x,ym);context.bezierCurveTo(x,ym-oy,xm-ox,y,xm,y);context.bezierCurveTo(xm+ox,y,xe,ym-oy,xe,ym);context.bezierCurveTo(xe,ym+oy,xm+ox,ye,xm,ye);context.bezierCurveTo(xm-ox,ye,x,ym+oy,x,ym);context.closePath();context.stroke()}function sendData(){if(graphicData.id||graphicData.id===0){var txtVal=graphicData.dataArr[graphicData.dataArr.length-1].text;if(graphicData.id==2&&(txtVal==""||txtVal==undefined)){resetArrays();textRendering=false;return }if(graphicData.id==1&&graphicData.dataArr.length>500){var jStr=convertObjToString(graphicData);currentObj.tempData=convertStringToObj(jStr);var ptC=graphicData.dataArr.length;var segArr=[];var buf;var header=graphicData.dataArr.shift();var tarr=graphicData.dataArr;var segData;var nxtStart;var nx0;var ny0;var pt={x:header.x,y:header.y};var nname=header.name;var segC=0;var nheader;while(ptC>0){segC++;buf=Math.min(500,ptC);ptC=ptC-buf;segData=tarr.splice(0,buf);var ngdata={};ngdata.lineColor=graphicData.lineColor;ngdata.id=graphicData.id;if(segC>1){var sObj={};sObj.id="move";sObj.x=pt.x;sObj.y=pt.y;segData.unshift(sObj)}nheader=cloneObject(header);nheader.name=nname;segData.unshift(nheader);ngdata.dataArr=segData;segArr.push(ngdata);nxtStart=segData[segData.length-1];pt={x:nxtStart.x,y:nxtStart.y};var n=header.name.split("_");nname=n[0]+"_"+(Number(n[1])+1)}for(var z=0;z<segArr.length;z++){sendDataToSERVER(segArr[z])}render=false;resetArrays();textRendering=false;return }render=false;sendDataToSERVER(graphicData);textRendering=false}resetArrays()}function sendDataToSERVER(jsdata){var jsonStr=convertObjToString(jsdata);wb.whiteboardOut(jsonStr,true)}function cloneObject(obj){var clone={};for(var m in obj){clone[m]=obj[m]}return clone}function resetArrays(){graphicData.dataArr=null;graphicData={}}function getToolFromID(id){for(var m in tool_id){if(id==tool_id[m]){return m}}}function convertObjToString(obj){try{var s=JSON.stringify(obj);return s}catch(ex){console.log(ex.name+":"+ex.message+":"+ex.location+":"+ex.text)}}function convertStringToObj(str){try{var o=eval("("+str+")");return o}catch(ex){console.log(ex.name+":"+ex.message+":"+ex.location+":"+ex.text)}}function renderObj(obj){var graphic_id=obj.id;var graphic_data=obj.dataArr;var line_rgb=obj.lineColor;var dLength=graphic_data.length;var dep,x0,y0,x1,y1;var textF;var idName;drawingLayer=graphic_data[0].layer?graphic_data[0].layer:drawingLayer;context.lineWidth=2;context.strokeStyle="rgb(0, 0, 0)";var deb="";if(graphic_id===0){for(var i=0;i<dLength;i++){x1=graphic_data[i].x;y1=graphic_data[i].y;deb+=x1+":"+y1+"||";erase(x1,y1)}}if(graphic_id===3||graphic_id===1){for(i=0;i<dLength;i++){x1=graphic_data[i].x;y1=graphic_data[i].y;if(graphic_data[i].id=="move"){context.beginPath();context.moveTo(x1,y1);x0=x1;y0=y1}else{context.lineTo(x0+x1,y0+y1)}}context.stroke();updateCanvas()}if(graphic_id===2){for(i=0;i<dLength;i++){if(graphic_data[i].text!=""||graphic_data[i].text!=undefined){x0=graphic_data[i].x;y0=graphic_data[i].y;renderText(xt,x0,y0)}}updateCanvas()}if(graphic_id===4||graphic_id===5){var fName=graphic_id==4?drawRect:drawOval;for(i=0;i<dLength;i++){var xd=graphic_data[i].xs<0?-1:1;var yd=graphic_data[i].ys<0?-1:1;x0=graphic_data[i].x;y0=graphic_data[i].y;w0=graphic_data[i].w*xd;h0=graphic_data[i].h*yd;fName(x0,y0,w0,h0)}updateCanvas()}if(graphic_id===11||graphic_id===12){idName=graphic_id==11?"gr2D":"nL";showHideGraph(idName,graphic_data[0].x,graphic_data[0].y,graphic_data[0].addImage)}}updateWhiteboard=function(cmdArray){var oaL=cmdArray.length;for(var l=0;l<oaL;l++){if(cmdArray[l] instanceof Array){var arg=cmdArray[l][1];arg=arg==undefined?[]:arg;this[cmdArray[l][0]].apply(scope,arg)}else{if(cmdArray[l].indexOf("dataArr")!=-1){draw(cmdArray[l])}else{scope[cmdArray[l]]()}}}};function gwt_updatewhiteboard(cmdArray){var realArray=[];for(var i=0,t=cmdArray.length;i<t;i++){var ele=[];ele[0]=cmdArray[i][0];ele[1]=cmdArray[i][1];realArray[i]=ele}updateWhiteboard(realArray)}wb.updateWhiteboard=function(cmdArray){gwt_updatewhiteboard(cmdArray)};draw=function(json_str){var grobj=convertStringToObj(json_str);renderObj(grobj)};function colorToNumber(c){var n=c.split("#").join("0x");return Number(n)}function clear(boo){if(!boo){resetWhiteBoard(false)}wb.whiteboardOut("clear",false)}wb.saveWhiteboard=function(){alert("default whiteboard save")};wb.whiteboardOut=function(data,boo){alert("default whiteboard out: "+data)};wb.disconnectWhiteboard=function(documentObject){alert("default whiteboard disconnect")};return wb}());function initializeQuiz(){var D=document.getElementById("testset_div");if(D){var C=D.getElementsByTagName("div");for(var B=0,A=C.length;B<A;B++){var E=C[B];if(E.className=="hm_question_def"){initializeQuizQuestion(E)}}processMathJax()}}var uniquer=1;function initializeQuizQuestion(E){var L="answer_"+uniquer;var D="ABCDEFGHIJKLMNOPQRSTUVWXYZ";var I=E.getElementsByTagName("li");for(var F=0,K=I.length;F<K;F++){answer=I[F];var H=answer.getAttribute("correct");var B=answer.getElementsByTagName("div");var G=B[0];uniquer++;var C="answer_id_"+uniquer;var A=D.charAt(F);var J="<span class='question-input' style='margin-right: 10px'><input value='"+H+"' type='radio' name='"+L+"' id='"+C+"' onclick='questionGuessChanged(this)'/>&nbsp;"+A+"</span>";G.innerHTML=J+G.innerHTML;if(B.length>0){B[1].style.display="none"}}}function hideQuestionResult(B){var E=B.getElementsByTagName("li");for(var D=0,C=E.length;D<C;D++){answer=E[D];var A=answer.getElementsByTagName("div");if(A.length>1){A[1].style.display="none"}}}function editQuizQuestion(B){if(B){var A=window.open("/solution_editor/SolutionEditor.html?pid="+B)}}function hideQuizQuestionResults(C){if(!C){C="testset_div"}var E=document.getElementById(C);if(E){var D=E.getElementsByTagName("div");for(var B=0,A=D.length;B<A;B++){var F=D[B];if(F.className=="hm_question_def"){hideQuestionResult(F)}}processMathJax()}}function prepareCustomQuizForDisplay(F,H){var E=F.getElementsByTagName("input");var G=0;var D=0;for(var C=0,B=E.length;C<B;C++){if(C>3&&(C%4)==0){G++}E[C].disabled=true;var A=C-(G*4);if(H[G]==A){E[C].checked=true}}};// version 1.1
+window.showCorrectAnswers=function(B){var D=document.getElementById("testset_div");if(D){var A=document.getElementById("testset_div").getElementsByTagName("div");for(var C=0;C<A.length;C++){if(A[C].className=="question_wrapper"){B(A[C])}}}};function setQuizQuestionActive(A){}function findQuestionGuid(B){while(B){var A=B.getAttribute("guid");if(A){return A}B=B.parentNode}return null}function findQuestionByPid(B){var D=document.getElementById("testset_div").getElementsByTagName("div");try{for(var C=0;C<D.length;C++){var E=D[C].getAttribute("guid");if(E==B){return D[C]}}}catch(A){alert("Error while setting selected question response: "+A)}alert("findQuestionByPid: pid not found: "+B);return null}function findQuestionNumberByPid(B){var E=document.getElementById("testset_div").getElementsByTagName("div");var C=0;try{for(var D=0;D<E.length;D++){var F=E[D].getAttribute("guid");if(F){if(F==B){return C}else{C++}}}}catch(A){alert("Error while question index: "+A)}alert("findQuestionByPid: pid not found: "+B);return null}function questionGuessChanged(H){try{var B=findQuestionGuid(H);var G=-1;if(H.id=="optionSkipped"){G="-2"}else{var D=H.parentNode.parentNode.parentNode.parentNode;var A=D.getElementsByTagName("input");for(var C=0;C<A.length;C++){if(A.item(C)==H){G=C;break}}}var E=findQuestionNumberByPid(B);questionGuessChanged_Gwt(""+E,""+G,B)}catch(F){alert("Error answering question in external JS: "+F)}}function setSolutionQuestionAnswerIndexByNumber(B,C){var A=0;showCorrectAnswers(function(H){var G=H.getElementsByTagName("input");if(A==B){for(var F=0,E=G.length;F<E;F++){if(F==C){G[F].checked=true;var D=G[F];questionGuessChanged(D)}else{G[F].checked=false}}}A++})}window.setSolutionQuestionAnswerIndex=function(B,H,E){var G=findQuestionByPid(B);if(G){var F=G.getElementsByTagName("input");for(var D=0,C=F.length;D<C;D++){var A=F.item(D);A.disabled=E?true:false;if(D==H){A.checked=true}}}};function doLoadResource(B,A){doLoadResource_Gwt(B,A);return false}window.markAllCorrectAnswers=function(){showCorrectAnswers(markCorrectResponse)};window.getQuizResultsCorrect=function(){var A=0;showCorrectAnswers(function(E){var D=E.getElementsByTagName("input");for(var C=0,B=D.length;C<B;C++){var F=D[C].parentNode.getElementsByTagName("div");if(F[0].innerHTML=="Correct"){if(D[C].checked){A++}}}});return A};window.getQuizQuestionCount=function(){var A=0;showCorrectAnswers(function(B){A++});return A};window.showCorrectAnswers=function(B){var A=document.getElementById("testset_div").getElementsByTagName("div");for(var C=0;C<A.length;C++){if(A[C].className=="question_wrapper"){B(A[C])}}};window.markCorrectResponse=function(D){var E=D.getElementsByTagName("input");for(var C=0,B=E.length;C<B;C++){var F=E[C].parentNode.getElementsByTagName("div");if(F[0].innerHTML=="Correct"){E[C].checked=true;var A=E[C];questionGuessChanged(A);break}}};function checkQuiz_Gwt(){alert("Checking quiz ...")}window.setQuizQuestionResult=function(C,A){var E=findQuestionByPid(C);var D=getQuestionMarkImage(C);var B=getQuestionMarkText(C);if(A=="Correct"){D.src="/gwt-resources/images/check_correct.png";B.innerHTML="Correct"}else{if(A=="Incorrect"){D.src="/gwt-resources/images/check_incorrect.png";B.innerHTML="Incorrect"}else{D.src="/gwt-resources/images/check_notanswered.png";B.innerHTML="Not answered"}}D.parentNode.style.display="block"};function getQuestionMarkImage(A){return document.getElementById("response_image_"+A)}function getQuestionMarkText(A){return document.getElementById("response_text_"+A)}function log(){}InmhButtons={};if(typeof deconcept=="undefined"){var deconcept=new Object()}if(typeof deconcept.util=="undefined"){deconcept.util=new Object()}if(typeof deconcept.SWFObjectUtil=="undefined"){deconcept.SWFObjectUtil=new Object()}deconcept.SWFObject=function(K,B,L,D,H,I,F,E,C,J){if(!document.getElementById){return }this.DETECT_KEY=J?J:"detectflash";this.skipDetect=deconcept.util.getRequestParameter(this.DETECT_KEY);this.params=new Object();this.variables=new Object();this.attributes=new Array();if(K){this.setAttribute("swf",K)}if(B){this.setAttribute("id",B)}if(L){this.setAttribute("width",L)}if(D){this.setAttribute("height",D)}if(H){this.setAttribute("version",new deconcept.PlayerVersion(H.toString().split(".")))}this.installedVer=deconcept.SWFObjectUtil.getPlayerVersion();if(!window.opera&&document.all&&this.installedVer.major>7){deconcept.SWFObject.doPrepUnload=true}if(I){this.addParam("bgcolor",I)}var A=F?F:"high";this.addParam("quality",A);this.setAttribute("useExpressInstall",false);this.setAttribute("doExpressInstall",false);var G=(E)?E:window.location;this.setAttribute("xiRedirectUrl",G);this.setAttribute("redirectUrl","");if(C){this.setAttribute("redirectUrl",C)}};deconcept.SWFObject.prototype={useExpressInstall:function(A){this.xiSWFPath=!A?"expressinstall.swf":A;this.setAttribute("useExpressInstall",true)},setAttribute:function(A,B){this.attributes[A]=B},getAttribute:function(A){return this.attributes[A]},addParam:function(B,A){this.params[B]=A},getParams:function(){return this.params},addVariable:function(B,A){this.variables[B]=A},getVariable:function(A){return this.variables[A]},getVariables:function(){return this.variables},getVariablePairs:function(){var C=new Array();var B;var A=this.getVariables();for(B in A){C[C.length]=B+"="+A[B]}return C},getSWFHTML:function(){var B="";if(navigator.plugins&&navigator.mimeTypes&&navigator.mimeTypes.length){if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","PlugIn");this.setAttribute("swf",this.xiSWFPath)}B='<embed type="application/x-shockwave-flash" src="'+this.getAttribute("swf")+'" width="'+this.getAttribute("width")+'" height="'+this.getAttribute("height")+'" style="'+this.getAttribute("style")+'"';B+=' id="'+this.getAttribute("id")+'" name="'+this.getAttribute("id")+'" ';var F=this.getParams();for(var E in F){B+=[E]+'="'+F[E]+'" '}var D=this.getVariablePairs().join("&");if(D.length>0){B+='flashvars="'+D+'"'}B+="/>"}else{if(this.getAttribute("doExpressInstall")){this.addVariable("MMplayerType","ActiveX");this.setAttribute("swf",this.xiSWFPath)}B='<object id="'+this.getAttribute("id")+'" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="'+this.getAttribute("width")+'" height="'+this.getAttribute("height")+'" style="'+this.getAttribute("style")+'">';B+='<param name="movie" value="'+this.getAttribute("swf")+'" />';var C=this.getParams();for(var E in C){B+='<param name="'+E+'" value="'+C[E]+'" />'}var A=this.getVariablePairs().join("&");if(A.length>0){B+='<param name="flashvars" value="'+A+'" />'}B+="</object>"}return B},write:function(B){if(this.getAttribute("useExpressInstall")){var A=new deconcept.PlayerVersion([6,0,65]);if(this.installedVer.versionIsValid(A)&&!this.installedVer.versionIsValid(this.getAttribute("version"))){this.setAttribute("doExpressInstall",true);this.addVariable("MMredirectURL",escape(this.getAttribute("xiRedirectUrl")));document.title=document.title.slice(0,47)+" - Flash Player Installation";this.addVariable("MMdoctitle",document.title)}}if(this.skipDetect||this.getAttribute("doExpressInstall")||this.installedVer.versionIsValid(this.getAttribute("version"))){var C=(typeof B=="string")?document.getElementById(B):B;C.innerHTML=this.getSWFHTML();return true}else{if(this.getAttribute("redirectUrl")!=""){document.location.replace(this.getAttribute("redirectUrl"))}}return false}};deconcept.SWFObjectUtil.getPlayerVersion=function(){var E=new deconcept.PlayerVersion([0,0,0]);if(navigator.plugins&&navigator.mimeTypes.length){var A=navigator.plugins["Shockwave Flash"];if(A&&A.description){E=new deconcept.PlayerVersion(A.description.replace(/([a-zA-Z]|\s)+/,"").replace(/(\s+r|\s+b[0-9]+)/,".").split("."))}}else{if(navigator.userAgent&&navigator.userAgent.indexOf("Windows CE")>=0){var B=1;var C=3;while(B){try{C++;B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash."+C);E=new deconcept.PlayerVersion([C,0,0])}catch(D){B=null}}}else{try{var B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.7")}catch(D){try{var B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash.6");E=new deconcept.PlayerVersion([6,0,21]);B.AllowScriptAccess="always"}catch(D){if(E.major==6){return E}}try{B=new ActiveXObject("ShockwaveFlash.ShockwaveFlash")}catch(D){}}if(B!=null){E=new deconcept.PlayerVersion(B.GetVariable("$version").split(" ")[1].split(","))}}}return E};deconcept.PlayerVersion=function(A){this.major=A[0]!=null?parseInt(A[0]):0;this.minor=A[1]!=null?parseInt(A[1]):0;this.rev=A[2]!=null?parseInt(A[2]):0};deconcept.PlayerVersion.prototype.versionIsValid=function(A){if(this.major<A.major){return false}if(this.major>A.major){return true}if(this.minor<A.minor){return false}if(this.minor>A.minor){return true}if(this.rev<A.rev){return false}return true};deconcept.util={getRequestParameter:function(C){var D=document.location.search||document.location.hash;if(C==null){return D}if(D){var B=D.substring(1).split("&");for(var A=0;A<B.length;A++){if(B[A].substring(0,B[A].indexOf("="))==C){return B[A].substring((B[A].indexOf("=")+1))}}}return""}};deconcept.SWFObjectUtil.cleanupSWFs=function(){var B=document.getElementsByTagName("OBJECT");for(var C=B.length-1;C>=0;C--){B[C].style.display="none";for(var A in B[C]){if(typeof B[C][A]=="function"){B[C][A]=function(){}}}}};if(deconcept.SWFObject.doPrepUnload){if(!deconcept.unloadSet){deconcept.SWFObjectUtil.prepUnload=function(){__flash_unloadHandler=function(){};__flash_savedUnloadHandler=function(){};window.attachEvent("onunload",deconcept.SWFObjectUtil.cleanupSWFs)};window.attachEvent("onbeforeunload",deconcept.SWFObjectUtil.prepUnload);deconcept.unloadSet=true}}if(!document.getElementById&&document.all){document.getElementById=function(A){return document.all[A]}}var getQueryParamValue=deconcept.util.getRequestParameter;var FlashObject=deconcept.SWFObject;var SWFObject=deconcept.SWFObject;function f_clientWidth(){return f_filterResults(window.innerWidth?window.innerWidth:0,document.documentElement?document.documentElement.clientWidth:0,document.body?document.body.clientWidth:0)}function f_clientHeight(){return f_filterResults(window.innerHeight?window.innerHeight:0,document.documentElement?document.documentElement.clientHeight:0,document.body?document.body.clientHeight:0)}function f_scrollLeft(){return f_filterResults(window.pageXOffset?window.pageXOffset:0,document.documentElement?document.documentElement.scrollLeft:0,document.body?document.body.scrollLeft:0)}function f_scrollTop(){return f_filterResults(window.pageYOffset?window.pageYOffset:0,document.documentElement?document.documentElement.scrollTop:0,document.body?document.body.scrollTop:0)}function f_filterResults(D,B,A){var C=D?D:0;if(B&&(!C||(C>B))){C=B}return A&&(!C||(C>A))?A:C};var _productionMode=false;var HmEvents={eventTutorInitialized:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorInitialized.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorInitialized.listeners;for(var A=0;A<B.length;A++){B[A]()}}},eventTutorLastStep:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorLastStep.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorLastStep.listeners;for(var A=0;A<B.length;A++){B[A]()}}},eventTutorWidgetComplete:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorWidgetComplete.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorWidgetComplete.listeners;for(var A=0;A<B.length;A++){B[A]()}}},eventTutorSetComplete:{listeners:[],subscribe:function(B){var A=HmEvents.eventTutorSetComplete.listeners;A[A.length]=B},fire:function(){var B=HmEvents.eventTutorSetComplete.listeners;for(var A=0;A<B.length;A++){B[A]()}}}};function $get(A){return document.getElementById(A)}HmEvents.eventTutorInitialized.subscribe(function(){try{MathJax.Hub.Queue(["Typeset",MathJax.Hub])}catch(A){alert("MathJAX processing failed: "+A)}});function setStepsInfoHelp(){}function resetStepsInfo(){}function getNextMoveTo(){}var TutorManager={currentRealStep:-1,currentStepUnit:-1,stepUnitsMo:[],stepUnits:[],steps:[],pid:"",stepUnit:null,tutorData:null,initializeTutor:function(A,D,C,B){TutorManager.pid=A;TutorManager.currentRealStep=-1;TutorManager.currentStepUnit=-1;TutorManager.loadTutorData(D);TutorManager.analyzeLoadedData();enabledNext(true);HmEvents.eventTutorInitialized.fire()},showMessage:function(B){var A=$get("tutor_message");A.innerHTML=B;setTimeout(function(){A.innerHTML="&nbsp;"},2000)},showNextStep:function(){if(TutorManager.currentStepUnit+1<TutorManager.stepUnits.length){TutorManager.currentStepUnit++;showStepUnit(TutorManager.currentStepUnit)}else{TutorManager.showMessage("no more steps")}},showPreviousStep:function(){if(TutorManager.currentStepUnit<0){TutorManager.showMessage("No previous step");return }else{while(TutorManager.currentStepUnit>-1){var A=TutorManager.stepUnits[TutorManager.currentStepUnit].ele;if(TutorManager.stepUnits[TutorManager.currentStepUnit].realNum!=TutorManager.currentRealStep){TutorManager.currentRealStep=TutorManager.stepUnits[TutorManager.currentStepUnit].realNum;break}A.style.display="none";TutorManager.currentStepUnit--}if(TutorManager.currentStepUnit==0){TutorManager.currentStepUnit=-1;window.scrollTo(0,0)}if(TutorManager.currentStepUnit>-1){setAsCurrent(TutorManager.stepUnits[TutorManager.currentStepUnit].ele)}setButtonState();scrollToStep(TutorManager.currentStepUnit);return false}},loadTutorData:function(solutionData){try{TutorManager.tutorData=eval("("+solutionData+")")}catch(e){alert(e)}},analyzeLoadedData:function(){TutorManager.stepUnits=[];TutorManager.steps=[];var I=100;for(var J=0;J<I;J++){var E=_getStepUnit(J);if(E==null){break}var B=E.getAttribute("id");var A=TutorManager.stepUnits.length;var C=E.getAttribute("steprole");var F=E.getAttribute("steptype");var G=parseInt(E.getAttribute("realstep"));var H=new StepUnit(B,A,F,C,G,E);TutorManager.stepUnits[TutorManager.stepUnits.length]=H;var D=TutorManager.steps[G];if(D==null){D=new Step(G);TutorManager.steps[G]=D}D.stepUnits[D.stepUnits.length]=H}return TutorManager.stepUnits.length},backToLesson:function(){gwt_backToLesson()},newProblem:function(){gwt_tutorNewProblem()}};function setButtonState(){setState("step",TutorManager.currentStepUnit<(TutorManager.stepUnits.length-1));setState("back",TutorManager.currentStepUnit>-1)}function enabledPrevious(A){enabledButton("steps_prev",A)}function enabledNext(A){enabledButton("steps_next",A)}function enabledButton(B,C){var A="sexybutton ";if(!C){A+=" disabled"}$get(B).className=A}function StepUnit(F,E,B,A,D,C){this.id=F;this.stepUnitNum=E;this.type=B;this.roleType=A;this.realNum=D;this.ele=C}function Step(A){this.realNum=A;this.stepUnits=new Array()}function _getStepUnit(A){return _getElement("stepunit",A)}function _getHintUnit(A){return _getElement("hintunit",A)}function _getFigureUnit(A){return _getElement("figure",A)}function findPreviousFigureUnit(A){for(p=A-1;p>-1;p--){fu=_getFigureUnit(p);if(fu!=null){return fu}}return null}function setAsNotCurrent(A){A.style.backgroundColor="#E2E2E2"}function _getElement(A,B){var C=A+"-"+B;return document.getElementById(C)}function showStepUnit(A){if(A<0){return }try{var B=TutorManager.stepUnits[A].ele;if(B==null){return false}B.style.display="block";if(B.getAttribute("steprole")=="step"){setAsCurrent(B)}setStepTitle(A,B);var D=_getFigureUnit(A);if(D!=null){if(A==0){D.style.display="block"}else{var E=findPreviousFigureUnit(A);if(E!=null&&E.src==D.src){D.style.display="none"}else{D.style.display="block"}}}for(i=A-1;i>-1;i--){if(TutorManager.stepUnits[i].roleType=="hint"){TutorManager.stepUnits[i].ele.style.display="none"}else{setAsNotCurrent(TutorManager.stepUnits[i].ele)}}TutorManager.currentStepUnit=A;TutorManager.currentRealStep=TutorManager.stepUnits[A].realNum;setButtonState();scrollToStep(A)}catch(C){alert("Error showing step: "+C)}return true}function setAsCurrent(A){A.style.backgroundColor="#F1F1F1"}function setStepTitle(A,C){stepTitle=document.getElementById("step_title-"+A);if(stepTitle){var B=C.getAttribute("steprole");if(B&&B=="step"){stepTitle.innerHTML="Step "+(parseInt(C.getAttribute("realstep"))+1);stepTitle.className="step_title_step"}else{stepTitle.innerHTML="Hint";stepTitle.className="step_title_hint"}}}function findPreviousFigureUnit(A){for(p=A-1;p>-1;p--){fu=_getFigureUnit(p);if(fu!=null){return fu}}return null}function setState(B,A){if(B=="step"){enabledNext(A);if(!A){HmEvents.eventTutorLastStep.fire()}}else{if(B=="back"){enabledPrevious(A)}}}function scrollToStep(C){var B=document.getElementById("scrollTo-button");if(B){var G=DL_GetElementTop(B);var E=getViewableSize();var A=getScrollXY();var F=A[1];var D=E[1];var H=D+F;if(true||G<F||G>H){gwt_scrollToBottomOfScrollPanel(G-D)}}}function hideAllSteps(){for(var A=0;A<TutorManager.stepUnits.length;A++){var B=TutorManager.stepUnits[A].ele;if(B==null){return }if(B.style.display!="none"){B.style.display="none"}}window.scrollTo(0,0)}function initializeExternalJs(){var A="control-floater";new FloatLayer(A,150,15,10);detach(A);alignControlFloater()}function alignControlFloater(){alignFloatLayers();setTimeout(alignControlFloater,2000)}function doQuestionResponseEnd(){}var _activeQuestion;function doQuestionResponse(A,D){var C=TutorManager.tutorData._strings_moArray[A];if(_activeQuestion){var B=document.createElement("div");B.className="questionResponseAnswer";B.innerHTML=C;_activeQuestion.parentNode.appendChild(B)}else{gwt_showMessage(C)}}HmEvents.eventTutorInitialized.subscribe(function(){var H=document.getElementById("tutor_raw_steps_wrapper");if(H==null){return }var B=H.getElementsByTagName("div");var A=B.length;for(var E=0;E<A;E++){var G=B.item(E);if(G.className=="question_guess"){var F=G.getElementsByTagName("img");var D=F.item(0);var C=D.onmouseout=null;D.onmouseoverDeferred=D.onmouseover;D.onmouseover=null;D.onclick=function(I){var J=(I)?I:window.event;var K=J.srcElement?J.srcElement:J.target;_activeQuestion=K;if(!K.onmouseoverDeferred){alert("error: no deferred move event");return }K.onclick=null;K.onmouseoverDeferred()}}}});function DL_GetElementLeft(B){if(!B&&this){B=this}var C=document.all?true:false;var A=B.offsetLeft;var D=B.offsetParent;while(D!=null){if(C){if(D.tagName=="TD"){A+=D.clientLeft}}A+=D.offsetLeft;D=D.offsetParent}return A}function DL_GetElementTop(B){if(!B&&this){B=this}var C=document.all?true:false;var A=B.offsetTop;var D=B.offsetParent;while(D!=null){if(C){if(D.tagName=="TD"){A+=D.clientTop}}A+=D.offsetTop;D=D.offsetParent}return A}function getViewableSize(){var B=0,A=0;if(typeof (window.innerWidth)=="number"){B=window.innerWidth;A=window.innerHeight}else{if(document.documentElement&&(document.documentElement.clientWidth||document.documentElement.clientHeight)){B=document.documentElement.clientWidth;A=document.documentElement.clientHeight}else{if(document.body&&(document.body.clientWidth||document.body.clientHeight)){B=document.body.clientWidth;A=document.body.clientHeight}}}a=[B,A];return a}function getScrollXY(){var B=0,A=0;if(typeof (window.pageYOffset)=="number"){A=window.pageYOffset;B=window.pageXOffset}else{if(document.body&&(document.body.scrollLeft||document.body.scrollTop)){A=document.body.scrollTop;B=document.body.scrollLeft}else{if(document.documentElement&&(document.documentElement.scrollLeft||document.documentElement.scrollTop)){A=document.documentElement.scrollTop;B=document.documentElement.scrollLeft}}}return[B,A]}function _addEvent(E,D,B,A){if(E.addEventListener){E.addEventListener(D,B,A);return true}else{if(E.attachEvent){var C=E.attachEvent("on"+D,B);return C}else{alert("Handler could not be attached")}}}function _removeEvent(E,D,B,A){if(E.removeEventListener){E.removeEventListener(D,B,A);return true}else{if(E.detachEvent){var C=E.detachEvent("on"+D,B);return C}else{alert("Handler could not be removed")}}}function hideDivOnMouseOut(A){var C,B;if(window.event){C=this;B=window.event.toElement}else{C=A.currentTarget;B=A.relatedTarget}if(C!=B){if(!contains(C,B)){C.style.display="none"}}}function contains(B,A){while(A.parentNode){A=A.parentNode;if(A==B){return true}}return false}function grabComputedStyle(B,A){if(document.defaultView&&document.defaultView.getComputedStyle){return document.defaultView.getComputedStyle(B,null).getPropertyValue(A)}else{if(B.currentStyle){return B.currentStyle[A]}else{return null}}}function grabComputedHeight(B){var A=grabComputedStyle(B,"height");if(A!=null){if(A=="auto"){if(B.offsetHeight){A=B.offsetHeight}}A=parseInt(A)}return A}function grabComputedWidth(B){var A=grabComputedStyle(B,"width");if(A!=null){if(A.indexOf("px")!=-1){A=A.substring(0,A.indexOf("px"))}if(A=="auto"){if(B.offsetWidth){A=B.offsetWidth}}}return A};if(!document.createElement("canvas").getContext){(function(){var AB=Math;var K=AB.round;var J=AB.sin;var W=AB.cos;var e=AB.abs;var n=AB.sqrt;var D=10;var F=D/2;var V=+navigator.userAgent.match(/MSIE ([\d.]+)?/)[1];function U(){return this.context_||(this.context_=new a(this))}var P=Array.prototype.slice;function G(i,j,m){var Z=P.call(arguments,2);return function(){return i.apply(j,Z.concat(P.call(arguments)))}}function AF(Z){return String(Z).replace(/&/g,"&amp;").replace(/"/g,"&quot;")}function z(j,i,Z){if(!j.namespaces[i]){j.namespaces.add(i,Z,"#default#VML")}}function s(i){z(i,"g_vml_","urn:schemas-microsoft-com:vml");z(i,"g_o_","urn:schemas-microsoft-com:office:office");if(!i.styleSheets.ex_canvas_){var Z=i.createStyleSheet();Z.owningElement.id="ex_canvas_";Z.cssText="canvas{display:inline-block;overflow:hidden;text-align:left;width:300px;height:150px}"}}s(document);var E={init:function(Z){var i=Z||document;i.createElement("canvas");i.attachEvent("onreadystatechange",G(this.init_,this,i))},init_:function(m){var j=m.getElementsByTagName("canvas");for(var Z=0;Z<j.length;Z++){this.initElement(j[Z])}},initElement:function(i){if(!i.getContext){i.getContext=U;s(i.ownerDocument);i.innerHTML="";i.attachEvent("onpropertychange",T);i.attachEvent("onresize",x);var Z=i.attributes;if(Z.width&&Z.width.specified){i.style.width=Z.width.nodeValue+"px"}else{i.width=i.clientWidth}if(Z.height&&Z.height.specified){i.style.height=Z.height.nodeValue+"px"}else{i.height=i.clientHeight}}return i}};function T(i){var Z=i.srcElement;switch(i.propertyName){case"width":Z.getContext().clearRect();Z.style.width=Z.attributes.width.nodeValue+"px";Z.firstChild.style.width=Z.clientWidth+"px";break;case"height":Z.getContext().clearRect();Z.style.height=Z.attributes.height.nodeValue+"px";Z.firstChild.style.height=Z.clientHeight+"px";break}}function x(i){var Z=i.srcElement;if(Z.firstChild){Z.firstChild.style.width=Z.clientWidth+"px";Z.firstChild.style.height=Z.clientHeight+"px"}}E.init();var I=[];for(var AE=0;AE<16;AE++){for(var AD=0;AD<16;AD++){I[AE*16+AD]=AE.toString(16)+AD.toString(16)}}function X(){return[[1,0,0],[0,1,0],[0,0,1]]}function g(m,j){var i=X();for(var Z=0;Z<3;Z++){for(var AH=0;AH<3;AH++){var p=0;for(var AG=0;AG<3;AG++){p+=m[Z][AG]*j[AG][AH]}i[Z][AH]=p}}return i}function R(i,Z){Z.fillStyle=i.fillStyle;Z.lineCap=i.lineCap;Z.lineJoin=i.lineJoin;Z.lineWidth=i.lineWidth;Z.miterLimit=i.miterLimit;Z.shadowBlur=i.shadowBlur;Z.shadowColor=i.shadowColor;Z.shadowOffsetX=i.shadowOffsetX;Z.shadowOffsetY=i.shadowOffsetY;Z.strokeStyle=i.strokeStyle;Z.globalAlpha=i.globalAlpha;Z.font=i.font;Z.textAlign=i.textAlign;Z.textBaseline=i.textBaseline;Z.arcScaleX_=i.arcScaleX_;Z.arcScaleY_=i.arcScaleY_;Z.lineScale_=i.lineScale_}var B={aliceblue:"#F0F8FF",antiquewhite:"#FAEBD7",aquamarine:"#7FFFD4",azure:"#F0FFFF",beige:"#F5F5DC",bisque:"#FFE4C4",black:"#000000",blanchedalmond:"#FFEBCD",blueviolet:"#8A2BE2",brown:"#A52A2A",burlywood:"#DEB887",cadetblue:"#5F9EA0",chartreuse:"#7FFF00",chocolate:"#D2691E",coral:"#FF7F50",cornflowerblue:"#6495ED",cornsilk:"#FFF8DC",crimson:"#DC143C",cyan:"#00FFFF",darkblue:"#00008B",darkcyan:"#008B8B",darkgoldenrod:"#B8860B",darkgray:"#A9A9A9",darkgreen:"#006400",darkgrey:"#A9A9A9",darkkhaki:"#BDB76B",darkmagenta:"#8B008B",darkolivegreen:"#556B2F",darkorange:"#FF8C00",darkorchid:"#9932CC",darkred:"#8B0000",darksalmon:"#E9967A",darkseagreen:"#8FBC8F",darkslateblue:"#483D8B",darkslategray:"#2F4F4F",darkslategrey:"#2F4F4F",darkturquoise:"#00CED1",darkviolet:"#9400D3",deeppink:"#FF1493",deepskyblue:"#00BFFF",dimgray:"#696969",dimgrey:"#696969",dodgerblue:"#1E90FF",firebrick:"#B22222",floralwhite:"#FFFAF0",forestgreen:"#228B22",gainsboro:"#DCDCDC",ghostwhite:"#F8F8FF",gold:"#FFD700",goldenrod:"#DAA520",grey:"#808080",greenyellow:"#ADFF2F",honeydew:"#F0FFF0",hotpink:"#FF69B4",indianred:"#CD5C5C",indigo:"#4B0082",ivory:"#FFFFF0",khaki:"#F0E68C",lavender:"#E6E6FA",lavenderblush:"#FFF0F5",lawngreen:"#7CFC00",lemonchiffon:"#FFFACD",lightblue:"#ADD8E6",lightcoral:"#F08080",lightcyan:"#E0FFFF",lightgoldenrodyellow:"#FAFAD2",lightgreen:"#90EE90",lightgrey:"#D3D3D3",lightpink:"#FFB6C1",lightsalmon:"#FFA07A",lightseagreen:"#20B2AA",lightskyblue:"#87CEFA",lightslategray:"#778899",lightslategrey:"#778899",lightsteelblue:"#B0C4DE",lightyellow:"#FFFFE0",limegreen:"#32CD32",linen:"#FAF0E6",magenta:"#FF00FF",mediumaquamarine:"#66CDAA",mediumblue:"#0000CD",mediumorchid:"#BA55D3",mediumpurple:"#9370DB",mediumseagreen:"#3CB371",mediumslateblue:"#7B68EE",mediumspringgreen:"#00FA9A",mediumturquoise:"#48D1CC",mediumvioletred:"#C71585",midnightblue:"#191970",mintcream:"#F5FFFA",mistyrose:"#FFE4E1",moccasin:"#FFE4B5",navajowhite:"#FFDEAD",oldlace:"#FDF5E6",olivedrab:"#6B8E23",orange:"#FFA500",orangered:"#FF4500",orchid:"#DA70D6",palegoldenrod:"#EEE8AA",palegreen:"#98FB98",paleturquoise:"#AFEEEE",palevioletred:"#DB7093",papayawhip:"#FFEFD5",peachpuff:"#FFDAB9",peru:"#CD853F",pink:"#FFC0CB",plum:"#DDA0DD",powderblue:"#B0E0E6",rosybrown:"#BC8F8F",royalblue:"#4169E1",saddlebrown:"#8B4513",salmon:"#FA8072",sandybrown:"#F4A460",seagreen:"#2E8B57",seashell:"#FFF5EE",sienna:"#A0522D",skyblue:"#87CEEB",slateblue:"#6A5ACD",slategray:"#708090",slategrey:"#708090",snow:"#FFFAFA",springgreen:"#00FF7F",steelblue:"#4682B4",tan:"#D2B48C",thistle:"#D8BFD8",tomato:"#FF6347",turquoise:"#40E0D0",violet:"#EE82EE",wheat:"#F5DEB3",whitesmoke:"#F5F5F5",yellowgreen:"#9ACD32"};function l(i){var m=i.indexOf("(",3);var Z=i.indexOf(")",m+1);var j=i.substring(m+1,Z).split(",");if(j.length!=4||i.charAt(3)!="a"){j[3]=1}return j}function C(Z){return parseFloat(Z)/100}function N(i,j,Z){return Math.min(Z,Math.max(j,i))}function f(AG){var Z,AI,AJ,AH,AK,m;AH=parseFloat(AG[0])/360%360;if(AH<0){AH++}AK=N(C(AG[1]),0,1);m=N(C(AG[2]),0,1);if(AK==0){Z=AI=AJ=m}else{var i=m<0.5?m*(1+AK):m+AK-m*AK;var j=2*m-i;Z=A(j,i,AH+1/3);AI=A(j,i,AH);AJ=A(j,i,AH-1/3)}return"#"+I[Math.floor(Z*255)]+I[Math.floor(AI*255)]+I[Math.floor(AJ*255)]}function A(i,Z,j){if(j<0){j++}if(j>1){j--}if(6*j<1){return i+(Z-i)*6*j}else{if(2*j<1){return Z}else{if(3*j<2){return i+(Z-i)*(2/3-j)*6}else{return i}}}}var Y={};function c(Z){if(Z in Y){return Y[Z]}var AG,p=1;Z=String(Z);if(Z.charAt(0)=="#"){AG=Z}else{if(/^rgb/.test(Z)){var m=l(Z);var AG="#",AH;for(var j=0;j<3;j++){if(m[j].indexOf("%")!=-1){AH=Math.floor(C(m[j])*255)}else{AH=+m[j]}AG+=I[N(AH,0,255)]}p=+m[3]}else{if(/^hsl/.test(Z)){var m=l(Z);AG=f(m);p=m[3]}else{AG=B[Z]||Z}}}return Y[Z]={color:AG,alpha:p}}var L={style:"normal",variant:"normal",weight:"normal",size:10,family:"sans-serif"};var k={};function b(Z){if(k[Z]){return k[Z]}var m=document.createElement("div");var j=m.style;try{j.font=Z}catch(i){}return k[Z]={style:j.fontStyle||L.style,variant:j.fontVariant||L.variant,weight:j.fontWeight||L.weight,size:j.fontSize||L.size,family:j.fontFamily||L.family}}function Q(j,i){var Z={};for(var AH in j){Z[AH]=j[AH]}var AG=parseFloat(i.currentStyle.fontSize),m=parseFloat(j.size);if(typeof j.size=="number"){Z.size=j.size}else{if(j.size.indexOf("px")!=-1){Z.size=m}else{if(j.size.indexOf("em")!=-1){Z.size=AG*m}else{if(j.size.indexOf("%")!=-1){Z.size=(AG/100)*m}else{if(j.size.indexOf("pt")!=-1){Z.size=m/0.75}else{Z.size=AG}}}}}Z.size*=0.981;return Z}function AC(Z){return Z.style+" "+Z.variant+" "+Z.weight+" "+Z.size+"px "+Z.family}var O={butt:"flat",round:"round"};function t(Z){return O[Z]||"square"}function a(Z){this.m_=X();this.mStack_=[];this.aStack_=[];this.currentPath_=[];this.strokeStyle="#000";this.fillStyle="#000";this.lineWidth=1;this.lineJoin="miter";this.lineCap="butt";this.miterLimit=D*1;this.globalAlpha=1;this.font="10px sans-serif";this.textAlign="left";this.textBaseline="alphabetic";this.canvas=Z;var j="width:"+Z.clientWidth+"px;height:"+Z.clientHeight+"px;overflow:hidden;position:absolute";var i=Z.ownerDocument.createElement("div");i.style.cssText=j;Z.appendChild(i);var m=i.cloneNode(false);m.style.backgroundColor="red";m.style.filter="alpha(opacity=0)";Z.appendChild(m);this.element_=i;this.arcScaleX_=1;this.arcScaleY_=1;this.lineScale_=1}var M=a.prototype;M.clearRect=function(){if(this.textMeasureEl_){this.textMeasureEl_.removeNode(true);this.textMeasureEl_=null}this.element_.innerHTML=""};M.beginPath=function(){this.currentPath_=[]};M.moveTo=function(i,Z){var j=w(this,i,Z);this.currentPath_.push({type:"moveTo",x:j.x,y:j.y});this.currentX_=j.x;this.currentY_=j.y};M.lineTo=function(i,Z){var j=w(this,i,Z);this.currentPath_.push({type:"lineTo",x:j.x,y:j.y});this.currentX_=j.x;this.currentY_=j.y};M.bezierCurveTo=function(j,i,AK,AJ,AI,AG){var Z=w(this,AI,AG);var AH=w(this,j,i);var m=w(this,AK,AJ);h(this,AH,m,Z)};function h(Z,m,j,i){Z.currentPath_.push({type:"bezierCurveTo",cp1x:m.x,cp1y:m.y,cp2x:j.x,cp2y:j.y,x:i.x,y:i.y});Z.currentX_=i.x;Z.currentY_=i.y}M.quadraticCurveTo=function(AI,j,i,Z){var AH=w(this,AI,j);var AG=w(this,i,Z);var AJ={x:this.currentX_+2/3*(AH.x-this.currentX_),y:this.currentY_+2/3*(AH.y-this.currentY_)};var m={x:AJ.x+(AG.x-this.currentX_)/3,y:AJ.y+(AG.y-this.currentY_)/3};h(this,AJ,m,AG)};M.arc=function(AL,AJ,AK,AG,i,j){AK*=D;var AP=j?"at":"wa";var AM=AL+W(AG)*AK-F;var AO=AJ+J(AG)*AK-F;var Z=AL+W(i)*AK-F;var AN=AJ+J(i)*AK-F;if(AM==Z&&!j){AM+=0.125}var m=w(this,AL,AJ);var AI=w(this,AM,AO);var AH=w(this,Z,AN);this.currentPath_.push({type:AP,x:m.x,y:m.y,radius:AK,xStart:AI.x,yStart:AI.y,xEnd:AH.x,yEnd:AH.y})};M.rect=function(j,i,Z,m){this.moveTo(j,i);this.lineTo(j+Z,i);this.lineTo(j+Z,i+m);this.lineTo(j,i+m);this.closePath()};M.strokeRect=function(j,i,Z,m){var p=this.currentPath_;this.beginPath();this.moveTo(j,i);this.lineTo(j+Z,i);this.lineTo(j+Z,i+m);this.lineTo(j,i+m);this.closePath();this.stroke();this.currentPath_=p};M.fillRect=function(j,i,Z,m){var p=this.currentPath_;this.beginPath();this.moveTo(j,i);this.lineTo(j+Z,i);this.lineTo(j+Z,i+m);this.lineTo(j,i+m);this.closePath();this.fill();this.currentPath_=p};M.createLinearGradient=function(i,m,Z,j){var p=new v("gradient");p.x0_=i;p.y0_=m;p.x1_=Z;p.y1_=j;return p};M.createRadialGradient=function(m,AG,j,i,p,Z){var AH=new v("gradientradial");AH.x0_=m;AH.y0_=AG;AH.r0_=j;AH.x1_=i;AH.y1_=p;AH.r1_=Z;return AH};M.drawImage=function(AR,m){var AK,AI,AM,AY,AP,AN,AT,Aa;var AL=AR.runtimeStyle.width;var AQ=AR.runtimeStyle.height;AR.runtimeStyle.width="auto";AR.runtimeStyle.height="auto";var AJ=AR.width;var AW=AR.height;AR.runtimeStyle.width=AL;AR.runtimeStyle.height=AQ;if(arguments.length==3){AK=arguments[1];AI=arguments[2];AP=AN=0;AT=AM=AJ;Aa=AY=AW}else{if(arguments.length==5){AK=arguments[1];AI=arguments[2];AM=arguments[3];AY=arguments[4];AP=AN=0;AT=AJ;Aa=AW}else{if(arguments.length==9){AP=arguments[1];AN=arguments[2];AT=arguments[3];Aa=arguments[4];AK=arguments[5];AI=arguments[6];AM=arguments[7];AY=arguments[8]}else{throw Error("Invalid number of arguments")}}}if(AR.tagName=="canvas"){var i=document.createElement("div");i.style.position="absolute";i.style.left=AK+"px";i.style.top=AI+"px";i.innerHTML=AR.outerHTML;this.element_.insertAdjacentHTML("BeforeEnd",i.outerHTML);return }var AZ=w(this,AK,AI);var p=AT/2;var j=Aa/2;var AX=[];var Z=10;var AH=10;AX.push(" <g_vml_:group",' coordsize="',D*Z,",",D*AH,'"',' coordorigin="0,0"',' style="width:',Z,"px;height:",AH,"px;position:absolute;");if(this.m_[0][0]!=1||this.m_[0][1]||this.m_[1][1]!=1||this.m_[1][0]){var AG=[];AG.push("M11=",this.m_[0][0],",","M12=",this.m_[1][0],",","M21=",this.m_[0][1],",","M22=",this.m_[1][1],",","Dx=",K(AZ.x/D),",","Dy=",K(AZ.y/D),"");var AV=AZ;var AU=w(this,AK+AM,AI);var AS=w(this,AK,AI+AY);var AO=w(this,AK+AM,AI+AY);AV.x=AB.max(AV.x,AU.x,AS.x,AO.x);AV.y=AB.max(AV.y,AU.y,AS.y,AO.y);AX.push("padding:0 ",K(AV.x/D),"px ",K(AV.y/D),"px 0;filter:progid:DXImageTransform.Microsoft.Matrix(",AG.join(""),", sizingmethod='clip');")}else{AX.push("top:",K(AZ.y/D),"px;left:",K(AZ.x/D),"px;")}AX.push(' ">','<g_vml_:image src="',AR.src,'"',' style="width:',D*AM,"px;"," height:",D*AY,'px"',' cropleft="',AP/AJ,'"',' croptop="',AN/AW,'"',' cropright="',(AJ-AP-AT)/AJ,'"',' cropbottom="',(AW-AN-Aa)/AW,'"'," />","</g_vml_:group>");this.element_.insertAdjacentHTML("BeforeEnd",AX.join(""))};M.stroke=function(AL){var AJ=[];var m=false;var j=10;var AM=10;AJ.push("<g_vml_:shape",' filled="',!!AL,'"',' style="position:absolute;width:',j,"px;height:",AM,'px;"',' coordorigin="0,0"',' coordsize="',D*j,",",D*AM,'"',' stroked="',!AL,'"',' path="');var AN=false;var AG={x:null,y:null};var AK={x:null,y:null};for(var AH=0;AH<this.currentPath_.length;AH++){var Z=this.currentPath_[AH];var AI;switch(Z.type){case"moveTo":AI=Z;AJ.push(" m ",K(Z.x),",",K(Z.y));break;case"lineTo":AJ.push(" l ",K(Z.x),",",K(Z.y));break;case"close":AJ.push(" x ");Z=null;break;case"bezierCurveTo":AJ.push(" c ",K(Z.cp1x),",",K(Z.cp1y),",",K(Z.cp2x),",",K(Z.cp2y),",",K(Z.x),",",K(Z.y));break;case"at":case"wa":AJ.push(" ",Z.type," ",K(Z.x-this.arcScaleX_*Z.radius),",",K(Z.y-this.arcScaleY_*Z.radius)," ",K(Z.x+this.arcScaleX_*Z.radius),",",K(Z.y+this.arcScaleY_*Z.radius)," ",K(Z.xStart),",",K(Z.yStart)," ",K(Z.xEnd),",",K(Z.yEnd));break}if(Z){if(AG.x==null||Z.x<AG.x){AG.x=Z.x}if(AK.x==null||Z.x>AK.x){AK.x=Z.x}if(AG.y==null||Z.y<AG.y){AG.y=Z.y}if(AK.y==null||Z.y>AK.y){AK.y=Z.y}}}AJ.push(' ">');if(!AL){S(this,AJ)}else{d(this,AJ,AG,AK)}AJ.push("</g_vml_:shape>");this.element_.insertAdjacentHTML("beforeEnd",AJ.join(""))};function S(j,AG){var i=c(j.strokeStyle);var m=i.color;var p=i.alpha*j.globalAlpha;var Z=j.lineScale_*j.lineWidth;if(Z<1){p*=Z}AG.push("<g_vml_:stroke",' opacity="',p,'"',' joinstyle="',j.lineJoin,'"',' miterlimit="',j.miterLimit,'"',' endcap="',t(j.lineCap),'"',' weight="',Z,'px"',' color="',m,'" />')}function d(AQ,AI,Aj,AR){var AJ=AQ.fillStyle;var Aa=AQ.arcScaleX_;var AZ=AQ.arcScaleY_;var Z=AR.x-Aj.x;var m=AR.y-Aj.y;if(AJ instanceof v){var AN=0;var Ae={x:0,y:0};var AW=0;var AM=1;if(AJ.type_=="gradient"){var AL=AJ.x0_/Aa;var j=AJ.y0_/AZ;var AK=AJ.x1_/Aa;var Al=AJ.y1_/AZ;var Ai=w(AQ,AL,j);var Ah=w(AQ,AK,Al);var AG=Ah.x-Ai.x;var p=Ah.y-Ai.y;AN=Math.atan2(AG,p)*180/Math.PI;if(AN<0){AN+=360}if(AN<0.000001){AN=0}}else{var Ai=w(AQ,AJ.x0_,AJ.y0_);Ae={x:(Ai.x-Aj.x)/Z,y:(Ai.y-Aj.y)/m};Z/=Aa*D;m/=AZ*D;var Ac=AB.max(Z,m);AW=2*AJ.r0_/Ac;AM=2*AJ.r1_/Ac-AW}var AU=AJ.colors_;AU.sort(function(Am,i){return Am.offset-i.offset});var AP=AU.length;var AT=AU[0].color;var AS=AU[AP-1].color;var AY=AU[0].alpha*AQ.globalAlpha;var AX=AU[AP-1].alpha*AQ.globalAlpha;var Ad=[];for(var Ag=0;Ag<AP;Ag++){var AO=AU[Ag];Ad.push(AO.offset*AM+AW+" "+AO.color)}AI.push('<g_vml_:fill type="',AJ.type_,'"',' method="none" focus="100%"',' color="',AT,'"',' color2="',AS,'"',' colors="',Ad.join(","),'"',' opacity="',AX,'"',' g_o_:opacity2="',AY,'"',' angle="',AN,'"',' focusposition="',Ae.x,",",Ae.y,'" />')}else{if(AJ instanceof u){if(Z&&m){var AH=-Aj.x;var Ab=-Aj.y;AI.push("<g_vml_:fill",' position="',AH/Z*Aa*Aa,",",Ab/m*AZ*AZ,'"',' type="tile"',' src="',AJ.src_,'" />')}}else{var Ak=c(AQ.fillStyle);var AV=Ak.color;var Af=Ak.alpha*AQ.globalAlpha;AI.push('<g_vml_:fill color="',AV,'" opacity="',Af,'" />')}}}M.fill=function(){this.stroke(true)};M.closePath=function(){this.currentPath_.push({type:"close"})};function w(i,p,j){var Z=i.m_;return{x:D*(p*Z[0][0]+j*Z[1][0]+Z[2][0])-F,y:D*(p*Z[0][1]+j*Z[1][1]+Z[2][1])-F}}M.save=function(){var Z={};R(this,Z);this.aStack_.push(Z);this.mStack_.push(this.m_);this.m_=g(X(),this.m_)};M.restore=function(){if(this.aStack_.length){R(this.aStack_.pop(),this);this.m_=this.mStack_.pop()}};function H(Z){return isFinite(Z[0][0])&&isFinite(Z[0][1])&&isFinite(Z[1][0])&&isFinite(Z[1][1])&&isFinite(Z[2][0])&&isFinite(Z[2][1])}function AA(i,Z,j){if(!H(Z)){return }i.m_=Z;if(j){var p=Z[0][0]*Z[1][1]-Z[0][1]*Z[1][0];i.lineScale_=n(e(p))}}M.translate=function(j,i){var Z=[[1,0,0],[0,1,0],[j,i,1]];AA(this,g(Z,this.m_),false)};M.rotate=function(i){var m=W(i);var j=J(i);var Z=[[m,j,0],[-j,m,0],[0,0,1]];AA(this,g(Z,this.m_),false)};M.scale=function(j,i){this.arcScaleX_*=j;this.arcScaleY_*=i;var Z=[[j,0,0],[0,i,0],[0,0,1]];AA(this,g(Z,this.m_),true)};M.transform=function(p,m,AH,AG,i,Z){var j=[[p,m,0],[AH,AG,0],[i,Z,1]];AA(this,g(j,this.m_),true)};M.setTransform=function(AG,p,AI,AH,j,i){var Z=[[AG,p,0],[AI,AH,0],[j,i,1]];AA(this,Z,true)};M.drawText_=function(AM,AK,AJ,AP,AI){var AO=this.m_,AS=1000,i=0,AR=AS,AH={x:0,y:0},AG=[];var Z=Q(b(this.font),this.element_);var j=AC(Z);var AT=this.element_.currentStyle;var p=this.textAlign.toLowerCase();switch(p){case"left":case"center":case"right":break;case"end":p=AT.direction=="ltr"?"right":"left";break;case"start":p=AT.direction=="rtl"?"right":"left";break;default:p="left"}switch(this.textBaseline){case"hanging":case"top":AH.y=Z.size/1.75;break;case"middle":break;default:case null:case"alphabetic":case"ideographic":case"bottom":AH.y=-Z.size/2.25;break}switch(p){case"right":i=AS;AR=0.05;break;case"center":i=AR=AS/2;break}var AQ=w(this,AK+AH.x,AJ+AH.y);AG.push('<g_vml_:line from="',-i,' 0" to="',AR,' 0.05" ',' coordsize="100 100" coordorigin="0 0"',' filled="',!AI,'" stroked="',!!AI,'" style="position:absolute;width:1px;height:1px;">');if(AI){S(this,AG)}else{d(this,AG,{x:-i,y:0},{x:AR,y:Z.size})}var AN=AO[0][0].toFixed(3)+","+AO[1][0].toFixed(3)+","+AO[0][1].toFixed(3)+","+AO[1][1].toFixed(3)+",0,0";var AL=K(AQ.x/D)+","+K(AQ.y/D);AG.push('<g_vml_:skew on="t" matrix="',AN,'" ',' offset="',AL,'" origin="',i,' 0" />','<g_vml_:path textpathok="true" />','<g_vml_:textpath on="true" string="',AF(AM),'" style="v-text-align:',p,";font:",AF(j),'" /></g_vml_:line>');this.element_.insertAdjacentHTML("beforeEnd",AG.join(""))};M.fillText=function(j,Z,m,i){this.drawText_(j,Z,m,i,false)};M.strokeText=function(j,Z,m,i){this.drawText_(j,Z,m,i,true)};M.measureText=function(j){if(!this.textMeasureEl_){var Z='<span style="position:absolute;top:-20000px;left:0;padding:0;margin:0;border:none;white-space:pre;"></span>';this.element_.insertAdjacentHTML("beforeEnd",Z);this.textMeasureEl_=this.element_.lastChild}var i=this.element_.ownerDocument;this.textMeasureEl_.innerHTML="";this.textMeasureEl_.style.font=this.font;this.textMeasureEl_.appendChild(i.createTextNode(j));return{width:this.textMeasureEl_.offsetWidth}};M.clip=function(){};M.arcTo=function(){};M.createPattern=function(i,Z){return new u(i,Z)};function v(Z){this.type_=Z;this.x0_=0;this.y0_=0;this.r0_=0;this.x1_=0;this.y1_=0;this.r1_=0;this.colors_=[]}v.prototype.addColorStop=function(i,Z){Z=c(Z);this.colors_.push({offset:i,color:Z.color,alpha:Z.alpha})};function u(i,Z){r(i);switch(Z){case"repeat":case null:case"":this.repetition_="repeat";break;case"repeat-x":case"repeat-y":case"no-repeat":this.repetition_=Z;break;default:o("SYNTAX_ERR")}this.src_=i.src;this.width_=i.width;this.height_=i.height}function o(Z){throw new q(Z)}function r(Z){if(!Z||Z.nodeType!=1||Z.tagName!="IMG"){o("TYPE_MISMATCH_ERR")}if(Z.readyState!="complete"){o("INVALID_STATE_ERR")}}function q(Z){this.code=this[Z];this.message=Z+": DOM Exception "+this.code}var y=q.prototype=new Error;y.INDEX_SIZE_ERR=1;y.DOMSTRING_SIZE_ERR=2;y.HIERARCHY_REQUEST_ERR=3;y.WRONG_DOCUMENT_ERR=4;y.INVALID_CHARACTER_ERR=5;y.NO_DATA_ALLOWED_ERR=6;y.NO_MODIFICATION_ALLOWED_ERR=7;y.NOT_FOUND_ERR=8;y.NOT_SUPPORTED_ERR=9;y.INUSE_ATTRIBUTE_ERR=10;y.INVALID_STATE_ERR=11;y.SYNTAX_ERR=12;y.INVALID_MODIFICATION_ERR=13;y.NAMESPACE_ERR=14;y.INVALID_ACCESS_ERR=15;y.VALIDATION_ERR=16;y.TYPE_MISMATCH_ERR=17;G_vmlCanvasManager=E;CanvasRenderingContext2D=a;CanvasGradient=v;CanvasPattern=u;DOMException=q})()};var Whiteboard=(function(){var wb={};var canvas,context,pencil_btn,rect_btn,width,height,x,y,clickX,clickY,penDown=false;var origcanvas,origcontext,currentTool="pencil";var graphcanvas,graphcontext,topcanvas,topcontext,gr2D,nL,graphMode,gr2D_xp,gr2D_yp,nL_xp,nL_yp;var offX,offY,x0,y0,w0,h0,drawingLayer,drawcolor,rendering;var graphicData,tool_id;var scope=this;var isTouchEnabled=false;function renderText(xt,xp,yp){var txt=xt?xt:$get_Element("#content").value;var str=txt.split("\n");var x0=xp?xp:clickX;var y0=yp?yp:clickY;var ht=15;for(var i=0;i<str.length;i++){context.fillText(str[i],x0,y0);y0+=ht}updateCanvas();if(!xt){updateText(txt);sendData();$get_Element("#content").value="";$get_Element("#inputBox").style.display="none"}}function onkeyupHandler(){}function onkeydownHandler(_event){var event=_event?_event:window.event;if(currentTool=="text"&&event.keyCode==13){if(!event.shiftKey){if(event.preventDefault){event.preventDefault()}else{event.returnValue=false}renderText()}}}function resetButtonHighlite(){$get_Element("#button_text").style.border="1px solid #000000";$get_Element("#button_pencil").style.border="1px solid #000000";$get_Element("#button_line").style.border="1px solid #000000";$get_Element("#button_rect").style.border="1px solid #000000";$get_Element("#button_oval").style.border="1px solid #000000";$get_Element("#button_eraser").style.border="1px solid #000000"}function buttonHighlite(t){resetButtonHighlite();$get_Element("#button_"+t).style.border="2px solid #ff9900"}function viewport(){var e=window,a="inner";if(!("innerWidth" in window)){a="client";e=document.documentElement||document.body}return{width:e[a+"Width"],height:e[a+"Height"]}}function getDocHeight(){var D=document;return Math.max(Math.max(D.body.scrollHeight,D.documentElement.scrollHeight),Math.max(D.body.offsetHeight,D.documentElement.offsetHeight),Math.max(D.body.clientHeight,D.documentElement.clientHeight))}function touchStartFunction(event){event.preventDefault()}var touchMoveFunction=touchStartFunction;var _imageBaseDir="/gwt-resources/images/whiteboard/";var mainDoc;wb.initWhiteboard=function(mainDocIn){console.log("WHITEBOARD_INITIATED! - document object:"+mainDocIn);mainDoc=mainDocIn;canvas=$get_Element("#canvas");var siz=viewport();var docWidth=siz.width;var docHeight=siz.height;var topOff=$get_Element("#tools").offsetHeight+$get_Element("#tools").offsetTop+15;var leftOff=$get_Element("#tools").offsetLeft+15;origcanvas=$get_Element("#ocanvas");graphcanvas=$get_Element("#gcanvas");topcanvas=$get_Element("#tcanvas");canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=docWidth-leftOff;canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=docHeight-topOff;context=canvas.getContext("2d");origcontext=origcanvas.getContext("2d");graphcontext=graphcanvas.getContext("2d");topcontext=topcanvas.getContext("2d");width=canvas.width;height=canvas.height;context.font=origcontext.font=topcontext.font="12px sans-serif";gr2D=new Image();gr2D.src=_imageBaseDir+"gr2D.png";nL=new Image();nL.src=_imageBaseDir+"nL.png";graphMode="";gr2D_xp=nL_xp=(width-300)/2;gr2D_yp=(height-300)/2;nL_yp=(height-100)/2;gr2D_w=300;gr2D_h=300;nL_w=300;nL_h=100;offX=$get_Element("#canvas-container").offsetLeft;offY=$get_Element("#canvas-container").offsetTop;function getCanvasPos(){console.log("getCanvasPos processing!");var box=canvas.getBoundingClientRect();console.log("canvas bound= top: "+box.top+" left:"+box.left);var body=mainDoc.body;var docElem=mainDoc.documentElement;var scrollTop=window.pageYOffset||docElem.scrollTop||body.scrollTop;var scrollLeft=window.pageXOffset||docElem.scrollLeft||body.scrollLeft;var clientTop=docElem.clientTop||body.clientTop||0;var clientLeft=docElem.clientLeft||body.clientLeft||0;console.log("offset_datas: scrollTop="+scrollTop+" scrollLeft="+scrollLeft+" clientTop="+clientTop+" clientLeft="+clientLeft);var top=box.top+scrollTop-clientTop;var left=box.left+scrollLeft-clientLeft;offX=Math.round(left);offY=Math.round(top);console.log("OFFSET: top="+offY+" left="+offX);return{top:offY,left:offX}}console.log("getCanvasPos calling!");getCanvasPos();console.log("getCanvasPos CALL END!");graphicData={};tool_id={};tool_id.eraser=0;tool_id.pencil=1;tool_id.text=2;tool_id.line=3;tool_id.rect=4;tool_id.oval=5;tool_id.gr2D=11;tool_id.nL=12;drawingLayer="1";$get_Element("#button_pencil").style.border="2px solid #ff9900";$get_Element("#button_text").onclick=function(event){currentTool="text";buttonHighlite(currentTool)};$get_Element("#button_pencil").onclick=function(event){currentTool="pencil";buttonHighlite(currentTool)};$get_Element("#button_rect").onclick=function(event){currentTool="rect";buttonHighlite(currentTool)};$get_Element("#button_line").onclick=function(event){currentTool="line";buttonHighlite(currentTool)};$get_Element("#button_oval").onclick=function(event){currentTool="oval";buttonHighlite(currentTool)};$get_Element("#button_gr2D").onclick=function(event){currentTool="gr2D";showHideGraph("gr2D");buttonHighlite("pencil")};$get_Element("#button_nL").onclick=function(event){currentTool="nL";showHideGraph("nL");buttonHighlite("pencil")};$get_Element("#button_clear").onclick=function(event){currentTool="pencil";buttonHighlite(currentTool);resetWhiteBoard(true)};$get_Element("#button_eraser").onclick=function(event){currentTool="eraser";buttonHighlite(currentTool)};$get_Element("#done_btn").onclick=function(event){renderText()};$get_Element("#button_save").onclick=function(event){wb.saveWhiteboard()};var ev_onmousedown=function(_event){isTouchEnabled=_event.type.indexOf("touch")>-1;if(isTouchEnabled){canvas.removeEventListener("mousedown",ev_onmousedown,false);canvas.removeEventListener("mouseup",ev_onmouseup,false);canvas.removeEventListener("mousemove",ev_onmousemove,false)}getCanvasPos();var event=_event?_event:window.event;event=isTouchEnabled?_event.changedTouches[0]:event;var dx,dy,dist;if(event.pageX!=undefined){dx=event.pageX-offX;dy=event.pageY-offY}else{dx=event.clientX-offX;dy=event.clientY-offY}console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY);context.lineWidth=2;context.strokeStyle="rgb(0, 0, 0)";if(dx>=0&&dx<width){penDown=true;rendering=false;clickX=dx;clickY=dy;x=dx;y=dy;if(!graphicData.dataArr){graphicData.dataArr=[]}graphicData.id=tool_id[currentTool];if(currentTool=="pencil"){context.beginPath();context.moveTo(clickX,clickY)}else{if(currentTool=="eraser"){erase(x,y)}}drawcolor=colorToNumber(context.strokeStyle);if(currentTool=="text"){penDown=false;graphicData.dataArr[0]={x:x,y:y,text:"",color:drawcolor,name:"",layer:drawingLayer};showTextBox()}else{graphicData.dataArr[graphicData.dataArr.length]={x:x,y:y,id:"move",color:drawcolor,name:"",layer:drawingLayer}}}else{penDown=false}if(event.preventDefault){event.preventDefault()}};var ev_onmouseup=function(_event){var event=_event?_event:window.event;event=_event.type.indexOf("touch")>-1?_event.targetTouches[0]:event;if(rendering){penDown=false;if(currentTool=="rect"||currentTool=="oval"){graphicData.dataArr[0].w=w0;graphicData.dataArr[0].h=h0;graphicData.dataArr[0].xs=w0/400;graphicData.dataArr[0].ys=h0/400}else{if(currentTool=="line"||currentTool=="pencil"||currentTool=="eraser"){var xp=x-clickX;var yp=y-clickY;xp=currentTool=="eraser"?x:xp;yp=currentTool=="eraser"?y:yp;graphicData.dataArr[graphicData.dataArr.length]={x:xp,y:yp,id:"line"}}}if(currentTool!="eraser"){updateCanvas();context.beginPath()}sendData();rendering=false}};var ev_onmousemove=function(_event){var event=_event?_event:window.event;event=_event.type.indexOf("touch")>-1?_event.changedTouches[0]:event;if(penDown){rendering=true;if(currentTool!="pencil"&&currentTool!="text"){context.clearRect(0,0,canvas.width,canvas.height)}if(event.pageX!=undefined){x=event.pageX-offX;y=event.pageY-offY}else{x=event.clientX-offX;y=event.clientY-offY}if(currentTool=="rect"||currentTool=="oval"){x0=clickX;y0=clickY;w0=x-clickX;h0=y-clickY;if(currentTool=="rect"){drawRect(x0,y0,w0,h0)}if(currentTool=="oval"){drawOval(x0,y0,w0,h0)}}else{if(currentTool=="line"){context.beginPath();context.moveTo(clickX,clickY);drawLine()}else{if(currentTool=="eraser"){erase(x,y);graphicData.dataArr[graphicData.dataArr.length]={x:x,y:y,id:"line"}}else{graphicData.dataArr[graphicData.dataArr.length]={x:x-clickX,y:y-clickY,id:"line"};drawLine()}}}}if(event.preventDefault){event.preventDefault()}};if(document.addEventListener){canvas.addEventListener("mousedown",ev_onmousedown,false);canvas.addEventListener("mouseup",ev_onmouseup,false);canvas.addEventListener("mousemove",ev_onmousemove,false);canvas.addEventListener("touchstart",touchStartFunction,false);canvas.addEventListener("touchmove",touchMoveFunction,false);canvas.addEventListener("touchstart",ev_onmousedown,false);canvas.addEventListener("touchmove",ev_onmousemove,false);canvas.addEventListener("touchend",ev_onmouseup,false)}else{canvas.attachEvent("onmousedown",ev_onmousedown);canvas.attachEvent("onmouseup",ev_onmouseup);canvas.attachEvent("onmousemove",ev_onmousemove);canvas.attachEvent("touchstart",touchStartFunction);canvas.attachEvent("touchmove",touchMoveFunction);canvas.attachEvent("touchstart",ev_onmousedown);canvas.attachEvent("touchmove",ev_onmousemove);canvas.attachEvent("touchend",ev_onmouseup)}canvas.focus()};function $get_Element(n){var str=n.indexOf("#")>-1?n.split("#")[1]:n;return mainDoc.getElementById(str)}function updateText(txt){graphicData.dataArr[0].text=txt}function showTextBox(){$get_Element("#inputBox").style.display="block";$get_Element("#inputBox").style.top=clickY+"px";$get_Element("#inputBox").style.left=clickX+"px";$get_Element("#content").focus()}function resetWhiteBoard(boo){penDown=false;graphMode="";origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;origcontext.clearRect(0,0,canvas.width,canvas.height);graphcontext.clearRect(0,0,canvas.width,canvas.height);topcontext.clearRect(0,0,canvas.width,canvas.height);context.clearRect(0,0,canvas.width,canvas.height);drawingLayer="1";$get_Element("#button_gr2D").style.border="1px solid #000000";$get_Element("#button_nL").style.border="1px solid #000000";if(boo){clear(true)}}function showHideGraph(flag,x,y,boo){graphcanvas.width=graphcanvas.width;graphcanvas.height=graphcanvas.height;graphcontext.clearRect(0,0,canvas.width,canvas.height);graphicData.dataArr=[];graphicData.id=tool_id[currentTool];var addGraph=false;if(!boo&&((graphMode=="gr2D"&&flag=="gr2D")||(graphMode=="nL"&&flag=="nL"))){graphMode="";drawingLayer="1";$get_Element("#button_gr2D").style.border="1px solid #000000";$get_Element("#button_nL").style.border="1px solid #000000"}else{$get_Element("#button_gr2D").style.border="1px solid #000000";$get_Element("#button_nL").style.border="1px solid #000000";var gr,xp,yp,xs,ys;graphMode=flag;if(flag=="gr2D"){gr=gr2D;xp=x?x-(gr2D_w/2):gr2D_xp;yp=y?y-(gr2D_h/2):gr2D_yp;xs=x?x:gr2D_xp+(gr2D_w/2);ys=y?y:gr2D_yp+(gr2D_h/2);$get_Element("#button_gr2D").style.border="2px solid #ff0000"}else{gr=nL;xp=x?x-(nL_w/2):nL_xp;yp=y?y-(nL_h/2):nL_yp;xs=x?x:nL_xp+(nL_w/2);ys=y?y:nL_yp+(nL_h/2);$get_Element("#button_nL").style.border="2px solid #ff0000"}drawingLayer="3";addGraph=true;graphcontext.drawImage(gr,xp,yp)}graphicData.dataArr.push({x:xs,y:ys,name:"graphImage",addImage:addGraph});sendData()}function mouseOverGraph(){getCanvasPos();var mx=event.layerX?event.layerX:event.pageX-offX;var my=event.layerY?event.layerY:event.pageY-offY;var xp,yp,wi,hi;if(graphMode=="gr2D"){gr=gr2D;xp=gr2D_xp;yp=gr2D_yp;wi=300;hi=300}else{if(graphMode=="nL"){gr=nL;xp=nL_xp;yp=nL_yp;wi=300;hi=100}}if((mx>=xp&&mx<=xp+wi)&&(my>=yp&&my<=yp+hi)){return true}return false}function updateCanvas(){var cntxt=drawingLayer=="1"?origcontext:topcontext;cntxt.drawImage(canvas,0,0);context.clearRect(0,0,canvas.width,canvas.height);context.beginPath()}function erase(x,y){var ew=10;var ep=ew/2;origcontext.clearRect(x-ep,y-ep,ew,ew);topcontext.clearRect(x-ep,y-ep,ew,ew)}function drawLine(){context.lineTo(x,y);context.stroke()}function drawRect(x,y,w,h,color){if(color!=undefined){context.strokeStyle=color}context.strokeRect(x,y,w,h)}function drawOval(x,y,w,h,color){if(color!=undefined){context.strokeStyle=color}var kappa=0.5522848;var ox=(w/2)*kappa;var oy=(h/2)*kappa;var xe=x+w;var ye=y+h;var xm=x+w/2;var ym=y+h/2;context.beginPath();context.moveTo(x,ym);context.bezierCurveTo(x,ym-oy,xm-ox,y,xm,y);context.bezierCurveTo(xm+ox,y,xe,ym-oy,xe,ym);context.bezierCurveTo(xe,ym+oy,xm+ox,ye,xm,ye);context.bezierCurveTo(xm-ox,ye,x,ym+oy,x,ym);context.closePath();context.stroke()}function sendData(){if(graphicData.id||graphicData.id===0){var txtVal=graphicData.dataArr[graphicData.dataArr.length-1].text;if(graphicData.id==2&&(txtVal==""||txtVal==undefined)){resetArrays();textRendering=false;return }if(graphicData.id==1&&graphicData.dataArr.length>500){var jStr=convertObjToString(graphicData);currentObj.tempData=convertStringToObj(jStr);var ptC=graphicData.dataArr.length;var segArr=[];var buf;var header=graphicData.dataArr.shift();var tarr=graphicData.dataArr;var segData;var nxtStart;var nx0;var ny0;var pt={x:header.x,y:header.y};var nname=header.name;var segC=0;var nheader;while(ptC>0){segC++;buf=Math.min(500,ptC);ptC=ptC-buf;segData=tarr.splice(0,buf);var ngdata={};ngdata.lineColor=graphicData.lineColor;ngdata.id=graphicData.id;if(segC>1){var sObj={};sObj.id="move";sObj.x=pt.x;sObj.y=pt.y;segData.unshift(sObj)}nheader=cloneObject(header);nheader.name=nname;segData.unshift(nheader);ngdata.dataArr=segData;segArr.push(ngdata);nxtStart=segData[segData.length-1];pt={x:nxtStart.x,y:nxtStart.y};var n=header.name.split("_");nname=n[0]+"_"+(Number(n[1])+1)}for(var z=0;z<segArr.length;z++){sendDataToSERVER(segArr[z])}render=false;resetArrays();textRendering=false;return }render=false;sendDataToSERVER(graphicData);textRendering=false}resetArrays()}function sendDataToSERVER(jsdata){var jsonStr=convertObjToString(jsdata);wb.whiteboardOut(jsonStr,true)}function cloneObject(obj){var clone={};for(var m in obj){clone[m]=obj[m]}return clone}function resetArrays(){graphicData.dataArr=null;graphicData={}}function getToolFromID(id){for(var m in tool_id){if(id==tool_id[m]){return m}}}function convertObjToString(obj){try{var s=JSON.stringify(obj);return s}catch(ex){console.log(ex.name+":"+ex.message+":"+ex.location+":"+ex.text)}}function convertStringToObj(str){try{var o=eval("("+str+")");return o}catch(ex){console.log(ex.name+":"+ex.message+":"+ex.location+":"+ex.text)}}function renderObj(obj){var graphic_id=obj.id;var graphic_data=obj.dataArr;var line_rgb=obj.lineColor;var dLength=graphic_data.length;var dep,x0,y0,x1,y1;var textF;var idName;drawingLayer=graphic_data[0].layer?graphic_data[0].layer:drawingLayer;context.lineWidth=2;context.strokeStyle="rgb(0, 0, 0)";var deb="";if(graphic_id===0){for(var i=0;i<dLength;i++){x1=graphic_data[i].x;y1=graphic_data[i].y;deb+=x1+":"+y1+"||";erase(x1,y1)}}if(graphic_id===3||graphic_id===1){for(i=0;i<dLength;i++){x1=graphic_data[i].x;y1=graphic_data[i].y;if(graphic_data[i].id=="move"){context.beginPath();context.moveTo(x1,y1);x0=x1;y0=y1}else{context.lineTo(x0+x1,y0+y1)}}context.stroke();updateCanvas()}if(graphic_id===2){for(i=0;i<dLength;i++){if(graphic_data[i].text!=""||graphic_data[i].text!=undefined){x0=graphic_data[i].x;y0=graphic_data[i].y;renderText(xt,x0,y0)}}updateCanvas()}if(graphic_id===4||graphic_id===5){var fName=graphic_id==4?drawRect:drawOval;for(i=0;i<dLength;i++){var xd=graphic_data[i].xs<0?-1:1;var yd=graphic_data[i].ys<0?-1:1;x0=graphic_data[i].x;y0=graphic_data[i].y;w0=graphic_data[i].w*xd;h0=graphic_data[i].h*yd;fName(x0,y0,w0,h0)}updateCanvas()}if(graphic_id===11||graphic_id===12){idName=graphic_id==11?"gr2D":"nL";showHideGraph(idName,graphic_data[0].x,graphic_data[0].y,graphic_data[0].addImage)}}updateWhiteboard=function(cmdArray){var oaL=cmdArray.length;for(var l=0;l<oaL;l++){if(cmdArray[l] instanceof Array){var arg=cmdArray[l][1];arg=arg==undefined?[]:arg;this[cmdArray[l][0]].apply(scope,arg)}else{if(cmdArray[l].indexOf("dataArr")!=-1){draw(cmdArray[l])}else{scope[cmdArray[l]]()}}}};function gwt_updatewhiteboard(cmdArray){var realArray=[];for(var i=0,t=cmdArray.length;i<t;i++){var ele=[];ele[0]=cmdArray[i][0];ele[1]=cmdArray[i][1];realArray[i]=ele}updateWhiteboard(realArray)}wb.updateWhiteboard=function(cmdArray){gwt_updatewhiteboard(cmdArray)};draw=function(json_str){var grobj=convertStringToObj(json_str);renderObj(grobj)};function colorToNumber(c){var n=c.split("#").join("0x");return Number(n)}function clear(boo){if(!boo){resetWhiteBoard(false)}wb.whiteboardOut("clear",false)}wb.saveWhiteboard=function(){alert("default whiteboard save")};wb.whiteboardOut=function(data,boo){alert("default whiteboard out: "+data)};wb.disconnectWhiteboard=function(documentObject){alert("default whiteboard disconnect")};return wb}());function initializeQuiz(){var D=document.getElementById("testset_div");if(D){var C=D.getElementsByTagName("div");for(var B=0,A=C.length;B<A;B++){var E=C[B];if(E.className=="hm_question_def"){initializeQuizQuestion(E)}}processMathJax()}}var uniquer=1;function initializeQuizQuestion(E){var L="answer_"+uniquer;var D="ABCDEFGHIJKLMNOPQRSTUVWXYZ";var I=E.getElementsByTagName("li");for(var F=0,K=I.length;F<K;F++){answer=I[F];var H=answer.getAttribute("correct");var B=answer.getElementsByTagName("div");var G=B[0];uniquer++;var C="answer_id_"+uniquer;var A=D.charAt(F);var J="<span class='question-input' style='margin-right: 10px'><input value='"+H+"' type='radio' name='"+L+"' id='"+C+"' onclick='questionGuessChanged(this)'/>&nbsp;"+A+"</span>";G.innerHTML=J+G.innerHTML;if(B.length>0){B[1].style.display="none"}}}function hideQuestionResult(B){var E=B.getElementsByTagName("li");for(var D=0,C=E.length;D<C;D++){answer=E[D];var A=answer.getElementsByTagName("div");if(A.length>1){A[1].style.display="none"}}}function editQuizQuestion(B){if(B){var A=window.open("/solution_editor/SolutionEditor.html?pid="+B)}}function hideQuizQuestionResults(C){if(!C){C="testset_div"}var E=document.getElementById(C);if(E){var D=E.getElementsByTagName("div");for(var B=0,A=D.length;B<A;B++){var F=D[B];if(F.className=="hm_question_def"){hideQuestionResult(F)}}processMathJax()}}function prepareCustomQuizForDisplay(F,H){var E=F.getElementsByTagName("input");var G=0;var D=0;for(var C=0,B=E.length;C<B;C++){if(C>3&&(C%4)==0){G++}E[C].disabled=true;var A=C-(G*4);if(H[G]==A){E[C].checked=true}}};// version 1.1
 var _json;
 var HmFlashWidgetFactory = {
     createWidget:function(jsonObj) {
@@ -1902,13 +1902,24 @@ var Plotter = function(graphObj, plot_type, plot_input) {
 	this.graphObj.board.appendChild(this.canvas);
 	this.context = this.canvas.getContext('2d');
 	//
+	this.icanvas = this.graphObj.document.createElement("canvas");
+	this.icanvas.width = this.graphObj.width;
+	this.icanvas.height = this.graphObj.height;
+	//
+	this.icanvas.style.position = 'absolute';
+	this.icanvas.style.top = 0;
+	this.icanvas.style.left = 0;
+	//
+	this.graphObj.board.appendChild(this.icanvas);
+	this.icontext = this.icanvas.getContext('2d');
+	//
 	//this.context.strokeStyle='red';
 	//console.log(this.context.strokeStyle);
 	this.offX=0;
 	this.offY=0;
 	this.getCanvasOffSet();
 	this.cpos=this.coordToCanvasPoint(0,0);
-	console.log(this.cpos[0]+":"+this.cpos[1]);
+	//console.log(this.cpos[0]+":"+this.cpos[1]);
 	EqParser.init();
 	this.getPlots();
 }
@@ -1918,12 +1929,11 @@ Plotter.prototype.createZoomCanvas=function(){
 	this.zcanvas.height = 60;
 	//
 	this.zcanvas.style.position = 'absolute';
-	this.zcanvas.style.top = 0;
-	this.zcanvas.style.left = 0;
+	this.zcanvas.style.top = -60+"px";
+	this.zcanvas.style.left = 0+"px";
 	//
 	this.graphObj.board.appendChild(this.zcanvas);
 	this.zcontext = this.zcanvas.getContext('2d');
-	 console.log("CREATE_ZOOM_CANVAS "+this.zcanvas+":"+this.zcontext);
 }
 Plotter.prototype.renderZoomCanvas=function(x,y){
 	this.zcontext.clearRect(0,0,this.zcanvas.width,this.zcanvas.height);
@@ -1932,14 +1942,14 @@ Plotter.prototype.renderZoomCanvas=function(x,y){
 	var pcntx=this.context;
 	var gw=this.graphObj.width;
 	var gh=this.graphObj.height;
-	var off=20;
+	var off=15;
 	var wi=this.zcanvas.width;
 	var hi=this.zcanvas.height;
 	var hwi=wi/2;
 	var hhi=hi/2;
 	var dx=x-hwi;
-	var dy=y-(hi+off);
-	
+	var dy=y-hi-off;
+	console.log("TOP_POS:"+y+":"+hi+":"+off+":"+dx+":"+dy)
 	if(dx<0){
 		dx=x
 	}else if(dx+wi>gw){
@@ -1961,6 +1971,7 @@ Plotter.prototype.renderZoomCanvas=function(x,y){
         sx=x>gw-(hwi/2)?gw-hwi:sx;
         sy=y<hhi/2?0:y-(hhi/2);
         sy=y>gh-(hhi/2)?gh-hhi:sy;
+		//console.log("TOP_POS2:"+y+":"+hi+":"+off)
 	this.zcanvas.style.top = dy+"px";
 	this.zcanvas.style.left = dx+"px";
 	
@@ -1977,14 +1988,15 @@ Plotter.prototype.renderZoomCanvas=function(x,y){
 	//this.zcontext.beginPath();
 	this.zcontext.drawImage(this.graphObj.canvas,sx,sy,hwi,hhi,0,0,wi,hi);
 	this.zcontext.drawImage(this.canvas,sx,sy,hwi,hhi,0,0,wi,hi);
-	
+	this.zcontext.drawImage(this.icanvas,sx,sy,hwi,hhi,0,0,wi,hi);
 	//this.zcontext.drawImage(this.canvas,x-25,y-25,50,50,dx,dy,100,100);
 	//this.zcontext.globalCompositeOperation = "source-over";
 	//this.drawPoint(hwi,hhi,'#ff0000',8,false,this.zcontext);
 	//this.zcontext.restore();
 }
-Plotter.prototype.clear=function(){
-	this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+Plotter.prototype.clear=function(ctx){
+var _ctx=ctx?ctx:this.context
+	_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 }
 Plotter.prototype.getCanvasOffSet=function () {
 	var box = this.canvas.getBoundingClientRect();    
@@ -2085,10 +2097,14 @@ Plotter.prototype.evalFor = function(ev, fr) {
 Plotter.prototype.getPlots = function() {
 	this.getPlotInputs();
 	var temp1 = this.plot_datas.split("|");
+	//console.log("getPlots:"+temp1)
 	for(var i = 0; i < temp1.length; i++) {
 		var pointdata = eval(temp1[i]);
+		//console.log("getPlots_pd:"+pointdata)
 		this.plot_type = pointdata.shift();
 		this.plot_data = pointdata;
+		//console.log("getPlots_ty:"+this.plot_type)
+		
 		this.drawPlot();
 	}
 }
@@ -2110,12 +2126,47 @@ Plotter.prototype.drawPlot = function() {
 		this.plotRect();
 	}else if(this.plot_type=="interactive") {
 		this.iplot_type=this.plot_data[0];
-		this.createZoomCanvas();
-		console.log("DRAW_PLOT:"+this.plot_type+":"+this.zcanvas+":"+this.zcontext)
-		this.initMouseListeners();
-		this.graphObj.init_graph_transformListeners();
-		
+		this.node_count=0;
+		if(this.iplot_type=='point'){
+		this.totalNodes=1;
+		}else if(this.iplot_type=='line'||this.iplot_type=='segment'){
+		this.totalNodes=2;
+		//console.log("getPlots_pd2:"+this.plot_data)
+	}else if(this.iplot_type=='path'||this.iplot_type=='polygon'){
+		this.totalNodes=this.plot_data[1].length;
+	}else if(this.iplot_type=='inequality'){
+	
+	var f1=function(){this.scope.totalNodes=1;this.scope.fand=false;}
+	var f2=function(){this.scope.totalNodes=1;this.scope.fand=false;}
+	var f3=function(){this.scope.totalNodes=1;this.scope.fand=false;}
+	var f4=function(){this.scope.totalNodes=1;this.scope.fand=false;}
+	var f5=function(){this.scope.totalNodes=2;this.scope.fand=true;}
+	var f6=function(){this.scope.totalNodes=2;this.scope.fand=true;}
+	var f7=function(){this.scope.totalNodes=2;this.scope.fand=true;}
+	var f8=function(){this.scope.totalNodes=2;this.scope.fand=true;}
+	
+	var t1={type:'button',id:'btn_lt',label:'lt',img_norm_src:'in_lt_norm.png',img_sel_src:'in_lt_sel.png',callfunc:f1,scope:this};
+	var t2={type:'button',id:'btn_le',label:'le',img_norm_src:'in_le_norm.png',img_sel_src:'in_le_sel.png',callfunc:f2,scope:this};
+	var t3={type:'button',id:'btn_gt',label:'gt',img_norm_src:'in_gt_norm.png',img_sel_src:'in_gt_sel.png',callfunc:f3,scope:this};
+	var t4={type:'button',id:'btn_ge',label:'ge',img_norm_src:'in_ge_norm.png',img_sel_src:'in_ge_sel.png',callfunc:f4,scope:this};
+	var t5={type:'button',id:'btn_gt_lt',label:'gt_lt',img_norm_src:'in_gt_lt_norm.png',img_sel_src:'in_gt_lt_sel.png',callfunc:f5,scope:this};
+	var t6={type:'button',id:'btn_ge_le',label:'ge_le',img_norm_src:'in_ge_le_norm.png',img_sel_src:'in_ge_le_sel.png',callfunc:f6,scope:this};
+	var t7={type:'button',id:'btn_gt_le',label:'gt_le',img_norm_src:'in_gt_le_norm.png',img_sel_src:'in_gt_le_sel.png',callfunc:f7,scope:this};
+	var t8={type:'button',id:'btn_ge_lt',label:'ge_lt',img_norm_src:'in_ge_lt_norm.png',img_sel_src:'in_ge_lt_sel.png',callfunc:f8,scope:this};
+	var toolData=[t1,t2,t3,t4,t5,t6,t7,t8];
+		this.graphObj.createTools(toolData,{x:0,y:this.canvas.height-42});
+		this.graphObj.inter_obj={zoom:true};
+		this.graphObj.addGraphUI();
 	}
+	if(this.iplot_type!='inequality'){
+		this.startListeners();		
+	}		
+		this.createZoomCanvas();
+	}
+}
+Plotter.prototype.startListeners=function(){
+this.initMouseListeners();
+this.graphObj.init_graph_transformListeners();
 }
 Plotter.prototype.getPlotInputs = function() {
 	this.plot_datas = this.plot_input.data;
@@ -2311,8 +2362,8 @@ Plotter.prototype.drawPoint = function(x, y, color, r, _open,_cntx) {
 	}
 	ctx.closePath();
 }
-Plotter.prototype.drawCircle = function(x, y, rad, stroke, stroke_color, fill, fill_color) {
-	var context = this.context;
+Plotter.prototype.drawCircle = function(x, y, rad, stroke, stroke_color, fill, fill_color,ctx) {
+	var context = ctx?ctx:this.context;
 	if(stroke) {
 		context.lineWidth = 2.0;
 		context.strokeStyle = stroke_color;
@@ -2333,8 +2384,8 @@ Plotter.prototype.drawCircle = function(x, y, rad, stroke, stroke_color, fill, f
 	}
 	context.closePath();
 }
-Plotter.prototype.drawRect = function(x, y, w, h, stroke, stroke_color, fill, fill_color) {
-	var context = this.context;
+Plotter.prototype.drawRect = function(x, y, w, h, stroke, stroke_color, fill, fill_color,ctx) {
+	var context = ctx?ctx:this.context;
 	if(stroke) {
 		context.lineWidth = 2.0;
 		context.strokeStyle = stroke_color;
@@ -2357,6 +2408,32 @@ Plotter.prototype.drawRect = function(x, y, w, h, stroke, stroke_color, fill, fi
 
 	}
 	context.closePath();
+}
+Plotter.prototype.roundRect=function(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke == "undefined" ) {
+    stroke = true;
+  }
+  if (typeof radius === "undefined") {
+    radius = 5;
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  if (stroke) {
+  //console.log("STROKE")
+    ctx.stroke();
+  }
+  if (fill) {
+    ctx.fill();
+  }        
 }
 //--------------------------------------------------------------------------------------//
 Plotter.prototype.getPointsFromEq = function() {
@@ -3553,7 +3630,7 @@ function delegate(obj, func)
   return function() {return func.apply(obj, arguments); };
 }
 Plotter.prototype.initMouseListeners=function(){
-	var canvas=this.canvas;
+	var canvas=this.icanvas;
 	var touchStartFunction=function(event) {
     event.preventDefault();
 	}
@@ -3561,7 +3638,9 @@ Plotter.prototype.initMouseListeners=function(){
 	 this.mouse_down=delegate(this,this.ev_onmousedown);
 	 this.mouse_move=delegate(this,this.ev_onmousemove);
 	 this.mouse_up=delegate(this,this.ev_onmouseup);
+	 console.log("ON_initMouseListeners: "+this)
 	if (this.document.addEventListener) {
+	 console.log("ON_initMouseListeners: "+this.mouse_down)
         canvas.addEventListener("mousedown", this.mouse_down, false);
        // canvas.addEventListener("mouseup", this.ev_onmouseup, false);
        // canvas.addEventListener("mousemove", this.ev_onmousemove, false);
@@ -3596,7 +3675,7 @@ Plotter.prototype.killListeners=function(){
 	console.log("LISTENERS_KILLED")
 }
 Plotter.prototype.killMouseListeners=function(){
-	var canvas=this.canvas;
+	var canvas=this.icanvas;
 	if (this.document.addEventListener) {
 	canvas.removeEventListener("mousedown", this.mouse_down, false);
     canvas.removeEventListener("mouseup", this.mouse_up, false);
@@ -3610,7 +3689,7 @@ Plotter.prototype.killMouseListeners=function(){
    }
 }
 Plotter.prototype.killTouchListeners=function(){
-	var canvas=this.canvas;
+	var canvas=this.icanvas;
 	if (this.document.addEventListener) {
     //
      canvas.removeEventListener('touchstart', this.mouse_down, false);
@@ -3625,8 +3704,10 @@ Plotter.prototype.killTouchListeners=function(){
 }
 
 Plotter.prototype.ev_onmousedown = function(_event) {
-	var canvas=this.canvas;
-	this.isTouchEnabled = _event.type.indexOf('touch') > -1
+	var canvas=this.icanvas;
+	this.mousePos='down';
+	this.isTouchEnabled = _event.type.indexOf('touch') > -1;
+	console.log("ON_MOUSE_DOWN: "+_event.toString())
 	if(this.isTouchEnabled) {
 		this.killMouseListeners();
 		if (this.document.addEventListener) {
@@ -3644,17 +3725,29 @@ Plotter.prototype.ev_onmousedown = function(_event) {
        	canvas.attachEvent("onmouseup", this.mouse_up);
        canvas.attachEvent("onmousemove", this.mouse_move);
        }
-	}	
-	
+	}
+	this.node_count++;
+	//console.log("ON_MOUSE_DOWN: "+this.node_count+":"+this.totalNodes)
+	if(this.node_count>this.totalNodes){
+	this.finishRendering=false;
+	this.node_count=1
+	this.clear();
+	}
+	if(this.node_count==this.totalNodes){
+	this.finishRendering=true;
+	}
 	this.showCursorPos=true;
 	this.render(_event);
 }
 Plotter.prototype.ev_onmouseup = function(_event) {	
+console.log("ON_MOUSE_UP: "+this.finishRendering)
+this.mousePos='up';
 	this.showCursorPos=true;
 	var pos=this.render(_event,true);
 	var coords=this.canvasPosToCoords(pos[0],pos[1]);
 	coords[0]=Math.fixTo(coords[0],1);
 	coords[1]=Math.fixTo(coords[1],1);
+	if(this.finishRendering){
 	var apos=this.plot_data[1][0]+","+this.plot_data[1][1];	
 	var ipos=coords[0]+","+coords[1];	
 	var boo=apos==ipos;
@@ -3664,9 +3757,9 @@ Plotter.prototype.ev_onmouseup = function(_event) {
 	try{
 		if(HmEvents){
 		if(boo){
-			HmEvents.eventTutorWidgetComplete.fire(true);
+			//HmEvents.eventTutorWidgetComplete.fire(true);
 		}else{
-			HmEvents.eventTutorWidgetComplete.fire(false);
+			//HmEvents.eventTutorWidgetComplete.fire(false);
 		}
 	}else{
 		if(boo){
@@ -3684,48 +3777,117 @@ Plotter.prototype.ev_onmouseup = function(_event) {
 		}
 	}
 	
-	/*if(boo){
-			console.log("Correct!");
+	if(boo){
+			alert("Correct!");
 		}else{
-			console.log("Incorrect!");
-		}*/
+			alert("Incorrect!");
+		}
+	
+	//return
+	}
+	this.lastNode=pos;
 	this.killListeners();
 	this.initMouseListeners();
 	if(this.zcontext){
-	this.zcontext.clearRect(0,0,this.zcanvas.width,this.zcanvas.height)
+	this.zcontext.clearRect(0,0,this.zcanvas.width,this.zcanvas.height);
+	this.zcanvas.style.top = -60+"px";
+	this.zcanvas.style.left = 0+"px";
 	}
 }
 Plotter.prototype.ev_onmousemove = function(_event) {
+this.mousePos='move';
 	this.showCursorPos=true;	
 	var pos=this.render(_event);
 	this.renderZoomCanvas(pos[0],pos[1]);
 }
 Plotter.prototype.render = function(e,end){
-        var isEnd=end?end:false;
+    var isEnd=end?end:false;
 	var cp=this.getCursorPos(e);
 	var pos=[cp.x,cp.y];
-	pos[1]=this.numberLine?cpos[1]:pos[1];
-	this.clear();
-	if(this.plot_data[0]=='point'){
-		this.drawPoint(pos[0],pos[1],'#ff0000',4)
-	}
+	pos[1]=this.numberLine?this.cpos[1]:pos[1];
 	
-	if(this.showCursorPos){
-		var coords=this.canvasPosToCoords(pos[0],pos[1]);
+	var cw=this.canvas.width;
+    var ch=this.canvas.height;
+	var render_cntx=isEnd?this.context:this.icontext;
+	this.clear(this.icontext);
+	this.point_open=false;
+	if(this.plot_data[0]=='inequality'){
+	var eqSy=this.fneql.split("_");
+	if(this.fneql=='lt'||this.fneql=='gt'){
+	this.point_open=true;
+	}
+	if(eqSy[this.node_count-1]=='lt'||eqSy[this.node_count-1]=='gt'){
+	this.point_open=true;
+	}
+	}
+	var isOpen=this.point_open;
+	if(isEnd){
+	this.icontext.clearRect(0,0,cw,ch);
+	}
+	if(this.plot_data[0]=='point'||this.plot_data[0]=='segment'||this.plot_data[0]=='line'||this.plot_data[0]=='polygon'||this.plot_data[0]=='path'||(this.plot_data[0]=='inequality'&&this.fand)){
+	if(this.plot_data[0]=='point'){
+	this.clear();
+	}
+		this.drawPoint(pos[0],pos[1],'#ff0000',4,isOpen,render_cntx)
+	}
+	if(this.plot_data[0]=='segment'||this.plot_data[0]=='line'||this.plot_data[0]=='polygon'||this.plot_data[0]=='path'||(this.plot_data[0]=='inequality'&&this.fand)){
+	if(this.lastNode&&this.node_count>1){
+	var x1=this.lastNode[0];
+	var y1=this.lastNode[1];
+	var x2=pos[0];
+	var y2=pos[1];
+	render_cntx.strokeStyle="#ff0000";
+	render_cntx.lineWidth=2.0;
+	render_cntx.beginPath();	
+	render_cntx.moveTo(x1,y1);
+	render_cntx.lineTo(x2,y2);
+	render_cntx.stroke();
+	}
+	}
+	if(this.plot_data[0]=='line'){
+	if(this.lastNode&&this.node_count>1){
+	var dm=(y2-y1)/(x2-x1);
+	var da2=Math.atan(dm);
+	var da1=Math.PI-da2;
+	da2=Math.PI+da1
+	var r=Math.sqrt((cw*cw)+(ch*ch))
+	var nx1=x1+r*Math.cos(da1);
+	var ny1=y1-r*Math.sin(da1);
+	var nx2=x2+r*Math.cos(da2);
+	var ny2=y2-r*Math.sin(da2);
+	render_cntx.lineStyle="#ff0000";
+	render_cntx.lineWidth=2.0;
+	render_cntx.beginPath();
+render_cntx.moveTo(nx1,ny1);	
+	render_cntx.lineTo(x1,y1);
+	render_cntx.moveTo(x2,y2);
+	render_cntx.lineTo(nx2,ny2);
+	render_cntx.stroke();
+	}
+	}
+	var coords=this.canvasPosToCoords(pos[0],pos[1]);
 		coords[0]=Math.fixTo(coords[0],1);
 		coords[1]=Math.fixTo(coords[1],1);
+	if(this.iplot_type=='inequality'){
+	if(this.totalNodes==1){
+	this.fn=String(coords[0]);
+	this.clear();
+		this.plotNumberLine();
+	}
+	}
+	if(this.showCursorPos){
+		
 		var ipos=this.graph_type=='x'?String(coords[0]):"("+coords[0]+", "+coords[1]+")";
 		
 		//this.drawRect(xp, yp, 50, 25, true, '#000000', true, this.hex2rgb('#999999',0.5));
-		this.context.textBaseline = 'bottom';
-		this.context.font = "bold 12px sans-serif";
-		this.context.fillStyle="BLACK";                
-                var tw=this.context.measureText(ipos).width;
+		render_cntx.textBaseline = 'bottom';
+		render_cntx.font = "bold 12px sans-serif";
+		render_cntx.fillStyle="BLACK";                
+                var tw=render_cntx.measureText(ipos).width;
                 var xp=pos[0]-25;
 		var yp=pos[1]-2;
-                var cw=this.canvas.width;
-                var ch=this.canvas.height;
-                console.log(cw+":"+tw+":"+xp)
+                
+                //console.log(cw+":"+tw+":"+xp)
                 if(xp+tw>cw){
                     var dx=xp+tw-cw
                     xp=xp-dx
@@ -3738,7 +3900,13 @@ Plotter.prototype.render = function(e,end){
                     var dy=yp
                     yp=yp-dy
                 }
-		this.context.fillText(ipos,xp,yp);
+				if(this.graph_type=='x'){
+				xp=pos[0]-(tw/2);
+				}
+				if(this.iplot_type=='inequality'&&this.mousePos=='up'){
+				return pos
+				}
+		render_cntx.fillText(ipos,xp,yp);
 		//console.log(this.plot_type+" ---> "+ipos);
 	}
 	
@@ -4411,8 +4579,9 @@ Math.fixTo = function(n, pl, round) {
  * @author sathesh
  */
 
-var Graph = function(doc, canvas_cont, graph_type, xmin, xmax, ymin, ymax, xinc, yinc, show_axis, show_axis_label, show_grid, show_half_grid, width, height) {
+var Graph = function(doc, canvas_cont, graph_type, xmin, xmax, ymin, ymax, xinc, yinc,interact, show_axis, show_axis_label, show_grid, show_half_grid, width, height) {
 	//console.log(doc + ":" + canvas_cont + ":" + graph_type + ":" + xmin + ":" + xmax + ":" + ymin + ":" + ymax + ":" + xinc + ":" + yinc)
+	this._imageBaseDir = '/js/images/dynamic_widgets/';
 	this.document = doc;
 	this.board = canvas_cont;
 	this.graph_type = graph_type ? graph_type : 'xy';
@@ -4424,15 +4593,20 @@ var Graph = function(doc, canvas_cont, graph_type, xmin, xmax, ymin, ymax, xinc,
 	this.ymax = ymax ? ymax * 1 : 5;
 	this.xinc = xinc ? (xinc == 'pi' ? 1 : xinc * 1) : 1;
 	this.yinc = yinc ? (yinc == 'pi' ? 1 : yinc * 1) : 1;
+	this.inter_obj=interact;
 	this.show_axis = show_axis ? show_axis : true;
 	this.show_axis_label = show_axis_label ? show_axis_label : true;
 	this.show_grid = show_grid ? show_grid : true;
 	this.show_half_grid = show_half_grid ? show_half_grid : false;
+	this.scaleUnits = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
 	//
 	this.scaleX = this.width / ((Math.abs((this.xmax + this.xinc) - (this.xmin - this.xinc))) / this.xinc);
 	this.scaleY = this.height / ((Math.abs((this.ymax + this.yinc) - (this.ymin - this.yinc))) / this.yinc);
-	this.axisYpos = (this.width) - (((this.xmax + this.xinc) / this.xinc) * (this.scaleX));
-	this.axisXpos = (this.height) - (((this.ymax + this.yinc) / this.yinc) * (this.scaleY));
+	this.paxisYpos=this.axisYpos = (this.width) - (((this.xmax + this.xinc) / this.xinc) * (this.scaleX));
+	this.paxisXpos=this.axisXpos = (this.height) - (((this.ymax + this.yinc) / this.yinc) * (this.scaleY));
+	this.xPscale=this.scaleX;
+	this.yPscale=this.scaleY;
+	
 	//
 	this.canvas = this.document.createElement("canvas");
 	this.canvas.width = this.width;
@@ -4440,16 +4614,401 @@ var Graph = function(doc, canvas_cont, graph_type, xmin, xmax, ymin, ymax, xinc,
 	this.board.appendChild(this.canvas);
 	this.context = this.canvas.getContext('2d');
 	this.canvas.style.position='absolute';
-	this.canvas.style.top=0;
-	this.canvas.style.left=0;	
+	this.canvas.style.top=0+'px';
+	this.canvas.style.left=0+'px';
+	this.plotObj=null;	
 	//
-	
+	if(this.inter_obj){
+	this.addGraphUI()
+	}
+	this.getRatio();
 	this.drawGraph();
+}
+Graph.prototype.resetGraph=function(){
+console.log("RESET_CALLED "+this)
+this.scaleX=this.xPscale;
+this.scaleY=this.yPscale;
+this.axisYpos=this.paxisYpos;
+this.axisXpos=this.paxisXpos;
+this.getRatio();
+this.drawGraph();
+}
+Graph.prototype.addGraphUI=function(){
+	this.gtool_div = this.document.createElement("div");
+	this.gtool_div.width = this.width;
+	this.board.appendChild(this.gtool_div );
+	this.gtool_div.style.position='absolute';
+	this.gtool_div.style.top=1+'px';
+	this.gtool_div.style.left=1+'px';
+	var this_scope=this
+	//
+	///*
+	var reset_btn=this.createGTool("RESET");
+	var reset=function(){
+	this_scope.clearGraph();
+	this_scope.resetGraph();
+	console.log("RESET: "+this)
+	this_scope.zmpt.style.top = this_scope.axisXpos+'px';
+	this_scope.zmpt.style.left = this_scope.axisYpos-(this_scope.zmpt.width/2)+'px';
+	this_scope.zmpt_pos={px:this_scope.axisYpos,py:this_scope.axisXpos,sx:this_scope.axisYpos,sy:this_scope.axisXpos,cx:this_scope.axisYpos,cy:this_scope.axisXpos,nx:this_scope.axisYpos,ny:this_scope.axisXpos,dx:0,dy:0};
+	
+	}
+	reset_btn.onmousedown=function(){reset()};
+	this.gtool_div.appendChild(reset_btn);
+	//
+	var aL=this.createGTool("\u25c4\u25AC");
+	var aR=this.createGTool("\u25AC\u25BA");
+	
+	aL.onmousedown=function(){this_scope.scrollLeft()};
+	aR.onmousedown=function(){this_scope.scrollRight()};
+	this.gtool_div.appendChild(aL);
+	this.gtool_div.appendChild(aR);
+	//
+	if(this.inter_obj&&this.inter_obj.zoom){
+	var zIn=this.createGTool("ZmIn");
+	var zOut=this.createGTool("ZmOut");
+	zIn.onmousedown=function(){this_scope.zoomIn()};
+	zOut.onmousedown=function(){this_scope.zoomOut()};
+	this.gtool_div.appendChild(zIn);
+	this.gtool_div.appendChild(zOut);
+	this.addZoomPointer();
+	}
+	
+	this.init_graph_transformListeners();
+	//*/
+}
+Graph.prototype.addZoomPointer=function(){
+	//var zmpt=this.document.getElementById('zmptr');
+	
+	if(this.zmpt){
+		//this.clearCanvas(this.zmpt_cntx);
+//this.renderZoomPinter();		
+	}else{
+	this.zmtool_div = this.document.createElement("div");
+	this.zmtool_div.width = this.width;
+	this.zmtool_div.height = this.height;
+	this.board.appendChild(this.zmtool_div );
+	this.zmtool_div.style.position='absolute';
+	this.zmtool_div.style.top=0+'px';
+	this.zmtool_div.style.left=0+'px';
+		this.zmpt= this.document.createElement('canvas');
+		
+		this.zmpt.setAttribute('id',"cbtn_zmptr");
+		this.zmpt.width=20;
+	this.zmpt.height=35;
+	this.zmtool_div.appendChild(this.zmpt);
+	var zmpt=this.zmpt;
+	console.log("ZMPOINT:"+zmpt+":"+zmpt.width+":"+zmpt.height)
+	zmpt.style.position = 'absolute';
+	zmpt.style.top = this.axisXpos+'px';
+	zmpt.style.left = this.axisYpos-(this.zmpt.width/2)+'px';
+	
+		
+		this.zmpt_cntx=zmpt.getContext('2d');
+		this.renderZoomPointer();
+		this.zmpt_pos={px:this.axisYpos,py:this.axisXpos,sx:this.axisYpos,sy:this.axisXpos,cx:this.axisYpos,cy:this.axisXpos,nx:this.axisYpos,ny:this.axisXpos,dx:0,dy:0};
+		var this_scope=this;
+		var touchStartFunction=function(event) {
+    event.preventDefault();
+	}
+	var touchMoveFunction = touchStartFunction;
+	if (this.document.addEventListener) {
+	 console.log("ON_initMouseListeners: "+this.mouse_down)
+       
+
+        // touchscreen specific - to prevent web page being scrolled while drawing
+        this.zmpt.addEventListener('touchstart', touchStartFunction, false);
+         this.zmpt.addEventListener('touchmove', touchMoveFunction, false);
+
+        // attach the touchstart, touchmove, touchend event listeners.
+        //canvas.addEventListener('touchstart', this.mouse_down, false);
+       
+    } else {
+       // canvas.attachEvent("onmousedown", this.mouse_down);
+       // canvas.attachEvent("onmouseup", this.ev_onmouseup);
+       // canvas.attachEvent("onmousemove", this.ev_onmousemove);
+
+
+        // touchscreen specific - to prevent web page being scrolled while drawing
+         this.zmpt.attachEvent('touchstart', touchStartFunction);
+         this.zmpt.attachEvent('touchmove', touchMoveFunction);
+
+        // attach the touchstart, touchmove, touchend event listeners.
+        //canvas.attachEvent('touchstart', this.mouse_down);
+       // canvas.attachEvent('touchmove', this.ev_onmousemove);
+       // canvas.attachEvent('touchend', this.ev_onmouseup);
+    }
+		zmpt.ontouchstart=zmpt.onmousedown=function(e){
+		var cpos=this_scope.plotObj.getCursorPos(e)
+		this_scope.zmpt_pos.sx=cpos.x;
+		this_scope.zmpt_pos.sy=cpos.y;
+		console.log("ZM_PT_ON_MOUSE_DOWN:"+cpos.x+":"+cpos.y)
+		zmpt.ontouchmove=this.onmousemove=this_scope.zmtool_div.onmousemove=function(e){
+		var cpos=this_scope.plotObj.getCursorPos(e)
+		this_scope.zmpt_pos.cx=cpos.x;
+		this_scope.zmpt_pos.cy=cpos.y;
+		
+		this_scope.zmpt_pos.dx=this_scope.zmpt_pos.cx-this_scope.zmpt_pos.sx;
+		this_scope.zmpt_pos.dy=this_scope.zmpt_pos.cy-this_scope.zmpt_pos.sy;
+		this_scope.zmpt_pos.nx=this_scope.zmpt_pos.sx+this_scope.zmpt_pos.dx;
+		this_scope.zmpt_pos.ny=this_scope.zmpt_pos.sy+this_scope.zmpt_pos.dy;
+		setZPointerPos()
+		}
+		zmpt.ontouchend=this.onmouseup=this_scope.zmtool_div.onmouseup=function(e){
+		var cpos=this_scope.plotObj.getCursorPos(e)
+		this_scope.zmpt_pos.cx=cpos.x;
+		this_scope.zmpt_pos.cy=cpos.y;		
+		this_scope.zmpt_pos.dx=this_scope.zmpt_pos.cx-this_scope.zmpt_pos.sx;
+		this_scope.zmpt_pos.dy=this_scope.zmpt_pos.cy-this_scope.zmpt_pos.sy;
+		this_scope.zmpt_pos.nx=this_scope.zmpt_pos.sx+this_scope.zmpt_pos.dx;
+		this_scope.zmpt_pos.ny=this_scope.zmpt_pos.sy+this_scope.zmpt_pos.dy;
+		setZPointerPos()
+		zmpt.ontouchmove=this_scope.onmousemove=this.onmousemove=null
+		zmpt.ontouchend=this_scope.onmouseup=this.onmouseup=null
+		}
+		}
+		
+		
+		function setZPointerPos(){
+			var pos=this_scope.zmpt_pos;
+			this_scope.zmpt.style.top=this_scope.graph_type=='x'?(pos.py)+'px':pos.ny+'px';
+			this_scope.zmpt.style.left=(pos.nx-this_scope.zmpt.width/2)+'px';
+			//console.log("ZM_PT_ON_POS:"+pos.nx+":"+pos.ny+":"+this_scope.zmpt.style.top+":"+this_scope.zmpt.style.left)
+		}
+	}
+}
+Graph.prototype.renderZoomPointer=function(){
+var xs=10;
+var ys=0;
+var x1=xs-3;
+var y1=ys+7.5;
+var x2=xs+3;
+var y2=y1;
+var x3=xs;
+var y3=y1;
+var x4=xs;
+var y4=y1+7.5;
+var x5=xs;
+var y5=y4+10;
+this.zmpt_cntx.strokeStyle="RED";
+this.zmpt_cntx.fillStyle="RED";
+this.zmpt_cntx.lineWidth=1.0;
+this.zmpt_cntx.beginPath();
+this.zmpt_cntx.moveTo(xs,ys);
+this.zmpt_cntx.lineTo(x1,y1);
+this.zmpt_cntx.lineTo(x2,y2);
+this.zmpt_cntx.lineTo(xs,ys);
+this.zmpt_cntx.fill();
+ this.zmpt_cntx.closePath();
+this.zmpt_cntx.strokeStyle="RED";
+this.zmpt_cntx.lineWidth=1.0;
+this.zmpt_cntx.beginPath();
+this.zmpt_cntx.moveTo(x3,y3);
+this.zmpt_cntx.lineTo(x4,y4);
+this.zmpt_cntx.stroke();
+this.zmpt_cntx.closePath(); 
+this.plotObj.drawPoint(x5,y5,'#ff0000',10,false,this.zmpt_cntx);
+}
+Graph.prototype.createGTool=function(label){	
+	var tool_label=label;
+	var btn_height=35;
+	var buttonnode= this.document.createElement('canvas');
+	buttonnode.setAttribute('id',"cbtn_"+tool_label);
+	buttonnode.width=this.btn_width;
+	buttonnode.height=btn_height;
+	var btn_cntx=buttonnode.getContext('2d');
+	btn_cntx.strokeStyle="#ffffff";
+	btn_cntx.lineWidth=2.0;
+	btn_cntx.fillStyle="#999999";
+	//this.plotObj.roundRect(btn_cntx,0,0,this.btn_width,this.btn_height,0,true,true);
+	btn_cntx.fillRect(0,0,this.btn_width,btn_height);
+	btn_cntx.strokeRect(0,0,this.btn_width,btn_height);
+	btn_cntx.closePath();
+	btn_cntx.textBaseline = 'top';
+	btn_cntx.font = "bold 12px sans-serif";
+	btn_cntx.fillStyle="#ffffff";  
+	var to=btn_cntx.measureText(tool_label);
+	
+	var tw=to.width;
+	var th=12;
+	var img_x=(this.btn_width-tw)/2;
+	var img_y=(btn_height-th)/2;
+	btn_cntx.fillText(tool_label,img_x,img_y);
+	console.log("LABEL:"+tool_label)
+	return buttonnode;
+}
+Graph.prototype.createTools=function(tool_data,pos){
+	this.tool_div = this.document.createElement("div");
+	this.tool_div .width = this.width;
+	//this.tool_div .height = 30;
+	this.board.appendChild(this.tool_div );
+	//this.tool_context = this.tool_div.getContext('2d');
+	this.tool_div.style.position='absolute';
+	this.tool_div.style.top=pos.y+'px';
+	this.tool_div.style.left=pos.x+'px';
+	
+	this.btn_width=45;
+	this.btn_height=20;
+	this.btn_offsetX=this.width;
+	this.btn_offsetY=0
+	this.tool_row=1;
+	this.tool_arr=[]
+	var l=tool_data.length;
+	for(var i=0;i<l;i++){
+		this.createTool(tool_data[i]);
+		//break
+	}
+	//this.init_graph_transformListeners();
+}
+Graph.prototype.createTool=function(tool_data){
+
+	var tool_type=tool_data.type
+	var tool_name=tool_data.id
+	var tool_label=tool_data.label;
+	var labelType=tool_data.img_norm_src?'image':'text'
+	console.log("CREATE_TOOLS "+tool_type+":"+tool_name+":"+tool_label)
+	var buttonnode= this.document.createElement('canvas');
+	buttonnode.setAttribute('id',"cbtn_"+tool_name);
+	buttonnode.width=this.btn_width;
+	buttonnode.height=this.btn_height;
+	buttonnode.style.position = 'absolute';
+	
+	this.btn_offsetX-=(this.btn_width+2);
+	if(this.btn_offsetX<0){
+	this.btn_offsetX=this.width-(this.btn_width+2);
+	this.btn_offsetY+=this.btn_height+2;
+	this.tool_row++
+	}
+	console.log("btn_offset "+this.btn_offsetX+":"+this.btn_offsetY)
+	buttonnode.style.top = this.btn_offsetY+"px";
+	buttonnode.style.left = this.btn_offsetX+"px";
+	var btn_cntx=buttonnode.getContext('2d');
+	//btn_cntx.shadowOffsetX = 2;
+	//btn_cntx.shadowOffsetY = 2;
+	//btn_cntx.shadowBlur = 2;
+	//btn_cntx.shadowColor = 'rgba(105, 105, 105, 0.5)';
+	btn_cntx.strokeStyle="#cccccc";
+	btn_cntx.lineWidth=2.0;
+	btn_cntx.fillStyle="#999999";
+	//this.plotObj.roundRect(btn_cntx,0,0,this.btn_width,this.btn_height,0,true,true);
+	btn_cntx.fillRect(0,0,this.btn_width,this.btn_height);
+	btn_cntx.strokeRect(0,0,this.btn_width,this.btn_height);
+	btn_cntx.closePath();
+	var this_scope=this;
+	var obj
+	if(labelType=='image'){
+	var img_norm = new Image();
+	img_norm.onload=function(){
+	var w=this.width;
+	var h=this.height;
+	this_scope.btn_img_x=(this_scope.btn_width-w)/2;
+	this_scope.btn_img_y=(this_scope.btn_height-h)/2;
+	btn_cntx.drawImage(img_norm,this_scope.btn_img_x,this_scope.btn_img_y)
+	}
+    img_norm.src = this._imageBaseDir + tool_data.img_norm_src;
+	var img_sel = new Image();
+    img_sel.src = this._imageBaseDir + tool_data.img_sel_src;
+	
+	this.tool_div.appendChild(buttonnode);
+	obj={ctx:btn_cntx,labelType:labelType,img_norm:img_norm,img_sel:img_sel,w:buttonnode.width,h:buttonnode.height,id:tool_name,x:this_scope.btn_img_x,y:this_scope.btn_img_y};
+	}else{
+		btn_cntx.textBaseline = 'bottom';
+		btn_cntx.font = "bold 12px sans-serif";
+		btn_cntx.fillStyle="WHITE";  
+		var to=btn_cntx.measureText(tool_label);
+		var tw=to.width;
+		var th=to.height;
+		this_scope.btn_img_x=(this_scope.btn_width-tw)/2;
+	this_scope.btn_img_y=(this_scope.btn_height-th)/2;
+		btn_cntx.fillText(tool_label,this_scope.btn_img_x,this_scope.btn_img_y);
+obj={ctx:btn_cntx,labelType:labelType,label:tool_label,w:buttonnode.width,h:buttonnode.height,id:tool_name,x:this_scope.btn_img_x,y:this_scope.btn_img_y};		
+	}
+	buttonnode.scope=this
+	buttonnode.onmousedown = function(){
+	this.scope.resetTools();
+	this.scope.plotObj.killListeners();
+	this.scope.plotObj.clear();
+	
+	if(obj.id==this.current_tool){
+	this.scope.init_graph_transformListeners()
+	return;
+	}
+	//
+	this.current_tool=obj.id
+	this.scope.selTool(obj);
+	this.scope.plotObj.fneql=tool_label;	
+	this.scope.plotObj.initMouseListeners();
+	this.scope.stop_graph_transformListeners();	
+	tool_data.callfunc();
+	
+	}
+	this.tool_arr.push(obj);
+}
+Graph.prototype.resetTools=function(){
+	var l=this.tool_arr.length;
+	var btn_cntx
+	var obj
+	for(var i=0;i<l;i++){
+	obj=this.tool_arr[i];
+	btn_cntx=obj.ctx;
+	btn_cntx.clearRect(0,0,obj.w,obj.h)
+	//btn_cntx.shadowOffsetX = 2;
+	//btn_cntx.shadowOffsetY = 2;
+	//btn_cntx.shadowBlur = 5;
+	//btn_cntx.shadowColor = "#666666";
+	btn_cntx.strokeStyle="#cccccc";
+	btn_cntx.lineWidth=2.0;
+	btn_cntx.fillStyle="#999999";
+	//this.plotObj.roundRect(btn_cntx,0,0,this.btn_width,this.btn_height,0,true,true);
+	btn_cntx.fillRect(0,0,this.btn_width,this.btn_height);
+	btn_cntx.strokeRect(0,0,this.btn_width,this.btn_height);
+	if(obj.labelType=='image'){
+	btn_cntx.drawImage(obj.img_norm,this.btn_img_x,this.btn_img_y);
+	}else{
+	btn_cntx.fillStyle="WHITE"; 
+	btn_cntx.fillText(obj.label,obj.x,obj.y);
+	}
+	}
+}
+Graph.prototype.selTool=function(obj){
+	
+	var btn_cntx=obj.ctx;
+	btn_cntx.clearRect(0,0,obj.w,obj.h)
+	//btn_cntx.shadowOffsetX = 2;
+	//btn_cntx.shadowOffsetY = 2;
+	//btn_cntx.shadowBlur = 5;
+	//btn_cntx.shadowColor = "#666666";
+	btn_cntx.strokeStyle="#cccccc";
+	btn_cntx.lineWidth=2.0;
+	btn_cntx.fillStyle="#999999";
+	//this.plotObj.roundRect(btn_cntx,0,0,this.btn_width,this.btn_height,0,true,true);
+	btn_cntx.fillRect(0,0,this.btn_width,this.btn_height);
+	btn_cntx.strokeRect(0,0,this.btn_width,this.btn_height);
+	
+	if(obj.labelType=='image'){
+	btn_cntx.drawImage(obj.img_sel,this.btn_img_x,this.btn_img_y)
+	}else{
+	btn_cntx.fillStyle="GREEN"; 
+	btn_cntx.fillText(obj.label,obj.x,obj.y);
+	}
 }
 /**Drawing Methods*/
 Graph.prototype.drawGraph = function() {
 
 	/**Draw grid lines*/
+	var errorD;
+	var isNaN=function(n){
+	return Number(n)==Number.NaN;
+	}
+		if (this.graph_type == "xy") {
+			errorD = isNaN(this.axisYpos) || isNaN(this.axisXpos) || isNaN(this.incX1) || isNaN(this.incY1);
+		} else {
+			errorD = isNaN(this.axisYpos) || isNaN(this.incX1);
+		}
+		if (errorD) {
+			alert("ERROR cannot plot the given axis range!");
+			return;
+		}
 	var scope = this.context;
 	var alab = 0;
 	var i;
@@ -4461,11 +5020,11 @@ Graph.prototype.drawGraph = function() {
 	scope.strokeStyle = this.graph_type=='xy'?"rgb(150, 150, 150)":"BLACK";
 	scope.beginPath();
 	console.log(this.axisYpos + ":" + this.width + ":" + this.scaleX)
-	for( i = this.axisYpos; i <= this.width; i += this.scaleX) {
+	for( i = this.axisYpos; i <= this.width; i += this.incX) {
 		scope.moveTo(i, grid_s);
 		scope.lineTo(i, grid_len);
 		if(alab > 0 && (i < this.width)) {
-			label = alab * this.xinc;
+			label = alab /this.divX;
 			scope.fillText(label, i-label_dx, this.axisXpos + 12)
 		}
 		//console.log(i+":"+label)
@@ -4473,32 +5032,32 @@ Graph.prototype.drawGraph = function() {
 	}
 	//scope.stroke();
 	alab = 0;
-	for( i = this.axisYpos; i > 0; i -= this.scaleX) {
+	for( i = this.axisYpos; i > 0; i -= this.incX) {
 		scope.moveTo(i, grid_s);
 		scope.lineTo(i, grid_len);
 		if(alab > 0 && (i > 0)) {
-			label = -alab * this.xinc;
+			label = -alab /this.divX;
 			scope.fillText(label, i-label_dx, this.axisXpos + 12)
 		}
 		alab++;
 	}
 	if(this.graph_type=='xy'){
 	alab = 0;
-	for( i = this.axisXpos; i <= this.height; i += this.scaleY) {
+	for( i = this.axisXpos; i <= this.height; i += this.incY) {
 		scope.moveTo(0, i);
 		scope.lineTo(this.width, i);
 		if(alab > 0 && (i < this.height)) {
-			label = -alab * this.yinc;
+			label = -alab / this.divY;
 			scope.fillText(label, this.axisYpos + 3, i)
 		}
 		alab++;
 	}
 	alab = 0;
-	for( i = this.axisXpos; i > 0; i -= this.scaleY) {
+	for( i = this.axisXpos; i > 0; i -= this.incY) {
 		scope.moveTo(0, i);
 		scope.lineTo(this.width, i);
 		if(alab > 0 && (i > 0)) {
-			label = alab * this.yinc;
+			label = alab /this.divY;
 			scope.fillText(label, this.axisYpos + 3, i)
 		}
 		alab++;
@@ -4557,12 +5116,338 @@ Graph.prototype.clearGraph=function(){
 	var cn = this.board.getElementsByTagName("canvas");
   for (var i = 0; i < cn.length; i++) 
   {
-     console.log(cn[i]);  
+    //console.log(cn[i]);  
+	if(cn[i].id.indexOf('cbtn')>-1){
+	continue;
+	}
      cn[i].getContext('2d').clearRect(0, 0, this.width, this.height);
   }
 
 }
-/**
+Graph.prototype.clearCanvas=function(cntx){	
+var ctx=cntx?cntx:this.context;
+   ctx.clearRect(0, 0, this.width, this.height);
+}
+/** Utility methods*/
+Graph.prototype.getCanvasOffSet=function () {
+	var box = this.canvas.getBoundingClientRect();    
+	var body = this.document.body;
+	var docElem = this.document.documentElement;
+    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+    var clientTop = docElem.clientTop || body.clientTop || 0;
+    var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+    var top  = box.top +  scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+    this.offX=Math.round(left);
+	this.offY=Math.round(top);
+    return { top: this.offY, left: this.offX }
+}
+Graph.prototype.getCursorPos=function (e) {
+this.isTouchEnabled = e.type.indexOf('touch') > -1;
+	var ev = e ?e: window.event;
+	ev=this.isTouchEnabled?ev.changedTouches[0]:ev;
+    var cursor = {x:0, y:0};
+    if (ev.pageX!==undefined) {
+        cursor.x = ev.pageX-this.offX;
+        cursor.y = ev.pageY-this.offY;
+		
+    } 
+    else {
+        cursor.x = ev.clientX - this.offX;
+        cursor.y = ev.clientY - this.offY;
+		
+    }
+    return cursor;
+}
+Graph.prototype.coordToCanvasPoint = function(x, y) {
+	var xp = this.axisYpos + x * (this.scaleX / this.xinc);
+	var yp = this.axisXpos - y * (this.scaleY / this.yinc);
+	return [xp, yp];
+}
+Graph.prototype.canvasPosToCoords = function(xp, yp) {
+	console.log("canvasPosToCoords"+xp+":"+yp)
+	var x=(xp-this.axisYpos)/(this.scaleX / this.xinc)
+	var y=(-yp+this.axisXpos)/(this.scaleY / this.yinc)
+	return [x, y];
+}
+Graph.prototype.scaleGraph=function(sx,sy){
+	this.scaleX = sx;
+	this.scaleY = sy;
+	this.clearGraph();	
+	this.getRatio();
+	this.drawGraph();		
+}
+Graph.prototype.shiftAxis=function(ax,ay){
+	this.axisYpos+=ax;
+	this.axisXpos+=ay?ay:0;
+	this.clearGraph();
+	this.drawGraph();
+}
+Graph.prototype.ScaleFromCenter=function(sx,sy){
+		var pos={x:this.canvas.width/2,y:this.canvas.height/2};
+		var pXscale=this.scaleX;
+		var pXaxis=this.axisYpos;
+		var pYscale=this.scaleY;
+		var pYaxis=this.axisXpos;
+		var npos=this.canvasPosToCoords(pos.x,pos.y)
+		var inx=this.xinc;
+		var iny=this.yinc;
+		var px=(Math.round(npos[0]/inx)*inx);
+		var py=(Math.round(npos[1]/iny)*iny);
+		this.scaleGraph(sx,sy);
+		var dx=(sx-pXscale)*px;	
+		var dy=(sy-pYscale)*py;		
+		this.axisYpos = pXaxis-dx;
+		this.axisXpos = pYaxis-dy;
+		this.clearGraph();
+		this.drawGraph();
+}
+Graph.prototype.ScaleFromPt=function(sx,sy){
+		var pos={x:this.zmpt_pos.nx,y:this.zmpt_pos.ny};
+		sy=this.graph_type=='x'?this.scaleY:sy;
+		sx=sx?sx:this.scaleX;
+		sy=sy?sy:this.scaleY;
+		var pXscale=this.scaleX;
+		var pXaxis=this.axisYpos;
+		var pYscale=this.scaleY;
+		var pYaxis=this.axisXpos;
+		var npos=this.canvasPosToCoords(pos.x,pos.y)
+		var inx=this.xinc;
+		var iny=this.yinc;
+		var px=(Math.round(npos[0]/inx)*inx);
+		var py=(Math.round(npos[1]/iny)*iny);
+		this.scaleGraph(sx,sy)
+		var dx=(sx-pXscale)*px;	
+		var dy=(sy-pYscale)*py;		
+		this.axisYpos = pXaxis-dx;
+		this.axisXpos = pYaxis-dy;
+		this.clearGraph();
+		this.drawGraph();
+}
+Graph.prototype.increment=function(val) {
+		var inc;
+		var scaleUnits=this.scaleUnits;
+		console.log("SCALE_UNITS:"+this)
+		if (val>=1000) {
+			inc = Math.round(val/1000)*1000;
+			return inc;
+		}
+		if (val>=1) {
+			for (var v = 0; v<scaleUnits.length-1; v++) {
+				//trace("::: " + val + ":" + scaleUnits[v] + ":" + scaleUnits[v + 1]);
+				if (val>=scaleUnits[v] && val<scaleUnits[v+1]) {
+					inc = Math.round(val/scaleUnits[v])*scaleUnits[v];
+					break;
+				}
+			}
+		}
+		//trace("::: inc " + inc);        
+		return inc;
+}
+Graph.prototype.getRatio=function() {
+var xscale=this.scaleX;
+var yscale=this.scaleY;
+var xPscale=this.xPscale;
+var yPscale=this.yPscale;
+
+		this.ratioX = xscale/xPscale;
+		this.ratioY = yscale/yPscale;
+		var ratioX=this.ratioX;
+		var ratioY=this.ratioY;
+		ratioX = Math.fixTo(ratioX, 8);
+		ratioY = Math.fixTo(ratioY, 8);
+		var incX,divX;
+		var incY,divY;
+		var increment=this.increment;
+		if (ratioX>=1 && ratioX<2) {
+			incX = xscale;
+			divX = 1;
+		} else if (ratioX>=2 && ratioX<5) {
+			incX = xscale/2;
+			divX = 2;
+		} else if (ratioX>=5) {
+			divX = ratioX;
+			divX = divX>1 ? this.increment(divX) : divX;
+			incX = xscale/divX;
+		} else if (ratioX>=.5 && ratioX<1) {
+			incX = xscale*2;
+			divX = .5;
+		} else if (ratioX>=.2 && ratioX<.5) {
+			incX = xscale*5;
+			divX = .2;
+		} else if (ratioX>=.1 && ratioX<.2) {
+			incX = xscale*10;
+			divX = .1;
+		} else {
+			var __rxT = 1/this.increment(1/ratioX);
+			__rxT = Math.fixTo(__rxT, String(1/__rxT).split(".")[0].length);
+			divX = __rxT;
+			incX = xscale/divX;
+		}
+		if (ratioY>=1 && ratioY<2) {
+			incY = yscale;
+			divY = 1;
+		} else if (ratioY>=2 && ratioY<5) {
+			incY = yscale/2;
+			divY = 2;
+		} else if (ratioY>=5) {
+			divY = ratioY;
+			divY = divY>1 ? this.increment(divY) : divY;
+			incY = yscale/divY;
+		} else if (ratioY>=.5 && ratioY<1) {
+			incY = yscale*2;
+			divY = .5;
+		} else if (ratioY>=.2 && ratioY<.5) {
+			incY = yscale*5;
+			divY = .2;
+		} else if (ratioY>=.1 && ratioY<.2) {
+			incY = yscale*10;
+			divY = .1;
+		} else if (ratioY<.1) {
+			var __ryT = 1/this.increment(1/ratioY);
+			__ryT = Math.fixTo(__ryT, String(1/__ryT).split(".")[0].length);
+			//ratioY = increment(ratioY)
+			divY = __ryT;
+			incY = yscale/divY;
+		}
+		incX = Math.fixTo(incX, 8);
+		incY = Math.fixTo(incY, 8);
+		this.incX1 = incX/2;
+		this.incY1 = incY/2;
+		var iX = (1/divX);
+		var iY = (1/divY);
+		this.incX=incX;
+		this.incY=incY;
+		this.divX=divX;
+		this.divY=divY;
+	}
+Graph.prototype.zoomIn=function(){
+	var ds=(this.scaleX/10);
+	var sx=this.scaleX+ds
+	var sy=this.graph_type=='x'?this.scaleY:this.scaleY+ds;
+	if(sx<=55000){
+		this.ScaleFromPt(sx,sy)
+		this.plotObj.setAxisDatas()
+	}
+}
+Graph.prototype.zoomOut=function(){
+	var ds=(this.scaleX/10);
+	var sx=this.scaleX-ds
+	var sy=this.graph_type=='x'?this.scaleY:this.scaleY-ds;
+	if(sx>=0.009){
+		this.ScaleFromPt(sx,sy);
+		this.plotObj.setAxisDatas();
+	}
+}
+Graph.prototype.scrollLeft=function(a){
+	var a0=a==undefined?this.scaleX:a
+	var dx = this.xinc*a0;
+	dy = 0;
+	this.shiftAxis(dx, dy);	
+	this.plotObj.setAxisDatas();
+}
+Graph.prototype.scrollRight=function(a){
+	var a0=a==undefined?this.scaleX:a
+	var dx = -this.xinc*a0;
+	dy = 0;
+	this.shiftAxis(dx, dy);	
+	this.plotObj.setAxisDatas();
+}
+Graph.prototype.scrollTop=function(a){
+	var a0=a==undefined?this.scaleY:a
+	var dy = this.yinc*a0;
+	dx = 0;
+	this.shiftAxis(dx, dy);	
+	this.plotObj.setAxisDatas();
+}
+Graph.prototype.scrollBottom=function(a){
+	var a0=a==undefined?this.scaleY:a
+	var dy = -this.yinc*a0;
+	dx = 0;
+	this.shiftAxis(dx, dy);	
+	this.plotObj.setAxisDatas();
+}
+Graph.prototype.init_graph_transformListeners=function(){
+this.trans_graph=true;
+if(this.zmtool_div){
+this.zmtool_div.style.display='block';
+}
+	this.initKeyListeners1();
+}
+Graph.prototype.stop_graph_transformListeners=function(){
+this.trans_graph=false;
+this.zmtool_div.style.display='none'
+	this.killKeyListeners1();
+}
+Graph.prototype.killKeyListeners1=function(){
+	console.log("killKeyListeners1")
+	var that=this;
+	this.document.onkeydown=null;
+}
+Graph.prototype.initKeyListeners1=function(){
+	console.log("initKeyListeners1")
+	var that=this;
+	this.document.onkeydown=function(e){
+		var event=e?e:window.event;
+		event.preventDefault();
+		var code=event.keyCode;
+		console.log("KEY_DOWN: "+code)
+		switch(code){
+			case 107:
+			that.zoomIn();
+			break;
+			case 109:
+			that.zoomOut();
+			break;
+			case 37:
+			that.scrollLeft();
+			break;
+			case 39:
+			that.scrollRight();
+			break;
+			case 38:
+			that.scrollTop();
+			break;
+			case 40:
+			that.scrollBottom();
+			break;
+		}
+	}
+}
+var Anim_mngr=function(_canvas,tweenObj){
+	this.canvas=_canvas;
+	window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       || 
+              window.webkitRequestAnimationFrame || 
+              window.mozRequestAnimationFrame    || 
+              window.oRequestAnimationFrame      || 
+              window.msRequestAnimationFrame     || 
+              function(callback, element){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })();
+    window.cancelRequestAnimFrame = ( function() {
+		return window.cancelAnimationFrame          ||
+        window.webkitCancelRequestAnimationFrame    ||
+        window.mozCancelRequestAnimationFrame       ||
+        window.oCancelRequestAnimationFrame     ||
+        window.msCancelRequestAnimationFrame        ||
+        clearTimeout
+	} )();
+}
+Anim_mngr.prototype.startAnim=function(func,scope,params){
+    this.render(func,scope,params);
+    this.animObj=window.requestAnimFrame(this.animloop,this.canvas)
+}
+Anim_mngr.prototype.stopAnim=function(){
+	if(this.animObj){
+		window.cancelAnimFrame(this.animObj);
+	}
+}
+Anim_mngr.prototype.render=function(func,scope,params){
+	scope[func](params);
+}/**
  * Install any widgets
  * 
  * Each widget is registered with the AuthorApi.
@@ -4585,7 +5470,7 @@ Graph.prototype.clearGraph=function(){
  *    ymax
  *    xinc
  *    yinc
- *    
+ *   interactive 
  *    
  */
 var GraphWidget = {
@@ -4602,7 +5487,7 @@ var GraphWidget = {
 		// prepare the dom widget to contain the graph
 		var board = widgetDom;
 		var graph = new Graph(document, board, config.gtype, config.xmin, config.xmax, 
-				config.ymin, config.ymax,config.xinc, config.yinc);
+				config.ymin, config.ymax,config.xinc, config.yinc, config.interactive);
 		var plot = new Plotter(graph, 'point', {data : config.plot_data});
 	}
 };
@@ -4792,6 +5677,24 @@ for(var i=0;i<l;i++){
 a.push(n)
 }
 return a;
+}
+
+Math.multiple=function(x,y)
+{
+	  
+     var myString = "";
+	 var myString1="";
+	 var mult=x;
+	
+     for (i=1; i<y; i++) {
+	 
+	  myString += x + " &times; " ;
+	  mult=mult*x
+	   myString1 +=   myString + x + " = " + mult + "<br/>";
+    
+	 }
+     return (myString1);
+	
 }
 Math.randomNumber = function(from, to) {
 	var num;
@@ -5128,6 +6031,7 @@ var topic_data_18="1/2,1/3,1/4,1/5,1/6,1/7,1/8,1/9,1/10,2/3,1/4,3/4,1/5,2/5,3/5,
 var topic_data_22='<data><item><question><![CDATA[The number of minutes it takes me to read 7 pages if I read 1 page in <i>M</i> minutes.]]></question><answer vars="M"><![CDATA[7M]]></answer><explanation><![CDATA[It takes|<eqn>M|minutes to read 1 page,|<eqn>2*M|minutes to read 2 pages,|<eqn>3*M|minutes to read 3 pages, etc. So it takes|<eqn>7*M|minutes to read 7 pages.]]></explanation></item><item><question><![CDATA[The age in years of someone who is twice as old as Cayenne, if Cayenne is <i>C</i> years old.]]></question><answer vars="C"><![CDATA[2C]]></answer><explanation><![CDATA[If Cayenne is 5 years old, then twice that is|<eqn>2*5=10|, if Cayenne is 7 years old, then twice that is would be|<eqn>2 *7=14|years old. If Cayenne is|<eqn>C|years old, then twice that would be|<eqn>2*C|years old.]]></explanation></item><item><question><![CDATA[The total price, in cents, of 5 apples at <i>A</i> cents each plus 9 bananas at <i>B</i> cents each.]]></question><answer vars="A,B"><![CDATA[5A+9B]]></answer><explanation><![CDATA[If one apple costs 15 cents, then 5 apples cost|<eqn>5*15=75|cents.  If an apple costs|<eqn>A|cents, then 5 apples cost|<eqn>5*A|cents. Likewise, the bananas cost|<eqn>9*B|cents. Adding the two amounts together gives|<eqn>5A+9B|, also written as|<eqn>5*A+9*B|.]]></explanation></item><item><question><![CDATA[Number of gallons of gas it takes to go 50 miles if you get <i>G</i> miles per gallon.]]></question><answer vars="G"><![CDATA[50/G]]></answer><explanation><![CDATA[At 10 miles per gallon, it will take|<eqn>{50/10}=5|gallons. At 25 miles per gallon, it will take|<eqn>{50/25}=2|gallons. So, at|<eqn>G|miles per gallon it will take me |<eqn>50/G|gallons.]]></explanation></item><item><question><![CDATA[The sum of two consecutive numbers with <i>N</i> as the first one.]]></question><answer vars="N"><![CDATA[2N+1]]></answer><explanation><![CDATA[As an example, 5 and 6 are two consecutive numbers. Their sum would be|<eqn>5+6 = 11|. If the first number is|<eqn>N|, then the next one would be|<eqn>N+1|. The sum would be|<eqn>N+(N+1)|which simplifies to|<eqn>2N+1|.]]></explanation></item><item><question><![CDATA[The number of minutes required to watch half of an <i>M</i>-minute movie.]]></question><answer vars="M"><![CDATA[M/2]]></answer><explanation><![CDATA[To find half of any quantity, divide by 2. For example, half of a 110 minute movie would take|<eqn>{110/2}=55|minutes. So, half of an|<eqn>M|-minute movie would take|<eqn>{M/2}|minutes.]]></explanation></item><item><question><![CDATA[The perimeter, in units, of an equilateral triangle with each side <i>L</i> units long.]]></question><answer vars="L"><![CDATA[3L]]></answer><explanation><![CDATA[An equilateral triangle has three equal sides. The perimeter of a triangle is the sum of the lengths of the three sides. For our triangle, the perimeter is|<eqn>L+L+L|which simplifies to|<eqn>3*L|or|<eqn>3L|.]]></explanation></item><item><question><![CDATA[The number of months it takes to grow one foot of hair, if the hair grows <i>N</i> inches per month.]]></question><answer vars="N"><![CDATA[12/N]]></answer><explanation><![CDATA[There are 12 inches in 1 foot.  Therefore, we divide 12 by the number of inches per month to get the answer. For example, if hair grows 2 inches per month, then in|<eqn>{12/2}=6|months to grow one foot. So, at|<eqn>N|inches per month it would take|<eqn>{12/N}|months.]]></explanation></item><item><question><![CDATA[The total score of a football game with <i>T</i> 6-pointer touchdowns, <i>F</i> 3-pointer field goals, and <i>C</i> 1-point conversions.]]></question><answer vars="T,F,C"><![CDATA[6T+3F+C]]></answer><explanation><![CDATA[As an example, three touchdowns give|<eqn>3*6=18|points, 5 field goals add|<eqn>5*3=15|more points, and 3 conversions add|<eqn>3*1=3|points. So the answer using|<eqn>T|,|<eqn>F|and|<eqn>C|would be|<eqn>6T+3F+C|.]]></explanation></item><item><question><![CDATA[The average score of three tests with scores of <i>a</i>, <i>b</i>, and <i>c</i>.]]></question><answer vars="a,b,c"><![CDATA[(a+b+c)/3]]></answer><explanation><![CDATA[Average is computed by adding all the values and dividing by the number of values. For example, if the scores were 70, 80, and 90, then the average score would be|<eqn>{(70+80+90)/3}={240/3}=80|. So, the answer is|<eqn>{(a+b+c)/3}|.]]></explanation></item></data>';
 var topic_data_24="1/2,1/3,2/3,1/4,2/4,3/4,1/5,2/5,3/5,4/5,1/6,2/6,3/6,4/6,5/6,1/8,2/8,3/8,4/8,5/8,6/8,7/8,1/9,2/9,3/9,4/9,5/9,6/9,7/9,8/9,1/10,2/10,3/10,4/10,5/10,6/10,7/10,8/10,9/10,1/11,1/16,3/12,4/12,6/12,8/12,9/12,1/20,3/20,7/20,9/20,11/20,13/20,17/20,19/20,1/25,1/40,1/50,1/100,1/200,1/500,1/1000|2/2,3/3,4/4,5/5,6/6,7/7,8/8,3/2,6/4,9/6,12/8,15/10,18/12,5/2,10/4,15/6,20/8,4/3,8/6,12/9,16/12,20/15,5/3,10/6,15/9,20/12,4/2,6/3,8/4,10/5,16/8,24/12,36/18,13/25,37/40,49/50,3/100,17/500,334/1000";
 var topic_data_25="0.5,1.5,2.5,3.5,0.333R,0.666R,0.25,0.75,1.25,1.75,2.25,2.75,3.25,3.75,0.2,0.4,0.6,0.8,1.2,2.4,3.6,4.8,0.125,0.375,0.625,0.875,1.125,1.375,0.1,0.3,0.7,0.9,0.05,0.15,0.35,0.45,0.55,0.65,0.85,0.95,0.04,0.08,0.12,0.16,0.24,0.28,0.32,0.36,0.44,0.48,0.52,0.56,0.64,0.68,0.72,0.76,0.84,0.88,0.92,0.96,0.11,0.13,0.17,0.19,0.23,0.27,0.33,0.39,0.67,0.71,0.77,0.79,0.81,0.83,0.87,0.89";
+var topic_data_28="<data><item><question eqn='2.4 d 0.2' type='1' txt='The value closest to'/><answer val='10'/><choices val='1|10|20|50'/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(2.4/0.2)*(10/10)| = |<eqn>24/2|.]]></step><step><![CDATA[Since 2 divides evenly into 24, our answer simplifies to]]></step><step><![CDATA[|<eqn>24/2| = 12.]]></step><step><![CDATA[Of all of the choices, the result is closest to 10.]]></step></item><item><question eqn='0.36 d 0.04' type='1' txt='The value closest to'/><answer val='10'/><choices val='1|10|15|20'/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.36/0.04)*(100/100)| = |<eqn> 36/4|.]]></step><step><![CDATA[Since 4 divides evenly into 36, our answer simplifies to]]></step><step><![CDATA[|<eqn>36/4| = 9.]]></step><step><![CDATA[Of all of the choices, the result is closest to 10.]]></step></item><item><question eqn='2.9 d 0.62' type='1' txt='The value closest to'/><answer val='5'/><choices val='5|10|15|20'/><step><![CDATA[You may notice that 2.9 is close to 3.0 and 0.62 is close to 0.60, so |<eqn>2.9/0.62| is close to |<eqn>3.0/0.60|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(3.0/0.60)*(10/10)| = |<eqn>30/6|.]]></step><step><![CDATA[Since 6 divides evenly into 30, our answer simplifies to]]></step><step><![CDATA[|<eqn>30/6| = 5.]]></step><step><![CDATA[The answer to the original problem will be closest to 5.]]></step></item><item><question eqn='9.1 d 0.32' type='1' txt='The value closest to'/><answer val='30'/><choices val='5|10|20|30'/><step><![CDATA[You may notice that 9.1 is close to 9.0 and 0.32 is close to 0.30, so |<eqn>9.1/0.32| is close to |<eqn>9.0/0.3|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(9.0/0.3)*(10/10)| = |<eqn>90/3|.]]></step><step><![CDATA[Since 3 divides evenly into 90, our answer simplifies to]]></step><step><![CDATA[|<eqn>90/3| = 30.]]></step><step><![CDATA[The answer to the original problem will be closest to 30.]]></step></item><item><question eqn='40 d 0.02' type='2' txt='Find the value of'/><answer val='2000'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(40/0.02)*(100/100)| = |<eqn>4000/2|.]]></step><step><![CDATA[Since 2 divides evenly into 4000, our answer simplifies to]]></step><step><![CDATA[|<eqn>4000/2| = 2000.]]></step></item><item><question eqn='56 d 0.07' type='2' txt='Find the value of'/><answer val='800'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(56/0.07)*(100/100)| = |<eqn>5600/7|.]]></step><step><![CDATA[Since 7 divides evenly into 5600, our answer simplifies to]]></step><step><![CDATA[|<eqn>5600/7| = 800.]]></step></item><item><question eqn='0.48 d 1.2' type='2' txt='Find the value of'/><answer val='0.4'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.48/1.2)*(100/100)| = |<eqn>48/120|.]]></step><step><![CDATA[Since 12 divides evenly into both the top and the bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>48/120| = |<eqn>4/10| = 0.4.]]></step></item><item><question eqn='0.75 d 2.5' type='2' txt='Find the value of'/><answer val='0.3'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.75/2.5)*(100/100)| = |<eqn>75/250|.]]></step><step><![CDATA[Since 25 divides evenly into both the top and the bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>75/250| = |<eqn>3/10| = 0.3.]]></step></item><item><question eqn='0.77 d 3.5' type='2' txt='Find the value of'/><answer val='0.22'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.77/3.5)*(100/100)| = |<eqn>77/350|.]]></step><step><![CDATA[Since 7 divides evenly into both the top and the bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>77/350| = |<eqn>11/50|.]]></step><step><![CDATA[To express this fraction in decimal form, we need the bottom to be a power of 10. Notice that we can multiply the top and bottom by 2:]]></step><step><![CDATA[|<eqn>(11/50)*(2/2)| = |<eqn>22/100| = 0.22.]]></step></item><item><question eqn='30 d 2.4' type='2' txt='Find the value of'/><answer val='12.5'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(30/2.4)*(10/10)| = |<eqn>300/24|.]]></step><step><![CDATA[Since 12 divides evenly into both the top and the bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>300/24| = |<eqn>25/2|.]]></step><step><![CDATA[To express this fraction in decimal form, we need the bottom to be a power of 10. Notice that we can multiply the top and bottom by 5:]]></step><step><![CDATA[|<eqn>(25/2)*(5/5)| = |<eqn>125/10| = 12.5.]]></step></item><item><question eqn='48 d 0.08' type='2' txt='Find the value of'/><answer val='600'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(48/0.08)*(100/100)| = |<eqn>4800/8|.]]></step><step><![CDATA[Since 8 divides evenly into 4800, our answer simplifies to]]></step><step><![CDATA[|<eqn>4800/8| = 600.]]></step></item><item><question eqn='32 d 0.016' type='2' txt='Find the value of'/><answer val='2000'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>1000/1000|:]]></step><step><![CDATA[|<eqn>(32/0.016)*(1000/1000)| = |<eqn>32000/16|.]]></step><step><![CDATA[Since 16 divides evenly into 32000, our answer simplifies to]]></step><step><![CDATA[|<eqn>32000/16| = 2000.]]></step></item><item><question eqn='7.2 d 0.51' type='1' txt='The value closest to'/><answer val='15'/><choices val='1|10|15|20'/><step><![CDATA[You may notice that 7.2 is close to 7.0 and 0.51 is close to 0.50, so |<eqn>7.2/0.51| is close to |<eqn>7.0/0.5|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(7.0/0.5)*(10/10)| = |<eqn>70/5|.]]></step><step><![CDATA[Since 5 divides evenly into 70, our answer simplifies to]]></step><step><![CDATA[|<eqn>70/5| = 14.]]></step><step><![CDATA[The answer to the original problem will be closest to 15.]]></step></item><item><question eqn='0.81 d 0.38' type='1' txt='The value closest to'/><answer val='2'/><choices val='1|2|10|20'/><step><![CDATA[You may notice that 0.81 is close to 0.8 and 0.38 is close to 0.40, so |<eqn>0.81/0.38| is close to |<eqn>0.8/0.4|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(0.8/0.4)*(10/10)| = |<eqn>8/4|.]]></step><step><![CDATA[Since 4 divides evenly into 8, our answer simplifies to]]></step><step><![CDATA[|<eqn>8/4| = 2.]]></step><step><![CDATA[The answer to the original problem will be closest to 2.]]></step></item><item><question eqn='0.639 d 0.079' type='1' txt='The value closest to'/><answer val='8.0'/><choices val='0.4|0.8|4|8'/><step><![CDATA[You may notice that 0.639 is close to 0.640 and 0.079 is close to 0.080, so |<eqn>0.639/0.079| is close to |<eqn>0.64/0.08|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.64/0.08)*(100/100)| = |<eqn>64/8|.]]></step><step><![CDATA[Since 8 divides evenly into 64, our answer simplifies to]]></step><step><![CDATA[|<eqn>64/8| = 8.]]></step><step><![CDATA[The answer to the original problem will be closest to 8.]]></step></item><item><question eqn='0.747 d 2.52' type='1' txt='The value closest to'/><answer val='0.3'/><choices val='0.1|0.3|0.5|0.7'/><step><![CDATA[You may notice that 0.747 is close to 0.750 and 2.52 is close to 2.50, so |<eqn>0.747/2.52| is close to |<eqn>0.75/2.5|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.75/2.5)*(100/100)| = |<eqn>75/250|.]]></step><step><![CDATA[Both top and bottom are divisible by 25, so we can simplify the answer:]]></step><step><![CDATA[|<eqn>75/250| = |<eqn>3/10| = 0.3.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.3.]]></step></item><item><question eqn='0.039 d 0.21' type='1' txt='The value closest to'/><answer val='0.2'/><choices val='200|20|2|0.2'/><step><![CDATA[You may notice that 0.039 is close to 0.04 and 0.21 is close to 0.2, so |<eqn>0.039/0.21| is close to |<eqn>0.04/0.2|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.04/0.2)*(100/100)| = |<eqn>4/20|.]]></step><step><![CDATA[Both top and bottom are divisible by 4, so we can simplify the answer:]]></step><step><![CDATA[|<eqn>4/20| = |<eqn>1/5| = 0.2.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.2.]]></step></item><item><question eqn='0.0048 d 5.01' type='1' txt='The value closest to'/><answer val='0.001'/><choices val='0.1|0.01|0.001|0.0001'/><step><![CDATA[You may notice that 0.0048 is close to 0.0050 and 5.01 is close to 5.00, so |<eqn>0.0048/5.01| is close to |<eqn>0.0050/5.00|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>1000/1000|:]]></step><step><![CDATA[|<eqn>(0.005/5)*(1000/1000)| = |<eqn>5/5000|.]]></step><step><![CDATA[Both top and bottom are divisible by 5, so we can simplify the answer:]]></step><step><![CDATA[|<eqn>5/5000| = |<eqn>1/1000| = 0.001.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.001.]]></step></item><item><question eqn='1.98 d 0.297' type='1' txt='The value closest to'/><answer val='7'/><choices val='0.7|7|14|70'/><step><![CDATA[You may notice that 1.98 is close to 2.00 and 0.297 is close to 0.30, so |<eqn>1.98/0.297| is close to |<eqn>2/0.3|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(2/0.3)*(10/10)| = |<eqn>20/3|.]]></step><step><![CDATA[Since 3 divided into 21 is 7, we see that 3 divided into 20 should be nearly 7.]]></step><step><![CDATA[The answer to the original problem will be closest to 7.0.]]></step></item><item><question eqn='2.04 d 59.2' type='1' txt='The value closest to'/><answer val='0.03'/><choices val='0.03|0.003|0.0003|0.00003'/><step><![CDATA[You may notice that 2.04 is close to 2.00 and 59.2 is close to 60.0, so |<eqn>2.04/59.2| is close to |<eqn>2/60|.]]></step><step><![CDATA[These are integers, both of which are divisible by 2, so we have]]></step><step><![CDATA[|<eqn>2/60| = |<eqn>1/30|.]]></step><step><![CDATA[We know that |<eqn>1/3| = |<eqn>0.333..., where the 3's continue forever, so |<eqn>1/30| = 0.0333....]]></step><step><![CDATA[The answer to the original problem will be closest to 0.03.]]></step></item><item><question eqn='11.4 d 19' type='2' txt='Find the value of'/><answer val='0.6'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(11.4/19)*(10/10)| = |<eqn>114/190|.]]></step><step><![CDATA[Since 19 divides evenly into both the top and the bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>114/190| = |<eqn>6/10| = 0.6.]]></step></item><item><question eqn='16.24 d 0.14' type='2' txt='Find the value of'/><answer val='116'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(16.24/0.14)*(100/100)| = |<eqn>1624/14|.]]></step><step><![CDATA[Since 14 divides evenly into 1624, our answer simplifies to]]></step><step><![CDATA[|<eqn>1624/14| = 116.]]></step></item><item><question eqn='96.6 d 0.42' type='2' txt='Find the value of'/><answer val='230'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(96.6/0.42)*(100/100)| = |<eqn>9660/42|.]]></step><step><![CDATA[Since 42 divides evenly into 9660, our answer simplifies to]]></step><step><![CDATA[|<eqn>9660/42| = 230.]]></step></item><item><question eqn='13.5 d 0.03' type='2' txt='Find the value of'/><answer val='450'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(13.5/0.03)*(100/100)| = |<eqn>1350/3|.]]></step><step><![CDATA[Since 3 divides evenly into 1350, our answer simplifies to]]></step><step><![CDATA[|<eqn>1350/3| = 450.]]></step></item><item><question eqn='4.5 d 0.75' type='2' txt='Find the value of'/><answer val='6'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(4.5/0.75)*(100/100)| = |<eqn>450/75|.]]></step><step><![CDATA[Since 75 divides evenly into 450, our answer simplifies to]]></step><step><![CDATA[|<eqn>450/75| = 6.]]></step></item><item><question eqn='2.07 d 0.9' type='2' txt='Find the value of'/><answer val='2.3'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(2.07/0.9)*(100/100)| = |<eqn>207/90|.]]></step><step><![CDATA[Since 9 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>207/90| = |<eqn>23/10| = 2.3.]]></step></item><item><question eqn='1.08 d 2.7' type='2' txt='Find the value of'/><answer val='0.4'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(1.08/2.7)*(100/100)| = |<eqn>108/270|.]]></step><step><![CDATA[Since 27 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>108/270| = |<eqn>4/10| = 0.4.]]></step></item><item><question eqn='29.12 d 1.3' type='2' txt='Find the value of'/><answer val='22.4'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(29.12/1.3)*(100/100)| = |<eqn>2912/130|.]]></step><step><![CDATA[Since 13 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>2912/130| = |<eqn>224/10| = 22.4.]]></step></item><item><question eqn='33.8 d 0.26' type='2' txt='Find the value of'/><answer val='130'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(33.8/0.26)*(100/100)| = |<eqn>3380/26|.]]></step><step><![CDATA[Since 26 divides evenly into 3380, our answer simplifies to]]></step><step><![CDATA[|<eqn>3380/26| = 130.]]></step></item><item><question eqn='186.9 d 8.9' type='2' txt='Find the value of'/><answer val='21'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(186.9/8.9)*(10/10)| = |<eqn>1869/89|.]]></step><step><![CDATA[Since 89 divides evenly into 1869, our answer simplifies to]]></step><step><![CDATA[|<eqn>1869/89| = 21.]]></step></item><item><question eqn='592 d 0.8' type='2' txt='Find the value of'/><answer val='740'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(592/0.8)*(10/10)| = |<eqn>5920/8|.]]></step><step><![CDATA[Since 8 divides evenly into 5920, our answer simplifies to]]></step><step><![CDATA[|<eqn>5920/8| = 740.]]></step></item><item><question eqn='0.1 d 1.25' type='2' txt='Find the value of'/><answer val='0.08'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.1/1.25)*(100/100)| = |<eqn>10/125|.]]></step><step><![CDATA[Since 5 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>10/125| = |<eqn>2/25|.]]></step><step><![CDATA[To express this fraction in decimal form, we need the bottom to be a power of 10. Notice that we can multiply the top and bottom by 4:]]></step><step><![CDATA[|<eqn>(2/25)*(4/4)| = |<eqn>8/100| = 0.08.]]></step></item><item><question eqn='5.04 d 0.07' type='2' txt='Find the value of'/><answer val='72'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(5.04/0.07)*(100/100)| = |<eqn>504/7|.]]></step><step><![CDATA[Since 7 divides evenly into 504, our answer simplifies to]]></step><step><![CDATA[|<eqn>504/7| = 72.]]></step></item><item><question eqn='8.36 d 1.9' type='2' txt='Find the value of'/><answer val='4.4'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(8.36/1.9)*(100/100)| = |<eqn>836/190|.]]></step><step><![CDATA[Since 19 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>836/190| = |<eqn>44/10| = 4.4.]]></step></item><item><question eqn='3.57 d 1.7' type='2' txt='Find the value of'/><answer val='2.1'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(3.57/1.7)*(100/100)| = |<eqn>357/170|.]]></step><step><![CDATA[Since 17 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>357/170| = |<eqn>21/10| = 2.1.]]></step></item><item><question eqn='9.89 d 2.3' type='2' txt='Find the value of'/><answer val='4.3'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(9.89/2.3)*(100/100)| = |<eqn>989/230|.]]></step><step><![CDATA[Since 23 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>989/230| = |<eqn>43/10| = 4.3.]]></step></item><item><question eqn='2.88 d 16' type='2' txt='Find the value of'/><answer val='0.18'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(2.88/16)*(100/100)| = |<eqn>288/1600|.]]></step><step><![CDATA[Since 16 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>288/1600| = |<eqn>18/100| = 0.18.]]></step></item><item><question eqn='1.98 d 0.11' type='2' txt='Find the value of'/><answer val='18'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(1.98/0.11)*(100/100)| = |<eqn>198/11|.]]></step><step><![CDATA[Since 11 divides evenly into 198, our answer simplifies to]]></step><step><![CDATA[|<eqn>198/11| = 18.]]></step></item><item><question eqn='1.95 d 15' type='2' txt='Find the value of'/><answer val='0.13'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(1.95/15)*(100/100)| = |<eqn>195/1500|.]]></step><step><![CDATA[Since 15 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>195/1500| = |<eqn>13/100| = 0.13.]]></step></item><item><question eqn='41.31 d 17' type='2' txt='Find the value of'/><answer val='2.43'/><choices val=''/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(41.31/17)*(100/100)| = |<eqn>4131/1700|.]]></step><step><![CDATA[Since 17 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>4131/1700| = |<eqn>243/100| = 2.43.]]></step></item><item><question eqn='7.7 d 0.51' type='1' txt='The value closest to'/><answer val='15'/><choices val='1|10|15|20'/><step><![CDATA[You may notice that 7.7 is close to 8 and 0.51 is close to 0.5, so |<eqn>7.7/0.51| is close to |<eqn>8/0.5|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(8/0.5)*(10/10)| = |<eqn>80/5|.]]></step><step><![CDATA[Since 5 divides evenly into 80, our answer simplifies to]]></step><step><![CDATA[|<eqn>80/5| = 16.]]></step><step><![CDATA[Of all of the choices, the result is closest to 15.]]></step></item><item><question eqn='6.8 d 0.51' type='1' txt='The value closest to'/><answer val='15'/><choices val='1|10|15|20'/><step><![CDATA[You may notice that 6.8 is close to 7 and 0.51 is close to 0.5, so |<eqn>6.8/0.51| is close to |<eqn>7/0.5|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(7/0.5)*(10/10)| = |<eqn>70/5|.]]></step><step><![CDATA[Since 5 divides evenly into 70, our answer simplifies to]]></step><step><![CDATA[|<eqn>70/5| = 14.]]></step><step><![CDATA[Of all of the choices, the result is closest to 15.]]></step></item><item><question eqn='3.8 d 0.83' type='1' txt='The value closest to'/><answer val='5'/><choices val='1|3|5|7'/><step><![CDATA[You may notice that 3.8 is close to 4 and 0.83 is close to 0.8, so |<eqn>3.8/0.83| is close to |<eqn>4/0.8|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(4/0.8)*(10/10)| = |<eqn>40/8|.]]></step><step><![CDATA[Since 8 divides evenly into 40, our answer simplifies to]]></step><step><![CDATA[|<eqn>40/8| = 5.]]></step><step><![CDATA[The answer to the original problem will be closest to 5.]]></step></item><item><question eqn='0.0012 d 0.021' type='1' txt='The value closest to'/><answer val='0.05'/><choices val='0.05|0.005|0.0005|0.00005'/><step><![CDATA[You may notice that 0.0012 is close to 0.001 and 0.021 is close to 0.02, so |<eqn>0.0012/0.021| is close to |<eqn>0.001/0.02|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>1000/1000|:]]></step><step><![CDATA[|<eqn>(0.001/0.02)*(1000/1000)| = |<eqn>1/20|.]]></step><step><![CDATA[We know that |<eqn>1/2| = |<eqn>0.5, so |<eqn>1/20| = 0.05.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.05.]]></step></item><item><question eqn='0.41 d 0.082' type='1' txt='The value closest to'/><answer val='5'/><choices val='0.5|5|10|50'/><step><![CDATA[You may notice that 0.41 is close to 0.4 and 0.082 is close to 0.08, so |<eqn>0.41/0.082| is close to |<eqn>0.4/0.08|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.4/0.08)*(100/100)| = |<eqn>40/8|.]]></step><step><![CDATA[Since 8 divides evenly into 40, our answer simplifies to]]></step><step><![CDATA[|<eqn>40/8| = 5.]]></step><step><![CDATA[The answer to the original problem will be closest to 5.]]></step></item><item><question eqn='0.064 d 0.31' type='1' txt='The value closest to'/><answer val='0.2'/><choices val='200|20|2|0.2'/><step><![CDATA[You may notice that 0.064 is close to 0.06 and 0.31 is close to 0.3, so |<eqn>0.064/0.31| is close to |<eqn>0.06/0.3|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.06/0.3)*(100/100)| = |<eqn>6/30|.]]></step><step><![CDATA[Since 3 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>6/30| = |<eqn>2/10| = 0.2.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.2.]]></step></item><item><question eqn='4.522 d 0.88' type='1' txt='The value closest to'/><answer val='5'/><choices val='0.05|0.5|5.0|50'/><step><![CDATA[You may notice that 4.522 is close to 4.5 and 0.88 is close to 0.9, so |<eqn>4.522/0.88| is close to |<eqn>4.5/0.9|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(4.5/0.9)*(10/10)| = |<eqn>45/9|.]]></step><step><![CDATA[Since 9 divides evenly into 45, our answer simplifies to]]></step><step><![CDATA[|<eqn>45/9| = 5.]]></step><step><![CDATA[The answer to the original problem will be closest to 5.]]></step></item><item><question eqn='1.528 d 0.47' type='1' txt='The value closest to'/><answer val='3'/><choices val='0.03|0.3|3.0|30'/><step><![CDATA[You may notice that 1.528 is close to 1.5 and 0.47 is close to 0.5, so |<eqn>1.528/0.47| is close to |<eqn>1.5/0.5|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(1.5/0.5)*(10/10)| = |<eqn>15/5|.]]></step><step><![CDATA[Since 5 divides evenly into 15, our answer simplifies to]]></step><step><![CDATA[|<eqn>15/5| = 3.]]></step><step><![CDATA[The answer to the original problem will be closest to 3.]]></step></item><item><question eqn='1.813 d 0.59' type='1' txt='The value closest to'/><answer val='3'/><choices val='0.03|0.3|3.0|30'/><step><![CDATA[You may notice that 1.813 is close to 1.8 and 0.59 is close to 0.6, so |<eqn>1.813/0.59| is close to |<eqn>1.8/0.6|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(1.8/0.6)*(10/10)| = |<eqn>18/6|.]]></step><step><![CDATA[Since 6 divides evenly into 18, our answer simplifies to]]></step><step><![CDATA[|<eqn>18/6| = 3.]]></step><step><![CDATA[The answer to the original problem will be closest to 3.]]></step></item><item><question eqn='0.116 d 0.04' type='1' txt='The value closest to'/><answer val='3'/><choices val='3|4|12|30'/><step><![CDATA[You may notice that 0.116 is close to 0.12, so |<eqn>0.116/0.04| is close to |<eqn>0.12/0.04|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.12/0.04)*(100/100)| = |<eqn>12/4|.]]></step><step><![CDATA[Since 4 divides evenly into 12, our answer simplifies to]]></step><step><![CDATA[|<eqn>12/4| = 3.]]></step><step><![CDATA[The answer to the original problem will be closest to 3.]]></step></item><item><question eqn='220 d 2.5' type='1' txt='The value closest to'/><answer val='90'/><choices val='25|80|90|110'/><step><![CDATA[We can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(220/2.5)*(10/10)| = |<eqn>2200/25|.]]></step><step><![CDATA[Since 25 divides evenly into 2200, our answer simplifies to]]></step><step><![CDATA[|<eqn>2200/25| = 90.]]></step><step><![CDATA[The answer to the original problem will be closest to 90.]]></step></item><item><question eqn='4.22 d 7.1' type='1' txt='The value closest to'/><answer val='0.6'/><choices val='0.4|0.5|0.6|0.7'/><step><![CDATA[You may notice that 4.22 is close to 4.2 and 7.1 is close to 7, so |<eqn>4.22/7.1| is close to |<eqn>4.2/7|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(4.2/7)*(10/10)| = |<eqn>42/70|.]]></step><step><![CDATA[Since 7 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>42/70| = |<eqn>6/10| = 0.6.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.6.]]></step></item><item><question eqn='0.153 d 0.3' type='1' txt='The value closest to'/><answer val='0.5'/><choices val='0.1|0.2|0.4|0.5'/><step><![CDATA[You may notice that 0.153 is close to 0.15, so |<eqn>0.153/0.3| is close to |<eqn>0.15/0.3|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>100/100|:]]></step><step><![CDATA[|<eqn>(0.15/0.3)*(100/100)| = |<eqn>15/30|.]]></step><step><![CDATA[Since 3 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>15/30| = |<eqn>5/10| = 0.5.]]></step><step><![CDATA[The answer to the original problem will be closest to 0.5.]]></step></item><item><question eqn='8.7 d 5.8' type='1' txt='The value closest to'/><answer val='1.5'/><choices val='0.1|1.3|1.5|2.0'/><step><![CDATA[You may notice that 8.7 is close to 9 and 5.8 is close to 6, so |<eqn>8.7/5.8| is close to |<eqn>9/6|.]]></step><step><![CDATA[Since 3 divides evenly into both top and bottom, our answer simplifies to]]></step><step><![CDATA[|<eqn>9/6| = |<eqn>3/2| = 1.5.]]></step><step><![CDATA[The answer to the original problem will be closest to 1.5.]]></step></item><item><question eqn='9.14 d 1.29' type='1' txt='The value closest to'/><answer val='7.0'/><choices val='0.7|0.9|7.0|9.0'/><step><![CDATA[You may notice that 9.14 is close to 9.1 and 1.29 is close to 1.3, so |<eqn>9.14/1.29| is close to |<eqn>9.1/1.3|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(9.1/1.3)*(10/10)| = |<eqn>91/13|.]]></step><step><![CDATA[Since 7 divides evenly into 91, our answer simplifies to]]></step><step><![CDATA[|<eqn>91/13| = 7.]]></step><step><![CDATA[The answer to the original problem will be closest to 7.]]></step></item><item><question eqn='9.61 d 1.58' type='1' txt='The value closest to'/><answer val='5'/><choices val='1|5|9|10'/><step><![CDATA[You may notice that 9.61 is close to 9.6 and 1.58 is close to 1.6, so |<eqn>9.6/1.6| is close to |<eqn>9.6/1.6|.]]></step><step><![CDATA[Now we can convert both the top and the bottom into integers by multiplying by |<eqn>10/10|:]]></step><step><![CDATA[|<eqn>(9.6/1.6)*(10/10)| = |<eqn>96/16|.]]></step><step><![CDATA[Since 16 divides evenly into 96, our answer simplifies to]]></step><step><![CDATA[|<eqn>96/16| = 6.]]></step><step><![CDATA[Of all of the choices, the result is closest to 5.]]></step></item></data>";
 	/** END OF DATA DEFINITIONS
 	/**
 	API for fetching/parsing data for current topic 
@@ -5257,7 +6161,7 @@ mngr.parseXML=function(dat,topicID) {
 			_data.push([[q, exp, vars], a]);
 		} else if (topicID == 28) {
 			q = sub[0].attributes.eqn;
-			q = q.split(" ").join("").split("d").join("/");
+			q = q.split(" ").join("").split("d");
 			t = sub[0].attributes.type;
 			txt = sub[0].attributes.txt;
 			a = sub[1].attributes.val;

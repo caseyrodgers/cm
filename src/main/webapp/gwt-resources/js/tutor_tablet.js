@@ -1,9 +1,9 @@
 /**
  * Main Mobile JS
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
  */
 
 var _productionMode=false;
@@ -13,43 +13,58 @@ var HmEvents = {
                 eventTutorInitialized: {
                   listeners:[],
                   subscribe:function(callBack) {
-                	  var hel=HmEvents.eventTutorInitialized.listeners;
-                	  hel[hel.length] = callBack;
+                          var hel=HmEvents.eventTutorInitialized.listeners;
+                          hel[hel.length] = callBack;
                   },
                   fire:function() {
-                	  var hel=HmEvents.eventTutorInitialized.listeners;
+                          var hel=HmEvents.eventTutorInitialized.listeners;
                       for(var i=0;i<hel.length;i++) {
-                    	  hel[i]();
+                          hel[i]();
                       }
                   }
               },
               eventTutorLastStep: {
                   listeners:[],
                   subscribe:function(callBack) {
-                	  var hel=HmEvents.eventTutorLastStep.listeners;
-                	  hel[hel.length] = callBack;
+                          var hel=HmEvents.eventTutorLastStep.listeners;
+                          hel[hel.length] = callBack;
                   },
                   fire:function() {
-                	  var hel=HmEvents.eventTutorLastStep.listeners;
+                          var hel=HmEvents.eventTutorLastStep.listeners;
                       for(var i=0;i<hel.length;i++) {
-                    	  hel[i]();
+                          hel[i]();
                       }
                   }
               },
-              
+
               eventTutorWidgetComplete: {
                   listeners:[],
                   subscribe:function(callBack) {
-                	  var hel=HmEvents.eventTutorWidgetComplete.listeners;
-                	  hel[hel.length] = callBack;
+                          var hel=HmEvents.eventTutorWidgetComplete.listeners;
+                          hel[hel.length] = callBack;
                   },
                   fire:function() {
-                	  var hel=HmEvents.eventTutorWidgetComplete.listeners;
+                          var hel=HmEvents.eventTutorWidgetComplete.listeners;
                       for(var i=0;i<hel.length;i++) {
-                    	  hel[i]();
+                          hel[i]();
+                      }
+                  }
+              },
+
+              eventTutorSetComplete: {
+                  listeners:[],
+                  subscribe:function(callBack) {
+                          var hel=HmEvents.eventTutorSetComplete.listeners;
+                          hel[hel.length] = callBack;
+                  },
+                  fire:function() {
+                          var hel=HmEvents.eventTutorSetComplete.listeners;
+                      for(var i=0;i<hel.length;i++) {
+                          hel[i]();
                       }
                   }
               }
+
 
 }
 
@@ -60,7 +75,7 @@ function $get(name) {
 
 /**
  * Process MathJAX asynchronously
- * 
+ *
  */
 HmEvents.eventTutorInitialized.subscribe(function() {
     try {
@@ -94,10 +109,10 @@ var TutorManager = {
         TutorManager.analyzeLoadedData();
 
 
-        /* mark next button as active*/ 
+        /* mark next button as active*/
         enabledNext(true);
-       
-        
+
+
         /** hookup any question steps */
         HmEvents.eventTutorInitialized.fire();
     },
@@ -143,7 +158,7 @@ var TutorManager = {
             }
 
             setButtonState();
-            
+
             scrollToStep(TutorManager.currentStepUnit);
 
             return false;
@@ -158,26 +173,26 @@ var TutorManager = {
         },
 
         /**
-		 * read loaded tutor html and create meta data used to drive the
-		 * solution.
-		 * 
-		 * The stepUnits are individual parts of a step.
-		 * 
-		 * Stepunit contains these attribute: id, steprole, steptype, realstep
-		 * 
-		 * steps are the complete steps consisting of two stepUnits.
-		 * 
-		 * Return count of stepUnits loaded
-		 * 
-		 */
+                 * read loaded tutor html and create meta data used to drive the
+                 * solution.
+                 *
+                 * The stepUnits are individual parts of a step.
+                 *
+                 * Stepunit contains these attribute: id, steprole, steptype, realstep
+                 *
+                 * steps are the complete steps consisting of two stepUnits.
+                 *
+                 * Return count of stepUnits loaded
+                 *
+                 */
         analyzeLoadedData : function() {
                 TutorManager.stepUnits = [];
                 TutorManager.steps = [];
 
                 /**
-				 * for each step unit div on page
-				 * 
-				 */
+                                 * for each step unit div on page
+                                 *
+                                 */
                 var maxStepUnits = 100;
                 for ( var s = 0; s < maxStepUnits; s++) {
                         var stepUnit = _getStepUnit(s);
@@ -205,15 +220,15 @@ var TutorManager = {
     },
     backToLesson:function() {
         /**
-		 * Move back to lesson that called tutor
-		 * 
-		 * TODO: need gotoLessonForPid(currentPid);
-		 */
+                 * Move back to lesson that called tutor
+                 *
+                 * TODO: need gotoLessonForPid(currentPid);
+                 */
         gwt_backToLesson();
     }
     ,
     newProblem:function() {
-    	gwt_tutorNewProblem();
+        gwt_tutorNewProblem();
     }
 }
 
@@ -223,18 +238,18 @@ function setButtonState() {
 }
 
 function enabledPrevious(yesNo) {
-	enabledButton('steps_prev',yesNo);
+        enabledButton('steps_prev',yesNo);
 }
 
 function enabledNext(yesNo) {
-	enabledButton('steps_next',yesNo);	
+        enabledButton('steps_next',yesNo);
 }
 
 function enabledButton(btn, yesNo) {
-	var clazz = 'sexybutton ';
-	if(!yesNo) {
-		clazz += ' disabled';
-	}
+        var clazz = 'sexybutton ';
+        if(!yesNo) {
+                clazz += ' disabled';
+        }
     $get(btn).className = clazz;
 }
 
@@ -288,7 +303,7 @@ function setAsNotCurrent(ele) {
 
 /**
  * Return requested element
- * 
+ *
  */
 function _getElement(tag, num) {
         var step = tag + "-" + num;
@@ -396,48 +411,48 @@ function findPreviousFigureUnit(s) {
 
 // Set the state of the toolbar buttons
 function setState(n, onoff) {
-	if(n == 'step') {
-		enabledNext(onoff);
-		
-		if(!onoff) {
-			HmEvents.eventTutorLastStep.fire();
-		}
-	}
-	else if(n == 'back') {
-		enabledPrevious(onoff);
-	}
+        if(n == 'step') {
+                enabledNext(onoff);
+
+                if(!onoff) {
+                        HmEvents.eventTutorLastStep.fire();
+                }
+        }
+        else if(n == 'back') {
+                enabledPrevious(onoff);
+        }
 }
 
 
 /**
  * Attempt to scroll the document so the tutor bar rests on the bottom line
  * exposing the largest portion of solution.
- * 
- * 
+ *
+ *
  * gwt_scrollToBottomOfScrollPanel();
- * 
+ *
  * @param num
  * @return
  */
 
 function scrollToStep(num) {
-	var stb=document.getElementById('scrollTo-button');
-	if(stb) {
-	    var top = DL_GetElementTop(stb);
-	    var visibleSize = getViewableSize();
-	    var scrollXy = getScrollXY();
+        var stb=document.getElementById('scrollTo-button');
+        if(stb) {
+            var top = DL_GetElementTop(stb);
+            var visibleSize = getViewableSize();
+            var scrollXy = getScrollXY();
         var visTop = scrollXy[1];
-	    var visHeight = visibleSize[1];
-	    var visBot = visHeight + visTop;
-	    
-	    if(true || top < visTop || top > visBot) {
-// 	        alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
-//	          + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
-//	          + stb);
- 	        
- 	       gwt_scrollToBottomOfScrollPanel(top-visHeight);
-	    }
-	}
+            var visHeight = visibleSize[1];
+            var visBot = visHeight + visTop;
+
+            if(true || top < visTop || top > visBot) {
+//              alert('Need to scroll, visibleSize: ' + visibleSize + ' scrollXy: ' + scrollXy + ' visTop: '
+//                + visTop + ' visHeight: ' + visHeight + ' visBot: ' + visBot + ' buttonBar: '
+//                + stb);
+
+               gwt_scrollToBottomOfScrollPanel(top-visHeight);
+            }
+        }
 }
 
 
@@ -456,7 +471,7 @@ function hideAllSteps() {
 
 /**
  * called after control-floater inserted in ControlPanel
- * 
+ *
  */
 function initializeExternalJs() {
     var divName = 'control-floater';
@@ -505,20 +520,20 @@ HmEvents.eventTutorInitialized.subscribe(function() {
     var len = divs.length;
 
     /*
-	 * Mobile does not have onmoueover, so convert the mouseover to onclick on
-	 * all hint question_guess elements.
-	 * 
-	 * We rename the onmouseover to onmouseoverDeferred and the call the
-	 * deffered event onclick.
-	 * 
-	 * The event will call doQuestionResponse to be called passing in the proper
-	 * key to use to lookup the actual response text. The text is kept in a JSON
-	 * array to provide easy embedding of HTML.
-	 * 
-	 * In the mobile version this call is caught and passed to and question
-	 * answer is added to existing question div.
-	 * 
-	 */
+         * Mobile does not have onmoueover, so convert the mouseover to onclick on
+         * all hint question_guess elements.
+         *
+         * We rename the onmouseover to onmouseoverDeferred and the call the
+         * deffered event onclick.
+         *
+         * The event will call doQuestionResponse to be called passing in the proper
+         * key to use to lookup the actual response text. The text is kept in a JSON
+         * array to provide easy embedding of HTML.
+         *
+         * In the mobile version this call is caught and passed to and question
+         * answer is added to existing question div.
+         *
+         */
     for(var d=0;d<len;d++) {
         var div = divs.item(d);
         if(div.className == 'question_guess') {

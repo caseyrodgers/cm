@@ -49,10 +49,8 @@
                 assets/css/reset.css
                 ../../../../hotmath2/web/css/tutor_widget.css
                 gwt-resources/css/CatchupMathMobile3.css
-                gwt-resources/css/page_layout.css
             	gwt-resources/css/group_touch.css
             	gwt-resources/css/quiz.css
-                gwt-resources/css/quiz.css
                 assets/css/local_sexybuttons.css
             	gwt-resources/css/whiteboard.css
             	gwt-resources/css/resource_review.css
@@ -61,6 +59,7 @@
                 gwt-resources/css/whiteboard.css
             	gwt-resources/css/menubar_layout.css
             	gwt-resources/css/mobile_question_box.css
+                gwt-resources/css/page_layout.css
              " />
         </concat>
     </target>
