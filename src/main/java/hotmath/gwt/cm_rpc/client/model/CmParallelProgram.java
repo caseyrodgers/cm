@@ -10,8 +10,10 @@ public class CmParallelProgram implements Response {
 	int id;
 	int adminId;
 	int cmProgId;
+	int studentCount;
 	String password;
 	String name;
+	boolean isActive;
 	Date createDate;
 	
     public CmParallelProgram() {/* empty */}
@@ -48,6 +50,14 @@ public class CmParallelProgram implements Response {
 		this.cmProgId = cmProgId;
 	}
 
+	public int getStudentCount() {
+		return studentCount;
+	}
+
+	public void setStudentCount(int studentCount) {
+		this.studentCount = studentCount;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -64,6 +74,14 @@ public class CmParallelProgram implements Response {
 		this.name = name;
 	}
 
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -75,6 +93,7 @@ public class CmParallelProgram implements Response {
 	@Override
     public String toString() {
         return "CmParallelProgram [id=" + id + ", adminId=" + adminId + ", cmProgId="
-                + cmProgId + ", password=" + password + ", name=" + name + "]";
+                + cmProgId + ", password=" + password + ", name=" + name + ", studentCount="
+                + studentCount + ", isActive=" + isActive + "]";
     }
 }
