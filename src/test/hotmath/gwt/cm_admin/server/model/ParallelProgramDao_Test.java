@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import java.util.Date;
+import java.util.List;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
@@ -103,6 +104,7 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
 		cmProgAssign.setCmProgram(cmProg);
 		cmProgAssign.setUserId(9461);
 		cmProgAssign.setUserProgId(sm.getProgram().getProgramId());
+		cmProgAssign.setParallelProg(true);
 		_dao.addProgramAssignment(cmProgAssign);
     }
 
@@ -171,4 +173,10 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     	_dao.reassignProgram(9456, cmProg);
     }
 
+    @Test
+    public void testGetParallelProgramsForAdmin() throws Exception {
+    	List<CmParallelProgram> list = _dao.getParallelProgramsForAdminId(6);
+    	
+    	assert(list.size() > 0);    	
+    }
 }

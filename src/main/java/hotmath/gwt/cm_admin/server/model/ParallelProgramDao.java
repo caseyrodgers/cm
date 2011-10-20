@@ -13,6 +13,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -307,6 +308,33 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         model.setId(id);
     }
     
+    public List<CmParallelProgram> getParallelProgramsForAdminId(final int adminId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PARALLEL_PROGRAMS_FOR_ADMIN");
+        List<CmParallelProgram> ppList = this.getJdbcTemplate().query(
+                sql,
+                new Object[]{adminId},
+                new RowMapper<CmParallelProgram>() {
+                    public CmParallelProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmParallelProgram parallelProg;
+                        try {
+                        	parallelProg = new CmParallelProgram();
+                        	parallelProg.setAdminId(adminId);
+                        	parallelProg.setCmProgId(rs.getInt("prog_inst_id"));
+                        	parallelProg.setId(rs.getInt("id"));
+                        	parallelProg.setName(rs.getString("name"));
+                        	parallelProg.setPassword(rs.getString("password"));
+                        	parallelProg.setStudentCount(rs.getInt("student_count"));
+                            return parallelProg;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Parallel Programs for adminId: %d", adminId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return ppList;
+    }
+
     /**
      * is User's current Program in CM_PROGRAM?
      * 
