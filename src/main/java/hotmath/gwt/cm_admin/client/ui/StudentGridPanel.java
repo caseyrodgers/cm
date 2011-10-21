@@ -607,7 +607,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
 
     private MyMenuItem defineParallelProgramItem() {
-        return new MyMenuItem("Parallel Program", "Define a Parallel Program group.",
+        return new MyMenuItem("Parallel Programs", "Define a Parallel Program.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {

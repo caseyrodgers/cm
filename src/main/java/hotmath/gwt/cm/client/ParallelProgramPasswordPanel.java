@@ -225,36 +225,9 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
     }
 
     private void completeLogin(final String key) {
-        
-        final CmWindow win = new CmWindow();
-        win.setSize(320,200);
-        win.setModal(true);
-        win.setClosable(false);
-        
-        String html = "<div style='margin: 10px;'>" +
-                      "<p>Your current program is<br/><b>" + parallelProgName + "</b></p>" +
-                      "</div>";
-        
-        win.add(new Html(html));
-        
-        win.setHeading("Catchup Math");
-        
-        Button close = new Button("Begin Catchup Math");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                String userKey = key;
-                String url = "http://" + Window.Location.getHost();
-                
-                url += "/loginService?key=" + userKey;
-                Window.Location.replace(url);
-            }
-        });
-        
-        win.getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
-        win.addButton(close);
-        
-        win.setVisible(true);
+        String url = "http://" + Window.Location.getHost();        
+        url += "/loginService?key=" + key;
+        Window.Location.replace(url);
     }
     
     private void showParallelProgNotAvail(String password) {
@@ -273,11 +246,11 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         w.add(new Html(html));
         w.setSize(300,170);
         
-        Button close = new Button("Go");
+        Button close = new Button("OK");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Window.Location.replace(CmShared.CM_HOME_URL);
+                w.close();
             }
         });
         
@@ -300,11 +273,11 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         w.add(new Html(html));
         w.setSize(300,170);
         
-        Button close = new Button("Go");
+        Button close = new Button("OK");
         close.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                Window.Location.replace(CmShared.CM_HOME_URL);
+                w.close();
             }
         });
         
