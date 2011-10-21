@@ -2847,8 +2847,9 @@ where user_id=? and user_prog_id = ?
 
 .key=GET_PARALLEL_PROGRAMS_FOR_ADMIN
 
-select pp.*, pa.student_count
+select pp.*, ifnull(pa.student_count, 0) as student_count
 from CM_PARALLEL_PROGRAM pp
-join (select count(*) as student_count, prog_inst_id from CM_PROGRAM_ASSIGN group by prog_inst_id) pa
+left join (select count(*) as student_count, prog_inst_id from CM_PROGRAM_ASSIGN group by prog_inst_id) pa
   on pa.prog_inst_id = pp.prog_inst_id
 where pp.admin_id = ?
+order by pp.name

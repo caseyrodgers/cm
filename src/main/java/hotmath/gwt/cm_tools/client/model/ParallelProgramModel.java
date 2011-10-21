@@ -3,6 +3,10 @@ package hotmath.gwt.cm_tools.client.model;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ParallelProgramModel extends BaseModel implements Response {
+	
+	public static final String IS_ACTIVE     = "isActive";
+	public static final String NAME          = "name";
+	public static final String STUDENT_COUNT = "studentCount";
 
 	public ParallelProgramModel(){
         /** empty */
@@ -30,11 +34,11 @@ public class ParallelProgramModel extends BaseModel implements Response {
     }
 
     public void setName(String name) {
-        set("name", name);
+        set(NAME, name);
     }
 
     public String getName() {
-        return get("name");
+        return get(NAME);
     }
 
     public void setId(Integer id) {
@@ -70,19 +74,19 @@ public class ParallelProgramModel extends BaseModel implements Response {
     }
 
     public void setStudentCount(Integer count) {
-        set("studentCount", count);
+        set(STUDENT_COUNT, count);
     }
 
     public Integer getStudentCount() {
-        return get("studentCount");
+        return get(STUDENT_COUNT);
     }
 
     public void setIsActive(Boolean isActive) {
-        set("isActive", isActive);
+        set(IS_ACTIVE, isActive);
     }
 
     public Boolean getIsActive() {
-        return get("isActive");
+        return get(IS_ACTIVE);
     }
 
 }

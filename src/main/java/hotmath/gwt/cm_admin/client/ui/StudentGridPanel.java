@@ -424,6 +424,24 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         return btn;
     }
 
+    private Button manageParallelProgramsButton(final Grid<StudentModelExt> grid) {
+        final Button btn = new StudentPanelButton("Manage Parallel Programs");
+        btn.setToolTip("Manage Parallel Program definitions.");
+
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new ManageParallelProgramsWindow(_cmAdminMdl).setVisible(true);
+                    }
+                });
+            }
+        });
+        return btn;
+    }
+
     /**
      * Log in as selected user (student)
      * 
@@ -469,6 +487,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
         toolbar.add(manageGroupButton(_grid));
+        toolbar.add(manageParallelProgramsButton(_grid));
         toolbar.add(trendingReportButton());
 
         toolbar.add(highlightsButton());

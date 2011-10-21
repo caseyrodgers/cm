@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -32,8 +33,12 @@ public class ParallelProgramSetup extends RegisterStudent {
     TextField<String> _nameTag;
     TextField<String> _passwordTag;
     
-	public ParallelProgramSetup(StudentModel sm, CmAdminModel cm) {
-	    super(sm, cm);
+	private CmAsyncRequest requestCallback;
+    
+	public ParallelProgramSetup(CmAsyncRequest callback, CmAdminModel cm) {
+	    super(null, cm);
+	    
+	    requestCallback = callback;
 	    
 	    _window.setHeading("Parallel Program Setup");
 	    _fsProfile.removeAll();
