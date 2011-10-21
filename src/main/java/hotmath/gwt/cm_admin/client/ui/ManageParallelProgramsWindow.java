@@ -51,7 +51,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
     public ManageParallelProgramsWindow(CmAdminModel adminModel) {
         this.adminModel = adminModel;
         setSize(width,300);
-        setHeading("Manage Parallwl Programs");    
+        setHeading("Manage Parallel Programs");    
         
         readRpcData(adminModel.getId(), true);
         
