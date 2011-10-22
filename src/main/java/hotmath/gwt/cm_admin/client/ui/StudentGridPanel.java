@@ -406,42 +406,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
     }
 
-    private Button manageGroupButton(final Grid<StudentModelExt> grid) {
-        final Button btn = new StudentPanelButton("Manage Groups");
-        btn.setToolTip("Manage the group definitions.");
-
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        new ManageGroupsWindow(_cmAdminMdl).setVisible(true);
-                    }
-                });
-            }
-        });
-        return btn;
-    }
-
-    private Button manageParallelProgramsButton(final Grid<StudentModelExt> grid) {
-        final Button btn = new StudentPanelButton("Manage Parallel Programs");
-        btn.setToolTip("Manage Parallel Program definitions.");
-
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        new ManageParallelProgramsWindow(_cmAdminMdl).setVisible(true);
-                    }
-                });
-            }
-        });
-        return btn;
-    }
-
     /**
      * Log in as selected user (student)
      * 
@@ -482,12 +446,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ToolBar toolbar = new ToolBar();
         toolbar.setSpacing(5);
         toolbar.addStyleName("student-grid-panel-toolbar");
-        toolbar.add(createRefreshButton());
         toolbar.add(createRegistrationButton());
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
-        toolbar.add(manageGroupButton(_grid));
-        toolbar.add(manageParallelProgramsButton(_grid));
         toolbar.add(trendingReportButton());
 
         toolbar.add(highlightsButton());
@@ -538,6 +499,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         menu.add(defineBulkRegItem());
 
         menu.add(defineSelfRegItem());
+
+        menu.add(defineManageGroupsItem());
 
         if (CmShared.getQueryParameter("debug") != null)
             menu.add(defineParallelProgramItem());
@@ -625,15 +588,31 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         });
     }
 
-    private MyMenuItem defineParallelProgramItem() {
-        return new MyMenuItem("Parallel Programs", "Define a Parallel Program.",
+    private MyMenuItem defineManageGroupsItem() {
+        return new MyMenuItem("Manage Groups", "Manage group definitions.",
                 new SelectionListener<MenuEvent>() {
                     @Override
                     public void componentSelected(MenuEvent ce) {
                         GWT.runAsync(new CmRunAsyncCallback() {
                             @Override
                             public void onSuccess() {
-                                new ParallelProgramSetup(null, _cmAdminMdl);
+                                new ManageGroupsWindow(_cmAdminMdl).setVisible(true);
+                            }
+                        });
+                    }
+                });
+    }
+
+    private MyMenuItem defineParallelProgramItem() {
+        return new MyMenuItem("Parallel Programs", "Manage Parallel Programs.",
+                new SelectionListener<MenuEvent>() {
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        GWT.runAsync(new CmRunAsyncCallback() {
+                            @Override
+                            public void onSuccess() {
+                                new ManageParallelProgramsWindow(_cmAdminMdl).setVisible(true);
+
                             }
                         });
                     }
@@ -645,17 +624,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             super(test, listener);
             setToolTip(tip);
         }
-    }
-
-    private Button createRefreshButton() {
-        Button btn = new StudentPanelButton("Refresh List");
-        btn.setToolTip("Refresh Student List with latest information.");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CmAdminDataReader.getInstance().fireRefreshData();
-            }
-        });
-        return btn;
     }
 
     private Button trendingReportButton() {
