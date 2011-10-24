@@ -8,6 +8,7 @@ public class StudentActivityModel extends BaseModel implements Response {
 	
 	public static final String ACTIVITY_KEY = "activity";
 	public static final String PROGRAM_KEY = "program";
+	public static final String PROGRAM_TYPE_KEY = "program-type";
 	public static final String USE_DATE_KEY = "use-date";
 	public static final String RESULT_KEY = "result";
 	public static final String START_KEY = "start";
@@ -34,7 +35,7 @@ public class StudentActivityModel extends BaseModel implements Response {
 	    return get(IS_CUSTOM_QUIZ_KEY);
 	}
 
-	/** catch null program name to avoid nullexception 
+	/** catch null program name to avoid NPE 
 	 * 
 	 * @return
 	 */
@@ -44,6 +45,18 @@ public class StudentActivityModel extends BaseModel implements Response {
 
 	public void setProgramDescr(String program) {
 		set(PROGRAM_KEY, program);
+	}
+	
+	/** catch null program type to avoid NPE 
+	 * 
+	 * @return
+	 */
+	public String getProgramType() {
+		return get(PROGRAM_TYPE_KEY)!=null?(String)get(PROGRAM_TYPE_KEY):"Unknown Type";
+	}
+
+	public void setProgramType(String type) {
+		set(PROGRAM_TYPE_KEY, type);
 	}
 	
 	public String getUseDate() {
