@@ -255,7 +255,7 @@ select load_order,is_custom_quiz, max(s.use_date) as use_date, date_format(min(s
   s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.prog_id, s.subj_id, s.test_config_json,
   s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.test_run_id,
   s.activity, s.is_quiz, count(*) as problems_viewed, max(s.session_number) as session_number,
-  s.total_sessions, s.time_on_task
+  s.total_sessions, s.time_on_task, ifnull(pp.name, 'Primary') as prog_type
 from (
 
  select 1 as load_order,0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
@@ -267,11 +267,13 @@ from (
    0 as test_run_id,
    0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
-   hat.task_time as time_on_task
+   hat.task_time as time_on_task,
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
+ left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
   and u.active_test_id = l.test_id
 
@@ -285,26 +287,29 @@ from (
    l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id,
    r.run_id as test_run_id, 0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
-   hat.task_time as time_on_task
+   hat.task_time as time_on_task,
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
  from  HA_TEST l 
  join HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and (p.custom_program_id is null && p.custom_quiz_id is null)
+ left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
 
  union
 
  select 3 as load_order,0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
-  date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
-  date_format(iu.view_time,'%Y-%m-%d') as run_date,
-  0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
-  if (p.custom_program_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CP: ', cp.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
-  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
-  r.run_id as test_run_id, r.total_sessions as total_sessions,
-  if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
-  0 as time_on_task
+   date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
+   date_format(iu.view_time,'%Y-%m-%d') as run_date,
+   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
+   if (p.custom_program_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CP: ', cp.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
+   r.run_id as test_run_id, r.total_sessions as total_sessions,
+   if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
+   0 as time_on_task,
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join (
@@ -321,19 +326,21 @@ from (
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  join HA_ACTIVITY_TIME hat on hat.type = 'REVIEW'
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
+ left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
 
  union 
 
  select 4 as load_order, 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
-  date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
-  date_format(r.run_time,'%Y-%m-%d') as run_date,
-  r.answered_correct, r.answered_incorrect, r.not_answered,
-  if (p.custom_quiz_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CQ: ', q.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
-  l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
-  r.run_id as test_run_id, r.total_sessions as total_sessions,
-  if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
-  if (p.custom_quiz_id is null, 0, hat.task_time) as time_on_task
+   date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
+   date_format(r.run_time,'%Y-%m-%d') as run_date,
+   r.answered_correct, r.answered_incorrect, r.not_answered,
+   if (p.custom_quiz_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CQ: ', q.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
+   r.run_id as test_run_id, r.total_sessions as total_sessions,
+   if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
+   if (p.custom_quiz_id is null, 0, hat.task_time) as time_on_task,
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  left join (
@@ -350,9 +357,11 @@ from (
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join HA_CUSTOM_QUIZ q on q.qid = p.custom_quiz_id
+ left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
 
 ) s
+left join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = s.prog_inst_id and s.is_parallel_prog = 1
 group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.session_number asc
 
