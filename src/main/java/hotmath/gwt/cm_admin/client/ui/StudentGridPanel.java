@@ -503,7 +503,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         menu.add(defineManageGroupsItem());
 
         if (CmShared.getQueryParameter("debug") != null)
-            menu.add(defineParallelProgramItem());
+            menu.add(defineParallelProgramsItem());
 
         btn.setMenu(menu);
 
@@ -603,7 +603,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 });
     }
 
-    private MyMenuItem defineParallelProgramItem() {
+    private MyMenuItem defineParallelProgramsItem() {
         return new MyMenuItem("Parallel Programs", "Manage Parallel Programs.",
                 new SelectionListener<MenuEvent>() {
                     @Override
