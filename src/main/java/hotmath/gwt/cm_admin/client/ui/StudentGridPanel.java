@@ -446,6 +446,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ToolBar toolbar = new ToolBar();
         toolbar.setSpacing(5);
         toolbar.addStyleName("student-grid-panel-toolbar");
+        if (CmShared.getQueryParameter("debug") != null) {
+            toolbar.add(createRefreshButton());
+        }
         toolbar.add(createRegistrationButton());
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
@@ -624,6 +627,17 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             super(test, listener);
             setToolTip(tip);
         }
+    }
+
+    private Button createRefreshButton() {
+        Button btn = new StudentPanelButton("Refresh List");
+        btn.setToolTip("Refresh Student List with latest information.");
+        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                CmAdminDataReader.getInstance().fireRefreshData();
+            }
+        });
+        return btn;
     }
 
     private Button trendingReportButton() {
