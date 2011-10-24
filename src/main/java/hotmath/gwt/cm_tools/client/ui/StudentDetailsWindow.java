@@ -378,9 +378,17 @@ public class StudentDetailsWindow extends CmWindow {
         program.setMenuDisabled(true);
         configs.add(program);
 
+        ColumnConfig programType = new ColumnConfig();
+        programType.setId(StudentActivityModel.PROGRAM_TYPE_KEY);
+        programType.setHeader("Prog-Type");
+        programType.setWidth(105);
+        programType.setSortable(false);
+        programType.setMenuDisabled(true);
+        configs.add(programType);
+
         ColumnConfig activity = new ColumnConfig();
         activity.setId(StudentActivityModel.ACTIVITY_KEY);
-        activity.setHeader("Activity-Section");
+        activity.setHeader("Activity");
         activity.setWidth(125);
         activity.setSortable(false);
         activity.setMenuDisabled(true);
@@ -396,7 +404,7 @@ public class StudentDetailsWindow extends CmWindow {
         
         ColumnConfig timeOnTask = new ColumnConfig();
         timeOnTask.setId(StudentActivityModel.TIME_ON_TASK_KEY);
-        timeOnTask.setHeader("Time-on-task");
+        timeOnTask.setHeader("Time");
         timeOnTask.setWidth(100);
         timeOnTask.setSortable(true);
         timeOnTask.setMenuDisabled(true);
