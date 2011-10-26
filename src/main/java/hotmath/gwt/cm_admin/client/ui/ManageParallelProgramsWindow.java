@@ -6,7 +6,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
@@ -121,18 +120,29 @@ public class ManageParallelProgramsWindow extends CmWindow {
 
         lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                final ParallelProgramModel gim = getGridItem();
+                final ParallelProgramModel ppm = getGridItem();
                 /*
-                if (gim != null) {
+                if (ppm != null) {
                         
-                    MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + gim.getName() + "'?", new Listener<MessageBoxEvent>() {
+                    MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equalsIgnoreCase("yes"))
-                                deleteGroup(adminModel.getId(), gim.getId());
+                                deleteGroup(adminModel.getId(), ppm.getId());
                         }
                     });
                 }
                 */
+            }
+        }));
+
+        lc.add(new StdButton("Usage", "Display usage of selected Parallel Program.",new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                final ParallelProgramModel ppm = getGridItem();
+                
+                if (ppm != null) {
+                	new ParallelProgramUsageWindow(ppm);
+                }
+                
             }
         }));
 
@@ -162,36 +172,36 @@ public class ManageParallelProgramsWindow extends CmWindow {
     /** Return string that deals with singular/plural of student count
      * 
      */
-    private String getCountString(ParallelProgramModel gim) {
-        return gim.getStudentCount() + " " + (gim.getStudentCount() == 1?"student":"students");
+    private String getCountString(ParallelProgramModel ppm) {
+        return ppm.getStudentCount() + " " + (ppm.getStudentCount() == 1?"student":"students");
     }
 
     private ColumnModel defineColumns() {
         List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig group = new ColumnConfig();
-        group.setId(ParallelProgramModel.NAME);
-        group.setHeader("Name");
-        group.setWidth(120);
-        group.setSortable(true);
-        group.setRenderer(new GridCellRenderer<ParallelProgramModel>() {
+        ColumnConfig name = new ColumnConfig();
+        name.setId(ParallelProgramModel.NAME);
+        name.setHeader("Name");
+        name.setWidth(135);
+        name.setSortable(true);
+        name.setRenderer(new GridCellRenderer<ParallelProgramModel>() {
 			@Override
-			public Object render(ParallelProgramModel gim, String property,
+			public Object render(ParallelProgramModel ppm, String property,
 					ColumnData config, int rowIndex, int colIndex,
 					ListStore<ParallelProgramModel> store, Grid<ParallelProgramModel> grid) {
 
-				return gim.getName();
+				return ppm.getName();
 			}
         });
-        configs.add(group);
+        configs.add(name);
 
-        ColumnConfig usage = new ColumnConfig();
-        usage.setId(ParallelProgramModel.STUDENT_COUNT);
-        usage.setHeader("Count");
-        usage.setToolTip("Students in Parallel Program");
-        usage.setWidth(48);
-        usage.setSortable(true);
-        configs.add(usage);
+        ColumnConfig count = new ColumnConfig();
+        count.setId(ParallelProgramModel.STUDENT_COUNT);
+        count.setHeader("Count");
+        count.setToolTip("Students in Parallel Program");
+        count.setWidth(50);
+        count.setSortable(true);
+        configs.add(count);
 
         ColumnModel cm = new ColumnModel(configs);
         return cm;
