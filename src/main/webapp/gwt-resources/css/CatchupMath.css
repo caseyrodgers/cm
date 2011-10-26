@@ -1247,3 +1247,18 @@ SolutionSetCompleteDialog .results{
 	padding: 15px;
 	font-size: 1.3em;
 }
+
+.parallel-program-usage-panel {
+}
+
+.parallel-program-usage-window {
+}
+
+.parallel-program-usage-window-container {
+	    height: 310px;
+        width: 480px;
+}
+
+.parallel-program-usage-panel-grid {
+	height: 280px;
+}
