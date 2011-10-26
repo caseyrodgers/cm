@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import org.junit.Test;
@@ -179,4 +180,12 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     	
     	assert(list.size() > 0);    	
     }
+
+    @Test
+    public void testGetUsageForParallelProgram() throws Exception {
+    	List<ParallelProgramUsageModel> list = _dao.getUsageForParallelProgram(34);
+    	
+    	assert(list.size() > 0);    	
+    }
+
 }

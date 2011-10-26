@@ -7,6 +7,8 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
+import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -333,6 +335,34 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     }
                 });
         return ppList;
+    }
+
+    public List<ParallelProgramUsageModel> getUsageForParallelProgram(final int parallelProgId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USAGE_FOR_PARALLEL_PROGRAM");
+        List<ParallelProgramUsageModel> ppuList = this.getJdbcTemplate().query(
+                sql,
+                new Object[]{parallelProgId},
+                new RowMapper<ParallelProgramUsageModel>() {
+                    public ParallelProgramUsageModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        ParallelProgramUsageModel parallelProgUsage;
+                        try {
+                        	parallelProgUsage = new ParallelProgramUsageModel();
+
+                        	parallelProgUsage.setStudentName(rs.getString("user_name"));
+                        	parallelProgUsage.setUserId(rs.getInt("uid"));
+
+                        	//TODO: get real data for Activity and Result
+                        	parallelProgUsage.setActivity(" ");
+                        	parallelProgUsage.setResult(" ");
+                            return parallelProgUsage;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Parallel Program Usage for parallel prog Id: %d", parallelProgId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return ppuList;
     }
 
     /**

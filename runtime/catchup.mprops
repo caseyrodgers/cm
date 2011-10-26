@@ -2743,6 +2743,15 @@ where u.admin_id = cp.admin_id
   and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
 
 
+.key=GET_USAGE_FOR_PARALLEL_PROGRAM
+
+select distinct u.user_name, u.uid
+from CM_PARALLEL_PROGRAM pp
+join  CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
+join  HA_USER u on u.uid = pa.user_id
+where pp.id = ?
+
+
 .key=GET_MAIN_PROGRAM_FOR_USERID
 
 select pa.*, p.custom_prog_id, p.custom_quiz_id
