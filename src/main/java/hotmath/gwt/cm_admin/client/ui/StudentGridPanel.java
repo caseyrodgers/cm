@@ -446,9 +446,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         ToolBar toolbar = new ToolBar();
         toolbar.setSpacing(5);
         toolbar.addStyleName("student-grid-panel-toolbar");
-        if (CmShared.getQueryParameter("debug") != null) {
-            toolbar.add(createRefreshButton());
-        }
         toolbar.add(createRegistrationButton());
         toolbar.add(editStudentToolItem(_grid, _cmAdminMdl));
         toolbar.add(studentDetailsToolItem(_grid));
@@ -482,6 +479,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }));
 
         toolbar.add(exportStudentsToolItem(_grid));
+
+        if (CmShared.getQueryParameter("debug") != null) {
+            toolbar.add(createRefreshButton());
+        }
 
         toolbar.add(new FillToolItem());
 
