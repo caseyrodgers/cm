@@ -101,10 +101,12 @@ public class ManageParallelProgramsWindow extends CmWindow {
             public void componentSelected(ButtonEvent ce) {
                 
                 final ParallelProgramModel mdl = getGridItem();
-                /*
+                
                 if (mdl != null) {
-                    
-                    CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
+                    if (mdl.getStudentCount() > 0) {
+                        CatchupMathTools.showAlert("Selection is in use and cannot be modified.");
+                    }
+                /*
                         public void requestComplete(String requestData) {
                             updateGroupRPC(mdl.getAdminId(),mdl.getId(), requestData);
                         }
@@ -113,25 +115,29 @@ public class ManageParallelProgramsWindow extends CmWindow {
                     gm.setId(mdl.getId());
                     gm.setGroupName(mdl.getName());
                     new GroupWindow(callback, adminModel, null, false, gm).setVisible(true);
-                }
                 */
+                }
+                
             }
         }));
 
         lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 final ParallelProgramModel ppm = getGridItem();
-                /*
+                
                 if (ppm != null) {
-                        
+                    if (ppm.getStudentCount() > 0) {
+                        CatchupMathTools.showAlert("Selection is in use and cannot be removed.");
+                    }
+                    /*        
                     MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equalsIgnoreCase("yes"))
-                                deleteGroup(adminModel.getId(), ppm.getId());
+                                deleteParallelProgram(adminModel.getId(), ppm.getId());
                         }
                     });
+                    */
                 }
-                */
             }
         }));
 
@@ -140,6 +146,11 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 final ParallelProgramModel ppm = getGridItem();
                 
                 if (ppm != null) {
+
+                    if (ppm.getStudentCount() < 1) {
+                        CatchupMathTools.showAlert("Selection has no usage, nothing to display.");
+                    }
+
                 	new ParallelProgramUsageWindow(ppm);
                 }
                 
