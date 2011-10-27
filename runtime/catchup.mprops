@@ -366,7 +366,6 @@ group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.session_number asc
 
 ######
-
 .key=STUDENT_ACTIVITY_TIME_ON_TASK
 
 select iu.run_id, iu.item_type as activity_type, count(*) as activity_count
@@ -2742,16 +2741,7 @@ where u.admin_id = cp.admin_id
   and (ifnull(cp.test_config_json,' ')) = (ifnull(up.test_config_json,' '))
   and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
 
-
-.key=GET_USAGE_FOR_PARALLEL_PROGRAM
-
-select distinct u.user_name, u.uid
-from CM_PARALLEL_PROGRAM pp
-join  CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
-join  HA_USER u on u.uid = pa.user_id
-where pp.id = ?
-
-
+###
 .key=GET_MAIN_PROGRAM_FOR_USERID
 
 select pa.*, p.custom_prog_id, p.custom_quiz_id
@@ -2871,3 +2861,126 @@ left join (select count(*) as student_count, prog_inst_id from CM_PROGRAM_ASSIGN
   on pa.prog_inst_id = pp.prog_inst_id
 where pp.admin_id = ?
 order by pp.name
+
+#####
+.key=GET_STUDENTS_FOR_PARALLEL_PROGRAM
+
+select distinct pa.user_id
+from CM_PARALLEL_PROGRAM pp
+join  CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
+where pp.id = ?
+
+
+#####
+.key=GET_USAGE_FOR_PARALLEL_PROGRAM
+
+select user_name, user_id, load_order, is_custom_quiz, use_date, max(view_time) as view_time,
+       answered_correct, answered_incorrect, not_answered, program, prog_id, subj_id, test_config_json,
+       test_id, test_segment, test_def_id, test_run_id, total_sessions,
+       activity, is_quiz, session_number, prog_inst_id
+from (
+
+ select u.user_name, u.uid as user_id, 1 as load_order, 0 as is_custom_quiz,
+   date_format(l.create_time,'%Y-%m-%d') as use_date,
+   l.create_time as view_time,
+   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
+   concat(td.subj_id, ' ', td.prog_id) as program,  td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id,
+   0 as test_run_id,
+   0 as total_sessions,
+   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
+   pa.prog_inst_id
+ from  CM_PARALLEL_PROGRAM pp 
+ join CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
+ join HA_TEST l on l.user_prog_id = pa.user_prog_id
+ join HA_USER u on u.uid = pa.user_id
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
+ where pp.id = ?
+
+union
+
+ select u.user_name, u.uid as user_id, 2 as load_order,0 as is_custom_quiz,
+   date_format(r.run_time,'%Y-%m-%d') as use_date,
+   r.run_time as view_time,
+   r.answered_correct, r.answered_incorrect, r.not_answered,
+   concat(td.subj_id, ' ', td.prog_id) as program, td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, l.test_segment, td.test_def_id as test_def_id,
+   r.run_id as test_run_id, 0 as total_sessions,
+   'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
+   pa.prog_inst_id
+ from CM_PARALLEL_PROGRAM pp
+ join CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
+ join HA_TEST l on l.user_prog_id = pa.user_prog_id
+ join HA_USER u ON u.uid = pa.user_id
+ join HA_TEST_RUN r on r.test_id = l.test_id
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and (p.custom_program_id is null && p.custom_quiz_id is null)
+ where pp.id = ?
+
+union
+
+ select u.user_name, u.uid as user_id, 3 as load_order,0 as is_custom_quiz,
+   date_format(iu.view_time,'%Y-%m-%d') as use_date,
+   iu.view_time as view_time,
+   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered,
+   if (p.custom_program_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CP: ', cp.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
+   r.run_id as test_run_id, r.total_sessions as total_sessions,
+   if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
+   pa.prog_inst_id
+ from CM_PARALLEL_PROGRAM pp
+ join CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
+ join HA_TEST l on l.user_prog_id = pa.user_prog_id
+ JOIN HA_USER u ON u.uid = pa.user_id
+ join HA_TEST_RUN r on r.test_id = l.test_id
+ join (
+     select l.run_id,max(l.lesson_number) as session_number,max(lesson_viewed) as view_time
+     from    HA_TEST_RUN_LESSON l
+         JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
+         JOIN HA_TEST_RUN r on r.run_id = l.run_id
+         JOIN HA_TEST t on t.test_id = r.test_id
+     where t.user_id in ( $$UID_LIST$$ )
+     and l.lesson_viewed is not null
+     group by l.run_id, l.lesson_file
+ ) iu on iu.run_id = r.run_id
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
+ left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
+ where pp.id = ?
+
+ union 
+
+ select u.user_name, u.uid as user_id, 4 as load_order, 1 as is_custom_quiz,
+   date_format(r.run_time,'%Y-%m-%d') as use_date,
+   l.create_time as view_time,
+   r.answered_correct, r.answered_incorrect, r.not_answered,
+   if (p.custom_quiz_id is null, concat(td.subj_id, ' ', td.prog_id), concat('CQ: ', q.name)) as program, td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id,
+   r.run_id as test_run_id, r.total_sessions as total_sessions,
+   if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
+   pa.prog_inst_id
+ from CM_PARALLEL_PROGRAM pp
+ join CM_PROGRAM_ASSIGN pa on pa.prog_inst_id = pp.prog_inst_id
+ join HA_TEST l on l.user_prog_id = pa.user_prog_id
+ JOIN HA_USER u ON u.uid = pa.user_id
+ join HA_TEST_RUN r on r.test_id = l.test_id
+ left join (
+     select l.run_id,max(l.lesson_number) as session_number,max(lesson_viewed) as view_time
+     from    HA_TEST_RUN_LESSON l
+         JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
+         JOIN HA_TEST_RUN r on r.run_id = l.run_id
+         JOIN HA_TEST t on t.test_id = r.test_id
+     where t.user_id in ( $$UID_LIST$$ )
+     and l.lesson_viewed is not null
+     group by l.run_id, l.lesson_file
+ ) iu on iu.run_id = r.run_id
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
+ join HA_CUSTOM_QUIZ q on q.qid = p.custom_quiz_id
+ where pp.id = ?
+
+
+) s
+group by s.user_id
+order by s.user_name asc
