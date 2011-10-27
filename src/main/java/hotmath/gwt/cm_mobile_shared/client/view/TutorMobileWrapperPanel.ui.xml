@@ -1,0 +1,52 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    
+	<g:HTMLPanel>
+		<!-- HOTMATH BODY START -->
+		<div id="tutoroutput" style='display: block;position: relative;'>
+		    <div class='problem-title' ui:field="title"></div>
+			<div id='tutor_raw_steps_wrapper'>
+  				  $solution_html
+			</div>
+
+            <div id='steps_tail' style='position: relative;height: 90px;'>
+                <button class='sexybutton disabled' id='steps_prev' href="#"
+                    onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
+                    <span>
+                        <span>
+                            Previous
+                        </span>
+                    </span>
+                </button>
+                <button class='sexybutton disabled' id='steps_next'
+                    onclick="TutorManager.showNextStep();return false;" accesskey="s">
+                    <span>
+                        <span>Next
+                        </span>
+                    </span>
+                </button>
+                
+                <button class='sexybutton' id='new_problem'
+                    onclick="TutorManager.newProblem();return false;" accesskey="s">
+                    <span>
+                        <span>Lesson</span>
+                    </span>
+                </button>
+                
+                <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
+                    <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand
+                    </a>
+                </div>
+                <div id='tutor_message'>
+                </div>
+            </div>
+			<!-- HOTMATH BODY END -->
+			<img id='scrollTo-button' src='/assets/images/spacer.gif'/>
+		</div>
+		<!-- END TUTOR GUTS -->
+		<div class='debug-hide'>$pid</div>
+
+
+	</g:HTMLPanel>
+
+</ui:UiBinder>
