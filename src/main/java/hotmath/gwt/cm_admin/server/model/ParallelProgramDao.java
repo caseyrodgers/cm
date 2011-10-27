@@ -7,7 +7,6 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
-import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
 import hotmath.spring.SpringManager;
 
@@ -15,7 +14,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -337,11 +338,34 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return ppList;
     }
 
-    public List<ParallelProgramUsageModel> getUsageForParallelProgram(final int parallelProgId) throws Exception {
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USAGE_FOR_PARALLEL_PROGRAM");
-        List<ParallelProgramUsageModel> ppuList = this.getJdbcTemplate().query(
+    public List<Integer> getStudentsForParallelProgram(final int parallelProgId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENTS_FOR_PARALLEL_PROGRAM");
+        List<Integer> uidList = this.getJdbcTemplate().query(
                 sql,
                 new Object[]{parallelProgId},
+                new RowMapper<Integer>() {
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            return rs.getInt("user_id");
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Parallel Program Students for parallel prog Id: %d", parallelProgId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return uidList;
+    }
+    
+    public List<ParallelProgramUsageModel> getUsageForParallelProgram(final int parallelProgId) throws Exception {
+
+    	List<Integer> uidList = getStudentsForParallelProgram(parallelProgId);
+
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USAGE_FOR_PARALLEL_PROGRAM", createInListMap(createInList(uidList)));
+    	
+        List<ParallelProgramUsageModel> ppuList = this.getJdbcTemplate().query(
+                sql,
+                new Object[]{parallelProgId, parallelProgId, parallelProgId, parallelProgId},
                 new RowMapper<ParallelProgramUsageModel>() {
                     public ParallelProgramUsageModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         ParallelProgramUsageModel parallelProgUsage;
@@ -349,7 +373,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	parallelProgUsage = new ParallelProgramUsageModel();
 
                         	parallelProgUsage.setStudentName(rs.getString("user_name"));
-                        	parallelProgUsage.setUserId(rs.getInt("uid"));
+                        	parallelProgUsage.setUserId(rs.getInt("user_id"));
 
                         	//TODO: get real data for Activity and Result
                         	parallelProgUsage.setActivity(" ");
@@ -649,5 +673,21 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     }
                 });
         return cmProg;
+    }
+    
+    private Map<String,String> createInListMap(String list) {
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("UID_LIST", list);
+        return map;
+    }
+    
+    private String createInList(List<Integer> uids) {
+    	StringBuilder sb = new StringBuilder();
+        for(Integer uid: uids) {
+            if(sb.length() > 0 )
+                sb.append(", ");
+            sb.append(uid);
+        }
+        return sb.toString();
     }
 }
