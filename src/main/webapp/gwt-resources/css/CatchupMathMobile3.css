@@ -844,5 +844,11 @@ table {
 
 
 .cm_video {
-	border: 2px solid red;
+    border: 2px solid #6E84A2;
+    padding: 10px;
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
+    background: black;
+    width: 550px;
 }

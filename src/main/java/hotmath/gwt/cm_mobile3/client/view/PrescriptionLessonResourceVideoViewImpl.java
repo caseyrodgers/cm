@@ -71,9 +71,6 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         int width = 340;
         int height = 274;
         
-        
-        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));  // off in gwt_videoIsReady
-        
         String mp4File = videoUrl + ".mp4";
         String oggFile = videoUrl + ".ogv";
         String videoHtml = 
@@ -85,33 +82,12 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         videoContainer.setInnerHTML(videoHtml);
         
         setupVideoListeners(videoContainer, this);
-        
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                videoReadyWatch(PrescriptionLessonResourceVideoViewImpl.this);            
-            }
-        });
     }
     
     private void gwt_videoIsReady() {
-        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));   
+        this.videoReadyLabel.setInnerHTML("Video is loaded and ready to play");   
     }
-    
-    private native void videoReadyWatch(PrescriptionLessonResourceVideoViewImpl instance) /*-{
-    
-      var myAutoPlay = function() {
-          instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsReady()();
-      }
-        
-      var myVideo = $doc.getElementsByTagName('video')[0];
-      if(myVideo) {
-          myVideo.addEventListener('canplaythrough',myAutoPlay,false);
-      }
-      else {
-         alert('did not find video');
-       }
-    }-*/;
+
     
     private void gwt_videoIsComplete() {
         final PopupPanel popup = new PopupPanel();
@@ -120,7 +96,8 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         popup.setAutoHideEnabled(true);
         popup.setModal(true);
         FlowPanel fp = new FlowPanel();
-        String msg="Your video is complete.<br/>Choose one of the following options:";
+        fp.setHeight("300px");
+        String msg="Your video is complete.<br/>";
         fp.add(new HTML(msg));
         
         Button btnAgain = new Button("",new ClickHandler() {
@@ -130,6 +107,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
                 resetVideo(videoContainer);
             }
         });
+        btnAgain.getElement().setAttribute("style", "border-bottom: 10px");
         btnAgain.getElement().setInnerHTML("<span><span>Reset Video</span></span>");
         btnAgain.addStyleName("sexybutton");
         Button btnReturn = new Button("",new ClickHandler() {
@@ -157,6 +135,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
             var videoEl = videos[0]; // just first
             var autoPlay = function() {
                 videoEl.play();
+                instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsReady()();                
             }
             var videoEnded = function() {
                      instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsComplete()();
@@ -250,4 +229,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     
     @UiField
     Element videoTitle, videoContainer;
+    
+    @UiField
+    Element videoReadyLabel;
 }
