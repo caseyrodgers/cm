@@ -13,17 +13,17 @@ public class EndOfProblemSetDialog extends Composite {
         }
 
         private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-        
+
         public EndOfProblemSetDialog() {
             initWidget(uiBinder.createAndBindUi(this));
-            
-            
+
+
         }
-        
+
         public void setTutorTitle(String title) {
             this.title.setInnerHTML(title);
         }
-        
-        @UiField 
+
+        @UiField
         DivElement title;
 }

@@ -23,15 +23,17 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     
     EventBus eventBus;
     String pid;
+    int runId;
     
     static ShowWorkActivity __lastInstance;
-    public ShowWorkActivity(EventBus eventBus, String pid) {
+    public ShowWorkActivity(EventBus eventBus, String pid, int runId) {
         this.eventBus = eventBus;
         __lastInstance = this;
         if(pid == null || pid.length() == 0) {
             pid = "quiz:quiz";
         }
         this.pid = pid;
+        this.runId = runId;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         setExternalJsniHooks(this);
         
         /** TODO: why use global? */
-        int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
+        //int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, runId);

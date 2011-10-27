@@ -13,15 +13,15 @@ public class TutorMobileWrapperPanel extends Composite {
         }
 
         private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-        
+
         public TutorMobileWrapperPanel() {
             initWidget(uiBinder.createAndBindUi(this));
         }
-        
+
         public void setTutorTitle(String title) {
             this.title.setInnerHTML(title);
         }
-        
-        @UiField 
+
+        @UiField
         DivElement title;
 }

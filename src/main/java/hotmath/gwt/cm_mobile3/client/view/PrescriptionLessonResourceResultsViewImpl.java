@@ -1,9 +1,13 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 
 import java.util.List;
@@ -26,6 +30,8 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 	    contentPanel = new FlowPanel();
 	    initWidget(contentPanel);
 	    setStyleName("prescriptionLessonResourceResultsViewImpl");
+	    
+	    setupTriggers(this);
 	}
 
 	Presenter presenter;
@@ -66,6 +72,21 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
         
     }
     
+    private void showWhiteboard_Gwt(String pid) {
+        ShowWorkActivity activity = new ShowWorkActivity(CatchupMathMobile3.__clientFactory.getEventBus(), pid,0);
+        ShowWorkView view = CatchupMathMobile3.__clientFactory.getShowWorkView();
+        view.setPresenter(activity);
+        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+    }
+    
+
+    private native void setupTriggers(PrescriptionLessonResourceResultsViewImpl x) /*-{
+    
+        $wnd.showWhiteboard_Gwt = function (pid) {
+            x.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl::showWhiteboard_Gwt(Ljava/lang/String;)(pid);
+        };
+        
+    }-*/;
     
     /**
      * Parse JSONized array of HaTestRunResult objects

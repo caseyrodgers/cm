@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
@@ -236,7 +237,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     ShowWorkActivity.saveWhiteboard();
                 }
 
-                if (page instanceof QuizViewImpl) {
+                if (page instanceof QuizViewImpl || page instanceof PrescriptionLessonResourceResultsViewImpl) {
                     final int scrollTo = pageScroll.get(page);
                     if (scrollTo > 0) {
                         scrollWindowTo(scrollTo);

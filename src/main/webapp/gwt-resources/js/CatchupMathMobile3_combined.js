@@ -5952,6 +5952,51 @@ Math.multiple=function(x,y)
      return (myString1);
 
 }
+Math.leMultiple=function(x,y,z)
+{
+
+     var myString = "";
+         var myString1="";
+         var mult=x;
+		 var a;
+
+     for (i=1; i<y; i++) {
+
+          myString += x + " &times; " ;
+          mult=mult*(x);
+		  a=mult.toFixed(z);
+		  
+            myString1 +=   myString + x + " = " + a + "<br/>";
+
+         }
+     return (myString1);
+
+}
+Math.reMultiple=function(n,d,y)
+{
+
+    	 var myString = "";
+         var myString1="";
+		 var myString2="";
+         var mult1=n;
+		 var mult2=d;
+		
+				var str_s="<math><mrow>";
+                var str_e="</math></mrow>";
+                var str="";
+				
+				
+     for (i=1; i<y; i++) {
+
+          myString += str_s+"<mfrac><mtext>"+n+"</mtext><mtext>"+d+"</mtext></mfrac>" +str_e+ " &times; " ;
+          mult1=mult1*(n);
+		 mult2=mult2*(d);
+		  
+            myString1 +=   myString + str_s+"<mfrac><mtext>"+n+"</mtext><mtext>"+d+"</mtext></mfrac>" + str_e+" = " + str_s+"<mfrac><mtext>"+mult1+"</mtext><mtext>"+mult2+"</mtext></mfrac>" +str_e+ "<br/>";
+         }
+     return (myString1);
+
+}
 Math.randomNumber = function(from, to) {
         var num;
         var boo;
@@ -6408,6 +6453,12 @@ var Flashcard_mngr = (function () {
         this.limit = lim ? lim : this.limit;
         this.topic_id = id;
         this.initialized = true;
+		mngr.current_pblm_index = 0;
+    mngr.completed_pblms = 0;
+    mngr.quest_data = {};
+    mngr.current_quest = null;
+    mngr.current_ans = null;
+	 mngr.topic_data=null;
         console.log("FLASH_CARD_MNGR_CALLING GEN PROBLEMS FOR:" + id)
         //this.genProblems();
         if ((this.topic_id > 10 && this.topic_id < 18) || (this.topic_id > 18 && this.topic_id < 22) || this.topic_id == 26 || this.topic_id == 27) {
@@ -8361,8 +8412,9 @@ var Flashcard_mngr = (function () {
 
     mngr.getProblem = function (id) {
         if (this.initialized) {
-        	this.reset();
+        	if(this.topic_id!=id){
         	this.init(id);
+			}
         } else {
             this.init(id);
         }

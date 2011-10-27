@@ -831,7 +831,7 @@ table {
 
 
 .not_debug button {
-	display: block;
+	display: none  ;
 }
 
 
