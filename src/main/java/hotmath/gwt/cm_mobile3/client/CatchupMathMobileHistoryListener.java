@@ -31,6 +31,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
@@ -169,7 +170,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 if(p.length > 2) 
                     resourceFile = p[2];
                 if(p.length > 3) 
-                    resourceConfig = p[3];
+                    resourceConfig = URL.decode(p[3]);
                 if(p.length > 4)
                    try {
                        resourceOrdinal = Integer.parseInt(p[4]);

@@ -157,25 +157,25 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 }
                 sessionData.getInmhResources().add(resource);
             }
-
-            /** 
-             * Add a results resource type to allow user to view current results.
-             */
-            PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
-            resultsResource.setType("results");
-            resultsResource.setLabel("Quiz Results");
-            InmhItemData id = new InmhItemData();
-            id.setTitle("Your quiz results");
-            id.setFile("");
-            id.setType("results");
-            resultsResource.getItems().add(id);
-            
-            
             
             __logger.debug("adding prescription sessions: " + action);
             sessionData.getInmhResources().add(lessonResource);
             sessionData.getInmhResources().add(problemsResource);
-            sessionData.getInmhResources().add(resultsResource);
+
+            /** 
+             * Add a results resource type to allow user to view current results.
+             */
+            if(!cmProgram.getUserProgram().isCustom()) {
+                PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
+                resultsResource.setType("results");
+                resultsResource.setLabel("Quiz Results");
+                InmhItemData id = new InmhItemData();
+                id.setTitle("Your quiz results");
+                id.setFile("");
+                id.setType("results");
+                resultsResource.getItems().add(id);
+                sessionData.getInmhResources().add(resultsResource);
+            }
 
 
             /** 

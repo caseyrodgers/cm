@@ -64,7 +64,7 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         if(uid == 0) {
             securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
         }
-        
+
         /**
          * get list of previous prescribed lessons
          * 

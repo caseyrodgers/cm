@@ -12,7 +12,6 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
-import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -73,7 +72,7 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
                 
                 CatchupMathMobile3.__clientFactory.getPrescriptionLessonView().refreshRppIndicators();
                 
-                MessageBox.showMessage("Practice problem marked as complete");
+               // MessageBox.showMessage("Practice problem marked as complete");
             }
             @Override
             public void onFailure(Throwable caught) {
@@ -83,5 +82,9 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
         });
     }
 
+    @Override
+    public InmhItemData getItemData() {
+        return resourceItem;
+    }
 
 }

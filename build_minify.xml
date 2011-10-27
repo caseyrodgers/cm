@@ -37,6 +37,7 @@
             	   ../../../../../../hotmath2/web/js/tutor_author_api.js
             	   ../../../../../../hotmath2/web/js/tutor_flashcard_manager.js
             	   ../../../../../../hotmath2/web/js/hm_mathjax.js
+            	   ../../../../../../hotmath2/web/js/base64-min.js
                    spin-min.js
             	
                    CatchupMathMobile3-min.js

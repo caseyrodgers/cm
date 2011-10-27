@@ -65,13 +65,13 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             //solutionHtml = solutionHtml.replaceAll(match, imageServer);
 
 
-            Map<String, String> map = new HashMap<String, String>();
-            map.put("solution_html", solutionHtml);
-            map.put("pid", pid);
+//            Map<String, String> map = new HashMap<String, String>();
+//            map.put("solution_html", solutionHtml);
+//            map.put("pid", pid);
 
-            String runTimeDir = HotMathProperties.getInstance().getProperty("cm.runtime",".");
-            String tutorWrapper = new SbFile(runTimeDir + "/" + "mobile_tutor_wrapper.vm").getFileContents().toString("\n");
-            solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
+            //String runTimeDir = HotMathProperties.getInstance().getProperty("cm.runtime",".");
+            //String tutorWrapper = new SbFile(runTimeDir + "/" + "mobile_tutor_wrapper.vm").getFileContents().toString("\n");
+            //solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
 
             ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()       );
             SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false);

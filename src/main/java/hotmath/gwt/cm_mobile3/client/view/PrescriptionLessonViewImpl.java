@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
@@ -86,19 +87,33 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             if(resource.getType().equals("activity"))
                 continue;
             
+            if(resource.getItems().size() == 0) {
+                continue;
+            }
+            
             ListItem li = new ListItem();
             li.setStyleName("resourceType");
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));
             listItems.add(li);
             
             boolean isRpp = resource.getType().equals("practice")?true:false;
+            
+            int cnt=0;
             for(InmhItemData itemData: resource.getItems()) {
+                
+                // force title for cmextra
+                if(itemData.getType().equals("cmextra")) {
+                    itemData.setTitle("Problem " + (cnt+1));
+                }
+                
                 MyGenericTextTag textTag = new MyGenericTextTag(isRpp, itemData, touchHandler);
                 listItems.add(textTag);
                 
                 if(isRpp) {
                     rppItems.add(textTag);
                 }
+                
+                cnt++;
             }
         }    
         

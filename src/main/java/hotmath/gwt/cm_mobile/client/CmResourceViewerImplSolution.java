@@ -37,7 +37,7 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
             public void onSuccess(SolutionResponse result) {
                 HTML html = new HTML(result.getTutorHtml());
                 mainPanel.add(html);
-                initializeTutor(item.getFile(),result.getSolutionData(),"Solution", false,false);
+                initializeTutor(item.getFile(),result.getSolutionData(),result.getTutorHtml(),"Solution", false,false);
             }
 
             @Override
@@ -49,7 +49,7 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
         return this;
     }
     
-    private native void initializeTutor(String pid, String solutionDataJs, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
+    private native void initializeTutor(String pid, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
                                           $wnd.TutorManager.initializeTutor(pid, solutionDataJs,title,hasShowWork,shouldExpandSolution);
                                           }-*/;
 }

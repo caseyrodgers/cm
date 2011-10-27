@@ -140,9 +140,11 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
         final GenericContainerTag oldContainer = mActiveContainerPanel;
         final GenericContainerTag newContainer = mInactiveContainerPanel;
 
+        newContainer.clear();
+        
         AbstractPagePanel pagePanel = PagePanelFactory.createPagePanel(p);
 
-        newContainer.clear();
+        
 
         boolean startedAnimation = false;
 

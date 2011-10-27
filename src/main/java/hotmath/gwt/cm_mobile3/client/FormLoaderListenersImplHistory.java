@@ -33,6 +33,7 @@ import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -89,7 +90,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
             @Override
             public void showResource(InmhItemData resourceItem) {
                 History.newItem("resource:" + resourceItem.getType() + ":" + resourceItem.getFile() + ":"
-                        + resourceItem.getWidgetJsonArgs() + ":"
+                        + "" + ":"
                         + SharedData.findOrdinalPositionOfResource(resourceItem) + ":" + resourceItem.getTitle() + ":"
                         + System.currentTimeMillis());
             }

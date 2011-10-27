@@ -200,9 +200,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             @Override
             public void oncapture(SolutionInfo result) {
             	_solutionInfo = result;
-                String html = result.getHtml();
-                
-                /** We want to NOT show the Show Work
+
+            	/** We want to NOT show the Show Work
                  *  buttons over the tutor, so force
                  *  it off.
                  *  
