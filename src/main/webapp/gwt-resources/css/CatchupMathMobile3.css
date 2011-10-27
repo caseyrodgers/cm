@@ -841,3 +841,8 @@ table {
 	font-size: 1.2em;
 	font-weight: bold;
 }
+
+
+.cm_video {
+	border: 2px solid red;
+}

@@ -237,12 +237,12 @@ class MyGenericTextTag extends GenericTextTag<String> {
         this.resourceItem = resourceItem;
         addStyleName("group");
         addHandler(touchHandler);
-        if(isRpp) {
-            addStyleName("is_rpp");
-            if(resourceItem.isViewed()) {
-                addStyleName("is_viewed");
-            }
-        }
+//        if(false && isRpp) {
+//            addStyleName("is_rpp");
+//            if(resourceItem.isViewed()) {
+//                addStyleName("is_viewed");
+//            }
+//        }
         getElement().setInnerHTML("<span>" + resourceItem.getTitle() + "</span>");
     }
 }

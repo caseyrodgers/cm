@@ -1,14 +1,17 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -68,10 +71,13 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         int width = 340;
         int height = 274;
         
+        
+        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));  // off in gwt_videoIsReady
+        
         String mp4File = videoUrl + ".mp4";
         String oggFile = videoUrl + ".ogv";
         String videoHtml = 
-                "<video width='" + width + "' height='" + height + "' controls='controls' autoplay='autoplay'> " +
+                "<video class='cm_video' controls='controls' autoplay='autoplay'> " +
                     "<source src='" + mp4File + "' type='video/mp4' />" +
                     "<source src='" + oggFile + "' type='video/ogg' />" +
                 "</video>";
@@ -79,7 +85,33 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         videoContainer.setInnerHTML(videoHtml);
         
         setupVideoListeners(videoContainer, this);
+        
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                videoReadyWatch(PrescriptionLessonResourceVideoViewImpl.this);            
+            }
+        });
     }
+    
+    private void gwt_videoIsReady() {
+        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));   
+    }
+    
+    private native void videoReadyWatch(PrescriptionLessonResourceVideoViewImpl instance) /*-{
+    
+      var myAutoPlay = function() {
+          instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsReady()();
+      }
+        
+      var myVideo = $doc.getElementsByTagName('video')[0];
+      if(myVideo) {
+          myVideo.addEventListener('canplaythrough',myAutoPlay,false);
+      }
+      else {
+         alert('did not find video');
+       }
+    }-*/;
     
     private void gwt_videoIsComplete() {
         final PopupPanel popup = new PopupPanel();
