@@ -34,4 +34,8 @@ public class SessionTopic implements Response {
     public void setComplete(boolean complete) {
         this.complete = complete;
     }
+    @Override
+    public String toString() {
+        return topic;
+    }
 }
