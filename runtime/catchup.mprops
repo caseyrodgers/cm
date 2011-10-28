@@ -2983,3 +2983,8 @@ union
 
 ) s
 order by s.user_name asc, s.user_id asc, s.view_time desc
+
+#####
+.key=DELETE_PARALLEL_PROGRAM
+
+delete from CM_PARALLEL_PROGRAM where id = ?
