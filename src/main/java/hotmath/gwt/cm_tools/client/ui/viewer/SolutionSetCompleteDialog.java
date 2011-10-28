@@ -14,15 +14,7 @@ public class SolutionSetCompleteDialog extends CmWindow {
         setSize(250, 150);
         addStyleName("SolutionSetCompleteDialog");
         String html = 
-            "  <div class='results'>" +
-            "    <b>Correct Responses: </b>" +
-            "" + numCorrect +
-            "  </div>" +
-            "  <div >" +
-            "    <b>Total Questions: </b>" +
-            "" + limit + 
-            "  </div>";
-            
+            "  You correctly answered <b style='font-size: 1.5em'> " + numCorrect + " questions out of <b style='font-size: 1.5em'>" + limit + "</b>.";
         
        html = "<p class='solution_set_results'>" + html + "</p>";
        

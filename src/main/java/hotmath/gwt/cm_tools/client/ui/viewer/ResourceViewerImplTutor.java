@@ -81,14 +81,15 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
          //
          $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionSetComplete(II);
          
-         
          $wnd.TutorDynamic.setSolutionTitle = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionTitle(II);
     }-*/;
     
     static private void setSolutionTitle(int progNum, int limit) {
-        String title = "Problem " + progNum + " of " + limit;
-        InfoPopupBox.display(new CmInfoConfig("Problem Set Status",title));
-        CmMainPanel.__lastInstance._mainContent.currentContainer.setHeading(title);
+        if(progNum >  0) {
+            String title = "Problem " + progNum + " of " + limit;
+            InfoPopupBox.display(new CmInfoConfig("Problem Set Status",title));
+            CmMainPanel.__lastInstance._mainContent.currentContainer.setHeading(title);
+        }
     }
     
     static private void setSolutionSetComplete(int numCorrect, int limit) {
