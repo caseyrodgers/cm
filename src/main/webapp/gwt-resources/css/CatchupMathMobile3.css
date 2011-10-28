@@ -830,11 +830,15 @@ table {
 }
 
 
-.not_debug button {
+.debug button {
 	display: none  ;
 }
 
 
+.quiz_whiteboard_button {
+	float: left;
+	margin: 2px 0 0 5 px;
+}
 
 
 .prescriptionLessonResourceTutorViewImpl .problem-title {

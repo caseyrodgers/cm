@@ -8,9 +8,9 @@
         pid='$question.problemIndex' 
         onclick='setQuizQuestionActive(this)'>
         <a name='$question.questionTag' id='$question.questionTag'>&nbsp;</a>
-        <div class='question_head not_debug'>
-            <a style='color: white;font-size: .9em; float: left;margin: 2px 0 0 4px; text-decoration: underline;' onclick='showWhiteboard_Gwt(&quot;$question.problemIndex&quot;)'><span><span>whiteboard</span></span></a>
-            <button class='sexybutton' onclick="editQuizQuestion(&quot;$question.problemIndex&quot;)";><span><span>edit</span></span></button>
+        <div class='question_head'>
+            <button class='quiz_whiteboard_button sexybutton sexysmall' onclick='showWhiteboard_Gwt(&quot;$question.problemIndex&quot;)'>whiteboard</button>
+            <button class='debug_hide sexybutton' onclick="editQuizQuestion(&quot;$question.problemIndex&quot;)";><span><span>edit</span></span></button>
             <div class='question_head_text'> Problem $probNum </div>
             <div class='response_div' style='display: none;'>
                 <img id='response_image_$question.problemIndex' src='/images/tutor/spacer.gif'/>

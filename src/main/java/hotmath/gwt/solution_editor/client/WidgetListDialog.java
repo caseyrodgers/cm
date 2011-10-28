@@ -89,7 +89,7 @@ public class WidgetListDialog extends Window {
         WidgetDefModel widget = new WidgetDefModel();
         widget.setType(_typeCombo.getValue().getType());
         widget.setValue(_inputValue.getValue());
-        widget.setFormat(_formatCombo.getValue().getType());
+        widget.setFormat(_format.getValue());
         
         widget.setWidth(_width.getValue().intValue());
         widget.setHeight(_height.getValue().intValue());
@@ -143,20 +143,15 @@ public class WidgetListDialog extends Window {
         _inputValue.getFocusSupport().setPreviousId(simple.getButtonBar().getId());  
         simple.add(_inputValue, formData);
         
-        
-        _formatCombo.setFieldLabel("Format");
-        _formatCombo.setDisplayField("type");
-        _formatCombo.setAllowBlank(true);
-        _formatCombo.setEditable(true);
-        _formatCombo.getFocusSupport().setPreviousId(simple.getButtonBar().getId());
+
+        _format.setFieldLabel("Format");
+        _format.setAllowBlank(true);
+        _format.getFocusSupport().setPreviousId(simple.getButtonBar().getId());
         
         List<WidgetModel> formats = createListOfFormats();
         ListStore<WidgetModel> formatStore = new ListStore<WidgetModel>();  
         formatStore.add(formats);
-        _formatCombo.setStore(formatStore);
-        _formatCombo.setTriggerAction(TriggerAction.ALL);
-        
-        simple.add(_formatCombo, formData);
+        simple.add(_format, formData);
         
         
         _width.setFieldLabel("Width");
@@ -239,8 +234,7 @@ public class WidgetListDialog extends Window {
         _typeCombo.setValue(_typeCombo.getStore().findModel("type",widgetDef.getType()));
         _inputValue.setValue(widgetDef.getValue());
         
-        WidgetModel model = _formatCombo.getStore().findModel("type",widgetDef.getFormat());
-        _formatCombo.setValue(model);
+        _format.setValue(widgetDef.getFormat());
         _width.setValue(widgetDef.getWidth());
         _height.setValue(widgetDef.getHeight());   
     }
@@ -296,7 +290,7 @@ public class WidgetListDialog extends Window {
     ComboBox<WidgetModel> _typeCombo = new ComboBox<WidgetModel>();
     NumberField _width = new NumberField();
     TextField<String> _inputValue = new TextField<String>();
-    ComboBox<WidgetModel> _formatCombo = new ComboBox<WidgetModel>();     
+    TextField<String> _format = new TextField<String>();     
     NumberField _height = new NumberField();
     
     

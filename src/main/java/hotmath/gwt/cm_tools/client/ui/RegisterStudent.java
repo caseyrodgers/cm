@@ -30,6 +30,7 @@ import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 import hotmath.gwt.shared.client.util.CmException;
@@ -1101,6 +1102,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	public void finish() {
 		setComboBoxSelections();
 	}
+
 }
 
 /** Search for field in nested FieldSets
@@ -1130,4 +1132,5 @@ class CombinedFormPanel extends FormPanel {
 abstract class AdvOptCallback {
 	abstract void setAdvancedOptions(Map<String,Object> optionMap);
 }
+
 
