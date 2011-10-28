@@ -9,6 +9,7 @@ public class ParallelProgramUsageModel extends BaseModel implements Response {
 	public static final String RESULT        = "result";
 	public static final String USER_ID       = "userId";
 	public static final String USE_DATE      = "useDate";
+	public static final String IS_QUIZ       = "isQuiz";
 
 	public ParallelProgramUsageModel(){
         /** empty */
@@ -69,6 +70,14 @@ public class ParallelProgramUsageModel extends BaseModel implements Response {
 
     public String getUseDate() {
         return get(USE_DATE);
+    }
+
+    public void setIsQuiz(Boolean isQuiz) {
+    	set(IS_QUIZ, isQuiz);
+    }
+
+    public Boolean getIsQuiz() {
+        return get(IS_QUIZ);
     }
 
 }
