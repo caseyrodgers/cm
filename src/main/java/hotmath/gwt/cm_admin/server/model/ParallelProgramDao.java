@@ -8,12 +8,14 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -374,10 +376,58 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
 
                         	parallelProgUsage.setStudentName(rs.getString("user_name"));
                         	parallelProgUsage.setUserId(rs.getInt("user_id"));
+                			parallelProgUsage.setUseDate(rs.getString("use_date"));
 
-                        	//TODO: get real data for Activity and Result
-                        	parallelProgUsage.setActivity(" ");
-                        	parallelProgUsage.setResult(" ");
+                			StringBuilder sb = new StringBuilder();
+                			sb.append(rs.getString("activity"));
+
+                			boolean isQuiz = (rs.getInt("is_quiz") > 0);
+                			if (isQuiz) {
+                				sb.append(rs.getInt("test_segment"));
+                			}
+                			parallelProgUsage.setActivity(sb.toString());
+                			parallelProgUsage.setIsQuiz(isQuiz);
+
+                			sb.delete(0, sb.length());
+                			if (isQuiz) {
+                				int numCorrect = rs.getInt("answered_correct");
+                				int numIncorrect = rs.getInt("answered_incorrect");
+                				int notAnswered = rs.getInt("not_answered");
+                				if ((numCorrect + numIncorrect + notAnswered) > 0) {
+                					double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
+                					sb.append(Math.round(percent)).append("% correct");
+                				}
+                				else {
+                					sb.append("Started");
+                				}
+                			} else {
+                				int inProgress = 0; // lessonsViewed % problemsPerLesson;
+                				int totalSessions = rs.getInt("total_sessions");
+
+                				int lessonsViewed = rs.getInt("session_number") + 1;
+                				
+                				if (lessonsViewed >= 0) {
+                					if (totalSessions < 1) {
+                						sb.append("total of ").append(lessonsViewed);
+                						if (lessonsViewed > 1)
+                							sb.append(" reviews completed");
+                						else
+                							sb.append(" review completed");
+                						if (inProgress != 0) {
+                							sb.append(", 1 in progress");
+                						}
+                					} else {
+                						sb.append(lessonsViewed).append(" out of ");
+                						sb.append(totalSessions).append(" reviewed");
+                					}
+                				} else {
+                					if (inProgress != 0) {
+                						sb.append("1 review in progress");
+                					}
+                				}
+                			}
+                			parallelProgUsage.setResult(sb.toString());
+
                             return parallelProgUsage;
                         }
                         catch(Exception e) {
@@ -386,7 +436,22 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         }
                     }
                 });
-        return ppuList;
+        
+        // We only want the most recent Parallel Program usage for each user/student
+        // it may be possible to perform this in SQL, but for now...
+    	int userId = 0;
+    	
+    	List<ParallelProgramUsageModel> list = new ArrayList<ParallelProgramUsageModel>();
+    	ParallelProgramUsageModel mdl;
+    	
+        for (ParallelProgramUsageModel ppum : ppuList) {
+        	if (ppum.getUserId() != userId) {
+        		list.add(ppum);
+        		userId = ppum.getUserId();
+        	}
+        }
+        
+        return list;
     }
 
     /**
@@ -690,4 +755,5 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         }
         return sb.toString();
     }
+    
 }
