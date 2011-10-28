@@ -2874,7 +2874,7 @@ where pp.id = ?
 #####
 .key=GET_USAGE_FOR_PARALLEL_PROGRAM
 
-select user_name, user_id, load_order, is_custom_quiz, use_date, max(view_time) as view_time,
+select user_name, user_id, load_order, is_custom_quiz, use_date, view_time,
        answered_correct, answered_incorrect, not_answered, program, prog_id, subj_id, test_config_json,
        test_id, test_segment, test_def_id, test_run_id, total_sessions,
        activity, is_quiz, session_number, prog_inst_id
@@ -2982,5 +2982,4 @@ union
 
 
 ) s
-group by s.user_id
-order by s.user_name asc
+order by s.user_name asc, s.user_id asc, s.view_time desc
