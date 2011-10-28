@@ -18,11 +18,10 @@ import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 
-/** Save Parallel Program setup for this Admin / Group
+/** Save Parallel Program setup for this Admin
  * 
- *  Information will be saved in HA_USER_TEMPLATE
  *  The student will login using the usual username (school passcode) and the password,
- *  which is the Parallel Program Group Name.
+ *  which is the Parallel Program Name.
  *  
  * @author bob
  *
