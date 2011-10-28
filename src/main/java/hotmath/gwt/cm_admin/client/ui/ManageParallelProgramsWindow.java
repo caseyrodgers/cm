@@ -105,16 +105,15 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 if (mdl != null) {
                     if (mdl.getStudentCount() > 0) {
                         CatchupMathTools.showAlert("Selection is in use and cannot be modified.");
+                        return;
                     }
                 /*
+                    CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
                         public void requestComplete(String requestData) {
-                            updateGroupRPC(mdl.getAdminId(),mdl.getId(), requestData);
+                            readRPCData(adminModel.getId(), requestData);
                         }
                     };
-                    GroupInfoModel gm = new GroupInfoModel();
-                    gm.setId(mdl.getId());
-                    gm.setGroupName(mdl.getName());
-                    new GroupWindow(callback, adminModel, null, false, gm).setVisible(true);
+                    new ParallelProgramSetup(callback, adminModel, mdl).setVisible(true);
                 */
                 }
                 
@@ -128,6 +127,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 if (ppm != null) {
                     if (ppm.getStudentCount() > 0) {
                         CatchupMathTools.showAlert("Selection is in use and cannot be removed.");
+                        return;
                     }
                     /*        
                     MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new Listener<MessageBoxEvent>() {
@@ -149,6 +149,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
 
                     if (ppm.getStudentCount() < 1) {
                         CatchupMathTools.showAlert("Selection has no usage, nothing to display.");
+                        return;
                     }
 
                 	new ParallelProgramUsageWindow(ppm);
@@ -246,8 +247,8 @@ public class ManageParallelProgramsWindow extends CmWindow {
         }.register();
     }
 
-    private void deleteGroup(final Integer adminId, final Integer groupId) {
-    	groupActionRPC(adminId, groupId, null, GroupManagerAction.ActionType.DELETE);
+    private void deleteParallelProgram(final Integer adminId, final Integer ppId) {
+    	groupActionRPC(adminId, ppId, null, GroupManagerAction.ActionType.DELETE);
     }
 
     protected void updateGroupRPC(final int adminUid, Integer groupId, String groupName) {
