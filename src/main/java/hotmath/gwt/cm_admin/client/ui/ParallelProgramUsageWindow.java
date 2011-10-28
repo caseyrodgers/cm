@@ -56,7 +56,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
     public ParallelProgramUsageWindow(final ParallelProgramModel ppModel) {
         addStyleName("parallel-program-usage-window");
         this.ppModel = ppModel;
-        setSize(470, 315);
+        setSize(540, 315);
         setModal(true);
         setResizable(false);
         setHeading("Usage for: " + ppModel.getName());
@@ -68,7 +68,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ppumGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         ppumGrid.getSelectionModel().setFiresEvents(true);
         ppumGrid.setStripeRows(true);
-        ppumGrid.setWidth(390);
+        ppumGrid.setWidth(460);
         ppumGrid.setHeight(225);
 
         setLayout(new BorderLayout());
@@ -131,7 +131,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ColumnConfig program = new ColumnConfig();
         program.setId(ParallelProgramUsageModel.STUDENT_NAME);
         program.setHeader("Name");
-        program.setWidth(105);
+        program.setWidth(125);
         program.setSortable(true);
         program.setMenuDisabled(true);
         configs.add(program);
@@ -139,7 +139,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ColumnConfig activity = new ColumnConfig();
         activity.setId(ParallelProgramUsageModel.ACTIVITY);
         activity.setHeader("Activity");
-        activity.setWidth(125);
+        activity.setWidth(100);
         activity.setSortable(false);
         activity.setMenuDisabled(true);
         configs.add(activity);
@@ -151,15 +151,15 @@ public class ParallelProgramUsageWindow extends CmWindow {
         result.setSortable(false);
         result.setMenuDisabled(true);
         configs.add(result);
-/*        
+        
         ColumnConfig date = new ColumnConfig();
-        date.setId(StudentActivityModel.USE_DATE_KEY);
+        date.setId(ParallelProgramUsageModel.USE_DATE);
         date.setHeader("Date");
         date.setWidth(75);
         date.setSortable(false);
         date.setMenuDisabled(true);
         configs.add(date);
-*/
+
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }
