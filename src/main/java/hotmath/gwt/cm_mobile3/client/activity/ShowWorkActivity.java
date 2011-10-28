@@ -97,7 +97,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         if(commandType == CommandType.CLEAR) {
             whiteboardActions.getActions().clear();
         }
-        int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
+        // int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
+        int runId = 0;
+        
         SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(),runId, pid, commandType, json);
         whiteboardActions.getActions().add(action);
     }

@@ -856,3 +856,8 @@ table {
     background: black;
     width: 550px;
 }
+
+
+button.quiz_whiteboard_button {
+	display: block !important;
+}

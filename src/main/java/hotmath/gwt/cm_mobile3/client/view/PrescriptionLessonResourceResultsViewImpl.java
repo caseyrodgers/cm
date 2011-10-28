@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
@@ -20,7 +21,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
-public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel implements PrescriptionLessonResourceResultsView {
+public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel implements PrescriptionLessonResourceResultsView, HasWhiteboard{
 
 	ProblemNumber problem;
 	
