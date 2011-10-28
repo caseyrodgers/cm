@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
+import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -46,6 +47,10 @@ public class ParallelProgramUsageWindow extends CmWindow {
     private Grid<ParallelProgramUsageModel> ppumGrid;
     private Label _studentCount;
 
+    
+    //  StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
+    // showStudentInfo(StudentEventType.DETAILS, sm);
+    
     /**
      * Create Usage Window for Parallel Programs.
      * Displays student name, current Activity and most recent Result
@@ -85,6 +90,17 @@ public class ParallelProgramUsageWindow extends CmWindow {
         gridContainer.setHeight(250);
         
         add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
+
+        
+        addButton(new Button("Details",new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ParallelProgramUsageModel pp = ppumGrid.getSelectionModel().getSelectedItem();
+                if(pp != null) {
+                    StudentDetailsWindow.showStudentDetails(pp.getUserId());
+                }
+            }}));
+        
 
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);
