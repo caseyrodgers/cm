@@ -740,6 +740,31 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return cmProg;
     }
     
+    
+    /**
+     * delete Parallel Program for specified ppId
+     * 
+     * @param ppId
+     * @throws Exception
+     */
+    public void deleteParallelProgram(final int ppId) throws Exception {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_PARALLEL_PROGRAM");
+                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+                    ps.setInt(1, ppId);
+                    return ps;
+                }
+                catch(Exception e) {
+                    LOGGER.error(String.format("Error deleting Parallel Program identified by ID: %d", ppId), e);
+                    throw new SQLException(e.getMessage());
+                }
+            }
+        });
+    }
+    
+    
     private Map<String,String> createInListMap(String list) {
         Map<String,String> map = new HashMap<String, String>();
         map.put("UID_LIST", list);
