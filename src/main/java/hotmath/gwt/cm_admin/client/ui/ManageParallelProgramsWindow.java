@@ -15,8 +15,8 @@ import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
+import hotmath.gwt.shared.client.rpc.action.DeleteParallelProgramAction;
 import hotmath.gwt.shared.client.rpc.action.GetParallelProgramsAction;
-import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +26,12 @@ import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -129,14 +131,12 @@ public class ManageParallelProgramsWindow extends CmWindow {
                         CatchupMathTools.showAlert("Selection is in use and cannot be removed.");
                         return;
                     }
-                    /*        
                     MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getText().equalsIgnoreCase("yes"))
                                 deleteParallelProgram(adminModel.getId(), ppm.getId());
                         }
                     });
-                    */
                 }
             }
         }));
@@ -248,23 +248,13 @@ public class ManageParallelProgramsWindow extends CmWindow {
     }
 
     private void deleteParallelProgram(final Integer adminId, final Integer ppId) {
-    	groupActionRPC(adminId, ppId, null, GroupManagerAction.ActionType.DELETE);
-    }
-
-    protected void updateGroupRPC(final int adminUid, Integer groupId, String groupName) {
-    	groupActionRPC(adminUid, groupId, groupName, GroupManagerAction.ActionType.UPDATE);
-    }
-
-    private void groupActionRPC(final Integer adminId, final Integer groupId, final String groupName, final GroupManagerAction.ActionType actionType) {
 
     	new RetryAction<RpcData>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GroupManagerAction action = new GroupManagerAction(actionType, adminId);
+                DeleteParallelProgramAction action = new DeleteParallelProgramAction(adminId, ppId);
                 setAction(action);
-                action.setGroupId(groupId);
-                action.setGroupName(groupName);
                 CmShared.getCmService().execute(action, this);
             }
 
@@ -278,13 +268,8 @@ public class ManageParallelProgramsWindow extends CmWindow {
             @Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
-                
-                if(caught.getMessage().indexOf("you entered") > 0) {
-                    CatchupMathTools.showAlert("Problem renaming group", caught.getMessage());
-                    RetryActionManager.getInstance().requestComplete(this);
-                    return;
-                }
-                super.onFailure(caught);
+                CatchupMathTools.showAlert("Problem removing Parallel Program", caught.getMessage());
+                RetryActionManager.getInstance().requestComplete(this);
             }
 
         }.register();
