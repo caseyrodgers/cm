@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -16,6 +17,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -474,4 +476,28 @@ public class StudentDetailsWindow extends CmWindow {
             }
         }.register();
     }
+    
+    
+    
+    
+    
+    static public void showStudentDetails(final int userId) {
+        
+        new RetryAction<StudentModelI>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetStudentModelAction action = new GetStudentModelAction(userId);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }            
+            
+            @Override
+            public void oncapture(StudentModelI result) {
+                CmBusyManager.setBusy(false);
+                StudentModelExt sm = new StudentModelExt(result);
+                new StudentDetailsWindow(sm);
+            }
+        }.register();
+    }    
 }
