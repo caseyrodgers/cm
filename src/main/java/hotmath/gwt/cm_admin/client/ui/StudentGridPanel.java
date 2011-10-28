@@ -506,8 +506,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         menu.add(defineManageGroupsItem());
 
-        if (CmShared.getQueryParameter("debug") != null)
-            menu.add(defineParallelProgramsItem());
+        menu.add(defineParallelProgramsItem());
 
         btn.setMenu(menu);
 
