@@ -11,12 +11,12 @@ public class SolutionSetCompleteDialog extends CmWindow {
         setHeading("Problem Set Results");
         
         setModal(true);
-        setSize(250, 150);
+        setSize(350, 150);
         addStyleName("SolutionSetCompleteDialog");
         String html = 
-            "  You correctly answered <b style='font-size: 1.5em'> " + numCorrect + " questions out of <b style='font-size: 1.5em'>" + limit + "</b>.";
+            "You correctly answered <b style='font-size: 1.5em'> " + numCorrect + "</b> questions out of <b style='font-size: 1.5em'>" + limit + "</b>.";
         
-       html = "<p class='solution_set_results'>" + html + "</p>";
+       html = "<p style='text-align: center;margin-top: 10px;' class='solution_set_results'>" + html + "</p>";
        
        add(new Html(html));
        
