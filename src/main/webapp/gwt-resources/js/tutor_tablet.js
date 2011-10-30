@@ -100,13 +100,15 @@ var TutorManager = {
 	pid : '',
 	stepUnit : null,
 	tutorData : null,
-	initializeTutor : function(pid, jsonConfig, solutionData, stepText,
+	solutionTitle: null,
+	initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,
 			showWork, expand) {
 		TutorManager.pid = pid;
 		TutorManager.jsonConfig = jsonConfig;
 		TutorManager.currentRealStep = -1;
 		TutorManager.currentStepUnit = -1;
 		TutorManager.stepText = stepText;
+		TutorManager.solutionTitle = solutionTitle;
 		TutorManager.solutionData = solutionData;
 		TutorManager.loadTutorData(solutionData, stepText);
 		TutorManager.analyzeLoadedData();
