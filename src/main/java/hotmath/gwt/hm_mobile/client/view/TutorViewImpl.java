@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.view.TutorMobileWrapperPanel;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.hm_mobile.client.HmMobile;
@@ -14,19 +15,31 @@ import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage {
 
 	ProblemNumber problem;
 	
-    SimplePanel tutorPanel;
+	TutorMobileWrapperPanel tutorPanel;
     
 	public TutorViewImpl() {
-	    tutorPanel = new SimplePanel();
+	    tutorPanel = new TutorMobileWrapperPanel();
 	    initWidget(tutorPanel);
+	    
 	}
+	
+
+    static {
+        setupExternalJsHooks();
+    }
+   /** setup mandatory extern js referneces into
+    *  the dynamic tutor system.
+    */
+   static native private void setupExternalJsHooks() /*-{
+       $wnd.gwt_solutionHasBeenViewed = function(){
+           // empty
+        };
+   }-*/;
 
 	Presenter presenter;
 
@@ -40,13 +53,10 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 		this.problem = solution.getProblem();
 		setupJsni();
 		
-		tutorPanel.clear();
-		tutorPanel.add(new HTML(solution.getTutorHtml()));
-		
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				initializeTutor(problem.getPid(), solution.getSolutionData(), problem.getProblem(), false, false);
+				initializeTutor(problem.getPid(),null, solution.getSolutionData(),solution.getTutorHtml(), problem.getProblem(), false, false);
 			}
 		});
     }
@@ -67,8 +77,8 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
 		HmMobile.__clientFactory.getEventBus().fireEvent(new BackDiscoveryEvent((IPage)HmMobile.__clientFactory.getTutorView()));
 	}
 	
-    private native void initializeTutor(String pid, String solutionDataJs, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
-          $wnd.TutorManager.initializeTutor(pid, solutionDataJs,title,hasShowWork,shouldExpandSolution);
+    private native void initializeTutor(String pid, String jsonConfig, String solutionDataJs, String solutionText, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
+          $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs, solutionText, title,hasShowWork,shouldExpandSolution);
     }-*/;
 
 

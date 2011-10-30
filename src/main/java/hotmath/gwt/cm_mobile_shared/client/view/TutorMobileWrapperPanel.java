@@ -21,7 +21,7 @@ public class TutorMobileWrapperPanel extends Composite {
         public void setTutorTitle(String title) {
             this.title.setInnerHTML(title);
         }
-
+  
         @UiField
         DivElement title;
 }
