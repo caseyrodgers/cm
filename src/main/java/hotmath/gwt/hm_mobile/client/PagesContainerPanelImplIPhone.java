@@ -21,7 +21,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -85,7 +84,7 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
             var instance = this;
 
             var callBack = function(e){
-                instance.@hotmath.gwt.hm_mobile.client.PagesContainerPanel::onDomTransitionEnded()();
+                instance.@hotmath.gwt.hm_mobile.client.PagesContainerPanelImplIPhone::onDomTransitionEnded()();
             };
 
             element.addEventListener('webkitTransitionEnd', callBack, false);   
