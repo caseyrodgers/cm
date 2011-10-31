@@ -6,6 +6,7 @@ import java.util.List;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.rpc.action.SaveCustomQuizAction;
@@ -18,11 +19,16 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
         super(name);
     }
     
-    public void testGetQuesions() throws Exception {
+    public void testGetQuestions() throws Exception {
         String lesson= "topics/adding-and-subtracting-decimals.html";
         CmList<QuizQuestion> questions = CmQuizzesDao.getInstance().getQuestionsFor(conn, lesson, "pre-alg");
         assertTrue(questions.get(0).getQuizHtml().length() > 0);
         assertTrue(questions.get(0).getCorrectAnswer() > 0);
+    }
+    
+    public void testGetQuizDef() throws Exception {
+    	CustomQuizDef qd = CmQuizzesDao.getInstance().getCustomQuiz(87);
+    	assertTrue(qd != null);
     }
     
     public void testSaveLoad() throws Exception {
@@ -46,6 +52,6 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
         CmList<QuizQuestion> questions = CmQuizzesDao.getInstance().getCustomQuizQuestions(conn,customQuizId);
         assertTrue(questions.size() > 0);
         
-        assertTrue(CmQuizzesDao.getInstance().deleteCustomQuiz(conn, adminId, cpName));
+        //assertTrue(CmQuizzesDao.getInstance().deleteCustomQuiz(conn, adminId, cpName));
     }
 }
