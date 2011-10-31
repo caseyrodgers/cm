@@ -23,6 +23,7 @@ var HmEvents = {
 			}
 		}
 	},
+	
 	eventTutorLastStep : {
 		listeners : [],
 		subscribe : function(callBack) {
@@ -63,8 +64,21 @@ var HmEvents = {
 				hel[i]();
 			}
 		}
+	},
+	
+	eventTutorChangeStep : {
+		listeners : [],
+		subscribe : function(callBack) {
+			var hel = HmEvents.eventTutorChangeStep.listeners;
+			hel[hel.length] = callBack;
+		},
+		fire : function(args) {
+			var hel = HmEvents.eventTutorChangeStep.listeners;
+			for ( var i = 0; i < hel.length; i++) {
+				hel[i](null,[args]);
+			}
+		}
 	}
-
 }
 
 function $get(name) {
@@ -402,6 +416,9 @@ function showStepUnit(num) {
 		setButtonState();
 
 		scrollToStep(num);
+		
+		
+		 HmEvents.eventTutorChangeStep.fire(num);
 	} catch (e) {
 		alert('Error showing step: ' + e);
 	}
