@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -20,6 +21,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import sb.util.SbUtilities;
@@ -310,6 +313,34 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
+    }
+
+    /**
+     * Get a single Custom Program/Quiz by Id
+     * 
+     * @param progId
+     * @return
+     * @throws Exception
+     */
+    public CustomProgramModel getCustomProgram(final Integer progId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_DEFINITION_BYID");
+
+        CustomProgramModel customProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{progId},
+                new RowMapper<CustomProgramModel>() {
+                    public CustomProgramModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                            return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"),
+                                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0);
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Custom Program for Id: %d", progId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return customProg;
     }
 
     public CustomProgramModel getCustomProgram(final Connection conn, Integer adminId, String customProgramName)
