@@ -332,6 +332,9 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	parallelProg.setName(rs.getString("name"));
                         	parallelProg.setPassword(rs.getString("password"));
                         	parallelProg.setStudentCount(rs.getInt("student_count"));
+                        	String progName = getStdProgName(rs.getString("prog_id"), rs.getString("subj_id"),
+                        			rs.getString("cp_name"), rs.getString("cq_name"));
+                        	parallelProg.setCmProgName(progName);
                             return parallelProg;
                         }
                         catch(Exception e) {
@@ -863,4 +866,20 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
 
 		return sm;
 	}
+    
+    private String getStdProgName(String progId, String subjId, String cpName, String cqName) {
+    	StringBuilder sb = new StringBuilder();
+    	if (progId.startsWith("Custom")) {
+    	    if (cpName.trim().length() > 0) {
+    	    	sb.append("CP: ").append(cpName);
+    	    }
+    	    else if (cqName.trim().length() > 0) {
+    	    	sb.append("CQ: ").append(cqName);
+    	    }
+    	}
+    	else {
+    		sb.append(progId).append(" ").append(subjId);
+    	}
+    	return sb.toString();
+    }
 }

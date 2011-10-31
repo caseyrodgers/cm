@@ -13,6 +13,7 @@ public class CmParallelProgram implements Response {
 	int studentCount;
 	String password;
 	String name;
+	String cmProgName;
 	boolean isActive;
 	Date createDate;
 	
@@ -72,6 +73,14 @@ public class CmParallelProgram implements Response {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getCmProgName() {
+		return cmProgName;
+	}
+
+	public void setCmProgName(String cmProgName) {
+		this.cmProgName = cmProgName;
 	}
 
 	public boolean isActive() {
