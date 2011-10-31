@@ -316,7 +316,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * Get a single Custom Program/Quiz by Id
+     * Get a single Custom Program by Id
      * 
      * @param progId
      * @return
