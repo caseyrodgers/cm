@@ -45,7 +45,6 @@ public class ParallelProgramUsageWindow extends CmWindow {
 
     ParallelProgramModel ppModel;
     private Grid<ParallelProgramUsageModel> ppumGrid;
-    private Label _studentCount;
 
     
     //  StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
@@ -109,8 +108,8 @@ public class ParallelProgramUsageWindow extends CmWindow {
         getParallelProgramUsageRPC(store, ppModel);
 
         if (CmShared.getQueryParameter("debug") != null) {
-            //Menu debugMenu = buildDebugMenu();
-            //ppumGrid.setContextMenu(debugMenu);
+            Menu debugMenu = buildDebugMenu();
+            ppumGrid.setContextMenu(debugMenu);
         }
 
         setVisible(true);
