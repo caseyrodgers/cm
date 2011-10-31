@@ -90,15 +90,23 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             }
             else if(type.equals("resource")) {
                 
+                InmhItemData itemData=null;
+                
                 /** token the ordinal position of resource in list.  We do
                  *  not want to have to create new InmhItemData, use the existing
                  *  on in prescription data.
                  */
-                int ordinal = token.getResourceOrdinal();
-                
-
                 String resourceType = token.getResourceType();
-                InmhItemData itemData = SharedData.findInmhDataInPrescriptionByOrdinal(resourceType, ordinal);
+                String file = token.getResourceFile();
+                if(file == null) {
+                    int ordinal = token.getResourceOrdinal();
+                    itemData = SharedData.findInmhDataInPrescriptionByOrdinal(resourceType, ordinal);
+                }
+                else {
+                    itemData = new InmhItemData(resourceType, file,"");
+                }
+                
+                 
                 itemData.setTitle(token.getResourceTitle());
                 if(resourceType.equals("review")) {
                     PrescriptionLessonResourceReviewActivity activity = new PrescriptionLessonResourceReviewActivity(eb, itemData);

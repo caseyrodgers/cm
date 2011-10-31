@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.ClientFactory;
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -24,7 +27,23 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
     public PrescriptionLessonResourceReviewActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
         this.eventBus = eventBus;
         this.resourceItem = resourceItem;
+        
+        setupJsniHooks(this);
     }
+    
+    
+    private void doResourceLoad(String type, String file) {
+        // MessageBox.showError("Flie: " + file);'
+        ClientFactory cf = CatchupMathMobile3.__clientFactory;
+        InmhItemData newItem = new InmhItemData(type, file,"");
+        cf.getEventBus().fireEvent(new ShowPrescriptionResourceEvent(newItem));        
+    }
+
+    private native void setupJsniHooks(PrescriptionLessonResourceReviewActivity x) /*-{
+        $wnd.doLoadResource_Gwt = function(type,file) {
+            x.@hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceReviewActivity::doResourceLoad(Ljava/lang/String;Ljava/lang/String;)(type,file);
+        }
+    }-*/;
 
     @Override
     public void setupView(final PrescriptionLessonResourceReviewView view) {

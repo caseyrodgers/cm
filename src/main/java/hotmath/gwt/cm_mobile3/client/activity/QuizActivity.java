@@ -5,10 +5,10 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
@@ -87,7 +87,7 @@ public class QuizActivity implements QuizView.Presenter {
         /** update global user data
          *  TODO: create abstraction for this data
          */
-        CatchupMathMobileShared.__instance.user.setTestId(result.getTestId());
+        SharedData.getUserInfo().setTestId(result.getTestId());
         
         quizView.setQuizHtml(result.getQuizHtml(), testQuestionAnswers.size());
 
@@ -123,8 +123,8 @@ public class QuizActivity implements QuizView.Presenter {
             public void onSelectYes() {
                 eventBus.fireEvent(new SystemIsBusyEvent(true));
 
-                CmMobileUser user = CatchupMathMobileShared.getUser();
-                CreateTestRunAction checkTestAction = new CreateTestRunAction(user.getTestId(), user.getUserId());
+                UserInfo user = SharedData.getUserInfo();
+                CreateTestRunAction checkTestAction = new CreateTestRunAction(user.getTestId(), user.getUid());
                 CatchupMathMobileShared.getCmService().execute(checkTestAction, new AsyncCallback<CreateTestRunResponse>() {
                     @Override
                     public void onSuccess(CreateTestRunResponse result) {
@@ -189,7 +189,10 @@ public class QuizActivity implements QuizView.Presenter {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = (correctIndex == Integer.parseInt(answerIndex));        
-        SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(SharedData.getUserInfo().getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);
+        
+        int testId = SharedData.getUserInfo().getTestId();
+        
+        SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(testId, isCorrect, Integer.parseInt(answerIndex), pid);
 
         if(_isOffline) {
             answerAction.getActions().add(action);

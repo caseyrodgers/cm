@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -64,5 +66,17 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
     @Override
     public void setReviewHtml(String html) {
         reviewHtml.setInnerHTML(html);
+    }
+    
+    @Override
+    public BackAction getBackAction() {
+        return new BackAction() {
+            
+            @Override
+            public boolean goBack() {
+                CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+                return false;
+            }
+        };
     }
 }

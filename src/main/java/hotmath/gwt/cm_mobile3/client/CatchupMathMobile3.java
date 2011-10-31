@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
@@ -224,6 +225,12 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 }
             }
         });
+        
+        
+        /** Look for special cases and handle custom for the given view.
+         * 
+         * TODO: This should be in the view!
+         */
         eb.addHandler(BackPageLoadedEvent.TYPE, new BackPageLoadedEventHandler() {
             @Override
             public void movedBack(final IPage page) {
@@ -244,6 +251,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     }
                 }
                 else if (page instanceof PrescriptionLessonResourceVideoView) {
+                    eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
+                }
+                else if (page instanceof PrescriptionLessonResourceTutorViewImpl) {
                     eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
                 }
             }
