@@ -7,8 +7,11 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
-import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -442,7 +445,6 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     	int userId = 0;
     	
     	List<ParallelProgramUsageModel> list = new ArrayList<ParallelProgramUsageModel>();
-    	ParallelProgramUsageModel mdl;
     	
         for (ParallelProgramUsageModel ppum : ppuList) {
         	if (ppum.getUserId() != userId) {
@@ -739,7 +741,34 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                 });
         return cmProg;
     }
-    
+
+	public CmParallelProgram getParallelProgramForId(final int ppId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_PARALLEL_PROGRAM");
+
+        CmParallelProgram parallelProg = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{ppId},
+                new RowMapper<CmParallelProgram>() {
+                    public CmParallelProgram mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        CmParallelProgram parallelProg;
+                        try {
+                        	parallelProg = new CmParallelProgram();
+                        	parallelProg.setId(rs.getInt("id"));
+                        	parallelProg.setAdminId(rs.getInt("admin_id"));
+                        	parallelProg.setName(rs.getString("name"));
+                        	parallelProg.setPassword(rs.getString("password"));
+                        	parallelProg.setCmProgId(rs.getInt("prog_inst_id"));
+
+                            return parallelProg;
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Parallel Program for ppId: %d", ppId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return parallelProg;
+	}
     
     /**
      * delete Parallel Program for specified ppId
@@ -763,7 +792,24 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-    
+
+    public StudentModelExt getStudentModelForParallelProgram(int parallelProgId) throws Exception {
+    	CmParallelProgram pp = this.getParallelProgramForId(parallelProgId);
+    	CmProgram cmProg = this.getCmProgramForParallelProgramId(parallelProgId);
+    	StudentModelExt sm = this.parallelProgramToStudentModel(cmProg, pp);
+        return sm;    	
+    }
+
+	public void updateProgram(CmProgram prog, Integer parallelProgId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateParallelProgram(CmParallelProgram pp,
+			Integer parallelProgId) {
+		// TODO Auto-generated method stub
+		
+	}
     
     private Map<String,String> createInListMap(String list) {
         Map<String,String> map = new HashMap<String, String>();
@@ -780,5 +826,41 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         }
         return sb.toString();
     }
-    
+
+    private StudentModelExt parallelProgramToStudentModel(
+			CmProgram cmProg, CmParallelProgram ppMdl) throws Exception {
+    	
+    	StudentModelExt sm = new StudentModelExt();
+    	
+        CmProgramInfo progInfo = cmProg.getCmProgInfo();
+        
+        sm.setAdminUid(ppMdl.getAdminId());
+        sm.setName(ppMdl.getName());
+        sm.setPasscode(ppMdl.getPassword());
+        
+        StudentProgramModel progMdl =  new StudentProgramModel();
+        progMdl.setProgramType(progInfo.getProgramType());
+        progMdl.setSubjectId(progInfo.getSubjectId());
+        LOGGER.debug("+++ subjectId: " + progInfo.getSubjectId());
+
+        progMdl.getCustom().setCustomProgramId(cmProg.getCustomProgId());
+        if (cmProg.getCustomProgId() > 0) {
+        	CustomProgramModel cp = CmCustomProgramDao.getInstance().getCustomProgram(cmProg.getCustomProgId());
+        	progMdl.getCustom().setCustomProgramName(cp.getProgramName());
+            LOGGER.debug("+++ custom program name: " + cp.getProgramName());
+        }
+
+        progMdl.getCustom().setCustomQuizId(cmProg.getCustomQuizId());
+        if (cmProg.getCustomQuizId() > 0) {
+        	CustomQuizDef cq = CmQuizzesDao.getInstance().getCustomQuiz(cmProg.getCustomQuizId());
+        	progMdl.getCustom().setCustomQuizName(cq.getQuizName());
+            LOGGER.debug("+++ custom quiz name: " + cq.getQuizName());
+        }
+
+        sm.setProgram(progMdl);
+        sm.setJson(cmProg.getTestConfigJson());
+        sm.setPassPercent("70");
+
+		return sm;
+	}
 }

@@ -30,7 +30,6 @@ import hotmath.gwt.shared.client.rpc.action.AddStudentAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 import hotmath.gwt.shared.client.rpc.action.GetChaptersForProgramSubjectAction;
 import hotmath.gwt.shared.client.rpc.action.GetProgramDefinitionsAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.GetSubjectDefinitionsAction;
 import hotmath.gwt.shared.client.rpc.action.UpdateStudentAction;
 import hotmath.gwt.shared.client.util.CmException;
@@ -564,7 +563,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 		inProcessCount++;
 		
-		
 		new RetryAction <CmList<SubjectModel>>() {
 
 		    @Override
@@ -656,7 +654,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
     		passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
 
-            advOptionsBtn.enable();
+			if (advOptionsBtn.isVisible())
+                advOptionsBtn.enable();
 
             loading = false;
 		}
@@ -668,7 +667,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        return;
 	    }
 	    
-		Integer groupId = Integer.parseInt(stuMdl.getGroupId());
+	    if (_fsProfile.getItemByItemId("group-combo") == null) {
+	    	return;
+	    }
+
+	    Integer groupId = Integer.parseInt(stuMdl.getGroupId());
 		if (groupId != null) {
 			List<GroupInfoModel> l = __groupStore.getModels();
 			for (GroupInfoModel g : l) {

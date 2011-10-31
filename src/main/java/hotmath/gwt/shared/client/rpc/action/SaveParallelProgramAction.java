@@ -8,12 +8,14 @@ public class SaveParallelProgramAction implements Action<RpcData>{
     
     Integer adminId;
     StudentModelI student;
+    Integer parallelProgId;
     
     public SaveParallelProgramAction(){}
     
-    public SaveParallelProgramAction(Integer adminId, StudentModelI student) {
+    public SaveParallelProgramAction(Integer adminId, StudentModelI student, Integer parallelProgId) {
         this.adminId = adminId;
         this.student = student;
+        this.parallelProgId = parallelProgId;
     }
     
     public Integer getAdminId() {
@@ -28,10 +30,18 @@ public class SaveParallelProgramAction implements Action<RpcData>{
     public void setStudent(StudentModelI student) {
         this.student = student;
     }
-    
-    @Override
+
+	public Integer getParallelProgId() {
+		return parallelProgId;
+	}
+
+	public void setParallelProgId(Integer parallelProgId) {
+		this.parallelProgId = parallelProgId;
+	}
+
+	@Override
     public String toString() {
-        return "adminId: " + adminId + ", student: " + ((student != null) ? "Not NULL" : "NULL");	
+        return "adminId: " + adminId + ", parallelProgId: " + parallelProgId + ", student: " + ((student != null)?"Not NULL":"NULL");	
     }
 }
 

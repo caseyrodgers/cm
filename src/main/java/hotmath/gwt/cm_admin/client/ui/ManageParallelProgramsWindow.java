@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -17,6 +18,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.DeleteParallelProgramAction;
 import hotmath.gwt.shared.client.rpc.action.GetParallelProgramsAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentForParallelProgramAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
     Grid<ParallelProgramModel> grid;
     ListStore<ParallelProgramModel> store = new ListStore<ParallelProgramModel>();
     CmAdminModel adminModel;
+    StudentModelI stuMdl;
     int width = 400;
     
     public ManageParallelProgramsWindow(CmAdminModel adminModel) {
@@ -106,20 +109,16 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 
                 if (mdl != null) {
                     if (mdl.getStudentCount() > 0) {
-                        CatchupMathTools.showAlert("Selection is in use and cannot be modified.");
-                        return;
+                        CatchupMathTools.showAlert("Selection is in use and can only be viewed.");
+                        //return;
                     }
-                /*
-                    CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
-                        public void requestComplete(String requestData) {
-                            readRPCData(adminModel.getId(), requestData);
-                        }
-                    };
-                    new ParallelProgramSetup(callback, adminModel, mdl).setVisible(true);
-                */
+
+                    modifyParallelProgram(mdl);
+                    
                 }
                 
             }
+
         }));
 
         lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
@@ -158,9 +157,51 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
         }));
 
-        add(lc, new BorderLayoutData(LayoutRegion.EAST,200));
+        add(lc, new BorderLayoutData(LayoutRegion.EAST, 200));
     }
 
+	private void modifyParallelProgram(final ParallelProgramModel mdl) {
+    	new RetryAction<StudentModelExt>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetStudentForParallelProgramAction action = new GetStudentForParallelProgramAction(mdl.getId());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(StudentModelExt result) {
+
+                CmBusyManager.setBusy(false);
+
+                // now show Parallel Program Setup
+                showParallelProgramSetup(result, mdl);
+            	
+            }
+
+			@Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                CatchupMathTools.showAlert("Problem getting Parallel Program", caught.getMessage());
+                RetryActionManager.getInstance().requestComplete(this);
+            }
+
+        }.register();
+
+	}
+
+	private void showParallelProgramSetup(StudentModelI sm, ParallelProgramModel mdl) {
+
+        CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
+            public void requestComplete(String requestData) {
+                readRpcData(adminModel.getId(), false);
+            }
+        };
+        
+		new ParallelProgramSetup(callback, adminModel, mdl, sm).setVisible(true);
+    }
+    
     private Grid<ParallelProgramModel> defineGrid(final ListStore<ParallelProgramModel> store, ColumnModel cm) {
         final Grid<ParallelProgramModel> grid = new Grid<ParallelProgramModel>(store, cm);
         grid.setBorders(true);
@@ -219,34 +260,6 @@ public class ManageParallelProgramsWindow extends CmWindow {
         return cm;
     }
 
-    private void readRpcData(final Integer adminId, final boolean closeOnCancel) {
-    	
-    	final CmWindow cmw = this;
-    	
-        new RetryAction<CmList<ParallelProgramModel>>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                GetParallelProgramsAction action = new GetParallelProgramsAction(adminId);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(CmList<ParallelProgramModel> result) {
-                store.removeAll();
-                store.add(result);
-                CmBusyManager.setBusy(false);
-            }
-
-            @Override
-            public void onCancel() {
-            	if (closeOnCancel)
-            		cmw.close();
-            }
-        }.register();
-    }
-
     private void deleteParallelProgram(final Integer adminId, final Integer ppId) {
 
     	new RetryAction<RpcData>() {
@@ -274,6 +287,34 @@ public class ManageParallelProgramsWindow extends CmWindow {
 
         }.register();
 
+    }
+    
+    private void readRpcData(final Integer adminId, final boolean closeOnCancel) {
+    	
+    	final CmWindow cmw = this;
+    	
+        new RetryAction<CmList<ParallelProgramModel>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetParallelProgramsAction action = new GetParallelProgramsAction(adminId);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(CmList<ParallelProgramModel> result) {
+                store.removeAll();
+                store.add(result);
+                CmBusyManager.setBusy(false);
+            }
+
+            @Override
+            public void onCancel() {
+            	if (closeOnCancel)
+            		cmw.close();
+            }
+        }.register();
     }
 
 }
