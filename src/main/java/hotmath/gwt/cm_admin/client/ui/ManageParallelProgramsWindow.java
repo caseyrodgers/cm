@@ -108,13 +108,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 final ParallelProgramModel mdl = getGridItem();
                 
                 if (mdl != null) {
-                    if (mdl.getStudentCount() > 0) {
-                        CatchupMathTools.showAlert("Selection is in use and can only be viewed.");
-                        //return;
-                    }
-
                     modifyParallelProgram(mdl);
-                    
                 }
                 
             }
