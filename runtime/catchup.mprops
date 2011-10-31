@@ -2863,8 +2863,13 @@ where user_id=? and user_prog_id = ?
 
 .key=GET_PARALLEL_PROGRAMS_FOR_ADMIN
 
-select pp.*, ifnull(pa.student_count, 0) as student_count
+select pp.*, ifnull(pa.student_count, 0) as student_count, td.prog_id, td.subj_id,
+       ifnull(cp.name,' ') as cp_name, ifnull(cq.name, ' ') as cq_name
 from CM_PARALLEL_PROGRAM pp
+join CM_PROGRAM p on p.id = pp.prog_inst_id
+join HA_TEST_DEF td on td.test_def_id = p.test_def_id
+left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_prog_id
+left join HA_CUSTOM_QUIZ cq on cq.qid = p.custom_quiz_id
 left join (select count(*) as student_count, prog_inst_id from CM_PROGRAM_ASSIGN group by prog_inst_id) pa
   on pa.prog_inst_id = pp.prog_inst_id
 where pp.admin_id = ?
