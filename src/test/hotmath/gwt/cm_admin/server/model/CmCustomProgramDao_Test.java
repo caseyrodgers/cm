@@ -53,5 +53,9 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
     public void testGetAll() throws Exception {
         assertTrue(CmCustomProgramDao.getInstance().getAllLessons(conn).size() > 0);
     }
+    
+    public void testGetCustomProgramById() throws Exception {
+    	assertTrue(CmCustomProgramDao.getInstance().getCustomProgram(7) != null);
+    }
 
 }
