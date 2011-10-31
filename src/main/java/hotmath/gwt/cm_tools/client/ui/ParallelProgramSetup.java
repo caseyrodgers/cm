@@ -32,7 +32,6 @@ public class ParallelProgramSetup extends RegisterStudent {
     TextField<String> nameFld;
     TextField<String> passwordFld;
     
-    boolean isSaveOK;
     Integer parellelProgId;
     ParallelProgramModel parallelProg;
     
@@ -41,8 +40,6 @@ public class ParallelProgramSetup extends RegisterStudent {
 	public ParallelProgramSetup(CmAsyncRequest callback, CmAdminModel adminModel) {
 	    super(null, adminModel);
 
-	    isSaveOK = true;
-	    
 	    doIt(callback);
 	}	
 
@@ -52,7 +49,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 		super(sm, adminModel);
 		
 		parellelProgId = ppModel.getId();
-		isSaveOK = (ppModel.getStudentCount() < 1);
+		parallelProg = ppModel;
 		
 		doIt(callback);
 	}
@@ -92,7 +89,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	protected List<Button> getActionButtons() {
 	    List<Button> list = new ArrayList<Button>();
         
-	    if (isSaveOK == true) {
+	    if (parallelProg == null || parallelProg.getStudentCount() < 1) {
 	    	Button save = new Button("Save");
 	    	save.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
