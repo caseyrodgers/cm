@@ -632,7 +632,6 @@
 				<version>2.2.0</version>
 				<configuration>
 					<gwtHome>${gwtHome}</gwtHome>
-					<extraJvmArgs>-Xms1024m -Xmx1024m -Dgwt.logLevel=INFO</extraJvmArgs>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
 					<disableClassMetadata>true</disableClassMetadata>
@@ -643,10 +642,9 @@
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-<!--
-						<module>hotmath.gwt.cm_fmobile3.CatchupMathMobile3</module>
--->
+						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
+    			                        <module>hotmath.gwt.hm_mobile.HmMobile</module>
 						<!-- <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> -->
 						<!-- <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
