@@ -2478,6 +2478,14 @@ where admin_id = ?
 and name = ?         
 
 
+.key=GET_CUSTOM_QUIZ_BYID
+
+select q.name as quiz_name, q.qid as quiz_id, q.admin_id
+from  HA_CUSTOM_QUIZ q
+where qid = ?
+order by name
+
+
 .key=GET_CUSTOM_PROGRAM_ITEMS
 
 
