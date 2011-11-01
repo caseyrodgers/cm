@@ -2864,7 +2864,8 @@ where user_id=? and user_prog_id = ?
 .key=GET_PARALLEL_PROGRAMS_FOR_ADMIN
 
 select pp.*, ifnull(pa.student_count, 0) as student_count, td.prog_id, td.subj_id,
-       ifnull(cp.name,' ') as cp_name, ifnull(cq.name, ' ') as cq_name
+       ifnull(cp.name,' ') as cp_name, ifnull(cq.name, ' ') as cq_name,
+       concat(td.subj_id, ' ', td.prog_id) as program, p.test_config_json
 from CM_PARALLEL_PROGRAM pp
 join CM_PROGRAM p on p.id = pp.prog_inst_id
 join HA_TEST_DEF td on td.test_def_id = p.test_def_id
