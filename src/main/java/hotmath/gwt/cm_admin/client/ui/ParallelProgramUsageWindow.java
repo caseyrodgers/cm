@@ -18,10 +18,12 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
@@ -32,7 +34,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 /*
  * Displays Student status in selected Parallel Program
@@ -43,9 +48,10 @@ import com.google.gwt.user.client.ui.Label;
 
 public class ParallelProgramUsageWindow extends CmWindow {
 
-    ParallelProgramModel ppModel;
+    private ParallelProgramModel ppModel;
     private Grid<ParallelProgramUsageModel> ppumGrid;
-
+    private HTML html;
+    private XTemplate template;
     
     //  StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
     // showStudentInfo(StudentEventType.DETAILS, sm);
@@ -79,6 +85,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         addStyleName("parallel-program-usage-window-container");
 
         LayoutContainer lc = new LayoutContainer();
+        lc.add(infoPanel());
 
         add(lc, new BorderLayoutData(LayoutRegion.NORTH, 50));
 
@@ -87,10 +94,9 @@ public class ParallelProgramUsageWindow extends CmWindow {
         gridContainer.setStyleName("parallel-program-usage-panel-grid");
         gridContainer.add(ppumGrid);
         gridContainer.setHeight(250);
-        
+
         add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
-        
         addButton(new Button("Details",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -104,6 +110,8 @@ public class ParallelProgramUsageWindow extends CmWindow {
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);
         addButton(btnClose);
+        
+        template.overwrite(html.getElement(), Util.getJsObject(ppModel));
 
         getParallelProgramUsageRPC(store, ppModel);
 
@@ -162,7 +170,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ColumnConfig result = new ColumnConfig();
         result.setId(ParallelProgramUsageModel.RESULT);
         result.setHeader("Result");
-        result.setWidth(225);
+        result.setWidth(220);
         result.setSortable(false);
         result.setMenuDisabled(true);
         configs.add(result);
@@ -170,7 +178,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ColumnConfig date = new ColumnConfig();
         date.setId(ParallelProgramUsageModel.USE_DATE);
         date.setHeader("Date");
-        date.setWidth(75);
+        date.setWidth(77);
         date.setSortable(false);
         date.setMenuDisabled(true);
         configs.add(date);
@@ -188,9 +196,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
                 try {
                     store.removeAll();
                     store.add(list);
-
-                    //_studentCount.setText("count: " + list.size());
-
+                    Window.alert("name: " + list.get(0).getStudentName() + "\nuse-date: " + list.get(0).getUseDate());
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
@@ -205,5 +211,32 @@ public class ParallelProgramUsageWindow extends CmWindow {
                 s.execute(action, this);
             }
         }.register();
+    }
+
+    private Widget infoPanel() {
+        defineInfoTemplate();
+        return html;
+    }
+
+    /**
+     * Define the template for the header (does not add to container)
+     * 
+     * Defines the global 'html' object, filled in via RPC call.
+     * 
+     */
+    private void defineInfoTemplate() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div class='detail-info'>");
+        sb.append("<div class='form left'>");
+        sb.append("  <div class='fld'><label>Program:</label><div>{");
+        sb.append(ParallelProgramModel.PROGRAM_NAME).append("}&nbsp;</div></div>");
+        sb.append("</div>");
+        sb.append("</div>");
+
+        template = XTemplate.create(sb.toString());
+        html = new HTML();
+
+        html.setHeight("35px"); // to eliminate the jump when setting values in
+        // template
     }
 }
