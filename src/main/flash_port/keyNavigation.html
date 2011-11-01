@@ -1,0 +1,267 @@
+<html>
+   <head>
+
+      <style>
+          #frac-input {
+             width: 200px;
+             height: 200px;
+             border: 1px solid red;
+          }
+
+          #frac-input input {
+             width: 100px;
+             color: blue;
+          }
+		  .divider{		 
+			height: 3px;
+			background: black;
+			line-height: 3px;
+			width: 80px;
+		  }
+
+         
+          input {
+              width: 200px;
+              color: blue;
+			  font-size:20px;
+			  text-align:center;
+          }
+      </style>
+
+   </head>
+   <body onload="showNorm()">
+   <div id='display'>	   
+    </div>
+	
+    <script>
+		document.onkeydown=onkeydownHandler;
+		document.onkeyup=onkeyupHandler;
+		var norm_html = "<input name='widget_input_field_1' id='widget_input_field_1' type='text'/>";
+		var frac_html="<div style='height: 75px;'>" +
+            "<div style='float: left;'>" +
+                "<input id='widget_input_field_1' type='text' style='width: 80px;'/>" +        
+                "<div id='widget_divider' class='divider' style='display: block'>&nbsp;</div>" +
+                "<input id='widget_input_field_2' type='text' style='display: block;width: 80px;'/>" +
+            "</div>" +
+        "</div>";
+		var mixd_html="<div style='height: 50px;'>" +
+           "<div style='float: left;margin-top: 8px;margin-right: 5px;'>" +
+           "    <input id='widget_input_field_1' type='text' style='width: 30px'/>" +
+           "</div>" +
+           "<div style='float: left;width: 80px;'>" +
+               "<input id='widget_input_field_2' type='text' style='width: 80px;display: block;'/>" +
+               "<div class='divider'>&nbsp;</div>" +
+               "<input id='widget_input_field_3' type='text' style='width: 80px;display: block;'/>" +
+           "</div>" +
+           "</div>";
+		
+		var norm_val;
+		var num_val;
+		var den_val;
+		var setFocusTo;
+		var re;
+		var isFrac=false;
+		function showNorm(){
+		var disp=document.getElementById('display');
+		disp.innerHTML=norm_html;
+		var field=document.getElementById('widget_input_field_1');
+		console.log("NORM_VAL: "+norm_val);
+		if(norm_val&&norm_val.length){
+		console.log("NORM_VAL2: "+norm_val);
+		setFocusTo=field;
+		field.value=norm_val;
+		console.log("NORM_VAL3: "+field.value);
+		return
+		}
+		field.focus();
+		console.log("NORM_VAL4: "+field.value);
+		}
+         
+
+         function showFrac() {
+            //norm_val=document.getElementById('widget_input_field_1').value
+            var disp=document.getElementById('display');
+		disp.innerHTML=frac_html;
+		var field_n=document.getElementById('widget_input_field_1');
+		var field_d=document.getElementById('widget_input_field_2');
+		//setFocusTo=field_d
+		isFrac=true;
+			if(norm_val&&norm_val.length>0){
+				field_n.value=norm_val
+				setFocusTo=field_d
+			}
+			if(den_val&&den_val.length>0){
+				field_d.value=den_val
+				setFocusTo=field_n
+			}
+         }
+		 function showMixed() {
+            var disp=document.getElementById('display');
+		disp.innerHTML=mixd_html;
+		var field_w=document.getElementById('widget_input_field_1');
+		var field_n=document.getElementById('widget_input_field_2');
+		var field_d=document.getElementById('widget_input_field_3');
+			if(norm_val&&norm_val.length>0){
+				field_n.value=norm_val
+				
+			}
+			if(den_val&&den_val.length>0){
+				field_d.value=den_val
+				
+			}
+			if(whole_val&&whole_val.length>0){
+				field_w.value=whole_val
+				
+			}
+			setFocusTo=field_w
+         }
+         
+		 function removeFrac() {
+            showNorm();
+         }
+		 function onkeyupHandler(){
+			if(setFocusTo){
+				setFocusTo.focus();
+			}
+		 }
+		function onkeydownHandler(_event){
+			var event=_event?_event:window.event;
+			var field_n=document.getElementById('widget_input_field_1')
+			var field_f=document.getElementById('widget_input_field_2')
+				var field_m=document.getElementById('widget_input_field_3')	
+				isFracField=false;
+				isMixField=false;
+				if((field_f)!=null){
+				var num=document.getElementById('widget_input_field_1')
+				var den=document.getElementById('widget_input_field_2')
+				isFracField=true;
+				var bval=den.value;
+				}
+				if((field_m)!=null){
+				var whole=document.getElementById('widget_input_field_1')
+				var num=document.getElementById('widget_input_field_2')
+				var den=document.getElementById('widget_input_field_3')
+				var wval=whole.value;
+				isFracField=false;
+				isMixField=true
+				}
+			/*
+			BACKSPACE=8;
+			LEFT=37;
+			UP=38;
+			RIGHT=39;
+			DOWN=40;
+			SLASH=191,47;
+			m=77;
+			*/
+			console.log(event.keyCode);
+			if(event.keyCode==40){
+				if(isFracField){
+					if(document.activeElement==num){
+						setFocusTo=den
+					}
+				}
+				if(isMixField){
+					if(document.activeElement==num||document.activeElement==whole){
+						setFocusTo=den
+					}
+				}
+			}
+			if(event.keyCode==38){
+				if(isFracField){
+					if(document.activeElement==den){
+						setFocusTo=num
+					}
+				}
+				if(isMixField){
+					if(document.activeElement==whole||document.activeElement==den){
+						setFocusTo=num
+					}
+				}
+			}
+			if(event.keyCode==37){
+			
+				if(isFracField){
+					if(document.activeElement==num||document.activeElement==den){
+					
+						if(document.activeElement.selectionStart==0){
+						whole_val=""
+						norm_val=num.value;
+						den_val=den.value;
+							showMixed()
+						}
+					}
+				}
+				if(isMixField){
+					if(document.activeElement==num||document.activeElement==den){
+					if(document.activeElement.selectionStart==0){
+						setFocusTo=whole
+						}
+					}
+				}
+			}
+			if(event.keyCode==39){
+				
+				if(isMixField){
+					if(document.activeElement==whole){
+					console.log(document.activeElement.selectionStart+":"+whole.value.length);
+					if((document.activeElement.selectionStart==whole.value.length)){
+						setFocusTo=num
+						}
+					}
+				}
+			}
+			if(event.keyCode==77){
+				if(isFracField){
+					
+						whole_val=""
+						norm_val=num.value;
+						den_val=den.value;
+						showMixed()
+						
+					
+				}else if(!isMixField){
+				whole_val=field_n.value;
+						norm_val="";
+						den_val="";
+						showMixed();
+				}
+				
+			}
+			if(event.keyCode==47||event.keyCode==191){
+				var isNormalField=!document.getElementById('widget_input_field_2')
+				if(isNormalField){
+					norm_val=document.getElementById('widget_input_field_1').value;
+					showFrac();
+				}else{
+				event.preventDefault();
+				if(document.activeElement==num){
+				setFocusTo=den
+				}
+				}
+			}
+			if(event.keyCode==8){			
+				bval=den?den.value:null;
+				wval=whole?whole.value:null;
+				if(isFracField){
+					if(document.activeElement==den&&bval==""){
+						norm_val=document.getElementById('widget_input_field_1').value;						
+						removeFrac();
+					}
+				}else if(isMixField){
+				console.log(bval+":"+wval);
+					if((document.activeElement==den)&&(bval=="")&&(wval=="")){
+						norm_val=document.getElementById('widget_input_field_2').value;
+						removeFrac();
+					}else if((document.activeElement==whole)&&(wval=="")){
+						norm_val=num.value;
+						den_val=den.value;
+						showFrac();
+					}
+				}
+			}
+		}
+		
+    </script>
+   </body>
+</html>
