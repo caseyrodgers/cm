@@ -1,12 +1,14 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.JsonUtil;
 import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgram;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -332,9 +334,22 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         	parallelProg.setName(rs.getString("name"));
                         	parallelProg.setPassword(rs.getString("password"));
                         	parallelProg.setStudentCount(rs.getInt("student_count"));
-                        	String progName = getStdProgName(rs.getString("prog_id"), rs.getString("subj_id"),
-                        			rs.getString("cp_name"), rs.getString("cq_name"));
-                        	parallelProg.setCmProgName(progName);
+                        	
+                        	parallelProg.setCmProgName(rs.getString("program"));
+                        	
+                        	String progId = rs.getString("prog_id");
+                			if (progId.equalsIgnoreCase("chap")) {
+                				String subjId = rs.getString("subj_id");
+                				String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
+                				CmAdminDao cmaDao = CmAdminDao.getInstance();
+                				List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
+                				for (ChapterModel cm : cmList) {
+                					if (cm.getTitle().equals(chapter)) {
+                						parallelProg.setCmProgName(new StringBuilder(parallelProg.getCmProgName()).append(" ").append(cm.getNumber()).toString());
+                						break;
+                					}
+                				}
+                			}
                             return parallelProg;
                         }
                         catch(Exception e) {
