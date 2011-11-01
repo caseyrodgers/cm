@@ -196,7 +196,6 @@ public class ParallelProgramUsageWindow extends CmWindow {
                 try {
                     store.removeAll();
                     store.add(list);
-                    Window.alert("name: " + list.get(0).getStudentName() + "\nuse-date: " + list.get(0).getUseDate());
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
