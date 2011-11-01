@@ -61,23 +61,30 @@
 		var setFocusTo;
 		var re;
 		var isFrac=false;
+		/**
+		Method to show a normal field
+		this method will be called when user deletes the denominator of fraction field or mixed number field
+		*/
 		function showNorm(){
 		var disp=document.getElementById('display');
 		disp.innerHTML=norm_html;
 		var field=document.getElementById('widget_input_field_1');
-		console.log("NORM_VAL: "+norm_val);
+		//console.log("NORM_VAL: "+norm_val);
 		if(norm_val&&norm_val.length){
-		console.log("NORM_VAL2: "+norm_val);
+		//console.log("NORM_VAL2: "+norm_val);
 		setFocusTo=field;
 		field.value=norm_val;
-		console.log("NORM_VAL3: "+field.value);
+		//console.log("NORM_VAL3: "+field.value);
 		return
 		}
 		field.focus();
-		console.log("NORM_VAL4: "+field.value);
+		//console.log("NORM_VAL4: "+field.value);
 		}
-         
-
+		
+		/**
+		Method to show a fraction field
+		this method will be called when user press 'forward slash' from normal field and removes the whole number field in mixed number format
+		*/
          function showFrac() {
             //norm_val=document.getElementById('widget_input_field_1').value
             var disp=document.getElementById('display');
@@ -95,6 +102,11 @@
 				setFocusTo=field_n
 			}
          }
+		 /**
+		Method to show a  mixed number field
+		this method will be called when user press 'm'  key or 'SPACE BAR' from normal or fraction field
+		this method will also be called whe user presses left key when the cursor is that begining of numerator or denominator of fraction field
+		*/
 		 function showMixed() {
             var disp=document.getElementById('display');
 		disp.innerHTML=mixd_html;
@@ -115,10 +127,13 @@
 			}
 			setFocusTo=field_w
          }
-         
+         /**
+		Method to removes a fraction field and shows normal field
+		*/
 		 function removeFrac() {
             showNorm();
          }
+		 //
 		 function onkeyupHandler(){
 			if(setFocusTo){
 				setFocusTo.focus();
@@ -153,8 +168,10 @@
 			DOWN=40;
 			SLASH=191,47;
 			m=77;
+			SPACE BAR=32;
 			*/
 			console.log(event.keyCode);
+			//Navigation when DOWN Key pressed
 			if(event.keyCode==40){
 				if(isFracField){
 					if(document.activeElement==num){
@@ -167,6 +184,7 @@
 					}
 				}
 			}
+			//Navigation when UP Key pressed
 			if(event.keyCode==38){
 				if(isFracField){
 					if(document.activeElement==den){
@@ -179,6 +197,7 @@
 					}
 				}
 			}
+			//Navigation/Actions when LEFT Key pressed
 			if(event.keyCode==37){
 			
 				if(isFracField){
@@ -200,6 +219,7 @@
 					}
 				}
 			}
+			//Navigation when RIGHT Key pressed
 			if(event.keyCode==39){
 				
 				if(isMixField){
@@ -211,7 +231,8 @@
 					}
 				}
 			}
-			if(event.keyCode==77){
+			//Actions when 'm' key/SPACE BAR Key pressed
+			if(event.keyCode==77||event.keyCode==32){
 				if(isFracField){
 					
 						whole_val=""
@@ -228,6 +249,7 @@
 				}
 				
 			}
+			//Navigation/ACTION when Slash Key pressed
 			if(event.keyCode==47||event.keyCode==191){
 				var isNormalField=!document.getElementById('widget_input_field_2')
 				if(isNormalField){
@@ -240,6 +262,7 @@
 				}
 				}
 			}
+			//Action when BACKSPACE Key pressed
 			if(event.keyCode==8){			
 				bval=den?den.value:null;
 				wval=whole?whole.value:null;
