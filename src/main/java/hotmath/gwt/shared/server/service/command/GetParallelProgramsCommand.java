@@ -29,16 +29,9 @@ public class GetParallelProgramsCommand implements ActionHandler<GetParallelProg
         CmList<ParallelProgramModel> modelList = new CmArrayList<ParallelProgramModel>();
 
         for (CmParallelProgram pp : list) {
-        	ParallelProgramModel model = new ParallelProgramModel();
+        	ParallelProgramModel model = new ParallelProgramModel(pp.getName(), pp.getId(), pp.getAdminId(), pp.getPassword(), pp.getCmProgId(),
+        			pp.getStudentCount(), pp.isActive(), pp.getCmProgName());
         	
-        	model.setAdminId(pp.getAdminId());
-        	model.setCmProgId(pp.getCmProgId());
-        	model.setId(pp.getId());
-        	model.setName(pp.getName());
-        	model.setPassword(pp.getPassword());
-        	model.setStudentCount(pp.getStudentCount());
-        	model.setIsActive(pp.isActive());
-
         	modelList.add(model);
         }
         return modelList;
