@@ -64,8 +64,8 @@ public class ParallelProgramUsageModel extends BaseModel implements Response {
         return get(RESULT);
     }
 
-    public void setUseDate(String result) {
-        set(USE_DATE, result);
+    public void setUseDate(String useDate) {
+        set(USE_DATE, useDate);
     }
 
     public String getUseDate() {
