@@ -7,6 +7,7 @@ public class ParallelProgramModel extends BaseModel implements Response {
 	public static final String IS_ACTIVE     = "isActive";
 	public static final String NAME          = "name";
 	public static final String STUDENT_COUNT = "studentCount";
+	public static final String PROGRAM_NAME  = "programName";
 
 	public ParallelProgramModel(){
         /** empty */
@@ -23,7 +24,7 @@ public class ParallelProgramModel extends BaseModel implements Response {
 	 */
 
     public ParallelProgramModel(String name, Integer id, Integer adminId, String password, Integer cmProgId,
-    		Integer studentCount, Boolean isActive) {
+    		Integer studentCount, Boolean isActive, String programName) {
         setName(name);
         setId(id);
         setAdminId(adminId);
@@ -31,6 +32,7 @@ public class ParallelProgramModel extends BaseModel implements Response {
         setCmProgId(cmProgId);
         setStudentCount(studentCount);
         setIsActive(isActive);
+        setProgramName(programName);
     }
 
     public void setName(String name) {
@@ -39,6 +41,14 @@ public class ParallelProgramModel extends BaseModel implements Response {
 
     public String getName() {
         return get(NAME);
+    }
+
+    public void setProgramName(String name) {
+        set(PROGRAM_NAME, name);
+    }
+
+    public String getProgramName() {
+        return get(PROGRAM_NAME);
     }
 
     public void setId(Integer id) {
