@@ -50,7 +50,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
     ListStore<ParallelProgramModel> store = new ListStore<ParallelProgramModel>();
     CmAdminModel adminModel;
     StudentModelI stuMdl;
-    int width = 400;
+    int width = 535;
     
     public ManageParallelProgramsWindow(CmAdminModel adminModel) {
         this.adminModel = adminModel;
@@ -85,7 +85,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
         setLayout(new BorderLayout());
 
         grid = defineGrid(store, defineColumns());
-        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST,190);
+        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST,325);
         add(grid, bld);
 
         LayoutContainer lc = new LayoutContainer();
@@ -102,7 +102,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
         }));
 
-        lc.add(new StdButton("Modify", "Modify selected Parallel Program.",new SelectionListener<ButtonEvent>() {
+        StdButton modifyBtn = new StdButton("Modify", "Modify selected Parallel Program.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 
                 final ParallelProgramModel mdl = getGridItem();
@@ -113,7 +113,9 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 
             }
 
-        }));
+        });
+        //modifyBtn.disable();
+        lc.add(modifyBtn);
 
         lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
@@ -211,7 +213,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
         });
 
-        grid.setWidth("200px");
+        grid.setWidth("335px");
         grid.setHeight("250px");
         return grid;
     }
@@ -241,6 +243,13 @@ public class ManageParallelProgramsWindow extends CmWindow {
 			}
         });
         configs.add(name);
+
+        ColumnConfig program = new ColumnConfig();
+        program.setId(ParallelProgramModel.PROGRAM_NAME);
+        program.setHeader("Program");
+        program.setWidth(135);
+        program.setSortable(true);
+        configs.add(program);
 
         ColumnConfig count = new ColumnConfig();
         count.setId(ParallelProgramModel.STUDENT_COUNT);
