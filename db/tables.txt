@@ -4,7 +4,10 @@ BOOK_TOC
 BULK_ID_SETUP                       
 CATEGORIES                          
 CATEGORY_CONTENT                    
-CM_GROUP                            
+CM_GROUP         
+CM_PARALLEL_PROGRAM
+CM_PROGRAM
+CM_PROGRAM_ASSIGN                   
 CM_STUDENT_QUIZ_TOTALS              
 CM_STUDENT_STATS                    
 CM_USER_PROGRAM                     
@@ -14,7 +17,8 @@ EMAIL_TEMPLATES
 FB_USERS                            
 GT_CONFIG                           
 HA_ACTION_FAIL_LOG                  
-HA_ACTION_LOG                       
+HA_ACTION_LOG
+HA_ACTIVITY_TIME                       
 HA_ADMIN                            
 HA_ADMIN_PILOT_REQUEST              
 HA_CUSTOM_PROGRAM                   
