@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ParallelProgramModel extends BaseModel implements Response {
 	
+	public static final String ADMIN_ID      = "adminId";
 	public static final String IS_ACTIVE     = "isActive";
 	public static final String NAME          = "name";
 	public static final String STUDENT_COUNT = "studentCount";
@@ -60,11 +61,11 @@ public class ParallelProgramModel extends BaseModel implements Response {
     }
 
     public void setAdminId(int adminId) {
-        set("adminId", adminId);
+        set(ADMIN_ID, adminId);
     }
 
     public Integer getAdminId() {
-        return get("adminid");
+        return get(ADMIN_ID);
     }
 
     public void setCmProgId(Integer id) {
