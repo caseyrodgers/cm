@@ -146,7 +146,6 @@ public class ManageParallelProgramsWindow extends CmWindow {
                         CatchupMathTools.showAlert("Selection has no usage, nothing to display.");
                         return;
                     }
-                    ppm.setAdminId(adminModel.getId());
 
                 	new ParallelProgramUsageWindow(ppm);
                 }
