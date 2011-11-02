@@ -8,7 +8,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import java.util.List;
 
@@ -77,6 +76,19 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
         presenter.setupView(this);
     }
 
+    @Override
+    public void showNextQuizButton(boolean trueFalse) {
+        if(!trueFalse) {
+            segmentCompleteTop.getElement().setAttribute("style","display:none");
+            segmentCompleteBottom.getElement().setAttribute("style","display:none");
+        }
+        else {
+            segmentCompleteTop.getElement().setAttribute("style","display:block");
+            segmentCompleteBottom.getElement().setAttribute("style","display:block");
+            
+        }
+    }
+    
     @Override
     public void setLessonListing(List<SessionTopic> lessons) {
         

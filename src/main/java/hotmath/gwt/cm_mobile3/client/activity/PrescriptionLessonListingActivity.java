@@ -5,7 +5,6 @@ import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -26,12 +25,14 @@ public class PrescriptionLessonListingActivity implements PrescriptionLessonList
 
     public PrescriptionLessonListingActivity(com.google.gwt.event.shared.EventBus eventBus) {
         this.eventBus = eventBus;
-        this.userInfo = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
+        this.userInfo = SharedData.getUserInfo();
         prescriptionData = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData();
     }
 
     @Override
     public void setupView(PrescriptionLessonListingView view) {
+        /** if custom problem (no quiz) disable next quiz button */
+        view.showNextQuizButton(!userInfo.isCustomProgram());
         view.setLessonListing(prescriptionData.getSessionTopics());
     }
     
