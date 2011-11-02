@@ -6,10 +6,12 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
+import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.GeneratePdfParallelProgramUsageReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetParallelProgramUsageAction;
 
 import java.util.ArrayList;
@@ -34,9 +36,10 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /*
@@ -52,10 +55,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
     private Grid<ParallelProgramUsageModel> ppumGrid;
     private HTML html;
     private XTemplate template;
-    
-    //  StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
-    // showStudentInfo(StudentEventType.DETAILS, sm);
-    
+   
     /**
      * Create Usage Window for Parallel Programs.
      * Displays student name, current Activity and most recent Result
@@ -66,7 +66,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
     public ParallelProgramUsageWindow(final ParallelProgramModel ppModel) {
         addStyleName("parallel-program-usage-window");
         this.ppModel = ppModel;
-        setSize(540, 315);
+        setSize(540, 330);
         setModal(true);
         setResizable(false);
         setHeading("Usage for: " + ppModel.getName());
@@ -86,8 +86,9 @@ public class ParallelProgramUsageWindow extends CmWindow {
 
         LayoutContainer lc = new LayoutContainer();
         lc.add(infoPanel());
+        lc.add(toolbar());
 
-        add(lc, new BorderLayoutData(LayoutRegion.NORTH, 50));
+        add(lc, new BorderLayoutData(LayoutRegion.NORTH, 65));
 
         LayoutContainer gridContainer = new LayoutContainer();
         gridContainer.setLayout(new FitLayout());
@@ -96,16 +97,6 @@ public class ParallelProgramUsageWindow extends CmWindow {
         gridContainer.setHeight(250);
 
         add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
-
-        addButton(new Button("Details",new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                ParallelProgramUsageModel pp = ppumGrid.getSelectionModel().getSelectedItem();
-                if(pp != null) {
-                    StudentDetailsWindow.showStudentDetails(pp.getUserId());
-                }
-            }}));
-        
 
         Button btnClose = closeButton();
         setButtonAlign(HorizontalAlignment.RIGHT);
@@ -135,6 +126,46 @@ public class ParallelProgramUsageWindow extends CmWindow {
 		menu.add(detailDebug);
 
 		return menu;
+	}
+
+	private ToolBar toolbar() {
+        ToolBar toolBar = new ToolBar();
+        toolBar.add(detailsButton());
+        toolBar.add(new FillToolItem());
+        if (CmShared.getQueryParameter("debug") != null)
+            toolBar.add(displayPrintableReportButton(ppModel));
+        return toolBar;
+    }
+
+    private Button displayPrintableReportButton(final ParallelProgramModel pp) {
+        Button ti = new Button();
+        ti.setIconStyle("printer-icon");
+        ti.setToolTip("Display a printable usage report");
+        ti.addStyleName("student-details-panel-pr-btn");
+        
+        Window.alert("adminID: " + pp.getAdminId());
+
+        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+
+                new PdfWindow(pp.getAdminId(), "Catchup Math Usage Report for: " + pp.getName(),
+                        new GeneratePdfParallelProgramUsageReportAction(pp.getAdminId(), pp.getId()));
+            }
+        });
+        //ti.disable();
+        return ti;
+    }
+
+	private Button detailsButton() {
+		return new Button("Details", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                ParallelProgramUsageModel mdl = getGridItem();
+                if (mdl != null) {
+                    StudentDetailsWindow.showStudentDetails(mdl.getUserId());
+                }
+            }});
 	}
 
     private Button closeButton() {
@@ -237,5 +268,13 @@ public class ParallelProgramUsageWindow extends CmWindow {
 
         html.setHeight("35px"); // to eliminate the jump when setting values in
         // template
+    }
+    
+    private ParallelProgramUsageModel getGridItem() {
+        ParallelProgramUsageModel mdl = ppumGrid.getSelectionModel().getSelectedItem();
+        if (mdl == null) {
+            CatchupMathTools.showAlert("Please make a selection first");
+        }
+        return mdl;
     }
 }
