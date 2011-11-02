@@ -114,7 +114,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
 
         });
-        //modifyBtn.disable();
+        if (CmShared.getQueryParameter("debug") == null) modifyBtn.disable();
         lc.add(modifyBtn);
 
         lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
@@ -146,10 +146,11 @@ public class ManageParallelProgramsWindow extends CmWindow {
                         CatchupMathTools.showAlert("Selection has no usage, nothing to display.");
                         return;
                     }
+                    ppm.setAdminId(adminModel.getId());
 
                 	new ParallelProgramUsageWindow(ppm);
                 }
-                
+
             }
         }));
 
