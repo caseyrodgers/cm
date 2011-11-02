@@ -646,3 +646,9 @@ function SolutionMessageLocation(type, str1, int1) {
 function gotoGUID(messageContext, callAfter) {
 	TutorManager.resetTutor();
 }
+
+
+
+function resetTutor() {
+	TutorManager.resetTutor();
+}

@@ -103,7 +103,11 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     itemData = SharedData.findInmhDataInPrescriptionByOrdinal(resourceType, ordinal);
                 }
                 else {
-                    itemData = new InmhItemData(resourceType, file,"");
+                    itemData = SharedData.findInmhDataInPrescriptionByFile(resourceType, file);
+                    if(itemData == null) {
+                        // not currently loaded
+                        itemData = new InmhItemData(resourceType, file,"");
+                    }
                 }
                 
                  

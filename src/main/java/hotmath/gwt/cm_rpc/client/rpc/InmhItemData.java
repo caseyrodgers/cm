@@ -50,6 +50,7 @@ public class InmhItemData implements IsSerializable{
 		return title;
 	}
 	public void setTitle(String title) {
+	    System.out.println("Creating InmhItemData: " + title);
 		this.title = title;
 	}
 	public String getFile() {

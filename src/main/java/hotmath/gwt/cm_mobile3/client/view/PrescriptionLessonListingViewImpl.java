@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -7,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionData;
 
 import java.util.List;
 
@@ -128,6 +130,19 @@ class MyGenericTextTag2 extends GenericTextTag<String> {
         addStyleName("group");
         addHandler(touchHandler);
         
+
+        String topicLabel = topic.getTopicStatus();
+        
+        
+        /** if current topic, then check current counts
+         *  since they might have changed since last DB
+         *  read.
+         *  
+         */
+        if(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getTopic().equals(topic.getTopic())) {
+            topicLabel = SharedData.calculateCurrentLessonStatus(topic.getTopic());
+        }
+        
         String text=null;
         if(topic.isComplete()) {
             text = "<img src='/gwt-resources/images/check_correct.png'/> " + topic.getTopic();
@@ -136,7 +151,7 @@ class MyGenericTextTag2 extends GenericTextTag<String> {
             text = topic.getTopic();
         }
         
-        text += " (" + topic.getTopicStatus() + ")";
+        text += " (" + topicLabel + ")";
         
         getElement().setInnerHTML("<span>" + text + "</span>");
     }

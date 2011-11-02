@@ -58,6 +58,47 @@ public class SharedData {
         throw new Exception("No " + type + " resource at ordinal position '" + ordinal + "'");
     }
     
+    
+    public static String calculateCurrentLessonStatus(String topic) {
+        for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
+            if("practice".equals(dr.getType())) {
+                int viewed=0;
+                int total=0;
+                for(int i=0,t=dr.getItems().size();i<t;i++) {
+                    InmhItemData item = dr.getItems().get(i);
+                    if(item.isViewed()) {
+                        viewed++;
+                    }
+                    total++;
+                }
+                
+                return viewed + " of " + total;
+            }
+        }
+        return "unknown status '" + topic + "'";
+    }
+    
+    
+    /** Return the InmhItemData for the named resource file or null
+     * 
+     * @param type
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    public static InmhItemData findInmhDataInPrescriptionByFile(String type, String file) throws Exception {
+        for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
+            if(type.equals(dr.getType())) {
+                for(int i=0,t=dr.getItems().size();i<t;i++) {
+                    if(dr.getItems().get(i).getFile().equals(file)) {
+                        return dr.getItems().get(i);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
     public static int findOrdinalPositionOfResource(InmhItemData itemIn) {
         String type = itemIn.getType();
         for(PrescriptionSessionDataResource dr: flowAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().getInmhResources()) {
