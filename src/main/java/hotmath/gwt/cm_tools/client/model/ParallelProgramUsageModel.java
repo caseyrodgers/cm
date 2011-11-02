@@ -4,12 +4,12 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ParallelProgramUsageModel extends BaseModel implements Response {
 	
-	public static final String STUDENT_NAME  = "studentName";
-	public static final String ACTIVITY      = "activity";
-	public static final String RESULT        = "result";
-	public static final String USER_ID       = "userId";
-	public static final String USE_DATE      = "useDate";
-	public static final String IS_QUIZ       = "isQuiz";
+	public static final String ACTIVITY     = "activity";
+	public static final String IS_QUIZ      = "isQuiz";
+	public static final String RESULT       = "result";
+	public static final String STUDENT_NAME = "studentName";
+	public static final String USER_ID      = "userId";
+	public static final String USE_DATE     = "useDate";
 
 	public ParallelProgramUsageModel(){
         /** empty */

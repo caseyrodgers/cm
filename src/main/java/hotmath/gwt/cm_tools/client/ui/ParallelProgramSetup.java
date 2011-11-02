@@ -58,8 +58,8 @@ public class ParallelProgramSetup extends RegisterStudent {
 		requestCallback = callback;
 		
 	    _window.setHeading("Parallel Program Setup");
+	    
 	    _fsProfile.removeAll();
-	    _fsProfile.setHeading("");
 
 	    _window.setHeight(350);
         
@@ -69,14 +69,14 @@ public class ParallelProgramSetup extends RegisterStudent {
         nameFld.setId("nameTag");
         nameFld.setEmptyText("-- Enter Parallel Program name --");
 
-        if (parallelProg != null)
+        if (parallelProg != null) {
             nameFld.setValue((String)parallelProg.getName());
+        }
 
+	    _fsProfile.setHeading("");
         _fsProfile.add(nameFld);
-        
         _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this name as a password.</p>"));
 
-        
         _fsProgram.setHeading("Assign Program");
 	    _formPanel.layout();
 
