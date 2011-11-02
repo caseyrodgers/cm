@@ -43,9 +43,6 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     public PrescriptionLessonListingViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         addStyleName("prescriptionLessonListingViewImpl");
-        
-        segmentCompleteTop.setVisible(false);
-        segmentCompleteBottom.setVisible(false);
     }
 
 
@@ -86,7 +83,7 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
         listItems.clear();
         listItems.addStyleName("touch");
         for(int i=0,t=lessons.size();i<t;i++) {
-            MyGenericTextTag2 tt = new MyGenericTextTag2(lessons.get(i),i,touchHandler);
+            MyGenericTextTag2 tt = new MyGenericTextTag2(lessons.get(i),presenter.getStatusForLesson(lessons.get(0).getTopic()),i,touchHandler);
             listItems.add(tt);
             
             if(!lessons.get(i).isComplete()) {
@@ -97,12 +94,12 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
         
         
         if(isSegmentComplete) {
-            segmentCompleteTop.setVisible(true);
-            segmentCompleteBottom.setVisible(true);
+            segmentCompleteTop.getElement().removeClassName("disabled");
+            segmentCompleteBottom.getElement().removeClassName("disabled");
         }
         else {
-            segmentCompleteTop.setVisible(false);
-            segmentCompleteBottom.setVisible(false);
+            segmentCompleteTop.getElement().addClassName("disabled");
+            segmentCompleteBottom.getElement().addClassName("disabled");
         }
     }
     
@@ -125,7 +122,7 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
 
 class MyGenericTextTag2 extends GenericTextTag<String> {
     int sessionNum;
-    public MyGenericTextTag2(SessionTopic topic, int sessionNum,TouchClickHandler<String> touchHandler) {
+    public MyGenericTextTag2(SessionTopic topic, String status, int sessionNum,TouchClickHandler<String> touchHandler) {
         super("li");
         this.sessionNum = sessionNum;
         addStyleName("group");
@@ -138,6 +135,8 @@ class MyGenericTextTag2 extends GenericTextTag<String> {
         else {
             text = topic.getTopic();
         }
+        
+        text += " (" + topic.getTopicStatus() + ")";
         
         getElement().setInnerHTML("<span>" + text + "</span>");
     }

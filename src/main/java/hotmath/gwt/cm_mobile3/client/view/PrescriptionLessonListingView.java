@@ -14,5 +14,6 @@ public interface PrescriptionLessonListingView extends IPage {
         void setupView(PrescriptionLessonListingView view);
         void loadLesson(int sessionNum);
         void moveToNextSegment();
+        String getStatusForLesson(String lesson);
     }
 }

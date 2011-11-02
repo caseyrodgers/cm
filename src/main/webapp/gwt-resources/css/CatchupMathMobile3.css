@@ -636,11 +636,6 @@ table {
 }
 
 
-.prescriptionLessonListingViewImpl button {
-	margin-top: 20px;
-	margin-bottom: 20px;
-}
-
 
 .prescriptionLessonResourceVideoImpl div {
 	text-align: center;
@@ -861,3 +856,17 @@ table {
 button.quiz_whiteboard_button {
 	display: block !important;
 }
+
+
+
+/** Question Input boxes should stand out in mobile 
+*/
+.question_responses input {
+	margin: 15px 3px 20px 5px;
+}
+
+.question_responses {
+	font-size: 2em;
+}
+
+

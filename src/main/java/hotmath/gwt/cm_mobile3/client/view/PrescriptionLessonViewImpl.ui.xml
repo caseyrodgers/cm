@@ -5,9 +5,11 @@
 	   <div class="correct_image" ui:field="correctImage"></div>
 	   <h1 ui:field="lessonTitle">The Lesson Title</h1>
 	   <div class='buttonBar'>
+	       <!-- 
 	       <g:Button ui:field="movePrev" styleName='sexybutton'><span><span>Previous</span></span></g:Button>
 	       <g:Button ui:field="moveNext" styleName='sexybutton'><span><span>Next</span></span></g:Button>
-           <g:Button ui:field="choose" styleName='sexybutton'><span><span>Choose</span></span></g:Button>
+	        -->
+           <g:Button ui:field="choose" styleName='sexybutton'><span><span>Next Lesson/Quiz</span></span></g:Button>
 	   </div>
 	   <p>Choose a resource to help you better understand your lesson.</p>
 	   <g:HTMLPanel ui:field='resourceList' styleName='resourceList'></g:HTMLPanel>

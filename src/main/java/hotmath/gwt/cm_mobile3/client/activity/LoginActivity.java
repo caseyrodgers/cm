@@ -13,6 +13,7 @@ import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LoginActivity implements LoginView.Presenter {
@@ -31,7 +32,7 @@ public class LoginActivity implements LoginView.Presenter {
 
     
     @Override
-    public void doLogin(String userName, String passWord) {
+    public void doLogin(final String userName, final String passWord) {
         if(userName == null || userName.length() == 0 || passWord == null) {
             MessageBox.showError("Enter username and password");
             return;
@@ -63,8 +64,15 @@ public class LoginActivity implements LoginView.Presenter {
 
             @Override
             public void onFailure(Throwable caught) {
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
-                MessageBox.showMessage("Could not log you in: " + caught.getMessage());
+                
+                /** Look for special cases and provide helper functionality */
+                if(caught.getMessage().indexOf("Invalid user type: ADMIN") > -1) {
+                    Window.Location.assign("/loginService?user=" + userName + "&pwd=" + passWord);
+                }
+                else {
+                    eventBus.fireEvent(new SystemIsBusyEvent(false));
+                    MessageBox.showMessage("Could not log you in: " + caught.getMessage());
+                }
             }
         });
     }

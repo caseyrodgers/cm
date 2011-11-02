@@ -8,7 +8,9 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
 import java.util.List;
 
@@ -43,5 +45,27 @@ public class PrescriptionLessonListingActivity implements PrescriptionLessonList
     @Override
     public void moveToNextSegment() {
         eventBus.fireEvent(new MoveToNextSegmentEvent());
+    }
+
+    
+    /** return a status string used to label this lesson status */
+    @Override
+    public String getStatusForLesson(String lesson) {
+        
+        for(PrescriptionSessionDataResource pr: prescriptionData.getCurrSession().getInmhResources()) {
+            if(pr.getType().equals("practice")) {
+                int totalRp=0;
+                int completeRp=0;
+                for(InmhItemData item: pr.getItems()) {
+                    totalRp++;
+                    if(item.isViewed()) {
+                        completeRp++;
+                    }
+                }
+                
+                return completeRp + " of " + totalRp;
+            }
+        }
+        return "";
     }
 }

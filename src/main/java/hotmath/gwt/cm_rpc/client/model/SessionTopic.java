@@ -14,6 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class SessionTopic implements Response {
     String topic;
     boolean complete;
+    String topicStatus;
     
     public SessionTopic() {
         
@@ -37,5 +38,11 @@ public class SessionTopic implements Response {
     @Override
     public String toString() {
         return topic;
+    }
+    public String getTopicStatus() {
+        return topicStatus;
+    }
+    public void setTopicStatus(String topicStatus) {
+        this.topicStatus = topicStatus;
     }
 }

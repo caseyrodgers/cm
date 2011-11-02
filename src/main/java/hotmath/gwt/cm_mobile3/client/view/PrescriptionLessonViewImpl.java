@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
-import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
@@ -41,8 +40,6 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     @UiField
     DivElement correctImage;
     
-    @UiField
-    Button movePrev, moveNext;
     
     @UiField
     Button choose;
@@ -211,16 +208,6 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             }
         }
         indicateIfAllRppsViewed();
-    }
-    
-    @UiHandler("moveNext")
-    protected void handleMoveNext(ClickEvent ce) {
-        presenter.moveToNextLesson(this);
-    }
-    
-    @UiHandler("movePrev")
-    protected void handleMovePrev(ClickEvent ce) {
-        presenter.moveToPreviousLesson(this);
     }
     
     @UiHandler("choose")
