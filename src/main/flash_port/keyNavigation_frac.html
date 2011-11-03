@@ -1,0 +1,182 @@
+<html>
+   <head>
+
+      <style>
+		  .divider{		 
+			height: 3px;
+			background: black;
+			line-height: 3px;
+			width: 80px;
+		  }        
+          .input {
+              width: 80px;
+              color: blue;
+			  font-size:20px;
+			  text-align:center;
+          }
+      </style>
+
+   </head>
+   <body>
+   <div id='display'>	
+<form>
+<input type='text' class='input' id='widget_input_field_1'/>
+<div class='divider'>&nbsp;</div>
+<input type='text' class='input' id='widget_input_field_2'/>
+</form>   
+    </div>
+	
+    <script>
+		document.onkeydown=onkeydownHandler;
+		document.onkeyup=onkeyupHandler;
+		var setFocusTo=null;		
+		 //
+		 function onkeyupHandler(){
+			if(setFocusTo){
+				setFocusTo.focus();
+			}
+		 }
+		function onkeydownHandler(_event){
+			var event=_event?_event:window.event;
+			var field_n=document.getElementById('widget_input_field_1')
+			var field_d=document.getElementById('widget_input_field_2')
+			var field_m=document.getElementById('widget_input_field_3')	
+			var isFracField=false;
+			var	isMixField=false;
+			if((field_d)!=null){
+				var num=document.getElementById('widget_input_field_1')
+				var den=document.getElementById('widget_input_field_2')
+				isFracField=true;
+			}
+			if((field_m)!=null){
+				var whole=document.getElementById('widget_input_field_1')
+				var num=document.getElementById('widget_input_field_2')
+				var den=document.getElementById('widget_input_field_3')
+				isFracField=false;
+				isMixField=true
+			}
+			/*
+			BACKSPACE=8;
+			LEFT=37;
+			UP=38;
+			RIGHT=39;
+			DOWN=40;
+			SLASH=191,47;
+			m=77;
+			SPACE BAR=32;
+			*/
+			//Navigation when DOWN Key pressed
+			if(event.keyCode==40){
+				if(isFracField){
+					if(document.activeElement==num){
+						setFocusTo=den
+					}
+				}
+				if(isMixField){
+					if(document.activeElement==num||document.activeElement==whole){
+						setFocusTo=den
+					}
+				}
+			}
+			//Navigation when UP Key pressed
+			if(event.keyCode==38){
+				if(isFracField){
+					if(document.activeElement==den){
+					event.preventDefault();
+						setFocusTo=num
+					}
+				}
+				if(isMixField){
+					if(document.activeElement==whole||document.activeElement==den){
+					event.preventDefault();
+						setFocusTo=num
+					}
+				}
+			}
+			//Navigation/Actions when LEFT Key pressed
+			if(event.keyCode==37){			
+				if(isFracField){
+					if(document.activeElement==num||document.activeElement==den){					
+						if(document.activeElement.selectionStart==0){
+							/**
+							Need to show mixed Number field if number type allows mixed number field
+							*/
+						}
+					}
+				}
+				if(isMixField){
+					if(document.activeElement==num||document.activeElement==den){
+					if(document.activeElement.selectionStart==0){
+					event.preventDefault();
+						setFocusTo=whole
+						}
+					}
+				}
+			}
+			//Navigation when RIGHT Key pressed
+			if(event.keyCode==39){				
+				if(isMixField){
+					if(document.activeElement==whole){
+						if((document.activeElement.selectionStart==whole.value.length)){
+						event.preventDefault();
+							setFocusTo=num
+						}
+					}
+				}
+			}
+			//Actions when 'm' key/SPACE BAR Key pressed
+			if(event.keyCode==77||event.keyCode==32){
+				if(isFracField||!isMixField){					
+						/**
+							Need to show mixed Number field if number type allows mixed number field
+						*/					
+				}				
+			}
+			//Navigation/ACTION when Slash Key pressed
+			if(event.keyCode==47||event.keyCode==191){
+				var isNormalField=!document.getElementById('widget_input_field_2')
+				if(isNormalField){
+					/**
+					Show fraction field
+					THis is already implemented
+					*/
+				}else{
+					event.preventDefault();
+				/**
+				If its already a fraction field and focus is on numerator
+				pressing slash key should move focus to denominator
+				*/
+					if(document.activeElement==num){
+						setFocusTo=den
+					}
+				}
+			}
+			//Action when BACKSPACE Key pressed
+			if(event.keyCode==8){			
+				bval=den?den.value:null;
+				wval=whole?whole.value:null;
+				if(isFracField){
+					if(document.activeElement==den&&bval==""){
+						/**
+						Remove fraction field
+						THis is already implemented
+						*/
+					}
+				}else if(isMixField){				
+					if((document.activeElement==den)&&(bval=="")&&(wval=="")){
+						/**
+						Remove mixed number field
+						and show the normal field
+						*/
+					}else if((document.activeElement==whole)&&(wval=="")){
+						/**
+						Remove mixed number field
+						and show the fraction field
+						*/
+					}
+				}
+			}
+		}		
+    </script>
+   </body>
+</html>
