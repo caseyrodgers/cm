@@ -103,7 +103,7 @@ public class ParallelProgramUsageReport {
         int rowNum = 1;
         
         for (ParallelProgramUsageModel mdl : list) {
-        	addRow(mdl, tbl, rowNum);
+        	addRow(mdl, tbl, rowNum++);
             document.add(Chunk.NEWLINE);
         }
 

@@ -38,7 +38,6 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -132,8 +131,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ToolBar toolBar = new ToolBar();
         toolBar.add(detailsButton());
         toolBar.add(new FillToolItem());
-        if (CmShared.getQueryParameter("debug") != null)
-            toolBar.add(displayPrintableReportButton(ppModel));
+        toolBar.add(displayPrintableReportButton(ppModel));
         return toolBar;
     }
 
