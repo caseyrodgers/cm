@@ -304,6 +304,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setInt(7, model.getTestId());
                     ps.setInt(8, model.getSegmentSlot());
                     ps.setInt(9, model.isParallelProg()?1:0);
+                    ps.setInt(10, model.isCurrentMainProg()?1:0);
 
                     return ps;
                 } catch (Exception e) {
@@ -799,7 +800,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
                 try {
                     String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_PARALLEL_PROGRAM");
-                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
+                    PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setInt(1, ppId);
                     return ps;
                 }
@@ -817,6 +818,25 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     	StudentModelExt sm = this.parallelProgramToStudentModel(cmProg, pp);
         return sm;    	
     }
+
+	public void resetPreviousMainProgram(final int userId, final int progAssignId) {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("RESET_PREV_MAIN_PROGRAM");
+                    PreparedStatement ps = connection.prepareStatement(sql);
+                    ps.setInt(1, userId);
+                    ps.setInt(2, progAssignId);
+                    return ps;
+                }
+                catch(Exception e) {
+                    LOGGER.error(String.format("Error reseting Main Program identified by userId: %d, (not)id: %d",
+                    		userId, progAssignId), e);
+                    throw new SQLException(e.getMessage());
+                }
+            }
+        });		
+	}
 
 	public void updateProgram(CmProgram prog, Integer parallelProgId) {
 		// TODO Auto-generated method stub
@@ -897,4 +917,5 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     	}
     	return sb.toString();
     }
+
 }
