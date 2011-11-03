@@ -15,6 +15,7 @@ public class CmProgramAssign implements Response {
     int userId;
     int userProgId;
     boolean isParallelProg;
+    boolean isCurrentMainProg;
     
     public CmProgramAssign() {/* empty */}
     
@@ -102,6 +103,14 @@ public class CmProgramAssign implements Response {
 
 	public void setParallelProg(boolean isParallelProg) {
 		this.isParallelProg = isParallelProg;
+	}
+
+	public boolean isCurrentMainProg() {
+		return isCurrentMainProg;
+	}
+
+	public void setCurrentMainProg(boolean isCurrentMainProg) {
+		this.isCurrentMainProg = isCurrentMainProg;
 	}
 
 	@Override

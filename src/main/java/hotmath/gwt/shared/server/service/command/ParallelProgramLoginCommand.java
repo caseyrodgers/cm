@@ -215,10 +215,14 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 			cmProgAssign.setRunSession(stuActiveInfo.getActiveRunSession());
 			cmProgAssign.setSegmentSlot(stuActiveInfo.getActiveSegmentSlot());
 			cmProgAssign.setParallelProg(false);
-			ppDao.addProgramAssignment(cmProgAssign);            	
+			cmProgAssign.setCurrentMainProg(true);
+			ppDao.addProgramAssignment(cmProgAssign);
+			
+			// reset any other main program to *not* current
+			ppDao.resetPreviousMainProgram(userId, cmProgAssign.getId());
 		}
 		else {
-			// update exiting CM_PROGRAM_ASSIGN record
+			// update existing CM_PROGRAM_ASSIGN record
 			cmProg.setActiveInfo(stuActiveInfo);
 			ppDao.updateProgramAssign(userId, cmProg);
 		}
@@ -255,6 +259,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 			cmProgAssign.setUserId(userId);
 			cmProgAssign.setUserProgId(spMdl.getProgramId());
 			cmProgAssign.setParallelProg(true);
+			cmProgAssign.setCurrentMainProg(false);
 			ppDao.addProgramAssignment(cmProgAssign);
 		}
 		
