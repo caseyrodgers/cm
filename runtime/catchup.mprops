@@ -21,7 +21,7 @@
 .key=STUDENT_SUMMARY
 
 SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_email as email, h.admin_id as admin_uid,
-       h.user_prog_id, h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,h.active_test_id,
+       h.is_show_work_required, h.is_tutoring_available, h.active_segment, h.gui_background_style, h.is_demo,h.active_test_id,
        p.test_def_id, p.create_date, concat(p.pass_percent,'%') as pass_percent, p.test_config_json,p.date_completed,
        ifnull(s.limit_games, 0) as limit_games, ifnull(s.show_work_required, 0) as show_work_required,
        ifnull(s.stop_at_program_end, 0) as stop_at_program_end, ifnull(s.tutoring_available, 0) as tutoring_available,
@@ -35,12 +35,15 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(ux.quiz_pass_count, 0) as passing_count, ifnull(ux.quiz_not_pass_count, 0) as not_passing_count,
        ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
        ifnull(ux.lessons_completed, 0) as lessons_completed,
-       ifnull(ut.tutoring_use, 0) as tutoring_use
+       ifnull(ut.tutoring_use, 0) as tutoring_use,
+       h.user_prog_id, ifnull(pa.user_prog_id, h.user_prog_id) as main_user_prog_id
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
-   on a.aid = h.admin_id  
+   on a.aid = h.admin_id
+LEFT JOIN CM_PROGRAM_ASSIGN pa
+   on pa.user_id = h.uid and pa.is_current_main_prog = 1
 INNER JOIN CM_USER_PROGRAM p 
-   on p.user_id = h.uid and p.id = h.user_prog_id
+   on p.user_id = h.uid and p.id = (ifnull(pa.user_prog_id, h.user_prog_id))
 LEFT JOIN HA_USER_SETTINGS s
    on s.user_id = h.uid
 LEFT JOIN HA_TEST_DEF d 
@@ -2849,9 +2852,9 @@ values
 .key=CREATE_CM_PROGRAM_ASSIGN
 
 insert into CM_PROGRAM_ASSIGN
-(user_id, user_prog_id, prog_inst_id, prog_segment, run_id, run_session, test_id, segment_slot, is_parallel_prog, create_date) 
+(user_id, user_prog_id, prog_inst_id, prog_segment, run_id, run_session, test_id, segment_slot, is_parallel_prog, is_current_main_prog, create_date) 
 values
-(?, ?, ?, ?, ?, ?, ?, ?, ?, now())
+(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, now())
 
 
 .key=UPDATE_CM_PROGRAM_ASSIGN
@@ -3007,3 +3010,11 @@ delete from CM_PARALLEL_PROGRAM where id = ?
 .key=GET_PARALLEL_PROGRAM
 
 select * from CM_PARALLEL_PROGRAM where id = ?
+
+
+#####
+.key=RESET_PREV_MAIN_PROGRAM
+
+update CM_PROGRAM_ASSIGN
+set is_current_main_prog = 0
+where user_id = ? and is_current_main_prog = 1 and id != ?
