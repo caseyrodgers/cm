@@ -143,8 +143,6 @@ public class ParallelProgramUsageWindow extends CmWindow {
         ti.setToolTip("Display a printable usage report");
         ti.addStyleName("student-details-panel-pr-btn");
         
-        Window.alert("adminID: " + pp.getAdminId());
-
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -153,7 +151,6 @@ public class ParallelProgramUsageWindow extends CmWindow {
                         new GeneratePdfParallelProgramUsageReportAction(pp.getAdminId(), pp.getId()));
             }
         });
-        //ti.disable();
         return ti;
     }
 
