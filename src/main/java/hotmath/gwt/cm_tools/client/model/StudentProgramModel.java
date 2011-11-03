@@ -9,12 +9,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author casey
  *
  */
-public class StudentProgramModel implements IsSerializable{
+public class StudentProgramModel implements IsSerializable {
 
     Integer programId;
     String  subjectId;
     CmProgramType  programType;
     Integer sectionCount;
+    Boolean isActiveProgram = true;
+    
 
     CustomProgramComposite custom = new CustomProgramComposite();
 
@@ -92,7 +94,15 @@ public class StudentProgramModel implements IsSerializable{
         this.sectionCount = sectionCount;
     }
 
-    @Override
+    public Boolean getIsActiveProgram() {
+		return isActiveProgram;
+	}
+
+	public void setIsActiveProgram(Boolean isActiveProgram) {
+		this.isActiveProgram = isActiveProgram;
+	}
+
+	@Override
     public String toString() {
         return "StudentProgramModel [programId=" + programId + ", subjectID=" + subjectId
                 + ", programType=" + programType + ", " + custom.toString() + "]";

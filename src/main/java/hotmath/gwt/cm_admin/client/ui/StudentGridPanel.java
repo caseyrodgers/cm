@@ -416,6 +416,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
         
+        if (sm.getProgram().getIsActiveProgram() == false) {
+        	CatchupMathTools.showAlert("Student is using a Parallel Program, login is not possible at this time.");
+        	return;
+        }
         
         String mode=teacherMode?"mode=t":"debug=true";
         

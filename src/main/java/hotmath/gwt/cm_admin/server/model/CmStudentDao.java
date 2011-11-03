@@ -1962,6 +1962,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             StudentProgramModel sprm = sm.getProgram();
             sprm.setProgramDescription(rs.getString("program"));
             sprm.setProgramId(rs.getInt("user_prog_id"));
+            sprm.setIsActiveProgram(rs.getInt("user_prog_id") == rs.getInt("main_user_prog_id"));
 
             String progId = rs.getString("prog_id").toUpperCase();
             progId = (progId != null) ? progId.replaceAll(" ", "").replaceAll("-", "") : progId;
