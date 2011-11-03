@@ -652,3 +652,9 @@ function gotoGUID(messageContext, callAfter) {
 function resetTutor() {
 	TutorManager.resetTutor();
 }
+
+
+
+function gotoStepUnit(x) {
+	TutorManager.showStepUnit(x);	
+}

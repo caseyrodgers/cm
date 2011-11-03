@@ -31,10 +31,10 @@ var HmEvents = {
 			var list = HmEvents.eventTutorWidgetComplete.listeners;
 			list[list.length] = callBack;
 		},
-		fire : function() {
+		fire : function(args) {
 			var list = HmEvents.eventTutorWidgetComplete.listeners;
 			for ( var i = 0; i < list.length; i++) {
-				list[i]();
+				list[i](args);
 			}
 		}
 	},

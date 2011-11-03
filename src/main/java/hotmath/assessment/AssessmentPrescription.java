@@ -521,6 +521,25 @@ public class AssessmentPrescription {
         }
     }
 
+    
+    
+    /** return true if this prescription requires Flash 
+     *  on the client.
+     *  
+     */
+    public boolean dependsOnFlash() {
+        for(AssessmentPrescriptionSession s: getSessions()) {
+            for(INeedMoreHelpItem item: s.getInmhItemsFor("practice")) {
+                if(item.getFile().indexOf(".swf") > -1) {
+                    return true;
+                }
+                    
+            }
+        }
+        
+        return false;
+    }
+    
     /**
      * Return the URL used to load this test assessment
      * 

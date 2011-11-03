@@ -3,10 +3,12 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcExceptionClientDoesNotSupportFlash;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
@@ -21,6 +23,7 @@ import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaUserDao;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -51,6 +54,11 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
         try {
             
             AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
+            
+            ClientEnvironment ce = HaUserDao.getInstance().getLatestClientEnvironment(prescription.getTest().getUser().getUid());
+            if(prescription.dependsOnFlash() && !ce.isFlashEnabled()) {
+                throw new CmRpcExceptionClientDoesNotSupportFlash();
+            }
             
             __logger.debug("verifing prescription: " + action);
             CmStudentDao.getInstance().verifyActiveProgram(prescription.getTest().getTestId());
