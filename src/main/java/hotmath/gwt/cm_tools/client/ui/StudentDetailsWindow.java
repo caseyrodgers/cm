@@ -407,7 +407,7 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnConfig timeOnTask = new ColumnConfig();
         timeOnTask.setId(StudentActivityModel.TIME_ON_TASK_KEY);
         timeOnTask.setHeader("Time");
-        timeOnTask.setWidth(65);
+        timeOnTask.setWidth(63);
         timeOnTask.setSortable(true);
         timeOnTask.setMenuDisabled(true);
         configs.add(timeOnTask);
