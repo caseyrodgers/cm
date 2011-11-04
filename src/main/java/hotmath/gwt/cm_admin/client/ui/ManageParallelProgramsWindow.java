@@ -91,7 +91,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
         LayoutContainer lc = new LayoutContainer();
         lc.addStyleName("manage-groups-window-buttons");
 
-        lc.add(new StdButton("Add", "Create a new Parallel Program.", new SelectionListener<ButtonEvent>() {
+        lc.add(new StdButton("New Parallel Program", "Create a new Parallel Program.", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
@@ -114,8 +114,8 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
 
         });
-        if (CmShared.getQueryParameter("debug") == null) modifyBtn.disable();
-        lc.add(modifyBtn);
+        if (CmShared.getQueryParameter("debug_pp") != null)
+            lc.add(modifyBtn);
 
         lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
