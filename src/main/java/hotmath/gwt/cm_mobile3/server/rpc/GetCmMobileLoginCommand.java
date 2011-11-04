@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_rpc.client.rpc.CmRpcExceptionClientDoesNotSupportFlash;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -77,6 +78,16 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
             mobileUser.setSecurityKey(securityKey);
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
+            
+            
+            /** check if non flash enabled prescription, and throw exception allowing client to request 
+             *  if they want it recalulated with non-flash rpps.
+             */
+            if(nextAction.getPrescriptionResponse() != null) {
+                if(nextAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().dependsOnFlash()) {
+                    throw new CmRpcExceptionClientDoesNotSupportFlash();
+                }
+            }
             mobileUser.setFlowAction(nextAction);
         } finally {
             SqlUtilities.releaseResources(null, ps, null);

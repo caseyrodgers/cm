@@ -45,8 +45,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         
         // now choose pids from the pool for this item
         int uid = testRun.getHaTest().getUser().getUid();
-        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
-        
+
         int segment=testRun.getHaTest().getSegment();
         CmList<CustomLessonModel> progLessons = CmCustomProgramDao.getInstance().getCustomProgramLessons(conn, custProgId, segment);
         int sessNum = 0;
@@ -59,10 +58,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review",cpProgItem.getFile(),cpProgItem.getLesson());
                 InmhItemData itemData = new InmhItemData(item);
 
-                List<RppWidget> workBookPids = itemData.getWidgetPool(
-                        conn,
-                        uid + "/" + testRun.getRunId(),
-                        clientEnvironment);
+                List<RppWidget> workBookPids = itemData.getWidgetPool(conn, uid + "/" + testRun.getRunId());
                 if (workBookPids.size() == 0) {
                     logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                     continue; // nothing to see here.
@@ -70,7 +66,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 
                 gradeLevel = getHighestGradeLevel(workBookPids);
                 
-                session = createSession(sessNum,workBookPids,itemData,true,clientEnvironment);
+                session = createSession(sessNum,workBookPids,itemData,true);
                 
                 // assert that there is at least one
                 if(session.getSessionItems().size() == 0) {

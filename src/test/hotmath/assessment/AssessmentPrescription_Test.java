@@ -35,13 +35,13 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         String title = "mixed-numbers.html";
         InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
         int uid = testRun.getHaTest().getUser().getUid();
-        List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
+        List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId());
 
         assertTrue(!workBookPids.get(0).isFlashRequired());
         
         ClientEnvironment clientEnvironment = new ClientEnvironment(false);
 
-        AssessmentPrescriptionSession ap = new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, clientEnvironment);
+        AssessmentPrescriptionSession ap = new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
         
         assertTrue(ap.getSessionItems().get(0).getRpp().getWidgetJsonArgs() != null);
     }
@@ -54,11 +54,11 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         String title = "simplifying-radical-expressions";
         InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
         int uid = testRun.getHaTest().getUser().getUid();
-        List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(false));
+        List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId());
 
         ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
 
-        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, clientEnvironment);
+        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
     }
 
     
@@ -70,11 +70,11 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
     	String title = "simplifying-radical-expressions";
     	InmhItemData inmhData = new InmhItemData(new INeedMoreHelpItem("Review",file , title));
     	int uid = testRun.getHaTest().getUser().getUid();
-    	List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId(),new ClientEnvironment(true));
+    	List<RppWidget> workBookPids = inmhData.getWidgetPool(conn,uid + "/" + testRun.getRunId());
 
     	ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
     	
-    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, clientEnvironment);
+    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
     }
     
     

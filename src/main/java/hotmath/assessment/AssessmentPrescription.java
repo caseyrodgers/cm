@@ -3,7 +3,6 @@ package hotmath.assessment;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
-import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -14,7 +13,6 @@ import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
-import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -94,8 +92,6 @@ public class AssessmentPrescription {
         readAssessment();
 
         missed = _assessment.getPids().length;
-        
-        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
         int sumOfWeights = 0;
@@ -114,13 +110,13 @@ public class AssessmentPrescription {
                 continue;
             }
             
-            List<RppWidget> rppWidgets = itemData.getWidgetPool(conn, uid + "/" + testRun.getRunId(),clientEnvironment);
+            List<RppWidget> rppWidgets = itemData.getWidgetPool(conn, uid + "/" + testRun.getRunId());
             if (rppWidgets.size() == 0) {
                 logger.warn("No RP Widgets found for + '" + itemData.getInmhItem().toString() + "'");
                 continue;
             }
 
-            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true,clientEnvironment);
+            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true);
 
             // assert that there is at least one
             if (session.getSessionItems().size() == 0) {
@@ -273,7 +269,7 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData,
-            boolean filter,ClientEnvironment clientEnvironment) throws Exception {
+            boolean filter) throws Exception {
         AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
         List<SessionData> sessionItems = session.getSessionItems();
 
@@ -288,17 +284,16 @@ public class AssessmentPrescription {
                 break;
             }
         }
-        if (clientEnvironment.isFlashEnabled() && hasRPA) {
+        if (hasRPA) {
             /**
              * only show RPA widgets (filtered)
              * 
              */
             for (RppWidget rpp : rppWidgets) {
                 if (!rpp.isSolution()) {
-                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData
-                            .getWeight(), rpp.getWidgetJsonArgs()));
+                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
                 }
-            }
+            }            
         } else {
             /**
              * show only RPP widgets (filtered)
@@ -529,8 +524,9 @@ public class AssessmentPrescription {
      */
     public boolean dependsOnFlash() {
         for(AssessmentPrescriptionSession s: getSessions()) {
-            for(INeedMoreHelpItem item: s.getInmhItemsFor("practice")) {
-                if(item.getFile().indexOf(".swf") > -1) {
+            for(SessionData item: s.getSessionItems()) {
+                
+                if(item.getRpp().getFile().indexOf(".swf") > -1) {
                     return true;
                 }
                     

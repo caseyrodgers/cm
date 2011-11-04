@@ -17,7 +17,7 @@ public class InmhItemData_Test extends CmDbTestCase {
         String file = "topics/mixed-numbers.html";
         INeedMoreHelpItem item = new INeedMoreHelpItem("practice", file, "Test");  
         InmhItemData itemData = new InmhItemData(item);
-        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing",new ClientEnvironment(false));
+        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
         assertTrue(rpps.size() == 1);
         assertTrue(rpps.get(0).getWidgetJsonArgs() != null);
     }
@@ -30,7 +30,7 @@ public class InmhItemData_Test extends CmDbTestCase {
          */
         INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
-        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing",new ClientEnvironment(true));
+        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
         assertTrue(!hasDuplicates(rpps));
     }
     
@@ -42,7 +42,7 @@ public class InmhItemData_Test extends CmDbTestCase {
          */
         INeedMoreHelpItem item = new INeedMoreHelpItem("practice", "topics/functions.html", "Test");  
         InmhItemData itemData = new InmhItemData(item);
-        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing",new ClientEnvironment(false));
+        List<RppWidget> rpps = itemData.getWidgetPool(conn,"testing");
         assertTrue(rpps.get(0).getFile() != null);
     }
 

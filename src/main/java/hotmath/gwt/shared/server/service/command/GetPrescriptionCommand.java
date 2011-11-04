@@ -55,11 +55,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             
             AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
             
-            ClientEnvironment ce = HaUserDao.getInstance().getLatestClientEnvironment(prescription.getTest().getUser().getUid());
-            if(prescription.dependsOnFlash() && !ce.isFlashEnabled()) {
-                throw new CmRpcExceptionClientDoesNotSupportFlash();
-            }
-            
             __logger.debug("verifing prescription: " + action);
             CmStudentDao.getInstance().verifyActiveProgram(prescription.getTest().getTestId());
 

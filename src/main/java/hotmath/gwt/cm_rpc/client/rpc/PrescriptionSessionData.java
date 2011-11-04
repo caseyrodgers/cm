@@ -74,6 +74,19 @@ public class PrescriptionSessionData implements IsSerializable{
 		this.name = name;
 	}
 	
+	public boolean dependsOnFlash() {
+	    for(PrescriptionSessionDataResource r: inmhResources) {
+	        if(r.getType().equals("practice")) {
+	            for(InmhItemData item: r.getItems()) {
+	                if( item.getFile().indexOf(".swf") > -1) {
+	                    return true;
+	                }
+	            }
+	        }
+	    }
+	    
+	    return false;
+	}
 	
 	@Override
 	public String toString() {

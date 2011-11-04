@@ -2,6 +2,7 @@ package hotmath.assessment;
 
 import hotmath.SolutionManager;
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.concordance.ConcordanceEntry;
@@ -16,6 +17,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 
 /**
@@ -115,14 +118,14 @@ public class InmhItemData {
 
      * 
      */
-    public List<RppWidget> getWidgetPool(final Connection conn, String logTag,ClientEnvironment clientEnvironment) {
+    public List<RppWidget> getWidgetPool(final Connection conn, String logTag) throws Exception {
         /** check if in cache and return.  Side effect is if browserType changes no new pool will be created
          *  I'm not sure that is problem ... but, I think it is.
          *  
          *  TODO: We could save the browser type with the cached object and verify.
          *  
          */
-        String cacheKey = this.item.getFile() + "_" + clientEnvironment.isFlashEnabled();
+        String cacheKey = this.item.getFile();
     	List<RppWidget> widgets = (List<RppWidget>)CmCacheManager.getInstance().retrieveFromCache(CacheName.WOOKBOOK_POOL, cacheKey);
     	if(widgets != null)
     		return widgets;
@@ -133,6 +136,7 @@ public class InmhItemData {
 
         logger.debug("getting solution pool " + logTag);
         
+        boolean allowFlashWidgets = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty("prescription.allow_rpp", "true"));
         widgets = new ArrayList<RppWidget>();
         try {
             ps = conn.prepareStatement(sql);
@@ -145,10 +149,15 @@ public class InmhItemData {
 
                 if (rangeOrJson.startsWith("{")) {
                     RppWidget rpa = new RppWidget(rangeOrJson);
-                    if(!rpa.isFlashRequired() || clientEnvironment.isFlashEnabled()) {
-                        /** RPA widget defined in JSON */
+                    
+                    /** ignore Flash RPAs */
+                    if(!rpa.isFlashRequired() || allowFlashWidgets) {
                         widgets.add(rpa);
                     }
+                    else {
+                        logger.warn("Flash RPAs ignored: " + rpa);
+                    }
+                    
                 } else {
                     /** is a normal RPP */
                 	logger.debug("find solutions in range " + logTag);
