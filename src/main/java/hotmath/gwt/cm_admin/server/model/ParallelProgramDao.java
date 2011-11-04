@@ -404,9 +404,9 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                 			sb.append(rs.getString("activity"));
 
                 			boolean isQuiz = (rs.getInt("is_quiz") > 0);
-                			if (isQuiz) {
-                				sb.append(rs.getInt("test_segment"));
-                			}
+                			int segment = rs.getInt("test_segment");
+             				if (segment > 0)
+             					sb.append(rs.getInt("test_segment"));
                 			parallelProgUsage.setActivity(sb.toString());
                 			parallelProgUsage.setIsQuiz(isQuiz);
 
