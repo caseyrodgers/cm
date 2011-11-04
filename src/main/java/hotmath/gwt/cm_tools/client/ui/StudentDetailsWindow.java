@@ -375,7 +375,7 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnConfig program = new ColumnConfig();
         program.setId(StudentActivityModel.PROGRAM_KEY);
         program.setHeader("Program");
-        program.setWidth(105);
+        program.setWidth(120);
         program.setSortable(false);
         program.setMenuDisabled(true);
         configs.add(program);
@@ -383,7 +383,7 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnConfig programType = new ColumnConfig();
         programType.setId(StudentActivityModel.PROGRAM_TYPE_KEY);
         programType.setHeader("Prog-Type");
-        programType.setWidth(105);
+        programType.setWidth(115);
         programType.setSortable(false);
         programType.setMenuDisabled(true);
         configs.add(programType);
@@ -391,7 +391,7 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnConfig activity = new ColumnConfig();
         activity.setId(StudentActivityModel.ACTIVITY_KEY);
         activity.setHeader("Activity");
-        activity.setWidth(125);
+        activity.setWidth(90);
         activity.setSortable(false);
         activity.setMenuDisabled(true);
         configs.add(activity);
@@ -399,7 +399,7 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnConfig result = new ColumnConfig();
         result.setId(StudentActivityModel.RESULT_KEY);
         result.setHeader("Result");
-        result.setWidth(225);
+        result.setWidth(165);
         result.setSortable(false);
         result.setMenuDisabled(true);
         configs.add(result);
@@ -407,7 +407,7 @@ public class StudentDetailsWindow extends CmWindow {
         ColumnConfig timeOnTask = new ColumnConfig();
         timeOnTask.setId(StudentActivityModel.TIME_ON_TASK_KEY);
         timeOnTask.setHeader("Time");
-        timeOnTask.setWidth(100);
+        timeOnTask.setWidth(65);
         timeOnTask.setSortable(true);
         timeOnTask.setMenuDisabled(true);
         configs.add(timeOnTask);
