@@ -404,8 +404,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                 			sb.append(rs.getString("activity"));
 
                 			boolean isQuiz = (rs.getInt("is_quiz") > 0);
-                			int segment = rs.getInt("test_segment");
-             				if (segment > 0)
+             				if (isQuiz)
              					sb.append(rs.getInt("test_segment"));
                 			parallelProgUsage.setActivity(sb.toString());
                 			parallelProgUsage.setIsQuiz(isQuiz);
@@ -460,15 +459,34 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                 });
         
         // We only want the most recent Parallel Program usage for each user/student
+        // and the section number needs to be set for "Review-" activities;
         // it may be possible to perform this in SQL, but for now...
     	int userId = 0;
     	
     	List<ParallelProgramUsageModel> list = new ArrayList<ParallelProgramUsageModel>();
     	
+    	boolean isReview = false;
+    	ParallelProgramUsageModel mdl = null;
+
         for (ParallelProgramUsageModel ppum : ppuList) {
         	if (ppum.getUserId() != userId) {
         		list.add(ppum);
         		userId = ppum.getUserId();
+        		isReview = ppum.getActivity().equals("Review-");
+        		mdl = ppum;
+        	}
+        	else {
+        		// update "activity" with section number if isReview == true
+        		if (isReview == true) {
+        			if (ppum.getActivity().startsWith("Quiz-")) {
+            			isReview = false;
+        				String sectionNum = ppum.getActivity().substring(5);
+        				if (! sectionNum.equals("0")) {
+            				String activity = "Review-" + sectionNum;
+            				mdl.setActivity(activity);
+        				}
+        			}
+        		}
         	}
         }
         
