@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile3.client.event.ShowEndOfProgramEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -64,6 +65,10 @@ public class HandleNextFlowEventHandlerImpl implements HandleNextFlowEventHandle
 
         case AUTO_PLACEMENT:
             MessageBox.showMessage("Auto Placement");
+            break;
+            
+        case ERROR_FLASH_REQUIRED:
+            eventBus.fireEvent(new ShowFlashRequiredEvent());
             break;
 
         default:

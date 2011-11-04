@@ -42,6 +42,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         
         readAssessment();        
 
+        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUid());
         
         // now choose pids from the pool for this item
         int uid = testRun.getHaTest().getUser().getUid();
@@ -66,7 +67,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 
                 gradeLevel = getHighestGradeLevel(workBookPids);
                 
-                session = createSession(sessNum,workBookPids,itemData,true);
+                session = createSession(sessNum,workBookPids,itemData,true, clientEnvironment);
                 
                 // assert that there is at least one
                 if(session.getSessionItems().size() == 0) {

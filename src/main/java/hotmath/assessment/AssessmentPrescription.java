@@ -3,6 +3,7 @@ package hotmath.assessment;
 import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
+import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -14,6 +15,7 @@ import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
+import hotmath.testset.ha.HaUserDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
@@ -100,6 +102,10 @@ public class AssessmentPrescription {
         }
 
         totalPrescription = itemsData.size() * TOTAL_SESSION_SOLUTIONS;
+        
+        
+        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
+        logger.info("Creating prescription for client info: " + clientEnvironment);
 
         // assign weights to items
         int sessNum = 0;
@@ -116,7 +122,7 @@ public class AssessmentPrescription {
                 continue;
             }
 
-            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true);
+            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true, clientEnvironment);
 
             // assert that there is at least one
             if (session.getSessionItems().size() == 0) {
@@ -269,7 +275,7 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData,
-            boolean filter) throws Exception {
+            boolean filter,ClientEnvironment clientEnvironment) throws Exception {
         AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
         List<SessionData> sessionItems = session.getSessionItems();
 
@@ -284,7 +290,7 @@ public class AssessmentPrescription {
                 break;
             }
         }
-        if (hasRPA) {
+        if (hasRPA && clientEnvironment.isFlashEnabled()) {
             /**
              * only show RPA widgets (filtered)
              * 
@@ -338,6 +344,8 @@ public class AssessmentPrescription {
 
         List<RppWidget> maybeList = new ArrayList<RppWidget>();
         for (RppWidget rpp : rppWidgets) {
+            if(rpp.isFlashRequired())
+                continue;
             ProblemID pid = new ProblemID(rpp.getFile());
 
             int pidGradeLevel = pid.getGradeLevel();

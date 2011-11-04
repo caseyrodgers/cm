@@ -22,6 +22,8 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewHandler;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
@@ -33,7 +35,6 @@ import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -103,7 +104,12 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
             }
         });
         
-        
+        eb.addHandler(ShowFlashRequiredEvent.TYPE,new ShowFlashRequiredEventHandler() {
+           @Override
+            public void showFlashRequiredDialog() {
+               MessageBox.showError("The prescription assigned to the current quiz requires Flash and cannot be viewed on the IPad.");
+            } 
+        });
         
         eb.addHandler(MoveToNextSegmentEvent.TYPE, new MoveToNextSegmentEventHandler() {
             @Override

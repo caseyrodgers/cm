@@ -9,13 +9,14 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcExceptionClientDoesNotSupportFlash;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
+import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
@@ -79,16 +80,18 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
             
+            mobileUser.setFlowAction(nextAction);
             
-            /** check if non flash enabled prescription, and throw exception allowing client to request 
-             *  if they want it recalulated with non-flash rpps.
+            /** check if non flash enabled prescription, and mark next action
+             *  should be to NOT show it.  Instead client should handle the
+             *  flash required error.
+             *   
              */
             if(nextAction.getPrescriptionResponse() != null) {
                 if(nextAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().dependsOnFlash()) {
-                    throw new CmRpcExceptionClientDoesNotSupportFlash();
+                    mobileUser.setFlowAction(new CmProgramFlowAction(CmPlace.ERROR_FLASH_REQUIRED));
                 }
             }
-            mobileUser.setFlowAction(nextAction);
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }

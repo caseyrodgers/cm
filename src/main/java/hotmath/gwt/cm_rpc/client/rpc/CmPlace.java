@@ -7,5 +7,6 @@ public enum CmPlace implements Response {
     END_OF_PROGRAM,
     AUTO_ADVANCED_PROGRAM,
     AUTO_PLACEMENT,
-    WELCOME
+    WELCOME,
+    ERROR_FLASH_REQUIRED
 }

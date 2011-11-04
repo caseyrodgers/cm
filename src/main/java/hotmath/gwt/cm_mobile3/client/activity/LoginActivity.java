@@ -5,9 +5,11 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 
 import java.util.Date;
 
@@ -54,12 +56,19 @@ public class LoginActivity implements LoginView.Presenter {
             public void onSuccess(CmMobileUser result) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 Log.info("Login successful: " + result);
-                CatchupMathMobileShared.__instance.user = result;
                 
-                SharedData.setUserInfo(result.getBaseLoginResponse().getUserInfo());
-                SharedData.setFlowAction(result.getFlowAction());
                 
-                eventBus.fireEvent(new ShowWelcomeViewEvent());
+                if(result.getFlowAction().getPlace() == CmPlace.ERROR_FLASH_REQUIRED) {
+                    eventBus.fireEvent(new ShowFlashRequiredEvent());
+                }
+                else {
+                    CatchupMathMobileShared.__instance.user = result;
+                    
+                    SharedData.setUserInfo(result.getBaseLoginResponse().getUserInfo());
+                    SharedData.setFlowAction(result.getFlowAction());
+                    
+                    eventBus.fireEvent(new ShowWelcomeViewEvent());
+                }
             }
 
             @Override

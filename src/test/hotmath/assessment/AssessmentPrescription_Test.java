@@ -41,7 +41,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
         
         ClientEnvironment clientEnvironment = new ClientEnvironment(false);
 
-        AssessmentPrescriptionSession ap = new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
+        AssessmentPrescriptionSession ap = new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true, new ClientEnvironment());
         
         assertTrue(ap.getSessionItems().get(0).getRpp().getWidgetJsonArgs() != null);
     }
@@ -58,7 +58,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
 
         ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
 
-        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
+        new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true,new ClientEnvironment(false));
     }
 
     
@@ -74,7 +74,7 @@ public class AssessmentPrescription_Test extends CmDbTestCase {
 
     	ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUserKey());
     	
-    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true);
+    	new AssessmentPrescription(conn,testRun).createSession(0, workBookPids, inmhData, true,new ClientEnvironment(true));
     }
     
     
