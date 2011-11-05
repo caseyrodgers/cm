@@ -187,7 +187,7 @@ public class CatchupMath implements EntryPoint {
 	    		UserInfo.getInstance().setActiveUser(false);
 	    		showAutoRegistration_gwt();
 	    	}
-	    	if (startType.equals("PARALLEL_PROGRAM")) {
+	    	else if (startType.equals("PARALLEL_PROGRAM")) {
 		    	/**
 		    	 * Parallel Program - need student's password which must be associated
 		    	 * with same account as Parallel Program
