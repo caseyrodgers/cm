@@ -100,9 +100,12 @@ public class ParallelProgramSetup extends RegisterStudent {
 
 	    					@Override
 	    					public void afterValidation(StudentModel student) {
+	    					    
 	    						student.setName(nameFld.getValue());
 	    						student.setGroup(nameFld.getValue());
 	    						student.setPasscode(nameFld.getValue());
+
+                                 CmLogger.info("Student Model sent to savePPP: " + student.getName() + ", " + nameFld.getValue() + ", " + student);
 
 	    						saveParallelProgramSetup(student);
 	    					}
