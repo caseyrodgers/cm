@@ -87,14 +87,22 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
             
             
             if (action.getParallelProgId() == null) {
+                
+                LOGGER.info("Test #2a1: ");
                 ppDao.addProgram(prog);
                 CmParallelProgram pp = new CmParallelProgram();
+                
+                LOGGER.info("Test #2a2: ");
                 pp.setCmProgId(prog.getId());
                 pp.setAdminId(action.getAdminId());
                 pp.setPassword(student.getPasscode());
                 pp.setName(student.getName());
+                
+                LOGGER.info("Test #2a3: ");
+                
                 ppDao.addParallelProgram(pp);
             } else {
+                LOGGER.info("Test #2b: ");
                 ppDao.updateProgram(prog, parallelProgId);
 
                 CmParallelProgram pp = new CmParallelProgram();

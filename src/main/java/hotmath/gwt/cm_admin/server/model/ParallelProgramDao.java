@@ -262,9 +262,13 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
 
     public void addParallelProgram(final CmParallelProgram model) {
     	
+        LOGGER.info("Test 1");
+        
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                
+                LOGGER.info("Test 1a");
                 try {
                     String sql = CmMultiLinePropertyReader.getInstance().getProperty("CREATE_CM_PARALLEL_PROGRAM");
                     PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
@@ -273,6 +277,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setString(3, model.getPassword());
                     ps.setString(4, model.getName());
 
+                    LOGGER.info("Test 2a");
                     return ps;
                 } catch (Exception e) {
                     LOGGER.error("Error adding: " + model.toString(), e);
@@ -281,8 +286,12 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
             }
         }, keyHolder);
 
+        LOGGER.info("Test 2");
         // extract the auto created pk
         final int id = keyHolder.getKey().intValue();
+        
+        
+        LOGGER.info("Test 3");
         model.setId(id);
     }
 
