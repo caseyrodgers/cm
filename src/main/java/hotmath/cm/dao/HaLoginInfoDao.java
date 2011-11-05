@@ -174,9 +174,9 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
             pstat.setString(3, user.getUserType().toString());
             pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
             pstat.setString(5,user.getLoginName());
-            pstat.setString(6, clientEnv.getUserAgent());
+            pstat.setString(6, clientEnv!=null?clientEnv.getUserAgent():"unknown");
             pstat.setInt(7, isRealLogin?1:0);
-            pstat.setInt(8, clientEnv.isFlashEnabled()?0:1);
+            pstat.setInt(8, (clientEnv != null && clientEnv.isFlashEnabled())?0:1);
     
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");
