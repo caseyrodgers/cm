@@ -57,6 +57,9 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
 
             // set test config JSON
             CmStudentDao.getInstance().setTestConfig(conn, student);
+            
+            
+            LOGGER.info("Test #1: ");
 
             // init CmProgram (CM_PROGRAM)
             CmProgram prog = new CmProgram();
@@ -78,6 +81,11 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
 
             ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
 
+            
+            
+            LOGGER.info("Test #2: ");
+            
+            
             if (action.getParallelProgId() == null) {
                 ppDao.addProgram(prog);
                 CmParallelProgram pp = new CmParallelProgram();
@@ -96,6 +104,9 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
                 pp.setName(student.getName());
                 ppDao.updateParallelProgram(pp, parallelProgId);
             }
+            
+            
+            LOGGER.info("Test #3: ");
 
             RpcData rdata = new RpcData("status=OK");
             return rdata;
