@@ -277,7 +277,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setString(3, model.getPassword());
                     ps.setString(4, model.getName());
 
-                    LOGGER.info("Test 2a");
+                    LOGGER.info("Test 2a: " + ps.toString());
                     return ps;
                 } catch (Exception e) {
                     LOGGER.error("Error adding: " + model.toString(), e);
