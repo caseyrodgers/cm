@@ -84,7 +84,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			int uid) throws Exception {
 
 		if (samList == null || samList.size() == 0) {
-			throw new Exception("student model list is null or empty");
+			// nothing to do
+			return null;
 		}
 
 		Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
@@ -240,6 +241,11 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	}
 
 	private void updateTimeOnTask(Map<Integer, Integer> totMap, List<StudentActivityModel> samList) {
+		
+		if (samList == null || samList.isEmpty() || totMap == null) {
+			// nothing to do
+			return;
+		}
 		
 		for (StudentActivityModel sam : samList) {
 			if (sam.getIsQuiz() || sam.getIsCustomQuiz()) continue;
