@@ -143,7 +143,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 
             @Override
             public void onFailure(Throwable caught) {
-                caught.printStackTrace();
+                CmLogger.error("Error saving", caught);
                 CatchupMathTools.showAlert("Problem occurred while saving: " + caught.getMessage());
             }
         });	    
