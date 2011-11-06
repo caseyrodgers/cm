@@ -16,7 +16,6 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.ExportStudentData;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
@@ -417,7 +416,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             return;
         
         if (sm.getProgram().getIsActiveProgram() == false) {
-        	CatchupMathTools.showAlert("Student is using a Parallel Program, login is not possible at this time.");
+            if(CmShared.getQueryParameter("debug") == null) {
+                CatchupMathTools.showAlert("Student is using a Parallel Program, login is not possible at this time.");
+            }
         	return;
         }
         
@@ -510,7 +511,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         menu.add(defineManageGroupsItem());
 
-        menu.add(defineParallelProgramsItem());
+        if(CmShared.getQueryParameter("debug")!=null) {
+            menu.add(defineParallelProgramsItem());
+        }
 
         btn.setMenu(menu);
 
