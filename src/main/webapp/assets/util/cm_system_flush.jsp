@@ -2,11 +2,12 @@
 
 <%
     HotmathFlusher.getInstance().flushAll();
+    hotmath.SolutionManager.flushCache();
 %>
 <html>
   <body>
     <h1>
-System Flushed
+       All system caches flushed
     </h1>
   </body>
 </html>
