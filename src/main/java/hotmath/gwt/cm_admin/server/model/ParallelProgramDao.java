@@ -262,13 +262,10 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
 
     public void addParallelProgram(final CmParallelProgram model) {
     	
-        LOGGER.info("Test 1");
-        
         KeyHolder keyHolder = new GeneratedKeyHolder();
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
                 
-                LOGGER.info("Test 1a");
                 try {
                     String sql = CmMultiLinePropertyReader.getInstance().getProperty("CREATE_CM_PARALLEL_PROGRAM");
                     PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
@@ -277,7 +274,6 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     ps.setString(3, model.getPassword());
                     ps.setString(4, model.getName());
 
-                    LOGGER.info("Test 2a: " + ps.toString());
                     return ps;
                 } catch (Exception e) {
                     LOGGER.error("Error adding: " + model.toString(), e);
@@ -286,12 +282,9 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
             }
         }, keyHolder);
 
-        LOGGER.info("Test 2");
         // extract the auto created pk
         final int id = keyHolder.getKey().intValue();
         
-        
-        LOGGER.info("Test 3");
         model.setId(id);
     }
 
@@ -649,6 +642,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     public void reassignProgram(int userId, CmProgram cmProg) throws Exception {
 
     	CmProgram existingCP = getCmProgramForUserId(userId);
+    	LOGGER.debug("existingCP: " + existingCP);
+    	
     	updateProgramAssign(userId, existingCP);
 
     	updateProgramAssign(userId, cmProg);
@@ -764,18 +759,26 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         CmProgram cmProg;
                         try {
                         	cmProg = new CmProgram();
-                        	CmProgramInfo progInfo = cmProg.getCmProgInfo();
                         	cmProg.setId(rs.getInt("id"));
                         	cmProg.setAdminId(rs.getInt("admin_id"));
                         	cmProg.setPassPercent(rs.getInt("pass_percent"));
-                            progInfo.setTestDefId(rs.getInt("test_def_id"));
-                            progInfo.setSubjectId(rs.getString("subj_id"));
-                            progInfo.setSegmentCount(rs.getInt("segment_count"));
-                            progInfo.setProgramType(CmProgramType.lookup(rs.getString("prog_id")));
                             cmProg.setTestConfigJson(rs.getString("test_config_json"));
                             cmProg.setCustomProgId(rs.getInt("custom_prog_id"));
                             cmProg.setCustomQuizId(rs.getInt("custom_quiz_id"));
                             cmProg.setUserProgId(rs.getInt("user_prog_id"));
+                        	
+                        	CmProgramInfo progInfo = cmProg.getCmProgInfo();
+                            progInfo.setTestDefId(rs.getInt("test_def_id"));
+                            progInfo.setSubjectId(rs.getString("subj_id"));
+                            progInfo.setSegmentCount(rs.getInt("segment_count"));
+                            progInfo.setProgramType(CmProgramType.lookup(rs.getString("prog_id")));
+
+                            StudentActiveInfo activeInfo = cmProg.getActiveInfo();
+                            activeInfo.setActiveRunId(rs.getInt("active_run_id"));
+                            activeInfo.setActiveRunSession(rs.getInt("active_run_session"));
+                            activeInfo.setActiveSegment(rs.getInt("active_segment"));
+                            activeInfo.setActiveSegmentSlot(rs.getInt("active_segment_slot"));
+                            activeInfo.setActiveTestId(rs.getInt("active_test_id"));
 
                             return cmProg;
                         }
