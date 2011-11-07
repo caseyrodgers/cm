@@ -3019,3 +3019,11 @@ select * from CM_PARALLEL_PROGRAM where id = ?
 update CM_PROGRAM_ASSIGN
 set is_current_main_prog = 0
 where user_id = ? and is_current_main_prog = 1 and id != ?
+
+
+#####
+.key=RESET_MAIN_PROGRAM
+
+update CM_PROGRAM_ASSIGN
+set is_current_main_prog = 0
+where user_id = ? and is_current_main_prog = 1
