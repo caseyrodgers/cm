@@ -793,6 +793,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         	if (ppDao.isStudentInParallelProgram(sm.getUid()) == true) {
         		ppDao.updateProgramAssign(sm.getUid());
         	}
+        	// if Student has Main Program in CM_PROGRAM_ASSIGN, reset it
+        	ppDao.resetMainProgram(sm.getUid());
+        	
             addStudentProgram(conn, sm);
         }
         if (studentChanged)
@@ -1126,6 +1129,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         /** check for setting of StudyProgram, and implement override
          *  We should deprecate using instance vars to identify the program
          */
+        __logger.debug("addStudentProgram()");
         if(sm.getProgram().isCustom()) {
             return addStudentProgramCustom(conn, sm);
         }
