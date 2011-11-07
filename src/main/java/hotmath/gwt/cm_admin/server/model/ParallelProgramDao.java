@@ -642,7 +642,6 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     public void reassignProgram(int userId, CmProgram cmProg) throws Exception {
 
     	CmProgram existingCP = getCmProgramForUserId(userId);
-    	LOGGER.debug("existingCP: " + existingCP);
     	
     	updateProgramAssign(userId, existingCP);
 
@@ -674,7 +673,8 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      */
     public void updateProgramAssign(final int userId, final CmProgram cmProg) throws Exception {
 
-        LOGGER.debug(String.format("Updating CM Program Assign; userId: %d, user_progId: %d", userId, cmProg.getUserProgId()));
+        if (LOGGER.isDebugEnabled())
+        	LOGGER.debug(String.format("Updating CM Program Assign; userId: %d, user_progId: %d", userId, cmProg.getUserProgId()));
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -849,6 +849,24 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
         return sm;    	
     }
 
+	public void resetMainProgram(final int userId) {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+                try {
+                	String sql = CmMultiLinePropertyReader.getInstance().getProperty("RESET_MAIN_PROGRAM");
+                    PreparedStatement ps = connection.prepareStatement(sql);
+
+                    ps.setInt(1, userId);
+
+                    return ps;
+                } catch (Exception e) {
+                    LOGGER.error("Error resetting Main Program for userId: " + userId, e);
+                    throw new SQLException("Error updating CM_PROGRAM_ASSIGN", e);
+                }
+            }
+        });		
+	}
+
 	public void resetPreviousMainProgram(final int userId, final int progAssignId) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
@@ -947,5 +965,6 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     	}
     	return sb.toString();
     }
+
 
 }
