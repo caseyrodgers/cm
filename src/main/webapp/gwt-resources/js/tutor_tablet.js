@@ -416,9 +416,9 @@ function showStepUnit(num) {
 		setButtonState();
 
 		scrollToStep(num);
+
+		HmEvents.eventTutorChangeStep.fire(num);
 		
-		
-		 HmEvents.eventTutorChangeStep.fire(num);
 	} catch (e) {
 		alert('Error showing step: ' + e);
 	}
@@ -468,7 +468,7 @@ function setState(n, onoff) {
 		enabledNext(onoff);
 
 		if (!onoff) {
-			HmEvents.eventTutorLastStep.fire();
+			TutorDynamic.endOfSolutionReached();
 		}
 	} else if (n == 'back') {
 		enabledPrevious(onoff);

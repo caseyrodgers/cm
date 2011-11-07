@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.server.rpc;
 
-import hotmath.flusher.HotmathFlusher;
+import hotmath.SolutionManager;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -13,13 +13,19 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
 
+import org.apache.log4j.Logger;
+
 public class ServerFlusherCommand implements ActionHandler<ServerFlusherAction, RpcData>{
 
+    static Logger LOGGER = Logger.getLogger(ServerFlusherCommand.class); 
+    
     @Override
     public RpcData execute(Connection conn, ServerFlusherAction action) throws Exception {
         
+        LOGGER.info("Flushing server: " + action);
+        
         if(action.getServerToFlush() == null) {
-            HotmathFlusher.getInstance().flushAll();
+            SolutionManager.flushCache();  // will call Flusher (TODO: move to Flusher only)
         }
         else {
             String url = "http://" + action.getServerToFlush() + "/system/hm_admin_flush_cache.jsp";

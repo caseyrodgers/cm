@@ -65,7 +65,7 @@ public class QuestionParser implements IQuestionParser,Serializable{
                         }
                     }
                     else {
-                        System.out.println("No correct");
+                        System.out.println("No correct answer found in solution xml");
                     }
                 }
             }

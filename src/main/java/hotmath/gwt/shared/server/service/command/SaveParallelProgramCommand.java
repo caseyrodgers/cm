@@ -35,8 +35,7 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
     public RpcData execute(Connection conn, SaveParallelProgramAction action) throws Exception {
 
         try {
-            LOGGER.info("Action in: " + action);
-            
+           
             StudentModelI student = action.getStudent();
 
             Integer parallelProgId = action.getParallelProgId();
@@ -57,9 +56,6 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
 
             // set test config JSON
             CmStudentDao.getInstance().setTestConfig(conn, student);
-            
-            
-            LOGGER.info("Test #1: ");
 
             // init CmProgram (CM_PROGRAM)
             CmProgram prog = new CmProgram();
@@ -83,26 +79,19 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
 
             
             
-            LOGGER.info("Test #2: ");
-            
-            
             if (action.getParallelProgId() == null) {
-                
-                LOGGER.info("Test #2a1: ");
                 ppDao.addProgram(prog);
                 CmParallelProgram pp = new CmParallelProgram();
                 
-                LOGGER.info("Test #2a2: ");
                 pp.setCmProgId(prog.getId());
                 pp.setAdminId(action.getAdminId());
                 pp.setPassword(student.getPasscode());
                 pp.setName(student.getName());
                 
-                LOGGER.info("Test #2a3: ");
-                
                 ppDao.addParallelProgram(pp);
+                
+                
             } else {
-                LOGGER.info("Test #2b: ");
                 ppDao.updateProgram(prog, parallelProgId);
 
                 CmParallelProgram pp = new CmParallelProgram();
@@ -113,9 +102,6 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
                 ppDao.updateParallelProgram(pp, parallelProgId);
             }
             
-            
-            LOGGER.info("Test #3: ");
-
             RpcData rdata = new RpcData("status=OK");
             return rdata;
         } catch (Exception e) {

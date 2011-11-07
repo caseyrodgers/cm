@@ -26,4 +26,9 @@ public class ServerFlusherAction implements Action<RpcData>{
     public void setServerToFlush(String serverToFlush) {
         this.serverToFlush = serverToFlush;
     }
+
+    @Override
+    public String toString() {
+        return "ServerFlusherAction [serverToFlush=" + serverToFlush + "]";
+    }
 }
