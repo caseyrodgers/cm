@@ -2760,7 +2760,7 @@ limit 1
 select pa.*, p.custom_prog_id, p.custom_quiz_id
 from CM_PROGRAM_ASSIGN pa
 join CM_PROGRAM p on p.id = pa.prog_inst_id
-where pa.user_id = ? and pa.is_parallel_prog = 0
+where pa.user_id = ? and pa.is_current_main_prog = 1
 
 
 .key=IS_PARALLEL_PROGRAM_ASSIGNED
