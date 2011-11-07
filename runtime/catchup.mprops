@@ -2752,6 +2752,7 @@ where u.admin_id = cp.admin_id
   and (ifnull(cp.custom_quiz_id,0))     = (ifnull(up.custom_quiz_id,0))
   and (ifnull(cp.test_config_json,' ')) = (ifnull(up.test_config_json,' '))
   and (ifnull(cp.pass_percent,0))       = (ifnull(up.pass_percent,0))
+limit 1
 
 ###
 .key=GET_MAIN_PROGRAM_FOR_USERID
