@@ -781,6 +781,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged,
             Boolean progIsNew, Boolean passcodeChanged, Boolean passPercentChanged) throws Exception {
+    	return updateStudent(conn, sm, studentChanged, programChanged, progIsNew, passcodeChanged, passPercentChanged, true);
+    }
+
+    public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged,
+            Boolean progIsNew, Boolean passcodeChanged, Boolean passPercentChanged, boolean resetMainProgram) throws Exception {
         if (passcodeChanged) {
             Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
             if (isDuplicate) {
@@ -793,8 +798,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         	if (ppDao.isStudentInParallelProgram(sm.getUid()) == true) {
         		ppDao.updateProgramAssign(sm.getUid());
         	}
-        	// if Student has Main Program in CM_PROGRAM_ASSIGN, reset it
-        	ppDao.resetMainProgram(sm.getUid());
+        	// if Student has Main Program in CM_PROGRAM_ASSIGN, conditionally reset it
+        	if (resetMainProgram)
+        		ppDao.resetMainProgram(sm.getUid());
         	
             addStudentProgram(conn, sm);
         }
@@ -2429,7 +2435,16 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
-        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0);
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0, true);
+    }
+
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,
+    		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum) throws Exception {
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, settings, includeSelfRegGroups, sectionNum, true);
+    }
+    
+    public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent, boolean resetMainProgram) throws Exception {
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0, resetMainProgram);
     }
 
     /** Assign program to student.
@@ -2445,7 +2460,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,
-    		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum) throws Exception {
+    		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum, boolean resetMainProgram) throws Exception {
 
         StudentModelI sm = getStudentModelBase(conn, uid,includeSelfRegGroups);
 
@@ -2468,7 +2483,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         sm.setSectionNum(sectionNum);
 
         setTestConfig(conn, sm);
-        updateStudent(conn, sm, true, false, true, false, false);
+        updateStudent(conn, sm, true, false, true, false, false, resetMainProgram);
         
         // need to set user Prog Id for CM_PROGRAM_ASSIGN
         program.setProgramId(sm.getProgram().getProgramId());

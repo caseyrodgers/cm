@@ -252,7 +252,7 @@ public class ParallelProgramLoginCommand implements ActionHandler<ParallelProgra
 			}
 			String chapter = JsonUtil.getChapter(cmProg.getTestConfigJson());
 			if (LOGGER.isDebugEnabled()) LOGGER.debug("+++ chapter: " + chapter);
-		    stuDao.assignProgramToStudent(conn, userId, spMdl, chapter, String.valueOf(cmProg.getPassPercent()));
+		    stuDao.assignProgramToStudent(conn, userId, spMdl, chapter, String.valueOf(cmProg.getPassPercent()), false);
 
 			CmProgramAssign cmProgAssign = new CmProgramAssign();
 			cmProgAssign.setCmProgram(cmProg);
