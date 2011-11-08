@@ -267,7 +267,13 @@ var TutorManager = {
 	
 	showWhiteboard: function() {
 		// non-event .. should be overridden
+	},
+	
+	showStepUnit: function(x) {
+		  showStepUnit(x);
 	}
+	
+	
 }
 
 function setButtonState() {
