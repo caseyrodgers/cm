@@ -115,6 +115,10 @@ public class CmProgramAssign implements Response {
 
 	@Override
     public String toString() {
-        return "CmProgramAssign [userId=" + userId + cmProgram.toString() + "]";
+        return "CmProgramAssign [userId: " + userId + ", id: " + id + ", progSegment: " +
+            progSegment + ", runId: " + runId + ", runSession: " + runSession + 
+            ", segmentSlot: " + segmentSlot + ", testId: " + testId + ", userProgId: " +
+            userProgId + ", isParallelProg: " + isParallelProg + ", isCurrentMainProg: " +
+            isCurrentMainProg + ", " + cmProgram.toString() + "]";
     }
 }
