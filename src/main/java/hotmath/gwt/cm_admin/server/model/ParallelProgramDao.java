@@ -861,7 +861,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     return ps;
                 } catch (Exception e) {
                     LOGGER.error("Error resetting Main Program for userId: " + userId, e);
-                    throw new SQLException("Error updating CM_PROGRAM_ASSIGN", e);
+                    throw new SQLException("Error resetting Main Program", e);
                 }
             }
         });		
@@ -878,7 +878,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                     return ps;
                 }
                 catch(Exception e) {
-                    LOGGER.error(String.format("Error reseting Main Program identified by userId: %d, (not)id: %d",
+                    LOGGER.error(String.format("Error resetting Main Program identified by userId: %d, (not)id: %d",
                     		userId, progAssignId), e);
                     throw new SQLException(e.getMessage());
                 }
