@@ -4,6 +4,7 @@ import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -39,6 +40,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
     @Override
     public UserLoginResponse execute(final Connection conn, GetUserInfoAction action) throws Exception {
         try {
+        	
             CmStudentDao sdao = CmStudentDao.getInstance();
             StudentModelI sm = sdao.getStudentModelBase(conn, action.getUserId(), true);
             StudentSettingsModel settings = sm.getSettings();
@@ -163,11 +165,12 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setOnCompletion(onComplete);
             userInfo.setLimitGames(settings.getLimitGames());
             
-            /**if is custom program, then override the default EndOfProgram
+            /**if is custom program or parallel program, then override the default EndOfProgram
              * action to force a stop.
              * 
              */
-            if(isCustomProgram) {
+            boolean isParallelProgram = ParallelProgramDao.getInstance().isStudentInParallelProgram(action.getUserId());
+            if(isCustomProgram || isParallelProgram) {
                 /** this really depends on if CP ends on quiz or a test
                  * 
                  */
