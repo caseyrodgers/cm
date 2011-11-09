@@ -175,7 +175,8 @@ public class CmProgramFlow {
                  */
                 markProgramAsCompleted(conn, true);
 
-                if (student.getSettings().getStopAtProgramEnd()) {
+                if (student.getSettings().getStopAtProgramEnd() ||
+                	student.getProgram().getIsParallelProgram()) {
                     action = getActiveFlowAction(conn);
                     assert (action.getPlace() == CmPlace.END_OF_PROGRAM);
                 } else {
