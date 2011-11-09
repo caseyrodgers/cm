@@ -1263,3 +1263,6 @@ SolutionSetCompleteDialog .results{
 	height: 280px;
 }
 
+.register-student-form-panel input {
+	margin-bottom: 15px;
+}

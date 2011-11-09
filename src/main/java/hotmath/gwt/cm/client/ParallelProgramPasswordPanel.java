@@ -23,6 +23,8 @@ import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -59,7 +61,6 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
 
         _formPanel = new FormPanel();
         _formPanel.setStyleName("register-student-form-panel");
-        _formPanel.setLabelWidth(110);
         _formPanel.setHeight(200);
         _formPanel.setWidth(395);
         _formPanel.setFooter(true);
@@ -74,6 +75,9 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         _formPanel.setHeading("Parallel Program Login for [ " + parallelProgName + " ]");
         
         FieldSet fsLogin = new FieldSet();
+        FormLayout formLayout = new FormLayout();
+        formLayout.setLabelWidth(55);
+        fsLogin.setLayout(formLayout);
         HorizontalPanel hp = new HorizontalPanel();
         fsLogin.setHeading(" ");
 
@@ -83,6 +87,16 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         password.setValidator(new FieldValidator());
         password.setId("password");
         password.setEmptyText("-- enter your password --");
+        password.addKeyListener(new KeyListener() {
+            @Override
+            public void componentKeyPress(ComponentEvent event) {
+                if(event.getKeyCode() == 13) {
+                    // is a ENTER/RETURN
+                    doLogin();
+                }
+            }
+        });
+        
         fsLogin.add(password);
 
         Button returnToHome = new Button("Return to Home Page");
