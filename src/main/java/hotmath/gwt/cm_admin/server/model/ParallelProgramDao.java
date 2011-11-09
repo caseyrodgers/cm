@@ -116,6 +116,10 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
                         }
                     }
                 });
+        if (LOGGER.isDebugEnabled()) {
+        	LOGGER.debug(String.format("isStudentInParallelProgram: userId: %d, isInParallelProgram: %s",
+        			userId, isInParallelProgram));
+        }
         return isInParallelProgram;
     }
 
