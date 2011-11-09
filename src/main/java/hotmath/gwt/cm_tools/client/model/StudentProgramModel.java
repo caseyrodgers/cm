@@ -16,8 +16,8 @@ public class StudentProgramModel implements IsSerializable {
     CmProgramType  programType;
     Integer sectionCount;
     Boolean isActiveProgram = true;
+    Boolean isParallelProgram = false;
     
-
     CustomProgramComposite custom = new CustomProgramComposite();
 
     String programDescription;
@@ -102,10 +102,18 @@ public class StudentProgramModel implements IsSerializable {
 		this.isActiveProgram = isActiveProgram;
 	}
 
+	public boolean getIsParallelProgram() {
+		return isParallelProgram;
+	};
+
+	public void setIsParallelProgram(Boolean isParallelProgram) {
+		this.isParallelProgram = isParallelProgram;
+	}
+
 	@Override
     public String toString() {
         return "StudentProgramModel [programId=" + programId + ", subjectID=" + subjectId
                 + ", programType=" + programType + ", " + custom.toString() + "]";
-    };
+    }
 
 }

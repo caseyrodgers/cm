@@ -1747,6 +1747,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             sprm.setCustom(new CustomProgramComposite(rs.getInt("custom_program_id"), rs
                                     .getString("custom_program_name"), rs.getInt("custom_quiz_id"), rs
                                     .getString("custom_quiz_name")));
+                            sprm.setIsParallelProgram(rs.getInt("main_user_prog_id") != rs.getInt("user_prog_id"));
 
                             StudentSettingsModel mdl = sm.getSettings();
                             mdl.setLimitGames(rs.getInt("limit_games") > 0);
