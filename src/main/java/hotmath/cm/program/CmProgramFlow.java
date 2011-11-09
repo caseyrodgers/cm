@@ -3,6 +3,7 @@ package hotmath.cm.program;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -96,9 +97,10 @@ public class CmProgramFlow {
      */
     public CmProgramFlowAction getActiveFlowAction(final Connection conn) throws Exception {
 
+    	ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
         if (userProgram.isComplete()) {
             if (student.getSettings().getStopAtProgramEnd() || userProgram.isCustom() ||
-            	student.getProgram().getIsParallelProgram()) {
+            	ppDao.isStudentInParallelProgram(student.getUid())) {
                 return new CmProgramFlowAction(CmPlace.END_OF_PROGRAM);
             } else
                 return new CmProgramFlowAction(CmPlace.AUTO_ADVANCED_PROGRAM);
@@ -175,9 +177,11 @@ public class CmProgramFlow {
                  * 
                  */
                 markProgramAsCompleted(conn, true);
+                
+                ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
 
                 if (student.getSettings().getStopAtProgramEnd() ||
-                	student.getProgram().getIsParallelProgram()) {
+                	ppDao.isStudentInParallelProgram(student.getUid())) {
                     action = getActiveFlowAction(conn);
                     assert (action.getPlace() == CmPlace.END_OF_PROGRAM);
                 } else {
