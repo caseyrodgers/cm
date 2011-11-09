@@ -44,7 +44,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         //int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, runId);
+        
+        // always use zero for run_id
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, 0);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
             final String flashId="";
             public void onSuccess(hotmath.gwt.cm_rpc.client.rpc.CmList<WhiteboardCommand> commands) {

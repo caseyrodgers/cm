@@ -85,7 +85,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     }
     
     private void gwt_videoIsReady() {
-        this.videoReadyLabel.setInnerHTML("Video is loaded and ready to play");   
+        this.videoReadyLabel.setInnerHTML("");   
     }
 
     

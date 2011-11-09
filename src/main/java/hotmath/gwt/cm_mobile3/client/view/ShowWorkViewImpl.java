@@ -2,12 +2,14 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView {
@@ -48,6 +50,17 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
     @Override
     public TokenParser getBackButtonLocation() {
         return null;
+    }
+    
+    
+    @Override
+    public BackAction getBackAction() {
+        return new BackAction() {
+            @Override
+            public boolean goBack() {
+                return true;
+            }
+        };
     }
 
 }

@@ -254,7 +254,11 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
                 }
                 else if (page instanceof PrescriptionLessonResourceTutorViewImpl) {
-                    eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
+                    final int scrollTo = pageScroll.get(page);
+                    if (scrollTo > 0) {
+                        scrollWindowTo(scrollTo);
+                    }
+                    //eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
                 }
             }
         });
