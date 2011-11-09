@@ -97,7 +97,8 @@ public class CmProgramFlow {
     public CmProgramFlowAction getActiveFlowAction(final Connection conn) throws Exception {
 
         if (userProgram.isComplete()) {
-            if (student.getSettings().getStopAtProgramEnd() || userProgram.isCustom()) {
+            if (student.getSettings().getStopAtProgramEnd() || userProgram.isCustom() ||
+            	student.getProgram().getIsParallelProgram()) {
                 return new CmProgramFlowAction(CmPlace.END_OF_PROGRAM);
             } else
                 return new CmProgramFlowAction(CmPlace.AUTO_ADVANCED_PROGRAM);
