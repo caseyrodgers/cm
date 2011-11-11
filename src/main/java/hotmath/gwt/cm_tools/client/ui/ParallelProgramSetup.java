@@ -38,7 +38,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	private CmAsyncRequest requestCallback;
     
 	public ParallelProgramSetup(CmAsyncRequest callback, CmAdminModel adminModel) {
-	    super(null, adminModel);
+	    super(null, adminModel, true);
 
 	    doIt(callback);
 	}	
@@ -66,7 +66,7 @@ public class ParallelProgramSetup extends RegisterStudent {
         nameFld = new TextField<String>();  
         nameFld.setFieldLabel("Name");
         nameFld.setAllowBlank(false);
-        nameFld.setId("nameTag");
+        nameFld.setId("name");
         nameFld.setEmptyText("-- Enter Parallel Program name --");
 
         if (parallelProg != null) {
@@ -83,6 +83,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	    // Don't allow Advanced Options (for now?)
 	    hideAdvancedOptionsButton();
 
+	    
 	    showWindow();
 	}
 

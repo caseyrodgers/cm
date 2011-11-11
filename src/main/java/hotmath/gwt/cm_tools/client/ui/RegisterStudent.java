@@ -111,7 +111,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	public static final String ENTRY_REQUIRED_MSG = "This field is required";
 	
+	boolean excludeAutoEnroll;
+	
 	public RegisterStudent(StudentModelI sm, CmAdminModel cm) {
+        this(sm, cm, false);
+	}
+
+	public RegisterStudent(StudentModelI sm, CmAdminModel cm, boolean excludeAutoEnroll) {
+		
+		this.excludeAutoEnroll = excludeAutoEnroll;
 	    
 	    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 	    
@@ -531,6 +539,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
                 for (StudyProgramModel spm : spmList) {
+                	if (excludeAutoEnroll && spm.getShortTitle().equalsIgnoreCase("AUTO-ENROLL")) continue;
                     progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                                   spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                                   spm.getCustomProgramId(), spm.getCustomProgramName()));
