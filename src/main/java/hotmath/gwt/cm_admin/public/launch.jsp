@@ -46,7 +46,6 @@
      <script src="/gwt-resources/js/cm_core.js"></script>
      <script src="/gwt-resources/js/CatchupMath.js"></script>
      <script type="text/javascript" language="javascript" src="/gwt-resources/js/quiz.js"></script>
-     <script type="text/javascript" language="javascript" src="/js/tutor_flash_widget.js"></script>     
      <script type="text/javascript" language="javascript" src="/gwt-resources/js/swfobject/swfobject.js"></script>
      <script>
          var __securityKey = '<%= securityKey %>'

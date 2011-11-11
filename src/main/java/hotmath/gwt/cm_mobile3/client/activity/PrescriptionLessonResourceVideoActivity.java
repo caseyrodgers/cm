@@ -24,8 +24,16 @@ public class PrescriptionLessonResourceVideoActivity implements PrescriptionLess
 
     @Override
     public void setupView(final PrescriptionLessonResourceVideoView view) {
+        String nonFlashUrl = null;
         String video = resourceItem.getFile();
-        String nonFlashUrl = "/help/flvs/tw/" + video;
+        if(video.indexOf("youtube") > -1 || video.indexOf("mathtv") > -1) {
+            nonFlashUrl = video.substring(0, video.indexOf(".flv"));
+        }
+        else {
+            nonFlashUrl = "/help/flvs/tw/" + video;
+        }
+        
+        
         view.setVideoUrlWithOutExtension(nonFlashUrl);
         view.setVideoTitle(resourceItem.getTitle());
     }
