@@ -127,7 +127,7 @@ public class LogMonitor {
              * may be end of action
              * 
              */
-            String end = ActionDispatcher.LOG_FORMAT_BEGIN;
+            String end = ActionDispatcher.LOG_FORMAT_END;
             Pattern endPattern = Pattern.compile(end);
             matcher = endPattern.matcher(line);
             if (matcher.find()) {
