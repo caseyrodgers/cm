@@ -38,7 +38,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	private CmAsyncRequest requestCallback;
     
 	public ParallelProgramSetup(CmAsyncRequest callback, CmAdminModel adminModel) {
-	    super(null, adminModel, true);
+	    super(null, adminModel, false);
 
 	    doIt(callback);
 	}	
