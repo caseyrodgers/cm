@@ -1,17 +1,13 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
-import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -68,9 +64,6 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     HTMLPanel mainPanel;
 
     public void setVideoUrlWithOutExtension(String videoUrl) {
-        int width = 340;
-        int height = 274;
-        
         String mp4File = videoUrl + ".mp4";
         String oggFile = videoUrl + ".ogv";
         String videoHtml = 
@@ -80,7 +73,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
                 "</video>";
         
         videoContainer.setInnerHTML(videoHtml);
-        
+        videoReadyLabel.setInnerText("Touch the arrow once it appears.");
         setupVideoListeners(videoContainer, this);
     }
     

@@ -6,7 +6,7 @@
 		<div ui:field='videoContainer'>
 		    the video
 		</div>
-		<div ui:field='videoReadyLabel'>Touch the arrow once it appears.</div>
+		<div ui:field='videoReadyLabel'></div>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 

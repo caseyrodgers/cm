@@ -64,29 +64,30 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
     }
         
 
-    /**
-     * Static routines used throughout app
-     * 
-     * TODO: move to separate module
-     * 
-     * @return
-     */
-    static public CmServiceAsync getCmService() {
-        return _cmService;
-    }
 
     static CmServiceAsync _cmService;
+    
+    /** 
+     *  Get the single CmServiceAsync instance to all
+     *  for sending RPC commands.
+     *  
+     * @return
+     */
+    static CmServiceAsync _serviceInstance;
+    static public CmServiceAsync getCmService() {
+        return _serviceInstance;
+    }
+    
 
     static {
         String point = GWT.getModuleBaseURL();
         if (!point.endsWith("/"))
             point += "/";
-
-        point = "/cm/";
         
-        _cmService = (CmServiceAsync) GWT.create(CmService.class);
-        ((ServiceDefTarget) _cmService).setServiceEntryPoint(point + "services/cmService");
-
+        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
+        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
+        _serviceInstance = cmService;
+        
         _queryParameters = readQueryString();
     }
 

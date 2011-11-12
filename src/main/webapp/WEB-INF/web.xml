@@ -115,19 +115,7 @@
   <servlet-mapping>
     <servlet-name>CmService</servlet-name>
     <url-pattern>
-      /cm_mobile/services/cmService
-    </url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>CmService</servlet-name>
-    <url-pattern>
       /solution_editor/services/cmService
-    </url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>CmService</servlet-name>
-    <url-pattern>
-      /cm_mobile2/services/cmService
     </url-pattern>
   </servlet-mapping>
   <servlet-mapping>
@@ -140,6 +128,12 @@
     <servlet-name>CmService</servlet-name>
     <url-pattern>
       /hm_mobile/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_mobile3/services/cmService
     </url-pattern>
   </servlet-mapping>
   
