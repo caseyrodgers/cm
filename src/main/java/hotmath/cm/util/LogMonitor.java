@@ -3,18 +3,14 @@ package hotmath.cm.util;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.util.HMConnectionPool;
-import hotmath.util.sql.SqlUtilities;
-
-import sb.util.*;
 
 import java.io.File;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import sb.util.SbUtilities;
 
 
 
@@ -46,17 +42,20 @@ public class LogMonitor {
     LogTailer _tailer;
     boolean _logIsReady;
     boolean _writeToDb=true;
+    LogMonitorOutput output;
 
     private void stopTailing() {
         _tailer.stopTailing();
     }
 
     private LogMonitor(String file) {
-        this(file, true);
+        this(file, new LogMonitorOutputImplStdOut());
     }
-    private LogMonitor(String file, boolean writeToDb) {
-        _writeToDb = writeToDb;
-        System.out.println("Processing log: " + file + " (write_to_db=" + writeToDb + ")");
+    
+    private LogMonitor(String file,LogMonitorOutput output) {
+        this.output = output;
+        
+        System.out.println("Processing log: " + file + " (output=" + output + ")");
 
         _tailer = new LogTailer(new File(file), 2000, true);
         _tailer.addLogFileTailerListener(new LogFileTailerListener() {
@@ -120,8 +119,8 @@ public class LogMonitor {
         		args = argMatcher.group(1);
         	}
         	
-            System.out.println(String.format("cm_log record=%d %s, %s,%d,%s,%s", (++recordsWritten),timeStamp, userType, userId, actionName, id));
-        	writeDatabaseRecord("start", timeStamp, actionName, args, -1, userId, userType, id);
+            // System.out.println(String.format("cm_log record=%d %s, %s,%d,%s,%s", (++recordsWritten),timeStamp, userType, userId, actionName, id));
+        	output.writeRecord("start", timeStamp, actionName, args, -1, userId, userType, id);
         } else {
             /**
              * may be end of action
@@ -143,7 +142,7 @@ public class LogMonitor {
                 int elapsedTime = Integer.parseInt(mills);
                 
                 if (line.indexOf("FAILED") < 0) {
-                    writeDatabaseRecord("end", timeStamp, actionName, null, elapsedTime, userId, userType, id);                	
+                    output.writeRecord("end", timeStamp, actionName, null, elapsedTime, userId, userType, id);                	
                 }
                 else {
                 	String msg = matcher.group(6).trim();
@@ -152,7 +151,7 @@ public class LogMonitor {
                 	if ((idx = msg.indexOf("FAILED")) > 0) {
                 		msg = msg.substring(0, idx);
                 	}
-            		writeDatabaseRecord("fail", timeStamp, actionName, msg, elapsedTime, userId, userType, id);
+                	output.writeRecord("fail", timeStamp, actionName, msg, elapsedTime, userId, userType, id);
                 }
             }
         }
@@ -163,38 +162,7 @@ public class LogMonitor {
     }
     
     int recordsWritten=0;
-    private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime,int userId, String userType,
-    		String actionId)  {
-        Connection conn=null;
-        PreparedStatement ps=null;
-        
-        if(!_writeToDb)
-            return;
-        
-        try {
-            String sql = "insert into HA_ACTION_LOG(type, time_stamp, action_name, action_args, elapse_time, user_id, user_type, action_id)values(?,?,?,?,?,?,?,?)";
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(sql);
-            
-            ps.setString(1, type);
-            ps.setString(2, timeStamp);
-            ps.setString(3, actionName);
-            ps.setString(4, args);
-            ps.setInt(5, elapseTime);
-            ps.setInt(6, userId);
-            ps.setString(7,userType);
-            ps.setString(8, actionId);
-            
-            ps.executeUpdate();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        finally {
-            SqlUtilities.releaseResources(null, ps,conn);
-        }
-    }
-
+   
 
     private ActionInfo getActionInfo(String name) {
         ActionInfo ai = actions.get(name);
@@ -213,8 +181,9 @@ public class LogMonitor {
             SbUtilities.addOptions(as);
             String x = SbUtilities.getOption("true", "write_to_db");
             boolean writeToDb = SbUtilities.getBoolean(x);
-
-            new LogMonitor(as[0], writeToDb);
+            
+            LogMonitorOutput output = writeToDb?new LogMonitorOutputImplDb():new LogMonitorOutputImplStdOut();
+            new LogMonitor(as[0], output);
         } catch (Exception e) {
             e.printStackTrace();
         }
