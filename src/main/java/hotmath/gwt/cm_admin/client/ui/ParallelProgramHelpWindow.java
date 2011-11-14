@@ -24,7 +24,7 @@ public class ParallelProgramHelpWindow extends CmWindow {
         DOM.setElementProperty(frame.getElement(), "frameBorder", "no"); // disable
         DOM.setElementPropertyInt(frame.getElement(), "border", 0); // disable
         DOM.setElementPropertyInt(frame.getElement(), "frameSpacing", 0); // disable
-        frame.setSize("300px", "450px");
+        frame.setSize("100%", "300px");
         
         
         Button closeBtn = new Button("Close");
