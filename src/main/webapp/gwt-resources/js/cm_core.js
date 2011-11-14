@@ -1,4 +1,3 @@
-
 /** core Catchup Math routines
  * 
  */
@@ -296,3 +295,9 @@ function log() {
  */
 InmhButtons = {};
 
+
+
+
+function replaceAll(txt, replace, with_this) {
+	return txt.replace(new RegExp(replace, 'g'), with_this);
+}
