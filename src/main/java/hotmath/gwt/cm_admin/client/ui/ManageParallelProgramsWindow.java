@@ -91,6 +91,12 @@ public class ManageParallelProgramsWindow extends CmWindow {
         LayoutContainer lc = new LayoutContainer();
         lc.addStyleName("manage-groups-window-buttons");
 
+        lc.add(new StdButton("Help", "Parallel Program Help.", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                new ParallelProgramHelpWindow().setVisible(true);
+            }
+        }));
+
         lc.add(new StdButton("New Parallel Program", "Create a new Parallel Program.", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
