@@ -38,7 +38,8 @@ public class ParallelProgramSetup extends RegisterStudent {
 	private CmAsyncRequest requestCallback;
     
 	public ParallelProgramSetup(CmAsyncRequest callback, CmAdminModel adminModel) {
-	    super(null, adminModel, false);
+		// exclude Auto-Enroll Program unless in debug mode
+	    super(null, adminModel, (CmShared.getQueryParameter("debug") == null));
 
 	    doIt(callback);
 	}	
