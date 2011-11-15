@@ -233,6 +233,10 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si.getItemData().add(
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_wordproblems_level1.swf",
                         "Word Problems"));
+        
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_combine_liketerms.swf",
+                        "Combine Like Terms"));        
         subMenu.add(si);
 
         return subMenu;
@@ -387,8 +391,15 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
 
         si = new SubMenuItem(null);
         si.getItemData().add(
-                new InmhItemData(t, "/learning_activities/interactivities/flashcard_wordproblems_level1.swf",
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_wordproblems_level1.swf?lang=es",
                         "Problemas con palabras"));
+        
+        si.getItemData().add(
+                new InmhItemData(t, "/learning_activities/interactivities/flashcard_combine_liketerms.swf?lang=es",
+                        "Combinar como términos"));        
+        subMenu.add(si);
+        
+                
         subMenu.add(si);
 
         return subMenu;
