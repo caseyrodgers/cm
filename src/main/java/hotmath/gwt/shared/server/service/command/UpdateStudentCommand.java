@@ -50,8 +50,6 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
 
         	    // passing false marks Program as incomplete
         	    pDao.setProgramAsComplete(conn, student.getProgram().getProgramId(), false);
-        	    
-        	    LOGGER.debug("update - not in PP");
         	}
         	else {
                 // update CM Program Assign
@@ -64,8 +62,6 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
 
         	    // passing false marks Program as incomplete
         	    pDao.setProgramAsComplete(conn, cmProg.getUserProgId(), false);
-
-        	    LOGGER.debug("update - in PP");
             }
         }
         return student;
