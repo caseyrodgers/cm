@@ -593,9 +593,7 @@ and (
 )             
 
 
-
 .key=DEACTIVATE_STUDENT
-
 
 update HA_USER 
 set is_active = 0, user_passcode = ? 
@@ -603,18 +601,16 @@ where uid = ?
 and is_auto_create_template = 0
 
 
-
 .key=LOAD_ACTIVE_INFO
 
-
-select active_run_id, active_test_id, active_segment, 
-           active_segment_slot, active_run_session, 
-           t.test_def_id, t.test_name, 
-           t.segment_count as program_segment_count
+select u.active_run_id, u.active_test_id, u.active_segment, 
+       u.active_segment_slot, u.active_run_session, 
+       t.test_def_id, t.test_name, 
+       t.segment_count as program_segment_count
 from HA_USER u
-  LEFT JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id  
-  JOIN HA_TEST_DEF t on t.test_def_id = p.test_def_id
-where uid = ?
+LEFT JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id  
+LEFT JOIN HA_TEST_DEF t on t.test_def_id = p.test_def_id
+where u.uid = ?
 
 
 .key=SAVE_ACTIVE_INFO
