@@ -380,7 +380,7 @@ union
 
 select iu.run_id, iu.item_type as activity_type, count(*) as activity_count
 from HA_TEST_RUN_INMH_USE iu
-where iu.run_id in ( $$RUNID_LIST$$ )
+where iu.run_id in ( $$RUNID_LIST$$ ) and upper(iu.item_type) != 'REVIEW'
 group by iu.run_id, activity_type
 
 union
