@@ -404,7 +404,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         si = new SubMenuItem(null);
         si.getItemData().add(
                 new InmhItemData(t, "/learning_activities/interactivities/flashcard_combine_liketerms.swf?lang=es",
-                        "Combinar como términos"));        
+                        "Combinar como t&eacute;rminos"));        
         subMenu.add(si);
 
         return subMenu;
