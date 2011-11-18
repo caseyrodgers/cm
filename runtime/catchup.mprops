@@ -373,7 +373,7 @@ order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.sessio
 
 select l.run_id, 'REVIEW' as activity_type, count(*) as activity_count
 from HA_TEST_RUN_LESSON l
-where l.run_id in ( $$RUNID_LIST$$ )
+where l.run_id in ( $$RUNID_LIST$$ ) and l.lesson_viewed is not null
 group by l.run_id, activity_type
 
 union
