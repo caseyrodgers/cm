@@ -60,6 +60,9 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     	buildUi_Old(pdata);
     }
 
+    /** 
+     * @param pdata
+     */
     public void buildUi_Old(PrescriptionData pdata) {
         List<PrescriptionSessionDataResource> resources = pdata.getCurrSession().getInmhResources();
 

@@ -94,14 +94,16 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    
 	    FlowPanel flowPanel = new FlowPanel();
 	    flowPanel.add(new HTML("<p>You have completed this problem set.<br/>You answered <b style='font-size: 2em'>" + correct + "</b> out of <b style='font-size: 2em'>" + limit + "</b> problems correct.</p>"));
-	    flowPanel.add(new Button("Back to Lesson",new ClickHandler() {
-            
+        Button btn = new Button("Back to Lesson",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 Controller.navigateBack();
                 pp.hide();
             }
-        }));
+        });
+        btn.getElement().setInnerHTML("<span><span>" + btn.getText() + "</span></span>");
+        btn.addStyleName("sexybutton");
+	    flowPanel.add(btn);
         pp = MessageBox.showMessage(flowPanel,null);
 	}
 	

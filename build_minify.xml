@@ -21,11 +21,9 @@
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
                    cm_core-min.js
-                   swfobject-min.js
             	   browser_info_tools-min.js            	
             	   tutor_tablet-min.js
                	   dom_utils-min.js            	
-                   excanvas-min.js
                    whiteboard-min.js
             	   quiz-min.js
                    ../../../../../../hotmath2/web/js/tutor_dynamic.js
