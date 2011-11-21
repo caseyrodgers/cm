@@ -45,7 +45,7 @@ public class CmSolutionManagerDao {
     }
     
 
-    public void saveSolutionXml(final Connection conn, String pid, String xml) throws Exception {
+    public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine) throws Exception {
         PreparedStatement ps=null;
         try {
             
@@ -53,10 +53,11 @@ public class CmSolutionManagerDao {
                 createNewSolution(conn, pid);
             }
             
-            String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ? where problemindex = ?";
+            String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, tutor_define = ? where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, xml);
-            ps.setString(2, pid);
+            ps.setString(2, tutorDefine);
+            ps.setString(3, pid);
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not save solution xml: " + pid);
             
@@ -171,7 +172,7 @@ public class CmSolutionManagerDao {
     public TutorSolution getTutorSolution(final Connection conn, String pid) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "select solutionxml from SOLUTIONS where problemindex = ?";
+            String sql = "select solutionxml,tutor_define from SOLUTIONS where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pid);
             
@@ -180,6 +181,8 @@ public class CmSolutionManagerDao {
                 throw new Exception("No such solution: " + pid);
             }
             TutorSolution ts = TutorSolution.parse(rs.getString("solutionxml"));
+            ts.setTutorDefine(rs.getString("tutor_define"));
+            
             return ts;
         }
         finally {

@@ -11,6 +11,7 @@ public class SolutionMeta implements Response{
     String problemStatement;
     String figure;
     String md5OnRead;
+    String tutorDefine;
     
     List<SolutionMetaStep> steps = new ArrayList<SolutionMetaStep>();
     
@@ -18,6 +19,14 @@ public class SolutionMeta implements Response{
     
     public SolutionMeta(String pid) {
         this.pid = pid;
+    }
+
+    public String getTutorDefine() {
+        return tutorDefine;
+    }
+
+    public void setTutorDefine(String tutorDefine) {
+        this.tutorDefine = tutorDefine;
     }
 
     public String getPid() {

@@ -46,6 +46,13 @@ public class SolutionStepEditor extends ContentPanel {
         setScrollMode(Scroll.AUTOY);
         add(new Label("No solution loaded."));
 
+        getHeader().addTool(new Button("Define", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                showDefineEditor();
+            }
+        }));
+
         getHeader().addTool(new Button("Widget", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -81,6 +88,10 @@ public class SolutionStepEditor extends ContentPanel {
                 showInfo();
             }
         }));
+    }
+    
+    public SolutionMeta getMeta() {
+        return _meta;
     }
     
     public String getStatement() {
@@ -120,6 +131,10 @@ public class SolutionStepEditor extends ContentPanel {
                 fireChanged();
             }
         }, widgetJson);
+    }
+    
+    public void showDefineEditor() {
+        new StepEditorDefineDialog(_meta.getTutorDefine());
     }
     
     public void fireChanged() {
@@ -226,7 +241,7 @@ public class SolutionStepEditor extends ContentPanel {
         }
         
         String statementFigure = _meta.getFigure();
-        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs);
+        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs,_meta.getTutorDefine());
         action.setFromPid(_meta.getPid());
         saveSolution(action, asPid);
     }

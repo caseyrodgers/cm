@@ -9,11 +9,16 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionAdminAction;
 import hotmath.gwt.solution_editor.server.CmSolutionManagerDao;
 
+/** Not used? *
+ * 
+ * @author casey
+ *
+ */
 public class SaveSolutionAdminCommand implements ActionHandler<SaveSolutionAdminAction, RpcData>{
 
     @Override
     public RpcData execute(Connection conn, SaveSolutionAdminAction action) throws Exception {
-        new CmSolutionManagerDao().saveSolutionXml(conn, action.getPid(), action.getXml());
+        new CmSolutionManagerDao().saveSolutionXml(conn, action.getPid(), action.getXml(),null );
         RpcData rdata = new RpcData("status=OK");
         return rdata;
     }

@@ -19,15 +19,17 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
     String md5OnRead;
     boolean overrideDirty;
     List<StepUnitPair> steps;
+    String tutorDefine;
     
     public SaveSolutionStepsAdminAction(){}
     
-    public SaveSolutionStepsAdminAction(String md5OnRead, String pid, String statement,String statementFigure, List<StepUnitPair> steps) {
+    public SaveSolutionStepsAdminAction(String md5OnRead, String pid, String statement,String statementFigure, List<StepUnitPair> steps, String tutorDefine) {
         this.md5OnRead = md5OnRead;
         this.statement=statement;
         this.statementFigure = statementFigure;
         this.pid = pid;
         this.steps = steps;
+        this.tutorDefine = tutorDefine;
     }
     public String getOriginalPid() {
         return originalPid;
@@ -64,6 +66,14 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
 
     public boolean isOverrideDirty() {
         return overrideDirty;
+    }
+
+    public String getTutorDefine() {
+        return tutorDefine;
+    }
+
+    public void setTutorDefine(String tutorDefine) {
+        this.tutorDefine = tutorDefine;
     }
 
     public void setForceWrite(boolean overrideDirty) {

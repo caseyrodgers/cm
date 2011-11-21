@@ -39,6 +39,8 @@ public class TutorSolution implements SbTestImpl {
     String createdBy;
 
     TutorProblem problem = null;
+    
+    String tutorDefine;
 
     public TutorSolution(){}
     
@@ -81,6 +83,14 @@ public class TutorSolution implements SbTestImpl {
     public String toXml() throws Exception {
         return new TutorSolutionXmlWriter(this).toXml();
     
+    }
+
+    public String getTutorDefine() {
+        return tutorDefine;
+    }
+
+    public void setTutorDefine(String tutorDefine) {
+        this.tutorDefine = tutorDefine;
     }
 
     @Override

@@ -51,6 +51,7 @@ public class LoadSolutionMetaCommand implements ActionHandler<LoadSolutionMetaAc
         ProblemID pid = new ProblemID(action.getPid());
         TutorSolution tutorSolution = new CmSolutionManagerDao().getTutorSolution(conn, _pid);
         SolutionMeta meta = new SolutionMeta(action.getPid());
+        meta.setTutorDefine(tutorSolution.getTutorDefine());
         
         /** Save MD5, and if different on save the user must confirm overwrite
          *  
