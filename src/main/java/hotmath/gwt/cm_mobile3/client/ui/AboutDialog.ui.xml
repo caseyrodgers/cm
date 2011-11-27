@@ -29,6 +29,11 @@
 			<g:Button styleName='sexybutton sexysimple' ui:field="closeButton">
 				<span class='ok'>Close</span>
 			</g:Button>
+			
+			<g:Button styleName='sexybutton sexysimple' ui:field="logoutButton">
+                <span class='user'>Logout</span>
+            </g:Button>
+			
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

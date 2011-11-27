@@ -1,12 +1,11 @@
 package hotmath.gwt.cm_rpc.client.rpc;
-import hotmath.gwt.cm_tools.client.ui.ui.PrescriptionResource;
 
 /** Provides an abstraction over a single CM Program Item.
  * 
  * Represents the current location within a CM program
  * 
  * contains a composite object containing the data for
- * both a QUIZ and a PRESCRIPTION item.
+ * both a QUIZ OR a PRESCRIPTION item.
  * 
  * @author casey
  *

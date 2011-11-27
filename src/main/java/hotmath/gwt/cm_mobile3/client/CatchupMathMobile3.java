@@ -154,10 +154,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             // initializeExternalJs();
 
             // History.fireCurrentHistoryState();
+            
+            // always show login
             __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
+            
+            
 
             // CreateTestRunResponse testRunResponse = new
             // CreateTestRunResponse(null,0,0,0,false);
@@ -182,7 +186,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         __clientFactory.getEventBus().addHandler(AutoAdvanceUserEvent.TYPE, new AutoAdvanceUserEventHandlerImpl());
 
         Log.info("Catchup Math Mobile Initialized");
-
     }
 
     RootPanel _loadingDiv;

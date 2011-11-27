@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionResourceEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -162,6 +163,6 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     @Override
     public void goBack() {
         /** force back to Login view */
-        eventBus.fireEvent(new ShowLoginViewEvent());
+        eventBus.fireEvent(new ShowWelcomeViewEvent());
     }
 }
