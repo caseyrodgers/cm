@@ -1,7 +1,8 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm_rpc.client.model.CmParallelProgram;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -65,7 +66,13 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
      * Mark each lesson with the lowest level applicable for the lesson.
      * 
      */
+    @SuppressWarnings("unchecked")
     public CmList<CustomLessonModel> getAllLessons(final Connection conn) throws Exception {
+        
+        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null);
+        if(list != null) {
+            return list;
+        }
         HashMap<String, List<CustomLessonModel>> map = new HashMap<String, List<CustomLessonModel>>();
         Statement stmt = null;
         try {
@@ -120,7 +127,9 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                     return o1.getLesson().compareTo(o2.getLesson());
                 }
             });
-
+            
+            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null,lessons);
+            
             return lessons;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
@@ -198,6 +207,9 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         PreparedStatement stmt = null;
         try {
             List<ProgramSegment> programSegments = new ArrayList<ProgramSegment>();
+            
+            CmList<CustomLessonModel> all = getAllLessons(conn);
+          
 
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_PROGRAM_ITEMS");
             stmt = conn.prepareStatement(sql);
@@ -226,10 +238,21 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                     }
                 } else {
                     /** is a lesson */
-                    segment.getLessons().add(new CustomLessonModel(rs.getString("lesson"), rs.getString("file"), rs
-                            .getString("subject")));
+                    String lessonFile =  rs.getString("file");
+                    String subject = getSubject(lessonFile, all);
+                    segment.getLessons().add(new CustomLessonModel(rs.getString("lesson"),lessonFile, subject));
                 }
             }
+            
+            
+            Collections.sort(segment.getLessons(), new Comparator<CustomLessonModel>() {
+                @Override
+                public int compare(CustomLessonModel o1, CustomLessonModel o2) {
+                    return o1.getLesson().compareTo(o2.getLesson());
+                }
+            });            
+            
+            
             return programSegments;
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
@@ -237,6 +260,31 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     }
     
     
+    
+    /** Return the subject of the lesson found in all
+     * 
+     * Default == 'Ess';
+     * @param lesson
+     * @param all
+     * @return
+     */
+    private String getSubject(String lesson, CmList<CustomLessonModel> all) {
+        
+        for(CustomLessonModel l: all) {
+            if(l.getFile().equals(lesson)) {
+                return l.getSubject();
+            }
+        }
+        
+        return "Ess";
+    }
+    
+    
+    /** Composit of CustomLessonModel list of models.
+     * 
+     * @author casey
+     *
+     */
     class ProgramSegment {
         CustomLessonModel quiz;
         CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
@@ -262,6 +310,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         public void setLessons(CmList<CustomLessonModel> lessons) {
             this.lessons = lessons;
         }
+
     }
 
     /**

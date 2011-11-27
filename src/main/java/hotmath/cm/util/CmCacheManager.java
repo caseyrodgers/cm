@@ -87,7 +87,10 @@ public class CmCacheManager  {
 		PROBLEM_NUMBERS,
 		
 		/** Activity Times for Time-on-task */
-		ACTIVITY_TIMES
+		ACTIVITY_TIMES,
+		
+		/** List of all custom program lesson names */
+		ALL_CUSTOM_PROGRAM_LESSONS
 	};
 
 	private void flushCache() {
