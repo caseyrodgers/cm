@@ -245,12 +245,12 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             }
             
             
-            Collections.sort(segment.getLessons(), new Comparator<CustomLessonModel>() {
-                @Override
-                public int compare(CustomLessonModel o1, CustomLessonModel o2) {
-                    return o1.getLesson().compareTo(o2.getLesson());
-                }
-            });            
+//            Collections.sort(segment.getLessons(), new Comparator<CustomLessonModel>() {
+//                @Override
+//                public int compare(CustomLessonModel o1, CustomLessonModel o2) {
+//                    return o1.getLesson().compareTo(o2.getLesson());
+//                }
+//            });            
             
             
             return programSegments;
