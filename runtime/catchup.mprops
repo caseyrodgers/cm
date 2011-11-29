@@ -3,6 +3,8 @@
 #############
 
 ### uid used as demo user template
+#### will be child of demo admin_id=13 
+
 .key=DEMO_USER_ID
 
 727
@@ -1901,6 +1903,7 @@ select *
 from v_HA_CUSTOM_PROGRAM_INFO
 where admin_id = ? 
 or (is_template = 1 and admin_id is null)
+order by is_template desc, load_order, name
 
 
 
