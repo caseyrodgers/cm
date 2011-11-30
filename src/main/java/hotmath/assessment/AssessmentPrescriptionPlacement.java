@@ -110,7 +110,7 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
                 updateStudentTime = System.currentTimeMillis() - startTime;
                 
                 startTime = System.currentTimeMillis();
-                dao.setActiveInfo(conn, user.getUid(), active);
+                dao.setActiveInfo(conn, user.getUid(), active);  // clear out
                 activeInfoTime = System.currentTimeMillis() - startTime;
             }
             finally {

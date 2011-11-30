@@ -85,6 +85,10 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
+        this(conn, testRun, null);
+    }
+    
+    public AssessmentPrescription(final Connection conn, HaTestRun testRun, ClientEnvironment clientEnvironment) throws Exception {
         this(conn);
         logger.debug("Creating prescription for run: " + testRun);
         this.testRun = testRun;
@@ -103,8 +107,9 @@ public class AssessmentPrescription {
 
         totalPrescription = itemsData.size() * TOTAL_SESSION_SOLUTIONS;
         
-        
-        ClientEnvironment clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
+        if(clientEnvironment == null) {
+            clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
+        }
         logger.info("Creating prescription for client info: " + clientEnvironment);
 
         // assign weights to items
