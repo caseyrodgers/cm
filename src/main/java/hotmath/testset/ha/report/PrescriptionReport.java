@@ -341,7 +341,8 @@ public class PrescriptionReport {
                         AssessmentPrescription noFlashPres = new AssessmentPrescription(conn,prescription.getTestRun(), new ClientEnvironment(false));
                         if(noFlashPres.getSessions().size() == 0 || noFlashPres.getSessions().get(0).getSessionItems().size() == 0) {
                             String lessonFile = session.getInmhItemsFor(session.getTopic()).get(0).getFile();
-                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": no non-flash content found for '" + lessonFile + "'");
+                            String sessionInfo = String.format("%s (%d) [question pid: %s] (%s)",  prescription.getTest().getTitle(), prescription.getTest().getSegment(), quizQuestionPid, lessonFile);
+                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": no non-flash content found for '" + sessionInfo + "'");
                         }
                     }
                     
@@ -493,6 +494,10 @@ public class PrescriptionReport {
                         program = p;
                         break;
                     }
+                }
+                
+                if(program == null) {
+                    throw new Exception("-program specified unknown program: '" + programName + "'");
                 }
             }
             __logger.info("PrescriptionReport: Starting");
