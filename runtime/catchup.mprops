@@ -1107,18 +1107,6 @@ FROM   HA_TEST_DEF
 ORDER BY test_def_id
 
 
-.key=TEST_IDS_FOR_CHAPTER_PROGRAM
-
-SELECT s.problemindex
-FROM   SOLUTIONS s
-INNER  JOIN BOOK_TOC b on b.textcode = s.booktitle
-WHERE  s.BOOKTITLE = ?
-  AND  b.title = ?
-  AND  b.level = 2
-  AND  (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?)
-  AND  problemnumber between ? and ?
-
-
 .key=TEST_FOR_TEST_NAME
 
 SELECT *
@@ -1159,7 +1147,8 @@ ORDER BY problemnumber
 SELECT problemindex
 FROM   SOLUTIONS
 WHERE  (SOLUTIONS.BOOKTITLE = ? and (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?))
- and   problemnumber between ? and ?
+ AND   problemnumber between ? and ?
+ORDER BY problemnumber 
  
 #SELECT problemindex
 #FROM   SOLUTIONS
@@ -1168,6 +1157,18 @@ WHERE  (SOLUTIONS.BOOKTITLE = ? and (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SE
 #  AND  sectiontitle = ?
 #  AND  problemnumber between ? and ?
 
+
+.key=TEST_IDS_FOR_CHAPTER_PROGRAM
+
+SELECT s.problemindex
+FROM   SOLUTIONS s
+INNER  JOIN BOOK_TOC b on b.textcode = s.booktitle
+WHERE  s.BOOKTITLE = ?
+  AND  b.title = ?
+  AND  b.level = 2
+  AND  (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?)
+  AND  problemnumber between ? and ?
+ORDER BY problemnumber
 
 .key=PROGRAM_CHAPTERS_FOR_TEST_DEF
 
@@ -1966,15 +1967,12 @@ order by cpl.lesson
 ### CmProgramListingDao 
 #######################
 
-
 .key=GET_PROGRAM_LESSONS
 
-select distinct lesson
-from  HA_PROGRAM_LESSONS_static
-where pid in ($$PIDLIST$$)
-order by lesson;
-
-
+SELECT DISTINCT lesson
+FROM  HA_PROGRAM_LESSONS_static
+WHERE pid in ($$PIDLIST$$)
+ORDER BY FIELD( pid, $$PIDLIST$$ ), id
 
 
 ########################
@@ -2798,7 +2796,7 @@ from CM_PROGRAM_ASSIGN pa
 join CM_PARALLEL_PROGRAM pp on pp.id = ?
 where pa.user_id = ?
   and pa.prog_inst_id = pp.prog_inst_id
-  and pa.is_parallel_prog = 1  
+  and pa.is_parallel_prog = 1
   
 
 .key=CM_PROGRAM_EXISTS_FOR_STUDENT
