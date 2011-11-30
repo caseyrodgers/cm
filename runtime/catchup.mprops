@@ -1389,7 +1389,7 @@ from (
     from HA_USER_LOGIN ul 
     where ul.user_id = ?
     and login_time >= ?
-    and is_real_login = 0
+    and is_real_login = 1
     group by date(login_time)
 ) t
 
