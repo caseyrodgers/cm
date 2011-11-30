@@ -302,13 +302,6 @@ public class PrescriptionReport {
 
                     AssessmentPrescriptionSession session = prescription.getSessions().get(i);
                     List<SessionData> rpps = session.getSessionItems();
-
-                    
-                    String thisLesson = session.getInmhItemsFor(session.getTopic()).get(0).getFile();
-                    System.out.println(thisLesson);
-                    
-
-
                     
                     if (!session.isRpa() && rpps.size() != 3) {
                         logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i
@@ -347,7 +340,8 @@ public class PrescriptionReport {
                         
                         AssessmentPrescription noFlashPres = new AssessmentPrescription(conn,prescription.getTestRun(), new ClientEnvironment(false));
                         if(noFlashPres.getSessions().size() == 0 || noFlashPres.getSessions().get(0).getSessionItems().size() == 0) {
-                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": no non-flash content found for '" + session + "'");
+                            String lessonFile = session.getInmhItemsFor(session.getTopic()).get(0).getFile();
+                            logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": no non-flash content found for '" + lessonFile + "'");
                         }
                     }
                     
