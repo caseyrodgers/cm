@@ -8,6 +8,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
@@ -347,6 +348,18 @@ public class AssessmentPrescription {
 
         List<SessionData> session = new ArrayList<AssessmentPrescription.SessionData>();
 
+        
+        /** create a sorted list with dynamic solutions first.  That way they will be 
+         *  added to the prescription before 'raw' PIDS.
+         */
+        Collections.sort(rppWidgets, new Comparator<RppWidget>() {
+            @Override
+            public int compare(RppWidget o1, RppWidget o2) {
+                return o1.getWidgetJsonArgs()!=null?0:1;
+            }
+        });
+
+        
         List<RppWidget> maybeList = new ArrayList<RppWidget>();
         for (RppWidget rpp : rppWidgets) {
             if(rpp.isFlashRequired())
@@ -354,8 +367,8 @@ public class AssessmentPrescription {
             ProblemID pid = new ProblemID(rpp.getFile());
 
             int pidGradeLevel = pid.getGradeLevel();
-            if (pidGradeLevel == testDefGradeLevel) {
-                logger.debug("adding exact grade level match: " + rpp);
+            if (pidGradeLevel == testDefGradeLevel || rpp.getWidgetJsonArgs() != null) {
+                logger.debug("adding exact grade level match or dynamnic: " + rpp);
                 session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
 
                 if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)

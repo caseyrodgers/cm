@@ -24,7 +24,6 @@ public class CmHistoryManager {
     private CmHistoryManager(){}
     
     
-    static Integer __uniqer = 1;
     /** Cause a new history change to occur, this will
      *  invoke the global changeListener.
      *  
@@ -33,7 +32,7 @@ public class CmHistoryManager {
      * @param location
      */
     public void addHistoryLocation(CmLocation location) {
-        History.newItem(location.toString() + "" + ":" + (__uniqer++));
+        History.newItem(location.toString() + "" + ":" + (System.currentTimeMillis()));
     }
     
     
