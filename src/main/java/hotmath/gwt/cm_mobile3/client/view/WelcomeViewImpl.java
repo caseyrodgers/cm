@@ -37,7 +37,7 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
 
     @Override
     public String getBackButtonText() {
-        return "Back";
+        return null;
     }
 
 

@@ -2,7 +2,9 @@ package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -74,6 +76,10 @@ public class QuizCheckInfoDialog extends DialogBox {
                 toDo = "You will now be shown the Welcome screen.";
                 break;
                 
+            case AUTO_PLACEMENT:
+                toDo = "You have been assigned to the " + cpfa.getAssignedTest() + " based on your quiz score.";
+                break;
+                
                 default:
                     MessageBox.showError("QuizCheckInfoDialog Unknown place: " + cpfa.getPlace());
         }
@@ -96,7 +102,11 @@ public class QuizCheckInfoDialog extends DialogBox {
         removeFromParent();
         
         
-        if(testRunResponse.getNextAction().getPlace() == CmPlace.QUIZ) {
+        if(testRunResponse.getNextAction().getPlace() == CmPlace.AUTO_PLACEMENT) {
+            /** force a new login to retrieve the newly setup program */
+            reLogin();
+        }
+        else if(testRunResponse.getNextAction().getPlace() == CmPlace.QUIZ) {
             GetCmProgramFlowAction action = new GetCmProgramFlowAction(SharedData.getUserInfo().getUid(), FlowType.ACTIVE);
             eventBus.fireEvent(new SystemIsBusyEvent(true));
             CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmProgramFlowAction>() {
@@ -118,6 +128,37 @@ public class QuizCheckInfoDialog extends DialogBox {
             eventBus.fireEvent(new HandleNextFlowEvent(testRunResponse.getNextAction()));
         }
     }
+    
+    
+    private void reLogin() {
+        eventBus.fireEvent(new SystemIsBusyEvent(true));
+        GetCmProgramFlowAction action = new GetCmProgramFlowAction(SharedData.getUserInfo().getUid(), FlowType.ACTIVE);
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmProgramFlowAction>() {
+            @Override
+            public void onSuccess(CmProgramFlowAction result) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                Log.info("re login successful: " + result);
+                
+                
+                if(result.getPlace() == CmPlace.ERROR_FLASH_REQUIRED) {
+                    eventBus.fireEvent(new ShowFlashRequiredEvent());
+                }
+                else {
+                    SharedData.setFlowAction(result);
+                    
+                    eventBus.fireEvent(new ShowWelcomeViewEvent());
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+               eventBus.fireEvent(new SystemIsBusyEvent(false));
+               MessageBox.showMessage("Could not log you in: " + caught.getMessage());
+            }
+        });        
+        
+    }
+    
     
     
     @UiField

@@ -58,22 +58,9 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
     }
     @Override
     public String getBackButtonText() {
-        return "Back";
+        return null;
     }
 
-    @Override
-    public BackAction getBackAction() {
-        return new BackAction() {
-            
-            @Override
-            public boolean goBack() {
-                History.newItem("login");
-                return false;
-            }
-        };
-        
-    }
-    
     @Override
     public List<ControlAction> getControlFloaterActions() {
         return null;
