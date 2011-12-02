@@ -1147,8 +1147,7 @@ ORDER BY problemnumber
 SELECT problemindex
 FROM   SOLUTIONS
 WHERE  (SOLUTIONS.BOOKTITLE = ? and (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?))
- AND   problemnumber between ? and ?
-ORDER BY problemnumber 
+  AND  problemnumber between ? and ?
  
 #SELECT problemindex
 #FROM   SOLUTIONS
@@ -1972,7 +1971,7 @@ order by cpl.lesson
 SELECT DISTINCT lesson
 FROM  HA_PROGRAM_LESSONS_static
 WHERE pid in ($$PIDLIST$$)
-ORDER BY FIELD( pid, $$PIDLIST$$ ), id
+ORDER BY lesson
 
 
 ########################
