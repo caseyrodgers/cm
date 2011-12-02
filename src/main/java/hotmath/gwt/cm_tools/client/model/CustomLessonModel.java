@@ -126,4 +126,10 @@ public class CustomLessonModel extends BaseModel implements Response {
             return super.equals(obj);
         }
     }
+    
+    
+    @Override
+    public String toString() {
+        return getFile();
+    }
 }

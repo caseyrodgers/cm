@@ -97,7 +97,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 lessons.add(clm);
             }
 
-            checkForDuplicates(map);
+            //checkForDuplicates(map);
 
             /**
              * at this point we have a map containing a distinct list of file
@@ -136,6 +136,10 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         }
     }
     
+    /** Output a report showing lessons with duplicate titles
+     * 
+     * @param map
+     */
     private void checkForDuplicates(HashMap<String, List<CustomLessonModel>> map) {
         System.out.println("List of files with more than one lesson:");
         for (String f : map.keySet()) {
