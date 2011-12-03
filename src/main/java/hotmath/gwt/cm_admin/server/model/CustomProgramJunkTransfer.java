@@ -102,8 +102,13 @@ public class CustomProgramJunkTransfer implements SbTestImpl {
     
     static public void main(String as[]) {
         try {
-            SbTesterFrameGeneric tester = new SbTesterFrameGeneric(new CustomProgramJunkTransfer(HMConnectionPool.getConnection()));
-            tester.doTest(null, null);
+            if(as.length > 0) {
+                new CustomProgramJunkTransfer(HMConnectionPool.getConnection()).moveNewTopicsOver();
+            }
+            else {
+                SbTesterFrameGeneric tester = new SbTesterFrameGeneric(new CustomProgramJunkTransfer(HMConnectionPool.getConnection()));
+                tester.doTest(null, null);
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
