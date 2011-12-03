@@ -47,7 +47,7 @@ public class CustomProgramJunkTransfer implements SbTestImpl {
     private void copyNewProgramsToPilotAccount(String progName) throws Exception {
        
         String sql = "select tcp.id as to_cp, fcp.id as from_cp " +
-                     " from HA_CUSTOM_PROGRAM tcp, HA_CUSTOM_PROGRAM fcp " +
+                     " from HA_CUSTOM_PROGRAM tcp, JUNK_HA_CUSTOM_PROGRAM fcp " +
                      " where tcp.admin_id = ? and tcp.name = ? " +
                      " and fcp.admin_id = ? and fcp.name = tcp.name";
         
