@@ -2,7 +2,7 @@ package hotmath.gwt.cm_rpc.client.model.program_listing;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProgramLesson implements CmTreeNode, IsSerializable{
+public class ProgramLesson implements CmTreeNode, IsSerializable {
     String name;
     CmTreeNode parent;
 
