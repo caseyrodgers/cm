@@ -8,6 +8,8 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 import java.awt.Color;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -112,16 +114,15 @@ public class ReportUtils {
     }
 
     public static HeaderFooter getBasicReportHeader(AccountInfoModel info, String label) {
+    	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    	String today = dateFormat.format(new Date());
         Phrase heading = new Phrase();
         Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
-        Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
-        Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
+        Phrase date = buildPhraseLabel("Date: ", today);
         
         heading.add(school);
         heading.add(Chunk.NEWLINE);
-        heading.add(admin);
-        heading.add(Chunk.NEWLINE);
-        heading.add(expires);
+        heading.add(date);
         heading.add(Chunk.NEWLINE);
         if (label != null) heading.add(label);
 
