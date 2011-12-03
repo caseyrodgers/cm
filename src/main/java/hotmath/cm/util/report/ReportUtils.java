@@ -111,6 +111,25 @@ public class ReportUtils {
         return header;
     }
 
+    public static HeaderFooter getBasicReportHeader(AccountInfoModel info, String label) {
+        Phrase heading = new Phrase();
+        Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
+        Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
+        Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
+        
+        heading.add(school);
+        heading.add(Chunk.NEWLINE);
+        heading.add(admin);
+        heading.add(Chunk.NEWLINE);
+        heading.add(expires);
+        heading.add(Chunk.NEWLINE);
+        if (label != null) heading.add(label);
+
+        HeaderFooter header = new HeaderFooter(heading, false);
+
+        return header;
+    }
+
     static private String nz(String s) {
         return s == null?"":s;
     }
