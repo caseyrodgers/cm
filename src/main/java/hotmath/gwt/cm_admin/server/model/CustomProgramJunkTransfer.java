@@ -78,8 +78,8 @@ public class CustomProgramJunkTransfer implements SbTestImpl {
     }
     
     private int addNewLesson(int progId, String lesson, String file) throws Exception {
-        String sqlInsert = "insert into HA_CUSTOM_PROGRAM_LESSON(program_id, lesson, file) " +
-                " values(?,?,?)";
+        String sqlInsert = "insert into HA_CUSTOM_PROGRAM_LESSON(program_id, lesson, file, subject) " +
+                " values(?,?,?,'')";
         PreparedStatement ps = conn.prepareStatement(sqlInsert);
         ps.setInt(1, progId);
         ps.setString(2, lesson);
