@@ -48,13 +48,13 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         if(_theWindow != null)
             return;
         
-        //setVisible(true);
+        setVisible(true);
     }
     
     public SystemSyncChecker(String title, String msg, Button btn) {
         super(title, msg, btn);
         _theWindow = this;
-        //setVisible(true);
+        setVisible(true);
     }
 
     /** Monitor server for version changes.
@@ -70,6 +70,10 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
             }
         };
         timer.scheduleRepeating(CHECK_EVERY);
+        
+        
+        /** do it first */
+        checkForUpdate();
     }
     
     

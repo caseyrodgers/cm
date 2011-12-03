@@ -148,7 +148,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
             public void onSuccess(RpcData result) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 topic.setComplete(true);
-                MessageBox.showMessage("Lesson marked as complete!");
+                //MessageBox.showMessage("Lesson marked as complete!");
             }
 
             @Override
