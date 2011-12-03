@@ -133,10 +133,27 @@ public class ProgramDetailsReport {
                                     if (pSect.isSelected()) {
                                     	List<ProgramLesson> list =
                                         	dao.getLessonsFor(conn, pSect.getTestDefId(), pSect.getNumber(), pSect.getParent().getLabel(), sectList.size());
+                                    	StringBuilder sb = new StringBuilder();
+                                    	int i = 0;
+                                    	int limit = 120;
                                     	for (ProgramLesson pLesson : list) {
-                                            addRow(pLesson.getLabel(), pLesson.getLevel(), tbl, rowNum++);                                    		
+                                    		int length = sb.length();
+                                    		if (length + 2 + pLesson.getLabel().length() < limit) {
+                                        		sb.append(pLesson.getLabel());
+                                        		if (++i < list.size())
+                                        			sb.append(", ");
+                                    		}
+                                    		else {
+                                                addRow(sb.toString(), list.get(0).getLevel(), tbl, rowNum);                                    		
+                                                document.add(Chunk.NEWLINE);
+                                    			sb = new StringBuilder();
+                                    		}
+                                    	}
+                                    	if (sb.length() > 0) {
+                                            addRow(sb.toString(), list.get(0).getLevel(), tbl, rowNum);                                    		
                                             document.add(Chunk.NEWLINE);
                                     	}
+                                    	rowNum++;
                                     }
                     			}
                     		}
