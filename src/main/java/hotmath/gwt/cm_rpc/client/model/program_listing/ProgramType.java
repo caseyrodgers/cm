@@ -17,6 +17,7 @@ public class ProgramType implements CmTreeNode, IsSerializable {
 
     String label;
     String type;
+    boolean isSelected;
 
     public ProgramType() {
     }
@@ -43,7 +44,15 @@ public class ProgramType implements CmTreeNode, IsSerializable {
         this.type = type;
     }
 
-    @Override
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
+
+	@Override
     public String getLabel() {
         return label;
     }
@@ -57,4 +66,5 @@ public class ProgramType implements CmTreeNode, IsSerializable {
 	public CmTreeNode getParent() {
 		return null;
 	}
+
 }

@@ -10,6 +10,7 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
     int testDefId;
     int number;
     CmTreeNode parent;
+    boolean isSelected;
     
     List<ProgramLesson> lessons = new ArrayList<ProgramLesson>();
     
@@ -58,7 +59,15 @@ public class ProgramSection implements CmTreeNode, IsSerializable{
         this.lessons = lessons;
     }
 
-    @Override
+    public boolean isSelected() {
+		return isSelected;
+	}
+
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
+
+	@Override
     public String getLabel() {
         return name;
     }
