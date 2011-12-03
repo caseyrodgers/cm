@@ -1,3 +1,12 @@
+
+
+delete from CM_USER_PROGRAM
+where user_id not in (
+  select uid
+  from HA_USER
+);
+
+
 delete from HA_TEST
 where  user_id not in (
                         select user_id

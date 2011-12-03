@@ -619,6 +619,7 @@
                                                 <param>quiz.js</param>                      
 						<param>CatchupMath.js</param>
 						<param>swfobject/swfobject.js</param>
+                                   		<param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
 					</jsSourceFiles>
 				</configuration>
 			</plugin>

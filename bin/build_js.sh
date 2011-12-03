@@ -7,4 +7,4 @@ cd ../../cm
 mvn minify:minify -o
 
 ## build cm_mobile2 resources
-ant 
+ant  -f build_minify.xml

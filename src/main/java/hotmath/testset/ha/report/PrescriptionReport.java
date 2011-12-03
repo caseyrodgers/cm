@@ -44,15 +44,15 @@ import org.apache.log4j.Logger;
 
 /**
  * Checks all CM Programs for anomalies.
- * 
+ *
  * Writes to table HA_PRESCRIPTION_LOG
- * 
+ *
  * Also populates the HA_PROGRAM_LESSON table which contains all the ACTIVE
  * lessons currently in play.
- * 
- * 
+ *
+ *
  * @author casey
- * 
+ *
  */
 public class PrescriptionReport {
 
@@ -66,7 +66,7 @@ public class PrescriptionReport {
 
         /**
          * first try to init gui, if fails move on...
-         * 
+         *
          */
         try {
             String os = (String) System.getProperties().get("os.name");
@@ -94,9 +94,9 @@ public class PrescriptionReport {
 
                 /**
                  * assign every program to user and check for anomalies
-                 * 
+                 *
                  * Do not process Auto Enroll tests
-                 * 
+                 *
                  */
                 for (CmProgram progDef : CmProgram.values()) {
                     if (!progDef.isActive() && !progDef.getProgramType().equals("Other"))
@@ -128,7 +128,7 @@ public class PrescriptionReport {
 
     /**
      * run test on each chapter in this program
-     * 
+     *
      * @param conn
      * @param progDef
      * @throws Exception
@@ -148,8 +148,8 @@ public class PrescriptionReport {
     /**
      * test the currently assigned program by creating a prescription for every
      * assigned solution and looking for anomalies.
-     * 
-     * 
+     *
+     *
      * @param conn
      * @throws Exception
      */
@@ -190,7 +190,7 @@ public class PrescriptionReport {
 
                 /**
                  * for every distinct question in quiz
-                 * 
+                 *
                  */
                 List<String> pids = test.getPids();
 
@@ -204,32 +204,32 @@ public class PrescriptionReport {
                     /**
                      * create a prescription marking this question as incorrect
                      * in order to create a related prescription.
-                     * 
+                     *
                      */
 
                     /**
                      * mark all questions as correct
-                     * 
+                     *
                      */
                     for (String p : pids) {
                         HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), p, 0, true);
                     }
 
                     /**
-                     * mark the one pid as Incorrect 
-                     * 
+                     * mark the one pid as Incorrect
+                     *
                      */
                     HaTestDao.saveTestQuestionChange(_conn, test.getTestId(), pid, 0, false);
 
                     /**
                      * create the test run based on ONE pid
-                     * 
+                     *
                      */
                     HaTestRun testRun = HaTestDao.getInstance().createTestRun(_conn, _uid, test.getTestId(), 0, 1, 0);
 
                     /**
                      * then the prescription by missing the ONE pid
-                     * 
+                     *
                      */
                     AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(_conn, testRun.getRunId());
 
@@ -243,7 +243,7 @@ public class PrescriptionReport {
 
     /**
      * Make sure there are no TEST_RUNS associated with this test.
-     * 
+     *
      * @param conn
      * @param testId
      * @throws Exception
@@ -254,12 +254,12 @@ public class PrescriptionReport {
 
     /**
      * Perform checks for prescription to make sure it is valid
-     * 
+     *
      * Test:
-     * 
+     *
      * 1. 3 RPP per session 2. each RPP exists 3. 3 EPP per session 4. each EPP
      * exists
-     * 
+     *
      * @param prescription
      * @throws Exception
      */
@@ -269,7 +269,7 @@ public class PrescriptionReport {
         boolean isError = false;
         /**
          * make sure there is at least one session created
-         * 
+         *
          */
         if (prescription.getSessions().size() == 0) {
             String pidList = prescription.getTestRun().getPidList();
@@ -287,43 +287,43 @@ public class PrescriptionReport {
                 ps = conn.prepareStatement("insert into HA_PROGRAM_LESSONS(lesson,subject,file,pid)values(?,?,?,?)");
 
                 /**
-                 * there are sessions, make search: -- 
-                 * 
+                 * there are sessions, make search: --
+                 *
                  * if RPP there are three --
-                 * 
+                 *
                  * if RPA there is at least one.
                  *    .. and there are RPPs too.
-                 * 
-                 * 
-                 * 
+                 *
+                 *
+                 *
                  */
                 for (int i = 0, t = prescription.getSessions().size(); i < t; i++) {
-                    
+
 
                     AssessmentPrescriptionSession session = prescription.getSessions().get(i);
                     List<SessionData> rpps = session.getSessionItems();
-                    
+
                     if (!session.isRpa() && rpps.size() != 3) {
                         logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i
                                 + ": incorrect number of RPP (" + rpps.size() + ")");
                         isError = true;
                     }
-                    
+
                     boolean flashRequired=false;
                     for (SessionData p : rpps) {
                         if (p.getRpp().isFlashRequired()) {
                             flashRequired=true;
                             /**
                              * is a flash widget
-                             * 
+                             *
                              * TODO: validate JSON and activity.
                              * */
-                            
+
                             String widgetJson = p.getRpp().getWidgetJsonArgs();
                             if(widgetJson == null || widgetJson.length() == 0 || widgetJson.charAt(0) != '{') {
                                 logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": RPA has invalid widget JSON '" + p.getRpp().getWidgetJsonArgs() + "'");
                             }
-                                    
+
                         } else {
                             if (!SolutionManager.getInstance().doesSolutionExist(conn, p.getRpp().getFile())) {
                                 logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i
@@ -331,13 +331,13 @@ public class PrescriptionReport {
                             }
                         }
                     }
-                    
-                    
+
+
                     if(flashRequired) {
                         /**
                          * make sure there is a non flash prescription as well
                          */
-                        
+
                         AssessmentPrescription noFlashPres = new AssessmentPrescription(conn,prescription.getTestRun(), new ClientEnvironment(false));
                         if(noFlashPres.getSessions().size() == 0 || noFlashPres.getSessions().get(0).getSessionItems().size() == 0) {
                             String lessonFile = session.getInmhItemsFor(session.getTopic()).get(0).getFile();
@@ -345,13 +345,13 @@ public class PrescriptionReport {
                             logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i + ": no non-flash content found for '" + sessionInfo + "'");
                         }
                     }
-                    
 
-                    
+
+
                     Collection<INeedMoreHelpResourceType> epp = session.getPrescriptionInmhTypes(_conn, "cmextra");
                     /**
                      * if (epp.size() > 0 && epp.size() != 3) {
-                     * logMessage(prescription.getTestRun().getRunId(), 
+                     * logMessage(prescription.getTestRun().getRunId(),
                      * "WARNING: Session " + i + ": incorrect number of EPP (" +
                      * epp.size() + ")"); isError = true; }
                      */
@@ -385,10 +385,10 @@ public class PrescriptionReport {
 
     /**
      * Create a new user and assigned named program to it.
-     * 
+     *
      * Having a user for each test allows for easier debugging when problems
      * arise.
-     * 
+     *
      * @param conn
      * @param progDef
      * @param chapter
@@ -402,21 +402,21 @@ public class PrescriptionReport {
 
         /**
          * log to output file
-         * 
+         *
          */
         if (_fileOut != null)
             _fileOut.write(msg + "\n");
 
         /**
          * log to gui if available
-         * 
+         *
          */
         if (_rgui != null)
             _rgui.logMessage(msg);
 
         /**
          * log to database
-         * 
+         *
          */
         PreparedStatement ps = null;
         try {
@@ -440,7 +440,7 @@ public class PrescriptionReport {
     /**
      * create/recreate the HA_PRESCRIPTION_LOG table and the HA_PROGRAM_LESSON
      * table
-     * 
+     *
      * @throws Exception
      */
     private void setupDatabaseForTest() throws Exception {
@@ -488,16 +488,19 @@ public class PrescriptionReport {
             }
 
             if (programName != null) {
-                for (CmProgram p : CmProgram.values()) {
-                    if (p.name().equalsIgnoreCase(programName)) {
-                        __logger.info("Only checking program: " + p);
-                        program = p;
-                        break;
+
+                if(!programName.equalsIgnoreCase("ALL")) {
+                    for (CmProgram p : CmProgram.values()) {
+                        if (p.name().equalsIgnoreCase(programName)) {
+                            __logger.info("Only checking program: " + p);
+                            program = p;
+                            break;
+                        }
                     }
-                }
-                
-                if(program == null) {
-                    throw new Exception("-program specified unknown program: '" + programName + "'");
+
+                    if(program == null) {
+                        throw new Exception("-program specified unknown program: '" + programName + "'");
+                    }
                 }
             }
             __logger.info("PrescriptionReport: Starting");

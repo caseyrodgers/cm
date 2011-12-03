@@ -29,7 +29,7 @@
                    ../../../../../../hotmath2/web/js/tutor_dynamic.js
                    ../../../../../../hotmath2/web/js/tutor_widget.js
             	   ../../../../../../hotmath2/web/js/tutor_widget_validation.js
-            	   ../../../../../../hotmath2/web/js/tutor_widget_plotter.js
+            	   ../../../../../../hotmath2/web/js/tutor_widget_plotter-min.js
             	   ../../../../../../hotmath2/web/js/tutor_widget_graph.js
             	   ../../../../../../hotmath2/web/js/tutor_author_global.js
             	   ../../../../../../hotmath2/web/js/tutor_author_api.js
