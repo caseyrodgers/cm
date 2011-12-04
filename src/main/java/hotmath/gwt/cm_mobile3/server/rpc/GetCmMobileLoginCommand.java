@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile3.server.rpc;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
@@ -16,10 +17,16 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
-import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
+import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
+import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
+import hotmath.testset.ha.CmProgram;
+import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
+import hotmath.testset.ha.HaTestDefDao;
+import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
@@ -66,6 +73,24 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         if(uid == 0) {
             securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
         }
+        
+        int programSegmentCount = 0;
+        String testTitle = "";
+        boolean isCustomProgram = programFlow.getUserProgram().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
+        if(isCustomProgram) {
+            CustomProgramInfo cpi = GetUserInfoCommand.processCustomProgram(conn, sm.getUid(), active, programFlow.getUserProgram());
+            programSegmentCount = cpi.getProgramSegmentCount();
+            testTitle = cpi.getTitle();
+            
+            // TODO:
+            // here the CP is now ready for use, but what about the 
+            // programSegmentCount and testTitle ...?
+        }
+                
+        
+        
+        
+        
 
         /**
          * get list of previous prescribed lessons

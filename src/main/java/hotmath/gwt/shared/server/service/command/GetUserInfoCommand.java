@@ -75,61 +75,9 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             boolean isCustomProgram = testDef.getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
             if(isCustomProgram) {
-                if(activeInfo.getActiveRunId() == 0 && activeInfo.getActiveTestId() == 0) {
-                    
-                    /**
-                     *  One time per program use.
-                     * 
-                     *  This is done here because we do not want the user
-                     *  to be directed to a quiz, unless there is one in CP.
-                     *  
-                     *  
-                     *  Alternatively: ... I see no alternate because the flow is:
-                     *  
-                     *  1. The user logs in (this is called)
-                     *  2. This passes back the UserInfo object that defines
-                     *     the user's 'current active state'.
-                     *  3. The client will use this information and choose
-                     *     where to send the user.
-                     * 
-                     */
-
-                    /** Does this custom quiz start with a quiz?
-                     * 
-                     *  If not then create a dummy test as a place holder.
-                     */
-                    CmCustomProgramDao cpdao = CmCustomProgramDao.getInstance();
-                    if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 1)) {
-                        activeInfo.setActiveSegment(1);
-                        activeInfo.setActiveTestId(0);
-                        activeInfo.setActiveRunSession(0);           
-
-                        HaTest custTest = HaTestDao.getInstance().createTest(action.getUserId(),HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), activeInfo.getActiveSegment());
-                        custTest.setProgramInfo(cmProgram.getUserProgram());
-                        HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn, action.getUserId(), custTest.getTestId(), 10,0,0);
-                        testRun.setHaTest(custTest);
-                        
-                        /** make sure the are lessons available for this test run.
-                         * 
-                         * If not then move to next segment, or return end of program?
-                         */
-                        activeInfo.setActiveRunId(testRun.getRunId());
-                    }
-                    
-                    /** update the total number of program segments
-                     * 
-                     */
-                    programSegmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
-                    
-                    /** save for next time */
-                    sdao.setActiveInfo(conn, action.getUserId(), activeInfo);
-                }
-                /** Get the Custom Program's test title assigned by user
-                 * 
-                 */
-                CustomProgramModel customProgram = CmCustomProgramDao.getInstance().getCustomProgram(conn, userProgram.getCustomProgramId());
-                programSegmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
-                testTitle = customProgram.getProgramName();
+                CustomProgramInfo cpi = processCustomProgram(conn, action.getUserId(), activeInfo, userProgram);
+                programSegmentCount = cpi.getProgramSegmentCount();
+                testTitle = cpi.getTitle();
             }
             
             UserInfo userInfo = new UserInfo();
@@ -196,10 +144,109 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             throw new CmRpcException(e);
         }
     }
+    
+
+    /** Generalize the initialization of the Custom Programs
+     * 
+     * @param conn
+     * @param userId
+     * @param activeInfo
+     * @param userProgram
+     * @return
+     * @throws Exception
+     */
+    static public CustomProgramInfo processCustomProgram(final Connection conn, int userId, StudentActiveInfo activeInfo, StudentUserProgramModel userProgram) throws Exception {
+        
+        int programSegmentCount=0;
+        if(activeInfo.getActiveRunId() == 0 && activeInfo.getActiveTestId() == 0) {
+            
+            /**
+             *  One time per program use.
+             * 
+             *  This is done here because we do not want the user
+             *  to be directed to a quiz, unless there is one in CP.
+             *  
+             *  
+             *  Alternatively: ... I see no alternate because the flow is:
+             *  
+             *  1. The user logs in (this is called)
+             *  2. This passes back the UserInfo object that defines
+             *     the user's 'current active state'.
+             *  3. The client will use this information and choose
+             *     where to send the user.
+             * 
+             */
+
+            /** Does this custom quiz start with a quiz?
+             * 
+             *  If not then create a dummy test as a place holder.
+             */
+            CmCustomProgramDao cpdao = CmCustomProgramDao.getInstance();
+            if(!cpdao.doesProgramSegmentHaveQuiz(conn, userProgram.getCustomProgramId(), 1)) {
+                activeInfo.setActiveSegment(1);
+                activeInfo.setActiveTestId(0);
+                activeInfo.setActiveRunSession(0);           
+
+                HaTest custTest = HaTestDao.getInstance().createTest(userId,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), activeInfo.getActiveSegment());
+                custTest.setProgramInfo(userProgram);
+                HaTestRun testRun = HaTestDao.getInstance().createTestRun(conn,userId, custTest.getTestId(), 10,0,0);
+                testRun.setHaTest(custTest);
+                
+                /** make sure the are lessons available for this test run.
+                 * 
+                 * If not then move to next segment, or return end of program?
+                 */
+                activeInfo.setActiveRunId(testRun.getRunId());
+            }
+            
+            /** update the total number of program segments
+             * 
+             */
+            programSegmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
+            
+            /** save for next time */
+            CmStudentDao.getInstance().setActiveInfo(conn, userId, activeInfo);
+        }
+        /** Get the Custom Program's test title assigned by user
+         * 
+         */
+        CustomProgramModel customProgram = CmCustomProgramDao.getInstance().getCustomProgram(conn, userProgram.getCustomProgramId());
+        programSegmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(conn,userProgram.getCustomProgramId());
+        return new CustomProgramInfo(programSegmentCount,customProgram.getProgramName());
+    }
   
     
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetUserInfoAction.class;
     }
+    
+    
+    public static class CustomProgramInfo {
+        int programSegmentCount;
+        String title;
+        
+        public CustomProgramInfo(int segCount, String title) {
+            this.programSegmentCount = segCount;
+            this.title = title;
+        }
+
+        public int getProgramSegmentCount() {
+            return programSegmentCount;
+        }
+
+        public void setProgramSegmentCount(int programSegmentCount) {
+            this.programSegmentCount = programSegmentCount;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+    }    
 }
+
+
