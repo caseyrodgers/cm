@@ -84,10 +84,8 @@ public class ProgramDetailsPanel extends CmWindow {
         getHeader().addTool(cBtn);
         getHeader().setStyleName("program-details-header");
         
-        if(CmShared.getQueryParameter("debug") != null) {
-        	Button pBtn = buildPrintButton();
-            getHeader().addTool(pBtn);
-        }
+        Button pBtn = buildPrintButton();
+        getHeader().addTool(pBtn);
 
         _mainPanel = new LayoutContainer();
         _mainPanel.setLayout(new CenterLayout());
