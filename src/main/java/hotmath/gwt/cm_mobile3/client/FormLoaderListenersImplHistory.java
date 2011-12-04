@@ -146,7 +146,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                             public void onSuccess(CmMobileUser result) {
                                 eb.fireEvent(new SystemIsBusyEvent(false));
                                 SharedData.setFlowAction(result.getFlowAction());
-                                eb.fireEvent(new HandleNextFlowEvent());
+                                eb.fireEvent(new HandleNextFlowEvent(result.getFlowAction()));
                             }
 
                             @Override
