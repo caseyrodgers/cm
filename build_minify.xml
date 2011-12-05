@@ -26,15 +26,15 @@
                	   dom_utils-min.js            	
                    whiteboard-min.js
             	   quiz-min.js
-                   ../../../../../../hotmath2/web/js/tutor_dynamic.js
+                   ../../../../../../hotmath2/web/js/tutor_dynamic-min.js
                    ../../../../../../hotmath2/web/js/tutor_widget.js
-            	   ../../../../../../hotmath2/web/js/tutor_widget_validation.js
+            	   ../../../../../../hotmath2/web/js/tutor_widget_validation-min.js
             	   ../../../../../../hotmath2/web/js/tutor_widget_plotter-min.js
-            	   ../../../../../../hotmath2/web/js/tutor_widget_graph.js
-            	   ../../../../../../hotmath2/web/js/tutor_author_global.js
-            	   ../../../../../../hotmath2/web/js/tutor_author_api.js
-            	   ../../../../../../hotmath2/web/js/tutor_flashcard_manager.js
-            	   ../../../../../../hotmath2/web/js/hm_mathjax.js
+            	   ../../../../../../hotmath2/web/js/tutor_widget_graph-min.js
+            	   ../../../../../../hotmath2/web/js/tutor_author_api-min.js
+            	   ../../../../../../hotmath2/web/js/tutor_author_global-min.js
+            	   ../../../../../../hotmath2/web/js/tutor_flashcard_manager-min.js
+            	   ../../../../../../hotmath2/web/js/hm_mathjax-min.js
             	   ../../../../../../hotmath2/web/js/base64-min.js
                    spin-min.js
             	
