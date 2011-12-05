@@ -207,6 +207,16 @@ function flash_quizResult(result) {
         }
 }
 
+function processMathJax() {
+    try {
+        if (typeof MathJax != "undefined") {
+            MathJax.Hub.Queue([ "Typeset", MathJax.Hub ]);
+            //  alert('MathJax log: ' + MathJax.Message.Log());
+        }
+    } catch (e) {
+        alert('Error processing MathJax: ' + e);
+    }
+}
 
 function get_type(thing) {
         if (thing === null)
