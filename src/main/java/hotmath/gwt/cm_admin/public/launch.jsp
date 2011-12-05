@@ -27,6 +27,10 @@
     <title>Catchup Math Admin</title>
     <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/loading_image.css" />
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+
   </head>
 
   <body>
@@ -47,6 +51,7 @@
      <script src="/gwt-resources/js/CatchupMath.js"></script>
      <script type="text/javascript" language="javascript" src="/gwt-resources/js/quiz.js"></script>
      <script type="text/javascript" language="javascript" src="/gwt-resources/js/swfobject/swfobject.js"></script>
+     <script type="text/javascript" language="javascript" src="/js/hm_mathjax.js"></script>
      <script>
          var __securityKey = '<%= securityKey %>'
      </script>
