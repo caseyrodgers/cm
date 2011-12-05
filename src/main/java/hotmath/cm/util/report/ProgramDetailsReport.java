@@ -138,15 +138,18 @@ public class ProgramDetailsReport {
                                     	int limit = 120;
                                     	for (ProgramLesson pLesson : list) {
                                     		int length = sb.length();
-                                    		if (length + 2 + pLesson.getLabel().length() < limit) {
+                                    		if ((length + 2 + pLesson.getLabel().length()) < limit) {
                                         		sb.append(pLesson.getLabel());
                                         		if (++i < list.size())
                                         			sb.append(", ");
                                     		}
                                     		else {
-                                                addRow(sb.toString(), list.get(0).getLevel(), tbl, rowNum);                                    		
+                                                addRow(sb.toString(), list.get(0).getLevel(), tbl, rowNum);
                                                 document.add(Chunk.NEWLINE);
                                     			sb = new StringBuilder();
+                                        		sb.append(pLesson.getLabel());
+                                        		if (++i < list.size())
+                                        			sb.append(", ");
                                     		}
                                     	}
                                     	if (sb.length() > 0) {
