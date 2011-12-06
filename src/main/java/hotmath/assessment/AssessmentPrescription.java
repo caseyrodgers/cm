@@ -274,6 +274,15 @@ public class AssessmentPrescription {
     /**
      * Create a single prescription session based on passed in data
      * 
+     * if client supports flash and there are RPAs.
+     *    return only RPAs
+     *     
+     * if client does not support Flash
+     *    return only dynamic RPPs
+     *    
+     * Otherwise, 
+     *    return all RPPs
+     * 
      * @param sessNum
      * @param workBookPids
      * @param itemData
@@ -310,8 +319,22 @@ public class AssessmentPrescription {
             /**
              * show only RPP widgets (filtered)
              * 
+             * If any dynamic solutions, then only show 
+             * dynamic solutions.
+             * 
              */
-            sessionItems.addAll(filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData));
+            
+            if(!clientEnvironment.isFlashEnabled()) {
+                for (RppWidget rpp : rppWidgets) {
+                    if (!rpp.isDynamicSolution()) {
+                        sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
+                    }
+                }
+            }
+            
+            if(sessionItems.size() == 0) {
+                sessionItems.addAll(filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData));
+            }
         }
         return session;
     }

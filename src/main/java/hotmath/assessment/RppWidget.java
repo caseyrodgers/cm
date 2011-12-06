@@ -98,6 +98,15 @@ public class RppWidget {
         return !this.getFile().contains(".swf");
     }
     
+    /** return true if this RPP is a 
+     *  dynamic solution
+     * @return
+     */
+    public boolean isDynamicSolution() {
+        return this.getWidgetJsonArgs() != null && this.getWidgetJsonArgs().trim().startsWith("{");
+    }
+    
+    
     @Override
     public String toString() {
         return String.format("widgetKey=%s,widgetJsonArgs=%s",widetKey,widgetJsonArgs);
