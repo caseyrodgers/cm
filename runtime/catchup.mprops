@@ -7,9 +7,9 @@
 
 .key=DEMO_USER_ID
 
-## 727
+727
 
-29004
+### 29004
 
 
 
@@ -841,7 +841,7 @@ from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
 where    a.aid = ? 
 or is_template = 1
                             
-order by is_template desc, load_order2,load_order, id, title                      
+order by load_order, is_template desc, load_order2,load_order, id, title
            
            
            
