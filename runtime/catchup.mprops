@@ -795,7 +795,7 @@ select   d.id,
           null as custom_quiz_name,         
          d.load_order,
          ifnull(td.segment_count, 0) as segment_count,
-         0 as is_template
+         0 as is_template, 0 as load_order2
 from     HA_PROG_DEF d, HA_TEST_DEF td
 where    d.is_active = 1
   and    td.is_active = 1
@@ -817,12 +817,12 @@ select      'Custom Quiz' as id,
             q.name as custom_quiz_name,
             999 as load_order,
             0 as segment_count,
-            0 as is_template
+            0 as is_template, 0 as load_order2
 from   HA_ADMIN a join HA_CUSTOM_QUIZ q on q.admin_id = a.aid
 where    a.aid = ?
-
 union
-                            
+
+                                                        
 select      'Custom' as id,
             cp.name as title,
             'Custom Program' as description,
@@ -836,12 +836,15 @@ select      'Custom' as id,
             null as custom_quiz_name,
             999 as load_order,
             0 as segment_count,
-            is_template
+            is_template,cp.load_order load_order2
 from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
 where    a.aid = ? 
 or is_template = 1
                             
-order by load_order, id, title                      
+order by is_template desc, load_order2,load_order, id, title                      
+           
+           
+           
            
            
 .key=ACCOUNT_TYPE_LOOKUP
