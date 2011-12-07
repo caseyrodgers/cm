@@ -64,12 +64,12 @@ public class GetMobileLessonInfoCommand implements ActionHandler<GetMobileLesson
         if(practiceProblems.size() > 0) {
             /** label either as Problems or Activities */
             isActivity = practiceProblems.get(0).getWidgetArgs() != null;
-            String title = "Required Practice " + (isActivity ? "Activities" : "Problems");
+            String title = "Required Practice " + (isActivity?"Problem Sets":"Problem");
             problemsResource.setLabel(title);
             int cnt = 1;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
                 InmhItemData id = new InmhItemData();
-                String type = isActivity ? "Activity " : "Problem ";
+                String type = isActivity ? "Problem Set " : "Problem ";
                 id.setTitle(type + cnt++);
                 id.setFile(sdata.getRpp().getFile());
                 id.setType("practice");

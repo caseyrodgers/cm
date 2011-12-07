@@ -100,7 +100,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
                 
                 // force title for cmextra
                 if(itemData.getType().equals("cmextra")) {
-                    itemData.setTitle("Problem " + (cnt+1));
+                    itemData.setTitle(itemData.getWidgetJsonArgs()==null?"Problem ":"Problem Set " + (cnt+1));
                 }
                 
                 MyGenericTextTag textTag = new MyGenericTextTag(isRpp, itemData, touchHandler);

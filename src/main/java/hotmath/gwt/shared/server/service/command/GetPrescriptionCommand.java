@@ -1,14 +1,13 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.assessment.AssessmentPrescription;
+import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
-import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcExceptionClientDoesNotSupportFlash;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
@@ -23,7 +22,6 @@ import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpResourceType;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
-import hotmath.testset.ha.HaUserDao;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -98,14 +96,34 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
              * 
              *  All RPs will be with RPP or RPA, never both. 
              */
-            boolean isActivity=practiceProblems.get(0).getWidgetArgs()!=null;
-            String title = "Required Practice " + (isActivity?"Activities":"Problems");
+            SessionData sd = practiceProblems.get(0);
+            boolean isActivity= (sd.getWidgetArgs()!=null && sd.getRpp().isFlashRequired());
+            boolean isProblemSet = sd.getRpp().isDynamicSolution();
+            
+            String title = null;
+            if(isActivity) {
+                title = "Required Activities";
+            }
+            else if(isProblemSet) {
+                title = "Required Problem Sets";
+            }
             problemsResource.setLabel(title);
             int cnt = 1;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
                 InmhItemData id = new InmhItemData();
-                String type = isActivity?"Activity ":"Problem ";
+                String type = null;
+                if(isActivity) {
+                    type = "Activity ";
+                }
+                else if(isProblemSet) {
+                    type = "Problem Set ";
+                }
+                else {
+                    type = "Problem ";
+                }
+                    
                 id.setTitle(type + cnt++);
+                
                 id.setFile(sdata.getRpp().getFile());
                 id.setType("practice");
                 id.setWidgetJsonArgs(sdata.getRpp().getWidgetJsonArgs());

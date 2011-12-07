@@ -128,14 +128,14 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 else if(resourceType.equals("practice")) {
                     PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb, itemData);
                     PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
-                    view.setTitle("Required Practice Problems");
+                    view.setTitle("Required " + itemData.getTitle());
                     view.setPresenter(activity);
                     eb.fireEvent(new LoadNewPageEvent((IPage)view));
                 }
                 else if(resourceType.equals("cmextra")) {
                     PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb, itemData);
                     PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
-                    view.setTitle("Extra Practice Problems");
+                    view.setTitle("Extra Practice");
                     view.setPresenter(activity);
                     eb.fireEvent(new LoadNewPageEvent((IPage)view));
                 }

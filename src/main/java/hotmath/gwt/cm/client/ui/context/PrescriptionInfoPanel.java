@@ -20,7 +20,7 @@ class PrescriptionInfoPanel extends LayoutContainer {
         setStyleName("prescription-info-panel");
 
         String html = "<p>Use any menu items you wish, before or after trying " +
-                      "the Required Practice Problems.</p>";
+                      "the Required Practice problems.</p>";
         Html htmlO = new Html(html);
         add(htmlO);
         
