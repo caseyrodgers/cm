@@ -32,6 +32,7 @@ public enum CmProgram {
     NATIONAL_V1(37,"National Practice Test","","Grad Prep National (version 1)",false, 8),
     NATIONAL(44,"National Practice Test","","Grad Prep National",true, 8),
     CUSTOM_PROGRAM(36,"Custom Program","Custom","Custom",false, 0),
+    CUSTOM_QUIZ(46,"Custom Quiz","Custom","Custom",false, 0),
     ESSENTIALS_V1(41,"Essentials Program (version 1)","Ess","Prof", false, 6),
     ESSENTIALS(42,"Essentials Program","Ess","Prof", true, 6),
     OTHER_ESS(47,"Essentials, Other", "Ess", "Other",false,1),

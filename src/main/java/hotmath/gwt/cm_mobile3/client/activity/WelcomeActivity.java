@@ -44,9 +44,20 @@ public class WelcomeActivity implements WelcomeView.Presenter{
         int segmentsTotal = ui.getProgramSegmentCount();
         int lessonNumber = ui.getSessionNumber();
         int lessonsTotal = ui.getSessionCount(); 
+        boolean isCustom = ui.isCustomProgram();
+        boolean isCustomQuiz = ui.isCustomProgram() && ui.getRunId() == 0;
         
-        String status = "<p>You are in section " + segment + " of the <b>" + testName + "</b> program.</p>" +
-                        "<p>You have " + lessonsTotal + " lesson" + (lessonsTotal>1?"s":"") +  " to study.";
+        String status = null;
+        if(!isCustomQuiz) {
+            status = "<p>You are in section " + segment + " of " + segmentsTotal + " of the <b>" + testName + "</b> program.</p>";
+            
+            if(runId > 0) {
+                status += "<p>You have " + lessonsTotal + " lesson" + (lessonsTotal>1?"s":"") +  " to study.";
+            }
+        }
+        else {
+            status = "<p>You are in the <b>" + testName + "</b> program.</p>";
+        }
         
         return status;
     }

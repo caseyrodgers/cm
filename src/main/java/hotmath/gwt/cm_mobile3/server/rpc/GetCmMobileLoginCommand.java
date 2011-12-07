@@ -3,7 +3,7 @@ package hotmath.gwt.cm_mobile3.server.rpc;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
-import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
+import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
@@ -17,16 +17,12 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
-import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
 import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestDao;
-import hotmath.testset.ha.HaTestDefDao;
-import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
@@ -75,19 +71,29 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         }
         
         int programSegmentCount = 0;
-        String testTitle = "";
+        String testTitle = programFlow.getUserProgram().getTestName();
         boolean isCustomProgram = programFlow.getUserProgram().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
         if(isCustomProgram) {
             CustomProgramInfo cpi = GetUserInfoCommand.processCustomProgram(conn, sm.getUid(), active, programFlow.getUserProgram());
             programSegmentCount = cpi.getProgramSegmentCount();
             testTitle = cpi.getTitle();
             
+            //mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
+            
+            
             // TODO:
             // here the CP is now ready for use, but what about the 
             // programSegmentCount and testTitle ...?
         }
-                
         
+        
+        
+        /** look up the Custom Quiz name */
+        boolean isCustomQuiz = programFlow.getUserProgram().getCustomQuizId() > 0;
+        if(isCustomQuiz) {
+            testTitle = programFlow.getUserProgram().getCustomQuizName();
+        }
+
         
         
         
@@ -102,6 +108,8 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
             UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, loginAction);
             mobileUser.setBaseLoginResponse(userLoginResponse);
             mobileUser.setSecurityKey(securityKey);
+            
+            mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
             
             CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
             
