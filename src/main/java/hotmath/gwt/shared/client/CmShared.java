@@ -299,7 +299,7 @@ public class CmShared implements EntryPoint {
      * 
      */
     static public void reloadUser() {
-        Window.Location.reload();
+        Window.Location.replace("/loginService?uid=" + UserInfo.getInstance().getUid());
     }    
     
     

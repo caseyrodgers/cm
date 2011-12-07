@@ -107,6 +107,10 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             else if(isProblemSet) {
                 title = "Required Problem Sets";
             }
+            else {
+                title = "Required Problems";
+            }
+            
             problemsResource.setLabel(title);
             int cnt = 1;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
@@ -159,6 +163,8 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             __logger.debug("Getting prescription resource items: " + action);
             sessionData.setTopic(session.getTopic(),item.getFile());
             sessionData.setSessionNumber(sessionNumber);
+            
+            
             for (INeedMoreHelpResourceType t : session.getPrescriptionInmhTypesDistinct(conn)) {
 
                 // skip the workbooks for now.
@@ -168,10 +174,23 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
                 resource.setType(t.getTypeDef().getType());
                 resource.setLabel(t.getTypeDef().getLabel());
+                
+                int pcnt=0;
                 for (INeedMoreHelpItem i : t.getResources()) {
                     InmhItemData id = new InmhItemData();
                     id.setFile(i.getFile());
-                    id.setTitle(i.getTitle());
+                    
+                    
+                    /** override title of special types
+                     * 
+                     */
+                    if(i.getType().equals("cmextra")) {
+                        id.setTitle("Problem " + (++pcnt));
+                    }
+                    else {
+                        id.setTitle(i.getTitle());
+                    }
+                    
                     id.setType(i.getType());
 
                     resource.getItems().add(id);
@@ -256,7 +275,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 { "Video", "video", "Math videos related to the current topic" },
                 { "Activities", "activity", "Math activities and games related to the current topic" },
                 { null, "practice", "Practice problems you must complete before advancing" },
-                { "Extra Practice Problems", "cmextra", "Additional workbook problems" },
+                { "Extra Practice", "cmextra", "Additional workbook problems" },
                 { "Quiz Results", "results", "The current quiz's results" }, };
 
         for (int i = 0; i < types.length; i++) {

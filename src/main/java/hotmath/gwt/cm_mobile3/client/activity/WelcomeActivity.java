@@ -45,7 +45,7 @@ public class WelcomeActivity implements WelcomeView.Presenter{
         int lessonNumber = ui.getSessionNumber();
         int lessonsTotal = ui.getSessionCount(); 
         
-        String status = "<p>You are in Section " + segment + " of the " + testName + " program.</p>" +
+        String status = "<p>You are in section " + segment + " of the <b>" + testName + "</b> program.</p>" +
                         "<p>You have " + lessonsTotal + " lesson" + (lessonsTotal>1?"s":"") +  " to study.";
         
         return status;
