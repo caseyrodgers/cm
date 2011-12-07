@@ -7,6 +7,7 @@
 
 	<g:HTMLPanel styleName="welcomeViewImpl">
 		<div ui:field="firstThing">&nbsp;</div>
+		<div ui:field="programStatus">&nbsp;</div>
 		<g:Button ui:field="begin" styleName="sexyButton sexy_cm_green sexylarge">
 			<span>
 				<span>Start Using Catchup Math</span>

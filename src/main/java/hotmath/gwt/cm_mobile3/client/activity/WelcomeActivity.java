@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
-import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -18,29 +18,38 @@ public class WelcomeActivity implements WelcomeView.Presenter{
 
     public void prepareView(WelcomeView view) {
         
-        CmMobileUser user = CatchupMathMobileShared.getUser();
-        
+        UserInfo user = SharedData.getUserInfo();
         String firstThing=null;
-        CmPlace firstPlace = user.getFlowAction().getPlace();
-        if(firstPlace == CmPlace.QUIZ) {
-            firstThing = "You will continue from your previous quiz.";
-        }
-        else if(firstPlace == CmPlace.END_OF_PROGRAM) {
-            firstThing = "Your program is complete.";
-        }
-        else if(firstPlace == CmPlace.AUTO_ADVANCED_PROGRAM) {
-            firstThing = "You will be advanced to the next program";
-        }
-        else if(firstPlace == CmPlace.PRESCRIPTION) {
-            firstThing = "You will continue from your previous lesson.";
+
+        if(user.getRunId() > 0){
+            firstThing = "<p>You will start this Catchup Math session with a lesson.</p>";
         }
         else {
-            firstThing = "This is your first visit.  You start a new session";
+            firstThing = "<p>You will start this Catchup Math session with a quiz.</p>";
         }
         
-        view.prepareView(firstThing);        
+        firstThing += "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>";
+        
+        String currentStatus = determineCurrentStatus();
+        
+        view.prepareView(firstThing, currentStatus);        
     }
 
+    private String determineCurrentStatus() {
+        String testName = SharedData.getUserInfo().getTestName();
+        UserInfo ui =  SharedData.getUserInfo();
+        int runId = ui.getRunId();
+        int testId = ui.getTestId();
+        int segment = ui.getTestSegment();
+        int segmentsTotal = ui.getProgramSegmentCount();
+        int lessonNumber = ui.getSessionNumber();
+        int lessonsTotal = ui.getSessionCount(); 
+        
+        String status = "<p>You are in Section " + segment + " of the " + testName + " program.</p>" +
+                        "<p>You have " + lessonsTotal + " to study.";
+        
+        return status;
+    }
     @Override
     public void beginCatchupMath() {
         eventBus.fireEvent(new HandleNextFlowEvent(CatchupMathMobileShared.getUser().getFlowAction()));

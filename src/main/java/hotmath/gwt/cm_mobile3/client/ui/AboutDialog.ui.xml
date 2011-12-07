@@ -13,6 +13,8 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
+	   <p>You are logged in as: <span ui:field="loggedInAs"></span></p>
+	
 		<p>
 			This tablet edition of Catchupmath.com
 			allows access to your Catchup Math session

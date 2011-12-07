@@ -6,7 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 public interface WelcomeView extends IPage{
     
     public void setPresenter(Presenter presenter);
-    public void prepareView(String firstThing);
+    public void prepareView(String firstThing, String prepareView);
     
     public interface Presenter {
         void beginCatchupMath();

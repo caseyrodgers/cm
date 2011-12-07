@@ -1,11 +1,14 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -30,6 +33,11 @@ public class AboutDialog extends DialogBox  {
 		setAutoHideEnabled(true);
 		
 		setVisible(true);
+		
+		
+		
+		loggedInAs.setInnerHTML(SharedData.getUserInfo().getUserName());
+		
 	}
 	
 	public void showCentered() {
@@ -45,4 +53,8 @@ public class AboutDialog extends DialogBox  {
 	protected void onCloseButton(ClickEvent ce) {
 		this.hide();
 	}
+	
+	@UiField
+	Element loggedInAs;
+	
 }

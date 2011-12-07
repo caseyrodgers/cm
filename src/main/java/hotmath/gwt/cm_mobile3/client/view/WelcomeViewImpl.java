@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -54,12 +55,13 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     
     @Override
     public String getTitle() {
-        return "Welcome To Catchup Math Mobile!";
+        return "Welcome To Catchup Math " + SharedData.getUserInfo().getUserName();
     }
 
     @Override
-    public void prepareView(String firstThingDescription) {
+    public void prepareView(String firstThingDescription, String status) {
         firstThing.setInnerHTML(firstThingDescription);
+        programStatus.setInnerHTML(status);
     }
     
     @UiHandler("begin")
@@ -69,7 +71,7 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     
     
     @UiField
-    DivElement firstThing;
+    DivElement firstThing,programStatus;
     
     @UiField
     Button begin;
