@@ -326,7 +326,7 @@ public class AssessmentPrescription {
             
             if(!clientEnvironment.isFlashEnabled()) {
                 for (RppWidget rpp : rppWidgets) {
-                    if (!rpp.isDynamicSolution()) {
+                    if (rpp.isDynamicSolution()) {
                         sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
                     }
                 }
