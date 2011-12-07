@@ -34,9 +34,10 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
+    String _videoTitle="";
     @Override
     public String getTitle() {
-        return "Video Review";
+        return "Video: " + _videoTitle;
     }
 
     @Override
@@ -205,7 +206,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
 
     @Override
     public void setVideoTitle(String title) {
-        videoTitle.setInnerHTML(title);
+        _videoTitle = title;
     }
 
     @Override
@@ -221,7 +222,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     
     
     @UiField
-    Element videoTitle, videoContainer;
+    Element videoContainer;
     
     @UiField
     Element videoReadyLabel;

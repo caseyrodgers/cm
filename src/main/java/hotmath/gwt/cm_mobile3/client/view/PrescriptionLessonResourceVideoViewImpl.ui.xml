@@ -2,7 +2,6 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<g:HTMLPanel ui:field="mainPanel" styleName="prescriptionLessonResourceVideoImpl">
-		<h1 ui:field="videoTitle">The Video Title</h1>
 		<div ui:field='videoContainer'>
 		    the video
 		</div>

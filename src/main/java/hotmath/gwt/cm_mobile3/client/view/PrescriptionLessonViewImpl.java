@@ -157,7 +157,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     
     @Override
     public String getTitle() {
-        return "Lesson Resources";
+        return "Lesson: " + lessonData.getTopic();
     }
 
 

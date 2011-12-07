@@ -3,7 +3,7 @@
 
 	<g:HTMLPanel styleName='prescriptionLessonViewImpl'>
 	   <div class="correct_image" ui:field="correctImage"></div>
-	   <h1 ui:field="lessonTitle">The Lesson Title</h1>
+	   <h1 ui:field="lessonTitle"></h1>
 	   <div class='buttonBar'>
 	       <!-- 
 	       <g:Button ui:field="movePrev" styleName='sexybutton'><span><span>Previous</span></span></g:Button>

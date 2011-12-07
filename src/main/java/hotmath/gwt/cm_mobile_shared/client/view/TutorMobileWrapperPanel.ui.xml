@@ -9,7 +9,7 @@
   				  $solution_html
 			</div>
 
-            <div id='steps_tail' style='position: relative;height: 90px;'>
+            <div id='steps_tail'>
                 <button class='sexybutton disabled' id='steps_prev' href="#"
                     onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
                     <span>
@@ -41,6 +41,7 @@
                 </div>
             </div>
 			<!-- HOTMATH BODY END -->
+			<div id='refresh_problem_button'></div>
 			<img id='scrollTo-button' src='/assets/images/spacer.gif'/>
 		</div>
 		<!-- END TUTOR GUTS -->
