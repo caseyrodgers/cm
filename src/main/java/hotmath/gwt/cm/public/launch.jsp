@@ -38,8 +38,6 @@
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     <script type="text/javascript" language="javascript" src="/cm_student/cm_student.nocache.js"></script>
     <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
-<script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath.js"></script>
-<script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
 <!--
 <script type="text/javascript" language="javascript" src="/js/base64.js"></script>
 <script type="text/javascript" language="javascript" src="/js/tutor6.js"></script>
