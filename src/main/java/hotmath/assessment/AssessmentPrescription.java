@@ -323,15 +323,11 @@ public class AssessmentPrescription {
              * dynamic solutions.
              * 
              */
-            
-            if(!clientEnvironment.isFlashEnabled()) {
-                for (RppWidget rpp : rppWidgets) {
-                    if (rpp.isDynamicSolution()) {
-                        sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
-                    }
+            for (RppWidget rpp : rppWidgets) {
+                if (rpp.isDynamicSolution()) {
+                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
                 }
             }
-            
             if(sessionItems.size() == 0) {
                 sessionItems.addAll(filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData));
             }
