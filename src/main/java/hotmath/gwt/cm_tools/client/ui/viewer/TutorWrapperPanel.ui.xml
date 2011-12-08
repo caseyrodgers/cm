@@ -38,6 +38,7 @@
                             </a>
                         </div>
                     </div>
+                    <div id='refresh_problem_button'></div>
                     <img id='scrollTo-button' src='/images/tutor5/spacer.gif' />
                 </div>
                 <!-- HOTMATH BODY END -->
