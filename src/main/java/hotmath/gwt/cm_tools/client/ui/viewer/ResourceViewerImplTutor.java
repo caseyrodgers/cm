@@ -96,6 +96,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         String title = "Correct " + numCorrect + " out of " + limit;
         InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
         
+        CmMainPanel.__lastInstance.removeResource();
+        
         new SolutionSetCompleteDialog(numCorrect, limit);
     }
     

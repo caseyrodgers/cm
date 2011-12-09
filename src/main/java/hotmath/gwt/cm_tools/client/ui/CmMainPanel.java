@@ -134,7 +134,7 @@ public class CmMainPanel extends LayoutContainer {
 	}
 
 	/**
-	 * Remove any resource
+	 * Remove current resource
 	 * 
 	 */
 	public void removeResource() {

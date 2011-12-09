@@ -115,7 +115,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    
 	    String title = null;
 	    if(total > 0) {
-	        title = "Flashcard Set: problem " + probNum + " of " + total;
+	        title = "Problem Set: " + probNum + " of " + total;
 	    }
 	    else {
 	        title = "Problem 1 of 1";
