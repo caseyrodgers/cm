@@ -115,18 +115,21 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             int cnt = 1;
             for (AssessmentPrescription.SessionData sdata : practiceProblems) {
                 InmhItemData id = new InmhItemData();
+                
+                String rppInfoLabel="";
                 String type = null;
                 if(isActivity) {
                     type = "Activity ";
                 }
                 else if(isProblemSet) {
                     type = "Problem Set ";
+                    rppInfoLabel = " (" + sdata.getRpp().getInfoLabel() + ")";
                 }
                 else {
                     type = "Problem ";
                 }
                     
-                id.setTitle(type + cnt++);
+                id.setTitle(type + (cnt++) + " " + rppInfoLabel);
                 
                 id.setFile(sdata.getRpp().getFile());
                 id.setType("practice");

@@ -6,6 +6,7 @@ import java.io.StringReader;
 
 import org.apache.log4j.Logger;
 
+import com.sdicons.json.model.JSONInteger;
 import com.sdicons.json.model.JSONObject;
 import com.sdicons.json.model.JSONString;
 import com.sdicons.json.model.JSONValue;
@@ -25,6 +26,7 @@ public class RppWidget {
     String widetKey;
     String widgetJsonArgs;
     String title;
+    int numProblems;
 
     public RppWidget() {
         /* empty */
@@ -64,10 +66,20 @@ public class RppWidget {
         if(value.isComplex()) {
             JSONObject complex = (JSONObject)value;
             widetKey = ((JSONString)complex.get("widget")).getValue();
+            numProblems = ((JSONInteger)complex.get("limit")).getValue().intValue();
             widgetJsonArgs = jsonRecord;
         }
         if(widetKey == null)
             throw new CmException("JSON string did not contain a 'widget' element");
+    }
+    
+    public String getInfoLabel() {
+        if(numProblems > 0) {
+            return "set of " + numProblems;
+        }
+        else {
+            return "1 problem";
+        }
     }
     
     public String getWidgetJsonArgs() {

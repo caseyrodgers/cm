@@ -152,7 +152,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
                 lessonTitle.setInnerHTML("<img src='/gwt-resources/images/check_correct.png'/>" + lessonData.getTopic());
             }
             else {
-                correctImage.setInnerHTML("Not Completed");
+                correctImage.setInnerHTML("");
                 correctImage.removeClassName("is_complete");
             }
         }
