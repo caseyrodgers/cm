@@ -34,8 +34,8 @@ public class LoginActivity implements LoginView.Presenter {
 
     
     @Override
-    public void doLogin(final String userName, final String passWord) {
-        if(userName == null || userName.length() == 0 || passWord == null) {
+    public void doLogin(final int uid, final String userName, final String passWord) {
+        if(uid == 0 && (userName == null || userName.length() == 0 || passWord == null)) {
             MessageBox.showError("Enter username and password");
             return;
         }
@@ -51,6 +51,7 @@ public class LoginActivity implements LoginView.Presenter {
         GetCmMobileLoginAction action = new GetCmMobileLoginAction();
         action.setName(userName);
         action.setPassword(passWord);
+        action.setUid(uid);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmMobileUser>() {
             @Override
             public void onSuccess(CmMobileUser result) {
@@ -91,7 +92,7 @@ public class LoginActivity implements LoginView.Presenter {
         Log.info("Create demo account");
         String userName="catchup_demo";
         String passWord = "demo";
-        doLogin(userName, passWord);
+        doLogin(0, userName, passWord);
     }
 
     

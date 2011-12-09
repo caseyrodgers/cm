@@ -1,11 +1,15 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
+import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -131,32 +135,7 @@ public class QuizCheckInfoDialog extends DialogBox {
     
     
     private void reLogin() {
-        eventBus.fireEvent(new SystemIsBusyEvent(true));
-        GetCmProgramFlowAction action = new GetCmProgramFlowAction(SharedData.getUserInfo().getUid(), FlowType.ACTIVE);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmProgramFlowAction>() {
-            @Override
-            public void onSuccess(CmProgramFlowAction result) {
-                eventBus.fireEvent(new SystemIsBusyEvent(false));
-                Log.info("re login successful: " + result);
-                
-                
-                if(result.getPlace() == CmPlace.ERROR_FLASH_REQUIRED) {
-                    eventBus.fireEvent(new ShowFlashRequiredEvent());
-                }
-                else {
-                    SharedData.setFlowAction(result);
-                    
-                    eventBus.fireEvent(new ShowWelcomeViewEvent());
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable caught) {
-               eventBus.fireEvent(new SystemIsBusyEvent(false));
-               MessageBox.showMessage("Could not log you in: " + caught.getMessage());
-            }
-        });        
-        
+        new LoginActivity(CatchupMathMobile3.__clientFactory.getEventBus()).doLogin(SharedData.getUserInfo().getUid(), null,null);
     }
     
     

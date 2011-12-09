@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
@@ -39,7 +40,7 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 
 	@Override
 	public String getTitle() {
-	   return "Quiz Results";
+	   return "Quiz Results for " + SharedData.getUserInfo().getUserName();
 	}
 	
 	@Override

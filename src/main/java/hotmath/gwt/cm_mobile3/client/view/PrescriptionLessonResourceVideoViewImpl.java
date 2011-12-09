@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
@@ -37,7 +38,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     String _videoTitle="";
     @Override
     public String getTitle() {
-        return "Video: " + _videoTitle;
+        return "Video Lesson for " + SharedData.getUserInfo().getUserName();
     }
 
     @Override
@@ -206,7 +207,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
 
     @Override
     public void setVideoTitle(String title) {
-        _videoTitle = title;
+        videoTitle.setInnerHTML(title);
     }
 
     @Override
@@ -225,5 +226,6 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     Element videoContainer;
     
     @UiField
-    Element videoReadyLabel;
-}
+    Element videoReadyLabel, videoTitle;
+    
+    }

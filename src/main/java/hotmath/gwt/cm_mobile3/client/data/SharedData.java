@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.data;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -38,6 +39,15 @@ public class SharedData {
         userInfo = userInfoIn;
     }
 
+    static public int getCountLessonsRemaining() {
+        int cnt=SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size();
+        for(SessionTopic topic: SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics()) {
+            if(topic.isComplete()) {
+                cnt--;
+            }
+        }
+        return cnt;
+    }
     
     /** Search through prescription data and return the InmhItemData that is 
      * in the ordinal position of the named resource type.

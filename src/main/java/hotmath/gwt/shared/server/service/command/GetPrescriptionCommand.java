@@ -248,7 +248,6 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             response.setPrescriptionData(presData);
             response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), prescription.getTestRun().getAnsweredCorrect()));
             response.setProgramTitle(prescription.getTest().getTestDef().getTitle());
-            
 
             return response;
 

@@ -54,7 +54,14 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
     public String getTitle() {
         int segNum = SharedData.getUserInfo().getTestSegment();
         int segCount = SharedData.getUserInfo().getProgramSegmentCount();
-        return "Catchup Math Quiz: " + segNum + " of " + segCount;
+        String programName = SharedData.getUserInfo().getTestName();
+        String user = SharedData.getUserInfo().getUserName();
+        String section = "";
+        if(!SharedData.getUserInfo().isCustomProgram()) {
+            section = " for Section " + segNum + " of " + segCount;
+        }
+        String title = programName + " Quiz " + section + " for " + user;
+        return title;
     }
     @Override
     public String getBackButtonText() {

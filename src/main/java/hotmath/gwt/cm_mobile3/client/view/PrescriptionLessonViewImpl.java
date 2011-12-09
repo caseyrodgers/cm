@@ -74,8 +74,11 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     public void setLesson(PrescriptionSessionData lessonData) {
         
         listItems.clear();
-        this.lessonData = lessonData; 
-        lessonTitle.setInnerHTML(lessonData.getTopic());
+        this.lessonData = lessonData;
+        
+        String lesson = lessonData.getTopic();
+        lesson += " <span style='font-size: 70%'>" + "(" + SharedData.getCountLessonsRemaining() + " out of " + SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size() + " remaining)";
+        lessonTitle.setInnerHTML(lesson);
         
         rppItems.clear();
         
@@ -157,7 +160,10 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
     
     @Override
     public String getTitle() {
-        return "Lesson: " + lessonData.getTopic();
+        String programName = SharedData.getUserInfo().getTestName();
+        String userName = SharedData.getUserInfo().getUserName();
+        
+        return programName + " Current Topic for " + userName;
     }
 
 

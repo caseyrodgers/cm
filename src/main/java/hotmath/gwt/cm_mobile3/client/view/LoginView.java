@@ -10,7 +10,7 @@ public interface LoginView extends IPage {
     void prepareLogin(UserInfo userInfo);
     
     static public interface Presenter {
-        void doLogin(String userName, String passWord);
+        void doLogin(int uid, String userName, String passWord);
         void createDemo();
     }
 

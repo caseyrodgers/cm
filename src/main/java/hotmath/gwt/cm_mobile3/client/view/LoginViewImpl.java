@@ -41,7 +41,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
         String uName = usernameBox.getValue();
         String pass = passwordBox.getValue();
         
-        presenter.doLogin(uName, pass);
+        presenter.doLogin(0,uName, pass);
     }
     
 
