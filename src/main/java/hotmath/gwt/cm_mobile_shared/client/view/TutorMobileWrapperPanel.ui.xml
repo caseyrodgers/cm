@@ -29,7 +29,7 @@
                 <button class='sexybutton' id='new_problem'
                     onclick="TutorManager.newProblem();return false;" accesskey="s">
                     <span>
-                        <span>Back</span>
+                        <span>Return</span>
                     </span>
                 </button>
                 

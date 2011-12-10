@@ -231,6 +231,6 @@ class MyGenericTextTag extends GenericTextTag<String> {
 //                addStyleName("is_viewed");
 //            }
 //        }
-        getElement().setInnerHTML("<span>" + resourceItem.getTitle() + "</span>");
+        getElement().setInnerHTML("<span >&nbsp;&nbsp;&nbsp;<span class='group-item-dot'>&nbsp;</span>" + resourceItem.getTitle() + "</span>");
     }
 }

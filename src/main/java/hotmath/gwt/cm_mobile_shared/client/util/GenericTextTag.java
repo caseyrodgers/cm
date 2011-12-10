@@ -2,8 +2,6 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 
 //based on Label.java source code that comes with GWT
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;

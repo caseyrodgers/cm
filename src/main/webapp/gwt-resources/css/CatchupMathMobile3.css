@@ -875,3 +875,10 @@ button.quiz_whiteboard_button {
 }
 
 
+span.group-item-dot {
+	float: left;
+	margin-left: 5px;
+	width: 5px;
+	height: 5px;
+	background-color: green;
+}

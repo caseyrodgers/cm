@@ -93,7 +93,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    presenter.markSolutionAsComplete();
 	    
 	    FlowPanel flowPanel = new FlowPanel();
-	    flowPanel.add(new HTML("<p>You have completed this problem set.<br/>You answered <b style='font-size: 2em'>" + correct + "</b> out of <b style='font-size: 2em'>" + limit + "</b> problems correct.</p>"));
+	    flowPanel.add(new HTML("<p>You have completed this problem set.<br/>You answered <b style='font-size: 2em'>" + correct + "</b> out of <b style='font-size: 2em'>" + limit + "</b> problems correctly.</p>"));
         Button btn = new Button("Back to Lesson",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
