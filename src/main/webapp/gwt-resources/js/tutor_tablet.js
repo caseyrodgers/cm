@@ -115,6 +115,7 @@ var TutorManager = {
 	stepUnit : null,
 	tutorData : null,
 	solutionTitle: null,
+	context: null,
 	initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,
 			showWork, expand) {
 		TutorManager.pid = pid;
@@ -132,8 +133,8 @@ var TutorManager = {
 
 		/** hookup any question steps */
 		// HmEvents.eventTutorInitialized.fire();
-		var mc = createNewSolutionMessageContext(pid, jsonConfig);
-		TutorDynamic.initializeTutor(mc);
+		TutorManager.context = createNewSolutionMessageContext(pid, jsonConfig);
+		TutorDynamic.initializeTutor(TutorManager.context);
 	},
 	showMessage : function(msg) {
 		var tm = $get('tutor_message');
@@ -262,7 +263,9 @@ var TutorManager = {
 		gwt_backToLesson();
 	},
 	newProblem : function() {
-		gwt_tutorNewProblem();
+		var cnt = TutorManager.context.probNum;
+		var total = TutorManager.context.jsonConfig?TutorManager.context.jsonConfig.limit:0;
+		gwt_tutorNewProblem(cnt+1, total);
 	},
 	
 	showWhiteboard: function() {

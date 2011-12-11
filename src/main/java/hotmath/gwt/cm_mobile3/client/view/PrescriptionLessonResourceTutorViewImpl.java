@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -16,6 +18,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -80,8 +83,42 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	 *  in the tutor template. 
 	 * 
 	 */
-	static private void tutorNewProblem() {
-		Controller.navigateBack();
+	private void tutorNewProblem() {
+	    if(_total < 2) {
+	        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+	        return;
+	    }
+	    
+        FlowPanel flowPanel = new FlowPanel();
+        flowPanel.add(new HTML("<p>You are currently on problem " + _probNum + " of " + _total + "</p>" +
+                                "<p>Are you sure you want to Return to the lesson?</p>"
+                               ));
+        Button btn = new Button("Return to Lesson",new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+                pp.hide();
+            }
+        });
+        
+        btn.getElement().setInnerHTML("<span><span>" + btn.getText() + "</span></span>");
+        btn.addStyleName("sexybutton");
+        flowPanel.add(btn);
+        
+        
+        Button btn2 = new Button("Cancel",new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                pp.hide();
+            }
+        });
+        btn2.getElement().setInnerHTML("<span style='margin-left: 10px'><span>" + btn2.getText() + "</span></span>");
+        btn2.addStyleName("sexybutton");
+        flowPanel.add(btn2);
+        
+        
+        
+        pp = MessageBox.showMessage(flowPanel,null);
 	}
 	
 	private void showWhiteboard_Gwt() {
@@ -111,8 +148,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(),lastResponse.getSolutionData(), lastResponse.getTutorHtml(),problem.getProblem(), false, false);
 	}
 	
+	int _probNum;
+	int _total;
 	private void setSolutionTitle_Gwt(int probNum, int total) {
-	    
+	    _probNum = probNum;	    _total = total;
 	    String title = null;
 	    if(total > 0) {
 	        title = "Problem Set: " + probNum + " of " + total;
@@ -170,16 +209,31 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     	$wnd.gwt_solutionHasBeenViewed = function(){
     	    instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::gwt_solutionHasBeenViewed()();
     	 };
+    	 
+        $wnd.gwt_tutorNewProblem = function(){
+            instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::tutorNewProblem()();
+         };    	 
+
     }-*/;
     
     native private static void setupJsniStatic() /*-{
         $wnd.gwt_scrollToBottomOfScrollPanel = @hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::scrollToBottom(I);
-        $wnd.gwt_tutorNewProblem = @hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::tutorNewProblem();
     }-*/;
 
     @Override
     public String getBackButtonText() {
         return "back";
+    }
+    
+    @Override
+    public BackAction getBackAction() {
+        return new BackAction() {
+            @Override
+            public boolean goBack() {
+                tutorNewProblem();
+                return false;
+            }
+        };
     }
 
     @Override
