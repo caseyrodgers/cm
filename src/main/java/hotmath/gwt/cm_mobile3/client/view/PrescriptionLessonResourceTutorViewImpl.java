@@ -18,7 +18,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -84,7 +83,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	 * 
 	 */
 	private void tutorNewProblem() {
-	    if(_total < 2) {
+	    if(_total < 2 || _probNum >= _total) {
 	        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
 	        return;
 	    }
