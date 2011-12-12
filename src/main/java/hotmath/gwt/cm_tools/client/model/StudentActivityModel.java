@@ -14,6 +14,7 @@ public class StudentActivityModel extends BaseModel implements Response {
 	public static final String START_KEY = "start";
 	public static final String STOP_KEY = "stop";
 	public static final String IS_QUIZ_KEY = "is-quiz";
+	public static final String IS_PASSING_KEY = "is-passing";
 	public static final String RUN_ID_KEY = "run-id";
 	public static final String TEST_ID_KEY = "test-id";
 	public static final String IS_CUSTOM_QUIZ_KEY = "is-custom-quiz";
@@ -97,6 +98,14 @@ public class StudentActivityModel extends BaseModel implements Response {
 
 	public void setIsQuiz(Boolean isQuiz) {
 		set(IS_QUIZ_KEY, isQuiz);
+	}
+
+	public Boolean getIsPassing() {
+		return get(IS_PASSING_KEY);
+	}
+
+	public void setIsPassing(Boolean isPassing) {
+		set(IS_PASSING_KEY, isPassing);
 	}
 
 	public Integer getRunId() {
