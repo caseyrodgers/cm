@@ -46,6 +46,30 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
     private HaUserDao() {
         /** empty */
     }
+    
+
+    /** Manually set the alternate test that will be used on next 
+     *  quiz creation.
+     *  
+     *   (NOTE: this is usually not called as the segment_slot is automatically 
+     *   incremented round-robin style when creating quizzes.
+     *   
+     * @param uid
+     * @param segmentSlot
+     * @throws Exception
+     */
+    public void setSegmentSlot(final int uid, final int segmentSlot) throws Exception {
+        int count = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update HA_USER set active_segment_slot = ? " + " where uid = ?";
+                PreparedStatement pstat = con.prepareStatement(sql);
+                pstat.setInt(1, segmentSlot);
+                pstat.setInt(2, uid);
+                return pstat;
+            }
+        });
+    }
 
     public HaUser lookUser(Integer uid, boolean cachedOk) throws HotMathException {
         PreparedStatement pstat = null;

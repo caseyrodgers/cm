@@ -23,6 +23,7 @@ import hotmath.gwt.shared.client.rpc.action.LoginAction;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
 import hotmath.gwt.shared.server.service.command.LoginCommand;
 import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.HaUserParallelProgram;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.Jsonizer;
@@ -79,6 +80,7 @@ public class LoginService extends HttpServlet {
 		String pwd = req.getParameter("pwd");
 		String action = req.getParameter("action");
 		String key = req.getParameter("key");
+
 		boolean isDebug=false;
 		
 		/** real_login passed as hidden input from login.html
@@ -221,43 +223,62 @@ public class LoginService extends HttpServlet {
 				req.getSession().setAttribute("securityKey", loginInfo.getKey());
 
 				clientInfo.setUserId(loginInfo.getUserId());
-
+				
 				if(cmUser instanceof HaAdmin) {
 					clientInfo.setUserType(UserType.ADMIN);
 
 					req.getSession().setAttribute("loginInfo", loginInfo);
 					req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
 				}
-				else if (cmUser instanceof HaUserParallelProgram) {
-					clientInfo.setUserType(UserType.STUDENT);
-					
-					UserLoginResponse response = new UserLoginResponse();
-					UserInfo userInfo = new UserInfo();
-					userInfo.setUid(loginInfo.getUserId());
-					userInfo.setLoginName(loginInfo.getLoginName());
-					response.setUserInfo(userInfo);
-					CmDestination dest = new CmDestination(CmPlace.WELCOME);
-					response.setNextAction(dest);
-					String jsonizedUserInfo = Jsonizer.toJson(response);			
-					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
-					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
-				}
 				else {
-					clientInfo.setUserType(UserType.STUDENT);
-					
-					// if this is a "real login" and Student is currently in a "Parallel Program",
-					// then need to reassign to "Main Program" before calling getUserInfoAction
-					ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
-					if (isRealLogin && ppDao.isStudentInParallelProgram(loginInfo.getUserId()) == true) {
-						ppDao.reassignMainProgram(loginInfo.getUserId());
-					}
+				    
+				    /** is cm_student 
+				     * 
+				     */
+				    
 
-					UserLoginResponse response = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
-					//UserInfo userInfo = response.getUserInfo();
-					String jsonizedUserInfo = Jsonizer.toJson(response);
-					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
-
-					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+	                
+	                
+	                /** allow override of alternate test (segment_slot) to be set on URL
+	                 * 
+	                 */
+	                String sSegmentSlot = req.getParameter("alt_test");
+	                if(sSegmentSlot != null) {
+	                    int segmentSlot = SbUtilities.getInt(sSegmentSlot);
+	                    HaUserDao.getInstance().setSegmentSlot(loginInfo.getUserId(),segmentSlot);
+	                }
+				    
+				    if (cmUser instanceof HaUserParallelProgram) {
+    					clientInfo.setUserType(UserType.STUDENT);
+    					
+    					UserLoginResponse response = new UserLoginResponse();
+    					UserInfo userInfo = new UserInfo();
+    					userInfo.setUid(loginInfo.getUserId());
+    					userInfo.setLoginName(loginInfo.getLoginName());
+    					response.setUserInfo(userInfo);
+    					CmDestination dest = new CmDestination(CmPlace.WELCOME);
+    					response.setNextAction(dest);
+    					String jsonizedUserInfo = Jsonizer.toJson(response);			
+    					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
+    					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+				    }
+    				else {
+    					clientInfo.setUserType(UserType.STUDENT);
+    					
+    					// if this is a "real login" and Student is currently in a "Parallel Program",
+    					// then need to reassign to "Main Program" before calling getUserInfoAction
+    					ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+    					if (isRealLogin && ppDao.isStudentInParallelProgram(loginInfo.getUserId()) == true) {
+    						ppDao.reassignMainProgram(loginInfo.getUserId());
+    					}
+    
+    					UserLoginResponse response = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
+    					//UserInfo userInfo = response.getUserInfo();
+    					String jsonizedUserInfo = Jsonizer.toJson(response);
+    					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
+    
+    					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+    				}
 				}
 
 				req.getSession().setAttribute("clientInfo", clientInfo);

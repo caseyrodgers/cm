@@ -296,10 +296,29 @@ public class CmShared implements EntryPoint {
     /** Reload the current user's page allowing any changed
      * program configuration to take effect.
      * 
+     * Make sure there is a uid parameter to deal 
+     * with possible GETs
      * 
      */
     static public void reloadUser() {
-        Window.Location.replace("/loginService?uid=" + UserInfo.getInstance().getUid());
+        String queryString="";
+        boolean hasUid=false;
+        for(String k: _queryParameters.keySet()) {
+           if(queryString.length() > 0) {
+               queryString += "&";
+           }
+           if(k.equals("uid")) {
+               hasUid=true;
+           }
+           queryString += k + "=" + _queryParameters.get(k);
+        }
+        if(!hasUid) {
+            if(queryString.length() > 0) {
+                queryString += "&";
+            }
+            queryString += "uid=" + UserInfo.getInstance().getUid();
+        }
+        Window.Location.replace("/loginService?" + queryString);
     }    
     
     

@@ -106,6 +106,7 @@ public class UserInfoDao {
 	         ui.setProgramName(getJsonString(o.get("testName")));
 	         ui.setProgramSegment(getJsonInt(o.get("testSegment")));
 	         ui.setProgramSegmentCount(getJsonInt(o.get("programSegmentCount")));
+	         ui.setTestSegmentSlot(getJsonInt(o.get("testSegmentSlot")));
 	         ui.setTutoringAvail(o.get("tutoringAvail").isBoolean().booleanValue());
 	         ui.setViewCount(getJsonInt(o.get("viewCount")));
 	         

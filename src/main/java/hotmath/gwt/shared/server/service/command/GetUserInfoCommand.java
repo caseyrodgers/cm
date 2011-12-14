@@ -83,6 +83,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             UserInfo userInfo = new UserInfo();
             userInfo.setUid(sm.getUid());
             userInfo.setTestId(activeInfo.getActiveTestId());
+            userInfo.setTestSegmentSlot(activeInfo.getActiveSegmentSlot());
             userInfo.setRunId(activeInfo.getActiveRunId());
             userInfo.setProgramSegment(activeInfo.getActiveSegment());
             userInfo.setUserName(sm.getName());

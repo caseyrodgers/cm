@@ -136,7 +136,7 @@ public class InmhItemData {
 
         logger.debug("getting solution pool " + logTag);
         
-        boolean allowFlashWidgets = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty("prescription.allow_rpp", "true"));
+        boolean allowFlashWidgets = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty("prescription.allow_rpa", "true"));
         widgets = new ArrayList<RppWidget>();
         try {
             ps = conn.prepareStatement(sql);

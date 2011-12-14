@@ -6,6 +6,8 @@ import hotmath.gwt.cm_core.client.EventBus;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 
 public class StepEditorDefineDialog extends Window {
 
@@ -24,7 +26,15 @@ public class StepEditorDefineDialog extends Window {
         setAnimCollapse(true);
         setDraggable(false);
         setModal(true);
-        _textArea.setValue(tutorDefine);
+        
+        
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                _textArea.setValue(tutorDefine);
+            }
+        });
+        
         _textArea.setCallback(new HtmlEditorApplet.Callback() {
 
             @Override

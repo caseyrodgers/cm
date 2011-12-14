@@ -18,6 +18,7 @@ public class UserInfo implements  Response {
 	int sessionNumber=0;
 	int testSegment=1;
 	int programSegmentCount=4;
+	int testSegmentSlot;
 	String testName;
 	String userName;
 	int viewCount;
@@ -310,7 +311,7 @@ public class UserInfo implements  Response {
      * @return
      */
     public String getUserStatus() {
-       String status = "uid: " + uid + ", test_id: " + getTestId() + 
+       String status = "uid: " + uid + ", test_id: " + getTestId() + ", alt_test: " + getTestSegmentSlot() + 
                        ", run_id: " + getRunId() + ", quiz: " + getTestSegment() + "/" + getProgramSegmentCount() + 
                        ", prescription: " + getSessionNumber() + "/" + getSessionCount();
        return status;
@@ -345,19 +346,30 @@ public class UserInfo implements  Response {
     public void setOnCompletion(UserProgramCompletionAction onCompletion) {
         this.onCompletion = onCompletion;
     }
+    
+    
+
+    public int getTestSegmentSlot() {
+        return testSegmentSlot;
+    }
+
+    public void setTestSegmentSlot(int testSegmentSlot) {
+        this.testSegmentSlot = testSegmentSlot;
+    }
 
     @Override
     public String toString() {
-        return "UserInfo [DEMO_USER_NAME=" + DEMO_USER_NAME + ", activeUser=" + activeUser + ", autoTestMode="
-                + autoTestMode + ", backgroundStyle=" + backgroundStyle + ", correctAnswers=" + correctAnswers
-                + ", correctPercent=" + correctPercent + ", customProgram=" + customProgram + ", isDemoUser="
-                + isDemoUser + ", isFirstView=" + isFirstView + ", isShowWorkRequired=" + isShowWorkRequired
-                + ", isTutoringAvail=" + isTutoringAvail + ", lmitGames=" + limitGames + ", loginName=" + loginName
-                + ", onCompletion=" + onCompletion + ", passPercentRequired=" + passPercentRequired + ", password="
-                + password + ", runId=" + runId + ", sessionCount=" + sessionCount + ", sessionNumber=" + sessionNumber
-                + ", subTitle=" + subTitle + ", testId=" + testId + ", testName=" + testName + ", testSegment="
-                + testSegment + ", testSegmentCount=" + programSegmentCount + ", uid=" + uid + ", userAccountType="
-                + userAccountType + ", userName=" + userName + ", viewCount=" + viewCount + "]";
+        return "UserInfo [uid=" + uid + ", testId=" + testId + ", runId=" + runId + ", sessionNumber=" + sessionNumber
+                + ", testSegment=" + testSegment + ", programSegmentCount=" + programSegmentCount
+                + ", testSegmentSlot=" + testSegmentSlot + ", testName=" + testName + ", userName=" + userName
+                + ", viewCount=" + viewCount + ", correctPercent=" + correctPercent + ", backgroundStyle="
+                + backgroundStyle + ", correctAnswers=" + correctAnswers + ", isShowWorkRequired=" + isShowWorkRequired
+                + ", isTutoringAvail=" + isTutoringAvail + ", isFirstView=" + isFirstView + ", isDemoUser="
+                + isDemoUser + ", sessionCount=" + sessionCount + ", password=" + password + ", loginName=" + loginName
+                + ", customProgram=" + customProgram + ", limitGames=" + limitGames + ", userAccountType="
+                + userAccountType + ", passPercentRequired=" + passPercentRequired + ", subTitle=" + subTitle
+                + ", autoTestMode=" + autoTestMode + ", activeUser=" + activeUser + ", DEMO_USER_NAME="
+                + DEMO_USER_NAME + ", onCompletion=" + onCompletion + "]";
     }
     
     
@@ -417,4 +429,7 @@ public class UserInfo implements  Response {
          */
         AUTO_ADVANCE
     }
+    
+    
+    
 }
