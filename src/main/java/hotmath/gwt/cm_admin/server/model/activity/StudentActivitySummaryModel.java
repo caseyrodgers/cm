@@ -11,15 +11,16 @@ import java.util.List;
 
 public class StudentActivitySummaryModel {
 	
-	private String studentName;
 	private String programName;
 	private String programType;
 	private String status;
+	private String studentName;
 	
-	private int totalQuizzes;
-	private int totalSections;
-	private int passedQuizAvg;
 	private int allQuizAvg;
+	private int passedQuizAvg;
+	private int sectionCount;
+	private int sectionNum;
+	private int totalQuizzes;
 	
 	List<Integer> quizScores = new ArrayList<Integer>();
 
@@ -63,12 +64,20 @@ public class StudentActivitySummaryModel {
 		this.totalQuizzes = totalQuizzes;
 	}
 
-	public int getTotalSections() {
-		return totalSections;
+	public int getSectionCount() {
+		return sectionCount;
 	}
 
-	public void setTotalSections(int totalSections) {
-		this.totalSections = totalSections;
+	public void setSectionCount(int totalSections) {
+		this.sectionCount = totalSections;
+	}
+
+	public int getSectionNum() {
+		return sectionNum;
+	}
+
+	public void setSectionNum(int sectionNum) {
+		this.sectionNum = sectionNum;
 	}
 
 	public int getPassedQuizAvg() {
