@@ -6,19 +6,21 @@ public class StudentActivityModel extends BaseModel implements Response {
 
 	private static final long serialVersionUID = 6939494404062103623L;
 	
-	public static final String ACTIVITY_KEY = "activity";
-	public static final String PROGRAM_KEY = "program";
-	public static final String PROGRAM_TYPE_KEY = "program-type";
-	public static final String USE_DATE_KEY = "use-date";
-	public static final String RESULT_KEY = "result";
-	public static final String START_KEY = "start";
-	public static final String STOP_KEY = "stop";
-	public static final String IS_QUIZ_KEY = "is-quiz";
-	public static final String IS_PASSING_KEY = "is-passing";
-	public static final String RUN_ID_KEY = "run-id";
-	public static final String TEST_ID_KEY = "test-id";
+	public static final String ACTIVITY_KEY       = "activity";
 	public static final String IS_CUSTOM_QUIZ_KEY = "is-custom-quiz";
-	public static final String TIME_ON_TASK_KEY = "time-on-task";
+	public static final String IS_PASSING_KEY     = "is-passing";
+	public static final String IS_QUIZ_KEY        = "is-quiz";
+	public static final String PROGRAM_KEY        = "program";
+	public static final String PROGRAM_TYPE_KEY   = "program-type";
+	public static final String RESULT_KEY         = "result";
+	public static final String RUN_ID_KEY         = "run-id";
+	public static final String SECTION_COUNT_KEY  = "section-count";
+	public static final String SECTION_NUM_KEY    = "section-num";
+	public static final String START_KEY          = "start";
+	public static final String STOP_KEY           = "stop";
+	public static final String TEST_ID_KEY        = "test-id";
+	public static final String TIME_ON_TASK_KEY   = "time-on-task";
+	public static final String USE_DATE_KEY       = "use-date";
 	
 	public String getActivity() {
 		return get(ACTIVITY_KEY);
@@ -114,6 +116,22 @@ public class StudentActivityModel extends BaseModel implements Response {
 	
 	public void setRunId(Integer runId) {
 	    set(RUN_ID_KEY, runId);	
+	}
+	
+	public Integer getSectionCount() {
+		return get(SECTION_COUNT_KEY);
+	}
+	
+	public void setSectionCount(Integer sectionCount) {
+	    set(SECTION_COUNT_KEY, sectionCount);	
+	}
+	
+	public Integer getSectionNum() {
+		return get(SECTION_NUM_KEY);
+	}
+	
+	public void setSectionNum(Integer sectionNum) {
+	    set(SECTION_NUM_KEY, sectionNum);	
 	}
 	
 	public void setTestId(Integer testId) {
