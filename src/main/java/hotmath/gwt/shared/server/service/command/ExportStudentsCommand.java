@@ -7,6 +7,8 @@ import hotmath.cm.util.export.ExportStudentsInExcelFormat;
 import hotmath.cm.util.report.ReportUtils;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
+import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -32,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -120,6 +123,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     	public void run() {
     		List<StudentReportCardModelI> rcList = new ArrayList<StudentReportCardModelI>();
+    		Map<Integer,List<StudentActivitySummaryModel>> sasMap = new HashMap<Integer,List<StudentActivitySummaryModel>> ();
     		Connection conn = null;
     		try {
     			conn = HMConnectionPool.getConnection();
@@ -132,6 +136,12 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     				rc.setStudentUid(sm.getUid());
     				rcList.add(rc);
     				uidList.add(String.valueOf(sm.getUid()));
+    			}
+
+    			StudentActivityDao saDao = StudentActivityDao.getInstance();
+    			for (StudentModelExt sm : studentList) {
+    				List<StudentActivitySummaryModel> list = saDao.getStudentActivitySummary(sm.getUid());
+    				if (list != null && list.size() > 0) sasMap.put(sm.getUid(), list);
     			}
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
@@ -159,6 +169,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
+    			exporter.setStudentActivitySummaryMap(sasMap);
     			exporter.setTimeOnTaskMap(totMap);
     			exporter.setTitle(titleBuff.toString());
     			exporter.setFilterDescr(sb.toString());

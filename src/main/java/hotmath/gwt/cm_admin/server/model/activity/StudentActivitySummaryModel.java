@@ -15,9 +15,11 @@ public class StudentActivitySummaryModel {
 	private String programType;
 	private String status;
 	private String studentName;
+	private String useDate;
 	
 	private int allQuizAvg;
 	private int passedQuizAvg;
+	private int passedQuizzes;
 	private int sectionCount;
 	private int sectionNum;
 	private int totalQuizzes;
@@ -56,6 +58,14 @@ public class StudentActivitySummaryModel {
 		this.status = status;
 	}
 
+	public String getUseDate() {
+		return useDate;
+	}
+
+	public void setUseDate(String useDate) {
+		this.useDate = useDate;
+	}
+
 	public int getTotalQuizzes() {
 		return totalQuizzes;
 	}
@@ -86,6 +96,14 @@ public class StudentActivitySummaryModel {
 
 	public void setPassedQuizAvg(int passedQuizAvg) {
 		this.passedQuizAvg = passedQuizAvg;
+	}
+
+	public int getPassedQuizzes() {
+		return passedQuizzes;
+	}
+
+	public void setPassedQuizzes(int passedQuizzes) {
+		this.passedQuizzes = passedQuizzes;
 	}
 
 	public int getAllQuizAvg() {

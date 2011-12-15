@@ -1,5 +1,6 @@
 package hotmath.cm.util.export;
 
+import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
@@ -46,6 +47,8 @@ public class ExportStudentsInExcelFormat {
 	private List<StudentModelExt> studentList;
 	
 	private List<StudentReportCardModelI> rcList;
+	
+	private Map<Integer, List<StudentActivitySummaryModel>> sasMap;
 	
 	private Map<Integer, Integer> timeOnTaskMap;
 
@@ -110,15 +113,41 @@ public class ExportStudentsInExcelFormat {
 		this.title = title;
 	}
 
+	public Map<Integer, List<StudentActivitySummaryModel>> getStudentActivitySummaryMap() {
+		return sasMap;
+	}
+
+	public void setStudentActivitySummaryMap(Map<Integer, List<StudentActivitySummaryModel>> sasMap) {
+		this.sasMap = sasMap;
+	}
+
 	private static String[] headings = {
 		"Student", "Password", "Group", "Current Program", "Status", "% Complete", "Quizzes",
 		"Last Quiz", "Last Login", "Total Lessons", "Quizzes Attempted", "Quizzes Passed",
 		"Passed Quiz Avg Score", "Time-on-Task", "Total Logins", "First Login", "First Program"
 	};
 	
+	private static String[] headingsSheet2 = {
+		"Student", "Program", "Prog-Type", "Date", "Status", "Total Quizzes", "Passed Quizzes",
+		"Total Sections", "Passed Quiz Avg", "All Quiz Avg", "Quiz 1", "Quiz 2",
+		"Quiz 3", "Quiz 4", "Quiz 5", "Quiz 6", "Quiz 7", "Quiz 8", "Quiz 9", "Quiz 10"
+	};
+	
 	public ByteArrayOutputStream export() throws Exception {
 
 		Workbook wb = new HSSFWorkbook();
+
+		buildStudentSheet(wb);
+		buildStudentProgramSheet(wb);
+	    
+	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	    wb.write(bos);
+	    bos.close();
+
+	    return bos;
+	}
+
+	private void buildStudentSheet(Workbook wb) {
 		Sheet sheet = wb.createSheet("Catchup Math Students");
 
 	    sheet.setDisplayGridlines(false);
@@ -271,13 +300,144 @@ public class ExportStudentsInExcelFormat {
 	    
 	    // add legend
 	    addLegend(idx, sheet, styles);
+	}
+
+	private void buildStudentProgramSheet(Workbook wb) {
+		Sheet sheet = wb.createSheet("Student Programs");
+
+	    sheet.setDisplayGridlines(false);
+	    sheet.setPrintGridlines(false);
+	    sheet.setFitToPage(true);
+	    sheet.setHorizontallyCenter(true);
+	    PrintSetup printSetup = sheet.getPrintSetup();
+	    printSetup.setLandscape(true);
+
+	    //the following three statements are required only for HSSF
+	    sheet.setAutobreaks(true);
+	    printSetup.setFitHeight((short)1);
+	    printSetup.setFitWidth((short)1);
+
+	    Map<String, CellStyle> styles = createStyles(wb);
+		
+	    Row titleRow = sheet.createRow(0);
+	    Cell titleCell = titleRow.createCell(0);
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(title).append(" ").append(filterDescr);
+	    titleCell.setCellValue(sb.toString());
+        titleCell.setCellStyle(styles.get("title"));
+        
+	    //the header row: centered text in 48pt font
+	    Row headerRow = sheet.createRow(1);
+	    headerRow.setHeightInPoints(12.75f);
+	    int[] charCount = new int[headingsSheet2.length];
+
+	    for (int i = 0; i < headingsSheet2.length; i++) {
+	        Cell cell = headerRow.createCell(i);
+	        cell.setCellValue(headingsSheet2[i]);
+	        cell.setCellStyle(styles.get("header"));
+	        charCount[i] = headingsSheet2[i].length();
+	    }
+		
+	    int idx = 2;
+
+	    for (StudentModelI sm : studentList) {
+
+	    	List<StudentActivitySummaryModel> sasList = sasMap.get(sm.getUid());
+
+	    	if (sasList == null)  {
+	    		if (LOGGER.isDebugEnabled()) {
+	    			LOGGER.debug("+++ activity, skipping uid: " + sm.getUid());
+	    		}
+	    		continue;
+	    	}
+
+	    	for (StudentActivitySummaryModel model : sasList) {
+
+	    		Row row = sheet.createRow(idx++);
+	    		int col = 0;
+
+	    		Cell cell = row.createCell(col);
+	    		cell.setCellValue(sm.getName());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < (sm.getName().length() + 5)) charCount[col] = sm.getName().length() + 5;
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getProgramName());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < model.getProgramName().length()) charCount[col] = model.getProgramName().length();
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getProgramType());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < model.getProgramType().length()) charCount[col] = model.getProgramType().length();
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getUseDate());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < model.getUseDate().length()) charCount[col] = model.getUseDate().length();
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getStatus());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < model.getStatus().length())
+	    			charCount[col] = model.getStatus().length();
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getTotalQuizzes());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < String.valueOf(model.getTotalQuizzes()).length())
+	    			charCount[col] = String.valueOf(model.getTotalQuizzes()).length();
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getPassedQuizzes());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < String.valueOf(model.getPassedQuizzes()).length())
+	    			charCount[col] = String.valueOf(model.getPassedQuizzes()).length();
+
+	    		cell = row.createCell(++col);
+	    		cell.setCellValue(model.getSectionNum());
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < String.valueOf(model.getSectionNum()).length())
+	    			charCount[col] = String.valueOf(model.getSectionNum()).length();
+
+	    		cell = row.createCell(++col);
+	    		String percent = getPercent(model.getPassedQuizAvg());
+	    		cell.setCellValue(percent);
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < percent.length()) charCount[col] = percent.length();
+
+	    		cell = row.createCell(++col);
+	    		percent = getPercent(model.getAllQuizAvg());
+	    		cell.setCellValue(percent);
+	    		cell.setCellStyle(styles.get("data"));
+	    		if (charCount[col] < percent.length()) charCount[col] = percent.length();
+
+	    		List<Integer> quizScores = model.getQuizScores();
+
+	    		int quizCount = 0;
+	    		for (Integer quizScore : quizScores) {
+	    			quizCount++;
+	    			cell = row.createCell(++col);
+	    			percent = (quizScore != null) ? getPercentWithZero(quizScore) : " ";
+	    			cell.setCellValue(percent);
+	    			cell.setCellStyle(styles.get("data"));
+	    			if (charCount[col] < percent.length()) charCount[col] = percent.length();
+	    		}
+	    		while (quizCount < 10) {
+	    			quizCount++;
+	    			cell = row.createCell(++col);
+	    			cell.setCellValue(" ");
+	    			cell.setCellStyle(styles.get("data"));
+	    		}
+	    	}
+	    }
+
+	    for (int i = 0; i < headings.length; i++) {
+            sheet.setColumnWidth(i, 256*charCount[i]);
+	    }
 	    
-
-	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-	    wb.write(bos);
-	    bos.close();
-
-	    return bos;
+	    // add legend
+	    //addStudentProgramLegend(idx, sheet, styles);
 	}
 
     private void addLegend(int idx, Sheet sheet, Map<String, CellStyle> styles) {
@@ -308,9 +468,39 @@ public class ExportStudentsInExcelFormat {
         cell = row.createCell(col);
         cell.setCellValue("First Login - date of Students first activity in CM");
         cell.setCellStyle(styles.get("data"));
-}
+    }
     
-	private Map<String, CellStyle> createStyles(Workbook wb) {
+    private void addStudentProgramLegend(int idx, Sheet sheet, Map<String, CellStyle> styles) {
+    	idx = idx + 3;
+	    int col = 0;
+
+        Row row = sheet.createRow(idx++);
+	    Cell cell = row.createCell(col);
+        cell.setCellValue("% Complete - percentage of completion in current program");
+        cell.setCellStyle(styles.get("data"));
+    	
+        row = sheet.createRow(idx++);
+	    cell = row.createCell(col);
+        cell.setCellValue("Last Quiz - status or score for most recent Quiz");
+        cell.setCellStyle(styles.get("data"));
+
+        row = sheet.createRow(idx++);
+	    cell = row.createCell(col);
+        cell.setCellValue("Last Login - date of most recent CM activity");
+        cell.setCellStyle(styles.get("data"));
+
+        row = sheet.createRow(idx++);
+        cell = row.createCell(col);
+        cell.setCellValue("Total Logins - number of times the student has logged in");
+        cell.setCellStyle(styles.get("data"));
+
+        row = sheet.createRow(idx++);
+        cell = row.createCell(col);
+        cell.setCellValue("First Login - date of Students first activity in CM");
+        cell.setCellStyle(styles.get("data"));
+    }
+
+    private Map<String, CellStyle> createStyles(Workbook wb) {
 
 		Map<String, CellStyle> styles = new HashMap<String, CellStyle>();
 
@@ -404,5 +594,13 @@ public class ExportStudentsInExcelFormat {
 			return "50%";
 		}
 		return "";
+	}
+	
+	private String getPercent(int percent) {
+        return (percent > 0) ? String.format("%d%s", percent, "%") : " ";
+	}
+
+	private String getPercentWithZero(int percent) {
+        return String.format("%d%s", percent, "%");
 	}
 }

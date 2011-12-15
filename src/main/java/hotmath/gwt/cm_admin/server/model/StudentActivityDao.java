@@ -4,6 +4,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.JsonUtil;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.spring.SpringManager;
@@ -140,6 +141,209 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		
 		return totMap;
 	}
+	
+	public List<StudentActivityModel> getStudentActivity(final int uid, final boolean includeTimeOnTask) throws Exception {
+		final CmAdminDao cmaDao = CmAdminDao.getInstance();
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
+        List<StudentActivityModel> list = this.getJdbcTemplate().query(
+                sql,
+                new Object[]{uid, uid, uid, uid, uid, uid},
+                new RowMapper<StudentActivityModel>() {
+                    public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        StudentActivityModel model;
+                        try {
+                			model = new StudentActivityModel();
+                			model.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
+                			model.setProgramDescr(rs.getString("program"));
+                			model.setUseDate(rs.getString("use_date"));
+                			model.setStart(rs.getString("start_time"));
+                			model.setStop(rs.getString("stop_time"));
+                			model.setTestId(rs.getInt("test_id"));
+                			int sectionNum = rs.getInt("test_segment");
+                			model.setSectionNum(sectionNum);
+                			int sectionCount = rs.getInt("segment_count");
+                			model.setSectionCount(sectionCount);
+                			String progId = rs.getString("prog_id");
+                			model.setTimeOnTask(rs.getInt("time_on_task"));
+                		    model.setProgramType(rs.getString("prog_type"));
+
+                			if (progId.equalsIgnoreCase("chap")) {
+                				String subjId = rs.getString("subj_id");
+                				String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
+                				List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
+                				for (ChapterModel cm : cmList) {
+                					if (cm.getTitle().equals(chapter)) {
+                						model.setProgramDescr(new StringBuilder(model.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
+                						break;
+                					}
+                				}
+                			}
+
+                			int runId = rs.getInt("test_run_id");
+                			model.setRunId(runId);
+
+                			StringBuilder sb = new StringBuilder();
+                			sb.append(rs.getString("activity"));
+
+                			boolean isQuiz = (rs.getInt("is_quiz") > 0);
+                			model.setIsQuiz(isQuiz);
+                			if (isQuiz) {
+                				sb.append(sectionNum);
+                			}
+                			model.setActivity(sb.toString());
+                			model.setIsPassing(rs.getInt("is_passing") > 0);
+
+                			// TODO: flag re-takes?
+                			sb.delete(0, sb.length());
+                			if (isQuiz) {
+                				int numCorrect = rs.getInt("answered_correct");
+                				int numIncorrect = rs.getInt("answered_incorrect");
+                				int notAnswered = rs.getInt("not_answered");
+                				if ((numCorrect + numIncorrect + notAnswered) > 0) {
+                					double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
+                					sb.append(Math.round(percent)).append("% correct");
+                				}
+                				else {
+                					sb.append("Started");
+                				}
+                			} else {
+                				int inProgress = 0; // lessonsViewed % problemsPerLesson;
+                				int totalSessions = rs.getInt("total_sessions");
+
+                				int lessonsViewed = rs.getInt("session_number") + 1;
+                				
+                				if (includeTimeOnTask)
+                					model.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
+
+                				if (lessonsViewed >= 0) {
+                					if (totalSessions < 1) {
+                						sb.append("total of ").append(lessonsViewed);
+                						if (lessonsViewed > 1)
+                							sb.append(" reviews completed");
+                						else
+                							sb.append(" review completed");
+                						if (inProgress != 0) {
+                							sb.append(", 1 in progress");
+                						}
+                					} else {
+                						sb.append(lessonsViewed).append(" out of ");
+                						sb.append(totalSessions).append(" reviewed");
+                					}
+                				} else {
+                					if (inProgress != 0) {
+                						sb.append("1 review in progress");
+                					}
+                				}
+                			}
+                			model.setResult(sb.toString());
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Student Activity for uid: %d", uid), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                        return model;
+                    }});
+
+		fixReviewSectionNumbers(list);
+
+		// reverse order of list
+		List<StudentActivityModel> mList = new ArrayList<StudentActivityModel>(list.size());
+		for (int i = (list.size() - 1); i >= 0; i--) {
+			mList.add(list.get(i));
+		}
+
+		return mList;
+	}
+
+	public List<StudentActivitySummaryModel> getStudentActivitySummary(int uid) throws Exception {
+		
+		List<StudentActivityModel> samList = getStudentActivity(uid, false);
+		
+		List<StudentActivitySummaryModel> sasList = new ArrayList<StudentActivitySummaryModel>();
+		
+		// summarize student activity
+		String progName = "";
+		int passingQuizAvg = 0;
+		int passingQuizCount = 0;
+		int allQuizAvg = 0;
+		int quizCount = 0;
+		
+		StudentActivitySummaryModel model = null;
+		for (StudentActivityModel sam : samList) {
+			
+			if (! progName.equals(sam.getProgramDescr())) {
+				
+				if (model != null) {
+					// set Quiz data
+					if (quizCount > 0) {
+						double avg = (double) allQuizAvg / (double) quizCount;
+						model.setAllQuizAvg((int)Math.round(avg));
+						model.setTotalQuizzes(quizCount);
+					}
+					if (passingQuizCount > 0) {
+						double avg = (double) passingQuizAvg / (double) passingQuizCount;
+						model.setPassedQuizAvg((int)Math.round(avg));
+						model.setPassedQuizzes(passingQuizCount);
+					}
+				}
+				model = new StudentActivitySummaryModel();
+				progName = sam.getProgramDescr();
+				model.setProgramName(progName);
+				model.setProgramType(sam.getProgramType());
+				int sectionCount = (sam.getSectionCount() != null) ? sam.getSectionCount() : 0;
+				model.setSectionCount(sectionCount);
+				int sectionNum = (sam.getSectionNum() != null) ? sam.getSectionNum() : 0;
+				model.setSectionNum(sectionNum);
+				model.setUseDate(sam.getUseDate());
+
+				String status = " ";
+				if (sectionCount > 0 && sectionNum == sectionCount) {
+					status = "Completed";
+				}
+				else if (sectionNum > 0) {
+					if (sectionCount > 0)
+						status = String.format("Section %d of %d", sectionNum, sectionCount);
+					else
+						status = String.format("Section %d", sectionNum);
+				}
+				model.setStatus(status);
+				sasList.add(model);
+				
+				// reset stats
+				quizCount = 0;
+				sectionCount = 0;
+				allQuizAvg = 0;
+				passingQuizAvg = 0;
+				passingQuizCount = 0;
+			}
+			
+			if (sam.getIsQuiz() && sam.getRunId() > 0) {
+				quizCount++;
+				String result = sam.getResult();
+				result = result.substring(0, result.indexOf("%"));
+				int score = Integer.parseInt(result);
+				allQuizAvg += score;
+				if (sam.getIsPassing()) {
+					passingQuizCount++;
+					passingQuizAvg += score;
+				}
+				if (quizCount <= 10) {
+					model.getQuizScores().add(score);
+				}
+			}
+			
+		}
+		if (quizCount > 0) {
+			double avg = (double) allQuizAvg / (double) quizCount;
+			model.setAllQuizAvg((int)Math.round(avg));
+		}
+		if (passingQuizCount > 0) {
+			double avg = (double) passingQuizAvg / (double) passingQuizCount;
+			model.setPassedQuizAvg((int)Math.round(avg));
+		}
+
+		return sasList;
+	}
 
 	private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
@@ -155,6 +359,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			m.setStop(rs.getString("stop_time"));
 			m.setTestId(rs.getInt("test_id"));
 			int sectionNum = rs.getInt("test_segment");
+			m.setSectionNum(sectionNum);
+			int sectionCount = rs.getInt("segment_count");
+			m.setSectionCount(sectionCount);
 			String progId = rs.getString("prog_id");
 			m.setTimeOnTask(rs.getInt("time_on_task"));
 		    m.setProgramType(rs.getString("prog_type"));
@@ -276,6 +483,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 						StringBuilder sb = new StringBuilder(m.getActivity());
 						sb.append(t[1]);
 						m.setActivity(sb.toString());
+						m.setSectionNum(q.getSectionNum());
 					}
 				}
 			}
