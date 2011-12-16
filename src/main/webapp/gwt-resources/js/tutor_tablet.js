@@ -16,10 +16,10 @@ var HmEvents = {
 			var hel = HmEvents.eventTutorInitialized.listeners;
 			hel[hel.length] = callBack;
 		},
-		fire : function() {
+		fire : function(args) {
 			var hel = HmEvents.eventTutorInitialized.listeners;
 			for ( var i = 0; i < hel.length; i++) {
-				hel[i]();
+				hel[i](args,[]);
 			}
 		}
 	},
@@ -33,7 +33,7 @@ var HmEvents = {
 		fire : function() {
 			var hel = HmEvents.eventTutorLastStep.listeners;
 			for ( var i = 0; i < hel.length; i++) {
-				hel[i]();
+				hel[i]([]);
 			}
 		}
 	},
@@ -58,10 +58,10 @@ var HmEvents = {
 			var hel = HmEvents.eventTutorSetComplete.listeners;
 			hel[hel.length] = callBack;
 		},
-		fire : function() {
+		fire : function(args) {
 			var hel = HmEvents.eventTutorSetComplete.listeners;
 			for ( var i = 0; i < hel.length; i++) {
-				hel[i]();
+				hel[i](null,[args]);
 			}
 		}
 	},
