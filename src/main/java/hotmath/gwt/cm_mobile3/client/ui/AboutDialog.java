@@ -1,8 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
-import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
-import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -11,6 +9,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AboutDialog extends DialogBox  {
@@ -24,29 +25,29 @@ public class AboutDialog extends DialogBox  {
 	public AboutDialog() {
 		super(true);
 		setSize("300px", "250px");
-		setText("Catchup Math Mobile Information");		
+		setText("Info");		
 		setGlassEnabled(true);
-		setWidget(uiBinder.createAndBindUi(this));
-		
-		
 		setAnimationEnabled(true);
 		setAutoHideEnabled(true);
+
+        TabPanel tp = new TabPanel();
+        tp.add(uiBinder.createAndBindUi(this), "Info");
+        tp.add(new FeedbackPanel(), "Feedback");
+        tp.selectTab(0);
+        
+        setWidget(tp);      
 		
-		setVisible(true);
-		
-		
-		
-		loggedInAs.setInnerHTML(SharedData.getUserInfo().getUserName());
-		
+		String loggedIn="Not logged in";
+		if(SharedData.getUserInfo() != null) {
+		    loggedIn = SharedData.getUserInfo().getUserName();
+		}
+		loggedInAs.setInnerHTML(loggedIn);
+        
+        setVisible(true);
 	}
 	
 	public void showCentered() {
 		center();
-	}
-	
-	@UiHandler("logoutButton")
-	protected void onLogoutButton(ClickEvent ce) {
-	    CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
 	}
 	
 	@UiHandler("closeButton")
@@ -56,5 +57,16 @@ public class AboutDialog extends DialogBox  {
 	
 	@UiField
 	Element loggedInAs;
-	
+}
+
+
+class FeedbackPanel extends FlowPanel {
+    
+    public FeedbackPanel() {
+        setWidth("100%");
+        setHeight("200px");
+        
+        add(new Label("Feedback!"));
+    }
+    
 }

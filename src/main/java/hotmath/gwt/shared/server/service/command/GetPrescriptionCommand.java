@@ -273,12 +273,12 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
             List<PrescriptionSessionDataResource> inmhTypes) {
 
         List<PrescriptionSessionDataResource> newTypes = new ArrayList<PrescriptionSessionDataResource>();
-        String types[][] = { { "Lesson", "review", "Review lesson on the current topic" },
-                { "Video", "video", "Math videos related to the current topic" },
+        String types[][] = { { "Lesson", "review", "Written lesson on the current topic" },
+                { "Video", "video", "Math Video(s)" },
                 { "Activities", "activity", "Math activities and games related to the current topic" },
                 { null, "practice", "Practice problems you must complete before advancing" },
-                { "Extra Practice", "cmextra", "Additional workbook problems" },
-                { "Quiz Results", "results", "The current quiz's results" }, };
+                { "Extra Practice", "cmextra", "More practice" },
+                { "Quiz Results", "results", "Quiz results" }, };
 
         for (int i = 0; i < types.length; i++) {
             String type[] = types[i];

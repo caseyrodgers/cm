@@ -11,7 +11,7 @@
 	        -->
            <g:Button ui:field="choose" styleName='sexybutton'><span><span>Next Lesson/Quiz</span></span></g:Button>
 	   </div>
-	   <p>Choose a resource to help you better understand your lesson.</p>
+	   <p>Choose resources in any order.</p>
 	   <g:HTMLPanel ui:field='resourceList' styleName='resourceList'></g:HTMLPanel>
 	</g:HTMLPanel>
 

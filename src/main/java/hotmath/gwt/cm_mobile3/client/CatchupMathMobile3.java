@@ -302,7 +302,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          * component.
          * 
          */
-        HeaderPanel headerPanel = new HeaderPanel();
+        HeaderPanel headerPanel = new HeaderPanel(__clientFactory.getEventBus());
         PagesContainerPanel pagesPanel = __clientFactory.getPagesContainer();
 
         FlowPanel fp = new FlowPanel();

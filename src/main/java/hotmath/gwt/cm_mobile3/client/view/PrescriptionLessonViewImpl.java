@@ -77,7 +77,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
         this.lessonData = lessonData;
         
         String lesson = lessonData.getTopic();
-        lesson += " <span style='font-size: 70%'>" + "(" + SharedData.getCountLessonsRemaining() + " out of " + SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size() + " remaining)";
+        lesson += " <span style='font-size: 70%'>" + "(" + SharedData.getCountLessonsRemaining() + " lessons out of " + SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size() + " remaining)";
         lessonTitle.setInnerHTML(lesson);
         
         rppItems.clear();

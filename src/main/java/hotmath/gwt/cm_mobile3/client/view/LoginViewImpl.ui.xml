@@ -14,6 +14,13 @@
 			font-size: 1.1em;
 			margin-top: 10px;
 		}
+		
+		.heading p {
+            font-weight: normal;
+            font-size: 1em;
+            color: #666;
+		}
+		
 		.tableLayout {
 			color: white;
 			margin: 20px 0 15px 10px;
@@ -41,7 +48,9 @@
 	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
-		   <h2 class="{style.heading}">Catchup Math Mobile</h2>
+		   <p>Catchup Math provides immediate, personalized math review and practice based on short quizzes.</p>
+           <p>Rich, multi-modal instruction engages math learners from grade 7 through Algebra.</p>
+           <p>Watch the two-minute video at catchupmath.com to see how easy it is to use for both students and teachers. Try a sample session by pressing the Demo button below.</p>
 			<table class='{style.tableLayout}' >
 				<tr>
 					<td class='{style.fieldLabel}'>Username:</td>

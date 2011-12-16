@@ -308,6 +308,21 @@ h1, h2, h3, h4 {
         height: 65px;
         position: relative;
 }
+
+.cm-main-panel-choose-icon {
+        background: url(/gwt-resources/images/choose_topic.png) no-repeat center
+                left !important;
+        height: 46px;
+        position: absolute;
+        right: 0;
+        top: 2;
+        width: 244px;
+}
+.cm-main-panel-choose-icon-over {
+        background: url(/gwt-resources/images/choose_topic-over.png) no-repeat
+                center left !important;
+}
+
 .cm-main-panel-prev-icon {
         background: url(/gwt-resources/images/prev_topic.png) no-repeat center
                 left !important;

@@ -1,5 +1,10 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
+import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
+import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
@@ -8,12 +13,12 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
-import hotmath.gwt.cm_mobile3.client.ui.AboutDialog;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -38,7 +43,8 @@ public class HeaderPanel extends Composite {
 
     private boolean mInitialized = false;
 
-    public HeaderPanel() {
+    Anchor _logout;
+    public HeaderPanel(EventBus eventBus) {
         
         FlowPanel basePanel = new FlowPanel();
         basePanel.getElement().setId("header");
@@ -59,7 +65,20 @@ public class HeaderPanel extends Composite {
         mInactiveTitle = new Label();
         mInactiveTitle.setStyleName("title");
         basePanel.add(mInactiveTitle);
+
         
+        _logout = new Anchor("Logout");
+        _logout.addStyleName("logout-button");
+        _logout.addStyleName("about-dialog");
+        _logout.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
+            }
+        });
+        _logout.setVisible(false);
+        basePanel.add(_logout);
+
 
         Anchor about = new Anchor();
         about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
@@ -76,7 +95,30 @@ public class HeaderPanel extends Composite {
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
 
         initWidget(basePanel);
+        
+        
+        /** Show showing the Welcome panel turn on the Logout button*/
+        eventBus.addHandler(ShowWelcomeViewEvent.TYPE, new ShowWelcomeViewHandler() {
+            @Override
+            public void showWelcomeView() {
+                showLogoutButton(true);
+            }
+        });
+        
+        eventBus.addHandler(ShowLoginViewEvent.TYPE, new ShowLoginViewHandler() {
+            @Override
+            public void showLoginView() {
+                showLogoutButton(false);
+            }
+        });
+
+        
     }
+    
+    public void showLogoutButton(boolean yesNo) {
+        _logout.setVisible(yesNo);
+    }
+    
 
     private native void registerDomTransitionEndedEvent(Element element) /*-{
                                                                          try

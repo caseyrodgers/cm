@@ -1,5 +1,7 @@
 cd ../hotmath2/build
 call ant -f build_resource_combine.xml
+cp ../web/js/*.js ../../cm/src/main/webapp/js
+cp ../web/css/*.css ../../cm/src/main/webapp/css
 cd ../../cm
 
 call mvn minify:minify -o

@@ -89,8 +89,9 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    }
 	    
         FlowPanel flowPanel = new FlowPanel();
-        flowPanel.add(new HTML("<p>You are currently on problem " + _probNum + " of " + _total + "</p>" +
-                                "<p>Are you sure you want to Return to the lesson?</p>"
+        flowPanel.add(new HTML("<p>You are currently on problem " + _probNum + " of " + _total + ".</p>" +
+                               "<p>If you return now, you will start over at the beginning.</p>" +
+                               "<p style='margin-top: 15px'>Are you sure you want to Return to the lesson?</p>"
                                ));
         Button btn = new Button("Return to Lesson",new ClickHandler() {
             @Override

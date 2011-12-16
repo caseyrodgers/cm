@@ -143,6 +143,9 @@ var TutorManager = {
 			tm.innerHTML = '&nbsp;';
 		}, 2000);
 	},
+	removeStep : function(x) {
+		TutorManager.stepUnits.split(x,1);
+	},
 	showNextStep : function() {
 		if (TutorManager.currentStepUnit + 1 < TutorManager.stepUnits.length) {
 			TutorManager.currentStepUnit++;

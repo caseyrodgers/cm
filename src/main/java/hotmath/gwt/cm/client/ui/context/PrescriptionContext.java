@@ -29,12 +29,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -72,8 +76,7 @@ public class PrescriptionContext implements CmContext {
     public void resetContext() {
     }
 
-    IconButton _previousButton;
-    IconButton _nextButton;
+    IconButton _chooseButton;
     Text       _buttonText;
 
     public List<Component> getTools() {
@@ -84,25 +87,21 @@ public class PrescriptionContext implements CmContext {
         _buttonText.setText(" ");
         _buttonText.addStyleName("cm-main-panel-prev-next-text");
         _buttonText.setEnabled(true);
-        
-        _previousButton = new IconButtonWithTooltip("cm-main-panel-prev-icon", Direction.PREVIOUS);
-        _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                ContextController.getInstance().doPrevious();
-            }
-        });
-        list.add(_previousButton);
-
-        _nextButton = new IconButtonWithTooltip("cm-main-panel-next-icon", Direction.NEXT);
-        _nextButton.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                ContextController.getInstance().doNext();
-            }
-        });
-        list.add(_nextButton);
-        
         list.add(_buttonText);
         _buttonText.enable();
+        
+        
+        list.clear();
+        
+        
+        _chooseButton = new IconButtonWithTooltip("cm-main-panel-choose-icon", Direction.NEXT);
+        _chooseButton.addListener(Events.Select, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                new PrescriptionLessonChooserDialog().setVisible(true);
+            }
+        });
+        list.add(_chooseButton);
+
 
         return list;
     }
@@ -472,30 +471,6 @@ public class PrescriptionContext implements CmContext {
     enum Direction {
         PREVIOUS, NEXT
     };
-
-    /**
-     * IconButton that has drop down tooltip that allows fully contained
-     * tooltips that do not have z-order issues with flash components.
-     * 
-     * @author casey
-     * 
-     */
-    class IconButtonWithDropDownTooltip extends IconButton {
-        public IconButtonWithDropDownTooltip(String style) {
-            super(style);
-
-            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    Direction dir = (IconButtonWithDropDownTooltip.this == _previousButton) ? Direction.PREVIOUS
-                            : Direction.NEXT;
-                    String tip = getTooltipText(dir, prescriptionData);
-
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW, tip));
-                }
-            });
-        }
-    }
 
     /**
      * IconButton that has text tooltip

@@ -4,38 +4,25 @@
 
 	<ui:style>
 		.main {
-		padding: 10px;
+		    padding: 10px;
 		}
 		.main .footer {
-		padding-left: 10px;
-		padding-bottom: 5px;
+		    padding-left: 10px;
+		    padding-bottom: 5px;
 		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
 	   <p>You are logged in as: <span ui:field="loggedInAs"></span></p>
-	
 		<p>
-			This tablet edition of Catchupmath.com
-			allows access to your Catchup Math session
-			from a tablet interface such as the IPad.
-		</p>
-		<p>
-			Our Catchupmath.com desktop edition has games in addition to textbook answers.
-		</p>
-		<p>
-			Passwords may be purchased by going to Catchupmath.com on a desktop.
-		</p>
-		<p>Email feedback or questions to support@catchup.com.</p>
+            For more detailed information about Catchup Math, 
+            please visit on a desktop computer.
+        </p>
+		<p>Email feedback or questions to support@hotmath.com.</p>
 		<div class='{style.footer}'>
 			<g:Button styleName='sexybutton sexysimple' ui:field="closeButton">
 				<span class='ok'>Close</span>
 			</g:Button>
-			
-			<g:Button styleName='sexybutton sexysimple' ui:field="logoutButton">
-                <span class='user'>Logout</span>
-            </g:Button>
-			
 		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 
