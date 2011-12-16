@@ -10,6 +10,7 @@ public interface PrescriptionLessonListingView extends IPage {
     void setPresenter(Presenter presenter);
     void setLessonListing(List<SessionTopic> lessons);
     void showNextQuizButton(boolean trueFalse);
+    void hideInfoAboutNextQuiz();
     
     static public interface Presenter {
         void setupView(PrescriptionLessonListingView view);

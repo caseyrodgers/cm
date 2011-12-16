@@ -19,10 +19,5 @@
             please visit on a desktop computer.
         </p>
 		<p>Email feedback or questions to support@hotmath.com.</p>
-		<div class='{style.footer}'>
-			<g:Button styleName='sexybutton sexysimple' ui:field="closeButton">
-				<span class='ok'>Close</span>
-			</g:Button>
-		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

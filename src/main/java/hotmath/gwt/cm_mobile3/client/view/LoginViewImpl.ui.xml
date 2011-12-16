@@ -48,8 +48,8 @@
 	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
-		   <p>Catchup Math provides immediate, personalized math review and practice based on short quizzes.</p>
-           <p>Rich, multi-modal instruction engages math learners from grade 7 through Algebra.</p>
+		   <p>Catchup Math provides immediate, personalized math review and practice.</p>
+           <p>Rich, multi-modal instruction engages math learners from grade 7 through Algebra 2.</p>
            <p>Watch the two-minute video at catchupmath.com to see how easy it is to use for both students and teachers. Try a sample session by pressing the Demo button below.</p>
 			<table class='{style.tableLayout}' >
 				<tr>

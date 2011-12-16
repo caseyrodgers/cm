@@ -52,7 +52,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
 
     @Override
     public String getTitle() {
-        return "Login to Catchup Math Mobile";
+        return "Catchup Math Mobile";
     }
     @Override
     public String getBackButtonText() {

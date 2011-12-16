@@ -4,7 +4,7 @@
     <g:HTMLPanel>
         <h1>Choose what to do next</h1>
         <p>Choose a lesson to study.  You can jump around and study the lessons in any order you wish.  
-         However, before you can continue to the next quiz you will have to complete all lessons.  
+         <span ui:field="onlyShowForProfPrograms">However, before you can continue to the next quiz you will have to complete all lessons.</span>  
          A completed lesson will show a check next to its name.</p>
         <div class='buttonBar' style='background: inherit'>
             <g:Button ui:field="segmentCompleteTop" styleName="sexyButton disabled"><span><span>Next Quiz</span></span></g:Button>

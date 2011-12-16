@@ -220,7 +220,7 @@ public class UserInfo implements  Response {
 
     public String getUserName() {
         if(userName.toLowerCase().contains("student:")) {
-            return "a Demo Student";
+            return "Demo Student";
         }
         else {
            return userName;

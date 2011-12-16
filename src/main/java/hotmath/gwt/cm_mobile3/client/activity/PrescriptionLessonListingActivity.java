@@ -34,6 +34,10 @@ public class PrescriptionLessonListingActivity implements PrescriptionLessonList
         /** if custom problem (no quiz) disable next quiz button */
         view.showNextQuizButton(!userInfo.isCustomProgram());
         view.setLessonListing(prescriptionData.getSessionTopics());
+        
+        if(SharedData.getUserInfo().isCustomProgram()) {
+            view.hideInfoAboutNextQuiz();
+        }
     }
     
     @Override

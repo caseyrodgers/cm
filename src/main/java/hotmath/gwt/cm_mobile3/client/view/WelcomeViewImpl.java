@@ -55,7 +55,7 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     
     @Override
     public String getTitle() {
-        return "Welcome To Catchup Math " + SharedData.getUserInfo().getUserName();
+        return "Welcome To Catchup Math, " + SharedData.getUserInfo().getUserName();
     }
 
     @Override

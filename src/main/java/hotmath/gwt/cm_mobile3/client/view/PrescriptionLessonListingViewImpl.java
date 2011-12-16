@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -28,6 +29,9 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     
     @UiField 
     Button segmentCompleteTop, segmentCompleteBottom;
+    
+    @UiField
+    Element onlyShowForProfPrograms;
     
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonListingViewImpl> {
     }
@@ -74,6 +78,11 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
         this.presenter = presenter;
         
         presenter.setupView(this);
+    }
+    
+    @Override
+    public void hideInfoAboutNextQuiz() {
+        onlyShowForProfPrograms.setInnerHTML("");
     }
 
     @Override

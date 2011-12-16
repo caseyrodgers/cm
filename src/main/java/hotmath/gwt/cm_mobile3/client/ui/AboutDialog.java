@@ -1,17 +1,26 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AboutDialog extends DialogBox  {
@@ -25,24 +34,43 @@ public class AboutDialog extends DialogBox  {
 	public AboutDialog() {
 		super(true);
 		setSize("300px", "250px");
-		setText("Info");		
-		setGlassEnabled(true);
-		setAnimationEnabled(true);
-		setAutoHideEnabled(true);
-
-        TabPanel tp = new TabPanel();
-        tp.add(uiBinder.createAndBindUi(this), "Info");
-        tp.add(new FeedbackPanel(), "Feedback");
-        tp.selectTab(0);
+        setText("Info");		
+        setGlassEnabled(true);
+        setAnimationEnabled(true);
+        setAutoHideEnabled(true);
         
-        setWidget(tp);      
+        FlowPanel mainPanel = new FlowPanel();
+        mainPanel.add(uiBinder.createAndBindUi(this));
 		
-		String loggedIn="Not logged in";
+		String loggedIn="nobody";
 		if(SharedData.getUserInfo() != null) {
 		    loggedIn = SharedData.getUserInfo().getUserName();
 		}
 		loggedInAs.setInnerHTML(loggedIn);
+
+		
+		FlowPanel hp = new FlowPanel();
+		Button close = new SexyButton("Close", "ok");
+		close.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+		hp.add(close);
+		hp.getElement().setAttribute("style", "margin: 5px 0 5px 5px");
+		
+        DisclosurePanel feedback = new DisclosurePanel();
+        Anchor feedbackButton = new Anchor("Feedback");
+        feedbackButton.getElement().setAttribute("style", "float: right;margin-right: 10px;margin-bottom:5px;font-size: .9em;");
+        feedback.setHeader(feedbackButton);
+        feedback.setContent(new FeedbackPanel());
         
+        mainPanel.add(feedback);
+		mainPanel.add(hp);
+		
+		setWidget(mainPanel);
+		
         setVisible(true);
 	}
 	
@@ -50,10 +78,6 @@ public class AboutDialog extends DialogBox  {
 		center();
 	}
 	
-	@UiHandler("closeButton")
-	protected void onCloseButton(ClickEvent ce) {
-		this.hide();
-	}
 	
 	@UiField
 	Element loggedInAs;
@@ -61,12 +85,40 @@ public class AboutDialog extends DialogBox  {
 
 
 class FeedbackPanel extends FlowPanel {
-    
+    TextArea textArea = new TextArea();
     public FeedbackPanel() {
-        setWidth("100%");
-        setHeight("200px");
-        
-        add(new Label("Feedback!"));
+        setWidth("270px");
+        setHeight("130px");
+        getElement().setAttribute("style", "margin: 0px 10px 20px 10px;");
+        textArea.setWidth("280px");
+        textArea.setHeight("100px");
+        add(textArea);
+        add(new Button("Save",new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                saveFeedback();
+                textArea.setText("");
+            }
+        }));
     }
     
+    private void saveFeedback() {
+        String comments = textArea.getText();
+        if(comments == null || comments.length() == 0) {
+            return;
+        }
+    
+        String stateInfo = SharedData.getUserInfo()!=null?SharedData.getUserInfo().toString():"not logged in";
+        SaveFeedbackAction action = new SaveFeedbackAction(comments, "cm_mobile", stateInfo); 
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData result) {
+                MessageBox.showMessage("Feedback saved");
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                MessageBox.showError("Feedback error");
+            }
+        });
+    }
 }

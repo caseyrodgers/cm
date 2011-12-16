@@ -1,7 +1,5 @@
-package hotmath.gwt.shared.client.rpc.action;
+package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 public class SaveFeedbackAction implements Action<RpcData> {
     String comments;

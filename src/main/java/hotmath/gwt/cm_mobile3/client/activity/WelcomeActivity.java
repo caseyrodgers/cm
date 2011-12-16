@@ -49,7 +49,11 @@ public class WelcomeActivity implements WelcomeView.Presenter{
         
         String status = null;
         if(!isCustomQuiz) {
-            status = "<p>You are in section " + segment + " of " + segmentsTotal + " of the <b>" + testName + "</b> program.</p>";
+            String section="";
+            if(!isCustom) {
+                section = "section " + segment + " of " + segmentsTotal + " of ";
+            }
+            status = "<p>You are in " + section + " the <b>" + testName + " </b> program.</p>";
             
             if(runId > 0) {
                 status += "<p>You have " + lessonsTotal + " lesson" + (lessonsTotal>1?"s":"") +  " to study.";

@@ -60,7 +60,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
         if(!SharedData.getUserInfo().isCustomProgram()) {
             section = " for Section " + segNum + " of " + segCount;
         }
-        String title = programName + " Quiz " + section + " for " + user;
+        String title = programName + " Quiz " + section;
         return title;
     }
     @Override
