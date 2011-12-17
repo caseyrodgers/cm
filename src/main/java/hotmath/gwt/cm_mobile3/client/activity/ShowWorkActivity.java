@@ -24,9 +24,10 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     EventBus eventBus;
     String pid;
     int runId;
+    String title;
     
     static ShowWorkActivity __lastInstance;
-    public ShowWorkActivity(EventBus eventBus, String pid, int runId) {
+    public ShowWorkActivity(EventBus eventBus, String pid, String title, int runId) {
         this.eventBus = eventBus;
         __lastInstance = this;
         if(pid == null || pid.length() == 0) {
@@ -34,11 +35,14 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         }
         this.pid = pid;
         this.runId = runId;
+        this.title = title;
     }
 
     @Override
     public void prepareShowWorkView(ShowWorkView view) {
         setExternalJsniHooks(this);
+        
+        view.setTitle(title);
         
         /** TODO: why use global? */
         //int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();

@@ -75,7 +75,7 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
     }
     
     private void showWhiteboard_Gwt(String pid) {
-        ShowWorkActivity activity = new ShowWorkActivity(CatchupMathMobile3.__clientFactory.getEventBus(), pid,0);
+        ShowWorkActivity activity = new ShowWorkActivity(CatchupMathMobile3.__clientFactory.getEventBus(), pid,"Quiz Results",0);
         ShowWorkView view = CatchupMathMobile3.__clientFactory.getShowWorkView();
         view.setPresenter(activity);
         CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));

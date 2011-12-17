@@ -68,7 +68,8 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             }
             else if(type.equals("show_work")) {
                 String pid = token.getResourceType();
-                ShowWorkActivity activity = new ShowWorkActivity(eb, pid,SharedData.getUserInfo().getRunId());
+                String title = token.getResourceFile();
+                ShowWorkActivity activity = new ShowWorkActivity(eb, pid,title,SharedData.getUserInfo().getRunId());
                 ShowWorkView view = cf.getShowWorkView();
                 view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage)view));

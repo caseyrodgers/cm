@@ -17,6 +17,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
 
     Presenter presenter;
     
+    String title;
     public ShowWorkViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
@@ -35,8 +36,14 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
 
     @Override
     public String getTitle() {
-        return "Show Work";
+        return "Show Work for " + title;
     }
+    
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
     @Override
     public String getBackButtonText() {
         return "Back";

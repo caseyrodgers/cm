@@ -7,21 +7,25 @@ public class ShowWorkViewEvent extends GwtEvent<ShowWorkViewHandler>{
     public static Type<ShowWorkViewHandler> TYPE = new Type<ShowWorkViewHandler>();
 
     String pid;
+    String title;
+    
     public ShowWorkViewEvent() {
     }
     
-    public ShowWorkViewEvent(String pid) {
+    public ShowWorkViewEvent(String pid, String title) {
         this.pid = pid;
+        this.title = title;
     }
     
     @Override
     public Type<ShowWorkViewHandler> getAssociatedType() {
         return TYPE;
     }
+    
 
     @Override
     protected void dispatch(ShowWorkViewHandler handler) {
-        handler.showWorkView(pid);
+        handler.showWorkView(pid, title);
     }
 
 }

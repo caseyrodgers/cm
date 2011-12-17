@@ -74,11 +74,11 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         });
         eb.addHandler(ShowWorkViewEvent.TYPE, new ShowWorkViewHandler() {
             @Override
-            public void showWorkView(String pid) {
+            public void showWorkView(String pid, String title) {
                 if (pid == null) {
                     pid = "";
                 }
-                History.newItem("show_work:" + pid + ":" + System.currentTimeMillis());
+                History.newItem("show_work:" + pid + ":" + title + ":" + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowPrescriptionLessonViewEvent.TYPE, new ShowPrescriptionLessonViewHandler() {

@@ -55,6 +55,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     public void loadSolution(final SolutionResponse solution) {
 	    this.lastResponse = solution;
 	    this.problem = solution.getProblem();
+	    scrollToTop();
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
@@ -75,6 +76,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	 * */
 	static private native void scrollToBottom(int top)  /*-{
 	    $wnd.scrollTo(0,top);
+    }-*/;
+	
+	static private native void scrollToTop()  /*-{
+        $wnd.scrollTo(0,0);
     }-*/;
 	
 	
@@ -122,7 +127,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	}
 	
 	private void showWhiteboard_Gwt() {
-	    presenter.showWhiteboard();
+	    presenter.showWhiteboard(getTitle());
 	}
 	
 	PopupPanel pp; 

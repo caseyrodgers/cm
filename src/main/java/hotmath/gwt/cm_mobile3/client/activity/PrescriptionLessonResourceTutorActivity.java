@@ -6,7 +6,6 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -51,9 +50,9 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
 
 
     @Override
-    public void showWhiteboard() {
+    public void showWhiteboard(String title) {
         final String pid = resourceItem.getFile();
-        eventBus.fireEvent(new ShowWorkViewEvent(pid));
+        eventBus.fireEvent(new ShowWorkViewEvent(pid, title));
     }
 
 

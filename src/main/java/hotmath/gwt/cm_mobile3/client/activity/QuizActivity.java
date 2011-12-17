@@ -216,7 +216,7 @@ public class QuizActivity implements QuizView.Presenter {
     }
     
     private void showWhiteboard_Gwt(String pid) {
-        eventBus.fireEvent(new ShowWorkViewEvent(pid));
+        eventBus.fireEvent(new ShowWorkViewEvent(pid, "Quiz"));
     }
     
     String _activePid;
