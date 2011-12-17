@@ -10,10 +10,21 @@
 		    padding-left: 10px;
 		    padding-bottom: 5px;
 		}
+		.programInfo {
+		    margin: 5px;
+		    padding: 10px;
+		    color: #666;
+		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
 	   <p>You are logged in as: <span ui:field="loggedInAs"></span></p>
+	   <div style='display: none' class='{style.programInfo}' ui:field="programInfo">
+	        <ul>
+	            <li><b>Program: </b> <span ui:field="programName">Unknown</span></li>
+                <li style='display: none' ui:field="segmentInfo"><b>Segment: </b> <span ui:field="segment">Segment</span></li>	            
+	        </ul>
+	   </div>
 		<p>
             For more detailed information about Catchup Math, 
             please visit on a desktop computer.

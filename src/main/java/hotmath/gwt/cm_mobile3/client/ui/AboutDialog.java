@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -43,11 +44,24 @@ public class AboutDialog extends DialogBox  {
         mainPanel.add(uiBinder.createAndBindUi(this));
 		
 		String loggedIn="nobody";
+		String name=null;
 		if(SharedData.getUserInfo() != null) {
 		    loggedIn = SharedData.getUserInfo().getUserName();
+		    name = SharedData.getUserInfo().getTestName();
+		    
+	        int seg = SharedData.getUserInfo().getTestSegment();
+	        int segCnt = SharedData.getUserInfo().getProgramSegmentCount();
+	        if(segCnt > 1) {
+	            segment.setInnerHTML(seg + " of " + segCnt);
+	            segmentInfo.setAttribute("style", "display: block");
+	        }
 		}
 		loggedInAs.setInnerHTML(loggedIn);
 
+		if(name != null) {
+		    programName.setInnerHTML(name);
+		    programInfo.setAttribute("style", "display: block");
+		}
 		
 		FlowPanel hp = new FlowPanel();
 		Button close = new SexyButton("Close", "ok");
@@ -71,6 +85,8 @@ public class AboutDialog extends DialogBox  {
 		
 		setWidget(mainPanel);
 		
+		
+		
         setVisible(true);
 	}
 	
@@ -80,7 +96,7 @@ public class AboutDialog extends DialogBox  {
 	
 	
 	@UiField
-	Element loggedInAs;
+	Element loggedInAs,programInfo,programName, segment, segmentInfo;
 }
 
 
@@ -102,14 +118,19 @@ class FeedbackPanel extends FlowPanel {
         }));
     }
     
+    private native String  getQueryStringHash() /*-{
+        return $wnd.location.hash;
+    }-*/;
+    
     private void saveFeedback() {
         String comments = textArea.getText();
         if(comments == null || comments.length() == 0) {
             return;
         }
-    
+
+        String url = getQueryStringHash();
         String stateInfo = SharedData.getUserInfo()!=null?SharedData.getUserInfo().toString():"not logged in";
-        SaveFeedbackAction action = new SaveFeedbackAction(comments, "cm_mobile", stateInfo); 
+        SaveFeedbackAction action = new SaveFeedbackAction(comments, "cm_mobile: " + url, stateInfo); 
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {

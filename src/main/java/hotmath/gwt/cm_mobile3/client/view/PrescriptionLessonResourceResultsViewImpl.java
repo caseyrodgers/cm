@@ -40,7 +40,7 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 
 	@Override
 	public String getTitle() {
-	   return "Quiz Results for " + SharedData.getUserInfo().getUserName();
+	   return "Quiz Results";
 	}
 	
 	@Override

@@ -2,56 +2,63 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:style>
-	    .formLayout {
-	    	margin: 20px;
-	    	color: white;
-	    	height: 200px;
-	     }
-	     
+		.formLayout {
+		margin: 20px;
+		color: white;
+		height: 200px;
+		}
+
 		.heading {
-			color: #738AA6;
-			font-weight: bold;
-			font-size: 1.1em;
-			margin-top: 10px;
+		color: #738AA6;
+		font-weight: bold;
+		font-size: 1.1em;
+		margin-top: 10px;
 		}
-		
+
 		.heading p {
-            font-weight: normal;
-            font-size: 1em;
-            color: #666;
+		font-weight: normal;
+		font-size: 1em;
+		color: #666;
 		}
-		
+
 		.tableLayout {
-			color: white;
-			margin: 20px 0 15px 10px;
+		color: white;
+		margin: 20px 0 15px 10px;
+		}
+
+		.fieldLabel {
+		width: 85px;
+		}
+
+		.formLayout button {
+		margin-left: 100px;
+		}
+
+		button.demoButton {
+		margin-left: 10px;
+		}
+
+		.errorMessage {
+		color: red;
+		font-weight: bold;
+		margin-left: 40px;
 		}
 		
-		.fieldLabel {
-		     width: 85px;
-		 }
-		 
-		 .formLayout button {
-		     margin-left: 100px;
-	      }
-	      
-	      button.demoButton {
-	          margin-left: 10px;
-	      }
-	      
-	      .errorMessage {
-	         color: red;
-	         font-weight: bold;
-	         margin-left: 40px;
-	      }
+		.videoDisclose{
+		    margin-top: 15px;
+		    color: #666;
+		}
 	</ui:style>
-	
+
 	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
-		   <p>Catchup Math provides immediate, personalized math review and practice.</p>
-           <p>Rich, multi-modal instruction engages math learners from grade 7 through Algebra 2.</p>
-           <p>Watch the two-minute video at catchupmath.com to see how easy it is to use for both students and teachers. Try a sample session by pressing the Demo button below.</p>
-			<table class='{style.tableLayout}' >
+			<p>Catchup Math provides immediate, personalized math review and
+				practice.</p>
+			<p>Rich, multi-modal instruction engages math learners from grade 7
+				through Algebra 2.</p>
+			<p>Try a sample session by pressing the Demo button below.</p>
+			<table class='{style.tableLayout}'>
 				<tr>
 					<td class='{style.fieldLabel}'>Username:</td>
 					<td>
@@ -65,13 +72,23 @@
 					</td>
 				</tr>
 				<tr>
-				    <td class='{style.errorMessage}' colspan="2">
-				        <g:Label ui:field='errorMessage'/>
-				    </td>
+					<td class='{style.errorMessage}' colspan="2">
+						<g:Label ui:field='errorMessage' />
+					</td>
 				</tr>
 			</table>
-            <g:Button styleName="sexyButton sexylarge" ui:field='loginButton'><span><span>Log In</span></span></g:Button>
-            <g:Button styleName='sexyButton sexylarge {style.demoButton}' ui:field='demoButton'><span><span>Demo</span></span></g:Button>
+			<g:Button styleName="sexyButton sexylarge" ui:field='loginButton'>
+				<span>
+					<span>Log In</span>
+				</span>
+			</g:Button>
+			<g:Button styleName='sexyButton sexylarge {style.demoButton}'
+				ui:field='demoButton'>
+				<span>
+					<span>Demo</span>
+				</span>
+			</g:Button>
+
 		</g:HTMLPanel>
 	</g:DialogBox>
 

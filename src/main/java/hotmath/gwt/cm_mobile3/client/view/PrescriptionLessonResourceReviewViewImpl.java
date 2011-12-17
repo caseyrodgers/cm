@@ -30,7 +30,7 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
 
     @Override
     public String getTitle() {
-        return "Written Lesson for " + SharedData.getUserInfo().getUserName();
+        return "Written Lesson";
     }
 
     @Override
