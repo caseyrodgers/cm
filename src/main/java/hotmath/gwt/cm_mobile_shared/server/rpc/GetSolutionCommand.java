@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.server.rpc;
 
 import hotmath.HotMathLogger;
-import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
@@ -16,15 +15,10 @@ import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSyst
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
-import hotmath.util.VelocityTemplateFromStringManager;
 
 import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import sb.util.SbFile;
 
 public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionResponse>, ActionHandlerManualConnectionManagement{
 
