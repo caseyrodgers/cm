@@ -45,7 +45,7 @@
 			<img id='scrollTo-button' src='/assets/images/spacer.gif'/>
 		</div>
 		<!-- END TUTOR GUTS -->
-		<div class='debug-hide'>$pid</div>
+		<div ui:field="debugInfo" class='debug-hide'>$pid</div>
 
 
 	</g:HTMLPanel>

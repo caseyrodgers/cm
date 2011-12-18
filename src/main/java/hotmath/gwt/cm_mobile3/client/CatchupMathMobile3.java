@@ -64,39 +64,28 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         Log.setUncaughtExceptionHandler();
 
         /**
-         * register the main Flow listener that handle the transisions from one
+         * register the main Flow listener that handle the transitions from one
          * CM program flow to the next.
          */
         __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE,
                 new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
     }
 
+    /**
+     * Note, we defer all application initialization code to {@link #onModuleLoadAux()} so that the
+     * UncaughtExceptionHandler can catch any unexpected exceptions.
+     */    
     @Override
     public void onModuleLoad() {
-
         __instance = this;
-
-        // use deferred command to catch initialization exceptions in
-        // onModuleLoad2
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
                 onModuleLoadAux();
             }
         });
-
     }
 
-    @Override
-    public void orientationChanged(ScreenOrientation newOrientation) {
-        if (newOrientation == ScreenOrientation.Portrait) {
-            _rootPanel.removeStyleName("landscape");
-            _rootPanel.addStyleName("portrait");
-        } else {
-            _rootPanel.addStyleName("landscape");
-            _rootPanel.removeStyleName("portrait");
-        }
-    }
 
     LoadingDialog loadingDialog = null;
 
@@ -110,6 +99,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          */
         if (Log.isDebugEnabled()) {
             startTimeMillis = System.currentTimeMillis();
+            
+            registerDebugLoggingCatchToExternalJs();
         }
 
         /*
@@ -151,31 +142,12 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
-            // initializeExternalJs();
-
-            // History.fireCurrentHistoryState();
-            
-            // always show login
+            // always show login, bypass history
             __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
             
-            
-
-            // CreateTestRunResponse testRunResponse = new
-            // CreateTestRunResponse(null,0,0,0,false);
-            // testRunResponse.setTestCorrectPercent(50);
-            // new QuizCheckInfoDialog(__clientFactory.getEventBus(),
-            // testRunResponse);
-            //
-            // QuestionBox.askYesNoQuestion("Test title", "Test question", new
-            // QuestionBox.CallBack() {
-            // @Override
-            // public void onSelectYes() {
-            // }
-            // });
-
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
@@ -190,6 +162,18 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     RootPanel _loadingDiv;
 
+    
+
+    @Override
+    public void orientationChanged(ScreenOrientation newOrientation) {
+        if (newOrientation == ScreenOrientation.Portrait) {
+            _rootPanel.removeStyleName("landscape");
+            _rootPanel.addStyleName("portrait");
+        } else {
+            _rootPanel.addStyleName("landscape");
+            _rootPanel.removeStyleName("portrait");
+        }
+    }    
     /**
      * TODO: Move to a central Controller
      * 
@@ -318,4 +302,18 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         return fp;
     }
+    
+    static private void debugLogOut(String message) {
+        Log.debug(message);
+    }
+    
+    
+    /** Override the debug output to provide tunnel to the GWT Log interface
+     * 
+     */
+    private native void registerDebugLoggingCatchToExternalJs() /*-{
+        $wnd.debug = function(x){
+                @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::debugLogOut(Ljava/lang/String;)(x);
+         };      
+    }-*/;
 }

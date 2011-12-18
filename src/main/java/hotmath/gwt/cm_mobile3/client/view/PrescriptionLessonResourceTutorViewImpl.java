@@ -55,13 +55,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     public void loadSolution(final SolutionResponse solution) {
 	    this.lastResponse = solution;
 	    this.problem = solution.getProblem();
-	    scrollToTop();
+	    this.tutorPanel.setPid(solution.getProblem().getPid());
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
 				initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(), solution.getSolutionData(), solution.getTutorHtml(),problem.getProblem(), false, false);
-				
-				//tutorPanel.getElement().setAttribute("style", "display:block");
 			}
 		});
     }

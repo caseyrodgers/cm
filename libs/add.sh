@@ -23,7 +23,7 @@ mvn install:install-file -DgroupId=org.json -DartifactId=json -Dversion=1.0 -Dpa
 mvn install:install-file -DgroupId=sbserver -DartifactId=sbserver -Dversion=2.0 -Dpackaging=jar -Dfile=sqlkitchen_server.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=gwt2swf -DartifactId=gwt2swf -Dversion=0.6.0 -Dpackaging=jar -Dfile=gwt2swf-0.6.0.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=jade -DartifactId=jade -Dversion=1.0 -Dpackaging=jar -Dfile=jade.jar -DgeneratePom=true
-mvn install:install-file -DgroupId=gwt-log -DartifactId=gwt-log -Dversion=3.1.3 -Dpackaging=jar -Dfile=gwt-log-3.1.3.jar  -DgeneratePom=true
+mvn install:install-file -DgroupId=gwt-log -DartifactId=gwt-log -Dversion=3.1.7 -Dpackaging=jar -Dfile=gwt-log-3.1.7.jar  -DgeneratePom=true
 mvn install:install-file -DgroupId=itext -DartifactId=iText -Dversion=2.1.6 -Dpackaging=jar -Dfile=iText-2.1.6.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=gwt-debug-panel -DartifactId=gwt-debug-panel -Dversion=1.0 -Dpackaging=jar -Dfile=gwt-debug-panel-1.0.jar -DgeneratePom=true
 mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -Dpackaging=jar -Dfile=xmlrpc-client-3.1.2.jar -DgeneratePom=true

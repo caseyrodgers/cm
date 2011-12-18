@@ -17,11 +17,15 @@ public class TutorMobileWrapperPanel extends Composite {
         public TutorMobileWrapperPanel() {
             initWidget(uiBinder.createAndBindUi(this));
         }
+        
+        public void setPid(String pid) {
+            debugInfo.setInnerHTML(pid);
+        }
 
         public void setTutorTitle(String title) {
             this.title.setInnerHTML(title);
         }
   
         @UiField
-        DivElement title;
+        DivElement title,debugInfo;
 }
