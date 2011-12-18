@@ -6,7 +6,7 @@
 		<div id="tutoroutput" style='display: block;position: relative;'>
 		    <div class='problem-title' ui:field="title"></div>
 			<div id='tutor_raw_steps_wrapper'>
-  				  
+  				  <span style='font-type: italic;color: #666'>Loading ...</span>
 			</div>
 
             <div id='steps_tail'>

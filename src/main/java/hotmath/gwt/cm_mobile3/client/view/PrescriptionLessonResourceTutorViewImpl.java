@@ -165,6 +165,15 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    this.tutorPanel.setTutorTitle(title);
 	}
 	
+	private void tutorWidgetCompleteAux(boolean yesNo) {
+	    if(yesNo) {
+	        MessageBox.showMessage("Excellent! You are correct.  You can move on to the next problem.");
+	    }
+	    else {
+	        MessageBox.showMessage("Not right.  You can work through the solution and find the right answer.");
+	    }
+	}
+	
 	/** initialize external tutor JS/HTML and provide
 	 *  glue between external JS methods and GWT.
 	 *  
@@ -177,6 +186,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
           
           $wnd.TutorDynamic.setSolutionTitle = function(probNum, total) {
              instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::setSolutionTitle_Gwt(II)(probNum,total);
+          }
+          
+          
+          $wnd.tutorWidgetCompleteAux = function(yesNo) {
+             instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::tutorWidgetCompleteAux(Z)(yesNo);
           }
           
           $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution);
