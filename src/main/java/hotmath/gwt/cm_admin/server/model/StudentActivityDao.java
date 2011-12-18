@@ -208,9 +208,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 				}
                 			} else {
                 				int inProgress = 0; // lessonsViewed % problemsPerLesson;
-                				int totalSessions = rs.getInt("total_sessions");
 
-                				int lessonsViewed = rs.getInt("session_number") + 1;
+                				int totalSessions = rs.getInt("total_sessions");
+                				model.setLessonCount(totalSessions);
+
+                				int lessonsViewed = rs.getInt("problems_viewed");
+                				model.setLessonsViewed(lessonsViewed);
                 				
                 				if (includeTimeOnTask)
                 					model.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
@@ -291,21 +294,33 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				model.setProgramName(progName);
 				model.setProgramType(sam.getProgramType());
 				int sectionCount = (sam.getSectionCount() != null) ? sam.getSectionCount() : 0;
-				model.setSectionCount(sectionCount);
 				int sectionNum = (sam.getSectionNum() != null) ? sam.getSectionNum() : 0;
 				model.setSectionNum(sectionNum);
 				model.setUseDate(sam.getUseDate());
 
 				String status = " ";
-				if (sectionCount > 0 && sectionNum == sectionCount) {
-					status = "Completed";
+				if (logger.isDebugEnabled()) {
+					logger.debug("+++ progName: " + progName);
 				}
-				else if (sectionNum > 0) {
-					if (sectionCount > 0)
-						status = String.format("Section %d of %d", sectionNum, sectionCount);
-					else
-						status = String.format("Section %d", sectionNum);
+				if (! progName.startsWith("CP")) {
+					model.setSectionCount(sectionCount);
+				    if (sectionCount > 0 && sectionNum == sectionCount) {
+					    status = "Completed";
+				    }
+				    else if (sectionNum > 0) {
+					    if (sectionCount > 0)
+						    status = String.format("Section %d of %d", sectionNum, sectionCount);
+					    else
+						    status = String.format("Section %d", sectionNum);
+				    }
 				}
+    			else {
+    				model.setSectionNum(sam.getLessonCount());
+    				logger.debug("+++ lessonCount: " + sam.getLessonCount());
+					status = (sam.getLessonsViewed() != sam.getLessonCount()) ?
+							String.format("Lesson %d of %d", sam.getLessonsViewed(), sam.getLessonCount()):"Completed";
+				}
+                 
 				model.setStatus(status);
 				sasList.add(model);
 				
@@ -408,7 +423,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				int inProgress = 0; // lessonsViewed % problemsPerLesson;
 				int totalSessions = rs.getInt("total_sessions");
 
-				int lessonsViewed = rs.getInt("session_number") + 1;
+				m.setLessonCount(totalSessions);
+
+				int lessonsViewed = rs.getInt("problems_viewed");
+				m.setLessonsViewed(lessonsViewed);
 				
 				m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
 

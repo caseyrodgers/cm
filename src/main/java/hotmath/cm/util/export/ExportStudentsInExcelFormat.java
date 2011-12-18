@@ -129,7 +129,7 @@ public class ExportStudentsInExcelFormat {
 	
 	private static String[] headingsSheet2 = {
 		"Student", "Program", "Prog-Type", "Date", "Status", "Total Quizzes", "Passed Quizzes",
-		"Total Sections", "Passed Quiz Avg", "All Quiz Avg", "Quiz 1", "Quiz 2",
+		"Total Units", "Passed Quiz Avg", "All Quiz Avg", "Quiz 1", "Quiz 2",
 		"Quiz 3", "Quiz 4", "Quiz 5", "Quiz 6", "Quiz 7", "Quiz 8", "Quiz 9", "Quiz 10"
 	};
 	
@@ -148,7 +148,7 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	private void buildStudentSheet(Workbook wb) {
-		Sheet sheet = wb.createSheet("Catchup Math Students");
+		Sheet sheet = wb.createSheet("Overview");
 
 	    sheet.setDisplayGridlines(false);
 	    sheet.setPrintGridlines(false);
@@ -303,7 +303,7 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	private void buildStudentProgramSheet(Workbook wb) {
-		Sheet sheet = wb.createSheet("Student Programs");
+		Sheet sheet = wb.createSheet("Details");
 
 	    sheet.setDisplayGridlines(false);
 	    sheet.setPrintGridlines(false);
