@@ -484,6 +484,14 @@
 			<scope>compile</scope>
 		</dependency>
 
+
+		<dependency>
+			<groupId>org.jodd</groupId>
+			<artifactId>jodd</artifactId>
+			<version>3.3</version>
+			<scope>compile</scope>
+		</dependency>
+
 	</dependencies>
 
 
