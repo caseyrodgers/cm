@@ -4,6 +4,7 @@
 	<g:HTMLPanel styleName='prescriptionLessonViewImpl'>
 	   <div class="correct_image" ui:field="correctImage"></div>
 	   <h1 ui:field="lessonTitle"></h1>
+	   <p>Choose resources in any order.</p>
 	   <div class='buttonBar'>
 	       <!-- 
 	       <g:Button ui:field="movePrev" styleName='sexybutton'><span><span>Previous</span></span></g:Button>
@@ -11,7 +12,6 @@
 	        -->
            <g:Button ui:field="choose" styleName='sexybutton'><span><span>Next Lesson/Quiz</span></span></g:Button>
 	   </div>
-	   <p>Choose resources in any order.</p>
 	   <g:HTMLPanel ui:field='resourceList' styleName='resourceList'></g:HTMLPanel>
 	</g:HTMLPanel>
 

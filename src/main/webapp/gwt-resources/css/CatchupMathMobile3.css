@@ -37,7 +37,7 @@ ul li {
 }
 h1 {
     font-size:2em;
-    color: #1C97D1;
+    color: blue;
     margin:10px 0 10px 0px;
 }
 
@@ -642,6 +642,11 @@ table {
 }
 
 
+.prescriptionLessonViewImpl h1 {
+	font-size: 2em;
+	color: 
+}
+
 
 .prescriptionLessonResourceVideoImpl div {
 	text-align: center;
@@ -889,10 +894,3 @@ span.group-item-dot {
 	background-color: green;
 }
 
-
-
-
-.not_used {
-	display: none;
-}
-}

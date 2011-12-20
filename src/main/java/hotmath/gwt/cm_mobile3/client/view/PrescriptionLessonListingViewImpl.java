@@ -5,9 +5,11 @@ import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 
 import java.util.List;
 
@@ -94,14 +96,15 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
         else {
             segmentCompleteTop.getElement().setAttribute("style","display:block");
             segmentCompleteBottom.getElement().setAttribute("style","display:block");
-            
         }
     }
+    
+    boolean _isComplete;
     
     @Override
     public void setLessonListing(List<SessionTopic> lessons) {
         
-        boolean isSegmentComplete = true;
+        _isComplete = true;
         
         listItems.clear();
         listItems.addStyleName("touch");
@@ -110,13 +113,13 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
             listItems.add(tt);
             
             if(!lessons.get(i).isComplete()) {
-                isSegmentComplete = false;
+                _isComplete = false;
             }
         }
         lessonLising.add(listItems);
         
         
-        if(isSegmentComplete) {
+        if(_isComplete) {
             segmentCompleteTop.getElement().removeClassName("disabled");
             segmentCompleteBottom.getElement().removeClassName("disabled");
         }
@@ -137,7 +140,13 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     }    
     
     private void onSegmentComplete() {
-        presenter.moveToNextSegment();
+        if(_isComplete) {
+            presenter.moveToNextSegment();
+        }
+        else {
+            MessageBox.showMessage("You will need to finish all required problems first.");
+        }
+        
     }
 }
 

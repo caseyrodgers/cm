@@ -10,21 +10,13 @@
 			</div>
 
             <div id='steps_tail'>
-                <button class='sexybutton disabled' id='steps_prev' href="#"
-                    onclick="TutorManager.showPreviousStep();return false;" accesskey="p">
-                    <span>
-                        <span>
-                            Previous
-                        </span>
-                    </span>
-                </button>
-                <button class='sexybutton disabled' id='steps_next'
-                    onclick="TutorManager.showNextStep();return false;" accesskey="s">
-                    <span>
-                        <span>Next
-                        </span>
-                    </span>
-                </button>
+                <a id='steps_prev' href='#' onclick='TutorManager.showPreviousStep();return false;'>
+                    <img id="steps_prev_img" src="/images/tutor5/steps_previous-enabled.gif"/>
+                </a>
+
+                <a id='steps_next' href='#' onclick='TutorManager.showNextStep();return false;'>
+                    <img id="steps_next_img" src="/images/tutor5/steps_next-enabled.gif"/>
+                </a>
                 
                 <button class='sexybutton' id='new_problem'
                     onclick="TutorManager.newProblem();return false;" accesskey="s">
