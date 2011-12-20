@@ -266,9 +266,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		
 		// summarize student activity
 		String progName = "";
-		int passingQuizAvg = 0;
+		int passingQuizTotal = 0;
 		int passingQuizCount = 0;
-		int allQuizAvg = 0;
+		int allQuizTotal = 0;
 		int quizCount = 0;
 		
 		StudentActivitySummaryModel model = null;
@@ -279,12 +279,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				if (model != null) {
 					// set Quiz data
 					if (quizCount > 0) {
-						double avg = (double) allQuizAvg / (double) quizCount;
+						double avg = (double) allQuizTotal / (double) quizCount;
 						model.setAllQuizAvg((int)Math.round(avg));
 						model.setTotalQuizzes(quizCount);
 					}
 					if (passingQuizCount > 0) {
-						double avg = (double) passingQuizAvg / (double) passingQuizCount;
+						double avg = (double) passingQuizTotal / (double) passingQuizCount;
 						model.setPassedQuizAvg((int)Math.round(avg));
 						model.setPassedQuizzes(passingQuizCount);
 					}
@@ -327,8 +327,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				// reset stats
 				quizCount = 0;
 				sectionCount = 0;
-				allQuizAvg = 0;
-				passingQuizAvg = 0;
+				allQuizTotal = 0;
+				passingQuizTotal = 0;
 				passingQuizCount = 0;
 			}
 			
@@ -337,10 +337,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				String result = sam.getResult();
 				result = result.substring(0, result.indexOf("%"));
 				int score = Integer.parseInt(result);
-				allQuizAvg += score;
+				allQuizTotal += score;
 				if (sam.getIsPassing()) {
 					passingQuizCount++;
-					passingQuizAvg += score;
+					passingQuizTotal += score;
 				}
 				if (quizCount <= 10) {
 					model.getQuizScores().add(score);
@@ -349,12 +349,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			
 		}
 		if (quizCount > 0) {
-			double avg = (double) allQuizAvg / (double) quizCount;
+			double avg = (double) allQuizTotal / (double) quizCount;
 			model.setAllQuizAvg((int)Math.round(avg));
+			model.setTotalQuizzes(quizCount);
 		}
 		if (passingQuizCount > 0) {
-			double avg = (double) passingQuizAvg / (double) passingQuizCount;
+			double avg = (double) passingQuizTotal / (double) passingQuizCount;
 			model.setPassedQuizAvg((int)Math.round(avg));
+			model.setPassedQuizzes(passingQuizCount);
 		}
 
 		return sasList;
