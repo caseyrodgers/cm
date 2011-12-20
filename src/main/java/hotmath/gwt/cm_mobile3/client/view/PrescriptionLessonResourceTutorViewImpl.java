@@ -170,7 +170,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        MessageBox.showMessage("Excellent! You are correct.  You can move on to the next problem.");
 	    }
 	    else {
-	        MessageBox.showMessage("Not right.  You can work through the solution and find the right answer.");
+	        // MessageBox.showMessage("Not right.  You can work through the solution and find the right answer.");
 	    }
 	}
 	
