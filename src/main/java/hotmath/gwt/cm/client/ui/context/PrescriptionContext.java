@@ -434,7 +434,7 @@ public class PrescriptionContext implements CmContext {
     public String getTooltipText(Direction direction, PrescriptionData prescriptionData) {
 
         assert prescriptionData != null;
-        int sn = prescriptionData.getCurrSession().getSessionNumber();
+        int sn = prescriptionData.getCountCompletedTopics();
         int ts = prescriptionData.getSessionTopics().size();
         
         return "Choose the next topic (" + (ts - sn - 1) + " more to go)";
