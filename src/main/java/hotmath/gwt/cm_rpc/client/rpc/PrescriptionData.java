@@ -40,6 +40,14 @@ public class PrescriptionData implements IsSerializable {
 		this.currSession = currSession;
 	}
 	
+	public void setLessonAsComplete(String lesson) {
+        for(SessionTopic topic: sessionTopics) {
+            if(topic.getTopic().equals(lesson)) {
+                topic.setComplete(true);
+            }
+        }
+	}
+	
 	public int getCountCompletedTopics() {
 	    int cnt=0;
 	    for(SessionTopic topic: sessionTopics) {
@@ -48,5 +56,9 @@ public class PrescriptionData implements IsSerializable {
 	        }
 	    }
 	    return cnt;
+	}
+	
+	public boolean areAllLessonsCompleted() {
+	    return getCountCompletedTopics() == sessionTopics.size();
 	}
 }

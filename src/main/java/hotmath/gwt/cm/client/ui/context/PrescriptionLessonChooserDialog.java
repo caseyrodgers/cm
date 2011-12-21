@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.ArrayList;
@@ -52,17 +53,19 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         setScrollMode(Scroll.AUTOY);
         addStyleName(PrescriptionLessonChooserDialog.class.getName());
         
-        
-        if(!UserInfo.getInstance().isCustomProgram()) {
-            _nextSegment = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
+        _nextSegment = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                
+                if(!pData.areAllLessonsCompleted()) {
+                    InfoPopupBox.display("Not Finished", "Please complete all lessons first");
+                }
+                else {
                     CatchupMathTools.showAlert("Next Quiz");
                 }
-            });
-            addButton(_nextSegment);
-        }
-
+            }
+        });
+        addButton(_nextSegment);
         
         addButton(new Button("Load Lesson", new SelectionListener<ButtonEvent>() {
             @Override
@@ -120,10 +123,17 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         
         
         if(UserInfo.getInstance().isCustomProgram()) {
-            _nextSegment.setEnabled(false);
+            _nextSegment.setVisible(false);
         }
         else {
-            _nextSegment.setEnabled(true);
+            if(pData.areAllLessonsCompleted()) {
+                _nextSegment.setEnabled(true);
+                _nextSegment.setVisible(true);
+            }
+            else {
+                _nextSegment.setEnabled(false);
+                _nextSegment.setVisible(true);
+            }
         }
 
         setVisible(true);
