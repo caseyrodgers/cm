@@ -53,7 +53,16 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         addStyleName(PrescriptionLessonChooserDialog.class.getName());
         
         
-        if(UserInfo.getInstance().isCustomProgram())
+        if(!UserInfo.getInstance().isCustomProgram()) {
+            _nextSegment = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    CatchupMathTools.showAlert("Next Quiz");
+                }
+            });
+            addButton(_nextSegment);
+        }
+
         
         addButton(new Button("Load Lesson", new SelectionListener<ButtonEvent>() {
             @Override
@@ -61,15 +70,10 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
                 loadSelectedLesson();
             }
         }));
+
         addCloseButton();
         
         
-        _nextSegment = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                CatchupMathTools.showAlert("Next Quiz");
-            }
-        });
     }
 
     int scrollIntoView=0;
