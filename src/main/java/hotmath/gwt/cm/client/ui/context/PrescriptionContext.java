@@ -72,12 +72,11 @@ public class PrescriptionContext implements CmContext {
     public void resetContext() {
     }
 
-    IconButton _previousButton;
-    IconButton _nextButton;
+    IconButton _chooseButton;
     Text       _buttonText;
 
     public List<Component> getTools() {
-
+        
         List<Component> list = new ArrayList<Component>();
         
         _buttonText = new Text();
@@ -85,24 +84,17 @@ public class PrescriptionContext implements CmContext {
         _buttonText.addStyleName("cm-main-panel-prev-next-text");
         _buttonText.setEnabled(true);
         
-        _previousButton = new IconButtonWithTooltip("cm-main-panel-prev-icon", Direction.PREVIOUS);
-        _previousButton.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                ContextController.getInstance().doPrevious();
-            }
-        });
-        list.add(_previousButton);
-
-        _nextButton = new IconButtonWithTooltip("cm-main-panel-next-icon", Direction.NEXT);
-        _nextButton.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                ContextController.getInstance().doNext();
-            }
-        });
-        list.add(_nextButton);
-        
         list.add(_buttonText);
         _buttonText.enable();
+        
+        
+        _chooseButton = new IconButtonWithTooltip("cm-main-panel-choose-icon", Direction.NEXT);
+        _chooseButton.addListener(Events.Select, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                PrescriptionLessonChooserDialog.getSharedInstance().showDialog(prescriptionData);
+            }
+        });
+        list.add(_chooseButton);
 
         return list;
     }
@@ -442,60 +434,16 @@ public class PrescriptionContext implements CmContext {
     public String getTooltipText(Direction direction, PrescriptionData prescriptionData) {
 
         assert prescriptionData != null;
-
-        int pn = prescriptionData.getCurrSession().getSessionNumber();
-        if (direction == Direction.PREVIOUS) {
-            if (pn > 0) {
-                return "Move to the previous topic ("
-                        + prescriptionData.getSessionTopics().get(
-                                prescriptionData.getCurrSession().getSessionNumber() - 1) + ")";
-            } else {
-                return "No previous topics";
-            }
-        } else {
-            if (pn > prescriptionData.getSessionTopics().size() - 2) {
-                if (UserInfo.getInstance().isCustomProgram()) {
-                    return "No more lessons";
-                } else {
-                    return "Move to next quiz";
-                }
-            }
-
-            else {
-                int sn = prescriptionData.getCurrSession().getSessionNumber();
-                int ts = prescriptionData.getSessionTopics().size();
-                return "Move to the next topic (" + (ts - sn - 1) + " more to go)";
-            }
-        }
+        int sn = prescriptionData.getCurrSession().getSessionNumber();
+        int ts = prescriptionData.getSessionTopics().size();
+        
+        return "Choose the next topic (" + (ts - sn - 1) + " more to go)";
     }
 
     enum Direction {
         PREVIOUS, NEXT
     };
 
-    /**
-     * IconButton that has drop down tooltip that allows fully contained
-     * tooltips that do not have z-order issues with flash components.
-     * 
-     * @author casey
-     * 
-     */
-    class IconButtonWithDropDownTooltip extends IconButton {
-        public IconButtonWithDropDownTooltip(String style) {
-            super(style);
-
-            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                    Direction dir = (IconButtonWithDropDownTooltip.this == _previousButton) ? Direction.PREVIOUS
-                            : Direction.NEXT;
-                    String tip = getTooltipText(dir, prescriptionData);
-
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_CONTEXT_TOOLTIP_SHOW, tip));
-                }
-            });
-        }
-    }
 
     /**
      * IconButton that has text tooltip
