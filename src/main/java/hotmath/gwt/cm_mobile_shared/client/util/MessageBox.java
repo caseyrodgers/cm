@@ -15,9 +15,10 @@ public class MessageBox {
         final PopupPanel popup = new PopupPanel();
         popup.setStyleName("popup-message");
         popup.setAutoHideEnabled(true);
-        popup.setModal(true);
+        popup.setModal(false);
         popup.add(widget);
         popup.center();
+        popup.setWidth("300px");
         
         popup.addCloseHandler(new CloseHandler<PopupPanel>() {
             @Override
