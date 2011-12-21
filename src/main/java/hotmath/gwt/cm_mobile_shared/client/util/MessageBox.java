@@ -1,10 +1,15 @@
 package hotmath.gwt.cm_mobile_shared.client.util;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
+
 
 public class MessageBox {
     
@@ -15,8 +20,27 @@ public class MessageBox {
         final PopupPanel popup = new PopupPanel();
         popup.setStyleName("popup-message");
         popup.setAutoHideEnabled(true);
-        popup.setModal(false);
-        popup.add(widget);
+        popup.setModal(true);
+        
+        FlowPanel mainPanel = new FlowPanel();
+        mainPanel.add(new Button("Close", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                popup.hide();
+            }
+        }));
+        
+        mainPanel.add(widget);
+
+        popup.add(mainPanel);
+        
+        mainPanel.add(new Button("Close", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                popup.hide();
+            }
+        }));
+
         popup.center();
         popup.setWidth("300px");
         
@@ -28,6 +52,8 @@ public class MessageBox {
                 }
             }
         });
+        
+        
         
         //int left=0;
         //int top=50 + Window.getScrollTop();

@@ -156,6 +156,11 @@ background-color: black;
     box-shadow: 3px 3px 3px #666;
 }
 
+.popup-message button {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
 .popup-message.error {
     color: red;
 }
