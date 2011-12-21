@@ -39,4 +39,14 @@ public class PrescriptionData implements IsSerializable {
 	public void setCurrSession(PrescriptionSessionData currSession) {
 		this.currSession = currSession;
 	}
+	
+	public int getCountCompletedTopics() {
+	    int cnt=0;
+	    for(SessionTopic topic: sessionTopics) {
+	        if(topic.isComplete()) {
+	            cnt++;
+	        }
+	    }
+	    return cnt;
+	}
 }
