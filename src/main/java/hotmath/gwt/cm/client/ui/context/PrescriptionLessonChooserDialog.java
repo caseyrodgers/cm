@@ -117,6 +117,14 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             }.schedule(5000);
             
         }
+        
+        
+        if(UserInfo.getInstance().isCustomProgram()) {
+            _nextSegment.setEnabled(false);
+        }
+        else {
+            _nextSegment.setEnabled(true);
+        }
 
         setVisible(true);
     }
