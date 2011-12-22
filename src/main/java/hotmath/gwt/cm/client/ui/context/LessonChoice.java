@@ -22,7 +22,7 @@ public class LessonChoice extends BaseModel {
         return get("topic");
     }
     
-    public boolean isComplete() {
+    public Boolean isComplete() {
         return get("isComplete");
     }
     
