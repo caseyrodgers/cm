@@ -64,6 +64,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			ps.setInt(4, uid);
 			ps.setInt(5, uid);
 			ps.setInt(6, uid);
+			ps.setInt(7, uid);
 			rs = ps.executeQuery();
 
 			l = loadStudentActivity(conn, rs);
@@ -147,7 +148,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
         List<StudentActivityModel> list = this.getJdbcTemplate().query(
                 sql,
-                new Object[]{uid, uid, uid, uid, uid, uid},
+                new Object[]{uid, uid, uid, uid, uid, uid, uid},
                 new RowMapper<StudentActivityModel>() {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
@@ -402,14 +403,16 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			sb.append(rs.getString("activity"));
 
 			boolean isQuiz = (rs.getInt("is_quiz") > 0);
-			m.setIsQuiz(isQuiz);
-			if (isQuiz) {
+			boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
+			m.setIsQuiz(isQuiz && ! isCustomQuiz);
+			if (isQuiz && !isCustomQuiz) {
 				sb.append(sectionNum);
 			}
 			m.setActivity(sb.toString());
 
 			// TODO: flag re-takes?
 			sb.delete(0, sb.length());
+			int totalSessions = rs.getInt("total_sessions");
 			if (isQuiz) {
 				int numCorrect = rs.getInt("answered_correct");
 				int numIncorrect = rs.getInt("answered_incorrect");
@@ -418,12 +421,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 					double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
 					sb.append(Math.round(percent)).append("% correct");
 				}
-				else {
+				else if (isCustomQuiz == false) {
 					sb.append("Started");
+				}
+				else {
+					sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
 				}
 			} else {
 				int inProgress = 0; // lessonsViewed % problemsPerLesson;
-				int totalSessions = rs.getInt("total_sessions");
 
 				m.setLessonCount(totalSessions);
 
@@ -491,10 +496,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		}
 
 		for (StudentActivityModel m : l) {
-			if(m.getIsCustomQuiz()) {
-				m.setActivity(m.getRunId()!= null?"Completed":"Taking");
-			}
-			else if (!m.getIsQuiz()) {
+			if (!m.getIsQuiz() && !m.getIsCustomQuiz()) {
 				Integer runId = m.getRunId();
 				StudentActivityModel q = h.get(runId);
 				if (q != null) {
