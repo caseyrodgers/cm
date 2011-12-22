@@ -51,6 +51,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
+	private static final String NEW_LINE = System.getProperty("line.separator");
+
 	private boolean runInSeparateThread = true;
 
     @Override
@@ -147,12 +149,18 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
     			AccountInfoModel acctInfo = CmAdminDao.getInstance().getAccountInfo(adminUid);
+    			String acctCreateDate = sdf.format(acctInfo.getAccountCreateDate());
     			String todaysDate = sdf.format(new Date());
 
     			StringBuilder titleBuff = new StringBuilder();
     			titleBuff.append(acctInfo.getSchoolName()).append(" (");
     			titleBuff.append(acctInfo.getAdminUserName()).append(") ");
-    			titleBuff.append("Student Data Export on ").append(todaysDate);    	
+    			titleBuff.append("Student Data Export on ").append(todaysDate);
+
+    			titleBuff.append(NEW_LINE);
+    			String endDate = todaysDate;
+    	        String beginDate = acctCreateDate;
+    			titleBuff.append("Period covered is ").append(beginDate).append(" to ").append(endDate);
 
     	        Calendar now = Calendar.getInstance();
     	        now.add(Calendar.DATE, 1);
@@ -162,7 +170,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			ByteArrayOutputStream baos = null;
 
     			StringBuilder sb = new StringBuilder();
-    			if (filterDescr != null)
+    			if (filterDescr != null && filterDescr.trim().length() > 0)
     				sb.append("Filter: ( ").append(filterDescr).append(" )");
     			else
     				sb.append("Filter: ( All Students )");
@@ -199,6 +207,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     				msgBuff.append("with ").append(sb.toString());
     			}
 				msgBuff.append(" is attached.");
+				
 
     			String[] toEmailAddrs = new String[2];
     			toEmailAddrs[0] = emailAddr;
