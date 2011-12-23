@@ -86,7 +86,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
 
     private void setProblemStatement() {
         if(showProblem.getValue()) {
-            canvasBackground.setInnerHTML("<div style='background: grey;padding: 10px;'>" + presenter.getProblemStatementHtml() + "</div>");
+            canvasBackground.setInnerHTML("<div>" + presenter.getProblemStatementHtml() + "</div>");
             canvasBackground.setAttribute("style", "display: block");
             
             initializeWidgets();
