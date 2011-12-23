@@ -181,7 +181,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
 
     @Override
     public String getProblemStatementHtml() {
-        return replaceAllIds(getProblemStatementFromDocument(this.pid)); 
+        return getProblemStatementFromDocument(this.pid); 
     }
     
     /** replace all ID tags with ID_NOT */
