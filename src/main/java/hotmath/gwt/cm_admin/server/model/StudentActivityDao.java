@@ -153,93 +153,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
                         try {
-                			model = new StudentActivityModel();
-                			model.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
-                			model.setProgramDescr(rs.getString("program"));
-                			model.setUseDate(rs.getString("use_date"));
-                			model.setStart(rs.getString("start_time"));
-                			model.setStop(rs.getString("stop_time"));
-                			model.setTestId(rs.getInt("test_id"));
-                			int sectionNum = rs.getInt("test_segment");
-                			model.setSectionNum(sectionNum);
-                			int sectionCount = rs.getInt("segment_count");
-                			model.setSectionCount(sectionCount);
-                			String progId = rs.getString("prog_id");
-                			model.setTimeOnTask(rs.getInt("time_on_task"));
-                		    model.setProgramType(rs.getString("prog_type"));
-
-                			if (progId.equalsIgnoreCase("chap")) {
-                				String subjId = rs.getString("subj_id");
-                				String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
-                				List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
-                				for (ChapterModel cm : cmList) {
-                					if (cm.getTitle().equals(chapter)) {
-                						model.setProgramDescr(new StringBuilder(model.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
-                						break;
-                					}
-                				}
-                			}
-
-                			int runId = rs.getInt("test_run_id");
-                			model.setRunId(runId);
-
-                			StringBuilder sb = new StringBuilder();
-                			sb.append(rs.getString("activity"));
-
-                			boolean isQuiz = (rs.getInt("is_quiz") > 0);
-                			model.setIsQuiz(isQuiz);
-                			if (isQuiz) {
-                				sb.append(sectionNum);
-                			}
-                			model.setActivity(sb.toString());
-                			model.setIsPassing(rs.getInt("is_passing") > 0);
-
-                			// TODO: flag re-takes?
-                			sb.delete(0, sb.length());
-                			if (isQuiz) {
-                				int numCorrect = rs.getInt("answered_correct");
-                				int numIncorrect = rs.getInt("answered_incorrect");
-                				int notAnswered = rs.getInt("not_answered");
-                				if ((numCorrect + numIncorrect + notAnswered) > 0) {
-                					double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
-                					sb.append(Math.round(percent)).append("% correct");
-                				}
-                				else {
-                					sb.append("Started");
-                				}
-                			} else {
-                				int inProgress = 0; // lessonsViewed % problemsPerLesson;
-
-                				int totalSessions = rs.getInt("total_sessions");
-                				model.setLessonCount(totalSessions);
-
-                				int lessonsViewed = rs.getInt("problems_viewed");
-                				model.setLessonsViewed(lessonsViewed);
-                				
-                				if (includeTimeOnTask)
-                					model.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
-
-                				if (lessonsViewed >= 0) {
-                					if (totalSessions < 1) {
-                						sb.append("total of ").append(lessonsViewed);
-                						if (lessonsViewed > 1)
-                							sb.append(" reviews completed");
-                						else
-                							sb.append(" review completed");
-                						if (inProgress != 0) {
-                							sb.append(", 1 in progress");
-                						}
-                					} else {
-                						sb.append(lessonsViewed).append(" out of ");
-                						sb.append(totalSessions).append(" reviewed");
-                					}
-                				} else {
-                					if (inProgress != 0) {
-                						sb.append("1 review in progress");
-                					}
-                				}
-                			}
-                			model.setResult(sb.toString());
+                			model = loadRow(rs, cmaDao);
                         }
                         catch(Exception e) {
                             LOGGER.error(String.format("Error getting Student Activity for uid: %d", uid), e);
@@ -300,10 +214,21 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				model.setUseDate(sam.getUseDate());
 
 				String status = " ";
-				if (logger.isDebugEnabled()) {
-					logger.debug("+++ progName: " + progName);
+				if (logger.isDebugEnabled()) logger.debug("+++ progName: " + progName);
+
+				if (progName.startsWith("CP")) {
+    				model.setSectionNum(sam.getLessonsViewed());
+    				if (logger.isDebugEnabled()) logger.debug("+++ lessonCount: " + sam.getLessonCount());
+					status = (sam.getLessonsViewed() != sam.getLessonCount()) ?
+							String.format("%d of %d Lessons", sam.getLessonsViewed(), sam.getLessonCount()):"Completed";
 				}
-				if (! progName.startsWith("CP")) {
+    			else if (progName.startsWith("CQ")) {
+    				model.setSectionNum(sam.getLessonCount());
+    				if (logger.isDebugEnabled()) logger.debug("+++ questionCount: " + sam.getLessonCount());
+					status = (sam.getLessonCount() != sam.getSectionCount()) ?
+							String.format("%d of %d Questions", sam.getLessonCount(), sam.getSectionCount()):"Completed";
+				}
+    			else {
 					model.setSectionCount(sectionCount);
 				    if (sectionCount > 0 && sectionNum == sectionCount) {
 					    status = "Completed";
@@ -315,16 +240,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 						    status = String.format("Section %d", sectionNum);
 				    }
 				}
-    			else {
-    				model.setSectionNum(sam.getLessonCount());
-    				logger.debug("+++ lessonCount: " + sam.getLessonCount());
-					status = (sam.getLessonsViewed() != sam.getLessonCount()) ?
-							String.format("Lesson %d of %d", sam.getLessonsViewed(), sam.getLessonCount()):"Completed";
-				}
-                 
+
 				model.setStatus(status);
 				sasList.add(model);
-				
+
 				// reset stats
 				quizCount = 0;
 				sectionCount = 0;
@@ -332,8 +251,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				passingQuizTotal = 0;
 				passingQuizCount = 0;
 			}
-			
-			if (sam.getIsQuiz() && sam.getRunId() > 0) {
+
+			if (sam.getIsQuiz() && !sam.getIsCustomQuiz() && sam.getRunId() > 0) {
+				logger.debug("runId: " + sam.getRunId());
 				quizCount++;
 				String result = sam.getResult();
 				int offset = result.indexOf("%");
@@ -371,95 +291,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		CmAdminDao cmaDao = CmAdminDao.getInstance();
 
 		while (rs.next()) {
-			StudentActivityModel m = new StudentActivityModel();
-			m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
-			m.setProgramDescr(rs.getString("program"));
-			m.setUseDate(rs.getString("use_date"));
-			m.setStart(rs.getString("start_time"));
-			m.setStop(rs.getString("stop_time"));
-			m.setTestId(rs.getInt("test_id"));
-			int sectionNum = rs.getInt("test_segment");
-			m.setSectionNum(sectionNum);
-			int sectionCount = rs.getInt("segment_count");
-			m.setSectionCount(sectionCount);
-			String progId = rs.getString("prog_id");
-			m.setTimeOnTask(rs.getInt("time_on_task"));
-		    m.setProgramType(rs.getString("prog_type"));
-
-			if (progId.equalsIgnoreCase("chap")) {
-				String subjId = rs.getString("subj_id");
-				String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
-				List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
-				for (ChapterModel cm : cmList) {
-					if (cm.getTitle().equals(chapter)) {
-						m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
-						break;
-					}
-				}
-			}
-
-			int runId = rs.getInt("test_run_id");
-			m.setRunId(runId);
-
-			StringBuilder sb = new StringBuilder();
-			sb.append(rs.getString("activity"));
-
-			boolean isQuiz = (rs.getInt("is_quiz") > 0);
-			boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
-			m.setIsQuiz(isQuiz && ! isCustomQuiz);
-			if (isQuiz && !isCustomQuiz) {
-				sb.append(sectionNum);
-			}
-			m.setActivity(sb.toString());
-
-			// TODO: flag re-takes?
-			sb.delete(0, sb.length());
-			int totalSessions = rs.getInt("total_sessions");
-			if (isQuiz) {
-				int numCorrect = rs.getInt("answered_correct");
-				int numIncorrect = rs.getInt("answered_incorrect");
-				int notAnswered = rs.getInt("not_answered");
-				if ((numCorrect + numIncorrect + notAnswered) > 0) {
-					double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
-					sb.append(Math.round(percent)).append("% correct");
-				}
-				else if (isCustomQuiz == false) {
-					sb.append("Started");
-				}
-				else {
-					sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
-				}
-			} else {
-				int inProgress = 0; // lessonsViewed % problemsPerLesson;
-
-				m.setLessonCount(totalSessions);
-
-				int lessonsViewed = rs.getInt("problems_viewed");
-				m.setLessonsViewed(lessonsViewed);
-				
-				m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
-
-				if (lessonsViewed >= 0) {
-					if (totalSessions < 1) {
-						sb.append("total of ").append(lessonsViewed);
-						if (lessonsViewed > 1)
-							sb.append(" reviews completed");
-						else
-							sb.append(" review completed");
-						if (inProgress != 0) {
-							sb.append(", 1 in progress");
-						}
-					} else {
-						sb.append(lessonsViewed).append(" out of ");
-						sb.append(totalSessions).append(" reviewed");
-					}
-				} else {
-					if (inProgress != 0) {
-						sb.append("1 review in progress");
-					}
-				}
-			}
-			m.setResult(sb.toString());
+			StudentActivityModel m = loadRow(rs, cmaDao);
 			l.add(m);
 		}
 
@@ -471,6 +303,101 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			m.add(l.get(i));
 		}
 
+		return m;
+	}
+
+	private StudentActivityModel loadRow(ResultSet rs, CmAdminDao cmaDao)
+			throws SQLException, Exception {
+		StudentActivityModel m = new StudentActivityModel();
+		boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
+		m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
+		m.setProgramDescr(rs.getString("program"));
+		m.setUseDate(rs.getString("use_date"));
+		m.setStart(rs.getString("start_time"));
+		m.setStop(rs.getString("stop_time"));
+		m.setTestId(rs.getInt("test_id"));
+		int sectionNum = rs.getInt("test_segment");
+		m.setSectionNum(sectionNum);
+		int sectionCount = rs.getInt("segment_count");
+		m.setSectionCount(sectionCount);
+		String progId = rs.getString("prog_id");
+		m.setTimeOnTask(rs.getInt("time_on_task"));
+		m.setProgramType(rs.getString("prog_type"));
+
+		if (progId.equalsIgnoreCase("chap")) {
+			String subjId = rs.getString("subj_id");
+			String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
+			List <ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
+			for (ChapterModel cm : cmList) {
+				if (cm.getTitle().equals(chapter)) {
+					m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber()).toString());
+					break;
+				}
+			}
+		}
+
+		int runId = rs.getInt("test_run_id");
+		m.setRunId(runId);
+
+		StringBuilder sb = new StringBuilder();
+		sb.append(rs.getString("activity"));
+
+		boolean isQuiz = (rs.getInt("is_quiz") > 0);
+		m.setIsQuiz(isQuiz && ! isCustomQuiz);
+		if (isQuiz && !isCustomQuiz) {
+			sb.append(sectionNum);
+		}
+		m.setActivity(sb.toString());
+
+		// TODO: flag re-takes?
+		sb.delete(0, sb.length());
+		int totalSessions = rs.getInt("total_sessions");
+		m.setLessonCount(totalSessions);
+		if (isQuiz) {
+			int numCorrect = rs.getInt("answered_correct");
+			int numIncorrect = rs.getInt("answered_incorrect");
+			int notAnswered = rs.getInt("not_answered");
+			boolean isPassing = (rs.getInt("is_passing") > 0);
+			m.setIsPassing(isPassing);
+			if ((numCorrect + numIncorrect + notAnswered) > 0) {
+				double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
+				sb.append(Math.round(percent)).append("% correct");
+			}
+			else if (isCustomQuiz == false) {
+				sb.append("Started");
+			}
+			else {
+				sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
+			}
+		} else {
+			int inProgress = 0; // lessonsViewed % problemsPerLesson;
+
+			int lessonsViewed = rs.getInt("problems_viewed");
+			m.setLessonsViewed(lessonsViewed);
+			
+			m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
+
+			if (lessonsViewed >= 0) {
+				if (totalSessions < 1) {
+					sb.append("total of ").append(lessonsViewed);
+					if (lessonsViewed > 1)
+						sb.append(" reviews completed");
+					else
+						sb.append(" review completed");
+					if (inProgress != 0) {
+						sb.append(", 1 in progress");
+					}
+				} else {
+					sb.append(lessonsViewed).append(" out of ");
+					sb.append(totalSessions).append(" reviewed");
+				}
+			} else {
+				if (inProgress != 0) {
+					sb.append("1 review in progress");
+				}
+			}
+		}
+		m.setResult(sb.toString());
 		return m;
 	}
 
