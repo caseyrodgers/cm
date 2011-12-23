@@ -181,7 +181,12 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
 
     @Override
     public String getProblemStatementHtml() {
-        return getProblemStatementFromDocument(this.pid); 
+        return replaceAllIds(getProblemStatementFromDocument(this.pid)); 
+    }
+    
+    /** replace all ID tags with ID_NOT */
+    private String replaceAllIds(String html) {
+        return html.replaceAll("id","ID_NOT");
     }
     
 
@@ -196,9 +201,15 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
                  // alert('found ' + divs.length);
                  for(var i=0,t=divs.length;i<t;i++) {
                      var d = divs[i];
-                     if(d.className = 'question_wrapper' && d.getAttribute('pid') == pid) {
+                     if(d.className == 'question_wrapper' && d.getAttribute('pid') == pid) {
                          // alert('found it!');
-                         ps = d;
+                         var dds= d.getElementsByTagName('div');
+                         for(var di=0,dt=dds.length;di<dt;di++) {
+                             if(dds[di].className == 'question_div') {
+                                   ps = dds[di];
+                                   break;
+                             }
+                         }
                          break;
                      }
                  }

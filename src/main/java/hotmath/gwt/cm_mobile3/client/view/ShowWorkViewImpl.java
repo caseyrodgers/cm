@@ -86,14 +86,20 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
 
     private void setProblemStatement() {
         if(showProblem.getValue()) {
-            canvasBackground.setInnerHTML("<div style='background: #CCC;padding: 10px;'>" + presenter.getProblemStatementHtml() + "</div>");
+            canvasBackground.setInnerHTML("<div style='background: grey;padding: 10px;'>" + presenter.getProblemStatementHtml() + "</div>");
             canvasBackground.setAttribute("style", "display: block");
+            
+            initializeWidgets();
         }
         else {
             canvasBackground.setAttribute("style", "display: none");
             canvasBackground.setInnerHTML("");
         }        
     }
+    
+    native private void initializeWidgets() /*-{
+        AuthorApi.initializeWidgets();
+    }-*/; 
     
     @UiField
     CheckBox showProblem;

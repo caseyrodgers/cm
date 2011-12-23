@@ -1,47 +1,78 @@
-<P>
-
-</P>
-<DIV id="question_1" class="question_stepunit">
-	<P>
-	</P>
-	<P>The
-		absolute value of &ndash;8
-		is
-	</P>
-	<P></P>
-	<UL class="question_responses">
-		<LI>
-			<INPUT onclick="questionGuessChanged(this)" id="question_guess_1"
-				type="radio" name="question_1" value="false">
-				<LABEL for="question_guess_1">
-					<P>A. &ndash;8
-					</P>
-				</LABEL>
-				<DIV style="display: none">Incorrect</DIV>
-		</LI>
-		<LI>
-			<INPUT onclick="questionGuessChanged(this)" id="question_guess_2"
-				type="radio" name="question_1" value="false">
-				<LABEL for="question_guess_2">
-					<P>B. 0</P>
-				</LABEL>
-				<DIV style="display: none">Incorrect</DIV>
-		</LI>
-		<LI>
-			<INPUT onclick="questionGuessChanged(this)" id="question_guess_3"
-				type="radio" name="question_1" value="false">
-				<LABEL for="question_guess_3">
-					<P>C. 2</P>
-				</LABEL>
-				<DIV style="display: none">Incorrect</DIV>
-		</LI>
-		<LI>
-			<INPUT onclick="questionGuessChanged(this)" id="question_guess_4"
-				type="radio" name="question_1" value="true">
-				<LABEL for="question_guess_4">
-					<P>D. 8</P>
-				</LABEL>
-				<DIV style="display: none">Correct</DIV>
-		</LI>
-	</UL>
-</DIV>
+<div class="gwt-HTML">
+	<a name="$question.questionTag" id="$question.questionTag">&nbsp;
+	</a>
+	<div class="question_head">
+		<button style="display: none" class="quiz_whiteboard_button sexybutton sexysmall"
+			onclick="showWhiteboard_Gwt(&quot;cahseehm2_CourseTest_2_PracticeTest_34_2&quot;)">whiteboard</button>
+		<button style="display: none" class="quiz_edit_button sexybutton sexysmall"
+			onclick="editQuizQuestion(&quot;cahseehm2_CourseTest_2_PracticeTest_34_2&quot;)" ;>
+			<span>
+				<span>edit</span>
+			</span>
+		</button>
+		<div class="question_head_text"> Problem 4 </div>
+		<div class="response_div" style="display: block; ">
+			<img id="response_image_cahseehm2_CourseTest_2_PracticeTest_34_2"
+				src="/gwt-resources/images/check_notanswered.png" />
+			<div style="float: right;color: #3E3E3E;"
+				id="response_text_cahseehm2_CourseTest_2_PracticeTest_34_2" class="response_div_text">Not
+				answered</div>
+		</div>
+	</div>
+	<div class="question_div" id="question_div_3"
+		guid="cahseehm2_CourseTest_2_PracticeTest_34_2">
+		<p></p>
+		<div id="question_266" class="question_stepunit">
+			<p></p>
+			<p>The five members of a band are getting new outfits. Shirts cost
+				$21 each, pants cost $34 each, and boots cost $57 a pair. What is
+				the total cost of the new outfits for all of the members?</p>
+			<p></p>
+			<ul class="question_responses">
+				<li>
+					<input onclick="" id="question_guess_1053" type="radio"
+						name="question_266" value="false" disabled="true" />
+					<label for="question_guess_1053">
+						<p>A. $112</p>
+					</label>
+					<div style="display: none">
+					</div>
+				</li>
+				<li>
+					<input onclick="" id="question_guess_1054" type="radio"
+						name="question_266" value="false" disabled="true" />
+					<label for="question_guess_1054">
+						<p>B. $224</p>
+					</label>
+					<div style="display: none">
+					</div>
+				</li>
+				<li>
+					<input onclick="" id="question_guess_1055" type="radio"
+						name="question_266" value="true" disabled="true" />
+					<label for="question_guess_1055">
+						<p>C. $560</p>
+					</label>
+					<div style="display: none">
+					</div>
+				</li>
+				<li>
+					<input onclick="" id="question_guess_1056" type="radio"
+						name="question_266" value="false" disabled="true" />
+					<label for="question_guess_1056">
+						<p>D. $630</p>
+					</label>
+					<div style="display: none">
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="question_solution_link">
+			<a href="#"
+				onclick="gotoTestGUID(&quot;cahseehm2_CourseTest_2_PracticeTest_34_2&quot;)">
+				<img src="/images/trifco/view_solution-88x18.gif" />
+			</a>
+		</div>
+	</div>
+	<div class="debug-hide">cahseehm2_CourseTest_2_PracticeTest_34_2</div>
+</div>
