@@ -34,12 +34,6 @@ public class MessageBox {
 
         popup.add(mainPanel);
         
-        mainPanel.add(new Button("Close", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                popup.hide();
-            }
-        }));
 
         popup.center();
         popup.setWidth("300px");

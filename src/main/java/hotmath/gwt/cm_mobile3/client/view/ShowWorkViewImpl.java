@@ -2,14 +2,19 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.History;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView {
@@ -31,6 +36,9 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+        
+        showProblem.setValue(false);
+        setProblemStatement();
         presenter.prepareShowWorkView(this);
     }
 
@@ -69,5 +77,27 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
             }
         };
     }
+    
+    @UiHandler("showProblem")
+    protected void handleShowProblem(ClickEvent ce) {
+        setProblemStatement();
+    }
+    
 
+    private void setProblemStatement() {
+        if(showProblem.getValue()) {
+            canvasBackground.setInnerHTML("<div style='background: #CCC;padding: 10px;'>" + presenter.getProblemStatementHtml() + "</div>");
+            canvasBackground.setAttribute("style", "display: block");
+        }
+        else {
+            canvasBackground.setAttribute("style", "display: none");
+            canvasBackground.setInnerHTML("");
+        }        
+    }
+    
+    @UiField
+    CheckBox showProblem;
+    
+    @UiField
+    Element canvasBackground;
 }

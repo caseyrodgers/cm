@@ -899,3 +899,15 @@ span.group-item-dot {
 	background-color: green;
 }
 
+
+
+#wb-container #hm_flash_widget,
+#wb-container .question_head {
+	display: none;
+}
+
+
+#wb-container #tools span {
+    margin-left: 20px;
+}
+            

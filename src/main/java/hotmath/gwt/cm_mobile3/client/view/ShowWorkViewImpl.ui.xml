@@ -1,5 +1,17 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	   <ui:style>
+	       .show_problem {
+	           margin-left: 25px;
+	        }
+	        
+	        .problemStatement {
+	            position: absolute;
+	            top: 10px;
+	            left: 10px;
+	        }
+	    </ui:style>
 		<g:HTMLPanel>
 		<div id="wb-container" class='wb-container'>
 		    <div id="tools">
@@ -13,9 +25,12 @@
 		        <button id="button_nL" title="Number line"></button>
 		        <button id="button_clear" title="Clear Whiteboard">Clear</button>
 		        <button id="button_save" title="Save Whiteboard">Save</button>
+		        <g:CheckBox styleName="{style.show_problem}" ui:field="showProblem">Show Problem</g:CheckBox>
 		        <!--<button id="button_load" type="button" onclick="renderWhiteBoard()">Load Data</button>-->
 		    </div> <!-- /tools -->
-		    <div id="drawsection">
+		    <div id="drawsection" style='position: relative'>
+		        <div ui:field="canvasBackground" class="{style.problemStatement}">
+		        </div>
 		        <div id="canvas-container">
 		            <canvas id="ocanvas" width="800" height="500">(Your browser doesn't support canvas)</canvas>
 		            <canvas id="gcanvas" width="800" height="500"></canvas>

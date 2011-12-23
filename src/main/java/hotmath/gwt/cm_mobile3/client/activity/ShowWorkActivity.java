@@ -178,6 +178,42 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
             x.@hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity::whiteboardSave_Gwt()();
         }
     }-*/;
+
+    @Override
+    public String getProblemStatementHtml() {
+        return getProblemStatementFromDocument(this.pid); 
+    }
     
+
+    
+    private native String getProblemStatementFromDocument(String pid) /*-{
+         var ps = $doc.getElementById('problem_statement');
+         if(!ps) {
+             var quizEle = $doc.getElementById('testset_div');
+             if(quizEle) {
+                 // alert('found quiz');
+                 var divs = quizEle.getElementsByTagName('div');
+                 // alert('found ' + divs.length);
+                 for(var i=0,t=divs.length;i<t;i++) {
+                     var d = divs[i];
+                     if(d.className = 'question_wrapper' && d.getAttribute('pid') == pid) {
+                         // alert('found it!');
+                         ps = d;
+                         break;
+                     }
+                 }
+             }
+         }
+         
+         
+         if(!ps) {
+             alert('problem statement not found');
+             return null;
+         }
+         else {
+             return ps.innerHTML;
+         }
+         
+    }-*/;    
     
 }
