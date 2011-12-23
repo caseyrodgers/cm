@@ -437,7 +437,7 @@ public class ExportStudentsInExcelFormat {
 	    }
 	    
 	    // add legend
-	    //addStudentProgramLegend(idx, sheet, styles);
+	    addStudentProgramLegend(idx, sheet, styles);
 	}
 
     private void addLegend(int idx, Sheet sheet, Map<String, CellStyle> styles) {
@@ -476,27 +476,12 @@ public class ExportStudentsInExcelFormat {
 
         Row row = sheet.createRow(idx++);
 	    Cell cell = row.createCell(col);
-        cell.setCellValue("% Complete - percentage of completion in current program");
+        cell.setCellValue("Total Units - Completed Sections for Proficiency and Chapter Programs, completed lessons for Custom Programs, completed questions for Custom Programs.");
         cell.setCellStyle(styles.get("data"));
     	
         row = sheet.createRow(idx++);
 	    cell = row.createCell(col);
-        cell.setCellValue("Last Quiz - status or score for most recent Quiz");
-        cell.setCellStyle(styles.get("data"));
-
-        row = sheet.createRow(idx++);
-	    cell = row.createCell(col);
-        cell.setCellValue("Last Login - date of most recent CM activity");
-        cell.setCellStyle(styles.get("data"));
-
-        row = sheet.createRow(idx++);
-        cell = row.createCell(col);
-        cell.setCellValue("Total Logins - number of times the student has logged in");
-        cell.setCellStyle(styles.get("data"));
-
-        row = sheet.createRow(idx++);
-        cell = row.createCell(col);
-        cell.setCellValue("First Login - date of Students first activity in CM");
+        cell.setCellValue("Quiz 1-10 - scores are shown in reverse chronological order (i.e., Quiz 1 is the most recent)");
         cell.setCellStyle(styles.get("data"));
     }
 
