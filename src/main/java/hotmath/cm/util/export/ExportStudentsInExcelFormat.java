@@ -164,7 +164,8 @@ public class ExportStudentsInExcelFormat {
 
 	    Map<String, CellStyle> styles = createStyles(wb);
 		
-	    Row titleRow = sheet.createRow(0);
+        int idx = 1;
+	    Row titleRow = sheet.createRow(idx++);
 	    Cell titleCell = titleRow.createCell(0);
 	    StringBuilder sb = new StringBuilder();
 	    sb.append(title).append(" ").append(filterDescr);
@@ -172,7 +173,6 @@ public class ExportStudentsInExcelFormat {
         titleCell.setCellStyle(styles.get("title"));
         
 	    //the header row: centered text in 48pt font
-        int idx = 2;
 	    Row headerRow = sheet.createRow(idx++);
 	    headerRow.setHeightInPoints(12.75f);
 	    int[] charCount = new int[headings.length];
@@ -318,7 +318,9 @@ public class ExportStudentsInExcelFormat {
 
 	    Map<String, CellStyle> styles = createStyles(wb);
 		
-	    Row titleRow = sheet.createRow(0);
+	    int idx = 1;
+
+	    Row titleRow = sheet.createRow(idx++);
 	    Cell titleCell = titleRow.createCell(0);
 	    StringBuilder sb = new StringBuilder();
 	    sb.append(title).append(" ").append(filterDescr);
@@ -326,8 +328,6 @@ public class ExportStudentsInExcelFormat {
         titleCell.setCellStyle(styles.get("title"));
         
 	    //the header row: centered text in 48pt font
-	    int idx = 2;
-
 	    Row headerRow = sheet.createRow(idx++);
 	    headerRow.setHeightInPoints(12.75f);
 	    int[] charCount = new int[headingsSheet2.length];
