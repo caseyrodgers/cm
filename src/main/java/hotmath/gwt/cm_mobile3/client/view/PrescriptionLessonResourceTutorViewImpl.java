@@ -53,6 +53,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 
 	@Override
     public void loadSolution(final SolutionResponse solution) {
+	    
+	    // this.tutorPanel.getElement().setAttribute("style", "display: none");
+	    this.tutorPanel.setVisible(false);
+	    
 	    this.lastResponse = solution;
 	    this.problem = solution.getProblem();
 	    this.tutorPanel.setPid(solution.getProblem().getPid());
@@ -60,6 +64,8 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 			@Override
 			public void execute() {
 				initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(), solution.getSolutionData(), solution.getTutorHtml(),problem.getProblem(), false, false);
+				
+				tutorPanel.setVisible(true);				
 			}
 		});
     }

@@ -69,7 +69,10 @@ a {
     text-decoration: none;
 }
 
-
+sup {
+    vertical-align: super;
+    font-size: smaller;
+}
 
 #loading {
     -moz-border-radius:10px;
@@ -910,4 +913,8 @@ span.group-item-dot {
 #wb-container #tools span {
     margin-left: 20px;
 }
+            
+            
+            
+            
             
