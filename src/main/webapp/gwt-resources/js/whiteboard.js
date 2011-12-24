@@ -199,8 +199,13 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         // tool_id['ellipse']=5;
         tool_id['gr2D'] = 11;
         tool_id['nL'] = 12;
-        drawingLayer = '1'
+        drawingLayer = '1';
+		if(currentTool!='pencil'){
+		resetButtonHighlite();
+		currentTool = 'pencil';
+		}
         $get_Element("#button_pencil").style.border = '2px solid #ff9900';
+		
         // Events
         // drawRect(0,0,width,height,'#ff0000');
         $get_Element("#button_text").onclick = function (event) {
