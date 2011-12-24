@@ -16,6 +16,8 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
@@ -229,6 +231,47 @@ class MyGenericTextTag extends GenericTextTag<String> {
 //                addStyleName("is_viewed");
 //            }
 //        }
-        getElement().setInnerHTML("<span >&nbsp;&nbsp;&nbsp;<span class='group-item-dot'>&nbsp;</span>" + resourceItem.getTitle() + "</span>");
+        
+        // add a bit of unbreakable indentation
+        getElement().setInnerHTML("<span >&nbsp;&nbsp;&nbsp;<span class='group-item-dot'>&nbsp;</span>" + (!isRpp?resourceItem.getTitle():getResourceTitle(resourceItem)) + "</span>");
+    }
+    
+    private String getResourceTitle(InmhItemData itemData) {
+        
+        String title = null;
+        Storage storage = Storage.getLocalStorage();
+        if(storage != null) {
+            String tag = "mc_" + itemData.getFile();
+            String data = storage.getItem(tag);
+            if(data != null) {
+                String p[] = data.split("\\|");
+                if(p.length == 2) {
+                    try {
+                        int probNum = Integer.parseInt(p[0]);
+                        
+                        String tit2 = " <span class='ps-complete'> " + probNum + " completed</span>";
+                        String tit = itemData.getTitle();
+                        int pos = tit.indexOf(")");
+                        if(pos > -1) {
+                            tit = tit.substring(0, pos) + ", " + tit2 + ")";
+                        }
+                        else {
+                            tit = tit2;
+                        }
+                        title = tit; 
+                    }
+                    catch(Exception e) {
+                        Log.error("Error parsing tutor context", e);
+                    }
+                }
+            }
+        }
+        
+        if(title == null) {
+            return itemData.getTitle();
+        }
+        else {
+            return title;
+        }
     }
 }
