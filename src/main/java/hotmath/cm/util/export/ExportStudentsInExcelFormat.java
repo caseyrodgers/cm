@@ -165,6 +165,7 @@ public class ExportStudentsInExcelFormat {
 	    Map<String, CellStyle> styles = createStyles(wb);
 		
         int idx = 1;
+	    sheet.createRow(0);
 	    Row titleRow = sheet.createRow(idx++);
 	    Cell titleCell = titleRow.createCell(0);
 	    StringBuilder sb = new StringBuilder();
@@ -320,6 +321,7 @@ public class ExportStudentsInExcelFormat {
 		
 	    int idx = 1;
 
+	    sheet.createRow(0);
 	    Row titleRow = sheet.createRow(idx++);
 	    Cell titleCell = titleRow.createCell(0);
 	    StringBuilder sb = new StringBuilder();
