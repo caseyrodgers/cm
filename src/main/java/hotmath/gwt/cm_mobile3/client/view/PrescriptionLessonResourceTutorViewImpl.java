@@ -172,7 +172,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	
 	private void tutorWidgetCompleteAux(boolean yesNo) {
 	    if(yesNo) {
-	        MessageBox.showMessage("Excellent! You are correct.  You can move on to the next problem.");
+	        // MessageBox.showMessage("Excellent! You are correct.  You can move on to the next problem.");
 	    }
 	    else {
 	        // MessageBox.showMessage("Not right.  You can work through the solution and find the right answer.");
