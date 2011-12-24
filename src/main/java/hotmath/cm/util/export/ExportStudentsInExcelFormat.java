@@ -172,7 +172,8 @@ public class ExportStudentsInExcelFormat {
         titleCell.setCellStyle(styles.get("title"));
         
 	    //the header row: centered text in 48pt font
-	    Row headerRow = sheet.createRow(1);
+        int idx = 2;
+	    Row headerRow = sheet.createRow(idx++);
 	    headerRow.setHeightInPoints(12.75f);
 	    int[] charCount = new int[headings.length];
 
@@ -183,11 +184,9 @@ public class ExportStudentsInExcelFormat {
 	        charCount[i] = headings[i].length();
 	    }
 		
-	    int idx = 2;
-
 	    for (StudentModelI sm : studentList) {
 
-	    	StudentReportCardModelI rc = rcList.get(idx-2);
+	    	StudentReportCardModelI rc = rcList.get(idx-3);
 
 	        Row row = sheet.createRow(idx++);
 		    int col = 0;
@@ -327,7 +326,9 @@ public class ExportStudentsInExcelFormat {
         titleCell.setCellStyle(styles.get("title"));
         
 	    //the header row: centered text in 48pt font
-	    Row headerRow = sheet.createRow(1);
+	    int idx = 2;
+
+	    Row headerRow = sheet.createRow(idx++);
 	    headerRow.setHeightInPoints(12.75f);
 	    int[] charCount = new int[headingsSheet2.length];
 
@@ -338,8 +339,6 @@ public class ExportStudentsInExcelFormat {
 	        charCount[i] = headingsSheet2[i].length();
 	    }
 		
-	    int idx = 2;
-
 	    for (StudentModelI sm : studentList) {
 
 	    	List<StudentActivitySummaryModel> sasList = sasMap.get(sm.getUid());
@@ -476,7 +475,7 @@ public class ExportStudentsInExcelFormat {
 
         Row row = sheet.createRow(idx++);
 	    Cell cell = row.createCell(col);
-        cell.setCellValue("Total Units - Completed Sections for Proficiency and Chapter Programs, completed lessons for Custom Programs, completed questions for Custom Programs.");
+        cell.setCellValue("Total Units - Completed Sections for Proficiency and Chapter Programs, completed lessons for Custom Programs, completed questions for Custom Quizzes.");
         cell.setCellStyle(styles.get("data"));
     	
         row = sheet.createRow(idx++);
