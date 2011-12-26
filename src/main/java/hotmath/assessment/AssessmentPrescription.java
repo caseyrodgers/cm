@@ -392,7 +392,7 @@ public class AssessmentPrescription {
         
         List<RppWidget> maybeList = new ArrayList<RppWidget>();
         for (RppWidget rpp : rppWidgets) {
-            if(rpp.isFlashRequired())
+            if(rpp.isFlashRequired() || rpp.isDynamicSolution())
                 continue;
             ProblemID pid = new ProblemID(rpp.getFile());
 
