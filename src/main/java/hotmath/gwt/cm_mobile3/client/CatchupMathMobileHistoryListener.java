@@ -44,6 +44,10 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
         ClientFactory cf = CatchupMathMobile3.__clientFactory;
         
         try {
+            // always perform any actions here
+            ShowWorkActivity.saveWhiteboard();
+            
+            
             final String type = token.getType();
             
             if(type == null || type.equals("login")) {

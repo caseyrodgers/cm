@@ -82,7 +82,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     }
     
     static public void saveWhiteboard() {
-        __lastInstance.saveWhiteboardToServer();
+        if(__lastInstance != null) {
+            __lastInstance.saveWhiteboardToServer();
+        }
     }
 
     MultiActionRequestAction whiteboardActions = new MultiActionRequestAction();

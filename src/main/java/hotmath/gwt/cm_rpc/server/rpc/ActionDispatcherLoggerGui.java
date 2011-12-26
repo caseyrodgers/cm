@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -210,6 +211,9 @@ public class ActionDispatcherLoggerGui extends JFrame {
     }
     
     private void writeDatabaseRecord(String type, String timeStamp, String actionName, String args, int elapseTime,int userId, String userType,String actionId) {
+        
+        Toolkit.getDefaultToolkit().beep();
+        
         _requestsArea.append("type: " + type + "\ntime: " + timeStamp + "\nname:  " + actionName + "\nelapsed:  " + elapseTime + "\nargs: " + args + "\nactionId: " + actionId + "\n\n");
         _requestsArea.setCaretPosition(_requestsArea.getDocument().getLength());
     }
