@@ -334,7 +334,7 @@ public class AssessmentPrescription {
             
             if(sessionItems.size() == 0) {
                 for(SessionData sd: filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData)) {
-                    if(!sd.getRpp().isFlashRequired()) {
+                    if(!sd.getRpp().isFlashRequired() && !sd.getRpp().isDynamicSolution()) {
                         sessionItems.add(sd);
                         if(sessionItems.size() >= PID_COUNT) {
                             break;
