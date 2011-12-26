@@ -318,13 +318,16 @@ public class AssessmentPrescription {
             /**
              * show only RPP widgets (filtered)
              * 
-             * If any dynamic solutions, then only show 
-             * dynamic solutions.
+             * If CM Mobile (flashNoEnabled)
+             * then only use dynamic solutions
+             * if available.
              * 
              */
-            for (RppWidget rpp : rppWidgets) {
-                if (rpp.isDynamicSolution()) {
-                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
+            if(!clientEnvironment.isFlashEnabled()) {
+                for (RppWidget rpp : rppWidgets) {
+                    if (rpp.isDynamicSolution()) {
+                        sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
+                    }
                 }
             }
             
@@ -333,6 +336,9 @@ public class AssessmentPrescription {
                 for(SessionData sd: filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData)) {
                     if(!sd.getRpp().isFlashRequired()) {
                         sessionItems.add(sd);
+                        if(sessionItems.size() >= PID_COUNT) {
+                            break;
+                        }
                     }
                 }
             }
