@@ -327,8 +327,14 @@ public class AssessmentPrescription {
                     sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
                 }
             }
+            
+            
             if(sessionItems.size() == 0) {
-                sessionItems.addAll(filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData));
+                for(SessionData sd: filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData)) {
+                    if(!sd.getRpp().isFlashRequired()) {
+                        sessionItems.add(sd);
+                    }
+                }
             }
         }
         return session;

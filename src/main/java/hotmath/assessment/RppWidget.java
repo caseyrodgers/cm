@@ -115,7 +115,7 @@ public class RppWidget {
      * @return
      */
     public boolean isDynamicSolution() {
-        return this.getWidgetJsonArgs() != null && this.getWidgetJsonArgs().trim().startsWith("{");
+        return this.getWidgetJsonArgs() != null && this.getWidgetJsonArgs().trim().startsWith("{") && !isFlashRequired();
     }
     
     
