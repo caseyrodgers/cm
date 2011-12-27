@@ -26,7 +26,6 @@ var Whiteboard = (function () {
         var y0 = yp ? yp : clickY
         var ht = 15
         for (var i = 0; i < str.length; i++) {
-
             context.fillText(str[i], x0, y0)
             y0 += ht
         }
@@ -201,6 +200,9 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         tool_id['nL'] = 12;
         drawingLayer = '1';
 		if(currentTool!='pencil'){
+		if(currentTool=='text'||$get_Element("#inputBox").style.display == 'block'){
+		hideTextBox();
+		}
 		resetButtonHighlite();
 		currentTool = 'pencil';
 		}
@@ -500,6 +502,10 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         // alert($get_Element("#content"))
         // alert($get_Element("#inputBox").style.top+":"+$get_Element("#inputBox").style.left)
     }
+	function hideTextBox(){
+	$get_Element("#content").value = "";
+    $get_Element("#inputBox").style.display = 'none';
+	}
 
     function resetWhiteBoard(boo) {
         penDown = false;
