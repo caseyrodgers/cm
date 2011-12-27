@@ -157,10 +157,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			titleBuff.append(acctInfo.getAdminUserName()).append(") ");
     			titleBuff.append("Student Data Export on ").append(todaysDate);
 
-    			titleBuff.append(NEW_LINE);
     			String endDate = todaysDate;
     	        String beginDate = acctCreateDate;
-    			titleBuff.append("Period covered is ").append(beginDate).append(" to ").append(endDate);
+    			titleBuff.append(" - Period covered is ").append(beginDate).append(" to ").append(endDate);
 
     	        Calendar now = Calendar.getInstance();
     	        now.add(Calendar.DATE, 1);
@@ -171,9 +170,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			StringBuilder sb = new StringBuilder();
     			if (filterDescr != null && filterDescr.trim().length() > 0)
-    				sb.append("Filter: ( ").append(filterDescr).append(" )");
+    				sb.append(" - Filter: ( ").append(filterDescr).append(" )");
     			else
-    				sb.append("Filter: ( All Students )");
+    				sb.append(" - Filter: ( All Students )");
 
     			ExportStudentsInExcelFormat exporter = new ExportStudentsInExcelFormat(studentList);
     			exporter.setReportCardList(rcList);
@@ -207,7 +206,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     				msgBuff.append("with ").append(sb.toString());
     			}
 				msgBuff.append(" is attached.");
-				
+				msgBuff.append(NEW_LINE).append(NEW_LINE);
+
+				msgBuff.append("Note that the spreadsheet has two sheets, one for Summary and one for Details.");				
 
     			String[] toEmailAddrs = new String[2];
     			toEmailAddrs[0] = emailAddr;
