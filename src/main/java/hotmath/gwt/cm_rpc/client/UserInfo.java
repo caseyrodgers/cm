@@ -20,7 +20,7 @@ public class UserInfo implements  Response {
 	int programSegmentCount=4;
 	int testSegmentSlot;
 	String testName;
-	String userName;
+	String userName="";
 	int viewCount;
 	int correctPercent;
 	String backgroundStyle;
