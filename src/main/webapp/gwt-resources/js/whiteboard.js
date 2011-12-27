@@ -647,6 +647,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
     }
 
     function sendData() {
+	
         if (graphicData.id || graphicData.id === 0) {
             var txtVal = graphicData.dataArr[graphicData.dataArr.length - 1].text;
             if (graphicData.id == 2 && (txtVal == "" || txtVal == undefined)) {
@@ -656,8 +657,9 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
             }
             if (graphicData.id == 1 && graphicData.dataArr.length > 500) {
                 var jStr = convertObjToString(graphicData);
-                currentObj.tempData = convertStringToObj(jStr);
+                //currentObj.tempData = convertStringToObj(jStr);
                 // ExternalInterface.call("console.log","A")
+				
                 var ptC = graphicData.dataArr.length
                 var segArr = []
                 var buf
@@ -707,6 +709,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                 for (var z = 0; z < segArr.length; z++) {
                     sendDataToSERVER(segArr[z]);
                 }
+				console.log("Sending json string_segemented line -segments  : " + segArr.length);
                 render = false;
                 resetArrays();
                 textRendering = false;
@@ -714,6 +717,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
             }
             render = false;
             // var jsonStr = convertObjToString(graphicData);
+			 console.log("Sending Data string for: " + graphicData.id);
             sendDataToSERVER(graphicData);
             textRendering = false;
         }
@@ -722,7 +726,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
 
     function sendDataToSERVER(jsdata) {
         var jsonStr = convertObjToString(jsdata);
-        // console.log("Sending json string: " + jsonStr);
+        console.log("Sending json string: " + jsonStr);
         wb.whiteboardOut(jsonStr, true);
     }
 
@@ -780,6 +784,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         context.lineWidth = 2.0
         context.strokeStyle = "rgb(0, 0, 0)";
         var deb = ""
+		console.log("RENDER_DATA_FOR: "+graphic_id)
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
