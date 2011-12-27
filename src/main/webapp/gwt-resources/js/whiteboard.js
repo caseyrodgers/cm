@@ -71,6 +71,9 @@ var Whiteboard = (function () {
     function buttonHighlite(t) {
         resetButtonHighlite();
         $get_Element("#button_" + t).style.border = '2px solid #ff9900';
+        if(currentTool!='text'&&$get_Element("#inputBox").style.display == 'block'){
+		    hideTextBox();
+		}
     }
 
     function viewport() {
@@ -252,6 +255,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
             // resetWhiteBoard();
             currentTool = 'pencil'
             buttonHighlite(currentTool)
+			hideTextBox();
             // penDown=false;
             // graphMode='';
             // origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
