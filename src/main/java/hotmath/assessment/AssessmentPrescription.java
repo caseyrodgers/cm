@@ -408,15 +408,15 @@ public class AssessmentPrescription {
         List<SessionData> session = new ArrayList<AssessmentPrescription.SessionData>();
 
         
-        /** create a sorted list with dynamic solutions first.  That way they will be 
-         *  added to the prescription before 'raw' PIDS.
-         */
-        Collections.sort(rppWidgets, new Comparator<RppWidget>() {
-            @Override
-            public int compare(RppWidget o1, RppWidget o2) {
-                return o1.getWidgetJsonArgs()!=null?0:1;
-            }
-        });
+//        /** create a sorted list with dynamic solutions first.  That way they will be 
+//         *  added to the prescription before 'raw' PIDS.
+//         */
+//        Collections.sort(rppWidgets, new Comparator<RppWidget>() {
+//            @Override
+//            public int compare(RppWidget o1, RppWidget o2) {
+//                return o1.getWidgetJsonArgs()!=null?0:1;
+//            }
+//        });
 
         
         List<RppWidget> maybeList = new ArrayList<RppWidget>();
