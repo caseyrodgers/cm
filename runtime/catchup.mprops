@@ -2728,7 +2728,7 @@ order by overage desc
 select browser_info, is_html5_only
 from HA_USER_LOGIN
 where user_id = ?
-order by login_time desc
+order by lid desc
 limit 1
 
 ############################

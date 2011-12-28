@@ -20,8 +20,11 @@ import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.apache.log4j.Logger;
 
@@ -79,6 +82,26 @@ public class CmProgramFlow {
             sdao.verifyActiveProgram(getActiveInfo().getActiveTestId());
         } catch (Exception e) {
             __logger.error("Error validating test id: " + getActiveInfo().getActiveTestId());
+        }
+    }
+
+    /** Does the current prescription (all lessons) require flash */
+    public boolean dependsOnFlash(final Connection conn, int runId) throws Exception {
+        String sql = "select count(*) " +
+                     "from HA_TEST_RUN_LESSON l JOIN HA_TEST_RUN_LESSON_PID p  " +
+                     "  on p.lid = l.id " +
+                     "where l.run_id = ? " +
+                     "and p.pid like '%.swf' ";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, runId);
+            ResultSet rs = ps.executeQuery();
+            rs.first();
+            return (rs.getInt(1) > 0); 
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  ps, null);
         }
     }
 

@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<%@page import="hotmath.cm.util.CatchupMathProperties"%>
 <%@page import="hotmath.cm.util.CmCacheManager"%>
 <%@page import="hotmath.assessment.*"%>
 <html><!-- InstanceBegin template="/Templates/hm_core_layout.dwt" codeOutsideHTMLIsLocked="false" -->
@@ -26,7 +27,7 @@
 </head>
 <body>
   <h1>Assessment Prescription for: <%= inmhList.getTestRun().getPidList() %></h1>
-  <h2>Grade Level: <%= gradeLevelProgram %></h2>
+  <h2>Grade Level: <%= gradeLevelProgram %>, Allow RPA: <%= CatchupMathProperties.getInstance().getProperty("prescription.allow_rpa") %></h2>
   <ul>
       <%
           for(AssessmentPrescriptionSession s: sessions) {
@@ -35,9 +36,13 @@
               <ol>
                   <%
                       for(AssessmentPrescription.SessionData sessionData: s.getSessionItems()) {
+                          int gradeLevel = 0;
+                          if(!sessionData.getRpp().isFlashRequired()) {
+                              gradeLevel = new ProblemID(sessionData.getRpp().getFile()).getGradeLevel();
+                          }
                     	  %>
                     	  <li><a href='/tutor/?pid=<%= sessionData.getRpp().getFile() %>'><%= sessionData.getRpp().getFile() %></a>
-                    	      (level: <%= new ProblemID(sessionData.getRpp().getFile()).getGradeLevel() %>, weight: <%= sessionData.getWeight() %>, include: <%= sessionData.getNumPids() %>)
+                    	      (level: <%= gradeLevel %>, weight: <%= sessionData.getWeight() %>, include: <%= sessionData.getNumPids() %>)
                     	      <a href='_get_run_pool.jsp?run_id=<%= inmhList.getTestRun().getRunId() %>&item=<%= sessionData.getItem().getFile() %>'>pool</a>
                     	  </li>
                     	  <%

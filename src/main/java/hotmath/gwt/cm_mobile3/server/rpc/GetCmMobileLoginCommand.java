@@ -121,7 +121,7 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
              *   
              */
             if(nextAction.getPrescriptionResponse() != null) {
-                if(nextAction.getPrescriptionResponse().getPrescriptionData().getCurrSession().dependsOnFlash()) {
+                if(programFlow.dependsOnFlash(conn, nextAction.getPrescriptionResponse().getRunId())) {
                     mobileUser.setFlowAction(new CmProgramFlowAction(CmPlace.ERROR_FLASH_REQUIRED));
                 }
             }
