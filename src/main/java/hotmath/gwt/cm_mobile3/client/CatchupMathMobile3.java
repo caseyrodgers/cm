@@ -25,6 +25,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
+import hotmath.gwt.cm_mobile_shared.client.util.BrowserNotSupportedPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
@@ -123,6 +124,18 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         new LoadingDialog(__clientFactory.getEventBus());
         _rootPanel = RootPanel.get("main-content");
         try {
+            
+            if(CatchupMathMobileShared.getQueryParameter("debug")==null) {
+                /** only allow IPad access for now */
+                String userAgent = getUserAgent();
+                Log.info("User Agent: " + userAgent);
+                
+                if(userAgent.toLowerCase().indexOf("ipad") == -1) {
+                    _rootPanel.add(new BrowserNotSupportedPanel());
+                    return;
+                }
+            }
+            
             Controller.installEventBus(__clientFactory.getEventBus());
             _rootPanel.add(createApplicationPanel());
 
@@ -142,8 +155,11 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
-            // always show login, bypass history
             __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
+            if (!InitialMessage.hasBeenSeen()) {
+                new InitialMessage().showCentered();
+            }
+            
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
@@ -162,7 +178,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     RootPanel _loadingDiv;
 
-    
+    native private String getUserAgent() /*-{
+        if(typeof navigator !== 'undefined') {
+            return navigator.userAgent;
+        }
+        else {
+            return 'unknown';
+        }
+    }-*/;
 
     @Override
     public void orientationChanged(ScreenOrientation newOrientation) {

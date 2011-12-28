@@ -20,11 +20,13 @@
     finally {
       SqlUtilities.releaseResources(null,null,conn);
     }
-    
+
+    int gradeLevelProgram = inmhList.getGradeLevel();
 %>
 </head>
 <body>
   <h1>Assessment Prescription for: <%= inmhList.getTestRun().getPidList() %></h1>
+  <h2>Grade Level: <%= gradeLevelProgram %></h2>
   <ul>
       <%
           for(AssessmentPrescriptionSession s: sessions) {

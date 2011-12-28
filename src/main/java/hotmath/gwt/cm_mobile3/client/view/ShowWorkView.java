@@ -8,5 +8,6 @@ public interface ShowWorkView extends IPage {
     static public interface Presenter {
         void prepareShowWorkView(ShowWorkView view);
         String getProblemStatementHtml();
+        void goBack();
     }
 }

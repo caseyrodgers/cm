@@ -1,5 +1,6 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
+<%@page import="hotmath.assessment.RppWidget"%>
 <%@page import="hotmath.assessment.InmhAssessment"%>
 <%@page import="hotmath.testset.ha.HaTestRun"%>
 <%@page import="hotmath.testset.ha.HaTestRunDao"%>
@@ -48,16 +49,17 @@
   <ol>
       <%
           for(String s: _matches) {
+
+              RppWidget rpp = null;
         	  if(s.startsWith("{")) {
-        		  %>
-           		      <li> <%= s %></li>
-           		  <%
+        	      rpp = new RppWidget(s);
         	  }
-              else {
-		          %>
-	              <li> <a href='/tutor/?pid=<%= s %>'><%= s %></a> (level: <%= new ProblemID(s).getGradeLevel() %>)</li>
-  	              <%
-              }
+        	  else {
+        	      rpp = new RppWidget(s, null);
+        	  }
+	          %>
+                  <li> <a href='/tutor/?pid=<%= rpp.getFile() %>'><%= s %></a> (level: <%= new ProblemID(rpp.getFile()).getGradeLevel() %>)</li>
+              <%
           }
 
       %>

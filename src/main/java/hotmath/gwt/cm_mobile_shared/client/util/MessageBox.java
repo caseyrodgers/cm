@@ -58,14 +58,7 @@ public class MessageBox {
     }
     
     static public void showError(String msg) {
-        final PopupPanel popup = new PopupPanel();
-        popup.setStyleName("popup-message");
-        popup.addStyleName("error");
-        popup.setAutoHideEnabled(true);
-        popup.setModal(true);
-        popup.add(new HTML(msg));
-        popup.center();
-        popup.show();        
+        showMessage(msg);
     }
     
     static public interface Callback {

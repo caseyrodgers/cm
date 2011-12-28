@@ -24,8 +24,8 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     
     final static Logger __logger = Logger.getLogger(AssessmentPrescriptionCustom.class);
     
-    int _customProgramSubjectLevel;
     int _numSegments=0;
+    int gradeLevel;
     List<AssessmentPrescriptionSession> _sessionsAll = new ArrayList<AssessmentPrescriptionSession>();
     
     public AssessmentPrescriptionCustom(final Connection conn,HaTestRun testRun) throws Exception {
@@ -50,6 +50,14 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         int segment=testRun.getHaTest().getSegment();
         CmList<CustomLessonModel> progLessons = CmCustomProgramDao.getInstance().getCustomProgramLessons(conn, custProgId, segment);
         int sessNum = 0;
+
+        String cacheKey = uid + "/" + testRun.getRunId();
+
+        gradeLevel = CmUserProgramDao.getInstance().getGradeLevel(custProgId);
+        if(gradeLevel == 0) {
+            gradeLevel = determineGradeLevel(progLessons,cacheKey);
+        }
+        
         for(CustomLessonModel cpProgItem: progLessons) {
             AssessmentPrescriptionSession session=null;
             if(cpProgItem.getCustomProgramType() == Type.LESSON) {
@@ -59,13 +67,11 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review",cpProgItem.getFile(),cpProgItem.getLesson());
                 InmhItemData itemData = new InmhItemData(item);
 
-                List<RppWidget> workBookPids = itemData.getWidgetPool(conn, uid + "/" + testRun.getRunId());
+                List<RppWidget> workBookPids = itemData.getWidgetPool(conn, cacheKey);
                 if (workBookPids.size() == 0) {
                     logger.warn("No pool solutions found for + '" + itemData.getInmhItem().toString() + "'");
                     continue; // nothing to see here.
                 }
-                
-                gradeLevel = getHighestGradeLevel(workBookPids);
                 
                 session = createSession(sessNum,workBookPids,itemData,true, clientEnvironment);
                 
@@ -93,16 +99,31 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     }
 
     
+    private int determineGradeLevel(CmList<CustomLessonModel> progLessons, String cacheKey) throws Exception {
+        int gl=99999;
+        for(CustomLessonModel cpProgItem: progLessons) {
+            if(cpProgItem.getCustomProgramType() == Type.LESSON) {
+                INeedMoreHelpItem item = new INeedMoreHelpItem("review",cpProgItem.getFile(),cpProgItem.getLesson());
+                InmhItemData itemData = new InmhItemData(item);
+                List<RppWidget> workBookPids = itemData.getWidgetPool(conn, cacheKey);
+                
+                int lowest = getLowestGradeLevel(workBookPids);
+                if(lowest < gl) {
+                    gl = lowest;
+                }
+            }
+        }
+        return gl;
+    }
+    
+    
+    
     @Override
     public CmProgramFlowAction getNextAction() throws Exception {
         return new CmProgramFlowAction(CmPlace.PRESCRIPTION);
     }
     
-    
-    /** Return the grade level for this custom program 
-     * 
-     */
-    int gradeLevel;
+
     @Override
     public int getGradeLevel() {
     	return gradeLevel;

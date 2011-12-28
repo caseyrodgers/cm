@@ -210,6 +210,10 @@ var TutorManager = {
 		setButtonState();
 		TutorDynamic.resetTutor();
 	},
+	
+	getCurrentStepNumber: function() {
+		return TutorManager.currentStepUnit;
+	},
 
 	/**
 	 * read loaded tutor html and create meta data used to drive the solution.

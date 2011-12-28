@@ -22,3 +22,4 @@ function showWhiteboardActive(domEl) {
 
 function debug(s) {
 }
+

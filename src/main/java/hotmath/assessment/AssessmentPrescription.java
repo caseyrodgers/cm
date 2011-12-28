@@ -323,8 +323,16 @@ public class AssessmentPrescription {
              * if available.
              * 
              */
+            List<SessionData> filteredData = filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData);
+            
+            /** two passes
+             * 
+             * first to only choose dynamic solutions
+             * 
+             */
             if(!clientEnvironment.isFlashEnabled()) {
-                for (RppWidget rpp : rppWidgets) {
+                for(SessionData sd: filteredData) {
+                    RppWidget rpp = sd.getRpp();
                     if (rpp.isDynamicSolution()) {
                         sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData.getWeight(), rpp.getWidgetJsonArgs()));
                     }
@@ -332,9 +340,14 @@ public class AssessmentPrescription {
             }
             
             
+            /** second pass to fill in missing
+             *  with static RPPs
+             *  
+             */
             if(sessionItems.size() == 0) {
-                for(SessionData sd: filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData)) {
-                    if(!sd.getRpp().isFlashRequired() && !sd.getRpp().isDynamicSolution()) {
+                for(SessionData sd: filteredData) {
+                    RppWidget rpp = sd.getRpp();
+                    if(!rpp.isFlashRequired()) {
                         sessionItems.add(sd);
                         if(sessionItems.size() >= PID_COUNT) {
                             break;
@@ -357,6 +370,22 @@ public class AssessmentPrescription {
             }
         }
         return heighestLevel;
+    }
+
+    
+    protected int getLowestGradeLevel(List<RppWidget> rpps) throws Exception {
+        int lowestLevel = 99999;
+        for (RppWidget w : rpps) {
+            if (w.isSolution()) {
+                int level=0;
+                level = new ProblemID(w.getFile()).getGradeLevel();
+                
+                if (level < lowestLevel) {
+                    lowestLevel = level;
+                }
+            }
+        }
+        return lowestLevel;
     }
 
     
@@ -392,7 +421,7 @@ public class AssessmentPrescription {
         
         List<RppWidget> maybeList = new ArrayList<RppWidget>();
         for (RppWidget rpp : rppWidgets) {
-            if(rpp.isFlashRequired() || rpp.isDynamicSolution())
+            if(rpp.isFlashRequired())
                 continue;
             ProblemID pid = new ProblemID(rpp.getFile());
 

@@ -44,39 +44,6 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
         /** empty */
     }
 
-    static class StudentUserProgramModelMapper implements RowMapper<StudentUserProgramModel> {
-
-        int userId;
-
-        public StudentUserProgramModelMapper(int userId) {
-            this.userId = userId;
-        }
-
-        public StudentUserProgramModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-            StudentUserProgramModel supm = new StudentUserProgramModel();
-            try {
-                supm.setId(rs.getInt("id"));
-                supm.setUserId(rs.getInt("user_id"));
-                supm.setAdminId(rs.getInt("admin_id"));
-                supm.setTestDefId(rs.getInt("test_def_id"));
-                supm.setTestName(rs.getString("test_name"));
-                int passPercent = rs.getInt("pass_percent");
-                supm.setPassPercent(passPercent);
-                java.sql.Date dt = rs.getDate("create_date");
-                supm.setCreateDate(new Date(dt.getTime()));
-                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
-                supm.setCustomProgramId(rs.getInt("custom_program_id"));
-                supm.setCustomProgramName(rs.getString("custom_program_name"));
-                supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
-                supm.setCustomQuizName(rs.getString("custom_quiz_name"));
-                supm.setComplete(rs.getDate("date_completed") != null);
-                return supm;
-            } catch (Exception e) {
-                __logger.error("Error creating StudentUserProgramModel: " + userId, e);
-                throw new SQLException(e.getMessage());
-            }
-        }
-    }
 
     /**
      * Return the currently configured user program for this user
@@ -135,6 +102,15 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
             student.setTestDef(td);
         }
         return student;
+    }
+    
+    
+    public int getGradeLevel(int custProgId) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_PROGRAM_GRADE_LEVEL");
+        return this.getJdbcTemplate().queryForInt(
+                sql,
+                new Object[]{custProgId}
+                );
     }
 
     /**
@@ -302,5 +278,41 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
 
         return supm;
     }
+    
+    
+
+    static class StudentUserProgramModelMapper implements RowMapper<StudentUserProgramModel> {
+
+        int userId;
+
+        public StudentUserProgramModelMapper(int userId) {
+            this.userId = userId;
+        }
+
+        public StudentUserProgramModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+            StudentUserProgramModel supm = new StudentUserProgramModel();
+            try {
+                supm.setId(rs.getInt("id"));
+                supm.setUserId(rs.getInt("user_id"));
+                supm.setAdminId(rs.getInt("admin_id"));
+                supm.setTestDefId(rs.getInt("test_def_id"));
+                supm.setTestName(rs.getString("test_name"));
+                int passPercent = rs.getInt("pass_percent");
+                supm.setPassPercent(passPercent);
+                java.sql.Date dt = rs.getDate("create_date");
+                supm.setCreateDate(new Date(dt.getTime()));
+                supm.setConfig(new HaTestConfig(passPercent, rs.getString("test_config_json")));
+                supm.setCustomProgramId(rs.getInt("custom_program_id"));
+                supm.setCustomProgramName(rs.getString("custom_program_name"));
+                supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
+                supm.setCustomQuizName(rs.getString("custom_quiz_name"));
+                supm.setComplete(rs.getDate("date_completed") != null);
+                return supm;
+            } catch (Exception e) {
+                __logger.error("Error creating StudentUserProgramModel: " + userId, e);
+                throw new SQLException(e.getMessage());
+            }
+        }
+    }    
 
 }

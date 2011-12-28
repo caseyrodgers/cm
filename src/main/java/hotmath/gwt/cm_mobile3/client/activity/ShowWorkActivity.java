@@ -16,6 +16,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 
@@ -41,7 +42,6 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     @Override
     public void prepareShowWorkView(ShowWorkView view) {
         setExternalJsniHooks(this);
-        
         view.setTitle(title);
         
         /** TODO: why use global? */
@@ -79,6 +79,11 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
                 initializeWhiteboard();
             }
         });
+    }
+
+    @Override
+    public void goBack() {
+        History.back();
     }
     
     static public void saveWhiteboard() {

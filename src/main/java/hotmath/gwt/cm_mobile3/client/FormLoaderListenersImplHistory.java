@@ -78,7 +78,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                 if (pid == null) {
                     pid = "";
                 }
-                History.newItem("show_work:" + pid + ":" + title + ":" + System.currentTimeMillis());
+                History.newItem("show_work:" + pid + ":" + title + ":"  + System.currentTimeMillis());
             }
         });
         eb.addHandler(ShowPrescriptionLessonViewEvent.TYPE, new ShowPrescriptionLessonViewHandler() {

@@ -1,10 +1,14 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
+import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -20,7 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLessonResourceTutorView.Presenter {
 	InmhItemData resourceItem;
 	com.google.gwt.event.shared.EventBus eventBus;
-
+	
 	public PrescriptionLessonResourceTutorActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
 	    this.eventBus = eventBus;
 		this.resourceItem = resourceItem;
@@ -47,11 +51,20 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
             }
         });
     }
+    
+    native public int getSolutionStepUnit() /*-{
+        return $wnd.TutorManager.getCurrentStepNumber();
+    }-*/;
+    
+    native public int setSolutionStepUnit(int x) /*-{
+        $wnd.gotoStepUnit(x);
+    }-*/; 
+
 
 
     @Override
     public void showWhiteboard(String title) {
-        final String pid = resourceItem.getFile();
+        String pid = resourceItem.getFile();
         eventBus.fireEvent(new ShowWorkViewEvent(pid, title));
     }
 

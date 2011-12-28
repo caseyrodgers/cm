@@ -1604,6 +1604,11 @@ where id = ?
 
 
 
+.key=GET_CUSTOM_PROGRAM_GRADE_LEVEL
+
+select grade_level
+from   HA_CUSTOM_PROGRAM
+where  id = ? 
 
 
 

@@ -47,7 +47,7 @@ public class Controller {
     	/** allow current page an override to normal back
     	 * 
     	 */
-    	IPage pageCurrent = mPageStack.peek();
+    	IPage pageCurrent = peekPage();
     	boolean normalProcess = true;
     	if(pageCurrent != null && pageCurrent.getBackAction() != null) {
     		Log.info("Back override for '" + pageCurrent + "'");
@@ -69,6 +69,10 @@ public class Controller {
 	    		}
 	    	}
     	}
+    }
+    
+    public static IPage peekPage() {
+        return mPageStack.peek();
     }
 
     public static void navigateToWelcome(IPage currentPage) {
