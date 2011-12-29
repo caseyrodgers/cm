@@ -675,17 +675,16 @@ function gotoStepUnit(x) {
 	TutorManager.showStepUnit(x);	
 }
 
-
-function deleteStep(su) {
-	 var su = 0;
+function deleteStep(x) {
+         var su = 0;
      if(x > 0) {
-         su = x*2;            
+         su = x*2;
      }
 
      // completely remove from DOM
      var hintUnit = $get('stepunit-' + su);
      var stepUnit = $get('stepunit-' + (su+1));
-     
+
      if(hintUnit == null || stepUnit == null) {
          alert('Delete Step: step ' + x + ' not found');
          return false;
@@ -693,10 +692,10 @@ function deleteStep(su) {
      else {
          hintUnit.parentNode.removeChild(hintUnit);
          stepUnit.parentNode.removeChild(stepUnit);
-         
+
          TutorManager.steps.split(x,1);
          TutorManager.stepUnits.split(su,2);
-             
+
          return true;
      }
 }
