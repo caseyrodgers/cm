@@ -72,7 +72,6 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
         return new BackAction() {
             @Override
             public boolean goBack() {
-                ShowWorkActivity.saveWhiteboard();
                 return true;
             }
         };
