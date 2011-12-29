@@ -699,3 +699,30 @@ function deleteStep(x) {
          return true;
      }
 }
+
+
+
+function deleteStep(x) {
+	 var su = 0;
+     if(x > 0) {
+         su = x*2;            
+     }
+
+     // completely remove from DOM
+     var hintUnit = $get('stepunit-' + su);
+     var stepUnit = $get('stepunit-' + (su+1));
+     
+     if(hintUnit == null || stepUnit == null) {
+         alert('Delete Step: step ' + x + ' not found');
+         return false;
+     }
+     else {
+         hintUnit.parentNode.removeChild(hintUnit);
+         stepUnit.parentNode.removeChild(stepUnit);
+         
+         TutorManager.steps.splice(x,1);
+         TutorManager.stepUnits.splice(su,2);
+             
+         return true;
+     }
+}
