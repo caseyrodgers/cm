@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -71,6 +72,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
         return new BackAction() {
             @Override
             public boolean goBack() {
+                ShowWorkActivity.saveWhiteboard();
                 return true;
             }
         };
