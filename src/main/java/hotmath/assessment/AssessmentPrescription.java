@@ -327,7 +327,8 @@ public class AssessmentPrescription {
             
             /** two passes
              * 
-             * first to only choose dynamic solutions
+             * first to only choose dynamic solutions if 
+             * flash not available
              * 
              */
             if(!clientEnvironment.isFlashEnabled()) {
@@ -347,7 +348,7 @@ public class AssessmentPrescription {
             if(sessionItems.size() == 0) {
                 for(SessionData sd: filteredData) {
                     RppWidget rpp = sd.getRpp();
-                    if(!rpp.isFlashRequired()) {
+                    if(!rpp.isDynamicSolution()) {
                         sessionItems.add(sd);
                         if(sessionItems.size() >= PID_COUNT) {
                             break;
