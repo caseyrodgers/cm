@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile3.client.activity;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -44,9 +45,6 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     public void prepareShowWorkView(ShowWorkView view) {
         setExternalJsniHooks(this);
         view.setTitle(title);
-        
-        /** TODO: why use global? */
-        int runId = SharedData.getUserInfo().getRunId();
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         
@@ -111,8 +109,6 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         if(commandType == CommandType.CLEAR) {
             whiteboardActions.getActions().clear();
         }
-        
-        int runId = SharedData.getUserInfo().getRunId();
         
         SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(),runId, pid, commandType, json);
         whiteboardActions.getActions().add(action);
