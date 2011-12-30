@@ -58,6 +58,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
             gradeLevel = determineGradeLevel(progLessons,cacheKey);
         }
         
+        __logger.debug("grade level: " + gradeLevel);
         for(CustomLessonModel cpProgItem: progLessons) {
             AssessmentPrescriptionSession session=null;
             if(cpProgItem.getCustomProgramType() == Type.LESSON) {
@@ -79,7 +80,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 if(session.getSessionItems().size() == 0) {
                     // this session has no items, so it is invalid and will be
                     // skipped
-                    __logger.error("AssessmentPrescriptionSession: session has no items: " + session);
+                    __logger.error("AssessmentPrescriptionSession: session has no items: " + itemData);
                 }
                 else {
                     // add this session, and move to next
@@ -100,7 +101,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
 
     
     private int determineGradeLevel(CmList<CustomLessonModel> progLessons, String cacheKey) throws Exception {
-        int gl=99999;
+        int heighestLowestGradeLevel = 0;
         for(CustomLessonModel cpProgItem: progLessons) {
             if(cpProgItem.getCustomProgramType() == Type.LESSON) {
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review",cpProgItem.getFile(),cpProgItem.getLesson());
@@ -108,12 +109,12 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 List<RppWidget> workBookPids = itemData.getWidgetPool(conn, cacheKey);
                 
                 int lowest = getLowestGradeLevel(workBookPids);
-                if(lowest < gl) {
-                    gl = lowest;
+                if(lowest > heighestLowestGradeLevel) {
+                    heighestLowestGradeLevel = lowest;
                 }
             }
         }
-        return gl;
+        return heighestLowestGradeLevel>0?heighestLowestGradeLevel:9999;
     }
     
     

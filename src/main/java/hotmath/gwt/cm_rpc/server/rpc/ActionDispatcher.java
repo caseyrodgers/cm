@@ -57,7 +57,7 @@ public class ActionDispatcher {
 
 	static String startDate;
 
-	static public ActionDispatcher getInstance() {
+	static synchronized public ActionDispatcher getInstance() {
 		if (__instance == null)
 			__instance = new ActionDispatcher();
 		return __instance;

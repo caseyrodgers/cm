@@ -40,10 +40,14 @@ import sb.util.SbUtilities;
  */
 public class ActionDispatcherLoggerGui extends JFrame {
     
+    static Integer sentenial = new Integer(0);
     private static ActionDispatcherLoggerGui __instance;
     public static ActionDispatcherLoggerGui getInstance() {
         if(__instance == null) {
-            __instance = new ActionDispatcherLoggerGui();
+
+            synchronized(sentenial) {
+                __instance = new ActionDispatcherLoggerGui();
+            }
         }
         return __instance;
     }
