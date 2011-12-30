@@ -4,6 +4,7 @@ import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -30,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 /**
  * Class to represent an assessment prescription for a given set of INMH items.
@@ -293,6 +296,7 @@ public class AssessmentPrescription {
         AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
         List<SessionData> sessionItems = session.getSessionItems();
 
+        
         /**
          * if ANY widgets are RPA then only show the RPA widgets
          * 
@@ -330,8 +334,12 @@ public class AssessmentPrescription {
              * first to only choose dynamic solutions if 
              * flash not available
              * 
+             * fl
+             * 
              */
-            if(!clientEnvironment.isFlashEnabled()) {
+            boolean allowFlashWidgetsOnServer = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty("prescription.allow_rpa", "true"));
+            boolean allowDynamicProblemSets =  !allowFlashWidgetsOnServer || !clientEnvironment.isFlashEnabled(); 
+            if(allowDynamicProblemSets) {
                 for(SessionData sd: filteredData) {
                     RppWidget rpp = sd.getRpp();
                     if (rpp.isDynamicSolution()) {

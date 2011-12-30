@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -45,12 +46,12 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         view.setTitle(title);
         
         /** TODO: why use global? */
-        //int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
+        int runId = SharedData.getUserInfo().getRunId();
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         
         // always use zero for run_id
-        GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, 0);
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, runId);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
             final String flashId="";
             public void onSuccess(hotmath.gwt.cm_rpc.client.rpc.CmList<WhiteboardCommand> commands) {
@@ -110,8 +111,8 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         if(commandType == CommandType.CLEAR) {
             whiteboardActions.getActions().clear();
         }
-        // int runId = pid.startsWith("quiz") ? 0 : CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
-        int runId = 0;
+        
+        int runId = SharedData.getUserInfo().getRunId();
         
         SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(),runId, pid, commandType, json);
         whiteboardActions.getActions().add(action);
