@@ -18,6 +18,7 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
 	String groupFilter;
 	boolean forceRefresh;
 	String quickSearch;
+	String dateRange;
 	Map<FilterType,String> filterMap;
 		
 	public GetStudentGridPageAction() {
@@ -68,7 +69,15 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
         this.quickSearch = quickSearch;
     }
     
-    public void addFilter(FilterType key, String value) {
+    public String getDateRange() {
+		return dateRange;
+	}
+
+	public void setDateRange(String dateRange) {
+		this.dateRange = dateRange;
+	}
+
+	public void addFilter(FilterType key, String value) {
     	if (filterMap == null) filterMap = new HashMap<FilterType,String>();
     	filterMap.put(key, value);
     }
@@ -82,9 +91,9 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
         String loadConfigStr=loadConfig==null?"NULL":" offset=" + loadConfig.getOffset();
         String s = "GetStudentGridPageAction [adminId=" + adminId + ", filterMap=" + filterMap + ", forceRefresh="
                 + forceRefresh + ", groupFilter=" + groupFilter + "loadConfig=" + loadConfigStr + ", quickSearch="
-                + quickSearch + "]";
+                + quickSearch + ", dateRange=" + dateRange + "]";
         
         return s;
     }
-    public enum FilterType {GROUP, QUICKTEXT}
+    public enum FilterType {GROUP, QUICKTEXT, DATE_RANGE}
 }
