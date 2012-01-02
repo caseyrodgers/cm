@@ -4,16 +4,14 @@ import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
-import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
@@ -28,6 +26,11 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
 	public PrescriptionLessonResourceTutorActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
 	    this.eventBus = eventBus;
 		this.resourceItem = resourceItem;
+		
+		
+		/** enable to allow tracking solution contexts
+		setupExternalJsHooks(this);
+	   */
 	}
 
 
@@ -60,7 +63,31 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
         $wnd.gotoStepUnit(x);
     }-*/; 
 
-
+    private void saveTutorVariableContext_aux(String varsAsJson) {
+        Window.alert("Got the JSON: " + varsAsJson);
+    }
+    
+    public void gwt_solutionHasBeenInitialized(String variablesJson) {
+        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),resourceItem.getFile(), variablesJson);
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData result) {
+                Log.info("Context saved");
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                Log.error("Error saving solution context", caught);
+            }
+        });
+    }
+    
+    
+    native public void setupExternalJsHooks(PrescriptionLessonResourceTutorActivity instance) /*-{
+        $wnd.gwt_solutionHasBeenInitialized = function() {
+            var solutionVariablesJson = $wnd.getTutorVariableContextJson($wnd.TutorManager.tutorData._variables);
+            instance.@hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity::gwt_solutionHasBeenInitialized(Ljava/lang/String;)(solutionVariablesJson);        
+        }
+    }-*/;
 
     @Override
     public void showWhiteboard(String title) {

@@ -13,6 +13,9 @@ HmEvents.eventTutorLastStep.subscribe(function(x) {
 });
 
 
+HmEvents.eventTutorInitialized.subscribe(function(x) {
+	gwt_solutionHasBeenInitialized();
+});
 
 
 function showWhiteboardActive(domEl) {

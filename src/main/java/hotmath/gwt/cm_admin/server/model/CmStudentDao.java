@@ -1900,7 +1900,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
-            __logger.info(String.format("End getStudentModelBase(), UID: %d, elapsed msecs: %d", uid, (System.currentTimeMillis() - timeStart)));
+            __logger.debug(String.format("End getStudentModelBase(), UID: %d, elapsed msecs: %d", uid, (System.currentTimeMillis() - timeStart)));
         }
     }
 
