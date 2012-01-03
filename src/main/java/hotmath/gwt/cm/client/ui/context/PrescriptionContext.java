@@ -437,7 +437,13 @@ public class PrescriptionContext implements CmContext {
         int sn = prescriptionData.getCountCompletedTopics();
         int ts = prescriptionData.getSessionTopics().size();
         
-        return "Choose the next topic (" + (ts - sn - 1) + " more to go)";
+        int amount = (ts - sn - 1);
+        if(amount > 0) {
+            return "Choose the next topic (" + amount + " more to go)";
+        }
+        else {
+            return "You have completed all lessons";
+        }
     }
 
     enum Direction {

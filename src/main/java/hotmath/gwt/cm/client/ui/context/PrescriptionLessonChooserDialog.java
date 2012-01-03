@@ -3,12 +3,21 @@ package hotmath.gwt.cm.client.ui.context;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
 import hotmath.gwt.cm.client.history.CmLocation.LocationType;
+import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.ui.EndOfProgramWindow;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +29,10 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnData;
@@ -52,21 +63,27 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         setModal(true);
         setScrollMode(Scroll.AUTOY);
         addStyleName(PrescriptionLessonChooserDialog.class.getName());
-        
+
         _nextSegment = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                
-                if(!pData.areAllLessonsCompleted()) {
+
+                if (CmShared.getQueryParameter("debug") == null && pData.areAllLessonsCompleted()) {
                     InfoPopupBox.display("Not Finished", "Please complete all lessons first");
+                    return;
                 }
-                else {
-                    CatchupMathTools.showAlert("Next Quiz");
-                }
+
+
+                MessageBox.confirm("Continue?", "Ready to move to next quiz?", new Listener<MessageBoxEvent>() {
+                    @Override
+                    public void handleEvent(MessageBoxEvent be) {
+                        doMoveNextAux();
+                    }
+                });
             }
         });
         addButton(_nextSegment);
-        
+
         addButton(new Button("Load Lesson", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -75,11 +92,92 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         }));
 
         addCloseButton();
-        
-        
     }
 
-    int scrollIntoView=0;
+    private void doMoveNextAux() {
+
+        int correctPercent = UserInfo.getInstance().getCorrectPercent();
+
+        /**
+         * hard exit after completion of prescription for any demo
+         * 
+         */
+        if (UserInfo.getInstance().isDemoUser()) {
+            new SampleDemoMessageWindow();
+            return;
+        }
+
+        // there are no more sessions, so need to move to the 'next'.
+        // Next might be the same Quiz, the next Quiz or AutoAdvance.
+
+        int passPercentRequired = UserInfo.getInstance().getPassPercentRequired();
+        if (!UserInfo.getInstance().isActiveUser()) {
+            CatchupMathTools.showAlert("You are a visitor and cannot jump to the next quiz.");
+            return;
+        }
+
+        CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
+
+        if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {
+            /**
+             * user passed the quiz
+             * 
+             */
+            handlePassedQuiz();
+        } else {
+            /**
+             * user did not pass quiz
+             * 
+             */
+            handleNotPassedQuiz();
+        }
+        return;
+    }
+
+    private void handlePassedQuiz() {
+        hide();
+
+        /**
+         * User has passed this section, and is ready to move to next
+         * quiz/autoAdvance
+         */
+        if (UserInfo.getInstance().isDemoUser()) {
+            new SampleDemoMessageWindow();
+            return;
+        }
+
+        /**
+         * are there more Quizzes in this program?
+         */
+        boolean areMoreSegments = (!UserInfo.getInstance().isCustomProgram() && (UserInfo.getInstance()
+                .getTestSegment() < UserInfo.getInstance().getProgramSegmentCount()));
+        if (areMoreSegments) {
+            new PassedSectionWindow();
+        } else {
+            if (UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
+                new EndOfProgramWindow();
+            } else {
+                QuizCheckResultsWindow.autoAdvanceUser();
+            }
+        }
+    }
+
+    private void handleNotPassedQuiz() {
+        String msg = "Are you ready to be quizzed again on this section?";
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
+        MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    hide();
+                    CmProgramFlowClientManager.retakeProgramSegment();
+                }
+            }
+        });
+    }
+
+    int scrollIntoView = 0;
+
     public void showDialog(PrescriptionData pData) {
 
         if (this.pData != pData) {
@@ -87,50 +185,47 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
                 remove(_grid);
             }
 
-            
+            this.pData = pData;
+
             String currentTopic = pData.getCurrSession().getTopic();
             ListStore<LessonChoice> store = new ListStore<LessonChoice>();
-            boolean isSegmentComplete=true;
+            boolean isSegmentComplete = true;
             for (SessionTopic st : pData.getSessionTopics()) {
                 LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), st.getTopicStatus());
                 store.add(lc);
 
                 if (lc.getTopic().equals(currentTopic)) {
-                    lc.setStyle("selected");
-                    scrollIntoView = store.getCount()-1;
+                    //lc.setStyle("selected");
+                    scrollIntoView = store.getCount() - 1;
                 }
-                
-                
-                if(!lc.isComplete()) {
-                    isSegmentComplete=false;
+
+                if (!lc.isComplete()) {
+                    isSegmentComplete = false;
                 }
             }
             _grid = defineGrid(store, defineColumns());
             add(_grid);
-            
-            
-            
-            /** This does not seem to work ... 
+
+            /**
+             * This does not seem to work ...
              * 
              */
             new Timer() {
                 @Override
                 public void run() {
-                    _grid.getView().ensureVisible(scrollIntoView, 0, true);                }
+                    _grid.getView().ensureVisible(scrollIntoView, 0, true);
+                }
             }.schedule(5000);
-            
+
         }
-        
-        
-        if(UserInfo.getInstance().isCustomProgram()) {
+
+        if (UserInfo.getInstance().isCustomProgram()) {
             _nextSegment.setVisible(false);
-        }
-        else {
-            if(pData.areAllLessonsCompleted()) {
+        } else {
+            if (CmShared.getQueryParameter("debug") != null || pData.areAllLessonsCompleted()) {
                 _nextSegment.setEnabled(true);
                 _nextSegment.setVisible(true);
-            }
-            else {
+            } else {
                 _nextSegment.setEnabled(false);
                 _nextSegment.setVisible(true);
             }
