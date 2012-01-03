@@ -228,6 +228,7 @@ public class LoginService extends HttpServlet {
 					clientInfo.setUserType(UserType.ADMIN);
 
 					req.getSession().setAttribute("loginInfo", loginInfo);
+					
 					req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
 				}
 				else {
