@@ -210,6 +210,7 @@ public class CmShared implements EntryPoint {
      */
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
         try {
+            
         	 SystemSyncChecker.monitorVersionChanges();
         	 
             /** Provide shortcut, single argument entry for debugging a user
@@ -334,7 +335,7 @@ public class CmShared implements EntryPoint {
 
     static private void displayLoginError(Exception exception) {
         exception.printStackTrace();
-        CmLogger.info("Login error: " + exception.getMessage());
+        CmLogger.error("Login error: ", exception);
         
 
         String msg = "We suggest you refresh this page by pressing the F5 function key.";

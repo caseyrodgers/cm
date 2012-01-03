@@ -1179,12 +1179,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     }
 
                     String dateRange = null;
-                    if (dateRangeLabel.getText().trim().length() > 0 && fromDate != null && toDate != null) {
+                    
+                    String value = dateRangeLabel.getText();  /** will be null until initialized */
+                    if (value != null && value.trim().length() > 0 && fromDate != null && toDate != null) {
                     	dateRange = dateFmt.format(fromDate) + ":" + dateFmt.format(toDate);
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);                    	
                     }
                     _pageAction.setDateRange(dateRange);
-
                     CmShared.getCmService().execute(_pageAction, this);
 
                     /** always turn off */

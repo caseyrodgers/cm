@@ -31,6 +31,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.event.shared.UmbrellaException;
 
 public class CmLoggerWindow extends CmWindow {
     
@@ -207,6 +208,10 @@ public class CmLoggerWindow extends CmWindow {
     
     public void _error(String msg, Throwable th) {
         _info(msg + "\n" + th.getStackTrace());
+        
+        if(th instanceof UmbrellaException) {
+            _info("UmbrellaException: " + ((UmbrellaException)th).getCauses());
+        }
     }
     
     public void _debug(String msg) {
