@@ -49,7 +49,6 @@
   <ol>
       <%
           for(String s: _matches) {
-
               RppWidget rpp = null;
         	  if(s.startsWith("{")) {
         	      rpp = new RppWidget(s);
@@ -57,8 +56,16 @@
         	  else {
         	      rpp = new RppWidget(s, null);
         	  }
+              int rGradeLevel = 0;
+              if(rpp.isFlashRequired()) {
+                  rGradeLevel = 99;
+              }
+              else {
+                  rGradeLevel = new ProblemID(rpp.getFile()).getGradeLevel();                  
+              }
+        	  
 	          %>
-                  <li> <a href='/tutor/?pid=<%= rpp.getFile() %>'><%= s %></a> (level: <%= new ProblemID(rpp.getFile()).getGradeLevel() %>)</li>
+                  <li> <a href='/tutor/?pid=<%= rpp.getFile() %>'><%= s %></a> (level: <%= rGradeLevel %>)</li>
               <%
           }
 

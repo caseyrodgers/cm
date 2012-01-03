@@ -439,9 +439,6 @@ public class AssessmentPrescription {
                 logger.debug("adding exact grade level match or dynamnic: " + rpp);
                 session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
 
-                if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)
-                    break;
-
             } else if (pidGradeLevel < testDefGradeLevel) {
                 /**
                  * might be used
@@ -459,7 +456,7 @@ public class AssessmentPrescription {
             }
         }
 
-        if (session.size() < TOTAL_SESSION_SOLUTIONS && maybeList.size() > 0) {
+        if (maybeList.size() > 0) {
             logger.debug("finding best match from: " + maybeList.size());
             /**
              * take first three from maybe list
@@ -469,11 +466,6 @@ public class AssessmentPrescription {
                 for (int i = 0; i < maybeList.size(); i++) {
                     RppWidget rpp = maybeList.get(i);
                     session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
-                    
-                    
-                    if (session.size() > TOTAL_SESSION_SOLUTIONS - 1)
-                        break;
-                    
                 }
             } catch (Exception e) {
                 e.printStackTrace();
