@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -38,6 +39,7 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +68,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -86,6 +89,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
@@ -127,7 +131,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         StudentGridRpcProxy rpcProxy = new StudentGridRpcProxy();
 
         /**
-         * Create a load to do the actual loading
+         * Create a loader to do the actual loading
          * 
          */
         // loader
@@ -389,6 +393,15 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         fp.setLabelWidth(80);
         fp.add(new QuickSearchPanel());
         lc.add(fp);
+
+        // Date Range Panel
+        if (CmShared.getQueryParameter("debug") != null) {
+        fp = new MyFormPanel();
+        fp.setWidth(400);
+        fp.setLabelWidth(80);
+        fp.add(new DateRangePanel());
+        lc.add(fp);
+        }
 
         return lc;
     }
@@ -1165,6 +1178,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
                     }
 
+                    String dateRange = null;
+                    if (dateRangeLabel.getText().trim().length() > 0 && fromDate != null && toDate != null) {
+                    	dateRange = dateFmt.format(fromDate) + ":" + dateFmt.format(toDate);
+                        _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);                    	
+                    }
+                    _pageAction.setDateRange(dateRange);
+
                     CmShared.getCmService().execute(_pageAction, this);
 
                     /** always turn off */
@@ -1306,6 +1326,104 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         }
     }
+
+    /**
+     * Set and clear date range
+     * 
+     * @author bob
+     * 
+     */
+    static Date fromDate, toDate;
+    static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("MM/dd/yyyy");
+    static final DateTimeFormat dateFmt    = DateTimeFormat.getFormat("yyyy-MM-dd");
+    static Label dateRangeLabel = new Label();
+
+    class DateRangePanel extends HorizontalPanel {
+        
+        Button dateRangeButton;
+        Button clearButton;
+        //dateRangeLabel = new Label();
+        
+        DateRangePanel() {
+        	init();
+        }
+
+    	void init() {
+            toDate = new Date();
+            addDaysToDate(toDate, 1);
+
+            dateRangeButton = new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                	if (fromDate == null)
+                        fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+                    showDatePicker();
+                }
+            });
+            add(dateRangeButton);
+
+            clearButton = new Button("Clear", new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                	clearDateRange();
+                }
+            });
+            add(clearButton);
+
+            dateRangeLabel.setText(" ");
+            add(dateRangeLabel);
+    	}
+
+        @SuppressWarnings("deprecation") // GWT requires Date
+        public void addDaysToDate(Date date, int days) {
+            date.setDate(date.getDate() + days);
+        }
+
+        private void showDatePicker() {
+            DateRangePickerDialog.showSharedInstance(fromDate, toDate, new DateRangePickerDialog.Callback() {
+                @Override
+                public void datePicked(Date from, Date to) {
+                    fromDate = (from != null) ? from : fromDate;
+                    toDate = (to != null) ? to : toDate;
+
+                    dateRangeLabel.setText(formatDateRangeLabel(from, to));
+                    
+                    applyDateRange();
+                }
+            });
+        }
+
+        private void clearDateRange() {
+            fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+            dateRangeLabel.setText(" ");
+            toDate = new Date();
+            addDaysToDate(toDate, 1);
+
+            applyDateRange();
+        }
+
+        Date prevFrom;
+        Date prevTo;
+
+        private void applyDateRange() {
+
+        	boolean shouldRefresh = (!fromDate.equals(prevFrom) || !toDate.equals(prevTo));
+
+            if (shouldRefresh) {
+                prevFrom = fromDate;
+                prevTo = toDate;
+                loadAndResetStudentLoader();
+            }
+        }
+
+        private String formatDateRangeLabel(Date from, Date to) {
+        	if (from != null && to != null)
+                return "Date range: " + dateFormat.format(from) + " - " + dateFormat.format(to);
+        	else
+        		return " ";
+        }
+    }
+
 }
 
 /**

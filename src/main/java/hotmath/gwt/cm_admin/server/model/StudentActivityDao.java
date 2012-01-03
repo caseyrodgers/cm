@@ -4,6 +4,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.JsonUtil;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -516,6 +517,38 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	return activityTimeMap;
     }
     
+    public List<Integer> getStudentsWithActivityInDateRange(List<Integer> userIds, final String dateRange) throws Exception {
+    	if (userIds == null)
+    		throw new IllegalArgumentException("userIds cannot be null");
+    	if (dateRange == null || dateRange.trim().length() == 0)
+    		throw new IllegalArgumentException("dateRange cannot be null or empty");
+    	
+    	if (userIds.size() == 0) return userIds;
 
+    	String[] dates = dateRange.split(":");
+    	if (logger.isDebugEnabled()) logger.debug("dates[]: " + dates[0] + ", " + dates[1]);
+
+    	String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE");
+    	final String sql = QueryHelper.createInListSQL(sqlTemplate, userIds);
+    	if (logger.isDebugEnabled()) logger.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
+        List<Integer> list = this.getJdbcTemplate().query(
+                sql,
+                new Object[]{dates[0], dates[1]},
+                new RowMapper<Integer>() {
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Integer userId;
+                        try {
+                			userId = rs.getInt("user_id");
+                        }
+                        catch(Exception e) {
+                            LOGGER.error(String.format("Error getting Students with Activity for SQL: %s, dateRange: %s",
+                            		sql, dateRange), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                        return userId;
+                    }});
+        if (logger.isDebugEnabled()) logger.debug("+++ getStudentsWithActivityInDateRange(): list.size(): " + list.size());
+    	return list;
+    }
 
 }

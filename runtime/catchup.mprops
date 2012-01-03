@@ -254,6 +254,9 @@ where s.last_use_date  like '%YYY%'
    or s.last_quiz      like '%YYY%'
   
 ###
+# StudentActivityDao
+###
+
 .key=STUDENT_ACTIVITY
 
 select load_order,is_custom_quiz, max(s.use_date) as use_date, date_format(min(s.view_time),'%h:%i %p') as start_time,
@@ -396,6 +399,7 @@ union
 left join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = s.prog_inst_id and s.is_parallel_prog = 1
 group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.session_number asc
+
 ######
 .key=STUDENT_ACTIVITY_TIME_ON_TASK
 
@@ -423,6 +427,13 @@ and r.run_id in ( $$RUNID_LIST$$)
 group by run_id
 
 order by run_id, activity_type
+
+#####
+.key=STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE
+
+select ux.user_id from HA_USER_EXTENDED ux
+where ux.user_id in ( $$UID_LIST$$ )
+  and ux.last_login between ? and ?
 
 #####
 

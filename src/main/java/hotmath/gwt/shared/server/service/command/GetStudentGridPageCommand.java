@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
 import hotmath.gwt.cm_admin.server.model.StudentQuickSearcher;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -82,10 +83,10 @@ public class GetStudentGridPageCommand implements
 
 
         PagingLoadConfig config = action!=null?action.getLoadConfig():null;
-        logger.debug("aid=" + action.getAdminId() + " page config: " + config);
+        if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " page config: " + config);
         
         String cacheKey = getCacheKey(action.getAdminId());
-        logger.debug("aid=" + action.getAdminId() + " cache key: " + cacheKey);
+        if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " cache key: " + cacheKey);
         
         
         /**
@@ -94,7 +95,7 @@ public class GetStudentGridPageCommand implements
          */
         List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
         if (action.isForceRefresh() || _allStudents == null) {
-            logger.debug("aid=" + action.getAdminId() + " creating _allStudents");
+            if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " creating _allStudents");
             _allStudents = new ArrayList<StudentModelExt>();
             for (StudentModelI smi : CmStudentDao.getInstance().getStudentSummaries(conn, action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
@@ -102,9 +103,9 @@ public class GetStudentGridPageCommand implements
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
         }
         else {
-            logger.debug("aid=" + action.getAdminId() + " using cached all_students");
+            if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " using cached all_students");
         }
-        logger.debug("aid=" + action.getAdminId() + " _allStudents: " + _allStudents.size());        
+        if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " _allStudents: " + _allStudents.size());        
 
         List<StudentModelExt> studentPool = null;
 
@@ -120,7 +121,7 @@ public class GetStudentGridPageCommand implements
              * filtered values only matching filtered group
              * 
              */
-            logger.debug("aid=" + action.getAdminId() + "filtering student pool");
+            if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + "filtering student pool");
             studentPool = new ArrayList<StudentModelExt>();
             for (StudentModelExt sme : _allStudents) {
                 if (sme.getGroupId().equals(action.getGroupFilter()))
@@ -133,7 +134,7 @@ public class GetStudentGridPageCommand implements
              */
             studentPool = _allStudents;
         }
-        logger.debug("aid=" + action.getAdminId() + " filtered student pool: " + studentPool.size());        
+        if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " filtered student pool: " + studentPool.size());        
         
         /** apply the quick search algorithm
          * 
@@ -173,9 +174,34 @@ public class GetStudentGridPageCommand implements
             }
 
             studentPool = qsStudentPool;
+            if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " quick_search student pool: " + studentPool.size());
         }
-        logger.debug("aid=" + action.getAdminId() + " quick_search student pool: " + studentPool.size());
-        
+
+        // apply date range filter
+        if (action.getDateRange() != null) {
+        	
+        	if (logger.isDebugEnabled())
+        		logger.debug("date range: " + action.getDateRange());
+
+        	List<Integer> uidList = new ArrayList<Integer>();
+        	for (StudentModelExt m : studentPool) {
+        	    uidList.add(m.getUid());
+        	}
+        	StudentActivityDao dao = StudentActivityDao.getInstance();
+        	List<Integer> userIds = dao.getStudentsWithActivityInDateRange(uidList, action.getDateRange());
+
+            if (userIds.size() != uidList.size()) {
+            	
+            	List<StudentModelExt> drStudentPool = new ArrayList<StudentModelExt>();
+            	for (StudentModelExt m : studentPool) {
+            		if (userIds.contains(m.getUid())) {
+            			drStudentPool.add(m);
+            		}
+            	}
+            	studentPool = drStudentPool;            	
+            }
+        }
+
         /**
          * Should the student pool be sorted?
          * 
@@ -184,7 +210,7 @@ public class GetStudentGridPageCommand implements
             final String sortField = config.getSortInfo().getSortField();
             if (sortField != null) {
             	
-                logger.debug("aid=" + action.getAdminId() + " sorting student pool");
+            	if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " sorting student pool");
 
             	/**
             	 * fill the sort field as needed in both studentPool and _allStudents
@@ -197,7 +223,7 @@ public class GetStudentGridPageCommand implements
                 Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(cmp));
             }
         }   
-        logger.debug("aid=" + action.getAdminId() + " sorted student pool: " + studentPool.size());
+        if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " sorted student pool: " + studentPool.size());
         
         return studentPool;
     }
