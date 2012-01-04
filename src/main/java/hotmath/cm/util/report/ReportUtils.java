@@ -161,6 +161,12 @@ public class ReportUtils {
     			sb.append(filterMap.get(FilterType.QUICKTEXT).trim());
     		}
     	    
+    		if (filterMap.containsKey(FilterType.DATE_RANGE)) {
+    			if (sb.length() > 0) sb.append(", ");
+    			sb.append("Date range: ");
+    			sb.append(filterMap.get(FilterType.DATE_RANGE).trim());
+    		}
+    	    
     	    return sb.toString();
     	}
     	return "";
