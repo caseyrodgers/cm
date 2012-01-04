@@ -24,14 +24,14 @@ public class StatusImagePanel extends VerticalPanel {
         this.total = total;
         this.current = current;
         setStyleName("status-image-panel");
-        setToolTip("Your current program status");
+        setToolTip("Your current program's status");
         
         String html="";
         if(total > MAX_STATUS_IMAGES) {
             /** no stautus image, show text representation
              * 
              */
-            html = "<span color'#CCCCCC'>Lesson " + current + " of " + total + "</span>"; 
+            html = "<span color'#CCCCCC'>Completed " + current + " lesson" + (current>1?"s":"") + " of " + total + "</span>"; 
         }
         else {
             html = "<img src='/gwt-resources/images/status/status-" + total + "_" + current + ".png'/>" +

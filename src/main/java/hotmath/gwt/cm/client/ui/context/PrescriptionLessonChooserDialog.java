@@ -7,7 +7,9 @@ import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -93,6 +95,87 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
         addCloseButton();
     }
+    
+    int scrollIntoView = 0;
+
+    public void showDialog(PrescriptionData pData) {
+
+        this.pData = null;
+        
+        if (this.pData != pData) {
+            if (_grid != null) {
+                remove(_grid);
+            }
+
+            this.pData = pData;
+
+            String currentTopic = pData.getCurrSession().getTopic();
+            ListStore<LessonChoice> store = new ListStore<LessonChoice>();
+            boolean isSegmentComplete = true;
+            for (SessionTopic st : pData.getSessionTopics()) {
+                LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), getLessonStatus(st.getTopic()));
+                store.add(lc);
+
+                if (lc.getTopic().equals(currentTopic)) {
+                    //lc.setStyle("selected");
+                    scrollIntoView = store.getCount() - 1;
+                }
+
+                if (!lc.isComplete()) {
+                    isSegmentComplete = false;
+                }
+            }
+            _grid = defineGrid(store, defineColumns());
+            add(_grid);
+
+            /**
+             * This does not seem to work ...
+             * 
+             */
+            new Timer() {
+                @Override
+                public void run() {
+                    _grid.getView().ensureVisible(scrollIntoView, 0, true);
+                }
+            }.schedule(5000);
+
+        }
+
+        if (UserInfo.getInstance().isCustomProgram()) {
+            _nextSegment.setVisible(false);
+        } else {
+            if (CmShared.getQueryParameter("debug") != null || pData.areAllLessonsCompleted()) {
+                _nextSegment.setEnabled(true);
+                _nextSegment.setVisible(true);
+            } else {
+                _nextSegment.setEnabled(false);
+                _nextSegment.setVisible(true);
+            }
+        }
+
+        setVisible(true);
+    }
+    
+    
+    /** return a status string used to label this lesson status */
+    private String getLessonStatus(String lesson) {
+        
+        for(PrescriptionSessionDataResource pr: pData.getCurrSession().getInmhResources()) {
+            if(pr.getType().equals("practice")) {
+                int totalRp=0;
+                int completeRp=0;
+                for(InmhItemData item: pr.getItems()) {
+                    totalRp++;
+                    if(item.isViewed()) {
+                        completeRp++;
+                    }
+                }
+                
+                return completeRp + " of " + totalRp;
+            }
+        }
+        return "";
+    }
 
     private void doMoveNextAux() {
 
@@ -176,64 +259,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         });
     }
 
-    int scrollIntoView = 0;
-
-    public void showDialog(PrescriptionData pData) {
-
-        if (this.pData != pData) {
-            if (_grid != null) {
-                remove(_grid);
-            }
-
-            this.pData = pData;
-
-            String currentTopic = pData.getCurrSession().getTopic();
-            ListStore<LessonChoice> store = new ListStore<LessonChoice>();
-            boolean isSegmentComplete = true;
-            for (SessionTopic st : pData.getSessionTopics()) {
-                LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), st.getTopicStatus());
-                store.add(lc);
-
-                if (lc.getTopic().equals(currentTopic)) {
-                    //lc.setStyle("selected");
-                    scrollIntoView = store.getCount() - 1;
-                }
-
-                if (!lc.isComplete()) {
-                    isSegmentComplete = false;
-                }
-            }
-            _grid = defineGrid(store, defineColumns());
-            add(_grid);
-
-            /**
-             * This does not seem to work ...
-             * 
-             */
-            new Timer() {
-                @Override
-                public void run() {
-                    _grid.getView().ensureVisible(scrollIntoView, 0, true);
-                }
-            }.schedule(5000);
-
-        }
-
-        if (UserInfo.getInstance().isCustomProgram()) {
-            _nextSegment.setVisible(false);
-        } else {
-            if (CmShared.getQueryParameter("debug") != null || pData.areAllLessonsCompleted()) {
-                _nextSegment.setEnabled(true);
-                _nextSegment.setVisible(true);
-            } else {
-                _nextSegment.setEnabled(false);
-                _nextSegment.setVisible(true);
-            }
-        }
-
-        setVisible(true);
-    }
-
+    
     public void showCentered() {
         center();
     }

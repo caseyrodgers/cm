@@ -14,7 +14,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -30,7 +29,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
     HTMLPanel quizView;
     
     @UiField
-    Button checkQuizTop, checkQuizBottom, showWorkTop, showWorkBottom;
+    Button checkQuizTop, checkQuizBottom;
 
     Presenter presenter;
     
@@ -100,17 +99,6 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
     @UiHandler("checkQuizBottom")
     protected void doCheckQuizBottom(ClickEvent ce) {
         presenter.checkQuiz();
-    }
-    
-    @UiHandler("showWorkTop")
-    protected void doShowWorkTop(ClickEvent ce) {
-        presenter.showWork();
-    }
-
-    
-    @UiHandler("showWorkBottom")
-    protected void doShowWorkBottom(ClickEvent ce) {
-        presenter.showWork();
     }
     
 }

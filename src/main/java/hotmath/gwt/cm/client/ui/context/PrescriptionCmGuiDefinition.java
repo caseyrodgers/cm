@@ -362,6 +362,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                     InmhItemData id = ((InmhItemData) event.getEventData());
                     __instance.markResourceAsViewed(id);
+                    
                 } else if (event.getEventType() == EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN) {
                     // if not a required problem, then set as viewed
                     CmResourcePanel viewer = (CmResourcePanel) event.getEventData();

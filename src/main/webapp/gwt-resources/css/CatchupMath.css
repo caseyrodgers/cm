@@ -1118,8 +1118,8 @@ img.resource-item-complete {
 .status-image-panel span {
 	position: absolute;
 	top: 10px;
-	left: 20px;
-	width: 150px; 
+	left: 5px;
+	width: 180px; 
 	top: 145px;
 	text-align: center;
 	color: #CCCCCC;

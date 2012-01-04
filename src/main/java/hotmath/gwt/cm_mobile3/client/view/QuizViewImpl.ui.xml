@@ -14,11 +14,6 @@
 					<span>Check Quiz</span>
 				</span>
 			</g:Button>
-            <g:Button ui:field="showWorkTop" styleName="sexyButton sexylarge">
-                <span>
-                    <span>Show Work</span>
-                </span>
-            </g:Button>
 		</div>
 		<div ui:field="quizHtml"></div>
 		<div class='buttonBar'>
@@ -27,11 +22,6 @@
 					<span>Check Quiz</span>
 				</span>
 			</g:Button>
-            <g:Button ui:field="showWorkBottom"  styleName="sexyButton sexylarge">
-                <span>
-                    <span>Show Work</span>
-                </span>
-            </g:Button>
 		</div>
 	</g:HTMLPanel>
 
