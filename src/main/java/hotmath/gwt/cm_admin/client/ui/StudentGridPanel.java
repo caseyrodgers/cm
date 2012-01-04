@@ -389,7 +389,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lc.add(fp);
 
         fp = new MyFormPanel();
-        fp.setWidth(300);
+        fp.setWidth(275);
         fp.setLabelWidth(80);
         fp.add(new QuickSearchPanel());
         lc.add(fp);
@@ -397,7 +397,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         // Date Range Panel
         if (CmShared.getQueryParameter("debug") != null) {
         fp = new MyFormPanel();
-        fp.setWidth(400);
+        fp.setWidth(300);
         fp.setLabelWidth(80);
         fp.add(new DateRangePanel());
         lc.add(fp);
@@ -1179,13 +1179,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     }
 
                     String dateRange = null;
-                    
-                    String value = dateRangeLabel.getText();  /** will be null until initialized */
+
+                    String value = dateRangeFilter.getValue();  /** will be null until initialized */
                     if (value != null && value.trim().length() > 0 && fromDate != null && toDate != null) {
-                    	dateRange = dateFmt.format(fromDate) + ":" + dateFmt.format(toDate);
-                        _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);                    	
+                    	dateRange = dateFmt.format(fromDate) + " - " + dateFmt.format(toDate);
+                        _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);
                     }
                     _pageAction.setDateRange(dateRange);
+
                     CmShared.getCmService().execute(_pageAction, this);
 
                     /** always turn off */
@@ -1337,23 +1338,32 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     static Date fromDate, toDate;
     static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("MM/dd/yyyy");
     static final DateTimeFormat dateFmt    = DateTimeFormat.getFormat("yyyy-MM-dd");
-    static Label dateRangeLabel = new Label();
+    static TextField<String> dateRangeFilter;
 
     class DateRangePanel extends HorizontalPanel {
         
         Button dateRangeButton;
         Button clearButton;
-        //dateRangeLabel = new Label();
         
         DateRangePanel() {
         	init();
         }
 
     	void init() {
+    		
+            dateRangeFilter = new TextField<String>();
+            dateRangeFilter.setEmptyText("--- Date Range ---");
+            dateRangeFilter.setFieldLabel("Date Range");
+            dateRangeFilter.setWidth("160px");
+            dateRangeFilter.setReadOnly(true);
+            dateRangeFilter.setToolTip("Reporting is not restricted to a date range");
+
             toDate = new Date();
             addDaysToDate(toDate, 1);
 
-            dateRangeButton = new Button("Set Date Range", new SelectionListener<ButtonEvent>() {
+            add(dateRangeFilter);
+            
+            dateRangeButton = new Button("set", new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                 	if (fromDate == null)
@@ -1361,18 +1371,18 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     showDatePicker();
                 }
             });
+            dateRangeButton.setToolTip("Restrict all reporting to specified date range");
             add(dateRangeButton);
 
-            clearButton = new Button("Clear", new SelectionListener<ButtonEvent>() {
+            clearButton = new Button("clear", new SelectionListener<ButtonEvent>() {
                 @Override
                 public void componentSelected(ButtonEvent ce) {
                 	clearDateRange();
                 }
             });
+            clearButton.setToolTip("Set date range to maximum");
             add(clearButton);
 
-            dateRangeLabel.setText(" ");
-            add(dateRangeLabel);
     	}
 
         @SuppressWarnings("deprecation") // GWT requires Date
@@ -1387,7 +1397,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     fromDate = (from != null) ? from : fromDate;
                     toDate = (to != null) ? to : toDate;
 
-                    dateRangeLabel.setText(formatDateRangeLabel(from, to));
+                    dateRangeFilter.setValue(formatDateRange(from, to));
+                    dateRangeFilter.setToolTip("Restrict all reporting to specified date range");
                     
                     applyDateRange();
                 }
@@ -1395,8 +1406,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
 
         private void clearDateRange() {
+
+            dateRangeFilter.clear();
+            dateRangeFilter.setToolTip("Reporting is not restricted to a date range");
+
             fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
-            dateRangeLabel.setText(" ");
             toDate = new Date();
             addDaysToDate(toDate, 1);
 
@@ -1417,9 +1431,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         }
 
-        private String formatDateRangeLabel(Date from, Date to) {
+        private String formatDateRange(Date from, Date to) {
         	if (from != null && to != null)
-                return "Date range: " + dateFormat.format(from) + " - " + dateFormat.format(to);
+                return dateFormat.format(from) + " - " + dateFormat.format(to);
         	else
         		return " ";
         }

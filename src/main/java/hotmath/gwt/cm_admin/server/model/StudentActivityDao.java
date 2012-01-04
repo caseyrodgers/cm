@@ -525,7 +525,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	
     	if (userIds.size() == 0) return userIds;
 
-    	String[] dates = dateRange.split(":");
+    	String[] dates = dateRange.split(" - ");
     	if (logger.isDebugEnabled()) logger.debug("dates[]: " + dates[0] + ", " + dates[1]);
 
     	String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE");
