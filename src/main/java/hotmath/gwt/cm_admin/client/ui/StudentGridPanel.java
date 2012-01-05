@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_admin.client.ui.DateRangePickerDialog.FilterOptions;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -68,7 +69,6 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -1185,6 +1185,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     if (value != null && value.trim().length() > 0 && fromDate != null && toDate != null) {
                     	dateRange = dateFormat.format(fromDate) + " - " + dateFormat.format(toDate);
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);
+                        _pageAction.addFilter(GetStudentGridPageAction.FilterType.OPTIONS, (_filterOptions!=null?_filterOptions.toParsableString():""));
                     }
                     _pageAction.setDateRange(dateRange);
                     }
@@ -1340,6 +1341,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     static Date fromDate, toDate;
     static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
     static TextField<String> dateRangeFilter;
+    static FilterOptions _filterOptions;
 
     class DateRangePanel extends HorizontalPanel {
         
@@ -1400,12 +1402,13 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         private void showDatePicker() {
             DateRangePickerDialog.showSharedInstance(fromDate, toDate, new DateRangePickerDialog.Callback() {
                 @Override
-                public void datePicked(Date from, Date to) {
+                public void datePicked(Date from, Date to, FilterOptions filterOptions) {
                     fromDate = (from != null) ? from : fromDate;
                     toDate = (to != null) ? to : toDate;
 
                     dateRangeFilter.setValue(formatDateRange(from, to));
                     dateRangeFilter.setToolTip("Date range filter applied to Student activity");
+                    _filterOptions = filterOptions;
                     
                     applyDateRange();
                 }

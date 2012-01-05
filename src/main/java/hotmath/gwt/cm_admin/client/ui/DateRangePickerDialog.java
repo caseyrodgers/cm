@@ -4,24 +4,24 @@ import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
-import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,6 +29,8 @@ public class DateRangePickerDialog extends Window {
     
     static private DateRangePickerDialog __instance;
     static public DateRangePickerDialog showSharedInstance(Date from, Date to, Callback callback) {
+        
+        __instance = null;
         if(__instance == null) {
             __instance = new DateRangePickerDialog();
         }
@@ -41,16 +43,20 @@ public class DateRangePickerDialog extends Window {
     Callback callback;
     private DateRangePickerDialog() {
         addStyleName("date-range-picker-dialog");
-        setSize(420,350);
+        setSize(420,390);
         setHeading("Choose Date Range");
         setModal(true);
         setResizable(false);
-        setLayout(new BorderLayout());
-        add(createFromPicker(), new BorderLayoutData(LayoutRegion.WEST));
-        add(createToPicker(), new BorderLayoutData(LayoutRegion.EAST));
+
+        LayoutContainer mainPanel = new LayoutContainer(new BorderLayout());
+        mainPanel.add(createFromPicker(), new BorderLayoutData(LayoutRegion.WEST));
+        mainPanel.add(createToPicker(), new BorderLayoutData(LayoutRegion.EAST));
+        mainPanel.setHeight(280);
+        add(mainPanel);
+        add(createOptionsPanel());
+
 
         _defaultStartDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
-
         addButton(new Button("Maximum Range", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -59,7 +65,7 @@ public class DateRangePickerDialog extends Window {
                 Date to = new Date();
                 HighlightsDataWindow.addDaysToDate(to, 1);
                 
-                DateRangePickerDialog.this.callback.datePicked(from, to);
+                DateRangePickerDialog.this.callback.datePicked(from, to, getFilterOptions());
                 hide();
             }
         }));
@@ -71,7 +77,7 @@ public class DateRangePickerDialog extends Window {
                 Date from = _fromPicker.getValue();
                 Date to = _toPicker.getValue();
                 
-                DateRangePickerDialog.this.callback.datePicked(from, to);
+                DateRangePickerDialog.this.callback.datePicked(from, to, getFilterOptions());
                 hide();
             }
         }));
@@ -84,6 +90,47 @@ public class DateRangePickerDialog extends Window {
             }
         }));
         setVisible(true);
+    }
+    
+    
+    private FilterOptions getFilterOptions() {
+        return new FilterOptions(hasLoggedIn.getValue(), hasViewedTest.getValue(), hasTakenQuiz.getValue());
+    }
+    
+    CheckBox hasLoggedIn = new CheckBox();
+    CheckBox hasViewedTest = new CheckBox();
+    CheckBox hasTakenQuiz = new CheckBox();
+    
+    
+    private Widget createOptionsPanel() {
+        FormPanel fp = new FormPanel();
+        fp.setFooter(false);
+        fp.setFrame(false);
+        fp.setHeaderVisible(false);
+        fp.setBodyBorder(false);
+        fp.setIconStyle("icon-form");
+        fp.setButtonAlign(HorizontalAlignment.CENTER);
+        fp.setFieldWidth(80);
+        fp.setLayout(new FormLayout());
+
+        CheckBoxGroup group = new CheckBoxGroup();
+        group.setFieldLabel("Check for");
+        
+        hasLoggedIn.setBoxLabel("Logged In");
+        hasLoggedIn.setValue(true);
+        group.add(hasLoggedIn);
+        
+        hasViewedTest.setBoxLabel("Viewed Test");
+        hasViewedTest.setValue(true);
+        group.add(hasViewedTest);
+        
+        hasTakenQuiz.setBoxLabel("Taken Test");
+        hasTakenQuiz.setValue(true);
+        group.add(hasTakenQuiz);
+        
+        fp.add(group);
+        
+        return fp;
     }
 
     
@@ -106,8 +153,57 @@ public class DateRangePickerDialog extends Window {
         return new DatePickerWrapper(_toPicker, "To");
     }
     
+    /* customizable options to modify the date range filter
+     * 
+     */
+    public class FilterOptions {
+        boolean logins;
+        boolean quizView;
+        boolean quizCheck;        
+        
+        public FilterOptions(boolean logins, boolean quizView, boolean quizCheck) {
+            this.logins = logins;
+            this.quizView = quizView;
+            this.quizCheck = quizCheck;
+        }
+
+        public boolean isLogins() {
+            return logins;
+        }
+
+        public void setLogins(boolean logins) {
+            this.logins = logins;
+        }
+
+        public boolean isQuizView() {
+            return quizView;
+        }
+
+        public void setQuizView(boolean quizView) {
+            this.quizView = quizView;
+        }
+
+        public boolean isQuizCheck() {
+            return quizCheck;
+        }
+
+        public void setQuizCheck(boolean quizCheck) {
+            this.quizCheck = quizCheck;
+        }
+
+        public String toParsableString() {
+            return logins + "|" + quizView + "|" + quizCheck ;
+        }
+
+        @Override
+        public String toString() {
+            return "FilterOptions [logins=" + (logins?1:0) + ", quizView=" + (quizView?1:0) + ", quizCheck=" + (quizCheck?1:0) + "]";
+        }
+        
+    }
+    
     public interface Callback {
-        void datePicked(Date from, Date to);
+        void datePicked(Date from, Date to,FilterOptions options);
     }
 }
 
