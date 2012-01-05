@@ -431,9 +431,35 @@ order by run_id, activity_type
 #####
 .key=STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE
 
-select ux.user_id from HA_USER_EXTENDED ux
-where ux.user_id in ( $$UID_LIST$$ )
-  and ux.last_login between ? and ?
+SELECT ux.user_id
+FROM HA_USER_EXTENDED ux
+WHERE ux.user_id in ( $$UID_LIST$$ )
+  AND ux.last_login BETWEEN ? and ?
+
+UNION
+
+SELECT DISTINCT t.user_id
+FROM HA_TEST t
+WHERE t.user_id in ( $$UID_LIST$$ )
+  AND t.create_time BETWEEN ? and ?
+
+UNION
+
+SELECT DISTINCT t.user_id
+FROM HA_TEST t, HA_TEST_RUN r
+WHERE t.user_id in ( $$UID_LIST$$ )
+  AND t.test_id = r.test_id
+  AND r.run_time BETWEEN ? and ?
+  
+UNION
+
+SELECT DISTINCT t.user_id
+FROM HA_TEST t, HA_TEST_RUN r, HA_TEST_RUN_INMH_USE i
+WHERE t.user_id in ( $$UID_LIST$$ )
+  AND t.test_id = r.test_id
+  AND r.run_id = i.run_id
+  AND i.view_time BETWEEN ? and ?
+  
 
 #####
 

@@ -531,9 +531,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE");
     	final String sql = QueryHelper.createInListSQL(sqlTemplate, userIds);
     	if (logger.isDebugEnabled()) logger.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
+
         List<Integer> list = this.getJdbcTemplate().query(
                 sql,
-                new Object[]{dates[0], dates[1]},
+                new Object[]{dates[0], dates[1], dates[0], dates[1], dates[0], dates[1], dates[0], dates[1]},
                 new RowMapper<Integer>() {
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Integer userId;
