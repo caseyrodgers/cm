@@ -95,5 +95,5 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
         
         return s;
     }
-    public enum FilterType {GROUP, QUICKTEXT, DATE_RANGE}
+    public enum FilterType {GROUP, QUICKTEXT, DATE_RANGE, OPTIONS}
 }
