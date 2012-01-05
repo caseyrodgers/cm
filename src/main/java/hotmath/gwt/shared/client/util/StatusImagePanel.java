@@ -31,7 +31,7 @@ public class StatusImagePanel extends VerticalPanel {
             /** no stautus image, show text representation
              * 
              */
-            html = "<span color'#CCCCCC'>Completed " + current + " lesson" + (current>1?"s":"") + " of " + total + ".</span>"; 
+            html = "<span color'#CCCCCC'>Completed " + current + " lesson" + (current==1?"":"s") + " of " + total + ".</span>"; 
         }
         else {
             html = "<img src='/gwt-resources/images/status/status-" + total + "_" + current + ".png'/>" +
