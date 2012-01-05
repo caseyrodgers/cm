@@ -48,9 +48,8 @@
 }
 
 .question_head {
-    background: #333;
+	background:white url('/gwt-resources/images/page_divider_gradient.png') no-repeat right top;
     text-align: center;
-
     -webkit-border-top-left-radius: 20px;
     -webkit-border-top-right-radius: 20px;
     -webkit-border-bottom-left-radius: 20px;
@@ -62,7 +61,7 @@
 	font-size: large;
 	font-family: sans-serif;
 	
-	 color: white;
+	 color: #666;
      height: 40px;
      line-height: 40px;
      text-align: left;
