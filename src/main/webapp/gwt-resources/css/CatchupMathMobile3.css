@@ -8,6 +8,9 @@ body {
   background-repeat: no-repeat;
   
   font-family: Helvetica;
+
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+
   
   /* ensure that we don't get 
      the default callout following
@@ -36,8 +39,8 @@ ul li {
     text-align: left;
 }
 h1 {
-    font-size:2em;
-    color: blue;
+    font-size:1.5em;
+    color:F94701;
     margin:10px 0 10px 0px;
 }
 
@@ -136,7 +139,7 @@ background-color: black;
     color: white;
     font-weight: bold;
     background: #EA4505;
-    text-align: center;
+    text-align: left;
     height: 2em;
     line-height: 2em;
 }
@@ -144,8 +147,7 @@ background-color: black;
 .dialogTop {
    background: #EA4505; 
 }
-
-
+   
 
 .popup-message {
     background: white;
@@ -600,15 +602,8 @@ table {
 
 
 .buttonBar {
-    background: #999;
-    margin: 10px 0;
-    padding: 3px;
-    
-    -webkit-border-top-left-radius: 8px;
-    -webkit-border-top-right-radius: 8px;
-    -webkit-border-bottom-left-radius: 8px;
-    -webkit-border-bottom-right-radius: 8px;
-    border: 1px solid rgb(171,173,176);    
+  margin-top: 40px;
+  height: 70px;
 }
 
 
@@ -641,6 +636,9 @@ table {
 	font-size: .8em;
 }
 
+.resourceType b {
+   color: #F94701;
+}
 
 
 .prescriptionLessonResourceVideoImpl .video_wrapper {
@@ -656,12 +654,6 @@ table {
 .prescriptionLessonViewImpl .correct_image {
 	float: right;
 	margin-right: 10px;
-}
-
-
-.prescriptionLessonViewImpl h1 {
-	font-size: 2em;
-	color: 
 }
 
 
@@ -704,7 +696,6 @@ table {
     color: white;
     font-weight: bold;
     background: #EA4505;
-    text-align: center;
     height: 2em;
     line-height: 2em;
 }
@@ -827,8 +818,6 @@ table {
 
 
 
-
-
 .question_head {
 	position: relative;
 }
@@ -865,7 +854,7 @@ table {
 
 .quiz_whiteboard_button {
     float: right;
-    margin: 8px 5px 0 0;
+    margin: 0px 5px 0 0;
 }
 
 
@@ -904,11 +893,13 @@ button.quiz_whiteboard_button {
 
 
 span.group-item-dot {
+ /*
 	float: left;
 	margin-left: 5px;
 	width: 5px;
 	height: 5px;
 	background-color: green;
+*/
 }
 
 

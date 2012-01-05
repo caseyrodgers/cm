@@ -13,7 +13,7 @@ div.page ul.touch li {
   background-color: white;
   border-style: solid;
   border-width: 1px 1px 0px 1px;
-  border-color: rgb(171,173,176);  
+  border-color: #ABADB0;  
   margin: 0px;
   padding: 15px;
   /* ensure that long pieces of text get trimmed */
@@ -28,7 +28,7 @@ and no bottom border as the item below will already draw a border at its top
 div.page ul.touch li:first-child {
   -webkit-border-top-left-radius: 8px;
   -webkit-border-top-right-radius: 8px;
-  border: 1px solid rgb(171,173,176);
+  border: 1px solid #ABADB0;
   border-bottom-width: 0;
 }
 
@@ -39,7 +39,7 @@ and a bottom border
 div.page ul.touch li:last-child {
   -webkit-border-bottom-left-radius: 8px;
   -webkit-border-bottom-right-radius: 8px;
-  border: 1px solid rgb(171,173,176);
+  border: 1px solid #ABADB0;
   margin-bottom: 5px;
 }
 
