@@ -6,11 +6,11 @@
         <p>Choose a lesson to study.  You can jump around and study the lessons in any order you wish.  
          <span ui:field="onlyShowForProfPrograms">However, before you can continue to the next quiz you will have to complete all lessons.</span>  
          A completed lesson will show a check next to its name.</p>
-        <div class='buttonBar' style='background: inherit'>
+        <div class='buttonBar' ui:field="buttonBarTop">
             <g:Button ui:field="segmentCompleteTop" styleName="sexyButton disabled"><span><span>Next Quiz</span></span></g:Button>
         </div>
         <g:HTMLPanel ui:field="lessonLising"></g:HTMLPanel>
-        <div class='buttonBar'  style='background: inherit'>
+        <div class='buttonBar' ui:field="buttonBarBottom">
             <g:Button ui:field="segmentCompleteBottom" styleName="sexyButton disabled"><span><span>Next Quiz</span></span></g:Button>
         </div>
     </g:HTMLPanel>

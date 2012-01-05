@@ -1112,10 +1112,12 @@ img.resource-item-complete {
 	margin-top:5px;
 	position: relative;
 }
+
 .status-image-panel img {
-	margin-left: 2px;
+	margin-left: 15px;
 }
 .status-image-panel span {
+	font-size: 11px;
 	position: absolute;
 	top: 10px;
 	left: 5px;

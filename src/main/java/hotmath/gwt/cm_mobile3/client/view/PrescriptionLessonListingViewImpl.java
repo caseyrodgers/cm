@@ -9,7 +9,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 
 import java.util.List;
 
@@ -34,6 +33,9 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     
     @UiField
     Element onlyShowForProfPrograms;
+    
+    @UiField
+    Element buttonBarBottom, buttonBarTop;
     
     interface MyUiBinder extends UiBinder<Widget, PrescriptionLessonListingViewImpl> {
     }
@@ -90,12 +92,12 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     @Override
     public void showNextQuizButton(boolean trueFalse) {
         if(!trueFalse) {
-            segmentCompleteTop.getElement().setAttribute("style","display:none");
-            segmentCompleteBottom.getElement().setAttribute("style","display:none");
+            buttonBarTop.setAttribute("style","display:none");
+            buttonBarBottom.setAttribute("style","display:none");
         }
         else {
-            segmentCompleteTop.getElement().setAttribute("style","display:block");
-            segmentCompleteBottom.getElement().setAttribute("style","display:block");
+            buttonBarTop.setAttribute("style","display:block");
+            buttonBarBottom.setAttribute("style","display:block");
         }
     }
     

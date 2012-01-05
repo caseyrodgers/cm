@@ -48,14 +48,25 @@
 }
 
 .question_head {
-	background: red;
-	text-align: center;
+    background: #333;
+    text-align: center;
+
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -webkit-border-bottom-right-radius: 20px;
 }
 
 .question_head_text {
 	font-weight: bold;
 	font-size: large;
 	font-family: sans-serif;
+	
+	 color: white;
+     height: 40px;
+     line-height: 40px;
+     text-align: left;
+     padding-left: 10px;
 }
 
 .quizViewImpl .buttonBar-top {

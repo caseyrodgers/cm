@@ -783,6 +783,7 @@ li {
     position: absolute;
     right: 45px;
     top: 0px;
+    
     color: #edfeab;
     font-weight: bold;
 }
@@ -1015,12 +1016,12 @@ table {
     background: #999;
     margin: 10px 0;
     padding: 3px;
-
+    
     -webkit-border-top-left-radius: 8px;
     -webkit-border-top-right-radius: 8px;
     -webkit-border-bottom-left-radius: 8px;
     -webkit-border-bottom-right-radius: 8px;
-    border: 1px solid rgb(171,173,176);
+    border: 1px solid rgb(171,173,176);    
 }
 
 
@@ -1276,8 +1277,8 @@ table {
 
 
 .quiz_whiteboard_button {
-	float: right;
-	margin: 8px 5px 0 0;
+    float: right;
+    margin: 8px 5px 0 0;
 }
 
 
@@ -1465,24 +1466,25 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 .question_head {
-	background: #333;
-	text-align: center;
+    background: #333;
+    text-align: center;
 
-        -webkit-border-top-left-radius: 20px;
-        -webkit-border-top-right-radius: 20px;
-        -webkit-border-bottom-left-radius: 20px;
-        -webkit-border-bottom-right-radius: 20px;
+    -webkit-border-top-left-radius: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    -webkit-border-bottom-right-radius: 20px;
 }
 
 .question_head_text {
 	font-weight: bold;
 	font-size: large;
 	font-family: sans-serif;
-        color: white;
-        height: 40px;
-        line-height: 40px;
-        text-align: left;
-        padding-left: 10px;
+	
+	 color: white;
+     height: 40px;
+     line-height: 40px;
+     text-align: left;
+     padding-left: 10px;
 }
 
 .quizViewImpl .buttonBar-top {
