@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+import hotmath.gwt.cm_admin.client.ui.DateRangePickerDialog.FilterOptions;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -136,7 +137,7 @@ public class HighlightsDataWindow extends CmWindow {
     private void showDatePicker() {
         DateRangePickerDialog.showSharedInstance(_from, _to,new DateRangePickerDialog.Callback() {
             @Override
-            public void datePicked(Date from, Date to) {
+            public void datePicked(Date from, Date to,FilterOptions filterOptions) {
                 _from = (from != null)?from:_from;
                 _to = (to != null)?to:_to;
 
