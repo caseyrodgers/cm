@@ -1178,14 +1178,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
                     }
 
+                    if (CmShared.getQueryParameter("debug") != null) {
                     String dateRange = null;
 
                     String value = dateRangeFilter.getValue();  /** will be null until initialized */
                     if (value != null && value.trim().length() > 0 && fromDate != null && toDate != null) {
-                    	dateRange = dateFmt.format(fromDate) + " - " + dateFmt.format(toDate);
+                    	dateRange = dateFormat.format(fromDate) + " - " + dateFormat.format(toDate);
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);
                     }
                     _pageAction.setDateRange(dateRange);
+                    }
 
                     CmShared.getCmService().execute(_pageAction, this);
 
@@ -1336,14 +1338,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
      * 
      */
     static Date fromDate, toDate;
-    static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("MM/dd/yyyy");
-    static final DateTimeFormat dateFmt    = DateTimeFormat.getFormat("yyyy-MM-dd");
+    static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
     static TextField<String> dateRangeFilter;
 
     class DateRangePanel extends HorizontalPanel {
         
         Button dateRangeButton;
         Button clearButton;
+
+        Date prevFrom;
+        Date prevTo;
         
         DateRangePanel() {
         	init();
@@ -1356,10 +1360,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             dateRangeFilter.setFieldLabel("Date Range");
             dateRangeFilter.setWidth("160px");
             dateRangeFilter.setReadOnly(true);
-            dateRangeFilter.setToolTip("Reporting is not restricted to a date range");
+            dateRangeFilter.setToolTip("No date range filter applied");
 
             toDate = new Date();
             addDaysToDate(toDate, 1);
+            prevTo = toDate;
 
             add(dateRangeFilter);
             
@@ -1368,10 +1373,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 public void componentSelected(ButtonEvent ce) {
                 	if (fromDate == null)
                         fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+                	if (prevFrom == null)
+                        prevFrom = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
                     showDatePicker();
                 }
             });
-            dateRangeButton.setToolTip("Restrict all reporting to specified date range");
+            dateRangeButton.setToolTip("Date range filter applied to Student activity");
             add(dateRangeButton);
 
             clearButton = new Button("clear", new SelectionListener<ButtonEvent>() {
@@ -1398,7 +1405,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     toDate = (to != null) ? to : toDate;
 
                     dateRangeFilter.setValue(formatDateRange(from, to));
-                    dateRangeFilter.setToolTip("Restrict all reporting to specified date range");
+                    dateRangeFilter.setToolTip("Date range filter applied to Student activity");
                     
                     applyDateRange();
                 }
@@ -1408,7 +1415,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         private void clearDateRange() {
 
             dateRangeFilter.clear();
-            dateRangeFilter.setToolTip("Reporting is not restricted to a date range");
+            dateRangeFilter.setToolTip("No date range filter applied");
 
             fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
             toDate = new Date();
@@ -1416,9 +1423,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             applyDateRange();
         }
-
-        Date prevFrom;
-        Date prevTo;
 
         private void applyDateRange() {
 
