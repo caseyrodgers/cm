@@ -9,7 +9,7 @@
         onclick='setQuizQuestionActive(this)'>
         <a name='$question.questionTag' id='$question.questionTag'>&nbsp;</a>
         <div class='question_head'>
-            <button style='display: none' class='quiz_whiteboard_button sexybutton sexysmall' onclick='showWhiteboard_Gwt(&quot;$question.problemIndex&quot;)'><span>whiteboard</span></button>
+            <button style='display: none' class='quiz_whiteboard_button sexybutton sexysmall' onclick='showWhiteboard_Gwt(&quot;$question.problemIndex&quot;)'><span><span>whiteboard</span></span></button>
             <button style='display: none' class='quiz_edit_button sexybutton sexysmall' onclick="editQuizQuestion(&quot;$question.problemIndex&quot;)";><span><span>edit</span></span></button>
 
             <div class='question_head_text'> Problem $probNum </div>
@@ -24,7 +24,7 @@
        <div class='debug-hide'>$question.problemIndex</div>
    </div>
    #end
-   <div id='testset_footer'> <a href='#' class='check-quiz-link' title='Check Quiz' onclick='checkQuiz_Gwt();return false;'>click to check quiz</a></div>
+   <div id='testset_footer'></div>
    <!-- end-of-template -->
 </div>
     
