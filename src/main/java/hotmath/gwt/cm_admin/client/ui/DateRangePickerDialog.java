@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -91,17 +92,18 @@ public class DateRangePickerDialog extends Window {
         }));
         setVisible(true);
     }
-    
-    
+
     private FilterOptions getFilterOptions() {
-        return new FilterOptions(hasLoggedIn.getValue(), hasViewedTest.getValue(), hasTakenQuiz.getValue());
+        return new FilterOptions(hasLoggedIn.getValue(), hasViewedTest.getValue(), hasTakenQuiz.getValue(),
+        		hasViewedResources.getValue(), hasViewedLessons.getValue());
     }
     
     CheckBox hasLoggedIn = new CheckBox();
     CheckBox hasViewedTest = new CheckBox();
     CheckBox hasTakenQuiz = new CheckBox();
-    
-    
+    CheckBox hasViewedResources = new CheckBox();
+    CheckBox hasViewedLessons = new CheckBox();
+        
     private Widget createOptionsPanel() {
         FormPanel fp = new FormPanel();
         fp.setFooter(false);
@@ -110,23 +112,31 @@ public class DateRangePickerDialog extends Window {
         fp.setBodyBorder(false);
         fp.setIconStyle("icon-form");
         fp.setButtonAlign(HorizontalAlignment.CENTER);
-        fp.setFieldWidth(80);
+        fp.setFieldWidth(60);
         fp.setLayout(new FormLayout());
 
         CheckBoxGroup group = new CheckBoxGroup();
         group.setFieldLabel("Check for");
         
-        hasLoggedIn.setBoxLabel("Logged In");
+        hasLoggedIn.setBoxLabel("Login");
         hasLoggedIn.setValue(true);
         group.add(hasLoggedIn);
         
-        hasViewedTest.setBoxLabel("Viewed Test");
+        hasViewedTest.setBoxLabel("Viewed Quiz");
         hasViewedTest.setValue(true);
         group.add(hasViewedTest);
         
-        hasTakenQuiz.setBoxLabel("Taken Test");
+        hasTakenQuiz.setBoxLabel("Taken Quiz");
         hasTakenQuiz.setValue(true);
         group.add(hasTakenQuiz);
+        
+        hasViewedLessons.setBoxLabel("Lessons");
+        hasViewedLessons.setValue(true);
+        //group.add(hasViewedLessons);
+        
+        hasViewedResources.setBoxLabel("Resources");
+        hasViewedResources.setValue(true);
+        //group.add(hasViewedResources);
         
         fp.add(group);
         
@@ -159,12 +169,16 @@ public class DateRangePickerDialog extends Window {
     public class FilterOptions {
         boolean logins;
         boolean quizView;
-        boolean quizCheck;        
+        boolean quizCheck;
+        boolean lessons;
+        boolean resources;
         
-        public FilterOptions(boolean logins, boolean quizView, boolean quizCheck) {
+        public FilterOptions(boolean logins, boolean quizView, boolean quizCheck, boolean lessons, boolean resources) {
             this.logins = logins;
             this.quizView = quizView;
             this.quizCheck = quizCheck;
+            this.lessons = lessons;
+            this.resources = resources;
         }
 
         public boolean isLogins() {
@@ -191,19 +205,36 @@ public class DateRangePickerDialog extends Window {
             this.quizCheck = quizCheck;
         }
 
-        public String toParsableString() {
-            return logins + "|" + quizView + "|" + quizCheck ;
+        public boolean isLessons() {
+			return lessons;
+		}
+
+		public void setLessons(boolean lessons) {
+			this.lessons = lessons;
+		}
+
+		public boolean isResources() {
+			return resources;
+		}
+
+		public void setResources(boolean resources) {
+			this.resources = resources;
+		}
+
+		public String toParsableString() {
+            return logins + "|" + quizView + "|" + quizCheck + "|" + lessons + "|" + resources;
         }
 
         @Override
         public String toString() {
-            return "FilterOptions [logins=" + (logins?1:0) + ", quizView=" + (quizView?1:0) + ", quizCheck=" + (quizCheck?1:0) + "]";
+            return "FilterOptions [logins=" + (logins?1:0) + ", quizView=" + (quizView?1:0) + ", quizCheck=" + (quizCheck?1:0) +
+                   ", lessons=" + (lessons?1:0) + ", resources=" + (resources?1:0) + "]";
         }
         
     }
     
     public interface Callback {
-        void datePicked(Date from, Date to,FilterOptions options);
+        void datePicked(Date from, Date to, FilterOptions options);
     }
 }
 

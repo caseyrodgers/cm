@@ -1380,7 +1380,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     showDatePicker();
                 }
             });
-            dateRangeButton.setToolTip("Date range filter applied to Student activity");
+            dateRangeButton.setToolTip("Set Date range filter");
             add(dateRangeButton);
 
             clearButton = new Button("clear", new SelectionListener<ButtonEvent>() {

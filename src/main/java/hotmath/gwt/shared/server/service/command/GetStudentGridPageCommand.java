@@ -181,15 +181,19 @@ public class GetStudentGridPageCommand implements
         // apply date range filter
         if (action.getDateRange() != null) {
         	
+        	String options = action.getFilterMap().get(GetStudentGridPageAction.FilterType.OPTIONS);
+
         	if (logger.isDebugEnabled())
-        		logger.debug("date range: " + action.getDateRange());
+        		logger.debug(String.format("date range: %s, options: %s", action.getDateRange(),
+        				(options != null) ? options : "NULL"));
 
         	List<Integer> uidList = new ArrayList<Integer>();
         	for (StudentModelExt m : studentPool) {
         	    uidList.add(m.getUid());
         	}
         	StudentActivityDao dao = StudentActivityDao.getInstance();
-        	List<Integer> userIds = dao.getStudentsWithActivityInDateRange(uidList, action.getDateRange());
+        	List<Integer> userIds =
+        		dao.getStudentsWithActivityInDateRange(uidList, action.getDateRange(), options);
 
             if (userIds.size() != uidList.size()) {
             	
