@@ -517,7 +517,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	return activityTimeMap;
     }
     
-    public List<Integer> getStudentsWithActivityInDateRange(List<Integer> userIds, final String dateRange) throws Exception {
+    public List<Integer> getStudentsWithActivityInDateRange(List<Integer> userIds, final String dateRange,
+    		String options) throws Exception {
     	if (userIds == null)
     		throw new IllegalArgumentException("userIds cannot be null");
     	if (dateRange == null || dateRange.trim().length() == 0)
@@ -528,13 +529,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	String[] dates = dateRange.split(" - ");
     	if (logger.isDebugEnabled()) logger.debug("dates[]: " + dates[0] + ", " + dates[1]);
 
-    	String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE");
-    	final String sql = QueryHelper.createInListSQL(sqlTemplate, userIds);
+    	StringBuilder sb = buildSQL(options);
+
+    	final String sql = QueryHelper.createInListSQL(sb.toString(), userIds);
     	if (logger.isDebugEnabled()) logger.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
 
         List<Integer> list = this.getJdbcTemplate().query(
                 sql,
-                new Object[]{dates[0], dates[1], dates[0], dates[1], dates[0], dates[1], dates[0], dates[1]},
+                new Object[]{dates[0], dates[1], dates[0], dates[1], dates[0], dates[1], dates[0], dates[1], dates[0], dates[1]},
                 new RowMapper<Integer>() {
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Integer userId;
@@ -551,5 +553,52 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         if (logger.isDebugEnabled()) logger.debug("+++ getStudentsWithActivityInDateRange(): list.size(): " + list.size());
     	return list;
     }
+
+	private StringBuilder buildSQL(String options) throws Exception {
+		boolean includeLogin    = true;
+    	boolean includeQuizView = true;
+    	boolean includeQuizTake = true;
+    	boolean includeResource = true;
+    	boolean includeLesson   = true;
+
+    	if (options != null && options.trim().length() > 0) {
+        	if (logger.isDebugEnabled()) logger.debug("options: " + options);
+    		String[] option = options.split("|");
+    		if (option != null) {
+    		    if (option.length > 0) includeLogin    = new Boolean(option[0]);
+    		    if (option.length > 1) includeQuizView = new Boolean(option[1]);
+    		    if (option.length > 2) includeQuizTake = new Boolean(option[2]);
+    		    if (option.length > 3) includeLesson   = new Boolean(option[3]);
+    		    if (option.length > 4) includeResource = new Boolean(option[4]);
+    		}
+    	}
+
+    	StringBuilder sb = new StringBuilder();
+    	if (includeLogin) {
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_LOGIN_ACTIVITY_IN_DATE_RANGE"));
+    	}
+    	if (includeQuizView) {
+    		if (sb.length() > 0) sb.append(" UNION ");
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_QUIZ_VIEW_ACTIVITY_IN_DATE_RANGE"));
+    	}
+    	if (includeQuizTake) {
+    		if (sb.length() > 0) sb.append(" UNION ");
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_QUIZ_TAKE_ACTIVITY_IN_DATE_RANGE"));
+    	}
+    	if (includeLesson) {
+    		if (sb.length() > 0) sb.append(" UNION ");
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_LESSON_ACTIVITY_IN_DATE_RANGE"));
+    	}
+    	if (includeResource) {
+    		if (sb.length() > 0) sb.append(" UNION ");
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_RESOURCE_ACTIVITY_IN_DATE_RANGE"));
+    	}
+
+    	if (sb.length() == 0) {
+    		if (logger.isDebugEnabled()) logger.debug("defaulting to full query");
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE"));
+    	}
+		return sb;
+	}
 
 }
