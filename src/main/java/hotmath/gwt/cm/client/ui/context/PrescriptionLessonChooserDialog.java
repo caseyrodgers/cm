@@ -113,7 +113,13 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             ListStore<LessonChoice> store = new ListStore<LessonChoice>();
             boolean isSegmentComplete = true;
             for (SessionTopic st : pData.getSessionTopics()) {
-                LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), getLessonStatus(st.getTopic()));
+                String status = st.getTopicStatus(); // 
+
+                String currentLessonTopic = pData.getCurrSession().getTopic();
+                if(st.getTopic().equals(currentLessonTopic)) {
+                    status = getLessonStatus(st.getTopic());
+                }
+                LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), status);
                 store.add(lc);
 
                 if (lc.getTopic().equals(currentTopic)) {

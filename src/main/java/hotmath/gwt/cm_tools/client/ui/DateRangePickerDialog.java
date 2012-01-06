@@ -31,7 +31,7 @@ public class DateRangePickerDialog extends Window {
     static private DateRangePickerDialog __instance;
     static public DateRangePickerDialog showSharedInstance(Date from, Date to, Callback callback) {
         
-        __instance = null;
+        // __instance = null;  // force new each time.
         if(__instance == null) {
             __instance = new DateRangePickerDialog();
         }
