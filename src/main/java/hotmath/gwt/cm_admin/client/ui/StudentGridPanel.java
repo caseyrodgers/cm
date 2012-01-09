@@ -1348,6 +1348,10 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Button dateRangeButton;
         Button clearButton;
 
+        Date prevFrom;
+        Date prevTo;
+
+        FilterOptions prevOptions;
         
         DateRangePanel() {
         	init();
@@ -1364,6 +1368,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
             toDate = new Date();
             addDaysToDate(toDate, 1);
+            prevTo = toDate;
 
             add(dateRangeFilter);
             
@@ -1372,6 +1377,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 public void componentSelected(ButtonEvent ce) {
                 	if (fromDate == null)
                         fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+                	if (prevFrom == null)
+                        prevFrom = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
                     showDatePicker();
                 }
             });
@@ -1419,11 +1426,22 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             toDate = new Date();
             addDaysToDate(toDate, 1);
 
+            _filterOptions = null;
+
             applyDateRange();
         }
 
         private void applyDateRange() {
-            loadAndResetStudentLoader();
+
+        	boolean shouldRefresh = (!fromDate.equals(prevFrom) || !toDate.equals(prevTo) ||
+        			prevOptions == null || !prevOptions.equals(_filterOptions));
+
+            if (shouldRefresh) {
+                prevFrom = fromDate;
+                prevTo = toDate;
+                prevOptions = _filterOptions;
+                loadAndResetStudentLoader();
+            }
         }
 
         private String formatDateRange(Date from, Date to) {
