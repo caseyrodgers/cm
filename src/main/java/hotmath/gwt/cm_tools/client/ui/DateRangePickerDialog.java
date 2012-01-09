@@ -22,7 +22,6 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -44,7 +43,7 @@ public class DateRangePickerDialog extends Window {
     Callback callback;
     private DateRangePickerDialog() {
         addStyleName("date-range-picker-dialog");
-        setSize(420,390);
+        setSize(420,415);
         setHeading("Choose Date Range");
         setModal(true);
         setResizable(false);
@@ -115,30 +114,37 @@ public class DateRangePickerDialog extends Window {
         fp.setFieldWidth(60);
         fp.setLayout(new FormLayout());
 
-        CheckBoxGroup group = new CheckBoxGroup();
-        group.setFieldLabel("Check for");
+        CheckBoxGroup groupOne = new CheckBoxGroup();
+        groupOne.setFieldLabel("Check");
+        groupOne.setLabelSeparator("");
         
         hasLoggedIn.setBoxLabel("Login");
         hasLoggedIn.setValue(true);
-        group.add(hasLoggedIn);
+        groupOne.add(hasLoggedIn);
         
         hasViewedTest.setBoxLabel("Viewed Quiz");
         hasViewedTest.setValue(true);
-        group.add(hasViewedTest);
+        groupOne.add(hasViewedTest);
         
         hasTakenQuiz.setBoxLabel("Taken Quiz");
         hasTakenQuiz.setValue(true);
-        group.add(hasTakenQuiz);
+        groupOne.add(hasTakenQuiz);
+
+        
+        CheckBoxGroup groupTwo = new CheckBoxGroup();
+        groupTwo.setFieldLabel(" ");
+        groupTwo.setLabelSeparator("");
         
         hasViewedLessons.setBoxLabel("Lessons");
         hasViewedLessons.setValue(true);
-        //group.add(hasViewedLessons);
+        groupTwo.add(hasViewedLessons);
         
         hasViewedResources.setBoxLabel("Resources");
         hasViewedResources.setValue(true);
-        //group.add(hasViewedResources);
+        groupTwo.add(hasViewedResources);
         
-        fp.add(group);
+        fp.add(groupOne);
+        fp.add(groupTwo);
         
         return fp;
     }
@@ -229,6 +235,30 @@ public class DateRangePickerDialog extends Window {
         public String toString() {
             return "FilterOptions [logins=" + (logins?1:0) + ", quizView=" + (quizView?1:0) + ", quizCheck=" + (quizCheck?1:0) +
                    ", lessons=" + (lessons?1:0) + ", resources=" + (resources?1:0) + "]";
+        }
+        
+        @Override
+        public boolean equals(Object anObject) {
+        	if (this == anObject) return true;
+
+            if (anObject == null) return false;
+
+        	if (anObject instanceof FilterOptions) {
+        		FilterOptions filterOptions = (FilterOptions) anObject;
+        		
+        		return (this.lessons   == filterOptions.lessons   &&
+        				this.logins    == filterOptions.logins    &&
+        				this.quizCheck == filterOptions.quizCheck &&
+        				this.quizView  == filterOptions.quizView  &&
+        				this.resources == filterOptions.resources);
+        	}
+        	return false;
+        }
+        
+        @Override
+        public int hashCode() {
+        	String parseable = this.toParsableString();
+        	return parseable.hashCode();
         }
         
     }
