@@ -42,8 +42,9 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PrescriptionLessonChooserDialog extends CmWindow {
@@ -141,15 +142,16 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
              * This does not seem to work ...
              * 
              */
-            new Timer() {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                
                 @Override
-                public void run() {
+                public void execute() {
                     List<LessonChoice> selectedList = new ArrayList<LessonChoice>();
                     selectedList.add(store.getAt(scrollIntoView));
                     _grid.getSelectionModel().setSelection(selectedList);
                     _grid.getView().ensureVisible(scrollIntoView, 0, true);
                 }
-            }.schedule(5000);
+            });
 
         }
 

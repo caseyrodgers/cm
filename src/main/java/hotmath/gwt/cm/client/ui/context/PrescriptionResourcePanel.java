@@ -34,7 +34,8 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
 public class PrescriptionResourcePanel extends LayoutContainer {
 
     static PrescriptionResourcePanel __instance;
-    PrescriptionData pdata;
+    PrescriptionData pData;
+    StatusImagePanel _statusImage;
     List<PrescriptionSessionDataResource> registeredResources = new ArrayList<PrescriptionSessionDataResource>();
     Map<String, ResourceMenuButton> resourceButtons = new HashMap<String, ResourceMenuButton>();
 
@@ -55,16 +56,9 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     }
 
     
-    public void buildUi(PrescriptionData pdata) {
-    	this.pdata = pdata;
-    	buildUi_Old(pdata);
-    }
-
-    /** 
-     * @param pdata
-     */
-    public void buildUi_Old(PrescriptionData pdata) {
-        List<PrescriptionSessionDataResource> resources = pdata.getCurrSession().getInmhResources();
+    public void buildUi(PrescriptionData pData) {
+    	this.pData = pData;
+        List<PrescriptionSessionDataResource> resources = pData.getCurrSession().getInmhResources();
 
         removeAll();
         registeredResources.clear();
@@ -117,87 +111,13 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     		resourceButtons.put(resource.getType(), btn);
         }
         add(fs);
-        
-        int numCompleteSessions = pdata.getCountCompletedTopics();
-        int  totalSessions = UserInfo.getInstance().getSessionCount();
-        String  statusMsg = "Completed " + numCompleteSessions  + " lessons of " + totalSessions;
-        add(new StatusImagePanel(totalSessions, numCompleteSessions,"Lesson Status", statusMsg));
+        _statusImage = new StatusImagePanel(pData);
+        add(_statusImage);
         
         layout();
     }
 
 
-    /**
-     * Build or rebuild the GUI from list of resource objects
-     * 
-     * @param resources
-     */
-//    public void buildUi_new(PrescriptionData pdata) {
-//        List<PrescriptionSessionDataResource> resources = pdata.getCurrSession().getInmhResources();
-//
-//        removeAll();
-//        registeredResources.clear();
-//
-//        
-//        add(new LocationBar());
-//        
-//        
-//        setScrollMode(Scroll.NONE);
-//        VerticalPanel vp = new VerticalPanel();
-//        addStyleName("prescription-cm-gui-definition-resource-panel");
-//
-//        boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
-//
-//        PrescriptionSessionDataResource review=null;
-//        // setTitle("Choose a resource type, then click one of its items.");
-//        for (PrescriptionSessionDataResource resource : resources) {
-//            ResourceMenuButton btn = new ResourceMenuButton(resource);
-//
-//            registeredResources.add(resource);
-//
-//            resourceButtons.put(resource.getType(), btn);
-//            
-//            /** if a Custom Program, then make sure the results
-//             * button is disabled .. there are no quizzes.
-//             */
-//            if(resource.getType().equals("results")) {
-//            	review = resource;
-//            }
-//            else {
-//            	vp.add(btn);	
-//            }
-//            
-//        }
-//        add(vp);
-//        /**
-//         * Add the standard resources
-//         * 
-//         */
-//        VerticalPanel fs = new VerticalPanel();
-//        // <div style='margin-left: -7px;margin-top: 10px;font-size: .8em;color: white;'>Other Resources</div>
-//        
-//        fs.add(new Html("<hr class='resource-separator'/>"));
-//        ResourceMenuButton rbtn = new ResourceMenuButton(review);
-//        if(isCustomProgram) {
-//            rbtn.setEnabled(false);
-//        }
-//        fs.add(rbtn);
-//        
-//        for (PrescriptionSessionDataResource type : new CmInmhStandardResources()) {
-//    		registeredResources.add(type);
-//    		ResourceMenuButton btn = new ResourceMenuButton(type);
-//    		fs.add(btn);
-//    		resourceButtons.put(type.getType(), btn);
-//        }
-//        add(fs);
-//        
-//        int currentSession = UserInfo.getInstance().getSessionNumber();
-//        int  totalSessions = UserInfo.getInstance().getSessionCount();
-//        String  statusMsg = "Lesson " + (currentSession+1) + " of " + totalSessions;
-//        add(new StatusImagePanel(totalSessions, currentSession+1,"Lesson Status", statusMsg));
-//        
-//        layout();
-//    }
     
     /** make an indication that the current RPP has completed
      * 
@@ -248,7 +168,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
             	case EVENT_TYPE_REQUIRED_COMPLETE:
                     InmhItemData id = (InmhItemData)event.getEventData();
                     boolean isComplete = __instance.resourceButtons.get("practice").checkCompletion();
-                    
+                    __instance._statusImage.updateStatus();
                     if (isComplete) {
                     	setLessonCompleted(id.getTitle());
                     }

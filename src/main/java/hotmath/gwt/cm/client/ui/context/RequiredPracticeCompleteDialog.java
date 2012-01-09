@@ -24,7 +24,7 @@ public class RequiredPracticeCompleteDialog extends CmWindow {
 		setModal(true);
 		setHeading(title);
 		add(new Html("<p style='font-weight: bold;'>" + msg + "</p>"));
-		add(new UserProgramAdvancementPanel(PrescriptionResourcePanel.__instance.pdata, this));
+		add(new UserProgramAdvancementPanel(PrescriptionResourcePanel.__instance.pData, this));
 		
 		setClosable(true);
 		addCloseButton();
