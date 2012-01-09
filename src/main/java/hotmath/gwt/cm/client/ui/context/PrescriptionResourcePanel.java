@@ -239,7 +239,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
         /**
          * Setup a listener for solution view completions.
          * 
-         *  Also update DB via PRC when Lesson is complete
+         *  Also update DB via RPC when Lesson is complete
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {

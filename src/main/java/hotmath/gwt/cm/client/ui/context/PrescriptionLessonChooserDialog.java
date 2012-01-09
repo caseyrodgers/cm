@@ -12,7 +12,6 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.ui.EndOfProgramWindow;
@@ -110,14 +109,15 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             this.pData = pData;
 
             String currentTopic = pData.getCurrSession().getTopic();
-            ListStore<LessonChoice> store = new ListStore<LessonChoice>();
+            final ListStore<LessonChoice> store = new ListStore<LessonChoice>();
             boolean isSegmentComplete = true;
+            int recCnt=0;
             for (SessionTopic st : pData.getSessionTopics()) {
                 String status = st.getTopicStatus(); // 
 
                 String currentLessonTopic = pData.getCurrSession().getTopic();
                 if(st.getTopic().equals(currentLessonTopic)) {
-                    status = getLessonStatus(st.getTopic());
+                    status = getLessonStatus(st);
                 }
                 LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), status);
                 store.add(lc);
@@ -130,7 +130,10 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
                 if (!lc.isComplete()) {
                     isSegmentComplete = false;
                 }
+                
+                recCnt++;
             }
+            
             _grid = defineGrid(store, defineColumns());
             add(_grid);
 
@@ -141,6 +144,9 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             new Timer() {
                 @Override
                 public void run() {
+                    List<LessonChoice> selectedList = new ArrayList<LessonChoice>();
+                    selectedList.add(store.getAt(scrollIntoView));
+                    _grid.getSelectionModel().setSelection(selectedList);
                     _grid.getView().ensureVisible(scrollIntoView, 0, true);
                 }
             }.schedule(5000);
@@ -163,8 +169,12 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
     }
     
     
-    /** return a status string used to label this lesson status */
-    private String getLessonStatus(String lesson) {
+    /** handles real time analysis is current lesson topic
+     * 
+     * NOTE: side-effect of setting isComplete
+     * 
+     * */
+    private String getLessonStatus(SessionTopic lesson) {
         
         for(PrescriptionSessionDataResource pr: pData.getCurrSession().getInmhResources()) {
             if(pr.getType().equals("practice")) {
@@ -175,6 +185,10 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
                     if(item.isViewed()) {
                         completeRp++;
                     }
+                }
+
+                if(totalRp == completeRp) {
+                    lesson.setComplete(true);
                 }
                 
                 return completeRp + " of " + totalRp;
