@@ -67,7 +67,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                     CatchupMathTools.showAlert("Lesson Information", result.getWarning());
                 }
 
-                /** if in Engine mode, and lesson does not have a spanish version 
+                /** if in English mode, and lesson does not have a Spanish version 
                  *  disable button
                  */
                 if(!__isSpanish && !result.isHasSpanish())

@@ -424,11 +424,9 @@ public class PrescriptionContext implements CmContext {
     }
 
     /**
-     * Called with prev/next buttons that should have their tooltips set to the
-     * next/prev options.
+     * Called from prev/next buttons.
      * 
-     * Move to next topic (<n> more to go)”; or, if zero topics left: “Move to
-     * next quiz”
+     * Returns the standard or dynamic tooltip used.
      * 
      */
     public String getTooltipText(Direction direction, PrescriptionData prescriptionData) {
