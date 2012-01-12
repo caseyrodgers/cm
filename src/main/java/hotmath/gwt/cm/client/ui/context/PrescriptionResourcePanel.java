@@ -12,7 +12,6 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.util.StatusImagePanel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,7 +34,6 @@ public class PrescriptionResourcePanel extends LayoutContainer {
 
     static PrescriptionResourcePanel __instance;
     PrescriptionData pData;
-    StatusImagePanel _statusImage;
     List<PrescriptionSessionDataResource> registeredResources = new ArrayList<PrescriptionSessionDataResource>();
     Map<String, ResourceMenuButton> resourceButtons = new HashMap<String, ResourceMenuButton>();
 
@@ -111,8 +109,6 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     		resourceButtons.put(resource.getType(), btn);
         }
         add(fs);
-        _statusImage = new StatusImagePanel(pData);
-        add(_statusImage);
         
         layout();
     }
@@ -168,7 +164,6 @@ public class PrescriptionResourcePanel extends LayoutContainer {
             	case EVENT_TYPE_REQUIRED_COMPLETE:
                     InmhItemData id = (InmhItemData)event.getEventData();
                     boolean isComplete = __instance.resourceButtons.get("practice").checkCompletion();
-                    __instance._statusImage.updateStatus();
                     if (isComplete) {
                     	setLessonCompleted(id.getTitle());
                     }

@@ -432,18 +432,7 @@ public class PrescriptionContext implements CmContext {
      * 
      */
     public String getTooltipText(Direction direction, PrescriptionData prescriptionData) {
-
-        assert prescriptionData != null;
-        int sn = prescriptionData.getCountCompletedTopics();
-        int ts = prescriptionData.getSessionTopics().size();
-        
-        int amount = (ts - sn - 1);
-        if(amount > 0) {
-            return "Choose the next topic (" + amount + " more to go)";
-        }
-        else {
-            return "You have completed all lessons";
-        }
+        return "Choose the next topic or quiz";
     }
 
     enum Direction {

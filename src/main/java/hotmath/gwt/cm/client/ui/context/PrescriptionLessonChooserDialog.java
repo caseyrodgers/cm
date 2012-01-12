@@ -86,7 +86,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         });
         addButton(_nextSegment);
 
-        addButton(new Button("Load Lesson", new SelectionListener<ButtonEvent>() {
+        addButton(new Button("Select Lesson", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 loadSelectedLesson();
