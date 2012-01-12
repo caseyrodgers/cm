@@ -13,6 +13,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
@@ -43,7 +44,7 @@ public class DateRangePickerDialog extends Window {
     Callback callback;
     private DateRangePickerDialog() {
         addStyleName("date-range-picker-dialog");
-        setSize(420,415);
+        setSize(420,435);
         setHeading("Choose Date Range");
         setModal(true);
         setResizable(false);
@@ -115,19 +116,22 @@ public class DateRangePickerDialog extends Window {
         fp.setLayout(new FormLayout());
 
         CheckBoxGroup groupOne = new CheckBoxGroup();
-        groupOne.setFieldLabel("Check");
+        groupOne.setFieldLabel("Select");
         groupOne.setLabelSeparator("");
         
         hasLoggedIn.setBoxLabel("Login");
         hasLoggedIn.setValue(true);
+        hasLoggedIn.setToolTip("Select students that have logged in");
         groupOne.add(hasLoggedIn);
         
         hasViewedTest.setBoxLabel("Viewed Quiz");
         hasViewedTest.setValue(true);
+        hasViewedTest.setToolTip("Select students that have viewed a quiz");
         groupOne.add(hasViewedTest);
         
         hasTakenQuiz.setBoxLabel("Taken Quiz");
         hasTakenQuiz.setValue(true);
+        hasTakenQuiz.setToolTip("Select students that have completed a quiz");
         groupOne.add(hasTakenQuiz);
 
         
@@ -137,15 +141,21 @@ public class DateRangePickerDialog extends Window {
         
         hasViewedLessons.setBoxLabel("Lessons");
         hasViewedLessons.setValue(true);
+        hasViewedLessons.setToolTip("Select students that have viewed lessons");
         groupTwo.add(hasViewedLessons);
         
         hasViewedResources.setBoxLabel("Resources");
         hasViewedResources.setValue(true);
+        hasViewedResources.setToolTip("Select students that have used resources");
         groupTwo.add(hasViewedResources);
         
         fp.add(groupOne);
         fp.add(groupTwo);
         
+        Text text = new Text("Include students with selected activities in date range");
+        text.setStyleName("date-picker-legend");
+        
+        fp.add(text);   
         return fp;
     }
 
