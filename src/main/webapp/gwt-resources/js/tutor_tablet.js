@@ -301,7 +301,7 @@ function enabledNext(yesNo) {
 }
 
 function enabledButton(btn, yesNo) {
-	var clazz = 'sexybutton ';
+	var clazz = 'sexybutton sexy_cm_silver ';
 	if (!yesNo) {
 		clazz += ' disabled';
 	}

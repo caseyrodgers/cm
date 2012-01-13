@@ -6,11 +6,7 @@
 	   <h1 ui:field="lessonTitle"></h1>
 	   <p>Choose resources in any order.</p>
 	   <div class='buttonBar'>
-	       <!-- 
-	       <g:Button ui:field="movePrev" styleName='sexybutton'><span><span>Previous</span></span></g:Button>
-	       <g:Button ui:field="moveNext" styleName='sexybutton'><span><span>Next</span></span></g:Button>
-	        -->
-           <g:Button ui:field="choose" styleName='sexybutton'><span><span>Next Lesson/Quiz</span></span></g:Button>
+           <g:Button ui:field="choose" styleName='sexybutton sexy_cm_silver'><span><span>Next Lesson/Quiz</span></span></g:Button>
 	   </div>
 	   <g:HTMLPanel ui:field='resourceList' styleName='resourceList'></g:HTMLPanel>
 	</g:HTMLPanel>

@@ -586,9 +586,6 @@ question_head_text {
 }
 
 
-#steps_next {
-  margin-right: 10px;
-}
 
 .step_title_step {
    background: #E7C2AA;
@@ -633,22 +630,13 @@ question_head_text {
 }
 
 #steps_prev {
-    position: absolute;
-    top: 20px;        
-    left: 2px;
 }
 
 #steps_next {
-    position: absolute;
-    top: 20px;        
-    left: 83px;
 }
 
 
 #new_problem {
-    position: absolute;
-    top: 20px;
-    left: 165px;
 }
 
 #tutor_message {
@@ -838,18 +826,6 @@ div.landscape div.page ul.touch li.group:active {
 .topic-view-page-panel .resource_type button {
     margin-bottom: 5px;
     font-size: 1.1em;
-}
-
-#steps_tail {
-    background-color: #DEDEDE;
-    font-size: 20px;
-    padding: 5px;
-    -moz-border-radius:10px;
-    border-radius: 10px;
-}
-
-#steps_tail button {
-   1em;
 }
 
 

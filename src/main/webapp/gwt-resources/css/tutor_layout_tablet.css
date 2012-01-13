@@ -42,9 +42,6 @@
 }
 
 
-#steps_next {
-  margin-right: 10px;
-}
 
 .step_title_step {
    background: #E7C2AA;
@@ -88,23 +85,16 @@
    color: black;
 }
 
-#steps_prev {
-    position: absolute;
-    top: 20px;        
-    left: 2px;
+#steps_next {
+  margin-right: 60px;
+  margin-left: 20px;
 }
 
-#steps_next {
-    position: absolute;
-    top: 20px;        
-    left: 63px;
+#steps_prev {
 }
 
 
 #new_problem {
-    position: absolute;
-    top: 20px;
-    left: 165px;
 }
 
 #tutor_message {
@@ -142,5 +132,24 @@
 
 .is_complete {
 	color: green;
+}
+
+
+
+
+#steps_tail {
+    background-image: url('/gwt-resources/images/tutor_buttonbar_bg.png');
+    background-repeat: repeat-x;
+    height: 40px;
+}
+
+#steps_tail {
+	margin-top: 10px;
+    font-size: 20px;
+    padding: 5px;
+}
+
+#steps_tail button {
+   1em;
 }
 

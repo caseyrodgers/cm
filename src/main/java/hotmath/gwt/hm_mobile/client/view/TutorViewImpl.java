@@ -1,6 +1,7 @@
 package hotmath.gwt.hm_mobile.client.view;
 
 
+import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -89,6 +90,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
     native private void setupJsni() /*-{
     	$wnd.gwt_scrollToBottomOfScrollPanel = @hotmath.gwt.hm_mobile.client.view.TutorViewImpl::scrollToBottom(I);
     	$wnd.gwt_tutorNewProblem = @hotmath.gwt.hm_mobile.client.view.TutorViewImpl::tutorNewProblem();
+        $wnd.gwt_solutionHasBeenInitialized = function() { };
     }-*/;
 
     @Override

@@ -9,7 +9,7 @@
 			or bottom of the quiz.
 		</p>
 		<div class='buttonBar'>
-			<g:Button ui:field="checkQuizTop" styleName="sexyButton sexylarge">
+			<g:Button ui:field="checkQuizTop" styleName="sexybutton sexy_cm_silver">
 				<span>
 					<span>Check Quiz</span>
 				</span>
@@ -17,7 +17,7 @@
 		</div>
 		<div ui:field="quizHtml"></div>
 		<div class='buttonBar'>
-           <g:Button ui:field="checkQuizBottom"  styleName="sexyButton sexylarge">
+           <g:Button ui:field="checkQuizBottom"  styleName="sexybutton sexy_cm_silver">
 				<span>
 					<span>Check Quiz</span>
 				</span>

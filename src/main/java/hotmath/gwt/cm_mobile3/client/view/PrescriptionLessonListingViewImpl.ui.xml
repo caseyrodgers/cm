@@ -7,11 +7,11 @@
          <span ui:field="onlyShowForProfPrograms">However, before you can continue to the next quiz you will have to complete all lessons.</span>  
          A completed lesson will show a check next to its name.</p>
         <div class='buttonBar' ui:field="buttonBarTop">
-            <g:Button ui:field="segmentCompleteTop" styleName="sexyButton disabled"><span><span>Next Quiz</span></span></g:Button>
+            <g:Button ui:field="segmentCompleteTop" styleName="sexybutton sexy_cm_silver disabled"><span><span>Next Quiz</span></span></g:Button>
         </div>
         <g:HTMLPanel ui:field="lessonLising"></g:HTMLPanel>
         <div class='buttonBar' ui:field="buttonBarBottom">
-            <g:Button ui:field="segmentCompleteBottom" styleName="sexyButton disabled"><span><span>Next Quiz</span></span></g:Button>
+            <g:Button ui:field="segmentCompleteBottom" styleName="sexybutton sexy_cm_silver disabled"><span><span>Next Quiz</span></span></g:Button>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder> 

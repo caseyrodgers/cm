@@ -61,7 +61,7 @@
 }
 
 .question_head_divider { 
-  margin-top: 8px;
+  margin-bottom: 8px;
   height: 18px;
   background-image:url('/gwt-resources/images/page_divider_gradient.png');
   background-repeat: no-repeat;

@@ -663,9 +663,7 @@ table {
 
 
 #show_whiteboard_button {
-    position: absolute;
-    top: 20px;
-    left: 290px;
+	margin-left: 40px;
 }
 
 

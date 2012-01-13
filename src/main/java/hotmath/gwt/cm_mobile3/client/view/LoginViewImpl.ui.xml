@@ -77,12 +77,12 @@
 					</td>
 				</tr>
 			</table>
-			<g:Button styleName="sexyButton sexylarge" ui:field='loginButton'>
+			<g:Button styleName="sexybutton sexy_cm_silver" ui:field='loginButton'>
 				<span>
 					<span>Log In</span>
 				</span>
 			</g:Button>
-			<g:Button styleName='sexyButton sexylarge {style.demoButton}'
+			<g:Button styleName='sexybutton sexy_cm_silver {style.demoButton}'
 				ui:field='demoButton'>
 				<span>
 					<span>Demo</span>

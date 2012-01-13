@@ -12,7 +12,7 @@
     </path>
 
         
-        <target name='doCombines' depends='combine-js_CatchupMathMobile3, combine-css_CatchupMathMobile3'/>
+    <target name='doCombines' depends='combine-js_CatchupMathMobile3, combine-css_CatchupMathMobile3, combine-css_HmMobile'/>
         
     <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
         <!-- Combine CM JS into a single download
@@ -62,6 +62,19 @@
             	gwt-resources/css/menubar_layout.css
             	gwt-resources/css/mobile_question_box.css
                 gwt-resources/css/page_layout.css
+             " />
+        </concat>
+    </target>
+
+
+    <target name="combine-css_HmMobile">
+        <delete file="${web.dir}/gwt-resources/css/HmMobile_combined.css" />
+        <concat destfile="${web.dir}/gwt-resources/css/HmMobile_combined.css" append="true">
+            <filelist dir="${web.dir}" files="
+                ../../../../hotmath2/web/css/tutor_widget.css
+                assets/css/local_sexybuttons.css
+                gwt-resources/css/tutor_layout_tablet.css
+                gwt-resources/css/HmMobile.css
              " />
         </concat>
     </target>

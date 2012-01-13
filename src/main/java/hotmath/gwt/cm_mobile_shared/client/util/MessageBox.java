@@ -23,12 +23,15 @@ public class MessageBox {
         popup.setModal(true);
         
         FlowPanel mainPanel = new FlowPanel();
-        mainPanel.add(new Button("Close", new ClickHandler() {
+        Button btn = new Button("Close", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 popup.hide();
             }
-        }));
+        });
+        btn.getElement().setInnerHTML("<span><span>Close</span></span>");
+        btn.getElement().addClassName("sexy_cm_silver sexybutton");
+        mainPanel.add(btn);
         
         mainPanel.add(widget);
 

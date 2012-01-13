@@ -1076,9 +1076,7 @@ table {
 
 
 #show_whiteboard_button {
-    position: absolute;
-    top: 20px;
-    left: 290px;
+	margin-left: 40px;
 }
 
 
@@ -1471,7 +1469,7 @@ div.landscape div.page ul.touch li.group:active {
 }
 
 .question_head_divider { 
-  margin-top: 8px;
+  margin-bottom: 8px;
   height: 18px;
   background-image:url('/gwt-resources/images/page_divider_gradient.png');
   background-repeat: no-repeat;
@@ -1698,6 +1696,61 @@ div.landscape div.page ul.touch li.group:active {
     height: 24px;
     line-height: 24px;
 }
+
+
+
+
+
+
+
+
+.sexy_cm_silver span span {
+    font-size: 12px;
+    font-weight: normal;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+}
+.sexy_cm_silver:hover span, .sexy_cm_silver:focus span {
+    background-position: 100% -30px;
+}
+.sexy_cm_silver:hover span span, .sexy_cm_silver:focus span span {
+    background-position: 0 -30px;
+}
+.sexy_cm_silver:active span {
+    background-position: 100% -60px;
+}
+.sexy_cm_silver:active span span {
+    background-position: 0 -60px;
+}
+.sexy_cm_silver[disabled] span, .sexy_cm_silver.disabled span {
+    background-position: 100% -90px;
+}
+.sexy_cm_silver[disabled] span span, .sexy_cm_silver.disabled span span {
+    background-position: 0 -90px;
+}
+.sexybutton.sexy_cm_silver, .sexybutton.sexy_cm_silver:hover, .sexybutton.sexy_cm_silver:focus {
+    color: black !important;
+}
+.sexybutton.sexy_cm_silver[disabled], .sexybutton.sexy_cm_silver[disabled]:hover, .sexybutton.sexy_cm_silver[disabled]:active, .sexybutton.sexy_cm_silver[disabled]:focus, .sexybutton.sexy_cm_silver.disabled, .sexybutton.sexy_cm_silver.disabled:hover, .sexybutton.sexy_cm_silver.disabled:active, .sexybutton.sexy_cm_silver.disabled:focus {
+    color: #333333 !important;
+}
+.sexybutton.sexy_cm_silver span span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_silver_left.png");
+}
+.sexybutton.sexy_cm_silver span {
+    background-image: url("/assets/images/sexybuttons/sexybutton_silver_right.png");
+}
+.sexybutton.sexy_cm_silver span {
+    height: 30px;
+    line-height: 30px;
+}
+
+
+
+
+
+
+
+
 #canvas-container {
 	position: relative;
 }
@@ -2033,9 +2086,6 @@ p img {
 }
 
 
-#steps_next {
-  margin-right: 10px;
-}
 
 .step_title_step {
    background: #E7C2AA;
@@ -2079,23 +2129,16 @@ p img {
    color: black;
 }
 
-#steps_prev {
-    position: absolute;
-    top: 20px;        
-    left: 2px;
+#steps_next {
+  margin-right: 60px;
+  margin-left: 20px;
 }
 
-#steps_next {
-    position: absolute;
-    top: 20px;        
-    left: 63px;
+#steps_prev {
 }
 
 
 #new_problem {
-    position: absolute;
-    top: 20px;
-    left: 165px;
 }
 
 #tutor_message {
@@ -2133,6 +2176,25 @@ p img {
 
 .is_complete {
 	color: green;
+}
+
+
+
+
+#steps_tail {
+    background-image: url('/gwt-resources/images/tutor_buttonbar_bg.png');
+    background-repeat: repeat-x;
+    height: 40px;
+}
+
+#steps_tail {
+	margin-top: 10px;
+    font-size: 20px;
+    padding: 5px;
+}
+
+#steps_tail button {
+   1em;
 }
 
 /** Quiz Panel definition */

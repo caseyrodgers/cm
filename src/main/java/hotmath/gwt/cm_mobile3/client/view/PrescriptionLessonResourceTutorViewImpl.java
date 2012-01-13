@@ -110,7 +110,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         });
         
         btn.getElement().setInnerHTML("<span><span>" + btn.getText() + "</span></span>");
-        btn.addStyleName("sexybutton");
+        btn.addStyleName("sexybutton sexy_cm_silver");
         flowPanel.add(btn);
         
         
@@ -121,7 +121,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
             }
         });
         btn2.getElement().setInnerHTML("<span style='margin-left: 10px'><span>" + btn2.getText() + "</span></span>");
-        btn2.addStyleName("sexybutton");
+        btn2.addStyleName("sexybutton sexy_cm_silver");
         flowPanel.add(btn2);
         
         
@@ -204,13 +204,17 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
           var tutorFooter = $doc.getElementById('steps_tail');
           if(tutorFooter) {
               try {
-                 var showWhiteboard = $doc.createElement("button");
-                 showWhiteboard.className = 'sexybutton';
-                 showWhiteboard.id = 'show_whiteboard_button';
-                 showWhiteboard.innerHTML = "<span><span>Whiteboard</span></span>";
+                 var showWhiteboard = $doc.getElementById('show_whiteboard_button');
+                 if(!showWhiteboard) {
+                     showWhiteboard = $doc.createElement("button");
+                     showWhiteboard.className = 'sexybutton sexy_cm_silver';
+                     showWhiteboard.id = 'show_whiteboard_button';
+                     showWhiteboard.innerHTML = "<span><span>Whiteboard</span></span>";
+                     tutorFooter.appendChild(showWhiteboard);
+                 }
                  showWhiteboard.onclick = function() {
-                    instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::showWhiteboard_Gwt()();};
-                 tutorFooter.appendChild(showWhiteboard);
+                     instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::showWhiteboard_Gwt()();
+                 };
               }
               catch(E) {
                  alert(E);
