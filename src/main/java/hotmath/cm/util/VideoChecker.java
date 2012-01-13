@@ -106,7 +106,8 @@ public class VideoChecker implements SbTestImpl {
     
     public static void main(String as[]) {
         try {
-            new SbTesterFrameGeneric(new VideoChecker());
+            System.out.println("Video Checker: look for missing videos requried for mobile");
+            new VideoChecker().runTests();
         }
         catch(Exception e) {
             e.printStackTrace();
