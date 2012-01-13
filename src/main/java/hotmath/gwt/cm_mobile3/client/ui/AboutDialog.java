@@ -64,13 +64,14 @@ public class AboutDialog extends DialogBox  {
 		}
 		
 		FlowPanel hp = new FlowPanel();
-		Button close = new SexyButton("Close", "ok");
+		Button close = new SexyButton("Close");
 		close.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
             }
         });
+		close.getElement().setInnerHTML("<span><span>Close</span></span>");
 		hp.add(close);
 		hp.getElement().setAttribute("style", "margin: 5px 0 5px 5px");
 		

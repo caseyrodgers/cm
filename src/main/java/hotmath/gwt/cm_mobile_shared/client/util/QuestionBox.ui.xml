@@ -4,10 +4,10 @@
     <g:HTMLPanel>
         <p ui:field="questionContent"></p>
         <div class='footer'>
-            <g:Button styleName='sexybutton sexylarge' ui:field="yesButton">
+            <g:Button styleName='sexybutton sexy_cm_silver' ui:field="yesButton">
                 <span><span>Yes</span></span>
             </g:Button>
-            <g:Button styleName='sexybutton sexylarge' ui:field="noButton">
+            <g:Button styleName='sexybutton sexy_cm_silver' ui:field="noButton">
                 <span><span>No</span></span>
             </g:Button>
         </div>
