@@ -1480,7 +1480,25 @@ from HA_TEST_RUN_LESSON l JOIN HA_TEST_RUN_LESSON_PID p
 where l.run_id = ? order by lesson_number
 
 
+##
+.key=TEST_RUN_LESSON_STATUS
 
+SELECT x.run_id, x.id, x.lesson_name, x.date_completed, x.item_count, y.use_count
+FROM
+  (SELECT l.run_id, l.id, l.lesson_name, l.date_completed, count(p.id) as item_count
+   FROM HA_TEST_RUN_LESSON l
+   JOIN HA_TEST_RUN_LESSON_PID p ON p.lid = l.id
+   WHERE l.run_id = ?
+   GROUP BY l.id) x,
+
+  (SELECT l.run_id, l.id, l.lesson_name, l.date_completed, count(u.use_id) as use_count
+   FROM HA_TEST_RUN_LESSON l
+   JOIN HA_TEST_RUN_LESSON_PID p ON p.lid = l.id
+   LEFT OUTER JOIN HA_TEST_RUN_INMH_USE u ON u.run_id = l.run_id AND u.item_file = p.pid
+   WHERE l.run_id = ?
+   GROUP BY l.id) y
+
+WHERE x.id = y.id
 
 ##
 ## Class: CmReportCardDao

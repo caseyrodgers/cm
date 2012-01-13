@@ -117,20 +117,25 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public List<SessionTopic> getLessonStatuses(final int runId) throws Exception {
-        String sql = "select lesson_name,date_completed FROM HA_TEST_RUN_LESSON where run_id = ?";
-        List<SessionTopic> list = getJdbcTemplate().query(sql, new Object[] { runId }, new RowMapper<SessionTopic>() {
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TEST_RUN_LESSON_STATUS");
+
+        List<SessionTopic> list = getJdbcTemplate().query(sql, new Object[] { runId, runId }, new RowMapper<SessionTopic>() {
             @Override
             public SessionTopic mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Date dc = rs.getDate("date_completed");
-                SessionTopic st = new SessionTopic(rs.getString("lesson_name"), dc != null);
-                st.setTopicStatus(getTopicStatus(runId, st.getTopic()));
+                boolean completed = rs.getDate("date_completed") != null;
+                SessionTopic st = new SessionTopic(rs.getString("lesson_name"), completed);
+                int itemCount = rs.getInt("item_count");
+                int useCount = rs.getInt("use_count");
+                String status = String.format("%d of %d", useCount, itemCount);
+                st.setTopicStatus(status);
                 return st;
             }
         });
 
         return list;
     }
-
+/*
     private String getTopicStatus(int runId, String topic) {
 
         try {
@@ -177,7 +182,8 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
         }
 
     }
-
+*/
+    
     /**
      * Return the complete current definition of this test run
      * 
