@@ -435,7 +435,7 @@ public class AssessmentPrescription {
             ProblemID pid = new ProblemID(rpp.getFile());
 
             int pidGradeLevel = pid.getGradeLevel();
-            if (pidGradeLevel == testDefGradeLevel || rpp.getWidgetJsonArgs() != null) {
+            if (pidGradeLevel == testDefGradeLevel) {
                 logger.debug("adding exact grade level match or dynamnic: " + rpp);
                 session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
 

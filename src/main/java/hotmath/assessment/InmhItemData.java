@@ -131,7 +131,7 @@ public class InmhItemData {
     		return widgets;
     	
         // SQL to get list of ranges that match each INMH item
-        String sql = "select `range` from inmh_assessment i where i.file = ?";
+        String sql = "select `range` from inmh_assessment i where i.file = ? order by id";
         PreparedStatement ps = null;
 
         logger.debug("getting solution pool " + logTag);
