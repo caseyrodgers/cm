@@ -3,6 +3,7 @@ package hotmath.testset.ha;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
 
 import java.util.List;
@@ -66,5 +67,15 @@ public class HaTestRunDao_Test extends CmDbTestCase {
         List<TestRunLessonModel> lessons = dao.getTestRunLessons(conn, testRun.getRunId());
         
         dao.markLessonAsCompleted(conn, _testRun.getRunId(), lessons.get(0).getLesson());
+    }
+    
+    public void testGetLessonStatuses() throws Exception {
+        HaTestRun testRun = (_testRun != null?_testRun:setupDemoAccountTestRun());
+        
+        HaTestRunDao dao = HaTestRunDao.getInstance();
+
+        List<SessionTopic> list = dao.getLessonStatuses(testRun.getRunId());
+
+        assertTrue(list != null);
     }
 }
