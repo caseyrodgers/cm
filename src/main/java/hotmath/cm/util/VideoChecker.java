@@ -52,13 +52,13 @@ public class VideoChecker implements SbTestImpl {
 
         String base = CatchupMathProperties.getInstance().getSolutionBase();
 
-        String videoPath = "";
+
         File flvPath=null;
         File mp4Path=null;
         File ogvPath=null;
 
         if(videoKey.indexOf("youtube") > -1 || videoKey.indexOf("mathtv") > -1) {
-            videoPath = videoKey.substring(0, videoKey.indexOf(".flv"));
+            String videoPath = videoKey.substring(0, videoKey.indexOf(".flv"));
 
             String p[] =videoPath.split("/");
 
@@ -67,14 +67,13 @@ public class VideoChecker implements SbTestImpl {
             ogvPath = new File(base, "/help/flvs/tw/" + p[p.length-1]  + ".ogv");
         }
         else {
-            videoPath = "/help/flvs/tw/" + videoKey;
+            String videoPath = "/help/flvs/tw/" + videoKey;
 
-            flvPath = new File(videoPath + ".flv");
+            flvPath = new File(base, videoPath + ".flv");
 
-            mp4Path = new File("/help/flvs/tw/" + videoKey + ".mp4");
-            ogvPath = new File("/help/flvs/tw/" + videoKey + ".ogv");
+            mp4Path = new File(base, "/help/flvs/tw/" + videoKey + ".mp4");
+            ogvPath = new File(base, "/help/flvs/tw/" + videoKey + ".ogv");
         }
-        videoPath = base + videoPath;
 
         /** should be a .ogg and a .mp4 and a .flv
          *
