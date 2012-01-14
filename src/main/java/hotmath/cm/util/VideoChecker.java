@@ -36,7 +36,7 @@ public class VideoChecker implements SbTestImpl {
             ResultSet rs  = conn.createStatement().executeQuery(sql);
             while(rs.next()) {
                 if(!doesExistAsMobileVersion(rs.getString("link_key"))) {
-                    System.out.print("DOES NOT EXIST: " + rs.getString("lesson") + ", " + rs.getString("link_key"));
+                    System.out.println(rs.getString("link_key"));
                 }
             }
         }
@@ -63,8 +63,8 @@ public class VideoChecker implements SbTestImpl {
             String p[] =videoPath.split("/");
 
             flvPath = new File(base, videoPath + ".flv");
-            mp4Path = new File(base,"/help/flvs/tw/" + p[p.length-1]  + ".mp4");
-            ogvPath = new File(base, "/help/flvs/tw/" + p[p.length-1]  + ".ogv");
+            mp4Path = new File(base, videoPath + ".mp4");
+            ogvPath = new File(base, videoPath  + ".ogv");
         }
         else {
             String videoPath = "/help/flvs/tw/" + videoKey;
@@ -80,15 +80,15 @@ public class VideoChecker implements SbTestImpl {
          */
 
         if(!flvPath.exists()) {
-            System.out.println(flvPath + ": " + ".flv does not exist");
+            //System.out.println(flvPath + ": " + ".flv does not exist");
             return false;
         }
         if(!mp4Path.exists()) {
-            System.out.println(mp4Path + ": " + ".mp4 does not exist");
+            //System.out.println(mp4Path + ": " + ".mp4 does not exist");
             return false;
         }
         if(!ogvPath.exists()) {
-            System.out.println(ogvPath + ": " + ".ogv does not exist");
+            //System.out.println(ogvPath + ": " + ".ogv does not exist");
             return false;
         }
 
