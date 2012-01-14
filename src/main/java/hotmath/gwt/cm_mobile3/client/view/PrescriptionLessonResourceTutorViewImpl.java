@@ -212,6 +212,8 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
                      showWhiteboard.innerHTML = "<span><span>Whiteboard</span></span>";
                      tutorFooter.appendChild(showWhiteboard);
                  }
+                 
+                 showWhiteboard = $doc.getElementById('show_whiteboard_button');
                  showWhiteboard.onclick = function() {
                      instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::showWhiteboard_Gwt()();
                  };
