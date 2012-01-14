@@ -90,15 +90,15 @@ public class VideoChecker implements SbTestImpl {
          */
 
         if(!flvPath.exists()) {
-            //System.out.println(flvPath + ": " + ".flv does not exist");
+            System.out.println(flvPath + ": " + ".flv does not exist");
             return false;
         }
         if(!mp4Path.exists()) {
-            //System.out.println(mp4Path + ": " + ".mp4 does not exist");
+            System.out.println(mp4Path + ": " + ".mp4 does not exist");
             return false;
         }
         if(!ogvPath.exists()) {
-            //System.out.println(ogvPath + ": " + ".ogv does not exist");
+            System.out.println(ogvPath + ": " + ".ogv does not exist");
             return false;
         }
 
