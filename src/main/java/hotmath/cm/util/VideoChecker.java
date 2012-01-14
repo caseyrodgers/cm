@@ -56,6 +56,16 @@ public class VideoChecker implements SbTestImpl {
         File flvPath=null;
         File mp4Path=null;
         File ogvPath=null;
+        
+        
+        if(!isANumber(videoKey) && !videoKey.startsWith("/")) {
+            
+            /** must be mathtv
+             * MOVE TO CORRECT PLACE!
+             */
+            videoKey = "/help/flvs/mathtv/" + videoKey + ".flv";
+        }
+
 
         if(videoKey.indexOf("youtube") > -1 || videoKey.indexOf("mathtv") > -1) {
             String videoPath = videoKey.substring(0, videoKey.indexOf(".flv"));
@@ -94,6 +104,15 @@ public class VideoChecker implements SbTestImpl {
 
         return true;
 
+    }
+    
+    private boolean isANumber(String x) {
+        try {
+            Integer.parseInt(x);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 
     @Override

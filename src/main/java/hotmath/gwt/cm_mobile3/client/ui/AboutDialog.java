@@ -2,9 +2,7 @@ package hotmath.gwt.cm_mobile3.client.ui;
 
 import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 
@@ -14,7 +12,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -64,7 +61,7 @@ public class AboutDialog extends DialogBox  {
 		}
 		
 		FlowPanel hp = new FlowPanel();
-		Button close = new SexyButton("Close");
+		Button close = new Button("Close");
 		close.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
