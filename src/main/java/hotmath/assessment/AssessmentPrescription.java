@@ -270,6 +270,7 @@ public class AssessmentPrescription {
                 sessNum++;
             }
         }
+        
         logger.debug("Finished creating AssessmentPrescription from lessons: " + testRun.getRunId());
     }
 

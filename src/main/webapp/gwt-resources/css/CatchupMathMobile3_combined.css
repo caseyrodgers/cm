@@ -1016,7 +1016,7 @@ table {
 
 .buttonBar {
   margin-top: 40px;
-  height: 70px;
+  height: 60px;
 }
 
 
@@ -1660,7 +1660,7 @@ div.landscape div.page ul.touch li.group:active {
 .sexy_cm_red span span {
     font-size: 12px;
     font-weight: normal;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    text-shadow: none;
 }
 .sexy_cm_red:hover span, .sexy_cm_red:focus span {
     background-position: 100% -24px;
@@ -2188,7 +2188,8 @@ p img {
 }
 
 #steps_tail {
-	margin-top: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     font-size: 20px;
     padding: 5px;
 }
@@ -2264,11 +2265,15 @@ p img {
 
 .response_div {
    margin-right: 17px;
+   text-align: left;
+}
+
+.response_div_text {
 }
 
 
 .question_head img {
-    float: right;
+    float: none;
 }
 #canvas-container {
 	position: relative;

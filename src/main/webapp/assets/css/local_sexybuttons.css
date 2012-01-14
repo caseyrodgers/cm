@@ -168,7 +168,7 @@
 .sexy_cm_red span span {
     font-size: 12px;
     font-weight: normal;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    text-shadow: none;
 }
 .sexy_cm_red:hover span, .sexy_cm_red:focus span {
     background-position: 100% -24px;

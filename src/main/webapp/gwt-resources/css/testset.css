@@ -65,9 +65,13 @@
 
 .response_div {
    margin-right: 17px;
+   text-align: left;
+}
+
+.response_div_text {
 }
 
 
 .question_head img {
-    float: right;
+    float: none;
 }

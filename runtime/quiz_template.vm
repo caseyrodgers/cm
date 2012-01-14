@@ -17,7 +17,7 @@
 
             <div class='response_div' style='display: none;'>
                 <img id='response_image_$question.problemIndex' src='/images/tutor/spacer.gif'/>
-                <div id='response_text_$question.problemIndex' class='response_div_text'> &nbsp; </div>
+                <span id='response_text_$question.problemIndex' class='response_div_text'> &nbsp; </span>
             </div>
        </div>
        <div class='question_div' id='question_div_$velocityCount'  guid='$question.problemIndex'>$question.questionHtmlProcessed

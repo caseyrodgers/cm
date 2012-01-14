@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.cm.util.VideoChecker" -Dexec.args=$1 -o
