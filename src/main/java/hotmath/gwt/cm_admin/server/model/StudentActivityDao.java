@@ -534,9 +534,16 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	final String sql = QueryHelper.createInListSQL(sb.toString(), userIds);
     	if (logger.isDebugEnabled()) logger.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
 
+    	Object[] dateArray = new Object[2*dateRangeCount];
+    	int j = 0;
+    	for (int i=0; i<dateRangeCount; i++) {
+    		dateArray[j++] = dates[0];
+    		dateArray[j++] = dates[1];
+    	}
+
         List<Integer> list = this.getJdbcTemplate().query(
                 sql,
-                new Object[]{dates[0], dates[1], dates[0], dates[1], dates[0], dates[1], dates[0], dates[1], dates[0], dates[1]},
+                dateArray,
                 new RowMapper<Integer>() {
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                         Integer userId;
@@ -554,48 +561,80 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	return list;
     }
 
+    private int dateRangeCount;
+
 	private StringBuilder buildSQL(String options) throws Exception {
 		boolean includeLogin    = true;
     	boolean includeQuizView = true;
     	boolean includeQuizTake = true;
     	boolean includeResource = true;
     	boolean includeLesson   = true;
+    	boolean includeRegister = true;
+    	dateRangeCount = 0;
 
     	if (options != null && options.trim().length() > 0) {
         	if (logger.isDebugEnabled()) logger.debug("options: " + options);
-    		String[] option = options.split("|");
+    		String[] option = options.split(":");
+    		if (logger.isDebugEnabled()) {
+    			logger.debug("option[0]: " + option[0]);
+    			logger.debug("option[1]: " + option[1]);
+    			logger.debug("option[2]: " + option[2]);
+    			logger.debug("option[3]: " + option[3]);
+    			logger.debug("option[4]: " + option[4]);
+    			logger.debug("option[5]: " + option[5]);
+    		}
     		if (option != null) {
     		    if (option.length > 0) includeLogin    = new Boolean(option[0]);
     		    if (option.length > 1) includeQuizView = new Boolean(option[1]);
     		    if (option.length > 2) includeQuizTake = new Boolean(option[2]);
     		    if (option.length > 3) includeLesson   = new Boolean(option[3]);
     		    if (option.length > 4) includeResource = new Boolean(option[4]);
+    		    if (option.length > 5) includeRegister = new Boolean(option[5]);
+    		}
+    		if (logger.isDebugEnabled()) {
+    			logger.debug("includeLogin:    " + includeLogin);
+    			logger.debug("includeQuizView: " + includeQuizView);
+    			logger.debug("includeQuizTake: " + includeQuizTake);
+    			logger.debug("includeLesson:   " + includeLesson);
+    			logger.debug("includeResource: " + includeResource);
+    			logger.debug("includeRegister: " + includeRegister);
     		}
     	}
 
     	StringBuilder sb = new StringBuilder();
     	if (includeLogin) {
+    		dateRangeCount++;
     		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_LOGIN_ACTIVITY_IN_DATE_RANGE"));
     	}
     	if (includeQuizView) {
     		if (sb.length() > 0) sb.append(" UNION ");
+    		dateRangeCount++;
     		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_QUIZ_VIEW_ACTIVITY_IN_DATE_RANGE"));
     	}
     	if (includeQuizTake) {
     		if (sb.length() > 0) sb.append(" UNION ");
+    		dateRangeCount++;
     		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_QUIZ_TAKE_ACTIVITY_IN_DATE_RANGE"));
     	}
     	if (includeLesson) {
     		if (sb.length() > 0) sb.append(" UNION ");
+    		dateRangeCount++;
     		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_LESSON_ACTIVITY_IN_DATE_RANGE"));
     	}
     	if (includeResource) {
     		if (sb.length() > 0) sb.append(" UNION ");
+    		dateRangeCount++;
     		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_RESOURCE_ACTIVITY_IN_DATE_RANGE"));
+    	}
+    	if (includeRegister) {
+    		if (sb.length() > 0) sb.append(" UNION ");
+    		dateRangeCount++;
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_REGISTER_ACTIVITY_IN_DATE_RANGE"));
     	}
 
     	if (sb.length() == 0) {
     		if (logger.isDebugEnabled()) logger.debug("defaulting to full query");
+    		dateRangeCount = 6;
     		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE"));
     	}
 		return sb;
