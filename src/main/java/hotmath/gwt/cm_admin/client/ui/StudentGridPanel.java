@@ -395,13 +395,11 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lc.add(fp);
 
         // Date Range Panel
-        if (CmShared.getQueryParameter("debug") != null) {
         fp = new MyFormPanel();
         fp.setWidth(300);
         fp.setLabelWidth(80);
         fp.add(new DateRangePanel());
         lc.add(fp);
-        }
 
         return lc;
     }
@@ -1178,9 +1176,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, _quickSearch.trim());
                     }
 
-                    if (CmShared.getQueryParameter("debug") != null) {
                     String dateRange = null;
-
                     String value = dateRangeFilter.getValue();  /** will be null until initialized */
                     if (value != null && value.trim().length() > 0 && fromDate != null && toDate != null) {
                     	dateRange = dateFormat.format(fromDate) + " - " + dateFormat.format(toDate);
@@ -1188,7 +1184,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.OPTIONS, (_filterOptions!=null?_filterOptions.toParsableString():""));
                     }
                     _pageAction.setDateRange(dateRange);
-                    }
 
                     CmShared.getCmService().execute(_pageAction, this);
 
