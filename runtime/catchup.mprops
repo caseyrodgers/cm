@@ -474,7 +474,15 @@ WHERE t.user_id in ( $$UID_LIST$$ )
   AND r.run_id = l.run_id
   AND l.lesson_viewed BETWEEN ? and ?
   
- ####
+##  
+.key=STUDENTS_WITH_REGISTER_ACTIVITY_IN_DATE_RANGE
+
+SELECT DISTINCT u.uid as user_id
+FROM HA_USER u
+WHERE u.uid in ( $$UID_LIST$$ )
+  AND u.date_created BETWEEN ? and ?
+  
+####
 .key=STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE
 
 SELECT ux.user_id
@@ -516,7 +524,13 @@ WHERE t.user_id in ( $$UID_LIST$$ )
   AND r.run_id = l.run_id
   AND l.lesson_viewed BETWEEN ? and ?
 
+UNION
 
+SELECT DISTINCT u.uid as user_id
+FROM HA_USER u
+WHERE u.uid in ( $$UID_LIST$$ )
+  AND u.date_created BETWEEN ? and ?
+  
 #####
 
 ##################
