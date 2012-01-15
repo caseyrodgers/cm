@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -66,6 +67,9 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     HTMLPanel mainPanel;
 
     public void setVideoUrlWithOutExtension(String videoUrl) {
+        
+        Log.debug("Showing video: " + videoUrl);
+        
         String mp4File = videoUrl + ".mp4";
         String oggFile = videoUrl + ".ogv";
         String videoHtml = 

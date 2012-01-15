@@ -102,7 +102,6 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
             
             int cnt=0;
             for(InmhItemData itemData: resource.getItems()) {
-                
                 MyGenericTextTag textTag = new MyGenericTextTag(isRpp, itemData, touchHandler);
                 listItems.add(textTag);
                 
