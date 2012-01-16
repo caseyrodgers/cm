@@ -40,8 +40,6 @@ public class PrescriptionLessonResourceVideoActivity implements PrescriptionLess
             nonFlashUrl = video.substring(0, video.indexOf(".flv"));
         }
         else {
-     
-            
             nonFlashUrl = "/help/flvs/tw/" + video;
         }
         

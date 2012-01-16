@@ -282,7 +282,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
      *        this thread. But, by creating a new thread (Timer) the write
      *        works.
      */
-    private void showHelpPanel() {
+    static public void showHelpPanel() {
 
         Timer t = new Timer() {
             @Override
