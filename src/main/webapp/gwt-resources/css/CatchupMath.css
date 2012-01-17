@@ -913,8 +913,18 @@ img.resource-item-complete {
         background: url(/gwt-resources/images/icons/printer-icon.png) no-repeat center left !important;
 }
 .prescription-help-panel .info{
-	padding: 0px 10px 10px 10px;
+	background-color: #303030;
+	padding: 25px;
 	color: white;
+	
+	-moz-border-radius:10px;
+    border-radius: 10px;
+    
+    border: 2px solid #6E84A2;
+    
+    -moz-box-shadow: 3px 3px 3px #666;
+    -webkit-box-shadow: 3px 3px 3px #666;
+    box-shadow: 3px 3px 3px #666;
 }
 
 .prescription-help-panel ul {
