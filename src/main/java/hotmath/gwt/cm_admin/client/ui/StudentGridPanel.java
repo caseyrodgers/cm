@@ -54,10 +54,13 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
 import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.LoadListener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -93,6 +96,7 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -1350,11 +1354,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     	void init() {
     		
             dateRangeFilter = new TextField<String>();
-            dateRangeFilter.setEmptyText("--- Date Range ---");
+            dateRangeFilter.setEmptyText(" Use \"set\" for Date Range");
             dateRangeFilter.setFieldLabel("Date Range");
             dateRangeFilter.setWidth("160px");
             dateRangeFilter.setReadOnly(true);
             dateRangeFilter.setToolTip("No date range filter applied");
+            dateRangeFilter.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
+				@Override
+				public void handleEvent(BaseEvent be) {
+                	if (fromDate == null)
+                        fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+                    showDatePicker();
+                }
+            });
 
             toDate = new Date();
             addDaysToDate(toDate, 1);

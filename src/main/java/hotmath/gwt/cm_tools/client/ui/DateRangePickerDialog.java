@@ -129,17 +129,17 @@ public class DateRangePickerDialog extends Window {
 		groupOne.setFieldLabel("Select");
 		groupOne.setLabelSeparator("");
 
-		hasLoggedIn.setBoxLabel("Login");
+		hasLoggedIn.setBoxLabel("Logged In");
 		hasLoggedIn.setValue(true);
 		hasLoggedIn.setToolTip("Select students that have logged in");
 		groupOne.add(hasLoggedIn);
 
-		hasViewedTest.setBoxLabel("Viewed Quiz");
+		hasViewedTest.setBoxLabel("Started Quiz");
 		hasViewedTest.setValue(true);
-		hasViewedTest.setToolTip("Select students that have viewed a quiz");
+		hasViewedTest.setToolTip("Select students that have started a quiz");
 		groupOne.add(hasViewedTest);
 
-		hasTakenQuiz.setBoxLabel("Taken Quiz");
+		hasTakenQuiz.setBoxLabel("Took Quiz");
 		hasTakenQuiz.setValue(true);
 		hasTakenQuiz.setToolTip("Select students that have completed a quiz");
 		groupOne.add(hasTakenQuiz);
@@ -199,17 +199,17 @@ public class DateRangePickerDialog extends Window {
 	 */
 	public class FilterOptions {
 		boolean logins;
-		boolean quizView;
+		boolean quizStart;
 		boolean quizCheck;
 		boolean lessons;
 		boolean resources;
 		boolean registered;
 
-		public FilterOptions(boolean logins, boolean quizView,
+		public FilterOptions(boolean logins, boolean quizStart,
 				boolean quizCheck, boolean lessons, boolean resources,
 				boolean registered) {
 			this.logins = logins;
-			this.quizView = quizView;
+			this.quizStart = quizStart;
 			this.quizCheck = quizCheck;
 			this.lessons = lessons;
 			this.resources = resources;
@@ -224,12 +224,12 @@ public class DateRangePickerDialog extends Window {
 			this.logins = logins;
 		}
 
-		public boolean isQuizView() {
-			return quizView;
+		public boolean isQuizStart() {
+			return quizStart;
 		}
 
-		public void setQuizView(boolean quizView) {
-			this.quizView = quizView;
+		public void setQuizStart(boolean quizStart) {
+			this.quizStart = quizStart;
 		}
 
 		public boolean isQuizCheck() {
@@ -265,14 +265,14 @@ public class DateRangePickerDialog extends Window {
 		}
 
 		public String toParsableString() {
-			return logins + ":" + quizView + ":" + quizCheck + ":" + lessons
+			return logins + ":" + quizStart + ":" + quizCheck + ":" + lessons
 					+ ":" + resources + ":" + registered;
 		}
 
 		@Override
 		public String toString() {
 			return "FilterOptions [logins=" + (logins ? 1 : 0) + ", quizView="
-					+ (quizView ? 1 : 0) + ", quizCheck=" + (quizCheck ? 1 : 0)
+					+ (quizStart ? 1 : 0) + ", quizCheck=" + (quizCheck ? 1 : 0)
 					+ ", lessons=" + (lessons ? 1 : 0) + ", resources="
 					+ (resources ? 1 : 0) + ", registered="
 					+ (registered ? 1 : 0) + "]";
@@ -292,7 +292,7 @@ public class DateRangePickerDialog extends Window {
 				return (this.lessons == filterOptions.lessons
 						&& this.logins == filterOptions.logins
 						&& this.quizCheck == filterOptions.quizCheck
-						&& this.quizView == filterOptions.quizView
+						&& this.quizStart == filterOptions.quizStart
 						&& this.resources == filterOptions.resources && this.registered == filterOptions.registered);
 			}
 			return false;
