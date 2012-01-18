@@ -1341,6 +1341,29 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
     static TextField<String> dateRangeFilter;
     static FilterOptions _filterOptions;
+    
+    public Date getFromDate() {
+    	if (fromDate == null)
+            fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+        return fromDate;
+    }
+    
+    public Date getToDate() {
+    	if (toDate == null) {
+            toDate = new Date();
+            addDaysToDate(toDate, 1);
+    	}
+    	return toDate;
+    }
+
+    @SuppressWarnings("deprecation") // GWT requires Date
+    public void addDaysToDate(Date date, int days) {
+        date.setDate(date.getDate() + days);
+    }
+
+    public String formatDateRange() {
+        return dateFormat.format(getFromDate()) + " - " + dateFormat.format(getToDate());
+    }
 
     class DateRangePanel extends HorizontalPanel {
         
@@ -1362,14 +1385,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             dateRangeFilter.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
 				@Override
 				public void handleEvent(BaseEvent be) {
-                	if (fromDate == null)
-                        fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
+                	getFromDate();
                     showDatePicker();
                 }
             });
 
-            toDate = new Date();
-            addDaysToDate(toDate, 1);
+            getToDate();
 
             add(dateRangeFilter);
             
@@ -1394,11 +1415,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             add(clearButton);
 
     	}
-
-        @SuppressWarnings("deprecation") // GWT requires Date
-        public void addDaysToDate(Date date, int days) {
-            date.setDate(date.getDate() + days);
-        }
 
         private void showDatePicker() {
             DateRangePickerDialog.showSharedInstance(fromDate, toDate, new DateRangePickerDialog.Callback() {

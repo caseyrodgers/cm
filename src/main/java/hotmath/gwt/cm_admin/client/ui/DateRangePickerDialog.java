@@ -70,7 +70,7 @@ public class DateRangePickerDialog extends Window {
 
 						Date from = _defaultStartDate;
 						Date to = new Date();
-						HighlightsDataWindow.addDaysToDate(to, 1);
+						StudentGridPanel.instance.addDaysToDate(to, 1);
 
 						DateRangePickerDialog.this.callback.datePicked(from,
 								to, getFilterOptions());
