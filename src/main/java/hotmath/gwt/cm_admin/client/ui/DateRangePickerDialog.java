@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 
 import java.util.Date;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -351,4 +352,8 @@ class DatePickerWrapper extends LayoutContainer {
 	private String asDateString(Date d) {
 		return DateTimeFormat.getShortDateFormat().format(d);
 	}
+}
+
+abstract class AdvOptCallback {
+	abstract void setAdvancedOptions(Map<String,Boolean> optionMap);
 }
