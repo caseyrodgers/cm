@@ -411,6 +411,27 @@ font-color: green;
 #steps_tail {
 	position: relative;
 	height: 70px;
+}
+
+
+
+
+
+/** Game Styles */
+
+.circleBase {
+    -webkit-border-radius: 999px;
+    -moz-border-radius: 999px;
+    border-radius: 999px;
+    behavior: url(PIE.htc);
+}
+
+.circleType3 {
+   width: 500px;
+   height: 500px;
+   background: cyan;
+   border: 30px solid blue;
+   border-image: initial;
 }body {
   margin: 0px;
   padding: 0px;

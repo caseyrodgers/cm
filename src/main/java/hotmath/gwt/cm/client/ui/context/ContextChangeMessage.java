@@ -30,9 +30,9 @@ public class ContextChangeMessage extends CmWindow {
         lca.addStyleName("suggest-div");
 
         html = "<ul>" + 
-               "<li>The Help button has neat features</li> " + 
+               "<li>Use the Help button for feedback and progress</li> " + 
                "<li>Check for new Flash Cards and Games</li> " + 
-               "<li>Use our whiteboard to work the problems</li>" + "</ul>";
+               "<li>Use our whiteboard to work out the problems</li>" + "</ul>";
 
         lca.add(new Html(html));
 

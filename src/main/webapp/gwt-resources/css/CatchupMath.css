@@ -1307,3 +1307,9 @@ SolutionSetCompleteDialog .results{
 .PrescriptionLessonChooserDialog .is_complete {
 	text-align: center;
 }
+
+
+ /** turn off hints/steps for all EPPs */
+.is_epp #steps_tail {
+	display: none;
+}

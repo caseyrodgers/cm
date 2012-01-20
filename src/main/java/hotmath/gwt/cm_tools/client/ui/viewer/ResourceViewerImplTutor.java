@@ -233,8 +233,19 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         shouldExpandSolution = true;
                         // showWorkDialog();
                     }
-                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs());
+                    
+                    
+                    /** if is EPP, then turn off steps/hints and hide button bar */
+                    boolean isEpp=false;
+                    if(getResourceItem().getType().equals("cmextra")) {
+                        isEpp=true;
+                        tutorPanel.addStyleName("is_epp");
+                    }
 
+                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), 
+                             getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),
+                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp);
+                    
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -352,8 +363,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      * 
      * @param pid
      */
-    static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,String solutionHtml,String solutionData) /*-{
-                                          $wnd.doLoad_Gwt(pid, title,jsonConfig, hasShowWork,shouldExpandSolution,solutionHtml,solutionData);
+    static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,String solutionHtml,String solutionData,boolean isEpp) /*-{
+                                          $wnd.doLoad_Gwt(pid, title,jsonConfig, hasShowWork,shouldExpandSolution,solutionHtml,solutionData,isEpp);
                                           }-*/;
 
     static private native void expandAllSteps() /*-{

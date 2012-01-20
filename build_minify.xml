@@ -26,6 +26,13 @@
                	   dom_utils-min.js            	
                    whiteboard-min.js
             	   quiz-min.js
+
+                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/prototype.js
+                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/s2.js
+
+                  ../../../../../../hotmath2/web/js/tutor_graphic-min.js
+
+
                    ../../../../../../hotmath2/web/js/tutor_dynamic-min.js
                    ../../../../../../hotmath2/web/js/tutor_widget.js
             	   ../../../../../../hotmath2/web/js/tutor_widget_validation-min.js
