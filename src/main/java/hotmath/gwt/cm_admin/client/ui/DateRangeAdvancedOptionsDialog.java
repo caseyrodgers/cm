@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
@@ -45,7 +46,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 	private CheckBoxGroup registered;
 
 	private FieldSet fs;
-	private int formHeight = 260;
+	private int formHeight = 275;
 	private int formWidth  = 260;
 	private AdvOptCallback callback;
 	private Map<String,Boolean> advOptionsMap;
@@ -63,8 +64,17 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 		this.advOptionsMap = optionMap;
 
 		advOptWindow = new CmWindow();
+
+		advOptWindow.setHeading("Set Advanced Options");
+		advOptWindow.setWidth(formWidth+10);
+		advOptWindow.setHeight(formHeight+30);
+		advOptWindow.setLayout(new FitLayout());
+		advOptWindow.setResizable(false);
+		advOptWindow.setDraggable(true);
+		advOptWindow.setModal(true);
+
 		advOptWindow.add(optionsForm());
-		
+
 		setForm();
 	}
 	
@@ -79,6 +89,9 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 		fp.setIconStyle("icon-form");
 		fp.setButtonAlign(HorizontalAlignment.CENTER);
 		fp.setLayout(new FormLayout());
+		
+		Text text = new Text("Students will be filtered based on the activity options selected below.");
+        fp.add(text);
 
         advOptions = new FieldSet();
         advOptions.setWidth(233);
@@ -165,14 +178,6 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
         
-		advOptWindow.setHeading("Set Advanced Options");
-		advOptWindow.setWidth(formWidth+10);
-		advOptWindow.setHeight(formHeight+20);
-		advOptWindow.setLayout(new FitLayout());
-		advOptWindow.setResizable(false);
-		advOptWindow.setDraggable(true);
-		advOptWindow.setModal(true);
-
         return fp;
 	}
 
