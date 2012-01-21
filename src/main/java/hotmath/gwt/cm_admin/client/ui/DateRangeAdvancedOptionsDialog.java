@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import java.util.HashMap;
@@ -46,10 +45,17 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 	private CheckBoxGroup registered;
 
 	private FieldSet fs;
-	private int formHeight = 240;
-	private int formWidth  = 340;
+	private int formHeight = 260;
+	private int formWidth  = 260;
 	private AdvOptCallback callback;
 	private Map<String,Boolean> advOptionsMap;
+	
+	public static final String LOGGED_IN      = "logged_in";
+	public static final String STARTED_QUIZ   = "started_quiz";
+	public static final String TOOK_QUIZ      = "took_quiz";
+	public static final String VIEWED_LESSONS = "viewed_lessons";
+	public static final String USED_RESOURCES = "used_resources";
+	public static final String REGISTERED     = "registered";
 
 	public DateRangeAdvancedOptionsDialog(AdvOptCallback callback, Map <String,Boolean> optionMap) {
 
@@ -60,12 +66,11 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 		advOptWindow.add(optionsForm());
 		
 		setForm();
-
 	}
 	
 	private FormPanel optionsForm() {
 		FormPanel fp = new FormPanel();
-		fp.setLabelWidth(180);
+		fp.setLabelWidth(170);
 		fp.setHeight(formHeight);
 		fp.setFooter(true);
 		fp.setFrame(false);
@@ -76,6 +81,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 		fp.setLayout(new FormLayout());
 
         advOptions = new FieldSet();
+        advOptions.setWidth(233);
         
 		FormLayout fl = new FormLayout();
 		fl.setLabelWidth(fp.getLabelWidth());
@@ -85,74 +91,67 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
         advOptions.addStyleName("advanced-options-fieldset");
 
 		isLoggedIn = new CheckBox();
-        isLoggedIn.setId("logged_in");
-        isLoggedIn.setValue(advOptionsMap.get("logged_in"));
+        isLoggedIn.setId(LOGGED_IN);
+        isLoggedIn.setValue(advOptionsMap.get(LOGGED_IN));
         isLoggedIn.setToolTip("Select students that logged in.");
         loggedIn = new CheckBoxGroup(); 
         loggedIn.setFieldLabel("Logged in");
-        loggedIn.setId("logged_in");
+        loggedIn.setId(LOGGED_IN);
         loggedIn.add(isLoggedIn);
-        advOptions.add(viewedLessons);
+        advOptions.add(loggedIn);
 
         isStartedQuiz = new CheckBox();
-        isStartedQuiz.setId("started_quiz");
-        isStartedQuiz.setValue(advOptionsMap.get("started_quiz"));
+        isStartedQuiz.setId(STARTED_QUIZ);
+        isStartedQuiz.setValue(advOptionsMap.get(STARTED_QUIZ));
         isStartedQuiz.setToolTip("Select students that started a quiz.");
         startedQuiz = new CheckBoxGroup();
         startedQuiz.setFieldLabel("Started quiz");
-        startedQuiz.setId("started_quiz");
+        startedQuiz.setId(STARTED_QUIZ);
         startedQuiz.add(isStartedQuiz);
 		advOptions.add(startedQuiz); 
 
         isTookQuiz = new CheckBox();
-        isTookQuiz.setId("took_quiz");
-        isTookQuiz.setValue(advOptionsMap.get("took_quiz"));
+        isTookQuiz.setId(TOOK_QUIZ);
+        isTookQuiz.setValue(advOptionsMap.get(TOOK_QUIZ));
         isTookQuiz.setToolTip("Select students that completed a quiz.");
         tookQuiz = new CheckBoxGroup();
         tookQuiz.setFieldLabel("Took quiz");
-        tookQuiz.setId("took_quiz");
+        tookQuiz.setId(TOOK_QUIZ);
         tookQuiz.add(isTookQuiz);
 		advOptions.add(tookQuiz);
 
 		isViewedLessons = new CheckBox();
-        isViewedLessons.setId("viewed_lessons");
-        isViewedLessons.setValue(advOptionsMap.get("viewed_lessons"));
+        isViewedLessons.setId(VIEWED_LESSONS);
+        isViewedLessons.setValue(advOptionsMap.get(VIEWED_LESSONS));
         isViewedLessons.setToolTip("Select students that viewed a lesson.");
         viewedLessons = new CheckBoxGroup(); 
         viewedLessons.setFieldLabel("Viewed lessons");
-        viewedLessons.setId("viewed_lessons");
+        viewedLessons.setId(VIEWED_LESSONS);
         viewedLessons.add(isViewedLessons);
         advOptions.add(viewedLessons);
 
 		isUsedResources = new CheckBox();
-        isUsedResources.setId("used_resources");
-        isUsedResources.setValue(advOptionsMap.get("used_resources"));
-        isUsedResources.setToolTip("Select students that completed a practice problem, viewed a video, or played a math game.");
+        isUsedResources.setId(USED_RESOURCES);
+        isUsedResources.setValue(advOptionsMap.get(USED_RESOURCES));
+        isUsedResources.setToolTip("Select students that viewed a practice problem or video, or played a math game.");
         usedResources = new CheckBoxGroup(); 
         usedResources.setFieldLabel("Used resources");
-        usedResources.setId("used_resources");
+        usedResources.setId(USED_RESOURCES);
         usedResources.add(isUsedResources);
         advOptions.add(usedResources);
 
 		isRegistered = new CheckBox();
-        isRegistered.setId("registered");
-        isRegistered.setValue(advOptionsMap.get("registered"));
+        isRegistered.setId(REGISTERED);
+        isRegistered.setValue(advOptionsMap.get(REGISTERED));
+        isRegistered.setToolTip("Select students that registered.");
         registered = new CheckBoxGroup(); 
         registered.setFieldLabel("Registered");
-        registered.setId("registered");
+        registered.setId(REGISTERED);
         registered.add(isRegistered);
         advOptions.add(registered);
 
-		advOptWindow.setHeading("Set Options");
-		advOptWindow.setWidth(formWidth+10);
-		advOptWindow.setHeight(formHeight+20);
-		advOptWindow.setLayout(new FitLayout());
-		advOptWindow.setResizable(false);
-		advOptWindow.setDraggable(true);
-		advOptWindow.setModal(true);
-
 		fp.add(advOptions);
-		
+
 		Button resetBtn = resetButton(fp);
 
 		Button cancelBtn = cancelButton();
@@ -166,6 +165,14 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
         
+		advOptWindow.setHeading("Set Advanced Options");
+		advOptWindow.setWidth(formWidth+10);
+		advOptWindow.setHeight(formHeight+20);
+		advOptWindow.setLayout(new FitLayout());
+		advOptWindow.setResizable(false);
+		advOptWindow.setDraggable(true);
+		advOptWindow.setModal(true);
+
         return fp;
 	}
 
@@ -174,7 +181,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 	}
 
 	private Button resetButton(final FormPanel fp) {
-		Button cancelBtn = new Button("Reset", new SelectionListener<ButtonEvent>() {  
+		Button resetBtn = new Button("Reset", new SelectionListener<ButtonEvent>() {  
 	    	public void componentSelected(ButtonEvent ce) {
 	    		
 	        	isLoggedIn.setValue(true);
@@ -185,8 +192,8 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 	            isRegistered.setValue(true);
 	        }  
 	    });
-		cancelBtn.setToolTip("Reset to default values");
-		return cancelBtn;
+		resetBtn.setToolTip("Reset to default values");
+		return resetBtn;
 	}
 	
 	private Button cancelButton() {
@@ -208,27 +215,27 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
                 boolean value;
 
                 value = isLoggedIn.getValue();
-                optionMap.put("logged_in", value);
+                optionMap.put(LOGGED_IN, value);
                 isValid = (isValid || value);
 
                 value = isStartedQuiz.getValue();
-                optionMap.put("started_quiz", value);
+                optionMap.put(STARTED_QUIZ, value);
                 isValid = (isValid || value);
 
                 value = isTookQuiz.getValue();
-                optionMap.put("took_quiz", isTookQuiz.getValue());
+                optionMap.put(TOOK_QUIZ, isTookQuiz.getValue());
                 isValid = (isValid || value);
 
                 value = isViewedLessons.getValue();
-                optionMap.put("viewed_lessons", isViewedLessons.getValue());
+                optionMap.put(VIEWED_LESSONS, isViewedLessons.getValue());
                 isValid = (isValid || value);
 
                 value = isUsedResources.getValue();
-                optionMap.put("used_resources", isUsedResources.getValue());
+                optionMap.put(USED_RESOURCES, isUsedResources.getValue());
                 isValid = (isValid || value);
 
                 value = isRegistered.getValue();
-                optionMap.put("registered", isRegistered.getValue());
+                optionMap.put(REGISTERED, isRegistered.getValue());
                 isValid = (isValid || value);
 
                 if (isValid) {

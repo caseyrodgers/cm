@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -17,8 +18,6 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -48,7 +47,7 @@ public class DateRangePickerDialog extends Window {
 
 	private DateRangePickerDialog() {
 		addStyleName("date-range-picker-dialog");
-		setSize(420, 435);
+		setSize(420, 395);
 		setHeading("Choose Date Range");
 		setModal(true);
 		setResizable(false);
@@ -60,6 +59,8 @@ public class DateRangePickerDialog extends Window {
 				.add(createToPicker(), new BorderLayoutData(LayoutRegion.EAST));
 		mainPanel.setHeight(280);
 		add(mainPanel);
+		
+		
 		add(createOptionsPanel());
 
 		_defaultStartDate = CatchupMathAdmin.getInstance()
@@ -102,12 +103,66 @@ public class DateRangePickerDialog extends Window {
 	}
 
 	private FilterOptions getFilterOptions() {
-		return new FilterOptions(hasLoggedIn.getValue(),
-				hasViewedTest.getValue(), hasTakenQuiz.getValue(),
-				hasViewedResources.getValue(), hasViewedLessons.getValue(),
-				hasRegistered.getValue());
+		return new FilterOptions(loggedIn, startedQuiz, tookQuiz,
+				usedResources, viewedLessons, registered);
 	}
 
+	Boolean loggedIn = new Boolean(true);
+	Boolean startedQuiz = new Boolean(true);
+	Boolean tookQuiz = new Boolean(true);
+	Boolean viewedLessons = new Boolean(true);
+	Boolean usedResources = new Boolean(true);
+	Boolean registered = new Boolean(true);
+	
+	private Widget createOptionsPanel() {
+		FormPanel fp = new FormPanel();
+		fp.setFooter(false);
+		fp.setFrame(false);
+		fp.setHeaderVisible(false);
+		fp.setBodyBorder(false);
+		fp.setIconStyle("icon-form");
+		fp.setButtonAlign(HorizontalAlignment.LEFT);
+		fp.setFieldWidth(60);
+		fp.setLayout(new FormLayout());
+		
+		fp.add(advancedOptionsBtn());
+		
+		return fp;
+	}
+
+	private Button advancedOptionsBtn() {
+		Button btn = new Button("Advanced Options");
+		btn.setToolTip("Select Activities: logged in, started quizzes, took quizzes, viewed lessons, used resources, registered");
+		btn.setWidth("110px");
+	    btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+	        public void componentSelected(ButtonEvent ce) {
+	            AdvOptCallback callback = new AdvOptCallback() {
+					@Override
+					void setAdvancedOptions(Map<String, Boolean> optionMap) {
+						loggedIn = optionMap.get(DateRangeAdvancedOptionsDialog.LOGGED_IN);
+						startedQuiz = optionMap.get(DateRangeAdvancedOptionsDialog.STARTED_QUIZ);
+						tookQuiz = optionMap.get(DateRangeAdvancedOptionsDialog.TOOK_QUIZ);
+						viewedLessons = optionMap.get(DateRangeAdvancedOptionsDialog.VIEWED_LESSONS);
+						usedResources = optionMap.get(DateRangeAdvancedOptionsDialog.USED_RESOURCES);
+						registered = optionMap.get(DateRangeAdvancedOptionsDialog.REGISTERED);
+					}
+	            };
+	            final Map<String,Boolean>advOptionsMap = new HashMap <String,Boolean> ();
+
+	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.LOGGED_IN, loggedIn);
+	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.STARTED_QUIZ, startedQuiz);
+	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.TOOK_QUIZ, tookQuiz);
+	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.VIEWED_LESSONS, viewedLessons);
+	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.USED_RESOURCES, usedResources);
+	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.REGISTERED, registered);
+
+	            new DateRangeAdvancedOptionsDialog(callback, advOptionsMap).setVisible(true);              
+	        }
+	    });
+		return btn;
+	}
+
+	/*
 	CheckBox hasLoggedIn = new CheckBox();
 	CheckBox hasViewedTest = new CheckBox();
 	CheckBox hasTakenQuiz = new CheckBox();
@@ -175,7 +230,7 @@ public class DateRangePickerDialog extends Window {
 		fp.add(text);
 		return fp;
 	}
-
+*/
 	public void setCallback(Callback callback, Date from, Date to) {
 		this.callback = callback;
 
@@ -310,6 +365,7 @@ public class DateRangePickerDialog extends Window {
 	public interface Callback {
 		void datePicked(Date from, Date to, FilterOptions options);
 	}
+	
 }
 
 class DatePickerWrapper extends LayoutContainer {
