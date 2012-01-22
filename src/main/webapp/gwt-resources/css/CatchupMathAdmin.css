@@ -234,6 +234,14 @@
 	width: 420px;
 }
 
+.advanced-options-fieldset {
+	margin-top: 20px;
+}
+
+.date-range-adv-options-fieldset {
+	margin-top: 15px;
+}
+
 .student-grid-panel-grid {
 	height: 200px;
 }

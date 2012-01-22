@@ -101,7 +101,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 		fl.setDefaultWidth(100);
 		
 		advOptions.setLayout(fl);
-        advOptions.addStyleName("advanced-options-fieldset");
+        advOptions.addStyleName("date-range-adv-options-fieldset");
 
 		isLoggedIn = new CheckBox();
         isLoggedIn.setId(LOGGED_IN);
