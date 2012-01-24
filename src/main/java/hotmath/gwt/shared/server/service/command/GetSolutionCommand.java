@@ -1,8 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.HotMathException;
 import hotmath.HotMathLogger;
-import hotmath.HotMathProperties;
 import hotmath.HotMathUtilities;
 import hotmath.ProblemID;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -14,22 +12,13 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
-import hotmath.util.VelocityTemplateFromStringManager;
 import hotmath.util.sql.SqlUtilities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import sb.util.SbFile;
 
 /**
  * Return the raw HTML that makes up the solution
@@ -68,21 +57,21 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             String path = ppid.getSolutionPath_DirOnly("solutions");
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
-            logger.debug(String.format("+++ execute(): solution_html done in: %d msec",	System.currentTimeMillis()-startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): solution_html done in: %d msec",	System.currentTimeMillis()-startTime));
             
             startTime = System.currentTimeMillis();
 
-            logger.debug(String.format("+++ execute(): solutionHtml (Velocity) done in: %d msec",System.currentTimeMillis()-startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): solutionHtml (Velocity) done in: %d msec",System.currentTimeMillis()-startTime));
             
             startTime = System.currentTimeMillis();
             boolean hasShowWork = getHasShowWork(conn, uid, pid);
-            logger.debug(String.format("+++ execute(): getHasShowWork() done in: %d msec",
-                	System.currentTimeMillis()-startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): getHasShowWork() done in: %d msec",
+                    	System.currentTimeMillis()-startTime));
 
             startTime = System.currentTimeMillis();
             SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,sp.getData(),hasShowWork);
-            logger.debug(String.format("+++ execute(): SolutionInfo() done in: %d msec",
-                	System.currentTimeMillis()-startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): SolutionInfo() done in: %d msec",
+                    	System.currentTimeMillis()-startTime));
 
             return solutionInfo;
         } catch (Exception e) {
