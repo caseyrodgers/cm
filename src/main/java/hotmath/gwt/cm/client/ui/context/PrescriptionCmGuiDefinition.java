@@ -356,7 +356,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_SOLUTION_SHOW) {
                     __last_solution_item = (InmhItemData) event.getEventData();
-                } else if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE) {
+                } else if (event.getEventType() == EventType.EVENT_TYPE_REQUIRED_COMPLETE || event.getEventType() == EventType.EVENT_TYPE_EPP_COMPLETE) {
                     // update the InmhItemData associated with the currently
                     // active solution
 

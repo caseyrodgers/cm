@@ -29,6 +29,12 @@ public enum EventType{
      */
     EVENT_TYPE_REQUIRED_COMPLETE,
     
+    
+    /** Fired when a EPP has been completed
+     * 
+     */
+    EVENT_TYPE_EPP_COMPLETE,
+    
     /** Fired when a resource viewer is manually closed/removed
      * 
      */

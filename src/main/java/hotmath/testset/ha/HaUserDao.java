@@ -355,4 +355,28 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
         }
     }
     
+    
+    /** Save the value of a user input widget answer
+     * 
+     * @TODO: this does not seem to belong in this DAO. 
+     * 
+     * @param runId
+     * @param pid
+     * @param correct
+     */
+    public void saveUserTutorInputWidgetAnswer(final int runId, final String pid, final boolean correct) {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into HA_TEST_RUN_WIDGET_INPUT_ANSWERS(run_id, pid, correct,answer_time)values(?,?,?,now())";                
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, runId);
+                ps.setString(2, pid);
+                ps.setInt(3,correct?1:0);
+                
+                return ps;
+            }
+        });
+    }
+    
 }

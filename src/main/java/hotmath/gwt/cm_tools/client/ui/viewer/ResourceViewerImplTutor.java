@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -75,13 +77,37 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         
         addExternTutorHooks(this);
     }
-    private native void  addExternTutorHooks(ResourceViewerImplTutor tutor) /*-{
+    
+    private void tutorInputWidgetComplete_gwt(final int yesNo) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getRunId(), pid, yesNo==0?false:true);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
+            }
+            
+            @Override
+            public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
+                if(!result.getData("status").equals("OK")) {
+                    CatchupMathTools.showAlert("There was a problem saving answer.");
+                }
+            }
+        }.register();
+    }
+    
+    private native void  addExternTutorHooks(ResourceViewerImplTutor x) /*-{
     
          // override global functions defined in tutor_dynamic
          //
          $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionSetComplete(II);
-         
          $wnd.TutorDynamic.setSolutionTitle = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionTitle(II);
+         $wnd.tutorInputWidgetComplete_gwt = function (yesNo) {
+            x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::tutorInputWidgetComplete_gwt(I)(yesNo);
+        };
+         
     }-*/;
     
     static private void setSolutionTitle(int progNum, int limit) {

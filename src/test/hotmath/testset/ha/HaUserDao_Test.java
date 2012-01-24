@@ -13,8 +13,8 @@ public class HaUserDao_Test extends CmDbTestCase {
     protected void setUp() throws Exception {
         super.setUp();
         
-        if(_user == null) {
-            setupDemoAccount();
+        if(_testRun == null) {
+            setupDemoAccountTestRun();
         }
     }
     public void testReadByIdNoCache() throws Exception {
@@ -25,5 +25,9 @@ public class HaUserDao_Test extends CmDbTestCase {
     public void testClientEnvironment() throws Exception {
         ClientEnvironment ce = HaUserDao.getInstance().getLatestClientEnvironment(_user.getUserKey());
         assert(ce.isFlashEnabled());
+    }
+    
+    public void testSaveUserTutorInputWidget() throws Exception {
+        HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(_testRun.getRunId(),_test.getPids().get(0),false);
     }
 }
