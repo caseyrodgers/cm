@@ -15,7 +15,6 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.DatePicker;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -33,7 +32,6 @@ public class DateRangePickerDialog extends Window {
 	static public DateRangePickerDialog showSharedInstance(Date from, Date to,
 			Callback callback) {
 
-		// __instance = null; // force new each time.
 		if (__instance == null) {
 			__instance = new DateRangePickerDialog();
 		}
@@ -80,7 +78,7 @@ public class DateRangePickerDialog extends Window {
 					}
 				}));
 
-		addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
+		addButton(new Button("Apply", new SelectionListener<ButtonEvent>() {
 			@Override
 			public void componentSelected(ButtonEvent ce) {
 
@@ -162,75 +160,6 @@ public class DateRangePickerDialog extends Window {
 		return btn;
 	}
 
-	/*
-	CheckBox hasLoggedIn = new CheckBox();
-	CheckBox hasViewedTest = new CheckBox();
-	CheckBox hasTakenQuiz = new CheckBox();
-	CheckBox hasViewedResources = new CheckBox();
-	CheckBox hasViewedLessons = new CheckBox();
-	CheckBox hasRegistered = new CheckBox();
-
-	private Widget createOptionsPanel() {
-		FormPanel fp = new FormPanel();
-		fp.setFooter(false);
-		fp.setFrame(false);
-		fp.setHeaderVisible(false);
-		fp.setBodyBorder(false);
-		fp.setIconStyle("icon-form");
-		fp.setButtonAlign(HorizontalAlignment.CENTER);
-		fp.setFieldWidth(60);
-		fp.setLayout(new FormLayout());
-
-		CheckBoxGroup groupOne = new CheckBoxGroup();
-		groupOne.setFieldLabel("Select");
-		groupOne.setLabelSeparator("");
-
-		hasLoggedIn.setBoxLabel("Logged In");
-		hasLoggedIn.setValue(true);
-		hasLoggedIn.setToolTip("Select students that have logged in");
-		groupOne.add(hasLoggedIn);
-
-		hasViewedTest.setBoxLabel("Started Quiz");
-		hasViewedTest.setValue(true);
-		hasViewedTest.setToolTip("Select students that have started a quiz");
-		groupOne.add(hasViewedTest);
-
-		hasTakenQuiz.setBoxLabel("Took Quiz");
-		hasTakenQuiz.setValue(true);
-		hasTakenQuiz.setToolTip("Select students that have completed a quiz");
-		groupOne.add(hasTakenQuiz);
-
-		CheckBoxGroup groupTwo = new CheckBoxGroup();
-		groupTwo.setFieldLabel(" ");
-		groupTwo.setLabelSeparator("");
-
-		hasViewedLessons.setBoxLabel("Lessons");
-		hasViewedLessons.setValue(true);
-		hasViewedLessons.setToolTip("Select students that have viewed lessons");
-		groupTwo.add(hasViewedLessons);
-
-		hasViewedResources.setBoxLabel("Resources");
-		hasViewedResources.setValue(true);
-		hasViewedResources
-				.setToolTip("Select students that have used resources");
-		groupTwo.add(hasViewedResources);
-
-		hasRegistered.setBoxLabel("Registered");
-		hasRegistered.setValue(true);
-		hasRegistered.setToolTip("Select students that have registered");
-		groupTwo.add(hasRegistered);
-
-		fp.add(groupOne);
-		fp.add(groupTwo);
-
-		Text text = new Text(
-				"Include students with selected activities in date range");
-		text.setStyleName("date-picker-legend");
-
-		fp.add(text);
-		return fp;
-	}
-*/
 	public void setCallback(Callback callback, Date from, Date to) {
 		this.callback = callback;
 
