@@ -2477,18 +2477,17 @@ order  by avg_quiz_score desc,
 
 select u.uid,
        u.user_name,
-       count(r.run_id) as failed_quizzes
+       count(r.run_id) as failed_quizzes,
+       t.user_prog_id
 from   v_HA_USER_ACTIVE u
        join HA_TEST t
          on t.user_id = u.uid
-       join CM_USER_PROGRAM c1
-         on c1.id = t.user_prog_id
        join (select user_id,
-                    max(id)
+                    max(id) as user_prog_id
              from   CM_USER_PROGRAM
-             where  user_id in ($$UID_LIST$$)
+             where  user_id in ( $$UID_LIST$$ )
              group  by user_id) c2
-         on c2.user_id = u.uid
+         on  c2.user_prog_id = t.user_prog_id
        join HA_TEST_RUN r
          on r.test_id = t.test_id
 where  t.user_id in( $$UID_LIST$$ )
@@ -2497,7 +2496,7 @@ where  t.user_id in( $$UID_LIST$$ )
        and r.run_time between ? and ?
 group  by u.uid
 order  by failed_quizzes desc,
-          user_name 
+          user_name
           
 
 .key=HIGHLIGHT_REPORT_ZERO_LOGIN          
