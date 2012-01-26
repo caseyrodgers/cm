@@ -1,7 +1,6 @@
 package hotmath.assessment;
 
 import hotmath.SolutionManager;
-import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.concordance.ConcordanceEntry;
@@ -16,8 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
-import sb.util.SbUtilities;
 
 
 /**
@@ -108,23 +105,26 @@ public class InmhItemData {
 
         logger.debug("getting solution pool " + logTag);
         
-        boolean allowFlashWidgets = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty("prescription.allow_rpa", "true"));
         widgets = new ArrayList<RppWidget>();
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, this.item.getFile());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Range rangeOrJson = new Range(rs.getString("range"));
-                if (rangeOrJson.getRange() == null || rangeOrJson.getRange().length() == 0)
+                Range range = new Range(rs.getString("range"));
+                if (range.getRange() == null || range.getRange().length() == 0)
                     continue;
-
-                if (rangeOrJson.getRange().startsWith("{")) {
-                    RppWidget rpa = new RppWidget(rangeOrJson.getRange());
-                    rpa.getGradeLevels().addAll(rangeOrJson.getGradeLevels());
+                
+                if (range.getRange().startsWith("{")) {
+                    
+                    /** there is just one
+                     * 
+                     */
+                    RppWidget rpa = new RppWidget(range.getRange());
+                    rpa.getGradeLevels().addAll(range.getGradeLevels());
                     
                     /** ignore Flash RPAs */
-                    if(!rpa.isFlashRequired() || allowFlashWidgets) {
+                    if(!rpa.isFlashRequired()) {
                         widgets.add(rpa);
                     }
                     else {
@@ -132,19 +132,18 @@ public class InmhItemData {
                     }
                     
                 } else {
-                    /** is a normal RPP */
+                    /** is a normal RPP range */
                 	logger.debug("find solutions in range " + logTag);
-                    List<String> related = findSolutionsMatchingRange(conn, rangeOrJson.getRange());
+                    List<String> related = findSolutionsMatchingRange(conn, range.getRange());
                     logger.debug("finished finding solutions in range " + logTag);
                     for (String s : related) {
-                        RppWidget widget = new RppWidget();
-                        widget.getGradeLevels().addAll(rangeOrJson.getGradeLevels());
-                        widget.setFile(s);
+                        RppWidget widget = new RppWidget(s);
+                        widget.getGradeLevels().addAll(range.getGradeLevels());
                         if (!widgets.contains(widget)) {
                             if (SolutionManager.getInstance().doesSolutionExist(conn, widget.getFile())) {
                                 widgets.add(widget);
                             } else {
-                                logger.debug("Inmh: GUID does not exist: " + s);
+                                logger.debug("Inmh: PID does not exist: " + s);
                             }
                         }
                         else {

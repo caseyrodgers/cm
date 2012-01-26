@@ -39,9 +39,9 @@ public class Range {
         }
     }
     
-    private List<Integer> parseGradeLevels(String gl) {
+    static public List<Integer> parseGradeLevels(String gradeLevelRange) {
         List<Integer> list = new ArrayList<Integer>();
-        String p[] = gl.split("-");
+        String p[] = gradeLevelRange.split("-");
         if(p.length == 1) {
             list.add(Integer.parseInt(p[0]));
         }

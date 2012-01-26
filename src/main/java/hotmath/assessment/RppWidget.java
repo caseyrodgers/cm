@@ -79,9 +79,11 @@ public class RppWidget {
             numProblems = ((JSONInteger)complex.get("limit")).getValue().intValue();
             widgetJsonArgs = jsonRecord;
             
-            if(complex.get("level") != null) {
-                gradeLevels.add(((JSONInteger)complex.get("level")).getValue().intValue());
+            if(complex.get("grade") != null) {
+                String gradeLevelsRange = ((JSONString)complex.get("grade")).getValue(); 
                 
+                
+                gradeLevels.addAll(Range.parseGradeLevels(gradeLevelsRange));
             }
         }
         if(widetKey == null)
