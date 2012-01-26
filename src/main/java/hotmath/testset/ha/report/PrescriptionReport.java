@@ -317,11 +317,6 @@ public class PrescriptionReport {
                     AssessmentPrescriptionSession session = prescription.getSessions().get(i);
                     List<SessionData> rpps = session.getSessionItems();
 
-                    if (!session.isRpa() && rpps.size() != 3) {
-                        logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i
-                                + ": incorrect number of RPP (" + rpps.size() + ")");
-                        isError = true;
-                    }
 
                     boolean flashRequired=false;
                     for (SessionData p : rpps) {
