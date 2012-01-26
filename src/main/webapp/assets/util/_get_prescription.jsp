@@ -36,13 +36,9 @@
               <ol>
                   <%
                       for(AssessmentPrescription.SessionData sessionData: s.getSessionItems()) {
-                          int gradeLevel = 0;
-                          if(!sessionData.getRpp().isFlashRequired()) {
-                              gradeLevel = new ProblemID(sessionData.getRpp().getFile()).getGradeLevel();
-                          }
                     	  %>
                     	  <li><a href='/tutor/?pid=<%= sessionData.getRpp().getFile() %>'><%= sessionData.getRpp().getFile() %></a>
-                    	      (level: <%= gradeLevel %>, weight: <%= sessionData.getWeight() %>, include: <%= sessionData.getNumPids() %>)
+                    	      (level: <%= sessionData.getRpp().getGradeLevels() %>)
                     	      <a href='_get_run_pool.jsp?run_id=<%= inmhList.getTestRun().getRunId() %>&item=<%= sessionData.getItem().getFile() %>'>pool</a>
                     	  </li>
                     	  <%

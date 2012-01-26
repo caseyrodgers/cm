@@ -121,13 +121,13 @@ public class InmhAssessment {
 	}
 	
 	 
-	/** Return list of solutions in this item pool
+	/** Return list of RppWidgets along with their grade levels
 	 * 
 	 * @param item
 	 * @return
 	 * @throws Exception
 	 */
-	static public String[] getItemSolutionPool(String item) throws Exception {
+	static public List<RppWidget> getItemSolutionPool(String item) throws Exception {
 		
 		Connection conn=null;
 		Statement stmt=null;
@@ -136,21 +136,27 @@ public class InmhAssessment {
 			stmt = conn.createStatement();
 			
 			ResultSet rs = stmt.executeQuery("select * from inmh_assessment where file = '" + item + "'");
-			List<String> guids = new ArrayList<String>();
+			List<RppWidget> rppWidgets = new ArrayList<RppWidget>();
             while(rs.next()) {			
-				String range = rs.getString("range");
-				if(range == null || range.length() == 0)
+				String r = rs.getString("range");
+				if(r == null || r.length() == 0)
 					throw new Exception("Range is null for this item");
 				
-				if(!range.startsWith("{")) {
-					ConcordanceEntry con = new ConcordanceEntry(conn, range);
-					guids.addAll(Arrays.asList( con.getGUIDs() ) ) ;
+				Range range = new Range(r);
+				
+				if(!range.getRange().startsWith("{")) {
+					ConcordanceEntry con = new ConcordanceEntry(conn, range.getRange());
+					
+					for(String c: con.getGUIDs()) {
+					    rppWidgets.add(new RppWidget(c, range.getGradeLevels()));
+					}
 				}
 				else {
-					guids.addAll(Arrays.asList( range ) ) ;
+					rppWidgets.add(new RppWidget(range.getRange(), range.getGradeLevels()));
 				}
             }
-			return guids.toArray(new String[guids.size()]);
+            
+			return rppWidgets;
 		}
 		finally {
 			SqlUtilities.releaseResources(null,stmt, conn);

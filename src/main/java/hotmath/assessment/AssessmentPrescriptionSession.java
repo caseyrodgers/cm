@@ -37,7 +37,7 @@ public class AssessmentPrescriptionSession {
     	if (logger.isDebugEnabled())
             logger.debug(String.format("in addSolution(): pid: %s, item title: ", pid, item.getTitle()));
 
-        _pids.add(new SessionData(item, new RppWidget(pid,null), 0, 0));
+        _pids.add(new SessionData(item, new RppWidget(pid)));
     }
 
     public List<SessionData> getSessionItems() {

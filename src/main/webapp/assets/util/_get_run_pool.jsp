@@ -1,5 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
+<%@page import="java.util.List"%>
+<%@page import="hotmath.assessment.Range"%>
 <%@page import="hotmath.assessment.RppWidget"%>
 <%@page import="hotmath.assessment.InmhAssessment"%>
 <%@page import="hotmath.testset.ha.HaTestRun"%>
@@ -12,7 +14,7 @@
 <%@ page import="sb.util.*,hotmath.concordance.*, hotmath.*,hotmath.testset.*, hotmath.help.*" %>
 <%
 
-    String _matches[] = null;
+    String _matchPids[] = null;
     String _pid=null;
     ConcordanceEntry con = null;
     String _range = request.getParameter("range");
@@ -21,9 +23,10 @@
 	String item="";
 	try {
 	    conn = HMConnectionPool.getConnection();
-	    
+
 	    if(_range != null) {
-	    	_matches = new ConcordanceEntry(conn, _range).getGUIDs();
+	        Range range = new Range(_range);	        
+	        _matchPids = new ConcordanceEntry(conn, range.getRange()).getGUIDs();
 	    }
 	    else {
 	    	item = request.getParameter("item");
@@ -41,31 +44,16 @@
    	    SqlUtilities.releaseResources(null,null,conn);
    	}
    	_range = item;
-   	_matches = InmhAssessment.getItemSolutionPool(item);
+   	List<RppWidget> matches = InmhAssessment.getItemSolutionPool(item);
 %>
 </head>
 <body>
   <h1>Solutions matching range: <%= _range %></h1>
   <ol>
       <%
-          for(String s: _matches) {
-              RppWidget rpp = null;
-        	  if(s.startsWith("{")) {
-        	      rpp = new RppWidget(s);
-        	  }
-        	  else {
-        	      rpp = new RppWidget(s, null);
-        	  }
-              int rGradeLevel = 0;
-              if(rpp.isFlashRequired()) {
-                  rGradeLevel = 99;
-              }
-              else {
-                  rGradeLevel = new ProblemID(rpp.getFile()).getGradeLevel();                  
-              }
-        	  
+          for(RppWidget rpp: matches) {
 	          %>
-                  <li> <a href='/tutor/?pid=<%= rpp.getFile() %>'><%= s %></a> (level: <%= rGradeLevel %>)</li>
+                  <li> <a href='/tutor/?pid=<%= rpp.getFile() %>'><%= rpp.getFile() %></a> (level: <%= rpp.getGradeLevels() %>)</li>
               <%
           }
 

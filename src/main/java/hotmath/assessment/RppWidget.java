@@ -39,6 +39,7 @@ public class RppWidget {
         return widetKey.indexOf("swf") > -1?true:false;
     }
     
+    
     /**
      * form of [PATH_TO_WIDGET|TITLE_OF_WIDGET]
      * 
@@ -51,14 +52,20 @@ public class RppWidget {
      * Must have a file
      * @param def
      */
-    public RppWidget(String jsonRecord) throws Exception {
-        setJsonRecord(jsonRecord);
+    public RppWidget(String pid) throws Exception {
+        if(pid.startsWith("{")) {
+            setJsonRecord(pid);
+        }
+        else {
+            this.widetKey = pid;
+        }
+    }
+
+    public RppWidget(String jsonRecord, List<Integer> gradeLevels) throws Exception {
+        this(jsonRecord);
+        this.gradeLevels.addAll(gradeLevels);
     }
     
-    public RppWidget(String pid, String json) throws Exception {
-        this.widetKey = pid;
-        setJsonRecord(json);
-    }
     
     public void setJsonRecord(String jsonRecord) throws Exception {
         if(jsonRecord==null)

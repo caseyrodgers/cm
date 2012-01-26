@@ -4,7 +4,6 @@ import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.cm.login.ClientEnvironment;
-import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -31,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import sb.util.SbUtilities;
 
 /**
  * Class to represent an assessment prescription for a given set of INMH items.
@@ -104,10 +101,6 @@ public class AssessmentPrescription {
         missed = _assessment.getPids().length;
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
-        int sumOfWeights = 0;
-        for (InmhItemData itemData : itemsData) {
-            sumOfWeights += itemData.getWeight();
-        }
 
         totalPrescription = itemsData.size() * TOTAL_SESSION_SOLUTIONS;
 
@@ -131,12 +124,10 @@ public class AssessmentPrescription {
                 continue;
             }
 
-            
-            AssessmentPrescriptionSession session=null;
+            AssessmentPrescriptionSession session = null;
             try {
-                 session = createSession(sessNum, rppWidgets, itemData, true, clientEnvironment);
-            }
-            catch(SbExceptionNoLessonRppsFound noRpps) {
+                session = createSession(sessNum, rppWidgets, itemData, true, clientEnvironment);
+            } catch (SbExceptionNoLessonRppsFound noRpps) {
                 logger.error("Could not find RPPs with absolute match of grade level '" + getGradeLevel() + "'");
             }
 
@@ -271,7 +262,7 @@ public class AssessmentPrescription {
                  * 
                  */
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review", lesson.getFile(), lesson.getLesson());
-                si.add(new SessionData(item, pid, 3, 1, pid.getWidgetJsonArgs()));
+                si.add(new SessionData(item, pid, pid.getWidgetJsonArgs()));
             }
             if (!_sessions.contains(session)) {
                 _sessions.add(session);
@@ -284,12 +275,8 @@ public class AssessmentPrescription {
 
     /**
      * Create a single prescription session based on passed in data
-     * 
-     * if client supports flash and there are RPAs. return only RPAs
-     * 
-     * if client does not support Flash return only dynamic RPPs
-     * 
-     * Otherwise, return all RPPs
+     *
+     * return all RPPs specified for this lesson by matching absolute grade levels.
      * 
      * @param sessNum
      * @param workBookPids
@@ -308,44 +295,12 @@ public class AssessmentPrescription {
          */
         List<SessionData> filteredData = filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData);
 
-        if(filteredData.size() == 0) {
+        if (filteredData.size() == 0) {
             throw new SbExceptionNoLessonRppsFound(getGradeLevel(), itemData);
         }
-        
-        /**
-         * two passes
-         * 
-         * first to only choose dynamic solutions if flash not available
-         * 
-         * fl
-         * 
-         */
-        boolean allowFlashWidgetsOnServer = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty(
-                "prescription.allow_rpa", "true"));
-        boolean allowDynamicProblemSets = !allowFlashWidgetsOnServer || !clientEnvironment.isFlashEnabled();
-        if (allowDynamicProblemSets) {
-            for (SessionData sd : filteredData) {
-                RppWidget rpp = sd.getRpp();
-                if (rpp.isDynamicSolution()) {
-                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData
-                            .getWeight(), rpp.getWidgetJsonArgs()));
-                }
-            }
-        }
 
-        /**
-         * second pass to fill in ANY RPP (not RPAs)
-         * 
-         */
-        if (sessionItems.size() == 0) {
-            for (SessionData sd : filteredData) {
-                if (!sessionItems.contains(sd)) {
-                    sessionItems.add(sd);
-                }
-                if (sessionItems.size() >= PID_COUNT) {
-                    break;
-                }
-            }
+        for (SessionData sd : filteredData) {
+            sessionItems.add(sd);
         }
 
         return session;
@@ -367,13 +322,13 @@ public class AssessmentPrescription {
     protected int getLowestGradeLevel(List<RppWidget> rpps) throws Exception {
         int lowestLevel = 99999;
         for (RppWidget w : rpps) {
-            if (w.isSolution()) {
-                int level = 0;
-                level = new ProblemID(w.getFile()).getGradeLevel();
+            int level = 0;
 
-                if (level < lowestLevel) {
-                    lowestLevel = level;
-                }
+            // get the lowest level for this wpp
+            level = w.getGradeLevels().size() > 0 ? w.getGradeLevels().get(0) : 0;
+
+            if (level < lowestLevel) {
+                lowestLevel = level;
             }
         }
         return lowestLevel;
@@ -388,17 +343,17 @@ public class AssessmentPrescription {
      * 
      * 
      */
-    public List<SessionData> filterRppsByGradeLevel(int programGradLevel, List<RppWidget> rppWidgets,InmhItemData itemData) throws Exception {
+    public List<SessionData> filterRppsByGradeLevel(int programGradLevel, List<RppWidget> rppWidgets,
+            InmhItemData itemData) throws Exception {
 
         List<SessionData> session = new ArrayList<AssessmentPrescription.SessionData>();
 
         for (RppWidget rpp : rppWidgets) {
             if (rpp.isFlashRequired())
                 continue;
-            ProblemID pid = new ProblemID(rpp.getFile());
 
             if (rpp.isGradeLevel(programGradLevel)) {
-                session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
+                session.add(new SessionData(itemData.getInmhItem(), rpp));
             }
         }
         return session;
@@ -430,20 +385,6 @@ public class AssessmentPrescription {
 
     public HaTest getTest() {
         return getTestRun().getHaTest();
-    }
-
-    /**
-     * Return the sum of all the weights for the inmh items associated with this
-     * assessment.
-     * 
-     * @return
-     */
-    public int getSumOfWeights() {
-        int sum = 0;
-        for (InmhItemData id : _assessment.getInmhItemUnion(null)) {
-            sum += id.getWeight();
-        }
-        return sum;
     }
 
     public int getCountMissed() {
@@ -597,18 +538,15 @@ public class AssessmentPrescription {
     static public class SessionData {
         RppWidget rpp;
         INeedMoreHelpItem item;
-        int numPids, weight;
         String widgetArgs;
 
-        public SessionData(INeedMoreHelpItem item, RppWidget rpp, int numPids, int weight) {
+        public SessionData(INeedMoreHelpItem item, RppWidget rpp) {
             this.item = item;
             this.rpp = rpp;
-            this.numPids = numPids;
-            this.weight = weight;
         }
 
-        public SessionData(INeedMoreHelpItem item, RppWidget rpp, int numPids, int weight, String widgetArgs) {
-            this(item, rpp, numPids, weight);
+        public SessionData(INeedMoreHelpItem item, RppWidget rpp, String widgetArgs) {
+            this(item, rpp);
             this.widgetArgs = widgetArgs;
         }
 
@@ -618,22 +556,6 @@ public class AssessmentPrescription {
 
         public void setWidgetArgs(String widgetArgs) {
             this.widgetArgs = widgetArgs;
-        }
-
-        public int getNumPids() {
-            return numPids;
-        }
-
-        public void setNumPids(int numPids) {
-            this.numPids = numPids;
-        }
-
-        public int getWeight() {
-            return weight;
-        }
-
-        public void setWeight(int weight) {
-            this.weight = weight;
         }
 
         public RppWidget getRpp() {

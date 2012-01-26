@@ -51,33 +51,6 @@ public class InmhItemData {
             pidsReferenced.add(pid);
     }
 
-    /**
-     * Return a sorted map containing weighted values and the problem index.
-     * 
-     * entries are weight:solution
-     * 
-     * @return
-     */
-    public List<String> getWeightedIndexes(int sumOfWeights, int totalNumSolsInPrescription) {
-        List<String> values = new ArrayList<String>();
-        for (String pid : pidsReferenced) {
-            int weight = (getWeight() / sumOfWeights) * totalNumSolsInPrescription;
-            values.add(String.format("%s:%s", weight, pid));
-        }
-        return values;
-    }
-
-    /**
-     * Get the weight of this InmhItem.
-     * 
-     * The weight is determined by how many times this item is referenced.
-     * 
-     * @return
-     */
-    public int getWeight() {
-        return pidsReferenced.size();
-    }
-
     public void setINeedMoreHelpItem(INeedMoreHelpItem item) {
         this.item = item;
     }
