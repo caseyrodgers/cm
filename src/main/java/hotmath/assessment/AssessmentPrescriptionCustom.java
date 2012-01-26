@@ -74,10 +74,16 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                     continue; // nothing to see here.
                 }
                 
-                session = createSession(sessNum,workBookPids,itemData,true, clientEnvironment);
+                try {
+                    session = createSession(sessNum,workBookPids,itemData,true, clientEnvironment);
+                }
+                catch(SbExceptionNoLessonRppsFound noRpps) {
+                    __logger.error("No RPPS could be found",noRpps);
+                }
+                
                 
                 // assert that there is at least one
-                if(session.getSessionItems().size() == 0) {
+                if(session == null || session.getSessionItems().size() == 0) {
                     // this session has no items, so it is invalid and will be
                     // skipped
                     __logger.error("AssessmentPrescriptionSession: session has no items: " + itemData);

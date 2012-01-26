@@ -131,11 +131,17 @@ public class AssessmentPrescription {
                 continue;
             }
 
-            AssessmentPrescriptionSession session = createSession(sessNum, rppWidgets, itemData, true,
-                    clientEnvironment);
+            
+            AssessmentPrescriptionSession session=null;
+            try {
+                 session = createSession(sessNum, rppWidgets, itemData, true, clientEnvironment);
+            }
+            catch(SbExceptionNoLessonRppsFound noRpps) {
+                logger.error("Could not find RPPs with absolute match of grade level '" + getGradeLevel() + "'");
+            }
 
             // assert that there is at least one
-            if (session.getSessionItems().size() == 0) {
+            if (session == null || session.getSessionItems().size() == 0) {
                 // this session has no items, so it is invalid and will be
                 // skipped
                 logger.warn("AssessmentPrescriptionSession: session has no items: " + session);
@@ -297,73 +303,51 @@ public class AssessmentPrescription {
         List<SessionData> sessionItems = session.getSessionItems();
 
         /**
-         * if ANY widgets are RPA then only show the RPA widgets
+         * show RPP widgets (filtered)
          * 
          */
-        boolean hasRPA = false;
-        for (RppWidget rpp : rppWidgets) {
-            if (!rpp.isSolution()) {
-                hasRPA = true;
-                break;
-            }
+        List<SessionData> filteredData = filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData);
+
+        if(filteredData.size() == 0) {
+            throw new SbExceptionNoLessonRppsFound(getGradeLevel(), itemData);
         }
-        if (hasRPA && clientEnvironment.isFlashEnabled()) {
-            /**
-             * only show RPA widgets (filtered)
-             * 
-             */
-            for (RppWidget rpp : rppWidgets) {
-                if (!rpp.isSolution()) {
-                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT,
-                            itemData.getWeight(), rpp.getWidgetJsonArgs()));
-                }
-            }
-        } else {
-            /**
-             * show only RPP widgets (filtered)
-             * 
-             * If CM Mobile (flashNoEnabled) then only use dynamic solutions if
-             * available.
-             * 
-             */
-            List<SessionData> filteredData = filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData);
-
-            /**
-             * two passes
-             * 
-             * first to only choose dynamic solutions if flash not available
-             * 
-             * fl
-             * 
-             */
-            boolean allowFlashWidgetsOnServer = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty(
-                    "prescription.allow_rpa", "true"));
-            boolean allowDynamicProblemSets = !allowFlashWidgetsOnServer || !clientEnvironment.isFlashEnabled();
-            if (allowDynamicProblemSets) {
-                for (SessionData sd : filteredData) {
-                    RppWidget rpp = sd.getRpp();
-                    if (rpp.isDynamicSolution()) {
-                        sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData
-                                .getWeight(), rpp.getWidgetJsonArgs()));
-                    }
-                }
-            }
-
-            /**
-             * second pass to fill in ANY RPP (not RPAs)
-             * 
-             */
-            if (sessionItems.size() == 0) {
-                for (SessionData sd : filteredData) {
-                    if(!sessionItems.contains(sd)) {
-                        sessionItems.add(sd);
-                    }
-                    if (sessionItems.size() >= PID_COUNT) {
-                        break;
-                    }
+        
+        /**
+         * two passes
+         * 
+         * first to only choose dynamic solutions if flash not available
+         * 
+         * fl
+         * 
+         */
+        boolean allowFlashWidgetsOnServer = SbUtilities.getBoolean(CatchupMathProperties.getInstance().getProperty(
+                "prescription.allow_rpa", "true"));
+        boolean allowDynamicProblemSets = !allowFlashWidgetsOnServer || !clientEnvironment.isFlashEnabled();
+        if (allowDynamicProblemSets) {
+            for (SessionData sd : filteredData) {
+                RppWidget rpp = sd.getRpp();
+                if (rpp.isDynamicSolution()) {
+                    sessionItems.add(new SessionData(itemData.getInmhItem(), rpp, (int) PID_COUNT, itemData
+                            .getWeight(), rpp.getWidgetJsonArgs()));
                 }
             }
         }
+
+        /**
+         * second pass to fill in ANY RPP (not RPAs)
+         * 
+         */
+        if (sessionItems.size() == 0) {
+            for (SessionData sd : filteredData) {
+                if (!sessionItems.contains(sd)) {
+                    sessionItems.add(sd);
+                }
+                if (sessionItems.size() >= PID_COUNT) {
+                    break;
+                }
+            }
+        }
+
         return session;
     }
 
@@ -400,73 +384,23 @@ public class AssessmentPrescription {
      * 
      * create list of possible PIDS looking at grade level.
      * 
-     * favor exact match 2. do not consider higher grade levels 3. choose top
-     * three.
+     * only allow an absolute match.
      * 
      * 
-     * do this is possible two passes. First pass looks for three that have the
-     * exact grade_level match. If that fails, then select the rest from
      */
-    private List<SessionData> filterRppsByGradeLevel(int testDefGradeLevel, List<RppWidget> rppWidgets,
-            InmhItemData itemData) throws Exception {
+    public List<SessionData> filterRppsByGradeLevel(int programGradLevel, List<RppWidget> rppWidgets,InmhItemData itemData) throws Exception {
 
         List<SessionData> session = new ArrayList<AssessmentPrescription.SessionData>();
 
-        // /** create a sorted list with dynamic solutions first. That way they
-        // will be
-        // * added to the prescription before 'raw' PIDS.
-        // */
-        // Collections.sort(rppWidgets, new Comparator<RppWidget>() {
-        // @Override
-        // public int compare(RppWidget o1, RppWidget o2) {
-        // return o1.getWidgetJsonArgs()!=null?0:1;
-        // }
-        // });
-
-        List<RppWidget> maybeList = new ArrayList<RppWidget>();
         for (RppWidget rpp : rppWidgets) {
             if (rpp.isFlashRequired())
                 continue;
             ProblemID pid = new ProblemID(rpp.getFile());
 
-            int pidGradeLevel = pid.getGradeLevel();
-            if (pidGradeLevel == testDefGradeLevel) {
-                logger.debug("adding exact grade level match or dynamnic: " + rpp);
+            if (rpp.isGradeLevel(programGradLevel)) {
                 session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
-
-            } else if (pidGradeLevel < testDefGradeLevel) {
-                /**
-                 * might be used
-                 */
-                maybeList.add(rpp);
-            } else if (pidGradeLevel > testDefGradeLevel) {
-                /**
-                 * completely filtered out
-                 * 
-                 */
-                logger.debug("AssessmentPrescriptionSession: " + itemData.getInmhItem() + testRun.getRunId()
-                        + ", level: " + testDefGradeLevel + ", inmh item not included due to higher grade level:  "
-                        + pid + ", level: " + pid.getGradeLevel());
-                continue;
             }
         }
-
-        if (maybeList.size() > 0) {
-            logger.debug("finding best match from: " + maybeList.size());
-            /**
-             * take first three from maybe list
-             * 
-             */
-            try {
-                for (int i = 0; i < maybeList.size(); i++) {
-                    RppWidget rpp = maybeList.get(i);
-                    session.add(new SessionData(itemData.getInmhItem(), rpp, PID_COUNT, itemData.getWeight()));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
         return session;
     }
 

@@ -1,7 +1,6 @@
 package hotmath.assessment;
 
 import hotmath.SolutionManager;
-import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
@@ -143,12 +142,13 @@ public class InmhItemData {
             ps.setString(1, this.item.getFile());
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                String rangeOrJson = rs.getString("range");
-                if (rangeOrJson == null || rangeOrJson.length() == 0)
+                Range rangeOrJson = new Range(rs.getString("range"));
+                if (rangeOrJson.getRange() == null || rangeOrJson.getRange().length() == 0)
                     continue;
 
-                if (rangeOrJson.startsWith("{")) {
-                    RppWidget rpa = new RppWidget(rangeOrJson);
+                if (rangeOrJson.getRange().startsWith("{")) {
+                    RppWidget rpa = new RppWidget(rangeOrJson.getRange());
+                    rpa.getGradeLevels().addAll(rangeOrJson.getGradeLevels());
                     
                     /** ignore Flash RPAs */
                     if(!rpa.isFlashRequired() || allowFlashWidgets) {
@@ -161,10 +161,11 @@ public class InmhItemData {
                 } else {
                     /** is a normal RPP */
                 	logger.debug("find solutions in range " + logTag);
-                    List<String> related = findSolutionsMatchingRange(conn, rangeOrJson);
+                    List<String> related = findSolutionsMatchingRange(conn, rangeOrJson.getRange());
                     logger.debug("finished finding solutions in range " + logTag);
                     for (String s : related) {
                         RppWidget widget = new RppWidget();
+                        widget.getGradeLevels().addAll(rangeOrJson.getGradeLevels());
                         widget.setFile(s);
                         if (!widgets.contains(widget)) {
                             if (SolutionManager.getInstance().doesSolutionExist(conn, widget.getFile())) {

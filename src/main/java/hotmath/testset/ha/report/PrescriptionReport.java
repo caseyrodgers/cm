@@ -5,6 +5,9 @@ import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.assessment.InmhItemData;
+import hotmath.assessment.RppWidget;
+import hotmath.assessment.SbExceptionNoLessonRppsFound;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.CmUserProgramDao;
@@ -232,6 +235,17 @@ public class PrescriptionReport {
                      *
                      */
                     AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(_conn, testRun.getRunId());
+                    
+                    List<InmhItemData> itemsData = prescription.getAssessment().getInmhItemUnion("review");
+                    for (InmhItemData itemData : itemsData) {
+                        List<RppWidget> poolItems = itemData.getWidgetPool(conn,"prescription_report");
+                        if(poolItems.size() == 0) {
+                            logMessage(testRun.getRunId(),"WARNING: No RPP pool found for '" + itemData);
+                        }
+                        else if(prescription.filterRppsByGradeLevel(prescription.getGradeLevel(), poolItems, itemData).size() == 0) {
+                            logMessage(testRun.getRunId(),"WARNING: No RPP items (level=" + prescription.getGradeLevel() + ") found for '" + itemData.getInmhItem().getFile());    
+                        }
+                    }
 
                     checkPrescription(_conn, prescription, pid);
 

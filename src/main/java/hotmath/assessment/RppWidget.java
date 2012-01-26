@@ -3,6 +3,8 @@ package hotmath.assessment;
 import hotmath.gwt.shared.client.util.CmException;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -27,6 +29,7 @@ public class RppWidget {
     String widgetJsonArgs;
     String title;
     int numProblems;
+    List<Integer> gradeLevels = new ArrayList<Integer>();
 
     public RppWidget() {
         /* empty */
@@ -68,9 +71,28 @@ public class RppWidget {
             widetKey = ((JSONString)complex.get("widget")).getValue();
             numProblems = ((JSONInteger)complex.get("limit")).getValue().intValue();
             widgetJsonArgs = jsonRecord;
+            
+            if(complex.get("level") != null) {
+                gradeLevels.add(((JSONInteger)complex.get("level")).getValue().intValue());
+                
+            }
         }
         if(widetKey == null)
             throw new CmException("JSON string did not contain a 'widget' element");
+    }
+    
+    /** Does this RPP widget support the given grade level
+     * 
+     * @param gradeLevel
+     * @return
+     */
+    public boolean isGradeLevel(int gradeLevel) {
+       for(Integer gl: gradeLevels)  {
+           if(gl == gradeLevel) {
+               return true;
+           }
+       }
+       return false;
     }
     
     public String getInfoLabel() {
@@ -119,9 +141,18 @@ public class RppWidget {
     }
     
     
+    public List<Integer> getGradeLevels() {
+        return gradeLevels;
+    }
+
+    public void setGradeLevels(List<Integer> gradeLevels) {
+        this.gradeLevels = gradeLevels;
+    }
+
     @Override
     public String toString() {
-        return String.format("widgetKey=%s,widgetJsonArgs=%s",widetKey,widgetJsonArgs);
+        return "RppWidget [widetKey=" + widetKey + ", widgetJsonArgs=" + widgetJsonArgs + ", title=" + title
+                + ", numProblems=" + numProblems + "]";
     }
     
     @Override
