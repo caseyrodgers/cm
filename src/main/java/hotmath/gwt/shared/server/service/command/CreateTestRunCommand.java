@@ -57,7 +57,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
         CmProgramFlow cmProgram = new CmProgramFlow(conn,action.getUserId());
 
-        logger.debug(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",System.currentTimeMillis() - startTime));
+        if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): verifyActiveProgram(): took: %d msec",System.currentTimeMillis() - startTime));
 
         try {
             // get list of all correct answers
@@ -69,7 +69,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
 
             startTime = System.currentTimeMillis();
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
-            logger.debug(String.format("+++ execute(): loadTest(): took: %d msec",System.currentTimeMillis() - startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): loadTest(): took: %d msec",System.currentTimeMillis() - startTime));
             
             startTime = System.currentTimeMillis();
             String sql = "select cs.pid, cs.is_correct, t.total_segments from v_HA_TEST_CURRENT_STATUS cs, HA_TEST t where cs.test_id = ? and t.test_id = cs.test_id";
@@ -113,10 +113,10 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
                 }
             }
            
-            logger.debug(String.format("+++ execute(): getting current test results took: %d msec",System.currentTimeMillis() - startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): getting current test results took: %d msec",System.currentTimeMillis() - startTime));
             startTime = System.currentTimeMillis();
             HaTestRun run = HaTestDao.getInstance().createTestRun(conn, test.getUser().getUid(), test.getTestId(), answeredCorrect, answeredIncorrect, notAnswered);
-          	logger.debug(String.format("+++ execute(): createTestRun(): took: %d msec",System.currentTimeMillis() - startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): createTestRun(): took: %d msec",System.currentTimeMillis() - startTime));
             
           	
           	AssessmentPrescription pres=null;
@@ -130,7 +130,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
           	else {
           	    startTime = System.currentTimeMillis();
           	    pres = AssessmentPrescriptionManager.getInstance().getPrescription(conn, run.getRunId());
-          	    logger.debug(String.format("+++ execute(): getPrescription(): took: %d msec",System.currentTimeMillis() - startTime));
+          	    if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): getPrescription(): took: %d msec",System.currentTimeMillis() - startTime));
           	}
             
             testRunInfo.setRunId(run.getRunId());
@@ -154,7 +154,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
             if(!run.isPassing()) {
                 startTime = System.currentTimeMillis();
                 CmStudentDao.getInstance().moveToNextQuizSegmentSlot(conn,test.getUser().getUid(), test.getTestDef().getNumAlternateTests());
-                	logger.debug(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",System.currentTimeMillis() - startTime));
+                if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): moveToNextQuizSegmentSlot(): took: %d msec",System.currentTimeMillis() - startTime));
             }
             
             /** 
@@ -163,7 +163,7 @@ public class CreateTestRunCommand implements ActionHandler<CreateTestRunAction, 
              */
             startTime = System.currentTimeMillis();
            
-            logger.debug(String.format("+++ execute: Prescription Class: %s, getNextAction(): took: %d msec",pres!=null?pres.getClass().getName():"No Prescription", System.currentTimeMillis() - startTime));
+            if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute: Prescription Class: %s, getNextAction(): took: %d msec",pres!=null?pres.getClass().getName():"No Prescription", System.currentTimeMillis() - startTime));
             
             testRunInfo.setCorrect(answeredCorrect);
             testRunInfo.setTotal(test.getTestQuestionCount());
