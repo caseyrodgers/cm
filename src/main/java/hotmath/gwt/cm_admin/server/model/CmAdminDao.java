@@ -408,8 +408,11 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     }
     
     public AccountInfoModel getAccountInfo(final Integer adminUid) throws Exception {
-        AccountInfoModel accountInfo = this.getJdbcTemplate().queryForObject(
-                CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL"), 
+    	AccountInfoModel accountInfo = null;
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("ACCOUNT_INFO_SQL");
+    	try {
+            accountInfo = this.getJdbcTemplate().queryForObject(
+                sql, 
                 new Object[] { adminUid,adminUid,adminUid,adminUid },
                 new RowMapper<AccountInfoModel>() {
                     public AccountInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -451,6 +454,10 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         }
                     }
                 });
+    	}
+    	catch( Exception e) {
+    		logger.error(String.format("Error reading data for AccountInfoModel: adminId: %d, SQL: %s", adminUid, sql), e);
+    	}
 
         return accountInfo;
     }
