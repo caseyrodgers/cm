@@ -20,6 +20,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -310,23 +311,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         };
         t.schedule(1);
     }
-    
-    /**
-     * Mark the pid as being viewed called from external JS
-     * 
-     * called from CatchupMath.js
-     * 
-     * 
-     * @TODO: remove access to globals
-     * 
-     * @param pid
-     */
-    static public void solutionHasBeenViewed_Gwt(String eventName) {
-    	if(CmShared.getQueryParameter("debug") != null || !__last_solution_item.isViewed()) {
-    		__last_solution_item.setViewed(true);
-    		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, __last_solution_item));
-    	}
-    }
+
 
     /**
      * This solution is being viewed. The first step of solution has been
@@ -345,7 +330,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     }
 
     static private native void publishNative() /*-{
-                                               $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
                                                $wnd.solutionIsBeingViewed_Gwt = @hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition::solutionIsBeingViewed_Gwt(Ljava/lang/String;);
                                                }-*/;
 
@@ -386,7 +370,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                      * an Solution FIF was entered correct, so we want to mark
                      * this (current) solution as having been complicated
                      */
-                    solutionHasBeenViewed_Gwt(null);
+                    ResourceViewerImplTutor.solutionHasBeenViewed_Gwt(null);
                 }
             }
         });

@@ -4,10 +4,10 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.MarkHomeWorkAttemptedAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -305,6 +305,26 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             }
         }.register();
     }
+    
+    
+    
+    /**
+     * Mark the pid as being viewed called from external JS
+     * 
+     * called from CatchupMath.js
+     * 
+     * 
+     * @TODO: remove access to globals
+     * 
+     * @param pid
+     */
+    static public void solutionHasBeenViewed_Gwt(String eventName) {
+        InmhItemData item = _instance.getResourceItem();
+        if(CmShared.getQueryParameter("debug") != null || !item.isViewed()) {
+            item.setViewed(true);
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, item));
+        }
+    }    
 
     /**
      * Notified whenever a showwork entry is made
@@ -320,7 +340,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             if(!getResourceItem().isViewed()) {
                 getResourceItem().setViewed(true);
                 
-                PrescriptionCmGuiDefinition.solutionHasBeenViewed_Gwt(null);
+                solutionHasBeenViewed_Gwt(null);
             }
         }
     }
@@ -345,6 +365,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
 	   $wnd.saveWhiteboardSnapshot_Gwt
 	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
+	     
+       $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
+
      }-*/;
 
     /**
