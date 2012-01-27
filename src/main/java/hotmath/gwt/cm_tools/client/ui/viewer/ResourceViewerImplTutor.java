@@ -1,7 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.MarkHomeWorkAttemptedAction;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
@@ -79,21 +84,37 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     }
     
     private void tutorInputWidgetComplete_gwt(final int yesNo) {
-        new RetryAction<RpcData>() {
+        new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
+                
+                
                 CmBusyManager.setBusy(true);
+                MultiActionRequestAction mAction = new MultiActionRequestAction();
+                setAction(mAction);
+                
                 SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getRunId(), pid, yesNo==0?false:true);
-                setAction(action);
-                CmShared.getCmService().execute(action,this);
+                mAction.getActions().add(action);
+
+
+                // if EPP (homework), then emarked as viewed as 
+                // soon as input widget is attempted.
+                if(getResourceItem().getType().equals("cmextra")) {
+                    if(getResourceItem().isViewed() == false) {
+                        getResourceItem().setViewed(true);
+                        
+                        MarkHomeWorkAttemptedAction homeWorkAction = new MarkHomeWorkAttemptedAction(UserInfo.getInstance().getRunId(), getResourceItem().getTitle(), pid);
+                        mAction.getActions().add(homeWorkAction);
+                    }
+                }
+                
+                
+                CmShared.getCmService().execute(mAction,this);
             }
             
             @Override
-            public void oncapture(RpcData result) {
+            public void oncapture(CmList<Response> results) {
                 CmBusyManager.setBusy(false);
-                if(!result.getData("status").equals("OK")) {
-                    CatchupMathTools.showAlert("There was a problem saving answer.");
-                }
             }
         }.register();
     }
@@ -288,20 +309,20 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     /**
      * Notified whenever a showwork entry is made
      * 
+     *  If EPP and first whiteboard entry, then mark this
+     *  EPP resource as  'attempted'.
+     *  
+     * 
      * @param pid
      */
     protected void whiteBoardHasBeenUpdated(String pid) {
-//        if (UserInfo.getInstance().isShowWorkRequired() && !this.hasShowWork && this.pid.equals(pid)) {
-//            /** 
-//             * this solution's whiteboard has been updated, so
-//             * we must make sure the ForceShowWork button is removed
-//             */
-//            initializeTutor(pid, this.getResourceItem().getTitle(), true, false,_solutionInfo.getJs());
-//
-//            hasShowWork = true;
-//        }
-        
-        //createWhiteboardSnapshot_Jsni();
+        if(getResourceItem().getType().equals("cmextra")) {
+            if(!getResourceItem().isViewed()) {
+                getResourceItem().setViewed(true);
+                
+                PrescriptionCmGuiDefinition.solutionHasBeenViewed_Gwt(null);
+            }
+        }
     }
     
 

@@ -242,8 +242,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                 CmLogger.debug("PrescriptionResourceAccord: setItemAsViewed: " + resourceItem);
 
-                boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType()
-                        .equals("cmextra"));
+                boolean isSolutionResource = (resourceItem.getType().equals("practice") || resourceItem.getType().equals("cmextra"));
 
                 // update the total count in the Header
                 // only if a practice or cmextra type
@@ -260,6 +259,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     return;
 
                 resourceItem.setViewed(true);
+                
+                updateCheckMarks();
             }
 
         }.register();

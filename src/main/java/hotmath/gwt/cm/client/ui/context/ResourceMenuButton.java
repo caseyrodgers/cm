@@ -119,7 +119,7 @@ class ResourceMenuButton extends Button {
      * 
      */
     public boolean updateCheckMarks() {
-        if(!resource.getType().equals("practice"))
+        if(!resource.getType().equals("practice") && !resource.getType().equals("cmextra"))
             return false;
         
         
@@ -190,7 +190,7 @@ class ResourceMenuButton extends Button {
     			isComplete = false;
 
     		MenuItem item = null;
-    		if(resource.getType().equals("practice")) {
+    		if(resource.getType().equals("practice") || resource.getType().equals("cmextra")) {
     			final CheckMenuItem citem = new CheckMenuItem(id.getTitle());
     			citem.setChecked(id.isViewed(), true);
     			item = citem;

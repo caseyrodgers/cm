@@ -125,6 +125,8 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     public void expandResourcePracticeProblems() {
         resourceButtons.get("practice").updateCheckMarks();
         resourceButtons.get("practice").showMenu();
+        
+        resourceButtons.get("cmextra").updateCheckMarks();
     }
     
     public void disableGames() {

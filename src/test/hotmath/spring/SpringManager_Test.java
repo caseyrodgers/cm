@@ -13,6 +13,7 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRunDao;
+import hotmath.testset.ha.HaTestRunHomeWorkDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.HaUserExtendedDao;
 import junit.framework.TestCase;
@@ -121,5 +122,12 @@ public class SpringManager_Test extends TestCase{
         SpringManager manager = SpringManager.getInstance();
         CmTemplateDao testDao = (CmTemplateDao)manager.getBeanFactory().getBean("hotmath.cm.server.model.CmTemplateDao");
         assertNotNull(testDao);
+    }
+    
+    public void testCmHomeWorkDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        HaTestRunHomeWorkDao testDao = (HaTestRunHomeWorkDao)manager.getBeanFactory().getBean("hotmath.testset.ha.HaTestRunHomeWorkDao");
+        assertNotNull(testDao);
     }    
+
 }

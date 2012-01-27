@@ -116,8 +116,7 @@ public class ShowWorkPanel extends Frame {
             return;
         }
 
-        if (UserInfo.getInstance().isShowWorkRequired())
-            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
 
 
         /**
