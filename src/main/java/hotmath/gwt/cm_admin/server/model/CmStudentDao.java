@@ -2277,7 +2277,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      */
     public StudentActiveInfo loadActiveInfo(final Integer userId) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_ACTIVE_INFO");
-        StudentActiveInfo activeInfo = this.getJdbcTemplate().queryForObject(
+        StudentActiveInfo activeInfo = null;
+        try {
+            activeInfo = this.getJdbcTemplate().queryForObject(
                 sql,
                 new Object[]{userId},
                 new RowMapper<StudentActiveInfo>() {
@@ -2293,18 +2295,22 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             return activeInfo;
                         }
                         catch(Exception e) {
-                            __logger.error("Error creating StudentUserProgramModel: " + userId, e);
+                            __logger.error("Error creating StudentActiveInfo: " + userId, e);
                             throw new SQLException(e.getMessage());
                         }
                     }
                 });
-
+        }
+        catch (Exception e) {
+        	__logger.error(String.format("Error querying for StudentActiveInfo; userId: %d, SQL; %s", userId, sql), e);
+        	throw e;
+        }
 
         /** Check to see if this program supports alternate tests, if so
          *  pass along the segment_slot to use .. otherwise, make sure it
          *  is zero to always use the same slot
          */
-        if(activeInfo.getActiveSegmentSlot() > 0) {
+        if (activeInfo != null && activeInfo.getActiveSegmentSlot() > 0) {
                 CmUserProgramDao upDao = CmUserProgramDao.getInstance();
             if(upDao.loadProgramInfoCurrent(userId).getTestDef().getNumAlternateTests() == 0)
                activeInfo.setActiveSegmentSlot(0);
