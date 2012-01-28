@@ -8,7 +8,6 @@ import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
 import hotmath.gwt.shared.client.model.CustomQuizId;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 

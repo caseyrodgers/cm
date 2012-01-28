@@ -264,8 +264,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws SQLException
      */
-    public List<String> getTestIdsForSegment(StudentUserProgramModel userProgram, int segment, String textcode,
-            String chapter, HaTestConfig config, int segmentSlot) throws Exception {
+    public List<String> getTestIdsForSegment(StudentUserProgramModel userProgram, int segment, String textcode, String chapter, HaTestConfig config, int segmentSlot) throws Exception {
 
         assert (segment > 0);
 

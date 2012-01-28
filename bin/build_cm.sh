@@ -65,10 +65,10 @@ echo Setting up CM package symbolic links to shared resources
 # make symbolic links for cm_mobile2 as standalone domain
 #
 echo Setup the cm_mobile2 GWT app as standalone domain
-cd target/cm-1.0-SNAPSHOT/cm_mobile2
-chmod +x ./make_links.sh
-./make_links.sh
-cd ../../..
+#cd target/cm-1.0-SNAPSHOT/cm_mobile3
+#chmod +x ./make_links.sh
+#./make_links.sh
+#cd ../../..
 
 
 # make temp dir used in temp file creation

@@ -1288,6 +1288,7 @@ SELECT problemindex
 FROM   SOLUTIONS
 WHERE  (SOLUTIONS.BOOKTITLE = ? and (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?))
   AND  problemnumber between ? and ?
+ORDER BY cast(problemnumber as unsigned)  
  
 #SELECT problemindex
 #FROM   SOLUTIONS

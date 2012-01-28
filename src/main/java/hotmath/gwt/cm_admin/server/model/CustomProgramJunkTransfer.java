@@ -22,7 +22,7 @@ public class CustomProgramJunkTransfer implements SbTestImpl {
     static final int DEMO_ADMIN_ID=13;
     static final int FROM_ADMIN_ID=5;
     
-    String progNames[] = {"Essentials Topics", "Pre-Algebra Topics", "Algebra 1 Topics", "Geometry Topics",  "Algebra 2 Topics"};
+    String progNames[] = {"Foundations - A", "Foundations - B"};
     public CustomProgramJunkTransfer(Connection conn) throws Exception  {
         this.conn = conn;
     }
@@ -63,7 +63,7 @@ public class CustomProgramJunkTransfer implements SbTestImpl {
         ps.close();
         
         
-        sql = "select * from JUNK_CUST_PROG_TOPICS_LESSON where program_id = ? order by id";
+        sql = "select * from JUNK_HA_CUSTOM_PROGRAM_LESSON where program_id = ? order by id";
         ps = conn.prepareStatement(sql);
         ps.setInt(1, fromCp);
       
@@ -104,6 +104,7 @@ public class CustomProgramJunkTransfer implements SbTestImpl {
         try {
             if(as.length > 0) {
                 new CustomProgramJunkTransfer(HMConnectionPool.getConnection()).moveNewTopicsOver();
+                System.exit(0);
             }
             else {
                 SbTesterFrameGeneric tester = new SbTesterFrameGeneric(new CustomProgramJunkTransfer(HMConnectionPool.getConnection()));

@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="hotmath.gwt.cm_admin.server.modelCustomProgramJunkTransfer"  -o
