@@ -344,7 +344,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		sb.append(rs.getString("activity"));
 
 		boolean isQuiz = (rs.getInt("is_quiz") > 0);
-		m.setIsQuiz(isQuiz && ! isCustomQuiz);
+		m.setIsQuiz(isQuiz);
 		if (isQuiz && !isCustomQuiz) {
 			sb.append(sectionNum);
 		}
@@ -368,6 +368,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				sb.append("Started");
 			}
 			else {
+				m.setIsQuiz(false);
 				sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
 			}
 		} else {
