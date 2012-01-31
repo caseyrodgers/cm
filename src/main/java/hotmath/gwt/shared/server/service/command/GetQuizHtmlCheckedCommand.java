@@ -3,11 +3,13 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.rpc.action.GetQuizHtmlCheckedAction;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
@@ -45,7 +47,16 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             Map<String, Object> map = new HashMap<String, Object>();
 
             HaTest haTest = HaTestDao.getInstance().loadTest( action.getTestId());
-            String testTitle = haTest.getTitle();
+            
+            //TODO:  if Custom Quiz, then get CQ name as title
+            String testTitle;
+            if ("custom quiz".equalsIgnoreCase(haTest.getTitle())) {
+            	CustomQuizDef cqDef = CmQuizzesDao.getInstance().getCustomQuizByTestId(action.getTestId());
+            	testTitle = "CQ: " + cqDef.getQuizName();
+            }
+            else {
+            	testTitle = haTest.getTitle();
+            }
 
             HaTestSet _testSet = new HaTestSet(autoConn, haTest.getPids());
 
