@@ -261,14 +261,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
                 resourceItem.setViewed(true);
                 
-                updateCheckMarks();
+                _guiWidget.updateCheckMarks(resourceItem.getType());
             }
 
         }.register();
-    }
-
-    public void updateCheckMarks() {
-        _guiWidget.expandResourcePracticeProblems();
     }
 
     public CmContext getContext() {

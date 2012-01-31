@@ -141,13 +141,15 @@ class ResourceMenuButton extends Button {
             }
         }   
         
-        if(viewed == resource.getItems().size())
-            setText(initialValue);
-        else
-            setText(initialValue + " (" + viewed + "/" + resource.getItems().size() + ")");
-        
-        if(isComplete) {
-            indicateCompletion();
+        if(resource.getItems().size() > 0) {
+            if(viewed == resource.getItems().size())
+                setText(initialValue);
+            else
+                setText(initialValue + " (" + viewed + "/" + resource.getItems().size() + ")");
+            
+            if(isComplete) {
+                indicateCompletion();
+            }
         }
         return isComplete;
     }

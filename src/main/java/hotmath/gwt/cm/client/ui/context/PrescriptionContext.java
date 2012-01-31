@@ -137,7 +137,7 @@ public class PrescriptionContext implements CmContext {
                  * 
                  */
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                        .expandResourcePracticeProblems();
+                        .updateCheckMarks("practice");
 
                 /**
                  * show an appropriate message for either RPA or RPP
@@ -155,7 +155,7 @@ public class PrescriptionContext implements CmContext {
                  * 
                  */
                 ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                        .expandResourcePracticeProblems();
+                        .updateCheckMarks("practice");
 
                 new RequiredPracticeCompleteDialog("More Practice Required", msg);
 

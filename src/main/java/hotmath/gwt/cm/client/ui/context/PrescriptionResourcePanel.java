@@ -122,11 +122,15 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     	resourceButtons.get("practice").el().blink(new FxConfig());
     }
 
-    public void expandResourcePracticeProblems() {
-        resourceButtons.get("practice").updateCheckMarks();
-        resourceButtons.get("practice").showMenu();
+    public void updateCheckMarks(String resourceType) {
         
-        resourceButtons.get("cmextra").updateCheckMarks();
+        if(resourceType != null && resourceType.equals("cmextra")) {
+            resourceButtons.get("cmextra").updateCheckMarks();
+        }
+        else {
+            resourceButtons.get("practice").updateCheckMarks();
+            resourceButtons.get("practice").showMenu();
+        }
     }
     
     public void disableGames() {

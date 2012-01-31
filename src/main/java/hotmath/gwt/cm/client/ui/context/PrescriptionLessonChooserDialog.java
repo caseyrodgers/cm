@@ -32,6 +32,8 @@ import com.extjs.gxt.ui.client.event.GridEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.WindowEvent;
+import com.extjs.gxt.ui.client.event.WindowListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -94,11 +96,23 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         }));
 
         addCloseButton();
+        
+        
+        addWindowListener(new WindowListener() {
+            @Override
+            public void windowHide(WindowEvent we) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+            }
+        });
+        
     }
     
     int scrollIntoView = 0;
 
     public void showDialog(PrescriptionData pData) {
+        
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
+
 
         this.pData = null;
         
@@ -109,32 +123,31 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
             this.pData = pData;
 
-            String currentTopic = pData.getCurrSession().getTopic();
             final ListStore<LessonChoice> store = new ListStore<LessonChoice>();
-            boolean isSegmentComplete = true;
             int recCnt=0;
+            int nextLesson=-1;
             for (SessionTopic st : pData.getSessionTopics()) {
                 String status = st.getTopicStatus(); // 
 
                 String currentLessonTopic = pData.getCurrSession().getTopic();
                 if(st.getTopic().equals(currentLessonTopic)) {
                     status = getLessonStatus(st);
+                    if(!st.isComplete()) {
+                        nextLesson = recCnt;
+                    }
                 }
                 LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), status);
                 store.add(lc);
-
-                if (lc.getTopic().equals(currentTopic)) {
-                    //lc.setStyle("selected");
-                    scrollIntoView = store.getCount() - 1;
-                }
-
-                if (!lc.isComplete()) {
-                    isSegmentComplete = false;
-                }
                 
+                if(nextLesson < 0 && !st.isComplete()) {
+                    nextLesson = recCnt;
+                }
+
                 recCnt++;
             }
             
+            
+            scrollIntoView = nextLesson;
             _grid = defineGrid(store, defineColumns());
             add(_grid);
 
@@ -169,7 +182,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
         setVisible(true);
     }
-    
+
     
     /** handles real time analysis is current lesson topic
      * 
@@ -376,6 +389,9 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
     static PrescriptionLessonChooserDialog __instance;
 
     static public PrescriptionLessonChooserDialog getSharedInstance() {
+        
+        __instance = null; // force new for debuggin.
+        
         if (__instance == null) {
             __instance = new PrescriptionLessonChooserDialog();
         }
