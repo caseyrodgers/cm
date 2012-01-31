@@ -307,6 +307,32 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
         return customQuiz;
     	
     }
+
+    public CustomQuizDef getCustomQuizByTestId(final int testId) throws Exception {
+
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_BY_TESTID");
+
+        CustomQuizDef customQuiz = this.getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{testId},
+                new RowMapper<CustomQuizDef>() {
+                    public CustomQuizDef mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        try {
+                                return new CustomQuizDef(
+                                        rs.getInt("quiz_id"), 
+                                        rs.getString("quiz_name"),
+                                        rs.getInt("admin_id"));
+                        }
+                        catch(Exception e) {
+                            __logger.error(String.format("Error getting Custom Quiz for runId: %d", testId), e);
+                            throw new SQLException(e.getMessage());
+                        }
+                    }
+                });
+        return customQuiz;
+    	
+    }
+
     /** Return list of question HTML for custom quiz
      *
      * TODO: return List instead of CmList
