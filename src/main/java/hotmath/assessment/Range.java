@@ -41,6 +41,8 @@ public class Range {
     
     static public List<Integer> parseGradeLevels(String gradeLevelRange) {
         List<Integer> list = new ArrayList<Integer>();
+        
+        gradeLevelRange = gradeLevelRange.replace(" ","");
         String p[] = gradeLevelRange.split("-");
         if(p.length == 1) {
             list.add(Integer.parseInt(p[0]));
