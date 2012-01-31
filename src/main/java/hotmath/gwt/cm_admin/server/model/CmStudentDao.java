@@ -1366,6 +1366,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
         return sm;
     }
+    
 
     /** add a new custom program based on contents of StudyProgram in StudentModel
     *

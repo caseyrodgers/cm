@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.inmh.INeedMoreHelpItem;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserDao;
@@ -25,9 +26,8 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     final static Logger __logger = Logger.getLogger(AssessmentPrescriptionCustom.class);
     
     int _numSegments=0;
-    int gradeLevel;
     List<AssessmentPrescriptionSession> _sessionsAll = new ArrayList<AssessmentPrescriptionSession>();
-    
+    int gradeLevel;
     public AssessmentPrescriptionCustom(final Connection conn,HaTestRun testRun) throws Exception {
         super(conn);
         
@@ -53,9 +53,12 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
 
         String cacheKey = uid + "/" + testRun.getRunId();
 
-        gradeLevel = CmUserProgramDao.getInstance().getGradeLevel(custProgId);
+        gradeLevel = testRun.getHaTest().getGradeLevel();
         if(gradeLevel == 0) {
             gradeLevel = determineGradeLevel(progLessons,cacheKey);
+            if(gradeLevel < MAX_GRADE_LEVEL) {
+               HaTestDao.getInstance().updateGradeLevel(testRun.getHaTest().getTestId(),gradeLevel);
+            }
         }
         
         __logger.debug("grade level: " + gradeLevel);
@@ -105,6 +108,10 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         HaTestRunDao.getInstance().addLessonsToTestRun(conn,testRun, _sessions);
     }
 
+    @Override
+    public int getGradeLevel() {
+        return gradeLevel;
+    }
     
     private int determineGradeLevel(CmList<CustomLessonModel> progLessons, String cacheKey) throws Exception {
         int heighestLowestGradeLevel = 0;
@@ -120,19 +127,14 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 }
             }
         }
-        return heighestLowestGradeLevel>0?heighestLowestGradeLevel:9999;
+        return heighestLowestGradeLevel>0?heighestLowestGradeLevel:MAX_GRADE_LEVEL;
     }
     
     
+    int MAX_GRADE_LEVEL = 9999;
     
     @Override
     public CmProgramFlowAction getNextAction() throws Exception {
         return new CmProgramFlowAction(CmPlace.PRESCRIPTION);
-    }
-    
-
-    @Override
-    public int getGradeLevel() {
-    	return gradeLevel;
     }
 }

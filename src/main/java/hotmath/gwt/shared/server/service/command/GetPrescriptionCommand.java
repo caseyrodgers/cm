@@ -4,6 +4,7 @@ import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
+import hotmath.assessment.Range;
 import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -181,16 +182,27 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
                 int pcnt=0;
                 for (INeedMoreHelpItem i : t.getResources()) {
                     InmhItemData id = new InmhItemData();
-                    id.setFile(i.getFile());
-                    
                     
                     /** override title of special types
                      * 
                      */
                     if(i.getType().equals("cmextra")) {
+                        
+                        /** only keep if in this program's
+                         *  grade level
+                         */
+                        Range range = new Range(i.getFile());
+                        if(!range.isGradeLevel(prescription.getGradeLevel())) {
+                            // skip if not grade level
+                            __logger.debug("skipping cmextra due to not matching grade level: " + prescription.getGradeLevel() + ", " + i);
+                            continue;
+                        }
+                        
+                        id.setFile(range.getRange());
                         id.setTitle("Problem " + (++pcnt));
                     }
                     else {
+                        id.setFile(i.getFile());
                         id.setTitle(i.getTitle());
                     }
                     

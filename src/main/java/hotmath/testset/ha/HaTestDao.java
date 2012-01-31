@@ -168,6 +168,17 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
     	});
     }
 
+    public void updateGradeLevel(final int testId, final int gradeLevel) throws Exception {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = con.prepareStatement("update HA_TEST set grade_level = ? where test_id = ?");
+                ps.setInt(1, gradeLevel);
+                ps.setInt(2, testId);
+                return ps;
+            }
+        });
+    }
+    
     /**
      * Convenience method used to create a new HaTest from raw data
      * 
@@ -223,17 +234,20 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                      * 
                      */
                     int segmentCount = 0;
+                    int gradeLevel=0;
                     if (userProgram.getCustomProgramId() > 0) {
                         segmentCount = CmCustomProgramDao.getInstance().getTotalSegmentCount(connection,userProgram.getCustomProgramId());
+                        gradeLevel = CmUserProgramDao.getInstance().getCustomProgramGradeLevel(userProgram.getCustomProgramId());
                     } else if (userProgram.getCustomQuizId() > 0)
                         segmentCount = 1;
                     else {
                         segmentCount = config.getSegmentCount();
+                        gradeLevel = testDef.getGradeLevel();
                     }
                     ps.setInt(7, segmentCount);
 
                     ps.setInt(8, testIds.size());
-                    ps.setInt(9, testDef.getGradeLevel());
+                    ps.setInt(9, gradeLevel);
 
                     return ps;
                 } catch (Exception e) {

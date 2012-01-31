@@ -260,7 +260,7 @@ public class AssessmentPrescriptionSession {
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_activity;
                 else if (linkType.equals("workbook"))
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_workbook;
-                else if (linkType.equals("cmextra"))
+                else if (linkType.equals("cmextra")) 
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_cmextra;
                 else if (linkType.equals("flashcard"))
                     type = INeedMoreHelpResourceTypeDef.RESOURCE_TYPE_flashcard;
@@ -273,6 +273,8 @@ public class AssessmentPrescriptionSession {
                         break;
                     }
                 }
+                
+                
                 INeedMoreHelpItem inmhItem = INeedMoreHelpItemFactory.create(conn, rs.getString("link_type"), rs.getString("link_key"), rs.getString("link_title"));
 
                 // only add items that at, or below the current

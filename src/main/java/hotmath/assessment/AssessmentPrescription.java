@@ -4,6 +4,7 @@ import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -12,6 +13,7 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
@@ -55,7 +57,7 @@ public class AssessmentPrescription {
     int missed, totalPrescription;
 
     HaTestRun testRun;
-
+    
     protected AssessmentPrescription(final Connection conn) {
         this.conn = conn;
     }
@@ -85,14 +87,16 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescription(final Connection conn, HaTestRun testRun) throws Exception {
-        this(conn, testRun, null);
+        this(conn,testRun, null);
     }
 
     public AssessmentPrescription(final Connection conn, HaTestRun testRun, ClientEnvironment clientEnvironment)
             throws Exception {
         this(conn);
+        
         logger.debug("Creating prescription for run: " + testRun);
         this.testRun = testRun;
+        
 
         int uid = testRun.getHaTest().getUser().getUid();
 
@@ -151,21 +155,11 @@ public class AssessmentPrescription {
         logger.debug("Finished creating prescription for run: " + testRun);
     }
 
+    
     String DEFAULT_LESSON = "/hotmath_help/topics/index_hotmath_review_full.html";
 
-    /**
-     * Return the grade level of this current program
-     * 
-     * This will be determined by the textcode's subject's grade_level found in
-     * textcode assigned to the test_def
-     * 
-     * @return
-     */
     public int getGradeLevel() {
-        if (testRun == null)
-            return 99;
-
-        return getTestRun().getHaTest().getTestDef().getGradeLevel();
+        return testRun.getHaTest().getGradeLevel();
     }
 
     public HaTestRun getTestRun() {

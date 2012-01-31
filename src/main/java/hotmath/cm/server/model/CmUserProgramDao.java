@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
@@ -44,6 +45,20 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
         /** empty */
     }
 
+
+    public void updateStudentGradeLevel(final int userProgId, final int gradeLevel) throws Exception {
+        final String sql = CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_STUDENT_GRADE_LEVEL_PROGRAM_SQL");
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1,gradeLevel);
+                ps.setInt(2,userProgId);
+                return ps;
+            }
+        });
+    }
+    
 
     /**
      * Return the currently configured user program for this user
@@ -105,7 +120,7 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
     }
     
     
-    public int getGradeLevel(int custProgId) throws Exception {
+    public int getCustomProgramGradeLevel(int custProgId) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_PROGRAM_GRADE_LEVEL");
         return this.getJdbcTemplate().queryForInt(
                 sql,

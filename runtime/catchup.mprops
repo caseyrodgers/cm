@@ -675,6 +675,14 @@ insert CM_USER_PROGRAM (user_id, admin_id, test_def_id, pass_percent, create_dat
 values (?, ?, (select max(test_def_id) as test_def_id from HA_TEST_DEF where prog_id = ? and subj_id = ? and is_active = 1), ?, ?, ?, ?)
 
 
+.key=GET_PROGRAM_GRADE_LEVEL_BY_RUN_ID
+
+select c.grade_level
+from HA_TEST_RUN r
+  JOIN HA_TEST t on t.test_id = r.test_id
+  JOIN CM_USER_PROGRAM c on c.id = t.user_prog_id
+where r.run_id = ?  
+
 
 .key=GET_TEST_DEF_BY_PROG_SUBJECT
 select max(test_def_id) as test_def_id 

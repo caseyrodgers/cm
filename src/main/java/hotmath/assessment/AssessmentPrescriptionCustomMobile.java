@@ -16,6 +16,7 @@ public class AssessmentPrescriptionCustomMobile extends AssessmentPrescription {
         super(conn);
         
         this.testRun = testRun;
+        
         readAssessment();
         
         ClientEnvironment ce = HaUserDao.getInstance().getLatestClientEnvironment(testRun.getHaTest().getUser().getUid());

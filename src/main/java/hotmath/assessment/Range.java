@@ -7,7 +7,7 @@ import sb.util.SbUtilities;
 
 /** Represents a single solution range 
  * 
- * deal with parsing range and extacting grade level, in the form:
+ * deal with parsing range and extracting grade level, in the form:
  * 
  * RANGE : GRADE
  * 
@@ -62,5 +62,14 @@ public class Range {
     
     public List<Integer> getGradeLevels() {
         return gradeLevels;
+    }
+    
+    public boolean isGradeLevel(int gradeLevel) {
+        for(Integer gl: gradeLevels) {
+            if(gl == gradeLevel) {
+                return true;
+            }
+        }
+        return false;
     }
 }

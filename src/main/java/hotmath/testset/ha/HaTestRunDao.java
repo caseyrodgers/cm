@@ -45,6 +45,9 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
      * object. This table is used as a quick method of accessing the lessons
      * assigned to a testRun without having to recreate the prescription.
      * 
+     * This also updates the HA_TEST_RUN record indicating what grade level '
+     * was used when creating the prescription associated with this test run.
+     * 
      * Serialize prescription information.
      * 
      */
@@ -53,7 +56,7 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
 
         if (testRun.getRunId() == null)
             return;
-
+        
         PreparedStatement pstat = null;
         try {
             conn.createStatement().executeUpdate("delete from HA_TEST_RUN_LESSON where run_id = " + testRun.getRunId());
@@ -109,6 +112,14 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
         }
     }
 
+    public int getGradeLevelFromRunId(final int runId) throws Exception {
+        String sql=CmMultiLinePropertyReader.getInstance().getProperty("GET_PROGRAM_GRADE_LEVEL_BY_RUN_ID");
+        return getJdbcTemplate().queryForInt(
+                sql,
+                new Object[]{runId}
+                );
+    }
+    
     /**
      * Return the list of lessons in this test run along with their statues
      * 
