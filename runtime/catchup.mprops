@@ -2658,6 +2658,16 @@ where qid = ?
 order by name
 
 
+.key=GET_CUSTOM_QUIZ_BY_TESTID
+
+SELECT q.name as quiz_name, q.qid as quiz_id, q.admin_id
+FROM   HA_TEST t, CM_USER_PROGRAM p, HA_CUSTOM_QUIZ q
+WHERE t.test_id = ?
+  AND t.user_prog_id = p.id
+  AND p.custom_quiz_id = q.qid
+ORDER BY name
+
+
 .key=GET_CUSTOM_PROGRAM_ITEMS
 
 
