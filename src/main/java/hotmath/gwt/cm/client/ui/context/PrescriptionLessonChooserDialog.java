@@ -126,6 +126,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             final ListStore<LessonChoice> store = new ListStore<LessonChoice>();
             int recCnt=0;
             int nextLesson=-1;
+            int currentIndex=-1;
             for (SessionTopic st : pData.getSessionTopics()) {
                 String status = st.getTopicStatus(); // 
 
@@ -133,7 +134,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
                 if(st.getTopic().equals(currentLessonTopic)) {
                     status = getLessonStatus(st);
                     if(!st.isComplete()) {
-                        nextLesson = recCnt;
+                        currentIndex = recCnt;
                     }
                 }
                 LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), status);
@@ -152,7 +153,6 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             add(_grid);
 
             /**
-             * This does not seem to work ...
              * 
              */
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
