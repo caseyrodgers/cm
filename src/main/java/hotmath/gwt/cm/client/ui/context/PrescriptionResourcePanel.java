@@ -126,6 +126,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
         
         if(resourceType != null && resourceType.equals("cmextra")) {
             resourceButtons.get("cmextra").updateCheckMarks();
+            resourceButtons.get("cmextra").showMenu();
         }
         else {
             resourceButtons.get("practice").updateCheckMarks();

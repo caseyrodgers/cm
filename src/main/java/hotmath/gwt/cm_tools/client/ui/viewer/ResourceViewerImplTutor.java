@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.MarkHomeWorkAttemptedAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
+import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -97,14 +98,16 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 mAction.getActions().add(action);
 
 
+                InmhItemData item = getResourceItem();
                 // if EPP (homework), then emarked as viewed as 
                 // soon as input widget is attempted.
-                if(getResourceItem().getType().equals("cmextra")) {
-                    if(getResourceItem().isViewed() == false) {
-                        getResourceItem().setViewed(true);
+                if(item.getType().equals("cmextra")) {
+                    if(item.isViewed() == false) {
+                        item.setViewed(true);
+                        SetInmhItemAsViewedAction eppViewedAction = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(),item.getType(), item.getFile(), UserInfo.getInstance().getSessionNumber());
+                        mAction.getActions().add(eppViewedAction);
                         
-                        MarkHomeWorkAttemptedAction homeWorkAction = new MarkHomeWorkAttemptedAction(UserInfo.getInstance().getRunId(), getResourceItem().getTitle(), pid);
-                        mAction.getActions().add(homeWorkAction);
+                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_EPP_COMPLETE,item));
                     }
                 }
                 

@@ -4,7 +4,6 @@ import hotmath.BookInfoManager;
 import hotmath.HotMathException;
 import hotmath.ProblemID;
 import hotmath.cm.login.ClientEnvironment;
-import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -13,7 +12,6 @@ import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.inmh.INeedMoreHelpManager;
 import hotmath.testset.ha.HaTest;
-import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunDao.TestRunLesson;
@@ -47,9 +45,7 @@ public class AssessmentPrescription {
 
     protected Connection conn;
 
-    final static public int TOTAL_SESSION_SOLUTIONS = 3;
     final static public int MAX_SESSIONS = 100;
-    static final int PID_COUNT = 3;
 
     InmhAssessment _assessment;
 
@@ -106,7 +102,6 @@ public class AssessmentPrescription {
 
         List<InmhItemData> itemsData = _assessment.getInmhItemUnion("review");
 
-        totalPrescription = itemsData.size() * TOTAL_SESSION_SOLUTIONS;
 
         if (clientEnvironment == null) {
             clientEnvironment = HaUserDao.getInstance().getLatestClientEnvironment(uid);
