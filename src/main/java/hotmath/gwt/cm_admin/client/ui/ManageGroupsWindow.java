@@ -21,9 +21,6 @@ import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetTemplateForSelfRegGroupAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -49,6 +46,9 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ManageGroupsWindow extends CmWindow {
     
@@ -425,7 +425,6 @@ class GroupManagerGlobalSettings extends CmWindow {
     
     GroupInfoModel gim;
     CheckBox showWorkRequired;
-    CheckBox tutoringAllowed;
     CheckBox limitGames;
     CheckBox stopAtProgramEnd;
     
@@ -434,7 +433,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(370,350);
+        setSize(340,270);
         drawGui();
         setModal(true);
         setResizable(false);
@@ -444,12 +443,15 @@ class GroupManagerGlobalSettings extends CmWindow {
     private void drawGui() {
         setLayout(new FitLayout());
         FormPanel form = new FormPanel();
+		form.setLabelWidth(220);
         form.setFrame(false);
         form.getHeader().setVisible(false);
         FieldSet fs = new FieldSet();
         FormLayout fl = new FormLayout();
+		fl.setLabelWidth(form.getLabelWidth());
         fs.setLayout(fl);
         fs.setHeading("Group Settings");
+        fs.setWidth(303);
         showWorkRequired = new CheckBox();
         showWorkRequired.setFieldLabel("Require Show Work");
         showWorkRequired.setBoxLabel("");
@@ -465,11 +467,6 @@ class GroupManagerGlobalSettings extends CmWindow {
         stopAtProgramEnd.setFieldLabel("Stop at End of Program");
         stopAtProgramEnd.setBoxLabel("");
         fs.add(stopAtProgramEnd);
-
-        tutoringAllowed = new CheckBox();
-        tutoringAllowed. setFieldLabel("Tutoring Enabled");
-        tutoringAllowed.setBoxLabel("");
-        fs.add(tutoringAllowed);
 
         form.add(fs);
 
@@ -509,7 +506,7 @@ class GroupManagerGlobalSettings extends CmWindow {
                 setAction(action);
                 action.setGroupId(gim.getId());
                 action.setShowWorkRequired(showWorkRequired.getValue());
-                action.setDisallowTutoring( !tutoringAllowed.getValue());
+                action.setDisallowTutoring(false);
                 action.setStopAtProgramEnd(stopAtProgramEnd.getValue());
                 action.setLimitGames(limitGames.getValue());                
                 action.setPassPercent(null);
