@@ -6,12 +6,10 @@ import hotmath.assessment.AssessmentPrescription.SessionData;
 import hotmath.assessment.AssessmentPrescriptionManager;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.InmhItemData;
+import hotmath.assessment.Range;
 import hotmath.assessment.RppWidget;
-import hotmath.assessment.SbExceptionNoLessonRppsFound;
 import hotmath.cm.login.ClientEnvironment;
-import hotmath.cm.program.CmProgramFlow;
 import hotmath.cm.server.model.CmUserProgramDao;
-import hotmath.cm.util.ActionInfo;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -366,7 +364,8 @@ public class PrescriptionReport {
                      */
                     for (INeedMoreHelpResourceType p : epp) {
                         for (INeedMoreHelpItem pid : p.getResources()) {
-                            if (!SolutionManager.getInstance().doesSolutionExist(conn, pid.getFile())) {
+                            
+                            if (!SolutionManager.getInstance().doesSolutionExist(conn, new Range(pid.getFile()).getRange())) {
                                 logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i
                                         + ": RPP does not exist '" + pid.getFile() + "'");
                             }
