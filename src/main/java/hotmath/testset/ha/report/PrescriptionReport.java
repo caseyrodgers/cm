@@ -237,7 +237,10 @@ public class PrescriptionReport {
                     List<InmhItemData> itemsData = prescription.getAssessment().getInmhItemUnion("review");
                     for (InmhItemData itemData : itemsData) {
                         List<RppWidget> poolItems = itemData.getWidgetPool(conn,"prescription_report");
-                        if(poolItems.size() == 0) {
+                        if(itemData.getInmhItem().getFile().contains("index_hotmath_review_full.html")) {
+                            System.out.print("index review full");
+                        }
+                        else if(poolItems.size() == 0) {
                             logMessage(testRun.getRunId(),"WARNING: No RPP pool found for '" + itemData);
                         }
                         else if(prescription.filterRppsByGradeLevel(prescription.getGradeLevel(), poolItems, itemData).size() == 0) {
