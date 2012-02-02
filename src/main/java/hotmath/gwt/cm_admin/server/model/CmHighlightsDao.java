@@ -389,7 +389,8 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             	totalTime = totalTime + count * time;
             }
             // add last student
-            list.add(new HighlightReportData(userId, userName, String.valueOf(totalTime)));
+            if (userId != -1)
+                list.add(new HighlightReportData(userId, userName, String.valueOf(totalTime)));
 
         }
         finally {
