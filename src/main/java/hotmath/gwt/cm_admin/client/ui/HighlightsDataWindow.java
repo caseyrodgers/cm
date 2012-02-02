@@ -113,8 +113,8 @@ public class HighlightsDataWindow extends CmWindow {
             public void handleEvent(CmEvent event) {
                 if(event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
                     if(__instance != null && __instance.isVisible()) {
-                        __instance.reloadAllReports();
                         __instance.refreshDateRangeLabel();
+                        __instance.reloadAllReports();
                     }
                 }
             }
