@@ -630,7 +630,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	if (includeRegister) {
     		if (sb.length() > 0) sb.append(" UNION ");
     		dateRangeCount++;
-    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_REGISTER_ACTIVITY_IN_DATE_RANGE"));
+    		sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVE_REGISTRATION_IN_DATE_RANGE"));
     	}
 
     	if (sb.length() == 0) {

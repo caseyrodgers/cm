@@ -156,7 +156,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 		isRegistered = new CheckBox();
         isRegistered.setId(REGISTERED);
         isRegistered.setValue(advOptionsMap.get(REGISTERED));
-        isRegistered.setToolTip("Select students that registered.");
+        isRegistered.setToolTip("Select students that were registered.");
         registered = new CheckBoxGroup(); 
         registered.setFieldLabel("Registered");
         registered.setId(REGISTERED);

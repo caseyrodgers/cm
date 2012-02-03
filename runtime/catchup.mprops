@@ -475,12 +475,18 @@ WHERE t.user_id in ( $$UID_LIST$$ )
   AND l.lesson_viewed BETWEEN ? and ?
   
 ##  
-.key=STUDENTS_WITH_REGISTER_ACTIVITY_IN_DATE_RANGE
+.key=STUDENTS_WITH_ACTIVE_REGISTRATION_IN_DATE_RANGE
+#
+# can't handle students that were unregistered in date range
+# because there is not a separate "unregistered" time stamp
+#
 
 SELECT DISTINCT u.uid as user_id
 FROM HA_USER u
 WHERE u.uid in ( $$UID_LIST$$ )
-  AND u.date_created BETWEEN ? and ?
+  AND u.is_active = 1
+  AND ( u.date_created < ? OR u.date_created < ? )
+  
   
 ####
 .key=STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE
