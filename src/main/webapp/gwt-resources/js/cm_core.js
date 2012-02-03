@@ -56,6 +56,12 @@ function findQuestionByPid(pid) {
 			if (o == pid) {
 				return all[i];
 			}
+			
+			o = all[i].getAttribute('pid');
+			if (o == pid) {
+				return all[i];
+			}
+
 		}
 	} catch (x) {
 		alert('Error while setting selected question response: ' + x);
