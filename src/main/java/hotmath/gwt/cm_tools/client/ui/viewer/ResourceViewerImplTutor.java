@@ -499,7 +499,7 @@ class ShowHowToUseDialog extends CmWindow {
     public ShowHowToUseDialog() {
     	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         setModal(true);
-        setSize(350,300);
+        setSize(350,200);
         setHeading("How To Use This");
         add(new Html(html));
         addCloseButton();
@@ -512,8 +512,9 @@ class ShowHowToUseDialog extends CmWindow {
     }
     String html =
         "<div style='padding: 10px 5px;'>" +
-        "<p>Work out your answer using pencil and paper, or click 'Show Whiteboard' to enter your work there.  (Some teachers may require this.)</p>" +
-        "<p>If you see an 'Enter Your Answer' input box, you can check your answer there.</p>" +
-        "<p>Then, click the green arrow keys to see a step-by-step solution.</p>" +
+         "<p>Work out your answer using pencil and paper or the Whiteboard. " +
+         "Some teachers may require this.</p>" +
+         "<p>If you see an 'Enter Your Answer' input box, you can enter your" +
+         "answer there to check your work.</p>" +
         "</div>";
 }
