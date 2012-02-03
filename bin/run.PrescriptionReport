@@ -1,1 +1,1 @@
-mvn exec:java -Dexec.mainClass="hotmath.testset.ha.report.PrescriptionReport"  -Dexec.args="-program=ALL" -o
+mvn exec:java -Dexec.mainClass="hotmath.testset.ha.report.PrescriptionReport"  -Dexec.args="-program=$1" -o

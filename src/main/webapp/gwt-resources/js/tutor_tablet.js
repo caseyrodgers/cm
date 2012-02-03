@@ -106,8 +106,6 @@ function getNextMoveTo() {
 }
 
 
-alert('loading tutor manager');
-
 var TutorManager = {
     currentRealStep : -1,
     currentStepUnit : -1,

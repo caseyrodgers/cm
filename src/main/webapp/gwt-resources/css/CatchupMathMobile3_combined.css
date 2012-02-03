@@ -333,6 +333,9 @@ define {
 .equation-small {
    font-size: 1.5em;
 }
+.equation-med {
+   font-size: 18px;
+}
 
 .equation-large {
   font-size: 2.5em;
