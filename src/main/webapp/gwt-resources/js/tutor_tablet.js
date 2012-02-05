@@ -680,6 +680,10 @@ function gotoStepUnit(x) {
     TutorManager.showStepUnit(x);
 }
 
+function getCurrentStepUnitNumber() {
+    return TutorManager.currentStepUnit;
+}
+
 function deleteStep(x) {
          var su = 0;
      if(x > 0) {
