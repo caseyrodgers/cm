@@ -83,7 +83,9 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
                 MessageBox.confirm("Continue?", "Ready to move to next quiz?", new Listener<MessageBoxEvent>() {
                     @Override
                     public void handleEvent(MessageBoxEvent be) {
-                        doMoveNextAux();
+                        if(be.getButtonClicked().getText().equals("Yes")) {
+                            doMoveNextAux();
+                        }
                     }
                 });
             }
