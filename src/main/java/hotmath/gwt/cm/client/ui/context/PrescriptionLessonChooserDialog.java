@@ -74,7 +74,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
                 CmLogger.info("NextQuiz: pData.areAllLessonsCompleted() = " + pData.areAllLessonsCompleted() + ", " +
                         pData.getCountCompletedTopics() + ", " + pData.getSessionTopics().size());
-                if (CmShared.getQueryParameter("debug") == null && pData.areAllLessonsCompleted()) {
+                if (CmShared.getQueryParameter("debug") == null && !pData.areAllLessonsCompleted()) {
                     InfoPopupBox.display("Not Finished", "Please complete all lessons first");
                     return;
                 }
