@@ -23,8 +23,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jfree.util.Log;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.data.ModelData;
@@ -76,7 +75,6 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
                 Log.info("NextQuiz: pData.areAllLessonsCompleted() = " + pData.areAllLessonsCompleted() + ", " +
                         pData.getCountCompletedTopics() + ", " + pData.getSessionTopics().size());
-                
                 if (CmShared.getQueryParameter("debug") == null && pData.areAllLessonsCompleted()) {
                     InfoPopupBox.display("Not Finished", "Please complete all lessons first");
                     return;
