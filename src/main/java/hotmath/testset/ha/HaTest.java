@@ -160,23 +160,22 @@ public class HaTest {
 		return getUser().getActiveTestRunId();
 	}	
 	
-	@Override
-	public String toString() {
-		return "HaTest [user=" + user + ", testId=" + testId + ", pids=" + pids
-				+ ", testDef=" + testDef + ", segment=" + segment
-				+ ", segmentSlot=" + segmentSlot + ", totalSegments="
-				+ totalSegments + ", numTestQuestions=" + numTestQuestions
-				+ ", createTime=" + createTime + ", gradeLevel=" + gradeLevel
-				+ ", testRuns=" + testRuns + ", programInfo=" + programInfo
-				+ ", TEST_SIZE=" + TEST_SIZE + "]";
-	}
-	
+    
     public int getGradeLevel() {
-		return gradeLevel;
-	}
+        return gradeLevel;
+    }
 
-	public void setGradeLevel(int gradeLevel) {
-		this.gradeLevel = gradeLevel;
-	}
+    public void setGradeLevel(int gradeLevel) {
+        this.gradeLevel = gradeLevel;
+    }	
+	
+	@Override
+    public String toString() {
+        return "HaTest [user=" + user + ", testId=" + testId + ", pids=" + pids + ", testDef=" + testDef + ", segment="
+                + segment + ", segmentSlot=" + segmentSlot + ", totalSegments=" + totalSegments + ", numTestQuestions="
+                + numTestQuestions + ", createTime=" + createTime + ", gradeLevel=" + gradeLevel + ", testRuns="
+                + testRuns + ", programInfo=" + programInfo + ", TEST_SIZE=" + TEST_SIZE + "]";
+    }
+
 	
 }

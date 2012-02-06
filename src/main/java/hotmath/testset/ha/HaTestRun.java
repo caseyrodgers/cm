@@ -23,19 +23,10 @@ public class HaTestRun {
     int answeredCorrect, answeredIncorrect, notAnswered;
     int sessionNumber;
     boolean isPassing;
-    int gradeLevel;
 
     
     public HaTestRun() {
         
-    }
-    
-    public int getGradeLevel() {
-        return gradeLevel;
-    }
-
-    public void setGradeLevel(int gradeLevel) {
-        this.gradeLevel = gradeLevel;
     }
 
     public boolean isPassing() {

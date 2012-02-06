@@ -310,6 +310,8 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
                                 test.setNumTestQuestions(rs.getInt("test_question_count"));
                                 test.setTotalSegments(rs.getInt("total_segments"));
                                 test.setGradeLevel(rs.getInt("grade_level"));
+            
+                                System.out.println("DEBUG,DEBUG: " + test);
                                 
             
                                 test.setProgramInfo(new StudentUserProgramModel());
