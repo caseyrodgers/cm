@@ -11,10 +11,12 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
+import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
+import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonQuestionsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveCustomQuizAction;
@@ -48,12 +50,12 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.JsArrayInteger;
@@ -76,7 +78,9 @@ public class CustomProgramAddQuizDialog extends Window {
     TextField<String> _textQuizName;
     Button _saveButton;
     CustomQuizDef _customQuiz;
-
+    Label _readOnlyLabel;
+    ContentPanel _questionToolbar;
+    
     int adminId;
 
     public CustomProgramAddQuizDialog(Callback callback, CustomQuizDef quiz, boolean asCopy) {
@@ -100,6 +104,7 @@ public class CustomProgramAddQuizDialog extends Window {
                 saveCustomQuiz();
             }
         });
+        _saveButton.setEnabled(false);
 
         addButton(_saveButton);
 
@@ -207,9 +212,47 @@ public class CustomProgramAddQuizDialog extends Window {
         }
         _textQuizName.setValue(_customQuiz.getQuizName());
         
+        
+        
+        /** initially everything is readyonly, only enable after call to verify
+         *  existing custom quiz does not exist
+         */
+        setIsEditable(false);
+        
+        
+        CustomQuizInfoAction a;
+        new RetryAction<CustomQuizInfoModel>() {
+            @Override
+            public void attempt() {
+                CustomQuizInfoAction action = new CustomQuizInfoAction(adminId,new CustomLessonModel(_customQuiz.getQuizId(), null));
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+            
+            @Override
+            public void oncapture(CustomQuizInfoModel value) {
+                if(CmShared.getQueryParameter("debug") != null || value.getAssignedStudents().size() == 0) {
+                    setIsEditable(true);
+                }
+            };
+        }.register();
+        
+        
+        
         setVisible(true);
     }
 
+    
+    private void setIsEditable(boolean yesNo) {
+        CmLogger.info("CustomProgramAddQuizDialog: Is editable: " + yesNo);
+        _textQuizName.setEnabled(yesNo);
+        _saveButton.setEnabled(yesNo);
+        _readOnlyLabel.setVisible(!yesNo);
+        
+        _questionToolbar.getHeader().setVisible(yesNo);
+        _panelQuestions.getHeader().setVisible(yesNo);
+    }
+    
     private void addSelectedQuestionToCustomQuiz() {
         QuizQuestionModel question = _listQuestions.getSelectionModel().getSelectedItem();
         if (question != null) {
@@ -479,18 +522,18 @@ public class CustomProgramAddQuizDialog extends Window {
         ld.setSplit(true);
         lc.add(cpLeft, ld);
 
-        ContentPanel cpRight = new ContentPanel();
-        cpRight.setHeading("Questions in Custom Quiz");
-        cpRight.setLayout(new BorderLayout());
-        cpRight.add(_listCustomQuiz, new BorderLayoutData(LayoutRegion.CENTER));
+        _questionToolbar = new ContentPanel();
+        _questionToolbar.setHeading("Questions in Custom Quiz");
+        _questionToolbar.setLayout(new BorderLayout());
+        _questionToolbar.add(_listCustomQuiz, new BorderLayoutData(LayoutRegion.CENTER));
         
         _totalCount.setStyleAttribute("margin-right", "5px");
         LayoutContainer foot = new LayoutContainer();
         foot.setStyleAttribute("text-align", "right");
         foot.add(_totalCount);
-        cpRight.add(foot, new BorderLayoutData(LayoutRegion.SOUTH, 15));
+        _questionToolbar.add(foot, new BorderLayoutData(LayoutRegion.SOUTH, 15));
         
-        lc.add(cpRight, new BorderLayoutData(LayoutRegion.CENTER));
+        lc.add(_questionToolbar, new BorderLayoutData(LayoutRegion.CENTER));
         
 
         Button removeBtn = new Button("Remove");
@@ -508,9 +551,9 @@ public class CustomProgramAddQuizDialog extends Window {
                     }
                 }));
         removeBtn.setMenu(removeMenu);
-        cpRight.getHeader().addTool(removeBtn);
+        _questionToolbar.getHeader().addTool(removeBtn);
 
-        cpRight.getHeader().addTool(
+        _questionToolbar.getHeader().addTool(
                 new MyButtonWithTip("Move Down", "Move the selected question down in the custom quiz.",
                         new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
@@ -518,7 +561,7 @@ public class CustomProgramAddQuizDialog extends Window {
                             }
                         }));
 
-        cpRight.getHeader().addTool(
+        _questionToolbar.getHeader().addTool(
                 new MyButtonWithTip("Move Up", "Move the selected question up in the custom quiz.",
                         new SelectionListener<ButtonEvent>() {
                             public void componentSelected(ButtonEvent ce) {
@@ -620,19 +663,24 @@ public class CustomProgramAddQuizDialog extends Window {
         form.setHeaderVisible(false);
         form.setLabelWidth(75);
         LayoutContainer lc = new LayoutContainer();
-        lc.setLayout(new FitLayout());
+        lc.setLayout(new FlowLayout());
         lc.addStyleName("custom-quiz-top-panel");
         _textQuizName = new TextField<String>();
         _textQuizName.setAllowBlank(false);
 
         // loadExistingCustomQuizNames();
 
+        
+        _readOnlyLabel = new Label("<div style='float: right; color: red;padding: 5px;'>This Custom Quiz is in use and cannot be edited.  You can make a copy to customize.</div>");
+        _readOnlyLabel.addStyleName("custom-quiz-editable-label");
+        lc.add(_readOnlyLabel);
+
         _textQuizName.setFieldLabel("Quiz Name");
         form.add(_textQuizName);
         lc.add(form);
-
-        FormButtonBinding binding = new FormButtonBinding(form);
-        binding.addButton(_saveButton);
+        
+        //FormButtonBinding binding = new FormButtonBinding(form);
+        //binding.addButton(_saveButton);
 
         return lc;
     }

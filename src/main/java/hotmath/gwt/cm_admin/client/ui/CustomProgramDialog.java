@@ -208,7 +208,7 @@ public class CustomProgramDialog extends CmWindow {
         if (asCopy) {
             sel1 = _listViewCq.getSelectionModel().getSelectedItem();
             if (sel1 == null) {
-                CatchupMathTools.showAlert("Select a custom program first");
+                CatchupMathTools.showAlert("Select a custom quiz first");
                 return;
             }
         }
