@@ -182,7 +182,13 @@ public class HaTestDefDescription {
              */
             HaTestRun testRunDummy = new HaTestRun();
             HaTest test = new HaTest();
-            test.setGradeLevel(testRun.getHaTest().getGradeLevel());
+            
+            int gradeLevel = testRun.getHaTest().getGradeLevel();
+            if(gradeLevel == 0) {
+                gradeLevel = def.getGradeLevel();
+            }
+            
+            test.setGradeLevel(gradeLevel);
             test.setUser(testRun.getHaTest().getUser());
             test.setTestDef(def);
             testRunDummy.setHaTest(test);
