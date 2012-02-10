@@ -121,7 +121,9 @@ var Whiteboard = (function () {
         var docWidth = siz.width;
         var docHeight = siz.height;
         var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
-        var leftOff = $get_Element("#tools").offsetLeft + 15
+        var leftOff = $get_Element("#tools").offsetLeft + 15;
+		wb.globalStrokeColor="#000000";
+		wb.mode='student';
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
@@ -303,8 +305,8 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                 }
                 // alert(dx+":"+event.clientX)
 				console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY);
-                context.lineWidth = 2.0
-                context.strokeStyle = "rgb(0, 0, 0)";
+                context.lineWidth = 2.0;
+                context.strokeStyle = wb.globalStrokeColor;
 
                 if (dx >= 0 && dx < width) {
                     penDown = true;
@@ -421,10 +423,10 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                         w0 = x - clickX;
                         h0 = y - clickY;
                         if (currentTool == 'rect') {
-                            drawRect(x0, y0, w0, h0)
+                            drawRect(x0, y0, w0, h0,wb.globalStrokeColor)
                         }
                         if (currentTool == 'oval') {
-                            drawOval(x0, y0, w0, h0)
+                            drawOval(x0, y0, w0, h0,wb.globalStrokeColor)
                         }
                     } else {
                         if (currentTool == 'line') {
@@ -781,8 +783,9 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         var textF;
         var idName;
         drawingLayer = graphic_data[0].layer ? graphic_data[0].layer : drawingLayer;
-        context.lineWidth = 2.0
-        context.strokeStyle = "rgb(0, 0, 0)";
+        context.lineWidth = 2.0;
+		var col="#"+graphic_data[0].color.toString(16);
+        context.strokeStyle = col;
         var deb = ""
 		console.log("RENDER_DATA_FOR: "+graphic_id)
         if (graphic_id === 0) {
@@ -834,7 +837,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                 y0 = graphic_data[i].y
                 w0 = graphic_data[i].w * xd
                 h0 = graphic_data[i].h * yd
-                fName(x0, y0, w0, h0);
+                fName(x0, y0, w0, h0,col);
             }
             updateCanvas()
         }
@@ -883,7 +886,25 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
     wb.updateWhiteboard = function (cmdArray) {
         gwt_updatewhiteboard(cmdArray);
     }
-
+//
+/**
+** SETS THE WHITEBOARD MODE AS TEACHER MODE
+++ ON TEACHER MODE THE DRAWING COLOR WILL BE SET AS RED
+*/
+wb.setAsTeacherMode=function(boo){
+    var b=boo===undefined?true:boo
+    if(b){
+        wb.globalStrokeColor='#ff0000';
+		wb.mode='admin'
+    }else{
+        wb.globalStrokeColor='#000000';
+		wb.mode='student';
+    }
+}
+wb.getWhiteboardMode=function(boo){
+    return wb.mode;
+}
+//
     // function receives jsonData and renders it to the screen
     draw = function (json_str) {
         var grobj = convertStringToObj(json_str);
