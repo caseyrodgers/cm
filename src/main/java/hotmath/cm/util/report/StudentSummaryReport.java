@@ -140,7 +140,7 @@ public class StudentSummaryReport {
         StringBuilder sb = new StringBuilder();
         sb.append("CM-SummaryReport");
         if (info.getSchoolName() != null)
-        	sb.append("-").append(info.getSchoolName().replaceAll("/|# ", ""));
+        	sb.append("-").append(info.getSchoolName().replaceAll(" ", "").replaceAll("/|#", ""));
         reportName = sb.toString();
     }
 
