@@ -18,13 +18,14 @@ var Whiteboard = (function () {
     var scope = this;
     var isTouchEnabled = false;
 
-    function renderText(xt, xp, yp) {
+    function renderText(xt, xp, yp,col) {
         var txt = xt ? xt : $get_Element("#content").value;
         // alert(txt);
         var str = txt.split("\n")
         var x0 = xp ? xp : clickX
         var y0 = yp ? yp : clickY
-        var ht = 15
+        var ht = 15;
+		context.fillStyle=col?col:wb.globalStrokeColor
         for (var i = 0; i < str.length; i++) {
             context.fillText(str[i], x0, y0)
             y0 += ht
@@ -823,7 +824,8 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                     x0 = graphic_data[i].x;
                     y0 = graphic_data[i].y;
                     // context.fillText(graphic_data[i].text, x0, y0);
-                    renderText(xt, x0, y0)
+					xt=graphic_data[i].text;
+                    renderText(xt, x0, y0,col)
                 }
             }
             updateCanvas()
@@ -901,7 +903,7 @@ wb.setAsTeacherMode=function(boo){
 		wb.mode='student';
     }
 }
-wb.getWhiteboardMode=function(boo){
+wb.getWhiteboardMode=function(){
     return wb.mode;
 }
 //
