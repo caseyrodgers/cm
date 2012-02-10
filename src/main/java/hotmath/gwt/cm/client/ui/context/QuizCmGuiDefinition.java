@@ -63,9 +63,9 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
         } else {
 
             if (UserInfo.getInstance().isCustomProgram()) {
-                html = "<h1>HOW TO USE CATCHUP MATH</h1>" + "<p>Take the custom quiz to the right.</p>"
-                        + "<p>Then work through any review and practice problems assigned.</p>"
-                        + "<p>You can use the whiteboard to help.</p>";
+                html = "<h1>Catchup Math Custom Quiz</h1>"
+                        + "<p>Work out the Quiz answers carefully.</p>"
+                        + "<p>After completion, your teacher will be able to review the score and your submitted whiteboard work.</p>";
             } else {
                 html = "<h1>HOW TO USE CATCHUP MATH</h1>" + "<p>Take the 10-question quiz to the right.</p>"
                         + "<p>Then, we will provide you with personalized review and practice.</p>"
