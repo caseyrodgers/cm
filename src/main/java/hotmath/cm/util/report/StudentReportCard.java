@@ -109,7 +109,7 @@ public class StudentReportCard {
         StringBuilder sb = new StringBuilder();
         sb.append("CM-ReportCard");
         String token = (smList.size() < 2) ? smList.get(0).getName() : info.getSchoolName();
-        sb.append("-").append(token.replaceAll(" ", "").replaceAll("/", ""));
+        sb.append("-").append(token.replaceAll(" ", "").replaceAll("/|#", ""));
         this.reportName = sb.toString();
 
         Phrase school = ReportUtils.buildParagraphLabel("School: ", info.getSchoolName());

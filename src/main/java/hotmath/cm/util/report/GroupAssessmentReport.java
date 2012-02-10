@@ -126,7 +126,7 @@ public class GroupAssessmentReport {
         StringBuilder sb = new StringBuilder();
         sb.append("CM-GroupAssessmentReport");
         if (info.getSchoolName() != null)
-        	sb.append("-").append(info.getSchoolName().replaceAll("/| ", ""));
+        	sb.append("-").append(info.getSchoolName().replaceAll("/|# ", ""));
         reportName = sb.toString();
     }
 
