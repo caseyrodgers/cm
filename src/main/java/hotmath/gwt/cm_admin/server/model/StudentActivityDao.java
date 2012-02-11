@@ -70,7 +70,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
 			l = loadStudentActivity(conn, rs);
 			
-			Map<Integer, Integer> totMap = getTimeOnTaskForRunIDs(conn, l, uid);
+			Map<String, Integer> totMap = getTimeOnTaskForRunIDs(conn, l, uid);
 			
 			updateTimeOnTask(totMap, l);
 			
@@ -83,7 +83,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		return l;
 	}
 
-	public  Map<Integer, Integer> getTimeOnTaskForRunIDs(final Connection conn, List<StudentActivityModel> samList,
+	public  Map<String, Integer> getTimeOnTaskForRunIDs(final Connection conn, List<StudentActivityModel> samList,
 			int uid) throws Exception {
 
 		if (samList == null || samList.size() == 0) {
@@ -91,7 +91,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			return null;
 		}
 
-		Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
+		Map<String, Integer> totMap = new HashMap<String, Integer>();
 		
         Map<ActivityTypeEnum, ActivityTime> map = getActivityTimeMap();
 
@@ -120,19 +120,25 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			
 			runId = -1;
 			int totalTime = 0;
+			String useDate = null;
 			while (rs.next()) {
 				
-				if (runId > 0 && runId != rs.getInt("run_id")) {
-					totMap.put(runId, totalTime);
+				if (useDate != null && 
+				    (runId != rs.getInt("run_id") || ! useDate.equals(rs.getString("use_date")))) {
+					String key = String.format("%d.%s", runId, useDate);
+					totMap.put(key, totalTime);
 					totalTime = 0;
 				}
 				runId = rs.getInt("run_id");
+				useDate = rs.getString("use_date");
+				
 				int count = rs.getInt("activity_count");
 				String type = rs.getString("activity_type");
 				int time = map.get(ActivityTypeEnum.valueOf(type.toUpperCase())).timeOnTask;
 				totalTime += time * count;
 			}
-			totMap.put(runId, totalTime);
+			String key = String.format("%d.%s", runId, useDate);
+			totMap.put(key, totalTime);
 			
 		} catch (Exception e) {
 			LOGGER.error(String.format("*** Error getting time-on-task for student uid: %d", uid), e);
@@ -403,7 +409,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		return m;
 	}
 
-	private void updateTimeOnTask(Map<Integer, Integer> totMap, List<StudentActivityModel> samList) {
+	private void updateTimeOnTask(Map<String, Integer> totMap, List<StudentActivityModel> samList) {
 		
 		if (samList == null || samList.isEmpty() || totMap == null) {
 			// nothing to do
@@ -412,7 +418,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		
 		for (StudentActivityModel sam : samList) {
 			if (sam.getIsQuiz() || sam.getIsCustomQuiz()) continue;
-			int totalTime = sam.getTimeOnTask() + ((totMap.get(sam.getRunId()) == null) ? 0 : totMap.get(sam.getRunId()));
+			String key = String.format("%d.%s", sam.getRunId(), sam.getUseDate());
+			int totalTime = sam.getTimeOnTask() + ((totMap.get(key) == null) ? 0 : totMap.get(key));
 			sam.setTimeOnTask(totalTime);
 		}
 		

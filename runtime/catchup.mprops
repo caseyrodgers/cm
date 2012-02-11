@@ -404,29 +404,35 @@ order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.sessio
 .key=STUDENT_ACTIVITY_TIME_ON_TASK
 
 
-select l.run_id, 'REVIEW' as activity_type, count(*) as activity_count
+select l.run_id,
+       date_format(l.lesson_viewed, '%Y-%m-%d') as use_date,
+      'REVIEW' as activity_type, count(*) as activity_count
 from HA_TEST_RUN_LESSON l
 where l.run_id in ( $$RUNID_LIST$$ ) and l.lesson_viewed is not null
-group by l.run_id, activity_type
+group by l.run_id, date_format(l.lesson_viewed, '%Y-%m-%d'), activity_type 
 
 union
 
-select  iu.run_id, iu.item_type as activity_type, count(*) as activity_count
+select  iu.run_id,
+        date_format(iu.view_time, '%Y-%m-%d') as use_date,
+        iu.item_type as activity_type, count(*) as activity_count
 from HA_TEST_RUN_INMH_USE iu
-where iu.run_id in ($$RUNID_LIST$$) and upper(iu.item_type) != 'REVIEW'
-group by iu.run_id, activity_type
+where iu.run_id in ( $$RUNID_LIST$$ ) and upper(iu.item_type) != 'REVIEW'
+group by iu.run_id, date_format(iu.view_time, '%Y-%m-%d'), activity_type
 
 union
 
-select tw.run_id as run_id, 'WHITEBOARD' as activity_type, 1 as activity_count
+select tw.run_id as run_id,
+       date_format(cast(from_unixtime(( cast(insert_time_mills as binary) / 1000)) as  datetime), '%Y-%m-%d') as use_date,
+       'WHITEBOARD' as activity_type, 1 as activity_count
 from HA_TEST_RUN_WHITEBOARD tw
   JOIN HA_TEST_RUN r on r.run_id = tw.run_id
   JOIN HA_TEST t on t.test_id = r.test_id
 where  tw.user_id = t.user_id
-and r.run_id in ( $$RUNID_LIST$$)
-group by run_id
+and r.run_id in ( $$RUNID_LIST$$ )
+group by run_id, date_format(cast(from_unixtime(( cast(insert_time_mills as binary) / 1000)) as  datetime), '%Y-%m-%d')
 
-order by run_id, activity_type
+order by run_id, use_date, activity_type
 
 #####
 .key=STUDENTS_WITH_LOGIN_ACTIVITY_IN_DATE_RANGE
@@ -2603,10 +2609,10 @@ order by guid
 
 .key=GET_CUSTOM_QUIZ_DEFS
 
-select q.name as quiz_name, q.qid as quiz_id
+select q.name as quiz_name, q.qid as quiz_id, q.admin_id, q.is_answers_viewable
 from  HA_CUSTOM_QUIZ q
-where admin_id = ?
-order by name
+where q.admin_id = ?
+order by q.name
 
           
 .key=DELETE_CUSTOM_QUIZ_IDS
@@ -2624,11 +2630,18 @@ from HA_CUSTOM_QUIZ
 where admin_id = ?
 and name = ?
 
+.key=DELETE_CUSTOM_QUIZ_BYID
+
+delete
+from HA_CUSTOM_QUIZ
+where admin_id = ?
+and qid = ?
+
 
 .key=ADD_CUSTOM_QUIZ
 
-insert into HA_CUSTOM_QUIZ(admin_id, name)
-values(?, ?)
+insert into HA_CUSTOM_QUIZ(admin_id, name, is_answers_viewable)
+values(?, ?, ?)
 
           
 .key=ADD_CUSTOM_QUIZ_IDS
@@ -2637,7 +2650,13 @@ insert into HA_CUSTOM_QUIZ_IDS(qid, pid, load_order)
 value(?,?,?)
 
 
+.key=UPDATE_CUSTOM_QUIZ
 
+UPDATE HA_CUSTOM_QUIZ 
+SET    name=?, is_answers_viewable=?
+WHERE  QUID=?
+
+          
 .key=GET_CUSTOM_QUIZ_IDS
 
 select q.name, qi.pid
@@ -2658,7 +2677,7 @@ and name = ?
 
 .key=GET_CUSTOM_QUIZ_BYID
 
-select q.name as quiz_name, q.qid as quiz_id, q.admin_id
+select q.name as quiz_name, q.qid as quiz_id, q.admin_id, q.is_answers_viewable
 from  HA_CUSTOM_QUIZ q
 where qid = ?
 order by name
@@ -2684,7 +2703,12 @@ where program_id = ?
 order by l.id
 
 
+.key=CUSTOM_QUIZ_EXISTS
 
+SELECT q.*
+FROM HA_CUSTOM_QUIZ q
+WHERE q.admin_id = ?
+  AND q.quiz_id = ?
 
 
 
