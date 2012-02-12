@@ -2640,8 +2640,8 @@ and qid = ?
 
 .key=ADD_CUSTOM_QUIZ
 
-insert into HA_CUSTOM_QUIZ(admin_id, name, is_answers_viewable)
-values(?, ?, ?)
+insert into HA_CUSTOM_QUIZ(admin_id, name)
+values(?, ?)
 
           
 .key=ADD_CUSTOM_QUIZ_IDS
