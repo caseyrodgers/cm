@@ -309,6 +309,7 @@ public class AssessmentPrescription {
     }
 
     protected int getLowestGradeLevel(List<RppWidget> rpps) throws Exception {
+
         int lowestLevel = 99999;
         for (RppWidget w : rpps) {
             int level = 0;
@@ -320,6 +321,7 @@ public class AssessmentPrescription {
                 lowestLevel = level;
             }
         }
+        logger.debug("lowest grade level for " + rpps.size() + " == " + lowestLevel);
         return lowestLevel;
     }
 

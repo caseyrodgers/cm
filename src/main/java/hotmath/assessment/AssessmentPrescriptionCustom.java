@@ -65,6 +65,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
         gradeLevel = testRun.getHaTest().getGradeLevel();
         if (gradeLevel == 0) {
             gradeLevel = determineGradeLevel(progLessons, cacheKey);
+            __logger.info("determineGradeLevel == " + gradeLevel);
             if (gradeLevel < MAX_GRADE_LEVEL) {
                 HaTestDao.getInstance().updateGradeLevel(testRun.getHaTest().getTestId(), gradeLevel);
             }
@@ -127,11 +128,15 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review", cpProgItem.getFile(), cpProgItem.getLesson());
                 InmhItemData itemData = new InmhItemData(item);
                 List<RppWidget> workBookPids = itemData.getWidgetPool(conn, cacheKey);
-
-                int lowest = getLowestGradeLevel(workBookPids);
-                if (lowest > heighestLowestGradeLevel) {
-                    heighestLowestGradeLevel = lowest;
+                if(workBookPids.size() == 0) {
+                    __logger.info("No widgets from pool: " + cpProgItem);
                 }
+                else {
+                    int lowest = getLowestGradeLevel(workBookPids);
+                    if (lowest > heighestLowestGradeLevel && lowest < MAX_GRADE_LEVEL) {
+                        heighestLowestGradeLevel = lowest;
+                    }
+		}
             }
         }
         return heighestLowestGradeLevel > 0 ? heighestLowestGradeLevel : DEFAULT_GRADE_LEVEL;
