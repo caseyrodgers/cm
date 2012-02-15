@@ -318,7 +318,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     				ps.setInt(8, model.getSegmentSlot());
     				ps.setInt(9, model.isParallelProg()?1:0);
     				ps.setInt(10, model.isCurrentMainProg()?1:0);
-    				ps .setInt(11, model.getParallelProgId());
+    				//ps .setInt(11, model.getParallelProgId());
 
     				return ps;
     			}
@@ -766,7 +766,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     						CmProgramAssign cmProgAssign;
     						cmProgAssign = new CmProgramAssign();
     						cmProgAssign.setId(rs.getInt("id"));
-    						cmProgAssign.setParallelProgId(rs.getInt("parallel_prog_id"));
+    						//cmProgAssign.setParallelProgId(rs.getInt("parallel_prog_id"));
     						cmProgAssign.setProgSegment(rs.getInt("prog_segment"));
     						cmProgAssign.setRunId(rs.getInt("run_id"));
     						cmProgAssign.setRunSession(rs.getInt("run_session"));
