@@ -3,7 +3,7 @@
 	  
 	  haveError = false;
 	  fld = $get('fld_title');
-	  if(fld.value == "") {
+	  if(fld.value == "none") {
 	      if(showError(fld, "Please specify your title.")) {
 	          haveError = true;
 	      }
@@ -26,8 +26,8 @@
 	          haveError = true;
 	      }
 	  }
-	  if(isNaN(fld.value) || Number(fld.value) < 50) {
-	      if(showError(fld, "Sorry, Catchup Math pilots are only available to schools and colleges with total enrollment over 200.")) {
+	  if(isNaN(fld.value) || Number(fld.value) < 200) {
+	      if(showError(fld, "Sorry, Catchup Math pilots are only available to schools and colleges with total enrollment of 200 or more.")) {
 	          haveError = true;
 	      }
 	  }
