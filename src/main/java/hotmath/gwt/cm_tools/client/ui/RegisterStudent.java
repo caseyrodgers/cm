@@ -103,7 +103,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	//private Map<String, Object> advOptionsMap;
 	
-	private int formHeight = 410;
+	private int formHeight = 450;
 	protected int formWidth  = 475;
 	
 	protected CombinedFormPanel _formPanel;
