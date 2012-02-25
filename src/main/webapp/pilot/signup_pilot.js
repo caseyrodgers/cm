@@ -26,7 +26,7 @@
 	          haveError = true;
 	      }
 	  }
-	  if(isNaN(fld.value) || fldValue < 1) {
+	  if(isNaN(fld.value) || fld.value < 1) {
 	      if(showError(fld, "Please enter a positive numeric value.")) {
 	          haveError = true;
 	      }
