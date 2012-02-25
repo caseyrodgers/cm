@@ -26,8 +26,8 @@
 	          haveError = true;
 	      }
 	  }
-	  if(isNaN(fld.value) || Number(fld.value) < 200) {
-	      if(showError(fld, "Sorry, Catchup Math pilots are only available to schools and colleges with total enrollment of 200 or more.")) {
+	  if(isNaN(fld.value) || fldValue < 1) {
+	      if(showError(fld, "Please enter a positive numeric value.")) {
 	          haveError = true;
 	      }
 	  }
