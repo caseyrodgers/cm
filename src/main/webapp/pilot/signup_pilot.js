@@ -26,7 +26,7 @@
 	          haveError = true;
 	      }
 	  }
-	  if(isNaN(fld.value) || fld.value < 1) {
+	  if(isNaN(fld.value) || fld.value < 1 || (10*parseInt(fld.value,10) != parseInt(10*fld.value,10))) {
 	      if(showError(fld, "Please enter a positive integer value.")) {
 	          haveError = true;
 	      }
