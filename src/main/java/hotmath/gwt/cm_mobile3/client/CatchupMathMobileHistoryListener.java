@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import java.util.ResourceBundle.Control;
-
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonListingActivity;
@@ -11,9 +9,9 @@ import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceReviewAc
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceVideoActivity;
 import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
+import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
@@ -27,6 +25,7 @@ import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -39,7 +38,7 @@ import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.Window;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
-    
+
     public void onValueChange(ValueChangeEvent<String> event) {
 
         String historyToken = event.getValue();
@@ -90,6 +89,10 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             } else if (type.equals("end_of_program")) {
                 eb.fireEvent(new LoadNewPageEvent((IPage) cf.getEndOfProgramView()));
+            } else if (type.equals("search")) {
+                SearchActivity search = new SearchActivity(cf,eb);
+                cf.getSearchView().setPresenter(search);
+                eb.fireEvent(new LoadNewPageEvent((IPage)cf.getSearchView() ));
             } else if (type.equals("resource")) {
 
                 InmhItemData itemData = null;
@@ -127,17 +130,17 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     view.setPresenter(activity);
                     eb.fireEvent(new LoadNewPageEvent((IPage) view));
                 } else if (resourceType.equals("practice")) {
-                    
-                    
-                    PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb,itemData);
-                    
-                    if(Controller.peekPage() instanceof ShowWorkViewImpl) {
-                        /** as shortcut, just show current tutor view
+
+                    PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb,
+                            itemData);
+
+                    if (Controller.peekPage() instanceof ShowWorkViewImpl) {
+                        /**
+                         * as shortcut, just show current tutor view
                          * 
                          */
                         Controller.navigateBack();
-                    }
-                    else {
+                    } else {
                         PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
                         view.setTitle("Required " + itemData.getTitle());
                         view.setPresenter(activity);

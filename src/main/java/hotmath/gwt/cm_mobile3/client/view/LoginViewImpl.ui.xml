@@ -37,6 +37,10 @@
 		button.demoButton {
 		margin-left: 10px;
 		}
+		
+	    button.searchButton {
+           margin-left: 10px;
+        }
 
 		.errorMessage {
 		color: red;
@@ -88,6 +92,13 @@
 					<span>Demo</span>
 				</span>
 			</g:Button>
+			
+			<g:Button styleName='sexybutton sexy_cm_silver {style.searchButton}' ui:field='searchButton'>
+                <span>
+                    <span>Search</span>
+                </span>
+            </g:Button>
+			
 
 		</g:HTMLPanel>
 	</g:DialogBox>

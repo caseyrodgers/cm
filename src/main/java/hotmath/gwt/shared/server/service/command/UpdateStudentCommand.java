@@ -58,7 +58,12 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
         	    info.setActiveSegment(action.getStudent().getSectionNum());
         	    info.setActiveRunId(0);
         	    info.setActiveTestId(0);
-        		ppDao.updateProgramAssign(userId, cmProg);
+        	    
+        	    /** TODO:
+        	     *  what is continuePar for?  (is false correct here?)
+        	     *  
+        	     */
+        		ppDao.updateProgramAssign(userId, cmProg,false);
 
         	    // passing false marks Program as incomplete
         	    pDao.setProgramAsComplete(conn, cmProg.getUserProgId(), false);

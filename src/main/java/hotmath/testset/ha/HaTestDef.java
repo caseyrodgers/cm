@@ -151,7 +151,8 @@ public class HaTestDef {
         this.stateId = stateId;
     }
     int gradeLevel = 0;
-    final static int HIGHEST_LEVEL = 99;  /* can include any problem */
+    final static int HIGHEST_LEVEL = 99;  
+    final static int LOWEST_LEVEL = 8; /* can include any problem */
 
 
     /**
@@ -161,7 +162,7 @@ public class HaTestDef {
         try {
             String textCode = this.getTextCode();
             if (textCode == null || textCode.length() == 0) {
-                return HIGHEST_LEVEL;
+                return LOWEST_LEVEL;
             } else {
                 return BookInfoManager.getInstance().getBookInfo(textCode).getGradeLevel();
             }

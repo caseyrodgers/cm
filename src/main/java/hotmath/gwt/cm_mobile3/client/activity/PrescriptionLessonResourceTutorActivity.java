@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.UserInfo;

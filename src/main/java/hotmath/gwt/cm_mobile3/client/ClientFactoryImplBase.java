@@ -20,6 +20,8 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
+import hotmath.gwt.cm_mobile3.client.view.SearchView;
+import hotmath.gwt.cm_mobile3.client.view.SearchViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
@@ -46,6 +48,7 @@ public class ClientFactoryImplBase implements ClientFactory {
     PrescriptionLessonResourceResultsView resultsView = new PrescriptionLessonResourceResultsViewImpl();
     PrescriptionLessonListingView lessonListingView = new PrescriptionLessonListingViewImpl();    
     EndOfProgramView endOfProgramView = new EndOfProgramViewImpl();
+    SearchView searchView = new SearchViewImpl();
     
     @Override
     public EventBus getEventBus() {
@@ -115,5 +118,10 @@ public class ClientFactoryImplBase implements ClientFactory {
     @Override
     public EndOfProgramView getEndOfProgramView() {
         return endOfProgramView;
+    }
+
+    @Override
+    public SearchView getSearchView() {
+        return searchView;
     }
 }

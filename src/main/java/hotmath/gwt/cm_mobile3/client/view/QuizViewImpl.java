@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 
 import java.util.List;
 

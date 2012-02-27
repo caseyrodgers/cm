@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEventHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowEndOfProgramEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowQuizViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;

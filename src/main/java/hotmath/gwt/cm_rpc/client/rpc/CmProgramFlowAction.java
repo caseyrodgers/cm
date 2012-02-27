@@ -72,6 +72,10 @@ public class CmProgramFlowAction implements Response {
     }
 
     public PrescriptionSessionResponse getPrescriptionResponse() {
+        if(prescriptionResponse == null) {
+            prescriptionResponse = new PrescriptionSessionResponse();
+        }
+            
         return prescriptionResponse;
     }
     

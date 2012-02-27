@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;

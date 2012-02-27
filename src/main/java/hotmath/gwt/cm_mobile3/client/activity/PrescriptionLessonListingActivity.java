@@ -2,9 +2,9 @@ package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.ClientFactory;
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.MoveToNextSegmentEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;

@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_mobile3.client.data;
+package hotmath.gwt.cm_mobile_shared.client.data;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -24,6 +24,9 @@ public class SharedData {
     private static CmProgramFlowAction flowAction;
     
     static public CmProgramFlowAction getFlowAction() {
+        if(flowAction == null) {
+            flowAction = new CmProgramFlowAction();
+        }
         return flowAction;
     }
     

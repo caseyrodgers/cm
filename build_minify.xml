@@ -12,10 +12,15 @@
     </path>
 
         
-    <target name='doCombines' depends='combine-js_CatchupMathMobile3, combine-css_CatchupMathMobile3, combine-css_HmMobile'/>
+    <target name='doCombines' depends='combine-js_CatchupMathMobile3,combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
         
     <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
         <!-- Combine CM JS into a single download
+
+                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/prototype.js
+                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/s2.js
+
+
         -->
         <delete file="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" />
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" append="true">
@@ -27,11 +32,10 @@
                    whiteboard-min.js
             	   quiz-min.js
 
-                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/prototype.js
-                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/s2.js
+                   ../../../../../../hotmath2/web/js/tutor_graphic-min.js
+ 
 
-                  ../../../../../../hotmath2/web/js/tutor_graphic-min.js
-
+                   ../../../../../../hotmath2/web/jlibs/jquery-1.7/jquery.min.js
 
                    ../../../../../../hotmath2/web/js/tutor_dynamic-min.js
                    ../../../../../../hotmath2/web/js/tutor_widget.js
@@ -50,6 +54,16 @@
         </concat>
     </target>
         
+
+    <target name="combine-js_CatchupMathSearch" depends="javascript-minify">
+        <delete file="${web.dir}/gwt-resources/js/CatchupMathSearch_combined.js" />
+        <concat destfile="${web.dir}/gwt-resources/js/CatchupMathSearch_combined.js" append="true">
+            <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
+                   CatchupMathMobile3_combined.js
+              " />
+        </concat>
+    </target>
+
         
     <target name="combine-css_CatchupMathMobile3">
         <delete file="${web.dir}/gwt-resources/css/CatchupMathMobile3_combined.css" />
@@ -68,6 +82,25 @@
                 gwt-resources/css/whiteboard.css
             	gwt-resources/css/menubar_layout.css
             	gwt-resources/css/mobile_question_box.css
+                gwt-resources/css/page_layout.css
+             " />
+        </concat>
+    </target>
+
+    <target name="combine-css_CatchupMathSearch">
+        <delete file="${web.dir}/gwt-resources/css/CatchupMathSearch_combined.css" />
+        <concat destfile="${web.dir}/gwt-resources/css/CatchupMathSearch_combined.css" append="true">
+            <filelist dir="${web.dir}" files="
+                assets/css/reset.css
+                ../../../../hotmath2/web/css/tutor_widget.css
+                gwt-resources/css/CatchupMathMobile3.css
+                gwt-resources/css/CatchupMathSearch.css
+            	gwt-resources/css/group_touch.css
+                assets/css/local_sexybuttons.css
+            	gwt-resources/css/whiteboard.css
+            	gwt-resources/css/resource_review.css
+                gwt-resources/css/tutor_layout_tablet.css
+                gwt-resources/css/whiteboard.css
                 gwt-resources/css/page_layout.css
              " />
         </concat>

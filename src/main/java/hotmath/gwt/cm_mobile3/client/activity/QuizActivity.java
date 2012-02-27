@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;

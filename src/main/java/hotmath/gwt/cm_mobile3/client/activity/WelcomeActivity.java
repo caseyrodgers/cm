@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import com.google.gwt.event.shared.EventBus;

@@ -49,222 +49,13 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
 
         __logger.debug("getting prescription: " + action);
         int runId = action.getRunId();
-        int sessionNumber = action.getSessionNumber();
         try {
             
             AssessmentPrescription prescription = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId);
-            
             __logger.debug("verifing prescription: " + action);
             CmStudentDao.getInstance().verifyActiveProgram(prescription.getTest().getTestId());
 
-            int totalSessions = prescription.getSessions().size();
-            if (totalSessions == 0) {
-                /** no prescription created (no missed answers?)
-                 * 
-                 * This might be a bug in that an empty prescription
-                 * is associated with a runId. 
-                 * 
-                 * return a default response
-                 */
-                PrescriptionSessionResponse resp = new PrescriptionSessionResponse();
-                resp.setCorrectPercent(100);  /** why does this need to 100? */
-                return resp;
-            }
-            // which session
-            if (sessionNumber > (totalSessions - 1)) {
-                __logger.warn(String.format("WARNING: session request for %d is outside bounds of prescription: %d, %d",
-                		runId, sessionNumber, totalSessions));
-                sessionNumber = 0;
-            }
-            
-            CmProgramFlow cmProgram = new CmProgramFlow(conn, prescription.getTest().getUser().getUid());
-            
-
-            AssessmentPrescriptionSession session = prescription.getSessions().get(sessionNumber);
-            PrescriptionData presData = new PrescriptionData();
-            
-            
-            /** We now take the prescription and extract and massage
-             *  it's data into a PrescriptionSessionResponse object.
-             */
-            List<AssessmentPrescription.SessionData> practiceProblems = session.getSessionDataFor(session.getTopic());
-            PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
-            problemsResource.setType("practice");
-            
-            __logger.debug("assigning problems to prescription: " + action);
-            
-            /** label either as Problems (RPP) or Activities (RPA)
-             * 
-             *  All RPs will be with RPP or RPA, never both. 
-             */
-            SessionData sd = practiceProblems.get(0);
-            boolean isActivity= (sd.getWidgetArgs()!=null && sd.getRpp().isFlashRequired());
-            boolean isProblemSet = sd.getRpp().isDynamicSolution();
-            
-            String title = null;
-            if(isActivity) {
-                title = "Required Activities";
-            }
-            else if(isProblemSet) {
-                title = "Required Problem Sets";
-            }
-            else {
-                title = "Required Problems";
-            }
-            
-            problemsResource.setLabel(title);
-            int cnt = 1;
-            for (AssessmentPrescription.SessionData sdata : practiceProblems) {
-                InmhItemData id = new InmhItemData();
-                
-                String rppInfoLabel="";
-                String type = null;
-                if(isActivity) {
-                    type = "Activity ";
-                }
-                else if(isProblemSet) {
-                    type = "Problem Set ";
-                    rppInfoLabel = " (" + sdata.getRpp().getInfoLabel() + ")";
-                }
-                else {
-                    type = "Problem ";
-                }
-                    
-                id.setTitle(type + (cnt++) + " " + rppInfoLabel);
-                
-                id.setFile(sdata.getRpp().getFile());
-                id.setType("practice");
-                id.setWidgetJsonArgs(sdata.getRpp().getWidgetJsonArgs());
-                
-                problemsResource.getItems().add(id);
-            }
-
-            PrescriptionSessionDataResource lessonResource = new PrescriptionSessionDataResource();
-            lessonResource.setType("review");
-            lessonResource.setLabel("Review Lesson");
-            InmhItemData lessonId = new InmhItemData();
-
-            /** Get the lesson for this session
-             * (NOTE: this is using the INMH code in HM)
-             */
-            INeedMoreHelpItem item = session.getSessionCategories().get(0);
-            lessonId.setTitle(item.getTitle());
-            lessonId.setFile(item.getFile());
-            lessonId.setType(item.getType());
-            lessonResource.getItems().add(lessonId);
-
-            /** Always send complete list of all lesson names.
-             * TODO: many should be done in initialize phase?
-             * TODO: why do need the full list?
-             */
-            __logger.debug("creating list of session names: " + action);
-            PrescriptionSessionData sessionData = new PrescriptionSessionData();
-            sessionData.setSessionRpa(isActivity);
-            presData.setSessionTopics(HaTestRunDao.getInstance().getLessonStatuses(runId));
-            presData.setCurrSession(sessionData);
-
-            
-            __logger.debug("Getting prescription resource items: " + action);
-            sessionData.setTopic(session.getTopic(),item.getFile());
-            sessionData.setSessionNumber(sessionNumber);
-            
-            
-            for (INeedMoreHelpResourceType t : session.getPrescriptionInmhTypesDistinct(conn)) {
-
-                // skip the workbooks for now.
-                if (t.getTypeDef().getType().equals("workbook"))
-                    continue;
-
-                PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
-                resource.setType(t.getTypeDef().getType());
-                resource.setLabel(t.getTypeDef().getLabel());
-                
-                int pcnt=0;
-                for (INeedMoreHelpItem i : t.getResources()) {
-                    InmhItemData id = new InmhItemData();
-                    
-                    /** override title of special types
-                     * 
-                     */
-                    if(i.getType().equals("cmextra")) {
-                        
-                        /** only keep if in this program's
-                         *  grade level
-                         */
-                        Range range = new Range(i.getFile());
-                        if(!range.isGradeLevel(prescription.getGradeLevel())) {
-                            // skip if not grade level
-                            __logger.debug("skipping cmextra due to not matching grade level: " + prescription.getGradeLevel() + ", " + i);
-                            continue;
-                        }
-                        
-                        id.setFile(range.getRange());
-                        id.setTitle("Problem " + (++pcnt));
-                    }
-                    else {
-                        id.setFile(i.getFile());
-                        id.setTitle(i.getTitle());
-                    }
-                    
-                    id.setType(i.getType());
-
-                    resource.getItems().add(id);
-                }
-                sessionData.getInmhResources().add(resource);
-            }
-            
-            __logger.debug("adding prescription sessions: " + action);
-            sessionData.getInmhResources().add(lessonResource);
-            sessionData.getInmhResources().add(problemsResource);
-
-            /** 
-             * Add a results resource type to allow user to view current results.
-             */
-            if(!cmProgram.getUserProgram().isCustom()) {
-                PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
-                resultsResource.setType("results");
-                resultsResource.setLabel("Quiz Results");
-                InmhItemData id = new InmhItemData();
-                id.setTitle("Your quiz results");
-                id.setFile("");
-                id.setType("results");
-                resultsResource.getItems().add(id);
-                sessionData.getInmhResources().add(resultsResource);
-            }
-
-
-            /** 
-             * Get list of lesson resources that have been viewed. 
-             */
-            __logger.debug("getting list of viewed lessons: " + action);
-            GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(runId);
-            List<RpcData> rdata = new GetViewedInmhItemsCommand().execute(conn, getViewedAction).getRpcData();
-            
-            List<PrescriptionSessionDataResource> resources = fixupInmhResources(sessionData.getInmhResources());
-            for (PrescriptionSessionDataResource r : resources) {
-                for (InmhItemData itemData : r.getItems()) {
-                    // is this item viewed?
-                    for (RpcData rd : rdata) {
-                        if (rd.getDataAsString("file").equals(itemData.getFile())) {
-                            itemData.setViewed(true);
-                            break;
-                        }
-                    }
-                }
-            }
-            sessionData.setInmhResources(resources);
-            
-            cmProgram.markSessionAsActive(conn, sessionNumber);
-            
-            HaTestRun testRun = prescription.getTestRun();
-            
-            PrescriptionSessionResponse response = new PrescriptionSessionResponse();
-            response.setRunId(testRun.getRunId());
-            response.setPrescriptionData(presData);
-            response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), prescription.getTestRun().getAnsweredCorrect()));
-            response.setProgramTitle(prescription.getTest().getTestDef().getTitle());
-
-            return response;
+            return createPrescriptionResponse(conn, prescription,action.getSessionNumber());
 
         } catch (Exception e) {
             throw new CmRpcException(e);
@@ -274,6 +65,218 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetPrescriptionAction.class;
+    }
+    
+    
+    static public PrescriptionSessionResponse createPrescriptionResponse(final Connection conn, AssessmentPrescription prescription,int sessionNumber) throws Exception {
+        int totalSessions = prescription.getSessions().size();
+        if (totalSessions == 0) {
+            /** no prescription created (no missed answers?)
+             * 
+             * This might be a bug in that an empty prescription
+             * is associated with a runId. 
+             * 
+             * return a default response
+             */
+            PrescriptionSessionResponse resp = new PrescriptionSessionResponse();
+            resp.setCorrectPercent(100);  /** why does this need to 100? */
+            return resp;
+        }
+        // which session
+        if (sessionNumber > (totalSessions - 1)) {
+            __logger.warn(String.format("WARNING: session request for %d is outside bounds of prescription: %d, %d", prescription.getTestRun().getRunId(), sessionNumber, totalSessions));
+            sessionNumber = 0;
+        }
+        
+        CmProgramFlow cmProgram = new CmProgramFlow(conn, prescription.getTest().getUser().getUid());
+        
+
+        AssessmentPrescriptionSession session = prescription.getSessions().get(sessionNumber);
+        PrescriptionData presData = new PrescriptionData();
+        
+        
+        /** We now take the prescription and extract and massage
+         *  it's data into a PrescriptionSessionResponse object.
+         */
+        List<AssessmentPrescription.SessionData> practiceProblems = session.getSessionDataFor(session.getTopic());
+        PrescriptionSessionDataResource problemsResource = new PrescriptionSessionDataResource();
+        problemsResource.setType("practice");
+        
+        __logger.debug("assigning problems to prescription: " + prescription.getTestRun().getRunId());
+        
+        /** label either as Problems (RPP) or Activities (RPA)
+         * 
+         *  All RPs will be with RPP or RPA, never both. 
+         */
+        SessionData sd = practiceProblems.get(0);
+        boolean isActivity= (sd.getWidgetArgs()!=null && sd.getRpp().isFlashRequired());
+        boolean isProblemSet = sd.getRpp().isDynamicSolution();
+        
+        String title = null;
+        if(isActivity) {
+            title = "Required Activities";
+        }
+        else if(isProblemSet) {
+            title = "Required Problem Sets";
+        }
+        else {
+            title = "Required Problems";
+        }
+        
+        problemsResource.setLabel(title);
+        int cnt = 1;
+        for (AssessmentPrescription.SessionData sdata : practiceProblems) {
+            InmhItemData id = new InmhItemData();
+            
+            String rppInfoLabel="";
+            String type = null;
+            if(isActivity) {
+                type = "Activity ";
+            }
+            else if(isProblemSet) {
+                type = "Problem Set ";
+                rppInfoLabel = " (" + sdata.getRpp().getInfoLabel() + ")";
+            }
+            else {
+                type = "Problem ";
+            }
+                
+            id.setTitle(type + (cnt++) + " " + rppInfoLabel);
+            
+            id.setFile(sdata.getRpp().getFile());
+            id.setType("practice");
+            id.setWidgetJsonArgs(sdata.getRpp().getWidgetJsonArgs());
+            
+            problemsResource.getItems().add(id);
+        }
+
+        PrescriptionSessionDataResource lessonResource = new PrescriptionSessionDataResource();
+        lessonResource.setType("review");
+        lessonResource.setLabel("Review Lesson");
+        InmhItemData lessonId = new InmhItemData();
+
+        /** Get the lesson for this session
+         * (NOTE: this is using the INMH code in HM)
+         */
+        INeedMoreHelpItem item = session.getSessionCategories().get(0);
+        lessonId.setTitle(item.getTitle());
+        lessonId.setFile(item.getFile());
+        lessonId.setType(item.getType());
+        lessonResource.getItems().add(lessonId);
+
+        /** Always send complete list of all lesson names.
+         * TODO: many should be done in initialize phase?
+         * TODO: why do need the full list?
+         */
+        __logger.debug("creating list of session names: " + prescription.getTestRun().getRunId());
+        PrescriptionSessionData sessionData = new PrescriptionSessionData();
+        sessionData.setSessionRpa(isActivity);
+        presData.setSessionTopics(HaTestRunDao.getInstance().getLessonStatuses(prescription.getTestRun().getRunId()));
+        presData.setCurrSession(sessionData);
+
+        
+        __logger.debug("Getting prescription resource items: " + prescription.getTestRun().getRunId());
+        sessionData.setTopic(session.getTopic(),item.getFile());
+        sessionData.setSessionNumber(sessionNumber);
+        
+        
+        for (INeedMoreHelpResourceType t : session.getPrescriptionInmhTypesDistinct(conn)) {
+
+            // skip the workbooks for now.
+            if (t.getTypeDef().getType().equals("workbook"))
+                continue;
+
+            PrescriptionSessionDataResource resource = new PrescriptionSessionDataResource();
+            resource.setType(t.getTypeDef().getType());
+            resource.setLabel(t.getTypeDef().getLabel());
+            
+            int pcnt=0;
+            for (INeedMoreHelpItem i : t.getResources()) {
+                InmhItemData id = new InmhItemData();
+                
+                /** override title of special types
+                 * 
+                 */
+                if(i.getType().equals("cmextra")) {
+                    
+                    /** only keep if in this program's
+                     *  grade level
+                     */
+                    Range range = new Range(i.getFile());
+                    if(!range.isGradeLevel(prescription.getGradeLevel())) {
+                        // skip if not grade level
+                        __logger.debug("skipping cmextra due to not matching grade level: " + prescription.getGradeLevel() + ", " + i);
+                        continue;
+                    }
+                    
+                    id.setFile(range.getRange());
+                    id.setTitle("Problem " + (++pcnt));
+                }
+                else {
+                    id.setFile(i.getFile());
+                    id.setTitle(i.getTitle());
+                }
+                
+                id.setType(i.getType());
+
+                resource.getItems().add(id);
+            }
+            sessionData.getInmhResources().add(resource);
+        }
+        
+        __logger.debug("adding prescription sessions: " + prescription.getTestRun().getRunId());
+        sessionData.getInmhResources().add(lessonResource);
+        sessionData.getInmhResources().add(problemsResource);
+
+        /** 
+         * Add a results resource type to allow user to view current results.
+         */
+        if(!cmProgram.getUserProgram().isCustom()) {
+            PrescriptionSessionDataResource resultsResource = new PrescriptionSessionDataResource();
+            resultsResource.setType("results");
+            resultsResource.setLabel("Quiz Results");
+            InmhItemData id = new InmhItemData();
+            id.setTitle("Your quiz results");
+            id.setFile("");
+            id.setType("results");
+            resultsResource.getItems().add(id);
+            sessionData.getInmhResources().add(resultsResource);
+        }
+
+
+        /** 
+         * Get list of lesson resources that have been viewed. 
+         */
+        __logger.debug("getting list of viewed lessons: " + prescription.getTestRun().getRunId());
+        GetViewedInmhItemsAction getViewedAction = new GetViewedInmhItemsAction(prescription.getTestRun().getRunId());
+        List<RpcData> rdata = new GetViewedInmhItemsCommand().execute(conn, getViewedAction).getRpcData();
+        
+        List<PrescriptionSessionDataResource> resources = fixupInmhResources(sessionData.getInmhResources());
+        for (PrescriptionSessionDataResource r : resources) {
+            for (InmhItemData itemData : r.getItems()) {
+                // is this item viewed?
+                for (RpcData rd : rdata) {
+                    if (rd.getDataAsString("file").equals(itemData.getFile())) {
+                        itemData.setViewed(true);
+                        break;
+                    }
+                }
+            }
+        }
+        sessionData.setInmhResources(resources);
+        
+        cmProgram.markSessionAsActive(conn, sessionNumber);
+        
+        HaTestRun testRun = prescription.getTestRun();
+        
+        PrescriptionSessionResponse response = new PrescriptionSessionResponse();
+        response.setRunId(testRun.getRunId());
+        response.setPrescriptionData(presData);
+        response.setCorrectPercent(getTestPassPercent(testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered(), prescription.getTestRun().getAnsweredCorrect()));
+        response.setProgramTitle(prescription.getTest().getTestDef().getTitle());
+
+        return response;
+        
     }
 
     /**

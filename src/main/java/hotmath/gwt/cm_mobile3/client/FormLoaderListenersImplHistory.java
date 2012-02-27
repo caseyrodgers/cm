@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_mobile3.client.data.SharedData;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEventHandler;
@@ -22,6 +21,7 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewHandler;
 import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;

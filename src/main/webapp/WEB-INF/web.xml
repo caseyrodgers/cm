@@ -136,6 +136,12 @@
       /cm_mobile3/services/cmService
     </url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_search/services/cmService
+    </url-pattern>
+  </servlet-mapping>
   
 
   <servlet>

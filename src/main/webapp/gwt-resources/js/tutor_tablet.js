@@ -379,8 +379,8 @@ function showStepUnit(num) {
         // use animation library to show step
         // appear added as method during intiialize
         // of scripty2
-        //stepElement.style.display = 'block'; // show it
-        stepElement.appear();
+        stepElement.style.display = 'block'; // show it
+        //stepElement.appear();
 
         if (stepElement.getAttribute("steprole") == 'step')
             setAsCurrent(stepElement);
