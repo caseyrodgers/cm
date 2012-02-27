@@ -1,0 +1,14 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<g:HTMLPanel styleName='prescriptionLessonViewImpl'>
+	   <div class="correct_image" ui:field="correctImage"></div>
+	   <h1 ui:field="lessonTitle"></h1>
+	   <p>Choose resources in any order.</p>
+	   <div class='buttonBar'>
+           <g:Button ui:field="newSearch" styleName='sexybutton sexy_cm_silver'><span><span>New Search</span></span></g:Button>
+	   </div>
+	   <g:HTMLPanel ui:field='resourceList' styleName='resourceList'></g:HTMLPanel>
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

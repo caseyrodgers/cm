@@ -1,0 +1,39 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+	   .main {
+	      margin: 20px;
+	   }
+	   
+	   .search_box {
+	      width: 300px;
+	      margin-bottom: 25px;
+	   }
+	   
+	   .list-items {
+	      margin-top: 25px;
+	   }
+	</ui:style>
+
+	<g:HTMLPanel styleName="{style.main}">
+	    <h1>Search Catchup Math Lessons</h1>
+	    <div class="{style.search_box}">
+	        <span>Search for Topic: </span>
+	        <g:TextBox ui:field='searchField'/>
+	    </div>
+	    
+	
+		<g:Button styleName='sexybutton sexy_cm_silver' ui:field='searchButton'>
+			<span>
+				<span>Search Catchup Math</span>
+			</span>
+		</g:Button>
+		
+		<g:SimplePanel styleName="{style.list-items}" ui:field='listItemsDiv'>
+		
+		
+		</g:SimplePanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 
