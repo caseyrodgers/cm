@@ -321,7 +321,8 @@ public class AssessmentPrescription {
                 lowestLevel = level;
             }
         }
-        logger.debug("lowest grade level for " + rpps.size() + " == " + lowestLevel);
+        if (logger.isDebugEnabled())
+            logger.debug("lowest grade level for " + rpps.size() + " == " + lowestLevel);
         return lowestLevel;
     }
 
