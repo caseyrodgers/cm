@@ -462,4 +462,38 @@ program-details-panel .x-ftree2-node-over {
 .custom-program-questions-container .question_responses li {
     padding-bottom: 5px;
 }
-  
+
+.custom-quiz-check-box-grp {
+	height: 22px;
+	width: 220x;
+}
+
+.include-archived-check-box-grp {
+	margin: 10px;
+	height: 20px;
+	width: 200x;
+}
+
+.custom-quiz-check-box {
+	padding: 5px;
+	width: 210px;
+}
+
+.custom-quiz-no-modify-label {
+	margin: 0px;
+    left: 545px;
+    top: 10px;
+    padding-right: 10px;
+}
+
+.custom-quiz-no-modify-text {
+    color: red;
+    width: 235px;
+}
+
+.custom-quiz-no-edit-label {
+	float: right;
+    color: red;
+    padding-right: 10px;
+    /* width: 235px; */
+}
