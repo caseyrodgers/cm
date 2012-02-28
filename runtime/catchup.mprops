@@ -2084,8 +2084,12 @@ values(?,?,now());
 
 .key=CUSTOM_PROGRAM_DEFINITIONS_ALL
 
-select *
-from v_HA_CUSTOM_PROGRAM_INFO
+select if (archive_date is null,
+           name,
+           concat(name, concat(' (', concat(Date_format(archive_date,'%Y-%m-%d'), ')')))) as name,
+       id, admin_id, is_template, is_archived, prog_id, assigned_count, inuse_count, load_order,
+       Date_format(archive_date,'%Y-%m-%d') as archive_date
+from v_HA_CUSTOM_PROGRAM_INFO 
 where admin_id = ? 
 or (is_template = 1 and admin_id is null)
 order by is_template desc, load_order, name
@@ -2094,7 +2098,11 @@ order by is_template desc, load_order, name
 
 .key=CUSTOM_PROGRAM_DEFINITION_BYID
 
-select *
+select if (archive_date is null,
+           name,
+           concat(name, concat(' (', concat(Date_format(archive_date,'%Y-%m-%d'), ')')))) as name,
+       id, admin_id, is_template, is_archived, prog_id, assigned_count, inuse_count, load_order,
+       Date_format(archive_date,'%Y-%m-%d') as archive_date
 from v_HA_CUSTOM_PROGRAM_INFO
 where id = ?  
 
@@ -2144,6 +2152,13 @@ where  t.test_id = ?
   and  up.id = t.user_prog_id
   and  cpl.program_id = up.custom_program_id
 order by cpl.lesson
+
+
+.key=ARCHIVE_CUSTOM_PROGRAM_BYID
+
+UPDATE HA_CUSTOM_PROGRAM cp
+SET    cp.is_archived=1, cp.archive_date=now()
+WHERE  cp.id=?
 
 
 #################
@@ -2615,7 +2630,11 @@ order by guid
 
 .key=GET_CUSTOM_QUIZ_DEFS
 
-select q.name as quiz_name, q.qid as quiz_id, q.admin_id, q.is_answers_viewable
+select if (q.archive_date is null,
+           q.name,
+           concat(q.name, concat(' (', concat(Date_format(q.archive_date,'%Y-%m-%d'), ')')))) as quiz_name,
+       q.qid as quiz_id, q.admin_id, q.is_answers_viewable, q.is_archived,
+       Date_format(q.archive_date,'%Y-%m-%d') as archive_date
 from  HA_CUSTOM_QUIZ q
 where q.admin_id = ?
 order by q.name
@@ -2646,8 +2665,8 @@ and qid = ?
 
 .key=ADD_CUSTOM_QUIZ
 
-insert into HA_CUSTOM_QUIZ(admin_id, name)
-values(?, ?)
+insert into HA_CUSTOM_QUIZ(admin_id, name, is_answers_viewable)
+values(?, ?, ?)
 
           
 .key=ADD_CUSTOM_QUIZ_IDS
@@ -2660,7 +2679,14 @@ value(?,?,?)
 
 UPDATE HA_CUSTOM_QUIZ 
 SET    name=?, is_answers_viewable=?
-WHERE  QUID=?
+WHERE  qid=?
+
+##
+.key=ARCHIVE_CUSTOM_QUIZ
+
+UPDATE HA_CUSTOM_QUIZ 
+SET    is_archived=1, archive_date=now()
+WHERE  qid=?
 
           
 .key=GET_CUSTOM_QUIZ_IDS
@@ -2683,15 +2709,23 @@ and name = ?
 
 .key=GET_CUSTOM_QUIZ_BYID
 
-select q.name as quiz_name, q.qid as quiz_id, q.admin_id, q.is_answers_viewable
+select if (q.archive_date is null,
+           q.name,
+           concat(q.name, concat(' (', concat(Date_format(q.archive_date,'%Y-%m-%d'), ')')))) as quiz_name,
+       q.qid as quiz_id, q.admin_id, q.is_answers_viewable, q.is_archived,
+       Date_format(q.archive_date,'%Y-%m-%d') as archive_date
 from  HA_CUSTOM_QUIZ q
 where qid = ?
 order by name
 
-
+##
 .key=GET_CUSTOM_QUIZ_BY_TESTID
 
-SELECT q.name as quiz_name, q.qid as quiz_id, q.admin_id
+SELECT if (q.archive_date is null,
+           q.name,
+           concat(q.name, concat(' (', concat(Date_format(q.archive_date,'%Y-%m-%d'), ')')))) as quiz_name,
+       q.qid as quiz_id, q.admin_id, q.is_answers_viewable, q.is_archived,
+       Date_format(q.archive_date,'%Y-%m-%d') as archive_date
 FROM   HA_TEST t, CM_USER_PROGRAM p, HA_CUSTOM_QUIZ q
 WHERE t.test_id = ?
   AND t.user_prog_id = p.id
@@ -2699,14 +2733,19 @@ WHERE t.test_id = ?
 ORDER BY name
 
 
+##
 .key=GET_CUSTOM_PROGRAM_ITEMS
 
-
-select l.*,q.name as custom_quiz_name
-from HA_CUSTOM_PROGRAM_LESSON l
+SELECT l.*,
+       if (q.archive_date is null,
+           q.name,
+           concat(q.name, concat(' (', concat(Date_format(q.archive_date,'%Y-%m-%d'), ')')))) as custom_quiz_name,
+       q.qid as quiz_id, q.admin_id, q.is_answers_viewable, q.is_archived,
+       Date_format(q.archive_date,'%Y-%m-%d') as archive_date
+FROM HA_CUSTOM_PROGRAM_LESSON l
   LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = l.custom_quiz
-where program_id = ?
-order by l.id
+WHERE program_id = ?
+ORDER BY l.id
 
 
 .key=CUSTOM_QUIZ_EXISTS

@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
 
 import java.util.List;
@@ -9,14 +10,22 @@ import java.util.List;
 public class SaveCustomQuizAction implements Action<RpcData>{
     
     int adminId;
-    String cpName;
+    String cqName;
     List<CustomQuizId> ids;
+    CustomQuizDef customQuiz;
     
     public SaveCustomQuizAction(){}
     
-    public SaveCustomQuizAction(int adminId, String cpName, List<CustomQuizId> ids) {
+    public SaveCustomQuizAction(int adminId, String cqName, List<CustomQuizId> ids) {
         this.adminId = adminId;
-        this.cpName = cpName;
+        this.cqName = cqName;
+        this.ids = ids;
+    }
+
+    public SaveCustomQuizAction(CustomQuizDef customQuiz, List<CustomQuizId> ids) {
+        this.adminId = customQuiz.getAdminId();
+        this.cqName = customQuiz.getQuizName();
+        this.customQuiz = customQuiz;
         this.ids = ids;
     }
 
@@ -29,11 +38,11 @@ public class SaveCustomQuizAction implements Action<RpcData>{
     }
 
     public String getCpName() {
-        return cpName;
+        return cqName;
     }
 
     public void setCpName(String cpName) {
-        this.cpName = cpName;
+        this.cqName = cpName;
     }
 
     public List<CustomQuizId> getIds() {
@@ -44,8 +53,17 @@ public class SaveCustomQuizAction implements Action<RpcData>{
         this.ids = ids;
     }
 
-    @Override
+    public CustomQuizDef getCustomQuiz() {
+		return customQuiz;
+	}
+
+	public void setCustomQuiz(CustomQuizDef customQuiz) {
+		this.customQuiz = customQuiz;
+	}
+
+	@Override
     public String toString() {
-        return "SaveCustomQuizAction [adminId=" + adminId + ", cpName=" + cpName + ", ids=" + ids + "]";
+        return "SaveCustomQuizAction [adminId=" + adminId + ", cqName=" + cqName + 
+            ", isAnswersViewable=" + customQuiz.isAnswersViewable() + ", ids=" + ids + "]";
     }
 }

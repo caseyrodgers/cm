@@ -18,13 +18,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
 
 import sb.util.SbFile;
 
@@ -64,12 +69,12 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
             ps.setInt(1, adminId);
             ps.setString(2, cpName);
             int result = ps.executeUpdate();
-            __logger.debug("Added custom quiz: " + result);
-            
+            if (__logger.isDebugEnabled()) __logger.debug("Added custom quiz: " + result);
+
             if(result != 1) {
-                throw new Exception("Could not create new custom problem, see server for details.");
+                throw new Exception("Could not create new custom quiz, see server for details.");
             }
-            
+
             quizId = SqlUtilities.getLastInsertId(conn);
         }
         finally {
@@ -77,7 +82,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
         }
         
         if(quizId == 0) {
-            throw new Exception("Could not find quiz id");
+            throw new Exception("Could not find custom quiz id");
         }
         
         /** add custom quiz ids */
@@ -102,6 +107,25 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
             SqlUtilities.releaseResources(null, ps, null);
         }  
         
+        return quizId;
+    }
+
+    public int saveCustomQuiz(CustomQuizDef quizDef, List<CustomQuizId> ids) throws Exception {
+
+        int quizId = quizDef.getQuizId();
+        boolean customQuizExists = (quizId != 0 && customQuizExists(quizDef));
+        
+        if (customQuizExists == false) {
+        	// add Custom Quiz
+        	quizId = addCustomQuiz(quizDef);
+        }
+        else {
+        	// update custom Quiz
+        	updateCustomQuiz(quizDef);
+        	if (quizDef.isInUse() == false) deleteCustomQuizIds(quizDef);
+        }
+        if (quizDef.isInUse() == false) addCustomQuizIds(quizId, ids);
+
         return quizId;
     }
 
@@ -204,7 +228,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
      * 
      * @param conn
      * @param adminId
-     * @param cpName
+     * @param cqName
      * @return
      * @throws Exception
      */
@@ -244,7 +268,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     
     SolutionPostProcess postProcessor = new SolutionPostProcess();
     
-    /** Read and process the problemstatement for the named PID.
+    /** Read and process the problem statement for the named PID.
      * 
      * This solution is expected to have a problem statement using the 
      * question format.
@@ -271,10 +295,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
                 new RowMapper<CustomQuizDef>() {
                     @Override
                     public CustomQuizDef mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new CustomQuizDef(
-                                rs.getInt("quiz_id"), 
-                                rs.getString("quiz_name"),
-                                adminId);
+                        return createCustomQuizDef(rs);
                     }
                 });
         
@@ -293,10 +314,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
                 new RowMapper<CustomQuizDef>() {
                     public CustomQuizDef mapRow(ResultSet rs, int rowNum) throws SQLException {
                         try {
-                                return new CustomQuizDef(
-                                        rs.getInt("quiz_id"), 
-                                        rs.getString("quiz_name"),
-                                        rs.getInt("admin_id"));
+                            return createCustomQuizDef(rs);
                         }
                         catch(Exception e) {
                             __logger.error(String.format("Error getting Custom Quiz for Id: %d", quizId), e);
@@ -312,25 +330,23 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
 
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CUSTOM_QUIZ_BY_TESTID");
 
-        CustomQuizDef customQuiz = this.getJdbcTemplate().queryForObject(
-                sql,
-                new Object[]{testId},
-                new RowMapper<CustomQuizDef>() {
-                    public CustomQuizDef mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        try {
-                                return new CustomQuizDef(
-                                        rs.getInt("quiz_id"), 
-                                        rs.getString("quiz_name"),
-                                        rs.getInt("admin_id"));
-                        }
-                        catch(Exception e) {
-                            __logger.error(String.format("Error getting Custom Quiz for runId: %d", testId), e);
-                            throw new SQLException(e.getMessage());
-                        }
-                    }
-                });
-        return customQuiz;
-    	
+    	CustomQuizDef customQuiz = null;
+    	try {
+    		customQuiz = this.getJdbcTemplate().queryForObject(
+    				sql,
+    				new Object[]{testId},
+    				new RowMapper<CustomQuizDef>() {
+    					public CustomQuizDef mapRow(ResultSet rs, int rowNum) throws SQLException {
+    						return createCustomQuizDef(rs);
+    					}
+    				});
+    	}
+    	catch(Exception e) {
+    		__logger.error(String.format("Error getting Custom Quiz for testId: %d", testId), e);
+    		throw new Exception("Error getting Custom Quiz");
+    	}
+    	return customQuiz;
+
     }
 
     /** Return list of question HTML for custom quiz
@@ -339,7 +355,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
      * 
      * @param conn
      * @param adminId
-     * @param cpName
+     * @param cqName
      * @return
      * @throws Exception
      */
@@ -361,9 +377,122 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
         list.addAll(quizIds);
         return list;
     }
-    
-    
-    
+
+    public boolean customQuizExists(CustomQuizDef quizDef) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_QUIZ_EXISTS");
+    	Boolean quizExists = false;
+    	try {
+            quizExists = getJdbcTemplate().queryForObject(
+                sql,
+                new Object[]{quizDef.getQuizId(), quizDef.getAdminId()},
+                new RowMapper<Boolean>() {
+                    @Override
+                    public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new Boolean(true);
+                    }
+                });
+    	}
+    	catch (Exception e) {
+    		__logger.warn("Error checking if CQ exists: " + quizDef.toString(), e);
+    	}
+        return quizExists;
+    }
+
+    public int addCustomQuiz(final CustomQuizDef quizDef) throws Exception {
+    	KeyHolder keyHolder = new GeneratedKeyHolder();
+		final String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADD_CUSTOM_QUIZ");
+    	try {
+    		getJdbcTemplate().update(new PreparedStatementCreator() {
+    			public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+    				PreparedStatement ps = connection.prepareStatement(sql, new String[] { "qid" });
+    				ps.setInt(1, quizDef.getAdminId());
+    				ps.setString(2, quizDef.getQuizName());
+    				ps.setInt(3, quizDef.isAnswersViewable()?1:0);
+
+    				return ps;
+    			}
+    		}, keyHolder);
+    	} catch (Exception e) {
+    		__logger.error("Error adding: " + quizDef.toString(), e);
+    		throw new Exception("Error adding Custom Quiz", e);
+    	}
+
+    	// extract the auto created PK
+    	int id = keyHolder.getKey().intValue();
+    	quizDef.setQuizId(id);
+
+    	return id;
+    }
+
+    public void archiveCustomQuiz(final int quizId) throws Exception {
+		final String sql = CmMultiLinePropertyReader.getInstance().getProperty("ARCHIVE_CUSTOM_QUIZ");
+    	try {
+    		getJdbcTemplate().update(new PreparedStatementCreator() {
+    			public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+    				PreparedStatement ps = connection.prepareStatement(sql);
+    				ps.setInt(1, quizId);
+    				return ps;
+    			}
+    		});
+    	} catch (Exception e) {
+    		__logger.error("Error arhiving quizId: " + quizId, e);
+    		throw new Exception("Error archiving Custom Quiz", e);
+    	}
+    }
+
+    public void updateCustomQuiz(final CustomQuizDef quizDef) throws Exception {
+		final String sql = CmMultiLinePropertyReader.getInstance().getProperty("UPDATE_CUSTOM_QUIZ");
+    	try {
+    		getJdbcTemplate().update(new PreparedStatementCreator() {
+    			public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+    				PreparedStatement ps = connection.prepareStatement(sql);
+    				ps.setString(1, quizDef.getQuizName());
+    				ps.setInt(2, quizDef.isAnswersViewable()?1:0);
+
+    				return ps;
+    			}
+    		});
+    	} catch (Exception e) {
+    		__logger.error("Error updating: " + quizDef.toString(), e);
+    		throw new Exception("Error updating Custom Quiz", e);
+    	}
+
+    }
+
+    private int[] addCustomQuizIds(final int quizId, List<CustomQuizId> cqIds) throws Exception {
+
+    	List<Object[]> batch = new ArrayList<Object[]>();
+        for (CustomQuizId cqId : cqIds) {
+            Object[] values = new Object[] {
+                quizId,
+                cqId.getPid(),
+                cqId.getLoadOrder() };
+                batch.add(values);
+        }
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ADD_CUSTOM_QUIZ_IDS");
+
+        int[] updateCounts = getSimpleJdbcTemplate().batchUpdate(sql, batch);
+
+        return updateCounts;
+    }
+
+    private void deleteCustomQuizIds(final CustomQuizDef quizDef) throws Exception {
+    	final String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_CUSTOM_QUIZ_IDS");
+    	try {
+    		getJdbcTemplate().update(new PreparedStatementCreator() {
+    			public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
+    				PreparedStatement ps = connection.prepareStatement(sql);
+    				ps.setInt(1, quizDef.getAdminId());
+    				ps.setInt(2, quizDef.getQuizId());
+    				return ps;
+    			}
+    		});
+    	} catch (Exception e) {
+    		__logger.error("Error deleting Quiz Ids for quiz id: " + quizDef.getQuizId(), e);
+    		throw new Exception("Error deleting Quiz Ids", e);
+    	}
+    }
+
     private String getQuizHtml(int num, String pid, String statement) throws Exception {
         try {
             String questionTemplate = readQuestionTemplate();
@@ -416,5 +545,19 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
         } else {
             return 0;
         }
-    }    
+    }
+    
+    private CustomQuizDef createCustomQuizDef(ResultSet rs) throws SQLException {
+    	__logger.debug("is_answers_viewable: " + (rs.getInt("is_answers_viewable")>0));
+    	__logger.debug("is_archived: " + (rs.getInt("is_archived")>0));
+    	return new CustomQuizDef(
+                rs.getInt("quiz_id"), 
+                rs.getString("quiz_name"),
+                rs.getInt("admin_id"),
+                rs.getInt("is_answers_viewable")>0,
+                false,
+                rs.getInt("is_archived")>0,
+                rs.getString("archive_date"));
+    }
+
 }

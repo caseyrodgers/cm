@@ -13,7 +13,7 @@ public class SaveCustomQuizCommand implements ActionHandler<SaveCustomQuizAction
 
     @Override
     public RpcData execute(Connection conn, SaveCustomQuizAction action) throws Exception {
-        int quizId = CmQuizzesDao.getInstance().saveCustomQuiz(conn, action.getAdminId(), action.getCpName(), action.getIds());
+        int quizId = CmQuizzesDao.getInstance().saveCustomQuiz(action.getCustomQuiz(), action.getIds());
         RpcData result = new RpcData("status=OK,custom_quiz_id=" + quizId);
         return result;
     }

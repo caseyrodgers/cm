@@ -35,10 +35,15 @@ public class CustomLessonModel extends BaseModel implements Response {
         setSubject(subject);
     }
 
-    public CustomLessonModel(int quizId, String quizLabel) {
+    public CustomLessonModel(int quizId, String quizLabel, boolean isAnswersViewable, boolean isInUse,
+    		boolean isArchived, String archiveDate) {
         this.customProgramType = Type.QUIZ;
         setQuiz(quizLabel);
         setQuizId(quizId);
+        setIsAnswersViewable(isAnswersViewable);
+        setIsInUse(isInUse);
+        setIsArchived(isArchived);
+        setArchiveDate(archiveDate);
 
         set("subjectStyleClass", "is_quiz_subject");
         set("customProgramItemClass", "is_quiz");
@@ -106,7 +111,37 @@ public class CustomLessonModel extends BaseModel implements Response {
         return get("subject");
     }
 
+    public Boolean getIsAnswersViewable() {
+    	return get("isAnswersViewable");
+    }
 
+    public void setIsAnswersViewable(Boolean isAnswersViewable) {
+    	set("isAnswersViewable", isAnswersViewable);
+    }
+
+    public Boolean getIsInUse() {
+    	return get("isInUse");
+    }
+
+    public void setIsInUse(Boolean isInUse) {
+    	set("isInUse", isInUse);
+    }
+
+    public Boolean getIsArchived() {
+    	return get("isArchived");
+    }
+
+    public void setIsArchived(Boolean isArchived) {
+    	set("isArchived", isArchived);
+    }
+
+    public String getArchiveDate() {
+    	return get("archiveDate");
+    }
+
+    public void setArchiveDate(String archiveDate) {
+    	set("archiveDate", archiveDate);
+    }
 
     @Override
     public boolean equals(Object obj) {

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -229,7 +230,10 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 String customQuizName = rs.getString("custom_quiz_name");
                 if (quizId > 0) {
                     /** is a quiz */
-                    CustomLessonModel cml = new CustomLessonModel(quizId, customQuizName);
+                	boolean isArchived = (rs.getInt("is_archived") > 0);
+                	boolean isAnswersViewable = (rs.getInt("is_answers_viewable") > 0);
+                	String archiveDate = rs.getString("archive_date");
+                    CustomLessonModel cml = new CustomLessonModel(quizId, customQuizName, isAnswersViewable, false, isArchived, archiveDate);
 
                     if(segment.getQuiz() == null) {
                         segment.setQuiz(cml);
@@ -335,7 +339,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 CustomProgramModel prog = new CustomProgramModel(rs.getString("name"), rs.getInt("id"),
-                        rs.getInt("assigned_count"), rs.getInt("inuse_count"), rs.getInt("is_template") != 0);
+                        rs.getInt("assigned_count"), rs.getInt("inuse_count"), rs.getInt("is_template") != 0,
+                        rs.getInt("is_archived") > 0);
                 programs.add(prog);
             }
             return programs;
@@ -362,10 +367,32 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             if (!rs.next())
                 throw new CmException("Custom Program not found: " + progId);
             return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"),
-                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0);
+                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0,
+                    rs.getInt("is_archived") > 0);
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
+    }
+
+    /**
+     * Get a single Custom Program by progId
+     * 
+     * @param conn
+     * @param progId
+     * @return
+     * @throws Exception
+     */
+    public CustomProgramModel archiveCustomProgram(Integer progId) throws Exception {
+    	try {
+            getSimpleJdbcTemplate().update(
+                    CmMultiLinePropertyReader.getInstance().getProperty("ARCHIVE_CUSTOM_PROGRAM_BYID"),
+                    new Object[] {progId});
+    	}
+    	catch (Exception e) {
+            logger.error("Error archiving custom prog id: " + progId, e);
+            throw new Exception ("Error archiving custom prog id: " + progId, e);
+    	}
+    	return getCustomProgram(progId);
     }
 
     /**
@@ -385,7 +412,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                     public CustomProgramModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         try {
                             return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"),
-                                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0);
+                                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0,
+                                    rs.getInt("is_archived") > 0);
                         }
                         catch(Exception e) {
                             LOGGER.error(String.format("Error getting Custom Program for Id: %d", progId), e);
@@ -409,7 +437,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 throw new CmException("Custom Program not found for: " + adminId + ", " + customProgramName);
 
             return new CustomProgramModel(rs.getString("name"), rs.getInt("id"), rs.getInt("assigned_count"),
-                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0);
+                    rs.getInt("inuse_count"), rs.getInt("is_template") != 0,
+                    rs.getInt("is_archived") > 0);
         } finally {
             SqlUtilities.releaseResources(null, stmt, null);
         }
@@ -748,7 +777,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
 
             saveChanges(conn, adminId, newProgId, name, lessons);
 
-            return new CustomProgramModel(name, newProgId, 0, 0, false);
+            return new CustomProgramModel(name, newProgId, 0, 0, false, false);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

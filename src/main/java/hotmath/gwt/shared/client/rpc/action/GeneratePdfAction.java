@@ -11,13 +11,15 @@ public class GeneratePdfAction implements Action<CmWebResource>{
 
 	@Override
     public String toString() {
-        return "GeneratePdfAction [adminId=" + adminId + ", pdfType=" + pdfType + ", studentUids=" + studentUids + "]";
+        return "GeneratePdfAction [adminId=" + adminId + ", pdfType=" + pdfType + ", studentUids=" + studentUids +
+            ", parallelProgId=" + parallelProgId + "]";
     }
 
     private static final long serialVersionUID = 6104125833256395744L;
 	
 	PdfType pdfType;
     Integer adminId;
+    Integer parallelProgId;
     List<Integer> studentUids;
     Map<FilterType,String> filterMap;
     String title;
@@ -31,6 +33,12 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         this.pdfType = pdfType;
         this.adminId = adminId;
         this.studentUids = studentUids;
+    }
+    
+    public GeneratePdfAction(PdfType pdfType, Integer adminId, Integer parallelProgId) {
+        this.pdfType = pdfType;
+        this.adminId = adminId;
+        this.parallelProgId = parallelProgId;
     }
     
     public GeneratePdfAction(PdfType pdfType, Integer adminId, GetStudentGridPageAction pageAction) {
@@ -125,6 +133,13 @@ public class GeneratePdfAction implements Action<CmWebResource>{
          * Generalized highlight report
          * 
          */
-        HIGHLIGHT_REPORT
+        HIGHLIGHT_REPORT,
+        
+        
+        /**
+         * Parallel Program usage report
+         * 
+         */
+        PARALLEL_PROG_USAGE
     };
 }

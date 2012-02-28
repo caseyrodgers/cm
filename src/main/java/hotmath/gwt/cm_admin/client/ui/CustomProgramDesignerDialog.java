@@ -72,8 +72,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
 
         setModal(true);
         setSize(640, 480);
-
-        
         
         buildGui();
 
@@ -97,6 +95,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
             else if(customProgram.getIsTemplate()) {
                 _isEditable = false;
             }
+            else if (customProgram.getIsArchived() == true) {
+            	_isEditable = false;
+            }
             else if(customProgram.getAssignedCount() == 0) {
                 _isEditable = true;
             }
@@ -109,9 +110,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         }
         add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));
         
-        if(isDebug)
-            enableForm(true);
-        else 
+        //if(isDebug)
+        //    enableForm(true);
+        //else 
             enableForm(_isEditable);
         
         setVisible(true);
@@ -212,7 +213,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             throw new Exception("Custom program already has a quiz as last item.");
         }
         
-        CustomLessonModel autoQuiz = new CustomLessonModel(0,"Auto Quiz");
+        CustomLessonModel autoQuiz = new CustomLessonModel(0,"Auto Quiz", true, false, false, null);
         _listSelected.getStore().add(autoQuiz);
     }
     
@@ -282,8 +283,10 @@ public class CustomProgramDesignerDialog extends CmWindow {
         else {
             if(customProgram != null && customProgram.getIsTemplate())
                 msg = "<span style='color: red;font-weight: bold'>This program is a Built-in Custom Program.  You can make a copy to customize.</span>";
-            else 
+            else if (customProgram.getIsArchived() == false)
                 msg = "<span style='color: red;font-weight: bold'>This program is in use and cannot be edited.</span>";
+            else
+                msg = "<span style='color: red;font-weight: bold'>This program is archived and cannot be edited.</span>";
         }
         Html html = new Html("<p style='margin-left: 20px;padding: 7px 10px; '>" + msg + "</p>");
         lc.add(html,new ColumnData(.50));
@@ -440,7 +443,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
                     CmBusyManager.setBusy(false);              
                     List<CustomLessonModel> gmodels = new ArrayList<CustomLessonModel>();
                     for(int i=0,t=defs.size();i<t;i++) {
-                        gmodels.add(new CustomLessonModel(defs.get(i).getQuizId(), defs.get(i).getQuizName()));
+                        gmodels.add(new CustomLessonModel(defs.get(i).getQuizId(), defs.get(i).getQuizName(),
+                        		defs.get(i).isAnswersViewable(), defs.get(i).isInUse(),
+                        		defs.get(i).isArchived(), defs.get(i).getArchiveDate()));
                     }
                     _listCustomPrograms.getStore().removeAll();                    
                     _listCustomPrograms.getStore().add(gmodels);
@@ -455,7 +460,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizName());
+                DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -487,9 +492,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
         cpPanel.getHeader().addTool(new Button("Edit", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                
                 CustomLessonModel quiz = _listCustomPrograms.getSelectionModel().getSelectedItem();
-                CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(),adminModel.getId());
+                CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(),
+                		quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
                 new CustomProgramAddQuizDialog(new Callback() {
                     @Override
                     public void quizCreated() {
@@ -504,7 +509,8 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 CustomLessonModel quiz = _listCustomPrograms.getSelectionModel().getSelectedItem();
-                final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(),adminModel.getId());
+                final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(),
+                		quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
                 MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName() + "'?", new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {
                         removeCustomQuiz(def);

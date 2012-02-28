@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -23,6 +24,12 @@ public class CustomProgramDefinitionCommand implements
             case DELETE:
                 CmCustomProgramDao.getInstance().deleteCustomProgram(conn, action.getProgramId());
                 return null;
+    
+            case ARCHIVE:
+            	CustomProgramModel model = CmCustomProgramDao.getInstance().archiveCustomProgram(action.getProgramId());
+            	CmList<CustomProgramModel> list = new CmArrayList<CustomProgramModel>();
+            	list.add(model);
+            	return list;
     
             default:
                 throw new CmException("Unknown ActionType: " + action);

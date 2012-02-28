@@ -17,6 +17,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.ArchiveCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
@@ -29,6 +30,7 @@ import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MenuEvent;
@@ -40,6 +42,8 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -60,6 +64,11 @@ public class CustomProgramDialog extends CmWindow {
     ListView<CustomLessonModel> _listViewCq;
     boolean _isDebug;
     TabPanel tabPanelType = new TabPanel();
+    boolean _includeArchivedPrograms = true;
+    boolean _includeArchivedQuizzes = true;
+    
+    CheckBox _includeArchivedChkBox;
+    CheckBoxGroup _includeArchivedChkBoxGrp;
 
     public CustomProgramDialog(CmAdminModel adminModel) {
         this.adminModel = adminModel;
@@ -67,7 +76,7 @@ public class CustomProgramDialog extends CmWindow {
         setHeading("Catchup Math Custom Program Definitions");
 
         setModal(true);
-        setSize(400, 380);
+        setSize(400, 420);
 
         _isDebug = CmShared.getQueryParameter("debug") != null;
 
@@ -124,6 +133,10 @@ public class CustomProgramDialog extends CmWindow {
                     if (_listViewCq.getStore().getCount() == 0) {
                         loadCustomQuizDefinitions();
                     }
+                    _includeArchivedChkBox.setValue(_includeArchivedQuizzes);
+                }
+                else {
+                	_includeArchivedChkBox.setValue(_includeArchivedPrograms);
                 }
             }
         });
@@ -176,6 +189,36 @@ public class CustomProgramDialog extends CmWindow {
 
         add(tb, new BorderLayoutData(LayoutRegion.NORTH, 35));
         addCloseButton();
+        
+        _includeArchivedChkBox = new CheckBox();
+        _includeArchivedChkBox.setId("include-archived");
+        _includeArchivedChkBox.setToolTip("include archived items in list");
+        _includeArchivedChkBox.setStyleName("custom-quiz-check-box");
+        _includeArchivedChkBox.setBoxLabel("Include archived custom items");
+        _includeArchivedChkBox.setLabelSeparator("");
+        _includeArchivedChkBox.setValue(_includeArchivedPrograms);
+        _includeArchivedChkBox.setFireChangeEventOnSetValue(true);
+
+        _includeArchivedChkBox.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent be) {
+                if (isCpTabSelected()) {
+                	_includeArchivedPrograms = _includeArchivedChkBox.getValue();
+                	getCustomProgramDefinitions();
+                }
+                else {
+                	_includeArchivedQuizzes = _includeArchivedChkBox.getValue();
+                	loadCustomQuizDefinitions();
+                }
+            }
+        });
+
+        _includeArchivedChkBoxGrp = new CheckBoxGroup();
+        _includeArchivedChkBoxGrp.setId("include-archiveds");
+        _includeArchivedChkBoxGrp.add(_includeArchivedChkBox);
+        _includeArchivedChkBoxGrp.setLabelSeparator("");
+        _includeArchivedChkBoxGrp.setStyleName("include-archived-check-box-grp");
+
+        add(_includeArchivedChkBoxGrp,new BorderLayoutData(LayoutRegion.SOUTH, 40));
     }
 
     /**
@@ -214,7 +257,8 @@ public class CustomProgramDialog extends CmWindow {
         }
 
         CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
-        CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId());
+        CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(),
+        		quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
         new CustomProgramAddQuizDialog(new Callback() {
             @Override
             public void quizCreated() {
@@ -305,39 +349,14 @@ public class CustomProgramDialog extends CmWindow {
 
     private void deleteCustomQuiz() {
         CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
-        final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId());
+
+        if (quiz.getIsArchived() == true) {
+            CatchupMathTools.showAlert("Custom Quiz is archived and cannot be deleted.");
+            return;
+        }
+        final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(), 
+        	    quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
         deleteCustomQuiz(def);
-    }
-
-    private void deleteCustomQuizDo(final CustomQuizDef def) {
-        
-        MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName()
-                + "'?", new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                if (be.getButtonClicked().getText().equals("Yes")) {
-                    new RetryAction<RpcData>() {
-                        @Override
-                        public void attempt() {
-                            CmBusyManager.setBusy(true);
-                            DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizName());
-                            setAction(action);
-                            CmShared.getCmService().execute(action, this);
-                        }
-
-                        @Override
-                        public void oncapture(RpcData result) {
-                            CmBusyManager.setBusy(false);
-                            
-                            if(result.getDataAsString("status").equals("OK")) {
-                                loadCustomQuizDefinitions();
-                            }
-                        }
-                    }.register();
-                }
-            }
-        });
-
-        
     }
 
     private void deleteCustomQuiz(final CustomQuizDef def) {
@@ -357,12 +376,71 @@ public class CustomProgramDialog extends CmWindow {
                 CmBusyManager.setBusy(false);
 
                 if (info.getAssignedStudents().size() > 0) {
-                    CatchupMathTools.showAlert("This custom quiz cannot be deleted because it has been assigned to students.");
+                    archiveCustomQuizDo(def);
                 } else {
                     deleteCustomQuizDo(def);
                 }
             }
         }.register();
+    }
+    private void deleteCustomQuizDo(final CustomQuizDef def) {
+        
+        MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName()
+                + "'?", new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    new RetryAction<RpcData>() {
+                        @Override
+                        public void attempt() {
+                            CmBusyManager.setBusy(true);
+                            DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizId());
+                            setAction(action);
+                            CmShared.getCmService().execute(action, this);
+                        }
+
+                        @Override
+                        public void oncapture(RpcData result) {
+                            CmBusyManager.setBusy(false);
+                            
+                            if(result.getDataAsString("status").equals("OK")) {
+                                loadCustomQuizDefinitions();
+                            }
+                        }
+                    }.register();
+                }
+            }
+        });
+   
+    }
+
+    private void archiveCustomQuizDo(final CustomQuizDef def) {
+        
+        MessageBox.confirm("Archive Custom Quiz?", "Are you sure you want to archive custom quiz '" + def.getQuizName()
+                + "'?", new Listener<MessageBoxEvent>() {
+            public void handleEvent(MessageBoxEvent be) {
+                if (be.getButtonClicked().getText().equals("Yes")) {
+                    new RetryAction<RpcData>() {
+                        @Override
+                        public void attempt() {
+                            CmBusyManager.setBusy(true);
+                            ArchiveCustomQuizAction action = new ArchiveCustomQuizAction(adminModel.getId(), def.getQuizId());
+                            setAction(action);
+                            CmShared.getCmService().execute(action, this);
+                        }
+
+                        @Override
+                        public void oncapture(RpcData result) {
+                            CmBusyManager.setBusy(false);
+                            
+                            if(result.getDataAsString("status").equals("OK")) {
+                                loadCustomQuizDefinitions();
+                            }
+                        }
+                    }.register();
+                }
+            }
+        });
+   
     }
 
     private void deleteCustomProgram() {
@@ -372,8 +450,8 @@ public class CustomProgramDialog extends CmWindow {
             return;
         }
 
-        if (!_isDebug && sel.getAssignedCount() > 0) {
-            CatchupMathTools.showAlert("This custom program cannot be deleted because it has been assigned to students.");
+        if (sel.getIsArchived()) {
+            CatchupMathTools.showAlert("This custom program has been archived and cannot be deleted.");
             return;
         }
 
@@ -382,16 +460,31 @@ public class CustomProgramDialog extends CmWindow {
             return;
         }
 
-        MessageBox.confirm("Delete Custom Program",
-                "Are you sure you want to delete custom program '" + sel.getProgramName() + "'?",
-                new Listener<MessageBoxEvent>() {
-                    public void handleEvent(MessageBoxEvent be) {
-                        String btnText = be.getButtonClicked().getText();
-                        if (btnText.equalsIgnoreCase("yes")) {
-                            deleteCustomProgram(sel);
-                        }
-                    }
-                });
+        if (sel.getAssignedCount() < 1) {
+        	MessageBox.confirm("Delete Custom Program",
+        			"Are you sure you want to delete custom program '" + sel.getProgramName() + "'?",
+        			new Listener<MessageBoxEvent>() {
+        		public void handleEvent(MessageBoxEvent be) {
+        			String btnText = be.getButtonClicked().getText();
+        			if (btnText.equalsIgnoreCase("yes")) {
+        				deleteCustomProgram(sel);
+        			}
+        		}
+        	});
+        }
+        else {
+        	MessageBox.confirm("Archive Custom Program",
+        			"Are you sure you want to archive custom program '" + sel.getProgramName() + "'?",
+        			new Listener<MessageBoxEvent>() {
+        		public void handleEvent(MessageBoxEvent be) {
+        			String btnText = be.getButtonClicked().getText();
+        			if (btnText.equalsIgnoreCase("yes")) {
+        				archiveCustomProgram(sel);
+        			}
+        		}
+        	});
+
+        }
     }
 
     private void deleteCustomProgram(final CustomProgramModel program) {
@@ -415,6 +508,30 @@ public class CustomProgramDialog extends CmWindow {
         }.register();
     }
 
+    private void archiveCustomProgram(final CustomProgramModel program) {
+
+        new RetryAction<CmList<CustomProgramModel>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CustomProgramDefinitionAction action = new CustomProgramDefinitionAction(ActionType.ARCHIVE,
+                        adminModel.getId());
+                action.setProgramId(program.getProgramId());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(CmList<CustomProgramModel> value) {
+                CmBusyManager.setBusy(false);
+                //_listViewCp.getStore().remove(program);
+                int index = _listViewCp.getStore().indexOf(program);
+                _listViewCp.getStore().remove(program);
+                _listViewCp.getStore().insert(value, index);
+            }
+        }.register();
+    }
+
     private void loadCustomQuizDefinitions() {
 
         new RetryAction<CmList<CustomQuizDef>>() {
@@ -429,9 +546,14 @@ public class CustomProgramDialog extends CmWindow {
             @Override
             public void oncapture(CmList<CustomQuizDef> defs) {
                 CmBusyManager.setBusy(false);
+
                 List<CustomLessonModel> gmodels = new ArrayList<CustomLessonModel>();
                 for (int i = 0, t = defs.size(); i < t; i++) {
-                    gmodels.add(new CustomLessonModel(defs.get(i).getQuizId(), defs.get(i).getQuizName()));
+                	CustomQuizDef def = defs.get(i);
+                	if (def.isArchived() == true && _includeArchivedQuizzes == false) continue;
+                    gmodels.add(new CustomLessonModel(def.getQuizId(), def.getQuizName(),
+                    		def.isAnswersViewable(), def.isInUse(), def.isArchived(),
+                    		def.getArchiveDate()));
                 }
                 _listViewCq.getStore().removeAll();
                 _listViewCq.getStore().add(gmodels);
@@ -460,15 +582,18 @@ public class CustomProgramDialog extends CmWindow {
                  */
                 List<CustomProgramModel> templates = new ArrayList<CustomProgramModel>();
                 List<CustomProgramModel> nonTemplates = new ArrayList<CustomProgramModel>();
+                List<CustomProgramModel> selected = new ArrayList<CustomProgramModel>();
                 for (int i = 0, t = programs.size(); i < t; i++) {
                     CustomProgramModel program = programs.get(i);
+                    if (program.getIsArchived() == true && _includeArchivedPrograms == false) continue;
                     if (program.getIsTemplate())
                         templates.add(program);
                     else
                         nonTemplates.add(program);
+                    selected.add(program);
                 }
                 _listViewCp.getStore().removeAll();
-                _listViewCp.getStore().add(programs);
+                _listViewCp.getStore().add(selected);
             }
         }.register();
     }

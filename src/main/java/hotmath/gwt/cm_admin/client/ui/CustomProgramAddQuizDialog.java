@@ -40,6 +40,7 @@ import com.extjs.gxt.ui.client.store.Store;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
 import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -50,12 +51,15 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout;
+import com.extjs.gxt.ui.client.widget.layout.HBoxLayout.HBoxLayoutAlign;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.JsArrayInteger;
@@ -76,11 +80,14 @@ public class CustomProgramAddQuizDialog extends Window {
     ContentPanel _panelQuestions;
     Callback callback;
     TextField<String> _textQuizName;
+    CheckBox _chkAnswersChkBox;
+    CheckBoxGroup _chkAnswersChkBoxGrp;
     Button _saveButton;
     CustomQuizDef _customQuiz;
+    MyButtonWithTip _addButton;
     Label _readOnlyLabel;
     ContentPanel _questionToolbar;
-    
+        
     int adminId;
 
     public CustomProgramAddQuizDialog(Callback callback, CustomQuizDef quiz, boolean asCopy) {
@@ -92,7 +99,7 @@ public class CustomProgramAddQuizDialog extends Window {
         setId("custom_quiz_design");
 
         setHeading("Define Custom Quiz");
-        setSize(750, 480);
+        setSize(805, 480);
         setMaximizable(true);
         setModal(true);
 
@@ -104,8 +111,6 @@ public class CustomProgramAddQuizDialog extends Window {
                 saveCustomQuiz();
             }
         });
-        _saveButton.setEnabled(false);
-
         addButton(_saveButton);
 
         addButton(new Button("Cancel", new SelectionListener<ButtonEvent>() {
@@ -188,7 +193,7 @@ public class CustomProgramAddQuizDialog extends Window {
         });
 
         setLayout(new BorderLayout());
-        add(createTopPanel(), new BorderLayoutData(LayoutRegion.NORTH, 40));
+        add(createTopPanel(), new BorderLayoutData(LayoutRegion.NORTH, 50));
         add(_mainPanel, new BorderLayoutData(LayoutRegion.CENTER));
 
         CustomProgramDesignerDialog.createButtonBarLedgend(getButtonBar());
@@ -205,52 +210,88 @@ public class CustomProgramAddQuizDialog extends Window {
         if (_customQuiz != null) {
             loadCustomQuiz(_customQuiz);
             if(asCopy) {
-                _customQuiz = new CustomQuizDef(0, "Copy of " + _customQuiz.getQuizName(), adminId);
+                _customQuiz = new CustomQuizDef(0, "Copy of " + _customQuiz.getQuizName(), adminId, _customQuiz.isAnswersViewable(),
+                		false, false, null);
             }
         } else {
-            _customQuiz = new CustomQuizDef(0, "New Custom Quiz", adminId);
+            _customQuiz = new CustomQuizDef(0, "New Custom Quiz", adminId, true, false, false, null);
         }
         _textQuizName.setValue(_customQuiz.getQuizName());
         
+        _chkAnswersChkBox.setValue(_customQuiz.isAnswersViewable());
         
         
-        /** initially everything is readyonly, only enable after call to verify
-         *  existing custom quiz does not exist
+        
+        /** initially everything is read only, only enable after call to verify
+         *  selected custom quiz is not in use or archived
          */
-        setIsEditable(false);
+        setIsModifiable(false);
+        setIsArchived(true);
         
         
         CustomQuizInfoAction a;
         new RetryAction<CustomQuizInfoModel>() {
             @Override
             public void attempt() {
-                CustomQuizInfoAction action = new CustomQuizInfoAction(adminId,new CustomLessonModel(_customQuiz.getQuizId(), null));
+                CustomQuizInfoAction action = new CustomQuizInfoAction(adminId, new CustomLessonModel(_customQuiz.getQuizId(), null, true, false, false, null));
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
             
             @Override
             public void oncapture(CustomQuizInfoModel value) {
-                if(CmShared.getQueryParameter("debug") != null || value.getAssignedStudents().size() == 0) {
-                    setIsEditable(true);
+                if(value.getAssignedStudents().size() == 0 && _customQuiz.isArchived() == false) {
+                    setIsModifiable(true);
+                    setIsArchived(false);
+                    _customQuiz.setInUse(false);
+                }
+                else {
+                    _customQuiz.setInUse(value.getAssignedStudents().size() != 0);
+                    setIsArchived(_customQuiz.isArchived());
+                    if (_customQuiz.isArchived()) {
+                    	_readOnlyLabel.setText("<div class='custom-quiz-no-modify-text'>Custom Quiz has been archived and cannot be<br/> modified.  You can make a copy to customize.</div>");
+                    }
+                    else {
+                    	_readOnlyLabel.setText("<div class='custom-quiz-no-modify-text'>Custom Quiz is in use and questions cannot be<br/> modified.  You can make a copy to customize.</div>");
+                    }
                 }
             };
         }.register();
-        
-        
-        
+
         setVisible(true);
     }
 
+    /*
+     * if isArchived is false, then name and check-answers can be changed and CQ can be saved, otherwise not.
+     */
+    private void setIsArchived(boolean isArchived) {
+    	if (isArchived == false) {
+    		_saveButton.enable();
+    		_textQuizName.enable();
+    		_chkAnswersChkBox.enable();
+    	}
+    	else {
+    		_saveButton.disable();
+    		_textQuizName.disable();
+    		_chkAnswersChkBox.disable();
+    	}
+    }
     
-    private void setIsEditable(boolean yesNo) {
-        CmLogger.info("CustomProgramAddQuizDialog: Is editable: " + yesNo);
-        _textQuizName.setEnabled(yesNo);
-        _saveButton.setEnabled(yesNo);
-        _readOnlyLabel.setVisible(!yesNo);
+    /*
+     * if isModifiable is true, then questions can be modified, otherwise not
+     */
+    private void setIsModifiable(boolean isModifiable) {
+        CmLogger.info("CustomProgramAddQuizDialog: Is modifiable: " + isModifiable);
+
+        _addButton.setEnabled(isModifiable);
+        _readOnlyLabel.setVisible(!isModifiable);
         
-        _questionToolbar.getHeader().setVisible(yesNo);
-        _panelQuestions.getHeader().setVisible(yesNo);
+        List<Component> tools = _questionToolbar.getHeader().getTools();
+        for (Component tool : tools) {
+        	if (isModifiable == true) tool.enable();
+        	else tool.disable();
+        }
+        _panelQuestions.getHeader().setVisible(isModifiable);
     }
     
     private void addSelectedQuestionToCustomQuiz() {
@@ -347,13 +388,17 @@ public class CustomProgramAddQuizDialog extends Window {
         if (ids.size() == 0) {
             throw new Exception("Quizzes must have one or more questions.");
         }
+        
+        final boolean isAnswersViewable = this._chkAnswersChkBox.getValue();
 
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
 
-                SaveCustomQuizAction action = new SaveCustomQuizAction(adminId, cpName, ids);
+                CustomQuizDef customQuiz = new CustomQuizDef(_customQuiz.getQuizId(), cpName, adminId, isAnswersViewable,
+                		_customQuiz.isInUse(), _customQuiz.isArchived(), _customQuiz.getArchiveDate());
+                SaveCustomQuizAction action = new SaveCustomQuizAction(customQuiz, ids);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -383,7 +428,7 @@ public class CustomProgramAddQuizDialog extends Window {
         CmWindow questionWindow = new CmWindow();
         questionWindow.setHeading("Question: " + quizModel.getQuestionId());
         questionWindow.setModal(true);
-        questionWindow.setSize(500, 300);
+        questionWindow.setSize(525, 300);
 
         Html html = new Html(quizModel.getQuestion());
         questionWindow.add(html);
@@ -568,6 +613,7 @@ public class CustomProgramAddQuizDialog extends Window {
                                 moveSelectedQuestionInProgramUp();
                             }
                         }));
+        
         return lc;
     }
 
@@ -646,41 +692,61 @@ public class CustomProgramAddQuizDialog extends Window {
         cp.setLayout(new FitLayout());
         cp.add(widget);
 
-        cp.getHeader().addTool(
-                new MyButtonWithTip("Add", "Add the selected question to custom quiz.",
-                        new SelectionListener<ButtonEvent>() {
-                            public void componentSelected(ButtonEvent ce) {
-                                addSelectedQuestionToCustomQuiz();
-                            }
-                        }));
+        _addButton =
+        	new MyButtonWithTip("Add", "Add the selected question to custom quiz.",
+                new SelectionListener<ButtonEvent>() {
+                    public void componentSelected(ButtonEvent ce) {
+                        addSelectedQuestionToCustomQuiz();
+                    }
+                });
+        _addButton.disable();
+        cp.getHeader().addTool(_addButton);
         return cp;
     }
 
     private Widget createTopPanel() {
+
+        LayoutContainer lc = new LayoutContainer();
+        HBoxLayout layout = new HBoxLayout();
+        layout.setHBoxLayoutAlign(HBoxLayoutAlign.MIDDLE);
+        lc.setLayout(layout);
+
         FormPanel form = new FormPanel();
         form.setFrame(false);
         form.setBodyBorder(false);
         form.setHeaderVisible(false);
-        form.setLabelWidth(75);
-        LayoutContainer lc = new LayoutContainer();
-        lc.setLayout(new FlowLayout());
-        lc.addStyleName("custom-quiz-top-panel");
+        form.setLabelWidth(70);
+        
         _textQuizName = new TextField<String>();
         _textQuizName.setAllowBlank(false);
-
-        // loadExistingCustomQuizNames();
-
-        
-        _readOnlyLabel = new Label("<div style='float: right; color: red;padding: 5px;'>This Custom Quiz is in use and cannot be edited.  You can make a copy to customize.</div>");
-        _readOnlyLabel.addStyleName("custom-quiz-editable-label");
-        lc.add(_readOnlyLabel);
-
         _textQuizName.setFieldLabel("Quiz Name");
         form.add(_textQuizName);
-        lc.add(form);
         
-        //FormButtonBinding binding = new FormButtonBinding(form);
-        //binding.addButton(_saveButton);
+        FormPanel fp = new FormPanel();
+        fp.setFrame(false);
+        fp.setBodyBorder(false);
+        fp.setHeaderVisible(false);
+        fp.setLabelWidth(1);
+
+        _chkAnswersChkBox = new CheckBox();
+        _chkAnswersChkBox.setId("check-answers");
+        _chkAnswersChkBox.setToolTip("Allow students to check their answers using Help/Student Details.");
+        _chkAnswersChkBox.setStyleName("custom-quiz-check-box");
+        _chkAnswersChkBox.setBoxLabel("Allow students to check answers");
+        _chkAnswersChkBox.setLabelSeparator("");
+        _chkAnswersChkBoxGrp = new CheckBoxGroup();
+        _chkAnswersChkBoxGrp.setId("check-answers");
+        _chkAnswersChkBoxGrp.add(_chkAnswersChkBox);
+        _chkAnswersChkBoxGrp.setLabelSeparator("");
+        _chkAnswersChkBoxGrp.setStyleName("custom-quiz-check-box-grp");
+        fp.add(_chkAnswersChkBoxGrp);
+
+        _readOnlyLabel = new Label("");
+        _readOnlyLabel.setStyleName("custom-quiz-no-modify-label");
+
+        lc.add(form);
+        lc.add(fp);
+        lc.add(_readOnlyLabel);
 
         return lc;
     }

@@ -10,6 +10,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.ClientInfo.UserType;
 import hotmath.gwt.cm_rpc.client.CmUserException;
+import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -64,11 +65,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
 import sb.util.SbUtilities;
 
@@ -569,16 +567,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public StudentModelI addStudentTemplate(StudentModelI sm, String templateType) throws Exception {
 
     	__logger.info("+++ progId: " + sm.getProgram().getProgramId());
-    	
-    	/*
-    	KeyHolder keyHolder = new GeneratedKeyHolder();
-        getJdbcTemplate().update(new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
-                try {
-                    String sql = CmMultiLinePropertyReader.getInstance().getProperty("CREATE_HA_USER_TEMPLATE");
-                    PreparedStatement ps = connection.prepareStatement(sql, new String[] { "id" });
-
-    	 */
 
         int count = getJdbcTemplate().update(
     	        "insert into HA_USER_TEMPLATE (name, password, admin_id, group_id, prog_inst_id, type, limit_games, show_work_required, stop_at_program_end, create_date) " +
@@ -781,11 +769,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged,
             Boolean progIsNew, Boolean passcodeChanged, Boolean passPercentChanged) throws Exception {
-    	return updateStudent(conn, sm, studentChanged, programChanged, progIsNew, passcodeChanged, passPercentChanged, true);
+    	return updateStudent(conn, sm, studentChanged, programChanged, progIsNew, passcodeChanged, passPercentChanged, true, false);
     }
 
     public StudentModelI updateStudent(final Connection conn, StudentModelI sm, Boolean studentChanged, Boolean programChanged,
-            Boolean progIsNew, Boolean passcodeChanged, Boolean passPercentChanged, boolean resetMainProgram) throws Exception {
+            Boolean progIsNew, Boolean passcodeChanged, Boolean passPercentChanged, boolean resetMainProgram,
+            boolean continueParallelProgram) throws Exception {
         if (passcodeChanged) {
             Boolean isDuplicate = checkForDuplicatePasscode(conn, sm);
             if (isDuplicate) {
@@ -794,9 +783,23 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
         if (progIsNew) {
         	// if Student is in Parallel Program, save Active Info before changing Program
+        	//TODO: handle Auto-Enroll Parallel Program transition
         	ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
+        	
         	if (ppDao.isStudentInParallelProgram(sm.getUid()) == true) {
-        		ppDao.updateProgramAssign(sm.getUid());
+        		ppDao.updateProgramAssign(sm.getUid(), continueParallelProgram);
+
+                if (continueParallelProgram) {
+        			hotmath.gwt.cm_rpc.client.model.CmProgram cp = ppDao.getCmProgramForUserId(sm.getUid());
+
+        			CmProgramAssign cmProgAssign = ppDao.getProgramAssignForUserIdAndUserProgId(sm.getUid(), sm.getProgram().getProgramId());
+        			cmProgAssign.setCmProgram(cp);
+        			cmProgAssign.setUserProgId(sm.getProgram().getProgramId());
+        			cmProgAssign.setParallelProg(true);
+        			cmProgAssign.setCurrentMainProg(false);
+        			ppDao.addProgramAssignment(cmProgAssign);
+                }
+
         	}
         	// if Student has Main Program in CM_PROGRAM_ASSIGN, conditionally reset it
         	if (resetMainProgram)
@@ -2443,16 +2446,16 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent) throws Exception {
-        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0, true);
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0, true, false);
     }
 
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,
     		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum) throws Exception {
-        assignProgramToStudent(conn, uid, program, chapter, passPercent, settings, includeSelfRegGroups, sectionNum, true);
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, settings, includeSelfRegGroups, sectionNum, true, false);
     }
     
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent, boolean resetMainProgram) throws Exception {
-        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0, resetMainProgram);
+        assignProgramToStudent(conn, uid, program, chapter, passPercent, null, false, 0, resetMainProgram, false);
     }
 
     /** Assign program to student.
@@ -2465,10 +2468,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @param settings
      * @param includeSelfRegGroups  (must be set to true if updating self-reg user template)
      * @param sectionNum
+     * @param resetMainProgram
+     * @param continueParallelProgram
      * @throws Exception
      */
     public void assignProgramToStudent(final Connection conn, Integer uid, StudentProgramModel program, String chapter, String passPercent,
-    		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum, boolean resetMainProgram) throws Exception {
+    		StudentSettingsModel settings, boolean includeSelfRegGroups, Integer sectionNum, boolean resetMainProgram,
+    		boolean continueParallelProgram) throws Exception {
 
         StudentModelI sm = getStudentModelBase(conn, uid,includeSelfRegGroups);
 
@@ -2491,7 +2497,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         sm.setSectionNum(sectionNum);
 
         setTestConfig(conn, sm);
-        updateStudent(conn, sm, true, false, true, false, false, resetMainProgram);
+        updateStudent(conn, sm, true, false, true, false, false, resetMainProgram, continueParallelProgram);
         
         // need to set user Prog Id for CM_PROGRAM_ASSIGN
         program.setProgramId(sm.getProgram().getProgramId());

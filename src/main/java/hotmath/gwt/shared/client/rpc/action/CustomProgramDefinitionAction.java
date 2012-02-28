@@ -41,5 +41,5 @@ public class CustomProgramDefinitionAction implements Action<CmList<CustomProgra
         this.programId = programId;
     }    
 
-    static public enum ActionType{GET, DELETE};
+    static public enum ActionType{GET, DELETE, ARCHIVE};
 }

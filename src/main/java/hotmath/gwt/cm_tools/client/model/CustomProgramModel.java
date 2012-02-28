@@ -7,12 +7,14 @@ public class CustomProgramModel extends BaseModel implements Response {
         /** empty */
     }
     
-    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount, Boolean isTemplate) {
+    public CustomProgramModel(String programName, Integer programId, Integer assignedCount, Integer inUseCount, Boolean isTemplate,
+    		Boolean isArchived) {
         setProgramName(programName);
         setProgramId(programId);
         setAssignedCount(assignedCount);
         setInUseCount(inUseCount);
         setIsTemplate(isTemplate);
+        setIsArchived(isArchived);
 
         if(isTemplate)
             setStyleName("program-read-only");
@@ -58,6 +60,14 @@ public class CustomProgramModel extends BaseModel implements Response {
     
     public Boolean getIsTemplate() {
         return get("isTemplate");
+    }
+    
+    public void setIsArchived(Boolean isArchived) {
+        set("isArchived", isArchived);
+    }
+    
+    public Boolean getIsArchived() {
+        return get("isArchived");
     }
     
     public String getStyleName() {

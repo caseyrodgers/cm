@@ -7,12 +7,13 @@ public class DeleteCustomQuizAction implements Action<RpcData> {
     
     int adminId;
     String name;
+    int quizId;
     
     public DeleteCustomQuizAction(){}
     
-    public DeleteCustomQuizAction(int adminId, String name) {
+    public DeleteCustomQuizAction(int adminId, int quizId) {
         this.adminId = adminId;
-        this.name = name;
+        this.quizId = quizId;
     }
 
     public int getAdminId() {
@@ -31,8 +32,16 @@ public class DeleteCustomQuizAction implements Action<RpcData> {
         this.name = name;
     }
 
-    @Override
+    public int getQuizId() {
+		return quizId;
+	}
+
+	public void setQuizId(int quizId) {
+		this.quizId = quizId;
+	}
+
+	@Override
     public String toString() {
-        return "DeleteCustomQuizAction [adminId=" + adminId + ", name=" + name + "]";
+        return "DeleteCustomQuizAction [adminId=" + adminId + ", quizId=" + quizId + "]";
     }
 }
