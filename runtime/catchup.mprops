@@ -2643,9 +2643,8 @@ order by q.name
 .key=DELETE_CUSTOM_QUIZ_IDS
 
 delete qi
-from HA_CUSTOM_QUIZ_IDS qi JOIN HA_CUSTOM_QUIZ q on qi.qid = q.qid
-where q.admin_id = ?
-and   q.name = ?
+from HA_CUSTOM_QUIZ_IDS qi
+where qi.qid = ?
 
 
 .key=DELETE_CUSTOM_QUIZ
@@ -2653,7 +2652,7 @@ and   q.name = ?
 delete
 from HA_CUSTOM_QUIZ
 where admin_id = ?
-and name = ?
+and qid = ?
 
 .key=DELETE_CUSTOM_QUIZ_BYID
 
@@ -2752,8 +2751,8 @@ ORDER BY l.id
 
 SELECT q.*
 FROM HA_CUSTOM_QUIZ q
-WHERE q.admin_id = ?
-  AND q.quiz_id = ?
+WHERE q.qid = ?
+  AND q.admin_id = ?
 
 
 

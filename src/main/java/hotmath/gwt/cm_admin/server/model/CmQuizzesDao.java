@@ -58,7 +58,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     public int saveCustomQuiz(final Connection conn, int adminId, String cpName, List<CustomQuizId> ids) throws Exception {
         
 
-        deleteCustomQuiz(conn, adminId, cpName);
+        //deleteCustomQuiz(conn, adminId, cpName);
         
         /** add custom quiz def */
         PreparedStatement ps = null;
@@ -114,6 +114,10 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
 
         int quizId = quizDef.getQuizId();
         boolean customQuizExists = (quizId != 0 && customQuizExists(quizDef));
+
+        if (__logger.isDebugEnabled())
+    		__logger.debug(String.format("saveCustomQuiz(): quizId: %d, adminId: %d, customQuizExists: %s",
+    				quizId, quizDef.getAdminId(), customQuizExists));
         
         if (customQuizExists == false) {
         	// add Custom Quiz
@@ -185,7 +189,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
      * @param name
      * @throws Exception
      */
-    public boolean deleteCustomQuiz(final Connection conn, int adminId, String cpName) throws Exception {
+    public boolean deleteCustomQuiz(final Connection conn, int adminId, int quizId) throws Exception {
         
         PreparedStatement ps=null;
         
@@ -195,8 +199,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
         try {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_CUSTOM_QUIZ_IDS");
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, adminId);
-            ps.setString(2, cpName);
+            ps.setInt(1, quizId);
             
             int result = ps.executeUpdate();
             __logger.debug("Removed custom quiz ids: " + result);
@@ -211,7 +214,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_CUSTOM_QUIZ");
             ps = conn.prepareStatement(sql);
             ps.setInt(1, adminId);
-            ps.setString(2, cpName);
+            ps.setInt(2, quizId);
             int result = ps.executeUpdate();
             __logger.debug("Removed custom quiz: " + result);
             
@@ -448,6 +451,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     				PreparedStatement ps = connection.prepareStatement(sql);
     				ps.setString(1, quizDef.getQuizName());
     				ps.setInt(2, quizDef.isAnswersViewable()?1:0);
+    				ps.setInt(3, quizDef.getQuizId());
 
     				return ps;
     			}
