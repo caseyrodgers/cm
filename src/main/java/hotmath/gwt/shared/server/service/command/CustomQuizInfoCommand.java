@@ -11,7 +11,7 @@ import java.sql.Connection;
 
 /** Provide status information about custom program 
  *  including counts of assigned, use,history and list 
- *  of students who are currently assiged.
+ *  of students who are currently assigned.
  *  
  * @author casey
  *
