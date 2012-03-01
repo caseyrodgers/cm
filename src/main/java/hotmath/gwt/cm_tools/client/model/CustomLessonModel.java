@@ -44,6 +44,9 @@ public class CustomLessonModel extends BaseModel implements Response {
         setIsInUse(isInUse);
         setIsArchived(isArchived);
         setArchiveDate(archiveDate);
+        
+        if(isArchived)
+        	setStyleName("custom-archived");
 
         set("subjectStyleClass", "is_quiz_subject");
         set("customProgramItemClass", "is_quiz");
@@ -141,6 +144,14 @@ public class CustomLessonModel extends BaseModel implements Response {
 
     public void setArchiveDate(String archiveDate) {
     	set("archiveDate", archiveDate);
+    }
+
+    public String getStyleName() {
+        return get("styleName");
+    }
+    
+    public void setStyleName(String style) {
+        set("styleName", style);
     }
 
     @Override
