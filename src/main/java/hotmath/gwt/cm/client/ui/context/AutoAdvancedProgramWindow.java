@@ -27,7 +27,7 @@ public class AutoAdvancedProgramWindow extends CmWindow {
         setResizable(false);
         setStyleName("auto-assignment-window");
         String msg = "<p>You are now enrolled in: <br/><b>" + assignedName + "</b><br/> "
-                + "You will be able to move ahead quickly to more advanced " + "programs as you pass the quizzes.</p>";
+                + "You will be able to move ahead quickly to more advanced programs as you pass the quizzes.</p>";
 
         Html html = new Html(msg);
 
