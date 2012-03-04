@@ -19,6 +19,9 @@ public class CustomProgramModel extends BaseModel implements Response {
         if(isTemplate)
             setStyleName("program-read-only");
         
+        if(isArchived)
+        	setStyleName("custom-archived");
+        
     }
 
     public void setProgramName(String programName) {

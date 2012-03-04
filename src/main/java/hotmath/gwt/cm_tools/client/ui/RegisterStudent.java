@@ -59,6 +59,7 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 
 /**
  * Provides UI for registering new students and modifying the registration of
@@ -538,9 +539,23 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		    }
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
+
+            	int stuCustomProgramId = (isNew == false && stuMdl.getProgram().getCustom().getCustomProgramId() != 0) ?
+            			stuMdl.getProgram().getCustom().getCustomProgramId(): -1;
+            	int stuCustomQuizId = (isNew == false && stuMdl.getProgram().getCustom().getCustomQuizId() != 0) ?
+            			stuMdl.getProgram().getCustom().getCustomQuizId() : -1;
+
                 for (StudyProgramModel spm : spmList) {
                 	if (excludeAutoEnroll && spm.getShortTitle().equalsIgnoreCase("AUTO-ENROLL")) continue;
-                    progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+
+                	if ((isNew == true && spm.getIsArchived() == true)) continue;
+
+                	if (isNew == false && spm.getIsArchived() == true &&
+                		spm.getCustomProgramId() != stuCustomProgramId &&
+                		spm.getCustomQuizId() != stuCustomQuizId)
+                		continue;
+
+                	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                                   spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                                   spm.getCustomProgramId(), spm.getCustomProgramName()));
                 }
@@ -697,13 +712,25 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	    StudentProgramModel program = stuMdl.getProgram();
 		String shortName = program.getProgramType().getType();
 		
-		if(program.getCustom().isCustom()) {
-		    shortName = program.getCustom().getCustomName();
+		if(program.isCustom()) {
+			List<StudyProgramExt> list = progStore.getModels();
+			
+			for (StudyProgramExt sp : list) {
+				
+	        	if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId()) ||
+					(program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
+					progCombo.setOriginalValue(sp);
+					progCombo.setValue(sp);
+					return sp;
+				}
+			}
+			return null;
 		}
 		
 		if (shortName != null) {
 			List<StudyProgramExt> list = progStore.getModels();
 			for (StudyProgramExt sp : list) {
+				
 				if (progNameCheckHack(shortName, sp)) {
 					progCombo.setOriginalValue(sp);
 					progCombo.setValue(sp);

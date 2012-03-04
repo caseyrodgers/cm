@@ -42,6 +42,14 @@ public class StudyProgramExt extends BaseModelData {
 		    pre="CQ:";
 		}
 		set("label", pre + title);
+		
+		/**
+		 * set css style and append archive date to identify archived programs
+		 */
+		if (program.getIsArchived()) {
+			set("styleIsArchived", "custom-archived");
+			set("label", get("label") + " (" + program.getArchiveDate() + ")");
+		}
 	}
 	
 	public Integer getCustomProgramId() {

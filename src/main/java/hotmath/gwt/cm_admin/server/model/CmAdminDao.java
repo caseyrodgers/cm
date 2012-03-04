@@ -672,6 +672,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             m.setNeedsPassPercent(rs.getInt("needs_pass_percent"));
             m.setNeedsState(rs.getInt("needs_state"));
             m.setIsTemplate(rs.getInt("is_template") != 0);
+            m.setIsArchived(rs.getInt("is_archived") != 0);
+            m.setArchiveDate(rs.getString("archive_date"));
             m.setSectionCount(rs.getInt("segment_count"));
             
             String progId = rs.getString("id").toUpperCase();

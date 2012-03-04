@@ -26,6 +26,9 @@ public class StudyProgramModel implements IsSerializable {
     private String customProgramName;
 
     private Boolean isTemplate;
+
+    private Boolean isArchived;
+    private String archiveDate;
     
     private CmProgramType programType;
 
@@ -74,7 +77,23 @@ public class StudyProgramModel implements IsSerializable {
         this.isTemplate = isTemplate;
     }
 
-    public CmProgramType getProgramType() {
+    public Boolean getIsArchived() {
+		return isArchived;
+	}
+
+	public void setIsArchived(Boolean isArchived) {
+		this.isArchived = isArchived;
+	}
+
+	public String getArchiveDate() {
+		return archiveDate;
+	}
+
+	public void setArchiveDate(String archiveDate) {
+		this.archiveDate = archiveDate;
+	}
+
+	public CmProgramType getProgramType() {
 		return programType;
 	}
 
