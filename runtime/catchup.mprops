@@ -942,57 +942,60 @@ select   d.id,
          d.needs_state,
          null as custom_program_id,
          null as custom_program_name,
-          0 as custom_quiz_id,
-          null as custom_quiz_name,         
+         0 as custom_quiz_id,
+         null as custom_quiz_name,         
          d.load_order,
          ifnull(td.segment_count, 0) as segment_count,
-         0 as is_template, 0 as load_order2
+         0 as is_template, 0 as load_order2,
+         0 as is_archived, null as archive_date
 from     HA_PROG_DEF d, HA_TEST_DEF td
 where    d.is_active = 1
   and    td.is_active = 1
   and    d.id = td.prog_id
-  and d.load_order < 100
+  and    d.load_order < 100
                             
-union
+UNION
                             
-select      'Custom Quiz' as id,
-            q.name as title,
-            'Custom Program' as description,
-            0 as needs_subject,
-            0 as needs_chapter,
-            0 as needs_pass_percent,
-            0 as needs_state,
-            0 as custom_program_id,
-            null as custom_program_name,
-            q.qid as custom_quiz_id,
-            q.name as custom_quiz_name,
-            999 as load_order,
-            0 as segment_count,
-            0 as is_template, 0 as load_order2
-from   HA_ADMIN a join HA_CUSTOM_QUIZ q on q.admin_id = a.aid
+select   'Custom Quiz' as id,
+         q.name as title,
+         'Custom Program' as description,
+         0 as needs_subject,
+         0 as needs_chapter,
+         0 as needs_pass_percent,
+         0 as needs_state,
+         0 as custom_program_id,
+         null as custom_program_name,
+         q.qid as custom_quiz_id,
+         q.name as custom_quiz_name,
+         999 as load_order,
+         0 as segment_count,
+         0 as is_template, 0 as load_order2,
+         q.is_archived, Date_format(q.archive_date,'%Y-%m-%d') as archive_date
+from     HA_ADMIN a join HA_CUSTOM_QUIZ q on q.admin_id = a.aid
 where    a.aid = ?
-union
 
+UNION
                                                         
-select      'Custom' as id,
-            cp.name as title,
-            'Custom Program' as description,
-            0 as needs_subject,
-            0 as needs_chapter,
-            0 as needs_pass_percent,
-            0 as needs_state,
-            cp.id as custom_program_id,
-            cp.name as custom_program_name,
-            0 as custom_quiz_id,
-            null as custom_quiz_name,
-            999 as load_order,
-            0 as segment_count,
-            is_template,cp.load_order load_order2
-from   HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
+select   'Custom' as id,
+         cp.name as title,
+         'Custom Program' as description,
+         0 as needs_subject,
+         0 as needs_chapter,
+         0 as needs_pass_percent,
+         0 as needs_state,
+         cp.id as custom_program_id,
+         cp.name as custom_program_name,
+         0 as custom_quiz_id,
+         null as custom_quiz_name,
+         999 as load_order,
+         0 as segment_count,
+         is_template,cp.load_order load_order2,
+         cp.is_archived, Date_format(cp.archive_date,'%Y-%m-%d') as archive_date
+from     HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
 where    a.aid = ? 
-or is_template = 1
+   or    is_template = 1
                             
-order by load_order, is_template desc, load_order2,load_order, id, title
+order by load_order, is_template desc, load_order2, load_order, id, title
            
            
            
