@@ -249,10 +249,10 @@ public class CustomProgramAddQuizDialog extends Window {
                     _customQuiz.setInUse(value.getAssignedStudents().size() != 0);
                     setIsArchived(_customQuiz.isArchived());
                     if (_customQuiz.isArchived()) {
-                    	_readOnlyLabel.setText("<div class='custom-quiz-no-modify-text'>Custom Quiz has been archived and cannot be<br/> modified.  You can make a copy to customize.</div>");
+                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been archived and may not be modified.  You can make a copy to customize.</span>");
                     }
                     else {
-                    	_readOnlyLabel.setText("<div class='custom-quiz-no-modify-text'>Custom Quiz is in use and questions cannot be<br/> modified.  You can make a copy to customize.</div>");
+                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to customize.</span>");
                     }
                 }
             };

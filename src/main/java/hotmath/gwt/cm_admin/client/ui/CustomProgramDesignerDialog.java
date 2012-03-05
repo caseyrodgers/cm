@@ -282,11 +282,11 @@ public class CustomProgramDesignerDialog extends CmWindow {
             msg = "Drag and drop lessons from the left side to create and reorder the custom program";
         else {
             if(customProgram != null && customProgram.getIsTemplate())
-                msg = "<span style='color: red;font-weight: bold'>This program is a Built-in Custom Program.  You can make a copy to customize.</span>";
+                msg = "<span style='color: red;font-weight: bold'>This is a Built-in Custom Program.  You can make a copy to customize.</span>";
             else if (customProgram.getIsArchived() == false)
-                msg = "<span style='color: red;font-weight: bold'>This program is in use and cannot be edited.</span>";
+                msg = "<span style='color: red;font-weight: bold'>This program has been used and may not be edited.  You can archive it or make a copy to customize.</span>";
             else
-                msg = "<span style='color: red;font-weight: bold'>This program is archived and cannot be edited.</span>";
+                msg = "<span style='color: red;font-weight: bold'>This program is archived and may not be edited.  You can make a copy to customize.</span>";
         }
         Html html = new Html("<p style='margin-left: 20px;padding: 7px 10px; '>" + msg + "</p>");
         lc.add(html,new ColumnData(.50));

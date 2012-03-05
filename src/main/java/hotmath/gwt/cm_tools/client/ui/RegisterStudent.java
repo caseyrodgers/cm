@@ -431,7 +431,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private native String getProgramTemplate() /*-{ 
 	    return  [ 
 	   '<tpl for=".">', 
-	   '<div class="x-combo-list-item {styleIsCustomProgram}" qtip="{descr}">{label}</div>', 
+	   '<div class="x-combo-list-item {styleIsCustomProgram} {styleIsArchived}" qtip="{descr}">{label}</div>', 
 	   '</tpl>' 
 	   ].join(""); 
 	   }-*/;  
