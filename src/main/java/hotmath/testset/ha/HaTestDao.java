@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -260,6 +262,9 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         // extract the auto created pk
         final int testId = keyHolder.getKey().intValue();
 
+        
+        randomizePids(testIds);
+        
         for (final String pid : testIds) {
             // insert IDS for use with this test
             int count = getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -284,6 +289,11 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
         return loadTest(testId);
     }
+    
+    private void randomizePids(List<String> pids) {
+        Collections.shuffle(pids);
+    }
+    
 
     public HaTest loadTest(final int testId) throws Exception {
 
@@ -660,7 +670,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
     public List<String> getTestIdsForTest(int testId) throws Exception {
         
         return getJdbcTemplate().query(
-                "select * from HA_TEST_IDS where test_id = ?",
+                "select * from HA_TEST_IDS where test_id = ? order by tid",
                 new Object[]{testId},
                 new RowMapper<String>() {
                     @Override
