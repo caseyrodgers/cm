@@ -40,8 +40,10 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -378,6 +380,18 @@ public class StudentDetailsWindow extends CmWindow {
         program.setWidth(120);
         program.setSortable(false);
         program.setMenuDisabled(true);
+        program.setRenderer(new GridCellRenderer<StudentActivityModel>() {
+			@Override
+			public Object render(StudentActivityModel sam, String property,
+					ColumnData config, int rowIndex, int colIndex,
+					ListStore<StudentActivityModel> store, Grid<StudentActivityModel> grid) {
+                if (sam.getIsArchived() != 0)
+                    return "<span class='" + sam.getIsArchivedStyle() + "'>" +  sam.getProgramDescr() + "</span>";
+                else {
+                	return sam.getProgramDescr();
+                }
+			}
+        });
         configs.add(program);
 
         ColumnConfig programType = new ColumnConfig();

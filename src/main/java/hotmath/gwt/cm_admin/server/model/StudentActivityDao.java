@@ -330,6 +330,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		String progId = rs.getString("prog_id");
 		m.setTimeOnTask(rs.getInt("time_on_task"));
 		m.setProgramType(rs.getString("prog_type"));
+		m.setIsArchived(rs.getInt("is_archived"));
 
 		if (progId.equalsIgnoreCase("chap")) {
 			String subjId = rs.getString("subj_id");

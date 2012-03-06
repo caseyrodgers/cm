@@ -23,6 +23,8 @@ public class StudentActivityModel extends BaseModel implements Response {
 	public static final String TEST_ID_KEY        = "test-id";
 	public static final String TIME_ON_TASK_KEY   = "time-on-task";
 	public static final String USE_DATE_KEY       = "use-date";
+	public static final String IS_ARCHIVED        = "is-archived";
+	public static final String IS_ARCHIVED_STYLE  = "is-archived-style";
 	
 	public String getActivity() {
 		return get(ACTIVITY_KEY);
@@ -168,6 +170,23 @@ public class StudentActivityModel extends BaseModel implements Response {
 		set(TIME_ON_TASK_KEY, tot);
 	}
 	
+	public Integer getIsArchived() {
+		return get(IS_ARCHIVED);
+	}
+	
+	public void setIsArchived(Integer isArchived) {
+		set(IS_ARCHIVED, isArchived);
+		setIsArchivedStyle((isArchived!=0)?"custom-archived":null);
+	}
+
+	public String getIsArchivedStyle() {
+		return get(IS_ARCHIVED_STYLE);
+	}
+	
+	public void setIsArchivedStyle(String style) {
+		set(IS_ARCHIVED_STYLE, style);
+	}
+
 	public StudentActivityModel() {
 	}
 }
