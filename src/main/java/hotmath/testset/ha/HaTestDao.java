@@ -262,8 +262,9 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         // extract the auto created pk
         final int testId = keyHolder.getKey().intValue();
 
-        
-        randomizePids(testIds);
+        if((testDef.getTestDefId() != CmProgram.CUSTOM_QUIZ.getDefId()) && (testDef.getTestDefId() != CmProgram.AUTO_ENROLL.getDefId())) {
+            randomizePids(testIds);
+        }
         
         for (final String pid : testIds) {
             // insert IDS for use with this test
@@ -291,6 +292,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
     }
     
     private void randomizePids(List<String> pids) {
+        __logger.debug("Randomizing pids");
         Collections.shuffle(pids);
     }
     
