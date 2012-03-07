@@ -252,7 +252,7 @@ public class CustomProgramAddQuizDialog extends Window {
                     	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been archived and may not be modified.  You can make a copy to customize.</span>");
                     }
                     else {
-                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to customize.</span>");
+                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>This Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to edit.</span>");
                     }
                 }
             };
