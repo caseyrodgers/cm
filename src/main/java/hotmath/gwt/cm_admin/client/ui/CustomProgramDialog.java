@@ -167,11 +167,11 @@ public class CustomProgramDialog extends CmWindow {
             }
         }, "Edit the selected custom item."));
 
-        tb.add(new MyButtonWithTooltip("Delete", new SelectionListener<ButtonEvent>() {
+        tb.add(new MyButtonWithTooltip("Delete/Archive", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 deleteProgram();
             }
-        }, "Delete selected custom item"));
+        }, "Delete or archive selected custom item"));
         tb.add(new MyButtonWithTooltip("Info", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 if (!isCpTabSelected()) {
