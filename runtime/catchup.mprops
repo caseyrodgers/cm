@@ -2145,6 +2145,12 @@ from   HA_CUSTOM_QUIZ q
 where u.admin_id = ?
 and  q.qid = ?
 
+.key=CUSTOM_QUIZ_USAGE_COUNT
+
+SELECT count(distinct up.user_id) as count
+FROM   CM_USER_PROGRAM up
+WHERE  up.custom_quiz_id = ?
+
 
 .key=CUSTOM_PROGRAM_INFO_ASSIGNED
 
@@ -2154,6 +2160,12 @@ from HA_USER u
   JOIN HA_CUSTOM_PROGRAM cp on cp.id = up.custom_program_id
 where u.admin_id = ?
 and cp.id = ?
+
+.key=CUSTOM_PROGRAM_USAGE_COUNT
+
+SELECT count(distinct up.user_id) as count
+FROM   CM_USER_PROGRAM up
+where  up.custom_program_id = ?
 
 
 .key=CUSTOM_PROGRAM_LESSONS_FOR_TEST_ID
