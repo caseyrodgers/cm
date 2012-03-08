@@ -11,12 +11,12 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
-import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
+import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
-import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
+import hotmath.gwt.shared.client.rpc.action.CustomQuizUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.GetCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonQuestionsAction;
 import hotmath.gwt.shared.client.rpc.action.SaveCustomQuizAction;
@@ -228,31 +228,29 @@ public class CustomProgramAddQuizDialog extends Window {
         setIsModifiable(false);
         setIsArchived(true);
         
-        
-        CustomQuizInfoAction a;
-        new RetryAction<CustomQuizInfoModel>() {
+        new RetryAction<IntValueHolder>() {
             @Override
             public void attempt() {
-                CustomQuizInfoAction action = new CustomQuizInfoAction(adminId, new CustomLessonModel(_customQuiz.getQuizId(), null, true, false, false, null));
+                CustomQuizUsageCountAction action = new CustomQuizUsageCountAction(_customQuiz.getQuizId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
             
             @Override
-            public void oncapture(CustomQuizInfoModel value) {
-                if(value.getAssignedStudents().size() == 0 && _customQuiz.isArchived() == false) {
+            public void oncapture(IntValueHolder count) {
+                if(count.getValue() == 0 && _customQuiz.isArchived() == false) {
                     setIsModifiable(true);
                     setIsArchived(false);
                     _customQuiz.setInUse(false);
                 }
                 else {
-                    _customQuiz.setInUse(value.getAssignedStudents().size() != 0);
+                    _customQuiz.setInUse(count.getValue() > 0);
                     setIsArchived(_customQuiz.isArchived());
                     if (_customQuiz.isArchived()) {
                     	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been archived and may not be modified.  You can make a copy to customize.</span>");
                     }
                     else {
-                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>This Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to edit.</span>");
+                    	_readOnlyLabel.setText("<span class='custom-quiz-no-modify-text'>Custom Quiz has been used and questions may not be modified.  You can archive it or make a copy to customize.</span>");
                     }
                 }
             };

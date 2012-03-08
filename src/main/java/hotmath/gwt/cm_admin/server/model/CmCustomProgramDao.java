@@ -597,6 +597,27 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         }
     }
 
+    public int getCustomProgramUsageCount(int cpId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_PROGRAM_USAGE_COUNT");
+
+    	Integer count = 0;
+    	try {
+    		count = this.getJdbcTemplate().queryForObject(
+    				sql,
+    				new Object[]{cpId},
+    				new RowMapper<Integer>() {
+    					public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+    						return rs.getInt("count");
+    					}
+    				});
+    	}
+    	catch(Exception e) {
+    		LOGGER.error(String.format("Error getting Custom Program usage count for cpId: %d", cpId), e);
+    		throw new Exception("Error getting Custom Program usage count");
+    	}
+    	return count;
+    }
+
     /**
      * Auto Custom Quiz creation
      * 

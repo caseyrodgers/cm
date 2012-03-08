@@ -16,11 +16,14 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
+import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ArchiveCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
+import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
+import hotmath.gwt.shared.client.rpc.action.CustomQuizUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
 import java.util.ArrayList;
@@ -172,6 +175,7 @@ public class CustomProgramDialog extends CmWindow {
                 deleteProgram();
             }
         }, "Delete or archive selected custom item"));
+
         tb.add(new MyButtonWithTooltip("Info", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 if (!isCpTabSelected()) {
@@ -181,6 +185,7 @@ public class CustomProgramDialog extends CmWindow {
                 }
             }
         }, "Get information about selected custom item."));
+
         tb.add(new MyButtonWithTooltip("Help", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 new CustomProgramHelpWindow();
@@ -361,21 +366,21 @@ public class CustomProgramDialog extends CmWindow {
 
     private void deleteCustomQuiz(final CustomQuizDef def) {
 
-        new RetryAction<CustomQuizInfoModel>() {
+        new RetryAction<IntValueHolder>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true,false);
                 CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
-                CustomQuizInfoAction action = new CustomQuizInfoAction(adminModel.getId(), quiz);
+                CustomQuizUsageCountAction action = new CustomQuizUsageCountAction(quiz.getQuizId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
             @Override
-            public void oncapture(CustomQuizInfoModel info) {
+            public void oncapture(IntValueHolder count) {
                 CmBusyManager.setBusy(false);
 
-                if (info.getAssignedStudents().size() > 0) {
+                if (count.getValue() > 0) {
                     archiveCustomQuizDo(def);
                 } else {
                     deleteCustomQuizDo(def);
@@ -461,33 +466,47 @@ public class CustomProgramDialog extends CmWindow {
         }
 
         if (sel.getAssignedCount() < 1) {
-        	MessageBox.confirm("Delete Custom Program",
-        			"Are you sure you want to delete custom program '" + sel.getProgramName() + "'?",
-        			new Listener<MessageBoxEvent>() {
-        		public void handleEvent(MessageBoxEvent be) {
-        			String btnText = be.getButtonClicked().getText();
-        			if (btnText.equalsIgnoreCase("yes")) {
-        				deleteCustomProgram(sel);
-        			}
-        		}
-        	});
+        	
+            new RetryAction<IntValueHolder>() {
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true,false);
+                    CustomProgramUsageCountAction action = new CustomProgramUsageCountAction(sel.getProgramId());
+                    setAction(action);
+                    CmShared.getCmService().execute(action, this);
+                }
+
+                @Override
+                public void oncapture(IntValueHolder count) {
+                    CmBusyManager.setBusy(false);
+
+                    if (count.getValue() > 0) {
+                        archiveCustomProgram(sel);
+                    } else {
+                        deleteCustomProgram(sel);
+                    }
+                }
+            }.register();
         }
         else {
-        	MessageBox.confirm("Archive Custom Program",
-        			"Are you sure you want to archive custom program '" + sel.getProgramName() + "'?",
-        			new Listener<MessageBoxEvent>() {
-        		public void handleEvent(MessageBoxEvent be) {
-        			String btnText = be.getButtonClicked().getText();
-        			if (btnText.equalsIgnoreCase("yes")) {
-        				archiveCustomProgram(sel);
-        			}
-        		}
-        	});
-
+            archiveCustomProgram(sel);
         }
     }
 
     private void deleteCustomProgram(final CustomProgramModel program) {
+    	MessageBox.confirm("Delete Custom Program",
+    			"Are you sure you want to delete custom program '" + program.getProgramName() + "'?",
+    			new Listener<MessageBoxEvent>() {
+    		public void handleEvent(MessageBoxEvent be) {
+    			String btnText = be.getButtonClicked().getText();
+    			if (btnText.equalsIgnoreCase("yes")) {
+    				deleteCustomProgramDo(program);
+    			}
+    		}
+    	});    	
+    }
+
+    private void deleteCustomProgramDo(final CustomProgramModel program) {
 
         new RetryAction<CmList<CustomProgramModel>>() {
             @Override
@@ -509,6 +528,19 @@ public class CustomProgramDialog extends CmWindow {
     }
 
     private void archiveCustomProgram(final CustomProgramModel program) {
+    	MessageBox.confirm("Archive Custom Program",
+    			"Are you sure you want to archive custom program '" + program.getProgramName() + "'?",
+    			new Listener<MessageBoxEvent>() {
+    		public void handleEvent(MessageBoxEvent be) {
+    			String btnText = be.getButtonClicked().getText();
+    			if (btnText.equalsIgnoreCase("yes")) {
+    				archiveCustomProgramDo(program);
+    			}
+    		}
+    	});
+    }
+
+    private void archiveCustomProgramDo(final CustomProgramModel program) {
 
         new RetryAction<CmList<CustomProgramModel>>() {
             @Override

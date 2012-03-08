@@ -462,6 +462,27 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     	}
 
     }
+    
+    public int getCustomQuizUsageCount(int quizId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("CUSTOM_QUIZ_USAGE_COUNT");
+
+    	Integer count = 0;
+    	try {
+    		count = this.getJdbcTemplate().queryForObject(
+    				sql,
+    				new Object[]{quizId},
+    				new RowMapper<Integer>() {
+    					public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+    						return rs.getInt("count");
+    					}
+    				});
+    	}
+    	catch(Exception e) {
+    		__logger.error(String.format("Error getting Custom Quiz usage count for quizId: %d", quizId), e);
+    		throw new Exception("Error getting Custom Quiz usage count");
+    	}
+    	return count;
+    }
 
     private int[] addCustomQuizIds(final int quizId, List<CustomQuizId> cqIds) throws Exception {
 
