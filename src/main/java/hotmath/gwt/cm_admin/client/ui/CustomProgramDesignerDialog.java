@@ -14,8 +14,10 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
+import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
+import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
@@ -56,7 +58,9 @@ public class CustomProgramDesignerDialog extends CmWindow {
     CmAdminModel adminModel;
     CustomProgramModel customProgram;
     CmAsyncRequest callback;
-    boolean _isEditable;
+    boolean _isEditable = false;
+    boolean _verifyIsEditable = false;
+    String programName = "";
 
     public CustomProgramDesignerDialog(CmAdminModel adminModel,CmAsyncRequest callback) {
         this(adminModel,callback, null,false);
@@ -74,8 +78,6 @@ public class CustomProgramDesignerDialog extends CmWindow {
         setSize(640, 480);
         
         buildGui();
-
-        String programName="";
 
         /** if debug mode, the always allow edit */
         boolean isDebug = CmShared.getQueryParameter("debug")!=null;
@@ -99,7 +101,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             	_isEditable = false;
             }
             else if(customProgram.getAssignedCount() == 0) {
-                _isEditable = true;
+            	_verifyIsEditable = true;
             }
         }
         else {
@@ -108,14 +110,37 @@ public class CustomProgramDesignerDialog extends CmWindow {
             _isEditable=true;
             programName = "";
         }
-        add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));
+
+        if (_verifyIsEditable) { 
+        	new RetryAction<IntValueHolder>() {
+        		@Override
+        		public void attempt() {
+        			CustomProgramUsageCountAction action = new CustomProgramUsageCountAction(customProgram.getProgramId());
+        			setAction(action);
+        			CmShared.getCmService().execute(action, this);
+        		}
+
+        		@Override
+        		public void oncapture(IntValueHolder count) {
+        			if(count.getValue() == 0) {
+        				_isEditable = true;
+        			}
+        			add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));
+        			enableForm(_isEditable);
+        			setVisible(true);
+        		};
+        	}.register();
+        }
+        else {
+            add(createInfoSection(_isEditable, programName), new BorderLayoutData(LayoutRegion.NORTH,50));
+            enableForm(_isEditable);
+            setVisible(true);
+        }
         
         //if(isDebug)
         //    enableForm(true);
         //else 
-            enableForm(_isEditable);
         
-        setVisible(true);
     }
 
     ListView<CustomLessonModel> _listAll = new ListView<CustomLessonModel>();
@@ -123,6 +148,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
     ListView<CustomLessonModel> _listCustomPrograms = new ListView<CustomLessonModel>();
     Button _btnClearAll, _btnSave;
     TextField<String> _programName = new TextField<String>();
+
     private void buildGui() {
         setLayout(new BorderLayout());
 
