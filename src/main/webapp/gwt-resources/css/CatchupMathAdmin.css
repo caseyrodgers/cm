@@ -482,7 +482,7 @@ program-details-panel .x-ftree2-node-over {
 .custom-quiz-no-modify-label {
 	margin: 0px;
     left: 545px;
-    top: 10px;
+    top: 5px !important;
     padding-right: 10px;
 }
 
