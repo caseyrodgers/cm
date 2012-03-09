@@ -461,7 +461,7 @@ public class CustomProgramDialog extends CmWindow {
         }
 
         if (!_isDebug && sel.getIsTemplate()) {
-            CatchupMathTools.showAlert("This program is a built-in and cannot be deleted.");
+            CatchupMathTools.showAlert("This program is built-in and cannot be deleted.");
             return;
         }
 
