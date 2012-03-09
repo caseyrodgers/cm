@@ -80,8 +80,8 @@ public class CustomProgramAddQuizDialog extends Window {
     ContentPanel _panelQuestions;
     Callback callback;
     TextField<String> _textQuizName;
-    CheckBox _chkAnswersChkBox;
-    CheckBoxGroup _chkAnswersChkBoxGrp;
+    //CheckBox _chkAnswersChkBox;
+    //CheckBoxGroup _chkAnswersChkBoxGrp;
     Button _saveButton;
     CustomQuizDef _customQuiz;
     MyButtonWithTip _addButton;
@@ -218,7 +218,7 @@ public class CustomProgramAddQuizDialog extends Window {
         }
         _textQuizName.setValue(_customQuiz.getQuizName());
         
-        _chkAnswersChkBox.setValue(_customQuiz.isAnswersViewable());
+        //_chkAnswersChkBox.setValue(_customQuiz.isAnswersViewable());
         
         
         
@@ -266,12 +266,12 @@ public class CustomProgramAddQuizDialog extends Window {
     	if (isArchived == false) {
     		_saveButton.enable();
     		_textQuizName.enable();
-    		_chkAnswersChkBox.enable();
+    		//_chkAnswersChkBox.enable();
     	}
     	else {
     		_saveButton.disable();
     		_textQuizName.disable();
-    		_chkAnswersChkBox.disable();
+    		//_chkAnswersChkBox.disable();
     	}
     }
     
@@ -387,7 +387,7 @@ public class CustomProgramAddQuizDialog extends Window {
             throw new Exception("Quizzes must have one or more questions.");
         }
         
-        final boolean isAnswersViewable = this._chkAnswersChkBox.getValue();
+        final boolean isAnswersViewable = true; //this._chkAnswersChkBox.getValue();
 
         new RetryAction<RpcData>() {
             @Override
@@ -725,7 +725,7 @@ public class CustomProgramAddQuizDialog extends Window {
         fp.setBodyBorder(false);
         fp.setHeaderVisible(false);
         fp.setLabelWidth(1);
-
+/*
         _chkAnswersChkBox = new CheckBox();
         _chkAnswersChkBox.setId("check-answers");
         _chkAnswersChkBox.setToolTip("Allow students to check their answers using Help/Student Details.");
@@ -738,7 +738,7 @@ public class CustomProgramAddQuizDialog extends Window {
         _chkAnswersChkBoxGrp.setLabelSeparator("");
         _chkAnswersChkBoxGrp.setStyleName("custom-quiz-check-box-grp");
         fp.add(_chkAnswersChkBoxGrp);
-
+*/
         _readOnlyLabel = new Label("");
         _readOnlyLabel.setStyleName("custom-quiz-no-modify-label");
 
