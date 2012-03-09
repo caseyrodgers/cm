@@ -481,19 +481,10 @@ program-details-panel .x-ftree2-node-over {
 
 .custom-quiz-no-modify-label {
 	margin: 0px;
-    left: 545px;
-    top: 5px !important;
     padding-right: 10px;
 }
 
 .custom-quiz-no-modify-text {
     color: red;
-    width: 235px;
-}
-
-.custom-quiz-no-edit-label {
-	float: right;
-    color: red;
-    padding-right: 10px;
-    /* width: 235px; */
+    font-weight: bold;
 }
