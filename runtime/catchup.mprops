@@ -2128,43 +2128,51 @@ where admin_id = ? and name = ?
 
 .key=CUSTOM_PROGRAM_INFO_INUSE
 
-select u.uid, u.user_name
-from   HA_CUSTOM_PROGRAM cp
+SELECT distinct u.uid, u.user_name
+FROM   HA_CUSTOM_PROGRAM cp
   JOIN CM_USER_PROGRAM up on up.custom_program_id = cp.id
   JOIN HA_USER u on u.uid = up.user_id
-where u.admin_id = ?
-and  cp.id = ?;
+WHERE  u.admin_id = ?
+  AND  u.is_active = 1
+  AND  cp.id = ?
+ORDER BY u.user_name
 
 
 .key=CUSTOM_QUIZ_INFO_INUSE
 
-select u.uid, u.user_name
-from   HA_CUSTOM_QUIZ q
-  JOIN CM_USER_PROGRAM up on up.custom_quiz_id = q.qid
-  JOIN HA_USER u on u.uid = up.user_id
-where u.admin_id = ?
-and  q.qid = ?
+SELECT distinct u.uid, u.user_name
+FROM   HA_CUSTOM_QUIZ q
+ JOIN  CM_USER_PROGRAM up on up.custom_quiz_id = q.qid
+ JOIN  HA_USER u on u.uid = up.user_id
+WHERE  u.admin_id = ?
+  AND  u.is_active = 1
+  AND  q.qid = ?
+ORDER BY u.user_name
 
 .key=CUSTOM_QUIZ_USAGE_COUNT
 
 SELECT count(distinct up.user_id) as count
 FROM   CM_USER_PROGRAM up
+JOIN   HA_USER u on u.uid = up.user_id AND u.is_active = 1
 WHERE  up.custom_quiz_id = ?
 
 
 .key=CUSTOM_PROGRAM_INFO_ASSIGNED
 
-select distinct u.uid, u.user_name
-from HA_USER u
-  JOIN CM_USER_PROGRAM up on up.id = u.user_prog_id
-  JOIN HA_CUSTOM_PROGRAM cp on cp.id = up.custom_program_id
-where u.admin_id = ?
-and cp.id = ?
+SELECT distinct u.uid, u.user_name
+FROM   HA_USER u
+ JOIN  CM_USER_PROGRAM up on up.id = u.user_prog_id
+ JOIN  HA_CUSTOM_PROGRAM cp on cp.id = up.custom_program_id
+WHERE  u.admin_id = ?
+  AND  u.is_active = 1 
+  AND  cp.id = ?
+ORDER BY u.user_name
 
 .key=CUSTOM_PROGRAM_USAGE_COUNT
 
 SELECT count(distinct up.user_id) as count
 FROM   CM_USER_PROGRAM up
+JOIN   HA_USER u on u.uid = up.user_id AND u.is_active = 1
 where  up.custom_program_id = ?
 
 
