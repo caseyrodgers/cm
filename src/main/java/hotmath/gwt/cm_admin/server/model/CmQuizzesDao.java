@@ -507,8 +507,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
     		getJdbcTemplate().update(new PreparedStatementCreator() {
     			public PreparedStatement createPreparedStatement(final Connection connection) throws SQLException {
     				PreparedStatement ps = connection.prepareStatement(sql);
-    				ps.setInt(1, quizDef.getAdminId());
-    				ps.setInt(2, quizDef.getQuizId());
+    				ps.setInt(1, quizDef.getQuizId());
     				return ps;
     			}
     		});
