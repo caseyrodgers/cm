@@ -17,6 +17,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.visitors.NodeVisitor;
@@ -36,12 +37,16 @@ import org.htmlparser.visitors.NodeVisitor;
  */
 public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHtmlAction, RpcData> {
 
+	private static final Logger LOGGER = Logger.getLogger(GetQuizResultsHtmlCommand.class);
+
     @Override
     public RpcData execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
         try {
             HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(action.getRunId());
             
             List<HaTestRunResult> results = testRun.getTestRunResults();
+            LOGGER.info("got results [" + ((results != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
+
             String resultJson = "";
             for (HaTestRunResult r : results) {
                 if (resultJson.length() > 0)
@@ -49,18 +54,17 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
                 resultJson += Jsonizer.toJson(r);
             }
             resultJson = "[" + resultJson + "]";
+            LOGGER.info("got resultJson for runId: " + action.getRunId());
 
             GetQuizHtmlCheckedAction quizResultsAction = new GetQuizHtmlCheckedAction(testRun.getHaTest().getTestId());
             RpcData quizRpc = ActionDispatcher.getInstance().execute(quizResultsAction);
+            LOGGER.info("got quizRpc [" + ((quizRpc != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
 
-            
             /** Preselect HTML results with user's selection and make readonly
              * 
              */
             String key="quiz_html";
             quizRpc.putData(key, markUserSelections(quizRpc.getDataAsString(key), results));
-            
-            
             
             quizRpc.putData("quiz_result_json", resultJson);
             quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
