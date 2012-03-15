@@ -90,7 +90,9 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 	private int inProcessCount;
 	private String subjectId;
 	
-	private ListStore <StudyProgramExt> progStore;
+	private ListStore <StudyProgramExt> stdProgStore;
+	private ListStore <StudyProgramExt> customProgStore;
+	private ListStore <StudyProgramExt> customQuizStore;
 	private ComboBox<StudyProgramExt> progCombo;
 	
 	private ListStore <SubjectModel> subjStore;
@@ -247,9 +249,11 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		
 		_fsProgram.setLayout(fl);
 		
-		progStore = new ListStore <StudyProgramExt> ();
-		getStudyProgramListRPC(progStore);
-		progCombo = programCombo(progStore, _fsProgram);
+		stdProgStore = new ListStore <StudyProgramExt> ();
+		customProgStore = new ListStore <StudyProgramExt> ();
+		customQuizStore = new ListStore <StudyProgramExt> ();
+		getStudyProgramListRPC();
+		progCombo = programCombo(stdProgStore, _fsProgram);
 		_fsProgram.add(progCombo);
 		
 		subjStore = new ListStore <SubjectModel> ();
@@ -545,11 +549,10 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		return saveBtn;
 	}
 	
-	private void getStudyProgramListRPC(final ListStore <StudyProgramExt> progStore) {
+	private void getStudyProgramListRPC() {
 
 		inProcessCount++;
 
-		
 		new RetryAction<CmList<StudyProgramModel>>() {
 		    @Override
 		    public void attempt() {
@@ -558,7 +561,9 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		        CmShared.getCmService().execute(action, this);
 		    }
             public void oncapture(CmList<StudyProgramModel> spmList) {
-                List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
+                List<StudyProgramExt> stdProgList = new ArrayList <StudyProgramExt> ();
+                List<StudyProgramExt> customProgList = new ArrayList <StudyProgramExt> ();
+                List<StudyProgramExt> customQuizList = new ArrayList <StudyProgramExt> ();
 
             	int stuCustomProgramId = (isNew == false && stuMdl.getProgram().getCustom().getCustomProgramId() != 0) ?
             			stuMdl.getProgram().getCustom().getCustomProgramId(): -1;
@@ -575,11 +580,25 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
                 		spm.getCustomQuizId() != stuCustomQuizId)
                 		continue;
 
-                	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
-                                                  spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
-                                                  spm.getCustomProgramId(), spm.getCustomProgramName()));
+                	if (spm.getCustomProgramId() == 0 && spm.getCustomQuizId() == 0) {
+                    	stdProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                                spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                                spm.getCustomProgramId(), spm.getCustomProgramName()));                		
+                	}
+                	else if (spm.getCustomProgramId() != 0) {
+                    	customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
+                                spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                                spm.getCustomProgramId(), spm.getCustomProgramName()));
+                	}
+                	else {
+                    	customQuizList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
+                                spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                                spm.getCustomProgramId(), spm.getCustomProgramName()));
+                	}
                 }
-                progStore.add(progList);
+                stdProgStore.add(stdProgList);
+                customProgStore.add(customProgList);
+                customQuizStore.add(customQuizList);
                 inProcessCount--;
                 setComboBoxSelections();
             }
@@ -733,7 +752,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		String shortName = program.getProgramType().getType();
 		
 		if(program.isCustom()) {
-			List<StudyProgramExt> list = progStore.getModels();
+			List<StudyProgramExt> list = stdProgStore.getModels();
 			
 			for (StudyProgramExt sp : list) {
 				
@@ -748,7 +767,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		}
 		
 		if (shortName != null) {
-			List<StudyProgramExt> list = progStore.getModels();
+			List<StudyProgramExt> list = stdProgStore.getModels();
 			for (StudyProgramExt sp : list) {
 				
 				if (progNameCheckHack(shortName, sp)) {
