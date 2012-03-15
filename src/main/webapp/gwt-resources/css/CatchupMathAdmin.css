@@ -161,6 +161,16 @@
 	margin-top: 20px;
 }
 
+.register-student-proto-fieldset {
+	height: 120px !important;
+	border: none;
+}
+
+.register-student-std-prog-tab {
+    background-color: #DFE8F6 !important;	
+	height: 120px;
+}
+
 .account-info {
 	height: 120px;
 }
