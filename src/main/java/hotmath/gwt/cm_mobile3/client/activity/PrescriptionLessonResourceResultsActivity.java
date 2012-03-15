@@ -35,10 +35,7 @@ public class PrescriptionLessonResourceResultsActivity  implements PrescriptionL
                 int correctCount = rdata.getDataAsInt("quiz_correct_count");
                 String title = rdata.getDataAsString("title");
                 
-                
                 view.setQuizResults(title, resultHtml, resultJson, questionCount, correctCount);
-                
-                //view.setQuizResultsHtml(
             }
             @Override
             public void onFailure(Throwable caught) {
