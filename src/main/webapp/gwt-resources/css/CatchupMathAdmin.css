@@ -166,6 +166,16 @@
 	border: none;
 }
 
+.register-student-inner-fieldset {
+	height: 120px !important;
+	padding-left: 0px !important;
+	border: none;
+}
+
+.register-student-proto2-fieldset {
+	height: 155px !important;
+}
+
 .register-student-std-prog-tab {
     background-color: #DFE8F6 !important;	
 	height: 120px;
