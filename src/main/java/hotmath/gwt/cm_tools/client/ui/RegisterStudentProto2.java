@@ -277,9 +277,7 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 	    
 	    cardPanel.add(_fsStdProg);
 	    cardPanel.add(_fsCustomProg);
-	    Window.alert("cardPandel added _fsCustomProg");
 	    cardPanel.add(_fsCustomQuiz);
-	    Window.alert("cardPandel added _fsCustomQuiz");
 	    //cardPanel.setActiveItem(_fsStdProg);
 
 	    _fsProgram.add(cardPanel);
@@ -985,8 +983,6 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 	private void getChapterListRPC(final String progId, final String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
 
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
-
-    	Window.alert("getting chapters");
 
 		inProcessCount++;
 		new RetryAction <CmList<ChapterModel>> () {
