@@ -357,7 +357,7 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 		cstmCombo = customCombo(customProgStore, _fsCustomProg, "Custom Program", "Select a Custom Program");
 		_fsCustomProg.add(cstmCombo);
 
-	    _fsCustomProg.add(advOptionsBtn);
+	    //_fsCustomProg.add(advOptionsBtn);
     }
 
     private void setupCustomQuizUI() {
@@ -372,7 +372,7 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 		quizCombo = customCombo(customQuizStore, _fsCustomQuiz, "Custom Quiz", "Select a Custom Quiz");
 		_fsCustomQuiz.add(quizCombo);
 
-	    _fsCustomQuiz.add(advOptionsBtn);
+	    //_fsCustomQuiz.add(advOptionsBtn);
     }
 
     private Button advancedOptionsBtn() {
