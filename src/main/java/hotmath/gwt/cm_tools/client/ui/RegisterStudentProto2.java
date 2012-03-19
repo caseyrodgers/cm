@@ -189,7 +189,7 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 		advOptionsBtn.hide();
 	}
 	
-	public FieldSet _fsProfile, _fsProgram, _fsStdProg, _fsCustomProg, _fsCustomQuiz;
+	public FieldSet _fsProfile, _fsProgram, _fsStdProg, _fsCustomProg, _fsCustomQuiz, _fsEmpty;
 
 	GroupSelectorWidget _groupSelector;
 
@@ -267,6 +267,7 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 		advOptionsBtn = advancedOptionsBtn();
 		advOptionsBtn.disable();
 
+		setupEmptyUI();
 		setupStdProgramUI();
 		setupCustomProgramUI();
 		setupCustomQuizUI();
@@ -275,6 +276,7 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 
 	    cardPanel = new CardPanel();
 	    
+	    cardPanel.add(_fsEmpty);
 	    cardPanel.add(_fsStdProg);
 	    cardPanel.add(_fsCustomProg);
 	    cardPanel.add(_fsCustomQuiz);
@@ -319,6 +321,16 @@ public class RegisterStudentProto2 extends LayoutContainer implements ProcessTra
 	}
 
 	private String  passPercent;
+	
+	private void setupEmptyUI() {
+        _fsEmpty = new FieldSet();
+        _fsEmpty.setHeading("");
+        _fsEmpty.addStyleName("register-student-inner-fieldset");
+        FormLayout fl = new FormLayout();
+		fl.setLabelWidth(_formPanel.getLabelWidth());
+		fl.setDefaultWidth(LAYOUT_WIDTH);
+		_fsEmpty.setLayout(fl);		
+	}
 
     private void setupStdProgramUI() {
         _fsStdProg = new FieldSet();
