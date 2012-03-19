@@ -2,6 +2,8 @@ package hotmath.cm.test;
 
 import hotmath.ProblemID;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
+import hotmath.solution.IQuestionParser;
+import hotmath.solution.QuestionParser;
 
 import java.io.Serializable;
 
@@ -82,12 +84,6 @@ public class HaTestSetQuestion implements Serializable{
 
     public int getCorrectAnswer() {
         return questionParser.getCorrectAnswer();
-    }
-
-    public static interface IQuestionParser {
-        void processHtml(String questionHtml) throws Exception;
-        String getProcessedHtml();
-        int getCorrectAnswer();
     }
 
    }

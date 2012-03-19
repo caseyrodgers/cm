@@ -46,7 +46,10 @@ public class TutorSolutionParser {
         // first get a list of problems
         List eleList = rootElement.getChildren("problem");
         int iTotalProblems = eleList.size();
-
+        
+        
+        String hsmlVersion = rootElement.getAttributeValue("version");
+        
         if (iTotalProblems == 0) {
             throw new Exception("No <problem> elements defined in XML");
         }
@@ -54,23 +57,24 @@ public class TutorSolutionParser {
         for (int iProblem = 0; iProblem < iTotalProblems; iProblem++) {
             Element eleProblem = (Element) eleList.get(iProblem);
 
-            // the compiler version is a comment in the XML ... it should
-            // an attribute that can be retrieved. We just yank it out
-            // of the XML. This is done here to not hide this shit.
-            String compilerVersion = SbUtilities.getToken(sXML, 2, "\n"); // first
+            if(hsmlVersion == null) {
+                // the compiler version is a comment in the XML ... it should
+                // an attribute that can be retrieved. We just yank it out
+                //  of the XML. This is done here to not hide this shit.
+                String compilerVersion = SbUtilities.getToken(sXML, 2, "\n"); // first
                                                                           // comment
-            
-            if(compilerVersion != null) {
-                String p[] = compilerVersion.split("version");
-                if (p.length > 1) {
-                    compilerVersion = p[1];
-                    compilerVersion = compilerVersion.replace("-->", "").trim();
+                if(compilerVersion != null) {
+                    String p[] = compilerVersion.split("version");
+                    if (p.length > 1) {
+                        compilerVersion = p[1];
+                        compilerVersion = compilerVersion.replace("-->", "").trim();
+                    }
                 }
             }
 
-            String sCreator = eleProblem.getAttributeValue("createdby", compilerVersion);
+            String sCreator = eleProblem.getAttributeValue("createdby");
 
-            solution.setVersion(compilerVersion);
+            solution.setVersion(hsmlVersion);
             solution.setCreatedBy(sCreator);
 
             // get the identification of this problem

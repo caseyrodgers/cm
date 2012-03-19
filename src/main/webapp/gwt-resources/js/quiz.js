@@ -1,5 +1,4 @@
 function initializeQuiz() {
-
     var ts = document.getElementById('testset_div');
     if (ts) {
         var divs = ts.getElementsByTagName("div");

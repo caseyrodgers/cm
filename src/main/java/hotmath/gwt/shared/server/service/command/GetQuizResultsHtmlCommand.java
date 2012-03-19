@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
+import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
 
 
@@ -101,7 +102,11 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
      *  with users selections made.
      *  
      */
+    int questionNumber=-1;
+    int choiceNumber=0;
     private String markUserSelections(String html,final List<HaTestRunResult> results) throws Exception {
+        
+        questionNumber=-1;
         NodeVisitor visitor = new  NodeVisitor() {
             public void visitTag(org.htmlparser.Tag tag) {
                 if(root == null)
@@ -116,12 +121,26 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
                     selectedAnswer = getUserSelection(guid,results);
                     currentAnswer = 0;
                 }
+                else if(tag.getTagName().equalsIgnoreCase("ul")) {
+                    questionNumber++;
+                    choiceNumber=0;
+                }
+                else if(tag.getTagName().equalsIgnoreCase("li")) {
+                    HaTestRunResult thisQuestionResult = results.get(questionNumber);
+                    int choiceIndex = thisQuestionResult.getResponseIndex();
+                    if(choiceIndex == choiceNumber) {
+                        tag.setAttribute("class", "was_selected", '\"');
+                    }
+                    choiceNumber++;
+                }
                 else if(tag.getTagName().equalsIgnoreCase("input")) {
                     tag.setAttribute("disabled","true");
                     tag.setAttribute("onclick","");
                     if(currentAnswer++ == selectedAnswer) {
                         tag.setAttribute("checked", "true");
                     }
+                }
+                else if(tag.getTagName().equalsIgnoreCase("li")) {
                 }
             }
         };

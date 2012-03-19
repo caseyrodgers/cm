@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.test.HaTestSet;
+import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
@@ -22,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -66,6 +68,9 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             map.put("testSet", _testSet);
             map.put("subTitle", testSegment);
 
+            
+            List<HaTestSetQuestion> questions = _testSet.getQuestions();
+            
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
 
             RpcData rpcData = new RpcData();

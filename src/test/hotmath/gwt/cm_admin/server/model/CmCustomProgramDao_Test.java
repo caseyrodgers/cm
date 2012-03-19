@@ -41,7 +41,7 @@ public class CmCustomProgramDao_Test extends CmDbTestCase {
         
         List<CustomLessonModel> lessons = new ArrayList<CustomLessonModel>();
         lessons.add(new CustomLessonModel("Square Root", "topics/square-roots.html", "alg1"));
-        lessons.add(new CustomLessonModel(0, "Auto Quiz"));        
+        lessons.add(new CustomLessonModel("Square Root", "topics/square-roots.html", "alg1"));        
         CmCustomProgramDao.getInstance().createNewCustomProgram(conn, _user.getAid(),programName, lessons);
     }
     

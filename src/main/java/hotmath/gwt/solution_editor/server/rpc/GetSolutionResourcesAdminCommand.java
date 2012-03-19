@@ -14,6 +14,7 @@ import hotmath.gwt.solution_editor.client.rpc.SolutionResource;
 import java.io.File;
 import java.sql.Connection;
 
+import hotmath.gwt.solution_editor.server.rpc.SaveSolutionStepsAdminCommand;
 /** Return list of all resources used by this solution 
  * 
  * @author casey

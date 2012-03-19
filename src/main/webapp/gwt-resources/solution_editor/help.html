@@ -18,6 +18,11 @@
 		<li>step_changed (args == step_number)</li>
 		<li>tutor_initialized</li>
 	</ul>
+	
+	<h1>Depend</h1>
+	<p>
+	   You can define a file of JS that must be evaluated before the tutor_initialized event is fire.  Do this with a 'depend' element in the define XML.
+	</p>
 
 <pre>
   &lt;onevent type='widget_incorrect'&gt;gotoStepUnit(0)&lt;/onevent&gt;
@@ -29,6 +34,10 @@
 </pre>
 
 
+<h2>Define Section</h2>
+<p>
+   All custom code is encoded into the define xml element.
+</p>
 <h2>For Widgets</h2>
 <pre>
 Graph Widget

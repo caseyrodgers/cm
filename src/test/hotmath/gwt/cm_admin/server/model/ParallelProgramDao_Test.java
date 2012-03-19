@@ -164,7 +164,7 @@ public class ParallelProgramDao_Test extends CmDbTestCase {
     public void testUpdateProgramAssign() throws Exception {
     	CmProgram cmProg = _dao.getMainProgramForStudent(9456);
 
-    	_dao.updateProgramAssign(9456, cmProg);
+    	_dao.updateProgramAssign(9456, cmProg,true);
     }
 
     @Test

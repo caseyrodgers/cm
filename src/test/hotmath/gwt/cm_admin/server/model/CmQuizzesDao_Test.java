@@ -52,6 +52,6 @@ public class CmQuizzesDao_Test extends CmDbTestCase {
         CmList<QuizQuestion> questions = CmQuizzesDao.getInstance().getCustomQuizQuestions(conn,customQuizId);
         assertTrue(questions.size() > 0);
         
-        assertTrue(CmQuizzesDao.getInstance().deleteCustomQuiz(conn, adminId, cpName));
+        assertTrue(CmQuizzesDao.getInstance().deleteCustomQuiz(conn, adminId, customQuizId));
     }
 }

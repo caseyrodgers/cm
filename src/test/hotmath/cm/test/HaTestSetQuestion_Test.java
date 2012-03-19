@@ -13,6 +13,7 @@ public class HaTestSetQuestion_Test extends TestCase {
        String html = "<div class=\"hm_question_def\"> " +
        "  <div> " +
        "    <h1>Test Question 1</h1> " +
+       "  </div> " +
        "  <ul> " +
        "    <li correct=\"no\"> " +
        "      <div> " +
