@@ -21,6 +21,7 @@ import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudentProto;
+import hotmath.gwt.cm_tools.client.ui.RegisterStudentProto2;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
@@ -520,7 +521,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         menu.add(defineRegisterItem());
         
         if (CmShared.getQueryParameter("debug") != null) {
-            menu.add(this.defineRegisterProtoItem());
+            menu.add(defineRegisterProtoItem());
+            menu.add(defineRegisterProto2Item());
         }
 
         menu.add(defineUnregisterItem());
@@ -564,6 +566,22 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             @Override
                             public void onSuccess() {
                                 new RegisterStudentProto(null, _cmAdminMdl).showWindow();
+                            }
+                        });
+                    }
+                });
+    }
+
+    private MyMenuItem defineRegisterProto2Item() {
+        return new MyMenuItem("Register Prototype 2", "Create a new single student registration.",
+                new SelectionListener<MenuEvent>() {
+                    @Override
+                    public void componentSelected(MenuEvent ce) {
+                        GWT.runAsync(new CmRunAsyncCallback() {
+
+                            @Override
+                            public void onSuccess() {
+                                new RegisterStudentProto2(null, _cmAdminMdl).showWindow();
                             }
                         });
                     }
