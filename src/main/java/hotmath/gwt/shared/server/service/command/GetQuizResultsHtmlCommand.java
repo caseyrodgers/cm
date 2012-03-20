@@ -127,11 +127,13 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
                 }
                 else if(tag.getTagName().equalsIgnoreCase("li")) {
                     HaTestRunResult thisQuestionResult = results.get(questionNumber);
-                    int choiceIndex = thisQuestionResult.getResponseIndex();
-                    if(choiceIndex == choiceNumber) {
-                        tag.setAttribute("class", "was_selected", '\"');
+                    if(thisQuestionResult.isAnswered()) {
+                        int choiceIndex = thisQuestionResult.getResponseIndex();
+                        if(choiceIndex == choiceNumber) {
+                            tag.setAttribute("class", "was_selected", '\"');
+                        }
+                        choiceNumber++;
                     }
-                    choiceNumber++;
                 }
                 else if(tag.getTagName().equalsIgnoreCase("input")) {
                     tag.setAttribute("disabled","true");
