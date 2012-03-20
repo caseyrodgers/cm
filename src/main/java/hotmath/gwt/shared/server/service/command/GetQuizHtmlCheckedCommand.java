@@ -68,9 +68,8 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             map.put("testSet", _testSet);
             map.put("subTitle", testSegment);
 
-            
             List<HaTestSetQuestion> questions = _testSet.getQuestions();
-            
+
             String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
 
             RpcData rpcData = new RpcData();
@@ -78,7 +77,7 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
             rpcData.putData("test_id", haTest.getTestId());
             rpcData.putData("quiz_segment", testSegment);
             rpcData.putData("title", testTitle);
-            
+
             CmCacheManager.getInstance().addToCache(CacheName.TEST_HTML_CHECKED, action.getTestId(), rpcData);
 
             return rpcData;
@@ -95,7 +94,6 @@ public class GetQuizHtmlCheckedCommand implements ActionHandler<GetQuizHtmlCheck
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetQuizHtmlCheckedAction.class;
     }
-
 
     /** Read the velocity template from the classpath
      * 
