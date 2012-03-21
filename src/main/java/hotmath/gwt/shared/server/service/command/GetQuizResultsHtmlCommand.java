@@ -130,8 +130,18 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
                     if(thisQuestionResult.isAnswered()) {
                         int choiceIndex = thisQuestionResult.getResponseIndex();
                         if(choiceIndex == choiceNumber) {
-                            tag.setAttribute("class", "was_selected", '\"');
+                            String selectedClass = "was_selected ";
+                            String cor = tag.getAttribute("correct"); 
+                            if(cor != null && cor.equalsIgnoreCase("yes")) {
+                                selectedClass += " is_correct";
+                            }
+                            else {
+                                selectedClass += " is_incorrect";
+                            }
+                            tag.setAttribute("class", selectedClass, '\"');
                         }
+                        
+                        
                         choiceNumber++;
                     }
                 }

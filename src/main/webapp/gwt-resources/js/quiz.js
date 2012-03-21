@@ -70,7 +70,7 @@ function editQuizQuestion(pid) {
 
 /** hide new style of question results
  *
- * TODO: why doesn't IE ajacent child selector work?
+ * TODO: why doesn't IE adjacent child selector work?
  *
  */
 function hideQuizQuestionResults(tagName) {
