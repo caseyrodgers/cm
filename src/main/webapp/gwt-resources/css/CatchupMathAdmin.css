@@ -181,6 +181,11 @@
 	height: 120px;
 }
 
+.register-student-advanced-options-btn {
+	position: absolute !important;
+	top: 270px !important;
+}
+
 .account-info {
 	height: 120px;
 }
