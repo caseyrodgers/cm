@@ -121,6 +121,14 @@ public class StudyProgramModel implements IsSerializable {
         return (customProgramId != null && customProgramId > 0);
     }
 
+    public boolean isTemplate() {
+    	return (isTemplate != null && isTemplate);
+    }
+
+    public boolean isArchived() {
+    	return (isArchived != null && isArchived);
+    }
+
     public Integer getProgramId() {
         return programId;
     }
