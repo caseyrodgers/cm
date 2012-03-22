@@ -20,7 +20,10 @@ function initializeQuizQuestion(question) {
     for ( var i = 0, t = answers.length; i < t; i++) {
         answer = answers[i];
 
-        var trueOrFalse = answer.getAttribute("correct");
+        var isCorrect = answer.getAttribute("correct");
+        // might be correct/incorrect or yes/no
+        
+        var trueOrFalse = (isCorrect === 'correct' || isCorrect === 'yes')?"true":"false";
 
         var elems = answer.getElementsByTagName("div");
         var answerEle = elems[0];
@@ -41,7 +44,7 @@ function initializeQuizQuestion(question) {
             + id
             + "' onclick='questionGuessChanged(this)'/>"
             + '&nbsp;'
-            + answerNum + '</span>'
+            + answerNum + '</span>';
 
             answerEle.innerHTML = inputElement + answerEle.innerHTML;
 
@@ -111,3 +114,7 @@ function prepareCustomQuizForDisplay(questionList, answers) {
         }
     }
 }
+
+
+
+
