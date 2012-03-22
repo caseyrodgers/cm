@@ -1338,6 +1338,10 @@ SolutionSetCompleteDialog .results{
 
 
 
+
+
+
+
 .hm_question_def li.was_selected {
     border-radius: 10px;
     border: 2px solid #6E84A2;
@@ -1354,4 +1358,9 @@ SolutionSetCompleteDialog .results{
 
 .hm_question_def li.is_correct {
     border: 2px solid green;
+}
+
+#main-content .resource-viewer-impl-results .hm_question_def li {
+	list-style: upper-alpha;
+	list-style-position: inside;
 }
