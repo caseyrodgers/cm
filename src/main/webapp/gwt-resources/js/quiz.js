@@ -32,8 +32,6 @@ function initializeQuizQuestion(question) {
 
         var id = 'answer_id_' + uniquer;
 
-        var answerNum = alphabet.charAt(i);
-
         /** append the input element */
         var inputElement = "<span class='question-input' style='margin-right: 10px'>"
             + "<input value='"
@@ -43,8 +41,7 @@ function initializeQuizQuestion(question) {
             + "' id='"
             + id
             + "' onclick='questionGuessChanged(this)'/>"
-            + '&nbsp;'
-            + answerNum + '</span>';
+            + '</span>';
 
             answerEle.innerHTML = inputElement + answerEle.innerHTML;
 

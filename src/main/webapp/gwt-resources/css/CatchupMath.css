@@ -1341,6 +1341,11 @@ SolutionSetCompleteDialog .results{
 
 
 
+.resource-viewer-impl-results .hm_question_def ul{
+   padding-left: 10px;
+   margin: 0px;
+}
+
 
 .hm_question_def li.was_selected {
     border-radius: 10px;
