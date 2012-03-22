@@ -522,7 +522,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         if (CmShared.getQueryParameter("debug") != null) {
             menu.add(defineRegisterProtoItem());
-            menu.add(defineRegisterProto2Item());
         }
 
         menu.add(defineUnregisterItem());
@@ -566,22 +565,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             @Override
                             public void onSuccess() {
                                 new RegisterStudentProto(null, _cmAdminMdl).showWindow();
-                            }
-                        });
-                    }
-                });
-    }
-
-    private MyMenuItem defineRegisterProto2Item() {
-        return new MyMenuItem("Register Prototype 2", "Create a new single student registration.",
-                new SelectionListener<MenuEvent>() {
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
-                        GWT.runAsync(new CmRunAsyncCallback() {
-
-                            @Override
-                            public void onSuccess() {
-                                new RegisterStudentProto2(null, _cmAdminMdl).showWindow();
                             }
                         });
                     }
