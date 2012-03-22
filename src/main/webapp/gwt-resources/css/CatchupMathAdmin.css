@@ -391,7 +391,10 @@ trending-data-student-list-item {
 .isCustom {
 	color: red;
 }
-	
+
+.custom-template {
+	color: red;
+}
 	
 /** attempt to override ext-js style */
 #program-details-panel .x-ftree2-selected {

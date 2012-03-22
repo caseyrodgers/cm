@@ -544,7 +544,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 	private native String getProgramTemplate() /*-{ 
 	    return  [ 
 	   '<tpl for=".">', 
-	   '<div class="x-combo-list-item {styleIsCustomProgram} {styleIsArchived}" qtip="{descr}">{label}</div>', 
+	   '<div class="x-combo-list-item {styleIsTemplate} {styleIsArchived}" qtip="{descr}">{label}</div>', 
 	   '</tpl>' 
 	   ].join(""); 
 	   }-*/;  

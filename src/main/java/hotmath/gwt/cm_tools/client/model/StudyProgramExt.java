@@ -41,12 +41,17 @@ public class StudyProgramExt extends BaseModelData {
 		    set("styleIsCustomProgram","isCustom");
 		    pre="CQ:";
 		}
+
+		if (program.isTemplate()) {
+			set("styleIsTemplate", "custom-template");
+		}
+
 		set("label", pre + title);
 		
 		/**
 		 * set css style and append archive date to identify archived programs
 		 */
-		if (program.getIsArchived()) {
+		if (program.isArchived()) {
 			set("styleIsArchived", "custom-archived");
 			set("label", get("label") + " (" + program.getArchiveDate() + ")");
 		}
