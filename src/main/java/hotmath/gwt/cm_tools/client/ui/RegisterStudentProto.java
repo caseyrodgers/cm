@@ -110,12 +110,13 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 	
 	//private Map<String, Object> advOptionsMap;
 	
-	private int formHeight = 385;
-	protected int formWidth  = 475;
 	static final int LAYOUT_WIDTH = 295;
 	static final int CUSTOM_ID = 9999;
-	
-	protected CombinedFormPanel2 _formPanel;
+
+	private int formHeight = 385;
+	protected int formWidth  = 475;
+
+    protected FormPanel _formPanel;
 	private Button stdAdvOptionsBtn;
 	private Button customAdvOptionsBtn;
 	
@@ -175,7 +176,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 	    List<Button> list = new ArrayList<Button>();
         Button cancelBtn = cancelButton();
         cancelBtn.addStyleName("register-student-cancel");
-        //list.add(saveButton(_fsProgram, _formPanel));
+        list.add(saveButton(_fsProgram, _formPanel));
         list.add(cancelButton());
         for(int i=0;i<list.size();i++) {
             list.get(i).setWidth(75);
@@ -192,7 +193,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 	GroupSelectorWidget _groupSelector;
 
 	protected FormPanel createForm() {
-		_formPanel = new CombinedFormPanel2();
+		_formPanel = new FormPanel();
 		_formPanel.addStyleName("register-student-form-panel");
 		_formPanel.setLabelWidth(120);
 		_formPanel.setHeight(formHeight);
@@ -318,6 +319,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
         _fsStdProg = new FieldSet();
         _fsStdProg.setHeading("");
         _fsStdProg.addStyleName("register-student-inner-fieldset");
+        _fsStdProg.setId("std-prog-fs");
         FormLayout fl = new FormLayout();
 		fl.setLabelWidth(_formPanel.getLabelWidth());
 		fl.setDefaultWidth(LAYOUT_WIDTH);
@@ -340,6 +342,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
         _fsCustomProg = new FieldSet();
         _fsCustomProg.setHeading("");
         _fsCustomProg.addStyleName("register-student-inner-fieldset");
+        _fsCustomProg.setId("custom-prog-fs");
         FormLayout fl = new FormLayout();
 		fl.setLabelWidth(_formPanel.getLabelWidth());
 		fl.setDefaultWidth(LAYOUT_WIDTH);
@@ -623,12 +626,12 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		return cancelBtn;
 	}
 
-	private Button saveButton(final FieldSet fs, final CombinedFormPanel2 fp) {
+	private Button saveButton(final FieldSet fs, final FormPanel fp) {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 			@Override  
 	    	public void componentSelected(ButtonEvent cx) {
 	            try {
-	                doSubmitAction(fs, fp, null);
+	                doSubmitAction(null);
 	            }
 	            catch(CmException cm) {
 	                cm.printStackTrace();
@@ -993,9 +996,9 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 	 * @param fp
 	 */
 	@SuppressWarnings("unchecked")
-	protected void doSubmitAction(final FieldSet fs, final CombinedFormPanel2 fp, AfterValidation callback) throws CmException {
-	    
-	    TextField<String> tf = (TextField<String>)fp.getItemByItemId("name");
+	protected void doSubmitAction(AfterValidation callback) throws CmException {
+		
+	    TextField<String> tf = (TextField<String>)_fsProfile.getItemByItemId("name");
 	    String name="";
         if(tf != null) {
             tf.clearInvalid();
@@ -1008,7 +1011,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
         }
         
         String passcode = null;
-        tf = (TextField<String>)fp.getItemByItemId("passcode");
+        tf = (TextField<String>)_fsProfile.getItemByItemId("passcode");
         if(tf != null) {
             tf.clearInvalid();
             passcode = tf.getValue();
@@ -1029,7 +1032,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 
         String groupId=null;
         String group=null;
-        ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) fp.getItemByItemId("group-combo");
+        ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) _fsProfile.getItemByItemId("group-combo");
         if(cg != null) {
         	cg.clearInvalid();
         	GroupInfoModel g = cg.getValue();
@@ -1043,41 +1046,68 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
         	group = g.getName();
         }
         
-        ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) fs.getItemByItemId("prog-combo");
-        StudyProgramExt studyProgExt = cb.getValue();
-        cb.clearInvalid();
-        if (studyProgExt == null) {
-            cb.focus();
-            cb.forceInvalid(ENTRY_REQUIRED_MSG);
-            cb.expand();
-            throw new CmExceptionValidationFailed();
-        }
-        String prog = studyProgExt.get("shortTitle");
-
-        ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
-        SubjectModel sub = cs.getValue();
-        cs.clearInvalid();
-        if (sub != null) {
-            prog = sub.get("abbrev") + " " + prog;
-        }
-        if (((Integer)studyProgExt.get("needsSubject")).intValue() > 0 && sub == null) {
-            cs.focus();
-            cs.forceInvalid(ENTRY_REQUIRED_MSG);
-            cs.expand();
-            throw new CmExceptionValidationFailed();
+        String fsId = null;
+        List<Component> list = cardPanel.getItems();
+        for (Component c : list) {
+        	if (c.isVisible()) {
+        		fsId = c.getId();
+        	}
         }
 
-        ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
-        ChapterModel chap = cc.getValue();
-        cc.clearInvalid();
-        if (chap != null) {
-            prog = prog + " " + chap.get("number");
+        StudyProgramExt studyProgExt = null;
+        SubjectModel sub = null;
+        ChapterModel chap = null;
+        String prog = null;
+
+        if (fsId.equals("std-prog-fs")) {
+        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsProgram.getItemByItemId("prog-combo");
+        	studyProgExt = cb.getValue();
+        	cb.clearInvalid();
+        	if (studyProgExt == null) {
+        		cb.focus();
+        		cb.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cb.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+        	prog = studyProgExt.get("shortTitle");
+
+        	ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) _fsStdProg.getItemByItemId("subj-combo");
+        	sub = cs.getValue();
+        	cs.clearInvalid();
+        	if (sub != null) {
+        		prog = sub.get("abbrev") + " " + prog;
+        	}
+        	if (((Integer)studyProgExt.get("needsSubject")).intValue() > 0 && sub == null) {
+        		cs.focus();
+        		cs.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cs.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+
+        	ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) _fsStdProg.getItemByItemId("chap-combo");
+        	chap = cc.getValue();
+        	cc.clearInvalid();
+        	if (chap != null) {
+        		prog = prog + " " + chap.get("number");
+        	}
+        	if (((Integer)studyProgExt.get("needsChapters")).intValue() > 0 && chap == null) {
+        		cc.focus();
+        		cc.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cc.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
         }
-        if (((Integer)studyProgExt.get("needsChapters")).intValue() > 0 && chap == null) {
-            cc.focus();
-            cc.forceInvalid(ENTRY_REQUIRED_MSG);
-            cc.expand();
-            throw new CmExceptionValidationFailed();
+        else {
+        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsCustomProg.getItemByItemId("custom-combo");
+        	studyProgExt = cb.getValue();
+        	cb.clearInvalid();
+        	if (studyProgExt == null) {
+        		cb.focus();
+        		cb.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cb.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+        	prog = studyProgExt.get("shortTitle");
         }
 
         if (passPercentReqd &&
@@ -1266,30 +1296,6 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		setComboBoxSelections();
 	}
 
-}
-
-/** Search for field in nested FieldSets
- * 
- * @author casey
- *
- */
-class CombinedFormPanel2 extends FormPanel {
-    public Component getItemByItemId(String itemId) {
-        
-        Component foundObject = super.getItemByItemId(itemId);
-        if(foundObject != null)
-            return foundObject;
-        
-        // search all fieldsets, looking for named item
-        for(Component comp: getItems()) {
-            if(comp instanceof FieldSet) {
-                foundObject = ((FieldSet)comp).getItemByItemId(itemId);
-                if(foundObject != null)
-                    return foundObject;
-            }
-        }
-        return null;
-    }
 }
 
 abstract class AdvOptCallback2 {
