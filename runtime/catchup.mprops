@@ -987,7 +987,7 @@ UNION
                                                         
 select   'Custom' as id,
          cp.name as title,
-         'Custom Program' as description,
+         if (is_template<1,'Custom Program','Custom Program (built-in)') as description,
          0 as needs_subject,
          0 as needs_chapter,
          0 as needs_pass_percent,
@@ -998,7 +998,7 @@ select   'Custom' as id,
          null as custom_quiz_name,
          999 as load_order,
          0 as segment_count,
-         is_template,cp.load_order load_order2,
+         is_template, cp.load_order load_order2,
          cp.is_archived, Date_format(cp.archive_date,'%Y-%m-%d') as archive_date
 from     HA_ADMIN a join HA_CUSTOM_PROGRAM cp on cp.admin_id = a.aid
 where    a.aid = ? 
