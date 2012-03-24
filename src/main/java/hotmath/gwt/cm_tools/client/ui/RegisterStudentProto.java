@@ -381,6 +381,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
     					ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
     				}
     			}
+    			
     			advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
     			advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
 
@@ -388,6 +389,14 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
     			if (activeSection == null) activeSection = 0;
     			advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
     			advOptionsMap.put("section-is-settable", sectionSelectAvail);
+    			
+    			if ("custom-adv-opt-btn".equals(ce.getButton().getId())) {
+    				ssm.setStopAtProgramEnd(true);
+    				advOptionsMap.put("prog-stop-is-settable", new Boolean(false));
+    			}
+    			else {
+    				advOptionsMap.put("prog-stop-is-settable", new Boolean(true));
+    			}
 
     			new RegisterStudentAdvancedOptionsProto(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
     		}
@@ -399,6 +408,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		btn.setWidth("110px");
         btn.addSelectionListener(selectionListener);
         btn.addStyleName("register-student-advanced-options-btn");
+        btn.setId("std-adv-opt-btn");
 		return btn;
 	}
 
@@ -408,6 +418,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		btn.setWidth("110px");
         btn.addSelectionListener(selectionListener);
         btn.addStyleName("register-student-advanced-options-btn");
+        btn.setId("custom-adv-opt-btn");
 		return btn;
 	}
 

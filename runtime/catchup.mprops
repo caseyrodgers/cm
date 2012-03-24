@@ -967,7 +967,7 @@ UNION
                             
 select   'Custom Quiz' as id,
          q.name as title,
-         'Custom Program' as description,
+         'Custom Quiz (no prescribed lessons)' as description,
          0 as needs_subject,
          0 as needs_chapter,
          0 as needs_pass_percent,
@@ -987,7 +987,7 @@ UNION
                                                         
 select   'Custom' as id,
          cp.name as title,
-         if (is_template<1,'Custom Program','Custom Program (built-in)') as description,
+         if (is_template<1,'Custom Program (no quizzes)','Custom Program (no quizzes, built-in)') as description,
          0 as needs_subject,
          0 as needs_chapter,
          0 as needs_pass_percent,
