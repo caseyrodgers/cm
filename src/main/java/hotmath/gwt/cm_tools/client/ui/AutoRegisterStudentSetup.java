@@ -43,9 +43,15 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
         _fsProfile.add(_groupTag);
         
         _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this Group name to self-register.</p>"));
-
+        
+		stdAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
+		stdAdvOptionsBtn.addStyleName("register-student-advanced-options-self-reg-btn");
+		customAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
+		customAdvOptionsBtn.addStyleName("register-student-advanced-options-self-reg-btn");
         
         _fsProgram.setHeading("Assign Program for This Group");
+        _fsProgram.removeStyleName("register-student-outer-fieldset");
+        _fsProgram.addStyleName("register-student-self-reg-outer-fieldset");
 	    _formPanel.layout();
 	    showWindow();
 	}
@@ -60,7 +66,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 try {
-                    doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
+                    doSubmitAction(new AfterValidation() {
                         
                         @Override
                         public void afterValidation(StudentModel student) {

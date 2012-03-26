@@ -59,6 +59,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private int sectionCount;
 	private String currentSection;
 	private boolean sectionIsSettable;
+	private boolean progStopIsSettable;
 	
 	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, Map <String,Object> optionMap, boolean isNew,
 		boolean passPercentReqd) {
@@ -70,6 +71,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		this.currentSection = String.valueOf((Integer) advOptionsMap.get(StudentModelExt.SECTION_NUM_KEY));
 		this.sectionCount = (Integer) advOptionsMap.get(StudentModelExt.SECTION_COUNT_KEY);
 		this.sectionIsSettable = (Boolean) advOptionsMap.get("section-is-settable");
+		this.progStopIsSettable = (Boolean) advOptionsMap.get("prog-stop-is-settable");
 
 		advOptWindow = new CmWindow();
 		advOptWindow.add(optionsForm(isNew, passPercentReqd));
@@ -131,6 +133,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         stopAtProgramEnd.setFieldLabel("Stop at End of Program");
         stopAtProgramEnd.setId("stop_at_program_end");
 		stopAtProgramEnd.add(isStopAtProgramEnd);
+		if (! progStopIsSettable) stopAtProgramEnd.disable();
 		advOptions.add(stopAtProgramEnd);
 
 		if (sectionIsSettable) {

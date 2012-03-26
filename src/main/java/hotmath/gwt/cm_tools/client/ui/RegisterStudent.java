@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_tools.client.model.ProgramTypeModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -48,6 +49,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.CardPanel;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -78,8 +80,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private boolean loading;
 	private boolean passPercentReqd;
 	private Boolean sectionSelectAvail = false;
-	private Integer sectionCount;
-	private Integer activeSection;
+	private Integer sectionCount = 0;
+	private Integer activeSection = 0;
 	
 	private StudentModelI stuMdl;
 	private StudentSettingsModel stuSettingsMdl;
@@ -88,8 +90,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private int inProcessCount;
 	private String subjectId;
 	
+	private CardPanel cardPanel;
+
 	private ListStore <StudyProgramExt> progStore;
+	private ListStore <StudyProgramExt> customProgStore;
 	private ComboBox<StudyProgramExt> progCombo;
+	private ComboBox<StudyProgramExt> cstmCombo;
 	
 	private ListStore <SubjectModel> subjStore;
 	private ComboBox<SubjectModel> subjCombo;
@@ -104,11 +110,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	//private Map<String, Object> advOptionsMap;
 	
-	private int formHeight = 450;
+	static final int LAYOUT_WIDTH = 295;
+	static final int CUSTOM_ID = 9999;
+
+	private int formHeight = 385;
 	protected int formWidth  = 475;
-	
-	protected CombinedFormPanel _formPanel;
-	private Button advOptionsBtn;
+
+    protected FormPanel _formPanel;
+	protected Button stdAdvOptionsBtn;
+	protected Button customAdvOptionsBtn;
 	
 	public static final String ENTRY_REQUIRED_MSG = "This field is required";
 	
@@ -121,7 +131,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	public RegisterStudent(StudentModelI sm, CmAdminModel cm, boolean excludeAutoEnroll) {
 		
 		this.excludeAutoEnroll = excludeAutoEnroll;
-	    
+
 	    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 	    
 		inProcessCount = 0;
@@ -175,15 +185,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	protected void hideAdvancedOptionsButton() {
-		advOptionsBtn.hide();
+		stdAdvOptionsBtn.hide();
 	}
 	
-	public FieldSet _fsProfile, _fsProgram;
+	public FieldSet _fsProfile, _fsProgram, _fsStdProg, _fsCustomProg;
 
 	GroupSelectorWidget _groupSelector;
 
 	protected FormPanel createForm() {
-		_formPanel = new CombinedFormPanel();
+		_formPanel = new FormPanel();
 		_formPanel.addStyleName("register-student-form-panel");
 		_formPanel.setLabelWidth(120);
 		_formPanel.setHeight(formHeight);
@@ -199,9 +209,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		_fsProfile = new FieldSet();
 		FormLayout fL = new FormLayout();
 		fL.setLabelWidth(_formPanel.getLabelWidth());
-        fL.setDefaultWidth(295);
+        fL.setDefaultWidth(LAYOUT_WIDTH);
         _fsProfile.setLayout(fL);
-	    
+
         _fsProfile.setHeading("Define Profile");
         userName = new TextField<String>();  
         userName.setFieldLabel("Name");
@@ -212,7 +222,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		    userName.setValue((String)stuMdl.getName());
 		}
 		_fsProfile.add(userName);
-		
+
 	    TextField<String> passCode = new TextField<String>();
 		passCode.setFieldLabel("Passcode");
 		passCode.setEmptyText("-- enter passcode --");
@@ -222,11 +232,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			passCode.setValue((String)stuMdl.getPasscode());
 		}
 		_fsProfile.add(passCode);
-		
+
 		if(__groupStore == null) {
             __groupStore = new ListStore <GroupInfoModel> ();
 		}
-		
+
 		_groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore, true, this, "group-combo", true);
 		groupCombo = _groupSelector.groupCombo();
 		if(UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
@@ -235,37 +245,37 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 		_formPanel.add(_fsProfile);
 
-        _fsProgram = new FieldSet();
-        _fsProgram.setHeading("Assign Program");
-        _fsProgram.addStyleName("register-student-fieldset");
-		
+		progStore = new ListStore <StudyProgramExt> ();
+		customProgStore = new ListStore <StudyProgramExt> ();
+        getStudyProgramListRPC();
+
+		stdAdvOptionsBtn = stdAdvancedOptionsBtn();
+		stdAdvOptionsBtn.disable();
+		customAdvOptionsBtn = customAdvancedOptionsBtn();
+		customAdvOptionsBtn.disable();
+
 		FormLayout fl = new FormLayout();
 		fl.setLabelWidth(_formPanel.getLabelWidth());
 		fl.setDefaultWidth(fL.getDefaultWidth());
-		
+
+		_fsProgram = new FieldSet();
+        _fsProgram.setHeading("Assign Program");
+        _fsProgram.addStyleName("register-student-outer-fieldset");
 		_fsProgram.setLayout(fl);
-		
-		progStore = new ListStore <StudyProgramExt> ();
-		getStudyProgramListRPC(progStore);
-		progCombo = programCombo(progStore, _fsProgram);
+		progCombo = programCombo(progStore);
 		_fsProgram.add(progCombo);
-		
-		subjStore = new ListStore <SubjectModel> ();
-		getSubjectList((stuMdl != null)?stuMdl.getProgram().getProgramType().getType():null, subjStore);
-		subjCombo = subjectCombo(subjStore);
-		_fsProgram.add(subjCombo);
 
-		chapStore = new ListStore <ChapterModel> ();
-        getChapterListRPC((stuMdl != null)?stuMdl.getProgram().getProgramType().getType():null, subjectId, false, chapStore);
-		chapCombo = chapterCombo(chapStore);
-		_fsProgram.add(chapCombo);        
-
+		setupStdProgramUI();
+		setupCustomProgramUI();
+	    
 		getAccountInfoRPC(cmAdminMdl.getId());
 
-		advOptionsBtn = advancedOptionsBtn();
-		advOptionsBtn.disable();
-	    _fsProgram.add(advOptionsBtn);
+	    cardPanel = new CardPanel();
 	    
+	    cardPanel.add(_fsStdProg);
+	    cardPanel.add(_fsCustomProg);
+
+	    _fsProgram.add(cardPanel);
         _formPanel.add(_fsProgram);
 
         _window.setHeading((isNew)?"Register a New Student":"Edit Student");
@@ -276,8 +286,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         _window.setDraggable(true);
         _window.setModal(true);
 
-        /** Assign buttons to the button bar on the Window
-         * 
+        /**
+         *  Assign buttons to the button bar on the Window
          */
         _formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
         for(Button btn: getActionButtons()) {
@@ -304,48 +314,111 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 
 	private String  passPercent;
+	
+    private void setupStdProgramUI() {
+        _fsStdProg = new FieldSet();
+        _fsStdProg.setHeading("");
+        _fsStdProg.addStyleName("register-student-inner-fieldset");
+        _fsStdProg.setId("std-prog-fs");
+        FormLayout fl = new FormLayout();
+		fl.setLabelWidth(_formPanel.getLabelWidth());
+		fl.setDefaultWidth(LAYOUT_WIDTH);
+		_fsStdProg.setLayout(fl);
 
-	private Button advancedOptionsBtn() {
+		subjStore = new ListStore <SubjectModel> ();
+		getSubjectList((stuMdl != null)?stuMdl.getProgram().getProgramType().getType():null, subjStore);
+		subjCombo = subjectCombo(subjStore);
+		_fsStdProg.add(subjCombo);
+
+		chapStore = new ListStore <ChapterModel> ();
+        getChapterListRPC((stuMdl != null)?stuMdl.getProgram().getProgramType().getType():null, subjectId, false, chapStore);
+		chapCombo = chapterCombo(chapStore);
+		_fsStdProg.add(chapCombo);        
+
+	    _fsStdProg.add(stdAdvOptionsBtn);
+    }
+
+    private void setupCustomProgramUI() {
+        _fsCustomProg = new FieldSet();
+        _fsCustomProg.setHeading("");
+        _fsCustomProg.addStyleName("register-student-inner-fieldset");
+        _fsCustomProg.setId("custom-prog-fs");
+        FormLayout fl = new FormLayout();
+		fl.setLabelWidth(_formPanel.getLabelWidth());
+		fl.setDefaultWidth(LAYOUT_WIDTH);
+		_fsCustomProg.setLayout(fl);
+
+		cstmCombo = customCombo(customProgStore, _fsCustomProg, "Program or Quiz", "Select a Custom Program|Quiz");
+		_fsCustomProg.add(cstmCombo);
+
+	    _fsCustomProg.add(customAdvOptionsBtn);
+    }
+
+    private SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
+    		public void componentSelected(ButtonEvent ce) {
+    			AdvOptCallback callback = new AdvOptCallback() {
+    				@Override
+    				void setAdvancedOptions(Map<String, Object> optionMap) {
+    					stuSettingsMdl = (StudentSettingsModel) optionMap.get(StudentModelExt.SETTINGS_KEY);
+    					passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
+    					activeSection = (Integer) optionMap.get(StudentModelExt.SECTION_NUM_KEY);
+    				}
+    			};
+    			
+    			final Map<String,Object>advOptionsMap = new HashMap <String,Object> ();
+    			final StudentSettingsModel ssm = new StudentSettingsModel();
+
+    			/** only set options if not null */
+    			if(stuSettingsMdl != null) {
+    				ssm.setLimitGames(stuSettingsMdl.getLimitGames());
+    				ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
+    				ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
+    				ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+    			}
+    			else {
+    				/** use account data to set tutoring available */
+    				if (acctInfoMdl != null) {
+    					ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
+    				}
+    			}
+    			
+    			advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
+    			advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
+
+    			advOptionsMap.put(StudentModelExt.SECTION_COUNT_KEY, sectionCount);
+    			if (activeSection == null) activeSection = 0;
+    			advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
+    			advOptionsMap.put("section-is-settable", sectionSelectAvail);
+    			
+    			if ("custom-adv-opt-btn".equals(ce.getButton().getId())) {
+    				ssm.setStopAtProgramEnd(true);
+    				advOptionsMap.put("prog-stop-is-settable", new Boolean(false));
+    			}
+    			else {
+    				advOptionsMap.put("prog-stop-is-settable", new Boolean(true));
+    			}
+
+    			new RegisterStudentAdvancedOptions(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
+    		}
+    	};
+
+    private Button stdAdvancedOptionsBtn() {
 		Button btn = new Button("Advanced Options");
 		btn.setToolTip("Disallow games, Change pass percentage, etc.");
 		btn.setWidth("110px");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                AdvOptCallback callback = new AdvOptCallback() {
-					@Override
-					void setAdvancedOptions(Map<String, Object> optionMap) {
-						stuSettingsMdl = (StudentSettingsModel) optionMap.get(StudentModelExt.SETTINGS_KEY);
-						passPercent = (String) optionMap.get(StudentModelExt.PASS_PERCENT_KEY);
-						activeSection = (Integer) optionMap.get(StudentModelExt.SECTION_NUM_KEY);
-					}
-                };
-                final Map<String,Object>advOptionsMap = new HashMap <String,Object> ();
-                final StudentSettingsModel ssm = new StudentSettingsModel();
+        btn.addSelectionListener(selectionListener);
+        btn.addStyleName("register-student-advanced-options-btn");
+        btn.setId("std-adv-opt-btn");
+		return btn;
+	}
 
-                /** only set options if not null */
-                if(stuSettingsMdl != null) {
-                    ssm.setLimitGames(stuSettingsMdl.getLimitGames());
-                    ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
-                    ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
-                    ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
-                }
-                else {
-                	/** use account data to set tutoring available */
-                	if (acctInfoMdl != null) {
-                	    ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
-                	}
-                }
-                advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
-                advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
-
-                advOptionsMap.put(StudentModelExt.SECTION_COUNT_KEY, sectionCount);
-                if (activeSection == null) activeSection = 0;
-                advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
-                advOptionsMap.put("section-is-settable", sectionSelectAvail);
-
-                new RegisterStudentAdvancedOptions(callback, cmAdminMdl, advOptionsMap, isNew, passPercentReqd).setVisible(true);              
-            }
-        });
+    private Button customAdvancedOptionsBtn() {
+		Button btn = new Button("Advanced Options");
+		btn.setToolTip("Disallow games, Change pass percentage, etc.");
+		btn.setWidth("110px");
+        btn.addSelectionListener(selectionListener);
+        btn.addStyleName("register-student-advanced-options-btn");
+        btn.setId("custom-adv-opt-btn");
 		return btn;
 	}
 
@@ -356,9 +429,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 				type == CmProgramType.GRADPREPTX);
 	}
 
-	private ComboBox<StudyProgramExt> programCombo(ListStore<StudyProgramExt> store, final FieldSet fs) {
+	private ComboBox<StudyProgramExt> programCombo(ListStore<StudyProgramExt> store) {
 		ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>();
-		combo.setFieldLabel("Program");
+		combo.setFieldLabel("Program type");
 		combo.setForceSelection(true);
 		combo.setDisplayField("title");
 		combo.setEditable(false);
@@ -367,11 +440,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setTriggerAction(TriggerAction.ALL);
 		combo.setStore(store);
 		combo.setTemplate(getProgramTemplate());
-		combo.setTitle("Select a program");
+		combo.setTitle("Select a program type");
 		combo.setId("prog-combo");
 		combo.setTypeAhead(true);
 		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a program --");
+		combo.setEmptyText("-- select a program type --");
 		combo.setWidth(280);
 
 	    combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgramExt>() {
@@ -384,44 +457,98 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
 				int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
 				passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
-				
-				sectionSelectAvail = sp.isGradPrep() || sp.isProficiency();
+				CmProgramType progType = (CmProgramType) sp.get("programType");
 
-				sectionCount = sp.getSectionCount();
-				activeSection = 0;
+				if (CmProgramType.CUSTOM != progType) {
 
-				advOptionsBtn.enable();
+					if (! cardPanel.getActiveItem().equals(_fsStdProg)) {
+					    cardPanel.setActiveItem(_fsStdProg);
+	                }
 
-	        	ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
+					sectionSelectAvail = isSectionSelectAvail(progType); //sp.isGradPrep() || sp.isProficiency();
 
-	        	skipComboSet = true;
-	        	subjectId = null;
+					sectionCount = sp.getSectionCount();
+					activeSection = 0;
 
-	        	if (needsSubject > 0) {
-	        		cb.clearSelections();
-	        		cb.enable();
-	        		cb.setForceSelection(true);
-	        	    getSubjectList((String)sp.get("shortTitle"), subjStore);
-	        	}
-	        	else {
-	        		cb.clearInvalid();
-	        		cb.clearSelections();
-	        		cb.disable();
-	        		cb.setForceSelection(false);
-	        		subjectId = null;
-	        	}
-	        	ComboBox <ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
-	        	if (needsChapters > 0) {
-	        		cc.clearSelections();
-	        		cc.enable();
-	        		cc.setForceSelection(true);
-	        	}
-	        	else {
-	        		cc.clearInvalid();
-	        		cc.clearSelections();
-	        		cc.disable();
-	        		cc.setForceSelection(false);
-	        	}
+					stdAdvOptionsBtn.enable();
+
+					ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) _fsStdProg.getItemByItemId("subj-combo");
+
+					skipComboSet = true;
+					subjectId = null;
+
+					if (needsSubject > 0) {
+						cb.clearSelections();
+						cb.enable();
+						cb.setForceSelection(true);
+						getSubjectList((String)sp.get("shortTitle"), subjStore);
+					}
+					else {
+						cb.clearInvalid();
+						cb.clearSelections();
+						cb.disable();
+						cb.setForceSelection(false);
+						subjectId = null;
+					}
+
+					ComboBox <ChapterModel> cc = (ComboBox<ChapterModel>) _fsStdProg.getItemByItemId("chap-combo");
+
+					if (needsChapters > 0) {
+						cc.clearSelections();
+						cc.enable();
+						cc.setForceSelection(true);
+					}
+					else {
+						cc.clearInvalid();
+						cc.clearSelections();
+						cc.disable();
+						cc.setForceSelection(false);
+					}
+				}
+				else {
+					cardPanel.setActiveItem(_fsCustomProg);
+					skipComboSet = true;
+					subjectId = null;
+					sectionSelectAvail = false;
+					activeSection = 0;
+				}
+	        }
+	    });
+
+	    return combo;
+	}
+
+	private ComboBox<StudyProgramExt> customCombo(ListStore<StudyProgramExt> store, final FieldSet fs, String label, String title) {
+		ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>();
+		combo.setFieldLabel(label);
+		combo.setForceSelection(true);
+		combo.setDisplayField("title");
+		combo.setEditable(false);
+		combo.setMaxLength(45);
+		combo.setAllowBlank(false);
+		combo.setTriggerAction(TriggerAction.ALL);
+		combo.setStore(store);
+		combo.setTemplate(getProgramTemplate());
+		combo.setTitle(title);
+		combo.setId("custom-combo");
+		combo.setTypeAhead(true);
+		combo.setSelectOnFocus(true);
+		combo.setEmptyText("-- make a selection --");
+		combo.setWidth(280);
+
+	    combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgramExt>() {
+			public void selectionChanged(SelectionChangedEvent<StudyProgramExt> se) {
+
+	        	if (loading) return;
+
+	            StudyProgramExt sp = se.getSelectedItem();
+
+	            passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
+
+				sectionSelectAvail = false;
+
+				customAdvOptionsBtn.enable();
+
 	        }
 	    });
 
@@ -431,7 +558,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private native String getProgramTemplate() /*-{ 
 	    return  [ 
 	   '<tpl for=".">', 
-	   '<div class="x-combo-list-item {styleIsCustomProgram} {styleIsArchived}" qtip="{descr}">{label}</div>', 
+	   '<div class="x-combo-list-item {styleIsTemplate} {styleIsArchived}" qtip="{descr}">{label}</div>', 
 	   '</tpl>' 
 	   ].join(""); 
 	   }-*/;  
@@ -465,7 +592,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	        	    try {
 	    	        	skipComboSet = true;
     		        	subjectId = sm.getAbbrev();
-    		        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _formPanel.getItemByItemId("prog-combo");
+    		        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsProgram.getItemByItemId("prog-combo");
     		        	StudyProgramExt sp = cb.getValue();
     		        	String progId = sp.get("shortTitle");
     		        	chapStore.removeAll();
@@ -510,12 +637,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		return cancelBtn;
 	}
 
-	private Button saveButton(final FieldSet fs, final CombinedFormPanel fp) {
+	private Button saveButton(final FieldSet fs, final FormPanel fp) {
 		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
 			@Override  
 	    	public void componentSelected(ButtonEvent cx) {
 	            try {
-	                doSubmitAction(fs, fp, null);
+	                doSubmitAction(null);
 	            }
 	            catch(CmException cm) {
 	                cm.printStackTrace();
@@ -524,12 +651,11 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	    });
 		return saveBtn;
 	}
-	
-	private void getStudyProgramListRPC(final ListStore <StudyProgramExt> progStore) {
+
+	private void getStudyProgramListRPC() {
 
 		inProcessCount++;
 
-		
 		new RetryAction<CmList<StudyProgramModel>>() {
 		    @Override
 		    public void attempt() {
@@ -539,8 +665,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		    }
             public void oncapture(CmList<StudyProgramModel> spmList) {
                 List<StudyProgramExt> progList = new ArrayList <StudyProgramExt> ();
+                List<StudyProgramExt> customProgList = new ArrayList <StudyProgramExt> ();
 
-            	int stuCustomProgramId = (isNew == false && stuMdl.getProgram().getCustom().getCustomProgramId() != 0) ?
+                int stuCustomProgramId = (isNew == false && stuMdl.getProgram().getCustom().getCustomProgramId() != 0) ?
             			stuMdl.getProgram().getCustom().getCustomProgramId(): -1;
             	int stuCustomQuizId = (isNew == false && stuMdl.getProgram().getCustom().getCustomQuizId() != 0) ?
             			stuMdl.getProgram().getCustom().getCustomQuizId() : -1;
@@ -555,11 +682,24 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 		spm.getCustomQuizId() != stuCustomQuizId)
                 		continue;
 
-                	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
-                                                  spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
-                                                  spm.getCustomProgramId(), spm.getCustomProgramName()));
+                	if (spm.getCustomProgramId() == 0 && spm.getCustomQuizId() == 0) {
+                    	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                                spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                                spm.getCustomProgramId(), spm.getCustomProgramName()));                		
+                	}
+                	else {
+                    	customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
+                                spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
+                                spm.getCustomProgramId(), spm.getCustomProgramName()));
+                	}
                 }
+                StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID, "Custom", "Custom", "Custom Programs and Quizzes", 0, " ", 0, " ", 0, 0, 0, 0, 0);
+                spm.setProgramType(CmProgramType.CUSTOM);
+                spm.setIsArchived(false);
+            	progList.add(new StudyProgramExt(spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));                		
                 progStore.add(progList);
+                customProgStore.add(customProgList);
+                
                 inProcessCount--;
                 setComboBoxSelections();
             }
@@ -658,7 +798,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	
 	private void setComboBoxSelections() {
 		if (this.stuMdl != null && !skipComboSet && inProcessCount < 1) {
-
+			
 			loading = true;
 			
 			setGroupSelection();
@@ -670,16 +810,28 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     			loading = false;
     			return;
     		}
-    		int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
-    		if (needsSubject != 0) setSubjectSelection();
+    		
+			CmProgramType progType = (CmProgramType) sp.get("programType");
+			if (CmProgramType.CUSTOM != progType) {
+				cardPanel.setActiveItem(_fsStdProg);
 
-    		int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
-    		if (needsChapters != 0) setChapterSelection();
+				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
+    		    if (needsSubject != 0) setSubjectSelection();
 
+    		    int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
+    		    if (needsChapters != 0) setChapterSelection();
+     		}
+    		else {
+				cardPanel.setActiveItem(_fsCustomProg);
+    			setCustomProgramSelection();
+    		}
     		passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
 
-			if (advOptionsBtn.isVisible())
-                advOptionsBtn.enable();
+			if (stdAdvOptionsBtn.isVisible())
+                stdAdvOptionsBtn.enable();
+
+			if (customAdvOptionsBtn.isVisible())
+                customAdvOptionsBtn.enable();
 
             loading = false;
 		}
@@ -716,12 +868,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 			List<StudyProgramExt> list = progStore.getModels();
 			
 			for (StudyProgramExt sp : list) {
-				
-	        	if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId()) ||
-					(program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
+				if (sp.get("shortTitle").equals("Custom")) {
 					progCombo.setOriginalValue(sp);
 					progCombo.setValue(sp);
-					return sp;
+                    return sp;
 				}
 			}
 			return null;
@@ -740,7 +890,25 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 		return null;
 	}
-	
+
+	private StudyProgramExt setCustomProgramSelection() {
+	    StudentProgramModel program = stuMdl.getProgram();
+		
+		List<StudyProgramExt> list = customProgStore.getModels();
+		
+		for (StudyProgramExt sp : list) {
+			
+        	if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId()) ||
+				(program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
+				cstmCombo.setOriginalValue(sp);
+				cstmCombo.setValue(sp);
+				return sp;
+			}
+		}
+		return null;
+
+	}
+
 	/** perform hack to determine correct program.
 	 * 
 	 * @NOTE: add a way to identify programs correctly.
@@ -806,10 +974,10 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private void getChapterListRPC(final String progId, final String subjId, final Boolean chapOnly, final ListStore <ChapterModel> chapStore) {
 
 		if (progId == null || !progId.equalsIgnoreCase("chap")) return;
-		
+
 		inProcessCount++;
 		new RetryAction <CmList<ChapterModel>> () {
-		    
+
 		    @Override
 		    public void attempt() {
 		        CmServiceAsync s = CmShared.getCmService();
@@ -849,7 +1017,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         }.register();        
     }
     
-	/** Perform the form save operation and display any required validation.
+	/**
+	 * Perform the form save operation and display any required validation.
 	 * 
 	 * Throws CmExeptionValidationFailed on failed validation attempt.
 	 * 
@@ -863,9 +1032,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	 * @param fp
 	 */
 	@SuppressWarnings("unchecked")
-	protected void doSubmitAction(final FieldSet fs, final CombinedFormPanel fp, AfterValidation callback) throws CmException {
-	    
-	    TextField<String> tf = (TextField<String>)fp.getItemByItemId("name");
+	protected void doSubmitAction(AfterValidation callback) throws CmException {
+		
+	    TextField<String> tf = (TextField<String>)_fsProfile.getItemByItemId("name");
 	    String name="";
         if(tf != null) {
             tf.clearInvalid();
@@ -878,7 +1047,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         }
         
         String passcode = null;
-        tf = (TextField<String>)fp.getItemByItemId("passcode");
+        tf = (TextField<String>)_fsProfile.getItemByItemId("passcode");
         if(tf != null) {
             tf.clearInvalid();
             passcode = tf.getValue();
@@ -899,62 +1068,82 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
         String groupId=null;
         String group=null;
-        ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) fp.getItemByItemId("group-combo");
+        ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) _fsProfile.getItemByItemId("group-combo");
         if(cg != null) {
-            cg.clearInvalid();
-            if(cg != null) {
-                GroupInfoModel g = cg.getValue();
-                if (g == null) {
-                    cg.focus();
-                    cg.forceInvalid(ENTRY_REQUIRED_MSG);
-                    cg.expand();
-                    throw new CmExceptionValidationFailed();
-                }
-                groupId = g.getId().toString();
-                group = g.getName();
-            }
-            // dead code
-            else {
-                groupId = "1";
-                group = "none";
-            }
+        	cg.clearInvalid();
+        	GroupInfoModel g = cg.getValue();
+        	if (g == null) {
+        		cg.focus();
+        		cg.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cg.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+        	groupId = g.getId().toString();
+        	group = g.getName();
         }
         
-        ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) fs.getItemByItemId("prog-combo");
-        StudyProgramExt studyProgExt = cb.getValue();
-        cb.clearInvalid();
-        if (studyProgExt == null) {
-            cb.focus();
-            cb.forceInvalid(ENTRY_REQUIRED_MSG);
-            cb.expand();
-            throw new CmExceptionValidationFailed();
-        }
-        String prog = studyProgExt.get("shortTitle");
-
-        ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) fs.getItemByItemId("subj-combo");
-        SubjectModel sub = cs.getValue();
-        cs.clearInvalid();
-        if (sub != null) {
-            prog = sub.get("abbrev") + " " + prog;
-        }
-        if (((Integer)studyProgExt.get("needsSubject")).intValue() > 0 && sub == null) {
-            cs.focus();
-            cs.forceInvalid(ENTRY_REQUIRED_MSG);
-            cs.expand();
-            throw new CmExceptionValidationFailed();
+        String fsId = null;
+        List<Component> list = cardPanel.getItems();
+        for (Component c : list) {
+        	if (c.isVisible()) {
+        		fsId = c.getId();
+        	}
         }
 
-        ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) fs.getItemByItemId("chap-combo");
-        ChapterModel chap = cc.getValue();
-        cc.clearInvalid();
-        if (chap != null) {
-            prog = prog + " " + chap.get("number");
+        StudyProgramExt studyProgExt = null;
+        SubjectModel sub = null;
+        ChapterModel chap = null;
+        String prog = null;
+
+        if (fsId.equals("std-prog-fs")) {
+        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsProgram.getItemByItemId("prog-combo");
+        	studyProgExt = cb.getValue();
+        	cb.clearInvalid();
+        	if (studyProgExt == null) {
+        		cb.focus();
+        		cb.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cb.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+        	prog = studyProgExt.get("shortTitle");
+
+        	ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) _fsStdProg.getItemByItemId("subj-combo");
+        	sub = cs.getValue();
+        	cs.clearInvalid();
+        	if (sub != null) {
+        		prog = sub.get("abbrev") + " " + prog;
+        	}
+        	if (((Integer)studyProgExt.get("needsSubject")).intValue() > 0 && sub == null) {
+        		cs.focus();
+        		cs.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cs.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+
+        	ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) _fsStdProg.getItemByItemId("chap-combo");
+        	chap = cc.getValue();
+        	cc.clearInvalid();
+        	if (chap != null) {
+        		prog = prog + " " + chap.get("number");
+        	}
+        	if (((Integer)studyProgExt.get("needsChapters")).intValue() > 0 && chap == null) {
+        		cc.focus();
+        		cc.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cc.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
         }
-        if (((Integer)studyProgExt.get("needsChapters")).intValue() > 0 && chap == null) {
-            cc.focus();
-            cc.forceInvalid(ENTRY_REQUIRED_MSG);
-            cc.expand();
-            throw new CmExceptionValidationFailed();
+        else {
+        	ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsCustomProg.getItemByItemId("custom-combo");
+        	studyProgExt = cb.getValue();
+        	cb.clearInvalid();
+        	if (studyProgExt == null) {
+        		cb.focus();
+        		cb.forceInvalid(ENTRY_REQUIRED_MSG);
+        		cb.expand();
+        		throw new CmExceptionValidationFailed();
+        	}
+        	prog = studyProgExt.get("shortTitle");
         }
 
         if (passPercentReqd &&
@@ -1015,7 +1204,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             return;
         }
         
-        /** If callback not provided, then perform default operation
+        /**
+         * If callback not provided, then perform default operation
          * 
          * @TODO: all this logic about what is updated should be on the server
          *        the client should only have to update the POJO and say go.
@@ -1142,30 +1332,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		setComboBoxSelections();
 	}
 
-}
-
-/** Search for field in nested FieldSets
- * 
- * @author casey
- *
- */
-class CombinedFormPanel extends FormPanel {
-    public Component getItemByItemId(String itemId) {
-        
-        Component foundObject = super.getItemByItemId(itemId);
-        if(foundObject != null)
-            return foundObject;
-        
-        // search all fieldsets, looking for named item
-        for(Component comp: getItems()) {
-            if(comp instanceof FieldSet) {
-                foundObject = ((FieldSet)comp).getItemByItemId(itemId);
-                if(foundObject != null)
-                    return foundObject;
-            }
-        }
-        return null;
-    }
 }
 
 abstract class AdvOptCallback {

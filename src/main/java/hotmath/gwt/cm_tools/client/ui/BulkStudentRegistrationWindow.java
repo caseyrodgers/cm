@@ -59,6 +59,10 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		_fsProfile.remove(_fsProfile.getItemByItemId("passcode"));
 		_fsProfile.setHeading("Assign Group");
 		_fsProgram.setHeading("Assign Program");
+		stdAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
+		stdAdvOptionsBtn.addStyleName("register-student-advanced-options-bulk-reg-btn");
+		customAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
+		customAdvOptionsBtn.addStyleName("register-student-advanced-options-bulk-reg-btn");
 
 		/**
 		 * Create the upload form, which will contain the upload field
@@ -77,10 +81,12 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		 */
 		FieldSet fs = new FieldSet();
 		FormLayout fL = new FormLayout();
+		
 		fL.setLabelWidth(_formPanel.getLabelWidth());
+        fL.setDefaultWidth(LAYOUT_WIDTH);
 		fs.setLayout(fL);
 		fs.setHeading("Upload Students");
-		fs.setWidth(_fsProfile.getWidth());
+		//fs.setWidth(_fsProfile.getWidth());
 		fs.add(_uploadForm);
 		fs
 				.add(new Html(
@@ -90,7 +96,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 
 		_window.removeAll();
 		_window.setLayout(new BorderLayout());
-		_window.setHeight(470);
+		_window.setHeight(500);
 		_window.setWidth(550);
 		_window.setHeading("Bulk Registration");
 
@@ -116,20 +122,19 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 			public void componentSelected(ButtonEvent ce) {
 				CatchupMathTools.setBusy(true);
 				try {
-					doSubmitAction(_fsProgram, _formPanel,
-							new AfterValidation() {
-								@Override
-								public void afterValidation(StudentModel student) {
-									_student = student;
+					doSubmitAction(new AfterValidation() {
+						@Override
+						public void afterValidation(StudentModel student) {
+							_student = student;
 
-									if (!_uploadForm.isValid()) {
-										CatchupMathTools
-												.showAlert("Select a tab delimited file containing a list of names and passwords.");
-										return;
-									}
-									_uploadForm.submit();
-								}
-							});
+							if (!_uploadForm.isValid()) {
+								CatchupMathTools
+								.showAlert("Select a tab delimited file containing a list of names and passwords.");
+								return;
+							}
+							_uploadForm.submit();
+						}
+					});
 				} catch (CmException cme) {
 					cme.printStackTrace();
 				} finally {

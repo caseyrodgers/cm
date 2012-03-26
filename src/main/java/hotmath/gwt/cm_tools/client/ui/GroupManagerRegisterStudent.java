@@ -52,7 +52,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
         autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 try {
-                    doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
+                    doSubmitAction(new AfterValidation() {
                         
                         @Override
                         public void afterValidation(StudentModel student) {

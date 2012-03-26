@@ -98,7 +98,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	    		@Override
 	    		public void componentSelected(ButtonEvent ce) {
 	    			try {
-	    				doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
+	    				doSubmitAction(new AfterValidation() {
 
 	    					@Override
 	    					public void afterValidation(StudentModel student) {

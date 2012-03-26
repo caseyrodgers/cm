@@ -45,7 +45,6 @@ public class AutoRegisterStudent extends RegisterStudent {
         _passwordTag.setId("passtag");
         _passwordTag.setEmptyText("-- enter passcode tag --");
         _fsProfile.add(_passwordTag);
-	    
         
         FieldSet fsConfig = new FieldSet();
         fsConfig.setHeading("Configuration");
@@ -86,47 +85,47 @@ public class AutoRegisterStudent extends RegisterStudent {
 	
 
 	protected List<Button> getActionButtons() {
-	    List<Button> list = new ArrayList<Button>();
-        
-        Button autoCreate = new Button("Auto Create");
-        autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                try {
-                    doSubmitAction(_fsProgram, _formPanel, new AfterValidation() {
-                        
-                        @Override
-                        public void afterValidation(StudentModel student) {
-                            student.setName(_groupTag.getValue());
-                            student.setPasscode(_passwordTag.getValue());
-                            student.setGroup(_groupTag.getValue());
-                            
-                            NumberModel nm = _numToCreate.getValue();
-                            new AutoRegistrationWindow(student,null);
-                        }
-                    });
-                }
-                catch(CmException cm) {
-                    CatchupMathTools.showAlert("First, make sure all values on form are valid");
-                }
-            }
-        });
-        
-        list.add(autoCreate);
-        
-        
-        Button close = new Button("Close");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                _window.close();
-            }
-        });
-        
-        list.add(close);        
-        
-        return list;
+		List<Button> list = new ArrayList<Button>();
+
+		Button autoCreate = new Button("Auto Create");
+		autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
+
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				try {
+					doSubmitAction(new AfterValidation() {
+
+						@Override
+						public void afterValidation(StudentModel student) {
+							student.setName(_groupTag.getValue());
+							student.setPasscode(_passwordTag.getValue());
+							student.setGroup(_groupTag.getValue());
+
+							NumberModel nm = _numToCreate.getValue();
+							new AutoRegistrationWindow(student,null);
+						}
+					});
+				}
+				catch(CmException cm) {
+					CatchupMathTools.showAlert("First, make sure all values on form are valid");
+				}
+			}
+		});
+
+		list.add(autoCreate);
+
+
+		Button close = new Button("Close");
+		close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
+				_window.close();
+			}
+		});
+
+		list.add(close);        
+
+		return list;
 	}
 }
 

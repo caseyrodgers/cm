@@ -172,8 +172,12 @@
 	border: none;
 }
 
-.register-student-proto2-fieldset {
+.register-student-outer-fieldset {
 	height: 155px !important;
+}
+
+.register-student-self-reg-outer-fieldset {
+	height: 140px !important;
 }
 
 .register-student-std-prog-tab {
@@ -184,6 +188,16 @@
 .register-student-advanced-options-btn {
 	position: absolute !important;
 	top: 270px !important;
+}
+
+.register-student-advanced-options-bulk-reg-btn {
+	position: absolute !important;
+	top: 220px !important;
+}
+
+.register-student-advanced-options-self-reg-btn {
+	position: absolute !important;
+	top: 215px !important;
 }
 
 .account-info {
