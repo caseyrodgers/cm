@@ -71,7 +71,8 @@ public class ConvertOldToNew {
             conn = HMConnectionPool.getConnection();
             ConvertOldToNew converter = new ConvertOldToNew(conn);
             
-            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
+            //ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
+            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle = 'placement'");
             
             while(rs.next()) {
                 converter.convert(rs.getString("problemindex"));

@@ -49,7 +49,8 @@ public class ExportSolutionXml {
             conn = HMConnectionPool.getConnection();
             ExportSolutionXml converter = new ExportSolutionXml(conn);
             
-            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
+            //ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
+            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle = 'placement'");
             while(rs.next()) {
                 converter.output(rs.getString("problemindex"));
             }

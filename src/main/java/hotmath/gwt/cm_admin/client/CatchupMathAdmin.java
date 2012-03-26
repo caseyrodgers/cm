@@ -8,7 +8,9 @@ import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -78,7 +80,16 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         });
     }
 
-    private void completeLoginProcess(int uid) {
+    
+    private void completeLoginProcess(final int uid) {
+        new MessageOfTheDayDialog(new CallbackGeneric() {
+            @Override
+            public void callbackReady() {
+                // nothing to do
+            }
+        });
+        
+        
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setId(uid);
         
@@ -99,8 +110,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         History.fireCurrentHistoryState();
         
         if(UserInfoBase.getInstance().getEmail() == null || UserInfoBase.getInstance().getEmail().length() == 0) {
-        	new CollectEmailFromUserDialog();
-        }
+            new CollectEmailFromUserDialog();
+        }        
     }
 
     

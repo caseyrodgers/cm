@@ -12,12 +12,9 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.util.Util;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -60,7 +57,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         sb.append("  <div class='fld'><label>Previous admin login:</label><div>{last-login}&nbsp;</div></div>");
         sb.append("  <div class='{student-count-style}'><label>Student count:</label><div>{total-students}&nbsp;</div></div>");
         sb.append("</div>");
-        sb.append("<div style='position: absolute;top: 85px;left:0;font-size: .9em;color: #666;'>"); 
+        sb.append("<div style='display: none;position: absolute;top: 85px;left:0;font-size: .9em;color: #666;'>"); 
         sb.append("  <div style='font-weight: bold'>Monitor Class Progress in Real Time!</div>");
         sb.append("  <div>Set the Date Range to Today, and then click Highlights from time to time.</div>");
         sb.append("</div>");

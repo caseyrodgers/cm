@@ -40,7 +40,7 @@ public class ImportSolutionXml {
             try {
                 ps = conn.prepareStatement(sql);
                 ps.setString(1, xml);
-                ps.setString(2, pid);
+                ps.setString(2, pid);   
                 
                 if(ps.executeUpdate() != 1) {
                     throw new Exception("Could not update: " + pid);
@@ -57,17 +57,17 @@ public class ImportSolutionXml {
     }
  
     static public void main(String as[]) {
-        System.out.println("Outputing");
+        System.out.println("Importing ... ");
         
-        String dir = as[0];
+        String dir = "/temp/solution_input";
         
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
             ImportSolutionXml converter = new ImportSolutionXml(conn);
             
-            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
-            
+            //ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle in (select distinct textcode from HA_TEST_DEF)");
+            ResultSet rs = conn.createStatement().executeQuery("select problemindex from SOLUTIONS where booktitle = 'placement'");
             while(rs.next()) {
                 converter.input(dir, rs.getString("problemindex"));
             }
@@ -79,6 +79,6 @@ public class ImportSolutionXml {
             SqlUtilities.releaseResources(null, null, conn);
         }
         
-        System.out.println("Convertions complete");
+        System.out.println("Import complete");
     }
 }
