@@ -810,12 +810,21 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
     			loading = false;
     			return;
     		}
-    		int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
-    		if (needsSubject != 0) setSubjectSelection();
+    		
+			CmProgramType progType = (CmProgramType) sp.get("programType");
+			if (CmProgramType.CUSTOM != progType) {
+				cardPanel.setActiveItem(_fsStdProg);
 
-    		int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
-    		if (needsChapters != 0) setChapterSelection();
+				int needsSubject = ((Integer)sp.get("needsSubject")).intValue();
+    		    if (needsSubject != 0) setSubjectSelection();
 
+    		    int needsChapters = ((Integer)sp.get("needsChapters")).intValue();
+    		    if (needsChapters != 0) setChapterSelection();
+     		}
+    		else {
+				cardPanel.setActiveItem(_fsCustomProg);
+    			setCustomProgramSelection();
+    		}
     		passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
 
 			if (stdAdvOptionsBtn.isVisible())
@@ -859,12 +868,10 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 			List<StudyProgramExt> list = progStore.getModels();
 			
 			for (StudyProgramExt sp : list) {
-				
-	        	if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId()) ||
-					(program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
+				if (sp.get("shortTitle").equals("Custom")) {
 					progCombo.setOriginalValue(sp);
 					progCombo.setValue(sp);
-					return sp;
+                    return sp;
 				}
 			}
 			return null;
@@ -883,7 +890,25 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
 		}
 		return null;
 	}
-	
+
+	private StudyProgramExt setCustomProgramSelection() {
+	    StudentProgramModel program = stuMdl.getProgram();
+		
+		List<StudyProgramExt> list = customProgStore.getModels();
+		
+		for (StudyProgramExt sp : list) {
+			
+        	if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId()) ||
+				(program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
+				cstmCombo.setOriginalValue(sp);
+				cstmCombo.setValue(sp);
+				return sp;
+			}
+		}
+		return null;
+
+	}
+
 	/** perform hack to determine correct program.
 	 * 
 	 * @NOTE: add a way to identify programs correctly.

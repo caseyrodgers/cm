@@ -20,7 +20,6 @@ import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
-import hotmath.gwt.cm_tools.client.ui.RegisterStudentProto;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
@@ -515,10 +514,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         Menu menu = new Menu();
 
         menu.add(defineRegisterItem());
-        
-        if (CmShared.getQueryParameter("debug") != null) {
-            menu.add(defineRegisterProtoItem());
-        }
 
         menu.add(defineUnregisterItem());
 
@@ -529,7 +524,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         menu.add(defineManageGroupsItem());
 
         menu.add(defineParallelProgramsItem());
- 
+
         btn.setMenu(menu);
 
         return btn;
@@ -545,22 +540,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             @Override
                             public void onSuccess() {
                                 new RegisterStudent(null, _cmAdminMdl).showWindow();
-                            }
-                        });
-                    }
-                });
-    }
-
-    private MyMenuItem defineRegisterProtoItem() {
-        return new MyMenuItem("Register Prototype", "Create a new single student registration.",
-                new SelectionListener<MenuEvent>() {
-                    @Override
-                    public void componentSelected(MenuEvent ce) {
-                        GWT.runAsync(new CmRunAsyncCallback() {
-
-                            @Override
-                            public void onSuccess() {
-                                new RegisterStudentProto(null, _cmAdminMdl).showWindow();
                             }
                         });
                     }
