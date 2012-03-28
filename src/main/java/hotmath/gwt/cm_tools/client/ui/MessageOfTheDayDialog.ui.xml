@@ -3,17 +3,28 @@
 
 	<ui:style>
 	    .main {
-	        padding:10px;
+	        padding:10px 15px;
 	    }
 	    
+	    ol {
+	        padding: 10px 15px;
+	    }
+	    ol li {
+	        list-style-type: decimal;
+	    }
 	    .main h1 {
 	        margin-bottom: 10px;
 	    }
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
-       <h1>Monitor Class Progress in Real Time!</h1>
-       <p>Set the Date Range to Today, and then click Highlights from time to time.</p>
+    <h1>Monitor During Class</h1>
+    <ol>
+      <li>Use the Group select at the bottom of the page.</li>
+      <li>Set the Date Range to Today/Today at the bottom of the page.</li>
+      <li>Click the Highlights button.</li>
+      <li>Update using the Highlights Refresh button.</li>
+    </ol>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
