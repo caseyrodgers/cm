@@ -1337,8 +1337,11 @@ SolutionSetCompleteDialog .results{
 }
 
 
-
-
+.register-student-inner-fieldset {
+	height: 120px !important;
+	padding-left: 0px !important;
+	border: none;
+}
 
 
 .resource-viewer-impl-results .hm_question_def ul{
