@@ -57,7 +57,9 @@ public class SolutionResourceListDialog extends Window {
         addWindowListener(new WindowListener() {
             @Override
             public void windowHide(WindowEvent we) {
-                _callback.resourceSelected(null);
+                if(_callback != null) {
+                    _callback.resourceSelected(null);
+                }
             }
         });
         

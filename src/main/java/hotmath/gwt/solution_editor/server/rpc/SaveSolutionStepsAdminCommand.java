@@ -71,24 +71,34 @@ public class SaveSolutionStepsAdminCommand implements ActionHandler<SaveSolution
     
     private void copyFiles(File file, String destination) throws Exception {
         File fileKids[] = file.listFiles();
-        for (int iKid = 0; iKid < fileKids.length; iKid++) {
-            File fileKid = fileKids[iKid];
-            
-            if(fileKid.isDirectory()) {
-                copyFiles(fileKid, destination);
-            }
-            else {
-                String sSource = fileKid.getCanonicalPath();
-                String sSourceLowerCase = sSource.toLowerCase();
-    
-                // Add PNG..
-                if ( sSourceLowerCase.endsWith(".html") || 
-                     sSourceLowerCase.endsWith(".js") ||
-                     sSourceLowerCase.endsWith(".json"))  {
-                    continue;
+        if(fileKids != null) {
+            for (int iKid = 0; iKid < fileKids.length; iKid++) {
+                File fileKid = fileKids[iKid];
+                
+                if(fileKid.isDirectory()) {
+                    copyFiles(fileKid, destination);
                 }
+                else {
+                    String sSource = fileKid.getCanonicalPath();
+                    String sSourceLowerCase = sSource.toLowerCase();
+        
+                    // Add PNG..
+                    if ( sSourceLowerCase.endsWith(".html") || 
+                         sSourceLowerCase.endsWith(".js") ||
+                         sSourceLowerCase.endsWith(".json"))  {
+                        continue;
+                    }
                     
-                SbFile.copyFile(sSource, destination + "/" + fileKid.getName().toLowerCase());
+                    String out=destination;
+                    String s = fileKid.getAbsolutePath();
+                    String t = fileKid.getParent();
+                    
+                    if(fileKid.getParent().endsWith("resources")) {
+                        out += "/resources";
+                    }
+                        
+                    SbFile.copyFile(sSource, out + "/" + fileKid.getName().toLowerCase());
+                }
             }
         }
     }
