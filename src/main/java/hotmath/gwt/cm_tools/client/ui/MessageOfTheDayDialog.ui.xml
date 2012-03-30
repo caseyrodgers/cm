@@ -19,7 +19,7 @@
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
-    <h1>Monitor During Class</h1>
+    <h1>Real Time Monitoring During Class: Use Highlights</h1>
     <ol>
       <li>Use the Group select at the bottom of the page.</li>
       <li>Set the Date Range to Today/Today at the bottom of the page.</li>
