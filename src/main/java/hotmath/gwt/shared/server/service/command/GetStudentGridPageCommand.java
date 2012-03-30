@@ -178,7 +178,10 @@ public class GetStudentGridPageCommand implements
             if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " quick_search student pool: " + studentPool.size());
         }
 
-        // apply date range filter
+        /** 
+         *  apply date range filter
+         *  
+         */
         if (action.getDateRange() != null) {
         	
         	String options = action.getFilterMap().get(GetStudentGridPageAction.FilterType.OPTIONS);

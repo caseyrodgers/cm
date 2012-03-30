@@ -40,7 +40,8 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
        ifnull(ux.lessons_completed, 0) as lessons_completed,
        ifnull(ut.tutoring_use, 0) as tutoring_use,
-       h.user_prog_id, ifnull(pa.user_prog_id, h.user_prog_id) as main_user_prog_id
+       h.user_prog_id, ifnull(pa.user_prog_id, h.user_prog_id) as main_user_prog_id,
+      t.test_id, r.run_id,rl.cnt_lessons_completed
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
    on a.aid = h.admin_id
@@ -62,6 +63,18 @@ LEFT JOIN HA_USER_EXTENDED ux on ux.user_id = h.uid
 LEFT JOIN (SELECT uid, count(*) as tutoring_use 
            FROM HA_USER_TUTORING_SESSION ts
            GROUP by uid) ut on ut.uid = h.uid
+           
+LEFT JOIN HA_TEST t
+  on t.test_id = h.active_test_id        
+LEFT JOIN HA_TEST_RUN r
+  on r.run_id = h.active_run_id
+LEFT JOIN (
+    select run_id,count(*) as cnt_lessons_completed
+     from HA_TEST_RUN_LESSON 
+     where date_completed is not null
+     group by run_id
+) rl    
+    on rl.run_id = r.run_id             
 
 
 ## The base query for reading student data, including
@@ -79,7 +92,8 @@ SELECT h.uid, upper(h.user_name) as name, h.user_passcode as passcode, h.user_em
        ifnull(ux.current_lesson, 0) as current_lesson, ifnull(ux.lesson_count, 0) as lesson_count,
        ifnull(ux.lessons_completed, 0) as lessons_completed,
        cp.id as custom_program_id, cp.name as custom_program_name,
-       q.qid as custom_quiz_id, q.name as custom_quiz_name
+       q.qid as custom_quiz_id, q.name as custom_quiz_name,
+       rl.cnt_lessons_completed
 FROM  HA_ADMIN a 
 INNER JOIN HA_USER h 
    on a.aid = h.admin_id  
@@ -97,6 +111,21 @@ LEFT JOIN HA_USER_EXTENDED ux
    on ux.user_id = h.uid
 LEFT JOIN HA_CUSTOM_QUIZ q
   on q.qid = p.custom_quiz_id
+  
+  LEFT JOIN HA_TEST t
+  on t.test_id = h.active_test_id        
+LEFT JOIN HA_TEST_RUN r
+  on r.run_id = h.active_run_id
+LEFT JOIN (
+    select r.run_id,count(*) as cnt_lessons_completed
+     from HA_TEST_RUN_LESSON l
+        JOIN HA_TEST_RUN r on r.run_id = l.run_id
+        JOIN HA_TEST t on t.test_id = r.test_id
+     where  t.user_id = ?
+     and date_completed is not null
+     group by r.run_id
+) rl    
+    on rl.run_id = r.run_id  
 
   
 .key=STUDENT_SUMMARY_EXTENDED
@@ -265,7 +294,9 @@ select load_order,is_custom_quiz, max(s.use_date) as use_date, date_format(min(s
   s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.is_archived, s.prog_id, s.subj_id, s.test_config_json,
   s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.segment_count, s.test_run_id,
   s.activity, s.is_quiz, s.is_passing, count(*) as problems_viewed, max(s.session_number) as session_number,
-  s.total_sessions, s.time_on_task, ifnull(pp.name, 'Primary') as prog_type
+  s.total_sessions, s.time_on_task, ifnull(pp.name, 'Primary') as prog_type,
+  cnt_lessons_completed
+    
 from (
 
  select 1 as load_order,0 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
@@ -278,7 +309,9 @@ from (
    0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
    hat.task_time as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   -1 as cnt_lessons_completed
+   
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
@@ -286,9 +319,15 @@ from (
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
   and u.active_test_id = l.test_id
-
+  
+  
+ 
+   
  union
-
+ 
+ 
+ 
+ 
  select 2 as load_order,0 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time,
    date_format(r.run_time,'%Y-%m-%d') as run_date,
@@ -298,7 +337,9 @@ from (
    r.run_id as test_run_id, 0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
    hat.task_time as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   0 as cnt_lessons_completed
+   
  from  HA_TEST l 
  join HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
@@ -306,10 +347,12 @@ from (
  join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and (p.custom_program_id is null && p.custom_quiz_id is null)
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
+
  where u.uid = ?
-
- union
-
+  
+  union
+ 
+  
  select 3 as load_order,0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
    date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
    date_format(iu.view_time,'%Y-%m-%d') as run_date,
@@ -322,9 +365,20 @@ from (
    r.run_id as test_run_id, r.total_sessions as total_sessions,
    if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
    0 as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   ifnull(rl.cnt_lessons_completed,0) as cnt_lessons_completed
+   
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
+   LEFT JOIN (
+    select r.run_id,count(*) as cnt_lessons_completed
+     from HA_TEST_RUN_LESSON l
+         JOIN HA_TEST_RUN r on r.run_id = l.run_id
+         JOIN HA_TEST t on t.test_id = r.test_id     
+     where t.user_id = ?
+     and date_completed is not null
+     group by r.run_id
+ ) rl on rl.run_id = r.run_id
  join (
      select l.run_id,max(l.lesson_number) as session_number,max(lesson_viewed) as view_time
      from    HA_TEST_RUN_LESSON l
@@ -335,15 +389,26 @@ from (
      and l.lesson_viewed is not null
      group by l.run_id, l.lesson_file
  ) iu on iu.run_id = r.run_id
+  
+
+ 
+
+ 
+ 
+
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  join HA_ACTIVITY_TIME hat on hat.type = 'REVIEW'
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
-
+ 
+ 
+ 
  union 
-
+ 
+ 
+ 
  select 4 as load_order, 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
    date_format(r.run_time,'%Y-%m-%d') as run_date,
@@ -357,7 +422,9 @@ from (
    r.run_id as test_run_id, (select count(*) from HA_CUSTOM_QUIZ_IDS where qid = p.custom_quiz_id) as total_sessions,
    if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
    if (p.custom_quiz_id is null, 0, hat.task_time) as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   -1 as cnt_lessons_completed
+   
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
      
@@ -377,8 +444,11 @@ from (
  join HA_CUSTOM_QUIZ q on q.qid = p.custom_quiz_id
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
-
+ 
+ 
 union
+
+
 
  select 5 as load_order, 1 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    null as stop_time,  l.create_time as view_time,
@@ -393,7 +463,10 @@ union
    r.test_id as test_run_id, (select count(*) from HA_TEST_CURRENT where test_id = l.test_id) as total_sessions,
    'Quiz' as activity, 1 as is_quiz, 0 as session_number,
    hat.task_time as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   -1 as cnt_lessons_completed
+   
+   
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_CURRENT r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
@@ -403,11 +476,11 @@ union
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  left join HA_TEST_RUN tr on tr.test_id = l.test_id and tr.run_id is null
  where u.uid = ?
-
 ) s
 left join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = s.prog_inst_id and s.is_parallel_prog = 1
 group by s.test_run_id, s.is_quiz, s.use_date
 order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.session_number asc
+
 
 ######
 .key=STUDENT_ACTIVITY_TIME_ON_TASK

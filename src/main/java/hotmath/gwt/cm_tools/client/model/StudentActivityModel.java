@@ -12,6 +12,7 @@ public class StudentActivityModel extends BaseModel implements Response {
 	public static final String IS_QUIZ_KEY        = "is-quiz";
 	public static final String LESSON_COUNT_KEY   = "lesson-count";
 	public static final String LESSONS_VIEWED_KEY = "lessons-viewed";
+	public static final String LESSONS_COMPLETED_KEY = "lessons-completed";
 	public static final String PROGRAM_KEY        = "program";
 	public static final String PROGRAM_TYPE_KEY   = "program-type";
 	public static final String RESULT_KEY         = "result";
@@ -122,6 +123,14 @@ public class StudentActivityModel extends BaseModel implements Response {
 	    set(RUN_ID_KEY, runId);	
 	}
 
+	public Integer getLessonsCompleted() {
+	    return get(LESSONS_COMPLETED_KEY);
+	}
+	
+	public void setLessonsCompleted(int completed) {
+	    set(LESSONS_COMPLETED_KEY,completed);
+	}
+	
 	public Integer getLessonCount() {
 		return get(LESSON_COUNT_KEY);
 	}

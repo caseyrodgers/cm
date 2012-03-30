@@ -66,6 +66,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			ps.setInt(5, uid);
 			ps.setInt(6, uid);
 			ps.setInt(7, uid);
+			ps.setInt(8, uid);
 			rs = ps.executeQuery();
 
 			l = loadStudentActivity(conn, rs);
@@ -160,7 +161,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
                         try {
-                			model = loadRow(rs, cmaDao);
+                			model = loadStudentActivityRow(rs, cmaDao);
                         }
                         catch(Exception e) {
                             LOGGER.error(String.format("Error getting Student Activity for uid: %d", uid), e);
@@ -298,7 +299,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		CmAdminDao cmaDao = CmAdminDao.getInstance();
 
 		while (rs.next()) {
-			StudentActivityModel m = loadRow(rs, cmaDao);
+			StudentActivityModel m = loadStudentActivityRow(rs, cmaDao);
 			l.add(m);
 		}
 
@@ -313,7 +314,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		return m;
 	}
 
-	private StudentActivityModel loadRow(ResultSet rs, CmAdminDao cmaDao)
+	private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao)
 			throws SQLException, Exception {
 		StudentActivityModel m = new StudentActivityModel();
 		boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
@@ -331,6 +332,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		m.setTimeOnTask(rs.getInt("time_on_task"));
 		m.setProgramType(rs.getString("prog_type"));
 		m.setIsArchived(rs.getInt("is_archived"));
+		m.setLessonsCompleted(rs.getInt("cnt_lessons_completed"));
 
 		if (progId.equalsIgnoreCase("chap")) {
 			String subjId = rs.getString("subj_id");
@@ -384,21 +386,24 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			int lessonsViewed = rs.getInt("problems_viewed");
 			m.setLessonsViewed(lessonsViewed);
 			
+			int lessonsCompleted = rs.getInt("cnt_lessons_completed");
+			m.setLessonsCompleted(lessonsCompleted);
+			
 			m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
 
-			if (lessonsViewed >= 0) {
+			if (lessonsCompleted >= 0) {
 				if (totalSessions < 1) {
-					sb.append("total of ").append(lessonsViewed);
-					if (lessonsViewed > 1)
-						sb.append(" reviews completed");
+					sb.append("total of ").append(lessonsCompleted);
+					if (lessonsCompleted > 1)
+						sb.append(" lessons completed");
 					else
-						sb.append(" review completed");
+						sb.append(" lesson completed");
 					if (inProgress != 0) {
 						sb.append(", 1 in progress");
 					}
 				} else {
-					sb.append(lessonsViewed).append(" out of ");
-					sb.append(totalSessions).append(" reviewed");
+					sb.append(lessonsCompleted).append(" out of ");
+					sb.append(totalSessions).append(" completed");
 				}
 			} else {
 				if (inProgress != 0) {
