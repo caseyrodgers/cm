@@ -69,12 +69,15 @@ LEFT JOIN HA_TEST t
 LEFT JOIN HA_TEST_RUN r
   on r.run_id = h.active_run_id
 LEFT JOIN (
-    select run_id,count(*) as cnt_lessons_completed
-     from HA_TEST_RUN_LESSON 
-     where date_completed is not null
-     group by run_id
-) rl    
-    on rl.run_id = r.run_id             
+    select r.run_id,count(*) as cnt_lessons_completed
+     from HA_TEST_RUN_LESSON l
+        JOIN HA_TEST_RUN r on r.run_id = l.run_id
+        JOIN HA_TEST t on t.test_id = r.test_id
+        JOIN HA_USER u on u.uid = t.user_id
+     where u.admin_id = ?
+     and date_completed is not null
+     group by r.run_id
+) rl on rl.run_id = r.run_id             
 
 
 ## The base query for reading student data, including
