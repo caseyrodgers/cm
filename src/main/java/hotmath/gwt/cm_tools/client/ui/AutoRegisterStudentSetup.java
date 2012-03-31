@@ -102,6 +102,13 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	
 	
 	private void saveAutoRegistrationSetup(StudentModel student) {
+	    
+	    String group = student.getGroup();
+	    if(group == null) {
+	        CatchupMathTools.showAlert("Group must be specified");
+	        return;
+	    }
+	    
 	    CmServiceAsync s = CmShared.getCmService();
         s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
             @Override
