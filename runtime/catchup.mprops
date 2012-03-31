@@ -308,25 +308,18 @@ from (
    0 as test_run_id,
    0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
-   hat.task_time as time_on_task,
+   0 as time_on_task,
    ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
    -1 as cnt_lessons_completed
    
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join HA_ACTIVITY_TIME hat on hat.type = 'QUIZ'
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null and p.custom_quiz_id is null
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
   and u.active_test_id = l.test_id
-  
-  
- 
    
- union
- 
- 
- 
+ UNION
  
  select 2 as load_order,0 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time, r.run_time as view_time,
@@ -350,8 +343,7 @@ from (
 
  where u.uid = ?
   
-  union
- 
+ UNION
   
  select 3 as load_order,0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
    date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time as view_time,
@@ -389,13 +381,6 @@ from (
      and l.lesson_viewed is not null
      group by l.run_id, l.lesson_file
  ) iu on iu.run_id = r.run_id
-  
-
- 
-
- 
- 
-
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
  join HA_ACTIVITY_TIME hat on hat.type = 'REVIEW'
@@ -403,11 +388,7 @@ from (
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
  
- 
- 
- union 
- 
- 
+ UNION
  
  select 4 as load_order, 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
@@ -445,13 +426,10 @@ from (
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  where u.uid = ?
  
- 
-union
-
-
+ UNION
 
  select 5 as load_order, 1 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
-   null as stop_time,  l.create_time as view_time,
+   null as stop_time, l.create_time as view_time,
    date_format(l.create_time,'%Y-%m-%d') as run_date,
    0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 0 as is_passing,
    if (p.custom_quiz_id is null,
@@ -466,7 +444,6 @@ union
    ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
    -1 as cnt_lessons_completed
    
-   
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_CURRENT r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
@@ -476,6 +453,7 @@ union
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
  left join HA_TEST_RUN tr on tr.test_id = l.test_id and tr.run_id is null
  where u.uid = ?
+
 ) s
 left join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = s.prog_inst_id and s.is_parallel_prog = 1
 group by s.test_run_id, s.is_quiz, s.use_date
