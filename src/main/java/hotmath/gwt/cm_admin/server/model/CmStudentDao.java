@@ -207,7 +207,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         try {
                 ps = conn.prepareStatement(sqlWithUids);
                 ps.setInt(1, adminUid);
-            ps.setInt(2, (isActive) ? 1 : 0);
+                ps.setInt(2, adminUid);
+                ps.setInt(3, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
             l = loadStudentSummaries(rs);
@@ -1728,7 +1729,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             throws Exception {
 
         String sql = getStudentSql(StudentSqlType.SINGLE_STUDENT, includeSelfRegTemplate);
-        StudentModelI studentModel = this.getJdbcTemplate().queryForObject(sql, new Object[] { uid, 1 },
+        StudentModelI studentModel = this.getJdbcTemplate().queryForObject(sql, new Object[] { uid,uid, 1 },
                 new RowMapper<StudentModelI>() {
                     public StudentModelI mapRow(ResultSet rs, int rowNum) throws SQLException {
                         try {
