@@ -548,13 +548,15 @@ WHERE t.user_id in ( $$UID_LIST$$ )
 #
 # can't handle students that were unregistered in date range
 # because there is not a separate "unregistered" time stamp
+# (updated by Casey to use between instead of less than ..
+#  seemed like a bug..
 #
 
 SELECT DISTINCT u.uid as user_id
 FROM HA_USER u
 WHERE u.uid in ( $$UID_LIST$$ )
   AND u.is_active = 1
-  AND ( u.date_created < ? OR u.date_created < ? )
+  AND ( u.date_created between ? and  ? )
   
   
 ####
