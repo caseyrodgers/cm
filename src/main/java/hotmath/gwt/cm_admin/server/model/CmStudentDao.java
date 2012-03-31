@@ -246,7 +246,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
             ps.setInt(1, adminUid);
-            ps.setInt(2, (isActive) ? 1 : 0);
+            ps.setInt(2,adminUid);
+            ps.setInt(3, (isActive) ? 1 : 0);
             rs = ps.executeQuery();
 
             l = loadStudentBaseSummaries(rs, tutoringEnabledForAdmin);
@@ -1929,7 +1930,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
        try {
            ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.SINGLE_STUDENT, false));
            ps.setInt(1, uid);
-           ps.setInt(2, 1);
+           ps.setInt(2, uid);
+           ps.setInt(3, 1);
            rs = ps.executeQuery();
 
            List<StudentModelI> l = null;
