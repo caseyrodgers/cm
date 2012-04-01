@@ -47,6 +47,18 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	private StudentActivityDao() {
 	}
 
+	/**
+	 * Temporary
+	 * 
+	 * @param conn
+	 * @param uid
+	 * @return
+	 * @throws Exception
+	 */
+	public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid) throws Exception {
+		return getStudentActivity(conn, uid, null, null);
+	}
+	
 	/** Return list of activity records
 	 *
 	 * @param uid
