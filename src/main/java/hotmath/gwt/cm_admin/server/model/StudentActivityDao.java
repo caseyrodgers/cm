@@ -17,6 +17,7 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +53,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid) throws Exception {
+	public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid, Date fromDate, Date toDate) throws Exception {
 		List<StudentActivityModel> l = null;
 
 		PreparedStatement ps = null;
@@ -66,7 +67,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			ps.setInt(5, uid);
 			ps.setInt(6, uid);
 			ps.setInt(7, uid);
-			ps.setInt(8, uid);
 			rs = ps.executeQuery();
 
 			l = loadStudentActivity(conn, rs);
@@ -304,7 +304,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		}
 
 		fixReviewSectionNumbers(l);
-
+		
 		// reverse order of list
 		List<StudentActivityModel> m = new ArrayList<StudentActivityModel>(l.size());
 		for (int i = (l.size() - 1); i >= 0; i--) {
@@ -314,6 +314,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		return m;
 	}
 
+	int currentRunId = 0;
+	int lessonsCompleted = 0;
+	
 	private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao)
 			throws SQLException, Exception {
 		StudentActivityModel m = new StudentActivityModel();
@@ -332,7 +335,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		m.setTimeOnTask(rs.getInt("time_on_task"));
 		m.setProgramType(rs.getString("prog_type"));
 		m.setIsArchived(rs.getInt("is_archived"));
-		m.setLessonsCompleted(rs.getInt("cnt_lessons_completed"));
 
 		if (progId.equalsIgnoreCase("chap")) {
 			String subjId = rs.getString("subj_id");
@@ -347,6 +349,11 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		}
 
 		int runId = rs.getInt("test_run_id");
+		
+		if (runId != currentRunId) {
+			currentRunId = runId;
+			lessonsCompleted = 0;
+		}
 		m.setRunId(runId);
 
 		StringBuilder sb = new StringBuilder();
@@ -381,13 +388,17 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
 			}
 		} else {
-			int inProgress = 0; // lessonsViewed % problemsPerLesson;
+	        int inProgress = 0; // lessonsViewed % problemsPerLesson;
 
-			int lessonsViewed = rs.getInt("problems_viewed");
+	        int lessonsViewed = 0;
+			if (m.getUseDate() != null) {
+				lessonsViewed = rs.getInt("problems_viewed");
+			}
+			else {
+				m.setUseDate(rs.getString("run_date"));
+			}
 			m.setLessonsViewed(lessonsViewed);
-			
-			int lessonsCompleted = rs.getInt("cnt_lessons_completed");
-			m.setLessonsCompleted(lessonsCompleted);
+			lessonsCompleted += lessonsViewed;
 			
 			m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
 
@@ -395,9 +406,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 				if (totalSessions < 1) {
 					sb.append("total of ").append(lessonsCompleted);
 					if (lessonsCompleted > 1)
-						sb.append(" lessons completed");
+						sb.append(" reviews completed");
 					else
-						sb.append(" lesson completed");
+						sb.append(" review completed");
 					if (inProgress != 0) {
 						sb.append(", 1 in progress");
 					}
