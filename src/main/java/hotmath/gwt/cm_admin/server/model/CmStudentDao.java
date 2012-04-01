@@ -1999,7 +1999,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sprm.setSubjectId(rs.getString("subj_id"));
             sprm.setCustom(new CustomProgramComposite(
                     rs.getInt("custom_program_id"), rs.getString("custom_program_name"),
-                    rs.getInt("custom_quiz_id"),rs.getString("custom_quiz_name")));
+                    rs.getInt("custom_quiz_id"), rs.getString("custom_quiz_name")));
 
 
                 StudentSettingsModel mdl = sm.getSettings();
@@ -2421,8 +2421,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     /** Helper function to assign the named program/subject to the student identified by uid
      *
      * @param uid
-     * @param subId
-     * @param progId
+     * @param program
      * @param chapter
      * @throws Exception
      */
