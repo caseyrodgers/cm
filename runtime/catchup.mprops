@@ -1710,7 +1710,7 @@ WHERE u.uid = ?
 SELECT c.id, c.user_id, c.pass_percent, c.date_completed, u.admin_id, c.test_def_id, t.test_name, c.test_config_json, c.create_date,
        cp.id as custom_program_id, cp.name as custom_program_name, q.qid as custom_quiz_id, q.name as custom_quiz_name
 FROM      CM_USER_PROGRAM c
-JOIN      HA_USER u             on u.uid = u.user_id
+JOIN      HA_USER u             on c.user_id = u.uid
 JOIN      HA_TEST_DEF t         on c.test_def_id = t.test_def_id
 LEFT JOIN HA_CUSTOM_PROGRAM cp  on c.custom_program_id = cp.id
 LEFT JOIN HA_CUSTOM_QUIZ q on q.qid = c.custom_quiz_id
