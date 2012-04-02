@@ -1318,7 +1318,8 @@ ORDER BY test_def_id
 
 SELECT *
 FROM   HA_TEST_DEF
-WHERE  test_name = ? 
+WHERE  test_name = ?
+and is_active = 1 
 
 
 .key=TEST_FOR_TEST_DEF_ID
