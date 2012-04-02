@@ -567,8 +567,8 @@ public class ExportStudentsInExcelFormat {
 						return percentComplete;
 			}
 		} else if(sm.getProgram().getCustom().getType() == Type.LESSONS) {
-			float currentLesson = Integer.parseInt(tokens[1]);
-			float totalLessons = Integer.parseInt(tokens[3]);
+			float currentLesson = Integer.parseInt(tokens[0]);
+			float totalLessons = Integer.parseInt(tokens[2]);
 			if (totalLessons != 0.0f) {
 				// set percent complete to 90 if on last lesson but not 'COMPLETED'
 				float percent = (currentLesson != totalLessons) ?
