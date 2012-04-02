@@ -168,7 +168,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
         List<StudentActivityModel> list = this.getJdbcTemplate().query(
                 sql,
-                new Object[]{uid, uid, uid, uid, uid, uid, uid},
+                new Object[]{uid, uid, uid, uid, uid, uid, uid, uid},
                 new RowMapper<StudentActivityModel>() {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
