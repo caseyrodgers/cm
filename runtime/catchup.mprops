@@ -2673,7 +2673,7 @@ from inmh_map m
 where m.file = ?
 and b.grade_level <= ?
 and d.is_active = 1
-and solutionxml like '%<question>%'
+and solutionxml like '%statement%hm_question_def%statement%'
 and b.textcode in (
     'alg1ptests',
     'alg1ptests3',
