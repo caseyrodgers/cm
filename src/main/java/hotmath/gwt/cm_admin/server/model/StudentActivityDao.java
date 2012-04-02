@@ -70,6 +70,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+
 		try {
 			ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY"));
 			ps.setInt(1, uid);
@@ -162,13 +163,18 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		
 		return totMap;
 	}
+
+	int currentRunId = 0;
+	int lessonsCompleted = 0;
 	
 	public List<StudentActivityModel> getStudentActivity(final int uid, final boolean includeTimeOnTask) throws Exception {
 		final CmAdminDao cmaDao = CmAdminDao.getInstance();
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
+    	currentRunId = 0;
+    	lessonsCompleted = 0;
         List<StudentActivityModel> list = this.getJdbcTemplate().query(
                 sql,
-                new Object[]{uid, uid, uid, uid, uid, uid, uid, uid},
+                new Object[]{uid, uid, uid, uid, uid, uid, uid},
                 new RowMapper<StudentActivityModel>() {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
@@ -310,6 +316,9 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
 		CmAdminDao cmaDao = CmAdminDao.getInstance();
 
+		currentRunId = 0;
+		lessonsCompleted = 0;
+
 		while (rs.next()) {
 			StudentActivityModel m = loadStudentActivityRow(rs, cmaDao);
 			l.add(m);
@@ -326,9 +335,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		return m;
 	}
 
-	int currentRunId = 0;
-	int lessonsCompleted = 0;
-	
 	private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao)
 			throws SQLException, Exception {
 		StudentActivityModel m = new StudentActivityModel();
