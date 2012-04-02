@@ -2685,12 +2685,7 @@ and b.textcode in (
     'geoptests2',
     'prealgptests',
     'prealgptests2',
-    'taks11hm',
-    'dummy4customprog-alg1',
-    'dummy4customprog-alg2',
-    'dummy4customprog-ess',
-    'dummy4customprog-geo',
-    'dummy4customprog-prealg'    
+    'taks11hm'    
     )
 order by guid
           
