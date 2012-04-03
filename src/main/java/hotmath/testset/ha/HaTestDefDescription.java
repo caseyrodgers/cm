@@ -4,6 +4,7 @@ import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.InmhItemData;
 import hotmath.assessment.AssessmentPrescription.SessionData;
+import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.inmh.INeedMoreHelpItem;
@@ -160,9 +161,16 @@ public class HaTestDefDescription {
             if (config == null)
                 config = def.getTestConfig();
 
+            
+            // read full StudentProgramModel
+            StudentUserProgramModel sm = CmUserProgramDao.getInstance().loadProgramInfo(conn, testRun.getHaTest().getProgramInfo().getId());
+            String chapter = sm.getConfig().getChapters().size() > 0?sm.getConfig().getChapters().get(0):"Course Test";
+            
             HaTestDefDao dao = HaTestDefDao.getInstance();
             
-            int totalPidsInProgram = dao.getTestIds(testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, 0, 99999, config)
+            
+            
+            int totalPidsInProgram = dao.getTestIds(sm, def.getTextCode(), chapter, 0, 0, 99999, sm.getConfig())
                     .size();
             int pidsInASegment = totalPidsInProgram / def.getTotalSegmentCount();
 
@@ -174,7 +182,9 @@ public class HaTestDefDescription {
              * program
              * 
              */
-            List<String> pids = dao.getTestIds(testRun.getHaTest().getProgramInfo(), def.getTextCode(), def.getChapter(), 0, start, end, config);
+            
+                 
+            List<String> pids = dao.getTestIds(sm, def.getTextCode(), chapter, 0, start, end, sm.getConfig());
 
             /**
              * Create a dummy TestRun
