@@ -367,7 +367,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(5, vals[0]);
             ps.setString(6, vals[1]);            
 
-            __logger.debug("report sql: " + ps);
+            if (__logger.isDebugEnabled()) __logger.debug("report sql: " + ps);
 
             Map<ActivityTypeEnum, ActivityTime> map = StudentActivityDao.getInstance().getActivityTimeMap();
             ResultSet rs = ps.executeQuery();
