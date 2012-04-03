@@ -84,7 +84,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             ps.setInt(5, uid);
             ps.setInt(6, uid);
             ps.setInt(7, uid);
-            ps.setInt(8, uid);
+            // ps.setInt(8, uid);   // for login 
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);
