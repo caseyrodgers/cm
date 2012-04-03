@@ -608,14 +608,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         if (userIds.size() == 0)
             return userIds;
 
-        String[] dates = dateRange.split(" - ");
+        final String[] dates = dateRange.split(" - ");
         assert (dates.length == 2);
-        if (logger.isDebugEnabled())
-            logger.debug("dates[]: " + dates[0] + ", " + dates[1]);
 
         /** match at beginning of day and end of day, inclusive */
         dates[0] = dates[0] + " 00:00";
         dates[1] = dates[1] + " 23:59";
+        if (logger.isDebugEnabled())
+            logger.debug("dates[]: " + dates[0] + ", " + dates[1]);
 
         StringBuilder sb = buildSQL(options);
 
@@ -636,8 +636,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 try {
                     userId = rs.getInt("user_id");
                 } catch (Exception e) {
-                    LOGGER.error(String.format("Error getting Students with Activity for SQL: %s, dateRange: %s", sql,
-                            dateRange), e);
+                    LOGGER.error(String.format("Error getting Students with Activity for SQL: %s, dateRange: %s - %s", sql,
+                            dates[0], dates[1]), e);
                     throw new SQLException(e.getMessage());
                 }
                 return userId;
