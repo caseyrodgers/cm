@@ -345,19 +345,17 @@ from (
    date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time,
    date_format(iu.run_time,'%Y-%m-%d') as run_date,
    0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 0 as is_passing,
-   if (p.custom_program_id is null,
-       concat(td.subj_id, ' ', td.prog_id),
-       concat('CP: ', if (cp.is_archived=0, cp.name, concat(cp.name, concat(' (', concat(date_format(cp.archive_date,'%Y-%m-%d'), ')')))))) as program,
-   cp.is_archived as is_archived, td.prog_id, td.subj_id, p.test_config_json,
+   concat(td.subj_id, ' ', td.prog_id) as program,
+   0 as is_archived, td.prog_id, td.subj_id, p.test_config_json,
    l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, td.segment_count,
    r.run_id as test_run_id, r.total_sessions as total_sessions,
-   if (p.custom_program_id is null, 'Review-', 'Review') as activity, 0 as is_quiz, iu.session_number as session_number,
+   'Review-' as activity, 0 as is_quiz, iu.session_number as session_number,
    0 as time_on_task,
    ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join (
-     select l.run_id,max(l.lesson_number) as session_number,max(date_completed) as view_time, max(lesson_viewed) as run_time
+     select l.run_id,max(l.lesson_number) as session_number, max(lesson_viewed) as view_time, max(date_completed) as run_time
      from    HA_TEST_RUN_LESSON l
          JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
          JOIN HA_TEST_RUN r on r.run_id = l.run_id
@@ -367,7 +365,38 @@ from (
      group by l.run_id, l.lesson_file
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
- join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null
+ join HA_ACTIVITY_TIME hat on hat.type = 'REVIEW'
+ left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
+ where u.uid = ?
+
+ UNION
+
+ select 4 as load_order,0 as is_custom_quiz, date_format(iu.view_time,'%Y-%m-%d') as use_date, date_format(iu.view_time,'%h:%i %p') as start_time,
+   date_format(iu.view_time,'%h:%i %p') as stop_time, iu.view_time,
+   date_format(iu.run_time,'%Y-%m-%d') as run_date,
+   0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 0 as is_passing,
+   concat('CP: ', if (cp.is_archived=0, cp.name, concat(cp.name, concat(' (', concat(date_format(cp.archive_date,'%Y-%m-%d'), ')'))))) as program,
+   cp.is_archived as is_archived, td.prog_id, td.subj_id, p.test_config_json,
+   l.test_id as test_id, iu.session_number as test_segment, td.test_def_id as test_def_id, td.segment_count,
+   r.run_id as test_run_id, r.total_sessions as total_sessions,
+   'Review' as activity, 0 as is_quiz, iu.session_number as session_number,
+   0 as time_on_task,
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+ from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
+ join HA_TEST_RUN r on r.test_id = l.test_id
+ join (
+     select l.run_id,max(l.lesson_number) as session_number,max(lesson_viewed) as view_time, max(date_completed) as run_time
+     from    HA_TEST_RUN_LESSON l
+         JOIN HA_TEST_RUN_LESSON_PID p on p.lid = l.id
+         JOIN HA_TEST_RUN r on r.run_id = l.run_id
+         JOIN HA_TEST t on t.test_id = r.test_id
+     where t.user_id = ?
+     and l.date_completed is not null
+     group by l.run_id, l.lesson_file
+ ) iu on iu.run_id = r.run_id
+ join HA_TEST_DEF td on td.test_def_id = l.test_def_id
+ join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is not null
  join HA_ACTIVITY_TIME hat on hat.type = 'REVIEW'
  left join HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id and p.custom_program_id is not null
  left join CM_PROGRAM_ASSIGN pa on pa.user_prog_id = p.id
@@ -375,7 +404,7 @@ from (
 
  UNION 
 
- select 4 as load_order, 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 5 as load_order, 1 as is_custom_quiz, date_format(r.run_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    date_format(r.run_time,'%h:%i %p') as stop_time,  l.create_time as view_time,
    date_format(r.run_time,'%Y-%m-%d') as run_date,
    r.answered_correct, r.answered_incorrect, r.not_answered, r.is_passing,
@@ -411,7 +440,7 @@ from (
 
 UNION
 
- select 5 as load_order, 1 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
+ select 6 as load_order, 1 as is_custom_quiz, date_format(l.create_time,'%Y-%m-%d') as use_date, date_format(l.create_time,'%h:%i %p') as start_time,
    null as stop_time, l.create_time as view_time,
    date_format(l.create_time,'%Y-%m-%d') as run_date,
    0 as answered_correct, 0 as answered_incorrect, 0 as not_answered, 0 as is_passing,

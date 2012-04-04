@@ -84,7 +84,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             ps.setInt(5, uid);
             ps.setInt(6, uid);
             ps.setInt(7, uid);
-            // ps.setInt(8, uid);   // for login 
+            ps.setInt(8, uid);
+            ps.setInt(9, uid); 
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);
@@ -181,7 +182,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         currentRunId = 0;
         lessonsCompleted = 0;
         List<StudentActivityModel> list = this.getJdbcTemplate().query(sql,
-                new Object[] { uid, uid, uid, uid, uid, uid, uid }, new RowMapper<StudentActivityModel>() {
+                new Object[] { uid, uid, uid, uid, uid, uid, uid, uid, uid }, new RowMapper<StudentActivityModel>() {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
                         try {
@@ -451,7 +452,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
                 int lessonsViewed = 0;
                 if (m.getUseDate() != null) {
-                    lessonsViewed = rs.getInt("problems_viewed");
+                    lessonsViewed = (rs.getString("run_date") != null) ? rs.getInt("problems_viewed") : 0;
                 } else {
                     m.setUseDate(rs.getString("run_date"));
                 }
