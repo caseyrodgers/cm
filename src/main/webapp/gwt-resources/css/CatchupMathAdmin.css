@@ -50,7 +50,7 @@
 .header-panel-training-btn {
 	position: absolute; top : 3px;
 	right: 362;
-	background: url(/gwt-resources/images/admin_teacher_training.png)
+	background: url(/gwt-resources/images/training_videos_normal.png)
 		no-repeat center left !important;
 	height: 32px;
 	width: 144px;
@@ -58,14 +58,14 @@
 }
 
 .header-panel-training-btn-over {
-	background: url(/gwt-resources/images/admin_teacher_training-over.png)
+	background: url(/gwt-resources/images/training_videos_over.png)
 		no-repeat center left !important;
 }
 
 .header-panel-updates-btn {
 	position: absolute;
 	top: 3px;
-	right: 205px	; 
+	right: 205px; 
 	background :url(/gwt-resources/images/recent_updates-2_normal.png) no-repeat center left !important;
 	height: 32px;
 	width: 144px;
