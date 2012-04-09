@@ -464,6 +464,7 @@ UNION
  left join HA_TEST_RUN tr on tr.test_id = l.test_id and tr.run_id is null
  where u.uid = ?
 
+
 ) s
 left join CM_PARALLEL_PROGRAM pp on pp.prog_inst_id = s.prog_inst_id and s.is_parallel_prog = 1
 where use_date is not null
@@ -1379,11 +1380,17 @@ WHERE  booktitle = ?
 ORDER BY problemnumber
 
 
+
 .key=TEST_IDS_FOR_PROGRAM
+## NOTE: we do the replace to deal with a
+## bug in solution editor that removes spaces
+## when saving section,chapter...
 
 SELECT problemindex
 FROM   SOLUTIONS
-WHERE  (SOLUTIONS.BOOKTITLE = ? and (SOLUTIONS.CHAPTERTITLE = ? AND SOLUTIONS.SECTIONTITLE = ?))
+WHERE  (SOLUTIONS.BOOKTITLE = ? and 
+     (
+       replace(SOLUTIONS.CHAPTERTITLE,' ','') = replace(?,' ','') AND SOLUTIONS.SECTIONTITLE = ?))
   AND  problemnumber between ? and ?
 ORDER BY cast(problemnumber as unsigned)  
  

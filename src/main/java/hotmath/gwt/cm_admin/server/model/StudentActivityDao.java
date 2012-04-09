@@ -85,7 +85,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             ps.setInt(6, uid);
             ps.setInt(7, uid);
             ps.setInt(8, uid);
-            ps.setInt(9, uid); 
+            ps.setInt(9, uid);
             rs = ps.executeQuery();
 
             l = loadStudentActivity(conn, rs);
@@ -368,121 +368,111 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         sam.setIsArchived(0);
     }
 
-    final static int LOGIN = 6;
-
     private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao) throws SQLException, Exception {
         StudentActivityModel m = new StudentActivityModel();
 
-        int loadOrder = rs.getInt("load_order");
-        if (loadOrder == LOGIN) {
-            setDefaults(m);
-            // handle login records
-            m.setUseDate(rs.getString("use_date"));
-            m.setResult("Login Record Bitch");
+        boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
+        m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
+        m.setProgramDescr(rs.getString("program"));
+        m.setUseDate(rs.getString("use_date"));
+        m.setStart(rs.getString("start_time"));
+        m.setStop(rs.getString("stop_time"));
+        m.setTestId(rs.getInt("test_id"));
+        int sectionNum = rs.getInt("test_segment");
+        m.setSectionNum(sectionNum);
+        int sectionCount = rs.getInt("segment_count");
+        m.setSectionCount(sectionCount);
+        String progId = rs.getString("prog_id");
+        m.setTimeOnTask(rs.getInt("time_on_task"));
+        m.setProgramType(rs.getString("prog_type"));
+        m.setIsArchived(rs.getInt("is_archived"));
 
-        } else {
-            boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
-            m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
-            m.setProgramDescr(rs.getString("program"));
-            m.setUseDate(rs.getString("use_date"));
-            m.setStart(rs.getString("start_time"));
-            m.setStop(rs.getString("stop_time"));
-            m.setTestId(rs.getInt("test_id"));
-            int sectionNum = rs.getInt("test_segment");
-            m.setSectionNum(sectionNum);
-            int sectionCount = rs.getInt("segment_count");
-            m.setSectionCount(sectionCount);
-            String progId = rs.getString("prog_id");
-            m.setTimeOnTask(rs.getInt("time_on_task"));
-            m.setProgramType(rs.getString("prog_type"));
-            m.setIsArchived(rs.getInt("is_archived"));
-
-            if (progId.equalsIgnoreCase("chap")) {
-                String subjId = rs.getString("subj_id");
-                String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
-                List<ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
-                for (ChapterModel cm : cmList) {
-                    if (cm.getTitle().equals(chapter)) {
-                        m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber())
-                                .toString());
-                        break;
-                    }
+        if (progId.equalsIgnoreCase("chap")) {
+            String subjId = rs.getString("subj_id");
+            String chapter = JsonUtil.getChapter(rs.getString("test_config_json"));
+            List<ChapterModel> cmList = cmaDao.getChaptersForProgramSubject("Chap", subjId);
+            for (ChapterModel cm : cmList) {
+                if (cm.getTitle().equals(chapter)) {
+                    m.setProgramDescr(new StringBuilder(m.getProgramDescr()).append(" ").append(cm.getNumber())
+                            .toString());
+                    break;
                 }
             }
+        }
 
-            int runId = rs.getInt("test_run_id");
+        int runId = rs.getInt("test_run_id");
 
-            if (runId != currentRunId) {
-                currentRunId = runId;
-                lessonsCompleted = 0;
+        if (runId != currentRunId) {
+            currentRunId = runId;
+            lessonsCompleted = 0;
+        }
+        m.setRunId(runId);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(rs.getString("activity"));
+
+        boolean isQuiz = (rs.getInt("is_quiz") > 0);
+        m.setIsQuiz(isQuiz);
+        if (isQuiz && !isCustomQuiz) {
+            sb.append(sectionNum);
+        }
+        m.setActivity(sb.toString());
+
+        // TODO: flag re-takes?
+        sb.delete(0, sb.length());
+        int totalSessions = rs.getInt("total_sessions");
+        m.setLessonCount(totalSessions);
+        if (isQuiz) {
+            int numCorrect = rs.getInt("answered_correct");
+            int numIncorrect = rs.getInt("answered_incorrect");
+            int notAnswered = rs.getInt("not_answered");
+            boolean isPassing = (rs.getInt("is_passing") > 0);
+            m.setIsPassing(isPassing);
+            if ((numCorrect + numIncorrect + notAnswered) > 0) {
+                double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
+                sb.append(Math.round(percent)).append("% correct");
+            } else if (isCustomQuiz == false) {
+                sb.append("Started");
+            } else {
+                m.setIsQuiz(false);
+                sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
             }
-            m.setRunId(runId);
+        } else {
+            int inProgress = 0; // lessonsViewed % problemsPerLesson;
 
-            StringBuilder sb = new StringBuilder();
-            sb.append(rs.getString("activity"));
-
-            boolean isQuiz = (rs.getInt("is_quiz") > 0);
-            m.setIsQuiz(isQuiz);
-            if (isQuiz && !isCustomQuiz) {
-                sb.append(sectionNum);
+            int lessonsViewed = 0;
+            if (m.getUseDate() != null) {
+                lessonsViewed = (rs.getString("run_date") != null) ? rs.getInt("problems_viewed") : 0;
+            } else {
+                m.setUseDate(rs.getString("run_date"));
             }
-            m.setActivity(sb.toString());
+            m.setLessonsViewed(lessonsViewed);
+            lessonsCompleted += lessonsViewed;
 
-            // TODO: flag re-takes?
-            sb.delete(0, sb.length());
-            int totalSessions = rs.getInt("total_sessions");
-            m.setLessonCount(totalSessions);
-            if (isQuiz) {
-                int numCorrect = rs.getInt("answered_correct");
-                int numIncorrect = rs.getInt("answered_incorrect");
-                int notAnswered = rs.getInt("not_answered");
-                boolean isPassing = (rs.getInt("is_passing") > 0);
-                m.setIsPassing(isPassing);
-                if ((numCorrect + numIncorrect + notAnswered) > 0) {
-                    double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
-                    sb.append(Math.round(percent)).append("% correct");
-                } else if (isCustomQuiz == false) {
-                    sb.append("Started");
+            m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
+
+            if (lessonsCompleted >= 0) {
+                if (totalSessions < 1) {
+                    sb.append("total of ").append(lessonsCompleted);
+                    if (lessonsCompleted > 1)
+                        sb.append(" reviews completed");
+                    else
+                        sb.append(" review completed");
+                    if (inProgress != 0) {
+                        sb.append(", 1 in progress");
+                    }
                 } else {
-                    m.setIsQuiz(false);
-                    sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
+                    sb.append(lessonsCompleted).append(" out of ");
+                    sb.append(totalSessions).append(" completed");
                 }
             } else {
-                int inProgress = 0; // lessonsViewed % problemsPerLesson;
-
-                int lessonsViewed = 0;
-                if (m.getUseDate() != null) {
-                    lessonsViewed = (rs.getString("run_date") != null) ? rs.getInt("problems_viewed") : 0;
-                } else {
-                    m.setUseDate(rs.getString("run_date"));
-                }
-                m.setLessonsViewed(lessonsViewed);
-                lessonsCompleted += lessonsViewed;
-
-                m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
-
-                if (lessonsCompleted >= 0) {
-                    if (totalSessions < 1) {
-                        sb.append("total of ").append(lessonsCompleted);
-                        if (lessonsCompleted > 1)
-                            sb.append(" reviews completed");
-                        else
-                            sb.append(" review completed");
-                        if (inProgress != 0) {
-                            sb.append(", 1 in progress");
-                        }
-                    } else {
-                        sb.append(lessonsCompleted).append(" out of ");
-                        sb.append(totalSessions).append(" completed");
-                    }
-                } else {
-                    if (inProgress != 0) {
-                        sb.append("1 review in progress");
-                    }
+                if (inProgress != 0) {
+                    sb.append("1 review in progress");
                 }
             }
-            m.setResult(sb.toString());
         }
+        m.setResult(sb.toString());
+
         return m;
     }
 
@@ -637,8 +627,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 try {
                     userId = rs.getInt("user_id");
                 } catch (Exception e) {
-                    LOGGER.error(String.format("Error getting Students with Activity for SQL: %s, dateRange: %s - %s", sql,
-                            dates[0], dates[1]), e);
+                    LOGGER.error(String.format("Error getting Students with Activity for SQL: %s, dateRange: %s - %s",
+                            sql, dates[0], dates[1]), e);
                     throw new SQLException(e.getMessage());
                 }
                 return userId;
