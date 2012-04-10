@@ -29,7 +29,6 @@ public class TrainingVideosWindow extends CmWindow {
         addButton(closeBtn);
 
 		LayoutContainer lc = new LayoutContainer();
-		//TrainingVideosWindow lc = this;
 		lc.setAutoWidth(true);
 		lc.setBorders(false);
         lc.setStyleName("training-videos-window");
