@@ -1387,9 +1387,10 @@ SolutionSetCompleteDialog .results{
 }
 
 .training-videos-window h2 {
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .training-videos-window p {
-	font-size: 10px;
+	padding-top: 5px;
+	font-size: 12px;
 }
