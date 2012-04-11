@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
+import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -12,8 +13,9 @@ import com.google.gwt.user.client.ui.HTML;
 public class TrainingVideosWindow extends CmWindow {
 
     public  TrainingVideosWindow() {
-        setAutoHeight(true);
-        setSize(640,480);
+        setAutoHeight(false);
+        setSize(640,640);
+        setScrollMode(Scroll.AUTO);
 
         setModal(true);
         setResizable(false);
