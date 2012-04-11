@@ -19,13 +19,13 @@
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
-    <h1>Real Time Monitoring During Class: Use Highlights</h1>
-    <ol>
-      <li>Use the Group select at the bottom of the page.</li>
-      <li>Set the Date Range to Today/Today at the bottom of the page.</li>
-      <li>Click the Highlights button.</li>
-      <li>Update using the Highlights Refresh button.</li>
-    </ol>
+    
+    <h1>New way to get tips, updates, and special offers</h1>
+    <p>
+      Stay up to date on Catchup Math: follow us on Twitter @catchupmath and/or Like us on facebook.com/catchupmath.
+      We will still email weekly Usage and Update reports (please assure that registration@hotmath.com is not blocked).
+    </p>
+    <p>We thank you for using Catchup Math!</p>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
