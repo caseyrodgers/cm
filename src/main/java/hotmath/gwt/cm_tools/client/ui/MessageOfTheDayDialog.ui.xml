@@ -6,6 +6,9 @@
 	        padding:10px 15px;
 	    }
 	    
+	    .main p {
+	       padding-top: 10px;
+	       }
 	    ol {
 	        padding: 10px 15px;
 	    }
@@ -23,6 +26,8 @@
     <h1>New way to get tips, updates, and special offers</h1>
     <p>
       Stay up to date on Catchup Math: follow us on Twitter @catchupmath and/or Like us on facebook.com/catchupmath.
+    </p>
+    <p>
       We will still email weekly Usage and Update reports (please assure that registration@hotmath.com is not blocked).
     </p>
     <p>We thank you for using Catchup Math!</p>
