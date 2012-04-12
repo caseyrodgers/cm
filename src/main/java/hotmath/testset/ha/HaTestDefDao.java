@@ -423,8 +423,9 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
                         return rs.getString("problemindex");
                     }
                 });
+        
+        
         return pids;
-
     }
 
     /**

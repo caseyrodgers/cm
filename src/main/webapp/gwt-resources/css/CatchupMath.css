@@ -1231,7 +1231,7 @@ img.resource-item-complete {
 #testset_div .hm_question_def,
 #testset_div .hm_question_def p,
 #testset_div .hm_question_def ul {
-	font-family: Georgia,"Bitstream Charter",serif;
+	#font-family: Georgia,"Bitstream Charter",serif;
 }
 
 .debug-on #testset_div .hm_question_def .edit-button {
