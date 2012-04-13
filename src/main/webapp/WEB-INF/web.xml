@@ -4,10 +4,17 @@
 	 version="2.4">
 
   <display-name>Catchup Math Redux</display-name>
+
   <context-param>
     <param-name>contextConfigLocation</param-name>
     <param-value>WEB-INF/beans.xml</param-value>
   </context-param>
+  
+  <!--  listener>
+    <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+    </listener-class>
+  </listener -->
 
   <filter>
     <filter-name>ClientInfoFilter</filter-name>
@@ -142,7 +149,6 @@
       /cm_search/services/cmService
     </url-pattern>
   </servlet-mapping>
-  
 
   <servlet>
     <servlet-name>GeneratePDFService</servlet-name>
