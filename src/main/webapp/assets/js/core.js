@@ -138,6 +138,139 @@ function showWebinar() {
     });
 }
 
+function showTeacherVideo(name) {
+	var html = '';
+	var closeFoot = '';
+	var title = 'Catchup Math Training Video';
+    
+	if (name =='overview') {
+	     html = '<iframe src="/training-videos/embedded-overview.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+         closeFoot;
+	     title = 'Overview of Teacher Resources';
+	}
+	else if (name == 'sample-session') {
+	     html = '<iframe src="/training-videos/embedded-sample-session.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+         closeFoot;
+	     title = 'Sample Student Session';
+	}
+	else if (name == 'available-content') {
+	     html = '<iframe src="/training-videos/embedded-available-content.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+         closeFoot;
+	     title = 'Available Content';		
+	}
+	else if (name == 'registering-students') {
+	     html = '<iframe src="/training-videos/embedded-registering-students.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+         closeFoot;
+	     title = 'Registering Students';		
+	}
+	else if (name == 'managing-students') {
+	     html = '<iframe src="/training-videos/embedded-managing-students.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+         closeFoot;
+	     title = 'Managing Students';
+	}
+	else if (name == 'managing-groups') {
+	     html = '<iframe src="/training-videos/embedded-managing-groups.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+         closeFoot;
+	     title = 'Managing Groups';		
+	}
+
+    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + title;
+    
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _overlay = new Y.Overlay(
+                                {   
+                                    id:"webiner-video",
+                                    width : "810px",
+                                    heigth: "498px",
+                                    centered : true,
+                                    headerContent : head,
+                                    bodyContent : html,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+                        
+                       _overlay.render();
+    });
+}
+
+function getQueryStringParameter (paramName, url) {
+
+    var i, len, idx, queryString, params, tokens;
+
+    url = url || top.location.href;
+
+    idx = url.indexOf("?");
+    queryString = idx >= 0 ? url.substr(idx + 1) : url;
+
+    // Remove the hash if any
+    idx = queryString.lastIndexOf("#");
+    queryString = idx >= 0 ? queryString.substr(0, idx) : queryString;
+
+    params = queryString.split("&");
+
+    for (i = 0, len = params.length; i < len; i++) {
+        tokens = params[i].split("=");
+        if (tokens.length >= 2) {
+            if (tokens[0] === paramName) {
+                return unescape(tokens[1]);
+            }
+        }
+    }
+
+    return null;
+}
+
+function showWebinar2(filename, title) {
+	alert("in showWebinar2(): title: " + title);
+    var closeFoot = '';
+    var html = '<iframe src="/teacher-training-video/embedded.html" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
+              closeFoot;
+    
+    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + title;
+    
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _overlay = new Y.Overlay(
+                                {   
+                                    id:"webinar-video",
+                                    width : "810px",
+                                    heigth: "498px",
+                                    centered : true,
+                                    headerContent : head,
+                                    bodyContent : html,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+                        
+                       _overlay.render();
+    });
+}
+
+function showSelectedWebinar(webinar) {
+    var closeFoot = '';
+    var html = '<iframe src="/teacher-training-video/embedded.html?webinar=' + webinar + '" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
+              closeFoot;
+    
+    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + "Teaching With Catchup Math";
+    
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _overlay = new Y.Overlay(
+                                {   
+                                    id:"webinar-video",
+                                    width : "810px",
+                                    heigth: "498px",
+                                    centered : true,
+                                    headerContent : head,
+                                    bodyContent : html,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+                        
+                       _overlay.render();
+    });
+}
 
 function formatQuote(quote) {
     
