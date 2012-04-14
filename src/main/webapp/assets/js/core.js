@@ -221,57 +221,6 @@ function getQueryStringParameter (paramName, url) {
     return null;
 }
 
-function showWebinar2(filename, title) {
-	alert("in showWebinar2(): title: " + title);
-    var closeFoot = '';
-    var html = '<iframe src="/teacher-training-video/embedded.html" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
-              closeFoot;
-    
-    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + title;
-    
-    YUI().use('anim','overlay',
-                    function(Y) {
-                        _overlay = new Y.Overlay(
-                                {   
-                                    id:"webinar-video",
-                                    width : "810px",
-                                    heigth: "498px",
-                                    centered : true,
-                                    headerContent : head,
-                                    bodyContent : html,
-                                    zIndex : 2,
-                                    visible:true
-                                });
-                        
-                       _overlay.render();
-    });
-}
-
-function showSelectedWebinar(webinar) {
-    var closeFoot = '';
-    var html = '<iframe src="/teacher-training-video/embedded.html?webinar=' + webinar + '" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
-              closeFoot;
-    
-    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + "Teaching With Catchup Math";
-    
-    YUI().use('anim','overlay',
-                    function(Y) {
-                        _overlay = new Y.Overlay(
-                                {   
-                                    id:"webinar-video",
-                                    width : "810px",
-                                    heigth: "498px",
-                                    centered : true,
-                                    headerContent : head,
-                                    bodyContent : html,
-                                    zIndex : 2,
-                                    visible:true
-                                });
-                        
-                       _overlay.render();
-    });
-}
-
 function formatQuote(quote) {
     
     var url = quote.link_type == 'success'?'/success.html':'/research.html';
