@@ -43,30 +43,33 @@ public class AssessmentPrescriptionPlacement extends AssessmentPrescription {
             /** Sign user up for the current subject program.
                 map to real Program name.
             */
-            if (thisTest.indexOf("pre-algebra") > -1) {
-                if(correct < 3) {
-                    /** 
-                     * 0-2 correct on first quiz --> Essentials Prof
-                     */
+            if(thisTest.indexOf("essentials") > -1) {
+                if(correct < 9) {
                     program = CmProgram.ESSENTIALS;
                 }
-                else {
+            }
+            else if (thisTest.indexOf("pre-algebra") > -1) {
+                if(correct < 9) {
                     program = CmProgram.PREALG_PROF;    
                 }
             } else if (thisTest.indexOf("algebra 1") > -1) {
-                program = CmProgram.ALG1_PROF;
+                if(correct < 9) {
+                    program = CmProgram.ALG1_PROF;
+                }
             } else if (thisTest.indexOf("geometry") > -1) {
-                program = CmProgram.GEOM_PROF;
+                if(correct < 9) {
+                    program = CmProgram.GEOM_PROF;
+                }
             } else if (thisTest.indexOf("algebra 2") > -1) {
                 program = CmProgram.ALG2_PROF;
             }
         } else if (thisTest.indexOf("algebra 2") > -1) {
             /**
              * this means user passed the last test
-             * assign to cahsee as default
+             * assign to National as default
              * 
              */
-            program = CmProgram.CAHSEEHM;
+            program = CmProgram.NATIONAL;
         }
 
         HaUser user = getTestRun().getHaTest().getUser();        

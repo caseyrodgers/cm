@@ -19,8 +19,6 @@ public class HaTest {
     static Logger __logger = Logger.getLogger(HaTest.class);
     
 	final static int QUESTIONS_PER_TEST  = 10;
-	final static int SEGMENTS_PER_PROGRAM = 4;
-	
 	HaUser user;
 	Integer testId;
 	List<String> pids = new ArrayList<String>();

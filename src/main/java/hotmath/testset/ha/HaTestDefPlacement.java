@@ -10,8 +10,8 @@ import java.util.List;
  *
  */
 public class HaTestDefPlacement extends HaTestDef {
-	String TEXTCODE = "placement";
-	String PLACEMENT_CHAPTERS[] = {"prealg", "alg1", "geo", "alg2"};
+	String TEXTCODE = "placement2";
+	String PLACEMENT_CHAPTERS[] = {"ess", "prealg", "alg1", "geo", "alg2"};
 
 	public HaTestDefPlacement() {
 	    // silent
@@ -25,7 +25,7 @@ public class HaTestDefPlacement extends HaTestDef {
 	/** Return set of 4 tests of 7 questions, taken from each subject:
 	 * 
 	 * 
-	 * There will be 4 tests with 7 questions each (prealgptests, alg1, gcgeopractice, alg2).
+	 * There will be 4 tests with 10 questions each (prealgptests, alg1, gcgeopractice, alg2).
 	 * 
 	 */
 
@@ -45,16 +45,19 @@ public class HaTestDefPlacement extends HaTestDef {
 		String t = "Auto-Enrollment";
 		switch(segment) {
 		    case 0:
-		    case 1:
+	        case 1:
+	            t = "Essentials " + t;
+	            break;
+		    case 2:
 		        t = "Pre-Algebra " + t;
 		        break;
-		    case 2:
+		    case 3:
 		    	t = "Algebra 1 " + t;
 		    	break;
-		    case 3:
+		    case 4:
 		    	t = "Geometry " + t;
 		    	break;
-		    case 4:
+		    case 5:
 		    	t = "Algebra 2 " + t;
 		    	break;
 		}
@@ -63,7 +66,7 @@ public class HaTestDefPlacement extends HaTestDef {
 
 	@Override
 	public int getTotalSegmentCount() {
-		return 4;
+		return 5;
 	}
 	
 	/** Return JSON string used to initialize this test
