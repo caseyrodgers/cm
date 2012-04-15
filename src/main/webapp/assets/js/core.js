@@ -112,7 +112,6 @@ function closeWebinar() {
     _overlay.hide();
 }
 
-
 function showWebinar() {
     var closeFoot = '';
     var html = '<iframe src="/teacher-training-video/embedded.html" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
@@ -138,7 +137,21 @@ function showWebinar() {
     });
 }
 
+var _videoOverlay=null;
+
+function closeTeacherVideo() {
+    _videoOverlay.set("bodyContent", "");  // make sure video stops
+    _videoOverlay.hide();
+    _videoOverlay = null;
+}
+
 function showTeacherVideo(name) {
+	
+	if (_videoOverlay != null) {
+		showDialog('Sorry, only one video may be viewed at a time', 'Training Video Message', 4);
+		return;
+	}
+
 	var html = '';
 	var closeFoot = '';
 	var title = 'Catchup Math Training Video';
@@ -174,15 +187,15 @@ function showTeacherVideo(name) {
 	     title = 'Managing Groups';		
 	}
 
-    var head = '<a href="#" onclick="closeWebinar();return false" class="close"><span>close</span> X</a>' + title;
+    var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
     
     YUI().use('anim','overlay',
                     function(Y) {
-                        _overlay = new Y.Overlay(
+                        _videoOverlay = new Y.Overlay(
                                 {   
                                     id:"webiner-video",
-                                    width : "810px",
-                                    height: "498px",
+                                    width : "812px",
+                                    height: "697px",
                                     centered : true,
                                     headerContent : head,
                                     bodyContent : html,
@@ -190,7 +203,7 @@ function showTeacherVideo(name) {
                                     visible:true
                                 });
                         
-                       _overlay.render();
+                       _videoOverlay.render();
     });
 }
 
@@ -238,6 +251,10 @@ function formatQuote(quote) {
 var _overlay = null;
 
 function showDialog(msg, title) {
+	showDialog(msg, title, 2);
+}
+
+function showDialog(msg, title, indexVal) {
     if (_overlay) {
         _overlay.hide();
     }
@@ -254,7 +271,7 @@ function showDialog(msg, title) {
             centered : true,
             headerContent : head,
             bodyContent : html,
-            zIndex : 2,
+            zIndex : indexVal,
             visible : true
         });
 
