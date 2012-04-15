@@ -126,7 +126,7 @@ function showWebinar() {
                                 {   
                                     id:"webinar-video",
                                     width : "810px",
-                                    heigth: "498px",
+                                    height: "498px",
                                     centered : true,
                                     headerContent : head,
                                     bodyContent : html,
@@ -182,7 +182,7 @@ function showTeacherVideo(name) {
                                 {   
                                     id:"webiner-video",
                                     width : "810px",
-                                    heigth: "498px",
+                                    height: "498px",
                                     centered : true,
                                     headerContent : head,
                                     bodyContent : html,
