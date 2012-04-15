@@ -157,32 +157,32 @@ function showTeacherVideo(name) {
 	var title = 'Catchup Math Training Video';
     
 	if (name =='overview') {
-	     html = '<iframe src="/training-videos/embedded-overview.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+	     html = '<iframe src="/training-videos/embedded-overview.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
          closeFoot;
 	     title = 'Overview of Teacher Resources';
 	}
 	else if (name == 'sample-session') {
-	     html = '<iframe src="/training-videos/embedded-sample-session.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+	     html = '<iframe src="/training-videos/embedded-sample-session.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
          closeFoot;
 	     title = 'Sample Student Session';
 	}
 	else if (name == 'available-content') {
-	     html = '<iframe src="/training-videos/embedded-available-content.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+	     html = '<iframe src="/training-videos/embedded-available-content.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
          closeFoot;
 	     title = 'Available Content';		
 	}
 	else if (name == 'registering-students') {
-	     html = '<iframe src="/training-videos/embedded-registering-students.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+	     html = '<iframe src="/training-videos/embedded-registering-students.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
          closeFoot;
 	     title = 'Registering Students';		
 	}
 	else if (name == 'managing-students') {
-	     html = '<iframe src="/training-videos/embedded-managing-students.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+	     html = '<iframe src="/training-videos/embedded-managing-students.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
          closeFoot;
 	     title = 'Managing Students';
 	}
 	else if (name == 'managing-groups') {
-	     html = '<iframe src="/training-videos/embedded-managing-groups.html" width="800" height="660px" scrolling="no" frameborder="no"></iframe>' +
+	     html = '<iframe src="/training-videos/embedded-managing-groups.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
          closeFoot;
 	     title = 'Managing Groups';		
 	}
@@ -194,8 +194,8 @@ function showTeacherVideo(name) {
                         _videoOverlay = new Y.Overlay(
                                 {   
                                     id:"webiner-video",
-                                    width : "812px",
-                                    height: "697px",
+                                    width : "642px",
+                                    height: "562px",
                                     centered : true,
                                     headerContent : head,
                                     bodyContent : html,
