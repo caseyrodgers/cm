@@ -68,7 +68,7 @@ public class HeaderPanel extends LayoutContainer {
         training.setToolTip("Watch our Training Videos");
         training.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
-                new TrainingVideosWindow();
+            	showTrainingVideosPage();
             }
         });
         add(training);
@@ -126,6 +126,11 @@ public class HeaderPanel extends LayoutContainer {
 		add(btn);
 		layout();
 	}
+
+    private native void showTrainingVideosPage() /*-{
+        var tv = window.open('/training-videos');
+        tv.focus();
+    }-*/;
 
 	/**
 	 * Update all info fields and titles in header areas
