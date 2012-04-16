@@ -44,16 +44,16 @@
 </state>
 <state id="AL">
     <name>Alabama</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="AR">
     <name>Arkansas</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="AZ">
@@ -212,9 +212,9 @@
 </state>
 <state id="MS">
     <name>Mississippi</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="MT">
@@ -352,9 +352,9 @@
 </state>
 <state id="VA">
     <name>Virginia</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="VT">

@@ -296,12 +296,12 @@ public class CmPilotCreate {
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
-        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null,null,0,"","","");
+        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null,null,"");
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,
-            String additionalEmails, int enrollment, String pilotComments, String motivation, String teacherTitle) throws Exception {
+            String additionalEmails,  String motivation) throws Exception {
         
         
         String ccEmails = null;
@@ -314,7 +314,7 @@ public class CmPilotCreate {
         try {
             
             
-            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation,teacher_title)values(?,?,?,?,?,?,now(),?,?,?,?,?)";
+            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation)values(?,?,?,?,?,?,now(),?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, title);
@@ -324,10 +324,9 @@ public class CmPilotCreate {
             ps.setString(5, email);
             ps.setString(6, phone);
             ps.setString(7, ccEmails);
-            ps.setInt(8, enrollment);
-            ps.setString(9,pilotComments);
+            ps.setInt(8, studentCount);
+            ps.setString(9,userComments);
             ps.setString(10,motivation);
-            ps.setString(11, teacherTitle);
 
             ps.executeUpdate();
 
