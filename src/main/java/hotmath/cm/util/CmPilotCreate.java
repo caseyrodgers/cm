@@ -302,7 +302,10 @@ public class CmPilotCreate {
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,
             String additionalEmails,  String motivation) throws Exception {
+
         
+        // create a new Subscriber record based on this email
+        String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
         
         String ccEmails = null;
         if (additionalEmails != null) {
@@ -314,7 +317,7 @@ public class CmPilotCreate {
         try {
             
             
-            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation)values(?,?,?,?,?,?,now(),?,?,?,?)";
+            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation,subscriber_id)values(?,?,?,?,?,?,now(),?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, title);
@@ -327,11 +330,10 @@ public class CmPilotCreate {
             ps.setInt(8, studentCount);
             ps.setString(9,userComments);
             ps.setString(10,motivation);
+            ps.setString(11, idToUse);
 
             ps.executeUpdate();
 
-            // create a new Subscriber record based on this email
-            String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
             
             String ccEmailText;
             String subCcomments;
