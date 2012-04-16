@@ -296,11 +296,12 @@ public class CmPilotCreate {
     
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
             String phone, String userComments, String phoneWhen, String schoolPrefix,int studentCount) throws Exception {
-        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null,null);
+        return addPilotRequest(title, name, school, zip, email, phone, userComments, phoneWhen, schoolPrefix, true,studentCount,null,null,0,"","","");
     }
 
     static public Integer addPilotRequest(String title, String name, String school, String zip, String email,
-            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,String additionalEmails) throws Exception {
+            String phone, String userComments, String phoneWhen, String schoolPrefix, boolean sendEmailConfirmation,int studentCount, CmPartner partner,
+            String additionalEmails, int enrollment, String pilotComments, String motivation, String teacherTitle) throws Exception {
         
         
         String ccEmails = null;
@@ -313,7 +314,7 @@ public class CmPilotCreate {
         try {
             
             
-            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails)values(?,?,?,?,?,?,now(),?)";
+            String sql = "insert into HA_ADMIN_PILOT_REQUEST(title,name,school,zip,email,phone,request_date,cc_emails,enrollment,comments,motivation,teacher_title)values(?,?,?,?,?,?,now(),?,?,?,?,?)";
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
             ps.setString(1, title);
@@ -323,6 +324,10 @@ public class CmPilotCreate {
             ps.setString(5, email);
             ps.setString(6, phone);
             ps.setString(7, ccEmails);
+            ps.setInt(8, enrollment);
+            ps.setString(9,pilotComments);
+            ps.setString(10,motivation);
+            ps.setString(11, teacherTitle);
 
             ps.executeUpdate();
 
@@ -330,28 +335,25 @@ public class CmPilotCreate {
             String idToUse = HotMathSubscriber.createUniqueIDByStategy(new IdCreateStategyImpHmPilot(schoolPrefix));
             
             String ccEmailText;
-            String comments;
+            String subCcomments;
             if (ccEmails != null && ccEmails.trim().length() > 0) {
                 ccEmailText = ccEmails.trim();
-                comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %scc_emails=%s%s",
+                subCcomments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %scc_emails=%s%s",
                 		_dateFormat.format(new Date()), studentCount, NEW_LINE, ccEmailText, NEW_LINE);
             }
             else {
             	ccEmailText = "NONE";
-                comments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s",
+            	subCcomments = String.format("%s Catchup Math online pilot request CM_pilot_HM (approx student count: %d) %s",
                 		_dateFormat.format(new Date()), studentCount, NEW_LINE);
             }
 
             
             Representative salesPerson = SalesZone.getSalesRepresentativeByZip(conn, zip);
             
-            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, comments,new Date());
+            HotMathSubscriber sub = HotMathSubscriberManager.createBasicAccount(idToUse, school, "ST", email, subCcomments,new Date());
             sub.setResponsibleName(name);
             sub.setStatus("A");
             
-            /** concatenate phone to end of zip */
-            if(phone != null && phone.length() > 0)
-                zip += " / " + phone;
             sub.setZip(zip);
             sub.setSalesZone(salesPerson.getRepId());
             sub.saveChanges();
