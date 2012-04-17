@@ -392,7 +392,7 @@ from (
          JOIN HA_TEST_RUN r on r.run_id = l.run_id
          JOIN HA_TEST t on t.test_id = r.test_id
      where t.user_id = ?
-     and l.date_completed is not null
+     and l.lesson_viewed is not null
      group by l.run_id, l.lesson_file
  ) iu on iu.run_id = r.run_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
