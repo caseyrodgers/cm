@@ -610,7 +610,11 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
 
             updateTestRunSessions(conn, runId);
 
-            HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
+            /*
+             * shouldn't update Quiz columns for CP "test runs" (pinfo.getCustomProgramId() > 0)
+             */
+            if (pinfo.getCustomProgramId() <= 0)
+            	HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
 
             return testRun;
         } catch (HotMathException hme) {
