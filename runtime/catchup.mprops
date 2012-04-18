@@ -2951,27 +2951,34 @@ limit 1;
 select 'PASS_COUNT' as name, count(*) as value
 from HA_TEST t
 JOIN HA_TEST_RUN r on r.test_id = t.test_id
-where is_passing = 1 and user_id = ?
+JOIN CM_USER_PROGRAM up on up.id = t.user_prog_id and up.custom_program_id is null
+where is_passing = 1 and t.user_id = ?
 
 union 
 
 select 'NOT_PASS_COUNT' as name, count(*) as value
 from HA_TEST t
 JOIN HA_TEST_RUN r on r.test_id = t.test_id
-where is_passing = 1 and user_id = ?
+JOIN CM_USER_PROGRAM up on up.id = t.user_prog_id and up.custom_program_id is null
+where is_passing = 0 and t.user_id = ?
 
 union
 
-select 'LAST_QUIZ' as name, max(round((answered_correct  /  (answered_correct + answered_incorrect + not_answered)) * 100)) as value
-from HA_TEST t
-JOIN HA_TEST_RUN r on r.test_id = t.test_id
-where t.user_id = ?
+select 'LAST_QUIZ' as name, round((tr.answered_correct  /  (tr.answered_correct + tr.answered_incorrect + tr.not_answered)) * 100) as value
+from (
+    select max(r.run_id) as max_run_id
+    from HA_TEST_RUN r, HA_TEST t
+    where t.user_id = ? and r.test_id = t.test_id
+     ) mt
+JOIN HA_TEST_RUN tr on tr.run_id = mt.max_run_id
+JOIN HA_TEST t on t.test_id = tr.test_id
+JOIN CM_USER_PROGRAM up on up.id = t.user_prog_id and up.custom_program_id is null
 
 union
 
 select 'LAST_LOGIN' as name, max(create_time) as value
-from HA_TEST
-where user_id = ?
+from HA_TEST t
+where t.user_id = ?
 
 union
 
