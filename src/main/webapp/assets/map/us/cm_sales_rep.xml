@@ -44,9 +44,9 @@
 </state>
 <state id="AL">
     <name>Alabama</name>
-    <hover>David Lincoln</hover>
-    <data>0</data>
-    <url>javascript:showSalesRep(0);
+    <hover>Elizabeth Hawk</hover>
+    <data>3</data>
+    <url>javascript:showSalesRep(3);
     </url>
 </state>
 <state id="AR">
