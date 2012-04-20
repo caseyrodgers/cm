@@ -296,7 +296,7 @@ select load_order,is_custom_quiz, max(s.use_date) as use_date, date_format(min(s
   max(s.run_date) as run_date,
   s.answered_correct, s.answered_incorrect, s.not_answered, s.program, s.is_archived, s.prog_id, s.subj_id, s.test_config_json,
   s.test_id as test_id, max(s.test_segment) as test_segment, s.test_def_id, s.segment_count, s.test_run_id,
-  s.activity, s.is_quiz, s.is_passing, count(*) as problems_viewed, max(s.session_number) as session_number,
+  s.activity, s.is_quiz, s.is_passing, sum(is_complete) as problems_viewed, max(s.session_number) as session_number,
   s.total_sessions, s.time_on_task, ifnull(pp.name, 'Primary') as prog_type
 from (
 
@@ -310,7 +310,8 @@ from (
    0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
    0 as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   1 as is_complete
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id
  join CM_USER_PROGRAM p on p.user_id = u.uid and p.id = l.user_prog_id and p.custom_program_id is null and p.custom_quiz_id is null
@@ -329,7 +330,8 @@ from (
    r.run_id as test_run_id, 0 as total_sessions,
    'Quiz-' as activity, 1 as is_quiz, l.test_segment as session_number,
    hat.task_time as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   1 as is_complete
  from  HA_TEST l 
  join HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
@@ -351,7 +353,8 @@ from (
    r.run_id as test_run_id, r.total_sessions as total_sessions,
    'Review-' as activity, 0 as is_quiz, iu.session_number as session_number,
    0 as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   if(iu.run_time is null, 0, 1) as is_complete
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join (
@@ -382,7 +385,8 @@ from (
    r.run_id as test_run_id, r.total_sessions as total_sessions,
    'Review' as activity, 0 as is_quiz, iu.session_number as session_number,
    0 as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   if(iu.run_time is null, 0, 1) as is_complete
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
  join (
@@ -417,7 +421,8 @@ from (
    r.run_id as test_run_id, (select count(*) from HA_CUSTOM_QUIZ_IDS where qid = p.custom_quiz_id) as total_sessions,
    if (p.custom_quiz_id is null, 'Review-', 'Quiz') as activity, 1 as is_quiz, iu.session_number as session_number,
    if (p.custom_quiz_id is null, 0, hat.task_time) as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   if (iu.view_time is null, 0, 1) as is_complete
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_RUN r on r.test_id = l.test_id
      
@@ -453,7 +458,8 @@ UNION
    r.test_id as test_run_id, (select count(*) from HA_TEST_CURRENT where test_id = l.test_id) as total_sessions,
    'Quiz' as activity, 1 as is_quiz, 0 as session_number,
    hat.task_time as time_on_task,
-   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id
+   ifnull(pa.is_parallel_prog, 0) as is_parallel_prog, ifnull(pa.prog_inst_id, 0) as prog_inst_id,
+   1 as is_complete
  from  HA_TEST l INNER JOIN HA_USER u ON l.user_id = u.uid
  join HA_TEST_CURRENT r on r.test_id = l.test_id
  join HA_TEST_DEF td on td.test_def_id = l.test_def_id

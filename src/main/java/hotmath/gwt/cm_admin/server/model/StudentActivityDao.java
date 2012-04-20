@@ -70,10 +70,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
      */
     public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid, Date fromDate, Date toDate)
             throws Exception {
-        List<StudentActivityModel> l = null;
+        List<StudentActivityModel> samList = null;
 
         PreparedStatement ps = null;
         ResultSet rs = null;
+
+		LOGGER.info(String.format("getStudentActivity(Connection, int, Date, Date): uid: %d", uid));
 
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY"));
@@ -88,11 +90,17 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             ps.setInt(9, uid);
             rs = ps.executeQuery();
 
-            l = loadStudentActivity(conn, rs);
+            List<StudentActivityModel> smList = loadStudentActivity(conn, rs);
 
-            Map<String, Integer> totMap = getTimeOnTaskForRunIDs(conn, l, uid);
+            List<TimeOnTask> totList = getTimeOnTaskForRunIDs(conn, smList, uid);
 
-            updateTimeOnTask(totMap, l);
+            updateTimeOnTask(totList, smList);
+            
+            // reverse order of list
+            samList = new ArrayList<StudentActivityModel>(smList.size());
+            for (int i = (smList.size() - 1); i >= 0; i--) {
+                samList.add(smList.get(i));
+            }
 
         } catch (Exception e) {
             LOGGER.error(String.format("*** Error getting student details for student uid: %d", uid), e);
@@ -100,10 +108,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         } finally {
             SqlUtilities.releaseResources(rs, ps, null);
         }
-        return l;
+        return samList;
     }
 
-    public Map<String, Integer> getTimeOnTaskForRunIDs(final Connection conn, List<StudentActivityModel> samList,
+	public List<TimeOnTask> getTimeOnTaskForRunIDs(final Connection conn, List<StudentActivityModel> samList,
             int uid) throws Exception {
 
         if (samList == null || samList.size() == 0) {
@@ -111,7 +119,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             return null;
         }
 
-        Map<String, Integer> totMap = new HashMap<String, Integer>();
+        List<TimeOnTask> totList = new ArrayList<TimeOnTask>();
 
         Map<ActivityTypeEnum, ActivityTime> map = getActivityTimeMap();
 
@@ -134,10 +142,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 prevRunId = runId;
                 sb.append(runId);
             }
-            stmt = conn.createStatement();
-
             if (sb.length() == 0)
-                return totMap;
+                return totList;
+
+            stmt = conn.createStatement();
 
             rs = stmt.executeQuery(sql.replace("$$RUNID_LIST$$", sb.toString()));
 
@@ -147,9 +155,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             while (rs.next()) {
 
                 if (useDate != null && (runId != rs.getInt("run_id") || !useDate.equals(rs.getString("use_date")))) {
-                    String key = String.format("%d.%s", runId, useDate);
-                    totMap.put(key, totalTime);
+                    TimeOnTask tot = new TimeOnTask();
+                    tot.runId = runId;
+                    tot.date = useDate;
+                    tot.timeOnTask = totalTime;
                     totalTime = 0;
+                    totList.add(tot);
                 }
                 runId = rs.getInt("run_id");
                 useDate = rs.getString("use_date");
@@ -159,8 +170,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 int time = map.get(ActivityTypeEnum.valueOf(type.toUpperCase())).timeOnTask;
                 totalTime += time * count;
             }
-            String key = String.format("%d.%s", runId, useDate);
-            totMap.put(key, totalTime);
+            TimeOnTask tot = new TimeOnTask();
+            tot.runId = runId;
+            tot.date = useDate;
+            tot.timeOnTask = totalTime;
+            totalTime = 0;
+            totList.add(tot);
 
         } catch (Exception e) {
             LOGGER.error(String.format("*** Error getting time-on-task for student uid: %d", uid), e);
@@ -169,7 +184,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(rs, stmt, null);
         }
 
-        return totMap;
+        return totList;
     }
 
     int currentRunId = 0;
@@ -179,6 +194,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             throws Exception {
         final CmAdminDao cmaDao = CmAdminDao.getInstance();
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
+        
         currentRunId = 0;
         lessonsCompleted = 0;
         List<StudentActivityModel> list = this.getJdbcTemplate().query(sql,
@@ -319,7 +335,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return sasList;
     }
 
-    private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
+    private List<StudentActivityModel> loadStudentActivity(final Connection connX, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         CmAdminDao cmaDao = CmAdminDao.getInstance();
@@ -334,14 +350,13 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         fixReviewSectionNumbers(l);
 
-        // reverse order of list
-        List<StudentActivityModel> m = new ArrayList<StudentActivityModel>(l.size());
-        for (int i = (l.size() - 1); i >= 0; i--) {
-            m.add(l.get(i));
-        }
-
-        return m;
+        return l;
     }
+
+    private void detailStudentActivity(List<StudentActivityModel> l) {
+		// TODO Auto-generated method stub
+		
+	}
 
     private void setDefaults(StudentActivityModel sam) {
         // setup default values
@@ -440,10 +455,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         } else {
             int inProgress = 0; // lessonsViewed % problemsPerLesson;
 
-            int lessonsViewed = 0;
-            if (m.getUseDate() != null) {
-                lessonsViewed = (rs.getString("run_date") != null) ? rs.getInt("problems_viewed") : 0;
-            } else {
+            int lessonsViewed = rs.getInt("problems_viewed");
+            if (m.getUseDate() == null) {
                 m.setUseDate(rs.getString("run_date"));
             }
             m.setLessonsViewed(lessonsViewed);
@@ -476,24 +489,104 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return m;
     }
 
-    private void updateTimeOnTask(Map<String, Integer> totMap, List<StudentActivityModel> samList) {
+    private void updateTimeOnTask(List<TimeOnTask> totList, List<StudentActivityModel> samList) {
 
-        if (samList == null || samList.isEmpty() || totMap == null) {
+        if (samList == null || samList.isEmpty() || totList == null || totList.isEmpty()) {
             // nothing to do
             return;
         }
 
-        for (StudentActivityModel sam : samList) {
-            if (sam.getIsQuiz() || sam.getIsCustomQuiz())
-                continue;
-            String key = String.format("%d.%s", sam.getRunId(), sam.getUseDate());
-            int totalTime = sam.getTimeOnTask() + ((totMap.get(key) == null) ? 0 : totMap.get(key));
-            sam.setTimeOnTask(totalTime);
+        // transfer time-on-task values to StudentActivityModel
+        // if TimeOnTask list does not have corresponding StudentActivityModel, add StudentActivityModel
+        int lastFoundIndex = -1;
+        for (TimeOnTask tot : totList) {
+        	int index = findStudentActivityModelForTimeOnTask(tot, samList);
+        	if (index < 0) {
+        		if (lastFoundIndex >= 0) {
+            		StudentActivityModel samToCopy = samList.get(lastFoundIndex);
+            		copyStudentActivityModel(samList, lastFoundIndex, tot, samToCopy);
+        		}
+        		else {
+        			LOGGER.warn(String.format("found no matching StudentActivityModel for runId: %d, date: %s",
+        					tot.runId, tot.date));
+        		}
+        	}
+        	else {
+        		lastFoundIndex = index;
+        		StudentActivityModel sam = samList.get(lastFoundIndex);
+        		if (sam.getIsCustomQuiz() == false && sam.getIsQuiz() == false)
+            		sam.setTimeOnTask(sam.getTimeOnTask() + tot.timeOnTask);
+        		else {
+        			// find nearest later Review
+        			int foundIndex = findNearestReview(lastFoundIndex, samList);
+        			if (foundIndex != -1) {
+        				lastFoundIndex = foundIndex;
+                		StudentActivityModel samToCopy = samList.get(lastFoundIndex);
+                		copyStudentActivityModel(samList, lastFoundIndex, tot, samToCopy);
+        			}
+            		else {
+            			LOGGER.warn(String.format("found no matching later review for runId: %d, date: %s",
+            					tot.runId, tot.date));
+            		}
+        		}
+        	}
         }
 
     }
 
-    private void fixReviewSectionNumbers(List<StudentActivityModel> l) {
+	private int findNearestReview(int lastFoundIndex, List<StudentActivityModel> samList) {
+		for (int idx=lastFoundIndex; idx < samList.size(); idx++) {
+			StudentActivityModel sam = samList.get(idx);
+			if (sam.getIsCustomQuiz() || sam.getIsQuiz()) continue;
+			else return idx;
+		}
+		return -1;
+	}
+
+	private void copyStudentActivityModel(List<StudentActivityModel> samList,
+			int lastFoundIndex, TimeOnTask tot, StudentActivityModel samToCopy) {
+		StudentActivityModel samToAdd = new StudentActivityModel();
+		samToAdd.setActivity(samToCopy.getActivity());
+		samToAdd.setIsArchived(fixInteger(samToCopy.getIsArchived()));
+		samToAdd.setIsArchivedStyle(samToCopy.getIsArchivedStyle());
+		samToAdd.setIsCustomQuiz(false);
+		samToAdd.setIsPassing(fixBoolean(samToCopy.getIsPassing()));
+		samToAdd.setIsQuiz(false);
+		samToAdd.setLessonCount(fixInteger(samToCopy.getLessonCount()));
+		samToAdd.setLessonsCompleted(fixInteger(samToCopy.getLessonsCompleted()));
+		samToAdd.setLessonsViewed(fixInteger(samToCopy.getLessonsViewed()));
+		samToAdd.setProgramDescr(samToCopy.getProgramDescr());
+		samToAdd.setProgramType(samToCopy.getProgramType());
+		samToAdd.setResult(samToCopy.getResult());
+		samToAdd.setRunId(samToCopy.getRunId());
+		samToAdd.setTestId(samToCopy.getTestId());
+		samToAdd.setTimeOnTask(tot.timeOnTask);
+		samToAdd.setUseDate(tot.date);
+		samList.add(lastFoundIndex++, samToAdd);
+		LOGGER.info(String.format("added StudentActivityModel runId: %d, date: %s, result: %s",
+				tot.runId, tot.date, samToAdd.getResult()));
+	}
+
+    private boolean fixBoolean(Boolean value) {
+		return (value == null) ? false : value;
+	}
+
+	private int fixInteger(Integer value) {
+		return (value == null) ? 0 : value;
+	}
+
+	private int findStudentActivityModelForTimeOnTask(TimeOnTask tot, List<StudentActivityModel> samList) {
+    	int index = 0;
+    	for (StudentActivityModel sam : samList) {
+    		if (tot.runId == sam.getRunId() && tot.date.equals(sam.getUseDate())) {
+    			return index;
+    		}
+    		index++;
+    	}
+		return -1;
+	}
+
+	private void fixReviewSectionNumbers(List<StudentActivityModel> l) {
         Map<Integer, StudentActivityModel> h = new HashMap<Integer, StudentActivityModel>();
         for (StudentActivityModel m : l) {
             if (m.getIsQuiz()) {
@@ -545,6 +638,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             this.description = description;
             this.timeOnTask = timeOnTask;
         }
+    }
+
+    class TimeOnTask {
+    	int runId;
+    	String date;
+    	int timeOnTask;
     }
 
     public Map<ActivityTypeEnum, ActivityTime> getActivityTimeMap() {
