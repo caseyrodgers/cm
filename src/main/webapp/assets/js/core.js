@@ -195,7 +195,7 @@ function showTeacherVideo(name) {
                     function(Y) {
                         _videoOverlay = new Y.Overlay(
                                 {
-                                    id:"webiner-video",
+                                    id:"training-video",
                                     width : "642px",
                                     height: "562px",
                                     centered : true,
