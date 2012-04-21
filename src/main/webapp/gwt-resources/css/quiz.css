@@ -79,8 +79,9 @@
 
 
 
-.quiz_edit_button, .quiz_whiteboard_button {
-    display: none !important; 
+#testset_div .question_head button.quiz_edit_button, #testset_div .question_head .quiz_whiteboard_button {
+   float: right;
+   margin-right: 10px;
 }
 
 

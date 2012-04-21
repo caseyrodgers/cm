@@ -22,7 +22,7 @@ function initializeQuizQuestion(question) {
 
         var isCorrect = answer.getAttribute("correct");
         // might be correct/incorrect or yes/no
-        
+
         var trueOrFalse = (isCorrect === 'correct' || isCorrect === 'yes')?"true":"false";
 
         var elems = answer.getElementsByTagName("div");
