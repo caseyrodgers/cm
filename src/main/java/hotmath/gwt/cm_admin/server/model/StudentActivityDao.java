@@ -335,7 +335,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return sasList;
     }
 
-    private List<StudentActivityModel> loadStudentActivity(final Connection connX, ResultSet rs) throws Exception {
+    private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         CmAdminDao cmaDao = CmAdminDao.getInstance();
@@ -352,11 +352,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         return l;
     }
-
-    private void detailStudentActivity(List<StudentActivityModel> l) {
-		// TODO Auto-generated method stub
-		
-	}
 
     private void setDefaults(StudentActivityModel sam) {
         // setup default values
@@ -498,73 +493,100 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         // transfer time-on-task values to StudentActivityModel
         // if TimeOnTask list does not have corresponding StudentActivityModel, add StudentActivityModel
-        int lastFoundIndex = -1;
         for (TimeOnTask tot : totList) {
-        	int index = findStudentActivityModelForTimeOnTask(tot, samList);
-        	if (index < 0) {
-        		if (lastFoundIndex >= 0) {
-            		StudentActivityModel samToCopy = samList.get(lastFoundIndex);
-            		copyStudentActivityModel(samList, lastFoundIndex, tot, samToCopy);
-        		}
-        		else {
-        			LOGGER.warn(String.format("found no matching StudentActivityModel for runId: %d, date: %s",
-        					tot.runId, tot.date));
-        		}
+        	
+        	/*
+        	 * find StudentActivityModel: review, matching runId and date
+        	 */
+        	StudentActivityModel sam = findReviewForTimeOnTask(tot, samList);
+        	
+        	if (sam != null) {
+        		sam.setTimeOnTask(sam.getTimeOnTask() + tot.timeOnTask);
+        		continue;
         	}
-        	else {
-        		lastFoundIndex = index;
-        		StudentActivityModel sam = samList.get(lastFoundIndex);
-        		if (sam.getIsCustomQuiz() == false && sam.getIsQuiz() == false)
-            		sam.setTimeOnTask(sam.getTimeOnTask() + tot.timeOnTask);
-        		else {
-        			// find nearest later Review
-        			int foundIndex = findNearestReview(lastFoundIndex, samList);
-        			if (foundIndex != -1) {
-        				lastFoundIndex = foundIndex;
-                		StudentActivityModel samToCopy = samList.get(lastFoundIndex);
-                		copyStudentActivityModel(samList, lastFoundIndex, tot, samToCopy);
-        			}
-            		else {
-            			LOGGER.warn(String.format("found no matching later review for runId: %d, date: %s",
-            					tot.runId, tot.date));
-            		}
-        		}
+        	
+    		/*
+    		 * find "matching" later Review
+    		 */
+        	int index = findLaterReview(tot, samList);
+        	
+        	if (index >= 0) {
+                sam = samList.get(index);
+			    StudentActivityModel samCopy = copyStudentActivityModel(sam);
+			    samCopy.setUseDate(tot.date);
+			    String result = sam.getResult();
+    			/*
+	    		 * adjust result to indicate "0 out of N completed"
+		    	 */
+			    int offset = result.indexOf(" ");
+			    if (offset > 0) {
+    			    StringBuilder sb = new StringBuilder();
+    			    sb.append("0").append(result.substring(offset));
+    			    samCopy.setResult(sb.toString());
+			    }
+			    else
+    			    samCopy.setResult("");
+			    samCopy.setTimeOnTask(tot.timeOnTask);
+			    samList.add(index, samCopy);
+			    continue;
         	}
+
+        	/*
+             * find "matching" StudentActivityModel, (Quiz or earlier Review)
+        	 */
+    		index = findStudentActivityModel(tot, samList);
+
+    		if (index >= 0) {
+    			StudentActivityModel samToCopy = samList.get(index);
+    			addStudentActivityModel(samList, index, tot, samToCopy);
+    		}
+    		else {
+    			LOGGER.warn(String.format("found no matching review or quiz for runId: %d, date: %s",
+    					tot.runId, tot.date));    				
+    		}
         }
 
     }
 
-	private int findNearestReview(int lastFoundIndex, List<StudentActivityModel> samList) {
-		for (int idx=lastFoundIndex; idx < samList.size(); idx++) {
-			StudentActivityModel sam = samList.get(idx);
-			if (sam.getIsCustomQuiz() || sam.getIsQuiz()) continue;
-			else return idx;
-		}
-		return -1;
-	}
-
-	private void copyStudentActivityModel(List<StudentActivityModel> samList,
-			int lastFoundIndex, TimeOnTask tot, StudentActivityModel samToCopy) {
-		StudentActivityModel samToAdd = new StudentActivityModel();
-		samToAdd.setActivity(samToCopy.getActivity());
-		samToAdd.setIsArchived(fixInteger(samToCopy.getIsArchived()));
-		samToAdd.setIsArchivedStyle(samToCopy.getIsArchivedStyle());
-		samToAdd.setIsCustomQuiz(false);
-		samToAdd.setIsPassing(fixBoolean(samToCopy.getIsPassing()));
-		samToAdd.setIsQuiz(false);
-		samToAdd.setLessonCount(fixInteger(samToCopy.getLessonCount()));
-		samToAdd.setLessonsCompleted(fixInteger(samToCopy.getLessonsCompleted()));
-		samToAdd.setLessonsViewed(fixInteger(samToCopy.getLessonsViewed()));
-		samToAdd.setProgramDescr(samToCopy.getProgramDescr());
-		samToAdd.setProgramType(samToCopy.getProgramType());
-		samToAdd.setResult(samToCopy.getResult());
-		samToAdd.setRunId(samToCopy.getRunId());
-		samToAdd.setTestId(samToCopy.getTestId());
+	private void addStudentActivityModel(List<StudentActivityModel> samList,
+			int foundIndex, TimeOnTask tot, StudentActivityModel samToCopy) {
+		
+		StudentActivityModel samToAdd = copyStudentActivityModel(samToCopy);
 		samToAdd.setTimeOnTask(tot.timeOnTask);
 		samToAdd.setUseDate(tot.date);
-		samList.add(lastFoundIndex++, samToAdd);
+		samList.add(++foundIndex, samToAdd);
 		LOGGER.info(String.format("added StudentActivityModel runId: %d, date: %s, result: %s",
 				tot.runId, tot.date, samToAdd.getResult()));
+	}
+
+	private StudentActivityModel copyStudentActivityModel(StudentActivityModel samToCopy) {
+		StudentActivityModel sam = new StudentActivityModel();
+		sam.setIsArchived(fixInteger(samToCopy.getIsArchived()));
+		sam.setIsArchivedStyle(samToCopy.getIsArchivedStyle());
+		sam.setIsCustomQuiz(false);
+		sam.setIsPassing(fixBoolean(samToCopy.getIsPassing()));
+		sam.setIsQuiz(false);
+		sam.setLessonCount(fixInteger(samToCopy.getLessonCount()));
+		sam.setLessonsCompleted(fixInteger(samToCopy.getLessonsCompleted()));
+		sam.setLessonsViewed(fixInteger(samToCopy.getLessonsViewed()));
+		sam.setProgramDescr(samToCopy.getProgramDescr());
+		sam.setProgramType(samToCopy.getProgramType());
+		
+		if (samToCopy.getIsCustomQuiz() == false && samToCopy.getIsQuiz() == false) {
+			sam.setActivity(samToCopy.getActivity());
+    		sam.setResult(samToCopy.getResult());
+		}
+		else {
+			/*
+			 * have a Quiz instead of a Review
+			 */
+			String activity = samToCopy.getActivity().replaceFirst("Quiz", "Review");
+			sam.setActivity(activity);
+			sam.setResult("");
+		}
+		sam.setRunId(samToCopy.getRunId());
+		sam.setTestId(samToCopy.getTestId());
+		return sam;
 	}
 
     private boolean fixBoolean(Boolean value) {
@@ -575,13 +597,64 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		return (value == null) ? 0 : value;
 	}
 
-	private int findStudentActivityModelForTimeOnTask(TimeOnTask tot, List<StudentActivityModel> samList) {
-    	int index = 0;
-    	for (StudentActivityModel sam : samList) {
-    		if (tot.runId == sam.getRunId() && tot.date.equals(sam.getUseDate())) {
+	/**
+	 * find a Review activity with matching runId and date
+	 * 
+	 * @param tot
+	 * @param samList
+	 * @return matching model or null if no match
+	 */
+	private StudentActivityModel findReviewForTimeOnTask(TimeOnTask tot, List<StudentActivityModel> samList) {
+
+		for (StudentActivityModel sam : samList) {
+    		if (tot.runId == sam.getRunId() && tot.date.equals(sam.getUseDate()) &&
+    			sam.getIsQuiz() == false && sam.getIsCustomQuiz() == false) {
+    			if (LOGGER.isDebugEnabled())
+                     LOGGER.debug("found review: tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
+    			return sam;
+    		}
+    	}
+		return null;
+	}
+
+	/**
+	 * if runId matches and time-on-task date is less than activity date, have a "match"
+	 * 
+	 * @param tot
+	 * @param samList
+	 * @return index of matching model or -1 if no match
+	 */
+	private int findLaterReview(TimeOnTask tot, List<StudentActivityModel> samList) {
+
+		int index = 0;
+		for (StudentActivityModel sam : samList) {
+    		if (tot.runId == sam.getRunId() && tot.date.compareTo(sam.getUseDate()) < 0 &&
+        		sam.getIsQuiz() == false && sam.getIsCustomQuiz() == false) {
+    			LOGGER.debug("found later review: tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
     			return index;
     		}
-    		index++;
+        	if (tot.runId < sam.getRunId()) break;
+        	index++;
+    	}
+		return -1;
+	}
+	
+	/**
+	 * if runId matches and time-on-task date is equal to or greater than activity date, have a "match"
+	 * 
+	 * @param tot
+	 * @param samList
+	 * @return index of matching model or -1 if no match
+	 */
+	private int findStudentActivityModel(TimeOnTask tot, List<StudentActivityModel> samList) {
+    	for (int index = samList.size() - 1; index >= 0; index--) {
+    		StudentActivityModel sam = samList.get(index);
+    		if (tot.runId == sam.getRunId() && tot.date.compareTo(sam.getUseDate()) >= 0) {
+    			if (LOGGER.isDebugEnabled())
+    				LOGGER.debug("found \"match\": tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
+    			return index;
+    		}
+    		if (tot.runId > sam.getRunId()) break;
     	}
 		return -1;
 	}
@@ -836,3 +909,4 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     }
 
 }
+;
