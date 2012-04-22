@@ -20,6 +20,7 @@ public class MessageOfTheDayDialog extends Window {
         setHeading("Catchup Math Teacher Alert");
         setSize(350,240);
         setModal(true);
+        
         add(uiBinder.createAndBindUi(this));
         
         

@@ -4,6 +4,7 @@
 	<ui:style>
 	    .main {
 	        padding:10px 15px;
+	        font-size: 1.3em;
 	    }
 	    
 	    .main p {
@@ -18,19 +19,23 @@
 	    }
 	    .main h1 {
 	        margin-bottom: 10px;
+	        color: red;
 	    }
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
     
-    <h1>New way to get tips, updates, and special offers</h1>
+    <h1>New and Improved Teacher Videos</h1>
     <p>
-      Stay up to date on Catchup Math: follow us on Twitter @catchupmath and/or Like us on facebook.com/catchupmath.
+      We have updated our Teacher Videos.  You can easily view them one
+      section at a time.
     </p>
     <p>
-      We will still email weekly Usage and Update reports (please assure that registration@hotmath.com is not blocked).
+      Please tell other teachers about this easy way to learn about Catchup Math.
+    </p>      
+    <p>
+       Thank you for using Catchup Math!
     </p>
-    <p>We thank you for using Catchup Math!</p>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
