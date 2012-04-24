@@ -470,7 +470,12 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 					sectionCount = sp.getSectionCount();
 					activeSection = 0;
 
-					stdAdvOptionsBtn.enable();
+					if(progType == CmProgramType.AUTOENROLL) {
+					    stdAdvOptionsBtn.disable();
+					}
+					else {
+					    stdAdvOptionsBtn.enable();
+					}
 
 					ComboBox <SubjectModel> cb = (ComboBox<SubjectModel>) _fsStdProg.getItemByItemId("subj-combo");
 
@@ -512,6 +517,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 					sectionSelectAvail = false;
 					activeSection = 0;
 				}
+				
 	        }
 	    });
 
@@ -827,11 +833,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     		}
     		passPercentReqd = ((Integer)sp.get("needsPassPercent")).intValue() > 0;
 
-			if (stdAdvOptionsBtn.isVisible())
-                stdAdvOptionsBtn.enable();
+    		
+		    if (stdAdvOptionsBtn.isVisible()) {
+		        stdAdvOptionsBtn.enable();
+		    }
 
-			if (customAdvOptionsBtn.isVisible())
-                customAdvOptionsBtn.enable();
+		    if (customAdvOptionsBtn.isVisible()) {
+		        customAdvOptionsBtn.enable();
+		    }
 
             loading = false;
 		}
