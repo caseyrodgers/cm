@@ -335,7 +335,27 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return sasList;
     }
 
-    private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
+	public int getLessonCountForRunId(Integer runId) throws Exception {
+    	String sql = "select count(*) as lesson_count from HA_TEST_RUN_LESSON where run_id = ?";
+    	int lessonCount = 0;
+    	try {
+    		lessonCount = this.getJdbcTemplate().queryForObject(
+    				sql,
+    				new Object[]{runId},
+    				new RowMapper<Integer>() {
+    					public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+    						return rs.getInt("lesson_count");
+    					}
+    				});
+    	}
+    	catch(Exception e) {
+    		LOGGER.error(String.format("Error getting Lesson Count for runId: %d", runId), e);
+    		throw new Exception(e.getMessage());
+    	}
+		return lessonCount;
+	}
+
+	private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
         CmAdminDao cmaDao = CmAdminDao.getInstance();
@@ -484,7 +504,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return m;
     }
 
-    private void updateTimeOnTask(List<TimeOnTask> totList, List<StudentActivityModel> samList) {
+    private void updateTimeOnTask(List<TimeOnTask> totList, List<StudentActivityModel> samList) throws Exception {
 
         if (samList == null || samList.isEmpty() || totList == null || totList.isEmpty()) {
             // nothing to do
@@ -499,46 +519,48 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         	 * find StudentActivityModel: review, matching runId and date
         	 */
         	StudentActivityModel sam = findReviewForTimeOnTask(tot, samList);
-        	
         	if (sam != null) {
         		sam.setTimeOnTask(sam.getTimeOnTask() + tot.timeOnTask);
         		continue;
         	}
-        	
-    		/*
+
+        	/*
+             * find "matching" earlier Review or Quiz
+        	 */
+    		int index = findEarlierQuizOrReview(tot, samList);
+    		if (index >= 0) {
+                sam = samList.get(index);
+			    StudentActivityModel samCopy = copyStudentActivityModel(sam);
+			    samCopy.setUseDate(tot.date);
+        		samCopy.setTimeOnTask(tot.timeOnTask);
+
+        		/*
+        		 * if "result" is empty, attempt to fix
+        		 */
+        		if (samCopy.getResult().trim().length() < 1) {
+        			int idx = findLaterReview(tot, samList);
+        			fixLessonStatus(samList, sam, samCopy, idx);
+        		}
+        		samList.add(index+1, samCopy);
+        		continue;
+    		}
+
+        	/*
     		 * find "matching" later Review
     		 */
-        	int index = findLaterReview(tot, samList);
+        	index = findLaterReview(tot, samList);
         	
         	if (index >= 0) {
                 sam = samList.get(index);
 			    StudentActivityModel samCopy = copyStudentActivityModel(sam);
 			    samCopy.setUseDate(tot.date);
-			    String result = sam.getResult();
-    			/*
-	    		 * adjust result to indicate "0 out of N completed"
-		    	 */
-			    int offset = result.indexOf(" ");
-			    if (offset > 0) {
-    			    StringBuilder sb = new StringBuilder();
-    			    sb.append("0").append(result.substring(offset));
-    			    samCopy.setResult(sb.toString());
-			    }
-			    else
-    			    samCopy.setResult("");
 			    samCopy.setTimeOnTask(tot.timeOnTask);
+
+        		if (samCopy.getResult().trim().length() < 1) {
+        			fixLessonStatus(samList, sam, samCopy, index);
+        		}
+
 			    samList.add(index, samCopy);
-			    continue;
-        	}
-
-        	/*
-             * find "matching" StudentActivityModel, (Quiz or earlier Review)
-        	 */
-    		index = findStudentActivityModel(tot, samList);
-
-    		if (index >= 0) {
-    			StudentActivityModel samToCopy = samList.get(index);
-    			addStudentActivityModel(samList, index, tot, samToCopy);
     		}
     		else {
     			LOGGER.warn(String.format("found no matching review or quiz for runId: %d, date: %s",
@@ -547,6 +569,41 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         }
 
     }
+
+    /**
+     * if matching review not found (idx < 0), query DB
+     * @param samList
+     * @param sam
+     * @param samCopy
+     * @param idx
+     * @throws Exception
+     */
+	private void fixLessonStatus(List<StudentActivityModel> samList,
+			StudentActivityModel sam, StudentActivityModel samCopy, int idx)
+			throws Exception {
+		boolean foundIt = false;
+		if (idx >= 0) {
+			sam = samList.get(idx);
+			String result = sam.getResult();
+			/*
+			 * adjust result to indicate "0 out of N completed"
+			 */
+			int offset = result.indexOf(" ");
+			if (offset > 0) {
+				StringBuilder sb = new StringBuilder();
+				sb.append("0").append(result.substring(offset));
+				samCopy.setResult(sb.toString());
+				foundIt = true;
+			}
+		}
+		if (foundIt == false) {
+			/*
+			 * query DB for Lesson Count
+			 */
+			int lessonCount = getLessonCountForRunId(sam.getRunId());
+			samCopy.setResult(String.format("0 out of %d completed", lessonCount));
+		}
+	}
 
 	private void addStudentActivityModel(List<StudentActivityModel> samList,
 			int foundIndex, TimeOnTask tot, StudentActivityModel samToCopy) {
@@ -630,7 +687,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		for (StudentActivityModel sam : samList) {
     		if (tot.runId == sam.getRunId() && tot.date.compareTo(sam.getUseDate()) < 0 &&
         		sam.getIsQuiz() == false && sam.getIsCustomQuiz() == false) {
-    			LOGGER.debug("found later review: tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
+    			if (LOGGER.isDebugEnabled())
+        			LOGGER.debug("found later review: tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
     			return index;
     		}
         	if (tot.runId < sam.getRunId()) break;
@@ -638,7 +696,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     	}
 		return -1;
 	}
-	
+
 	/**
 	 * if runId matches and time-on-task date is equal to or greater than activity date, have a "match"
 	 * 
@@ -646,12 +704,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	 * @param samList
 	 * @return index of matching model or -1 if no match
 	 */
-	private int findStudentActivityModel(TimeOnTask tot, List<StudentActivityModel> samList) {
+	private int findEarlierQuizOrReview(TimeOnTask tot, List<StudentActivityModel> samList) {
     	for (int index = samList.size() - 1; index >= 0; index--) {
     		StudentActivityModel sam = samList.get(index);
     		if (tot.runId == sam.getRunId() && tot.date.compareTo(sam.getUseDate()) >= 0) {
     			if (LOGGER.isDebugEnabled())
-    				LOGGER.debug("found \"match\": tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
+    				LOGGER.debug("found \"match\": isQuiz: " + (sam.getIsCustomQuiz()||sam.getIsQuiz()) + ", tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
     			return index;
     		}
     		if (tot.runId > sam.getRunId()) break;
