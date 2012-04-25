@@ -483,11 +483,11 @@ order by s.view_time asc, s.test_id asc, s.test_run_id asc, load_order, s.sessio
 
 
 select l.run_id,
-       date_format(l.lesson_viewed, '%Y-%m-%d') as use_date,
+       date_format(l.date_completed, '%Y-%m-%d') as use_date,
       'REVIEW' as activity_type, count(*) as activity_count
 from HA_TEST_RUN_LESSON l
-where l.run_id in ( $$RUNID_LIST$$ ) and l.lesson_viewed is not null
-group by l.run_id, date_format(l.lesson_viewed, '%Y-%m-%d'), activity_type 
+where l.run_id in ( $$RUNID_LIST$$ ) and l.date_completed is not null
+group by l.run_id, date_format(l.date_completed, '%Y-%m-%d'), activity_type 
 
 union
 

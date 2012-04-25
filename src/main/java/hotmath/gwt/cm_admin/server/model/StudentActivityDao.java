@@ -369,11 +369,48 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         }
 
         fixReviewSectionNumbers(l);
+        
+        removeDuplicateReviewActivity(l);
 
         return l;
     }
 
-    private void setDefaults(StudentActivityModel sam) {
+	/**
+	 * Due to automatic update of HA_TEST_RUN_LESSON.view_time we can end up with duplicate REVIEW records
+	 * for a given day.  Only the latest one should be retained.
+	 * 
+	 * @param l list of StudentActivityModels
+	 */
+    private void removeDuplicateReviewActivity(List<StudentActivityModel> l) {
+    	
+    	StudentActivityModel prevSam = null;
+
+    	List<StudentActivityModel> dups = new ArrayList<StudentActivityModel>();
+
+    	for (StudentActivityModel sam : l) {
+
+    		if (prevSam == null || isQuiz(prevSam) || isQuiz(sam)) {
+    			prevSam = sam;
+    			continue;
+    		}
+
+            if (prevSam.getUseDate().equals(sam.getUseDate())) {
+            	dups.add(prevSam);
+            }
+            prevSam = sam;
+    	}
+    	
+    	for (StudentActivityModel dup : dups) {
+    		l.remove(dup);
+    	}
+    	
+	}
+
+	private boolean isQuiz(StudentActivityModel sam) {
+		return (sam.getIsCustomQuiz() || sam.getIsQuiz());
+	}
+
+	private void setDefaults(StudentActivityModel sam) {
         // setup default values
         sam.setActivity("");
 
@@ -404,7 +441,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
         m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
         m.setProgramDescr(rs.getString("program"));
-        m.setUseDate(rs.getString("use_date"));
+        m.setUseDate((rs.getString("run_date") == null) ? rs.getString("use_date"):rs.getString("run_date"));
         m.setStart(rs.getString("start_time"));
         m.setStop(rs.getString("stop_time"));
         m.setTestId(rs.getInt("test_id"));
