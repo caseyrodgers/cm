@@ -3,8 +3,10 @@ package hotmath.cm.server.model;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModel;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.spring.SpringManager;
@@ -19,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -113,7 +116,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
 
 			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
-			 setFirstLastActivityDate(rval, testList);
+			 StudentActivityDao saDao = StudentActivityDao.getInstance();
+			 List<StudentActivityModel> samList = saDao.getStudentActivity(conn, studentUid, beginDate, endDate);
+			 setFirstLastActivityDate(rval, samList);
 			 
 			 // load quiz data for initial through last programs
 			 loadQuizResults(filteredList, rval, conn);
@@ -246,16 +251,22 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 return dao.testRunLessonsCompleted(conn, runId);
 	 }
 
-	 private void setFirstLastActivityDate(StudentReportCardModelI rc, List<HaTest>testList) {
-		 if (testList != null && testList.size() > 0) {
-			 Date date = testList.get(0).getCreateTime();
-			 rc.setFirstActivityDate(date);
+	 private void setFirstLastActivityDate(StudentReportCardModelI rc, List<StudentActivityModel>samList) {
+		 if (samList != null && samList.size() > 0) {
+			 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-			 date = testList.get(testList.size() - 1).getCreateTime();
-		  	 rc.setLastActivityDate(date);
+			 try {
+    			 Date date = sdf.parse(samList.get(0).getUseDate());
+	    		 rc.setLastActivityDate(date);
+
+    			 date = sdf.parse(samList.get(samList.size() - 1).getUseDate());
+	    	  	 rc.setFirstActivityDate(date);
+			 }
+			 catch(Exception e) {
+				 logger.error(String.format("*** Error setting activity dates, first: %s, last: %s",
+						 samList.get(samList.size() - 1).getUseDate(), samList.get(0).getUseDate()), e);
+			 }
 		 }
-	  	 
-	  	 //TODO: refine "last" activity date using HA_TEST_RUN.run_time
 	 }
 
 	 /** Load the quiz information, throws Exception if no quizzes loaded
