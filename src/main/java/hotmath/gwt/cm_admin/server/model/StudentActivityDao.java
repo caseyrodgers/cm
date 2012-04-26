@@ -528,7 +528,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                     }
                 } else {
                     sb.append(lessonsCompleted).append(" out of ");
-                    sb.append(totalSessions).append(" completed");
+                    sb.append(totalSessions).append(" completed to date");
                 }
             } else {
                 if (inProgress != 0) {
@@ -638,7 +638,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 			 * query DB for Lesson Count
 			 */
 			int lessonCount = getLessonCountForRunId(sam.getRunId());
-			samCopy.setResult(String.format("0 out of %d completed", lessonCount));
+			samCopy.setResult(String.format("0 out of %d completed to date", lessonCount));
 		}
 	}
 
