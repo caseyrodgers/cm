@@ -18,7 +18,7 @@ function showAskATutorTooltip_Cm() {
 // ///////////////////
 // called by GWT to allow proper external setup of tutor
 var _shouldExpandSteps;
-function doLoad_Gwt(pid, title, jsonConfig, hasShowWork, shouldExpandSteps,solutionHtml, solutionJs, isEpp) {
+function doLoad_Gwt(pid, title, jsonConfig, hasShowWork, shouldExpandSteps,solutionHtml, solutionJs, isEpp, contextVarJson) {
         
     // store in var, registered listener will be notified
     // after solution has been fully initialized
@@ -42,7 +42,7 @@ function doLoad_Gwt(pid, title, jsonConfig, hasShowWork, shouldExpandSteps,solut
         }
 
         var obj = eval('(' + mc.solutionData + ')');
-        handleLoadSolutionData(solutionHtml, mc, obj, this.argument, isEpp);
+        handleLoadSolutionData(solutionHtml, mc, obj, this.argument, isEpp,contextVarJson);
     } catch (e) {
         alert('CM loadSolutionData catch: ' + e);
     }
@@ -103,6 +103,7 @@ HmEvents.eventTutorLastStep.subscribe(function (x) {
  *
  */
 HmEvents.eventTutorInitialized.subscribe(function (x) {
+	gwt_solutionHasBeenInitialized();
     if (_shouldExpandSteps) {
         expandAllSteps();
     }

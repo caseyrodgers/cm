@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
+import hotmath.testset.ha.SolutionDao;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -72,7 +73,13 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,sp.getData(),hasShowWork);
             if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): SolutionInfo() done in: %d msec",
                     	System.currentTimeMillis()-startTime));
-
+            
+            
+            /** read the context stored for this solution view instance or return null allowing new context to be 
+             *  created on client.
+             */
+            int probNum=0; // the problem number in a problem-set
+            solutionInfo.setContextVariablesJson(SolutionDao.getInstance().getSolutionContext(action.getRunId(), action.getPid(), probNum));
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

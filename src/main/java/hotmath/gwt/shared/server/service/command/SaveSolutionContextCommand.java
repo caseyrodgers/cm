@@ -7,12 +7,9 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.shared.client.util.CmException;
-import hotmath.util.sql.SqlUtilities;
+import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
 
 
 
@@ -24,26 +21,8 @@ public class SaveSolutionContextCommand extends ActionBase implements ActionHand
     
     @Override
     public RpcData execute(Connection conn, SaveSolutionContextAction action) throws Exception {
-        PreparedStatement ps=null;
-        try {
-            String sql = "insert into HA_SOLUTION_CONTEXT(uid, time_viewed, run_id, pid, variables)values(?,?,?,?,?)";
-            ps = conn.prepareStatement(sql);
-            
-            ps.setInt(1, action.getUid());
-            ps.setDate(2, new Date(System.currentTimeMillis()));
-            ps.setInt(3, action.getRunId());
-            ps.setString(4, action.getPid());
-            ps.setString(5,action.getContextVariables());
-            
-            int result = ps.executeUpdate();
-            if(result != 1) {
-                throw new CmException("Could not save solution context");
-            }
-            return new RpcData("status=OK");
-        }
-        finally {
-            SqlUtilities.releaseResources(null,  ps, null);
-        }
+        SolutionDao.getInstance().saveSolutionContext(action.getRunId(),action.getPid(),0,action.getContextVariables());
+        return new RpcData("status=OK");
     }
 
     @Override

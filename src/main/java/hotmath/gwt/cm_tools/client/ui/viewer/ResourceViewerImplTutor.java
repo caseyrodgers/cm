@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.MarkHomeWorkAttemptedAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
@@ -17,7 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard.DisplayMode;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -46,6 +45,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -123,8 +123,40 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         }.register();
     }
     
+    private void gwt_solutionHasBeenInitialized(String variablesJson) {
+        
+        if(variablesJson == null || variablesJson.length() == 0) {
+            return;
+        }
+        
+        SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),getResourceItem().getFile(), variablesJson);
+        CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData result) {
+                CmLogger.info("Context saved");
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                CmLogger.error("Error saving solution context", caught);
+            }
+        });        
+    }
+    
     private native void  addExternTutorHooks(ResourceViewerImplTutor x) /*-{
     
+        // called from CatchupMath.js event.tutorHasBeenInitialized
+        // used to store current tutor context on server providing
+        // a way to restore the tutor to its current var defs.
+        //  
+        $wnd.gwt_solutionHasBeenInitialized = function() {
+        try {
+            var vars = $wnd._tutorData._variables;
+            var solutionVariablesJson = $wnd.getTutorVariableContextJson(vars);
+            x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::gwt_solutionHasBeenInitialized(Ljava/lang/String;)(solutionVariablesJson);
+        }
+        catch(e) {
+            alert('error saving solution context: ' + e);}
+        }        
          // override global functions defined in tutor_dynamic
          //
          $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionSetComplete(II);
@@ -134,6 +166,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         };
          
     }-*/;
+    
+    
+    
     
     static private void setSolutionTitle(int progNum, int limit) {
         if(progNum >  0) {
@@ -246,7 +281,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), pid);
+                GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid);
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
@@ -262,6 +297,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                  *  result.isHasShowWork();
                  */
                 boolean hasShowWork = true; 
+                
+                String solutionContextJson = result.getContextVariablesJson();
                 
                 tutorPanel = new TutorWrapperPanel();
                 tutorPanel.addStyleName("tutor_solution_wrapper");
@@ -295,7 +332,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), 
                              getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),
-                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp);
+                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,result.getContextVariablesJson());
                     
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {
@@ -437,8 +474,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      * 
      * @param pid
      */
-    static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,String solutionHtml,String solutionData,boolean isEpp) /*-{
-                                          $wnd.doLoad_Gwt(pid, title,jsonConfig, hasShowWork,shouldExpandSolution,solutionHtml,solutionData,isEpp);
+    static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,String solutionHtml,String solutionData,boolean isEpp, String contextVarsJson) /*-{
+                                              $wnd.doLoad_Gwt(pid, title,jsonConfig, hasShowWork,shouldExpandSolution,solutionHtml,solutionData,isEpp,contextVarsJson);
                                           }-*/;
 
     static private native void expandAllSteps() /*-{

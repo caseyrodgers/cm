@@ -16,6 +16,7 @@ import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaTestRunHomeWorkDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.HaUserExtendedDao;
+import hotmath.testset.ha.SolutionDao;
 import junit.framework.TestCase;
 
 public class SpringManager_Test extends TestCase{
@@ -128,6 +129,12 @@ public class SpringManager_Test extends TestCase{
         SpringManager manager = SpringManager.getInstance();
         HaTestRunHomeWorkDao testDao = (HaTestRunHomeWorkDao)manager.getBeanFactory().getBean("hotmath.testset.ha.HaTestRunHomeWorkDao");
         assertNotNull(testDao);
-    }    
+    }
+    
+    public void testSolutionDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        SolutionDao testDao = (SolutionDao)manager.getBeanFactory().getBean("hotmath.testset.ha.SolutionDao");
+        assertNotNull(testDao);
+    }
 
 }

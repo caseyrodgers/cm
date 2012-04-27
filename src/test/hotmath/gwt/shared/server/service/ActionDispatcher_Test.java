@@ -98,7 +98,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testGetSolution() throws Exception {
         
-        GetSolutionAction action = new GetSolutionAction(uid, TEST_PID);
+        GetSolutionAction action = new GetSolutionAction(uid, TEST_RUN_ID,TEST_PID);
         SolutionInfo data = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(data);
@@ -108,7 +108,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
 
     public void testSendErrorNotification() throws Exception {
-        GetSolutionAction action = new GetSolutionAction(uid, "DOES_NOT_EXIST");
+        GetSolutionAction action = new GetSolutionAction(uid, TEST_RUN_ID,"DOES_NOT_EXIST");
         try {
             SolutionInfo data = ActionDispatcher.getInstance().execute(action);
         }

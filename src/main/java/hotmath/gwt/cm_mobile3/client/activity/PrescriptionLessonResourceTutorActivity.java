@@ -66,6 +66,10 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     }
     
     public void gwt_solutionHasBeenInitialized(String variablesJson) {
+        if(variablesJson == null || variablesJson.length() == 0) {
+            return;
+        }
+        
         SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),resourceItem.getFile(), variablesJson);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
@@ -82,8 +86,8 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     
     native public void setupExternalJsHooks(PrescriptionLessonResourceTutorActivity instance) /*-{
         $wnd.gwt_solutionHasBeenInitialized = function() {
-            //var solutionVariablesJson = $wnd.getTutorVariableContextJson($wnd.TutorManager.tutorData._variables);
-            //instance.@hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity::gwt_solutionHasBeenInitialized(Ljava/lang/String;)(solutionVariablesJson);        
+            var solutionVariablesJson = $wnd.getTutorVariableContextJson($wnd.TutorManager.tutorData._variables);
+            instance.@hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity::gwt_solutionHasBeenInitialized(Ljava/lang/String;)(solutionVariablesJson);        
         }
     }-*/;
 
