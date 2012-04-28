@@ -40,6 +40,15 @@ pageTracker._trackPageview();
   .first-para {
 	  color: #758F36;
   }
+  #hint_list li {
+	list-style-type: circle;
+	list-style: circle;
+	list-style: circle;
+	margin-left: 20px;
+	margin-bottom: 2px;
+	list-style-position: outside;
+  }
+  
 </style>
 <!-- InstanceBeginEditable name="head" -->
 <style>
@@ -130,7 +139,7 @@ pageTracker._trackPageview();
                     <div class='yui3-u-2-3 intro-section' id='main-content-left'>
                         <!-- InstanceBeginEditable name="main-content-left" -->
 
-   <h1>Math Class Activity</h1>
+   <h1>Four Math Class Activities</h1>
    <h2>Inconsistent Highway Signs</h2>
    <p>You are driving along a highway and see this sign:<br/>
  	  &nbsp;&nbsp;Nearville	150 miles<br/>
@@ -149,7 +158,58 @@ pageTracker._trackPageview();
        and thus 150.0+9.6=159.6 miles before Farville. The second sign is 99.6 miles before Nearville
        and thus 99.6+9.6=109.2 miles before Farville. So, the signs show the correct rounded distances.
      </div>
-   
+
+   <h2>Secret Salaries</h2>
+   <p>A group of 7 employees are out to lunch, sitting around a table, and the topic of salary comes up.
+      They all want to know the average salary of the group, without anyone revealing their own salary.
+      Can you think of a way to do that? [Hint: This can be accomplished without anything being written down.]
+   </p> 
+   <p><a href='javascript:showAnswer2();'>Click for answer</a>
+   </p>
+     <div id='answer2' class='activity-answer'>
+       One person adds her salary to some random (and secret) large number. Let's say her salary is $500
+       per week. She adds, say, $8000 to it and turns to the person next to her and whispers "$8500." This
+       goes around the table with each person adding their salary to the passed number, and then whispering
+       the new sum along. Finally, the original person receives the total. She subtracts the $8000 and
+       divides by the number of people at the table and tells everyone the average.
+     </div>
+
+   <h2>Eggsactly!</h2>
+   <p>A basket (like, say, an Easter basket) has exactly six eggs in it. Six different people each take one
+      egg. These are normal people and normal chicken eggs. After all 6 eggs have been taken, there is still
+      one egg left in the basket. How could this be? (No one put their egg back in the basket.)
+   </p>
+   <p><a href='javascript:showAnswer3();'>Click for answer</a>
+   </p>
+     <div id='answer3' class='activity-answer'>
+         Our answer: The last person took the basket.<br/> 
+         Our favorite teacher-suggestion: There was also a chicken in the basket that laid an egg. 
+     </div>
+
+   <h2>Adapted from a Car-Talk Puzzler</h2> 
+   <p>Three pieces of paper are face down, each with a different number written on them (say from minus
+      infinity to plus infinity). Your job is to find the highest number by following these rules:
+    </p>
+      <ul id='hint_list'>
+      <li> You can pick up a slip at random and either choose that number, or discard the number and pick up a second slip.
+      </li>
+      <li> You can then choose or discard the second number.
+      </li>
+      <li> If you discard the second number, then you automatically choose the last number.
+      </li>
+      </ul>
+   <p style='padding-top:15px;'>So the question is, can you think of a way to improve on a 1/3 chance of picking the highest number?
+      [Hint: there is a way!]
+   </p> 
+   <p><a href='javascript:showAnswer4();'>Click for answer</a>
+   </p>
+     <div id='answer4' class='activity-answer'>
+       Pick up the first slip and discard it. Then pick up the second slip. If the second number is higher than
+       the first number, choose it. If not, choose the third number. In this way you have removed one slip that
+       can't be the largest, so you have improved your chances to 50%. Your students can validate this strategy
+       by running several trials and recording their successes and failures in choosing the largest number.
+     </div>
+
    <h2>Learn More about Catchup Math</h2>
    <p>Please explore our website starting with the 2-minute video and sample student session on our
       <a href='/'>Home Page</a>. We are adding new features continually, so please ask your
@@ -340,6 +400,42 @@ pageTracker._trackPageview();
         	  var fld = $get("answer");
         	  if (hidden == true) {
         	      hidden = false;
+        	      fld.style.display='block';
+        	  }
+        	  else {
+        		  hidden = true;
+        	      fld.style.display='none';
+        	  }
+          }
+          var hidden2 = true;
+          function showAnswer2() {
+        	  var fld = $get("answer2");
+        	  if (hidden2 == true) {
+        	      hidden2 = false;
+        	      fld.style.display='block';
+        	  }
+        	  else {
+        		  hidden2 = true;
+        	      fld.style.display='none';
+        	  }
+          }
+          var hidden3 = true;
+          function showAnswer3() {
+        	  var fld = $get("answer3");
+        	  if (hidden3 == true) {
+        	      hidden3 = false;
+        	      fld.style.display='block';
+        	  }
+        	  else {
+        		  hidden3 = true;
+        	      fld.style.display='none';
+        	  }
+          }
+          var hidden4 = true;
+          function showAnswer4() {
+        	  var fld = $get("answer4");
+        	  if (hidden4 == true) {
+        	      hidden4 = false;
         	      fld.style.display='block';
         	  }
         	  else {
