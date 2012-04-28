@@ -53,6 +53,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     SolutionInfo _solutionInfo;
+    boolean _solutionHasExistingContext;
     
     public ResourceViewerImplTutor() {
         _instance = this;
@@ -129,17 +130,19 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             return;
         }
         
-        SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),getResourceItem().getFile(), variablesJson);
-        CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
-            @Override
-            public void onSuccess(RpcData result) {
-                CmLogger.info("Context saved");
-            }
-            @Override
-            public void onFailure(Throwable caught) {
-                CmLogger.error("Error saving solution context", caught);
-            }
-        });        
+        if(!_solutionHasExistingContext) {
+            SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),getResourceItem().getFile(), variablesJson);
+            CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+                @Override
+                public void onSuccess(RpcData result) {
+                    CmLogger.info("Context saved");
+                }
+                @Override
+                public void onFailure(Throwable caught) {
+                    CmLogger.error("Error saving solution context", caught);
+                }
+            });
+        }
     }
     
     private native void  addExternTutorHooks(ResourceViewerImplTutor x) /*-{
@@ -298,7 +301,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                  */
                 boolean hasShowWork = true; 
                 
-                String solutionContextJson = result.getContextVariablesJson();
+                _solutionHasExistingContext = (result.getContextVariablesJson() != null);
                 
                 tutorPanel = new TutorWrapperPanel();
                 tutorPanel.addStyleName("tutor_solution_wrapper");
