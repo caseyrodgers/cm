@@ -4,12 +4,11 @@ import java.util.Date;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
-import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction.ReportType;
 
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.Label;
@@ -54,8 +53,8 @@ public class HighlightImplComparePanel extends LayoutContainer {
                 		StudentGridPanel.instance._pageAction,
                 		reportType, 
                         StudentGridPanel.instance._cmAdminMdl.getId(), 
-                        StudentGridPanel.instance.getFromDate(),
-                        StudentGridPanel.instance.getToDate()
+                        DateRangePanel.getInstance().getFromDate(),
+                        DateRangePanel.getInstance().getToDate()
                         );
                 setAction(action);
                 CmShared.getCmService().execute(action, this);

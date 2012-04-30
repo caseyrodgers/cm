@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -109,8 +110,9 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
                 CmBusyManager.setBusy(true);
                 
                 HighlightsGetReportAction action = new HighlightsGetReportAction(StudentGridPanel.instance._pageAction, getReportType(),
-                        StudentGridPanel.instance._cmAdminMdl.getId(), StudentGridPanel.instance.getFromDate(),
-                        StudentGridPanel.instance.getToDate());
+                        StudentGridPanel.instance._cmAdminMdl.getId(),
+                        DateRangePanel.getInstance().getFromDate(),
+                        DateRangePanel.getInstance().getToDate());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

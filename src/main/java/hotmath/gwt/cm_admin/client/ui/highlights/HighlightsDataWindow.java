@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -88,7 +89,7 @@ public class HighlightsDataWindow extends CmWindow {
     }
 
 	private void refreshDateRangeLabel() {
-		_dateRange.setText("Date range: " + StudentGridPanel.instance.formatDateRange());
+		_dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
 	}
 
     int _currentSelection;
