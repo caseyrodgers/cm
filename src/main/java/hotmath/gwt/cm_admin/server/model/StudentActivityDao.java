@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,12 +97,19 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
             updateTimeOnTask(totList, smList);
             
+            // limit list if fromDate and/or toDate is not null
+        	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        	String from = (fromDate != null) ? sdf.format(fromDate) : null;
+        	String to = (toDate != null) ? sdf.format(toDate) : null;
+
             // reverse order of list
             samList = new ArrayList<StudentActivityModel>(smList.size());
             for (int i = (smList.size() - 1); i >= 0; i--) {
+            	if ( (from != null && from.compareTo(smList.get(i).getUseDate()) > 0) ||
+            	     (to != null && to.compareTo(smList.get(i).getUseDate()) < 0) ) continue;
                 samList.add(smList.get(i));
             }
-
+            
         } catch (Exception e) {
             LOGGER.error(String.format("*** Error getting student details for student uid: %d", uid), e);
             throw new Exception("*** Error getting student details ***");

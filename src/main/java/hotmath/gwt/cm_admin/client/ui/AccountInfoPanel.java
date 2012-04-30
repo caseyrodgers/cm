@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
@@ -139,11 +140,11 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
         }
         else {
             ai.setStudentCountStyle("fld");
-
         }
-        
         setAccountInfoModel(ai);
-        
+
+        DateRangePanel.getInstance().setDefaultFromDate(ai.getAccountCreateDate());
+
         CmLogger.info("AccountInfoPanel: student info read succesfully");
     }
     
