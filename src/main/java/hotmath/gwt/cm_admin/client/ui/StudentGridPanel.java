@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
-import hotmath.gwt.cm_admin.client.ui.DateRangePickerDialog.FilterOptions;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -15,6 +13,8 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.AutoRegisterStudentSetup;
 import hotmath.gwt.cm_tools.client.ui.BulkStudentRegistrationWindow;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.DateRangeCallback;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.ExportStudentData;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
@@ -40,7 +40,6 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +53,6 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.PagingLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.FieldEvent;
@@ -115,6 +113,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
     final PagingLoader<PagingLoadResult<StudentModelExt>> _studentLoader;
     final PagingToolBar _pagingToolBar;
+    private DateRangePanel dateRangePanel;
 
     final int MAX_ROWS_PER_PAGE = 50;
 
@@ -182,7 +181,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         add(lc, new BorderLayoutData(LayoutRegion.CENTER));
 
         BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.SOUTH, 35);
-        add(createGroupFilter(), borderLayout);
+        add(createFilters(), borderLayout);
 
         final Menu contextMenu = new Menu();
 
@@ -282,8 +281,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (CmShared.getQueryParameter("show_quiz") != null) {
             new CustomProgramAddQuizDialog(null, null, false);
         }
+
     }
-    
+
     private void resetProgramForUser(final int uid) {
         new RetryAction<RpcData>() {
             @Override
@@ -351,7 +351,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         }
     }
 
-    private Component createGroupFilter() {
+    private Component createFilters() {
 
         groupStore = new ListStore<GroupInfoModel>();
         GroupSelectorWidget gsw = new GroupSelectorWidget(_cmAdminMdl, groupStore, false, this, "group-filter", false);
@@ -396,10 +396,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         lc.add(fp);
 
         // Date Range Panel
+        
         fp = new MyFormPanel();
         fp.setWidth(300);
         fp.setLabelWidth(80);
-        fp.add(new DateRangePanel());
+        dateRangePanel = new DateRangePanel(new DateRangeCallback() {
+        	public void applyDateRange() {
+        		 loadAndResetStudentLoader();
+        	}
+        });
+        fp.add(dateRangePanel);
         lc.add(fp);
 
         return lc;
@@ -1143,6 +1149,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     	return _pageAction;
     }
 
+    static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+
     /**
      * Create proxy to handle the paged student grid RPC calls
      * 
@@ -1178,11 +1186,12 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     }
 
                     String dateRange = null;
-                    String value = dateRangeFilter.getValue();  /** will be null until initialized */
-                    if (value != null && value.trim().length() > 0 && fromDate != null && toDate != null) {
-                    	dateRange = dateFormat.format(fromDate) + " - " + dateFormat.format(toDate);
+                    TextField<String> dateRangeFilter = (dateRangePanel!=null)?dateRangePanel.getDateRangeFilter():null;
+                    String value = (dateRangeFilter != null)?dateRangeFilter.getValue():null;  /** will be null until initialized */
+                    if (value != null && value.trim().length() > 0) { // && fromDate != null && toDate != null) {
+                    	dateRange = dateFormat.format(dateRangePanel.getFromDate()) + " - " + dateFormat.format(dateRangePanel.getToDate());
                         _pageAction.addFilter(GetStudentGridPageAction.FilterType.DATE_RANGE, dateRange);
-                        _pageAction.addFilter(GetStudentGridPageAction.FilterType.OPTIONS, (_filterOptions!=null?_filterOptions.toParsableString():""));
+                        _pageAction.addFilter(GetStudentGridPageAction.FilterType.OPTIONS, (dateRangePanel.getFilterOptions()!=null?dateRangePanel.getFilterOptions().toParsableString():""));
                     }
                     _pageAction.setDateRange(dateRange);
 
@@ -1327,134 +1336,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             }
         }
     }
-
-    /**
-     * Set and clear date range
-     * 
-     * @author bob
-     * 
-     */
-    static Date fromDate, toDate;
-    static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
-    static TextField<String> dateRangeFilter;
-    static FilterOptions _filterOptions;
-    
-    public Date getFromDate() {
-    	if (fromDate == null)
-            fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
-        return fromDate;
-    }
-    
-    public Date getToDate() {
-    	if (toDate == null) {
-            toDate = new Date();
-            addDaysToDate(toDate, 1);
-    	}
-    	return toDate;
-    }
-
-    @SuppressWarnings("deprecation") // GWT requires Date
-    public void addDaysToDate(Date date, int days) {
-        date.setDate(date.getDate() + days);
-    }
-
-    public String formatDateRange() {
-        return dateFormat.format(getFromDate()) + " - " + dateFormat.format(getToDate());
-    }
-
-    class DateRangePanel extends HorizontalPanel {
-        
-        Button dateRangeButton;
-        Button clearButton;
-       
-        DateRangePanel() {
-        	init();
-        }
-
-    	void init() {
-    		
-            dateRangeFilter = new TextField<String>();
-            dateRangeFilter.setEmptyText(" Use \"set\" for Date Range");
-            dateRangeFilter.setFieldLabel("Date Range");
-            dateRangeFilter.setWidth("160px");
-            dateRangeFilter.setReadOnly(true);
-            dateRangeFilter.setToolTip("No date range filter applied");
-            dateRangeFilter.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
-				@Override
-				public void handleEvent(BaseEvent be) {
-                	getFromDate();
-                    showDatePicker();
-                }
-            });
-
-            getToDate();
-
-            add(dateRangeFilter);
-            
-            dateRangeButton = new Button("set", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                	if (fromDate == null)
-                        fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
-                    showDatePicker();
-                }
-            });
-            dateRangeButton.setToolTip("Set Date range filter");
-            add(dateRangeButton);
-
-            clearButton = new Button("clear", new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                	clearDateRange();
-                }
-            });
-            clearButton.setToolTip("Set date range to maximum");
-            add(clearButton);
-
-    	}
-
-        private void showDatePicker() {
-            DateRangePickerDialog.showSharedInstance(fromDate, toDate, new DateRangePickerDialog.Callback() {
-                @Override
-                public void datePicked(Date from, Date to, FilterOptions filterOptions) {
-                    fromDate = (from != null) ? from : fromDate;
-                    toDate = (to != null) ? to : toDate;
-
-                    dateRangeFilter.setValue(formatDateRange(from, to));
-                    dateRangeFilter.setToolTip("Date range filter applied to Student activity");
-                    _filterOptions = filterOptions;
-                    
-                    applyDateRange();
-                }
-            });
-        }
-
-        private void clearDateRange() {
-
-            dateRangeFilter.clear();
-            dateRangeFilter.setToolTip("No date range filter applied");
-
-            fromDate = CatchupMathAdmin.getInstance().getAccountInfoPanel().getModel().getAccountCreateDate();
-            toDate = new Date();
-            addDaysToDate(toDate, 1);
-
-            _filterOptions = null;
-
-            applyDateRange();
-        }
-
-        private void applyDateRange() {
-            loadAndResetStudentLoader();
-        }
-
-        private String formatDateRange(Date from, Date to) {
-        	if (from != null && to != null)
-                return dateFormat.format(from) + " - " + dateFormat.format(to);
-        	else
-        		return " ";
-        }
-    }
-
 }
 
 /**
