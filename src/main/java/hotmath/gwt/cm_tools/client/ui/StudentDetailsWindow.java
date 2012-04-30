@@ -51,8 +51,10 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.extjs.gxt.ui.client.widget.Label;
+
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
+//import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /*
@@ -72,6 +74,7 @@ public class StudentDetailsWindow extends CmWindow {
     private XTemplate template;
     private Grid<StudentActivityModel> samGrid;
     private Label _studentCount;
+    private Label dateRange = new Label();
 
     /**
      * Create StudentDetailsWindow for student. Shows all student activity for
@@ -147,6 +150,11 @@ public class StudentDetailsWindow extends CmWindow {
             Menu debugMenu = buildDebugMenu();
             samGrid.setContextMenu(debugMenu);
         }
+
+        refreshDateRangeLabel();
+        dateRange.addStyleName("date-range-label");
+        getButtonBar().setStyleAttribute("position", "relative");
+        getButtonBar().add(dateRange);
 
         setVisible(true);
     }
@@ -484,16 +492,17 @@ public class StudentDetailsWindow extends CmWindow {
             @Override
             public void attempt() {
                 CmServiceAsync s = CmShared.getCmService();
-                GetStudentActivityAction action = new GetStudentActivityAction(sm);
+                GetStudentActivityAction action =
+                		new GetStudentActivityAction(sm, DateRangePanel.getInstance().getFromDate(), DateRangePanel.getInstance().getToDate());
                 setAction(action);
                 s.execute(action, this);
             }
         }.register();
     }
     
-    
-    
-    
+	private void refreshDateRangeLabel() {
+		dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
+	}
     
     static public void showStudentDetails(final int userId) {
         

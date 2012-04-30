@@ -1,6 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui;
-
-import hotmath.gwt.cm_admin.client.CatchupMathAdmin;
+package hotmath.gwt.cm_tools.client.ui;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -54,29 +52,28 @@ public class DateRangePickerDialog extends Window {
 		mainPanel.add(createFromPicker(), new BorderLayoutData(
 				LayoutRegion.WEST));
 		mainPanel
-				.add(createToPicker(), new BorderLayoutData(LayoutRegion.EAST));
+		.add(createToPicker(), new BorderLayoutData(LayoutRegion.EAST));
 		mainPanel.setHeight(280);
 		add(mainPanel);
-		
-		
+
+
 		add(createOptionsPanel());
 
-		_defaultStartDate = CatchupMathAdmin.getInstance()
-				.getAccountInfoPanel().getModel().getAccountCreateDate();
+		_defaultStartDate = DateRangePanel.getInstance().getFromDate();
 		addButton(new Button("Maximum Range",
 				new SelectionListener<ButtonEvent>() {
-					@Override
-					public void componentSelected(ButtonEvent ce) {
+			@Override
+			public void componentSelected(ButtonEvent ce) {
 
-						Date from = _defaultStartDate;
-						Date to = new Date();
-						StudentGridPanel.instance.addDaysToDate(to, 1);
+				Date from = _defaultStartDate;
+				Date to = new Date();
+				DateRangePanel.getInstance().addDaysToDate(to, 1);
 
-						DateRangePickerDialog.this.callback.datePicked(from,
-								to, getFilterOptions());
-						hide();
-					}
-				}));
+				DateRangePickerDialog.this.callback.datePicked(from,
+						to, getFilterOptions());
+				hide();
+			}
+		}));
 
 		addButton(new Button("Apply", new SelectionListener<ButtonEvent>() {
 			@Override
@@ -111,7 +108,7 @@ public class DateRangePickerDialog extends Window {
 	Boolean viewedLessons = new Boolean(true);
 	Boolean usedResources = new Boolean(true);
 	Boolean registered = new Boolean(true);
-	
+
 	private Widget createOptionsPanel() {
 		FormPanel fp = new FormPanel();
 		fp.setFooter(false);
@@ -122,9 +119,9 @@ public class DateRangePickerDialog extends Window {
 		fp.setButtonAlign(HorizontalAlignment.LEFT);
 		fp.setFieldWidth(60);
 		fp.setLayout(new FormLayout());
-		
+
 		fp.add(advancedOptionsBtn());
-		
+
 		return fp;
 	}
 
@@ -132,9 +129,9 @@ public class DateRangePickerDialog extends Window {
 		Button btn = new Button("Advanced Options");
 		btn.setToolTip("Select Activities: logged in, started quizzes, took quizzes, viewed lessons, used resources, registered");
 		btn.setWidth("110px");
-	    btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-	        public void componentSelected(ButtonEvent ce) {
-	            AdvOptCallback callback = new AdvOptCallback() {
+		btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+			public void componentSelected(ButtonEvent ce) {
+				DateRangeAdvOptCallback callback = new DateRangeAdvOptCallback() {
 					@Override
 					void setAdvancedOptions(Map<String, Boolean> optionMap) {
 						loggedIn = optionMap.get(DateRangeAdvancedOptionsDialog.LOGGED_IN);
@@ -144,19 +141,19 @@ public class DateRangePickerDialog extends Window {
 						usedResources = optionMap.get(DateRangeAdvancedOptionsDialog.USED_RESOURCES);
 						registered = optionMap.get(DateRangeAdvancedOptionsDialog.REGISTERED);
 					}
-	            };
-	            final Map<String,Boolean>advOptionsMap = new HashMap <String,Boolean> ();
+				};
+				final Map<String,Boolean>advOptionsMap = new HashMap <String,Boolean> ();
 
-	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.LOGGED_IN, loggedIn);
-	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.STARTED_QUIZ, startedQuiz);
-	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.TOOK_QUIZ, tookQuiz);
-	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.VIEWED_LESSONS, viewedLessons);
-	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.USED_RESOURCES, usedResources);
-	            advOptionsMap.put(DateRangeAdvancedOptionsDialog.REGISTERED, registered);
+				advOptionsMap.put(DateRangeAdvancedOptionsDialog.LOGGED_IN, loggedIn);
+				advOptionsMap.put(DateRangeAdvancedOptionsDialog.STARTED_QUIZ, startedQuiz);
+				advOptionsMap.put(DateRangeAdvancedOptionsDialog.TOOK_QUIZ, tookQuiz);
+				advOptionsMap.put(DateRangeAdvancedOptionsDialog.VIEWED_LESSONS, viewedLessons);
+				advOptionsMap.put(DateRangeAdvancedOptionsDialog.USED_RESOURCES, usedResources);
+				advOptionsMap.put(DateRangeAdvancedOptionsDialog.REGISTERED, registered);
 
-	            new DateRangeAdvancedOptionsDialog(callback, advOptionsMap).setVisible(true);              
-	        }
-	    });
+				new DateRangeAdvancedOptionsDialog(callback, advOptionsMap).setVisible(true);              
+			}
+		});
 		return btn;
 	}
 
@@ -294,7 +291,7 @@ public class DateRangePickerDialog extends Window {
 	public interface Callback {
 		void datePicked(Date from, Date to, FilterOptions options);
 	}
-	
+
 }
 
 class DatePickerWrapper extends LayoutContainer {
@@ -339,6 +336,6 @@ class DatePickerWrapper extends LayoutContainer {
 	}
 }
 
-abstract class AdvOptCallback {
+abstract class DateRangeAdvOptCallback {
 	abstract void setAdvancedOptions(Map<String,Boolean> optionMap);
 }

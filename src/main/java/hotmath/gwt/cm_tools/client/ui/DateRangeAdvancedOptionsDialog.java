@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -48,7 +48,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 	private FieldSet fs;
 	private int formHeight = 275;
 	private int formWidth  = 260;
-	private AdvOptCallback callback;
+	private DateRangeAdvOptCallback callback;
 	private Map<String,Boolean> advOptionsMap;
 	
 	public static final String LOGGED_IN      = "logged_in";
@@ -58,7 +58,7 @@ public class DateRangeAdvancedOptionsDialog extends LayoutContainer {
 	public static final String USED_RESOURCES = "used_resources";
 	public static final String REGISTERED     = "registered";
 
-	public DateRangeAdvancedOptionsDialog(AdvOptCallback callback, Map <String,Boolean> optionMap) {
+	public DateRangeAdvancedOptionsDialog(DateRangeAdvOptCallback callback, Map <String,Boolean> optionMap) {
 
 		this.callback = callback;
 		this.advOptionsMap = optionMap;
