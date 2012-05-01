@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -58,6 +59,8 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     			studentUids = action.getStudentUids();
     		}
     		PdfType pdfType = action.getPdfType();
+    		Date fromDate = action.getFromDate();
+    		Date toDate = action.getToDate();
 
     		String reportId = CmAdminDao.getInstance().getPrintableStudentReportId(studentUids);
 
@@ -70,7 +73,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		}
     		else if (pdfType == PdfType.STUDENT_DETAIL) {
     			StudentDetailReport sd = new StudentDetailReport();
-    			baos = sd.makePdf(conn, reportId, adminId);
+    			baos = sd.makePdf(conn, reportId, adminId, fromDate, toDate);
     			reportName = sd.getReportName();
     		}
     		else if (pdfType == PdfType.REPORT_CARD) {

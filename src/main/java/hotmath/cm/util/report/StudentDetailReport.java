@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.lowagie.text.Cell;
@@ -40,7 +41,8 @@ public class StudentDetailReport {
 	private static Logger logger = Logger.getLogger(StudentDetailReport.class);
 	
 	@SuppressWarnings("unchecked")
-	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId) {
+	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId,
+			Date fromDate, Date toDate) {
 		ByteArrayOutputStream baos = null;
 
 		Integer stuUid = -1;
@@ -56,7 +58,7 @@ public class StudentDetailReport {
         	StudentModelI sm = studentDao.getStudentModelBase(conn, stuUid, false);
         	
         	StudentActivityDao activityDao = StudentActivityDao.getInstance();
-        	List<StudentActivityModel> sList = activityDao.getStudentActivity(conn, stuUid);
+        	List<StudentActivityModel> sList = activityDao.getStudentActivity(conn, stuUid, fromDate, toDate);
 						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();

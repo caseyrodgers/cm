@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,8 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     List<Integer> studentUids;
     Map<FilterType,String> filterMap;
     String title;
+    Date fromDate;
+    Date toDate;
     
     GetStudentGridPageAction pageAction;
 
@@ -31,6 +34,15 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         this.pdfType = pdfType;
         this.adminId = adminId;
         this.studentUids = studentUids;
+    }
+    
+    public GeneratePdfAction(PdfType pdfType, Integer adminId, List<Integer> studentUids,
+    		Date fromDate, Date toDate) {
+        this.pdfType = pdfType;
+        this.adminId = adminId;
+        this.studentUids = studentUids;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
     }
     
     public GeneratePdfAction(PdfType pdfType, Integer adminId, GetStudentGridPageAction pageAction) {
@@ -75,7 +87,23 @@ public class GeneratePdfAction implements Action<CmWebResource>{
         this.title = title;
     }
 
-    public void setStudentUids(List<Integer> studentUids) {
+    public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public void setStudentUids(List<Integer> studentUids) {
         this.studentUids = studentUids;
     }
 

@@ -346,9 +346,10 @@ public class StudentDetailsWindow extends CmWindow {
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-
+                DateRangePanel dateRange = DateRangePanel.getInstance();
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(),
-                        new GeneratePdfAction(PdfType.STUDENT_DETAIL, sm.getAdminUid(), Arrays.asList(sm.getUid())));
+                        new GeneratePdfAction(PdfType.STUDENT_DETAIL, sm.getAdminUid(), Arrays.asList(sm.getUid()),
+                        		dateRange.getFromDate(), dateRange.getToDate()));
             }
         });
         return ti;
