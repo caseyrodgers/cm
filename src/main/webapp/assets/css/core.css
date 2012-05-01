@@ -896,3 +896,7 @@ div#postit  a + p {
 	line-height: 1.3em;
 	margin-bottom: 20px;
 }
+
+#signup_panel {
+	width: 780px;
+}
