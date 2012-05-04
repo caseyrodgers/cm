@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile3.client.activity;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -70,7 +71,7 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
             return;
         }
         
-        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),resourceItem.getFile(), variablesJson);
+        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),resourceItem.getFile(),PrescriptionLessonResourceTutorViewImpl.__probNum, variablesJson);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {

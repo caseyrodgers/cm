@@ -19,7 +19,7 @@ public class GetStudentActivityCommand_Test extends CmDbTestCase {
     
     public void testCreate() throws Exception  {
         StudentModelI sm = CmStudentDao.getInstance().getStudentModel(_user.getUid());
-        GetStudentActivityAction action = new GetStudentActivityAction(sm);
+        GetStudentActivityAction action = new GetStudentActivityAction(sm,null,null);
         
         new GetStudentActivityCommand().execute(conn,action);
     }

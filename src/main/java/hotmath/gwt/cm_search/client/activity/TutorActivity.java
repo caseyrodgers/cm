@@ -12,6 +12,7 @@ import hotmath.gwt.cm_search.client.places.SearchPlace;
 import hotmath.gwt.cm_search.client.places.TutorPlace;
 import hotmath.gwt.cm_search.client.view.TopicView;
 import hotmath.gwt.cm_search.client.view.TutorView;
+import hotmath.gwt.cm_search.client.view.TutorViewImpl;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -78,7 +79,7 @@ public class TutorActivity extends AbstractActivity implements TutorView.Present
     
     
     public void gwt_solutionHasBeenInitialized(String variablesJson) {
-        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),place.getToken(), variablesJson);
+        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),place.getToken(),TutorViewImpl.__probNum, variablesJson);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {

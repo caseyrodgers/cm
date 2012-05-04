@@ -92,13 +92,13 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	 * 
 	 */
 	private void tutorNewProblem() {
-	    if(_total < 2 || _probNum >= _total) {
+	    if(_total < 2 || __probNum >= _total) {
 	        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
 	        return;
 	    }
 	    
         FlowPanel flowPanel = new FlowPanel();
-        flowPanel.add(new HTML("<p>You are currently on problem " + _probNum + " of " + _total + ".</p>" +
+        flowPanel.add(new HTML("<p>You are currently on problem " + __probNum + " of " + _total + ".</p>" +
                                "<p style='margin-top: 15px'>Are you sure you want to Return to the lesson?</p>"
                                ));
         Button btn = new Button("Return to Lesson",new ClickHandler() {
@@ -156,10 +156,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(),lastResponse.getSolutionData(), lastResponse.getTutorHtml(),problem.getProblem(), false, false);
 	}
 	
-	int _probNum;
+	public static int __probNum;
 	int _total;
 	private void setSolutionTitle_Gwt(int probNum, int total) {
-	    _probNum = probNum;	    _total = total;
+	    __probNum = probNum;	    _total = total;
 	    String title = null;
 	    if(total > 0) {
 	        title = "Problem Set: " + probNum + " of " + total;

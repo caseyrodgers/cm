@@ -1,7 +1,6 @@
 package hotmath.gwt.hm_mobile.client.view;
 
 
-import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;

@@ -155,10 +155,10 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView {
     }
    
     
-    int _probNum;
+    public static int __probNum;
     int _total;
     private void setSolutionTitle_Gwt(int probNum, int total) {
-        _probNum = probNum;     _total = total;
+        __probNum = probNum;     _total = total;
         String title = null;
         if(total > 0) {
             title = "Problem Set: " + probNum + " of " + total;

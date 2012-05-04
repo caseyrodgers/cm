@@ -14,6 +14,7 @@ public class GetStudentActivityAction implements Action<CmList<StudentActivityMo
     Date toDate;
     
     public GetStudentActivityAction(){}
+
     
     public GetStudentActivityAction(StudentModelI sm, Date fromDate, Date toDate) {
         this.student = sm;

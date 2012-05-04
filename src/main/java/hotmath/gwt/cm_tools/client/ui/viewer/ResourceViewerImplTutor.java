@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -26,7 +27,9 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.BaseEvent;
@@ -53,7 +56,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     SolutionInfo _solutionInfo;
-    boolean _solutionHasExistingContext;
     
     public ResourceViewerImplTutor() {
         _instance = this;
@@ -124,17 +126,26 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         }.register();
     }
     
-    private void gwt_solutionHasBeenInitialized(String variablesJson) {
+    private void gwt_solutionHasBeenInitialized(final String variablesJson) {
         
+        /** if this is already stored in variables, then no need to save on server
+         * 
+         */
         if(variablesJson == null || variablesJson.length() == 0) {
             return;
         }
-        
-        if(!_solutionHasExistingContext) {
-            SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),getResourceItem().getFile(), variablesJson);
+
+        if(_solutionInfo.getContextVariablesJson().size() > 0) {
+            // only store first one 
+        }
+        else {
+            final String pid=getResourceItem().getFile();
+            SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(),pid,__problemNumber, variablesJson);
             CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
+                    
+                    _solutionInfo.getContextVariablesJson().add(new SolutionContext(pid,__problemNumber,variablesJson));
                     CmLogger.info("Context saved");
                 }
                 @Override
@@ -143,6 +154,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 }
             });
         }
+    }
+    
+    
+    Map<Integer,String> _variableContexts = new HashMap<Integer, String>();
+    private String gwt_getSolutionProblemContext(int probNum) {
+       return SolutionContext.getSolutionContext(_solutionInfo.getContextVariablesJson(), probNum);
     }
     
     private native void  addExternTutorHooks(ResourceViewerImplTutor x) /*-{
@@ -167,15 +184,25 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
          $wnd.tutorInputWidgetComplete_gwt = function (yesNo) {
             x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::tutorInputWidgetComplete_gwt(I)(yesNo);
         };
+
+        $wnd.gwt_getSolutionProblemContext = function(probNum) {
+            try {
+                return x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::gwt_getSolutionProblemContext(I)(probNum);
+            }
+            catch(e) {
+                alert(e)
+            };
+        }
          
     }-*/;
     
     
     
-    
-    static private void setSolutionTitle(int progNum, int limit) {
-        if(progNum >  0) {
-            String title = "Problem " + progNum + " of " + limit;
+    static int __problemNumber;
+    static private void setSolutionTitle(int probNum, int limit) {
+        __problemNumber = probNum;
+        if(probNum >  0) {
+            String title = "Problem " + probNum + " of " + limit;
             InfoPopupBox.display(new CmInfoConfig("Problem Set Status",title));
             CmMainPanel.__lastInstance._mainContent.currentContainer.setHeading(title);
         }
@@ -293,6 +320,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             public void oncapture(SolutionInfo result) {
             	_solutionInfo = result;
 
+            	CmLogger.info("SolutionInfo: " + result);
+            	
             	/** We want to NOT show the Show Work
                  *  buttons over the tutor, so force
                  *  it off.
@@ -300,8 +329,6 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                  *  result.isHasShowWork();
                  */
                 boolean hasShowWork = true; 
-                
-                _solutionHasExistingContext = (result.getContextVariablesJson() != null);
                 
                 tutorPanel = new TutorWrapperPanel();
                 tutorPanel.addStyleName("tutor_solution_wrapper");
@@ -333,9 +360,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         tutorPanel.addStyleName("is_epp");
                     }
 
+                    
+                    String variableContext = SolutionContext.getSolutionContext(result.getContextVariablesJson(), 1);
+   
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), 
                              getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),
-                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,result.getContextVariablesJson());
+                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,variableContext);
                     
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {

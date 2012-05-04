@@ -4,15 +4,25 @@ public class SaveSolutionContextAction implements Action<RpcData>{
     int uid;
     int runId;
     String pid;
+    int problemNumber;
     String contextVariables;
     
     public SaveSolutionContextAction() {}
     
-    public SaveSolutionContextAction(int uid, int runId, String pid, String contextVariables) {
+    public SaveSolutionContextAction(int uid, int runId, String pid, int problemNumber, String contextVariables) {
         this.uid = uid;
         this.runId = runId;
         this.pid = pid;
+        this.problemNumber = problemNumber;
         this.contextVariables = contextVariables;
+    }
+
+    public int getProblemNumber() {
+        return problemNumber;
+    }
+
+    public void setProblemNumber(int problemNumber) {
+        this.problemNumber = problemNumber;
     }
 
     public int getUid() {
@@ -49,8 +59,8 @@ public class SaveSolutionContextAction implements Action<RpcData>{
 
     @Override
     public String toString() {
-        return "SaveSolutionContextAction [uid=" + uid + ", runId = " + runId + ", pid=" + pid + ", contextVariables length=" + contextVariables.length()
-                + "]";
+        return "SaveSolutionContextAction [uid=" + uid + ", runId=" + runId + ", pid=" + pid + ", problemNumber="
+                + problemNumber + ", contextVariables=" + contextVariables + "]";
     }
     
 

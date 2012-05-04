@@ -21,7 +21,7 @@ public class SaveSolutionContextCommand extends ActionBase implements ActionHand
     
     @Override
     public RpcData execute(Connection conn, SaveSolutionContextAction action) throws Exception {
-        SolutionDao.getInstance().saveSolutionContext(action.getRunId(),action.getPid(),0,action.getContextVariables());
+        SolutionDao.getInstance().saveSolutionContext(action.getRunId(),action.getPid(),action.getProblemNumber(),action.getContextVariables());
         return new RpcData("status=OK");
     }
 

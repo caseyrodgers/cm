@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -38,6 +39,28 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         /** Empty */
     }
 
+    
+    /** Return all contexts associated with this PID (problem set).
+     * 
+     * The will be from 1-N (zero based)
+     * 
+     * @param runId
+     * @param pid
+     * @return
+     */
+    public List<SolutionContext> getSolutionContext(int runId, final String pid) {
+        String sql = "select problem_number, variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? order by id";
+        List<SolutionContext> matches = getJdbcTemplate().query(sql,
+                new Object[]{runId,pid},
+                new RowMapper<SolutionContext>() {
+                    @Override
+                    public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new SolutionContext(pid, rs.getInt("problem_number"), rs.getString("variables"));
+                    }
+                });
+        return matches;
+    }
+    
     public String getSolutionContext(int runId, String pid, int probNum) {
         String sql = "select variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? and problem_number = ?";
         List<String> matches = getJdbcTemplate().query(sql,
@@ -51,18 +74,19 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         return matches.size() > 0?matches.get(0):null;
     }
 
-    public void saveSolutionContext(final int runId, final String pid, int i, final String contextJson) {
+    public void saveSolutionContext(final int runId, final String pid, final int problemNumber, final String contextJson) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                 PreparedStatement ps = null;
-                String sql = "insert into HA_SOLUTION_CONTEXT(time_viewed, run_id, pid, variables)values(?,?,?,?)";
+                String sql = "insert into HA_SOLUTION_CONTEXT(time_viewed, run_id, pid, problem_number, variables)values(?,?,?,?,?)";
                 ps = con.prepareStatement(sql);
 
                 ps.setDate(1, new Date(System.currentTimeMillis()));
                 ps.setInt(2, runId);
                 ps.setString(3, pid);
-                ps.setString(4, contextJson);
+                ps.setInt(4, problemNumber);
+                ps.setString(5, contextJson);
                 return ps;
             }
         });

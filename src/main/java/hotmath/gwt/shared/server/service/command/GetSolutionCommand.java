@@ -78,8 +78,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
             /** read the context stored for this solution view instance or return null allowing new context to be 
              *  created on client.
              */
-            int probNum=0; // the problem number in a problem-set
-            solutionInfo.setContextVariablesJson(SolutionDao.getInstance().getSolutionContext(action.getRunId(), action.getPid(), probNum));
+            solutionInfo.setContextVariablesJson(SolutionDao.getInstance().getSolutionContext(action.getRunId(), action.getPid()));
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
