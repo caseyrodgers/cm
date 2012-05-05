@@ -12,10 +12,9 @@ public class GetStudentActivityAction implements Action<CmList<StudentActivityMo
     StudentModelI student;
     Date fromDate;
     Date toDate;
-    
+
     public GetStudentActivityAction(){}
 
-    
     public GetStudentActivityAction(StudentModelI sm, Date fromDate, Date toDate) {
         this.student = sm;
     	this.fromDate = fromDate;
