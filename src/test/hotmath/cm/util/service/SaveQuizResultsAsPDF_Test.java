@@ -1,11 +1,8 @@
-package hotmath.cm.util.report;
+package hotmath.cm.util.service;
 
 import hotmath.cm.server.model.QuizResultsAccessor;
 import hotmath.cm.server.model.QuizResultsFileSystemAccessor;
 import hotmath.cm.util.service.SaveQuizResultsAsPDF;
-
-import java.util.List;
-import java.util.ArrayList;
 
 import junit.framework.TestCase;
 
