@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
-import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
@@ -16,7 +15,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
@@ -97,16 +95,10 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
       Log.info(event.toDebugString());
     }
     
-    @UiHandler("searchButton")
-    protected void doSearchButton(ClickEvent ce) {
-        History.newItem("search");
-    }
-    
     
     @UiField
     Button loginButton;
     LoginPage loginPage;
-    Button searchButton;
     
     @UiField
     Button demoButton;

@@ -5,6 +5,7 @@
         <ui:style>
             .main {
                 padding: 10px;
+                font-size: 1.2em;
             }
             .main .footer {
                 margin-top: 30px;

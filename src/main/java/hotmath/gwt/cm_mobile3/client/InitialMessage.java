@@ -20,7 +20,7 @@ public class InitialMessage extends DialogBox {
 
     public InitialMessage() {
         super(true);
-        setSize("300px", "200px");
+        setSize("350px", "320px");
         setText("Welcome to Hotmath Mobile!");
         setGlassEnabled(true);
         setWidget(uiBinder.createAndBindUi(this));
