@@ -42,6 +42,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -131,7 +132,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 Log.info("User Agent: " + userAgent);
                 
                 if(userAgent.toLowerCase().indexOf("ipad") == -1) {
-                    _rootPanel.add(new BrowserNotSupportedPanel());
+                    Location.assign("/cm_mobile_not_supported.html");
+                    // _rootPanel.add(new BrowserNotSupportedPanel());
                     return;
                 }
             }

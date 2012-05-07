@@ -367,7 +367,7 @@ public class SaveQuizResultsAsPDF {
 		
 		save.setAssetsPath("/Users/rfhall/workspace-cm/cm/src/main/webapp/assets/images/");
 		save.setWebPath("/Users/rfhall/workspace/hotmath2/web/");
-		save.setOutputPath("/tmp/");
+		//save.setOutputPath("/tmp/");
 		
 		try {
 			save.doIt(272938);
