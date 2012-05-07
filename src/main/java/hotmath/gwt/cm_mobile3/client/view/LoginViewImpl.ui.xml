@@ -92,13 +92,6 @@
 					<span>Demo</span>
 				</span>
 			</g:Button>
-			
-			<g:Button styleName='sexybutton sexy_cm_silver {style.searchButton}' ui:field='searchButton'>
-                <span>
-                    <span>Search</span>
-                </span>
-            </g:Button>
-			
 
 		</g:HTMLPanel>
 	</g:DialogBox>
