@@ -162,10 +162,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 new InitialMessage().showCentered();
             }
             
-            if (!InitialMessage.hasBeenSeen()) {
-                new InitialMessage().showCentered();
-            }
-            
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());

@@ -21,7 +21,7 @@ public class InitialMessage extends DialogBox {
     public InitialMessage() {
         super(true);
         setSize("350px", "320px");
-        setText("Welcome to Hotmath Mobile!");
+        setText("Welcome to Catchup Math Mobile!");
         setGlassEnabled(true);
         setWidget(uiBinder.createAndBindUi(this));
 
@@ -58,6 +58,6 @@ public class InitialMessage extends DialogBox {
     }
 
     public void setHasSeen() {
-        Cookies.setCookie("iniital_message", "true");
+        Cookies.setCookie("initial_message", "true");
     }
 }
