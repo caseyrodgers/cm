@@ -27,4 +27,12 @@ public class QuizResultsModel {
 	public void setQuizPDFbytes(byte[] quizPDFbytes) {
 		this.quizPDFbytes = quizPDFbytes;
 	}
+
+	public int getQuizPDFbytesLength() {
+		return (quizPDFbytes != null)?quizPDFbytes.length : 0;
+	}
+
+	public String toString() {
+		return String.format("runId: %d, quizPDFbytes.length(): %d", runId, getQuizPDFbytesLength());
+	}
 }
