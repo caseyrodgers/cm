@@ -52,6 +52,7 @@ http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
     <bean id="hotmath.cm.server.model.CmTemplateDao" class="hotmath.cm.server.model.CmTemplateDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.testset.ha.HaTestRunHomeWorkDao" class="hotmath.testset.ha.HaTestRunHomeWorkDao" parent="abstractJdbcDao"/>
     <bean id="hotmath.testset.ha.SolutionDao" class="hotmath.testset.ha.SolutionDao" parent="abstractJdbcDao"/>
+    <bean id="quizResultsPDFDao" class="hotmath.cm.server.model.QuizResultsPDFDao" parent="abstractJdbcDao" />
     
 
     <!-- DAOs used by HM Mobile -->    

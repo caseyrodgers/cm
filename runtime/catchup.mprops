@@ -3392,3 +3392,18 @@ where user_id = ? and is_current_main_prog = 1 and id != ?
 update CM_PROGRAM_ASSIGN
 set is_current_main_prog = 0
 where user_id = ? and is_current_main_prog = 1
+
+######
+# QuizResultsDatabaseAccessor
+
+###
+.key=INSERT_QUIZ_RESULTS_PDF
+
+INSERT INTO HA_TEST_RUN_RESULTS_PDF
+(run_id, pdf, create_date) VALUES(?, ?, now())
+
+.key=SELECT_QUIZ_RESULTS_PDF_BY_RUN_ID
+SELECT run_id, create_date, pdf
+FROM   HA_TEST_RUN_RESULTS_PDF
+WHERE run_id = ?
+
