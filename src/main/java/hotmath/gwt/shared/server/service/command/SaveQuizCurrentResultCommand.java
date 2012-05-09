@@ -26,7 +26,7 @@ public class SaveQuizCurrentResultCommand implements ActionHandler<SaveQuizCurre
         try {
             HaTest test = HaTestDao.getInstance().loadTest(action.getTestId());
             HaTestDao.saveTestQuestionChange(conn,test.getTestId(), action.getPid(), action.getAnswerIndex(),action.isCorrect());
-            
+
             RpcData rpcData = new RpcData();
             rpcData.putData("complete", "true");
             
@@ -44,7 +44,6 @@ public class SaveQuizCurrentResultCommand implements ActionHandler<SaveQuizCurre
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        // TODO Auto-generated method stub
         return SaveQuizCurrentResultAction.class;
     }
 
