@@ -1,6 +1,8 @@
 package hotmath.cm.util.service;
 
+import hotmath.cm.server.model.QuizResultDatabaseAccessor;
 import hotmath.cm.server.model.QuizResultsAccessor;
+import hotmath.cm.server.model.QuizResultsFileSystemAccessor;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
 import hotmath.testset.ha.HaTest;
@@ -45,17 +47,17 @@ public class SaveQuizResultsAsPDF {
 
 	private static Logger LOGGER = Logger.getLogger(SaveQuizResultsAsPDF.class);
 	
-	private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-	
-	private static final String NEW_LINE = System.getProperty("line.separator");
-
 	private boolean runInSeparateThread = true;
 	
-	private String assetsPath;
+	private String assetsPath = "src/main/webapp/assets/images/";
 	
-	private String webPath;
+	private String webPath = "../hotmath2/web/";
 	
 	private QuizResultsAccessor quizResultsAccessor;
+
+	public SaveQuizResultsAsPDF() {
+		setUseDatabaseAccessor(true);
+	}
 
     public void doIt(int runId) throws Exception {
 
@@ -106,6 +108,13 @@ public class SaveQuizResultsAsPDF {
 
 	public void setQuizResultsAccessor(QuizResultsAccessor quizResultsAccessor) {
 		this.quizResultsAccessor = quizResultsAccessor;
+	}
+
+	public void setUseDatabaseAccessor(boolean useDatabaseAccessor) {
+		if (useDatabaseAccessor == true)
+			setQuizResultsAccessor(new QuizResultDatabaseAccessor());
+		else
+			setQuizResultsAccessor(new QuizResultsFileSystemAccessor());
 	}
 
 	class SaveQuizResultsRunnable implements Runnable {
@@ -362,18 +371,5 @@ public class SaveQuizResultsAsPDF {
         return -1;
     }
 
-	public static void main(String[] args) {
-		SaveQuizResultsAsPDF save = new SaveQuizResultsAsPDF();
-		
-		save.setAssetsPath("/Users/rfhall/workspace-cm/cm/src/main/webapp/assets/images/");
-		save.setWebPath("/Users/rfhall/workspace/hotmath2/web/");
-		//save.setOutputPath("/tmp/");
-		
-		try {
-			save.doIt(272938);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }
 
