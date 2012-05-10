@@ -76,7 +76,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                 
                 switch(result.getType()) {
                     case PDF:
-                        addResource(new QuizResultsPanel(result.getPdfFileName()),getResourceItem().getTitle());
+                        addResource(new QuizResultsPdfPanel(result.getPdfFileName()),getResourceItem().getTitle());
                         break;
                         
                     case HTML:

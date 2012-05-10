@@ -6,7 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools.client.ui.viewer.QuizResultsPanel;
+import hotmath.gwt.cm_tools.client.ui.viewer.QuizResultsPdfPanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplResults;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -75,7 +75,7 @@ public class ShowQuizResultsDialog extends CmWindow {
 
         removeAll();
         setLayout(new FitLayout());
-        add(new QuizResultsPanel(pdfUrl));
+        add(new QuizResultsPdfPanel(pdfUrl));
 
         layout(true);
         setVisible(true);
