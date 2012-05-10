@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -24,11 +25,12 @@ public class PrescriptionLessonResourceResultsActivity  implements PrescriptionL
         GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId());
         
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        CatchupMathMobileShared.getCmService().execute(action,  new AsyncCallback<RpcData>() {
+        CatchupMathMobileShared.getCmService().execute(action,  new AsyncCallback<QuizResultsMetaInfo>() {
             @Override
-            public void onSuccess(RpcData rdata) {
+            public void onSuccess(QuizResultsMetaInfo results) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 
+                RpcData rdata = results.getRpcData();
                 String resultHtml = rdata.getDataAsString("quiz_html");
                 String resultJson = rdata.getDataAsString("quiz_result_json");
                 int questionCount = rdata.getDataAsInt("quiz_question_count");

@@ -1,7 +1,6 @@
 package hotmath.cm.util.service;
 
 import hotmath.cm.server.model.QuizResultDatabaseAccessor;
-import hotmath.cm.server.model.QuizResultsAccessor;
 import hotmath.cm.server.model.QuizResultsFileSystemAccessor;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
@@ -15,11 +14,9 @@ import hotmath.util.sql.SqlUtilities;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.nodes.TextNode;
@@ -39,11 +36,13 @@ import com.lowagie.text.pdf.PdfWriter;
 /**
  * Save Quiz Results as PDF
  * 
+ * NOTE: extends base class
+ * 
  * @author bob
  *
  */
 
-public class SaveQuizResultsAsPDF {
+public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 
 	private static Logger LOGGER = Logger.getLogger(SaveQuizResultsAsPDF.class);
 	
@@ -53,7 +52,6 @@ public class SaveQuizResultsAsPDF {
 	
 	private String webPath = "../hotmath2/web/";
 	
-	private QuizResultsAccessor quizResultsAccessor;
 
 	public SaveQuizResultsAsPDF() {
 		setUseDatabaseAccessor(true);
@@ -102,14 +100,6 @@ public class SaveQuizResultsAsPDF {
 		this.webPath = webPath;
 	}
 
-	public QuizResultsAccessor getQuizResultsAccessor() {
-		return quizResultsAccessor;
-	}
-
-	public void setQuizResultsAccessor(QuizResultsAccessor quizResultsAccessor) {
-		this.quizResultsAccessor = quizResultsAccessor;
-	}
-
 	public void setUseDatabaseAccessor(boolean useDatabaseAccessor) {
 		if (useDatabaseAccessor == true)
 			setQuizResultsAccessor(new QuizResultDatabaseAccessor());
@@ -152,7 +142,7 @@ public class SaveQuizResultsAsPDF {
                 document.close();
                 
                 byte[] quizPDFbytes = baos.toByteArray();
-                quizResultsAccessor.save(runId, quizPDFbytes);
+                getQuizResultsAccessor().save(runId, quizPDFbytes);
     		}
     		catch (Exception e) {
     			LOGGER.error("*** Exception generating / saving Quiz results as PDF ***", e);

@@ -1,8 +1,13 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.server.model.QuizPDFTempFile;
+import hotmath.cm.server.model.QuizResultsModel;
+import hotmath.cm.util.service.GetQuizResultsAsPDF;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
+import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo.QuizResultsType;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
@@ -20,7 +25,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
-import org.htmlparser.util.NodeList;
 import org.htmlparser.visitors.NodeVisitor;
 
 
@@ -36,42 +40,67 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @TODO: replace RpcData with QuizHtmlResults
  */
-public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHtmlAction, RpcData> {
+public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHtmlAction, QuizResultsMetaInfo> {
 
 	private static final Logger LOGGER = Logger.getLogger(GetQuizResultsHtmlCommand.class);
 
     @Override
-    public RpcData execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
+    public QuizResultsMetaInfo execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
         try {
             HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(action.getRunId());
             
-            List<HaTestRunResult> results = testRun.getTestRunResults();
-            LOGGER.info("got results [" + ((results != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
-
-            String resultJson = "";
-            for (HaTestRunResult r : results) {
-                if (resultJson.length() > 0)
-                    resultJson += ",";
-                resultJson += Jsonizer.toJson(r);
-            }
-            resultJson = "[" + resultJson + "]";
-            LOGGER.info("got resultJson for runId: " + action.getRunId());
-
-            GetQuizHtmlCheckedAction quizResultsAction = new GetQuizHtmlCheckedAction(testRun.getHaTest().getTestId());
-            RpcData quizRpc = ActionDispatcher.getInstance().execute(quizResultsAction);
-            LOGGER.info("got quizRpc [" + ((quizRpc != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
-
-            /** Preselect HTML results with user's selection and make readonly
+            
+            
+            QuizResultsMetaInfo returnResult = null;
+            
+            /** See if this Quiz Results is stored as PDF
              * 
              */
-            String key="quiz_html";
-            quizRpc.putData(key, markUserSelections(quizRpc.getDataAsString(key), results));
+            QuizResultsModel quizResultsModel = action.isAllowPdfIfExist()?new GetQuizResultsAsPDF().getQuizResultsPdfBytes(testRun.getRunId()) :null;
+            if(quizResultsModel != null) {
+                
+                String pdfUrl = new QuizPDFTempFile(quizResultsModel).getPdfUrl();
+                // there is a PDF version
+                returnResult = new QuizResultsMetaInfo(QuizResultsType.PDF);
+                returnResult.setPdfFileName(pdfUrl);
+            }
+            else {
+                // there is not a PDF version
+                // or HTML only was requested
+                // so return normal HTML
+                List<HaTestRunResult> results = testRun.getTestRunResults();
+                LOGGER.info("got results [" + ((results != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
+    
+                String resultJson = "";
+                for (HaTestRunResult r : results) {
+                    if (resultJson.length() > 0)
+                        resultJson += ",";
+                    resultJson += Jsonizer.toJson(r);
+                }
+                resultJson = "[" + resultJson + "]";
+                LOGGER.info("got resultJson for runId: " + action.getRunId());
+    
+                GetQuizHtmlCheckedAction quizResultsAction = new GetQuizHtmlCheckedAction(testRun.getHaTest().getTestId());
+                RpcData quizRpc = ActionDispatcher.getInstance().execute(quizResultsAction);
+                
+                LOGGER.info("got quizRpc [" + ((quizRpc != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
+    
+                /** Preselect HTML results with user's selection and make readonly
+                 * 
+                 */
+                String key="quiz_html";
+                quizRpc.putData(key, markUserSelections(quizRpc.getDataAsString(key), results));
+                
+                quizRpc.putData("quiz_result_json", resultJson);
+                quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
+                quizRpc.putData("quiz_correct_count", testRun.getAnsweredCorrect());
+                
+                returnResult = new QuizResultsMetaInfo(QuizResultsType.HTML);
+                returnResult.setRpcData(quizRpc);
+            }
             
-            quizRpc.putData("quiz_result_json", resultJson);
-            quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
-            quizRpc.putData("quiz_correct_count", testRun.getAnsweredCorrect());
+            return returnResult;
 
-            return quizRpc;
         } catch (Exception e) {
             throw new CmRpcException(e);
         } finally {

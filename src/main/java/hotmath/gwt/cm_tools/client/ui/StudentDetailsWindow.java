@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
@@ -36,6 +37,7 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -51,10 +53,7 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-import com.extjs.gxt.ui.client.widget.Label;
-
 import com.google.gwt.user.client.ui.HTML;
-//import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 /*
@@ -493,8 +492,11 @@ public class StudentDetailsWindow extends CmWindow {
             @Override
             public void attempt() {
                 CmServiceAsync s = CmShared.getCmService();
-                GetStudentActivityAction action =
-                		new GetStudentActivityAction(sm, DateRangePanel.getInstance().getFromDate(), DateRangePanel.getInstance().getToDate());
+                DateRangePanel p = DateRangePanel.getInstance();
+                Date fromDate = p != null?p.getFromDate():null;
+                Date toDate = p != null ?p.getToDate():null;
+                
+                GetStudentActivityAction action = new GetStudentActivityAction(sm, fromDate, toDate);
                 setAction(action);
                 s.execute(action, this);
             }
@@ -502,7 +504,9 @@ public class StudentDetailsWindow extends CmWindow {
     }
     
 	private void refreshDateRangeLabel() {
-		dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
+	    if(DateRangePanel.getInstance() != null) {
+	        dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
+	    }
 	}
     
     static public void showStudentDetails(final int userId) {

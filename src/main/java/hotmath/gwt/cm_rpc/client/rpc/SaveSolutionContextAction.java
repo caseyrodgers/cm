@@ -60,7 +60,7 @@ public class SaveSolutionContextAction implements Action<RpcData>{
     @Override
     public String toString() {
         return "SaveSolutionContextAction [uid=" + uid + ", runId=" + runId + ", pid=" + pid + ", problemNumber="
-                + problemNumber + ", contextVariables=" + contextVariables + "]";
+                + problemNumber + ", contextVariables=" + (contextVariables!=null?contextVariables.length():0) + "]";
     }
     
 

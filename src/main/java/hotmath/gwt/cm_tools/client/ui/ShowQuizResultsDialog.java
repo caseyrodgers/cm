@@ -1,9 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.viewer.QuizResultsPanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplResults;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -37,7 +40,7 @@ public class ShowQuizResultsDialog extends CmWindow {
     
     
     private void getResultHtml() {
-        new RetryAction<RpcData>() {
+        new RetryAction<QuizResultsMetaInfo>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
@@ -47,28 +50,56 @@ public class ShowQuizResultsDialog extends CmWindow {
             }
 
             @Override
-            public void oncapture(RpcData rdata) {
+            public void oncapture(QuizResultsMetaInfo results) {
                 CmBusyManager.setBusy(false);
                 
-                String html = rdata.getDataAsString("quiz_html");
-                String resultJson = rdata.getDataAsString("quiz_result_json");
-                int total = rdata.getDataAsInt("quiz_question_count");
-                int correct = rdata.getDataAsInt("quiz_correct_count");
-                String title = rdata.getDataAsString("title");
-                
-                setHeading("Quiz Results: " + title);
-
-                Html quizPanel = new Html(html);
-
-                add(quizPanel, new BorderLayoutData(LayoutRegion.CENTER));
-                
-                layout(true);
-
-                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MATHJAX_RENDER));
-                hideAnswerResults();
-                ResourceViewerImplResults.markAnswers(resultJson);
+                switch(results.getType()) {
+                case HTML:
+                    showResultsAsHtml(results.getRpcData());
+                    break;
+                    
+                case PDF:
+                    showResultsAsPdf(results.getPdfFileName());
+                    break;
+                    
+                    
+                default:
+                    CatchupMathTools.showAlert("Unknown ResultsType: " + results.getType());   
+                }
             }
         }.register();
+        
+    }
+    
+    private void showResultsAsPdf(String pdfUrl) {
+
+        removeAll();
+        setLayout(new FitLayout());
+        add(new QuizResultsPanel(pdfUrl));
+
+        layout(true);
+        setVisible(true);
+    }
+    
+    private void showResultsAsHtml(RpcData rdata) {
+        
+        String html = rdata.getDataAsString("quiz_html");
+        String resultJson = rdata.getDataAsString("quiz_result_json");
+        int total = rdata.getDataAsInt("quiz_question_count");
+        int correct = rdata.getDataAsInt("quiz_correct_count");
+        String title = rdata.getDataAsString("title");
+        
+        setHeading("Quiz Results: " + title);
+
+        Html htmlEl = new Html(html);
+        htmlEl.getElement().setAttribute("style", "padding-left: 20px;");
+        add(htmlEl, new BorderLayoutData(LayoutRegion.CENTER));
+        layout(true);
+
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MATHJAX_RENDER));
+        hideAnswerResults();
+        ResourceViewerImplResults.markAnswers(resultJson);
+        
         
     }
     

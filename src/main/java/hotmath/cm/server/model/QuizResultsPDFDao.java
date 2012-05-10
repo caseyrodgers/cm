@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -51,13 +52,22 @@ public class QuizResultsPDFDao extends SimpleJdbcDaoSupport {
     	}
 
     }
+    
 
+    /** return either the QuizResultsModel or null
+     *  if QuizResulsModel does not exist for runId
+     *  
+     * @param runId
+     * @return
+     * @throws Exception
+     */
     public QuizResultsModel read(int runId) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("SELECT_QUIZ_RESULTS_PDF_BY_RUN_ID");
 
+    	List<QuizResultsModel> models;
     	QuizResultsModel model = null;
     	try {
-    		model = this.getJdbcTemplate().queryForObject(
+    		models = this.getJdbcTemplate().query(
     				sql,
     				new Object[]{runId},
     				new RowMapper<QuizResultsModel>() {
@@ -70,13 +80,12 @@ public class QuizResultsPDFDao extends SimpleJdbcDaoSupport {
     						return model;
     					}
     				});
+    		return models.size() == 0?null:models.get(0);
     	}
     	catch(Exception e) {
     		LOGGER.error(String.format("Error reading Quiz Results PDF, runId: %d", runId), e);
-    		throw new Exception(e.getMessage());
+    		throw new Exception(e.getMessage(), e);
     	}
-
-    	return model;
     }
 
 }

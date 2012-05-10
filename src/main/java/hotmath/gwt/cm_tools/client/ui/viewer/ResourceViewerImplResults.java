@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
@@ -62,33 +63,42 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
     public Widget getResourcePanel() {
 
-        new RetryAction<RpcData>() {
+        new RetryAction<QuizResultsMetaInfo>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
+                GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId(),false);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
-            public void oncapture(RpcData result) {
-                try {
-                    RpcData rdata = result;
-                    String html = rdata.getDataAsString("quiz_html");
-                    String resultJson = rdata.getDataAsString("quiz_result_json");
-                    int total = rdata.getDataAsInt("quiz_question_count");
-                    int correct = rdata.getDataAsInt("quiz_correct_count");
-                    _title = rdata.getDataAsString("title");
+            public void oncapture(QuizResultsMetaInfo result) {
+                
+                switch(result.getType()) {
+                    case PDF:
+                        addResource(new QuizResultsPanel(result.getPdfFileName()),getResourceItem().getTitle());
+                        break;
+                        
+                    case HTML:
+                        try {
+                            RpcData rdata = result.getRpcData();
+                            String html = rdata.getDataAsString("quiz_html");
+                            String resultJson = rdata.getDataAsString("quiz_result_json");
+                            int total = rdata.getDataAsInt("quiz_question_count");
+                            int correct = rdata.getDataAsInt("quiz_correct_count");
+                            _title = rdata.getDataAsString("title");
 
-                    _quizPanel = new Html(html);
+                            _quizPanel = new Html(html);
 
-                    addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
+                            addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
 
-                    processQuestions(resultJson);
+                            processQuestions(resultJson);
 
-                    CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
-                } finally {
-                    CmBusyManager.setBusy(false);
+                            CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
+                        } finally {
+                            CmBusyManager.setBusy(false);
+                        }
+                        break;
                 }
             }
         }.register();

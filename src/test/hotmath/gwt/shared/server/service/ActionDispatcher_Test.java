@@ -19,6 +19,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
+import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
@@ -296,8 +297,8 @@ public class ActionDispatcher_Test extends CmDbTestCase {
     
     public void testGetQuizResultsHtmlCommand() throws Exception {
         GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(TEST_RUN_ID);
-        RpcData rpcData = ActionDispatcher.getInstance().execute(action);
-        
+        QuizResultsMetaInfo meta = ActionDispatcher.getInstance().execute(action);
+        RpcData rpcData = meta.getRpcData();
         assertNotNull(rpcData);
         assertTrue(rpcData.getDataAsString("quiz_result_json").length() > 0);
         

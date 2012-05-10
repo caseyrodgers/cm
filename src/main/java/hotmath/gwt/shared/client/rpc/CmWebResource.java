@@ -47,6 +47,10 @@ public class CmWebResource implements Response {
      * @return
      */
     public String getUrl() {
+        return getUrl(CmShared.CM_HOME_URL);
+    }
+    
+    public String getUrl(String cmHomeUrl) {
         // get the last component as the name
     	String name;
     	if (fileBase != null && file.startsWith(fileBase)) {
@@ -63,7 +67,7 @@ public class CmWebResource implements Response {
     	 */
     	name = name.replaceAll("\\\\", "/");
 
-        String ret = CmShared.CM_HOME_URL + webBase + name;
+        String ret = cmHomeUrl + webBase + name;
         CmLogger.info("CmWebResource: return URL: " + ret);
         return ret;
     }
