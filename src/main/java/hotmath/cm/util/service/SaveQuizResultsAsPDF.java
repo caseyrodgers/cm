@@ -4,6 +4,7 @@ import hotmath.cm.server.model.QuizResultDatabaseAccessor;
 import hotmath.cm.server.model.QuizResultsFileSystemAccessor;
 import hotmath.cm.test.HaTestSet;
 import hotmath.cm.test.HaTestSetQuestion;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
@@ -48,9 +49,9 @@ public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 	
 	private boolean runInSeparateThread = true;
 	
-	private String assetsPath = "src/main/webapp/assets/images/";
+	private String assetsPath;
 	
-	private String webPath = "../hotmath2/web/";
+	private String webPath;
 	
 
 	public SaveQuizResultsAsPDF() {
@@ -84,7 +85,10 @@ public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 		return runInSeparateThread;
 	}
 
-	public String getAssetsPath() {
+	public String getAssetsPath() throws Exception {
+		if (assetsPath == null) {
+			setAssetsPath(CatchupMathProperties.getInstance().getCatchupHome() + "/src/main/webapp/assets/images/");
+		}
 		return assetsPath;
 	}
 
@@ -92,7 +96,10 @@ public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 		this.assetsPath = assetsPath;
 	}
 
-	public String getWebPath() {
+	public String getWebPath() throws Exception {
+		if (webPath == null) {
+			setWebPath(CatchupMathProperties.getInstance().getSolutionBase());
+		}
 		return webPath;
 	}
 
