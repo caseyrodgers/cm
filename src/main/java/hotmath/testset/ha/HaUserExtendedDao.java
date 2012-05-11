@@ -58,7 +58,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
 
     	/** protect against divide by zero errors */
     	int total = testRun.getAnsweredCorrect() + testRun.getAnsweredIncorrect() + testRun.getNotAnswered();
-		int lastQuiz = (total != 0) ? (testRun.getAnsweredCorrect() * 100) / total : 0;
+		int lastQuiz = (total != 0) ? Math.round((testRun.getAnsweredCorrect() * 100.0f) / total) : 0;
 
 		try {
     		stmt = conn.prepareStatement(sql);
