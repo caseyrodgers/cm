@@ -17,11 +17,12 @@
   <head>
     <!--  For Tutor/Show Work -->  
     <link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="/css/testset.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
     <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
     <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
-    <link rel="stylesheet" type="text/css" href="/css/testset.css" />
+
     
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Catchup Math Admin</title>

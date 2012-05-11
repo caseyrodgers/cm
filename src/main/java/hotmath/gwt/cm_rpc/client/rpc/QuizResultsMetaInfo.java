@@ -11,36 +11,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public class QuizResultsMetaInfo implements Response, IsSerializable {
-   
-    public static enum QuizResultsType  {HTML,PDF};
     
     public QuizResultsMetaInfo(){}
-    
-    public QuizResultsMetaInfo(QuizResultsType type) {
-        this.type = type;
-    }
-    
-    QuizResultsType type;
-    String pdfFileName;
-    
+
     RpcData rpcData;
-    
-
-    public QuizResultsType getType() {
-        return type;
-    }
-
-    public void setType(QuizResultsType type) {
-        this.type = type;
-    }
-
-    public String getPdfFileName() {
-        return pdfFileName;
-    }
-
-    public void setPdfFileName(String pdfFileName) {
-        this.pdfFileName = pdfFileName;
-    }
 
     public RpcData getRpcData() {
         return rpcData;
@@ -52,7 +26,7 @@ public class QuizResultsMetaInfo implements Response, IsSerializable {
 
     @Override
     public String toString() {
-        return "QuizResultsMetaInfo [type=" + type + ", pdfFileName=" + pdfFileName + ", rpcData=" + (rpcData!=null?true:false) + "]";
+        return "QuizResultsMetaInfo [rpcData=" + rpcData + "]";
     }
     
     

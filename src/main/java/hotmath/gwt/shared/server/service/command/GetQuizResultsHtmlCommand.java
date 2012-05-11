@@ -1,13 +1,9 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.server.model.QuizPDFTempFile;
-import hotmath.cm.server.model.QuizResultsModel;
-import hotmath.cm.util.service.GetQuizResultsAsPDF;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
-import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo.QuizResultsType;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
@@ -27,10 +23,9 @@ import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.visitors.NodeVisitor;
 
-
 /**
  * Return the QuizHtml with the results stored as a list of pids that are
- * correct.  
+ * correct.
  * 
  * Also, the HTML radiobuttons are pre-selected and readonly.
  * 
@@ -42,63 +37,50 @@ import org.htmlparser.visitors.NodeVisitor;
  */
 public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHtmlAction, QuizResultsMetaInfo> {
 
-	private static final Logger LOGGER = Logger.getLogger(GetQuizResultsHtmlCommand.class);
+    private static final Logger LOGGER = Logger.getLogger(GetQuizResultsHtmlCommand.class);
 
     @Override
     public QuizResultsMetaInfo execute(final Connection conn, GetQuizResultsHtmlAction action) throws CmRpcException {
         try {
             HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(action.getRunId());
-            
-            
-            
-            QuizResultsMetaInfo returnResult = null;
-            
-            /** See if this Quiz Results is stored as PDF
+
+            QuizResultsMetaInfo returnResult = new QuizResultsMetaInfo();
+
+            // there is not a PDF version
+            // or HTML only was requested
+            // so return normal HTML
+            List<HaTestRunResult> results = testRun.getTestRunResults();
+            LOGGER.info("got results [" + ((results != null) ? "not null" : "NULL") + "] for runId: "
+                    + action.getRunId());
+
+            String resultJson = "";
+            for (HaTestRunResult r : results) {
+                if (resultJson.length() > 0)
+                    resultJson += ",";
+                resultJson += Jsonizer.toJson(r);
+            }
+            resultJson = "[" + resultJson + "]";
+            LOGGER.info("got resultJson for runId: " + action.getRunId());
+
+            GetQuizHtmlCheckedAction quizResultsAction = new GetQuizHtmlCheckedAction(testRun.getHaTest().getTestId());
+            RpcData quizRpc = ActionDispatcher.getInstance().execute(quizResultsAction);
+
+            LOGGER.info("got quizRpc [" + ((quizRpc != null) ? "not null" : "NULL") + "] for runId: "
+                    + action.getRunId());
+
+            /**
+             * Preselect HTML results with user's selection and make readonly
              * 
              */
-            QuizResultsModel quizResultsModel = action.isAllowPdfIfExist()?new GetQuizResultsAsPDF().getQuizResultsPdfBytes(testRun.getRunId()) :null;
-            if(quizResultsModel != null) {
-                
-                String pdfUrl = new QuizPDFTempFile(quizResultsModel).getPdfUrl();
-                // there is a PDF version
-                returnResult = new QuizResultsMetaInfo(QuizResultsType.PDF);
-                returnResult.setPdfFileName(pdfUrl);
-            }
-            else {
-                // there is not a PDF version
-                // or HTML only was requested
-                // so return normal HTML
-                List<HaTestRunResult> results = testRun.getTestRunResults();
-                LOGGER.info("got results [" + ((results != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
-    
-                String resultJson = "";
-                for (HaTestRunResult r : results) {
-                    if (resultJson.length() > 0)
-                        resultJson += ",";
-                    resultJson += Jsonizer.toJson(r);
-                }
-                resultJson = "[" + resultJson + "]";
-                LOGGER.info("got resultJson for runId: " + action.getRunId());
-    
-                GetQuizHtmlCheckedAction quizResultsAction = new GetQuizHtmlCheckedAction(testRun.getHaTest().getTestId());
-                RpcData quizRpc = ActionDispatcher.getInstance().execute(quizResultsAction);
-                
-                LOGGER.info("got quizRpc [" + ((quizRpc != null)?"not null":"NULL") + "] for runId: " + action.getRunId());
-    
-                /** Preselect HTML results with user's selection and make readonly
-                 * 
-                 */
-                String key="quiz_html";
-                quizRpc.putData(key, markUserSelections(quizRpc.getDataAsString(key), results));
-                
-                quizRpc.putData("quiz_result_json", resultJson);
-                quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
-                quizRpc.putData("quiz_correct_count", testRun.getAnsweredCorrect());
-                
-                returnResult = new QuizResultsMetaInfo(QuizResultsType.HTML);
-                returnResult.setRpcData(quizRpc);
-            }
-            
+            String key = "quiz_html";
+            quizRpc.putData(key, markUserSelections(quizRpc.getDataAsString(key), results));
+
+            quizRpc.putData("quiz_result_json", resultJson);
+            quizRpc.putData("quiz_question_count", testRun.getHaTest().getTestQuestionCount());
+            quizRpc.putData("quiz_correct_count", testRun.getAnsweredCorrect());
+
+            returnResult.setRpcData(quizRpc);
+
             return returnResult;
 
         } catch (Exception e) {
@@ -115,73 +97,67 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
         return GetQuizResultsHtmlAction.class;
     }
 
-    
     Parser parser = new Parser();
-    Node root=null;
-    int selectedAnswer=-1;
-    int currentAnswer=0;    
-    
-    /** Parse quiz HTML and mark the users current selections as 
-     *  readonly values.  This is so we do not have to dynamically
-     *  select the answers on the client which is buggy due to 
-     *  IE not being able add/remove radiobuttons to the DOM without reset 
-     *  to original value.
-     *  
-     *  Returns a readonly representation of the users quiz html 
-     *  with users selections made.
-     *  
+    Node root = null;
+    int selectedAnswer = -1;
+    int currentAnswer = 0;
+
+    /**
+     * Parse quiz HTML and mark the users current selections as readonly values.
+     * This is so we do not have to dynamically select the answers on the client
+     * which is buggy due to IE not being able add/remove radiobuttons to the
+     * DOM without reset to original value.
+     * 
+     * Returns a readonly representation of the users quiz html with users
+     * selections made.
+     * 
      */
-    int questionNumber=-1;
-    int choiceNumber=0;
-    private String markUserSelections(String html,final List<HaTestRunResult> results) throws Exception {
-        
-        questionNumber=-1;
-        NodeVisitor visitor = new  NodeVisitor() {
+    int questionNumber = -1;
+    int choiceNumber = 0;
+
+    private String markUserSelections(String html, final List<HaTestRunResult> results) throws Exception {
+
+        questionNumber = -1;
+        NodeVisitor visitor = new NodeVisitor() {
             public void visitTag(org.htmlparser.Tag tag) {
-                if(root == null)
+                if (root == null)
                     root = tag;
-                
-                String guid=null;
+
+                String guid = null;
 
                 String tn = tag.getTagName().toLowerCase();
-                if(tn.equals("div") && tag.getAttribute("guid") != null ) {
-                    guid=tag.getAttribute("guid");
-                    
-                    selectedAnswer = getUserSelection(guid,results);
+                if (tn.equals("div") && tag.getAttribute("guid") != null) {
+                    guid = tag.getAttribute("guid");
+
+                    selectedAnswer = getUserSelection(guid, results);
                     currentAnswer = 0;
-                }
-                else if(tag.getTagName().equalsIgnoreCase("ul")) {
+                } else if (tag.getTagName().equalsIgnoreCase("ul")) {
                     questionNumber++;
-                    choiceNumber=0;
-                }
-                else if(tag.getTagName().equalsIgnoreCase("li")) {
+                    choiceNumber = 0;
+                } else if (tag.getTagName().equalsIgnoreCase("li")) {
                     HaTestRunResult thisQuestionResult = results.get(questionNumber);
-                    if(thisQuestionResult.isAnswered()) {
+                    if (thisQuestionResult.isAnswered()) {
                         int choiceIndex = thisQuestionResult.getResponseIndex();
-                        if(choiceIndex == choiceNumber) {
+                        if (choiceIndex == choiceNumber) {
                             String selectedClass = "was_selected ";
-                            String cor = tag.getAttribute("correct"); 
-                            if(cor != null && cor.equalsIgnoreCase("yes")) {
+                            String cor = tag.getAttribute("correct");
+                            if (cor != null && cor.equalsIgnoreCase("yes")) {
                                 selectedClass += " is_correct";
-                            }
-                            else {
+                            } else {
                                 selectedClass += " is_incorrect";
                             }
                             tag.setAttribute("class", selectedClass, '\"');
                         }
-                        
-                        
+
                         choiceNumber++;
                     }
-                }
-                else if(tag.getTagName().equalsIgnoreCase("input")) {
-                    tag.setAttribute("disabled","true");
-                    tag.setAttribute("onclick","");
-                    if(currentAnswer++ == selectedAnswer) {
+                } else if (tag.getTagName().equalsIgnoreCase("input")) {
+                    tag.setAttribute("disabled", "true");
+                    tag.setAttribute("onclick", "");
+                    if (currentAnswer++ == selectedAnswer) {
                         tag.setAttribute("checked", "true");
                     }
-                }
-                else if(tag.getTagName().equalsIgnoreCase("li")) {
+                } else if (tag.getTagName().equalsIgnoreCase("li")) {
                 }
             }
         };
@@ -191,25 +167,26 @@ public class GetQuizResultsHtmlCommand implements ActionHandler<GetQuizResultsHt
         return html;
     }
 
-    /** Return the users selection for the question for guid.  Return 
-     * -1 if user has not made a selection.
+    /**
+     * Return the users selection for the question for guid. Return -1 if user
+     * has not made a selection.
      */
     private int getUserSelection(String guid, List<HaTestRunResult> results) {
-        for(HaTestRunResult r: results) {
-            if(r.getPid().equals(guid)) {
-                if(r.isAnswered()) {
+        for (HaTestRunResult r : results) {
+            if (r.getPid().equals(guid)) {
+                if (r.isAnswered()) {
                     return r.getResponseIndex();
                 }
             }
         }
         return -1;
     }
-    
+
     private Node getDocumentNode(Node nl) {
         Node parent = nl;
-        while(parent.getParent() != null)
+        while (parent.getParent() != null)
             parent = parent.getParent();
-        
+
         return parent;
-    }    
+    }
 }

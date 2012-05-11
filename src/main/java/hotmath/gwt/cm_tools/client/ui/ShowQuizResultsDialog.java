@@ -21,24 +21,24 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 public class ShowQuizResultsDialog extends CmWindow {
-    
+
     int runId;
+
     public ShowQuizResultsDialog(int runId) {
         this.runId = runId;
-        setSize(550,480);
+        setSize(550, 480);
         setScrollMode(Scroll.AUTO);
         setHeading("Quiz Results");
 
         addStyleName("resource-viewer-impl-results");
         setLayout(new FitLayout());
         getResultHtml();
-        
+
         addCloseButton();
-        
+
         setVisible(true);
     }
-    
-    
+
     private void getResultHtml() {
         new RetryAction<QuizResultsMetaInfo>() {
             @Override
@@ -52,25 +52,12 @@ public class ShowQuizResultsDialog extends CmWindow {
             @Override
             public void oncapture(QuizResultsMetaInfo results) {
                 CmBusyManager.setBusy(false);
-                
-                switch(results.getType()) {
-                case HTML:
-                    showResultsAsHtml(results.getRpcData());
-                    break;
-                    
-                case PDF:
-                    showResultsAsPdf(results.getPdfFileName());
-                    break;
-                    
-                    
-                default:
-                    CatchupMathTools.showAlert("Unknown ResultsType: " + results.getType());   
-                }
+                showResultsAsHtml(results.getRpcData());
             }
         }.register();
-        
+
     }
-    
+
     private void showResultsAsPdf(String pdfUrl) {
 
         removeAll();
@@ -80,15 +67,15 @@ public class ShowQuizResultsDialog extends CmWindow {
         layout(true);
         setVisible(true);
     }
-    
+
     private void showResultsAsHtml(RpcData rdata) {
-        
+
         String html = rdata.getDataAsString("quiz_html");
         String resultJson = rdata.getDataAsString("quiz_result_json");
         int total = rdata.getDataAsInt("quiz_question_count");
         int correct = rdata.getDataAsInt("quiz_correct_count");
         String title = rdata.getDataAsString("title");
-        
+
         setHeading("Quiz Results: " + title);
 
         Html htmlEl = new Html(html);
@@ -99,15 +86,14 @@ public class ShowQuizResultsDialog extends CmWindow {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MATHJAX_RENDER));
         hideAnswerResults();
         ResourceViewerImplResults.markAnswers(resultJson);
-        
-        
+
     }
-    
-    /** 
-     *  hide new style of question results
+
+    /**
+     * hide new style of question results
      */
     private native void hideAnswerResults() /*-{
-    $wnd.hideQuizQuestionResults();
-}-*/;
+                                            $wnd.hideQuizQuestionResults();
+                                            }-*/;
 
 }

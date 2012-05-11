@@ -58,8 +58,8 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
      *            Should the selection control be made disabled.
      */
     static private native void setSolutionQuestionAnswerIndex(String pid, String which, boolean disabled)/*-{
-                                                                                                  $wnd.setSolutionQuestionAnswerIndex(pid,which,disabled);
-                                                                                                  }-*/;
+                                                                                                         $wnd.setSolutionQuestionAnswerIndex(pid,which,disabled);
+                                                                                                         }-*/;
 
     public Widget getResourcePanel() {
 
@@ -67,38 +67,29 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId(),false);
+                GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
             public void oncapture(QuizResultsMetaInfo result) {
-                
-                switch(result.getType()) {
-                    case PDF:
-                        addResource(new QuizResultsPdfPanel(result.getPdfFileName()),getResourceItem().getTitle());
-                        break;
-                        
-                    case HTML:
-                        try {
-                            RpcData rdata = result.getRpcData();
-                            String html = rdata.getDataAsString("quiz_html");
-                            String resultJson = rdata.getDataAsString("quiz_result_json");
-                            int total = rdata.getDataAsInt("quiz_question_count");
-                            int correct = rdata.getDataAsInt("quiz_correct_count");
-                            _title = rdata.getDataAsString("title");
+                try {
+                    RpcData rdata = result.getRpcData();
+                    String html = rdata.getDataAsString("quiz_html");
+                    String resultJson = rdata.getDataAsString("quiz_result_json");
+                    int total = rdata.getDataAsInt("quiz_question_count");
+                    int correct = rdata.getDataAsInt("quiz_correct_count");
+                    _title = rdata.getDataAsString("title");
 
-                            _quizPanel = new Html(html);
+                    _quizPanel = new Html(html);
 
-                            addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
+                    addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
 
-                            processQuestions(resultJson);
+                    processQuestions(resultJson);
 
-                            CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
-                        } finally {
-                            CmBusyManager.setBusy(false);
-                        }
-                        break;
+                    CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
+                } finally {
+                    CmBusyManager.setBusy(false);
                 }
             }
         }.register();
@@ -106,13 +97,12 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         return this;
     }
 
-    
     private void processQuestions(String resultJson) {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MATHJAX_RENDER));
         hideAnswerResults();
         markAnswers(resultJson);
     }
-    
+
     /**
      * Parse JSONized array of HaTestRunResult objects
      * 
@@ -144,14 +134,13 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
     }
 
     static private native void setQuizQuestionResult(String pid, String result) /*-{
-                                                                         $wnd.setQuizQuestionResult(pid, result);
-                                                                         }-*/;
+                                                                                $wnd.setQuizQuestionResult(pid, result);
+                                                                                }-*/;
 
-   
     private native void hideAnswerResults() /*-{
-        $wnd.hideQuizQuestionResults();
-    }-*/;
-    
+                                            $wnd.hideQuizQuestionResults();
+                                            }-*/;
+
     @Override
     public Widget getTutorDisplay() {
         return _quizPanel;
@@ -160,11 +149,10 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
     @Override
     public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
         String pid = "";
-        if(CmMainPanel.getLastQuestionPid() != null) {
+        if (CmMainPanel.getLastQuestionPid() != null) {
             /** use the currently active quiz */
             pid = "quiz:" + CmMainPanel.getLastQuestionPid();
-        }
-        else {
+        } else {
             /** use the default for the quiz */
             pid = "quiz:" + UserInfo.getInstance().getTestId();
         }

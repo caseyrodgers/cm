@@ -1380,10 +1380,6 @@ SolutionSetCompleteDialog .results{
     border: 2px solid green;
 }
 
-#main-content .resource-viewer-impl-results .hm_question_def li {
-	list-style: upper-alpha;
-	list-style-position: inside;
-}
 
 .training-videos-window {
 	padding-left: 10px;
