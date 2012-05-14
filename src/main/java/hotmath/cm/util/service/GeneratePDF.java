@@ -91,7 +91,7 @@ public class GeneratePDF extends HttpServlet {
 			Connection conn=null;
 			try {
 			    conn = HMConnectionPool.getConnection();
-			    baos = sr.makePdf(conn, reportId, adminId);
+			    baos = sr.makePdf(conn, reportId, adminId, null, null);
 			}
 			finally {
 			    SqlUtilities.releaseResources(null,null,conn);

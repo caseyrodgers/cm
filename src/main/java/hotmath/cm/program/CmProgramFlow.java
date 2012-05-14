@@ -25,6 +25,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -354,7 +355,7 @@ public class CmProgramFlow {
     public void markProgramAsCompleted(final Connection conn, boolean trueOrFalse) throws Exception {
         if (updao.setProgramAsComplete(conn, userProgram.getId(), trueOrFalse)) {
             /** update our instance */
-            userProgram.setComplete(trueOrFalse);
+            userProgram.setCompleteDate((trueOrFalse==true)?new Date():null);
         }
     }
 
