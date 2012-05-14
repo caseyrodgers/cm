@@ -9,7 +9,6 @@ import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.cm.util.service.SaveQuizResultsAsPDF;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
@@ -617,18 +616,6 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
             if (pinfo.getCustomProgramId() <= 0)
             	HaUserExtendedDao.updateUserExtended(conn, studentUid, testRun);
 
-            /*
-             * save PDF of checked Quiz results (in separate thread by default)
-             * catch and log any Exception
-             */
-            SaveQuizResultsAsPDF savePDF = new SaveQuizResultsAsPDF();
-            try {
-                savePDF.doIt(runId);
-            }
-            catch (Exception e) {
-            	__logger.error("ERROR saving Quiz Results PDF", e);
-            }
-            
             return testRun;
         } catch (HotMathException hme) {
             throw hme;
