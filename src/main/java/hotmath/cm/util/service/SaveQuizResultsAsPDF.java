@@ -15,6 +15,7 @@ import hotmath.util.sql.SqlUtilities;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -204,13 +205,11 @@ public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 	                			Node node = iter.nextNode();
 	                			if (node instanceof TextNode) {
 	                				String text = ((TextNode)node).getText();
-	                				text = text.replaceAll("&ndash;", "-");
-	                				text = text.replaceAll("&minus;", "-");
-	                				if ("?".equals(text)) text = " " + text;
-	                				Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.COURIER, 12, Font.BOLD, new Color(0, 0, 0)));
-	                				if (LOGGER.isDebugEnabled())
-	                					LOGGER.debug("text: " + text);
-	                				p.add(c);
+
+                                    List<Chunk> chunks = processText(text);
+                                    for(Chunk c : chunks) {
+	                				    p.add(c);
+                                    }
 	                			}
 	                			else if (node instanceof ImageTag) {
 	                				ImageTag imgTag = (ImageTag)node;
@@ -346,6 +345,7 @@ public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 	                	e.printStackTrace();
 	                }
 	            }
+
 	        };
 
 	        parser.setInputHTML(question.getQuestionHtml());
@@ -354,7 +354,28 @@ public class SaveQuizResultsAsPDF extends QuizResultsAsPDFBase {
 		}
     }
 	
-    /** Return the users selection for the question for guid.  Return 
+	private List<Chunk> processText(String text) {
+		List<Chunk> chunks = new ArrayList<Chunk>();
+		text = text.replaceAll("&ndash;", "-");
+		text = text.replaceAll("&minus;", "-");
+		text = text.replaceAll("&quot;", "\"");
+		
+		if ("?".equals(text)) text = " " + text;
+		Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.COURIER, 12, Font.BOLD, new Color(0, 0, 0)));
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("text: " + text);
+		
+		chunks.add(c);
+		
+		c = new Chunk("\00B7", FontFactory.getFont(FontFactory.COURIER, 12, Font.BOLD, new Color(0, 0, 0)));
+		chunks.add(c);
+		chunks.add(c);
+		chunks.add(c);
+
+		return chunks;
+	}
+
+	/** Return the users selection for the question for guid.  Return 
      * -1 if user has not made a selection.
      */
     private int getUserSelection(String guid, List<HaTestRunResult> results) {
