@@ -1398,6 +1398,7 @@ WHERE  (SOLUTIONS.BOOKTITLE = ? and
      (
        replace(SOLUTIONS.CHAPTERTITLE,' ','') = replace(?,' ','') AND SOLUTIONS.SECTIONTITLE = ?))
   AND  problemnumber between ? and ?
+  AND  active = 1
 ORDER BY cast(problemnumber as unsigned)  
  
 #SELECT problemindex
@@ -1418,6 +1419,7 @@ WHERE  s.BOOKTITLE = ?
   AND  b.level = 2
   AND  (s.chaptertitle = b.title_number AND s.SECTIONTITLE = ?)
   AND  problemnumber between ? and ?
+  AND  active = 1
 ORDER BY problemnumber
 
 .key=PROGRAM_CHAPTERS_FOR_TEST_DEF
