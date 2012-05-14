@@ -39,10 +39,14 @@ import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -98,6 +102,7 @@ public class SolutionEditor implements EntryPoint {
         HorizontalPanel tb = new HorizontalPanel();
         TableData td = new TableData();
         td.setMargin(5);
+
         
         tb.add(new Button("Create",new SelectionListener<ButtonEvent>() {
             @Override
@@ -176,6 +181,16 @@ public class SolutionEditor implements EntryPoint {
                 new ShowHelpWindow();
             }
         }));
+        
+        
+        isActiveCheckBox.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED,_stepEditorViewer._meta));                
+            }
+        });
+
+        
         
         return tb;
     }
@@ -310,6 +325,7 @@ public class SolutionEditor implements EntryPoint {
     ContentPanel _mainPanel = new ContentPanel();    
     TextArea _textArea = new TextArea();
     SolutionStepEditor _stepEditorViewer = new SolutionStepEditor();
+    CheckBox isActiveCheckBox = new CheckBox();
     
     Button _saveButton;
     

@@ -18,7 +18,7 @@ public class SaveSolutionAdminCommand implements ActionHandler<SaveSolutionAdmin
 
     @Override
     public RpcData execute(Connection conn, SaveSolutionAdminAction action) throws Exception {
-        new CmSolutionManagerDao().saveSolutionXml(conn, action.getPid(), action.getXml(),null );
+        new CmSolutionManagerDao().saveSolutionXml(conn, action.getPid(), action.getXml(),null,true );
         RpcData rdata = new RpcData("status=OK");
         return rdata;
     }

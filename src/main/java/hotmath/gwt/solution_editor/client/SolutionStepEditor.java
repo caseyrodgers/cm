@@ -24,12 +24,17 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.CheckBox;
+
 
 public class SolutionStepEditor extends ContentPanel {
     SolutionMeta _meta;
@@ -39,6 +44,7 @@ public class SolutionStepEditor extends ContentPanel {
     
     LayoutContainer _mainContainer = new LayoutContainer();
     String _statement;
+    CheckBox isActiveCheckBox = new CheckBox();
 
     public SolutionStepEditor() {
         __instance = this;
@@ -46,6 +52,26 @@ public class SolutionStepEditor extends ContentPanel {
         setScrollMode(Scroll.AUTOY);
         add(new Label("No solution loaded."));
 
+
+        
+        isActiveCheckBox.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                _meta.setActive(isActiveCheckBox.getValue());
+                EventBus.getInstance().fireEvent(new CmEvent(hotmath.gwt.solution_editor.client.EventTypes.SOLUTION_EDITOR_CHANGED,_meta));                
+            }
+        });
+        
+        
+        HorizontalPanel pp = new HorizontalPanel();
+        Label l = new Label("Active");
+        l.getElement().setAttribute("style", "font-size: .7em;margin: 3px 3px 0 20px;");
+        pp.add(l);
+        pp.add(isActiveCheckBox);
+
+        getHeader().addTool(pp);
+        getHeader().addTool(new Spacer());        
+                
         getHeader().addTool(new Button("Define", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -173,6 +199,9 @@ public class SolutionStepEditor extends ContentPanel {
         this._meta = meta;
         removeAll();
 
+        
+        isActiveCheckBox.setValue(meta.isActive());
+        
         setHeading("Solution Step Editor");
         add(new StatementContainer("Problem Statement", new ProblemStatement(meta)));
         
@@ -241,7 +270,7 @@ public class SolutionStepEditor extends ContentPanel {
         }
         
         String statementFigure = _meta.getFigure();
-        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs,_meta.getTutorDefine());
+        final SaveSolutionStepsAdminAction action = new SaveSolutionStepsAdminAction(_meta.getMd5OnRead(), asPid,statement,statementFigure,stepPairs,_meta.getTutorDefine(),_meta.isActive());
         action.setFromPid(_meta.getPid());
         saveSolution(action, asPid);
     }
@@ -329,4 +358,11 @@ public class SolutionStepEditor extends ContentPanel {
     static private native void mathJaxProcess() /*-{
          $wnd.processMathJax();
     }-*/;
+}
+
+
+class Spacer extends Label {
+    public Spacer() {
+        setWidth(400);
+    }
 }

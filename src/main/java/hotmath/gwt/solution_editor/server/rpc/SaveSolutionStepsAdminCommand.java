@@ -22,7 +22,7 @@ public class SaveSolutionStepsAdminCommand implements ActionHandler<SaveSolution
     @Override
     public RpcData execute(Connection conn, SaveSolutionStepsAdminAction action) throws Exception {
         SolutionDef def = new SolutionDef(action.getPid());
-        TutorSolution ts = new TutorSolution("sm", def, action.getStatement(), action.getStatementFigure(), action.getSteps());
+        TutorSolution ts = new TutorSolution("sm", def, action.getStatement(), action.getStatementFigure(), action.getSteps(),action.isActive());
 
         /**
          * make sure it has not been changed since read
@@ -37,7 +37,7 @@ public class SaveSolutionStepsAdminCommand implements ActionHandler<SaveSolution
             }
         }
 
-        new CmSolutionManagerDao().saveSolutionXml(conn, action.getPid(), ts.toXml(), action.getTutorDefine());
+        new CmSolutionManagerDao().saveSolutionXml(conn, action.getPid(), ts.toXml(), action.getTutorDefine(), action.isActive());
 
         /**
          * if the destination does not match the original, the copy resources

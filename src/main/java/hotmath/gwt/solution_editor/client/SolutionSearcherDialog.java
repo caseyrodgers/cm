@@ -18,6 +18,7 @@ import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
@@ -25,6 +26,8 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -33,6 +36,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 
 public class SolutionSearcherDialog extends Window {
     Callback callBack;
@@ -43,6 +47,7 @@ public class SolutionSearcherDialog extends Window {
     RecentTab _tabRecent;
     TextField<String> _searchField = new TextField<String>();
     TextField<String> _searchFieldFull = new TextField<String>();
+    CheckBox _includeInActive = new CheckBox();
 
 
     private SolutionSearcherDialog() {
@@ -57,6 +62,14 @@ public class SolutionSearcherDialog extends Window {
         FormPanel fPanel = new FormPanel();
         fPanel.setFieldWidth(300);
         fPanel.setLabelWidth(100);
+
+        
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(new Label("Include Inactive: "));
+        hp.add(_includeInActive);
+        getButtonBar().add(hp);        
+        fPanel.getButtonBar().add(hp);
+        
         fPanel.addButton(new Button("Search", new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 doSearch();
@@ -85,7 +98,9 @@ public class SolutionSearcherDialog extends Window {
         });        
         fPanel.add(_searchFieldFull);
         
+         
         tabItem.add(fPanel, new BorderLayoutData(LayoutRegion.NORTH, 95));
+        
         fPanel.setFrame(false);
         fPanel.setBodyBorder(false);
         fPanel.setHeaderVisible(false);
@@ -103,6 +118,8 @@ public class SolutionSearcherDialog extends Window {
 
         tabItem.add(_matches, new BorderLayoutData(LayoutRegion.SOUTH, 5));
 
+        
+        
         addButton(new Button("Select", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -120,6 +137,11 @@ public class SolutionSearcherDialog extends Window {
                 hide();
             }
         }));
+        
+        
+        
+        
+        
 
         setLayout(new FitLayout());
         _tabPanel.add(tabItem);
@@ -158,11 +180,12 @@ public class SolutionSearcherDialog extends Window {
     private void doSearch() {
         String text = _searchField.getValue();
         String textFull = _searchFieldFull.getValue();
+        boolean includeInActive=_includeInActive.getValue();
 
         SolutionEditor.__status.setText("Searching for: " + text + ", text: " + textFull);
         if (text != null && text.length() > 0) {
 
-            SearchForSolutionsAction action = new SearchForSolutionsAction(text, textFull);
+            SearchForSolutionsAction action = new SearchForSolutionsAction(text, textFull, includeInActive);
             SolutionEditor.getCmService().execute(action, new AsyncCallback<CmList<SolutionSearchModel>>() {
                 @Override
                 public void onSuccess(CmList<SolutionSearchModel> result) {
@@ -245,8 +268,12 @@ class RecentTab extends LayoutContainer {
         if (recentList != null) {
             String list[] = recentList.split("\\|");
             for (int i = 0; i < list.length; i++) {
-                if (list[i] != null && list[i].length() > 0)
-                    models.add(new SolutionSearchModel(list[i]));
+                if (list[i] != null && list[i].length() > 0) {
+                    String p[] = list[i].split("\\|");
+                    String pid = p[0];
+                    boolean isActive = p.length==2&&p[1].equals("true")?true:false;
+                    models.add(new SolutionSearchModel(pid,isActive));
+                }
             }
         }
         return models;

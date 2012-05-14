@@ -41,15 +41,18 @@ public class TutorSolution implements SbTestImpl {
     TutorProblem problem = null;
     
     String tutorDefine;
+    
+    boolean active;
 
     public TutorSolution(){}
     
-    public TutorSolution(String createdBy,SolutionDef def,String statement, String statementFigure, List<StepUnitPair> steps) {
+    public TutorSolution(String createdBy,SolutionDef def,String statement, String statementFigure, List<StepUnitPair> steps,boolean isActive) {
         this(createdBy, def, statement, statementFigure);
         
         for(StepUnitPair step: steps) {
             addStep(step.getHint(), step.getText(), step.getFigure());
         }
+        active = isActive;
     }
   
     SimpleDateFormat _dateFormat = new SimpleDateFormat("MM/dd/yy");
@@ -66,6 +69,14 @@ public class TutorSolution implements SbTestImpl {
         this.date = _dateFormat.format(new Date());
     }
     
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     /** Add a hint/step combination to solution
      * 
      * @param hint

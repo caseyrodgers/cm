@@ -8,6 +8,7 @@ import java.util.List;
 public class SolutionMeta implements Response{
     String pid;
     int numSteps;
+    boolean isActive;
     String problemStatement;
     String figure;
     String md5OnRead;
@@ -19,6 +20,14 @@ public class SolutionMeta implements Response{
     
     public SolutionMeta(String pid) {
         this.pid = pid;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
     public String getTutorDefine() {

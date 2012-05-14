@@ -11,8 +11,9 @@ import hotmath.gwt.cm_tools.client.model.BaseModel;
             /** empty */
         }
         
-        public SolutionSearchModel(String pid) {
+        public SolutionSearchModel(String pid, boolean isActive) {
             setPid(pid);
+            setIsActive(isActive);
         }
         
         public void setPid(String pid) {
@@ -22,4 +23,13 @@ import hotmath.gwt.cm_tools.client.model.BaseModel;
         public String getPid() {
             return get("pid");
         }
+        
+        public void setIsActive(boolean isActive) {
+            set("active", isActive);
+        }
+        
+        public boolean isActive() {
+            return get("active");
+        }
+       
 }

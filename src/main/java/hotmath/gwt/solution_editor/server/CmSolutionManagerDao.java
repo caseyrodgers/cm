@@ -45,7 +45,7 @@ public class CmSolutionManagerDao {
     }
     
 
-    public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine) throws Exception {
+    public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine, boolean isActive) throws Exception {
         PreparedStatement ps=null;
         try {
             
@@ -53,17 +53,22 @@ public class CmSolutionManagerDao {
                 createNewSolution(conn, pid);
             }
             
-            String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, tutor_define = ? where problemindex = ?";
+            String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, tutor_define = ?, active = ?  where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, xml);
             ps.setString(2, tutorDefine);
-            ps.setString(3, pid);
+            ps.setInt(3, isActive?1:0);
+            ps.setString(4, pid);
+            
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not save solution xml: " + pid);
             
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
             
             StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);            
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
@@ -147,19 +152,23 @@ public class CmSolutionManagerDao {
     }    
     
     
-    public CmList<SolutionSearchModel> searchForSolutions(final Connection conn, String searchFor, String searchFullText) throws Exception {
+    public CmList<SolutionSearchModel> searchForSolutions(final Connection conn, String searchFor, String searchFullText, boolean includeInactive) throws Exception {
         CmList<SolutionSearchModel> list = new CmArrayList<SolutionSearchModel>();
         
         if(searchFullText == null)
             searchFullText="";
         PreparedStatement ps=null;
         try {
-            String sql = "select problemindex from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' order by problemindex limit 100";
+            String sql = "select problemindex,active from SOLUTIONS where problemindex like ? and solutionXML like '%" + searchFullText + "%' ";
+            
+            if(!includeInactive) {
+                sql += " and active = 1 ";
+            }
             ps = conn.prepareStatement(sql);
             ps.setString(1, searchFor + "%");
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new SolutionSearchModel(rs.getString(1)));
+                list.add(new SolutionSearchModel(rs.getString(1), rs.getInt("active")==1?true:false));
             }
             return list;
         }
@@ -172,7 +181,7 @@ public class CmSolutionManagerDao {
     public TutorSolution getTutorSolution(final Connection conn, String pid) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "select solutionxml,tutor_define from SOLUTIONS where problemindex = ?";
+            String sql = "select active, solutionxml,tutor_define from SOLUTIONS where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pid);
             
@@ -181,6 +190,7 @@ public class CmSolutionManagerDao {
                 throw new Exception("No such solution: " + pid);
             }
             TutorSolution ts = TutorSolution.parse(rs.getString("solutionxml"));
+            ts.setActive(rs.getInt("active")==1?true:false);
             ts.setTutorDefine(rs.getString("tutor_define"));
             
             return ts;

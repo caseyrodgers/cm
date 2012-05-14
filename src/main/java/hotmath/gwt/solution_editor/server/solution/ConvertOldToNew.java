@@ -50,8 +50,8 @@ public class ConvertOldToNew {
                 stepUnitPairs.add(new StepUnitPair(step.getHint(),step.getText(), step.getFigure()));
             }
             
-            TutorSolution ts = new TutorSolution("sm", def, meta.getProblemStatement(), meta.getFigure(), stepUnitPairs);
-            new CmSolutionManagerDao().saveSolutionXml(conn, pidSt, ts.toXml(), meta.getTutorDefine());
+            TutorSolution ts = new TutorSolution("sm", def, meta.getProblemStatement(), meta.getFigure(), stepUnitPairs,meta.isActive());
+            new CmSolutionManagerDao().saveSolutionXml(conn, pidSt, ts.toXml(), meta.getTutorDefine(),meta.isActive());
         }
         
         

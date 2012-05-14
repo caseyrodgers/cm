@@ -20,7 +20,7 @@ public class CmSolutionManagerDao_Test extends CmDbTestCase {
     }
 
     public void testSearchFor() throws Exception {
-        CmList<SolutionSearchModel> list = new CmSolutionManagerDao().searchForSolutions(conn, "test_","question");
+        CmList<SolutionSearchModel> list = new CmSolutionManagerDao().searchForSolutions(conn, "test_","question",true);
         assertTrue(list.size() > 0);
     }
     

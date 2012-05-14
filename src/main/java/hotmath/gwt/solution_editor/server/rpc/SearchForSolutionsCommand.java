@@ -15,7 +15,7 @@ public class SearchForSolutionsCommand implements ActionHandler<SearchForSolutio
     
     @Override
     public CmList<SolutionSearchModel> execute(Connection conn, SearchForSolutionsAction action) throws Exception {
-        return new CmSolutionManagerDao().searchForSolutions(conn,action.getSearchFor(), action.getSearchText());
+        return new CmSolutionManagerDao().searchForSolutions(conn,action.getSearchFor(), action.getSearchText(),action.isIncludeInActive());
     }
 
     @Override

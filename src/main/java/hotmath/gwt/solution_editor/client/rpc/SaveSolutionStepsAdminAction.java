@@ -20,17 +20,28 @@ public class SaveSolutionStepsAdminAction implements Action<RpcData>{
     boolean overrideDirty;
     List<StepUnitPair> steps;
     String tutorDefine;
+    boolean isActive;
     
     public SaveSolutionStepsAdminAction(){}
     
-    public SaveSolutionStepsAdminAction(String md5OnRead, String pid, String statement,String statementFigure, List<StepUnitPair> steps, String tutorDefine) {
+    public SaveSolutionStepsAdminAction(String md5OnRead, String pid, String statement,String statementFigure, List<StepUnitPair> steps, String tutorDefine,boolean isActive) {
         this.md5OnRead = md5OnRead;
         this.statement=statement;
         this.statementFigure = statementFigure;
         this.pid = pid;
         this.steps = steps;
         this.tutorDefine = tutorDefine;
+        this.isActive = isActive;
     }
+    
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
     public String getOriginalPid() {
         return originalPid;
     }
