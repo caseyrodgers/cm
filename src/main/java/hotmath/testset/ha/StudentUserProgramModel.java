@@ -22,6 +22,7 @@ public class StudentUserProgramModel {
     String testName;
     Integer adminId;
     Date createDate;
+    Date completeDate;
     HaTestConfig config;
     HaTestDef testDef;
     int customProgramId;
@@ -108,7 +109,14 @@ public class StudentUserProgramModel {
         this.createDate = createDate;
     }
     
-    public Integer getPassPercent() {
+    public Date getCompleteDate() {
+		return completeDate;
+	}
+	public void setCompleteDate(Date completeDate) {
+		this.completeDate = completeDate;
+	}
+
+	public Integer getPassPercent() {
     	return passPercent;
     }
     
@@ -131,11 +139,9 @@ public class StudentUserProgramModel {
 	}
 
     public boolean isComplete() {
-        return isComplete;
+        return completeDate != null;
     }
-    public void setComplete(boolean isComplete) {
-        this.isComplete = isComplete;
-    }
+
     public void setCustomProgramId(int customProgramId) {
         this.customProgramId = customProgramId;
     }

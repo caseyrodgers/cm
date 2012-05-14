@@ -103,7 +103,7 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
                             supm.setCustomProgramName(rs.getString("custom_program_name"));
                             supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
                             supm.setCustomQuizName(rs.getString("custom_quiz_name"));
-                            supm.setComplete(rs.getDate("date_completed") != null);
+                            supm.setCompleteDate(rs.getDate("date_completed"));
                             return supm;
                         } catch (Exception e) {
                             __logger.error("Error creating StudentUserProgramModel: " + userProgId, e);
@@ -252,7 +252,7 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
                 supm.setCustomProgramName(rs.getString("custom_program_name"));
                 supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
                 supm.setCustomQuizName(rs.getString("custom_quiz_name"));
-                supm.setComplete(rs.getDate("date_completed") != null);
+                supm.setCompleteDate(rs.getDate("date_completed"));
 
                 return supm;
             } catch (Exception e) {
@@ -289,7 +289,7 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
         supm.setCustomProgramName(rs.getString("custom_program_name"));
         supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
         supm.setCustomQuizName(rs.getString("custom_quiz_name"));
-        supm.setComplete(rs.getDate("date_completed") != null);
+        supm.setCompleteDate(rs.getDate("date_completed"));
 
         return supm;
     }
@@ -321,7 +321,7 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
                 supm.setCustomProgramName(rs.getString("custom_program_name"));
                 supm.setCustomQuizId(rs.getInt("custom_quiz_id"));
                 supm.setCustomQuizName(rs.getString("custom_quiz_name"));
-                supm.setComplete(rs.getDate("date_completed") != null);
+                supm.setCompleteDate(rs.getDate("date_completed"));
                 return supm;
             } catch (Exception e) {
                 __logger.error("Error creating StudentUserProgramModel: " + userId, e);

@@ -83,7 +83,8 @@ public class StudentReportCard {
     private String reportName;
     
     @SuppressWarnings("unchecked")
-    public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId) throws Exception {
+    public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId,
+    		Date fromDate, Date toDate) throws Exception {
         ByteArrayOutputStream baos = null;
 
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
@@ -114,11 +115,11 @@ public class StudentReportCard {
 
         Phrase school = ReportUtils.buildParagraphLabel("School: ", info.getSchoolName());
 
-        HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-        footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
         /*
          * don't include page number footer
          */
+        //HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
+        //footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
         //document.setFooter(footer);
 
         document.open();
@@ -127,13 +128,13 @@ public class StudentReportCard {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DATE, 1);
 
-    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMap(conn, smList, info.getAccountCreateDate(), now.getTime());
+    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMap(conn, smList, fromDate, toDate);
 
     	int idx = 0;
     	
         for (StudentModelI sm : smList) {
         	
-            StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
+            StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), fromDate, toDate);
             rc.getResourceUsage().put("timeontask", totMap.get(sm.getUid()));
 
         	addStudentInfo(school, sm, rc, document);

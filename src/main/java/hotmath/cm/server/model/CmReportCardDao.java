@@ -240,8 +240,17 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 		 List<StudentUserProgramModel> l = new ArrayList<StudentUserProgramModel>();
 
-		 //TODO: apply date range if requested
-		 l.addAll(list);
+		 if (beginDate != null || endDate != null) {
+			 for (StudentUserProgramModel model : list) {
+
+				 if ((endDate != null && model.getCreateDate().after(endDate)) ||
+				     (beginDate != null && model.getCompleteDate().before(beginDate))) continue;
+				 l.add(model);
+			}
+		 }
+		 else {
+    		 l.addAll(list);
+		 }
 
 		 return l;
 	 }
