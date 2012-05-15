@@ -246,7 +246,7 @@ public class AssessmentPrescriptionSession {
                     + " from   inmh_assessment m, inmh_link l " 
                     + " where  m.file = l.file " + " and  m.file in ("
                     + topicListSb.toString() + ") " + " and l.link_type like '%" + linkTypeIn + "'"
-                    + " order by l.link_type, link_title ";
+                    + " order by l.link_type, l.id ";
             
             pstat = conn.prepareStatement(sql);
             ResultSet rs = pstat.executeQuery();

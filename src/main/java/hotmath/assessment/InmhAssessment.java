@@ -64,8 +64,8 @@ public class InmhAssessment {
 
             	for(INeedMoreHelpItem h:items) {
             		inmhItems.add(h);
-            		inmhItemsMap.put(p, inmhItems);
             	}
+                inmhItemsMap.put(p, inmhItems);            	
             }
             catch(Exception e) {
                 throw new CmException("ERROR obtaining INMH for pids: " + pids, e);
