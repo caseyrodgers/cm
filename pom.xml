@@ -624,10 +624,10 @@
 					<jsSourceFiles>
 						<param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
 						<param>cm_core.js</param>
-                                                <param>quiz.js</param>                      
+                        <param>quiz.js</param>                      
 						<param>CatchupMath.js</param>
 						<param>swfobject/swfobject.js</param>
-                                   		<param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
+                        <param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
 					</jsSourceFiles>
 				</configuration>
 			</plugin>
