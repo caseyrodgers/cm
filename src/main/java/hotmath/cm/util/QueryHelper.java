@@ -2,6 +2,7 @@ package hotmath.cm.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /*
@@ -189,6 +190,14 @@ public class QueryHelper {
     static public String[] getDateTimeRange(Date beginDate, Date endDate) {
     	String[] vals = new String[2];
     	
+        if (beginDate == null) {
+            beginDate = new GregorianCalendar(2010,0,0).getTime();
+        }
+
+        if(endDate == null) {
+            endDate = new GregorianCalendar(2050,0,0).getTime();
+        }
+
     	vals[0] = getDateTime(beginDate, true);
     	
     	vals[1] = getDateTime(endDate, false);
