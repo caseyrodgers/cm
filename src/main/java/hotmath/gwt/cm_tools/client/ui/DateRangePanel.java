@@ -47,6 +47,10 @@ public class DateRangePanel extends HorizontalPanel{
 		this.defaultFromDate = date;
 	}
 
+	public boolean isDefault() {
+		return (_filterOptions == null);
+	}
+
 	public FilterOptions getFilterOptions() {
 		return _filterOptions;
 	}

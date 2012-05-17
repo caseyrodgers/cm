@@ -1,6 +1,7 @@
 package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
@@ -61,21 +62,28 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 try {
 
 			 CmUserProgramDao upDao = CmUserProgramDao.getInstance();
+
 			 List<StudentUserProgramModel> list = upDao.loadProgramInfoAll(conn, studentUid);
-			 List<StudentUserProgramModel> filteredList = findFirstLastUserProgramInDateRange(list, beginDate, endDate);
+
+			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
+			 StudentActivityDao saDao = StudentActivityDao.getInstance();
+			 List<StudentActivityModel> samList = saDao.getStudentActivity(conn, studentUid, beginDate, endDate);
+			 setFirstLastActivityDate(rval, samList);
+
+			 List<StudentUserProgramModel> filteredList = findFirstLastUserProgramInDateRange(list, samList, beginDate, endDate);
 
 			 if (filteredList.size() < 1) return rval;
 
 			 StudentUserProgramModel pm = filteredList.get(0);
 			
-			 String testName = (pm.getCustomProgramId() == 0) ? pm.getTestName() : "CP: " + pm.getCustomProgramName();
+			 String testName = pm.getTestName();
 
 			 List<String> chapList = pm.getConfig().getChapters();
 			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
 				 String chapter = chapList.get(0).trim();
 				 
-				 String[] progNames = buildProgramNames(conn, pm, chapter, testName);
+				 String[] progNames = buildProgramNames(pm, chapter, testName);
 				 rval.setInitialProgramName(progNames[0]);
 				 rval.setInitialProgramShortName(progNames[1]);
 			 }
@@ -91,7 +99,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
     	    		 rval.setInitialProgramShortName(sb.toString());
     			 }
     			 else {
-    				 rval.setInitialProgramShortName(getTestName(pm));
+    				 rval.setInitialProgramShortName(testName);
     			 }
 			 }
 			 rval.setInitialProgramDate(pm.getCreateDate());
@@ -111,23 +119,22 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 rval.setLastProgramDate(pm.getCreateDate());
 
 			 // load HaTest and HaTestRun
-			 List<HaTest> testList = loadQuizData(conn, filteredList);
+			 List<HaTest> testList = loadQuizData(conn, filteredList, beginDate, endDate);
 			 StudentActiveInfo ai = CmStudentDao.getInstance().loadActiveInfo(studentUid);
 			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
 
-			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
-			 StudentActivityDao saDao = StudentActivityDao.getInstance();
-			 List<StudentActivityModel> samList = saDao.getStudentActivity(conn, studentUid, beginDate, endDate);
-			 setFirstLastActivityDate(rval, samList);
 			 
 			 // load quiz data for initial through last programs
-			 loadQuizResults(filteredList, rval, conn);
+			 loadQuizResults(conn, filteredList, rval, beginDate, endDate);
 
 			 // load resource usage data for initial through last programs
-			 loadResourceUsage(filteredList, rval);
+			 loadResourceUsage(filteredList, rval, beginDate, endDate);
 
 			 // load prescribed lesson data for initial through last programs
 			 loadPrescribedLessons(filteredList, rval, conn);
+			 
+			 rval.setReportStartDate(beginDate);
+			 rval.setReportEndDate(endDate);
 
 		 } catch (Exception e) {
 			 logger.error(String.format("*** Error getting report card for Student uid: %d", studentUid), e);
@@ -172,7 +179,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
                  String.format("%s, %s", testName, chapter);
 	 }
 
-	 private String[] buildProgramNames(final Connection conn, StudentUserProgramModel pm, String chapter, String testName) throws Exception {
+	 private String[] buildProgramNames(StudentUserProgramModel pm, String chapter, String testName) throws Exception {
 
 		 CmAdminDao adminDao = CmAdminDao.getInstance();
 		 String subjectId = pm.getTestDef().getSubjectId();
@@ -236,17 +243,44 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 }
 	}
 
-	 private List<StudentUserProgramModel> findFirstLastUserProgramInDateRange(List<StudentUserProgramModel> list, Date beginDate, Date endDate) {
+	 private List<StudentUserProgramModel> findFirstLastUserProgramInDateRange(List<StudentUserProgramModel> list,
+			 List<StudentActivityModel> samList, Date beginDate, Date endDate) {
 
 		 List<StudentUserProgramModel> l = new ArrayList<StudentUserProgramModel>();
 
+		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		 
 		 if (beginDate != null || endDate != null) {
-			 for (StudentUserProgramModel model : list) {
 
-				 if ((endDate != null && model.getCreateDate().after(endDate)) ||
-				     (beginDate != null && model.getCompleteDate().before(beginDate))) continue;
-				 l.add(model);
-			}
+			 int index = samList.size() - 1;
+			 for (; index >= 0; index--) {
+				 StudentActivityModel sam = samList.get(index);
+				 String progDescr = sam.getProgramDescr();
+
+				 for (StudentUserProgramModel model : list) {
+					 String testName, progId;
+					 if (model.isCustom() == false) {
+						 testName = model.getTestDef().getSubjectId();
+						 progId = model.getTestDef().getProgId();
+						 if (testName.trim().length() == 0) {
+							 testName = model.getTestDef().getProgId();
+							 progId = null;
+						 }
+					 }
+					 else {
+						 testName = (model.getCustomProgramId() == 0)?
+								 "CQ: " + model.getCustomQuizName() :
+								 "CP: " + model.getCustomProgramName();
+					     progId = null;
+					 }
+
+					 if (progDescr.indexOf(testName) >= 0 && (progId == null || progDescr.indexOf(progId) > 0)) {
+						 if (model.isCustom()) model.setTestName(progDescr);
+						 l.add(model);
+						 break;
+					 }
+				 }
+			 }
 		 }
 		 else {
     		 l.addAll(list);
@@ -282,47 +316,106 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	  * 
 	  * @param conn
 	  * @param list
+	  * @param beginDate
+	  * @param endDate
 	  * @return
 	  * @throws Exception
 	  */
-	 private List<HaTest> loadQuizData(final Connection conn, List<StudentUserProgramModel> list) throws Exception {
-		 return HaTestDao.loadTestsForProgramList(conn, list);
+	 private List<HaTest> loadQuizData(final Connection conn, List<StudentUserProgramModel> list,
+			 Date beginDate, Date endDate) throws Exception {
+
+		 List<HaTest> tests = HaTestDao.loadTestsForProgramList(conn, list);
+
+		 if (endDate == null) return tests;
+
+		 List<HaTest> filtered = new ArrayList<HaTest>(tests.size());
+		 for (HaTest test : tests) {
+			 if (endDate.before(test.getCreateTime())) continue;
+			 filtered.add(test);
+		 }
+		 return filtered;
 	 }
-	 
-	 private void loadQuizResults(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Connection conn) throws Exception {
+ 
+	 private void loadQuizResults(final Connection conn, List<StudentUserProgramModel> list, StudentReportCardModelI rc,
+			 Date beginDate, Date endDate) throws Exception {
+
 		 PreparedStatement ps = null;
 		 ResultSet rs = null;
 		 String sql;
 
 		 String progIds = getProgIdList(list);
+
+		 String begin = null, end = null;
+
+		 if (beginDate != null) {
+			 begin = QueryHelper.getDateTime(beginDate, true);
+			 if (endDate == null) endDate = new Date();
+			 end = QueryHelper.getDateTime(endDate, false);
+		 }
+
 		 try {
-			 sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_QUIZ_COUNT");
+			 sql = (beginDate == null) ?
+				   CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_QUIZ_COUNT") :
+				   CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_QUIZ_COUNT_IN_DATE_RANGE") ;
+
 			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+			 if (beginDate != null) {
+				 ps.setString(1, begin);
+				 ps.setString(2, end);
+			 }
+
 			 Long start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
-			 logger.debug(String.format("+++ PROGRAM_QUIZ_COUNT: exec time: %d msec", (System.currentTimeMillis()-start)));
+
+			 if (logger.isDebugEnabled())
+				 logger.debug(String.format("+++ PROGRAM_QUIZ_COUNT: exec time: %d msec", (System.currentTimeMillis()-start)));
+
 			 if (rs.next()) {
 				 Integer quizCount = rs.getInt(1);
 				 rc.setQuizCount(quizCount);
 			 }
 			 SqlUtilities.releaseResources(rs, ps, null);
 
-			 sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PASSED_QUIZ_COUNT");
+			 sql = (beginDate == null) ?
+                   CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PASSED_QUIZ_COUNT") :
+                   CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_PASSED_QUIZ_COUNT_IN_DATE_RANGE");
+
 			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+
+			 if (beginDate != null) {
+				 ps.setString(1, begin);
+				 ps.setString(2, end);
+			 }
+
 			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
-			 logger.debug(String.format("+++ PROGRAM_PASSED_QUIZ_COUNT: exec time: %d msec", (System.currentTimeMillis()-start)));
+
+			 if (logger.isDebugEnabled())
+				 logger.debug(String.format("+++ PROGRAM_PASSED_QUIZ_COUNT: exec time: %d msec", (System.currentTimeMillis()-start)));
+
 			 if (rs.next()) {
 				 Integer quizCount = rs.getInt(1);
 				 rc.setQuizPassCount(quizCount);
 			 }
 			 SqlUtilities.releaseResources(rs, ps, null);
 
-			 sql = CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_AGGREGATE_QUIZ_RESULTS");
+			 sql = (beginDate == null) ?
+				    CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_AGGREGATE_QUIZ_RESULTS") :
+				    CmMultiLinePropertyReader.getInstance().getProperty("PROGRAM_AGGREGATE_QUIZ_RESULTS_IN_DATE_RANGE");
+
 			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+
+			 if (beginDate != null) {
+				 ps.setString(1, begin);
+				 ps.setString(2, end);
+			 }
+
 			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
-			 logger.debug(String.format("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: exec time: %d msec", (System.currentTimeMillis()-start)));
+
+			 if (logger.isDebugEnabled())
+				 logger.debug(String.format("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: exec time: %d msec", (System.currentTimeMillis()-start)));
+
 			 if (rs.next()) {
 				 Integer answeredCorrect = rs.getInt("answered_correct");
 				 Integer answeredIncorrect = rs.getInt("answered_incorrect");
@@ -337,7 +430,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 }
 		 catch (Exception e) {
 			 Integer uid = list.get(0).getUserId();
-			 logger.error(String.format("*** Error obtaining quiz results for student UID: %d", uid), e);
+			 logger.error(String.format("*** Error obtaining quiz results for student UID: %d, begin: %s, end: %s",
+					 uid, (begin!=null)?begin:"NULL", (end!=null)?end:"NULL"), e);
 			 throw new Exception(String.format("*** Error obtaining quiz results for student with UID: %d", uid));
 		 }
 		 finally {
@@ -346,17 +440,27 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 	 }
 
-	 private void loadResourceUsage(List<StudentUserProgramModel> list, StudentReportCardModelI rc) throws Exception {
-	     
-	     String date = String.format("%1$tY-%1$tm-%1$td", list.get(0).getCreateDate());
-	     Integer uid = list.get(0).getUserId();
+	 private void loadResourceUsage(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Date beginDate, Date endDate) throws Exception {
+
+		 String bDate, eDate;
+		 if (beginDate == null) 
+	         bDate = String.format("%1$tY-%1$tm-%1$td", list.get(0).getCreateDate());
+		 else
+			 bDate = String.format("%1$tY-%1$tm-%1$td", beginDate);
+
+		 if (endDate == null) 
+	         eDate = String.format("%1$tY-%1$tm-%1$td", new Date());
+		 else
+			 eDate = String.format("%1$tY-%1$tm-%1$td", endDate);
+
+		 Integer uid = list.get(0).getUserId();
 	     
          final Map<String, Integer> usageMap = new HashMap<String, Integer>();
          rc.setResourceUsage(usageMap);
 	     
          Integer loginCount = getJdbcTemplate().queryForObject(
 	             CmMultiLinePropertyReader.getInstance().getProperty("LOGIN_COUNT"),
-	             new Object[]{uid, date},
+	             new Object[]{uid, bDate, eDate},
 	             new RowMapper<Integer>() {
 	                 @Override
 	                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -377,6 +481,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	     }
 	     List<UsageCount> ucl = getJdbcTemplate().query(
 	             CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT").replaceAll("XXX", getProgIdList(list)),
+	             new Object[]{bDate, eDate, bDate, eDate, bDate, eDate},
 	             new RowMapper<UsageCount>() {
 	                 @Override
 	                public UsageCount mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -388,7 +493,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	     }
 	 }
 
-	 private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Connection conn) throws Exception {
+	 private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc,
+			 final Connection conn) throws Exception {
 		 PreparedStatement ps = null;
 		 ResultSet rs = null;
 		 Integer uid = list.get(0).getUserId();

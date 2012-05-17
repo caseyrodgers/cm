@@ -281,9 +281,11 @@ public class StudentReportCard {
         String initialProgDesc = rc.getInitialProgramName();
 
         /*
-         * don't include initial status for now if (initialProgDesc != null) {
-         * initialProgDesc += (rc.getInitialProgramStatus() != null) ? " " +
-         * rc.getInitialProgramStatus() : ""; }
+         * don't include initial status for now
+         * if (initialProgDesc != null) {
+         *     initialProgDesc += (rc.getInitialProgramStatus() != null) ?
+         *         " " + rc.getInitialProgramStatus() : "";
+         * }
          */
 
         StringBuilder sb = new StringBuilder();
@@ -304,11 +306,17 @@ public class StudentReportCard {
                 lastProgDesc += (rc.getLastProgramStatus() != null) ? ", " + rc.getLastProgramStatus() : "";
             }
         }
-        String currentProgLbl = (isCurrentProgCustom) ? "Current program: " : "Current program & section: ";
-        Phrase lastProg = ReportUtils.buildParagraphLabel(currentProgLbl, lastProgDesc);
-        assignedDate = rc.getLastProgramDate();
+        StringBuilder sBuff = new StringBuilder((rc.getReportStartDate() == null) ? "Current " : "Final ");
+
+        if (isCurrentProgCustom)
+        	sBuff.append("program: ");
+        else 
+        	sBuff.append("program & section: ");
+
+        Phrase lastProg = ReportUtils.buildParagraphLabel(sBuff.toString(), lastProgDesc);
 
         // don't include assigned date for current (last) program
+        // assignedDate = rc.getLastProgramDate();
         // String lastDate = (assignedDate != null) ?
         // String.format("%1$tY-%1$tm-%1$td", assignedDate) : " ";
 
