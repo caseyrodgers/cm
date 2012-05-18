@@ -47,7 +47,7 @@ import com.lowagie.text.pdf.PdfWriter;
 
 public class StudentReportCard {
 
-	private static final Logger logger = Logger.getLogger(StudentReportCard.class);
+	private static final Logger LOGGER = Logger.getLogger(StudentReportCard.class);
 	
     static Map<String, String> labelMap;
     
@@ -56,15 +56,15 @@ public class StudentReportCard {
     static {
         labelMap = new HashMap<String, String>();
 
-        labelMap.put("login", "Logins: ");
-        labelMap.put("timeontask", "Estimated Time-onTask: ");
-        labelMap.put("activity", "Learning Activities: ");
-        labelMap.put("cmextra", "Extra Practice Problems: ");
-        labelMap.put("review", "Prescribed Lessons Reviewed: ");
-        labelMap.put("practice", "Required Practice Problems: ");
-        labelMap.put("flashcard", "Flashcard Sessions: ");
-        labelMap.put("video", "Videos: ");
-        labelMap.put("game", "Games: ");
+        labelMap.put("login",      "Logins: ");
+        labelMap.put("timeontask", "Estimated Time-on-Task: ");
+        labelMap.put("activity",   "Learning Activities: ");
+        labelMap.put("cmextra",    "Extra Practice Problems: ");
+        labelMap.put("review",     "Prescribed Lessons Reviewed: ");
+        labelMap.put("practice",   "Required Practice Problems: ");
+        labelMap.put("flashcard",  "Flashcard Sessions: ");
+        labelMap.put("video",      "Videos: ");
+        labelMap.put("game",       "Games: ");
         
         orderList = new ArrayList<String>();
         
@@ -94,7 +94,7 @@ public class StudentReportCard {
         AccountInfoModel info = adminDao.getAccountInfo(adminId);
         
         if (info == null) {
-            logger.warn("*** Account info is NULL for adminId: " + adminId);
+            LOGGER.warn("*** Account info is NULL for adminId: " + adminId);
             return null;
         }
 
@@ -243,8 +243,8 @@ public class StudentReportCard {
 
         for (String key : orderList) {
             String label = labelMap.get(key);
-            if (logger.isDebugEnabled())
-                logger.debug("key: " + key + ", label: " + label);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("key: " + key + ", label: " + label);
             Integer count = (map.get(key) == null) ? 0 : map.get(key);
             usage = buildSectionContent(label, String.valueOf(count), true);
             usageTbl.addCell(usage);

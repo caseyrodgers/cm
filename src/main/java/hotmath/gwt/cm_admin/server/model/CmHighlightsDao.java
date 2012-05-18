@@ -366,6 +366,8 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(4, vals[1]);            
             ps.setString(5, vals[0]);
             ps.setString(6, vals[1]);            
+            ps.setString(7, vals[0]);
+            ps.setString(8, vals[1]);
 
             if (__logger.isDebugEnabled()) __logger.debug("report sql: " + ps);
 
@@ -529,6 +531,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     }    
    
     public Map<Integer, Integer> getTimeOnTaskMap(final Connection conn, List<StudentModelI> smList, Date from, Date to) throws Exception {
+
         List<String> uidList = new ArrayList<String>();
     	for (StudentModelI sm : smList) {
     		uidList.add(sm.getUid().toString());
