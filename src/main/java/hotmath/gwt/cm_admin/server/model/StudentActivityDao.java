@@ -402,7 +402,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     			continue;
     		}
 
-            if (prevSam.getUseDate().equals(sam.getUseDate())) {
+            if (prevSam.getRunId() == sam.getRunId() && prevSam.getUseDate().equals(sam.getUseDate())) {
             	dups.add(prevSam);
             }
             prevSam = sam;
