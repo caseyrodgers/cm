@@ -186,6 +186,19 @@ function showTeacherVideo(name) {
          closeFoot;
              title = 'Managing Groups';
         }
+        else if (name == 'custom-programs') {
+            html = '<iframe src="/training-videos/embedded-custom-programs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
+            title = 'Custom Programs and Quizzes';
+       }
+        else if (name == 'parallel-programs') {
+            html = '<iframe src="/training-videos/embedded-parallel-programs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
+            title = 'Parallel Programs';
+       }        
+        
+        
+        
 
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
     
