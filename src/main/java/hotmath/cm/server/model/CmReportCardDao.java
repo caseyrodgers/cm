@@ -70,7 +70,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 List<StudentActivityModel> samList = saDao.getStudentActivity(conn, studentUid, beginDate, endDate);
 			 setFirstLastActivityDate(rval, samList);
 
-			 List<StudentUserProgramModel> filteredList = findFirstLastUserProgramInDateRange(list, samList, beginDate, endDate);
+			 List<StudentUserProgramModel> filteredList = findUserProgramsInDateRange(list, samList);
 
 			 if (filteredList.size() < 1) return rval;
 
@@ -243,47 +243,39 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 }
 	}
 
-	 private List<StudentUserProgramModel> findFirstLastUserProgramInDateRange(List<StudentUserProgramModel> list,
-			 List<StudentActivityModel> samList, Date beginDate, Date endDate) {
+	 private List<StudentUserProgramModel> findUserProgramsInDateRange(List<StudentUserProgramModel> list,
+			 List<StudentActivityModel> samList) {
 
 		 List<StudentUserProgramModel> l = new ArrayList<StudentUserProgramModel>();
 
-		 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		 
-		 if (beginDate != null || endDate != null) {
+		 int index = samList.size() - 1;
+		 for (; index >= 0; index--) {
+			 StudentActivityModel sam = samList.get(index);
+			 String progDescr = sam.getProgramDescr();
 
-			 int index = samList.size() - 1;
-			 for (; index >= 0; index--) {
-				 StudentActivityModel sam = samList.get(index);
-				 String progDescr = sam.getProgramDescr();
-
-				 for (StudentUserProgramModel model : list) {
-					 String testName, progId;
-					 if (model.isCustom() == false) {
-						 testName = model.getTestDef().getSubjectId();
-						 progId = model.getTestDef().getProgId();
-						 if (testName.trim().length() == 0) {
-							 testName = model.getTestDef().getProgId();
-							 progId = null;
-						 }
-					 }
-					 else {
-						 testName = (model.getCustomProgramId() == 0)?
-								 "CQ: " + model.getCustomQuizName() :
-								 "CP: " + model.getCustomProgramName();
-					     progId = null;
-					 }
-
-					 if (progDescr.indexOf(testName) >= 0 && (progId == null || progDescr.indexOf(progId) > 0)) {
-						 if (model.isCustom()) model.setTestName(progDescr);
-						 l.add(model);
-						 break;
+			 for (StudentUserProgramModel model : list) {
+				 String testName, progId;
+				 if (model.isCustom() == false) {
+					 testName = model.getTestDef().getSubjectId();
+					 progId = model.getTestDef().getProgId();
+					 if (testName.trim().length() == 0) {
+						 testName = model.getTestDef().getProgId();
+						 progId = null;
 					 }
 				 }
+				 else {
+					 testName = (model.getCustomProgramId() == 0)?
+							 "CQ: " + model.getCustomQuizName() :
+								 "CP: " + model.getCustomProgramName();
+							 progId = null;
+				 }
+
+				 if (progDescr.indexOf(testName) >= 0 && (progId == null || progDescr.indexOf(progId) > 0)) {
+					 if (model.isCustom()) model.setTestName(progDescr);
+					 l.add(model);
+					 break;
+				 }
 			 }
-		 }
-		 else {
-    		 l.addAll(list);
 		 }
 
 		 return l;
@@ -530,6 +522,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 				 sb.append(",");
 			 sb.append(m.getId());
 		 }
+		 logger.debug("progIdList: " + sb.toString());
 		 return sb.toString();
 	 }
 
