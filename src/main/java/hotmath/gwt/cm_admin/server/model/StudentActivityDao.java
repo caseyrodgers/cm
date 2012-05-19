@@ -198,7 +198,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     int currentRunId = 0;
     int lessonsCompleted = 0;
 
-    public List<StudentActivityModel> getStudentActivity(final int uid, final boolean includeTimeOnTask)
+    public List<StudentActivityModel> getStudentActivity(final int uid, final boolean includeTimeOnTask) throws Exception {
+        return getStudentActivity(uid, includeTimeOnTask, null, null);
+    }
+
+    public List<StudentActivityModel> getStudentActivity(final int uid, final boolean includeTimeOnTask,
+    		Date fromDate, Date toDate)
             throws Exception {
         final CmAdminDao cmaDao = CmAdminDao.getInstance();
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
@@ -221,9 +226,16 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         fixReviewSectionNumbers(list);
 
+        // limit list if fromDate and/or toDate is not null
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    	String from = (fromDate != null) ? sdf.format(fromDate) : null;
+    	String to = (toDate != null) ? sdf.format(toDate) : null;
+
         // reverse order of list
-        List<StudentActivityModel> mList = new ArrayList<StudentActivityModel>(list.size());
+        List<StudentActivityModel>mList = new ArrayList<StudentActivityModel>(list.size());
         for (int i = (list.size() - 1); i >= 0; i--) {
+        	if ( (from != null && from.compareTo(list.get(i).getUseDate()) > 0) ||
+        	     (to != null && to.compareTo(list.get(i).getUseDate()) < 0) ) continue;
             mList.add(list.get(i));
         }
 
@@ -231,8 +243,12 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     }
 
     public List<StudentActivitySummaryModel> getStudentActivitySummary(int uid) throws Exception {
+        return getStudentActivitySummary(uid, null, null);
+    }
 
-        List<StudentActivityModel> samList = getStudentActivity(uid, false);
+    public List<StudentActivitySummaryModel> getStudentActivitySummary(int uid, Date fromDate, Date toDate) throws Exception {
+
+        List<StudentActivityModel> samList = getStudentActivity(uid, false, fromDate, toDate);
 
         List<StudentActivitySummaryModel> sasList = new ArrayList<StudentActivitySummaryModel>();
 
