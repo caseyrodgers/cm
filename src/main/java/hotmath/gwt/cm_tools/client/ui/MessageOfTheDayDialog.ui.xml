@@ -10,12 +10,13 @@
 	    .main p {
 	       padding-top: 10px;
 	       }
-	    ol {
-	        padding: 10px 15px;
+	    ul {
+	        margin-top: 10px;
 	    }
-	    ol li {
-	        list-style-type: decimal;
+	    
+	    ul li {
 	        line-height: 1.5em;
+	        margin-left: 10px;
 	    }
 	    .main h1 {
 	        margin-bottom: 10px;
