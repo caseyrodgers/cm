@@ -704,7 +704,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
      * 
      * @param userId
      * @param cmProg
-     * @param continueParallelProgram  (what is this used for?)  
+     * @param continueParallelProgram  (for future auto-enroll support)  
      * 
      *
      * @throws Exception

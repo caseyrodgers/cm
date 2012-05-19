@@ -95,8 +95,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         
         infoPanel = new AccountInfoPanel(cmAdminMdl);
         studentGrid = new StudentGridPanel(cmAdminMdl);
-        
-        
+
         CmAdminDataReader.getInstance().fireRefreshData();
 
         // If the application starts with no history token, redirect to a new
@@ -118,7 +117,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
         mainContainer.removeAll();
-
 
         mainContainer.setLayout(new BorderLayout());
         
