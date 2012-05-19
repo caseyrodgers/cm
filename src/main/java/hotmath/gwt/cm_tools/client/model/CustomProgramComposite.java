@@ -42,7 +42,7 @@ public class CustomProgramComposite implements Serializable {
     
     /** Return the correct name of this custom object.
      * 
-     * If a quiz, the quiz name, if a lessons then the custom program name
+     * If a quiz, the quiz name, if lessons then the custom program name
      * If is not custom then return empty string
      * 
      * @return
@@ -86,7 +86,7 @@ public class CustomProgramComposite implements Serializable {
     
     /** Set this object as a QUIZ only if quizId is > 0
      * 
-     * @param progId
+     * @param quizId
      * @param name
      */
     public void setCustomQuiz(int quizId, String name) {
@@ -101,7 +101,7 @@ public class CustomProgramComposite implements Serializable {
     }
     
     /** Is any type of custom, either
-     *  a QUIZ or a LESSONS
+     *  a QUIZ or LESSONS
      *  
      * @return
      */
