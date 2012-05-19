@@ -56,16 +56,16 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static public final String STYLE_NAME="resource-viewer-impl-tutor";
     SolutionInfo _solutionInfo;
-    
+
     public ResourceViewerImplTutor() {
         _instance = this;
         addStyleName(STYLE_NAME);
         setScrollMode(Scroll.AUTOY);
-        
-        /** If in debug mode, the provide double click on 
+
+        /** If in debug mode, the provide double click on
          * the tutor loads the solution editor for the current
          * solution.
-         * 
+         *
          */
         if(CmShared.getQueryParameter("debug") != null) {
             addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
@@ -83,60 +83,60 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             });
             sinkEvents(Event.ONDBLCLICK);
         }
-        
-        
+
+
         addExternTutorHooks(this);
     }
-    
+
     private void tutorInputWidgetComplete_gwt(final int yesNo) {
         new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
-                
-                
+
+
                 CmBusyManager.setBusy(true);
                 MultiActionRequestAction mAction = new MultiActionRequestAction();
                 setAction(mAction);
-                
+
                 SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getRunId(), pid, yesNo==0?false:true);
                 mAction.getActions().add(action);
 
 
                 InmhItemData item = getResourceItem();
-                // if EPP (homework), then emarked as viewed as 
+                // if EPP (homework), then emarked as viewed as
                 // soon as input widget is attempted.
                 if(item.getType().equals("cmextra")) {
                     if(item.isViewed() == false) {
                         item.setViewed(true);
                         SetInmhItemAsViewedAction eppViewedAction = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(),item.getType(), item.getFile(), UserInfo.getInstance().getSessionNumber());
                         mAction.getActions().add(eppViewedAction);
-                        
+
                         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_EPP_COMPLETE,item));
                     }
                 }
-                
-                
+
+
                 CmShared.getCmService().execute(mAction,this);
             }
-            
+
             @Override
             public void oncapture(CmList<Response> results) {
                 CmBusyManager.setBusy(false);
             }
         }.register();
     }
-    
+
     private void gwt_solutionHasBeenInitialized(final String variablesJson) {
-        
+
         /** if this is already stored in variables, then no need to save on server
-         * 
+         *
          */
         if(variablesJson == null || variablesJson.length() == 0) {
             return;
         }
 
         if(_solutionInfo.getContextVariablesJson().size() > 0) {
-            // only store first one 
+            // only store first one
         }
         else {
             final String pid=getResourceItem().getFile();
@@ -144,7 +144,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
-                    
+
                     _solutionInfo.getContextVariablesJson().add(new SolutionContext(pid,__problemNumber,variablesJson));
                     CmLogger.info("Context saved");
                 }
@@ -155,19 +155,19 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             });
         }
     }
-    
-    
+
+
     Map<Integer,String> _variableContexts = new HashMap<Integer, String>();
     private String gwt_getSolutionProblemContext(int probNum) {
        return SolutionContext.getSolutionContext(_solutionInfo.getContextVariablesJson(), probNum);
     }
-    
+
     private native void  addExternTutorHooks(ResourceViewerImplTutor x) /*-{
-    
+
         // called from CatchupMath.js event.tutorHasBeenInitialized
         // used to store current tutor context on server providing
         // a way to restore the tutor to its current var defs.
-        //  
+        //
         $wnd.gwt_solutionHasBeenInitialized = function() {
         try {
             var vars = $wnd._tutorData._variables;
@@ -176,7 +176,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         }
         catch(e) {
             alert('error saving solution context: ' + e);}
-        }        
+        }
          // override global functions defined in tutor_dynamic
          //
          $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::setSolutionSetComplete(II);
@@ -193,11 +193,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 alert(e)
             };
         }
-         
+
     }-*/;
-    
-    
-    
+
+
+
     static int __problemNumber;
     static private void setSolutionTitle(int probNum, int limit) {
         __problemNumber = probNum;
@@ -207,32 +207,32 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             CmMainPanel.__lastInstance._mainContent.currentContainer.setHeading(title);
         }
     }
-    
+
     static private void setSolutionSetComplete(int numCorrect, int limit) {
         String title = "Correct " + numCorrect + " out of " + limit;
         InfoPopupBox.display(new CmInfoConfig("Problem Set Complete",title));
-        
+
         CmMainPanel.__lastInstance.removeResource();
-        
+
         new SolutionSetCompleteDialog(numCorrect, limit);
     }
-    
+
     private native void showSolutionEditorForPid(String pid) /*-{
         var se = window.open('/solution_editor/SolutionEditor.html?pid=' + pid);
         se.focus();
     }-*/;
-    
+
     @Override
     public Widget getTutorDisplay() {
-    	return tutorPanel;
+        return tutorPanel;
     }
 
     @Override
     public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-    	whiteboardPanel.setupForPid(getPid());
+        whiteboardPanel.setupForPid(getPid());
     }
-    
-    
+
+
     @Override
     public Integer getOptimalWidth() {
         return 500;
@@ -242,20 +242,20 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     public Boolean allowMaximize() {
         return true;
     }
-   
-    
+
+
     @Override
     public String getContainerStyleName() {
         return STYLE_NAME;
     }
-    
-    
+
+
     String pid;
     boolean hasShowWork;
 
     @Override
     public Widget getResourcePanel() {
-        
+
         this.pid = getResourceItem().getFile();
         showSolution();
 
@@ -271,12 +271,12 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     public String getPid() {
         return this.pid;
     }
-    
+
     public void setPid(String pid){
         this.pid = pid;
     }
 
-    
+
     public List<Component> getContainerTools() {
         List<Component> tools = new ArrayList<Component>();
         tools.add(new Button("How to Use This", new SelectionListener<ButtonEvent>() {
@@ -288,25 +288,25 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         tools.addAll(super.getContainerTools());
         return tools;
     }
-    
+
     /**
      * Load the tutor
-     * 
+     *
      */
-    
+
     TutorWrapperPanel tutorPanel;
     public void showSolution() {
 
-        
-    	CmLogger.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
-        
-        /** If panel has already been initialized, then 
+
+        CmLogger.debug("ResourceViewerImplTutor: loading solution '" + pid + "'");
+
+        /** If panel has already been initialized, then
          *  use existing panel.
          */
         if(tutorPanel != null)
-            return;  
+            return;
 
-        
+
         new RetryAction<SolutionInfo>() {
             @Override
             public void attempt() {
@@ -315,25 +315,25 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
-            
+
             @Override
             public void oncapture(SolutionInfo result) {
-            	_solutionInfo = result;
+                _solutionInfo = result;
 
-            	CmLogger.info("SolutionInfo: " + result);
-            	
-            	/** We want to NOT show the Show Work
+                CmLogger.info("SolutionInfo: " + result);
+
+                /** We want to NOT show the Show Work
                  *  buttons over the tutor, so force
                  *  it off.
-                 *  
+                 *
                  *  result.isHasShowWork();
                  */
-                boolean hasShowWork = true; 
-                
+                boolean hasShowWork = true;
+
                 tutorPanel = new TutorWrapperPanel();
                 tutorPanel.addStyleName("tutor_solution_wrapper");
                 addResource(tutorPanel, getResourceItem().getTitle());
-                
+
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 if (CmMainPanel.__lastInstance != null)
                     CmMainPanel.__lastInstance._mainContent.layout();
@@ -342,7 +342,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     /**
                      * Show Work is not required, then do not show the
                      * ShowWorkRequired
-                     * 
+                     *
                      */
                     if (!UserInfo.getInstance().isShowWorkRequired())
                         hasShowWork = true;
@@ -351,8 +351,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         shouldExpandSolution = true;
                         // showWorkDialog();
                     }
-                    
-                    
+
+
                     /** if is EPP, then turn off steps/hints and hide button bar */
                     boolean isEpp=false;
                     if(getResourceItem().getType().equals("cmextra")) {
@@ -360,13 +360,13 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         tutorPanel.addStyleName("is_epp");
                     }
 
-                    
+
                     String variableContext = SolutionContext.getSolutionContext(result.getContextVariablesJson(), 1);
-   
-                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(), 
+
+                    ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(),
                              getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),
                              hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,variableContext);
-                    
+
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -379,17 +379,17 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             }
         }.register();
     }
-    
-    
-    
+
+
+
     /**
      * Mark the pid as being viewed called from external JS
-     * 
+     *
      * called from CatchupMath.js
-     * 
-     * 
+     *
+     *
      * @TODO: remove access to globals
-     * 
+     *
      * @param pid
      */
     static public void solutionHasBeenViewed_Gwt(String eventName) {
@@ -398,27 +398,27 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             item.setViewed(true);
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, item));
         }
-    }    
+    }
 
     /**
      * Notified whenever a showwork entry is made
-     * 
+     *
      *  If EPP and first whiteboard entry, then mark this
      *  EPP resource as  'attempted'.
-     *  
-     * 
+     *
+     *
      * @param pid
      */
     protected void whiteBoardHasBeenUpdated(String pid) {
         if(getResourceItem().getType().equals("cmextra")) {
             if(!getResourceItem().isViewed()) {
                 getResourceItem().setViewed(true);
-                
+
                 solutionHasBeenViewed_Gwt(null);
             }
         }
     }
-    
+
 
     static private native void createWhiteboardSnapshot_Jsni() /*-{
         parent.createWhiteboardSnapshot_Jsni();
@@ -427,19 +427,19 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     /**
      * publish native method to allow for opening of Show Window from external
      * JS using current instance
-     * 
-     * 
+     *
+     *
      */
     static private native void publishNative() /*-{
-	   $wnd.showWorkDialog_Gwt     
-	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
-	   $wnd.showTutoringDialog_Gwt 
-	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
-	   $wnd.flashInputField_Gwt   
-	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
-	   $wnd.saveWhiteboardSnapshot_Gwt
-	     = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
-	     
+           $wnd.showWorkDialog_Gwt
+             = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showWorkDialog();
+           $wnd.showTutoringDialog_Gwt
+             = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::showTutoringDialog();
+           $wnd.flashInputField_Gwt
+             = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::flashInputField_Gwt(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;);
+           $wnd.saveWhiteboardSnapshot_Gwt
+             = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::saveWhiteboardSnapshot_Gwt(Ljava/lang/String;);
+
        $wnd.solutionHasBeenViewed_Gwt = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor::solutionHasBeenViewed_Gwt(Ljava/lang/String;);
 
      }-*/;
@@ -447,7 +447,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     /**
      * Called from the show-work-button display on the tutor and default in
      * tutor_wrapper.vm
-     * 
+     *
      * @TODO: Make this an instance var. JSNI does not seem to be working when
      *        specified as instance (using this). Does not work in hosted mode
      *        (does in web mode)
@@ -459,7 +459,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static public void showTutoringDialog() {
         _instance.showTutoring(_instance.getPid());
     }
-    
+
     static public void saveWhiteboardSnapshot_Gwt(String o) {
         CatchupMathTools.showAlert("Whiteboard snapshot: " + o);
     }
@@ -473,14 +473,14 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             // do nothing if incorrect
         }
     }
-    
-    
+
+
     /**
      * Display LWL tutoring in separate browser window.
-     * 
+     *
      * It does not play well in a DHTML controlled window
-     * 
-     * 
+     *
+     *
      * @param pid
      */
     public void showTutoring(String pid) {
@@ -504,7 +504,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     /**
      * Call specialized JavaScript defined in main js
-     * 
+     *
      * @param pid
      */
     static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,String solutionHtml,String solutionData,boolean isEpp, String contextVarsJson) /*-{
@@ -514,11 +514,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     static private native void expandAllSteps() /*-{
                                           $wnd.expandAllSteps();
                                           }-*/;
-    
+
     static private native void setTutorState(Boolean yesNo) /*-{
         $wnd.setState('step',yesNo);
     }-*/;
-    
+
 
     static ResourceViewerImplTutor _instance;
     static {
@@ -541,9 +541,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
 /**
  * Display a few examples of using the Show Work as a DHTML window.
- * 
+ *
  * @author casey
- * 
+ *
  */
 class ShowWorkExampleWindow extends Window {
 
@@ -567,17 +567,17 @@ class ShowWorkExampleWindow extends Window {
 
 class ShowHowToUseDialog extends CmWindow {
     public ShowHowToUseDialog() {
-    	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         setModal(true);
         setSize(350,200);
         setHeading("How To Use This");
         add(new Html(html));
         addCloseButton();
         addWindowListener(new WindowListener() {
-        	@Override
-        	public void windowHide(WindowEvent we) {
-        		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-        	}
+                @Override
+                public void windowHide(WindowEvent we) {
+                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+                }
         });
     }
     String html =

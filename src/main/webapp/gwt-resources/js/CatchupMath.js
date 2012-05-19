@@ -19,7 +19,7 @@ function showAskATutorTooltip_Cm() {
 // called by GWT to allow proper external setup of tutor
 var _shouldExpandSteps;
 function doLoad_Gwt(pid, title, jsonConfig, hasShowWork, shouldExpandSteps,solutionHtml, solutionJs, isEpp, contextVarJson) {
-        
+
     // store in var, registered listener will be notified
     // after solution has been fully initialized
     _shouldExpandSteps = shouldExpandSteps;
@@ -103,7 +103,7 @@ HmEvents.eventTutorLastStep.subscribe(function (x) {
  *
  */
 HmEvents.eventTutorInitialized.subscribe(function (x) {
-	gwt_solutionHasBeenInitialized();
+    gwt_solutionHasBeenInitialized();
     if (_shouldExpandSteps) {
         expandAllSteps();
     }
