@@ -40,6 +40,7 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -867,8 +868,19 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
                         @Override
                         public void onSuccess() {
+                            DateRangePanel dateRange = DateRangePanel.getInstance();
+                            Date fromDate, toDate;
+                            if (dateRange.isDefault()) {
+                            	fromDate = null;
+                            	toDate = null;
+                            }
+                            else {
+                            	fromDate = dateRange.getFromDate();
+                            	toDate = dateRange.getToDate();
+                            }
+
                             GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.REPORT_CARD, _cmAdminMdl
-                                    .getId(), studentUids);
+                                    .getId(), studentUids, fromDate, toDate);
                             new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Report Card", pdfAction);
                         }
                     });
