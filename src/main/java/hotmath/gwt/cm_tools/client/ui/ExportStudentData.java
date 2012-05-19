@@ -156,10 +156,22 @@ public class ExportStudentData extends LayoutContainer {
 		    @Override
 		    public void attempt() {
 		        CmBusyManager.setBusy(true);
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate, toDate;
+                if (dateRange.isDefault()) {
+                	fromDate = null;
+                	toDate = null;
+                }
+                else {
+                	fromDate = dateRange.getFromDate();
+                	toDate = dateRange.getToDate();
+                }
 		        ExportStudentsAction action =
 		        	new ExportStudentsAction(adminUid, StudentGridPanel.instance.getPageAction());
 		        action.setEmailAddress(emailAddr);
             	action.setFilterMap(StudentGridPanel.instance.getPageAction().getFilterMap());
+            	action.setFromDate(fromDate);
+            	action.setToDate(toDate);
 		        setAction(action);
 		        CmShared.getCmService().execute(action,this);
 		    }

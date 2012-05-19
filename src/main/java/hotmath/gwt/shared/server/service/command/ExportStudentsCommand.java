@@ -82,7 +82,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	    }
 
 	    ExportStudentDataRunnable exportRunnable =
-	    	new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress(), filterDescr);
+	    	new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress(), filterDescr,
+	    			action.getFromDate(), action.getToDate());
 
 	    if (runInSeparateThread) {
             Thread t = new Thread(exportRunnable);
@@ -114,13 +115,17 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	private List<StudentModelExt> studentList;
     	private String emailAddr;
     	private String filterDescr;
+    	private Date fromDate;
+    	private Date toDate;
 
     	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelExt> studentList,
-    			final String emailAddr, final String filterDescr) {
+    			final String emailAddr, final String filterDescr, Date fromDate, Date toDate) {
     		this.adminUid = adminUid;
     		this.studentList = studentList;
     		this.emailAddr = emailAddr;
     		this.filterDescr = filterDescr;
+    		this.fromDate = fromDate;
+    	    this.toDate = toDate;
     	}
 
     	public void run() {
@@ -134,7 +139,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			List<String> uidList = new ArrayList<String> ();
 
     			for (StudentModelExt sm : studentList) {
-    				StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), null, null);
+    				StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), fromDate, toDate);
     				rc.setStudentUid(sm.getUid());
     				rcList.add(rc);
     				uidList.add(String.valueOf(sm.getUid()));
@@ -142,7 +147,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
     			StudentActivityDao saDao = StudentActivityDao.getInstance();
     			for (StudentModelExt sm : studentList) {
-    				List<StudentActivitySummaryModel> list = saDao.getStudentActivitySummary(sm.getUid());
+    				List<StudentActivitySummaryModel> list = saDao.getStudentActivitySummary(sm.getUid(), fromDate, toDate);
     				if (list != null && list.size() > 0) sasMap.put(sm.getUid(), list);
     			}
 
@@ -157,14 +162,14 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			titleBuff.append(acctInfo.getAdminUserName()).append(") ");
     			titleBuff.append("Student Data Export on ").append(todaysDate);
 
-    			String endDate = todaysDate;
-    	        String beginDate = acctCreateDate;
+    			String endDate = (toDate == null) ? todaysDate : sdf.format(toDate);
+    	        String beginDate = (fromDate == null) ? acctCreateDate : sdf.format(fromDate);
     			titleBuff.append(" - Period covered is ").append(beginDate).append(" to ").append(endDate);
 
     	        Calendar now = Calendar.getInstance();
     	        now.add(Calendar.DATE, 1);
 
-    	    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMapForUids(conn, uidList, acctInfo.getAccountCreateDate(), now.getTime());
+    	    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMapForUids(conn, uidList, fromDate, toDate);
 
     			ByteArrayOutputStream baos = null;
 
