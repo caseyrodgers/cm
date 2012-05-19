@@ -80,6 +80,12 @@ public class StudyProgramExt extends BaseModelData {
     	return (CmProgramType.PROF == (CmProgramType) get("programType"));
     }
     
+    public boolean isCustom() {
+    	int customProgId = ((Integer)get("cutomProgramId")!=null)?(Integer)get("customProgramId"):0;
+    	int customQuizId = ((Integer)get("cutomQuizId")!=null)?(Integer)get("customQuizId"):0;
+    	return (customProgId != 0 || customQuizId != 0);
+    }
+
     public boolean isGradPrep() {
     	CmProgramType progType = (CmProgramType) get("programType");
 
