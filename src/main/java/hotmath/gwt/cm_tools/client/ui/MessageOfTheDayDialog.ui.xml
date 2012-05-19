@@ -25,18 +25,21 @@
 
     <g:HTMLPanel styleName='{style.main}'>
     
-    <h1>Big Favor</h1>
+    <h1>Two New Videos Added</h1>
     <p>
-      May we ask a big favor?
-    </p>
-    <p>
-      Please tell your friends and colleagues at other schools to check us out at Catchupmath.com 
-      or on the iPad at m.catchupmath.com.  <a href='http://catchupmath.com/how-it-works/'>The two-minute video</a> is a great introduction.
-      You might even like us on <a href='http://www.facebook.com/catchupmath'>Facebook</a>!
-    </p>      
-    <p>
-      Thank you!       
-    </p>
+       Two new <a href='/training-videos/' target='_new'>Teacher Videos</a> have been added to our training library:
+       <ul>
+           <li>
+              Parallel Programs (11 minutes)
+           </li>
+           <li>
+              Custom Programs and Quizzes (25 minutes).
+           </li>
+        </ul>
+     </p>
+     <p>        
+     Please tell colleagues about this great way to get the most from Catchup Math.
+     </p>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
