@@ -146,11 +146,11 @@ public class StudentReportCard {
 
         	addQuizInfo(rc, document);
 
-        	if (rc.getResourceUsage().size() > 0) {
+        	if (rc.getResourceUsage() != null && rc.getResourceUsage().size() > 0) {
         		addResourceUsage(rc, document);
         	}
 
-        	if (rc.getPrescribedLessonList().size() > 0) {
+        	if (rc.getPrescribedLessonList() != null && rc.getPrescribedLessonList().size() > 0) {
         		addPrescribedLessons(rc, sm.getProgram().getCustom().isCustom(), document);
         	}
 
@@ -262,8 +262,8 @@ public class StudentReportCard {
         PdfPTable quizTbl = new PdfPTable(1);
         quizTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
         Phrase quizLabel = buildSectionLabel("Quizzes");
-        Paragraph totalQuizzes = buildSectionContent("Attempted: ", rc.getQuizCount().toString(), true);
-        Paragraph passedQuizzes = buildSectionContent("Passed: ", rc.getQuizPassCount().toString(), true);
+        Paragraph totalQuizzes = buildSectionContent("Attempted: ", (rc.getQuizCount() != null) ? rc.getQuizCount().toString() : "0", true);
+        Paragraph passedQuizzes = buildSectionContent("Passed: ", (rc.getQuizPassCount() != null) ? rc.getQuizPassCount().toString() : "0", true);
         String average = (rc.getQuizAvgPassPercent() != null) ? rc.getQuizAvgPassPercent() + "%" : "n/a";
         Paragraph avgScore = buildSectionContent("Avg score of passed quizzes: ", average, true);
 
