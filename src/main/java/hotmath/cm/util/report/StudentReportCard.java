@@ -135,7 +135,10 @@ public class StudentReportCard {
         for (StudentModelI sm : smList) {
         	
             StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), fromDate, toDate);
-            rc.getResourceUsage().put("timeontask", totMap.get(sm.getUid()));
+
+            if (rc.getResourceUsage() != null) {
+                rc.getResourceUsage().put("timeontask", totMap.get(sm.getUid()));
+            }
 
         	addStudentInfo(school, sm, rc, document);
         	
