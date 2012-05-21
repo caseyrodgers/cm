@@ -4,7 +4,7 @@
 	<ui:style>
 	    .main {
 	        padding:10px 15px;
-	        font-size: 1.3em;
+	        font-size: 1.1em;
 	    }
 	    
 	    .main p {
@@ -40,6 +40,9 @@
      </p>
      <p>        
      Please tell colleagues about this great way to get the most from Catchup Math.
+     </p>
+     <p>
+         <a href='/support.html'>Having problems</a>?
      </p>
 	</g:HTMLPanel>
 

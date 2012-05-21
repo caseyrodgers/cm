@@ -9,6 +9,8 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MessageOfTheDayDialog extends Window {
+
+
     
     interface MyUiBinder extends UiBinder<Widget, MessageOfTheDayDialog> { }
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
