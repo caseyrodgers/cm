@@ -111,7 +111,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	static final int LAYOUT_WIDTH = 295;
 	static final int CUSTOM_ID = 9999;
 
-	private int formHeight = 385;
+	private int formHeight = 485;
 	protected int formWidth  = 475;
 
     protected FormPanel _formPanel;
@@ -405,7 +405,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		btn.setToolTip("Disallow games, Change pass percentage, etc.");
 		btn.setWidth("110px");
         btn.addSelectionListener(selectionListener);
-        btn.addStyleName("register-student-advanced-options-btn");
+        //btn.addStyleName("register-student-advanced-options-btn");
         btn.setId("std-adv-opt-btn");
 		return btn;
 	}
