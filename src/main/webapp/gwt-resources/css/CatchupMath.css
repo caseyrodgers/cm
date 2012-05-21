@@ -1346,7 +1346,7 @@ SolutionSetCompleteDialog .results{
 }
 
 .register-student-outer-fieldset {
-	height: 155px !important;
+	/*height: 155px !important;*/
 }
 
 .register-student-inner-fieldset {
