@@ -1906,6 +1906,13 @@ from (
     and p.custom_program_id is null
 ) c
 
+####
+.key=GET_PROG_IDS_FOR_RUN_IDS
+
+SELECT  DISTINCT t.user_prog_id
+FROM    HA_TEST_RUN tr, HA_TEST t
+WHERE   tr.run_id IN (XXX)
+  AND   t.test_id = tr.test_id
 
 ####
 .key=UPDATE_PASS_PERCENT_SQL

@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
@@ -70,7 +71,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 List<StudentActivityModel> samList = saDao.getStudentActivity(conn, studentUid, beginDate, endDate);
 			 setFirstLastActivityDate(rval, samList);
 
-			 List<StudentUserProgramModel> filteredList = findUserProgramsInDateRange(list, samList);
+			 List<StudentUserProgramModel> filteredList = findMatchingUserPrograms(list, samList);
 
 			 if (filteredList.size() < 1) return rval;
 
@@ -243,42 +244,31 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 }
 	}
 
-	 private List<StudentUserProgramModel> findUserProgramsInDateRange(List<StudentUserProgramModel> list,
-			 List<StudentActivityModel> samList) {
+	 private List<StudentUserProgramModel> findMatchingUserPrograms(List<StudentUserProgramModel> list,
+			 List<StudentActivityModel> samList) throws Exception {
 
 		 List<StudentUserProgramModel> l = new ArrayList<StudentUserProgramModel>();
+		 
+	     List<Integer> progList = getJdbcTemplate().query(
+	             CmMultiLinePropertyReader.getInstance().getProperty("GET_PROG_IDS_FOR_RUN_IDS").replaceAll("XXX", getRunIdList(samList)),
+	             new RowMapper<Integer>() {
+	                 @Override
+	                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+	                    return rs.getInt(1);
+	                }
+                });
 
-		 int index = samList.size() - 1;
-		 for (; index >= 0; index--) {
-			 StudentActivityModel sam = samList.get(index);
-			 String progDescr = sam.getProgramDescr();
+	     for (StudentUserProgramModel mdl : list) {
+	    	 int progId = mdl.getId();
+		     for (Integer prog : progList) {
+		    	 if (prog == progId) {
+		    		 l.add(mdl);
+		    		 break;
+		    	 }
+		     }
+	     }
 
-			 for (StudentUserProgramModel model : list) {
-				 String testName, progId;
-				 if (model.isCustom() == false) {
-					 testName = model.getTestDef().getSubjectId();
-					 progId = model.getTestDef().getProgId();
-					 if (testName.trim().length() == 0) {
-						 testName = model.getTestDef().getProgId();
-						 progId = null;
-					 }
-				 }
-				 else {
-					 testName = (model.getCustomProgramId() == 0)?
-							 "CQ: " + model.getCustomQuizName() :
-								 "CP: " + model.getCustomProgramName();
-							 progId = null;
-				 }
-
-				 if (progDescr.indexOf(testName) >= 0 && (progId == null || progDescr.indexOf(progId) > 0)) {
-					 if (model.isCustom()) model.setTestName(progDescr);
-					 l.add(model);
-					 break;
-				 }
-			 }
-		 }
-
-		 return l;
+	     return l;
 	 }
 	 
 	 private boolean lessonsCompleted(final Connection conn, int runId) throws Exception {
@@ -525,7 +515,21 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 				 sb.append(",");
 			 sb.append(m.getId());
 		 }
-		 logger.debug("progIdList: " + sb.toString());
+		 if (logger.isDebugEnabled()) logger.debug("progIdList: " + sb.toString());
+		 return sb.toString();
+	 }
+
+	 private String getRunIdList(List<StudentActivityModel> list) {
+		 StringBuilder sb = new StringBuilder();
+		 boolean first = true;
+		 for (StudentActivityModel m : list) {
+			 if (first)
+				 first = false;
+			 else
+				 sb.append(",");
+			 sb.append(m.getRunId());
+		 }
+		 if (logger.isDebugEnabled()) logger.debug("runIdList: " + sb.toString());
 		 return sb.toString();
 	 }
 
