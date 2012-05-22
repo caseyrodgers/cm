@@ -248,7 +248,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 List<StudentActivityModel> samList) throws Exception {
 
 		 List<StudentUserProgramModel> l = new ArrayList<StudentUserProgramModel>();
-		 
+
+		 if (samList.size() < 1) return l;
+
 	     List<Integer> progList = getJdbcTemplate().query(
 	             CmMultiLinePropertyReader.getInstance().getProperty("GET_PROG_IDS_FOR_RUN_IDS").replaceAll("XXX", getRunIdList(samList)),
 	             new RowMapper<Integer>() {
