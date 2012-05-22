@@ -359,8 +359,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 Long start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
 
-			 if (logger.isDebugEnabled())
-				 logger.debug(String.format("+++ PROGRAM_QUIZ_COUNT: exec time: %d msec", (System.currentTimeMillis()-start)));
+			 if (logger.isDebugEnabled()) {
+				 logger.debug(String.format("+++ PROGRAM_QUIZ_COUNT: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
+			 }
 
 			 if (rs.next()) {
 				 Integer quizCount = rs.getInt(1);
@@ -382,8 +383,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
 
-			 if (logger.isDebugEnabled())
-				 logger.debug(String.format("+++ PROGRAM_PASSED_QUIZ_COUNT: exec time: %d msec", (System.currentTimeMillis()-start)));
+			 if (logger.isDebugEnabled()) {
+				 logger.debug(String.format("+++ PROGRAM_PASSED_QUIZ_COUNT: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
+			 }
 
 			 if (rs.next()) {
 				 Integer quizCount = rs.getInt(1);
@@ -405,8 +407,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 start = System.currentTimeMillis();
 			 rs = ps.executeQuery();
 
-			 if (logger.isDebugEnabled())
-				 logger.debug(String.format("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: exec time: %d msec", (System.currentTimeMillis()-start)));
+			 if (logger.isDebugEnabled()) {
+				 logger.debug(String.format("+++ PROGRAM_AGGREGATE_QUIZ_RESULTS: SQL: %s, exec time: %d msec", ps.toString(), (System.currentTimeMillis()-start)));
+			 }
 
 			 if (rs.next()) {
 				 Integer answeredCorrect = rs.getInt("answered_correct");
