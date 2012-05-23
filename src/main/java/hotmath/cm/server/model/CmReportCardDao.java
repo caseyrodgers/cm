@@ -78,6 +78,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		         rval.setResourceUsage(usageMap);
 		         rval.setQuizCount(0);
 		         rval.setQuizPassCount(0);
+		         rval.setInitialProgramShortName(" ");
+		         rval.setInitialProgramName(" ");
 				 return rval;
 			 }
 
