@@ -243,7 +243,7 @@ public class ExportStudentsInExcelFormat {
 
 		    Map<String, Integer> usageMap = rc.getResourceUsage();
 		    cell = row.createCell(++col);
-		    String lessonCount = String.valueOf((usageMap.get("review") != null)?usageMap.get("review"):0);
+		    String lessonCount = String.valueOf((usageMap != null && usageMap.get("review") != null)?usageMap.get("review"):0);
 	        cell.setCellValue(Integer.parseInt(lessonCount));
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < lessonCount.length()) charCount[col] = lessonCount.length();
@@ -274,7 +274,7 @@ public class ExportStudentsInExcelFormat {
 	        if (charCount[col] < timeOnTask.length()) charCount[col] = timeOnTask.length();
 
 		    cell = row.createCell(++col);
-		    String totalLogins = String.valueOf((usageMap.get("login") != null) ? usageMap.get("login") : 0);
+		    String totalLogins = String.valueOf((usageMap != null && usageMap.get("login") != null) ? usageMap.get("login") : 0);
 	        cell.setCellValue(Integer.parseInt(totalLogins));
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < totalLogins.length()) charCount[col] = totalLogins.length();
