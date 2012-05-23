@@ -73,7 +73,11 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 			 List<StudentUserProgramModel> filteredList = findMatchingUserPrograms(list, samList);
 
-			 if (filteredList.size() < 1) return rval;
+			 if (filteredList.size() < 1) {
+		         final Map<String, Integer> usageMap = new HashMap<String, Integer>();
+		         rval.setResourceUsage(usageMap);
+				 return rval;
+			 }
 
 			 StudentUserProgramModel pm = filteredList.get(0);
 			
