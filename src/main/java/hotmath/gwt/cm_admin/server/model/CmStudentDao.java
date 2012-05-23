@@ -1781,7 +1781,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             setupProgramStatus(sm, rs.getString("program"),
                                     rs.getInt("current_lesson"), rs.getInt("lesson_count"),
                                     rs.getInt("cnt_lessons_completed"),
-                                    rs.getInt("lessons_completed")!=0, activeTestId, isComplete);
+                                    activeTestId, isComplete);
 
                             return sm;
                         } catch (Exception e) {
@@ -2024,7 +2024,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             setupSectionCount(sm, rs.getString("test_config_json"));
 
-            setupProgramStatus(sm, rs.getString("program"), rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("cnt_lessons_completed"), rs.getInt("lessons_completed")!=0,activeTestId, isComplete);
+            setupProgramStatus(sm, rs.getString("program"), rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("cnt_lessons_completed"), activeTestId, isComplete);
 
             l.add(sm);
         }
@@ -2037,7 +2037,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      *  For custom programs, add the CP:PROG_NAME and looks up the status info
      *
      */
-    private void setupProgramStatus(StudentModelI student, String programName, int currentLesson,int lessonCount, int countLessonsCompleted,  boolean isLessonsCompleted, int activeTestId, boolean isCompleted) {
+    private void setupProgramStatus(StudentModelI student, String programName, int currentLesson,int lessonCount, int countLessonsCompleted, int activeTestId, boolean isCompleted) {
 
         StudentProgramModel program = student.getProgram();
         if (program.isCustom() == false) {
@@ -2046,7 +2046,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         }
         else if(program.getCustom().getType() == Type.LESSONS) {
             program.setProgramDescription("CP: " + program.getCustom().getCustomProgramName());
-            student.setStatus(getStatusCustomProgram(countLessonsCompleted, currentLesson, lessonCount, isLessonsCompleted));
+            student.setStatus(getStatusCustomProgram(countLessonsCompleted, currentLesson, lessonCount));
         }
         else if(program.getCustom().getType() == Type.QUIZ) {
             program.setProgramDescription("CQ: " + program.getCustom().getCustomQuizName());
@@ -2102,7 +2102,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             setupSectionCount(sm, rs.getString("test_config_json"));
 
             setupProgramStatus(sm, rs.getString("program"),
-                rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("cnt_lessons_completed"), rs.getInt("lessons_completed")!=0, activeTestId, isCompleted);
+                rs.getInt("current_lesson"), rs.getInt("lesson_count"), rs.getInt("cnt_lessons_completed"), activeTestId, isCompleted);
 
             l.add(sm);
         }
@@ -2136,9 +2136,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return "Not started";
     }
 
-    private String getStatusCustomProgram(int countLessonsCompleted, int currentLesson, int lessonCount, boolean isLessonsCompleted) {
+    private String getStatusCustomProgram(int countLessonsCompleted, int currentLesson, int lessonCount) {
         if (currentLesson > 0) {
-            if (!isLessonsCompleted) {
+            if (countLessonsCompleted < lessonCount) {
                 StringBuilder sb = new StringBuilder();
                 return sb.append(countLessonsCompleted).append(" of " ).append(lessonCount).append(" completed").toString();
             }
