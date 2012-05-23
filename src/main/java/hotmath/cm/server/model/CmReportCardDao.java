@@ -76,6 +76,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 if (filteredList.size() < 1) {
 		         final Map<String, Integer> usageMap = new HashMap<String, Integer>();
 		         rval.setResourceUsage(usageMap);
+		         rval.setQuizCount(0);
+		         rval.setQuizPassCount(0);
 				 return rval;
 			 }
 
