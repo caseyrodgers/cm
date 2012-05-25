@@ -102,7 +102,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         	String from = (fromDate != null) ? sdf.format(fromDate) : null;
         	String to = (toDate != null) ? sdf.format(toDate) : null;
 
-            // reverse order of list
+            // reverse order of list and apply date range if defined
             samList = new ArrayList<StudentActivityModel>(smList.size());
             for (int i = (smList.size() - 1); i >= 0; i--) {
             	if ( (from != null && from.compareTo(smList.get(i).getUseDate()) > 0) ||
@@ -287,19 +287,19 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 model.setUseDate(sam.getUseDate());
 
                 String status = " ";
-                if (logger.isDebugEnabled())
-                    logger.debug("+++ progName: " + progName);
+                if (LOGGER.isDebugEnabled())
+                    LOGGER.debug("+++ progName: " + progName);
 
                 if (progName.startsWith("CP")) {
-                    model.setSectionNum(sam.getLessonsViewed());
-                    if (logger.isDebugEnabled())
-                        logger.debug("+++ lessonCount: " + sam.getLessonCount());
-                    status = (sam.getLessonsViewed() != sam.getLessonCount()) ? String.format("%d of %d Lessons",
-                            sam.getLessonsViewed(), sam.getLessonCount()) : "Completed";
+                    model.setSectionNum(sam.getLessonsCompleted());
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug(String.format("+++ lessonsCompleted: %d, lessonCount: %d", sam.getLessonsCompleted(), sam.getLessonCount()));
+                    status = (sam.getLessonsCompleted() != sam.getLessonCount()) ? String.format("%d of %d Lessons",
+                            sam.getLessonsCompleted(), sam.getLessonCount()) : "Completed";
                 } else if (progName.startsWith("CQ")) {
                     model.setSectionNum(sam.getLessonCount());
-                    if (logger.isDebugEnabled())
-                        logger.debug("+++ questionCount: " + sam.getLessonCount());
+                    if (LOGGER.isDebugEnabled())
+                        LOGGER.debug("+++ questionCount: " + sam.getLessonCount());
                     status = (sam.getLessonCount() != sam.getSectionCount()) ? String.format("%d of %d Questions",
                             sam.getLessonCount(), sam.getSectionCount()) : "Completed";
                 } else {
@@ -326,7 +326,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             }
 
             if (sam.getIsQuiz() && !sam.getIsCustomQuiz() && sam.getRunId() > 0) {
-                logger.debug("runId: " + sam.getRunId());
+                if (LOGGER.isDebugEnabled())
+                	LOGGER.debug("runId: " + sam.getRunId());
                 quizCount++;
                 String result = sam.getResult();
                 int offset = result.indexOf("%");
@@ -537,6 +538,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             }
             m.setLessonsViewed(lessonsViewed);
             lessonsCompleted += lessonsViewed;
+            m.setLessonsCompleted(lessonsCompleted);
 
             m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
 
@@ -896,14 +898,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         /** match at beginning of day and end of day, inclusive */
         dates[0] = dates[0] + " 00:00";
         dates[1] = dates[1] + " 23:59";
-        if (logger.isDebugEnabled())
-            logger.debug("dates[]: " + dates[0] + ", " + dates[1]);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("dates[]: " + dates[0] + ", " + dates[1]);
 
         StringBuilder sb = buildSQL(options);
 
         final String sql = QueryHelper.createInListSQL(sb.toString(), userIds);
-        if (logger.isDebugEnabled())
-            logger.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
 
         Object[] dateArray = new Object[2 * dateRangeCount];
         int j = 0;
@@ -925,8 +927,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 return userId;
             }
         });
-        if (logger.isDebugEnabled())
-            logger.debug("+++ getStudentsWithActivityInDateRange(): list.size(): " + list.size());
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStudentsWithActivityInDateRange(): list.size(): " + list.size());
         return list;
     }
 
@@ -942,16 +944,16 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         dateRangeCount = 0;
 
         if (options != null && options.trim().length() > 0) {
-            if (logger.isDebugEnabled())
-                logger.debug("options: " + options);
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("options: " + options);
             String[] option = options.split(":");
-            if (logger.isDebugEnabled()) {
-                logger.debug("option[0]: " + option[0]);
-                logger.debug("option[1]: " + option[1]);
-                logger.debug("option[2]: " + option[2]);
-                logger.debug("option[3]: " + option[3]);
-                logger.debug("option[4]: " + option[4]);
-                logger.debug("option[5]: " + option[5]);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("option[0]: " + option[0]);
+                LOGGER.debug("option[1]: " + option[1]);
+                LOGGER.debug("option[2]: " + option[2]);
+                LOGGER.debug("option[3]: " + option[3]);
+                LOGGER.debug("option[4]: " + option[4]);
+                LOGGER.debug("option[5]: " + option[5]);
             }
             if (option != null) {
                 if (option.length > 0)
@@ -967,13 +969,13 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 if (option.length > 5)
                     includeRegister = new Boolean(option[5]);
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("includeLogin:    " + includeLogin);
-                logger.debug("includeQuizView: " + includeQuizView);
-                logger.debug("includeQuizTake: " + includeQuizTake);
-                logger.debug("includeLesson:   " + includeLesson);
-                logger.debug("includeResource: " + includeResource);
-                logger.debug("includeRegister: " + includeRegister);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("includeLogin:    " + includeLogin);
+                LOGGER.debug("includeQuizView: " + includeQuizView);
+                LOGGER.debug("includeQuizTake: " + includeQuizTake);
+                LOGGER.debug("includeLesson:   " + includeLesson);
+                LOGGER.debug("includeResource: " + includeResource);
+                LOGGER.debug("includeRegister: " + includeRegister);
             }
         }
 
@@ -1019,8 +1021,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         }
 
         if (sb.length() == 0) {
-            if (logger.isDebugEnabled())
-                logger.debug("defaulting to full query");
+            if (LOGGER.isDebugEnabled())
+                LOGGER.debug("defaulting to full query");
             dateRangeCount = 6;
             sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_WITH_ACTIVITY_IN_DATE_RANGE"));
         }
