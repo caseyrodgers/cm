@@ -42,7 +42,6 @@ public class StudentSummaryReport {
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
         List<StudentModelI> sList = null;
-        List<StudentModelI> extList = null;
         Connection conn=null;
         String filterDescription;
         AccountInfoModel info = null;
@@ -57,8 +56,7 @@ public class StudentSummaryReport {
 
             setReportName(info);
             
-            sList = studentDao.getBaseSummariesForActiveStudents(conn, adminId);
-            extList = studentDao.getStudentExtendedSummaries(conn, studentUids);
+            sList = studentDao.getSummariesForActiveStudents(conn, adminId);
             filterDescription = ReportUtils.getFilterDescription(conn, adminId, adminDao, filterMap);
         }
         finally {
@@ -70,15 +68,9 @@ public class StudentSummaryReport {
             map.put(sm.getUid(), sm);
         }
 
-        Map<Integer, StudentModelI> extMap = new HashMap<Integer, StudentModelI>(extList.size());
-        for (StudentModelI sm : extList) {
-            extMap.put(sm.getUid(), sm);
-        }
-        
         List<StudentModelI> list = new ArrayList<StudentModelI>(studentUids.size());
         for (Integer uid : studentUids) {
-            setBaseData(map.get(uid), extMap.get(uid));
-            list.add(extMap.get(uid));
+            list.add(map.get(uid));
         }
 
         Document document = new Document();
