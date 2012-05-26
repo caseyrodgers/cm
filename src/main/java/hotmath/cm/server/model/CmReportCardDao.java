@@ -437,16 +437,13 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 	 private void loadResourceUsage(List<StudentUserProgramModel> list, StudentReportCardModelI rc, Date beginDate, Date endDate) throws Exception {
 
-		 String bDate, eDate;
-		 if (beginDate == null) 
-	         bDate = String.format("%1$tY-%1$tm-%1$td", list.get(0).getCreateDate());
-		 else
-			 bDate = String.format("%1$tY-%1$tm-%1$td", beginDate);
-
-		 if (endDate == null) 
-	         eDate = String.format("%1$tY-%1$tm-%1$td", new Date());
-		 else
-			 eDate = String.format("%1$tY-%1$tm-%1$td", endDate);
+		 if (beginDate == null) {
+			 beginDate = list.get(0).getCreateDate();
+		 }
+		 if (endDate == null) {
+			 endDate = new Date();
+		 }
+		 String dates[] = QueryHelper.getDateTimeRange(beginDate, endDate);
 
 		 Integer uid = list.get(0).getUserId();
 	     
@@ -455,7 +452,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	     
          Integer loginCount = getJdbcTemplate().queryForObject(
 	             CmMultiLinePropertyReader.getInstance().getProperty("LOGIN_COUNT"),
-	             new Object[]{uid, bDate, eDate},
+	             new Object[]{uid, dates[0], dates[1]},
 	             new RowMapper<Integer>() {
 	                 @Override
 	                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -476,7 +473,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	     }
 	     List<UsageCount> ucl = getJdbcTemplate().query(
 	             CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT").replaceAll("XXX", getProgIdList(list)),
-	             new Object[]{bDate, eDate, bDate, eDate, bDate, eDate},
+	             new Object[]{dates[0], dates[1], dates[0], dates[1], dates[0], dates[1]},
 	             new RowMapper<UsageCount>() {
 	                 @Override
 	                public UsageCount mapRow(ResultSet rs, int rowNum) throws SQLException {
