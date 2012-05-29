@@ -89,7 +89,7 @@ public class SaveSolutionAsDialog extends CmWindow {
         String ps = probSet.getValue();
         String pn = probNum.getValue();
         String pg = pageNum.getValue();
-        return (b + "_" + c + "_" + s + "_" + ps + "_" + pn + "_" + pg).toLowerCase();
+        return (b + "_" + c + "_" + s + "_" + ps + "_" + pn + "_" + pg);
     }
 
     public void setCallback(Callback callback, String pidToSaveAs) {

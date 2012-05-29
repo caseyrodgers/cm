@@ -80,24 +80,20 @@ public class SaveSolutionStepsAdminCommand implements ActionHandler<SaveSolution
                 }
                 else {
                     String sSource = fileKid.getCanonicalPath();
-                    String sSourceLowerCase = sSource.toLowerCase();
         
                     // Add PNG..
-                    if ( sSourceLowerCase.endsWith(".html") || 
-                         sSourceLowerCase.endsWith(".js") ||
-                         sSourceLowerCase.endsWith(".json"))  {
+                    if ( sSource.endsWith(".html") || 
+                            sSource.endsWith(".js") ||
+                            sSource.endsWith(".json"))  {
                         continue;
                     }
                     
                     String out=destination;
-                    String s = fileKid.getAbsolutePath();
-                    String t = fileKid.getParent();
-                    
                     if(fileKid.getParent().endsWith("resources")) {
                         out += "/resources";
                     }
                         
-                    SbFile.copyFile(sSource, out + "/" + fileKid.getName().toLowerCase());
+                    SbFile.copyFile(sSource, out + "/" + fileKid.getName());
                 }
             }
         }

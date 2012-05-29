@@ -633,7 +633,7 @@ public class ParallelProgramDao extends SimpleJdbcDaoSupport {
     	}
     	catch(Exception e) {
     		LOGGER.error(String.format("Error getting CM Main Program, userId: %d", userId), e);
-    		throw new Exception(e.getMessage());
+    		throw new Exception(e.getMessage(),e);
     	}
 
     	return cmProg;
