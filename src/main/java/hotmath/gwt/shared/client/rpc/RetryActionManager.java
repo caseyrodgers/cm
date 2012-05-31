@@ -1,11 +1,17 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Manages a queue of action requests making
  *  sure only one request executes at a time.
@@ -49,19 +55,53 @@ public class RetryActionManager {
 
         CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
         
-        checkQueue();
-    }
-    
-    @SuppressWarnings("rawtypes")
-    public void requestComplete(RetryAction action) {
-        CmLogger.debug("RetryActionManager: requestComplete: " + action);
-        _busy = false;
+        
 
         /*
          * only retain QUEUE_SIZE most recently completed actions
          */
         _queue.add(action);
         if (_queue.size() > QUEUE_SIZE) _queue.remove();
+        
+        /** check for error error condition 
+         */
+        if(action.getAction() instanceof GetQuizResultsHtmlAction) {
+            GetQuizResultsHtmlAction a = (GetQuizResultsHtmlAction)action.getAction();
+            if(a.getRunId() == 0) {
+                sendStandardErrorFeedback();
+            }
+        }
+        
+        checkQueue();
+    }
+    
+    private String createActionQueueStack() {
+        String msg="";
+        for(RetryAction<?> ra: getCompletedActions()) {
+            msg += ra.getAction().toString();
+        }
+        return msg;
+    }
+    
+    private void sendStandardErrorFeedback() {
+        final String comments = createActionQueueStack();
+        SaveFeedbackAction action = new SaveFeedbackAction(comments, "QuizReesultAction Error Condition", "internal"); 
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData result) {
+                CmLogger.info("Feedback saved: " + comments);
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                CmLogger.error("Error saving feedback: " + caught);
+            }
+        });        
+    }
+    
+    @SuppressWarnings("rawtypes")
+    public void requestComplete(RetryAction action) {
+        CmLogger.debug("RetryActionManager: requestComplete: " + action);
+        _busy = false;
         
         checkQueue();
     }
