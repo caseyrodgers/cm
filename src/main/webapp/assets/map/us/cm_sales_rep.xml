@@ -198,9 +198,9 @@
 </state>
 <state id="MN">
     <name>Minnesota</name>
-    <hover>Tina Hamilton</hover>
-    <data>1</data>
-    <url>javascript:showSalesRep(1);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="MO">

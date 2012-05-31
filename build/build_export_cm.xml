@@ -7,10 +7,9 @@
 <project basedir="." default="" name="catchup">
 
     <property name="textcodes" value="cahseehm,nationalhm,nationalhm2,cahseehm2,genericprealg,genericalg1,genericgeo,genericalg2,mini6and7gt,minialg1gt,minigeogt,minialg2gt,cmextras,cmextrasgeo,cmextrasalg2,cmextrasgeo-2,alg1ptests,alg1ptests2,alg2ptests,prealgptests,geoptests,geoptests2,placement,placement2,miniprealggt,miniprecalcgt,taks11hm,alg2ptests2,alg2ptests3,prealgptests2,alg1ptests3,cmextrasalg1,essptests2,dummy4customprog-alg1,dummy4customprog-alg2,dummy4customprog-ess,dummy4customprog-geo,dummy4customprog-prealg,test,cmextrasprealg"/>
-
+    <!--<property name="textcodes" value="cmextras,cmextrasalg1,cmextrasalg2,cmextrasgeo"/> -->
     <target name='export' depends='export_cm_solutions_all'/>
     <target name='import_inmh' depends='import_cm_inmh_all,import_cm_inmh_link_all'/>
-
 
     <property name="build.classes" value="../../hotmath2/build/classes"/>
     <property name="lib" value="../../libs"/>
