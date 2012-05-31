@@ -3,7 +3,9 @@ package hotmath.gwt.shared.client.rpc;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /** Manages a queue of action requests making
  *  sure only one request executes at a time.
@@ -12,7 +14,9 @@ import java.util.List;
  *
  */
 public class RetryActionManager {
-    
+
+	static final int QUEUE_SIZE = 5;
+
     static private RetryActionManager __instance;
     static public RetryActionManager getInstance() {
         if(__instance == null) {
@@ -29,6 +33,10 @@ public class RetryActionManager {
     
     @SuppressWarnings("rawtypes")
     List<RetryAction> _actions = new ArrayList<RetryAction>();
+
+    @SuppressWarnings("rawtypes")
+    Queue<RetryAction> _queue = new LinkedList<RetryAction>();
+
     private RetryActionManager() {
         /** start up action queue watcher
         new RetryActionManagerQueueWatcher();
@@ -48,6 +56,13 @@ public class RetryActionManager {
     public void requestComplete(RetryAction action) {
         CmLogger.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
+
+        /*
+         * only retain QUEUE_SIZE most recently completed actions
+         */
+        _queue.add(action);
+        if (_queue.size() > QUEUE_SIZE) _queue.remove();
+        
         checkQueue();
     }
     
@@ -91,5 +106,10 @@ public class RetryActionManager {
     public String toString() {
         String msg = "Request Queue: " + _actions;
         return msg;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public Queue<RetryAction> getCompletedActions() {
+    	return _queue;
     }
 }
