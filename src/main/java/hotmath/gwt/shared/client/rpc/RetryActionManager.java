@@ -1,10 +1,13 @@
 package hotmath.gwt.shared.client.rpc;
 
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+
+import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -86,7 +89,7 @@ public class RetryActionManager {
     private void sendStandardErrorFeedback() {
         final String comments = createActionQueueStack();
         SaveFeedbackAction action = new SaveFeedbackAction(comments, "QuizReesultAction Error Condition", "internal"); 
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+        CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
                 CmLogger.info("Feedback saved: " + comments);
