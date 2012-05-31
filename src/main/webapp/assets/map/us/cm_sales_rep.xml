@@ -44,9 +44,9 @@
 </state>
 <state id="AL">
     <name>Alabama</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="AR">
@@ -79,37 +79,37 @@
 </state>
 <state id="CT">
     <name>Connecticut</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="DC">
     <name>Washington DC</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="DE">
     <name>Delaware</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="FL">
     <name>Florida</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="GA">
     <name>Georgia</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="HI">
@@ -121,9 +121,9 @@
 </state>
 <state id="IA">
     <name>Iowa</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="ID">
@@ -135,30 +135,30 @@
 </state>
 <state id="IL">
     <name>Illinois</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="IN">
     <name>Indiana</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="KS">
     <name>Kansas</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="KY">
     <name>Kentucky</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="LA">
@@ -170,44 +170,44 @@
 </state>
 <state id="MA">
     <name>Massachusetts</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="MD">
     <name>Maryland</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="ME">
     <name>Maine</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="MI">
     <name>Michigan</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="MN">
     <name>Minnesota</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="MO">
     <name>Missouri</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="MS">
@@ -226,37 +226,37 @@
 </state>
 <state id="NC">
     <name>North Carolina</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="ND">
     <name>North Dakota</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="NE">
     <name>Nebraska</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="NH">
     <name>New Hampshire</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="NJ">
     <name>New Jersey</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="NM">
@@ -275,23 +275,23 @@
 </state>
 <state id="NY">
     <name>New York</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="OH">
     <name>Ohio</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="OK">
     <name>Oklahoma</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="OR">
@@ -303,37 +303,37 @@
 </state>
 <state id="PA">
     <name>Pennsylvania</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="RI">
     <name>Rhode Island</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="SC">
     <name>South Carolina</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="SD">
     <name>South Dakota</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="TN">
     <name>Tennessee</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="TX">
@@ -359,9 +359,9 @@
 </state>
 <state id="VT">
     <name>Vermont</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="WA">
@@ -373,16 +373,16 @@
 </state>
 <state id="WI">
     <name>Wisconsin</name>
-    <hover>Elizabeth Hawk</hover>
-    <data>3</data>
-    <url>javascript:showSalesRep(3);
+    <hover>David Lincoln</hover>
+    <data>0</data>
+    <url>javascript:showSalesRep(0);
     </url>
 </state>
 <state id="WV">
     <name>West Virgina</name>
-    <hover>Raymond Ross</hover>
-    <data>2</data>
-    <url>javascript:showSalesRep(2);
+    <hover>Tina Hamilton</hover>
+    <data>1</data>
+    <url>javascript:showSalesRep(1);
     </url>
 </state>
 <state id="WY">
