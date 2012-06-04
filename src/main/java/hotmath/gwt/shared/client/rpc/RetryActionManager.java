@@ -1,7 +1,5 @@
 package hotmath.gwt.shared.client.rpc;
 
-
-import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -55,38 +53,41 @@ public class RetryActionManager {
         _actions.add(action);
 
         CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
-        
-        
 
-        /*
-         * only retain QUEUE_SIZE most recently completed actions
-         */
-        _queue.add(action);
-        if (_queue.size() > QUEUE_SIZE) _queue.remove();
+        addActionToReportQueue(action);
         
-        /** check for error error condition 
+        /** check for error condition 
          */
-        if(action.getAction() instanceof GetQuizResultsHtmlAction) {
-            GetQuizResultsHtmlAction a = (GetQuizResultsHtmlAction)action.getAction();
-            if(a.getRunId() == 0) {
-                sendStandardErrorFeedback();
-            }
+        if(action.inErrorCondition()) {
+            sendStandardErrorFeedback(action.getErrorDescription());
         }
         
         checkQueue();
     }
-    
+
+    @SuppressWarnings("rawtypes")
+    public void addActionToReportQueue(RetryAction retryAction) {
+        /*
+         * only retain QUEUE_SIZE most recent retryActions
+         */
+        _queue.add(retryAction);
+        if (_queue.size() > QUEUE_SIZE) _queue.remove();
+    }
+
     private String createActionQueueStack() {
-        String msg="";
-        for(RetryAction<?> ra: getCompletedActions()) {
+        String msg = "";
+        
+        for(RetryAction<?> ra: getRegisteredActions()) {
+        	if (ra == null || ra.getAction() == null) continue;
+        	if (msg.length() > 0) msg += "   ";
             msg += ra.getAction().toString();
         }
         return msg;
     }
     
-    private void sendStandardErrorFeedback() {
+    private void sendStandardErrorFeedback(String actionErrorCondition) {
         final String comments = createActionQueueStack();
-        SaveFeedbackAction action = new SaveFeedbackAction(comments, "QuizReesultAction Error Condition", "internal"); 
+        SaveFeedbackAction action = new SaveFeedbackAction(comments, actionErrorCondition, "internal"); 
         CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
@@ -150,7 +151,7 @@ public class RetryActionManager {
     }
 
     @SuppressWarnings("rawtypes")
-    public Queue<RetryAction> getCompletedActions() {
+    public Queue<RetryAction> getRegisteredActions() {
     	return _queue;
     }
 }
