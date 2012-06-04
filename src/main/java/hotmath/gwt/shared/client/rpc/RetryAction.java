@@ -26,14 +26,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.client.rpc.StatusCodeException;
 
 /** Provide retry operation for GWT RPC 
  * 
- *  implement RPC in attempt method, and callback in the oncapture method.
+ *  implement RPC in attempt() method, and callback in the oncapture() method.
  *  
  *  If an error occurred, the user is given the opportunity to
- *  retry the operation (resulting in another call to attempt).
+ *  retry the operation (resulting in another call to attempt() ).
  *  
  *   Example usage:
  *  <pre>
@@ -86,6 +85,14 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         CmLogger.info("RetryAction " + instanceCount + " created: " + getClass().getName());
     }
     
+    public boolean inErrorCondition() {
+    	return false;
+    }
+
+    public String getErrorDescription() {
+    	return "";
+    }
+
     public void setStartTime() {
         _timeStart = System.currentTimeMillis();
     }
@@ -262,6 +269,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      */
     public void setAction(Action<? extends Response> action) {
         this.activeAction = action;
+        //RetryActionManager.getInstance().addActionToReportQueue(this);
     }    
 
     private long getRequestTime() {
