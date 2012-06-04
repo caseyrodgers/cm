@@ -27,5 +27,10 @@ public class CheckUserAccountStatusAction implements Action<RpcData>{
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    @Override
+    public String toString() {
+    	return "CheckUserAccountStatusAction: [ password= " + password + " ]";
+    }
 
 }

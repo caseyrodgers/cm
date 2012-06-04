@@ -32,4 +32,9 @@ public class SaveAdminEmailAction implements Action<StringHolder>{
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	@Override
+	public String toString() {
+		return "SaveAdminEmailAction: [ admin_id: " + adminId + ", email: " + email + " ]";
+	}
 }
