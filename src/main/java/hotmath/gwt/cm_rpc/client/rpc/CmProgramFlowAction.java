@@ -85,7 +85,7 @@ public class CmProgramFlowAction implements Response {
 
     @Override
     public String toString() {
-        return "NextAction [quizResult=" + quizResult + ", prescriptionResponse=" + prescriptionResponse + ", place="
+        return "CmProgramFlowAction [quizResult=" + quizResult + ", prescriptionResponse=" + prescriptionResponse + ", place="
                 + place + ", assignedTest=" + assignedTest + ", assignedTestId=" + assignedTestId + "]";
     }
 }
