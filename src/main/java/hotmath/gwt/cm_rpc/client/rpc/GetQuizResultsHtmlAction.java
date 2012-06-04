@@ -20,7 +20,6 @@ public class GetQuizResultsHtmlAction implements Action<QuizResultsMetaInfo>{
         this.runId = runId;
     }
 
-
     @Override
     public String toString() {
         return "GetQuizResultsHtmlAction [runId=" + runId +  "]";
