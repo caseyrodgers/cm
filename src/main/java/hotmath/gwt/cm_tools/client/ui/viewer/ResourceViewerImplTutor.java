@@ -131,12 +131,17 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         /** if this is already stored in variables, then no need to save on server
          *
          */
-        if(variablesJson == null || variablesJson.length() == 0) {
+        if(variablesJson == null || variablesJson.length() < 100) {
             return;
         }
 
         if(_solutionInfo.getContextVariablesJson().size() > 0) {
-            // only store first one
+            /** 
+             *  only store first one, each subsequent read
+             *  on same prescription (run_id) will have the 
+             *  existing context restored. 
+             */
+            
         }
         else {
             final String pid=getResourceItem().getFile();
