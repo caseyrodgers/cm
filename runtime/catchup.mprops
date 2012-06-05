@@ -1730,12 +1730,22 @@ from HA_TEST_RUN_LESSON rl, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
     and tr.test_id = t.test_id
     and rl.run_id = tr.run_id
     and rl.date_completed is not null
-    and rl.date_completed >= ?
-    and rl.date_completed <= ?
 order by lesson_name asc
 
 
+####
+.key=LESSONS_COMPLETED_IN_DATE_RANGE
 
+select distinct(lesson_name)
+from HA_TEST_RUN_LESSON rl, HA_TEST_RUN tr, HA_TEST t, CM_USER_PROGRAM p
+  where p.id in (XXX)
+    and t.user_prog_id = p.id
+    and tr.test_id = t.test_id
+    and rl.run_id = tr.run_id
+    and rl.date_completed is not null
+    and rl.date_completed >= ?
+    and rl.date_completed <= ?
+order by lesson_name asc
 
 
 
