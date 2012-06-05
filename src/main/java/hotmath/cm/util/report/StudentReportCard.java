@@ -60,7 +60,7 @@ public class StudentReportCard {
         labelMap.put("timeontask", "Estimated Time-on-Task: ");
         labelMap.put("activity",   "Learning Activities: ");
         labelMap.put("cmextra",    "Extra Practice Problems: ");
-        labelMap.put("review",     "Prescribed Lessons Reviewed: ");
+        labelMap.put("review",     "Lessons Completed: ");
         labelMap.put("practice",   "Required Practice Problems: ");
         labelMap.put("flashcard",  "Flashcard Sessions: ");
         labelMap.put("video",      "Videos: ");
@@ -215,7 +215,7 @@ public class StudentReportCard {
         PdfPTable lessonTbl = new PdfPTable(1);
         lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-        String text = (isCustomProgram) ? "Prescribed Lessons" : "Prescribed Lessons (based on wrong quiz answers)";
+        String text = (isCustomProgram) ? "Assigned Lessons Completed" : "Prescribed Lessons Completed (based on wrong quiz answers)";
         Phrase lesson = buildSectionLabel(text);
         lessonTbl.addCell(lesson);
 

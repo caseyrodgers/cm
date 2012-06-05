@@ -140,7 +140,10 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 loadResourceUsage(filteredList, rval, beginDate, endDate);
 
 			 // load prescribed lesson data for initial through last programs
-			 loadPrescribedLessons(filteredList, rval, conn);
+			 //loadPrescribedLessons(filteredList, rval, conn);
+			 
+			 // load prescribed lesson comnpleted data for initial through last programs
+			 loadCompletedLessons(filteredList, rval, beginDate, endDate, conn);
 			 
 			 rval.setReportStartDate(beginDate);
 			 rval.setReportEndDate(endDate);
@@ -504,8 +507,38 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 rc.setPrescribedLessonList(lessons);
 		 }
 		 catch (Exception e) {
-			 logger.error(String.format("*** Error obtaining prescribed lessons for student UID: %d", uid), e);
-			 throw new Exception(String.format("*** Error obtaining prescriobed lessons for student with UID: %d", uid));	        	
+			 logger.error(String.format("*** Error obtaining prescribed lessons completed for student UID: %d", uid), e);
+			 throw new Exception(String.format("*** Error obtaining prescribed lessons completed for student with UID: %d", uid));	        	
+		 }
+		 finally {
+			 SqlUtilities.releaseResources(rs, ps, null);
+		 }
+	 }
+
+	 private void loadCompletedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc,
+			 Date beginDate, Date endDate, final Connection conn) throws Exception {
+		 PreparedStatement ps = null;
+		 ResultSet rs = null;
+		 Integer uid = list.get(0).getUserId();
+
+		 try { 
+			 String sql = CmMultiLinePropertyReader.getInstance().getProperty("LESSONS_COMPLETED_IN_DATE_RANGE");
+			 String progIds = getProgIdList(list);
+			 ps = conn.prepareStatement(sql.replaceFirst("XXX", progIds));
+			 String[] dates = QueryHelper.getDateTimeRange(beginDate, endDate);
+			 ps.setString(1, dates[0]);
+			 ps.setString(2, dates[1]);
+			 rs = ps.executeQuery();
+			 List<String> lessons = new ArrayList<String>();
+			 while (rs.next()) {
+				 String lesson = rs.getString(1);
+				 lessons.add(lesson);
+			 }
+			 rc.setPrescribedLessonList(lessons);
+		 }
+		 catch (Exception e) {
+			 logger.error(String.format("*** Error obtaining prescribed lessons completed for student UID: %d", uid), e);
+			 throw new Exception(String.format("*** Error obtaining prescribed lessons completed for student with UID: %d", uid));	        	
 		 }
 		 finally {
 			 SqlUtilities.releaseResources(rs, ps, null);
