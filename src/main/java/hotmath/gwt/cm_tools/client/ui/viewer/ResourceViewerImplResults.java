@@ -65,16 +65,6 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
         new RetryAction<QuizResultsMetaInfo>() {
 
-        	@Override
-        	public boolean inErrorCondition() {
-        		return (UserInfo.getInstance().getRunId() == 0);
-        	}
-
-            @Override
-            public String getErrorDescription() {
-            	return (inErrorCondition())?"GetQuizResultsHtmlAction runId=0":"";
-            }
-
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);

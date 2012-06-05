@@ -38,16 +38,7 @@ public class CmProgramFlowClientManager {
     static private void getProgramState(final Callback callback, final FlowType flowType) {
 
         new RetryAction<CmProgramFlowAction>() {
-        	
-        	@Override
-        	public boolean inErrorCondition() {
-        		return (UserInfo.getInstance().getUid() == 0);
-        	}
 
-        	@Override
-        	public String getErrorDescription() {
-        		return (inErrorCondition()) ? "CmProgramFlowClientManager: getProgramState(): userId=0":"";
-        	}
             
             @Override
             public void attempt() {

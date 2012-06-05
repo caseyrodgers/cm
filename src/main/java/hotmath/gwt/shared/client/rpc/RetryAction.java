@@ -84,10 +84,6 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         instanceCount = __counter++;
         CmLogger.info("RetryAction " + instanceCount + " created: " + getClass().getName());
     }
-    
-    public boolean inErrorCondition() {
-    	return false;
-    }
 
     public String getErrorDescription() {
     	return "";
@@ -269,7 +265,10 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
      */
     public void setAction(Action<? extends Response> action) {
         this.activeAction = action;
-        //RetryActionManager.getInstance().addActionToReportQueue(this);
+        
+        // do this here after the action has been set
+        // TODO: move!
+        RetryActionManager.getInstance().addActionToReportQueue(this);
     }    
 
     private long getRequestTime() {

@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -53,14 +54,6 @@ public class RetryActionManager {
         _actions.add(action);
 
         CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
-
-        addActionToReportQueue(action);
-        
-        /** check for error condition 
-         */
-        if(action.inErrorCondition()) {
-            sendStandardErrorFeedback(action.getErrorDescription());
-        }
         
         checkQueue();
     }
@@ -104,6 +97,14 @@ public class RetryActionManager {
     public void requestComplete(RetryAction action) {
         CmLogger.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
+        
+        
+        /** check for error condition 
+         */
+        CmLogger.debug("Action class: " + action.getAction());
+        if(action.getAction() instanceof GetQuizResultsHtmlAction) {
+            sendStandardErrorFeedback(action.getErrorDescription());
+        }
         
         checkQueue();
     }
