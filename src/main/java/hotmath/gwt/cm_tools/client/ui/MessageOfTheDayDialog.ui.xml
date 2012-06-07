@@ -26,20 +26,22 @@
 
     <g:HTMLPanel styleName='{style.main}'>
     
-    <h1>Two New Videos Added</h1>
+    <h1>Summer suggestions</h1>
     <p>
-       Two new <a href='/training-videos/' target='_new'>Teacher Videos</a> have been added to our training library:
        <ul>
            <li>
-              Parallel Programs (11 minutes)
+              Offer your students credit recovery or grade improvement via Catchup Math over the summer.
            </li>
            <li>
-              Custom Programs and Quizzes (25 minutes).
+              Tell parents about Catchup Math to get their students well prepared for fall math class.
            </li>
+           <li>
+              Have a great summer!
+           </li>           
         </ul>
      </p>
      <p>        
-     Please tell colleagues about this great way to get the most from Catchup Math.
+     Thank you for using Catchup Math!
      </p>
      <p>
          <a href='/support.html'>Having problems</a>?

@@ -36,5 +36,6 @@ public class MessageOfTheDayDialog extends Window {
         });
         addButton(okBtn);
         setVisible(true);
+        
     }
 }
