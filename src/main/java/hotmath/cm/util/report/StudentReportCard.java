@@ -215,7 +215,7 @@ public class StudentReportCard {
         PdfPTable lessonTbl = new PdfPTable(1);
         lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-        String text = (isCustomProgram) ? "Assigned Lessons Completed" : "Prescribed Lessons Completed (based on wrong quiz answers)";
+        String text = (isCustomProgram) ? "Assigned Lessons Completed" : "Prescribed Lessons Completed";
         Phrase lesson = buildSectionLabel(text);
         lessonTbl.addCell(lesson);
 

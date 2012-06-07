@@ -84,9 +84,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 }
 
 			 StudentUserProgramModel pm = filteredList.get(0);
-			
-			 String testName = pm.getTestName();
-
+			 String testName = getTestName(pm);
 			 List<String> chapList = pm.getConfig().getChapters();
 			 if (chapList != null && chapList.size() > 0) {
 				 // getChapters() returns a List - using only the first one
@@ -247,7 +245,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
     		 logger.debug(String.format("+++ setFirstLastProgramStatus(): testId: %d, runId: %d, currentSegment: %d, totalSegments: %d",
 				 testId, runId, currentSegment, totalSegments));
 		 if (currentSegment < totalSegments || runId == 0 || (runId != 0 && ! lessonsCompleted(conn, runId))) {
-		     String status = sb.append("Section ").append(currentSegment).append(" of ").append(totalSegments).toString();
+		     String status = (pm.isCustom() == false) ?
+		    		 sb.append("Section ").append(currentSegment).append(" of ").append(totalSegments).toString() :
+		    		 sb.append(section).append(" sections completed").toString();
 		     rval.setLastProgramStatus(status);
 		 }
 		 else {
