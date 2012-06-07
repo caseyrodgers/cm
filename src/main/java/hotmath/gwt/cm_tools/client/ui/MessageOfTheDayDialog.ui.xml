@@ -10,11 +10,12 @@
 	    .main p {
 	       padding-top: 10px;
 	       }
-	    ul {
+	    .main ul {
 	        margin-top: 10px;
+	        list-style-type: disc;
 	    }
 	    
-	    ul li {
+	    .main ul li {
 	        line-height: 1.5em;
 	        margin-left: 10px;
 	    }
@@ -25,9 +26,7 @@
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
-    
     <h1>Summer suggestions</h1>
-    <p>
        <ul>
            <li>
               Offer your students credit recovery or grade improvement via Catchup Math over the summer.
@@ -39,7 +38,6 @@
               Have a great summer!
            </li>           
         </ul>
-     </p>
      <p>        
      Thank you for using Catchup Math!
      </p>
