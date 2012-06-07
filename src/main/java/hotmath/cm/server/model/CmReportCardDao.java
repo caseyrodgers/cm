@@ -247,7 +247,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 if (currentSegment < totalSegments || runId == 0 || (runId != 0 && ! lessonsCompleted(conn, runId))) {
 		     String status = (pm.isCustom() == false) ?
 		    		 sb.append("Section ").append(currentSegment).append(" of ").append(totalSegments).toString() :
-		    		 sb.append(section).append(" sections completed").toString();
+		    		 sb.append(section).append((section<2)?" section":" sections").append(" completed").toString();
 		     rval.setLastProgramStatus(status);
 		 }
 		 else {
