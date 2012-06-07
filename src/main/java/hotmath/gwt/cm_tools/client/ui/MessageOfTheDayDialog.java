@@ -11,21 +11,22 @@ import com.google.gwt.user.client.ui.Widget;
 public class MessageOfTheDayDialog extends Window {
 
 
-    
+
+
     interface MyUiBinder extends UiBinder<Widget, MessageOfTheDayDialog> { }
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
-    
+
     CallbackGeneric callback;
     public MessageOfTheDayDialog(CallbackGeneric callbackIn) {
         this.callback = callbackIn;
-        
+
         setHeading("Catchup Math Teacher Alert");
         setSize(350,270);
         setModal(true);
-        
+
         add(uiBinder.createAndBindUi(this));
-        
-        
+
+
         Button okBtn = new Button("OK");
         okBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -36,6 +37,6 @@ public class MessageOfTheDayDialog extends Window {
         });
         addButton(okBtn);
         setVisible(true);
-        
+
     }
 }

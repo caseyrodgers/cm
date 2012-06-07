@@ -41,9 +41,6 @@
      <p>        
      Thank you for using Catchup Math!
      </p>
-     <p>
-         <a href='/support.html'>Having problems</a>?
-     </p>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
