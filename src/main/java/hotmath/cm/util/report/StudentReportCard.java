@@ -56,7 +56,7 @@ public class StudentReportCard {
     static {
         labelMap = new HashMap<String, String>();
 
-        labelMap.put("login",      "Logins: ");
+        labelMap.put("login",      "Login Days: ");
         labelMap.put("timeontask", "Estimated Time-on-Task: ");
         labelMap.put("activity",   "Learning Activities: ");
         labelMap.put("cmextra",    "Extra Practice Problems: ");
@@ -151,7 +151,7 @@ public class StudentReportCard {
         	}
 
         	if (rc.getPrescribedLessonList() != null && rc.getPrescribedLessonList().size() > 0) {
-        		addPrescribedLessons(rc, sm.getProgram().getCustom().isCustom(), document);
+        		addLessons(rc, sm.getProgram().getCustom().isCustom(), document);
         	}
 
         	document.add(Chunk.NEWLINE);
@@ -211,12 +211,12 @@ public class StudentReportCard {
     	return reportName;
     }
 
-    private void addPrescribedLessons(StudentReportCardModelI rc, boolean isCustomProgram, Document document) throws DocumentException {
+    private void addLessons(StudentReportCardModelI rc, boolean isCustomProgram, Document document) throws DocumentException {
         PdfPTable lessonTbl = new PdfPTable(1);
         lessonTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-        String text = (isCustomProgram) ? "Assigned Lessons Completed" : "Prescribed Lessons Completed";
-        Phrase lesson = buildSectionLabel(text);
+        //String text = (isCustomProgram) ? "Assigned Lessons Completed" : "Prescribed Lessons Completed";
+        Phrase lesson = buildSectionLabel("Lessons Completed");
         lessonTbl.addCell(lesson);
 
         StringBuilder sb = new StringBuilder();
