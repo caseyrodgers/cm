@@ -210,6 +210,43 @@ pageTracker._trackPageview();
        by running several trials and recording their successes and failures in choosing the largest number.
      </div>
 
+   <h2>Missing Dollar Conundrum</h2> 
+   <p>Three travelers stop for the night in a hotel. They are charged $30 at the front desk and each contributes $10.
+      Later, a bellhop comes to the room and says there was a mistake; the room price is only $25, so he refunds $5.
+      The travelers each take $1 and give $2 to the bellhop.  So, each traveler spent $9 ($27 total), and together
+      they tipped $2, for a total of $29 paid.  What happened to the other dollar?
+    </p>
+   <p><a href='javascript:showAnswer5();'>Click for answer</a>
+   </p>
+     <div id='answer5' class='activity-answer'>
+       The question is an obfuscation, implying that a dollar is missing when it is not.  Of the original $30, $25
+       went to the hotel, $3 went back to the travelers, and $2 went to the bellhop.
+     </div>
+
+   <h2>Making Sense of the Census</h2> 
+   <p>A census-taker knocks on a door, and asks the woman inside how many children she has and how old they are.
+      "I have three daughters. Their ages are whole numbers, and the product of the ages is 36," says the mother.
+    </p>
+      <ul id='hint_list'>
+      <li> "That's not enough information," responds the census-taker.
+      </li>
+      <li> "I'd tell you the sum of their ages, but you'd still be stumped," says the mother.
+      </li>
+      <li> "I wish you would tell me something more." 
+      </li>
+      <li> "Okay, my oldest daughter Annie likes dogs." 
+      </li>
+      </ul>
+   <p style='padding-top:15px;'>What are the ages of the three daughters?
+   </p>
+   <p><a href='javascript:showAnswer6();'>Click for answer</a>
+   </p>
+     <div id='answer6' class='activity-answer'>
+       Since the sum cannot help, there must be at least two sets of numbers with the same sum.  There is one pair
+       of possible answers that have the same sum: {1, 6, 6} and {2, 2, 9}.  Since there is an OLDEST daughter,
+       the answer must be 2, 2, 9.
+     </div>
+
    <h2>Learn More about Catchup Math</h2>
    <p>Please explore our website starting with the 2-minute video and sample student session on our
       <a href='/'>Home Page</a>. We are adding new features continually, so please ask your
@@ -439,7 +476,31 @@ pageTracker._trackPageview();
         	      fld.style.display='block';
         	  }
         	  else {
-        		  hidden = true;
+        		  hidden4 = true;
+        	      fld.style.display='none';
+        	  }
+          }
+          var hidden5 = true;
+          function showAnswer5() {
+        	  var fld = $get("answer5");
+        	  if (hidden5 == true) {
+        	      hidden5 = false;
+        	      fld.style.display='block';
+        	  }
+        	  else {
+        		  hidden5 = true;
+        	      fld.style.display='none';
+        	  }
+          }
+          var hidden6 = true;
+          function showAnswer6() {
+        	  var fld = $get("answer6");
+        	  if (hidden6 == true) {
+        	      hidden6 = false;
+        	      fld.style.display='block';
+        	  }
+        	  else {
+        		  hidden6 = true;
         	      fld.style.display='none';
         	  }
           }
