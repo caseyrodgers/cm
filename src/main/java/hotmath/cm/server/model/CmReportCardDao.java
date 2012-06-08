@@ -26,8 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
@@ -137,6 +139,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 // load resource usage data for initial through last programs
 			 loadResourceUsage(filteredList, rval, beginDate, endDate);
 
+             // set "Login Days": the number of distinct days of activity 
+			 setLoginDays(rval, samList);
+
 			 // load prescribed lesson data for initial through last programs
 			 //loadPrescribedLessons(filteredList, rval, conn);
 			 
@@ -155,7 +160,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 return rval;
 	 }
 	 
-	 private String getTestName(StudentUserProgramModel pm) {
+	private String getTestName(StudentUserProgramModel pm) {
 	     String name=null;
 	     if(pm.getCustomProgramId() > 0) {
 	         name = "CP: " + pm.getCustomProgramName();	     
@@ -453,19 +458,6 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
          final Map<String, Integer> usageMap = new HashMap<String, Integer>();
          rc.setResourceUsage(usageMap);
 	     
-         Integer loginCount = getJdbcTemplate().queryForObject(
-	             CmMultiLinePropertyReader.getInstance().getProperty("LOGIN_COUNT"),
-	             new Object[]{uid, dates[0], dates[1]},
-	             new RowMapper<Integer>() {
-	                 @Override
-	                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-	                     return rs.getInt(1);
-	                }
-	             });
-	             
-         usageMap.put("login", loginCount);
-
-         
          class UsageCount {
 	         int count;
 	         String resource;
@@ -474,7 +466,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	             this.resource = r;
 	         }
 	     }
-	     List<UsageCount> ucl = getJdbcTemplate().query(
+
+         List<UsageCount> ucl = getJdbcTemplate().query(
 	             CmMultiLinePropertyReader.getInstance().getProperty("RESOURCE_USAGE_COUNT").replaceAll("XXX", getProgIdList(list)),
 	             new Object[]{dates[0], dates[1], dates[0], dates[1], dates[0], dates[1]},
 	             new RowMapper<UsageCount>() {
@@ -487,6 +480,20 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	         usageMap.put(uc.resource, uc.count);
 	     }
 	 }
+
+	 private void setLoginDays(StudentReportCardModelI rc,
+				List<StudentActivityModel> samList) {
+			 
+			 Set<String> distinctDates = new HashSet<String>();
+
+			 for (StudentActivityModel sam : samList) {
+				 distinctDates.add(sam.getUseDate());
+			 }
+	         Integer loginCount = distinctDates.size();
+		             
+	         rc.getResourceUsage().put("login", loginCount);
+		}
+
 
 	 private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc,
 			 final Connection conn) throws Exception {
