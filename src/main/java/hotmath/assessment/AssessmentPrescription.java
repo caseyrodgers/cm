@@ -6,6 +6,7 @@ import hotmath.ProblemID;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
+import hotmath.cm.util.JsonUtil;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.shared.client.util.CmException;
@@ -119,7 +120,7 @@ public class AssessmentPrescription {
 
             List<RppWidget> rppWidgets = itemData.getWidgetPool(conn, uid + "/" + testRun.getRunId());
             if (rppWidgets.size() == 0) {
-                logger.warn("No RP Widgets found for + '" + itemData.getInmhItem().toString() + "'");
+                logger.error("No RP Widgets found for + '" + itemData.getInmhItem().toString() + "'");
                 continue;
             }
 
@@ -134,10 +135,9 @@ public class AssessmentPrescription {
             if (session == null || session.getSessionItems().size() == 0) {
                 // this session has no items, so it is invalid and will be
                 // skipped
-                logger.warn("AssessmentPrescriptionSession: session has no items: " + session);
+                logger.error("AssessmentPrescriptionSession: session has no items: " + session);
             } else {
-                // TOOD: should sessNum be incremented if session not actually
-                // added?
+                // TOOD: should sessNum be incremented if session not actually added?
                 // add this session, and move to next
                 _sessions.add(session);
                 sessNum++;
@@ -345,10 +345,43 @@ public class AssessmentPrescription {
                 continue;
 
             if (rpp.isGradeLevel(programGradLevel)) {
-                session.add(new SessionData(itemData.getInmhItem(), rpp));
+                
+                for(RppWidget rppExpand: expandProblemSetPids(rpp)) {
+                    session.add(new SessionData(itemData.getInmhItem(), rppExpand));
+                }
             }
         }
         return session;
+    }
+    
+    
+    private List<RppWidget> expandProblemSetPids(RppWidget rpp) throws Exception {
+        List<RppWidget> expandedPids = new ArrayList<RppWidget>();
+        
+        if(rpp.isProblemSet()) {
+            expandedPids.addAll(createPsudoProblemSetPids(rpp));
+        }
+        else {
+            // just add single pid
+            expandedPids.add(rpp);
+        }
+        return expandedPids;
+    }
+    
+    
+    private List<RppWidget> createPsudoProblemSetPids(RppWidget rpp) throws Exception {
+        List<RppWidget> expandedPids = new ArrayList<RppWidget>();
+        int numPidsNeeded = JsonUtil.getProblemSetPidCount(rpp.getWidgetJsonArgs());
+        if(numPidsNeeded > 0) {
+            for(int i=0;i<numPidsNeeded;i++) {
+                String psudoPid = rpp.getFile() + "$" + (i+1);
+                expandedPids.add(new RppWidget(psudoPid));
+            }
+        }
+        else {
+            expandedPids.add(rpp); // no need to expand
+        }
+        return expandedPids;
     }
 
     /**

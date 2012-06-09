@@ -135,7 +135,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             return;
         }
 
-        if(_solutionInfo.getContextVariablesJson().size() > 0) {
+        if(_solutionInfo.getContext() != null) {
             /** 
              *  only store first one, each subsequent read
              *  on same prescription (run_id) will have the 
@@ -149,8 +149,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
                 @Override
                 public void onSuccess(RpcData result) {
-
-                    _solutionInfo.getContextVariablesJson().add(new SolutionContext(pid,__problemNumber,variablesJson));
+                    _solutionInfo.setContext(new SolutionContext(pid,__problemNumber,variablesJson));
                     CmLogger.info("Context saved");
                 }
                 @Override
@@ -160,11 +159,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
             });
         }
     }
-
-
+    
     Map<Integer,String> _variableContexts = new HashMap<Integer, String>();
     private String gwt_getSolutionProblemContext(int probNum) {
-       return SolutionContext.getSolutionContext(_solutionInfo.getContextVariablesJson(), probNum);
+       return _solutionInfo.getContext().getContextJson();
     }
 
     private native void  addExternTutorHooks(ResourceViewerImplTutor x) /*-{
@@ -366,8 +364,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     }
 
 
-                    String variableContext = SolutionContext.getSolutionContext(result.getContextVariablesJson(), 1);
-
+                    String variableContext = null;
+                    if(_solutionInfo.getContext() != null) {
+                        variableContext = _solutionInfo.getContext().getContextJson();
+                    }
+                    
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(),
                              getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),
                              hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,variableContext);

@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.ProblemID;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.spring.SpringManager;
 
@@ -48,7 +49,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @return
      */
-    public List<SolutionContext> getSolutionContext(int runId, final String pid) {
+    public SolutionContext getSolutionContext(int runId, final String pid) {
         String sql = "select problem_number, variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? order by id";
         List<SolutionContext> matches = getJdbcTemplate().query(sql,
                 new Object[]{runId,pid},
@@ -58,13 +59,14 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                         return new SolutionContext(pid, rs.getInt("problem_number"), rs.getString("variables"));
                     }
                 });
-        return matches;
+        return matches.size()>0?matches.get(0):null;
     }
     
-    public String getSolutionContext(int runId, String pid, int probNum) {
+    public String getSolutionContextString(int runId, String pid) {
+        ProblemID pidO = new ProblemID(pid);
         String sql = "select variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? and problem_number = ?";
         List<String> matches = getJdbcTemplate().query(sql,
-                new Object[]{runId,pid,probNum},
+                new Object[]{runId,pid,pidO.getProblemSetProblemNumber()},
                 new RowMapper<String>() {
                     @Override
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {

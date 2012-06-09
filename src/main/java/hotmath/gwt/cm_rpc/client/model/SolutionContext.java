@@ -52,7 +52,7 @@ public class SolutionContext implements Serializable {
     public static String getSolutionContext(List<SolutionContext> contexts, int probNum) {
         String res=null;
         for(SolutionContext sc: contexts) {
-            if(sc.getProbNum() == (probNum-1)) {
+            if(sc.getProbNum() == probNum) {
                 CmLogger.debug("SolutionContext: getSolutionContext found: " + sc);
                 res = sc.getContextJson();
             }

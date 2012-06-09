@@ -2,15 +2,13 @@ package hotmath.gwt.cm_rpc.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class SolutionInfo implements Response,IsSerializable {
 
 	String html;
 	String js;
-	List<SolutionContext> contextVariablesJson;
+	SolutionContext context;
 	boolean hasShowWork;
 	
 	   
@@ -21,12 +19,12 @@ public class SolutionInfo implements Response,IsSerializable {
         this.hasShowWork = hasShowWork;
     }
     
-	public List<SolutionContext> getContextVariablesJson() {
-        return contextVariablesJson;
+	public SolutionContext getContext() {
+        return context;
     }
 	
-    public void setContextVariablesJson(List<SolutionContext> contextVariablesJson) {
-        this.contextVariablesJson = contextVariablesJson;
+    public void setContext(SolutionContext context) {
+        this.context = context;
     }
     
 	public String getHtml() {
@@ -54,7 +52,7 @@ public class SolutionInfo implements Response,IsSerializable {
 	}
     @Override
     public String toString() {
-        return "SolutionInfo [html=" + html.length() + ", js=" + js.length() + ", contextVariablesJson=" + contextVariablesJson.size()
+        return "SolutionInfo [html=" + html.length() + ", js=" + js.length() + ", context=" + context
                 + ", hasShowWork=" + hasShowWork + "]";
     }
 }

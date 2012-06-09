@@ -142,10 +142,11 @@ public class RppWidget {
     }
     
     /** return true if this RPP is a 
-     *  dynamic solution
+     *  problem set
+     *  
      * @return
      */
-    public boolean isDynamicSolution() {
+    public boolean isProblemSet() {
         return this.getWidgetJsonArgs() != null && this.getWidgetJsonArgs().trim().startsWith("{") && !isFlashRequired();
     }
     

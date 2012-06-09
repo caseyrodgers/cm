@@ -45,4 +45,22 @@ public class JsonUtil {
 
         return count;
     }
+    
+    public static int getProblemSetPidCount(String json) {
+        if (json == null || json.trim().length() == 0)
+            return 0;
+
+        int count = 0;
+        try {
+            JSONObject jo = new JSONObject(json);
+
+            if (jo.has("limit")) {
+                count = jo.getInt("limit");
+            }
+        } catch (Exception e) {
+            LOGGER.error("*** Error extracting limit from JSON", e);
+        }
+
+        return count;
+    }
 }

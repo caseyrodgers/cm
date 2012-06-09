@@ -110,7 +110,7 @@ public class GetPrescriptionCommand implements ActionHandler<GetPrescriptionActi
          */
         SessionData sd = practiceProblems.get(0);
         boolean isActivity= (sd.getWidgetArgs()!=null && sd.getRpp().isFlashRequired());
-        boolean isProblemSet = sd.getRpp().isDynamicSolution();
+        boolean isProblemSet = sd.getRpp().isProblemSet();
         
         String title = null;
         if(isActivity) {
