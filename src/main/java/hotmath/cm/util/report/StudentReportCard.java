@@ -128,17 +128,11 @@ public class StudentReportCard {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DATE, 1);
 
-    	Map<Integer, Integer> totMap = CmHighlightsDao.getInstance().getTimeOnTaskMap(conn, smList, fromDate, toDate);
-
     	int idx = 0;
     	
         for (StudentModelI sm : smList) {
         	
             StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), fromDate, toDate);
-
-            if (rc.getResourceUsage() != null) {
-                rc.getResourceUsage().put("timeontask", totMap.get(sm.getUid()));
-            }
 
         	addStudentInfo(school, sm, rc, document);
         	

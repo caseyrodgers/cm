@@ -142,6 +142,9 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
              // set "Login Days": the number of distinct days of activity 
 			 setLoginDays(rval, samList);
 
+			 // set Time-on-task
+			 setTimeOnTask(rval, samList);
+
 			 // load prescribed lesson data for initial through last programs
 			 //loadPrescribedLessons(filteredList, rval, conn);
 			 
@@ -159,8 +162,8 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 }
 		 return rval;
 	 }
-	 
-	private String getTestName(StudentUserProgramModel pm) {
+
+	 private String getTestName(StudentUserProgramModel pm) {
 	     String name=null;
 	     if(pm.getCustomProgramId() > 0) {
 	         name = "CP: " + pm.getCustomProgramName();	     
@@ -482,17 +485,31 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 	 }
 
 	 private void setLoginDays(StudentReportCardModelI rc,
-				List<StudentActivityModel> samList) {
-			 
-			 Set<String> distinctDates = new HashSet<String>();
+			 List<StudentActivityModel> samList) {
 
-			 for (StudentActivityModel sam : samList) {
-				 distinctDates.add(sam.getUseDate());
-			 }
-	         Integer loginCount = distinctDates.size();
-		             
-	         rc.getResourceUsage().put("login", loginCount);
-		}
+		 Set<String> distinctDates = new HashSet<String>();
+
+		 for (StudentActivityModel sam : samList) {
+			 distinctDates.add(sam.getUseDate());
+		 }
+		 Integer loginCount = distinctDates.size();
+
+		 rc.getResourceUsage().put("login", loginCount);
+	 }
+
+
+	 private void setTimeOnTask(StudentReportCardModelI rc,
+			 List<StudentActivityModel> samList) {
+		 
+		 int tot = 0;
+		 
+		 for (StudentActivityModel sam : samList) {
+			 tot += (sam.getTimeOnTask() != null) ? sam.getTimeOnTask() : 0;
+		 }
+
+		 rc.getResourceUsage().put("timeontask", tot);
+	 }
+
 
 
 	 private void loadPrescribedLessons(List<StudentUserProgramModel> list, StudentReportCardModelI rc,
