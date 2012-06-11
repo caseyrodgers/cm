@@ -71,7 +71,7 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
             tutorWrapper = sb.toString();
             solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
             
-            SolutionResponse rs = new SolutionResponse(new ProblemNumber(pid),solutionHtml, parts.getData(), false);
+            SolutionResponse rs = new SolutionResponse(new ProblemNumber(pid),solutionHtml, parts.getData(), false, "");
             return rs;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

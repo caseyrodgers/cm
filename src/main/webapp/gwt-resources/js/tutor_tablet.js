@@ -117,8 +117,8 @@ var TutorManager = {
     tutorData : null,
     solutionTitle: null,
     context: null,
-    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,
-            showWork, expand) {
+    solutionVariableContext:null,
+    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext) {
         TutorManager.pid = pid;
         TutorManager.jsonConfig = jsonConfig;
         TutorManager.currentRealStep = -1;
@@ -126,7 +126,9 @@ var TutorManager = {
         TutorManager.stepText = stepText;
         TutorManager.solutionTitle = solutionTitle;
         TutorManager.solutionData = solutionData;
-        TutorManager.loadTutorData(solutionData, stepText);
+        TutorManager.solutionVariableContext = solutionVariableContext;
+        
+        TutorManager.loadTutorData(solutionData, stepText, solutionVariableContext);
         TutorManager.analyzeLoadedData();
 
         /* mark next button as active */
@@ -188,11 +190,11 @@ var TutorManager = {
             return false;
         }
     },
-    loadTutorData : function(solutionData, stepText) {
+    loadTutorData : function(solutionData, stepText, solutionVariableContext) {
         try {
             TutorManager.tutorData = eval("(" + solutionData + ")");
 
-            processTutorData(TutorManager.tutorData, stepText);
+            processTutorData(TutorManager.tutorData, stepText, solutionVariableContext);
 
         } catch (e) {
             alert(e);

@@ -38,7 +38,6 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
     @Override
     public SolutionResponse execute(final Connection conn, GetMobileSolutionAction action) throws Exception {
         try {
-            
             /** read the sprited tutor html */
             File pathWebBase = new File(CmWebResourceManager.getInstance().getFileBase()).getParentFile();
             ProblemID pid = new ProblemID(action.getPid());
@@ -68,7 +67,7 @@ public class GetMobileSolutionCommand implements ActionHandler<GetMobileSolution
             
             ProblemNumber problem = new ProblemNumber(pid.getProblemNumber(), pid.getProblemSet(),pid.getGUID(),pid.getPage());
             
-            SolutionResponse rs = new SolutionResponse(problem, solutionHtml, solutionData, false);
+            SolutionResponse rs = new SolutionResponse(problem, solutionHtml, solutionData, false,"");
             return rs;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

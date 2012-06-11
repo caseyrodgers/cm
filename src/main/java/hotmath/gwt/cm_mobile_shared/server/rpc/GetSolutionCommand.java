@@ -15,6 +15,7 @@ import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSyst
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
+import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;
 
@@ -36,7 +37,11 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
     @Override
     public SolutionResponse execute(final Connection conn, GetSolutionAction action) throws Exception {
+        if(true) {
+            throw new Exception("Command not used");
+        }
         try {
+            
             String pid = action.getPid();
 
             /** LOOK HERE! */
@@ -51,24 +56,8 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
             solutionHtml = HotMathUtilities.makeAbsolutePaths(path, solutionHtml);
 
-            /** Replace local server to one with static images
-             *
-             */
-            //String match = "/help/solutions";
-            //String imageServer = "http://m.hotmath.com/help/solutions";
-            //solutionHtml = solutionHtml.replaceAll(match, imageServer);
-
-
-//            Map<String, String> map = new HashMap<String, String>();
-//            map.put("solution_html", solutionHtml);
-//            map.put("pid", pid);
-
-            //String runTimeDir = HotMathProperties.getInstance().getProperty("cm.runtime",".");
-            //String tutorWrapper = new SbFile(runTimeDir + "/" + "mobile_tutor_wrapper.vm").getFileContents().toString("\n");
-            //solutionHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(tutorWrapper, map);
-
             ProblemNumber problem = new ProblemNumber(ppid.getProblemNumber(), ppid.getProblemSet(),ppid.getGUID(),ppid.getPage()       );
-            SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false);
+            SolutionResponse rs = new SolutionResponse(problem, solutionHtml, parts.getData(), false, "");
             return rs;
         } catch (Exception e) {
                 logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

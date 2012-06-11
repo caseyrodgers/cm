@@ -63,7 +63,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(), solution.getSolutionData(), solution.getTutorHtml(),problem.getProblem(), false, false);
+				initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(), solution.getSolutionData(), solution.getTutorHtml(),problem.getProblem(), false, false, solution.getSolutionVariableContext() );
 				
 				tutorPanel.setVisible(true);				
 			}
@@ -153,7 +153,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	}
 	
 	private void resetTutor_Gwt() {
-	    initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(),lastResponse.getSolutionData(), lastResponse.getTutorHtml(),problem.getProblem(), false, false);
+	    initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(),lastResponse.getSolutionData(), lastResponse.getTutorHtml(),problem.getProblem(), false, false,null);
 	}
 	
 	public static int __probNum;
@@ -183,7 +183,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	 *  glue between external JS methods and GWT.
 	 *  
 	 */
-    private native void initializeTutor(PrescriptionLessonResourceTutorViewImpl instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution) /*-{
+    private native void initializeTutor(PrescriptionLessonResourceTutorViewImpl instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) /*-{
     
           $wnd.solutionSetComplete = function(numCorrect, limit) {
               instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::solutionSetComplete_Gwt(II)(numCorrect,limit);
@@ -198,7 +198,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
              instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::tutorWidgetCompleteAux(Z)(yesNo);
           }
           
-          $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution);
+          $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext);
           
           // Customize Tutor HTML for Mobile 
           var tutorFooter = $doc.getElementById('steps_tail');
