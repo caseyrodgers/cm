@@ -547,6 +547,10 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             CmList<CustomQuizId> quizIds = CmQuizzesDao.getInstance().getCustomQuizIds(quid);
             return quizIds;
         }
+        catch (Exception e) {
+            throw new Exception(String.format("*** Exception getting quizIds for programId: %d, programSegment: %d",
+        			programId, programSegment), e);
+        }
         finally {
             SqlUtilities.releaseResources(null, stmt, conn);
         }
