@@ -93,7 +93,8 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	 */
 	private void tutorNewProblem() {
 	    if(_total < 2 || __probNum >= _total) {
-	        CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+	        //CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+            Controller.navigateBack();
 	        return;
 	    }
 	    
@@ -258,8 +259,8 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         return new BackAction() {
             @Override
             public boolean goBack() {
-                tutorNewProblem();
-                return false;
+                //tutorNewProblem();
+                return true;
             }
         };
     }
@@ -284,3 +285,4 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         _title = title;
     }
 }
+ 
