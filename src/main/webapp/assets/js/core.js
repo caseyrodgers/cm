@@ -195,9 +195,12 @@ function showTeacherVideo(name) {
             html = '<iframe src="/training-videos/embedded-parallel-programs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
         closeFoot;
             title = 'Parallel Programs';
+       }
+       else if (name == 'special-needs') {
+            html = '<iframe src="/training-videos/embedded-special-needs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
+            title = 'Special Needs';
        }        
-        
-        
         
 
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
