@@ -232,6 +232,12 @@ public class CmMainPanel extends LayoutContainer {
 										EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH));
 									}
 							break;
+							
+                        case EVENT_TYPE_MODAL_WINDOW_CLEAR:
+                            if (__lastInstance != null) {
+                                __lastInstance = null;
+                                __lastInstance._mainContent = null;
+                            }
 						}
 					}
 				});

@@ -189,4 +189,14 @@ public enum EventType{
      *  required to be in a logout state
      */
     EVENT_TYPE_LOGOUT,
+    
+    
+    /** Remove any windows hidden during modal window display.
+     * This is used to clear the slate before a major change
+     * in functionality where any hidden dialog might no longer
+     * be in context.
+     * 
+     */
+    EVENT_TYPE_MODAL_WINDOW_CLEAR
+   
 }
