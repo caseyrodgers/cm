@@ -20,10 +20,20 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 	public static final String STUDENT_COUNT_STYLE_KEY = "student-count-style";
 	public static final String TUTORING_MINUTES_LABEL = "tutoring-minutes-label";
 	public static final String ACCOUNT_CREATE_DATE = "account_create_date";
+	public static final String IS_FREE_ACCOUNT = "is-free-account";
+	
 	public String getSchoolName() {
 		return get(SCHOOL_NAME_KEY);
 	}
 
+	public void setIsFreeAccount(Boolean yesNo) {
+	    set(IS_FREE_ACCOUNT,yesNo);
+	}
+	
+	public Boolean getIsFreeAccount() {
+	    return get(IS_FREE_ACCOUNT);
+	}
+	
 	public void setSchoolName(String schoolName) {
 		set(SCHOOL_NAME_KEY, schoolName);
 	}

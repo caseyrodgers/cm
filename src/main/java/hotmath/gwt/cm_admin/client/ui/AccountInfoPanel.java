@@ -46,11 +46,11 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div class='account-info'>");
         sb.append("<div class='form school-name-form'>");
-        sb.append("  <div class='fld'><label>School:</label><div>{school-name}&nbsp;</div></div>");
+        sb.append("  <div class='fld'><label>School:</label><div>{school-name}&nbsp;{is-free-account-label}</div></div>");
         sb.append("</div>");
 		sb.append("<div class='form left'>");
 		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}&nbsp;</div></div>");
-		sb.append("  <div class='fld'><label>Maximum Students:</label><div> {max-students}&nbsp;</div></div>");
+		sb.append("  <div class='fld'><label>Account Limit:</label><div> {max-students}&nbsp;</div></div>");
 		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}&nbsp;</div></div>");
 		sb.append("</div>");
         sb.append("<div class='form right'>");
@@ -94,6 +94,9 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	public void setAccountInfoModel(AccountInfoModel model) {
 		this.model = model;
 		
+		if(model.getIsFreeAccount()) {
+		    model.set("is-free-account-label", "<span style='color: red;margin-left: 15px;'>Free Account for Essentials</span>");
+		}
 		template.overwrite(html.getElement(), Util.getJsObject(this.model));
 		
 		html.setVisible(true);

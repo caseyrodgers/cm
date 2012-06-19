@@ -562,10 +562,28 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	private native String getProgramTemplate() /*-{ 
 	    return  [ 
 	   '<tpl for=".">', 
-	   '<div class="x-combo-list-item {styleIsTemplate} {styleIsArchived}" qtip="{descr}">{label}</div>', 
+	   '<div class="x-combo-list-item {styleIsTemplate} {styleIsArchived} {styleIsFree}" qtip="{descr}">{label}</div>', 
 	   '</tpl>' 
 	   ].join(""); 
 	   }-*/;  
+	
+	
+	private native String getSubjectTemplate() /*-{ 
+       return  [ 
+      '<tpl for=".">', 
+      '<div class="x-combo-list-item {styleIsFree}">{subject}</div>', 
+      '</tpl>' 
+      ].join(""); 
+      }-*/; 
+	
+	
+	   private native String getChapterTemplate() /*-{ 
+       return  [ 
+      '<tpl for=".">', 
+      '<div class="x-combo-list-item {styleIsFree}">{chapter}</div>', 
+      '</tpl>' 
+      ].join(""); 
+      }-*/; 
 
 	private ComboBox<SubjectModel> subjectCombo(ListStore<SubjectModel> store) {
 		ComboBox<SubjectModel> combo = new ComboBox<SubjectModel>();
@@ -576,14 +594,19 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setMaxLength(30);
 		combo.setAllowBlank(false);
 		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
+		
 		combo.setTitle("Select a subject");
 		combo.setId("subj-combo");
 		combo.setTypeAhead(true);
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a subject --");
+		
+		combo.setTemplate(getSubjectTemplate());
+		
 		combo.disable();
 		combo.setWidth(280);
+
+		combo.setStore(store);
 		
 	    combo.addSelectionChangedListener(new SelectionChangedListener<SubjectModel>() {
 			@SuppressWarnings("unchecked")
@@ -628,6 +651,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a chapter --");
 		combo.disable();
+		combo.setTemplate(getChapterTemplate());
 		combo.setWidth(280);
 		return combo;
 	}
@@ -685,14 +709,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 		spm.getCustomProgramId() != stuCustomProgramId &&
                 		spm.getCustomQuizId() != stuCustomQuizId)
                 		continue;
-
+                	
+                	
                 	if (spm.getCustomProgramId() == 0 && spm.getCustomQuizId() == 0) {
-                    	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                    	progList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                 spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                 spm.getCustomProgramId(), spm.getCustomProgramName()));                		
                 	}
                 	else {
-                    	customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
+                    	customProgList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
                                 spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                 spm.getCustomProgramId(), spm.getCustomProgramName()));
                 	}
@@ -700,7 +725,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID, "Custom", "Custom", "Custom Programs and Quizzes", 0, " ", 0, " ", 0, 0, 0, 0, 0);
                 spm.setProgramType(CmProgramType.CUSTOM);
                 spm.setIsArchived(false);
-            	progList.add(new StudyProgramExt(spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));                		
+            	progList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));                		
                 progStore.add(progList);
                 customProgStore.add(customProgList);
                 
@@ -740,6 +765,14 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		        CmShared.getCmService().execute(action,this);		        
 		    }
             public void oncapture(CmList<SubjectModel> result) {
+                
+                for(SubjectModel sm: result) {
+                    if(acctInfoMdl.getIsFreeAccount()) {
+                        if(!sm.get("subject").equals("Essentials")) {
+                            sm.set("styleIsFree", "is-free-account-label");
+                        }
+                    }
+                }
                 subjStore.removeAll();
                 subjStore.add(result);
                 inProcessCount--;
@@ -994,6 +1027,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		    }
 
             public void oncapture(CmList<ChapterModel> result) {
+                
+                
+                for(ChapterModel cm: result) {
+                    if(acctInfoMdl.getIsFreeAccount()) {
+                        cm.set("styleIsFree", "is-free-account-label");
+                    }
+                }
+                
+                
                 chapStore.add(result);
                 inProcessCount--;
                 if (! chapOnly)

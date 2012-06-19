@@ -402,6 +402,10 @@ trending-data-student-list-item {
 	color: red;
 }
 	
+.is-free-account-label {
+	color: grey;
+}	
+	
 /** attempt to override ext-js style */
 #program-details-panel .x-ftree2-selected {
     background-color: #DFE8F6 !important;

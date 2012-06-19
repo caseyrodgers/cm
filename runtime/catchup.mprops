@@ -973,7 +973,8 @@ select s.id,
        t.student_count,
        Ifnull(cc.max_students,1000)                   as max_students,
        l.login_time,
-       Date_format(l.login_time,'%Y-%m-%d %h:%i %p') as login_date_time
+       Date_format(l.login_time,'%Y-%m-%d %h:%i %p') as login_date_time,
+       h.is_free
 from   SUBSCRIBERS s
        inner join HA_ADMIN h
          on h.subscriber_id = s.id

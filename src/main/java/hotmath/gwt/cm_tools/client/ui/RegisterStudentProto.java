@@ -683,12 +683,12 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
                 		continue;
 
                 	if (spm.getCustomProgramId() == 0 && spm.getCustomQuizId() == 0) {
-                    	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                    	progList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                 spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                 spm.getCustomProgramId(), spm.getCustomProgramName()));                		
                 	}
                 	else {
-                    	customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
+                    	customProgList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
                                 spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                 spm.getCustomProgramId(), spm.getCustomProgramName()));
                 	}
@@ -696,7 +696,7 @@ public class RegisterStudentProto extends LayoutContainer implements ProcessTrac
                 StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID, "Custom", "Custom", "Custom Programs and Quizzes", 0, " ", 0, " ", 0, 0, 0, 0, 0);
                 spm.setProgramType(CmProgramType.CUSTOM);
                 spm.setIsArchived(false);
-            	progList.add(new StudyProgramExt(spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));                		
+            	progList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));                		
                 progStore.add(progList);
                 customProgStore.add(customProgList);
                 
