@@ -279,6 +279,47 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         };
         
         //
+		function killMouseListeners(){
+		
+		if (document.addEventListener) {
+            canvas.removeEventListener("mousedown", ev_onmousedown, false);
+                    canvas.removeEventListener("mouseup", ev_onmouseup, false);
+                    canvas.removeEventListener("mousemove", ev_onmousemove, false);          
+
+        } else {
+            canvas.detachEvent("onmousedown", ev_onmousedown);
+            canvas.detachEvent("onmouseup", ev_onmouseup);
+            canvas.detachEvent("onmousemove", ev_onmousemove);            
+        }
+		}
+		function killTouchListeners(){
+		if (document.addEventListener) {
+           
+
+            // touchscreen specific - to prevent web page being scrolled while drawing
+            canvas.removeEventListener('touchstart', touchStartFunction, false);
+            canvas.removeEventListener('touchmove', touchMoveFunction, false);
+
+            // attach the touchstart, touchmove, touchend event listeners.
+            canvas.removeEventListener('touchstart', ev_onmousedown, false);
+            canvas.removeEventListener('touchmove', ev_onmousemove, false);
+            canvas.removeEventListener('touchend', ev_onmouseup, false);
+
+        } else {
+            // touchscreen specific - to prevent web page being scrolled while drawing
+            canvas.detachEvent('touchstart', touchStartFunction);
+            canvas.detachEvent('touchmove', touchMoveFunction);
+
+            // attach the touchstart, touchmove, touchend event listeners.
+            canvas.detachEvent('touchstart', ev_onmousedown);
+            canvas.detachEvent('touchmove', ev_onmousemove);
+            canvas.detachEvent('touchend', ev_onmouseup);
+        }
+		}
+		function __killListeners(){
+		killMouseListeners();
+		killTouchListeners();
+		}
         var ev_onmousedown = function (_event) {
                 isTouchEnabled = _event.type.indexOf('touch') > -1
                 if (isTouchEnabled) {
@@ -344,7 +385,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                         // alert("0:: "+graphicData.dataArr[0])
                         showTextBox();
                     } else {
-                        graphicData.dataArr[graphicData.dataArr.length] = {
+                        graphicData.dataArr[0] = {
                             x: x,
                             y: y,
                             id: "move",
@@ -455,7 +496,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
                 if (event.preventDefault) event.preventDefault();
                 // _event.stopPropagation();
             };
-
+__killListeners()
         if (document.addEventListener) {
             canvas.addEventListener("mousedown", ev_onmousedown, false);
             canvas.addEventListener("mouseup", ev_onmouseup, false);
