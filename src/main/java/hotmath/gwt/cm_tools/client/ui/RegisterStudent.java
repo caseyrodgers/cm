@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
@@ -712,20 +713,43 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
                 	
                 	
                 	if (spm.getCustomProgramId() == 0 && spm.getCustomQuizId() == 0) {
-                    	progList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
+                    	progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), 
                                 spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                 spm.getCustomProgramId(), spm.getCustomProgramName()));                		
                 	}
                 	else {
-                    	customProgList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
+                    	customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(),
                                 spm.getNeedsSubject(), spm.getNeedsChapters(), spm.getNeedsPassPercent(),
                                 spm.getCustomProgramId(), spm.getCustomProgramName()));
                 	}
+                	
                 }
                 StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID, "Custom", "Custom", "Custom Programs and Quizzes", 0, " ", 0, " ", 0, 0, 0, 0, 0);
                 spm.setProgramType(CmProgramType.CUSTOM);
                 spm.setIsArchived(false);
-            	progList.add(new StudyProgramExt(acctInfoMdl.getIsFreeAccount(),spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));                		
+            	progList.add(new StudyProgramExt(spm, "Custom", "Custom", "Custom Programs and Quizzes", 0, 0, 0, 0, null));
+            	
+            	
+            	/** If is free, then shown only Prof and Custom as available */
+            	for(BaseModelData md: progList) {
+            	    if(acctInfoMdl.getIsFreeAccount()) {
+            	        String pn = md.get("title");
+            	        if(!pn.contains("Proficiency") && !pn.contains("Custom")) {
+            	            md.set("styleIsFree", "is-free-account-label");
+            	        }
+            	    }
+            	}
+            	
+            	/** If is free, then show only Essentials as available. */
+                for(BaseModelData md: customProgList) {
+                    if(acctInfoMdl.getIsFreeAccount()) {
+                        String pn = md.get("title");
+                        if(!pn.contains("Essentials")) {
+                            md.set("styleIsFree", "is-free-account-label");
+                        }
+                    }
+                }
+            	
                 progStore.add(progList);
                 customProgStore.add(customProgList);
                 
@@ -816,6 +840,20 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 
 	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
 	        final Boolean passcodeChanged, final Boolean passPercentChanged, final Boolean sectionNumChanged) {
+	    
+	    
+	    /** Free accounts can only change to Essentials/Essentials Topcs
+	     * 
+	     */
+	    if(acctInfoMdl.getIsFreeAccount()) {
+	        String progName = sm.getProgram().getProgramDescription();
+	        String pn = sm.getProgram().getCustom().getCustomProgramName();
+	        if(!progName.equals("Ess Prof") && !(sm.getProgram().getCustom() != null && pn.equals("Essentials Topics"))) {
+	            CatchupMathTools.showAlert("Change not allowed", "Sorry, this program is not currently available under your school license.");
+	            return;
+	        }
+	    }
+	        
 		new RetryAction<StudentModelI> () {
 		    @Override
 		    public void attempt() {

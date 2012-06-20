@@ -11,7 +11,7 @@ public class StudyProgramExt extends BaseModelData {
     private static final long serialVersionUID = 5574506049604177840L;
     StudyProgramModel program;
 
-    public StudyProgramExt(boolean isFree, StudyProgramModel program, String title, String shortTitle, String descr,
+    public StudyProgramExt(StudyProgramModel program, String title, String shortTitle, String descr,
             Integer needsSubject, Integer needsChapters, Integer needsPassPercent, Integer customProgramId,
             String customProgramName) {
 
@@ -47,12 +47,6 @@ public class StudyProgramExt extends BaseModelData {
             set("styleIsTemplate", "custom-template");
         }
 
-        if (isFree) {
-            if(program.getProgramType() != CmProgramType.PROF) {
-                set("styleIsFree", "is-free-account-label");
-            }
-        }
-        
         set("label", pre + title);
 
         /**
