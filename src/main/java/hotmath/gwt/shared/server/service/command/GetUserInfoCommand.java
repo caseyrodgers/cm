@@ -5,6 +5,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
+import hotmath.gwt.cm_rpc.client.CmExceptionFreeProgramDenied;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -20,6 +21,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.CmProgram;
+import hotmath.testset.ha.HaAdmin;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
@@ -28,6 +30,7 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.StudentUserProgramModel;
+import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 
@@ -48,6 +51,18 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
             CmProgramFlow cmProgram = new CmProgramFlow(conn, action.getUserId());
             StudentUserProgramModel userProgram = cmProgram.getUserProgram();
+            
+            /** If is a free account, then verify his user has access to the program
+             * 
+             * Only Essentials is allowed for free accounts
+             */
+            HaAdmin admin = CmAdminDao.getInstance().getAdmin(sm.getAdminUid());
+            if(admin.isFreeAccount()) {
+                if(userProgram.getTestDef().getTestDefId() != CmProgram.ESSENTIALS.getDefId()) {
+                    throw new CmExceptionFreeProgramDenied(action.getUserId(), userProgram.getTestName());
+                }
+            }
+            
             StudentActiveInfo activeInfo = cmProgram.getActiveInfo();
 
             AccountType accountType = CmAdminDao.getInstance().getAccountType(conn, sm.getAdminUid());
@@ -142,7 +157,13 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
-            throw new CmRpcException(e);
+        	
+        	if(e instanceof CmRpcException) {
+        	    throw e;
+        	}
+        	else {
+        	    throw new CmRpcException(e);
+        	}
         }
     }
     

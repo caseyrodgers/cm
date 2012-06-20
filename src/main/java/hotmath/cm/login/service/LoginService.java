@@ -7,6 +7,7 @@ import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
 import hotmath.gwt.cm_rpc.client.CmExceptionDoNotNotify;
+import hotmath.gwt.cm_rpc.client.CmExceptionFreeProgramDenied;
 import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
@@ -288,7 +289,8 @@ public class LoginService extends HttpServlet {
 		catch(Exception e) {
 			if ( (e instanceof CmExceptionDoNotNotify)
 			        || e instanceof CmRpcException && ((CmRpcException)e).isUserException()
-			        || e instanceof CmUserException) {
+			        || e instanceof CmUserException
+			        || e instanceof CmExceptionFreeProgramDenied) {
 			    req.getSession().setAttribute("error-msg", e.getMessage());
 			}
 			else {

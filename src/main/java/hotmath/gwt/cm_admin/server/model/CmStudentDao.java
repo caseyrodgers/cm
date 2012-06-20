@@ -33,6 +33,8 @@ import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.CmProgram;
+import hotmath.testset.ha.HaAdmin;
+import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
@@ -2699,7 +2701,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             }
         }
         catch (Exception e) {
-                __logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId));
+                __logger.warn(String.format(">>> verifyActiveProgram(): program is not active uid: %d, testId: %d", uid, testId),e);
                 throw e;
         }
         finally {

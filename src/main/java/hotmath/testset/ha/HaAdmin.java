@@ -8,7 +8,16 @@ package hotmath.testset.ha;
 public class HaAdmin extends HaBasicUserImpl {
 
     int adminId;
+    boolean freeAccount;
     
+    public boolean isFreeAccount() {
+        return freeAccount;
+    }
+
+    public void setFreeAccount(boolean freeAccount) {
+        this.freeAccount = freeAccount;
+    }
+
     public int getAdminId() {
         return adminId;
     }
