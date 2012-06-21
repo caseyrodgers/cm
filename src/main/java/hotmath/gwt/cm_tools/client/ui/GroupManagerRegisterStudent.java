@@ -86,6 +86,11 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	
 	
     private void assignProgram(final Integer adminId, final Integer groupId, final StudentModel studentTemplate) {
+        
+        if(!verifyOkToSave(studentTemplate)) {
+            return;
+        }
+
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {

@@ -837,23 +837,36 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
             }
         }.attempt();
 	}
+	
+	
+	/** Return true only if OK to save changes. 
+	 * 
+	 * @param sm
+	 * @return
+	 */
+	protected boolean verifyOkToSave(StudentModel sm) {
+        /** Free accounts can only change to Essentials/Essentials Topcs
+         * 
+         */
+        if(acctInfoMdl.getIsFreeAccount()) {
+            String progName = sm.getProgram().getProgramDescription();
+            String pn = sm.getProgram().getCustom().getCustomProgramName();
+            if(!progName.equals("Ess Prof") && !(pn != null && pn.equals("Essentials Topics"))) {
+                CatchupMathTools.showAlert("Change not allowed", "Sorry, this program is not currently available under your school license.");
+                return false;
+            }
+        }
+        
+        return true;
+	}
 
 	protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
 	        final Boolean passcodeChanged, final Boolean passPercentChanged, final Boolean sectionNumChanged) {
-	    
-	    
-	    /** Free accounts can only change to Essentials/Essentials Topcs
-	     * 
-	     */
-	    if(acctInfoMdl.getIsFreeAccount()) {
-	        String progName = sm.getProgram().getProgramDescription();
-	        String pn = sm.getProgram().getCustom().getCustomProgramName();
-	        if(!progName.equals("Ess Prof") && !(sm.getProgram().getCustom() != null && pn.equals("Essentials Topics"))) {
-	            CatchupMathTools.showAlert("Change not allowed", "Sorry, this program is not currently available under your school license.");
-	            return;
-	        }
+
+	    if(!verifyOkToSave(sm)) {
+	        return;
 	    }
-	        
+
 		new RetryAction<StudentModelI> () {
 		    @Override
 		    public void attempt() {
