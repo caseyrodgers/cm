@@ -427,7 +427,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                             java.sql.Date dt = rs.getDate("catchup_expire_date");
                             ai.setAccountCreateDate(rs.getDate("account_create_date"));
                             ai.setIsFreeAccount(rs.getInt("is_free")==0?Boolean.FALSE:Boolean.TRUE);
-                            
+                            ai.setCountFreeStudents(rs.getInt("student_count_free"));
                             /** if account create is null (test account), use default
                              * 
                              */
