@@ -138,6 +138,11 @@ public class ParallelProgramSetup extends RegisterStudent {
 	}
 
 	private void saveParallelProgramSetup(StudentModel student) {
+	    
+	    if(!verifyOkToSave(student)) {
+	        return;
+	    }
+	    
 	    CmServiceAsync s = CmShared.getCmService();
         s.execute(new SaveParallelProgramAction(student.getAdminUid(), student, parellelProgId), new AsyncCallback<RpcData>() {
             @Override

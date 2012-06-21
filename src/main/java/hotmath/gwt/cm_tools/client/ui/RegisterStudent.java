@@ -839,13 +839,15 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	}
 	
 	
-	/** Return true only if OK to save changes. 
+	/** Will show a message if not allowed to save.
+	 * 
+	 * Return true only if OK to save changes. 
 	 * 
 	 * @param sm
 	 * @return
 	 */
 	protected boolean verifyOkToSave(StudentModel sm) {
-        /** Free accounts can only change to Essentials/Essentials Topcs
+        /** Free accounts can only change to Essentials/Essentials Topics
          * 
          */
         if(acctInfoMdl.getIsFreeAccount()) {

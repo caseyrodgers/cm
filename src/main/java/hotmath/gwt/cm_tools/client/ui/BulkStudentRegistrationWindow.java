@@ -127,6 +127,12 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 						public void afterValidation(StudentModel student) {
 							_student = student;
 
+							
+							if(!verifyOkToSave(student)) {
+							    return;
+							}
+							
+							
 							if (!_uploadForm.isValid()) {
 								CatchupMathTools
 								.showAlert("Select a tab delimited file containing a list of names and passwords.");

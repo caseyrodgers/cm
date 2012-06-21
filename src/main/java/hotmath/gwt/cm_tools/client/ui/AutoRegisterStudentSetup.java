@@ -109,6 +109,11 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	        return;
 	    }
 	    
+	    
+	    if(!verifyOkToSave(student)) {
+	        return;
+	    }
+	    
 	    CmServiceAsync s = CmShared.getCmService();
         s.execute(new SaveAutoRegistrationAction(student.getAdminUid(), student), new AsyncCallback<RpcData>() {
             @Override
