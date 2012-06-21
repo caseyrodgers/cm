@@ -64,13 +64,13 @@
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>CmSignpService</servlet-name>
+    <servlet-name>CmSignupService</servlet-name>
     <servlet-class>
       hotmath.cm.signup.CatchupSignupServlet
     </servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>CmSignpService</servlet-name>
+    <servlet-name>CmSignupService</servlet-name>
     <url-pattern>
       /signup_cm
     </url-pattern>
