@@ -413,7 +413,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     	try {
             accountInfo = this.getJdbcTemplate().queryForObject(
                 sql, 
-                new Object[] { adminUid,adminUid,adminUid,adminUid },
+                new Object[] { adminUid,adminUid,adminUid,adminUid,adminUid },
                 new RowMapper<AccountInfoModel>() {
                     public AccountInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         try {

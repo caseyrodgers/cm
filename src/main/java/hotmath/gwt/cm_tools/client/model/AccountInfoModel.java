@@ -93,6 +93,14 @@ public class AccountInfoModel extends BaseModelData  implements Response {
 	public void setTotalStudents(Integer totalStudents) {
 		set("total-students", totalStudents);
 	}
+	
+	public void setCountFreeStudents(Integer cnt) {
+	    set("free-students", cnt);
+	}
+	
+	public Integer getCountFreeStudents() {
+	    return get("free-students");
+	}
 
 	public String getHasTutoring() {
 		return get(HAS_TUTORING_KEY);

@@ -962,51 +962,71 @@ ORDER BY   user_name
 
 .key=ACCOUNT_INFO_SQL
 
+
 select s.id,
-       Ifnull(s.school_type,'NONE')                  as school_name,
+       Ifnull(s.school_type, 'NONE')                  as school_name,
        s.responsible_name,
-       sc.date_expire                                as catchup_expire_date,
+       sc.date_expire                                 as catchup_expire_date,
        sc.service_name,
-       st.date_expire                                as tutoring_expire_date,
+       st.date_expire                                 as tutoring_expire_date,
        h.user_name,
-       h.create_date as account_create_date,       
+       h.create_date                                  as account_create_date,
        t.student_count,
-       Ifnull(cc.max_students,1000)                   as max_students,
+       t2.student_count_free,
+       Ifnull(cc.max_students, 1000)                  as max_students,
        l.login_time,
-       Date_format(l.login_time,'%Y-%m-%d %h:%i %p') as login_date_time,
+       Date_format(l.login_time, '%Y-%m-%d %h:%i %p') as login_date_time,
        h.is_free
 from   SUBSCRIBERS s
        inner join HA_ADMIN h
-         on h.subscriber_id = s.id
+               on h.subscriber_id = s.id
        left join SUBSCRIBERS_SERVICES st
-         on st.subscriber_id = h.subscriber_id
-            and st.service_name = 'tutoring'
+              on st.subscriber_id = h.subscriber_id
+                 and st.service_name = 'tutoring'
        left join SUBSCRIBERS_SERVICES sc
-         on sc.subscriber_id = h.subscriber_id
-            and sc.service_name = 'catchup'
+              on sc.subscriber_id = h.subscriber_id
+                 and sc.service_name = 'catchup'
        left join SUBSCRIBERS_SERVICES_CONFIG_CATCHUP cc
-         on cc.subscriber_svc_id = sc.ssid
-       left join (select   admin_id,
-                           is_active,
-                           Count(* ) as student_count
-                  from     HA_USER
-                  where    admin_id = ?
-                    and    is_active = 1
-                    and    is_auto_create_template = 0
-                  group by admin_id) t
-         on t.admin_id = h.aid
-       left join (select   user_id,
-                           Max(login_time) as login_time
-                  from     HA_USER_LOGIN u
-                  where    u.login_time < (select   Max(login_time) as login_time
-                                           from     HA_USER_LOGIN
-                                           where    user_type = 'ADMIN'
-                                             and    user_id = ?
-                                           group by user_id)
-                           and u.user_id = ?
-                  group by u.user_id) l
-         on l.user_id = h.aid
-where  h.aid = ?
+              on cc.subscriber_svc_id = sc.ssid
+       left join (select admin_id,
+                         is_active,
+                         Count(*) as student_count
+                  from   HA_USER
+                  where  admin_id = ?
+                         and is_active = 1
+                         and is_auto_create_template = 0
+                  group  by admin_id) t
+              on t.admin_id = h.aid
+       left join (select u.admin_id,
+                         u.is_active,
+                         Count(*) as student_count_free
+                  from   HA_USER u
+                         join CM_USER_PROGRAM cp
+                           on cp.id = u.user_prog_id
+                         join HA_TEST_DEF d
+                           on d.test_def_id = cp.test_def_id
+                         left join HA_CUSTOM_PROGRAM cust
+                                on cust.id = cp.custom_program_id
+                  where  u.admin_id = ?
+                         and u.is_active = 1
+                         and is_auto_create_template = 0
+                         and ( d.test_name = 'Essentials'
+                                or ( d.test_name = 'Custom'
+                                     and cust.name = 'Essentials Topics' ) )
+                  group  by admin_id) t2
+              on t2.admin_id = h.aid
+       left join (select user_id,
+                         Max(login_time) as login_time
+                  from   HA_USER_LOGIN u
+                  where  u.login_time < (select Max(login_time) as login_time
+                                         from   HA_USER_LOGIN
+                                         where  user_type = 'ADMIN'
+                                                and user_id = ?
+                                         group  by user_id)
+                         and u.user_id = ?
+                  group  by u.user_id) l
+              on l.user_id = h.aid
+where  h.aid = ? 
            
            
            
