@@ -198,7 +198,7 @@ pageTracker._trackPageview();
                             </li>
                             <li>
                                 <img src='/assets/images/arrow_right_small.png'/>
-                                <a href='#' onclick='showWebinar();return false;'>Forty-minute Teacher Video
+                                <a href='/training-videos'>Teacher Training Videos
                                 </a>
                             </li>
                         </ul>
@@ -242,7 +242,12 @@ pageTracker._trackPageview();
                             </li>
                             <li>
                                 <img src='/assets/images/arrow_right_small.png'/>
-                                <a href='/faq.html'>FAQ
+                                <a href='/faq.html'>FAQ-1 (Prospective Licensees)
+                                </a>
+                            </li>
+                            <li>
+                                <img src='/assets/images/arrow_right_small.png'/>
+                                <a href='/teacher-faq.html'>FAQ-2 (Current Licensees)
                                 </a>
                             </li>
                         </ul>
