@@ -235,8 +235,8 @@ public class CmMainPanel extends LayoutContainer {
 							
                         case EVENT_TYPE_MODAL_WINDOW_CLEAR:
                             if (__lastInstance != null) {
-                                __lastInstance = null;
                                 __lastInstance._mainContent = null;
+                                __lastInstance = null;
                             }
 						}
 					}
