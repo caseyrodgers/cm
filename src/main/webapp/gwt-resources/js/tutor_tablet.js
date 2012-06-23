@@ -127,7 +127,7 @@ var TutorManager = {
         TutorManager.solutionTitle = solutionTitle;
         TutorManager.solutionData = solutionData;
         TutorManager.solutionVariableContext = solutionVariableContext;
-        
+
         TutorManager.loadTutorData(solutionData, stepText, solutionVariableContext);
         TutorManager.analyzeLoadedData();
 

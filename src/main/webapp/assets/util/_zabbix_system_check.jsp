@@ -14,7 +14,7 @@
       conn = DriverManager.getConnection(url + dbName, userName, password);
       ResultSet rs = conn.createStatement().executeQuery("select count(*) from items where status = 3");
       rs.first();
-      numDisabledItems = rs.getInt(0);
+      numDisabledItems = rs.getInt(1);
   }
   finally {
       conn.close();
