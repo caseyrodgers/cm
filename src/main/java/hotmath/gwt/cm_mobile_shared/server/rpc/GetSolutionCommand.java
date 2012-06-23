@@ -37,9 +37,6 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
 
     @Override
     public SolutionResponse execute(final Connection conn, GetSolutionAction action) throws Exception {
-        if(true) {
-            throw new Exception("Command not used");
-        }
         try {
             
             String pid = action.getPid();
