@@ -199,7 +199,7 @@ function showTeacherVideo(name) {
        else if (name == 'special-needs') {
             html = '<iframe src="/training-videos/embedded-special-needs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
         closeFoot;
-            title = 'Special Needs';
+            title = 'At Risk and Special Needs';
        }        
         
 
