@@ -308,7 +308,7 @@ var Quotes =
      },
      {
          text:'Eighth-graders who take an online Algebra I course score higher on end-of-year algebra assessments than other students who take the standard instructor-led math program offered by their schools and are twice as likely to follow an advanced course sequence in high school as their peers.',
-         link_text: 'Access to Algebra I: The Effects of Online Mathematics for Grade 8 Students (2011), Regional Educational Laboratory Northeast and Islands, Institute of Education Sciences',
+         link_text: 'Institute of Education Sciences',
          link_type:'research'
      },
      {
