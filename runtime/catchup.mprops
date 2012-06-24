@@ -1678,7 +1678,7 @@ where u.uid = ?
 ##
 select count(*)
 from (
-    select date(login_time),count(*)
+    select date(login_time), count(*)
     from HA_USER_LOGIN ul 
     where ul.user_id = ?
     and login_time >= ?
@@ -3010,7 +3010,7 @@ where lid = ?
 
 .key=INSERT_LOGIN_INFO
 
-insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name, browser_info, is_real_login,is_html5_only)
+insert into HA_USER_LOGIN(user_id, login_key, user_type, login_time,login_name, browser_info, is_real_login, is_html5_only)
 values(?,?,?,?,?,?,?,?)
 
 
@@ -3162,7 +3162,7 @@ where a.subscriber_id = sc.subscriber_id
   and sc.max_students < c.student_count
   and ss.subscriber_id = a.subscriber_id
   and sc.subscriber_svc_id = ss.ssid
-  and s.sales_zone = sz.zone_id
+  and s.sales_zone = sz.zone
 order by overage desc
 
 
