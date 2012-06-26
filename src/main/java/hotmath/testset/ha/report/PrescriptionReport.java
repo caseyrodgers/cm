@@ -1,5 +1,6 @@
 package hotmath.testset.ha.report;
 
+import hotmath.ProblemID;
 import hotmath.SolutionManager;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescription.SessionData;
@@ -42,6 +43,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 /**
  * Checks all CM Programs for anomalies.
@@ -335,7 +338,8 @@ public class PrescriptionReport {
                             }
 
                         } else {
-                            if (!SolutionManager.getInstance().doesSolutionExist(conn, p.getRpp().getFile())) {
+                            String pid = p.getRpp().getFile(); 
+                            if (!SolutionManager.getInstance().doesSolutionExist(conn, SbUtilities.getToken(pid,1, "$"))) {
                                 logMessage(prescription.getTestRun().getRunId(), "WARNING: Session " + i
                                         + ": RPP does not exist '" + p.getRpp().getFile() + "'");
                             }
