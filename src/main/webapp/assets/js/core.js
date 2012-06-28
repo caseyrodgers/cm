@@ -20,11 +20,11 @@ function $get(x) {
 
 
 function setupPage() {
+
     /** setup menu buttons
      *
      */
     YUI().use('node', function(Y) {
-
         Y.on('domready',function() {
             if(CmPage.menuItem > -1) {
                 /** Set the selected menu button */
@@ -57,6 +57,7 @@ function setupPage() {
 function setupPageLocal() {
     /** empty */
 }
+
 
 YUI().use('node',function(Y) {
     Y.on('domready',function() {
@@ -146,7 +147,6 @@ function closeTeacherVideo() {
 }
 
 function showTeacherVideo(name) {
-
         if (_videoOverlay != null) {
                 showDialog('Sorry, only one video may be viewed at a time', 'Training Video Message', 4);
                 return;
