@@ -103,8 +103,8 @@ public class GradeBookDialog extends CmWindow {
         configs.add(column);
         
         int lessonNum=1;
-        for(GradeBookModel m: data) {
-            
+        if(data.size() > 0) {
+            GradeBookModel m =  data.get(0);
             for(String pn: m.getPropertyNames()) {
                 if(pn.startsWith("Asg")) {
                     ColumnConfig lessonColumn = new ColumnConfig();
