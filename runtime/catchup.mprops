@@ -3533,3 +3533,24 @@ SELECT run_id, create_date, pdf
 FROM   HA_TEST_RUN_RESULTS_PDF
 WHERE run_id = ?
 
+
+
+###############################
+# GradeLevelDao 
+#################################
+.key=GET_GRADE_BOOK_DATA
+
+select u.uid, u.user_name,l.lesson_name, count(*) as count_entries
+from  HA_USER u
+  JOIN HA_TEST t on t.user_id = u.uid
+  JOIN CM_USER_PROGRAM p on p.id = t.user_prog_id
+  JOIN  HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id
+  JOIN HA_TEST_RUN r on r.test_id = t.test_id
+  JOIN HA_TEST_RUN_WIDGET_INPUT_ANSWERS a on a.run_id = r.run_id
+  JOIN HA_TEST_RUN_LESSON l on l.run_id = a.run_id
+where u.admin_id = ?  
+and     cp.name = 'Homework'
+group by user_name, l.lesson_name  
+
+
+

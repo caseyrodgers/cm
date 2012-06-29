@@ -10,6 +10,7 @@ import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
 import hotmath.gwt.cm_admin.server.model.CmQuizzesDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_admin.server.model.GradeBookDao;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestRunDao;
@@ -136,5 +137,12 @@ public class SpringManager_Test extends TestCase{
         SolutionDao testDao = (SolutionDao)manager.getBeanFactory().getBean("hotmath.testset.ha.SolutionDao");
         assertNotNull(testDao);
     }
+    
+    public void testGradeBookDao() throws Exception {
+        SpringManager manager = SpringManager.getInstance();
+        GradeBookDao testDao = (GradeBookDao)manager.getBeanFactory().getBean(GradeBookDao.class.getName());
+        assertNotNull(testDao);
+    }
+    
 
 }
