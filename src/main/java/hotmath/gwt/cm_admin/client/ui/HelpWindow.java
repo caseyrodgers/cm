@@ -3,9 +3,7 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
@@ -33,11 +31,11 @@ public class HelpWindow extends CmWindow {
         
         
         
-        Button webinar = new Button("Teacher Walkthrough Video");
-        webinar.setToolTip("View a webinar explaining Catchup Math in detail.");
+        Button webinar = new Button("Teacher Training Videos");
+        webinar.setToolTip("Watch our training videos.");
         webinar.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                new WebinarWindow();
+            	showTrainingVideosPage();
             }
         });
         addButton(webinar);
@@ -85,5 +83,10 @@ public class HelpWindow extends CmWindow {
             });
         }        
     }
-}
 
+    private native void showTrainingVideosPage() /*-{
+        var tv = window.open('/training-videos');
+        tv.focus();
+    }-*/;
+
+}
