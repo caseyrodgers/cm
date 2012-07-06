@@ -4,7 +4,6 @@ import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
@@ -37,12 +36,12 @@ public class GettingStartedGuideWindow extends CmWindow {
         addButton(closeBtn);
 
         
-        Button webinar = new Button("VIDEO: Teaching with Catchup Math");
+        Button webinar = new Button("Teaching with Catchup Math Videos");
         webinar.setStyleAttribute("margin","10px;");
-        webinar.setToolTip("This supplement to our Getting Started Guide is for teachers and administrators.  It is divided into sections.");
+        webinar.setToolTip("These videos supplement our Getting Started Guide for teachers and administrators");
         webinar.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
-                new WebinarWindow();
+                showTrainingVideosPage();
             }
         });
         add(webinar);
@@ -50,6 +49,11 @@ public class GettingStartedGuideWindow extends CmWindow {
 
         setVisible(true);
     }
+    
+    private native void showTrainingVideosPage() /*-{
+        var tv = window.open('/training-videos');
+        tv.focus();
+    }-*/;
 
     public void onClick(ClickEvent event) {
     }
