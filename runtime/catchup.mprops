@@ -3536,21 +3536,21 @@ WHERE run_id = ?
 
 
 ###############################
-# GradeLevelDao 
+# GradeBookDao 
 #################################
 .key=GET_GRADE_BOOK_DATA
 
-select u.uid, u.user_name,l.lesson_name, count(*) as count_entries
-from  HA_USER u
-  JOIN HA_TEST t on t.user_id = u.uid
-  JOIN CM_USER_PROGRAM p on p.id = t.user_prog_id
-  JOIN  HA_CUSTOM_PROGRAM cp on cp.id = p.custom_program_id
-  JOIN HA_TEST_RUN r on r.test_id = t.test_id
-  JOIN HA_TEST_RUN_WIDGET_INPUT_ANSWERS a on a.run_id = r.run_id
-  JOIN HA_TEST_RUN_LESSON l on l.run_id = a.run_id
-where u.admin_id = ?  
-and     cp.name = 'Homework'
-group by user_name, l.lesson_name  
-
-
-
+select s.*, if (s.count_entries != 0, round(num_correct * 100 / count_entries), 0) as percent_correct
+from (
+  select u.uid, u.user_name, cp.id as cp_id, cp.name as cp_name, l.lesson_name,
+         round(count(*) * if(a.pid is null,0, 1)) as count_entries, ifnull(sum(correct), 0) as num_correct
+  from HA_USER u
+  join HA_CUSTOM_PROGRAM cp on cp.admin_id = u.admin_id and upper(cp.name) like 'HOMEWORK%'
+  left outer JOIN CM_USER_PROGRAM p on p.custom_program_id = cp.id and p.user_id = u.uid
+  left outer JOIN HA_TEST t on t.user_prog_id = p.id
+  left outer JOIN HA_TEST_RUN r on r.test_id = t.test_id
+  left outer JOIN HA_TEST_RUN_WIDGET_INPUT_ANSWERS a on a.run_id = r.run_id
+  left outer JOIN HA_TEST_RUN_LESSON l on l.run_id = a.run_id and l.lesson_viewed is not null
+  left outer JOIN HA_CUSTOM_PROGRAM_LESSON pl on pl.program_id = cp.id and pl.lesson = l.lesson_name
+  where u.admin_id = ?
+  group by user_name, cp.id, pl.id) s
