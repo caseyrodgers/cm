@@ -3549,8 +3549,10 @@ from (
   left outer JOIN CM_USER_PROGRAM p on p.custom_program_id = cp.id and p.user_id = u.uid
   left outer JOIN HA_TEST t on t.user_prog_id = p.id
   left outer JOIN HA_TEST_RUN r on r.test_id = t.test_id
-  left outer JOIN HA_TEST_RUN_WIDGET_INPUT_ANSWERS a on a.run_id = r.run_id
+  left outer JOIN HA_TEST_RUN_WIDGET_INPUT_ANSWERS a on a.run_id = r.run_id 
+       and answer_time >= ?
+       and answer_time <= ?
   left outer JOIN HA_TEST_RUN_LESSON l on l.run_id = a.run_id and l.lesson_viewed is not null
   left outer JOIN HA_CUSTOM_PROGRAM_LESSON pl on pl.program_id = cp.id and pl.lesson = l.lesson_name
-  where u.admin_id = ?
+  where u.uid in ( $$UID_LIST$$ )
   group by user_name, cp.id, pl.id) s
