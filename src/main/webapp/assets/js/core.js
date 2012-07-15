@@ -200,11 +200,15 @@ function showTeacherVideo(name) {
             html = '<iframe src="/training-videos/embedded-special-needs.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
         closeFoot;
             title = 'At Risk and Special Needs';
-       }        
-        
+       }
+       else if (name == 'student-how-to') {
+            html = '<iframe src="/training-videos/embedded-student-how-to.html" width="630" height="525px" scrolling="no" frameborder="no"></iframe>' +
+        closeFoot;
+            title = 'Student How To';
+       }
 
     var head = '<a href="#" onclick="closeTeacherVideo();return false" class="close"><span>close</span> X</a>' + title;
-    
+
     var tail = '<a href="#" onclick="closeTeacherVideo();return false" class="close" style="background-color: white"><span>close</span> X</a>';
 
     YUI().use('anim','overlay',
