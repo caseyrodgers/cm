@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.spring.SpringManager;
 
@@ -38,10 +39,11 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
     private GradeBookDao() {
     }
 
-    public List<GradeBookModel> getGradeBookData(int aid) throws Exception {
+    public List<GradeBookModel> getGradeBookData(int adminId, List<Integer> uidList, String[] dates) throws Exception {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA");
-        List<GradeBookModel> list = getJdbcTemplate().query(sql, new Object[] { aid }, new RowMapper<GradeBookModel>() {
+        sql = QueryHelper.createInListSQL(sql, uidList);
+        List<GradeBookModel> list = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1] }, new RowMapper<GradeBookModel>() {
             @Override
             public GradeBookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"), rs.getString("lesson_name"), 

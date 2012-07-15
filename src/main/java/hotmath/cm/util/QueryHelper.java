@@ -204,4 +204,15 @@ public class QueryHelper {
     	
     	return vals;
     }
+    
+    static public String[] getDatesFromDateRange(String dateRange) {
+        final String[] dates = dateRange.split(" - ");
+        assert (dates.length == 2);
+
+        /** match at beginning of day and end of day, inclusive */
+        dates[0] = dates[0] + " 00:00";
+        dates[1] = dates[1] + " 23:59";
+
+        return dates;
+    }
 }
