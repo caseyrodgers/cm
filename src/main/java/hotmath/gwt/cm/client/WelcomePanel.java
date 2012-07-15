@@ -121,7 +121,7 @@ public class WelcomePanel extends LayoutContainer {
             
             html += "<p>Please work out your answers carefully using our whiteboard or pencil and paper.</p>" +
                     "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' " +
-                    " href='#' onclick='showMotivationalVideo_Gwt();return false;'>Watch motivational video</a>";
+                    " href='#' onclick='showMotivationalVideo_Gwt();return false;'>Video: How to use Catchup Math</a>";
             
             setHtml(html);
         }

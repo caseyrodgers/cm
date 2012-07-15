@@ -288,11 +288,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 String html = 
                           "<div class='info'>" 
                         + "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
-                        + "<li>Choose any resource from the left-side menu</li> "
-                        + "<li>The Help button has neat features</li> "
-                        + "<li>Check for new Flash Cards and Games</li> "
-                        + "<li>Use our whiteboard to work the problems</li>"
-                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt();return false;'>Professor Musa Video</li>"
+                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(\"how\");return false;'>How to use Catchup Math</li>"
+                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(\"musa\");return false;'>Professor Musa Video</li>"
                         + "</ul></div>";
                 
                 Html ohtml = new Html(html);

@@ -14,8 +14,6 @@ import hotmath.gwt.cm_tools.client.CmLoginPanel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
-import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -413,7 +411,7 @@ public class CatchupMath2 implements EntryPoint {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                new GenericVideoPlayerForMona(MonaVideo.MOTIVATIONAL);
+                //new GenericVideoPlayerForMona(MonaVideo.MOTIVATIONAL);
             }
         });
     }

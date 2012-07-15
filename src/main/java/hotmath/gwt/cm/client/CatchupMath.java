@@ -26,6 +26,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
+import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -47,7 +48,6 @@ import com.extjs.gxt.ui.client.widget.Viewport;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -536,11 +536,16 @@ public class CatchupMath implements EntryPoint {
         });
     }
 
-    static public void showMotivationalVideo_Gwt() {
+    static public void showMotivationalVideo_Gwt(final String which) {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                new GenericVideoPlayerForMona(MonaVideo.MOTIVATIONAL);
+                if(which.equals("how")) {
+                    new StudentHowToFlashWindow();
+                }
+                else {
+                    new GenericVideoPlayerForMona(MonaVideo.MOTIVATIONAL);
+                }
             }
         });
     }
@@ -560,6 +565,6 @@ public class CatchupMath implements EntryPoint {
     static private native void publishNativeJsAfterLoad() /*-{
                                                $wnd.doLoadResource_Gwt = @hotmath.gwt.cm.client.CatchupMath::doResourceLoad(Ljava/lang/String;Ljava/lang/String;);
                                                
-                                               $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt();
+                                               $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt(Ljava/lang/String;);
                                                }-*/;
 }

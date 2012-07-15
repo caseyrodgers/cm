@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -105,7 +106,17 @@ public class HelpWindow extends CmWindow {
         FieldSet fs = new FieldSet();
         fs.setHeading("Using Catchup Math");
         fs.add(messageArea);
+        Button howTo = new Button("Video: How to use Catchup Math");
+        howTo.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                new StudentHowToFlashWindow();
+            }
+        });
+        fs.add(howTo);
+        
         vp.add(fs);
+        
         
         if(CmShared.getQueryParameter("debug") != null) {
             FieldSet fsDebug = new FieldSet();
@@ -114,6 +125,8 @@ public class HelpWindow extends CmWindow {
             vp.add(fsDebug);
         }
 
+        
+        
         
         bgCombo = new ComboBox<BackgroundModel>();
         bgCombo.setStore(getBackgroundListStores());
