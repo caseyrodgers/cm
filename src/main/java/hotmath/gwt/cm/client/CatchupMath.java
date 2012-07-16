@@ -540,7 +540,7 @@ public class CatchupMath implements EntryPoint {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                if(which.equals("how")) {
+                if(which == null) {
                     new StudentHowToFlashWindow();
                 }
                 else {

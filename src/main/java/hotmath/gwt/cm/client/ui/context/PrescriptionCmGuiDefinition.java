@@ -288,7 +288,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 String html = 
                           "<div class='info'>" 
                         + "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
-                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(\"how\");return false;'>How to use Catchup Math</li>"
+                        + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(null);return false;'>How to use Catchup Math</li>"
                         + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(\"musa\");return false;'>Professor Musa Video</li>"
                         + "</ul></div>";
                 
