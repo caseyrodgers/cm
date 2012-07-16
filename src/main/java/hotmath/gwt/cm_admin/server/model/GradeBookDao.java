@@ -75,6 +75,13 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
          * 
          */
         List<GradeBookModel> pivot = new ArrayList<GradeBookModel>(list.size());
+        
+        /**
+         * If assignmentMap is empty there is nothing else to do,
+         * just return empty list
+         */
+        if (assignmentMap.size() < 1) return pivot;
+        
         int lastUid = -1;
         int lastCpId = -1;
         GradeBookModel pivotModel = null;
