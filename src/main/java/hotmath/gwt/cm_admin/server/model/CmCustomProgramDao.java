@@ -528,15 +528,15 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<CustomQuizId> getCustomProgramQuizIds(int programId, int programSegment)
+    public CmList<CustomQuizId> getCustomProgramQuizIds(int programId, int segmentSlot)
             throws Exception {
-        assert(programSegment>0);
+        assert(segmentSlot>0);
         PreparedStatement stmt = null;
         
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            ProgramSegment segment = readProgramSegments(conn, programId).get(programSegment-1);
+            ProgramSegment segment = readProgramSegments(conn, programId).get(segmentSlot-1);
             CustomLessonModel theQuiz = segment.getQuiz();
             
             Integer quid = theQuiz != null?theQuiz.getQuizId():null;
@@ -548,8 +548,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             return quizIds;
         }
         catch (Exception e) {
-            throw new Exception(String.format("*** Exception getting quizIds for programId: %d, programSegment: %d",
-        			programId, programSegment), e);
+            throw new Exception(String.format("*** Exception getting quizIds for programId: %d, segmentSlot: %d",
+        			programId, segmentSlot), e);
         }
         finally {
             SqlUtilities.releaseResources(null, stmt, conn);

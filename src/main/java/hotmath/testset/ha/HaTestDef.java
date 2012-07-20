@@ -203,7 +203,7 @@ public class HaTestDef {
      * segment.
      * 
      *
-     * The segmentSlot is the position in the alternate tests to selection questions
+     * The segmentSlot is the offset (section) position in the program's textcode 
      * 
      * @return
      * @throws HotMathException

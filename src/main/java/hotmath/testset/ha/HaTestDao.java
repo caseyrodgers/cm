@@ -203,7 +203,7 @@ public class HaTestDao extends SimpleJdbcDaoSupport {
         final StudentUserProgramModel userProgram = CmUserProgramDao.getInstance().loadProgramInfoCurrent(uid);
 
         /**
-         * Determine determine which alternate test to use
+         * Determine which alternate test to use
          * 
          * @see CreateTestRunCommand.java
          */

@@ -18,7 +18,7 @@ public class GradeBookDao_Test extends TestCase {
     }
     
     public void testGetData() throws Exception {
-        List<GradeBookModel> data = GradeBookDao.getInstance().getGradeBookData(2);
+        List<GradeBookModel> data = GradeBookDao.getInstance().getGradeBookData(2,null,null);
         assertTrue(data.size() > 0);
     }
 }

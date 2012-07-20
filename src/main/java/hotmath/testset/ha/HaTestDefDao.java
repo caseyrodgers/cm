@@ -351,12 +351,12 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public List<String> getTestIds(StudentUserProgramModel userProgram, String textcode,
-            String chapter, int section, int startProblemNumber, int endProblemNumber, HaTestConfig config)
+            String chapter, int segmentSlot, int startProblemNumber, int endProblemNumber, HaTestConfig config)
             throws Exception {
         if (userProgram.getCustomProgramId() > 0) {
-            return getTestIdsCustom(userProgram, section, startProblemNumber, endProblemNumber, config);
+            return getTestIdsCustom(userProgram, segmentSlot, startProblemNumber, endProblemNumber, config);
         } else {
-            return getTestIdsBasic(textcode, chapter, section, startProblemNumber, endProblemNumber, config);
+            return getTestIdsBasic(textcode, chapter, segmentSlot, startProblemNumber, endProblemNumber, config);
         }
     }
 
@@ -372,10 +372,10 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    private List<String> getTestIdsCustom(StudentUserProgramModel userProgram, int section, int startProblemNumber,
+    private List<String> getTestIdsCustom(StudentUserProgramModel userProgram, int segmentSlot, int startProblemNumber,
             int endProblemNumber, HaTestConfig config) throws Exception {
         int customProgramId = userProgram.getCustomProgramId();
-        CmList<CustomQuizId> items = CmCustomProgramDao.getInstance().getCustomProgramQuizIds(customProgramId, section);
+        CmList<CustomQuizId> items = CmCustomProgramDao.getInstance().getCustomProgramQuizIds(customProgramId, segmentSlot);
 
         List<String> pids = new ArrayList<String>();
         for (CustomQuizId quid : items) {
@@ -397,7 +397,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public List<String> getTestIdsBasic(String textcode, String chapter, int section, int startProblemNumber,
+    public List<String> getTestIdsBasic(String textcode, String chapter, int segmentSlot, int startProblemNumber,
             int endProblemNumber, HaTestConfig config) throws Exception {
 
         String sql = "";
@@ -416,7 +416,7 @@ public class HaTestDefDao extends SimpleJdbcDaoSupport {
         }
 
         List<String> pids = getJdbcTemplate().query(sql,
-                new Object[] { textcode, chapter, section + 1, startProblemNumber, endProblemNumber },
+                new Object[] { textcode, chapter, segmentSlot + 1, startProblemNumber, endProblemNumber },
                 new RowMapper<String>() {
                     @Override
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {

@@ -20,7 +20,15 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         super.setUp();
         dao = HaTestDefDao.getInstance();
     }
-    
+    public void testGetTestIdsForFirstDef() throws Exception {
+        List<String> names = dao.getTestNames(conn);
+        HaTestDef def = dao.getTestDef(names.get(0));
+        HaTestConfig config = new HaTestConfig(null);
+        List<String> pids = dao.getTestIdsForSegment(userProgram,1, def.getTextCode(), def.chapter, config,0);
+        assertTrue(pids.size() > 0);
+
+    }
+
     
     public void testGetSubTitle3() throws Exception {
         int uid = setupDemoAccount();
@@ -77,14 +85,6 @@ public class HaTestDefDao_Test extends CmDbTestCase {
         assertTrue(names.size() > 0);
     }
 
-    public void testGetTestIdsForFirstDef() throws Exception {
-        List<String> names = dao.getTestNames(conn);
-        HaTestDef def = dao.getTestDef(names.get(0));
-        HaTestConfig config = new HaTestConfig(null);
-        List<String> pids = dao.getTestIdsForSegment(userProgram,1, def.getTextCode(), def.chapter, config,0);
-        assertTrue(pids.size() > 0);
-
-    }
 
     public void testGetProgramChapters() throws Exception {
         List<String> names = dao.getTestNames(conn);
