@@ -31,6 +31,7 @@ public class CmInmhStandardResources extends ArrayList<PrescriptionSessionDataRe
         resourceType.setDescription("Math games that might help you");
 
         List<InmhItemData> items = new ArrayList<InmhItemData>();
+        items.add(new InmhItemData(t, "/hotmath_help/games/numberchef/numchef.swf", "Number Chef"));
         items.add(new InmhItemData(t, "/hotmath_help/games/ctf/ctf_hotmath.swf", "Catch The Fly"));
         items.add(new InmhItemData(t, "/hotmath_help/games/numbercop/numbercop_hotmath.swf", "Number Cop"));
         items.add(new InmhItemData(t, "/hotmath_help/games/kp/kp_hotmath_sound.swf", "Algebra vs. the Cockroaches"));
