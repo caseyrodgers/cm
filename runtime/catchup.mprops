@@ -3538,21 +3538,31 @@ WHERE run_id = ?
 ###############################
 # GradeBookDao 
 #################################
+
 .key=GET_GRADE_BOOK_DATA
 
 select s.*, if (s.count_entries != 0, round(num_correct * 100 / count_entries), 0) as percent_correct
 from (
-  select u.uid, u.user_name, cp.id as cp_id, cp.name as cp_name, l.lesson_name,
-         round(count(*) * if(a.pid is null,0, 1)) as count_entries, ifnull(sum(correct), 0) as num_correct
+  select u.uid, u.user_name, cp.id as cp_id, cp.name as cp_name, l.lesson_name, pl.id as pl_id,
+         x.epp_count as count_entries, ifnull(sum(a.correct), 0) as num_correct
   from HA_USER u
   join HA_CUSTOM_PROGRAM cp on cp.admin_id = u.admin_id and upper(cp.name) like 'HOMEWORK%'
   left outer JOIN CM_USER_PROGRAM p on p.custom_program_id = cp.id and p.user_id = u.uid
   left outer JOIN HA_TEST t on t.user_prog_id = p.id
   left outer JOIN HA_TEST_RUN r on r.test_id = t.test_id
-  left outer JOIN HA_TEST_RUN_WIDGET_INPUT_ANSWERS a on a.run_id = r.run_id 
-       and answer_time >= ?
-       and answer_time <= ?
-  left outer JOIN HA_TEST_RUN_LESSON l on l.run_id = a.run_id and l.lesson_viewed is not null
+  left outer JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id and l.lesson_viewed is not null
   left outer JOIN HA_CUSTOM_PROGRAM_LESSON pl on pl.program_id = cp.id and pl.lesson = l.lesson_name
+  left outer join (
+      select il.file, count(*) as epp_count
+      from inmh_link il
+      where il.link_type='cmextra'
+      group by il.file) x on x.file = pl.file
+  left outer JOIN (
+       select ia.run_id, ia.pid, ia.correct, il.file
+       from HA_TEST_RUN_WIDGET_INPUT_ANSWERS ia, inmh_link il
+       where ia.answer_time >= ?
+         and ia.answer_time <= ?
+         and il.link_key like concat(ia.pid, '%')
+       ) a on a.run_id = r.run_id and a.file = pl.file
   where u.uid in ( $$UID_LIST$$ )
   group by user_name, cp.id, pl.id) s
