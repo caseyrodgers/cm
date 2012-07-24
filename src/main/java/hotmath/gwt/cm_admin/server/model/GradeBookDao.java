@@ -43,14 +43,21 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA");
         sql = QueryHelper.createInListSQL(sql, uidList);
-        List<GradeBookModel> list = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1] }, new RowMapper<GradeBookModel>() {
-            @Override
-            public GradeBookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"), rs.getString("lesson_name"), 
-                        rs.getInt("count_entries"), rs.getInt("num_correct"), rs.getInt("percent_correct"),
-                        rs.getInt("cp_id"));
-            }
-        });
+        List<GradeBookModel> list = new ArrayList<GradeBookModel>(1);
+        try {
+            list = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1] }, new RowMapper<GradeBookModel>() {
+                @Override
+                public GradeBookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"), rs.getString("lesson_name"), 
+                            rs.getInt("count_entries"), rs.getInt("num_correct"), rs.getInt("percent_correct"),
+                            rs.getInt("cp_id"));
+                }
+            });
+        }
+        catch(Exception e) {
+            __logger.error(String.format("Exception: adminId: %d, uidList: %s", adminId, uidList), e);
+            throw e;
+        }
 
         /**
          * identify unique homework assignments
@@ -85,14 +92,17 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
         int lastUid = -1;
         int lastCpId = -1;
         GradeBookModel pivotModel = null;
+        Map<String, String> pivotMap = null;;
         int colCount = 0;
         for(GradeBookModel m : list) {
             
             if(lastUid != m.getUid()) {
                 // new student, start a new pivot row
+            	xferMapToModel(pivotModel, pivotMap);
                 pivotModel = new GradeBookModel();
                 pivotModel.set("userName", m.getUserName());
                 pivotModel.set("uid", m.getUid());
+                pivotMap = new HashMap<String, String>();
                 colCount = 0; // reset
                 lastCpId = -1; // reset
                 pivot.add(pivotModel);
@@ -110,10 +120,14 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             		}
             	}
             	/*
-            	 * nothing completed for current lesson, init all to "N/A"
+            	 * nothing completed for current lesson, init to "N/A"
+            	 * if assigned to any student in current UID list
             	 */
+            	if (assignmentMap.get(cpId) == null) {
+            		assignmentMap.put(cpId, new ArrayList<String>());
+            	}
             	for (int i=0; i < assignmentMap.get(cpId).size(); i++) {
-                    pivotModel.set("Asg-" + (++colCount), "N/A");            		
+                    pivotMap.put("Asg-" + (++colCount), "N/A");            		
             	}
             }
 
@@ -127,8 +141,11 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             			lastCpId = cpId;
             		}
             		int cCount = colCount;
+                	if (assignmentMap.get(cpId) == null) {
+                		assignmentMap.put(cpId, new ArrayList<String>());
+                	}
                 	for (int i=0; i < assignmentMap.get(cpId).size(); i++) {
-                        pivotModel.set("Asg-" + (++cCount), "N/A");            		
+                        pivotMap.put("Asg-" + (++cCount), "N/A");
                 	}
                 	lastCpId = cpId;
             	}
@@ -138,14 +155,29 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             		if (lessonName.equals(lesson)) {
             			String percentCorrect = String.format("%d%s", m.getPercentCorrect(), "%");
             			String key = String.format("Asg-%d", colCount + idx);
-            			pivotModel.set(key, percentCorrect);
-            			__logger.debug(String.format("key: %s, percentCorrect: %s", key, percentCorrect));
+            			pivotMap.put(key, percentCorrect);
             		}
             		idx++;
             	}
             	
             }
         }
+        /**
+         * transfer last one
+         */
+        xferMapToModel(pivotModel, pivotMap);
+
         return pivot;
     }
+
+	private void xferMapToModel(GradeBookModel pivotModel,
+			Map<String, String> pivotMap) {
+		if (pivotMap != null) {
+		    for (int i=1; i <= pivotMap.size(); i++) {
+		    	String key = "Asg-" + i;
+			    pivotModel.set(key, pivotMap.get(key));
+    			__logger.debug(String.format("Model Set: uid: %d, key: %s, percentCorrect: %s", pivotModel.getUid(), key, pivotMap.get(key)));
+		    }
+		}
+	}
 }
