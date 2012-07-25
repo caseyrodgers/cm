@@ -50,7 +50,7 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
                 public GradeBookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                     return new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"), rs.getString("lesson_name"), 
                             rs.getInt("count_entries"), rs.getInt("num_correct"), rs.getInt("percent_correct"),
-                            rs.getInt("cp_id"));
+                            rs.getInt("num_answered"), rs.getInt("cp_id"));
                 }
             });
         }

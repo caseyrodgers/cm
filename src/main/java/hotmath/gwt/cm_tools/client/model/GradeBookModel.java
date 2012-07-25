@@ -7,13 +7,14 @@ public class GradeBookModel extends BaseModel {
     }
     
     public GradeBookModel(Integer uid, String userName, String lessonName, Integer countEntries, Integer numCorrect,
-    		Integer percentCorrect, Integer cpId) {
+    		Integer percentCorrect, Integer numAnswered, Integer cpId) {
         set("uid", uid);
         set("userName", userName);
         set("lessonName", lessonName);
         set("countEntries", countEntries);
         set("numCorrect", numCorrect);
         set("percentCorrect", percentCorrect);
+        set("numAnswered", numAnswered);
         set("cpId", cpId);
     }
     
@@ -39,6 +40,10 @@ public class GradeBookModel extends BaseModel {
 
     public Integer getPercentCorrect() {
     	return get("percentCorrect");
+    }
+
+    public Integer getNumAnswered() {
+    	return get("numAnswered");
     }
 
     public Integer getCpId() {
