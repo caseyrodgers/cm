@@ -3544,7 +3544,7 @@ WHERE run_id = ?
 select s.*, if (s.count_entries != 0, round(num_correct * 100 / count_entries), 0) as percent_correct
 from (
   select u.uid, u.user_name, cp.id as cp_id, cp.name as cp_name, l.lesson_name, pl.id as pl_id,
-         x.epp_count as count_entries, ifnull(sum(a.correct), 0) as num_correct,  sum(if(a.correct is null, 0, 1)) as num_answered
+         ifnull(x.epp_count, 0) as count_entries, ifnull(sum(a.correct), 0) as num_correct,  sum(if(a.correct is null, 0, 1)) as num_answered
   from HA_USER u
   join HA_CUSTOM_PROGRAM cp on cp.admin_id = u.admin_id and upper(cp.name) like 'HOMEWORK%'
   left outer JOIN CM_USER_PROGRAM p on p.custom_program_id = cp.id and p.user_id = u.uid

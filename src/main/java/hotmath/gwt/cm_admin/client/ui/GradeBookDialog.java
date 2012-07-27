@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetGradeBookDataAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
@@ -44,12 +45,22 @@ public class GradeBookDialog extends CmWindow {
         ListStore<GradeBookModel> store = new ListStore<GradeBookModel>();
         _grid = defineGrid(store, defineColumns(data));
         add(_grid);
+        xferAssignmentList(data);
         _grid.getStore().add(data);
         
         layout(true);
     }
     
-    private void readServerData() {
+    private void xferAssignmentList(CmList<GradeBookModel> gbList) {
+    	for (GradeBookModel gbMdl : gbList) {
+    		for (AssignmentModel asgMdl : gbMdl.getAssignmentList()) {
+    			gbMdl.set(asgMdl.getName(), asgMdl.getPercentCorrect());
+    		}
+    	}
+		
+	}
+
+	private void readServerData() {
 
         new RetryAction<CmList<GradeBookModel>>() {
             @Override
@@ -72,7 +83,7 @@ public class GradeBookDialog extends CmWindow {
     
     private Grid<GradeBookModel> defineGrid(final ListStore<GradeBookModel> store, ColumnModel cm) {
         final Grid<GradeBookModel> grid = new Grid<GradeBookModel>(store, cm);
-        grid.setAutoExpandColumn("userName");
+        //grid.setAutoExpandColumn("userName");
         grid.setBorders(true);
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -80,7 +91,7 @@ public class GradeBookDialog extends CmWindow {
         grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
             public void handleEvent(final SelectionEvent<StudentModelExt> se) {
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CatchupMathTools.showAlert("Clicked it");
+                    CatchupMathTools.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
                 }
             }
         });
@@ -102,20 +113,18 @@ public class GradeBookDialog extends CmWindow {
         column.setSortable(true);
         configs.add(column);
         
-        int lessonNum=1;
         if(data.size() > 0) {
             GradeBookModel m =  data.get(0);
-            for(String pn: m.getPropertyNames()) {
-                if(pn.startsWith("Asg")) {
-                    ColumnConfig lessonColumn = new ColumnConfig();
-                    lessonColumn.setId(pn);
-                    lessonColumn.setHeader(pn);
-                    lessonColumn.setWidth(140);
-                    lessonColumn.setSortable(true);
-                    configs.add(lessonColumn);
-                    
-                    lessonNum++;
-                }
+
+            for(AssignmentModel mdl : m.getAssignmentList()) {
+                ColumnConfig lessonColumn = new ColumnConfig();
+                lessonColumn.setId(mdl.getName());
+                lessonColumn.setHeader(mdl.getName());
+                lessonColumn.setToolTip(mdl.getCpName() + " (" + mdl.getLessonName() + ")");
+                lessonColumn.setWidth(70);
+                lessonColumn.setSortable(true);
+
+                configs.add(lessonColumn);
             }
         }
         

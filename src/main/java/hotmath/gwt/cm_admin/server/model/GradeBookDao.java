@@ -2,6 +2,9 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.spring.SpringManager;
 
@@ -48,9 +51,15 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             list = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1] }, new RowMapper<GradeBookModel>() {
                 @Override
                 public GradeBookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"), rs.getString("lesson_name"), 
-                            rs.getInt("count_entries"), rs.getInt("num_correct"), rs.getInt("percent_correct"),
-                            rs.getInt("num_answered"), rs.getInt("cp_id"));
+                	GradeBookModel gbMdl = new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"));
+                	CmList<AssignmentModel> asgList = new CmArrayList<AssignmentModel>();
+                	String percentComplete = String.format("%d%s", rs.getInt("percent_correct"), "%");
+                	AssignmentModel asgMdl = new AssignmentModel( rs.getString("lesson_name"), rs.getInt("count_entries"),
+                			rs.getInt("num_correct"), percentComplete, rs.getInt("num_answered"), rs.getInt("cp_id"),
+                			rs.getString("cp_name"));
+                	asgList.add(asgMdl);
+                	gbMdl.setAssignmentList(asgList);
+                    return gbMdl;
                 }
             });
         }
@@ -62,19 +71,27 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
         /**
          * identify unique homework assignments
          */
-        int id = 0;
-        Map<Integer,List<String>> assignmentMap = new HashMap<Integer,List<String>>();
+        Map<Integer,List<AssignmentModel>> assignmentMap = new HashMap<Integer,List<AssignmentModel>>();
         for(GradeBookModel m : list) {
-        	String lessonName = m.getLessonName();
+        	AssignmentModel asgMdl = m.getAssignmentList().get(0);
+        	String lessonName = asgMdl.getLessonName();
         	if (lessonName == null) continue;
-        	Integer cpId = m.getCpId();
-        	List<String> lessonList = assignmentMap.get(cpId);
-        	if (lessonList == null) {
-        		lessonList = new ArrayList<String>();
-                assignmentMap.put(cpId, lessonList);
+        	Integer cpId = asgMdl.getCpId();
+        	List<AssignmentModel> assignmentList = assignmentMap.get(cpId);
+        	if (assignmentList == null) {
+        		assignmentList = new ArrayList<AssignmentModel>();
+                assignmentMap.put(cpId, assignmentList);
         	}
-            if (lessonList.contains(lessonName) == false) {
-            	lessonList.add(lessonName);
+        	boolean isInList = false;
+        	for (AssignmentModel mdl : assignmentList) {
+        		if (mdl.getCpId().equals(asgMdl.getCpId()) == false ||
+        		    mdl.getLessonName().equals(asgMdl.getLessonName()) == false) continue;
+        		isInList = true;
+        		break;
+        	}
+            //if (assignmentList.contains(asgMdl) == false) {
+            if (isInList == false) {
+            	assignmentList.add(asgMdl);
             }
         }
         
@@ -92,25 +109,26 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
         int lastUid = -1;
         int lastCpId = -1;
         GradeBookModel pivotModel = null;
-        Map<String, String> pivotMap = null;;
+        List<AssignmentModel> pivotList = null;
         int colCount = 0;
-        for(GradeBookModel m : list) {
+        for(GradeBookModel gbMdl : list) {
             
-            if(lastUid != m.getUid()) {
+            if(lastUid != gbMdl.getUid()) {
                 // new student, start a new pivot row
-            	xferMapToModel(pivotModel, pivotMap);
                 pivotModel = new GradeBookModel();
-                pivotModel.set("userName", m.getUserName());
-                pivotModel.set("uid", m.getUid());
-                pivotMap = new HashMap<String, String>();
+                pivotModel.set("userName", gbMdl.getUserName());
+                pivotModel.set("uid", gbMdl.getUid());
+                pivotModel.setAssignmentList(new CmArrayList<AssignmentModel>());
+                pivotList = pivotModel.getAssignmentList();
                 colCount = 0; // reset
                 lastCpId = -1; // reset
                 pivot.add(pivotModel);
-                lastUid = m.getUid();
+                lastUid = gbMdl.getUid();
             }
-            
-            String lessonName = m.getLessonName();
-            Integer cpId = m.getCpId();
+
+            AssignmentModel asgMdl = gbMdl.getAssignmentList().get(0);
+            String lessonName = asgMdl.getLessonName();
+            Integer cpId = asgMdl.getCpId();
 
             if (lessonName == null) {
             	if (lastCpId != cpId) {
@@ -124,10 +142,15 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             	 * if assigned to any student in current UID list
             	 */
             	if (assignmentMap.get(cpId) == null) {
-            		assignmentMap.put(cpId, new ArrayList<String>());
+            		assignmentMap.put(cpId, new ArrayList<AssignmentModel>());
             	}
-            	for (int i=0; i < assignmentMap.get(cpId).size(); i++) {
-                    pivotMap.put("Asg-" + (++colCount), "N/A");            		
+            	int cCount = colCount;
+            	for (AssignmentModel mdl : assignmentMap.get(cpId)) {
+            		AssignmentModel naMdl = new AssignmentModel(mdl.getLessonName(), mdl.getCountEntries(), 0, "N/A", 0,
+            				mdl.getCpId(), mdl.getCpName());
+            		String name = String.format("Asg-%d", ++cCount);
+            		naMdl.setName(name);
+            		pivotList.add(naMdl);
             	}
             }
 
@@ -140,24 +163,34 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             			colCount += assignmentMap.get(lastCpId).size();
             			lastCpId = cpId;
             		}
-            		int cCount = colCount;
                 	if (assignmentMap.get(cpId) == null) {
-                		assignmentMap.put(cpId, new ArrayList<String>());
+                		assignmentMap.put(cpId, new ArrayList<AssignmentModel>());
                 	}
-                	for (int i=0; i < assignmentMap.get(cpId).size(); i++) {
-                        pivotMap.put("Asg-" + (++cCount), "N/A");
+                	int cCount = colCount;
+                	for (AssignmentModel mdl : assignmentMap.get(cpId)) {
+                		AssignmentModel naMdl = new AssignmentModel(mdl.getLessonName(), mdl.getCountEntries(), 0, "N/A", 0,
+                			    mdl.getCpId(), mdl.getCpName());
+                		String name = String.format("Asg-%d", ++cCount);
+                		naMdl.setName(name);
+                		pivotList.add(naMdl);
                 	}
                 	lastCpId = cpId;
             	}
-            	List<String> lessonList = assignmentMap.get(cpId);
-            	int idx = 1;
-            	for (String lesson : lessonList) {
-            		if (lessonName.equals(lesson)) {
-            			String percentCorrect = String.format("%d%s", m.getPercentCorrect(), "%");
-            			String key = String.format("Asg-%d", colCount + idx);
-            			pivotMap.put(key, percentCorrect);
+            	List<AssignmentModel> asgList = assignmentMap.get(cpId);
+            	int cCount = colCount;
+            	for (AssignmentModel asg : asgList) {
+            		++cCount;
+            		if (asgMdl.getCountEntries() > 0 && lessonName.equals(asg.getLessonName())) {
+                		AssignmentModel mdl = new AssignmentModel(asg.getLessonName(), asg.getCountEntries(),
+                				asgMdl.getNumAnswered(), asgMdl.getPercentCorrect(), asgMdl.getNumCorrect(), asg.getCpId(),
+                				asgMdl.getCpName());
+                		String name = String.format("Asg-%d", cCount);
+                		mdl.setName(name);
+                		int index = pivotList.indexOf(mdl);
+                		//__logger.debug("cCount: " + cCount + ", index: " + index);
+                		pivotList.remove(index);
+                		pivotList.add(index, mdl);
             		}
-            		idx++;
             	}
             	
             }
@@ -165,19 +198,8 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
         /**
          * transfer last one
          */
-        xferMapToModel(pivotModel, pivotMap);
+        //xferMapToModel(pivotModel, pivotList);
 
         return pivot;
     }
-
-	private void xferMapToModel(GradeBookModel pivotModel,
-			Map<String, String> pivotMap) {
-		if (pivotMap != null) {
-		    for (int i=1; i <= pivotMap.size(); i++) {
-		    	String key = "Asg-" + i;
-			    pivotModel.set(key, pivotMap.get(key));
-    			__logger.debug(String.format("Model Set: uid: %d, key: %s, percentCorrect: %s", pivotModel.getUid(), key, pivotMap.get(key)));
-		    }
-		}
-	}
 }

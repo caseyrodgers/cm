@@ -1,21 +1,17 @@
 package hotmath.gwt.cm_tools.client.model;
 
-
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 
 public class GradeBookModel extends BaseModel {
-    public GradeBookModel() {
+
+	private static final long serialVersionUID = -5790068503224882819L;
+	
+	public GradeBookModel() {
     }
     
-    public GradeBookModel(Integer uid, String userName, String lessonName, Integer countEntries, Integer numCorrect,
-    		Integer percentCorrect, Integer numAnswered, Integer cpId) {
+    public GradeBookModel(Integer uid, String userName) {
         set("uid", uid);
         set("userName", userName);
-        set("lessonName", lessonName);
-        set("countEntries", countEntries);
-        set("numCorrect", numCorrect);
-        set("percentCorrect", percentCorrect);
-        set("numAnswered", numAnswered);
-        set("cpId", cpId);
     }
     
     public Integer getUid() {
@@ -25,29 +21,13 @@ public class GradeBookModel extends BaseModel {
     public String getUserName() {
         return get("userName");
     }
-    
-    public String getLessonName() {
-        return get("lessonName");
-    }
-    
-    public Integer getCountEntries() {
-        return get("countEntries");
+
+    public CmList<AssignmentModel> getAssignmentList() {
+    	return get("assignmentList");
     }
 
-    public Integer getNumCorrect() {
-    	return get("numCorrect");
-    }
-
-    public Integer getPercentCorrect() {
-    	return get("percentCorrect");
-    }
-
-    public Integer getNumAnswered() {
-    	return get("numAnswered");
-    }
-
-    public Integer getCpId() {
-    	return get("cpId");
+    public void setAssignmentList(CmList<AssignmentModel> assignmentList) {
+    	set("assignmentList", assignmentList);
     }
 }
 
