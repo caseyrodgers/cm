@@ -24,6 +24,7 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 
 	String _subject;
 	Presenter presenter;
+	String _title;
 
 	GenericContainerTag listItems = new GenericContainerTag("ul");
 	
@@ -134,9 +135,14 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 		this.presenter = presenter;
     }
 
+	String backButtonText="back";
     @Override
     public String getBackButtonText() {
-        return "back";
+        return backButtonText;
+    }
+
+    public void setBackButtonText(String backButtonText) {
+        this.backButtonText = backButtonText;
     }
     
     @Override
@@ -162,7 +168,12 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
     
     @Override
     public String getTitle() {
-        return  _subject;
+        return (_title != null)?_title:_subject;
+    }
+    
+    @Override
+    public void setTitle(String title) {
+        _title = title;
     }
     
     @Override

@@ -1,5 +1,6 @@
 package hotmath.gwt.hm_mobile.client;
 
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.TokenParserGeneric;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
@@ -16,6 +17,7 @@ import hotmath.gwt.hm_mobile.client.place.BookViewPlace;
 import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 import hotmath.gwt.hm_mobile.client.place.TutorViewPlace;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
+import hotmath.gwt.hm_mobile.client.view.BookListViewImpl;
 import hotmath.gwt.hm_mobile.client.view.BookSearchView;
 import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.CategoryListView;
@@ -42,13 +44,35 @@ public class HmMobileHistoryListener implements ValueChangeHandler<String> {
                  * 
                  */
                 //resetViewPort();
+                
+                
+                /** If subject passed as argument, then setup 
+                 *  subject page as the home.
+                 * 
+                 */
     
                 final String type = token.getToken(0);
                 if(type == null || type.length() == 0 || type.equals("CategoryListPlace")) {
-                    CategoryListActivity a = new CategoryListActivity(new CategoryListPlace(historyToken), HmMobile.__clientFactory);
-                    CategoryListView view = HmMobile.__clientFactory.getCategoryListView();
-                    view.setPresenter(a);
-                    HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                    
+                    ForcedSubject forceSubject = HmMobile.__instance.getForcedSubject();
+                    if(forceSubject != null && forceSubject.isOnlyOne()) {
+                        String sub = forceSubject.getSubjects()[0];
+                        BookListActivity activity = new BookListActivity(new BookListPlace(sub),HmMobile.__clientFactory);
+                        final BookListView view = HmMobile.__clientFactory.getBookListView();
+                        view.setPresenter(activity);
+                        
+                        activity.doLoadBookForSubject(sub, new CallbackOnComplete() {
+                            public void isComplete() {
+                                HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                            }
+                        });
+                    }
+                    else {
+                        CategoryListActivity a = new CategoryListActivity(new CategoryListPlace(historyToken), HmMobile.__clientFactory);
+                        CategoryListView view = HmMobile.__clientFactory.getCategoryListView();
+                        view.setPresenter(a);
+                        HmMobile.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage)view));
+                    }
                 }
                 else if(type.equals("BookListPlace")) {
                     BookListActivity activity = new BookListActivity(new BookListPlace(token.getToken(1)),HmMobile.__clientFactory);

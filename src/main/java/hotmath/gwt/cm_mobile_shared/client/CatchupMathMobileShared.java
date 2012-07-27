@@ -142,6 +142,10 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
     }
 
     
+    /** Call to JS to reset the viewport to top
+     * 
+     * @return
+     */
     static public native int resetViewPort() /*-{
        var scrollHeight=0;
        try {

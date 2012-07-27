@@ -39,9 +39,10 @@ import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEventHandler;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
-import hotmath.gwt.hm_mobile.client.place.CategoryListPlace;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
+import hotmath.gwt.hm_mobile.client.view.BookListViewImpl;
 import hotmath.gwt.hm_mobile.client.view.BookView;
+import hotmath.gwt.hm_mobile.client.view.CategoryListViewImpl;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
 
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -65,13 +65,15 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Provide minimal CM for mobile access.
+ * Provide minimal Hotmath for mobile access.
  * 
  * @author casey
  * 
  */
 public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
+    static ForcedSubject __forcedSubject = new ForcedSubject(); 
+
     static {
         setupServices();
     } 
@@ -82,12 +84,10 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
 
-    Place defaultPlace = new CategoryListPlace("");
-    // ControlPanel _controlPanel;
-
     public static HmMobile __instance;
     
     public void onModuleLoad() {
+        
 		 /*
 		 * Install an UncaughtExceptionHandler which will produce <code>FATAL</code> log messages
 		 */
@@ -144,8 +144,21 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     
             History.addValueChangeHandler(new HmMobileHistoryListener());
 
-            //initializeExternalJs();
+            if(__forcedSubject.isForcedSubject()) {
+                if(__forcedSubject.isOnlyOne()) {
+                    /** disable back, this is new home
+                     * 
+                     */
+                    ((BookListViewImpl)HmMobile.__clientFactory.getBookListView()).setBackButtonText(null);
+                    ((BookListViewImpl)HmMobile.__clientFactory.getBookListView()).setTitle(__forcedSubject.getTitle());
+                }
+                else {
+                    ((CategoryListViewImpl)HmMobile.__clientFactory.getCategoryListView()).setTitle(__forcedSubject.getTitle());
+                }
+            }
 
+           
+            
             History.fireCurrentHistoryState();
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
@@ -165,7 +178,7 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         Log.info("Hotmath Mobile Initialized");
 
     }
-
+    
 
     private Widget createApplicationPanel() {
         /**
@@ -429,6 +442,11 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
         ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
         _serviceInstance = cmService;
+    }
+
+    
+    public ForcedSubject getForcedSubject() {
+        return __forcedSubject;
     }
 }
 
