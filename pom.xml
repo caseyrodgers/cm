@@ -315,6 +315,16 @@
 			<scope>compile</scope>
 		</dependency>
 
+
+<!-- Deal with change to GWTBrige (Ext uses old) -->
+<dependency>
+  <groupId>com.google.web.bindery</groupId>
+  <artifactId>requestfactory-server</artifactId>
+  <version>${gwtVersion}</version>
+  <scope>runtime</scope>
+</dependency>
+
+
 		<!-- Gson: Java to Json conversion -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
