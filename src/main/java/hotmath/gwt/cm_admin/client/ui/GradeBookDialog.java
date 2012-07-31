@@ -6,7 +6,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -14,52 +13,49 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 
 public class GradeBookDialog extends CmWindow {
     
     int uid;
-    Grid _grid;
+    Grid<GradeBookModel> _grid;
+	ComboBox<AssignmentModel> homeworkCombo;
+    GradeBookModel gradeBookMdl;
+    
     public GradeBookDialog(int uid) {
         this.uid = uid;
         setHeading("Grade Book View");
         setSize("640px", "480px");
         setLayout(new FillLayout());
         
+        //getButtonBar().setStyleAttribute("position", "relative");
+        getButtonBar().add(defineHomeworkSelector());
         addCloseButton();
         setVisible(true);
         
         readServerData();
-    }
-    
-    @SuppressWarnings("unchecked")
-    private void loadDataIntoGrid(CmList<GradeBookModel> data) {
-        ListStore<GradeBookModel> store = new ListStore<GradeBookModel>();
-        _grid = defineGrid(store, defineColumns(data));
-        add(_grid);
-        xferAssignmentList(data);
-        _grid.getStore().add(data);
         
-        layout(true);
     }
     
-    private void xferAssignmentList(CmList<GradeBookModel> gbList) {
-    	for (GradeBookModel gbMdl : gbList) {
-    		for (AssignmentModel asgMdl : gbMdl.getAssignmentList()) {
-    			gbMdl.set(asgMdl.getName(), asgMdl.getPercentCorrect());
-    		}
-    	}
-		
-	}
-
 	private void readServerData() {
 
         new RetryAction<CmList<GradeBookModel>>() {
@@ -74,6 +70,7 @@ public class GradeBookDialog extends CmWindow {
 
             public void oncapture(CmList<GradeBookModel> result) {
                 CmBusyManager.setBusy(false);
+                initHomeworkCombo(result);
                 loadDataIntoGrid(result);
                 _grid.setLoadMask(false);
             }
@@ -81,6 +78,28 @@ public class GradeBookDialog extends CmWindow {
         
     }
     
+    private void loadDataIntoGrid(CmList<GradeBookModel> data) {
+        ListStore<GradeBookModel> store = new ListStore<GradeBookModel>();
+
+        _grid = defineGrid(store, defineColumns(data));
+        add(_grid);
+        xferAssignmentList(data);
+        _grid.getStore().add(data);
+        getButtonBar().setStyleAttribute("position", "relative");
+        getButtonBar().add(defineHomeworkSelector());
+        
+        layout(true);
+    }
+    
+    private void xferAssignmentList(CmList<GradeBookModel> gbList) {
+    	for (GradeBookModel gbMdl : gbList) {
+    		for (AssignmentModel asgMdl : gbMdl.getAssignmentList()) {
+    			gbMdl.set(asgMdl.getName(), asgMdl.getPercentCorrect());
+    		}
+    	}
+		
+	}
+
     private Grid<GradeBookModel> defineGrid(final ListStore<GradeBookModel> store, ColumnModel cm) {
         final Grid<GradeBookModel> grid = new Grid<GradeBookModel>(store, cm);
         //grid.setAutoExpandColumn("userName");
@@ -88,8 +107,9 @@ public class GradeBookDialog extends CmWindow {
         grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getSelectionModel().setFiresEvents(true);
-        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
-            public void handleEvent(final SelectionEvent<StudentModelExt> se) {
+        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<BaseEvent>() {
+            public void handleEvent(final BaseEvent be) {
+                CatchupMathTools.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
                     CatchupMathTools.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
                 }
@@ -111,12 +131,13 @@ public class GradeBookDialog extends CmWindow {
         column.setHeader("Student");
         column.setWidth(140);
         column.setSortable(true);
+        
         configs.add(column);
         
         if(data.size() > 0) {
-            GradeBookModel m =  data.get(0);
+            gradeBookMdl =  data.get(0);
 
-            for(AssignmentModel mdl : m.getAssignmentList()) {
+            for(AssignmentModel mdl : gradeBookMdl.getAssignmentList()) {
                 ColumnConfig lessonColumn = new ColumnConfig();
                 lessonColumn.setId(mdl.getName());
                 lessonColumn.setHeader(mdl.getName());
@@ -131,5 +152,88 @@ public class GradeBookDialog extends CmWindow {
         ColumnModel cm = new ColumnModel(configs);
         return cm;
     }    
-    
+
+    private Component defineHomeworkSelector() {
+
+        LayoutContainer lc = new HorizontalPanel();
+
+        class MyFormPanel extends FormPanel {
+            MyFormPanel() {
+                setHeaderVisible(false);
+                setLabelWidth(60);
+                setBorders(false);
+                setFrame(false);
+                setFooter(false);
+                setBodyBorder(false);
+                setBorders(false);
+                setWidth(300);
+            }
+        };
+
+        FormPanel fp = new MyFormPanel();
+        defineHomeworkCombo();
+        fp.add(homeworkCombo);
+        BorderLayoutData borderLayout = new BorderLayoutData(LayoutRegion.WEST, 300);
+        lc.add(fp, borderLayout);
+        
+        return lc;
+    }
+
+	private void defineHomeworkCombo() {
+		homeworkCombo = new ComboBox<AssignmentModel>();
+		
+        ListStore<AssignmentModel> store = new ListStore<AssignmentModel>();
+
+        AssignmentModel mdl = new AssignmentModel();
+        mdl.set("cpId", 0);
+        mdl.set("cpName", "--- All ---");
+        store.insert(mdl, 0);
+
+		homeworkCombo.setFieldLabel("Homework");
+		homeworkCombo.setForceSelection(false);
+		homeworkCombo.setDisplayField("cpName");
+		homeworkCombo.setEditable(false);
+		homeworkCombo.setMaxLength(50);
+		homeworkCombo.setAllowBlank(true);
+		homeworkCombo.setTriggerAction(TriggerAction.ALL);
+		homeworkCombo.setStore(store);
+		homeworkCombo.setTitle("Make a selection");
+		homeworkCombo.setId("hw_combo");
+		homeworkCombo.setTypeAhead(true);
+		homeworkCombo.setSelectOnFocus(true);
+		homeworkCombo.setEmptyText("-- make a selection --");
+		homeworkCombo.setWidth(280);
+
+		homeworkCombo.addSelectionChangedListener(new SelectionChangedListener<AssignmentModel>() {
+			public void selectionChanged(SelectionChangedEvent<AssignmentModel> se) {
+			    AssignmentModel asgMdl = se.getSelectedItem();
+                String homeworkName = asgMdl.getCpName();
+                ColumnModel colMdl = _grid.getColumnModel();
+                for(AssignmentModel mdl : gradeBookMdl.getAssignmentList()) {
+                	if (homeworkName.equals("--- All ---") || mdl.getCpName().equals(homeworkName)) {
+                		colMdl.setHidden(colMdl.getIndexById(mdl.getName()), false);
+                	}
+                	else {
+                		colMdl.setHidden(colMdl.getIndexById(mdl.getName()), true);                		
+                	}
+                }
+	        }
+	    });
+	}
+
+	private void initHomeworkCombo(List<GradeBookModel> gbList) {
+		
+        ListStore<AssignmentModel> store = homeworkCombo.getStore();
+
+        if (gbList != null) {
+        	int cpId = -1;
+            for (AssignmentModel asgMdl : gbList.get(0).getAssignmentList()) {
+            	if (cpId != asgMdl.getCpId()) {
+            		store.add(asgMdl);
+            		cpId = asgMdl.getCpId();
+            	}
+            }
+        }
+	}
+
 }
