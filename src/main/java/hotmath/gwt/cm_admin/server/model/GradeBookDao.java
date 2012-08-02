@@ -53,9 +53,14 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
                 public GradeBookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                 	GradeBookModel gbMdl = new GradeBookModel(rs.getInt("uid"),rs.getString("user_name"));
                 	CmList<AssignmentModel> asgList = new CmArrayList<AssignmentModel>();
-                	String percentComplete = String.format("%d%s", rs.getInt("percent_correct"), "%");
-                	AssignmentModel asgMdl = new AssignmentModel( rs.getString("lesson_name"), rs.getInt("count_entries"),
-                			rs.getInt("num_correct"), percentComplete, rs.getInt("num_answered"), rs.getInt("cp_id"),
+
+                	int numAnswered = rs.getInt("num_answered");
+                	int numCorrect = rs.getInt("num_correct");
+                	int countEntries = rs.getInt("count_entries");
+                	
+                	String percentCorrect = String.format("%d%s", rs.getInt("percent_correct"), "%");
+                	AssignmentModel asgMdl = new AssignmentModel( rs.getString("lesson_name"), countEntries,
+                			numCorrect, percentCorrect, numAnswered, rs.getInt("cp_id"),
                 			rs.getString("cp_name"));
                 	asgList.add(asgMdl);
                 	gbMdl.setAssignmentList(asgList);
@@ -182,8 +187,8 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             		++cCount;
             		if (asgMdl.getCountEntries() > 0 && lessonName.equals(asg.getLessonName())) {
                 		AssignmentModel mdl = new AssignmentModel(asg.getLessonName(), asg.getCountEntries(),
-                				asgMdl.getNumAnswered(), asgMdl.getPercentCorrect(), asgMdl.getNumCorrect(), asg.getCpId(),
-                				asgMdl.getCpName());
+                				asgMdl.getNumCorrect(), asgMdl.getPercentCorrect(), asgMdl.getNumAnswered(),
+                				asg.getCpId(), asgMdl.getCpName());
                 		String name = String.format("Asg-%d", cCount);
                 		mdl.setName(name);
                 		int index = pivotList.indexOf(mdl);

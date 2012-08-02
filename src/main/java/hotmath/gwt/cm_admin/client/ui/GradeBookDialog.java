@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
+import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -16,11 +17,13 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
@@ -46,16 +49,43 @@ public class GradeBookDialog extends CmWindow {
         setHeading("Grade Book View");
         setSize("640px", "480px");
         setLayout(new FillLayout());
-        
-        //getButtonBar().setStyleAttribute("position", "relative");
-        getButtonBar().add(defineHomeworkSelector());
+
+        getButtonBar().setStyleAttribute("position", "relative");
+        addHomeworkSelector();
+        addDetailsButton();
         addCloseButton();
         setVisible(true);
-        
+
         readServerData();
-        
+
     }
-    
+
+    private void addDetailsButton() {
+        StdButton detailsBtn = new StdButton("Homework Details", "Display homework details.", new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent ce) {
+                
+                final GradeBookModel mdl = getGridItem();
+                if (mdl != null) {
+                    displayHomeworkDetails(mdl);
+                }
+                
+            }
+
+        });
+        detailsBtn.setStyleAttribute("padding-right", "35px");
+        detailsBtn.setStyleAttribute("padding-top", "2px");
+
+        getButtonBar().add(detailsBtn);    	
+    }
+
+    private void addHomeworkSelector() {
+        getButtonBar().add(defineHomeworkSelector());
+    }
+
+	private void displayHomeworkDetails(GradeBookModel mdl) {
+		new HomeworkDetailsWindow(mdl).setVisible(true);		
+	}
+
 	private void readServerData() {
 
         new RetryAction<CmList<GradeBookModel>>() {
@@ -85,8 +115,6 @@ public class GradeBookDialog extends CmWindow {
         add(_grid);
         xferAssignmentList(data);
         _grid.getStore().add(data);
-        getButtonBar().setStyleAttribute("position", "relative");
-        getButtonBar().add(defineHomeworkSelector());
         
         layout(true);
     }
@@ -202,7 +230,7 @@ public class GradeBookDialog extends CmWindow {
 		homeworkCombo.setTypeAhead(true);
 		homeworkCombo.setSelectOnFocus(true);
 		homeworkCombo.setEmptyText("-- make a selection --");
-		homeworkCombo.setWidth(280);
+		homeworkCombo.setWidth(300);
 
 		homeworkCombo.addSelectionChangedListener(new SelectionChangedListener<AssignmentModel>() {
 			public void selectionChanged(SelectionChangedEvent<AssignmentModel> se) {
@@ -235,5 +263,14 @@ public class GradeBookDialog extends CmWindow {
             }
         }
 	}
+
+    private GradeBookModel getGridItem() {
+        GradeBookModel mdl = _grid.getSelectionModel().getSelectedItem();
+        if (mdl == null) {
+            CatchupMathTools.showAlert("Please select a student");
+        }
+        return mdl;
+    }
+
 
 }

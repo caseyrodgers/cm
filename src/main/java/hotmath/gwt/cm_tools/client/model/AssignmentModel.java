@@ -14,6 +14,8 @@ public class AssignmentModel extends BaseModel {
         set("numAnswered", numAnswered);
         set("cpId", cpId);
         set("cpName", cpName);
+        set("numNotAnswered", countEntries - numAnswered);
+        set("numWrong", numAnswered - numCorrect);
     }
     
     public String getLessonName() {
