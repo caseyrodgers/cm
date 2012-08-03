@@ -14,18 +14,14 @@
 
 	<g:HTMLPanel styleName="{style.main}">
         <p>
-           This Smartphone edition of Hotmath.com 
-           shows explanations for actual odd-numbered 
-           homework problems in over 300 math textbooks.
-       </p>
-       <p>
-           Our Hotmath.com desktop edition also has math videos,
-           activities, and games in addition to textbook answers.
-       </p>
-       <p>
-           Passwords may be purchased by going to Hotmath.com on a desktop.
-       </p>
-       <p>Email feedback or questions to support@hotmath.com.</p>
+        For more information, visit Hotmath.com. For support, email support@hotmath.com.
+        </p>
+        <p>
+         Visit your App Store for Hotmath coverage of other subjects: 
+         we have step-by-step explanations for the odd-numbered homework problems
+         for over 300 math textbooks.
+         </p>
+         <p>Also, please visit Catchupmath.com for math instruction.</p>
 	    <div class='{style.footer}'> 
 	       <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
 	    </div>

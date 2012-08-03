@@ -43,7 +43,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements CategoryL
         
 
         ForcedSubject forcedSubject = ForcedSubject.__instance;
-        if (forcedSubject != null) {
+        if (forcedSubject != null && forcedSubject.getSubjects() != null) {
             for (String subject : forcedSubject.getSubjects()) {
                 listItems.add(new MyGenericTextTag(subject, touchHandler));
             }

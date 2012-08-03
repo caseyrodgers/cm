@@ -130,9 +130,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             if(CatchupMathMobileShared.getQueryParameter("debug")==null) {
                 /** only allow IPad access for now */
                 String userAgent = getUserAgent();
-                Log.info("User Agent: " + userAgent);
+                Window.alert("User Agent: " + userAgent);
                 
-                if(userAgent.toLowerCase().indexOf("ipad") == -1) {
+                if(userAgent.toLowerCase().indexOf("ipad") == -1  && userAgent.toLowerCase().indexOf("android") == -1) {
                     Location.assign("/cm_mobile_not_supported.html");
                     // _rootPanel.add(new BrowserNotSupportedPanel());
                     return;

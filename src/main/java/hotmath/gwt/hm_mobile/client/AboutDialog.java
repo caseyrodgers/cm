@@ -17,7 +17,7 @@ public class AboutDialog extends DialogBox  {
 	
 	public AboutDialog() {
 		super(true);
-		setSize("300px", "250px");
+		setSize("400px", "250px");
 		setText("Math Homework Help");		
 		setGlassEnabled(true);
 		setWidget(uiBinder.createAndBindUi(this));
