@@ -97,6 +97,8 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             //if (assignmentList.contains(asgMdl) == false) {
             if (isInList == false) {
             	assignmentList.add(asgMdl);
+            	if (__logger.isDebugEnabled())
+            		__logger.debug(String.format("cpId: %d, homework: %s, lessonName: %s", cpId, asgMdl.getCpName(), asgMdl.getLessonName()));
             }
         }
         
@@ -154,9 +156,12 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
             		AssignmentModel naMdl = new AssignmentModel(mdl.getLessonName(), mdl.getCountEntries(), 0, "N/A", 0,
             				mdl.getCpId(), mdl.getCpName());
             		String name = String.format("Asg-%d", ++cCount);
+            		if (__logger.isDebugEnabled())
+            			__logger.debug(String.format("cpId: %d, name: %s", cpId, name));
             		naMdl.setName(name);
             		pivotList.add(naMdl);
             	}
+            	lastCpId = cpId;
             }
 
             else {
@@ -192,7 +197,6 @@ public class GradeBookDao extends SimpleJdbcDaoSupport {
                 		String name = String.format("Asg-%d", cCount);
                 		mdl.setName(name);
                 		int index = pivotList.indexOf(mdl);
-                		//__logger.debug("cCount: " + cCount + ", index: " + index);
                 		pivotList.remove(index);
                 		pivotList.add(index, mdl);
             		}
