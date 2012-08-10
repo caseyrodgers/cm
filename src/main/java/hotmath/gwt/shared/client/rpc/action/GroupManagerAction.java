@@ -21,6 +21,8 @@ public class GroupManagerAction implements Action<RpcData>{
     Boolean showWorkRequired;
     Boolean limitGames;
     Boolean stopAtProgramEnd;
+    Boolean disableCalcAlways;
+    Boolean disableCalcQuizzes;
     Integer passPercent;
     Integer isSelfReg;
 
@@ -61,6 +63,22 @@ public class GroupManagerAction implements Action<RpcData>{
 
 	public void setStopAtProgramEnd(Boolean stopAtProgramEnd) {
 		this.stopAtProgramEnd = stopAtProgramEnd;
+	}
+
+	public Boolean getDisableCalcAlways() {
+		return disableCalcAlways;
+	}
+
+	public void setDisableCalcAlways(Boolean disableCalcAlways) {
+		this.disableCalcAlways = disableCalcAlways;
+	}
+
+	public Boolean getDisableCalcQuizzes() {
+		return disableCalcQuizzes;
+	}
+
+	public void setDisableCalcQuizzes(Boolean disableCalcQuizzes) {
+		this.disableCalcQuizzes = disableCalcQuizzes;
 	}
 
 	public Integer getPassPercent() {

@@ -373,6 +373,8 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
     				ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
     				ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
     				ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+    				ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
+    				ssm.setDisableCalcQuizzes(stuSettingsMdl.getDisableCalcQuizzes());
     			}
     			else {
     				/** use account data to set tutoring available */
@@ -1406,7 +1408,9 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
         return ( ! origValue.getLimitGames() == newValue.getLimitGames() ||
         		 ! origValue.getShowWorkRequired() == newValue.getShowWorkRequired() ||
         		 ! origValue.getStopAtProgramEnd() == newValue.getStopAtProgramEnd() ||
-        		 ! origValue.getTutoringAvailable() == newValue.getTutoringAvailable());
+        		 ! origValue.getTutoringAvailable() == newValue.getTutoringAvailable() ||
+        		 ! origValue.getDisableCalcAlways() == newValue.getDisableCalcAlways() ||
+        		 ! origValue.getDisableCalcQuizzes() == newValue.getDisableCalcQuizzes());
 	}
 
 	private boolean valueChanged(String origValue, String newValue) {

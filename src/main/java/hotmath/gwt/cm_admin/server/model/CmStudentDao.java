@@ -33,8 +33,6 @@ import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.CmProgram;
-import hotmath.testset.ha.HaAdmin;
-import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.HaTestDefDescription;
@@ -244,7 +242,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         ResultSet rs = null;
 
         try {
-                Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
+            Boolean tutoringEnabledForAdmin = isTutoringEnabledForAdmin(conn, adminUid);
 
             ps = conn.prepareStatement(getStudentSummarySql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
             ps.setInt(1, adminUid);
@@ -1011,6 +1009,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                     mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
                     mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
                     mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+                    mdl.setDisableCalcAlways(rs.getInt("diasable_calculator_always") > 0);
+                    mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
             }
         }
         finally {
@@ -1023,7 +1023,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     public void updateStudentSettings(final Connection conn, StudentModelI sm, Integer passPercent) throws Exception {
         StudentSettingsModel ssm = sm.getSettings();
         updateStudentSettings(conn, sm.getUid(), ssm.getShowWorkRequired(), ssm.getTutoringAvailable(),
-                        ssm.getLimitGames(), ssm.getStopAtProgramEnd(), passPercent);
+                        ssm.getLimitGames(), ssm.getStopAtProgramEnd(), passPercent, ssm.getDisableCalcAlways(),
+                        ssm.getDisableCalcQuizzes());
     }
 
     /** Update settings for the specified user.
@@ -1038,15 +1039,15 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public void updateStudentSettings(final Connection conn, Integer uid, Boolean showWorkRequired, Boolean tutoringAvailable,
-        Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
+        Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent, Boolean disableCalcAlways, Boolean disableCalcQuizzes) throws Exception {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         try {
 
-                String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, user_id) values (?, ?, ?, ?, ?)";
-                String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=? where user_id=?";
+                String insertSql = "insert into HA_USER_SETTINGS (limit_games, show_work_required, stop_at_program_end, tutoring_available, disable_calculator_always, disable_calculator_quizzes, user_id) values (?, ?, ?, ?, ?, ?, ?)";
+                String updateSql = "update HA_USER_SETTINGS set limit_games=?, show_work_required=?, stop_at_program_end=?, tutoring_available=?, disable_calculator_always=?, disable_calculator_quizzes=? where user_id=?";
 
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("SETTINGS_SELECT_SQL"));
                 ps.setInt(1, uid);
@@ -1064,7 +1065,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps.setInt(2, (showWorkRequired)?1:0);
                 ps.setInt(3, (stopAtProgramEnd)?1:0);
                 ps.setInt(4, (tutoringAvailable)?1:0);
-                ps.setInt(5, uid);
+                ps.setInt(5, (disableCalcAlways)?1:0);
+                ps.setInt(6, (disableCalcQuizzes)?1:0);
+                ps.setInt(7, uid);
 
             int cnt = ps.executeUpdate();
 
@@ -1763,6 +1766,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
                             mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
                             mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+                            mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
+                            mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
 
                             sm.setLastQuiz(rs.getString("last_quiz"));
                             sm.setChapter(getChapter(rs.getString("test_config_json")));
@@ -2000,15 +2005,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             sprm.setSubjectId(rs.getString("subj_id"));
             sprm.setCustom(new CustomProgramComposite(
-                    rs.getInt("custom_program_id"), rs.getString("custom_program_name"),
-                    rs.getInt("custom_quiz_id"), rs.getString("custom_quiz_name")));
+            		rs.getInt("custom_program_id"), rs.getString("custom_program_name"),
+            		rs.getInt("custom_quiz_id"), rs.getString("custom_quiz_name")));
 
 
-                StudentSettingsModel mdl = sm.getSettings();
-                    mdl.setLimitGames(rs.getInt("limit_games") > 0);
-                    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
-                    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
-                    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+            StudentSettingsModel mdl = sm.getSettings();
+            mdl.setLimitGames(rs.getInt("limit_games") > 0);
+            mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+            mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0);
+            mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
+            mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
 
             sm.setLastQuiz(rs.getString("last_quiz"));
             sm.setChapter(getChapter(rs.getString("test_config_json")));
@@ -2070,11 +2077,13 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setEmail(rs.getString("email"));
             sm.setIsDemoUser(rs.getInt("is_demo") > 0);
 
-                StudentSettingsModel mdl = sm.getSettings();
-                    mdl.setLimitGames(rs.getInt("limit_games") > 0);
-                    mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
-                    mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
-                    mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
+            StudentSettingsModel mdl = sm.getSettings();
+            mdl.setLimitGames(rs.getInt("limit_games") > 0);
+            mdl.setShowWorkRequired(rs.getInt("show_work_required") > 0);
+            mdl.setStopAtProgramEnd(rs.getInt("stop_at_program_end") > 0);
+            mdl.setTutoringAvailable(rs.getInt("tutoring_available") > 0 && ((tutoringEnabledForAdmin == null) || tutoringEnabledForAdmin));
+            mdl.setDisableCalcAlways(rs.getInt("disable_calculator_always") > 0);
+            mdl.setDisableCalcQuizzes(rs.getInt("disable_calculator_quizzes") > 0);
 
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
 
