@@ -1,10 +1,13 @@
 <module rename-to='cm_shared'>
 
       <inherits name='com.google.gwt.user.User'/>
-      <inherits name="com.extjs.gxt.ui.GXT"/>
       <inherits name="hotmath.gwt.cm_tools.CatchupMathTools"/>
       <inherits name='hotmath.gwt.cm_rpc.CmRpc'/>
 
+      <inherits name="com.extjs.gxt.ui.GXT"/>
+      <inherits name='com.sencha.gxt.ui.GXT'/>
+       
+       
       <entry-point class='hotmath.gwt.shared.client.CmShared'/>
 </module>
 

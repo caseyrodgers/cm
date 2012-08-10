@@ -804,15 +804,16 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     }
     
     private Button gradeBookToolItem(final Grid<StudentModelExt> grid) {
-        Button ti = new StudentPanelButton("Gradebook");
-        ti.setToolTip("View student's homework.");
+        Button ti = new StudentPanelButton("Assignments");
+        ti.setToolTip("Manage and view student's homework.");
 
         ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent ce) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        new GradeBookDialog(_cmAdminMdl.getId());
+                        //new GradeBookDialog(_cmAdminMdl.getId());
+                        new AssignmentManagerDialog(_cmAdminMdl.getId());
                     }
                 });
             }

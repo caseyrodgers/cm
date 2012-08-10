@@ -31,9 +31,6 @@
             	   browser_info_tools-min.js            	
             	   tutor_tablet-min.js
                	   dom_utils-min.js            	
-                  
-
-                   whiteboard-min.js
 
             	   quiz-min.js
 
@@ -55,6 +52,10 @@
                    spin-min.js
             	
                    CatchupMathMobile3-min.js
+
+
+                   mathquill/mathquill.js
+                   whiteboard-min.js
               " />
         </concat>
     </target>

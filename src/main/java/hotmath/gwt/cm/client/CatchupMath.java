@@ -36,6 +36,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
+import hotmath.gwt.shared.client.util.CmNotifyManager;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
@@ -135,6 +136,9 @@ public class CatchupMath implements EntryPoint {
                 processLoginComplete(uid);
             }
         });
+        
+        
+        CmNotifyManager.getInstance().notify("This is a test notification");
     }
 
 

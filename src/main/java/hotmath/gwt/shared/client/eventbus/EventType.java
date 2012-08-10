@@ -197,6 +197,13 @@ public enum EventType{
      * be in context.
      * 
      */
-    EVENT_TYPE_MODAL_WINDOW_CLEAR
+    EVENT_TYPE_MODAL_WINDOW_CLEAR,
+    
+    /** Fired when question viewer is hidden. This 
+     * allows clients to re-draw and share the 
+     * single instance of the tutor/question viewer.
+     * 
+     */
+    EVENT_TYPE_QUESTION_VIEWER_CLOSED
    
 }

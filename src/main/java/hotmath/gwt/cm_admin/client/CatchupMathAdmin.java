@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
+import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
@@ -67,6 +68,28 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
+        
+        
+//        if(true) {
+////            Assignment ass = new Assignment(1,"Test","Test",new Date(),null,null);
+////            new EditAssignmentDialog(ass, new CallbackOnComplete() {
+////                
+////                @Override
+////                public void isComplete() {
+////                }
+////            });
+////            return;
+//            new AssignmentManagerDialog(2);
+//            return;
+////            AddProblemDialog.showDialog(new CallbackOnComplete() {
+////                @Override
+////                public void isComplete() {
+////                }
+////            });
+//            //return;
+//        }
+        
+        
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {

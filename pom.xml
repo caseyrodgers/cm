@@ -28,7 +28,15 @@
 		</repository> </distributionManagement> -->
 
 	<repositories>
-		<repository>
+
+               		<repository>
+	        <id>sencha-commercial-release</id>
+	  <name>Sencha commercial releases</name>
+	  <url>https://maven.sencha.com/repo/commercial-release/</url>
+	  </repository>
+
+
+               <repository>
 			<id>gson</id>
 			<url>http://google-gson.googlecode.com/svn/mavenrepo</url>
 			<snapshots>
@@ -82,6 +90,13 @@
 	</repositories>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.sencha.gxt</groupId>
+			<artifactId>gxt</artifactId>
+			<version>3.0.0</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>com.bramosystems.oss.player</groupId>
@@ -634,10 +649,10 @@
 					<jsSourceFiles>
 						<param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
 						<param>cm_core.js</param>
-                        <param>quiz.js</param>                      
+                                                <param>quiz.js</param>                      
 						<param>CatchupMath.js</param>
 						<param>swfobject/swfobject.js</param>
-                                                <param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
+                        <param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
 					</jsSourceFiles>
 				</configuration>
 			</plugin>

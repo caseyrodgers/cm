@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapterAll;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -42,7 +43,7 @@ public class CmProgramListingDao {
      * @return
      * @throws Exception
      */
-    public ProgramListing getProgramListing(final Connection conn, int adminId) throws Exception {
+    public ProgramListing getProgramListing(final Connection conn, int __adminId) throws Exception {
         String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -292,4 +293,5 @@ public class CmProgramListingDao {
     	}
     	return list;
     }
+
 }

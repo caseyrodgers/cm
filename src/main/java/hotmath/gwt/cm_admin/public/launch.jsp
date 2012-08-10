@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <%@page import="hotmath.gwt.cm_tools.client.data.HaLoginInfo"%>
 <%
   /** Provide a wrapper around CM Admin initialization to allow for pre-fetching data
@@ -15,14 +15,14 @@
 %>
 <html>
   <head>
-    <!--  For Tutor/Show Work -->  
+    <!--  For Tutor/Show Work -->
+    <link rel="stylesheet" href="/assets/css/reset.css" type="text/css"/>
     <link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
     <link rel="stylesheet" type="text/css" href="/css/testset.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
     <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
     <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
     <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
-
     
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Catchup Math Admin</title>

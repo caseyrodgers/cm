@@ -8,10 +8,12 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
+import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -78,10 +80,13 @@ public class HeaderPanel extends LayoutContainer {
         updates.setToolTip("Learn about recent Catchup Math updates");
         updates.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
-                new RecentUpdatesWindow();
+                //new RecentUpdatesWindow();
+                new AssignmentManagerDialog(2);
             }
         });
         add(updates);
+
+        
 
         EventBus.getInstance().addEventListener(new CmEventListener() {
 			
