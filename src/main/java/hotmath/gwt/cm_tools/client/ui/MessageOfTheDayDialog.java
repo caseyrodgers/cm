@@ -18,7 +18,7 @@ public class MessageOfTheDayDialog extends Window {
         this.callback = callbackIn;
 
         setHeading("Catchup Math Teacher Alert");
-        setSize(350,270);
+        setSize(450,270);
         setModal(true);
 
         add(uiBinder.createAndBindUi(this));
