@@ -39,7 +39,7 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             doGroupProgramAssignment(conn,action.getAdminId(),action.getGroupId(), action.getStudentModel(), action.getIsSelfReg()>0);
         else if(action.getActionType() == GroupManagerAction.ActionType.GROUP_PROPERTY_SET)
             doGroupPropertySet(conn,action.getAdminId(),action.getGroupId(),action.getShowWorkRequired(),action.getDisallowTutoring(),
-            		action.getLimitGames(), action.getStopAtProgramEnd(), action.getPassPercent());
+            		action.getLimitGames(), action.getStopAtProgramEnd(), action.getPassPercent(), action.getDisableCalcAlways(), action.getDisableCalcQuizzes());
         
         rpcData.putData("status","OK");
         return rpcData;
@@ -175,10 +175,12 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
      * @param showWorkRequired
      * @param disallowTutoring
      * @param passPercent
+     * @param disableCalcAlways TODO
+     * @param disableCalcQuizzes TODO
      * @throws Exception
      */
     private void doGroupPropertySet(final Connection conn,Integer adminId,Integer groupId,Boolean showWorkRequired,Boolean disallowTutoring,
-    	Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent) throws Exception {
+    	Boolean limitGames, Boolean stopAtProgramEnd, Integer passPercent, Boolean disableCalcAlways, Boolean disableCalcQuizzes) throws Exception {
         PreparedStatement ps=null;
         try {
             if(groupId == -1) {
@@ -195,7 +197,8 @@ public class GroupManagerCommand implements ActionHandler<GroupManagerAction, Rp
             CmStudentDao dao = CmStudentDao.getInstance();
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                dao.updateStudentSettings(conn, rs.getInt("uid"), showWorkRequired, !disallowTutoring, limitGames, stopAtProgramEnd, passPercent);
+                dao.updateStudentSettings(conn, rs.getInt("uid"), showWorkRequired, !disallowTutoring, limitGames, stopAtProgramEnd, passPercent,
+                		disableCalcAlways, disableCalcQuizzes);
             }
         }
         finally {

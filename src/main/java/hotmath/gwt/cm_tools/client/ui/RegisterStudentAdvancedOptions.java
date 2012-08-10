@@ -22,6 +22,7 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.user.client.Window;
 
 /**
  * Register Student Advanced Options UI
@@ -41,17 +42,21 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	private CheckBox isShowWorkRequired;
 	private CheckBox isGamesLimited;
 	private CheckBox isStopAtProgramEnd;
+	private CheckBox isDisableCalcAlways;
+	private CheckBox isDisableCalcQuizzes;
 	private CheckBoxGroup requireShowWork;
 	private CheckBoxGroup limitGames;
 	private CheckBoxGroup stopAtProgramEnd;
+	private CheckBoxGroup disableCalcAlways;
+	private CheckBoxGroup disableCalcQuizzes;
 
 	private ComboBox <PassPercent> passCombo;
 	private ComboBox <SectionNumber> sectionCombo;
 
 	private FieldSet fs;
 	private CmAdminModel cmAdminMdl;
-	private int formHeight = 240;
-	private int formWidth  = 340;
+	private int formHeight = 290;
+	private int formWidth  = 390;
 	private AdvOptCallback callback;
 	private boolean passPercentReqd;
 	private Map<String,Object> advOptionsMap;
@@ -82,7 +87,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	
 	private FormPanel optionsForm(boolean isNew, boolean passPercentReqd) {
 		FormPanel fp = new FormPanel();
-		fp.setLabelWidth(180);
+		fp.setLabelWidth(245);
 		fp.setHeight(formHeight);
 		fp.setFooter(true);
 		fp.setFrame(false);
@@ -118,7 +123,6 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         isGamesLimited.setId("limit_games");
         isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
         isGamesLimited.setToolTip("If checked, then no Games can be played.");
-        
         limitGames = new CheckBoxGroup();
         limitGames.setFieldLabel("Disallow Games");
         limitGames.setId("limit_games");
@@ -136,7 +140,25 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		if (! progStopIsSettable) stopAtProgramEnd.disable();
 		advOptions.add(stopAtProgramEnd);
 
-		if (sectionIsSettable) {
+		isDisableCalcAlways = new CheckBox();
+		isDisableCalcAlways.setId("disable_calc_always");
+		isDisableCalcAlways.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getDisableCalcAlways());
+        disableCalcAlways = new CheckBoxGroup(); 
+        disableCalcAlways.setFieldLabel("Disable whiteboard calculator always");
+        disableCalcAlways.setId("disable_calc_always");
+        disableCalcAlways.add(isDisableCalcAlways);
+        advOptions.add(disableCalcAlways);
+
+		isDisableCalcQuizzes = new CheckBox();
+		isDisableCalcQuizzes.setId("disable_calc_quizzeass");
+		isDisableCalcQuizzes.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getDisableCalcQuizzes());
+        disableCalcQuizzes = new CheckBoxGroup(); 
+        disableCalcQuizzes.setFieldLabel("Disable whiteboard calculator for quizzes");
+        disableCalcQuizzes.setId("disable_calc_quizzess");
+        disableCalcQuizzes.add(isDisableCalcQuizzes);
+        advOptions.add(disableCalcQuizzes);
+
+        if (sectionIsSettable) {
     		sectionCombo = new SectionNumberCombo(sectionCount);
             setSectionNumberSelection();
 		    advOptions.add(sectionCombo);
@@ -243,6 +265,8 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 	        	isShowWorkRequired.setValue(false);
 	            isGamesLimited.setValue(false);
 	            isStopAtProgramEnd.setValue(false);
+	            isDisableCalcAlways.setValue(false);
+	            isDisableCalcQuizzes.setValue(false);
 	        }  
 	    });
 		cancelBtn.setToolTip("Reset to default values");
@@ -270,7 +294,9 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
                 ssm.setShowWorkRequired(isShowWorkRequired.getValue());
                 ssm.setStopAtProgramEnd(isStopAtProgramEnd.getValue());
                 ssm.setLimitGames(isGamesLimited.getValue());
-                
+                ssm.setDisableCalcAlways(isDisableCalcAlways.getValue());
+                ssm.setDisableCalcQuizzes(isDisableCalcQuizzes.getValue());
+
                 /*
                  * don't want to place "0" in the section number list...
                  * If incoming section number was "0" and selected value is "1", then

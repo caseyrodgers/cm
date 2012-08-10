@@ -25,6 +25,8 @@ public class StudentSettingsModel implements IsSerializable {
 	boolean showWorkRequired;
 	boolean limitGames;
 	boolean stopAtProgramEnd;
+	boolean disableCalcAlways;
+	boolean disableCalcQuizzes;
 
 	public boolean getTutoringAvailable() {
 		return tutoringAvailable;
@@ -56,6 +58,22 @@ public class StudentSettingsModel implements IsSerializable {
 
 	public void setStopAtProgramEnd(boolean stopAtProgramEnd) {
 		this.stopAtProgramEnd = stopAtProgramEnd;
+	}
+
+	public boolean getDisableCalcAlways() {
+		return disableCalcAlways;
+	}
+
+	public void setDisableCalcAlways(boolean disableCalcAlways) {
+		this.disableCalcAlways = disableCalcAlways;
+	}
+
+	public boolean getDisableCalcQuizzes() {
+		return disableCalcQuizzes;
+	}
+
+	public void setDisableCalcQuizzes(boolean disableCalcQuizzes) {
+		this.disableCalcQuizzes = disableCalcQuizzes;
 	}
 
 }
