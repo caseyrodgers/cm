@@ -26,21 +26,15 @@
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
-    <h1>Summer suggestions</h1>
+       <h1>Back to School Suggestions:</h1>
        <ul>
            <li>
-              Offer your students credit recovery or grade improvement via Catchup Math over the summer.
+              For mainstream classes: Take students to the computer lab and have them complete the Proficiency Program for their last math course.  This will fill in gaps from "Summer Slide."
            </li>
            <li>
-              Tell parents about Catchup Math to get their students well prepared for fall math class.
-           </li>
-           <li>
-              Watch our new training video for tips on success with at risk and special education students.
+              For Intervention and Special Ed classes: Have them complete the Essentials Proficiency Program (or Foundations A and B) for a thorough review of basic math topics.
            </li>
         </ul>
-     <p>        
-     Thank you for using Catchup Math!
-     </p>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
