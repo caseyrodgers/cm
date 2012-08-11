@@ -49,7 +49,7 @@
 
 .header-panel-training-btn {
 	position: absolute; top : 3px;
-	right: 362;
+	right: 362px;
 	background: url(/gwt-resources/images/training_videos_normal.png)
 		no-repeat center left !important;
 	height: 32px;
