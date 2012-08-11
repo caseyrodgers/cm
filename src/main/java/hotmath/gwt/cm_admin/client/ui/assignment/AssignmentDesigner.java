@@ -22,12 +22,14 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -76,7 +78,11 @@ public class AssignmentDesigner extends SimpleContainer {
     
     
     private void setupViewerGui() {
-        _mainContainer.setCenterWidget(QuestionViewerPanel.getInstance());
+        
+        FlowLayoutContainer fc = new FlowLayoutContainer();
+        fc.setScrollMode(ScrollMode.AUTO);
+        fc.add(QuestionViewerPanel.getInstance());
+        _mainContainer.setCenterWidget(fc);
         _mainContainer.forceLayout();
     }
     
@@ -126,6 +132,14 @@ public class AssignmentDesigner extends SimpleContainer {
                 
                 _listView.getGrid().getStore().clear();
                 _listView.getGrid().getStore().addAll(assignment.getPids());
+                
+                
+                /** select first problem, if any */
+                if(assignment.getPids().size() > 0) {
+                    List<ProblemDto> selectedNodes = new ArrayList<ProblemDto>();
+                    selectedNodes.add(assignment.getPids().get(0));
+                    _listView.getGrid().getSelectionModel().setSelection(selectedNodes);
+                }
             }
             
             public void onFailure(Throwable error) {

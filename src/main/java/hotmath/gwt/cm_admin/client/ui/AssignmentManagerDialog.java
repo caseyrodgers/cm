@@ -21,7 +21,6 @@ public class AssignmentManagerDialog  {
 
     public AssignmentManagerDialog(int aid) {
         this.aid = aid;
-        readDataFromServer();
         
         Window window = new GWindow(true);
         window.setPixelSize(800,600);
@@ -49,9 +48,6 @@ public class AssignmentManagerDialog  {
         
         
         window.show();
-    }
-
-    private void readDataFromServer() {
     }
 }
 

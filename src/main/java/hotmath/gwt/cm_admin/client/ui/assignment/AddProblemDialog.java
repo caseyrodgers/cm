@@ -36,6 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.DelayedTask;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -47,6 +48,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
@@ -106,7 +108,10 @@ public class AddProblemDialog extends GWindow {
         BorderLayoutData eastData = new BorderLayoutData();
         eastData.setSize(400);
         eastData.setSplit(true);
-        _mainContainer.setEastWidget(QuestionViewerPanel.getInstance(), eastData);
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.add(QuestionViewerPanel.getInstance());
+        flow.setScrollMode(ScrollMode.AUTO);
+        _mainContainer.setEastWidget(flow,eastData);
     }
     
     private Widget createAddSelectionButton() {
