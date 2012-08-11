@@ -11,7 +11,9 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.user.client.ui.Widget;
@@ -66,6 +68,12 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void oncapture(CmList<Assignment> assignments) {
                 _listView.getStore().clear();
                 _listView.getStore().addAll(assignments);
+                
+                if(assignments.size() > 0) {
+                    List<Assignment> selectedList = new ArrayList<Assignment>();
+                    selectedList.add(assignments.get(0));
+                    _listView.getSelectionModel().setSelection(selectedList);
+                }
             }
         }.register();        
     }
