@@ -11,14 +11,15 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonProblemsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -118,12 +119,7 @@ public class AddProblemDialog extends GWindow {
         TextButton btn = new TextButton("Add selected problems", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                
-                List<ProblemDto> problems = getSelectedProblems();
-                _callbackOnComplete.problemsAdded(problems);
-                
-                hide();
-                uncheckAll();
+                makeSureLessonProblemsReadMaybeAsync(_callbackOnComplete);
             }
         });
         btn.setToolTip("Add all selected problems to current assignment");
@@ -137,16 +133,76 @@ public class AddProblemDialog extends GWindow {
         }
     }
     
-    private List<ProblemDto> getSelectedProblems() {
-        List<ProblemDto> problems = new ArrayList<ProblemDto>();
+    /** Some lessons might not have had their problems read from the server.
+     * We do not want to make the user manually expand the problems (and see them).
+     * 
+     * @param callback
+     */
+    private void makeSureLessonProblemsReadMaybeAsync(final Callback callback) {
+        final List<ProblemDto> problems = new ArrayList<ProblemDto>();
         List<BaseDto> checked = _tree.getCheckedSelection();
+        
+        List<LessonDto> lessonsNeeded = new ArrayList<LessonDto>();
         for (BaseDto d : checked) {
-            if(d instanceof ProblemDto) {
+            if(d instanceof LessonDto) {
+                if(d.getChildren() == null || d.getChildren().size() == 0) {
+                    lessonsNeeded.add((LessonDto)d);
+                }
+            }
+            else if(d instanceof ProblemDto) {
                 problems.add((ProblemDto)d);
             }
         }
-        return problems;
+        
+        if(lessonsNeeded.size() > 0) {
+           readProblemsForLessonsAndCallBack(lessonsNeeded,callback,problems);
+        }
+        else {
+            // no need for async
+            callBackToServer(callback,problems);
+        }
     }    
+    
+    
+
+    private void readProblemsForLessonsAndCallBack(final List<LessonDto> lessonsNeeded, final Callback callback, final List<ProblemDto> problems) {
+        new RetryAction<CmList<Response>>() {
+            @Override
+            public void attempt() {
+                
+                MultiActionRequestAction mAction = new  MultiActionRequestAction();
+                for(LessonDto l: lessonsNeeded) {
+                    GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(l.getLessonName(), l.getSubject());
+                    mAction.getActions().add(action);
+                }
+                setAction(mAction);
+                CmShared.getCmService().execute(mAction, this);
+            }
+
+            @Override
+            public void oncapture(CmList<Response> responses) {
+                List<ProblemDto> data = new ArrayList<ProblemDto>();
+                
+                for(Response r: responses) {
+                    List<ProblemDto> probs = (CmList<ProblemDto>)r;
+                    for (int i = 0, t = probs.size(); i < t; i++) {
+                        ProblemDto pt = probs.get(i);
+                        pt.setId(++BaseDto.autoId);
+                        data.add(pt);
+                    }
+                }
+                problems.addAll(data);
+                callBackToServer(callback,problems);
+            }
+
+        }.register();        
+    }
+
+    private void callBackToServer(Callback callback, List<ProblemDto> problems) {
+        _callbackOnComplete.problemsAdded(problems);
+        hide();
+        uncheckAll();
+    }
 
     private void setCallback(Callback callbackOnComplete) {
         _callbackOnComplete = callbackOnComplete;
@@ -259,6 +315,8 @@ public class AddProblemDialog extends GWindow {
         _tree.setWidth(300);
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.TRI);
+        _tree.setAutoSelect(true);
+        
 
         final DelayedTask task = new DelayedTask() {
 
