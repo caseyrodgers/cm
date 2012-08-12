@@ -1,13 +1,11 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
+import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
-import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
-import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog.Callback;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -18,8 +16,6 @@ import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-
-import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -75,22 +71,21 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         
         
         if(false) {
-////            Assignment ass = new Assignment(1,"Test","Test",new Date(),null,null);
-////            new EditAssignmentDialog(ass, new CallbackOnComplete() {
-////                
-////                @Override
-////                public void isComplete() {
-////                }
-////            });
-////            return;
-//            new AssignmentManagerDialog(2);
-//            return;
-            AddProblemDialog.showDialog(new Callback() {
-                @Override
-                public void problemsAdded(List<ProblemDto> problemsAdded) {
-                }
-            });
+//            Assignment ass = new Assignment(1,"Test","Test",new Date(),null,null);
+//            new EditAssignmentDialog(ass, new CallbackOnComplete() {
+//                
+//                @Override
+//                public void isComplete() {
+//                }
+//            });
+            new AssignmentManagerDialog(2);
             return;
+//            AddProblemDialog.showDialog(new Callback() {
+//                @Override
+//                public void problemsAdded(List<ProblemDto> problemsAdded) {
+//                }
+//            });
+//            return;
         }
         
         

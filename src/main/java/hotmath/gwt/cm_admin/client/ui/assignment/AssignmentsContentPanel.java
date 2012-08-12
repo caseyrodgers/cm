@@ -27,13 +27,17 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 public class AssignmentsContentPanel extends ContentPanel {
     
     ListView<Assignment, String> _listView;
+    GradeBookPanel gradeBookPanel;
     
-    public AssignmentsContentPanel() {
+    public AssignmentsContentPanel(GradeBookPanel gradeBookPanel) {
         
+        this.gradeBookPanel = gradeBookPanel;
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         getHeader().addTool(createDelButton());
@@ -48,12 +52,27 @@ public class AssignmentsContentPanel extends ContentPanel {
        
         // Create the tree using the store and value provider for the name field
         _listView = new ListView<Assignment, String>(s, dp.assignmentName());
+        
+        _listView.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<Assignment>() {
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent<Assignment> event) {
+                showGradeBookForSelectedAssignment();
+            }
+        });
+        
         add(_listView);
         
         
         readAssignmentData();
     }
 
+    private void showGradeBookForSelectedAssignment() {
+        Assignment ass = _listView.getSelectionModel().getSelectedItem();
+        if(ass == null) {
+            return;
+        }
+        gradeBookPanel.showGradeBookFor(ass);
+    }
     
     
     private void readAssignmentData() {

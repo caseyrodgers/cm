@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
 
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -35,10 +36,9 @@ public class AssignmentManagerDialog  {
         westData.setCollapseMini(true);
         westData.setMargins(new Margins(0, 5, 0, 5));
         
-        ContentPanel assignmentPanel = new AssignmentsContentPanel();
-        ContentPanel gradeBookPanel = new ContentPanel();
-        gradeBookPanel.setHeadingText("Selected Assignment Grade Book");
-
+        GradeBookPanel gradeBookPanel = new GradeBookPanel();
+        ContentPanel assignmentPanel = new AssignmentsContentPanel(gradeBookPanel);
+        
         assignmentPanel.setLayoutData(westData);
         
         con.setCenterWidget(gradeBookPanel);

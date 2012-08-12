@@ -2,7 +2,10 @@ package hotmath.cm.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.Assignment;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.GradeBookModel;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -288,5 +291,51 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
+    }
+
+    public List<GradeBookModel> getAssignmentGradeBook(int assignKey) {
+        System.out.println("Getting grade book");
+        return null;
+    }
+
+    /** Assign students to assignment.  Return messages indicating each error
+     *  s
+     * @param assignKey
+     * @param students
+     * @return
+     */
+    public AssignmentInfo assignStudents(final int assignKey, List<StudentDto> students) {
+
+        int assignCount=0,errorCount=0;
+        AssignmentInfo assignmentInfo = new AssignmentInfo();
+        String messages=null;
+        for(final StudentDto s: students) {
+            
+            try {
+                getJdbcTemplate().update(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                        String sql = "insert into CM_ASSIGNMENT_USERS(assign_key, uid)values(?,?)";
+                        PreparedStatement ps = con.prepareStatement(sql);
+                        ps.setInt(1, assignKey);
+                        ps.setInt(2, s.getUid());
+                        return ps;
+                    }
+                });
+                
+                ++assignCount;
+            }
+            catch(Exception e) {
+                errorCount++;
+                if(messages == null) {
+                    messages = "";
+                }
+                messages += "Error assigning student (" + s.getName() + "): " + e.getMessage() + "\n";
+            }
+        }
+        assignmentInfo.setAssigned(assignCount);
+        assignmentInfo.setErrors(errorCount);
+        assignmentInfo.setMessage(messages);
+        return assignmentInfo;
     }
 }
