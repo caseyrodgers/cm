@@ -122,6 +122,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         if(ass == null) {
             return;
         }
+
         
         final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Are you sure you want to delete this assignment?");
         cm.addHideHandler(new HideHandler() {
@@ -147,6 +148,22 @@ public class AssignmentsContentPanel extends ContentPanel {
             }
 
             public void oncapture(RpcData data) {
+                List<Assignment> assList = _listView.getStore().getAll();
+                
+                Assignment assToSelect=null;
+                int cnt=0;
+                for(Assignment a: assList) {
+                    if(a.getAssignKey() == ass.getAssignKey()) {
+                        if(assList.size() > cnt+1) {
+                            assToSelect = assList.get(cnt);
+                            List<Assignment> nextSelect = new ArrayList<Assignment>();
+                            nextSelect.add(assToSelect);
+                            _listView.getSelectionModel().setSelection(nextSelect);
+                        }
+                    }
+                    cnt++;
+                }
+                
                 CmBusyManager.setBusy(false);
                 _listView.getStore().remove(ass);
             }

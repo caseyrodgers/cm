@@ -253,6 +253,9 @@ class AssignmentProblemListView extends ContentPanel {
             public void onSelect(SelectEvent event) {
                 List<ProblemDto> newList = new ArrayList<ProblemDto>();
                 
+                
+                
+                ProblemDto nextSelect=null;
                 for(int j=0, jt=getGrid().getStore().getAll().size();j<jt;j++) {
                     ProblemDto pd = (ProblemDto)getGrid().getStore().getAll().get(j);
                 
@@ -262,6 +265,17 @@ class AssignmentProblemListView extends ContentPanel {
                         if(pto == pd) {
                             // remove it
                             found=true;
+                            
+                            int tot=getGrid().getStore().getAll().size();
+                            if(j<tot-1) {
+                                nextSelect = (ProblemDto)getGrid().getStore().get(j+1);
+                            }
+                            else if(j>1){
+                                nextSelect = (ProblemDto)getGrid().getStore().get(j-1);
+                            }
+                            else if(j==1){
+                                nextSelect = (ProblemDto)getGrid().getStore().get(0);
+                            }
                             break;
                         }
                     }
@@ -272,6 +286,13 @@ class AssignmentProblemListView extends ContentPanel {
                 
                 getGrid().getStore().clear();
                 getGrid().getStore().addAll(newList);
+                
+                
+                if(nextSelect != null) {
+                    newList.clear();
+                    newList.add(nextSelect);
+                    getGrid().getSelectionModel().setSelection(newList);
+                }
             }
         });
 
