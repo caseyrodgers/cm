@@ -347,4 +347,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentInfo.setMessage(messages);
         return assignmentInfo;
     }
+
+    public void unassignStudents(final int assKey, final CmList<StudentDto> students) {
+        getJdbcTemplate().batchUpdate("delete from CM_ASSIGNMENT_USERS where assign_key = ? and uid = ?", new BatchPreparedStatementSetter() {
+
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, assKey);
+                ps.setInt(2, students.get(i).getUid());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return students.size();
+            }
+        });
+        
+    }
 }
