@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.sprite.CreateSprites;
 
 import java.util.List;
 
@@ -44,7 +45,9 @@ public class AssignStudentsToAssignmentDialog extends GWindow {
         
         setWidget(_listView);
         
-        
+
+        getHeader().addTool(createSelectAll());
+        getHeader().addTool(createUnSelectAll());
         addButton(createAssignStudents());
         addCloseButton();
 
@@ -69,6 +72,31 @@ public class AssignStudentsToAssignmentDialog extends GWindow {
         return btn;
     }
 
+    private Widget createSelectAll() {
+        TextButton btn = new TextButton("Select All");
+        btn.setToolTip("Select all students in list.");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                _listView.getSelectionModel().selectAll();
+            }
+        });
+        return btn;        
+    }
+    
+    private Widget createUnSelectAll() {
+        TextButton btn = new TextButton("Unselect All");
+        btn.setToolTip("Unselect all students in list.");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                _listView.getSelectionModel().deselectAll();
+            }
+        });
+        return btn;        
+    }
+
+    
     private void assignStudents(final List<StudentDto> students) {
         new RetryAction<AssignmentInfo>() {
             @Override
@@ -90,14 +118,21 @@ public class AssignStudentsToAssignmentDialog extends GWindow {
                     errorInfo.setPixelSize(400, 300);
                     errorInfo.show();
                 }
+                
+                _gradeBookPanel.showGradeBookFor(_assignment);
+                
+                
+                hide();
             }
 
         }.register();         
     }
 
 
+    GradeBookPanel _gradeBookPanel;
     Assignment _assignment;
-    public void showDialog(Assignment assignment) {
+    public void showDialog(GradeBookPanel gradeBookPanel, Assignment assignment) {
+        _gradeBookPanel = gradeBookPanel;
         _assignment = assignment;
         show();
         

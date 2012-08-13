@@ -3,7 +3,6 @@ package hotmath.cm.assignment;
 import hotmath.gwt.cm_rpc.client.model.Assignment;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.GradeBookModel;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
@@ -293,9 +292,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
     }
 
-    public List<GradeBookModel> getAssignmentGradeBook(int assignKey) {
-        System.out.println("Getting grade book");
-        return null;
+    public List<StudentDto> getAssignmentGradeBook(final int assignKey) {
+        String sql = "select u.uid, u.user_name " +
+                     "from HA_USER u " + 
+                     " join CM_ASSIGNMENT_USERS au on au.uid = u.uid " +
+                     " where au.assign_key = ? " +
+                     " order by u.user_name";
+        List<StudentDto> students = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<StudentDto>() {
+            @Override
+            public StudentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new StudentDto(rs.getInt("uid"), rs.getString("user_name"));
+            }
+        });        
+        return students;
     }
 
     /** Assign students to assignment.  Return messages indicating each error

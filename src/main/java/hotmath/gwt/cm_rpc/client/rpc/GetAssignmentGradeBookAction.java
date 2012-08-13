@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-public class GetAssignmentGradeBookAction implements Action<RpcData> {
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+
+public class GetAssignmentGradeBookAction implements Action<CmList<StudentDto>> {
     private int assignKey;
 
     public GetAssignmentGradeBookAction(){}
