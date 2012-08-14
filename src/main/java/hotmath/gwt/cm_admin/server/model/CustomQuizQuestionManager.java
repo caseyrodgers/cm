@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CatchupMathProperties;
-import hotmath.concordance.ConcordanceEntry;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -54,6 +53,9 @@ public class CustomQuizQuestionManager {
     }
     
     
+    /** file is absolute matching of lesson and pids (not ranges)
+     * 
+     */
     private void readInFile() throws Exception{
         SbFile file = new SbFile(new File(CatchupMathProperties.getInstance().getCatchupRuntime(), "all.custom_quiz"));
         
@@ -62,15 +64,34 @@ public class CustomQuizQuestionManager {
         
         data.clear();
         for(String line: lines) {
-            String lesson = SbUtilities.getToken(line, 1, ":").trim();
-            String range = SbUtilities.getToken(line, 2, ":").trim();
+            if(line.startsWith("#")) {
+                continue;
+            }
+            String lesson = SbUtilities.getToken(line, 1, "\t").trim();
+            String pid = SbUtilities.getToken(line, 2, "\t").trim();
             
-            data.put(lesson,new CustomQuizLessonInfo(range)); 
+            CustomQuizLessonInfo ci = data.get(lesson);
+            if(ci == null) {
+                ci = new CustomQuizLessonInfo();
+                data.put(lesson,ci);
+            }
+            ci.pids.add(pid);
         }
     }
     
     
     public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lessonFile, int gradeLevel) throws Exception {
+        
+
+//                  QuizQuestionParsed quizQuestion = getQuestionHtml(conn, num, pid);
+//                  quizHtml = quizQuestion.getStatement();
+//                  correctAnswer = quizQuestion.getCorrectAnswer();
+//              }
+//              num++;
+//              
+//              list.add(new QuizQuestion(questionId,lessonFile, rs.getString("program_name"), pid, quizHtml, correctAnswer));
+//          }        
+        
         
         CmList<QuizQuestion> retData = new CmArrayList<QuizQuestion>();
         CustomQuizLessonInfo lessonInfo = data.get(lessonFile);
@@ -78,22 +99,20 @@ public class CustomQuizQuestionManager {
             __logger.warn("Could not find lesson info : " + lessonFile);
         }
         else {
-            if(lessonInfo.pids == null) {
-                ConcordanceEntry con = new ConcordanceEntry(conn, lessonInfo.range);
-
-                List<String> pids = new ArrayList<String>();
-                for(String c: con.getGUIDs()) {
-                    pids.add(c);
-                }               
-                lessonInfo.pids = pids;
-            }
-
             for(String pid: lessonInfo.pids) {
-                QuizQuestion quizQuesion = new QuizQuestion("ques_id", lessonFile,"Prog Name",pid, "quiz HTML", 1);
+                
+                QuizQuestionParsed quizQuestion = CmQuizzesDao.getInstance().getQuestionHtml(conn, 0, pid);
+                
+                QuizQuestion quizQuesion = new QuizQuestion("ques_id", lessonFile,"Prog Name",pid, quizQuestion.getStatement(), 1);
                 retData.add(quizQuesion);
             }
         }
         return retData;
+    }
+
+
+    public boolean isDefined(String lesson) {
+        return data.containsKey(lesson);
     }
 
 }
@@ -101,10 +120,8 @@ public class CustomQuizQuestionManager {
 
 
 class CustomQuizLessonInfo {
-    String range;
-    List<String> pids;
+    List<String> pids = new ArrayList<String>();
     
-    public CustomQuizLessonInfo(String range) {
-        this.range = range;
+    public CustomQuizLessonInfo() {
     }
 }

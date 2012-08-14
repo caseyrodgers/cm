@@ -285,7 +285,7 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
      * @return
      * @throws Exception
      */
-    private QuizQuestionParsed getQuestionHtml(final Connection conn, int problemNumber, String pid) throws Exception {
+    public QuizQuestionParsed getQuestionHtml(final Connection conn, int problemNumber, String pid) throws Exception {
         Solution sol = SolutionManager.getSolution(conn, pid,true);
         String statement = postProcessor.processHTML_SolutionImagesAbsolute(sol.getStatement(), sol.getSolutionImagesURI(), null);
         

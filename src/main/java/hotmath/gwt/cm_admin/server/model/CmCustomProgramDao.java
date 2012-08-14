@@ -83,8 +83,14 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             ResultSet rs = stmt
                     .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static order by lesson");
             while (rs.next()) {
-                CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"),
-                        rs.getString("subject"));
+                String file = rs.getString("file");
+                if(!CustomQuizQuestionManager.getInstance().isDefined(file)) {
+                    // skip if no absolute pids defined.
+                    LOGGER.warn("getAllLessons: Lesson '" + file + " does not have absolute pids defined");
+                    continue;
+                }
+                
+                CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), file,rs.getString("subject"));
 
                 /**
                  * see if there is a entry for this file already if there is use
