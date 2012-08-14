@@ -94,6 +94,8 @@ public class UserInfoDao {
 	         ui.setDemoUser(o.get("demoUser").isBoolean().booleanValue());
 	         ui.setFirstView(o.get("firstView").isBoolean().booleanValue());
 	         ui.setLimitGames(o.get("limitGames").isBoolean().booleanValue());
+	         ui.setDisableCalcAlways(o.get("disableCalcAlways").isBoolean().booleanValue());
+	         ui.setDisableCalcQuizzes(o.get("disableCalcQuizzes").isBoolean().booleanValue());
 	         ui.setLoginName(getJsonString(o.get("loginName")));
 	         ui.setPassPercentRequired(getJsonInt(o.get("passPercentRequired")));
 	         ui.setPassword(getJsonString(o.get("password")));

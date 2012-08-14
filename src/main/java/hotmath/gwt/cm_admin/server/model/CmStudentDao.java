@@ -573,9 +573,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         int count = getJdbcTemplate().update(
     	        "insert into HA_USER_TEMPLATE (name, password, admin_id, group_id, prog_inst_id, type, limit_games, show_work_required, stop_at_program_end, create_date) " +
-    	        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, now())", 
+    	        " values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? now())", 
     	        new Object[] {sm.getName(), sm.getPasscode(), sm.getAdminUid(), sm.getGroupId(), sm.getProgram().getProgramId(), templateType, sm.getSettings().getLimitGames()?1:0,
-    	        		      sm.getSettings().getShowWorkRequired()?1:0, sm.getSettings().getStopAtProgramEnd()?1:0});
+    	        		      sm.getSettings().getShowWorkRequired()?1:0, sm.getSettings().getStopAtProgramEnd()?1:0,
+    	        		      sm.getSettings().getDisableCalcAlways()?1:0, sm.getSettings().getDisableCalcQuizzes()?1:0});
 
         String sql = "select id from HA_USER_TEMPLATE where admin_id = ? and password = ?";
         Integer uid = getJdbcTemplate().queryForObject(sql, new Object[] { sm.getAdminUid(), sm.getPasscode() },

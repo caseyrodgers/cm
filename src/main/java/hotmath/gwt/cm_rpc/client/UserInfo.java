@@ -34,6 +34,8 @@ public class UserInfo implements  Response {
 	String loginName;
 	boolean customProgram;
 	boolean limitGames;
+	boolean disableCalcAlways;
+	boolean disableCalcQuizzes;
 
     public UserInfo() {}
     
@@ -332,7 +334,23 @@ public class UserInfo implements  Response {
         this.limitGames = limitGames;
     }
 
-    UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
+    public boolean isDisableCalcAlways() {
+		return disableCalcAlways;
+	}
+
+	public void setDisableCalcAlways(boolean disableCalcAlways) {
+		this.disableCalcAlways = disableCalcAlways;
+	}
+
+	public boolean isDisableCalcQuizzes() {
+		return disableCalcQuizzes;
+	}
+
+	public void setDisableCalcQuizzes(boolean disableCalcQuizzes) {
+		this.disableCalcQuizzes = disableCalcQuizzes;
+	}
+
+	UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
 
 
     /** Return action indicating what to do once the active

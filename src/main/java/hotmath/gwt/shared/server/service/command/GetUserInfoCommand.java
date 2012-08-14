@@ -30,7 +30,6 @@ import hotmath.testset.ha.HaTestRun;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.HaUserDao;
 import hotmath.testset.ha.StudentUserProgramModel;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 
@@ -129,6 +128,8 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             UserProgramCompletionAction onComplete = settings.getStopAtProgramEnd()?UserProgramCompletionAction.STOP:UserProgramCompletionAction.AUTO_ADVANCE;
             userInfo.setOnCompletion(onComplete);
             userInfo.setLimitGames(settings.getLimitGames());
+            userInfo.setDisableCalcAlways(settings.getDisableCalcAlways());
+            userInfo.setDisableCalcQuizzes(settings.getDisableCalcQuizzes());
             
             /**if is custom program or parallel program, then override the default EndOfProgram
              * action to force a stop.
