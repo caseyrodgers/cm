@@ -368,14 +368,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                     if(_solutionInfo.getContext() != null) {
                         variableContext = _solutionInfo.getContext().getContextJson();
                     }
-
-                    boolean isDisableCalcAlways = UserInfo.getInstance().isDisableCalcAlways();
-                    boolean isDisableCalcQuizzes = UserInfo.getInstance().isDisableCalcQuizzes();
                     
                     ResourceViewerImplTutor.initializeTutor(getResourceItem().getFile(),
                              getResourceItem().getTitle(),getResourceItem().getWidgetJsonArgs(),
-                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,variableContext,
-                             isDisableCalcAlways, isDisableCalcQuizzes);
+                             hasShowWork,shouldExpandSolution,result.getHtml(),result.getJs(),isEpp,variableContext);
 
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_SOLUTION_SHOW, getResourceItem()));
                 } catch (Exception e) {
@@ -517,10 +513,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
      *
      * @param pid
      */
-    static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,
-    		String solutionHtml,String solutionData,boolean isEpp, String contextVarsJson, boolean isDisableCalcAlways, boolean isDisableCalcQuizzes) /*-{
-        $wnd.doLoad_Gwt(pid, title,jsonConfig, hasShowWork, shouldExpandSolution, solutionHtml, solutionData, isEpp, contextVarsJson, isDisableCalcAlways, isDisableCalcQuizzes);
-    }-*/;
+    static private native void initializeTutor(String pid, String title, String jsonConfig, boolean hasShowWork, boolean shouldExpandSolution,String solutionHtml,String solutionData,boolean isEpp, String contextVarsJson) /*-{
+                                              $wnd.doLoad_Gwt(pid, title,jsonConfig, hasShowWork,shouldExpandSolution,solutionHtml,solutionData,isEpp,contextVarsJson);
+                                          }-*/;
 
     static private native void expandAllSteps() /*-{
                                           $wnd.expandAllSteps();
