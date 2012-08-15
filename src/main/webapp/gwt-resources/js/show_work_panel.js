@@ -56,6 +56,18 @@ function updateWhiteboard(id, command, commandData) {
    }
 }
 
+//called by GWT in ShowWorkPanel to disable whiteboard calculator
+function disableWhiteboardCalculator() {
+    var fo = getWhiteboardObject();
+    alert('disableWhiteboardCalculator');
+    fo.disableWhiteboardCalculator();
+}
+
+//called by GWT in ShowWorkPanel to enable whiteboard calculator
+function enableWHiteboardCalculator() {
+    var fo = getWhiteboardObject();
+    fo.enableWhiteboardCalculator();
+}
 
 /** return the whiteboard object DOM element
  * 
