@@ -35,6 +35,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class QuizCmGuiDefinition implements CmGuiDefinition {
     int testSegment;
 
+    static public final String QUIZ_PREFIX = "quiz:";
+
     public QuizCmGuiDefinition(int segmentNumber) {
         this.testSegment = segmentNumber;
     }
@@ -141,7 +143,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 
             @Override
             public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-                whiteboardPanel.setPid("quiz:" + CmMainPanel.getLastQuestionPid());
+                whiteboardPanel.setPid(QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
             }
         };
 
