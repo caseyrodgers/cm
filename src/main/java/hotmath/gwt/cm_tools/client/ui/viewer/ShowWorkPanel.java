@@ -17,6 +17,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
 
@@ -149,6 +150,7 @@ public class ShowWorkPanel extends Frame {
             callbackAfterWhiteboardInitialized.requestComplete(null);
 
         loadWhiteboardData();
+        checkDisableWhiteboardCalculator();
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_READY));
     }
 
@@ -180,6 +182,32 @@ public class ShowWorkPanel extends Frame {
         }.register();
     }
 
+    private void checkDisableWhiteboardCalculator() {
+        boolean always = UserInfo.getInstance().isDisableCalcAlways();
+        boolean quizzes = UserInfo.getInstance().isDisableCalcQuizzes();
+        
+        if (always == true)
+            MessageBox.info("disable calculator", "always: " + always + ", quizzes: " + quizzes, null);
+        
+        if (always == true || (quizzes == true && isQuiz())) {
+        	disableWhiteboardCalculator();
+        }
+
+    }
+
+    private boolean isQuiz() {
+    	//TODO: check for Quiz
+    	return true;
+    }
+
+    private native void disableWhiteboardCalculator() /*-{
+        $wnd.disableWhiteboardCalculator();
+    }-*/;
+    
+    private native void enableWhiteboardCalculator() /*-{
+        $wnd.enableWhiteboardCalculator();
+    }-*/;
+
     String backgroundHtml;
 
     /**
@@ -196,7 +224,7 @@ public class ShowWorkPanel extends Frame {
     /**
      * Push a GWT method onto the global space for the app window
      * 
-     * This wil be called from Flash whiteboard component after it initializes.
+     * This will be called from Flash whiteboard component after it initializes.
      * 
      * which is called after each guess selection.
      * 

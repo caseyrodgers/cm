@@ -60,7 +60,13 @@ function updateWhiteboard(id, command, commandData) {
 function disableWhiteboardCalculator() {
     var fo = getWhiteboardObject();
     alert('disableWhiteboardCalculator');
-    fo.disableWhiteboardCalculator();
+    if(fo.disableWhiteboardCalculator) {
+        fo.disableWhiteboardCalculator();
+    }
+    else {
+       alert('could not find disableWhiteboardCalculator()');
+    }
+
 }
 
 //called by GWT in ShowWorkPanel to enable whiteboard calculator
