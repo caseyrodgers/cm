@@ -200,11 +200,11 @@ public class ShowWorkPanel extends Frame {
     	return true;
     }
 
-    private native void disableWhiteboardCalculator() /*-{
+    static private native void disableWhiteboardCalculator() /*-{
         $wnd.disableWhiteboardCalculator();
     }-*/;
     
-    private native void enableWhiteboardCalculator() /*-{
+    static private native void enableWhiteboardCalculator() /*-{
         $wnd.enableWhiteboardCalculator();
     }-*/;
 
