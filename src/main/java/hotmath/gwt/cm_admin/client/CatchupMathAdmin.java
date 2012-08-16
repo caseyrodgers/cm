@@ -70,7 +70,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         RootPanel.get("main-content").add(mainPort);
         
         
-        if(true) {
+        if(false) {
 //            Assignment ass = new Assignment(1,"Test","Test",new Date(),null,null);
 //            new EditAssignmentDialog(ass, new CallbackOnComplete() {
 //                

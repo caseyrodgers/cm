@@ -38,7 +38,7 @@ public class AssignmentManagerDialog2  {
         this.aid = aid;
         
         Window window = new GWindow(true);
-        window.setPixelSize(400,400);
+        window.setPixelSize(450,400);
         window.setHeadingHtml("Assignment Manager");
         
         final BorderLayoutContainer con = new BorderLayoutContainer();
