@@ -187,9 +187,6 @@ public class ShowWorkPanel extends Frame {
         boolean always = UserInfo.getInstance().isDisableCalcAlways();
         boolean quizzes = UserInfo.getInstance().isDisableCalcQuizzes();
         
-        if (always == true)
-            MessageBox.info("disable calculator", "always: " + always + ", quizzes: " + quizzes, null);
-        
         if (always == true || (quizzes == true && isQuiz())) {
         	disableWhiteboardCalculator();
         }
