@@ -24,12 +24,13 @@ public class SaveAssignmentCommand_Test extends TestCase {
         Assignment ass = new Assignment();
         ass.setAssignmentName("Test 1: " + System.currentTimeMillis());
         ass.setAssignmentName("New Test Assignment");
+        ass.setGroupId(0);
         ass.setDueDate(new Date());
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
         pids.add(new ProblemDto(0,"Test Lesson", "Label", "pid"));
         ass.setPids(pids);
         
-        SaveAssignmentAction action = new SaveAssignmentAction();//2,ass);
+        SaveAssignmentAction action = new SaveAssignmentAction(0, ass);
         RpcData data = new SaveAssignmentCommand().execute(HMConnectionPool.getConnection(), action);
         assertNotNull(data);
     }

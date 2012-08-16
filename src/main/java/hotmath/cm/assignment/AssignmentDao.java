@@ -1,22 +1,32 @@
 package hotmath.cm.assignment;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.PropertyLoadFileException;
+import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.Assignment;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
+import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,6 +35,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
 public class AssignmentDao extends SimpleJdbcDaoSupport {
+    
+    static Logger __logger = Logger.getLogger(AssignmentDao.class);
+    
     static private AssignmentDao __instance;
 
     static public AssignmentDao getInstance() throws Exception {
@@ -55,12 +68,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,name,due_date,comments)values(?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified)values(?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, aid);
-                    ps.setString(2, ass.getAssignmentName());
-                    ps.setDate(3, new java.sql.Date(ass.getDueDate().getTime()));
-                    ps.setString(4, ass.getComments());
+                    ps.setInt(2, ass.getGroupId());
+                    ps.setString(3, ass.getAssignmentName());
+                    ps.setDate(4, new java.sql.Date(ass.getDueDate().getTime()));
+                    ps.setString(5, ass.getComments());
+                    ps.setDate(6, new Date(System.currentTimeMillis()));
                     return ps;
                 }
             }, keyHolder);
@@ -73,7 +88,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ? where assign_key = ?";
+                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now() where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, aid);
                     ps.setString(2, ass.getAssignmentName());
@@ -113,29 +128,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             });
         }
 
-        // /**
-        // * save the UIDS who have been assigned this Assignment.
-        // *
-        // MOVE TO AssignStudents
-        // */
-        // String sqlUids =
-        // "insert into CM_ASSIGNMENT_USERS(assign_key, uid)values(?,?)";
-        // getJdbcTemplate().batchUpdate(sqlUids, new
-        // BatchPreparedStatementSetter() {
-        //
-        // @Override
-        // public void setValues(PreparedStatement ps, int i) throws
-        // SQLException {
-        // ps.setInt(1, assKey);
-        // ps.setInt(2, ass.getUids().get(i).intValue());
-        // }
-        //
-        // @Override
-        // public int getBatchSize() {
-        // return ass.getUids().size();
-        // }
-        // });
-
         return assKey;
 
     }
@@ -154,7 +146,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             assignment = getJdbcTemplate().queryForObject(sql, new Object[] { assKey }, new RowMapper<Assignment>() {
                 @Override
                 public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Assignment(rs.getInt("assign_key"), rs.getString("name"), rs.getString("comments"), rs
+                    return new Assignment(rs.getInt("assign_key"),rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), rs
                             .getDate("due_date"), null, null);
                 }
             });
@@ -243,14 +235,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return problems;
     }
 
-    public List<Assignment> getAssignments(int aid) {
-        String sql = "select * from CM_ASSIGNMENT where aid  = ? order by assign_key";
+    public List<Assignment> getAssignments(int aid, int groupId) throws PropertyLoadFileException {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
 
-        List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { aid }, new RowMapper<Assignment>() {
+        List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] {groupId }, new RowMapper<Assignment>() {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getString("name"),
+                
+                // create a psudo name
+                String comments = rs.getString("comments");
+                String assignmentName = rs.getDate("due_date") + (comments!=null?" - " + comments:"");
+                
+                Assignment ass = new Assignment(rs.getInt("assign_key"),rs.getInt("group_id"), assignmentName,
                         rs.getString("comments"), rs.getDate("due_date"), null, null);
+                
+                ass.setProblemCount(rs.getInt("problem_count"));
                 return ass;
             }
         });
@@ -364,4 +363,35 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
         
     }
+
+    public List<GroupDto> getAssignmentGroups(int aid) {
+        List<GroupDto> groups = new ArrayList<GroupDto>();
+        try {
+            List<GroupInfoModel> groupModels = CmAdminDao.getInstance().getActiveGroups(aid);
+            
+            List<Integer> inList = new ArrayList<Integer>();
+            for(GroupInfoModel gm: groupModels) {
+                inList.add(gm.getId());
+            }
+            
+            
+            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_GROUP_INFO");
+            sql = QueryHelper.createInListSQL(sql, inList);
+            groups.addAll(getJdbcTemplate().query(sql, new Object[] {  }, new RowMapper<GroupDto>() {
+                @Override
+                public GroupDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    String label = rs.getString("name") + " [" + rs.getInt("student_count") + ", " + rs.getInt("assignment_count") + "]";
+                    return new GroupDto(rs.getInt("group_id"), label);
+                }
+            }));        
+           
+            
+        }
+        catch(Exception e) {
+            __logger.error("Error getting assignments", e);
+        }
+        return groups;
+        
+    }
+
 }

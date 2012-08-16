@@ -17,7 +17,7 @@ public class GetAssignmentsCreatedCommand implements ActionHandler<GetAssignment
     public CmList<Assignment> execute(Connection conn, GetAssignmentsCreatedAction action) throws Exception {
         
         CmList<Assignment> asses = new CmArrayList<Assignment>();
-        asses.addAll(AssignmentDao.getInstance().getAssignments(action.getAid()));
+        asses.addAll(AssignmentDao.getInstance().getAssignments(action.getAid(), action.getGroupId()));
         return asses;
     }
 

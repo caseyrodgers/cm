@@ -836,7 +836,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     @Override
                     public void onSuccess() {
                         //new GradeBookDialog(_cmAdminMdl.getId());
-                        new AssignmentManagerDialog(_cmAdminMdl.getId());
+                        new AssignmentManagerDialog2(_cmAdminMdl.getId());
                     }
                 });
             }

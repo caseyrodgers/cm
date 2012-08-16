@@ -3570,3 +3570,49 @@ from (
        ) a on a.run_id = r.run_id and a.file = pl.file
   where u.uid in ( $$UID_LIST$$ )
   group by user_name, cp.id, pl.id) s
+  
+  
+  
+  
+  
+##############################
+# AssignmentDao
+##############################
+  
+.key=GET_ASSIGNMENT_GROUP_INFO
+  
+select g.id as group_id, g.name, sc.student_count, ifnull(ac.assignment_count,0) as assignment_count
+from CM_GROUP g
+  join (
+        select u.group_id, count(*) as student_count
+        from HA_USER u 
+        group by u.group_id
+        ) sc on sc.group_id = g.id
+  left join (
+        select a.group_id, count(*) as assignment_count
+        from   CM_ASSIGNMENT a
+        group by a.group_id
+  ) ac on ac.group_id = g.id
+where id in ($$UID_LIST$$)
+group by group_id
+
+
+
+
+.key=GET_ASSIGNMENTS_FOR_GROUP
+
+
+select a.assign_key,
+       a.group_id,
+       a.name,
+       Ifnull(problem_count, 0) as problem_count,
+       a.comments,
+       a.due_date
+from   CM_ASSIGNMENT a
+       left join (select assign_key,
+                         Count(*) as problem_count
+                  from   CM_ASSIGNMENT_PIDS p
+                  group  by assign_key) p
+              on p.assign_key = a.assign_key
+where  a.group_id = ?
+order  by last_modified desc 

@@ -81,7 +81,7 @@ public class HeaderPanel extends LayoutContainer {
         updates.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
                 //new RecentUpdatesWindow();
-                new AssignmentManagerDialog(2);
+                new AssignmentManagerDialog2(2);
             }
         });
         add(updates);

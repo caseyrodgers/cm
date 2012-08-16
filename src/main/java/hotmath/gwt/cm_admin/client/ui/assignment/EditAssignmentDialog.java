@@ -47,7 +47,12 @@ public class EditAssignmentDialog {
         this._assignment = assignment;
         final GWindow window = new GWindow(false);
         window.setPixelSize(800,600);
-        window.setHeadingHtml("Edit Assignment");
+        
+        if(assignment.getAssignKey() == 0) {
+            window.setHeadingHtml("Edit Assignment: " + assignment.getAssignmentName());
+        } else {
+            window.setHeadingHtml("Create Assignment: " + assignment.getAssignmentName());
+        }
 
         final BorderLayoutContainer con = new BorderLayoutContainer();
         con.setBorders(true);
@@ -77,9 +82,11 @@ public class EditAssignmentDialog {
         
         BorderLayoutData headerData = new BorderLayoutData();
         headerData.setMargins(new Margins(20));
-        headerData.setSize(100);
+        headerData.setSize(70);
         header.setLayoutData(headerData);
-        header.add(assignmentNameLabel);
+        
+        
+        // header.add(assignmentNameLabel);
         
         _comments.setWidth(MAX_FIELD_LEN);
         _comments.setHeight(50);

@@ -32,19 +32,25 @@ public class CatchupMathProperties extends Properties {
     static Logger __log = Logger.getLogger(CatchupMathProperties.class);
     static private CatchupMathProperties __instance;
 
-    static public CatchupMathProperties getInstance() throws Exception {
+    static public CatchupMathProperties getInstance() throws PropertyLoadFileException {
         if (__instance == null)
             __instance = new CatchupMathProperties();
         return __instance;
     }
 
-    private CatchupMathProperties() throws Exception {
-        File pfile = new File(System.getProperty("user.home"), "cm.properties");
-        __log.info("Reading properties file: " + pfile);
-        if (!pfile.exists()) {
-            throw new Exception("Property file '" + pfile + "' does not exist");
+    private CatchupMathProperties() throws PropertyLoadFileException {
+        
+        try {
+            File pfile = new File(System.getProperty("user.home"), "cm.properties");
+            __log.info("Reading properties file: " + pfile);
+            if (!pfile.exists()) {
+                throw new Exception("Property file '" + pfile + "' does not exist");
+            }
+            load(new FileReader(pfile));
         }
-        load(new FileReader(pfile));
+        catch(Exception e) {
+            throw new PropertyLoadFileException(e);
+        }
     }
 
     /**

@@ -26,20 +26,33 @@ public class Assignment implements Response{
     
     String assignmentName;
     int assignKey;
+    int groupId;
     String comments;
     Date dueDate;
     CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
     List<Integer> uids = new ArrayList<Integer>();
     
+    // might be null indicate not set
+    Integer problemCount;
+    
     public Assignment() {}
     
-    public Assignment(int assignKey, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids) {
+    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids) {
         this.assignKey = assignKey;
+        this.groupId = groupId;
         this.assignmentName = name;
         this.comments = comments;
         this.dueDate = dueDate;
         this.pids = pids;
         this.uids = uids;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
     }
 
     public int getAssignKey() {
@@ -91,9 +104,18 @@ public class Assignment implements Response{
         this.comments = comments;
     }
 
+    public Integer getProblemCount() {
+        return problemCount;
+    }
+
+    public void setProblemCount(Integer problemCount) {
+        this.problemCount = problemCount;
+    }
+
     @Override
     public String toString() {
-        return "Assignment [assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", comments=" + comments
-                + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids + "]";
+        return "Assignment [assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId
+                + ", comments=" + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids
+                + ", problemCount=" + problemCount + "]";
     }
 }

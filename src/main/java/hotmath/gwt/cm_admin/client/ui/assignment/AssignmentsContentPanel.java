@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.Assignment;
+import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
@@ -16,24 +17,29 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
-import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 public class AssignmentsContentPanel extends ContentPanel {
     
-    ListView<Assignment, String> _listView;
+    Grid<Assignment> _grid;
+    
     GradeBookPanel gradeBookPanel;
+    GroupDto _currentGroup;
     
     public AssignmentsContentPanel(GradeBookPanel gradeBookPanel) {
         
@@ -44,30 +50,52 @@ public class AssignmentsContentPanel extends ContentPanel {
         setCollapsible(false);
         
         
-        AssignmentProperties dp = GWT.create(AssignmentProperties.class);
+        AssignmentProperties props = GWT.create(AssignmentProperties.class);
+
+        
+        ColumnConfig<Assignment, Date> nameCol = new ColumnConfig<Assignment, Date>(props.dueDate(), 75, "Due Date");
+        ColumnConfig<Assignment, Integer> lessonCountCol = new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems");
+        ColumnConfig<Assignment, String> commentsCol = new ColumnConfig<Assignment, String>(props.comments(),       50, "Comments");
+        List<ColumnConfig<Assignment, ?>> l = new ArrayList<ColumnConfig<Assignment, ?>>();
+        l.add(nameCol);
+        l.add(lessonCountCol);
+        l.add(commentsCol);
+        ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
+
+        
 
         // Create the store that the contains the data to display in the grid
-        ListStore<Assignment> s = new ListStore<Assignment>(dp.key());
+        ListStore<Assignment> store = new ListStore<Assignment>(props.key());
+                
+        _grid = new Grid<Assignment>(store, cm);
         
-       
-        // Create the tree using the store and value provider for the name field
-        _listView = new ListView<Assignment, String>(s, dp.assignmentName());
+        _grid.getView().setAutoExpandColumn(commentsCol);
+        _grid.getView().setStripeRows(true);
+        _grid.getView().setColumnLines(true);
         
-        _listView.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<Assignment>() {
+
+        _grid.addHandler(new DoubleClickHandler() {
             @Override
-            public void onSelectionChanged(SelectionChangedEvent<Assignment> event) {
-                showGradeBookForSelectedAssignment();
+            public void onDoubleClick(DoubleClickEvent event) {
+                editCurrentAssignment();
             }
-        });
-        
-        add(_listView);
-        
-        
-        readAssignmentData();
+        },DoubleClickEvent.getType());
+        add(_grid);
+    }
+    
+
+    public void loadAssignentsFor(GroupDto group) {
+        _currentGroup=group;
+        readAssignmentData(group);
     }
 
+
     private void showGradeBookForSelectedAssignment() {
-        Assignment ass = _listView.getSelectionModel().getSelectedItem();
+        if(gradeBookPanel == null) {
+            return;
+        }
+        
+        Assignment ass = _grid.getSelectionModel().getSelectedItem();
         if(ass == null) {
             return;
         }
@@ -75,23 +103,23 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     
-    private void readAssignmentData() {
+    private void readAssignmentData(final GroupDto group) {
         new RetryAction<CmList<Assignment>>() {
             @Override
             public void attempt() {
-                GetAssignmentsCreatedAction action = new GetAssignmentsCreatedAction(UserInfoBase.getInstance().getUid());
+                GetAssignmentsCreatedAction action = new GetAssignmentsCreatedAction(UserInfoBase.getInstance().getUid(), group.getGroupId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
             public void oncapture(CmList<Assignment> assignments) {
-                _listView.getStore().clear();
-                _listView.getStore().addAll(assignments);
+                _grid.getStore().clear();
+                _grid.getStore().addAll(assignments);
                 
                 if(assignments.size() > 0) {
                     List<Assignment> selectedList = new ArrayList<Assignment>();
                     selectedList.add(assignments.get(0));
-                    _listView.getSelectionModel().setSelection(selectedList);
+                    _grid.getSelectionModel().setSelection(selectedList);
                 }
             }
         }.register();        
@@ -103,6 +131,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         
         Assignment newAss = new Assignment();
         newAss.setAssignmentName("My New Assignment: " + new Date());
+        newAss.setGroupId(_currentGroup.getGroupId());
         
         Date defaultDate = new Date();
         defaultDate.setHours(defaultDate.getHours() + 24);        
@@ -111,14 +140,14 @@ public class AssignmentsContentPanel extends ContentPanel {
         new EditAssignmentDialog(newAss, new CallbackOnComplete() {
             @Override
             public void isComplete() {
-                readAssignmentData();
+                loadAssignentsFor(_currentGroup);
             }
         });        
     }
     
     private void deleteSelectedAssignment() {
         
-        final Assignment ass = _listView.getSelectionModel().getSelectedItem();
+        final Assignment ass = _grid.getSelectionModel().getSelectedItem();
         if(ass == null) {
             return;
         }
@@ -148,7 +177,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             }
 
             public void oncapture(RpcData data) {
-                List<Assignment> assList = _listView.getStore().getAll();
+                List<Assignment> assList = _grid.getStore().getAll();
                 
                 Assignment assToSelect=null;
                 int cnt=0;
@@ -158,25 +187,25 @@ public class AssignmentsContentPanel extends ContentPanel {
                             assToSelect = assList.get(cnt);
                             List<Assignment> nextSelect = new ArrayList<Assignment>();
                             nextSelect.add(assToSelect);
-                            _listView.getSelectionModel().setSelection(nextSelect);
+                            _grid.getSelectionModel().setSelection(nextSelect);
                         }
                     }
                     cnt++;
                 }
                 
                 CmBusyManager.setBusy(false);
-                _listView.getStore().remove(ass);
+                _grid.getStore().remove(ass);
             }
         }.register();        
     }
     
     private void editCurrentAssignment() {
-        Assignment data = _listView.getSelectionModel().getSelectedItem();
+        Assignment data = _grid.getSelectionModel().getSelectedItem();
         if(data != null) {
             new EditAssignmentDialog(data, new CallbackOnComplete() {
                 @Override
                 public void isComplete() {
-                    readAssignmentData();
+                    readAssignmentData(_currentGroup);
                 }
             });        
         }
