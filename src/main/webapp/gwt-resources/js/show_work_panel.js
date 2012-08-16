@@ -65,7 +65,6 @@ function disableWhiteboardCalculator() {
     else {
        alert('could not find disableCalculator()');
     }
-
 }
 
 //called by GWT in ShowWorkPanel to enable whiteboard calculator
@@ -135,3 +134,5 @@ parent.setWhiteboardBackground = setWhiteboardBackground;
 parent.updateWhiteboard = updateWhiteboard;
 parent.setWhiteboardIsReadonly = setWhiteboardIsReadonly;
 parent.createWhiteboardSnapshot_Jsni = createWhiteboardSnapshot_Jsni;
+parent.disableWhiteboardCalculator = disableWhiteboardCalculator;
+parent.enableWhiteboardCalculator = enableWhiteboardCalculator;
