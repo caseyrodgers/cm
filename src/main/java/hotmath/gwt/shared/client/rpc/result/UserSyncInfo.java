@@ -12,12 +12,16 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class UserSyncInfo implements Response{
     CatchupMathVersion versionInfo;
     String currentUserLoginKey;
+    boolean hasNewAssignments;
+    
+    //CmList<Assignment> assignments;
     
     public UserSyncInfo() {}
     
-    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey) {
+    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, boolean hasNewAssignments) {
         this.versionInfo = version;        
         this.currentUserLoginKey = currentUserLoginKey;
+        this.hasNewAssignments = hasNewAssignments;
     }
 
     public CatchupMathVersion getVersionInfo() {
@@ -35,10 +39,19 @@ public class UserSyncInfo implements Response{
     public void setCurrentUserLoginKey(String currentUserLoginKey) {
         this.currentUserLoginKey = currentUserLoginKey;
     }
-    
+
+    public boolean isHasNewAssignments() {
+        return hasNewAssignments;
+    }
+
+    public void setHasNewAssignments(boolean hasNewAssignments) {
+        this.hasNewAssignments = hasNewAssignments;
+    }
 
     @Override
     public String toString() {
-        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey + "]";
+        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey
+                + ", hasNewAssignments=" + hasNewAssignments + "]";
     }
+    
 }

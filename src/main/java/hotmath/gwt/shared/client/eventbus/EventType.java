@@ -204,6 +204,12 @@ public enum EventType{
      * single instance of the tutor/question viewer.
      * 
      */
-    EVENT_TYPE_QUESTION_VIEWER_CLOSED
+    EVENT_TYPE_QUESTION_VIEWER_CLOSED,
+    
+    
+    /** Fired after Assignments have been checked on server
+     * 
+     */
+    EVENT_TYPE_ASSIGNMENTS_UPDATED
    
 }

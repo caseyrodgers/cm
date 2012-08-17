@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -22,9 +23,13 @@ import java.sql.Connection;
 public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, UserSyncInfo>, ActionHandlerManualConnectionManagement{
     @Override
     public UserSyncInfo execute(Connection conn, GetUserSyncAction action) throws Exception {
+        
+      boolean hasUncompletedAssignments=false; // AssignmentDao.getInstance().getNumberOfIncompleteAssignments(action.getUid())>0;
+        
        return new UserSyncInfo(
                 new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()),
-                HaLoginInfoDao.getInstance().getLatestLoginKey(action.getUid()));
+                HaLoginInfoDao.getInstance().getLatestLoginKey(action.getUid()),
+                hasUncompletedAssignments);
     }
     
     @Override

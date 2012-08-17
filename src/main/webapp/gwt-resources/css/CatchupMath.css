@@ -228,6 +228,20 @@ h1, h2, h3, h4 {
 .header-panel-help-btn-over {
         background: url(../images/help-over.png) no-repeat center left!important;
 }
+
+
+.header-panel-assignment-btn {
+        background: url(../images/new_assignments.png) no-repeat center left !important;
+        height: 34px;
+        position: absolute;
+        right: 20px;
+        top: 2px;
+        width: 76px;
+}
+.header-panel-assignments-btn-over {
+        background: url(../images/new_assignments-over.png) no-repeat center left!important;
+}
+
 .header-panel-cmu-btn {
         height: 34px;
         left: 44%;

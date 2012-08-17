@@ -70,6 +70,14 @@ public class PrescriptionResourcePanel extends LayoutContainer {
         PrescriptionSessionDataResource review=null;
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
+            
+            /** do not show EPPs
+             * 
+             */
+            if(resource.getType().equals("cmextra")) {
+                continue;
+            }
+            
             ResourceMenuButton btn = new ResourceMenuButton(resource);
 
             registeredResources.add(resource);

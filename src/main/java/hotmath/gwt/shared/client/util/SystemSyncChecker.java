@@ -2,9 +2,13 @@ package hotmath.gwt.shared.client.util;
 
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.eventbus.CmEvent;
+import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
@@ -116,11 +120,13 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
 	                             }));
                 	 }
                  }
+                 
+                 //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_ASSIGNMENTS_UPDATED,info.isHasNewAssignments()));
             }
              @Override
             public void onFailure(Throwable arg0) {
                  /** fail silent */
-                 // CatchupMathTools.showAlert(arg0.getMessage());
+                 CatchupMathTools.showAlert(arg0.getMessage());
             }
         });
     }

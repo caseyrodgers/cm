@@ -480,9 +480,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         toolbar.add(trendingReportButton());
 
         toolbar.add(highlightsButton());
-        
-        toolbar.add(assignmentToolItem(_grid));
-        toolbar.add(gradeBookToolItem(_grid));
 
         Button customButton = new StudentPanelButton("Custom", new SelectionListener<ButtonEvent>() {
             @Override
@@ -513,7 +510,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         if (CmShared.getQueryParameter("debug") != null) {
             toolbar.add(createRefreshButton());
+            toolbar.add(assignmentToolItem(_grid));
         }
+        
 
         toolbar.add(new FillToolItem());
 
@@ -808,23 +807,6 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
     	return ti;
     }
     
-    private Button gradeBookToolItem(final Grid<StudentModelExt> grid) {
-        Button ti = new StudentPanelButton("Gradebook");
-        ti.setToolTip("Manage and view student's homework.");
-
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        //new GradeBookDialog(_cmAdminMdl.getId());
-                        new GradeBookDialog(_cmAdminMdl.getId());
-                    }
-                });
-            }
-        });
-        return ti;
-    }
     
     private Button assignmentToolItem(final Grid<StudentModelExt> grid) {
         Button ti = new StudentPanelButton("Assignments");

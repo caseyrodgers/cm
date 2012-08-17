@@ -27,6 +27,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
 
@@ -56,6 +58,7 @@ public class ActionDispatcherLoggerGui extends JFrame {
     JTextField _filter = new JTextField();
     List<String> _fullLog = new ArrayList<String>();
     JToggleButton _disabled = new JToggleButton("Enable");
+    JToggleButton _debugMode = new JToggleButton("Debug");
 
     private ActionDispatcherLoggerGui() {
 
@@ -92,7 +95,20 @@ public class ActionDispatcherLoggerGui extends JFrame {
             }
         });
         footer.add("East", clear);
-        footer.add("West", _disabled);
+        
+        JPanel panel = new JPanel();
+        panel.add(_disabled);
+        panel.add(_debugMode);
+        footer.add("West", panel);
+        
+        
+        
+        _debugMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                enableDebugMode(_debugMode.isSelected());
+            }
+        });
         
         JPanel logPanel = new JPanel();
         logPanel.setLayout(new BorderLayout());
@@ -104,6 +120,17 @@ public class ActionDispatcherLoggerGui extends JFrame {
         getContentPane().add("Center", tabPane);
         getContentPane().add("South", footer);
         setVisible(true);
+    }
+    
+    private void enableDebugMode(boolean yesNo) {
+        if(yesNo) {
+            Level level = Level.DEBUG;
+            LogManager.getRootLogger().setLevel(level);
+        }
+        else {
+            Level level = Level.INFO;
+            LogManager.getRootLogger().setLevel(level);
+        }
     }
 
     private void setupLog4JAppender() {

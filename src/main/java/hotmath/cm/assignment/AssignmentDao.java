@@ -23,7 +23,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -391,6 +390,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             __logger.error("Error getting assignments", e);
         }
         return groups;
+        
+    }
+
+    public int getNumberOfIncompleteAssignments(int uid) {
+        
+        String sql = "select count(*) as cnt " +
+                     " from HA_USER u " +
+                     " JOIN CM_GROUP g on g.id = u.group_id " +
+                     " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " +
+                     " where u.uid = ? ";
+        
+        List<Integer> cnt = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("cnt");
+            }
+        });        
+        return cnt.get(0);
         
     }
 

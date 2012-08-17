@@ -12,8 +12,10 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
+import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
@@ -21,10 +23,12 @@ import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Label;
 
 public class HeaderPanel extends LayoutContainer {
@@ -38,11 +42,15 @@ public class HeaderPanel extends LayoutContainer {
 	Label _headerText;
 	Html _helloInfo = new Html();
 	private IconButton helpButton;
+	Anchor _assignmentsAnchor;
 	protected void onRender(Element parent, int index) {
 		super.onRender(parent, index);
 
 		setStyleName("header-panel");
 		
+		_assignmentsAnchor = new Anchor("You Have Assignments");
+		_assignmentsAnchor.getElement().setAttribute("style", "color: red;font-weight: bold;width: 200px;position: absolute;top:8px;left:200px");
+		//add(_assignmentsAnchor);
 		
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);
@@ -66,10 +74,10 @@ public class HeaderPanel extends LayoutContainer {
 			};
 		});		
 		add(helpButton);
-		
+
 		_headerText = new Label();
 		_headerText.addStyleName("header-panel-title");
-		add(_headerText);
+		//add(_headerText);
 		
 		
 		EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
@@ -81,7 +89,6 @@ public class HeaderPanel extends LayoutContainer {
 			            
 			    	case EVENT_TYPE_CONTEXTCHANGED:
 			            CmContext context = (CmContext)event.getEventData();
-	  		            HeaderPanel.__instance.setHeaderTitle();
 	  		            boolean tr = CmMainPanel.__lastInstance == null;
 	  		            if(CmMainPanel.__lastInstance != null) {
 	  		                /** note we set a default heading, no matter what the test type */
@@ -108,11 +115,26 @@ public class HeaderPanel extends LayoutContainer {
 			    	case EVENT_TYPE_LOGOUT:
 			    	    setLogout();
 			    	    break;
+			    	    
+			    	    
+			    	case EVENT_TYPE_ASSIGNMENTS_UPDATED:
+			    	    updateAssignmentMessage((Boolean)event.getEventData());
+			    	    break;
+		    	}
 			    		
 		    }
-		    }});
+	    });
 	}
 	
+	
+	private void updateAssignmentMessage(boolean incompleteAssignments) {
+	    if(incompleteAssignments) {
+	        _assignmentsAnchor.setText("You have Assignments");
+	    }
+	    else {
+	        _assignmentsAnchor.setText("You do not have Assignments");
+	    }
+	}
 	
 	/** TODO: how to share this between student and admin 
 	 * 
@@ -190,16 +212,6 @@ public class HeaderPanel extends LayoutContainer {
 	 */
 	public void setHeaderInfo() {
 		CatchupMathTools.showAlert("Set Header info");	
-	}
-	
-	/* Set the header title for this context
-	 * 
-	 *  NOT USED?
-	 *  */
-	public void setHeaderTitle() {
-	   // CatchupMathTools.showAlert("Set Header info: " + UserInfo.getInstance().getSubTitle());
-	    String subTitle = UserInfo.getInstance().getSubTitle();
-	   _headerText.setText(subTitle != null?subTitle:"");
 	}
 
 }
