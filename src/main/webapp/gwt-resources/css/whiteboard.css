@@ -1,74 +1,30 @@
-.scroll_track{
-position: relative;
-background:#efefef;
-border:1px solid #999999;
-}
-.scroll_thumb{
-position: absolute;
-background:#333333;
-border:1px solid #666666;
-top:0px;
-left:0px;
-border:1px solid #333333;
-}
-#vscroller {
-	position: absolute;	
-}
-#vscroll_track {	
-	width:15px;	
-}
-#vscroll_thumb {	
-	width:15px;
-	height:30px;
-}
-#hscroller {
-	position: absolute;	
-}
-#hscroll_track {	
-	height:15px;	
-}
-#hscroll_thumb {	
-	width:30px;
-	height:15px;
-}
 #canvas-container {
 	position: relative;
-	
 }
-#drawsection {
-position: relative;
-	border: 1px solid #000000;
-	width:800px;
-	height:600px;
-	overflow: hidden;
-}
+
 #ocanvas {
-	
-	
+	border: 1px solid #000;
 }
 
 #canvas {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	
-	
+	border: 1px solid #000000;
 }
 
 #gcanvas {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	
-	
+	border: 1px solid #000000;
 }
 
 #tcanvas {
 	position: absolute;
 	top: 0px;
 	left: 0px;
-	
-	
+	border: 1px solid #000000;
 }
 
 #inputBox {
@@ -89,7 +45,7 @@ position: relative;
 }
 
 .wb-container button {
-	width: 30px;
+	width: 50px;
 	height: 30px;
 	vertical-align: middle;
 	margin: 0px;
@@ -100,127 +56,115 @@ position: relative;
 	text-align: center;
 	border: 1px solid #000000;
 	background: #ececec;
-	-webkit-background-size: 100%; /*for webKit*/
-        -moz-background-size: 100%; /*Mozilla*/
-        -o-background-size: 100%; /*opera*/
-        background-size: 100%; /*generic*/
-	-webkit-box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
-	-moz-box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
-	box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7); 
+	background-image: -moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: -webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
+	-webkit-box-shadow: 2px 2px 3px rgba(51, 51, 51, 0.7);
+	-moz-box-shadow: 2px 3px 3px rgba(51, 51, 51, 0.7);
+	box-shadow: 2px 2px 3px rgba(51, 51, 51, 0.7);
 	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
 		endColorstr='#ffffff' );*/
 }
-.small_tool_button {
-	width: 25px;
-	height: 25px;
-	vertical-align: middle;
-	margin: 0px;
-	padding: 0px;
-	cursor: pointer;
-	cursor: hand;
-	font-family: Arial, Tahoma, Verdana, Calibri;
-	text-align: center;
-	border: 1px solid #000000;
-	background: #ececec;
-	-webkit-background-size: 100%; /*for webKit*/
-        -moz-background-size: 100%; /*Mozilla*/
-        -o-background-size: 100%; /*opera*/
-        background-size: 100%; /*generic*/
-	-webkit-box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
-	-moz-box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
-	box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7); 
-	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
-		endColorstr='#ffffff' );*/
-}
-.big_tool_button {
-	width: 45px;
-	height: 30px;
-	vertical-align: middle;
-	margin: 0px;
-	padding: 0px;
-	cursor: pointer;
-	cursor: hand;
-	font-family: Arial, Tahoma, Verdana, Calibri;
-	text-align: center;
-	border: 1px solid #000000;
-	background: #ececec;
-	-webkit-background-size: 30px; /*for webKit*/
-        -moz-background-size: 30px; /*Mozilla*/
-        -o-background-size: 30px; /*opera*/
-        background-size: 30px; /*generic*/
-	-webkit-box-shadow: 1px 2px 4px rgba(51, 51, 51, 0.7);
-	-moz-box-shadow: 1px 2px 4px rgba(51, 51, 51, 0.7);
-	box-shadow: 1px 2px 4px rgba(51, 51, 51, 0.7); 
-	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
-		endColorstr='#ffffff' );*/
-}
+
 .btnType1 {
 	width: 45px;
 	height: 25px;
 }
 
 #button_clear {
-	width: 45px;
+	width: 50px;
 	height: 30px;
 }
 
 #done_btn {
-	width: 60px;
+	width: 45px;
 	height: 25px;
 }
 
 #button_text {
 	background-image: url(/gwt-resources/images/whiteboard/txt.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/txt.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/txt.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_pencil {
 	background-image: url(/gwt-resources/images/whiteboard/pencil.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/pencil.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/pencil.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_line {
 	background-image: url(/gwt-resources/images/whiteboard/line.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/line.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/line.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_rect {
 	background-image: url(/gwt-resources/images/whiteboard/rect.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/rect.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/rect.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_oval {
 	background-image: url(/gwt-resources/images/whiteboard/oval.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/oval.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/oval.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_eraser {
 	background-image: url(/gwt-resources/images/whiteboard/eraser.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/eraser.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/eraser.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_gr2D {
 	background-image: url(/gwt-resources/images/whiteboard/gr_2d.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/gr_2d.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/gr_2d.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
 
 #button_nL {
 	background-image: url(/gwt-resources/images/whiteboard/gr_nL.png);
-	
+	background-image: url(/gwt-resources/images/whiteboard/gr_nL.png),
+		-moz-linear-gradient(left, #ececec, #ffffff);
+	background-image: url(/gwt-resources/images/whiteboard/gr_nL.png),
+		-webkit-gradient(linear, left top, right top, from(#ececec),
+		to(#ffffff) );
 	background-repeat: no-repeat;
 	background-position: center;
 }
