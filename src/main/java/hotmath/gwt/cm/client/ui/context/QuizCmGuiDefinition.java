@@ -24,7 +24,6 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -34,9 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class QuizCmGuiDefinition implements CmGuiDefinition {
     int testSegment;
-
-    static public final String QUIZ_PREFIX = "quiz:";
-
+    
     public QuizCmGuiDefinition(int segmentNumber) {
         this.testSegment = segmentNumber;
     }
@@ -143,7 +140,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 
             @Override
             public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-                whiteboardPanel.setPid(QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
+                whiteboardPanel.setPid(ShowWorkPanel.QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
             }
         };
 

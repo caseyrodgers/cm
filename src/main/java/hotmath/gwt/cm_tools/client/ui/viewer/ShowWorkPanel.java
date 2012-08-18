@@ -6,10 +6,9 @@ import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -18,11 +17,13 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
 
 public class ShowWorkPanel extends Frame {
+    
+    static public final String QUIZ_PREFIX = "quiz:";
+
 
     String id;
     String flashId;
@@ -157,7 +158,7 @@ public class ShowWorkPanel extends Frame {
 
     private void loadWhiteboardData() {
 
-        if (pid == null || pid.equals(QuizCmGuiDefinition.QUIZ_PREFIX + "null"))
+        if (pid == null || pid.equals(QUIZ_PREFIX + "null"))
             return;
 
         new RetryAction<CmList<WhiteboardCommand>>() {
@@ -194,7 +195,7 @@ public class ShowWorkPanel extends Frame {
     }
 
     private boolean isQuiz() {
-    	return (pid != null && pid.startsWith(QuizCmGuiDefinition.QUIZ_PREFIX));
+    	return (pid != null && pid.startsWith(QUIZ_PREFIX));
     }
 
     static public native void disableWhiteboardCalculator() /*-{
@@ -290,7 +291,7 @@ public class ShowWorkPanel extends Frame {
                             __lastInstance.setPid(null);
                         }
                         else {
-                            __lastInstance.setPid(QuizCmGuiDefinition.QUIZ_PREFIX + event.getEventData().toString());
+                            __lastInstance.setPid(QUIZ_PREFIX + event.getEventData().toString());
                             __lastInstance.clearWhiteBoard(true);
                             __lastInstance.loadWhiteboardData();
                         }
