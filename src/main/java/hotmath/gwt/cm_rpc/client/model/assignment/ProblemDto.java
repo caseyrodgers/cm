@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_rpc.client.model.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ProblemDto extends BaseDto implements Response {

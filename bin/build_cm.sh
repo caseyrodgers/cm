@@ -47,10 +47,10 @@ ant
 #
 if [ $n -eq 1 ]; then
     echo Building full CM package w/o mvn update
-    mvn -o package minify:minify
+    mvn -o package minify:minify -Dgwt.compiler.force=true
 else
     echo Building full CM package
-    mvn package minify:minify
+    mvn package minify:minify -Dgwt.compiler.force=true -o
 fi
 
 

@@ -57,7 +57,7 @@ public class QuestionViewerPanel extends ContentPanel {
 
                 try {
                     
-                    setHeadingHtml(problem.getName());
+                    setHeadingHtml(problem.getLabel());
                     tutorPanel.addStyleName("tutor_solution_wrapper");
     
                     /** if is EPP, then turn off steps/hints and hide button bar */
@@ -70,7 +70,7 @@ public class QuestionViewerPanel extends ContentPanel {
                     }
     
                     String json = result.getContext()!=null?result.getContext().getContextJson():null;
-                    initializeTutor(problem.getPid(), problem.getName(), json, false, false,result.getHtml(), result.getJs(), isEpp, variableContext);
+                    initializeTutor(problem.getPid(), problem.getLabel(), json, false, false,result.getHtml(), result.getJs(), isEpp, variableContext);
                     
                     
                     tutorPanel.setVisible(true);

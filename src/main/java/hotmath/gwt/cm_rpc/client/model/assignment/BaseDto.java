@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui.assignment;
+package hotmath.gwt.cm_rpc.client.model.assignment;
 
 import java.io.Serializable;
 import java.util.List;
