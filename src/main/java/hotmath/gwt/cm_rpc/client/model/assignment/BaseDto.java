@@ -61,5 +61,5 @@ public class BaseDto implements Serializable, TreeStore.TreeNode<BaseDto> {
     }
     
     
-    static int autoId;
+    public static int autoId;
   }
