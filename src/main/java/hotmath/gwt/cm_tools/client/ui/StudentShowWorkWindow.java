@@ -129,7 +129,11 @@ public class StudentShowWorkWindow extends CmWindow {
             UserInfo user = new UserInfo(student.getUid(),activityModel.getTestId());
             user.setRunId(activityModel.getRunId());
             UserInfo.setInstance(user);
-
+            
+            // TODO: disable calculator per student's advanced options?
+            //       probably not since these should be the options in place when
+            //       whiteboard work was done
+            user.setDisableCalcAlways(true);
             
             ShowWorkPanel workPanel = new ShowWorkPanel(null);
             BorderLayoutData ld = new BorderLayoutData(LayoutRegion.NORTH, 290);
