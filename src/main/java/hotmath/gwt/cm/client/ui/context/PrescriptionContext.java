@@ -340,14 +340,15 @@ public class PrescriptionContext implements CmContext {
     }
 
     public String getStatusMessage() {
-        String html1 = "<ul>"
-                + "<li><b>Review and Practice</b> Choose any items from the left-side menu that you find helpful. "
-                + "In order to move ahead, you must view all three of the Required Practice problems all the way to "
-                + "the last step.  Please use a pencil and paper or our Show-Work feature to try the "
-                + "problems on your own first - that is how you really learn!" + "</li>"
-                + "<li style='margin-top: 10px'>"
+        String html1 = "<ul><li>" 
+        		+ "<b>Review and Practice</b> Choose any items on the left-side menu that you find helpful. "
+        		+ "You must view all the Required Problems to the last step. Use pencil and paper or our Whiteboard "
+                + "to work out the answers. Some problems prompt you to enter your answer and others do not. If you "
+        		+ "enter your answer correctly, you needn't click through our solution steps."
+                + "</li><li style='margin-top: 10px'>"
                 + "<b>Using the Whiteboard</b> Use the keyboard or draw with your mouse to enter answers or work out "
-                + "problems. Your work is saved in your account. " + "</li>" + "</ul>";
+                + "problems. Your work is saved in your account. "
+                + "</li></ul>";
 
         return html1;
     }
