@@ -89,7 +89,22 @@ p {
 
 #header {
     height: 86px;
+    position: relative;
 }
+
+
+/** hidden anchor to give
+    anchor access to 2-min vid
+*/
+
+#header a {
+   position: absolute;
+   top: 30px;
+   left: 380px;
+   width: 600px;
+   height: 50px;
+}
+
 
 #header .header_image {
     margin: 30px 0 0 0px;

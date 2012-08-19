@@ -52,6 +52,15 @@ function setupPage() {
            setupPageLocal();
      });
     });
+
+
+    /** provide anchor to 2-min video
+        (CSS in core.css)
+    */
+    var el = document.createElement("a");
+    el.href='/how-it-works';
+    el.innerHTML = "&nbsp;";
+    document.getElementById("header").appendChild(el);
  }
 
 function setupPageLocal() {
