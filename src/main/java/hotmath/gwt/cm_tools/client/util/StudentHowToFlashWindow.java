@@ -11,7 +11,7 @@ import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
 public class StudentHowToFlashWindow extends CmWindow {
     
-    String URL="http://catchupmath.com/assets/teacher_videos/Student%20How%20To%20video/Student%20How%20To%20video_controller.swf";
+    String URL="http://catchupmath.com/assets/teacher_videos/Student%20video%20last%20time/Student%20video%20last%20time_controller.swf";
     String title = "Video: How to use Catchup Math";
     
     public StudentHowToFlashWindow() {
@@ -34,7 +34,7 @@ public class StudentHowToFlashWindow extends CmWindow {
             s.setMinPlayerVersion(new PlayerVersion(CmShared.FLASH_MIN_VERSION));
             SWFWidget swfWidget = new SWFWidget(URL, "100%", "100%", s);
             swfWidget.addParam("wmode", "opaque");
-            swfWidget.addFlashVar("thumb", "http://catchupmath.com/assets/teacher_videos/Student%20How%20To%20video/FirstFrame.png");
+            swfWidget.addFlashVar("thumb", "http://catchupmath.com/assets/teacher_videos/Student%20video%20last%20time/FirstFrame.png");
             swfWidget.addFlashVar("autostart", "true");
             
             swfWidget.setStyleName("activity-widget");
