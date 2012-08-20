@@ -80,8 +80,8 @@ public class HeaderPanel extends LayoutContainer {
         updates.setToolTip("Learn about recent Catchup Math updates");
         updates.addSelectionListener(new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent ce) {
-                //new RecentUpdatesWindow();
-                new AssignmentManagerDialog2(2);
+                new RecentUpdatesWindow();
+                //new AssignmentManagerDialog2(2);
             }
         });
         add(updates);
