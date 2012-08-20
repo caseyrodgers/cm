@@ -1,7 +1,7 @@
 /** validate login attempt.  If both user/pass are
  *  set send to server, otherwise show error and
  *  do not send to server.
- *  
+ *
  * @returns {Boolean}
  */
 var _isLoggingIn=false;
@@ -54,7 +54,7 @@ function showLoggingInDialog(msg, title) {
 }
 
 function showLoginInvalid() {
-    showDialog("<div style='padding-top: 10px;height: 50px'>Please enter both Login Name and Password.</div>", "Login Invalid");
+    showDialog("<div style='padding-top: 10px;height: 50px;z-index:10'>Please enter both Login Name and Password.</div>", "Login Invalid");
 }
 
 var moreInfo = '' +
@@ -67,7 +67,7 @@ var moreInfo = '' +
     '<li>Your student ID</li>' +
     '<li>A password that your teacher assigned to you</li>' +
     '</ul>' +
-    '<h2>Teachers</h2>' + 
+    '<h2>Teachers</h2>' +
     '<p>Ask your Account Manager for your admin password.</p>' +
     '</div>';
 
