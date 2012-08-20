@@ -59,7 +59,7 @@ function setupPage() {
     */
     var el = document.createElement("a");
     el.href='/how-it-works';
-    el.innerHTML = "&nbsp;";
+    el.innerHTML = '<img src="/assets/images/blank-25x25.png"/>';
     document.getElementById("header").appendChild(el);
  }
 
