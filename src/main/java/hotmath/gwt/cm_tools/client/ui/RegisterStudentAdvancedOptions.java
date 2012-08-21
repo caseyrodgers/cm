@@ -55,8 +55,8 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 
 	private FieldSet fs;
 	private CmAdminModel cmAdminMdl;
-	private int formHeight = 290;
-	private int formWidth  = 390;
+	private int formHeight = 400;
+	private int formWidth  = 400;
 	private AdvOptCallback callback;
 	private boolean passPercentReqd;
 	private Map<String,Object> advOptionsMap;
