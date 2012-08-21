@@ -427,13 +427,15 @@ class GroupManagerGlobalSettings extends CmWindow {
     CheckBox showWorkRequired;
     CheckBox limitGames;
     CheckBox stopAtProgramEnd;
+    CheckBox disableCalcAlways;
+    CheckBox disableCalcQuizzes;
     
     CmAdminModel cm;
     public GroupManagerGlobalSettings(CmAdminModel cm, GroupInfoModel gim) {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(340,270);
+        setSize(410,330);
         drawGui();
         setModal(true);
         setResizable(false);
@@ -443,7 +445,7 @@ class GroupManagerGlobalSettings extends CmWindow {
     private void drawGui() {
         setLayout(new FitLayout());
         FormPanel form = new FormPanel();
-		form.setLabelWidth(220);
+		form.setLabelWidth(290);
         form.setFrame(false);
         form.getHeader().setVisible(false);
         FieldSet fs = new FieldSet();
@@ -451,7 +453,7 @@ class GroupManagerGlobalSettings extends CmWindow {
 		fl.setLabelWidth(form.getLabelWidth());
         fs.setLayout(fl);
         fs.setHeading("Group Settings");
-        fs.setWidth(303);
+        fs.setWidth(373);
         showWorkRequired = new CheckBox();
         showWorkRequired.setFieldLabel("Require Show Work");
         showWorkRequired.setBoxLabel("");
@@ -467,6 +469,16 @@ class GroupManagerGlobalSettings extends CmWindow {
         stopAtProgramEnd.setFieldLabel("Stop at End of Program");
         stopAtProgramEnd.setBoxLabel("");
         fs.add(stopAtProgramEnd);
+
+        disableCalcAlways = new CheckBox();
+        disableCalcAlways.setFieldLabel("Disable whiteboard calculator always");
+        disableCalcAlways.setBoxLabel("");
+        fs.add(disableCalcAlways);
+
+        disableCalcQuizzes = new CheckBox();
+        disableCalcQuizzes.setFieldLabel("Disable whiteboard calculator for quizzes");
+        disableCalcQuizzes.setBoxLabel("");
+        fs.add(disableCalcQuizzes);
 
         form.add(fs);
 
@@ -508,7 +520,9 @@ class GroupManagerGlobalSettings extends CmWindow {
                 action.setShowWorkRequired(showWorkRequired.getValue());
                 action.setDisallowTutoring(false);
                 action.setStopAtProgramEnd(stopAtProgramEnd.getValue());
-                action.setLimitGames(limitGames.getValue());                
+                action.setLimitGames(limitGames.getValue());
+                action.setDisableCalcAlways(disableCalcAlways.getValue());
+                action.setDisableCalcQuizzes(disableCalcQuizzes.getValue());
                 action.setPassPercent(null);
                 CmShared.getCmService().execute(action, this);
             }
