@@ -38,6 +38,7 @@ import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -265,6 +266,8 @@ public class PrescriptionContext implements CmContext {
             new SampleDemoMessageWindow();
             return;
         }
+
+        Window.alert("onCompletion: " + UserInfo.getInstance().getOnCompletion());
 
         /**
          * are there more Quizzes in this program?
