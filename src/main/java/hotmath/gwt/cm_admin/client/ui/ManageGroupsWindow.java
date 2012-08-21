@@ -435,7 +435,7 @@ class GroupManagerGlobalSettings extends CmWindow {
         this.cm = cm;
         this.gim = gim;
         setHeading("Group Settings for '" + gim.getName() + "'" );
-        setSize(410,330);
+        setSize(440,450);
         drawGui();
         setModal(true);
         setResizable(false);
