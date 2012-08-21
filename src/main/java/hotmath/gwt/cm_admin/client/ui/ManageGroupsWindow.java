@@ -453,7 +453,7 @@ class GroupManagerGlobalSettings extends CmWindow {
 		fl.setLabelWidth(form.getLabelWidth());
         fs.setLayout(fl);
         fs.setHeading("Group Settings");
-        fs.setWidth(373);
+        fs.setWidth(403);
         showWorkRequired = new CheckBox();
         showWorkRequired.setFieldLabel("Require Show Work");
         showWorkRequired.setBoxLabel("");
