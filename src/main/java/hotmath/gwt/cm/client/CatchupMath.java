@@ -11,6 +11,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
@@ -24,6 +25,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
@@ -55,6 +57,7 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -384,6 +387,32 @@ public class CatchupMath implements EntryPoint {
         });
     }
 
+    
+    public void showAssignments_gwt() {
+        
+        final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
+           @Override
+            public void isComplete() {
+                // remove assignment panel (last panel added)
+                _mainPort.remove(_mainPort.getWidget(_mainPort.getItems().size()-1));
+                
+                // put back main panel
+                BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
+                _mainPort.add(_mainContainer, bdata);
+                _mainPort.layout(true);                 
+            }
+        });
+
+        
+        
+
+        _mainPort.remove(_mainContainer);
+        BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
+        _mainPort.add(assignmentViewer, bdata);
+        
+        _mainPort.layout(true);
+    }
+    
     public void showQuizPanel_gwt(final int segmentNumber) {
 
         GWT.runAsync(new CmRunAsyncCallback() {

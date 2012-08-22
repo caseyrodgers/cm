@@ -1,4 +1,3 @@
-
 /** Define Whiteboard API:
  *
  *   initWhitegboard(document);   // initialze whiteboard and prepare for new use
@@ -8,6 +7,13 @@
  *
  *   NOTE: detachWhiteboard not needed.
  */
+if (typeof console === "undefined") {
+    console = {
+        log: function (x) {
+            // empty
+        }
+    };
+}
 var Whiteboard = (function () {
     var wb = {};
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -17,182 +23,596 @@ var Whiteboard = (function () {
     var graphicData, tool_id;
     var scope = this;
     var isTouchEnabled = false;
+    var screen_width;
+    var screen_height;
+    var mq_holder = new Image();
+    var lastTxt = null;
+    var scrollInt = null;
+    var swipe_mx, swipe_my, swipe_nx, swipe_ny, swipe_ox, swipe_oy, swipe_dx, swipe_dy, swipe_sx, swipe_sy;
+    swipe_ox = swipe_oy = 0;
+    var swipe_action = 'off';
+    var IS_IPAD = navigator.userAgent.match(/iPad/i) != null;
+    var IS_IE8 = navigator.userAgent.match(/MSIE 8.0/i) != null;
+    var IS_IE9 = navigator.userAgent.match(/MSIE 9.0/i) != null;
+    var IS_IE = IS_IE8 || IS_IE9;
+    var IS_ANDROID = navigator.userAgent.match(/Android/i) != null;
+    var IS_KINDLE = navigator.userAgent.match(/Kindle/i) != null || navigator.userAgent.match(/Silk/i) != null;
+    var IS_IPHONE = navigator.userAgent.match(/iPhone/i) != null;
+    var IS_OPERA = navigator.userAgent.match(/Opera/i) != null;
+    var IS_TOUCH_ONLY = IS_IPAD || IS_ANDROID || IS_KINDLE || IS_IPHONE
+    mq_holder.onload = function () {
 
-    function renderText(xt, xp, yp,col) {
-        var txt = xt ? xt : $get_Element("#content").value;
-        // alert(txt);
-        var str = txt.split("\n")
-        var x0 = xp ? xp : clickX
-        var y0 = yp ? yp : clickY
-        var ht = 15;
-                context.fillStyle=col?col:wb.globalStrokeColor
+        context.drawImage(this, holder_x, holder_y);
+        // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+        updateCanvas();
+    }
+    //
+        function getInternetExplorerVersion()
+        // Returns the version of Internet Explorer or a -1
+        // (indicating the use of another browser).
+        {
+            var rv = -1; // Return value assumes failure.
+            if (navigator.appName == 'Microsoft Internet Explorer') {
+                var ua = navigator.userAgent;
+                var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+                if (re.exec(ua) != null) rv = parseFloat(RegExp.$1);
+            }
+            return rv;
+        }
+        //
+        function renderText(xt, xp, yp, col) {
+            //var txt = xt ? xt : $get_Element("#editable-math").value;
+            var txt = xt ? xt : $('#editable-math').mathquill('latex');
+
+            //var str = txt.split("\n")
+            var x0 = xp ? xp : clickX
+            var y0 = yp ? yp : clickY
+            var colr = col ? col : '#000000'
+            var ht = 15;
+            holder_x = x0
+            holder_y = y0
+            //mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
+            if (lastTxt == txt) {
+                context.drawImage(mq_holder, holder_x, holder_y);
+                //alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+                updateCanvas();
+            } else {
+                mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+                lastTxt = txt
+            }
+            //alert(mq_holder.src)
+            /*var holder
+		if($get_Element('#mquill_hold')){
+		console.log("mquill_hold exists")
+		holder=$('mquill_hold');
+		}else{
+		console.log("mquill_hold dont exists")
+		holder=document.createElement('div')
+		$(holder).attr('id','mquill_hold')
+		$(holder).prependTo("#canvas-container");
+		var img=document.createElement('img');
+		$(img).appendTo($(holder));
+		img.onload=function(){
+		
+		context.drawImage(this,xp,yp,this.width+5,this.height+5)
+		$(this).remove();
+		alert(this.width+":"+this.height);
+		}
+		
+		
+		
+		}*/
+            /*var txtbox=document.createElement('span');
+		txtbox.style.position='absolute';
+		txtbox.style.left=x0+"px";
+		txtbox.style.top=y0+"px";
+		
+		$(txtbox).addClass('mathquill-embedded-latex');
+		//$('.mathquill-embedded-latex').remove()
+		$(txtbox).prependTo($('#mquill_hold')).mathquill();
+		$(txtbox).mathquill('latex',txt);
+		txtbox.style.display='none';*/
+            //context.drawImage(
+            /*context.fillStyle=col?col:wb.globalStrokeColor
         for (var i = 0; i < str.length; i++) {
             context.fillText(str[i], x0, y0)
             y0 += ht
+        }*/
+
+            if (!xt) {
+                updateText(txt, x0, y0, colr);
+                sendData();
+                //$get_Element("#editable-math").value = "";
+
+                $('#editable-math').mathquill('latex', "");
+                $get_Element("#inputBox").style.display = 'none';
+            }
+
+            // alert($get_Element("#inputBox").style.display)
         }
-        updateCanvas();
-        if (!xt) {
-            updateText(txt);
-            sendData();
-            $get_Element("#content").value = "";
-            $get_Element("#inputBox").style.display = 'none';
+
+        function onkeyupHandler() {
+            //
         }
-        // alert($get_Element("#inputBox").style.display)
-    }
 
-    function onkeyupHandler() {
-        //
-    }
+        function onkeydownHandler(_event) {
+            var event = _event ? _event : window.event;
 
-    function onkeydownHandler(_event) {
-        var event = _event ? _event : window.event;
-
-        if (currentTool == 'text' && event.keyCode == 13) {
-            if (!event.shiftKey) {
-                if (event.preventDefault) {
-                    event.preventDefault();
-                } else {
-                    event.returnValue = false;
+            if (currentTool == 'text' && event.keyCode == 13) {
+                if (!event.shiftKey) {
+                    if (event.preventDefault) {
+                        event.preventDefault();
+                    } else {
+                        event.returnValue = false;
+                    }
+                    renderText();
                 }
-                renderText();
             }
         }
-    }
 
-    function resetButtonHighlite() {
-        $get_Element("#button_text").style.border = '1px solid #000000';
-        $get_Element("#button_pencil").style.border = '1px solid #000000';
-        $get_Element("#button_line").style.border = '1px solid #000000';
-        $get_Element("#button_rect").style.border = '1px solid #000000';
-        $get_Element("#button_oval").style.border = '1px solid #000000';
-        $get_Element("#button_eraser").style.border = '1px solid #000000';
-        //
-    }
-
-    function buttonHighlite(t) {
-        resetButtonHighlite();
-        $get_Element("#button_" + t).style.border = '2px solid #ff9900';
-        if(currentTool!='text'&&$get_Element("#inputBox").style.display == 'block'){
-                    hideTextBox();
-                }
-    }
-
-    function viewport() {
-        var e = window,
-            a = 'inner';
-
-        if (!('innerWidth' in window)) {
-            a = 'client';
-            e = document.documentElement || document.body;
+        function resetButtonHighlite() {
+            $get_Element("#button_text").style.border = '1px solid #000000';
+            $get_Element("#button_pencil").style.border = '1px solid #000000';
+            $get_Element("#button_line").style.border = '1px solid #000000';
+            $get_Element("#button_rect").style.border = '1px solid #000000';
+            $get_Element("#button_oval").style.border = '1px solid #000000';
+            $get_Element("#button_eraser").style.border = '1px solid #000000';
+            //
         }
 
-        return {
-            width: e[a + 'Width'],
-            height: e[a + 'Height']
+        function buttonHighlite(t) {
+            resetButtonHighlite();
+            $get_Element("#button_" + t).style.border = '2px solid #ff9900';
+            if (currentTool != 'text' && $get_Element("#inputBox").style.display == 'block') {
+                hideTextBox();
+            }
         }
-    }
 
-    function getDocHeight() {
-        var D = document;
-        return Math.max(
-        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
-    }
+        function viewport() {
+            var e = window,
+                a = 'inner';
+
+            if (!('innerWidth' in window)) {
+                a = 'client';
+                e = document.documentElement || document.body;
+            }
+
+            return {
+                width: e[a + 'Width'],
+                height: e[a + 'Height']
+            }
+        }
+
+        function getDocHeight() {
+            var D = document;
+            return Math.max(
+            Math.max(D.body.scrollHeight, D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
+        }
 
 
 
-    /** Define as functions to allow removing
-     *
-     * @param event
-     */
+        /** Define as functions to allow removing
+         *
+         * @param event
+         */
 
-    function touchStartFunction(event) {
-        event.preventDefault();
-    }
+        function touchStartFunction(event) {
+            event.preventDefault();
+        }
     var touchMoveFunction = touchStartFunction;
 
     var _imageBaseDir = '/gwt-resources/images/whiteboard/';
 
     /** main HTML document object */
     var mainDoc;
+    var isIE = getInternetExplorerVersion() != -1;
     wb.initWhiteboard = function (mainDocIn) {
-                console.log("WHITEBOARD_INITIATED! - document object:"+mainDocIn);
+        console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         mainDoc = mainDocIn;
         canvas = $get_Element("#canvas");
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
+
         var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
         var leftOff = $get_Element("#tools").offsetLeft + 15;
-                wb.globalStrokeColor="#000000";
-                wb.mode='student';
+        var vscrollObj = {}
+        var hscrollObj = {}
+        wb.globalStrokeColor = "#000000";
+        wb.mode = 'student';
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
-        canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width = docWidth - leftOff;
-        canvas.height = origcanvas.height = graphcanvas.height = topcanvas.height = docHeight - topOff;
+        screen_width = docWidth - leftOff - 27;
+        screen_height = docHeight - topOff - 27;
+        if (screen_width > 800) {
+            //alert($('#tools button').css('width'));
+            $('#tools').css('height', '35px');
+            $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
+            $('#button_clear').css('width', '45px');
+            $('#button_clear').css('height', '30px');
+            $('#button_clear').text("Clear");
+            $('#button_save').text("Save");
+            //$('#button_clear').text("CL");
+        } else {
+            $('#tools').css('height', '25px');
+            $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
+            $('#button_clear').css('width', '25px');
+            $('#button_clear').css('height', '25px');
+            $('#button_clear').text("CL");
+            $('#button_save').text("S");
+
+        }
+        $get_Element('#drawsection').style.width = (screen_width) + 'px';
+        $get_Element('#drawsection').style.height = (screen_height) + 'px';
+        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+        $get_Element('#vscroller').style.left = (screen_width + 5) + 'px';
+        $get_Element('#vscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop) + 'px';
+
+        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+        $get_Element('#hscroller').style.left = (0) + 'px';
+        $get_Element('#hscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + screen_height + 5) + 'px';
+        var cmd_keys = {};
+        var nav_keys = {};
+        cmd_keys["frac"] = "/";
+        cmd_keys["power"] = "^";
+        cmd_keys["sqrt"] = "\\sqrt";
+        cmd_keys["prod"] = "*";
+        cmd_keys["div"] = "÷";
+        cmd_keys["neq"] = "\\ne";
+        nav_keys["Up"] = "Up";
+        nav_keys["Down"] = "Down";
+        nav_keys["Right"] = "Right";
+        nav_keys["Left"] = "Left";
+        nav_keys["Backspace"] = "Backspace";
+        if (!IS_TOUCH_ONLY) {
+
+            //$(".keypad").hide();
+            //alert($(".keypad").is(":visible"))
+        } else {
+
+        }
+        //alert($("button").on)
+        function mathquill_focus() {
+            $(".mathquill-editable").focus();
+        }
+
+        function navigate(key) {
+            //var event = _event ? _event : window.event;
+            //var target=event.target?event.target:event.srcElement
+            //var key=$(target).attr("value");
+            var h = $(".mathquill-editable").data("[[mathquill internal data]]").block
+            h.keydown({
+                which: key,
+                shiftKey: 0
+            })
+
+        }
+
+        $(".keypad").on("click", "button", function (event) {
+            var key = $(this).attr("value")
+            var h = $(".mathquill-editable");
+            if (cmd_keys[key]) {
+                h.mathquill('cmd', cmd_keys[key]);
+            } else if (nav_keys[key]) {
+                navigate(nav_keys[key])
+            } else {
+                h.mathquill('write', $(this).text())
+            }
+
+            setTimeout(function () {
+                mathquill_focus()
+            }, 100)
+        });
+        if (document.addEventListener) {
+            var thumb_h = $get_Element('#hscroll_thumb');
+            thumb_h.addEventListener("mousedown", initThumbDrag, false)
+            thumb_h.addEventListener('touchstart', touchStartFunction, false);
+            thumb_h.addEventListener('touchmove', touchMoveFunction, false);
+            // attach the touchstart, touchmove, touchend event listeners.
+            thumb_h.addEventListener('touchstart', initThumbDrag, false);
+            //
+            var thumb_v = $get_Element('#vscroll_thumb');
+            thumb_v.addEventListener("mousedown", initThumbDrag, false)
+            thumb_v.addEventListener('touchstart', touchStartFunction, false);
+            thumb_v.addEventListener('touchmove', touchMoveFunction, false);
+            // attach the touchstart, touchmove, touchend event listeners.
+            thumb_v.addEventListener('touchstart', initThumbDrag, false);
+        } else {
+            $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
+            $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
+        }
+        $(window).resize(function () {
+            adjustToolbar()
+        });
+
+        function adjustToolbar() {
+            var siz = viewport()
+            var docWidth = siz.width;
+            var docHeight = siz.height;
+
+            var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+            var leftOff = $get_Element("#tools").offsetLeft + 15;
+            screen_width = docWidth - leftOff - 27;
+            screen_height = docHeight - topOff - 27;
+            if (screen_width > 800) {
+                //alert($('#tools button').css('width'));
+                $('#tools').css('height', '35px');
+                $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
+                $('#button_clear').css('width', '45px');
+                $('#button_clear').css('height', '30px');
+                //$('#button_clear').text("CL");
+                $('#button_clear').text("Clear");
+                $('#button_save').text("Save");
+            } else {
+
+                $('#tools').css('height', '25px');
+                $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
+                $('#button_clear').css('width', '25px');
+                $('#button_clear').css('height', '25px');
+                $('#button_clear').text("CL");
+                $('#button_save').text("S");
+
+            }
+        }
+
+        function initThumbDrag(_event) {
+            //console.log("INIT_THUMB");
+            var event = _event ? _event : window.event;
+            isTouchEnabled = event.type.indexOf('touch') > -1
+            if (isTouchEnabled) {
+                $get_Element('#hscroll_thumb').removeEventListener("mousedown", initThumbDrag, false);
+
+            }
+
+            event = isTouchEnabled ? _event.changedTouches[0] : event;
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+            getCanvasPos();
+            var dx, dy;
+
+            if (event.pageX != undefined) {
+                dx = event.pageX - offX;
+                dy = event.pageY - offY;
+            } else {
+                dx = event.clientX - offX
+                dy = event.clientY - offY
+            }
+            var scroll = 'v';
+            var pos = 'top';
+            var scrollObj = vscrollObj;
+            var mouse_pos = dy
+            var dim = 'height';
+            var sdim = screen_height;
+            var target = event.target ? event.target : event.srcElement
+            if (target == $get_Element('#hscroll_thumb')) {
+                scroll = 'h';
+                pos = 'left';
+                scrollObj = hscrollObj;
+                mouse_pos = dx;
+                dim = 'width';
+                sdim = screen_width;
+            }
+            var spos = $get_Element('#' + scroll + 'scroll_thumb').style[pos]
+            spos = spos ? spos : 0
+            var scpos = $get_Element('#canvas-container').style[pos]
+            scpos = scpos ? scpos : 0
+            scrollObj.sy = parseInt(spos)
+            scrollObj.screeny = parseInt(scpos)
+            scrollObj.my = mouse_pos;
+            scrollObj.dragged = true;
+            scrollObj.scrub = (canvas[dim] - sdim) / (sdim - 30)
+            console.log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
+            if (document.addEventListener) {
+                if (isTouchEnabled) {
+                    document.addEventListener("touchend", stopThumbDrag, false);
+                    document.addEventListener("touchmove", startThumbDrag, false);
+                    $get_Element('#' + scroll + 'scroll_thumb').addEventListener("touchend", stopThumbDrag, false);
+                } else {
+                    document.addEventListener("mouseup", stopThumbDrag, false);
+                    document.addEventListener("mousemove", startThumbDrag, false);
+                    $get_Element('#' + scroll + 'scroll_thumb').addEventListener("mouseup", stopThumbDrag, false);
+                }
+            } else {
+                document.onmousemove = startThumbDrag;
+                $get_Element('#' + scroll + 'scroll_thumb').onmouseup = stopThumbDrag;
+                document.onmouseup = stopThumbDrag;
+            }
+        }
+
+        function startThumbDrag(_event) {
+
+            if (!vscrollObj.dragged && !hscrollObj.dragged) {
+                return
+            }
+            var event = _event ? _event : window.event;
+            event = isTouchEnabled ? event.changedTouches[0] : event;
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+            //getCanvasPos();
+            var dx, dy;
+            if (event.pageX != undefined) {
+                dx = event.pageX - offX;
+                dy = event.pageY - offY;
+            } else {
+                dx = event.clientX - offX
+                dy = event.clientY - offY
+            }
+            var scroll = 'v';
+            var pos = 'top';
+            var scrollObj = vscrollObj;
+            var mouse_pos = dy
+            var dim = 'height';
+            var sdim = screen_height;
+            var neg = -1
+            if (hscrollObj.dragged) {
+                scroll = 'h';
+                pos = 'left';
+                scrollObj = hscrollObj;
+                mouse_pos = dx;
+                dim = 'width';
+                sdim = screen_width;
+                neg = -1
+            }
+            var change = mouse_pos - scrollObj.my
+            var newpos = scrollObj.sy + change
+            newpos = newpos < 0 ? 0 : newpos
+            newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
+            if (newpos >= 0 && newpos <= sdim - 30) {
+                var currPos = scrollObj.screeny - (change * scrollObj.scrub);
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < neg * (canvas[dim] - sdim) ? -(canvas[dim] - sdim) : currPos;
+                //console.log("ON_SCROLL_SCRUB:"+scrollObj.sy+":"+change+":"+currPos);
+                $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
+                $get_Element('#canvas-container').style[pos] = currPos + "px";
+            }
+
+        }
+
+        function stopThumbDrag(_event) {
+            //console.log("STOP_SCROLL_SCRUB:");
+            if (!vscrollObj.dragged && !hscrollObj.dragged) {
+                return
+            }
+            var event = _event ? _event : window.event;
+            event = isTouchEnabled ? event.changedTouches[0] : event;
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+            //getCanvasPos();
+            var dx, dy;
+            if (event.pageX != undefined) {
+                dx = event.pageX - offX;
+                dy = event.pageY - offY;
+            } else {
+                dx = event.clientX - offX;
+                dy = event.clientY - offY;
+            }
+            var scroll = 'v';
+            var pos = 'top';
+            var scrollObj = vscrollObj;
+            var mouse_pos = dy
+            var dim = 'height';
+            var sdim = screen_height;
+            var neg = -1
+            if (hscrollObj.dragged) {
+                scroll = 'h';
+                pos = 'left';
+                scrollObj = hscrollObj;
+                mouse_pos = dx;
+                dim = 'width';
+                sdim = screen_width;
+                neg = -1
+            }
+            var change = mouse_pos - scrollObj.my
+            var newpos = scrollObj.sy + change
+            newpos = newpos < 0 ? 0 : newpos
+            newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
+            if (newpos >= 0 && newpos <= sdim - 30) {
+                var currPos = scrollObj.screeny - (change * scrollObj.scrub);
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < neg * (canvas[dim] - sdim) ? -(canvas[dim] - sdim) : currPos;
+                $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
+                $get_Element('#canvas-container').style[pos] = currPos + "px";
+            }
+            if (document.addEventListener) {
+                if (isTouchEnabled) {
+                    document.removeEventListener("mousemove", startThumbDrag, false);
+                    document.removeEventListener("touchmove", startThumbDrag, false);
+
+                } else {
+
+                    document.removeEventListener("mousemove", startThumbDrag, false);
+
+                }
+            } else {
+                document.onmousemove = null;
+            }
+            scrollObj.dragged = false;
+            console.log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
+        }
+        //canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width = docWidth - leftOff;
+        // canvas.height = origcanvas.height = graphcanvas.height = topcanvas.height = docHeight - topOff;
+        //console.log("A   " + canvas.width + ":" + canvas.height + ":" + docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
         context = canvas.getContext("2d");
         origcontext = origcanvas.getContext("2d");
         graphcontext = graphcanvas.getContext("2d");
         topcontext = topcanvas.getContext("2d");
-        width = canvas.width;
-        height = canvas.height;
-        // alert(width+":"+height)
+        //canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=5000;
+        //canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=5000;
+        width = screen_width; //canvas.width;
+        height = screen_height; //canvas.height;
         context.font = origcontext.font = topcontext.font = "12px sans-serif";
+        /*context.save();
+		context.fillStyle='white'
+		context.fillRect(0,0,width,height)
+		context.restore();*/
         gr2D = new Image();
         gr2D.src = _imageBaseDir + 'gr2D.png';
         nL = new Image();
         nL.src = _imageBaseDir + 'nL.png';
         graphMode = '';
-        gr2D_xp = nL_xp = (width - 300) / 2;
-        gr2D_yp = (height - 300) / 2;
-        nL_yp = (height - 100) / 2;
+        gr2D_xp = nL_xp = (screen_width - 300) / 2;
+        gr2D_yp = (screen_height - 300) / 2;
+        nL_yp = (screen_height - 100) / 2;
         gr2D_w = 300;
         gr2D_h = 300;
         nL_w = 300;
         nL_h = 100;
-        offX = $get_Element("#canvas-container").offsetLeft
+        offX = $get_Element("#canvas-container").offsetLeft;
         offY = $get_Element("#canvas-container").offsetTop;
         // alert(offX+":"+offY);
-                /*var getCanvasPos = function(){
-                        var obj = $get_Element("#canvas-container");
-                        var top = 0;
-                        var left = 0;
-                        while (obj.tagName != "BODY") {
-                                top += obj.offsetTop;
-                                left += obj.offsetLeft;
-                                console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
+        /*var getCanvasPos = function(){
+			var obj = $get_Element("#canvas-container");
+			var top = 0;
+			var left = 0;
+			while (obj.tagName != "BODY") {
+				top += obj.offsetTop;
+				left += obj.offsetLeft;
+				console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
                                 if(obj.offsetParent === null)
                                     break;
-                                obj = obj.offsetParent;
-                        }
-                        offX=left;
-                        offY=top;
-                        return {
-                                top: top,
-                                left: left
-                        };
-                };*/
-                function getCanvasPos() {
-                console.log("getCanvasPos processing!");
-        var box = canvas.getBoundingClientRect();
-console.log("canvas bound= top: "+box.top+" left:"+box.left);
-        var body = mainDoc.body;
-        var docElem = mainDoc.documentElement;
-    var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-    var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-    var clientTop = docElem.clientTop || body.clientTop || 0;
-    var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-        console.log("offset_datas: scrollTop="+scrollTop+" scrollLeft="+scrollLeft+" clientTop="+clientTop+" clientLeft="+clientLeft);
-    var top  = box.top +  scrollTop - clientTop;
-    var left = box.left + scrollLeft - clientLeft;
-    offX=Math.round(left);
-        offY=Math.round(top);
-        console.log("OFFSET: top="+offY+" left="+offX);
-    return { top: offY, left: offX }
+				obj = obj.offsetParent;
+			}
+			offX=left;
+			offY=top;
+			return {
+				top: top,
+				left: left
+			};
+		};*/
+        function getCanvasPos() {
+            console.log("getCanvasPos processing!");
+            var box = canvas.getBoundingClientRect();
+            console.log("canvas bound= top: " + box.top + " left:" + box.left);
+            var body = mainDoc.body;
+            var docElem = mainDoc.documentElement;
+            var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+            var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+            var clientTop = docElem.clientTop || body.clientTop || 0;
+            var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+            console.log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
+            var top = box.top + scrollTop - clientTop;
+            var left = box.left + scrollLeft - clientLeft;
+            offX = Math.round(left);
+            offY = Math.round(top);
+            console.log("OFFSET: top=" + offY + " left=" + offX);
+            return {
+                top: offY,
+                left: offX
+            }
         }
         console.log("getCanvasPos calling!");
-                getCanvasPos();
-                console.log("getCanvasPos CALL END!");
+        getCanvasPos();
+        console.log("getCanvasPos CALL END!");
         graphicData = {}
         tool_id = {};
         tool_id['eraser'] = 0;
@@ -205,13 +625,13 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         tool_id['gr2D'] = 11;
         tool_id['nL'] = 12;
         drawingLayer = '1';
-                if(currentTool!='pencil'){
-                if(currentTool=='text'||$get_Element("#inputBox").style.display == 'block'){
+        if (currentTool != 'pencil') {
+            if (currentTool == 'text' || $get_Element("#inputBox").style.display == 'block') {
                 hideTextBox();
-                }
-                resetButtonHighlite();
-                currentTool = 'pencil';
-                }
+            }
+            resetButtonHighlite();
+            currentTool = 'pencil';
+        }
         $get_Element("#button_pencil").style.border = '2px solid #ff9900';
 
         // Events
@@ -258,7 +678,7 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
             // resetWhiteBoard();
             currentTool = 'pencil'
             buttonHighlite(currentTool)
-                        hideTextBox();
+            hideTextBox();
             // penDown=false;
             // graphMode='';
             // origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
@@ -273,230 +693,512 @@ console.log("canvas bound= top: "+box.top+" left:"+box.left);
         //
         $get_Element("#done_btn").onclick = function (event) {
             renderText();
+            //check()
         }
+		if($get_Element("#button_save")){
         $get_Element("#button_save").onclick = function (event) {
             wb.saveWhiteboard();
         };
-
+}
         //
-                function killMouseListeners(){
+        function killMouseListeners() {
 
-                if (document.addEventListener) {
-            canvas.removeEventListener("mousedown", ev_onmousedown, false);
-                    canvas.removeEventListener("mouseup", ev_onmouseup, false);
-                    canvas.removeEventListener("mousemove", ev_onmousemove, false);
+            if (document.addEventListener) {
+                canvas.removeEventListener("mousedown", ev_onmousedown, false);
+                canvas.removeEventListener("mouseup", ev_onmouseup, false);
+                canvas.removeEventListener("mousemove", ev_onmousemove, false);
 
-        } else {
-            canvas.detachEvent("onmousedown", ev_onmousedown);
-            canvas.detachEvent("onmouseup", ev_onmouseup);
-            canvas.detachEvent("onmousemove", ev_onmousemove);
+            } else {
+                canvas.detachEvent("onmousedown", ev_onmousedown);
+                canvas.detachEvent("onmouseup", ev_onmouseup);
+                canvas.detachEvent("onmousemove", ev_onmousemove);
+            }
         }
-                }
-                function killTouchListeners(){
-                if (document.addEventListener) {
+
+        function killTouchListeners() {
+            if (document.addEventListener) {
 
 
-            // touchscreen specific - to prevent web page being scrolled while drawing
-            canvas.removeEventListener('touchstart', touchStartFunction, false);
-            canvas.removeEventListener('touchmove', touchMoveFunction, false);
+                // touchscreen specific - to prevent web page being scrolled while drawing
+                canvas.removeEventListener('touchstart', touchStartFunction, false);
+                canvas.removeEventListener('touchmove', touchMoveFunction, false);
 
-            // attach the touchstart, touchmove, touchend event listeners.
-            canvas.removeEventListener('touchstart', ev_onmousedown, false);
-            canvas.removeEventListener('touchmove', ev_onmousemove, false);
-            canvas.removeEventListener('touchend', ev_onmouseup, false);
+                // attach the touchstart, touchmove, touchend event listeners.
+                canvas.removeEventListener('touchstart', ev_onmousedown, false);
+                canvas.removeEventListener('touchmove', ev_onmousemove, false);
+                canvas.removeEventListener('touchend', ev_onmouseup, false);
 
-        } else {
-            // touchscreen specific - to prevent web page being scrolled while drawing
-            canvas.detachEvent('touchstart', touchStartFunction);
-            canvas.detachEvent('touchmove', touchMoveFunction);
+            } else {
+                // touchscreen specific - to prevent web page being scrolled while drawing
+                canvas.detachEvent('touchstart', touchStartFunction);
+                canvas.detachEvent('touchmove', touchMoveFunction);
 
-            // attach the touchstart, touchmove, touchend event listeners.
-            canvas.detachEvent('touchstart', ev_onmousedown);
-            canvas.detachEvent('touchmove', ev_onmousemove);
-            canvas.detachEvent('touchend', ev_onmouseup);
+                // attach the touchstart, touchmove, touchend event listeners.
+                canvas.detachEvent('touchstart', ev_onmousedown);
+                canvas.detachEvent('touchmove', ev_onmousemove);
+                canvas.detachEvent('touchend', ev_onmouseup);
+            }
         }
-                }
-                function __killListeners(){
-                killMouseListeners();
-                killTouchListeners();
-                }
+
+        function __killListeners() {
+            killMouseListeners();
+            killTouchListeners();
+        }
+        //
+        function scrollTheCanvas(event) {
+            checkForScroll(event);
+            //setTimeout(function(){checkForScroll(event)},100)
+        }
+
+        function checkForScroll(_event) {
+            //console.log("CHECK_FOR_SCROLL")
+            var event = _event ? _event : window.event;
+            isTouchEnabled = event.type.indexOf('touch') > -1;
+            var dx, dy, dist;
+
+            if (event.pageX != undefined) {
+                dx = event.pageX - offX;
+                dy = event.pageY - offY;
+            } else {
+                dx = event.clientX - offX
+                dy = event.clientY - offY
+            }
+            if (penDown) {
+                return
+            }
+
+            var cposX = ($get_Element("#container").style.left);
+            var cposY = ($get_Element("#container").style.top);
+
+            cposX = cposX ? parseInt(cposX) : 0;
+            cposY = cposY ? parseInt(cposY) : 0;
+            //console.log((dx-cposX)+":"+screen_width+"||"+(dy-cposY)+":"+screen_height)
+            if (dx - cposX >= screen_width) {
+                doRightScroll();
+                setTimeout(function () {
+                    checkForScroll(_event)
+                }, 100)
+            } else if (dy - cposY >= screen_height) {
+                doUpScroll();
+                setTimeout(function () {
+                    checkForScroll(_event)
+                }, 100)
+            } else {
+                //clearInterval(scrollInt);
+            }
+        }
+
+        function doRightScroll() {
+            var delta = -2
+            var currPos = $get_Element('#canvas-container').style.left;
+            currPos = currPos ? currPos : 0;
+            currPos = parseInt(currPos) + (delta * 10);
+            currPos = currPos > 0 ? 0 : currPos
+            currPos = currPos < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPos;
+            var scrub = (canvas.width - screen_width) / (screen_width - 30)
+            $get_Element('#canvas-container').style.left = currPos + "px";
+            $get_Element('#hscroll_thumb').style.left = (-currPos / scrub) + "px";
+        }
+
+        function doUpScroll() {
+            var delta = -2
+            var currPos = $get_Element('#canvas-container').style.top;
+            currPos = currPos ? currPos : 0;
+            currPos = parseInt(currPos) + (delta * 10);
+            currPos = currPos > 0 ? 0 : currPos
+            currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
+            var scrub = (canvas.height - screen_height) / (screen_height - 30)
+            $get_Element('#canvas-container').style.top = currPos + "px";
+            $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+        }
+        //
         var ev_onmousedown = function (_event) {
-                isTouchEnabled = _event.type.indexOf('touch') > -1
+            //alert("MDOWN")
+            var event = _event ? _event : window.event;
+            var tevent = event
+            isTouchEnabled = event.type.indexOf('touch') > -1
+            if (isTouchEnabled) {
+                canvas.removeEventListener("mousedown", ev_onmousedown, false);
+                canvas.removeEventListener("mouseup", ev_onmouseup, false);
+                canvas.removeEventListener("mousemove", ev_onmousemove, false);
+            }
+            getCanvasPos();
+            /*
+             * else{ canvas.removeEventListener('touchstart',ev_onmousedown, false);
+             * canvas.removeEventListener('touchmove',ev_onmousemove, false);
+             * canvas.removeEventListener('touchend',ev_onmouseup, false); }
+             */
+
+
+            event = isTouchEnabled ? _event.changedTouches[0] : event;
+
+            var dx, dy, dist;
+
+            if (event.pageX != undefined) {
+                dx = event.pageX - offX;
+                dy = event.pageY - offY;
+            } else {
+                dx = event.clientX - offX
+                dy = event.clientY - offY
+            }
+            // alert(dx+":"+canvas.width)
+            //console.log(dy + ":" + event.clientY + ":" + event.layerY + ":" + event.pageY + ":" + offY);
+            context.lineWidth = 2.0;
+            context.strokeStyle = wb.globalStrokeColor;
+
+            var currPos = $get_Element('#canvas-container').style.left;
+            currPos = currPos ? parseInt(currPos) : 0;
+            var click_pos = dx + currPos
+            console.log("MOUSE_DOWN " + dx + ":" + width + ":::" + click_pos + ":" + screen_width)
+
+            if (click_pos >= 0 && click_pos < screen_width) {
                 if (isTouchEnabled) {
-                    canvas.removeEventListener("mousedown", ev_onmousedown, false);
-                    canvas.removeEventListener("mouseup", ev_onmouseup, false);
-                    canvas.removeEventListener("mousemove", ev_onmousemove, false);
-                }
-                                        getCanvasPos();
-                /*
-                 * else{ canvas.removeEventListener('touchstart',ev_onmousedown, false);
-                 * canvas.removeEventListener('touchmove',ev_onmousemove, false);
-                 * canvas.removeEventListener('touchend',ev_onmouseup, false); }
-                 */
-                var event = _event ? _event : window.event;
-
-                event = isTouchEnabled ? _event.changedTouches[0] : event;
-                var dx, dy, dist;
-
-                if (event.pageX!=undefined) {
-                    dx = event.pageX - offX;
-                    dy = event.pageY - offY;
-                } else {
-                    dx = event.clientX - offX
-                    dy = event.clientY - offY
-                }
-                // alert(dx+":"+event.clientX)
-                                console.log(dy+":"+event.clientY+":"+event.layerY+":"+event.pageY+":"+offY);
-                context.lineWidth = 2.0;
-                context.strokeStyle = wb.globalStrokeColor;
-
-                if (dx >= 0 && dx < width) {
-                    penDown = true;
-                    rendering = false;
-                    clickX = dx;
-                    clickY = dy;
-                    x = dx;
-                    y = dy;
-
-                    if (!graphicData.dataArr) {
-                        graphicData.dataArr = [];
-
+                    if (tevent.touches.length > 1) {
+                        penDown = false;
+                        rendering = false;
+                        initSwipe(_event);
+                        return
                     }
-                    graphicData.id = tool_id[currentTool];
-                    if (currentTool == 'pencil') {
+                }
+                penDown = true;
+                rendering = false;
+                clickX = dx;
+                clickY = dy;
+                x = dx;
+                y = dy;
+
+                if (!graphicData.dataArr) {
+                    graphicData.dataArr = [];
+
+                }
+                graphicData.id = tool_id[currentTool];
+                console.log("CURRENT_TOOL:" + currentTool);
+                if (currentTool == 'pencil') {
+                    context.beginPath();
+                    context.moveTo(clickX, clickY);
+                } else if (currentTool == 'eraser') {
+                    erase(x, y);
+                }
+                drawcolor = colorToNumber(context.strokeStyle)
+                if (currentTool == 'text') {
+                    penDown = false;
+
+                    graphicData.dataArr[0] = {
+                        x: x,
+                        y: y,
+                        text: "",
+                        color: drawcolor,
+                        name: "",
+                        layer: drawingLayer
+                    };
+                    // alert("0:: "+graphicData.dataArr[0])
+                    showTextBox();
+                } else {
+                    graphicData.dataArr[graphicData.dataArr.length] = {
+                        x: x,
+                        y: y,
+                        id: "move",
+                        color: drawcolor,
+                        name: "",
+                        layer: drawingLayer
+                    };
+                    if (isIE && (currentTool == 'gr2D' || currentTool == 'nl')) {
                         context.beginPath();
                         context.moveTo(clickX, clickY);
-                    } else if (currentTool == 'eraser') {
-
-                        erase(x, y);
                     }
-                    drawcolor = colorToNumber(context.strokeStyle)
-                    if (currentTool == 'text') {
-                        penDown = false;
-
-                        graphicData.dataArr[0] = {
-                            x: x,
-                            y: y,
-                            text: "",
-                            color: drawcolor,
-                            name: "",
-                            layer: drawingLayer
-                        };
-                        // alert("0:: "+graphicData.dataArr[0])
-                        showTextBox();
-                    } else {
-                        graphicData.dataArr[0] = {
-                            x: x,
-                            y: y,
-                            id: "move",
-                            color: drawcolor,
-                            name: "",
-                            layer: drawingLayer
-                        };
-                    }
-                } else {
-                    penDown = false;
                 }
-                if (event.preventDefault) event.preventDefault();
-                // _event.stopPropagation();
+            } else {
+                penDown = false;
+            }
+            if (event.preventDefault) {
+                event.preventDefault()
+            } else {
+                event.returnValue = false
             };
+            // _event.stopPropagation();
+        };
 
         var ev_onmouseup = function (_event) {
-                var event = _event ? _event : window.event;
-                event = _event.type.indexOf('touch') > -1 ? _event.targetTouches[0] : event;
-                /*
-                 * if(penDown){ x = event.layerX?event.layerX:event.pageX-offX; y =
-                 * event.layerY?event.layerY:event.pageY-offY; }
-                 */
-                if (rendering) {
-                    penDown = false;
-                    if (currentTool == 'rect' || currentTool == 'oval') {
-                        graphicData.dataArr[0].w = w0
-                        graphicData.dataArr[0].h = h0
-                        graphicData.dataArr[0].xs = w0 / 400
-                        graphicData.dataArr[0].ys = h0 / 400
-                    } else if (currentTool == 'line' || currentTool == 'pencil' || currentTool == 'eraser') {
-                        // alert(_event.type+": "+clickX+":"+clickY+":"+x+":"+y);
-                        // {x:x-clickX, y:y-clickY, id:"line"}
-                        var xp = x - clickX
-                        var yp = y - clickY
-                        xp = currentTool == 'eraser' ? x : xp
-                        yp = currentTool == 'eraser' ? y : yp
-                        graphicData.dataArr[graphicData.dataArr.length] = {
-                            x: xp,
-                            y: yp,
-                            id: "line"
-                        };
-                    }
-                    if (currentTool != 'eraser') {
-                        updateCanvas();
-                        context.beginPath();
-                    }
-                    sendData();
-                    rendering = false;
+            var event = _event ? _event : window.event;
+            event = event.type.indexOf('touch') > -1 ? _event.targetTouches[0] : event;
+            /*
+             * if(penDown){ x = event.layerX?event.layerX:event.pageX-offX; y =
+             * event.layerY?event.layerY:event.pageY-offY; }
+             */
+            penDown = false;
+            //alert(rendering);
+            if (swipe_action == 'on') {
+                swipe_action = 'off'
+                return
+            }
+            if (rendering) {
+
+                if (currentTool == 'rect' || currentTool == 'oval') {
+                    graphicData.dataArr[0].w = w0
+                    graphicData.dataArr[0].h = h0
+                    graphicData.dataArr[0].xs = w0 / 400
+                    graphicData.dataArr[0].ys = h0 / 400
+                } else if (currentTool == 'line' || currentTool == 'pencil' || currentTool == 'eraser') {
+                    // alert(_event.type+": "+clickX+":"+clickY+":"+x+":"+y);
+                    // {x:x-clickX, y:y-clickY, id:"line"}
+                    var xp = x - clickX
+                    var yp = y - clickY
+                    xp = currentTool == 'eraser' ? x : xp
+                    yp = currentTool == 'eraser' ? y : yp
+                    graphicData.dataArr[graphicData.dataArr.length] = {
+                        x: xp,
+                        y: yp,
+                        id: "line"
+                    };
                 }
-            };
+                if (currentTool != 'eraser') {
+                    updateCanvas();
+                    context.beginPath();
+                } else if (currentTool == 'eraser' && isIE) {
+                    updateCanvas();
+                    context.beginPath();
+                }
+                sendData();
+                rendering = false;
+            } else if (currentTool == 'eraser' && isIE) {
+                //alert("A");
+                updateCanvas();
+                context.beginPath();
+                alert(rendering);
+            } else {
+
+                if (currentTool != 'text') {
+                    resetArrays()
+                } else {
+                    //alert("B");
+                    setTimeout(__focus);
+                    //$('.mathquill-editable').focus();
+                }
+            }
+        };
 
         var ev_onmousemove = function (_event) {
-                var event = _event ? _event : window.event;
-                event = _event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
-                if (penDown) {
-                    rendering = true;
-                    if (currentTool != 'pencil' && currentTool != 'text') {
+            var event = _event ? _event : window.event;
+            event = event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
+            if (penDown) {
+                rendering = true;
+                // console.log("MMOVE")
+                if (currentTool != 'pencil' && currentTool != 'text') {
+                    //console.log("MMOVE: "+isIE)
+                    if (isIE && currentTool != 'eraser') {
 
                         context.clearRect(0, 0, canvas.width, canvas.height);
-                    }
-
-                    // x = event.layerX?event.layerX:event.pageX-offX;
-                    // y = event.layerY?event.layerY:event.pageY-offY;
-
-                    if (event.pageX!=undefined) {
-                        x = event.pageX - offX;
-                        y = event.pageY - offY;
-                    } else {
-                        x = event.clientX - offX
-                        y = event.clientY - offY
-                    }
-
-                    if (currentTool == 'rect' || currentTool == 'oval') {
-
-                        x0 = clickX;
-                        y0 = clickY;
-                        w0 = x - clickX;
-                        h0 = y - clickY;
-                        if (currentTool == 'rect') {
-                            drawRect(x0, y0, w0, h0,wb.globalStrokeColor)
-                        }
-                        if (currentTool == 'oval') {
-                            drawOval(x0, y0, w0, h0,wb.globalStrokeColor)
-                        }
-                    } else {
-                        if (currentTool == 'line') {
-                            context.beginPath();
-                            context.moveTo(clickX, clickY);
-                            drawLine();
-                        } else if (currentTool == 'eraser') {
-                            erase(x, y);
-                            graphicData.dataArr[graphicData.dataArr.length] = {
-                                x: x,
-                                y: y,
-                                id: "line"
-                            };
-                        } else {
-                            graphicData.dataArr[graphicData.dataArr.length] = {
-                                x: x - clickX,
-                                y: y - clickY,
-                                id: "line"
-                            };
-                            drawLine();
-                        }
-
+                    } else if (!isIE) {
+                        context.clearRect(0, 0, canvas.width, canvas.height);
                     }
                 }
-                if (event.preventDefault) event.preventDefault();
-                // _event.stopPropagation();
+
+                // x = event.layerX?event.layerX:event.pageX-offX;
+                // y = event.layerY?event.layerY:event.pageY-offY;
+                //getCanvasPos()
+                if (event.pageX != undefined) {
+                    x = event.pageX - offX;
+                    y = event.pageY - offY;
+                } else {
+                    x = event.clientX - offX
+                    y = event.clientY - offY
+                }
+
+                if (currentTool == 'rect' || currentTool == 'oval') {
+
+                    x0 = clickX;
+                    y0 = clickY;
+                    w0 = x - clickX;
+                    h0 = y - clickY;
+                    if (currentTool == 'rect') {
+                        drawRect(x0, y0, w0, h0, wb.globalStrokeColor)
+                    }
+                    if (currentTool == 'oval') {
+                        drawOval(x0, y0, w0, h0, wb.globalStrokeColor)
+                    }
+                } else {
+                    if (currentTool == 'line') {
+                        context.beginPath();
+                        context.moveTo(clickX, clickY);
+                        drawLine();
+                    } else if (currentTool == 'eraser') {
+                        erase(x, y);
+                        graphicData.dataArr[graphicData.dataArr.length] = {
+                            x: x,
+                            y: y,
+                            id: "line"
+                        };
+                    } else {
+                        graphicData.dataArr[graphicData.dataArr.length] = {
+                            x: x - clickX,
+                            y: y - clickY,
+                            id: "line"
+                        };
+                        //console.log("DRAW_LINE_PENCIL: "+x+":"+y);
+                        drawLine();
+                    }
+
+                }
+            }
+            if (event.preventDefault) {
+                event.preventDefault()
+            } else {
+                event.returnValue = false
             };
-__killListeners()
+            // _event.stopPropagation();
+        };
+
+        function initSwipe(_event) {
+            var event = _event ? _event : window.event;
+            var c = $get_Element('#canvas-container')
+            var tl = 0;
+            if (event.touches) {
+                console.log(event.touches.length)
+                tl = event.touches.length
+            } else {
+                console.log("NOT TOUCH ENABLED!")
+            }
+            console.log("TOUCHES: " + tl);
+            if (tl >= 2) {
+                event.preventDefault();
+                var tarr = event.touches
+                var tp = {}
+                var tx = 0;
+                var ty = 0;
+                var tlen = tarr.length
+                for (var t = 0; t < tlen; t++) {
+                    tx += tarr[t].pageX
+                    ty += tarr[t].pageY
+                }
+                var touch = {
+                    pageX: tx / tlen,
+                    pageY: ty / tlen
+                };
+                swipe_sx = touch.pageX
+                swipe_sy = touch.pageY
+                console.log("TOUCHE_POS: " + swipe_sx + ":" + swipe_sy);
+                swipe_nx = 0
+                swipe_ny = 0
+                swipe_action = 'on'
+                c.addEventListener("touchmove", startSwipe)
+                c.addEventListener("touchend", stopSwipe)
+            }
+        }
+
+        function startSwipe(_event) {
+            var event = _event ? _event : window.event;
+            event.preventDefault();
+            var tarr = event.touches
+            var tp = {}
+            var tx = 0;
+            var ty = 0;
+            var tlen = tarr.length
+            if (tlen < 2) {
+                return
+            }
+            for (var t = 0; t < tlen; t++) {
+                tx += tarr[t].pageX
+                ty += tarr[t].pageY
+            }
+            var touch = {
+                pageX: tx / tlen,
+                pageY: ty / tlen
+            };
+            swipe_mx = touch.pageX
+            swipe_my = touch.pageY
+            swipe_dx = swipe_mx - swipe_sx
+            swipe_dy = swipe_my - swipe_sy
+            swipe_nx = swipe_ox + swipe_dx
+            swipe_ny = swipe_oy + swipe_dy
+            if (tlen < 2) {
+                return
+            }
+            //$get('canvas-container').style.left=dx+"px"
+            var currPosY = swipe_ny ? swipe_ny : 0;
+            currPosY = parseInt(currPosY)
+            currPosY = currPosY > 0 ? 0 : currPosY
+            currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
+            $get_Element('#canvas-container').style.top = currPosY + "px"
+            $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+            console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
+        }
+
+        function stopSwipe(_event) {
+            swipe_ox = swipe_ox + swipe_dx
+            swipe_oy = swipe_oy + swipe_dy
+            var event = _event ? _event : window.event;
+            //var touch=event.changedTouches[0]
+            event.preventDefault();
+            //swipe_action='stop';
+            var c = $get_Element('#canvas-container')
+            c.removeEventListener("touchmove", startSwipe)
+            c.removeEventListener("touchend", stopSwipe)
+            $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+            //console.log("Touch END x:" + touch.pageX + ", y:" + touch.pageY);
+        }
+
+        function getvscrolldata() {
+            var currPos = $get_Element('#canvas-container').style.top;
+            currPos = currPos ? currPos : 0;
+            currPos = parseInt(currPos)
+            currPos = currPos > 0 ? 0 : currPos
+            currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
+            var scrub = (canvas.height - screen_height) / (screen_height - 30);
+            return {
+                p: currPos,
+                s: scrub,
+                t: (-currPos / scrub)
+            }
+        }
+
+        function gethscrolldata() {
+            var currPos = $get_Element('#canvas-container').style.left;
+            currPos = currPos ? currPos : 0;
+            currPos = parseInt(currPos)
+            currPos = currPos > 0 ? 0 : currPos
+            currPos = currPos < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPos;
+            var scrub = (canvas.width - screen_width) / (screen_width - 30);
+            return {
+                p: currPos,
+                s: scrub,
+                t: (-currPos / scrub)
+            };
+        }
+
+        function moveObject(event) {
+            var delta = 0;
+
+            if (!event) event = window.event;
+
+            // normalize the delta
+            if (event.wheelDelta) {
+
+                // IE and Opera
+                delta = event.wheelDelta / 60;
+
+            } else if (event.detail) {
+
+                // W3C
+                delta = -event.detail / 2;
+            }
+
+            var currPos = $get_Element('#canvas-container').style.top;
+            currPos = currPos ? currPos : 0;
+            //console.log("DELTA:"+delta+":"+currPos);
+            //calculating the next position of the object
+            currPos = parseInt(currPos) + (delta * 10);
+            currPos = currPos > 0 ? 0 : currPos
+            currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
+            var scrub = (canvas.height - screen_height) / (screen_height - 30)
+            $get_Element('#canvas-container').style.top = currPos + "px";
+            $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+            //console.log("AFTER:"+currPos+":"+(currPos/scrub));
+            //moving the position of the object
+            //document.getElementById('scroll').style.top = currPos+"px";
+            //document.getElementById('scroll').innerHTML = event.wheelDelta + ":" + event.detail;
+        }
+        document.onmousewheel = moveObject;
+        __killListeners()
         if (document.addEventListener) {
             canvas.addEventListener("mousedown", ev_onmousedown, false);
             canvas.addEventListener("mouseup", ev_onmouseup, false);
@@ -510,7 +1212,9 @@ __killListeners()
             canvas.addEventListener('touchstart', ev_onmousedown, false);
             canvas.addEventListener('touchmove', ev_onmousemove, false);
             canvas.addEventListener('touchend', ev_onmouseup, false);
-
+            //
+            //document.addEventListener('DOMMouseScroll', moveObject, false);
+            //$get_Element('#container').addEventListener('mousemove', scrollTheCanvas, false);
         } else {
             canvas.attachEvent("onmousedown", ev_onmousedown);
             canvas.attachEvent("onmouseup", ev_onmouseup);
@@ -525,6 +1229,8 @@ __killListeners()
             canvas.attachEvent('touchstart', ev_onmousedown);
             canvas.attachEvent('touchmove', ev_onmousemove);
             canvas.attachEvent('touchend', ev_onmouseup);
+            //
+
         }
         canvas.focus()
     }
@@ -534,9 +1240,12 @@ __killListeners()
         return mainDoc.getElementById(str);
     }
 
-    function updateText(txt) {
-        // alert(graphicData.dataArr)
-        graphicData.dataArr[0].text = txt;
+    function updateText(txt, x, y, c) {
+        //alert("UT:"+txt)
+        graphicData.dataArr[0].text = escape(txt);
+        graphicData.dataArr[0].x = x;
+        graphicData.dataArr[0].y = y;
+        graphicData.dataArr[0].color = c;
     }
 
     function showTextBox() {
@@ -546,19 +1255,40 @@ __killListeners()
         // $get_Element("#inputBox").style.position="absolute";
         $get_Element("#inputBox").style.top = clickY + "px";
         $get_Element("#inputBox").style.left = clickX + "px";
-        $get_Element("#content").focus();
-        // alert($get_Element("#content"))
+        //$('#editable-math').mathquill('latex', "");
+        // $("#editable-math").focus();
+
+        setTimeout(__focus);
+        //alert($("textarea").value)
         // alert($get_Element("#inputBox").style.top+":"+$get_Element("#inputBox").style.left)
     }
-        function hideTextBox(){
-        $get_Element("#content").value = "";
-    $get_Element("#inputBox").style.display = 'none';
+
+    function __focus() {
+        //$("#editable-math").focus();
+
+        //$("#editable-math").focus();
+
+        //alert(isIE);
+        if (isIE || isTouchEnabled) {
+            $("textarea").focus();
+        } else {
+            $('.mathquill-editable').focus();
         }
 
+        //alert()
+    }
+
+    function hideTextBox() {
+        //$get_Element("#editable-math").value = "";
+        $("#editable-math").mathquill('redraw');
+        $get_Element("#inputBox").style.display = 'none';
+    }
+
     function resetWhiteBoard(boo) {
+
         penDown = false;
         graphMode = '';
-        origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = width;
+        //origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = width;
         origcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         topcontext.clearRect(0, 0, canvas.width, canvas.height);
@@ -566,19 +1296,20 @@ __killListeners()
         drawingLayer = '1'
         $get_Element("#button_gr2D").style.border = '1px solid #000000';
         $get_Element("#button_nL").style.border = '1px solid #000000';
+        $('.mathquill-embedded-latex').remove();
         if (boo) {
             clear(true);
         }
     }
 
-    function showHideGraph(flag, x, y,boo) {
+    function showHideGraph(flag, x, y, boo) {
         graphcanvas.width = graphcanvas.width;
         graphcanvas.height = graphcanvas.height;
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphicData.dataArr = [];
         graphicData.id = tool_id[currentTool];
         var addGraph = false
-        if (!boo&&((graphMode == 'gr2D' && flag == 'gr2D') || (graphMode == 'nL' && flag == 'nL'))) {
+        if (!boo && ((graphMode == 'gr2D' && flag == 'gr2D') || (graphMode == 'nL' && flag == 'nL'))) {
             graphMode = "";
             drawingLayer = '1'
             $get_Element("#button_gr2D").style.border = '1px solid #000000';
@@ -588,22 +1319,26 @@ __killListeners()
             $get_Element("#button_nL").style.border = '1px solid #000000';
             var gr, xp, yp, xs, ys
             graphMode = flag;
+            var cposX = parseInt($get_Element("#canvas-container").style.left);
+            var cposY = parseInt($get_Element("#canvas-container").style.top);
+            cposX = cposX ? cposX : 0;
+            cposY = cposY ? cposY : 0;
             if (flag == 'gr2D') {
                 gr = gr2D
-                xp = x ? x - (gr2D_w / 2) : gr2D_xp
-                yp = y ? y - (gr2D_h / 2) : gr2D_yp
-                xs = x ? x : gr2D_xp + (gr2D_w / 2)
-                ys = y ? y : gr2D_yp + (gr2D_h / 2)
+                xp = x ? x - (gr2D_w / 2) : gr2D_xp - cposX
+                yp = y ? y - (gr2D_h / 2) : gr2D_yp - cposY
+                xs = x ? x : gr2D_xp - cposX + (gr2D_w / 2)
+                ys = y ? y : gr2D_yp - cposY + (gr2D_h / 2)
                 $get_Element("#button_gr2D").style.border = '2px solid #ff0000';
             } else {
                 gr = nL;
-                xp = x ? x - (nL_w / 2) : nL_xp
-                yp = y ? y - (nL_h / 2) : nL_yp
-                xs = x ? x : nL_xp + (nL_w / 2)
-                ys = y ? y : nL_yp + (nL_h / 2)
+                xp = x ? x - (nL_w / 2) : nL_xp - cposX
+                yp = y ? y - (nL_h / 2) : nL_yp - cposY
+                xs = x ? x : nL_xp - cposX + (nL_w / 2)
+                ys = y ? y : nL_yp - cposY + (nL_h / 2)
                 $get_Element("#button_nL").style.border = '2px solid #ff0000';
             }
-            drawingLayer = '3'
+            drawingLayer = isIE ? '1' : '3';
             addGraph = true;
             // graphcontext.drawImage(gr,xp,yp);
             graphcontext.drawImage(gr, xp, yp);
@@ -644,18 +1379,53 @@ __killListeners()
 
     function updateCanvas() {
         var cntxt = drawingLayer == '1' ? origcontext : topcontext
+        if (currentTool == 'eraser') {
+            //cntxt=origcontext;
+        }
+        //console.log(cntxt);
         cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
+        /*context.save()
+		context.fillStyle='rgba(255,255,255,255)'
+		context.fillRect(0, 0, canvas.width, canvas.height);
+		context.restore();*/
         context.beginPath();
     }
 
     function erase(x, y) {
-        var ew = 10
-        var ep = ew / 2
-        origcontext.clearRect(x - ep, y - ep, ew, ew)
-        topcontext.clearRect(x - ep, y - ep, ew, ew)
+        var ew = 30
+        var ep = ew;
+        if (isIE) {
+            var x0 = x;
+            var y0 = y;
+            var graphics = context;
+            var eR = ep / 2;
+            context.save();
+            context.beginPath();
+            context.fillStyle = 'white';
+            //context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
+            graphics.moveTo(x0 - eR, y0 - eR);
+            graphics.lineTo(x0 + eR, y0 - eR);
+            graphics.lineTo(x0 + eR, y0 + eR);
+            graphics.lineTo(x0 - eR, y0 + eR);
+            graphics.lineTo(x0 - eR, y0 - eR);
+
+            context.closePath();
+            context.fill();
+            context.restore();
+            //updateCanvas();
+            //
+            /*topcontext.save();
+		    topcontext.fillStyle='white';
+		    topcontext.fillRect(x - ep / 2, y - ep / 2, ew, ew);
+		    topcontext.restore();*/
+            return;
+        }
+        origcontext.clearRect(x - ep / 2, y - ep / 2, ew, ew);
+        topcontext.clearRect(x - ep / 2, y - ep / 2, ew, ew);
         // alert(origcontext.clearRect)
     }
+
 
     function drawLine() {
         context.lineTo(x, y)
@@ -703,7 +1473,6 @@ __killListeners()
                 var jStr = convertObjToString(graphicData);
                 //currentObj.tempData = convertStringToObj(jStr);
                 // ExternalInterface.call("console.log","A")
-
                 var ptC = graphicData.dataArr.length
                 var segArr = []
                 var buf
@@ -753,7 +1522,7 @@ __killListeners()
                 for (var z = 0; z < segArr.length; z++) {
                     sendDataToSERVER(segArr[z]);
                 }
-                                console.log("Sending json string_segemented line -segments  : " + segArr.length);
+                console.log("Sending json string_segemented line -segments  : " + segArr.length);
                 render = false;
                 resetArrays();
                 textRendering = false;
@@ -761,7 +1530,7 @@ __killListeners()
             }
             render = false;
             // var jsonStr = convertObjToString(graphicData);
-                         console.log("Sending Data string for: " + graphicData.id);
+            console.log("Sending Data string for: " + graphicData.id);
             sendDataToSERVER(graphicData);
             textRendering = false;
         }
@@ -772,6 +1541,23 @@ __killListeners()
         var jsonStr = convertObjToString(jsdata);
         console.log("Sending json string: " + jsonStr);
         wb.whiteboardOut(jsonStr, true);
+        try {
+            if (supports_localStorage()) {
+                localStorage['jstr'] = jsonStr
+            } else {
+                console.log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+            }
+        } catch (e) {
+            console.log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+        }
+    }
+
+    function supports_localStorage() {
+        try {
+            return 'localStorage' in window && window['localStorage'] !== null;
+        } catch (e) {
+            return false;
+        }
     }
 
     function cloneObject(obj) {
@@ -785,6 +1571,7 @@ __killListeners()
     function resetArrays() {
         graphicData.dataArr = null;
         graphicData = {};
+        //alert("RESET_ARRAYS_CALLED");
     }
 
     function getToolFromID(id) {
@@ -795,7 +1582,6 @@ __killListeners()
         }
     }
     // function that converts flash object to JSON string
-
     function convertObjToString(obj) {
         try {
             var s = JSON.stringify(obj);
@@ -805,7 +1591,6 @@ __killListeners()
         }
     }
     // function that converts JSON string to flash object
-
     function convertStringToObj(str) {
         try {
             var o = eval("(" + str + ")"); // eval(str);
@@ -815,7 +1600,6 @@ __killListeners()
         }
     }
     // ### RENDER OBJECT TO WHITEBOARD
-
     function renderObj(obj) {
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
@@ -825,11 +1609,12 @@ __killListeners()
         var textF;
         var idName;
         drawingLayer = graphic_data[0].layer ? graphic_data[0].layer : drawingLayer;
+        drawingLayer = isIE ? '1' : drawingLayer;
         context.lineWidth = 2.0;
-                var col="#"+graphic_data[0].color.toString(16);
+        var col = "#" + graphic_data[0].color.toString(16);
         context.strokeStyle = col;
         var deb = ""
-                console.log("RENDER_DATA_FOR: "+graphic_id)
+        console.log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
@@ -865,8 +1650,9 @@ __killListeners()
                     x0 = graphic_data[i].x;
                     y0 = graphic_data[i].y;
                     // context.fillText(graphic_data[i].text, x0, y0);
-                                        xt=graphic_data[i].text;
-                    renderText(xt, x0, y0,col)
+                    xt = graphic_data[i].text;
+                    xt = unescape(decodeURI(xt));
+                    renderText(xt, x0, y0, col)
                 }
             }
             updateCanvas()
@@ -880,13 +1666,13 @@ __killListeners()
                 y0 = graphic_data[i].y
                 w0 = graphic_data[i].w * xd
                 h0 = graphic_data[i].h * yd
-                fName(x0, y0, w0, h0,col);
+                fName(x0, y0, w0, h0, col);
             }
             updateCanvas()
         }
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
-            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y,graphic_data[0].addImage);
+            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage);
         }
     }
     updateWhiteboard = function (cmdArray) {
@@ -929,25 +1715,35 @@ __killListeners()
     wb.updateWhiteboard = function (cmdArray) {
         gwt_updatewhiteboard(cmdArray);
     }
-//
-/**
+    wb.renderFromStorage = function () {
+        if (supports_localStorage()) {
+            var str = localStorage['jstr'];
+            updateWhiteboard([
+                ["draw", [str]]
+            ])
+        } else {
+            console.log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+        }
+    }
+    //
+    /**
 ** SETS THE WHITEBOARD MODE AS TEACHER MODE
 ++ ON TEACHER MODE THE DRAWING COLOR WILL BE SET AS RED
 */
-wb.setAsTeacherMode=function(boo){
-    var b=boo===undefined?true:boo
-    if(b){
-        wb.globalStrokeColor='#ff0000';
-                wb.mode='admin'
-    }else{
-        wb.globalStrokeColor='#000000';
-                wb.mode='student';
+    wb.setAsTeacherMode = function (boo) {
+        var b = boo === undefined ? true : boo
+        if (b) {
+            wb.globalStrokeColor = '#ff0000';
+            wb.mode = 'admin'
+        } else {
+            wb.globalStrokeColor = '#000000';
+            wb.mode = 'student';
+        }
     }
-}
-wb.getWhiteboardMode=function(){
-    return wb.mode;
-}
-//
+    wb.getWhiteboardMode = function () {
+        return wb.mode;
+    }
+    //
     // function receives jsonData and renders it to the screen
     draw = function (json_str) {
         var grobj = convertStringToObj(json_str);
@@ -969,8 +1765,8 @@ wb.getWhiteboardMode=function(){
 
 
     /** will be overriden in GWT/parent */
-    wb.saveWhiteboard = function() {
-        alert('default whiteboard save');
+    wb.saveWhiteboard = function () {
+        console.log('default whiteboard save');
     }
 
     /** API method used to externalize handling of JSON data
@@ -979,8 +1775,8 @@ wb.getWhiteboardMode=function(){
      * @param boo
      */
 
-    wb.whiteboardOut = function(data, boo) {
-        alert('default whiteboard out: ' + data);
+    wb.whiteboardOut = function (data, boo) {
+        // alert('default whiteboard out: ' + data);
         // console.log(data);
         /*
          * if(boo){ var flashObject=getFlashMovie('sw_wb');
@@ -990,7 +1786,7 @@ wb.getWhiteboardMode=function(){
          */
     }
 
-    wb.disconnectWhiteboard = function(documentObject) {
+    wb.disconnectWhiteboard = function (documentObject) {
         alert('default whiteboard disconnect');
         /** empty */
     }

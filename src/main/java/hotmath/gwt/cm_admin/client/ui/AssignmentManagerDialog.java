@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;

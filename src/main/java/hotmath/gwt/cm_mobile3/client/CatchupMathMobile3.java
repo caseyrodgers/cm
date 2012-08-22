@@ -26,7 +26,6 @@ import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
-import hotmath.gwt.cm_mobile_shared.client.util.BrowserNotSupportedPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
@@ -40,10 +39,14 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -125,6 +128,21 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         new LoadingDialog(__clientFactory.getEventBus());
         _rootPanel = RootPanel.get("main-content");
+        
+        if(false) {
+            Anchor btn = new Anchor("This is a test");
+            btn.addClickHandler(new ClickHandler() {
+                
+                @Override
+                public void onClick(ClickEvent event) {
+                    Window.alert("TEST");
+                }
+            });
+            _rootPanel.add(btn);
+            return;
+        }
+        
+        
         try {
             
             if(CatchupMathMobileShared.getQueryParameter("debug")==null) {

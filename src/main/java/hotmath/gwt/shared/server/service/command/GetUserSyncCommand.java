@@ -24,7 +24,7 @@ public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, User
     @Override
     public UserSyncInfo execute(Connection conn, GetUserSyncAction action) throws Exception {
         
-      boolean hasUncompletedAssignments=false; // AssignmentDao.getInstance().getNumberOfIncompleteAssignments(action.getUid())>0;
+      boolean hasUncompletedAssignments=AssignmentDao.getInstance().getNumberOfIncompleteAssignments(action.getUid())>0;
         
        return new UserSyncInfo(
                 new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()),

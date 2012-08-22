@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_tools.client.ui;
 
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;

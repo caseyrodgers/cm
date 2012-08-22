@@ -70,7 +70,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     @SuppressWarnings("unchecked")
     public CmList<CustomLessonModel> getAllLessons(final Connection conn) throws Exception {
         
-        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null);
+        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,"all");
         if(list != null) {
             return list;
         }
@@ -86,7 +86,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 String file = rs.getString("file");
                 if(!CustomQuizQuestionManager.getInstance().isDefined(file)) {
                     // skip if no absolute pids defined.
-                    LOGGER.warn("getAllLessons: Lesson '" + file + " does not have absolute pids defined");
+                    LOGGER.debug("getAllLessons: Lesson '" + file + " does not have absolute pids defined");
                     continue;
                 }
                 
@@ -135,7 +135,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 }
             });
             
-            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null,lessons);
+            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,"all",lessons);
             
             return lessons;
         } finally {

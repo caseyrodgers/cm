@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.GWindow;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.model.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
@@ -8,15 +7,14 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.rpc.AssignStudentsToAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.sprite.CreateSprites;
 
 import java.util.List;
 
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ListView;

@@ -56,6 +56,8 @@ function doLoad_Gwt(pid, title, jsonConfig, hasShowWork, shouldExpandSteps,solut
     }
 }
 
+
+
 var _bookMeta = {
     textCode: '',
     isControlled: false
@@ -65,6 +67,7 @@ var _bookMeta = {
 function setBreadCrumbs(crumbs) {
     // empty
 }
+
 
 /**
  * Overridden from tutor5.js
@@ -85,6 +88,8 @@ function scrollToStep(num) {
     objDiv.scrollTop = objDiv.scrollHeight;
 }
 
+
+
 /**
  * register a listener with Tutor to be notified when last step is reached. This
  * is used to only advance when the solution has actually been completed.
@@ -96,6 +101,12 @@ function scrollToStep(num) {
 HmEvents.eventTutorLastStep.subscribe(function (x) {
     solutionHasBeenViewed_Gwt(x);
 });
+
+
+
+
+
+
 
 /**
  * Registered listener to be notified after solution is loaded fully If
@@ -119,6 +130,8 @@ HmEvents.eventTutorInitialized.subscribe(function (x) {
 TutorManager.askATutor = function () {
     // do nothing
 };
+
+
 
 /**
  * overridden from tutor6
@@ -223,3 +236,4 @@ function get_type(thing) {
 function debug(x) {
     // silent
 }
+

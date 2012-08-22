@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.GWindow;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
@@ -19,6 +18,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;

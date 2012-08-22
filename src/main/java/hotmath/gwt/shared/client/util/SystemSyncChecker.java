@@ -121,7 +121,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                 	 }
                  }
                  
-                 //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_ASSIGNMENTS_UPDATED,info.isHasNewAssignments()));
+                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_ASSIGNMENTS_UPDATED,info.isHasNewAssignments()));
             }
              @Override
             public void onFailure(Throwable arg0) {
