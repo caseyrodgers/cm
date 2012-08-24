@@ -17,8 +17,6 @@ border:1px solid #333333;
 }
 #vscroll_track {	
 	width:15px;	
-        position: absolute;
-        top: 80px;
 }
 #vscroll_thumb {	
 	width:15px;
