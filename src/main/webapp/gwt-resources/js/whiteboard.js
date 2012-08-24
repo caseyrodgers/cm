@@ -258,10 +258,10 @@ if (docWidth > 600) {
 		dox=7
 		doy=0
 		}else{
-		dox=17
-		doy=17
+		dox=10
+		doy=10
 		}
-		dox=doy=0;
+		//dox=doy=0;
         screen_width = docWidth - leftOff-dox;
         screen_height = docHeight - topOff-doy;
         
@@ -391,10 +391,10 @@ if (docWidth > 600) {
 		dox=7
 		doy=0
 		}else{
-		dox=17
-		doy=17
+		dox=10
+		doy=10
 		}
-		dox=doy=0;
+		//dox=doy=0;
         screen_width = docWidth - leftOff -dox;
         screen_height = docHeight - topOff -doy;
             
