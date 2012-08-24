@@ -209,6 +209,7 @@ var Whiteboard = (function () {
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         mainDoc = mainDocIn;
+		console.log('off_ht_0: '+$get_Element("#tools").offsetHeight)
 		var parentDiv=$("#wb-container").parent()
 		if(parentDiv){
 		parentDiv.css('position','absolute');
@@ -227,6 +228,7 @@ var Whiteboard = (function () {
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
+		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight)
 		if(IS_IPHONE||docWidth < 600){
 		dox=7
 		doy=0
@@ -254,6 +256,7 @@ var Whiteboard = (function () {
             $('#button_save').text("S");
 
         }
+		console.log('off_ht_2: '+$get_Element("#tools").offsetHeight)
         $get_Element('#drawsection').style.width = (screen_width) + 'px';
         $get_Element('#drawsection').style.height = (screen_height) + 'px';
         $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
