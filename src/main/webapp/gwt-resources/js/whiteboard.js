@@ -209,6 +209,10 @@ var Whiteboard = (function () {
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         mainDoc = mainDocIn;
+		var parentDiv=$("#wb-container").parent()
+		if(parentDiv){
+		parentDiv.css('position','absolute');
+		}
         canvas = $get_Element("#canvas");
         var siz = viewport()
         var docWidth = siz.width;
