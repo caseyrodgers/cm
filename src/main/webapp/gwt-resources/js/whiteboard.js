@@ -240,7 +240,8 @@ if (docWidth > 600) {
             $('#button_save').text("S");
 
         }
-        var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+		var off_ht=$('#tools').height()+4;
+        var topOff = off_ht + $get_Element("#tools").offsetTop + 15
         var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
         var hscrollObj = {}
@@ -265,18 +266,18 @@ if (docWidth > 600) {
         $get_Element('#drawsection').style.height = (screen_height) + 'px';
         $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
         $get_Element('#vscroller').style.left = (screen_width + 3) + 'px';
-        $get_Element('#vscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop) + 'px';
+        $get_Element('#vscroller').style.top = (off_ht + $get_Element("#tools").offsetTop) + 'px';
 
         $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
         $get_Element('#hscroller').style.left = (0) + 'px';
-        $get_Element('#hscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + screen_height + 3) + 'px';
+        $get_Element('#hscroller').style.top = (off_ht + $get_Element("#tools").offsetTop + screen_height + 3) + 'px';
 		var posData="";
 		posData+="Screen-Width:"+docWidth+"\n";
 		posData+="Screen-Height:"+docHeight+"\n";
 		posData+="wb-Width:"+screen_width+"\n";
 		posData+="wb-Height:"+screen_height+"\n";
 		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
-		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+"\n";
+		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht"\n";
 		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
 		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
 		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
@@ -379,7 +380,8 @@ if (docWidth > 600) {
                 $('#button_save').text("S");
 
             }
-            var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+			var off_ht=$('#tools').height()+4;
+            var topOff = off_ht + $get_Element("#tools").offsetTop + 15
             var leftOff = $get_Element("#tools").offsetLeft + 15;
            if(IS_IPHONE||docWidth <= 600){
 		dox=7
