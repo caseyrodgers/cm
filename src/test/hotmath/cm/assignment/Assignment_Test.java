@@ -1,6 +1,6 @@
 package hotmath.cm.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -25,7 +25,7 @@ public class Assignment_Test extends TestCase {
         List<Integer> uids = new ArrayList<Integer>();
         uids.add(new Integer(1));
         
-        Assignment as = new Assignment(0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,uids);
+        Assignment as = new Assignment(0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,uids,"New");
         
         int assKey = AssignmentDao.getInstance().saveAssignement(2,as);
         assertTrue(assKey > 0);

@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 
 public class GetAssignmentsCreatedAction implements Action<CmList<Assignment>>{
     

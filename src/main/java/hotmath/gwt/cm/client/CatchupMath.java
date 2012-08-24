@@ -25,7 +25,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerWindow;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
@@ -387,31 +387,6 @@ public class CatchupMath implements EntryPoint {
         });
     }
 
-    
-    public void showAssignments_gwt() {
-        
-        final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
-           @Override
-            public void isComplete() {
-                // remove assignment panel (last panel added)
-                _mainPort.remove(_mainPort.getWidget(_mainPort.getItems().size()-1));
-                
-                // put back main panel
-                BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
-                _mainPort.add(_mainContainer, bdata);
-                _mainPort.layout(true);                 
-            }
-        });
-
-        
-        
-
-        _mainPort.remove(_mainContainer);
-        BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
-        _mainPort.add(assignmentViewer, bdata);
-        
-        _mainPort.layout(true);
-    }
     
     public void showQuizPanel_gwt(final int segmentNumber) {
 

@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 
-import hotmath.gwt.cm_rpc.client.model.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;

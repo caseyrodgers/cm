@@ -20,4 +20,6 @@
       -->
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
       <entry-point class='hotmath.gwt.cm.client.CatchupMath'/>
+      
+      <set-property name='user.agent' value='safari'/>
 </module>

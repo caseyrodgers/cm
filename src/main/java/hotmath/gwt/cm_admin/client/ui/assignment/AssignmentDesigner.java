@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
-import hotmath.gwt.cm_rpc.client.model.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.AddAssignmentProblemsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;

@@ -4,17 +4,18 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_rpc.client.model.Assignment;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -57,6 +58,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          * make sure to set the assignKey[0] variable to assign_key
          */
+        
+        if(ass.getStatus() == null) {
+            ass.setStatus("Open"); // default status
+        }
+        
         final int assignKey[] = new int[1];
         if (ass.getAssignKey() == 0) {
             KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -67,7 +73,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified)values(?,?,?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status)values(?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, aid);
                     ps.setInt(2, ass.getGroupId());
@@ -75,6 +81,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setDate(4, new java.sql.Date(ass.getDueDate().getTime()));
                     ps.setString(5, ass.getComments());
                     ps.setDate(6, new Date(System.currentTimeMillis()));
+                    ps.setString(7,ass.getStatus());
                     return ps;
                 }
             }, keyHolder);
@@ -87,13 +94,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now() where assign_key = ?";
+                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ? where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, aid);
                     ps.setString(2, ass.getAssignmentName());
                     ps.setDate(3, new java.sql.Date(ass.getDueDate().getTime()));
                     ps.setString(4, ass.getComments());
-                    ps.setInt(5, ass.getAssignKey());
+                    ps.setString(5, ass.getStatus());
+                    ps.setInt(6, ass.getAssignKey());
+                    
                     return ps;
                 }
             });
@@ -137,7 +146,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param assKey
      * @return
      */
-    public Assignment getAssignment(int assKey) throws CmException {
+    public Assignment getAssignment(int assKey) throws AssignmentNotFoundException {
 
         String sql = "select * from CM_ASSIGNMENT where assign_key = ?";
         Assignment assignment = null;
@@ -146,11 +155,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 @Override
                 public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
                     return new Assignment(rs.getInt("assign_key"),rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), rs
-                            .getDate("due_date"), null, null);
+                            .getDate("due_date"), null, null,rs.getString("status"));
                 }
             });
         } catch (Exception e) {
-            throw new CmException("Assignment not found: " + assKey, e);
+            throw new AssignmentNotFoundException(assKey, e);
         }
 
         /**
@@ -169,19 +178,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
         cmPids.addAll(pids);
         assignment.setPids(cmPids);
-
-        /**
-         * Find all users assigned to this assignemnt
-         * 
-         */
-        sql = "select * from CM_ASSIGNMENT_USERS where assign_key = ? order by id";
-        List<Integer> uids = getJdbcTemplate().query(sql, new Object[] { assKey }, new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new Integer(rs.getInt("uid"));
-            }
-        });
-        assignment.setUids(uids);
 
         return assignment;
     }
@@ -243,10 +239,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 
                 // create a psudo name
                 String comments = rs.getString("comments");
-                String assignmentName = rs.getDate("due_date") + (comments!=null?" - " + comments:"");
+                String assignmentName = _createAssignmentName(rs.getDate("due_date"),comments);
                 
                 Assignment ass = new Assignment(rs.getInt("assign_key"),rs.getInt("group_id"), assignmentName,
-                        rs.getString("comments"), rs.getDate("due_date"), null, null);
+                        rs.getString("comments"), rs.getDate("due_date"), null, null, rs.getString("status"));
                 
                 ass.setProblemCount(rs.getInt("problem_count"));
                 return ass;
@@ -395,6 +391,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public int getNumberOfIncompleteAssignments(int uid) {
         
+        __logger.debug("Getting number of of assignments for '" + uid + "'");
+        
         String sql = "select count(*) as cnt " +
                      " from HA_USER u " +
                      " JOIN CM_GROUP g on g.id = u.group_id " +
@@ -406,9 +404,126 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return rs.getInt("cnt");
             }
-        });        
+        });
+        
+        __logger.warn("Assignments for '" + uid + "': " + cnt.get(0));
         return cnt.get(0);
         
+    }
+
+    public List<Assignment> getAssignmentsForUser(int uid) {
+        
+        String sql = "select a.* " +
+                " from HA_USER u " +
+                " JOIN CM_GROUP g on g.id = u.group_id " +
+                " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " +
+                " where u.uid = ? ";
+        
+        List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] {uid }, new RowMapper<Assignment>() {
+            @Override
+            public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
+                
+                // create a psudo name
+                String comments = rs.getString("comments");
+                String assignmentName = _createAssignmentName(rs.getDate("due_date"),comments);
+
+                Assignment ass = new Assignment(rs.getInt("assign_key"),rs.getInt("group_id"), assignmentName,
+                        rs.getString("comments"), rs.getDate("due_date"), null, null, rs.getString("status"));
+                return ass;
+            }
+        });
+        return problems;
+    }
+    
+    private String _createAssignmentName(Date dueDate, String comments) {
+        return "Due Date: " + dueDate + (comments!=null?" - " + comments:"");        
+    }
+
+    public StudentAssignment getStudentAssignment(final int uid, int assignKey) throws Exception {
+        
+        StudentAssignment studentAssignment = new StudentAssignment();
+        
+        Assignment assignment = getAssignment(assignKey);
+        studentAssignment.setAssignment(assignment);
+        
+        
+        /** Read list of assignment problem statues for this user
+         * 
+         * 
+         */
+        String sql = "select * from  CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ?";
+
+
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey, uid }, new RowMapper<StudentProblemDto>() {
+            @Override
+            public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                StudentProblemDto prob = new StudentProblemDto();
+                prob.setUid(uid);
+                ProblemDto dummy = new ProblemDto(0,null,null,rs.getString("pid"));
+                prob.setProblem(dummy);
+                prob.setStatus(rs.getString("status"));
+                return prob;
+            }
+        });
+        
+        /** Make sure there is a status for each
+         * 
+         */
+        CmList<StudentProblemDto> allStatus = new CmArrayList<StudentProblemDto>();
+        
+        for(ProblemDto p: assignment.getPids()) {
+            boolean found=false;
+            for(StudentProblemDto s: problemStatuses) {
+                if(s.getProblem().getPid().equals(p.getPid())) {
+                    s.setProblem(p);  // replace with real problem
+                    allStatus.add(s);
+                    found=true;
+                    break;
+                }
+            }
+            if(!found) {
+                StudentProblemDto spd = new StudentProblemDto();
+                spd.setProblem(p);
+                spd.setUid(uid);
+                spd.setStatus("Not Viewed");
+                allStatus.add(spd);
+            }
+        }
+        
+        studentAssignment.setAssigmentStatuses(allStatus);
+        return studentAssignment;
+    }
+
+    /** Make sure there is a status record for this assignment PID
+     * 
+     * @param assignKey
+     * @param uid
+     * @param pid
+     */
+    public void setAssignmentPidStatus(final int assignKey, final int uid, final String pid) {
+        try {
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "insert into CM_ASSIGNMENT_PID_STATUS(assign_key, uid, pid, status)values(?,?,?,'Viewed')";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, assignKey);
+                    ps.setInt(2, uid);
+                    ps.setString(3, pid);
+                    
+                    return ps;
+                }
+            });
+        }
+        catch(Exception e) {
+            if(e.getMessage().toLowerCase().indexOf("duplicate") > -1) {
+                // duplicate record, already been viewed
+                // silent
+            }
+            else {
+                __logger.error("Error setting assignment pid status", e);
+            }
+        }
     }
 
 }

@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.model.Assignment;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
@@ -33,6 +33,12 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
+
+/** Provide GUI to list assignments and any related meta data
+ * 
+ * @author casey
+ *
+ */
 public class AssignmentsContentPanel extends ContentPanel {
     
     Grid<Assignment> _grid;
@@ -53,10 +59,12 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         
         ColumnConfig<Assignment, Date> nameCol = new ColumnConfig<Assignment, Date>(props.dueDate(), 75, "Due Date");
+        ColumnConfig<Assignment, String> statusCol = new ColumnConfig<Assignment, String>(props.status(), 75, "Status");
         ColumnConfig<Assignment, Integer> lessonCountCol = new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems");
-        ColumnConfig<Assignment, String> commentsCol = new ColumnConfig<Assignment, String>(props.comments(),       50, "Comments");
+        ColumnConfig<Assignment, String> commentsCol = new ColumnConfig<Assignment, String>(props.comments(),50, "Comments");
         List<ColumnConfig<Assignment, ?>> l = new ArrayList<ColumnConfig<Assignment, ?>>();
         l.add(nameCol);
+        l.add(statusCol);
         l.add(lessonCountCol);
         l.add(commentsCol);
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        

@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 
-import hotmath.gwt.cm_rpc.client.model.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 
 import java.util.Date;
 
@@ -18,4 +18,5 @@ public interface AssignmentProperties extends PropertyAccess<String> {
     ValueProvider<Assignment, Date> dueDate();
     ValueProvider<Assignment, Integer> problemCount();
     ValueProvider<Assignment, String> comments();
+    ValueProvider<Assignment, String> status();
   }

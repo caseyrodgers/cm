@@ -1,6 +1,5 @@
-package hotmath.gwt.cm_rpc.client.model;
+package hotmath.gwt.cm_rpc.client.model.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -23,7 +22,7 @@ import java.util.List;
  *
  */
 public class Assignment implements Response{
-    
+
     String assignmentName;
     int assignKey;
     int groupId;
@@ -31,13 +30,14 @@ public class Assignment implements Response{
     Date dueDate;
     CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
     List<Integer> uids = new ArrayList<Integer>();
+    String status;
     
     // might be null indicate not set
     Integer problemCount;
     
     public Assignment() {}
     
-    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids) {
+    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status) {
         this.assignKey = assignKey;
         this.groupId = groupId;
         this.assignmentName = name;
@@ -45,6 +45,7 @@ public class Assignment implements Response{
         this.dueDate = dueDate;
         this.pids = pids;
         this.uids = uids;
+        this.status = status;
     }
 
     public int getGroupId() {
@@ -112,10 +113,19 @@ public class Assignment implements Response{
         this.problemCount = problemCount;
     }
 
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }   
+    
     @Override
     public String toString() {
         return "Assignment [assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId
-                + ", comments=" + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids
-                + ", problemCount=" + problemCount + "]";
+                + ", comments=" + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids + ", status="
+                + status + ", problemCount=" + problemCount + "]";
     }
 }

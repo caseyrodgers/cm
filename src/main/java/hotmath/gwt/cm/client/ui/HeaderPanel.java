@@ -1,14 +1,14 @@
 package hotmath.gwt.cm.client.ui;
 
-import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -53,7 +53,11 @@ public class HeaderPanel extends LayoutContainer {
 		_assignmentsAnchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                CatchupMath.getThisInstance().showAssignments_gwt();
+                new StudentAssignmentViewerWindow(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                    }
+                });
             }
         });
 		_assignmentsAnchor.getElement().setAttribute("style", "color: red;font-weight: bold;width: 200px;position: absolute;top:8px;left:200px");
