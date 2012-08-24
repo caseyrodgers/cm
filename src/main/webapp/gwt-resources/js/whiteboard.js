@@ -277,7 +277,7 @@ if (docWidth > 600) {
 		posData+="wb-Width:"+screen_width+"\n";
 		posData+="wb-Height:"+screen_height+"\n";
 		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
-		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht"\n";
+		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
 		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
 		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
 		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
