@@ -206,16 +206,20 @@ var Whiteboard = (function () {
     /** main HTML document object */
     var mainDoc;
     var isIE = getInternetExplorerVersion() != -1;
+	var renderWB=false;
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         mainDoc = mainDocIn;
 		console.log('off_ht_0: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-		setTimeout(function(){console.log('off_ht_timer: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())},1000)
+		setTimeout(function(){renderWB=true;console.log('off_ht_timer: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())},1000)
+		
 		var parentDiv=$("#wb-container").parent()
 		if(parentDiv){
 		parentDiv.css('position','absolute');
 		}
         canvas = $get_Element("#canvas");
+		while(!renderWB){
+		}
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
