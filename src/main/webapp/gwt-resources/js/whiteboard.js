@@ -218,7 +218,7 @@ var Whiteboard = (function () {
 		
 		var parentDiv=$("#wb-container").parent()
 		if(parentDiv){
-		parentDiv.css('position','absolute');
+		//parentDiv.css('position','absolute');
 		}
         canvas = $get_Element("#canvas");
 		
