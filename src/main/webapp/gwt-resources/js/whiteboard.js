@@ -206,10 +206,13 @@ var Whiteboard = (function () {
     /** main HTML document object */
     var mainDoc;
     var isIE = getInternetExplorerVersion() != -1;
-	var renderWB=false;
+	
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         mainDoc = mainDocIn;
+		setTimeout(function(){
+		var renderWB=false;
+		//var init=function(){
 		console.log('off_ht_0: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
 		//setTimeout(function(){renderWB=true;console.log('off_ht_timer: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())},1000)
 		
@@ -240,7 +243,7 @@ if (docWidth > 600) {
             $('#button_save').text("S");
 
         }
-		var off_ht=$('#tools').height()+4;
+		var off_ht=$get_Element("#tools").offsetHeight;
         var topOff = off_ht + $get_Element("#tools").offsetTop + 15
         var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
@@ -1272,6 +1275,7 @@ if (docWidth > 600) {
 
         }
         canvas.focus()
+		},100);
     }
 
     function $get_Element(n) {
