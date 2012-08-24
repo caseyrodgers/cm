@@ -253,6 +253,17 @@ if (docWidth > 600) {
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
+		canvas.width=2620;
+		canvas.height=2000;
+		origcanvas.width=2620;
+		origcanvas.height=2000;
+		graphcanvas.width=2620;
+		graphcanvas.height=2000;
+		topcanvas.width=2620;
+		topcanvas.height=2000;
+		var ccnt=$get_Element("#canvas-container");
+		$("#canvas-container").css('width','2620px');
+		$("#canvas-container").css('height','2000px');
 		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
 		if(IS_IPHONE||docWidth <= 600){
 		dox=7
