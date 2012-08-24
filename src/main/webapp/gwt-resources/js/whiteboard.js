@@ -211,39 +211,18 @@ var Whiteboard = (function () {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         mainDoc = mainDocIn;
 		console.log('off_ht_0: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-		setTimeout(function(){renderWB=true;console.log('off_ht_timer: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())},1000)
+		//setTimeout(function(){renderWB=true;console.log('off_ht_timer: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())},1000)
 		
 		var parentDiv=$("#wb-container").parent()
 		if(parentDiv){
 		parentDiv.css('position','absolute');
 		}
         canvas = $get_Element("#canvas");
-		while(!renderWB){
-		}
+		
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
-
-        var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
-        var leftOff = $get_Element("#tools").offsetLeft + 15;
-        var vscrollObj = {}
-        var hscrollObj = {}
-        wb.globalStrokeColor = "#000000";
-        wb.mode = 'student';
-        origcanvas = $get_Element("#ocanvas");
-        graphcanvas = $get_Element("#gcanvas");
-        topcanvas = $get_Element("#tcanvas");
-		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-		if(IS_IPHONE||docWidth < 600){
-		dox=7
-		doy=0
-		}else{
-		dox=17
-		doy=17
-		}
-        screen_width = docWidth - leftOff - dox;
-        screen_height = docHeight - topOff - doy;
-        if (screen_width > 800) {
+if (docWidth > 600) {
             //alert($('#tools button').css('width'));
             $('#tools').css('height', '35px');
             $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
@@ -261,6 +240,26 @@ var Whiteboard = (function () {
             $('#button_save').text("S");
 
         }
+        var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+        var leftOff = $get_Element("#tools").offsetLeft + 15;
+        var vscrollObj = {}
+        var hscrollObj = {}
+        wb.globalStrokeColor = "#000000";
+        wb.mode = 'student';
+        origcanvas = $get_Element("#ocanvas");
+        graphcanvas = $get_Element("#gcanvas");
+        topcanvas = $get_Element("#tcanvas");
+		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
+		if(IS_IPHONE||docWidth <= 600){
+		dox=7
+		doy=0
+		}else{
+		dox=17
+		doy=17
+		}
+        screen_width = docWidth - leftOff - dox;
+        screen_height = docHeight - topOff - doy;
+        
 		console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
         $get_Element('#drawsection').style.width = (screen_width) + 'px';
         $get_Element('#drawsection').style.height = (screen_height) + 'px';
@@ -361,19 +360,7 @@ var Whiteboard = (function () {
             var siz = viewport()
             var docWidth = siz.width;
             var docHeight = siz.height;
-
-            var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
-            var leftOff = $get_Element("#tools").offsetLeft + 15;
-           if(IS_IPHONE||docWidth < 600){
-		dox=7
-		doy=0
-		}else{
-		dox=17
-		doy=17
-		}
-        screen_width = docWidth - leftOff -dox;
-        screen_height = docHeight - topOff -doy;
-            if (screen_width > 800) {
+if (docWidth > 600) {
                 //alert($('#tools button').css('width'));
                 $('#tools').css('height', '35px');
                 $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
@@ -392,6 +379,18 @@ var Whiteboard = (function () {
                 $('#button_save').text("S");
 
             }
+            var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+            var leftOff = $get_Element("#tools").offsetLeft + 15;
+           if(IS_IPHONE||docWidth <= 600){
+		dox=7
+		doy=0
+		}else{
+		dox=17
+		doy=17
+		}
+        screen_width = docWidth - leftOff -dox;
+        screen_height = docHeight - topOff -doy;
+            
         }
 
         function initThumbDrag(_event) {
