@@ -14,7 +14,7 @@ public class StudentAssignmentViewerWindow extends GWindow {
         super(true);
         
         setHeadingHtml("Student Assignment Manager");
-        setPixelSize(800, 600);
+        setPixelSize(900, 600);
         this.onComplete = onComplete;
         
         setCollapsible(true);

@@ -11,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonProblemsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
@@ -189,7 +188,17 @@ public class AddProblemDialog extends GWindow {
                     for (int i = 0, t = probs.size(); i < t; i++) {
                         ProblemDto pt = probs.get(i);
                         pt.setId(++BaseDto.autoId);
-                        data.add(pt);
+                        
+                        boolean found=false;
+                        for(ProblemDto d: problems) {
+                            if(d.getPid().equals(pt.getPid())) {
+                                found=true;
+                                break;
+                            }
+                        }
+                        if(!found) {
+                            data.add(pt);
+                        }
                     }
                 }
                 problems.addAll(data);

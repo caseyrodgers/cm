@@ -155,7 +155,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                 readAssignmentFromServer(event.getSelectedItem());
             }
         });
-        combo.setExpanded(true);
+        combo.expand();
         combo.setAllowBlank(false);
         combo.setEmptyText("--Select Assignment--");
         combo.setForceSelection(true);

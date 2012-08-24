@@ -68,7 +68,9 @@ public class ProblemListPanel extends SimpleContainer {
         _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
-                loadProblemStatement(event.getSelection().get(0));
+                if(event.getSelection().size() > 0) {
+                    loadProblemStatement(event.getSelection().get(0));
+                }
             }
         });
         
@@ -85,7 +87,13 @@ public class ProblemListPanel extends SimpleContainer {
     }
 
     public void loadAssignment(StudentAssignment assignment) {
-        _grid.getStore().clear();
+        _grid.getSelectionModel().setSelection(new ArrayList<StudentProblemDto>());
+        try {
+            _grid.getStore().clear();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         _grid.getStore().addAll(assignment.getAssigmentStatuses());
     }
     
