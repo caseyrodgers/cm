@@ -261,8 +261,9 @@ if (docWidth > 600) {
 		dox=17
 		doy=17
 		}
-        screen_width = docWidth - leftOff - dox;
-        screen_height = docHeight - topOff - doy;
+		dox=doy=0;
+        screen_width = docWidth - leftOff-dox;
+        screen_height = docHeight - topOff-doy;
         
 		console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
         $get_Element('#drawsection').style.width = (screen_width) + 'px';
@@ -393,6 +394,7 @@ if (docWidth > 600) {
 		dox=17
 		doy=17
 		}
+		dox=doy=0;
         screen_width = docWidth - leftOff -dox;
         screen_height = docHeight - topOff -doy;
             
