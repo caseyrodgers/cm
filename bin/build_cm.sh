@@ -49,8 +49,8 @@ if [ $n -eq 1 ]; then
     echo Building full CM package w/o mvn update
     mvn -o package minify:minify -Dgwt.compiler.force=true
 else
-    echo Building full CM package
-    mvn package minify:minify -Dgwt.compiler.force=true -o
+    echo Building full CM package with mvn update
+    mvn package minify:minify -Dgwt.compiler.force=true
 fi
 
 
