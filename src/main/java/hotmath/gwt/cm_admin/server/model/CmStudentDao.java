@@ -1066,8 +1066,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps.setInt(2, (showWorkRequired)?1:0);
                 ps.setInt(3, (stopAtProgramEnd)?1:0);
                 ps.setInt(4, (tutoringAvailable)?1:0);
-                ps.setInt(5, (disableCalcAlways)?1:0);
-                ps.setInt(6, (disableCalcQuizzes)?1:0);
+                int disable = (disableCalcAlways == null || disableCalcAlways == false)?0:1;
+                ps.setInt(5, disable);
+                disable = (disableCalcQuizzes == null || disableCalcQuizzes == false)?0:1;
+                ps.setInt(6, disable);
                 ps.setInt(7, uid);
 
             int cnt = ps.executeUpdate();
