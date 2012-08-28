@@ -58,24 +58,36 @@ public class CmProgramFlow {
     StudentModelI student;
 
     public CmProgramFlow(final Connection conn, int userId) throws Exception {
+    	
+    	long start = System.currentTimeMillis();
         this.activeInfo = sdao.loadActiveInfo(userId);
+        __logger.info(String.format("+++ CmProgramFlow: loadActiveInfo() took: %d msec", System.currentTimeMillis()-start));
 
+    	start = System.currentTimeMillis();
         this.userProgram = updao.loadProgramInfoCurrent(userId);
+        __logger.info(String.format("+++ CmProgramFlow: loadProgramInfoCurrent() took: %d msec", System.currentTimeMillis()-start));
+
+    	start = System.currentTimeMillis();
         this.student = sdao.getStudentModel(conn, userProgram.getUserId(), true);
+        __logger.info(String.format("+++ CmProgramFlow: getStudentModel() took: %d msec", System.currentTimeMillis()-start));
 
         /**
          * make the program segment 1 based
          */
         if (this.activeInfo.getActiveSegment() < 1) {
             this.activeInfo.setActiveSegment(1);
+        	start = System.currentTimeMillis();
             sdao.setActiveInfo(conn, userId, activeInfo);
+            __logger.info(String.format("+++ CmProgramFlow: setActiveInfo() took: %d msec", System.currentTimeMillis()-start));
         }
 
         /**
          * make sure the current state is valid, if not try to synchronize.
          * 
          */
+    	start = System.currentTimeMillis();
         isValid();
+        __logger.info(String.format("+++ CmProgramFlow: isValid() took: %d msec", System.currentTimeMillis()-start));
     }
 
     private void isValid() {
