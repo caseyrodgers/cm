@@ -59,35 +59,25 @@ public class CmProgramFlow {
 
     public CmProgramFlow(final Connection conn, int userId) throws Exception {
     	
-    	long start = System.currentTimeMillis();
         this.activeInfo = sdao.loadActiveInfo(userId);
-        __logger.info(String.format("+++ CmProgramFlow: loadActiveInfo() took: %d msec", System.currentTimeMillis()-start));
 
-    	start = System.currentTimeMillis();
         this.userProgram = updao.loadProgramInfoCurrent(userId);
-        __logger.info(String.format("+++ CmProgramFlow: loadProgramInfoCurrent() took: %d msec", System.currentTimeMillis()-start));
 
-    	start = System.currentTimeMillis();
         this.student = sdao.getStudentModel(conn, userProgram.getUserId(), true);
-        __logger.info(String.format("+++ CmProgramFlow: getStudentModel() took: %d msec", System.currentTimeMillis()-start));
 
         /**
          * make the program segment 1 based
          */
         if (this.activeInfo.getActiveSegment() < 1) {
             this.activeInfo.setActiveSegment(1);
-        	start = System.currentTimeMillis();
             sdao.setActiveInfo(conn, userId, activeInfo);
-            __logger.info(String.format("+++ CmProgramFlow: setActiveInfo() took: %d msec", System.currentTimeMillis()-start));
         }
 
         /**
          * make sure the current state is valid, if not try to synchronize.
          * 
          */
-    	start = System.currentTimeMillis();
         isValid();
-        __logger.info(String.format("+++ CmProgramFlow: isValid() took: %d msec", System.currentTimeMillis()-start));
     }
 
     private void isValid() {
@@ -131,28 +121,34 @@ public class CmProgramFlow {
      * @return
      */
     public CmProgramFlowAction getActiveFlowAction(final Connection conn) throws Exception {
+    	long start = System.currentTimeMillis();
 
-        if (userProgram.isComplete()) {
-            if (student.getSettings().getStopAtProgramEnd() || userProgram.isCustom()) {
-                return new CmProgramFlowAction(CmPlace.END_OF_PROGRAM);
-            } else
-                return new CmProgramFlowAction(CmPlace.AUTO_ADVANCED_PROGRAM);
-        }
+    	try {
+    		if (userProgram.isComplete()) {
+    			if (student.getSettings().getStopAtProgramEnd() || userProgram.isCustom()) {
+    				return new CmProgramFlowAction(CmPlace.END_OF_PROGRAM);
+    			} else
+    				return new CmProgramFlowAction(CmPlace.AUTO_ADVANCED_PROGRAM);
+    		}
 
-        if (activeInfo.getActiveRunId() > 0) {
-            // is in a prescription
-            return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, new GetPrescriptionAction(
-                    activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true)));
-        } else {
-            /**
-             * If no quiz for current segment, then create a new one
-             */
-            if (activeInfo.getActiveTestId() == 0) {
-                activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
-            }
-            return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,
-                    new GetQuizHtmlAction(activeInfo.getActiveTestId())));
-        }
+    		if (activeInfo.getActiveRunId() > 0) {
+    			// is in a prescription
+    			return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, new GetPrescriptionAction(
+    					activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true)));
+    		} else {
+    			/**
+    			 * If no quiz for current segment, then create a new one
+    			 */
+    			if (activeInfo.getActiveTestId() == 0) {
+    				activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
+    			}
+    			return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,
+    					new GetQuizHtmlAction(activeInfo.getActiveTestId())));
+    		}
+    	}
+    	finally {
+    		__logger.info(String.format("+++ getActiveFlowAction() took: %d", System.currentTimeMillis()-start));
+    	}
     }
 
     /**
@@ -182,6 +178,8 @@ public class CmProgramFlow {
     public CmProgramFlowAction moveToNextFlowItem(final Connection conn) throws Exception {
 
         // verifyProgramFlowIsStillActive();
+
+    	long start = System.currentTimeMillis();
 
         CmProgramFlowAction action = null;
         /**
@@ -246,6 +244,7 @@ public class CmProgramFlow {
             assert (action.getPlace() == CmPlace.PRESCRIPTION || action.getPlace() == CmPlace.QUIZ);
         }
 
+		__logger.info(String.format("+++ moveToNextFlowItem() took: %d", System.currentTimeMillis()-start));
         assert (action != null);
         return action;
     }
@@ -254,11 +253,15 @@ public class CmProgramFlow {
      * Setup so the active item is to retake the current segment
      */
     public CmProgramFlowAction retakeActiveProgramSegment(final Connection conn) throws Exception {
+    	long start = System.currentTimeMillis();
+
         activeInfo.setActiveRunId(0);
         activeInfo.setActiveTestId(0);
         sdao.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
 
-        return getActiveFlowAction(conn);
+        CmProgramFlowAction flowAction = getActiveFlowAction(conn);
+		__logger.info(String.format("+++ retakeActiveProgramSegment() took: %d", System.currentTimeMillis()-start));
+        return flowAction;
     }
 
     /**
@@ -268,13 +271,17 @@ public class CmProgramFlow {
      */
     private HaTest createNewProgramSegment() throws Exception {
 
-        verifyProgramFlowIsStillActive();
+    	long start = System.currentTimeMillis();
+
+    	verifyProgramFlowIsStillActive();
 
         /**
          * create and register a new test
          */
         HaTestDef testDef = userProgram.getTestDef();
-        return HaTestDao.getInstance().createTest(userProgram.getUserId(), testDef, activeInfo.getActiveSegment());
+        HaTest test = HaTestDao.getInstance().createTest(userProgram.getUserId(), testDef, activeInfo.getActiveSegment());
+		__logger.info(String.format("+++ createNewProgramSegment() took: %d", System.currentTimeMillis()-start));
+		return test;
     }
 
     /**
@@ -285,12 +292,19 @@ public class CmProgramFlow {
      * @throws Exception
      */
     public boolean hasPassedCurrentSegment(final Connection conn) throws Exception {
-        if (activeInfo.getActiveRunId() > 0) {
-            HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(activeInfo.getActiveRunId());
-            return testRun.isPassing();
-        } else {
-            return false;
-        }
+    	long start = System.currentTimeMillis();
+
+    	try {
+    		if (activeInfo.getActiveRunId() > 0) {
+    			HaTestRun testRun = HaTestRunDao.getInstance().lookupTestRun(activeInfo.getActiveRunId());
+    			return testRun.isPassing();
+    		} else {
+    			return false;
+    		}
+    	}
+    	finally{
+    		__logger.info(String.format("+++ hasPassedCurrentSegment() took: %d", System.currentTimeMillis()-start));
+    	}
     }
 
     /**
@@ -308,6 +322,7 @@ public class CmProgramFlow {
      */
     public void moveToNextProgramSegment(final Connection conn) throws CmProgramFlowException {
 
+    	long start = System.currentTimeMillis();
         __logger.debug("Moving to next segment: " + activeInfo);
         try {
             if (!areMoreSegments()) {
@@ -322,9 +337,11 @@ public class CmProgramFlow {
         } catch (Exception e) {
             throw new CmProgramFlowException("Error advancing program", e);
         }
+        __logger.info(String.format("+++ moveToNextProgramSegment() took: %d", System.currentTimeMillis()-start));
     }
 
     public void markSessionAsActive(final Connection conn, int session) throws CmProgramFlowException {
+    	long start = System.currentTimeMillis();
         try {
             if (session < 0 || session > getNumberOfSessionsInPrescription(conn, activeInfo.getActiveRunId())) {
                 throw new CmProgramFlowException("session number not valid: " + session + ", " + activeInfo);
@@ -341,6 +358,7 @@ public class CmProgramFlow {
         } catch (Exception e) {
             throw new CmProgramFlowException("Error advancing program", e);
         }
+        __logger.info(String.format("+++ markSessionAsActive() took: %d", System.currentTimeMillis()-start));
     }
 
     /**
@@ -351,6 +369,7 @@ public class CmProgramFlow {
      * @throws Exception
      */
     public void moveToNextSegmentIfAvailable(final Connection conn) throws Exception {
+    	long start = System.currentTimeMillis();
         if (areMoreSegments()) {
             moveToNextProgramSegment(conn);
         } else {
@@ -358,6 +377,7 @@ public class CmProgramFlow {
                 markProgramAsCompleted(conn, true);
             }
         }
+        __logger.info(String.format("+++ moveToNextSegmentIfAvailable() took: %d", System.currentTimeMillis()-start));
     }
 
     /*
@@ -365,10 +385,12 @@ public class CmProgramFlow {
      * throw an exception
      */
     public void markProgramAsCompleted(final Connection conn, boolean trueOrFalse) throws Exception {
+    	long start = System.currentTimeMillis();
         if (updao.setProgramAsComplete(conn, userProgram.getId(), trueOrFalse)) {
             /** update our instance */
             userProgram.setCompleteDate((trueOrFalse==true)?new Date():null);
         }
+        __logger.info(String.format("+++ markProgramAsCompleted() took: %d", System.currentTimeMillis()-start));
     }
 
     /**
@@ -382,7 +404,9 @@ public class CmProgramFlow {
      */
     public boolean moveToNextSessionInSegment(final Connection conn) throws CmProgramFlowException {
 
-        verifyProgramFlowIsStillActive();
+    	long start = System.currentTimeMillis();
+
+    	verifyProgramFlowIsStillActive();
 
         __logger.debug("Moving to next session in segment: " + activeInfo);
         try {
@@ -396,6 +420,7 @@ public class CmProgramFlow {
         } catch (Exception e) {
             throw new CmProgramFlowException("Could not advance to next lesson", e);
         }
+        __logger.info(String.format("+++ moveToNextSessionInSegment() took: %d", System.currentTimeMillis()-start));
 
         return false;
     }
@@ -418,7 +443,11 @@ public class CmProgramFlow {
          * Mark this lesson as being viewed
          * 
          */
+    	long start = System.currentTimeMillis();
+
         HaTestRunDao.getInstance().setLessonViewed(conn, activeInfo.getActiveRunId(), activeInfo.getActiveRunSession());
+
+        __logger.info(String.format("+++ markCurrentSessionAsViewed() took: %d", System.currentTimeMillis()-start));
     }
 
     /**
@@ -428,6 +457,7 @@ public class CmProgramFlow {
      * @throws Exception
      */
     public void reset(final Connection conn) throws Exception {
+    	long start = System.currentTimeMillis();
         activeInfo.setActiveSegment(1);
         activeInfo.setActiveRunId(0);
         activeInfo.setActiveRunSession(0);
@@ -436,6 +466,7 @@ public class CmProgramFlow {
 
         saveActiveInfo(conn);
         markProgramAsCompleted(conn, false);
+        __logger.info(String.format("+++ reset() took: %d", System.currentTimeMillis()-start));
     }
 
     /**
@@ -474,8 +505,11 @@ public class CmProgramFlow {
      * @throws Exception
      */
     public boolean areMoreSessionsInSegment(final Connection conn) throws Exception {
-        return activeInfo.getActiveRunSession() + 1 < getNumberOfSessionsInPrescription(conn,
+    	long start = System.currentTimeMillis();
+        boolean more = activeInfo.getActiveRunSession() + 1 < getNumberOfSessionsInPrescription(conn,
                 activeInfo.getActiveRunId());
+        __logger.info(String.format("+++ reset() took: %d", System.currentTimeMillis()-start));
+        return more;
     }
 
     /**
@@ -487,7 +521,9 @@ public class CmProgramFlow {
      * @throws Exception
      */
     public int getNumberOfSessionsInPrescription(final Connection conn, int runId) throws Exception {
+    	long start = System.currentTimeMillis();
         int sessions = AssessmentPrescriptionManager.getInstance().getPrescription(conn, runId).getSessions().size();
+        __logger.info(String.format("+++ getNumberOfSessionsInPrescription() took: %d", System.currentTimeMillis()-start));
         return sessions;
     }
 
@@ -519,7 +555,9 @@ public class CmProgramFlow {
     }
 
     public void saveActiveInfo(final Connection conn) throws Exception {
+    	long start = System.currentTimeMillis();
         sdao.setActiveInfo(conn, userProgram.getUserId(), activeInfo);
+        __logger.info(String.format("+++ saveActiveInfo() took: %d", System.currentTimeMillis()-start));
     }
 
     @Override
