@@ -122,6 +122,7 @@ public class CmProgramFlow {
      */
     public CmProgramFlowAction getActiveFlowAction(final Connection conn) throws Exception {
     	long start = System.currentTimeMillis();
+    	boolean newQuiz = false;
 
     	try {
     		if (userProgram.isComplete()) {
@@ -141,13 +142,15 @@ public class CmProgramFlow {
     			 */
     			if (activeInfo.getActiveTestId() == 0) {
     				activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
+    				newQuiz = true;
     			}
     			return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,
     					new GetQuizHtmlAction(activeInfo.getActiveTestId())));
     		}
     	}
     	finally {
-    		__logger.info(String.format("+++ getActiveFlowAction() took: %d msec", System.currentTimeMillis()-start));
+    		__logger.info(String.format("+++ getActiveFlowAction() runId: %d, testId: %d, newQuiz: %s, took: %d msec",
+    				activeInfo.getActiveRunId(), activeInfo.getActiveTestId(), newQuiz, System.currentTimeMillis()-start));
     	}
     }
 
