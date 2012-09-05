@@ -2,6 +2,7 @@ package hotmath.cm.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 
@@ -16,8 +17,7 @@ public class Assignment_Test extends TestCase {
     public Assignment_Test(String name) {
         super(name);
     }
-    
-   
+
     public void testCreate() throws Exception {
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
         pids.add(new ProblemDto(0,"Lesson", "Label", "Pid"));
@@ -32,6 +32,17 @@ public class Assignment_Test extends TestCase {
         Assignment assGet = AssignmentDao.getInstance().getAssignment(assKey);
         assertTrue(assGet.getUids().get(0).equals(as.getUids().get(0)));
         assertTrue(assGet.getPids().get(0).getPid().equals(as.getPids().get(0).getPid()));
+    }
+ 
+    public void testGetAssignmentForStudents() throws Exception {
+    	List<Integer> uidList = new ArrayList<Integer>();
+    	
+    	uidList.add(23255);
+    	uidList.add(27554);
+    	
+    	CmList<StudentAssignment> list = AssignmentDao.getInstance().getAssignmentForStudents(6, uidList);
+    	
+    	assertTrue(list.size() > 0);
     }
 
 }
