@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 
 public class UnassignStudentsFromAssignmentAction implements Action<RpcData> {
     
     private int assKey;
-    private CmList<StudentDto> students = new CmArrayList<StudentDto>();
+    private CmList<StudentAssignment> students = new CmArrayList<StudentAssignment>();
 
     public UnassignStudentsFromAssignmentAction(){}
     
@@ -21,11 +21,11 @@ public class UnassignStudentsFromAssignmentAction implements Action<RpcData> {
         this.assKey = assKey;
     }
 
-    public CmList<StudentDto> getStudents() {
+    public CmList<StudentAssignment> getStudents() {
         return students;
     }
 
-    public void setStudents(CmList<StudentDto> students) {
+    public void setStudents(CmList<StudentAssignment> students) {
         this.students = students;
     }
 

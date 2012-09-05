@@ -24,7 +24,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -286,19 +288,49 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
     }
 
-    public List<StudentDto> getAssignmentGradeBook(final int assignKey) {
-        String sql = "select u.uid, u.user_name " +
-                     "from HA_USER u " + 
-                     " join CM_ASSIGNMENT_USERS au on au.uid = u.uid " +
-                     " where au.assign_key = ? " +
-                     " order by u.user_name";
-        List<StudentDto> students = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<StudentDto>() {
+    public CmList<StudentAssignment> getAssignmentGradeBook(final int assignKey) throws Exception {
+        CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
+        Assignment assignment = getAssignment(assignKey);
+        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
+
+        /**
+         *  get assignment problem status list for all users
+         */
+        final Map<Integer, String> nameMap = new HashMap<Integer,String>();
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey}, new RowMapper<StudentProblemDto>() {
             @Override
-            public StudentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentDto(rs.getInt("uid"), rs.getString("user_name"));
+            public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                StudentProblemDto prob = new StudentProblemDto();
+                Integer uid = rs.getInt("uid");
+                if (! nameMap.containsKey(uid)) {
+                	nameMap.put(uid, rs.getString("user_name"));
+                }
+                prob.setUid(uid);
+                ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
+                prob.setProblem(dummy);
+                prob.setStatus(rs.getString("status"));
+                return prob;
             }
-        });        
-        return students;
+        });
+
+        /**
+         * create student assignments for all users
+         */
+        int uid = 0;
+        CmList<StudentProblemDto> probList = null;
+        for (StudentProblemDto probDto : problemStatuses) {
+        	if (probDto.getUid() != uid) {
+        		probList = new CmArrayList<StudentProblemDto>();
+        		uid = probDto.getUid();
+        		StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
+        		stuAssignment.setStudentName(nameMap.get(uid));
+        		stuAssignments.add(stuAssignment);
+        	}
+        	probList.add(probDto);
+        }
+
+        return stuAssignments;
     }
 
     /** Assign students to assignment.  Return messages indicating each error
@@ -342,7 +374,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return assignmentInfo;
     }
 
-    public void unassignStudents(final int assKey, final CmList<StudentDto> students) {
+    public void unassignStudents(final int assKey, final CmList<StudentAssignment> students) {
         getJdbcTemplate().batchUpdate("delete from CM_ASSIGNMENT_USERS where assign_key = ? and uid = ?", new BatchPreparedStatementSetter() {
 
             @Override
@@ -494,6 +526,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return studentAssignment;
     }
 
+    /**
+     * Get Assignment data for specified assignment and student UIDs
+     * 
+     * @param assignKey
+     * @param userIds
+     * @return
+     * @throws Exception
+     */
     public CmList<StudentAssignment> getAssignmentForStudents(int assignKey, List<Integer> userIds) throws Exception {
         
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
@@ -508,11 +548,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /**
          *  get assignment problem status list for all users
          */
+        final Map<Integer, String> nameMap = new HashMap<Integer,String>();
         List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey}, new RowMapper<StudentProblemDto>() {
             @Override
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 StudentProblemDto prob = new StudentProblemDto();
-                prob.setUid(rs.getInt("uid"));
+                Integer uid = rs.getInt("uid");
+                if (! nameMap.containsKey(uid)) {
+                	nameMap.put(uid, rs.getString("user_name"));
+                }
+                prob.setUid(uid);
                 ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
                 prob.setProblem(dummy);
                 prob.setStatus(rs.getString("status"));
@@ -530,6 +575,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         		probList = new CmArrayList<StudentProblemDto>();
         		uid = probDto.getUid();
         		StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
+        		stuAssignment.setStudentName(nameMap.get(uid));
         		stuAssignments.add(stuAssignment);
         	}
         	probList.add(probDto);

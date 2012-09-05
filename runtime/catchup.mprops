@@ -3574,8 +3574,9 @@ from (
  
 .key=GET_GRADE_BOOK_DATA_2
 
-select u.uid, u.user_name, a.assign_key, a.name, p.label, p.lesson, p.pid, s.status, q.correct, q.id, q.answer, 
-       ifnull(q.create_datetime,s.modify_datetime) as date_time
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+       ifnull(s.status, '-') as status, q.correct, q.id, q.answer, 
+       ifnull(q.create_datetime, s.modify_datetime) as update_datetime
 
 from HA_USER u
 join CM_ASSIGNMENT a on a.assign_key = ?
@@ -3595,6 +3596,35 @@ left join (
   on q.id=l.max_id
 
 where u.uid in ( $$UID_LIST$$ )
+order by u.uid, problem_id
+
+##
+.key=GET_GRADE_BOOK_DATA_3
+
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid, ifnull(s.status, '-') as status, q.correct, q.id, q.answer, 
+       ifnull(q.create_datetime,s.modify_datetime) as update_datetime
+
+from CM_ASSIGNMENT a 
+join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
+
+left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid -- and s.uid=u.uid
+
+join HA_USER u on u.uid = s.uid
+
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    group by pa.user_id, pa.assign_key, pa.pid ) l
+    on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
+    
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
+    from CM_ASSIGNMENT_PID_ANSWERS pa) q
+    on q.id=l.max_id
+    
+where a.assign_key=?
+order by u.uid, problem_id
+
   
   
   

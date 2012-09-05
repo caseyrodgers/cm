@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
@@ -28,23 +29,23 @@ import com.sencha.gxt.widget.core.client.info.Info;
 
 public class GradeBookPanel extends ContentPanel {
 
-    Grid<StudentDto> _studentGrid;
+    Grid<StudentAssignment> _studentGrid;
     
     public GradeBookPanel(){
         setHeadingText("Students Assigned to this Assignment");
         
         
         
-        ValueProvider<StudentDto, String> v = new ValueProvider<StudentDto, String>() {
+        ValueProvider<StudentAssignment, String> v = new ValueProvider<StudentAssignment, String>() {
 
             @Override
-            public String getValue(StudentDto object) {
-                return object.getName();
+            public String getValue(StudentAssignment object) {
+                return object.getStudentName();
             }
 
             @Override
-            public void setValue(StudentDto object, String value) {
-                object.setName(value);
+            public void setValue(StudentAssignment object, String value) {
+                object.setStudentName(value);
             }
 
             @Override
@@ -53,27 +54,26 @@ public class GradeBookPanel extends ContentPanel {
             }
             
         };        
-        ColumnConfig<StudentDto, String> nameCol = new ColumnConfig<StudentDto, String>(v, 200, "Student");
+        ColumnConfig<StudentAssignment, String> nameCol = new ColumnConfig<StudentAssignment, String>(v, 200, "Student");
      
-        List<ColumnConfig<StudentDto, ?>> l = new ArrayList<ColumnConfig<StudentDto, ?>>();
+        List<ColumnConfig<StudentAssignment, ?>> l = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
         l.add(nameCol);
-        ColumnModel<StudentDto> cm = new ColumnModel<StudentDto>(l);
+        ColumnModel<StudentAssignment> cm = new ColumnModel<StudentAssignment>(l);
      
         
-        ModelKeyProvider<StudentDto> kp = new ModelKeyProvider<StudentDto>() {
+        ModelKeyProvider<? super StudentAssignment> kp = new ModelKeyProvider<StudentAssignment>() {
             @Override
-            public String getKey(StudentDto item) {
-                return "" + item.getUid();
+            public String getKey(StudentAssignment item) {
+                return String.valueOf(item.getUid());
             }
         };
         
-        ListStore<StudentDto> store = new ListStore<StudentDto>(kp);
+        ListStore<StudentAssignment> store = new ListStore<StudentAssignment>(kp);
         
-        _studentGrid = new Grid<StudentDto>(store, cm);
+        _studentGrid = new Grid<StudentAssignment>(store, cm);
         _studentGrid.setWidth(300);
         
         setWidget(_studentGrid);
-        
         
         getHeader().addTool(createAssignButton());
         getHeader().addTool(createUnassignButton());
@@ -105,7 +105,7 @@ public class GradeBookPanel extends ContentPanel {
     }
     
     private void unassignSelectedStudents() {
-        final List<StudentDto> selected = _studentGrid.getSelectionModel().getSelectedItems();
+        final List<StudentAssignment> selected = _studentGrid.getSelectionModel().getSelectedItems();
         if(selected.size() == 0) {
             return;
         }
@@ -144,7 +144,7 @@ public class GradeBookPanel extends ContentPanel {
     }
     
     private void readData(final Assignment assignment) {
-        new RetryAction<CmList<StudentDto>>() {
+        new RetryAction<CmList<StudentAssignment>>() {
             @Override
             public void attempt() {
                 GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(assignment.getAssignKey());
@@ -153,7 +153,7 @@ public class GradeBookPanel extends ContentPanel {
             }
 
             @Override
-            public void oncapture(CmList<StudentDto> students) {
+            public void oncapture(CmList<StudentAssignment> students) {
                 _studentGrid.getStore().clear();
                 _studentGrid.getStore().addAll(students);
             }

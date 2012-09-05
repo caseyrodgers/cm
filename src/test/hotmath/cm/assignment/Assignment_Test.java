@@ -34,6 +34,12 @@ public class Assignment_Test extends TestCase {
         assertTrue(assGet.getPids().get(0).getPid().equals(as.getPids().get(0).getPid()));
     }
  
+    public void testGetAssignmentGradebook() throws Exception {
+    	CmList<StudentAssignment> list = AssignmentDao.getInstance().getAssignmentGradeBook(6);
+    	
+    	assertTrue(list.size() > 0);
+    }
+
     public void testGetAssignmentForStudents() throws Exception {
     	List<Integer> uidList = new ArrayList<Integer>();
     	
