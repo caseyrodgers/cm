@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.GetAllCustomQuizLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -14,8 +15,6 @@ import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.CustomQuizUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.GetCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonQuestionsAction;
@@ -51,8 +50,6 @@ import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
@@ -449,7 +446,7 @@ public class CustomProgramAddQuizDialog extends Window {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CustomProgramAction action = new CustomProgramAction(ActionType.GET_ALL_LESSONS);
+                GetAllCustomQuizLessonsAction action = new GetAllCustomQuizLessonsAction();
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
