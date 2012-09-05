@@ -494,6 +494,50 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return studentAssignment;
     }
 
+    public CmList<StudentAssignment> getAssignmentForStudents(int assignKey, List<Integer> userIds) throws Exception {
+        
+        CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
+        Assignment assignment = getAssignment(assignKey);
+        
+        String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_2");
+
+        String sql = QueryHelper.createInListSQL(sqlTemplate, userIds);
+        if (__logger.isDebugEnabled())
+            __logger.debug("+++ getStudentsWithActivityInDateRange(): sql: " + sql);
+        
+        /**
+         *  get assignment problem status list for all users
+         */
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey}, new RowMapper<StudentProblemDto>() {
+            @Override
+            public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                StudentProblemDto prob = new StudentProblemDto();
+                prob.setUid(rs.getInt("uid"));
+                ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
+                prob.setProblem(dummy);
+                prob.setStatus(rs.getString("status"));
+                return prob;
+            }
+        });
+
+        /**
+         * create student assignments for all users
+         */
+        int uid = 0;
+        CmList<StudentProblemDto> probList = null;
+        for (StudentProblemDto probDto : problemStatuses) {
+        	if (probDto.getUid() != uid) {
+        		probList = new CmArrayList<StudentProblemDto>();
+        		uid = probDto.getUid();
+        		StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
+        		stuAssignments.add(stuAssignment);
+        	}
+        	probList.add(probDto);
+        }
+
+        return stuAssignments;
+    }
+
     /** Make sure there is a status record for this assignment PID
      * 
      * @param assignKey
