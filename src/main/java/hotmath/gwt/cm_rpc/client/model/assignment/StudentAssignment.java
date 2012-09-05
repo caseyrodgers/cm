@@ -18,10 +18,11 @@ import java.util.List;
  * @author casey
  *
  */
-public class StudentAssignment implements Response{
+public class StudentAssignment implements Response {
     
     private int uid;
     private Assignment assignment;
+    private String studentName;
     private CmList<StudentProblemDto> assigmentStatuses;
 
     public StudentAssignment(){}
@@ -48,7 +49,15 @@ public class StudentAssignment implements Response{
         this.assignment = assignment;
     }
 
-    public List<StudentProblemDto> getAssigmentStatuses() {
+    public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+
+	public List<StudentProblemDto> getAssigmentStatuses() {
         return assigmentStatuses;
     }
 
