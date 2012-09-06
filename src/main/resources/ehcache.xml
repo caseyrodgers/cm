@@ -164,4 +164,10 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="ALL_CUSTOM_QUIZ_LESSONS"
+       maxElementsInMemory="1"
+       overflowToDisk="false">
+</cache>
+
+
 </ehcache>
