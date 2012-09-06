@@ -27,13 +27,7 @@ public class CustomProgramCommand implements ActionHandler<CustomProgramAction, 
     public CmList<CustomLessonModel> execute(Connection conn, CustomProgramAction action) throws Exception {
         switch(action.getAction()) {
             case GET_ALL_LESSONS:
-                CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance()
-                    .retrieveFromCache(CacheName.CUSTOM_PROGRAM_LESSONS, CacheName.CUSTOM_PROGRAM_LESSONS);
-                if(list == null) {
-                    list = CmCustomProgramDao.getInstance().getAllLessons(conn);
-                    CmCacheManager.getInstance().addToCache(CacheName.CUSTOM_PROGRAM_LESSONS, CacheName.CUSTOM_PROGRAM_LESSONS, list);
-                }
-                return list;
+                return CmCustomProgramDao.getInstance().getAllLessons(conn);
                 
             case GET_CUSTOM_PROGRAM:
                 return CmCustomProgramDao.getInstance().getCustomProgramLessonsAllSegments(conn, action.getProgramId());
