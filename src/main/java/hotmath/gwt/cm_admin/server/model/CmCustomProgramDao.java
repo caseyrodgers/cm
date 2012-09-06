@@ -69,8 +69,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
      */
     @SuppressWarnings("unchecked")
     public CmList<CustomLessonModel> getAllLessons(final Connection conn) throws Exception {
-        
-        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,"all");
+        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null);
         if(list != null) {
             return list;
         }
@@ -83,14 +82,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             ResultSet rs = stmt
                     .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static order by lesson");
             while (rs.next()) {
-                String file = rs.getString("file");
-                if(!CustomQuizQuestionManager.getInstance().isDefined(file)) {
-                    // skip if no absolute pids defined.
-                    LOGGER.debug("getAllLessons: Lesson '" + file + " does not have absolute pids defined");
-                    continue;
-                }
-                
-                CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), file,rs.getString("subject"));
+                CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"),
+                        rs.getString("subject"));
 
                 /**
                  * see if there is a entry for this file already if there is use
@@ -135,7 +128,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 }
             });
             
-            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,"all",lessons);
+            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null,lessons);
             
             return lessons;
         } finally {
@@ -895,7 +888,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
      * @param subject
      * @return
      */
-    public int getSubjectLevel(String subject) throws Exception {
+    static public int getSubjectLevel(String subject) throws Exception {
         if (subject == null || subject.length() == 0)
             return 10; // *no subject equals alg 1 by default
         

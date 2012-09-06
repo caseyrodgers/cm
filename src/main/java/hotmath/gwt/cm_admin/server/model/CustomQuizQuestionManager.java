@@ -82,17 +82,6 @@ public class CustomQuizQuestionManager {
     
     public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lessonFile, int gradeLevel) throws Exception {
         
-
-//                  QuizQuestionParsed quizQuestion = getQuestionHtml(conn, num, pid);
-//                  quizHtml = quizQuestion.getStatement();
-//                  correctAnswer = quizQuestion.getCorrectAnswer();
-//              }
-//              num++;
-//              
-//              list.add(new QuizQuestion(questionId,lessonFile, rs.getString("program_name"), pid, quizHtml, correctAnswer));
-//          }        
-        
-        
         CmList<QuizQuestion> retData = new CmArrayList<QuizQuestion>();
         CustomQuizLessonInfo lessonInfo = data.get(lessonFile);
         if(lessonInfo == null) {

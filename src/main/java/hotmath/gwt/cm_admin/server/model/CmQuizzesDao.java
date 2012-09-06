@@ -2,9 +2,12 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.SolutionManager;
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
 import hotmath.gwt.shared.client.model.QuizQuestion;
@@ -18,7 +21,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +35,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-
 
 import sb.util.SbFile;
 
@@ -588,5 +593,94 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
                 rs.getInt("is_archived")>0,
                 rs.getString("archive_date"));
     }
+    
 
+    public CmList<CustomLessonModel> getAllCustomQuizLessons(final Connection conn) throws Exception {
+        /**
+         * Return complete list of lessons that can be used to create a custom
+         * program.
+         * 
+         * NOTE: HA_PROGRAM_LESSONS is created in PrescriptionReport while creating
+         * the HA_PRESCRIPTION_LOG
+         * 
+         * This table is manually renamed to HA_PRESCRIPTION_LOG_static. (done to
+         * allow creation of new lookup table on live server)
+         * 
+         * Mark each lesson with the lowest level applicable for the lesson.
+         * 
+         */
+        
+            
+            CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_QUIZ_LESSONS,"all");
+            if(list != null) {
+                return list;
+            }
+            HashMap<String, List<CustomLessonModel>> map = new HashMap<String, List<CustomLessonModel>>();
+            Statement stmt = null;
+            try {
+                stmt = conn.createStatement();
+
+                /** for every entry with a specified subject */
+                ResultSet rs = stmt
+                        .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static order by lesson");
+                while (rs.next()) {
+                    String file = rs.getString("file");
+                    if(!CustomQuizQuestionManager.getInstance().isDefined(file)) {
+                        // skip if no absolute pids defined.
+                        __logger.debug("getAllLessons: Lesson '" + file + " does not have absolute pids defined");
+                        continue;
+                    }
+                    
+                    CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), file,rs.getString("subject"));
+
+                    /**
+                     * see if there is a entry for this file already if there is use
+                     * it and keep a counter, otherwise create a new entry.
+                     */
+                    List<CustomLessonModel> lessons = map.get(clm.getFile());
+                    if (lessons == null) {
+                        lessons = new ArrayList<CustomLessonModel>();
+                        map.put(clm.getFile(), lessons);
+                    }
+                    lessons.add(clm);
+                }
+
+                //checkForDuplicates(map);
+
+                /**
+                 * at this point we have a map containing a distinct list of file
+                 * names as keys and as values a list of lessons linked to the file.
+                 */
+
+                /**
+                 * Create list of distinct lessons and the highest subject
+                 * 
+                 */
+                CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
+                for (String lesson : map.keySet()) {
+                    List<CustomLessonModel> ls = map.get(lesson);
+                    CustomLessonModel use = null;
+                    for (CustomLessonModel clm : ls) {
+
+                        /** use the lowest level */
+                        if (use == null || CmCustomProgramDao.getSubjectLevel(clm.getSubject()) < CmCustomProgramDao.getSubjectLevel(use.getSubject())) {
+                            use = clm;
+                        }
+                    }
+                    lessons.add(use);
+                }
+                Collections.sort(lessons, new Comparator<CustomLessonModel>() {
+                    @Override
+                    public int compare(CustomLessonModel o1, CustomLessonModel o2) {
+                        return o1.getLesson().compareTo(o2.getLesson());
+                    }
+                });
+                
+                CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_QUIZ_LESSONS,"all",lessons);
+                
+                return lessons;
+            } finally {
+                SqlUtilities.releaseResources(null, stmt, null);
+            }
+        }        
 }
