@@ -59,9 +59,6 @@ public class CmCacheManager  {
 		BULK_UPLOAD_FILE,
 		PRESCRIPTION,
 		STUDENT_PAGED_DATA,
-		/** List of lessons available to create custom programs 
-		 */
-		CUSTOM_PROGRAM_LESSONS,
 		HA_USER,
 		
 		/** IneedMoreHelpItems looked for a pid */
@@ -90,7 +87,7 @@ public class CmCacheManager  {
 		ACTIVITY_TIMES,
 		
 		/** List of all custom program lesson names */
-		ALL_CUSTOM_PROGRAM_LESSONS
+		ALL_CUSTOM_PROGRAM_LESSONS, ALL_CUSTOM_QUIZ_LESSONS
 	};
 
 	private void flushCache() {
