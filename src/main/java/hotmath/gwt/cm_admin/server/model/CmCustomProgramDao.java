@@ -82,8 +82,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             ResultSet rs = stmt
                     .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static order by lesson");
             while (rs.next()) {
-                CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"),
-                        rs.getString("subject"));
+                CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"),rs.getString("subject"));
 
                 /**
                  * see if there is a entry for this file already if there is use
@@ -105,7 +104,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
              */
 
             /**
-             * Create list of distinct lessons and the highest subject
+             * Create list of distinct lessons and the lowest level
              * 
              */
             CmList<CustomLessonModel> lessons = new CmArrayList<CustomLessonModel>();
@@ -287,7 +286,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
     }
     
     
-    /** Composit of CustomLessonModel list of models.
+    /** Composite of CustomLessonModel list of models.
      * 
      * @author casey
      *
