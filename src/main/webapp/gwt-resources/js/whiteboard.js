@@ -288,7 +288,7 @@ if (docWidth > 600) {
 
         $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
         $get_Element('#hscroller').style.left = (off_left) + 'px';
-        $get_Element('#hscroller').style.top = (off_ht + off_left + screen_height + 3) + 'px';
+        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
 		var posData="";
 		posData+="Screen-Width:"+docWidth+"\n";
 		posData+="Screen-Height:"+docHeight+"\n";
