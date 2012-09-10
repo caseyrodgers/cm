@@ -1,4 +1,10 @@
-
+div {
+margin:0px;
+padding:0px;
+}
+body{
+overflow:hidden;
+}
 .scroll_track{
 position: relative;
 background:#efefef;
@@ -33,8 +39,7 @@ border:1px solid #333333;
 	height:15px;
 }
 #canvas-container {
-	position: relative;
-	
+	position: relative;	
 }
 #drawsection {
 position: relative;
@@ -43,33 +48,25 @@ position: relative;
 	height:600px;
 	overflow: hidden;
 }
-#ocanvas {
-	
-	
+#ocanvas {	
 }
 
 #canvas {
 	position: absolute;
 	top: 0px;
-	left: 0px;
-	
-	
+	left: 0px;	
 }
 
 #gcanvas {
 	position: absolute;
 	top: 0px;
-	left: 0px;
-	
-	
+	left: 0px;	
 }
 
 #tcanvas {
 	position: absolute;
 	top: 0px;
-	left: 0px;
-	
-	
+	left: 0px;	
 }
 
 #inputBox {

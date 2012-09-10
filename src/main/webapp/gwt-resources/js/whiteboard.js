@@ -235,7 +235,7 @@ if (docWidth > 600) {
             $('#button_save').text("Save");
             //$('#button_clear').text("CL");
         } else {
-            $('#tools').css('height', '25px');
+            $('#tools').css('height', '28px');
             $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
             $('#button_clear').css('width', '25px');
             $('#button_clear').css('height', '25px');
@@ -243,9 +243,12 @@ if (docWidth > 600) {
             $('#button_save').text("S");
 
         }
+		var off_left=$get_Element("#tools").offsetLeft;
+		var off_top=$get_Element("#tools").offsetTop;
 		var off_ht=$get_Element("#tools").offsetHeight;
-        var topOff = off_ht + $get_Element("#tools").offsetTop + 15
-        var leftOff = $get_Element("#tools").offsetLeft + 15;
+        var topOff = off_ht + off_top + 15;
+        var leftOff = off_left + 15;
+		
         var vscrollObj = {}
         var hscrollObj = {}
         wb.globalStrokeColor = "#000000";
@@ -264,13 +267,13 @@ if (docWidth > 600) {
 		var ccnt=$get_Element("#canvas-container");
 		$("#canvas-container").css('width','2000px');
 		$("#canvas-container").css('height','2620px');
-		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
+		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").offsetLeft+":"+$get_Element("#tools").offsetTop)
 		if(IS_IPHONE||docWidth <= 600){
-		dox=7
-		doy=0
+		dox=5
+		doy=5
 		}else{
-		dox=10
-		doy=10
+		dox=12
+		doy=12
 		}
 		//dox=doy=0;
         screen_width = docWidth - leftOff-dox;
@@ -280,12 +283,12 @@ if (docWidth > 600) {
         $get_Element('#drawsection').style.width = (screen_width) + 'px';
         $get_Element('#drawsection').style.height = (screen_height) + 'px';
         $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
-        $get_Element('#vscroller').style.left = (screen_width + 3) + 'px';
-        $get_Element('#vscroller').style.top = (off_ht + $get_Element("#tools").offsetTop) + 'px';
+        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
+        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
 
         $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
-        $get_Element('#hscroller').style.left = (0) + 'px';
-        $get_Element('#hscroller').style.top = (off_ht + $get_Element("#tools").offsetTop + screen_height + 3) + 'px';
+        $get_Element('#hscroller').style.left = (off_left) + 'px';
+        $get_Element('#hscroller').style.top = (off_ht + off_left + screen_height + 3) + 'px';
 		var posData="";
 		posData+="Screen-Width:"+docWidth+"\n";
 		posData+="Screen-Height:"+docHeight+"\n";
@@ -368,8 +371,9 @@ if (docWidth > 600) {
             $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
             $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
         }
-        $(window).resize(function () {
+        $(window).resize(function (event) {
             adjustToolbar()
+			
         });
 
         function adjustToolbar() {
@@ -395,20 +399,46 @@ if (docWidth > 600) {
                 $('#button_save').text("S");
 
             }
-			var off_ht=$('#tools').height()+4;
-            var topOff = off_ht + $get_Element("#tools").offsetTop + 15
-            var leftOff = $get_Element("#tools").offsetLeft + 15;
+			//setTimeout(function(){
+			var off_left=$get_Element("#tools").offsetLeft;
+		var off_top=$get_Element("#tools").offsetTop;
+			var off_ht=$get_Element("#tools").offsetHeight;
+            var topOff = off_ht + off_top + 15
+            var leftOff = off_left + 15;
            if(IS_IPHONE||docWidth <= 600){
-		dox=7
-		doy=0
+		dox=5
+		doy=5
 		}else{
-		dox=10
-		doy=10
+		dox=12
+		doy=12
 		}
 		//dox=doy=0;
         screen_width = docWidth - leftOff -dox;
         screen_height = docHeight - topOff -doy;
-            
+           console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
+        $get_Element('#drawsection').style.width = (screen_width) + 'px';
+        $get_Element('#drawsection').style.height = (screen_height) + 'px';
+        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
+        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
+
+        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+        $get_Element('#hscroller').style.left = (off_left) + 'px';
+        $get_Element('#hscroller').style.top = (off_ht + off_left + screen_height + 3) + 'px';
+		var posData="";
+		posData+="Screen-Width:"+docWidth+"\n";
+		posData+="Screen-Height:"+docHeight+"\n";
+		posData+="wb-Width:"+screen_width+"\n";
+		posData+="wb-Height:"+screen_height+"\n";
+		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
+		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
+		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
+		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
+		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
+		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
+		console.log(posData); 
+		positionScroller();
+		//},100);
         }
 
         function initThumbDrag(_event) {
@@ -800,6 +830,23 @@ if (docWidth > 600) {
             killTouchListeners();
         }
         //
+		function positionScroller(){
+		var scrubH = (canvas.width - screen_width) / (screen_width - 30);
+		var scrubV = (canvas.height - screen_height) / (screen_height - 30);
+		var currPosH=parseInt($get_Element('#canvas-container').style.left);
+		currPosH=currPosH?currPosH:0
+		currPosH = currPosH > 0 ? 0 : currPosH
+		currPosH = currPosH < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosH;
+        $get_Element('#hscroll_thumb').style.left = (-currPosH / scrubH) + "px";
+		$get_Element('#canvas-container').style.left = currPosH + "px";
+		var currPosV=parseInt($get_Element('#canvas-container').style.top);
+		currPosV=currPosV?currPosV:0
+		currPosV = currPosV > 0 ? 0 : currPosV
+        currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
+        $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
+		$get_Element('#canvas-container').style.top = currPosV + "px";
+		console.log("SCROLLER_THUMB_POS:"+scrubH+":"+scrubV+":"+(-currPosH)+":"+(-currPosV))
+		}
         function scrollTheCanvas(event) {
             checkForScroll(event);
             //setTimeout(function(){checkForScroll(event)},100)
@@ -822,8 +869,8 @@ if (docWidth > 600) {
                 return
             }
 
-            var cposX = ($get_Element("#container").style.left);
-            var cposY = ($get_Element("#container").style.top);
+            var cposX = ($get_Element("#wb-container").style.left);
+            var cposY = ($get_Element("#wb-container").style.top);
 
             cposX = cposX ? parseInt(cposX) : 0;
             cposY = cposY ? parseInt(cposY) : 0;
@@ -1175,6 +1222,13 @@ if (docWidth > 600) {
             currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
             $get_Element('#canvas-container').style.top = currPosY + "px"
             $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+			//
+			var currPosX = swipe_nx ? swipe_nx : 0;
+            currPosX = parseInt(currPosX)
+            currPosX = currPosX > 0 ? 0 : currPosX
+            currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
+            $get_Element('#canvas-container').style.left = currPosX + "px"
+            $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
             console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
         }
 
@@ -1189,6 +1243,7 @@ if (docWidth > 600) {
             c.removeEventListener("touchmove", startSwipe)
             c.removeEventListener("touchend", stopSwipe)
             $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+			$get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
             //console.log("Touch END x:" + touch.pageX + ", y:" + touch.pageY);
         }
 
