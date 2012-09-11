@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
@@ -49,15 +50,15 @@ public class AssignmentsContentPanel extends ContentPanel {
     public AssignmentsContentPanel(GradeBookPanel gradeBookPanel) {
         
         this.gradeBookPanel = gradeBookPanel;
+
+        getHeader().addTool(createGradebookButton());
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         getHeader().addTool(createDelButton());
         setCollapsible(false);
-        
-        
+
         AssignmentProperties props = GWT.create(AssignmentProperties.class);
 
-        
         ColumnConfig<Assignment, Date> nameCol = new ColumnConfig<Assignment, Date>(props.dueDate(), 75, "Due Date");
         ColumnConfig<Assignment, String> statusCol = new ColumnConfig<Assignment, String>(props.status(), 75, "Status");
         ColumnConfig<Assignment, Integer> lessonCountCol = new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems");
@@ -68,8 +69,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         l.add(lessonCountCol);
         l.add(commentsCol);
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
-
-        
 
         // Create the store that the contains the data to display in the grid
         ListStore<Assignment> store = new ListStore<Assignment>(props.key());
@@ -102,11 +101,11 @@ public class AssignmentsContentPanel extends ContentPanel {
             return;
         }
         
-        Assignment ass = _grid.getSelectionModel().getSelectedItem();
-        if(ass == null) {
+        Assignment asgn = _grid.getSelectionModel().getSelectedItem();
+        if(asgn == null) {
             return;
         }
-        gradeBookPanel.showGradeBookFor(ass);
+        gradeBookPanel.showGradeBookFor(asgn);
     }
     
     
@@ -252,7 +251,20 @@ public class AssignmentsContentPanel extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-             createNewAssignment();
+                createNewAssignment();
+            }
+
+        });
+        return btn;
+    }
+
+    private Widget createGradebookButton() {
+        TextButton btn = new TextButton("Gradebook");
+        btn.setToolTip("Gradebook for selected assignment");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+            	showGradeBookForSelectedAssignment();
             }
 
         });
