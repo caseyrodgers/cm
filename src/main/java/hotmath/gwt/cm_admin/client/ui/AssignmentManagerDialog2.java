@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -39,14 +40,15 @@ public class AssignmentManagerDialog2  {
         this.aid = aid;
         
         Window window = new GWindow(true);
-        window.setPixelSize(450,400);
+        window.setPixelSize(950,400);
         window.setHeadingHtml("Assignment Manager");
-        
+
         final BorderLayoutContainer con = new BorderLayoutContainer();
         con.setBorders(true);
 
         BorderLayoutData northData = new BorderLayoutData(30);
         northData.setMargins(new Margins(10));
+
         FlowLayoutContainer header = new FlowLayoutContainer();
         
         _groupCombo = createGroupNameCombo();
@@ -55,9 +57,16 @@ public class AssignmentManagerDialog2  {
         
         con.setNorthWidget(header, northData);
         
-        _assignmentsPanel = new AssignmentsContentPanel(null);
-        BorderLayoutData centerData = new BorderLayoutData();
-        con.setCenterWidget(_assignmentsPanel, centerData);
+        GradeBookPanel gbPanel = new GradeBookPanel();
+        _assignmentsPanel = new AssignmentsContentPanel(gbPanel);
+        
+        BorderLayoutData westData = new BorderLayoutData();
+        westData.setSize(440);
+        con.setWestWidget(_assignmentsPanel,  westData);
+        
+        BorderLayoutData eastData = new BorderLayoutData();
+        eastData.setSize(490);
+        con.setEastWidget(gbPanel, eastData);
         
         window.setWidget(con);
         
