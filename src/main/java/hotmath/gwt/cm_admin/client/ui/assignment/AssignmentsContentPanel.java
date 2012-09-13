@@ -16,8 +16,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.PreviewEvent;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.ui.Widget;
@@ -51,7 +57,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         
         this.gradeBookPanel = gradeBookPanel;
 
-        getHeader().addTool(createGradebookButton());
+        //getHeader().addTool(createGradebookButton());
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         getHeader().addTool(createDelButton());
@@ -78,7 +84,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         _grid.getView().setAutoExpandColumn(commentsCol);
         _grid.getView().setStripeRows(true);
         _grid.getView().setColumnLines(true);
-        
 
         _grid.addHandler(new DoubleClickHandler() {
             @Override
@@ -86,6 +91,16 @@ public class AssignmentsContentPanel extends ContentPanel {
                 editCurrentAssignment();
             }
         },DoubleClickEvent.getType());
+        
+        _grid.addHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent arg0) {
+				showGradeBookForSelectedAssignment();
+			}
+
+        }, ClickEvent.getType());
+        
         add(_grid);
     }
     

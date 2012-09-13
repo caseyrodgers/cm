@@ -66,7 +66,7 @@ public class AssignmentManagerDialog2  {
         
         BorderLayoutData eastData = new BorderLayoutData();
         eastData.setSize(490);
-        con.setEastWidget(gbPanel, eastData);
+        con.setCenterWidget(gbPanel, eastData);
         
         window.setWidget(con);
         

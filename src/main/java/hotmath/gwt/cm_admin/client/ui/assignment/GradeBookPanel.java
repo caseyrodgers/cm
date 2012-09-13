@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -31,89 +33,25 @@ import com.sencha.gxt.widget.core.client.info.Info;
 
 public class GradeBookPanel extends ContentPanel {
 
-    private static final StudentAssignmentProperties saProps = GWT.create(StudentAssignmentProperties.class);
+    private StudentAssignmentProperties saProps = GWT.create(StudentAssignmentProperties.class);
 
     Grid<StudentAssignment> _gradebookGrid;
     List<ColumnConfig<StudentAssignment, ?>> colConfList;
     ColumnModel<StudentAssignment> colMdl;
     ColumnConfig<StudentAssignment, String> nameCol;
-    private static GradeBookPanel _instance;
+    ListStore<StudentAssignment> _store;
     
     public GradeBookPanel(){
         setHeadingText("Gradebook for selected Assignment");
 
-        nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 30, "Student");
+        nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 100, "Student");
+        nameCol.setRowHeader(true);
 
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
         colConfList.add(nameCol);
         colMdl = new ColumnModel<StudentAssignment>(colConfList);
         
-        ListStore<StudentAssignment> store = new ListStore<StudentAssignment>(saProps.uid());
-        
-        _gradebookGrid = new Grid<StudentAssignment>(store, colMdl);
-        _gradebookGrid.setWidth(480);
-        
-        setWidget(_gradebookGrid);
-        
-        getHeader().addTool(createAssignButton());
-        getHeader().addTool(createUnassignButton());
-        
-        _instance = this;
-    }
-    
-    
-    private Widget createAssignButton() {
-        TextButton btn = new TextButton("Assign");
-        btn.setToolTip("Assign students to the selected Assignment");
-        btn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                AssignStudentsToAssignmentDialog.getInstance().showDialog(GradeBookPanel.this,_lastUsedAssignment);
-            }
-        });
-        return btn;
-    }
-    
-    private Widget createUnassignButton() {
-        TextButton btn = new TextButton("Unassign");
-        btn.setToolTip("Unassign students from the selected Assignment");
-        btn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                unassignSelectedStudents();
-            }
-        });
-        return btn;
-    }
-    
-    private void unassignSelectedStudents() {
-        final List<StudentAssignment> selected = _gradebookGrid.getSelectionModel().getSelectedItems();
-        if(selected.size() == 0) {
-            return;
-        }
-
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                UnassignStudentsFromAssignmentAction action = new UnassignStudentsFromAssignmentAction(_lastUsedAssignment.getAssignKey());
-                action.getStudents().addAll(selected);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(RpcData result) {
-                if(!result.getDataAsString("status").equals("OK")) {
-                    CatchupMathTools.showAlert("Error unassigning students");
-                }
-                else {
-                    showGradeBookFor(_lastUsedAssignment);
-                    Info.display("Students Unassigned", selected.size() + " student(s) unassigned.");
-                }
-            }
-
-        }.register();                
-
+        _store = new ListStore<StudentAssignment>(saProps.uid());
         
     }
     
@@ -135,48 +73,60 @@ public class GradeBookPanel extends ContentPanel {
 
             @Override
             public void oncapture(CmList<StudentAssignment> saList) {
-            	reconfigure(saList);
-                _gradebookGrid.getStore().clear();
-                _gradebookGrid.getStore().addAll(saList);
-                if (_instance.isEnabled() == false)
-                    _instance.enable();
-                if (_instance.hidden)
-                    _instance.show();
+
+                _store = new ListStore<StudentAssignment>(saProps.uid());
+                _store.addAll(saList);
+                
+            	configureColumns(saList);
+
+                _gradebookGrid = new Grid<StudentAssignment>(_store, colMdl);
+                _gradebookGrid.setWidth(480);
+                _gradebookGrid.getView().setStripeRows(true);
+                _gradebookGrid.getView().setColumnLines(true);
+                _gradebookGrid.getView().setAutoExpandColumn(nameCol);
+                
+                setWidget(_gradebookGrid);
             }
 
+            
+            
         }.register();                
     }
 
     /**
-     * reconfigure the grid based on current assignment
+     * configure the grid based on current assignment
      *
      * @param saList
      */
-    private void reconfigure(CmList<StudentAssignment> saList) {
-    	if (saList != null && saList.size() > 0) {
+    private void configureColumns(CmList<StudentAssignment> saList) {
+        colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
+
+        if (saList != null && saList.size() > 0) {
     		StudentAssignment sa = saList.get(0);
     		List<StudentProblemDto> asList = sa.getAssigmentStatuses();
 
-    		colConfList.clear();
+            nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
+            nameCol.setRowHeader(true);
+
             colConfList.add(nameCol);
 
             int idx = 0;
             for (StudentProblemDto as : asList) {
                 ColumnConfig<StudentAssignment, String> statusCol =
-                		new ColumnConfig<StudentAssignment, String>(new StudentAssignmentStatusValueProvider(idx), 20,
-                				as.getPidLabel());
+                		new ColumnConfig<StudentAssignment, String>(new StudentAssignmentStatusValueProvider(idx), 60,
+                				"Prob " + (idx+1));
+                statusCol.setToolTip(new SafeHtmlBuilder().appendEscaped(as.getPidLabel()).toSafeHtml());
                 colConfList.add(statusCol);
                 idx++;
             }
-            colMdl = new ColumnModel<StudentAssignment>(colConfList);
-            //Info.display("GradeBookPanel", "reconfigure() END: saList.size(): " + saList.size());
+
     	}
+        colMdl = new ColumnModel<StudentAssignment>(colConfList);
     	
     }
 
     private class StudentAssignmentStatusValueProvider extends Object implements ValueProvider<StudentAssignment, String> {
 
-    	private StudentAssignment stuAssignment;
     	private int idx;
 
     	StudentAssignmentStatusValueProvider(int idx) {
@@ -185,7 +135,7 @@ public class GradeBookPanel extends ContentPanel {
     	}
     	
 		@Override
-		public String getValue(StudentAssignment object) {
+		public String getValue(StudentAssignment stuAssignment) {
         	return stuAssignment.getAssigmentStatuses().get(idx).getStatus();
 		}
 
