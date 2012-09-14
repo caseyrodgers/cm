@@ -3622,7 +3622,7 @@ left join (
     on q.id=l.max_id
     
 where a.assign_key=?
-order by u.uid, problem_id
+order by u.user_name, problem_id
 
   
   
