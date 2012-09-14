@@ -3605,11 +3605,10 @@ select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime
 
 from CM_ASSIGNMENT a 
+join HA_USER u on u.group_id = a.group_id
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 
-left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid -- and s.uid=u.uid
-
-join HA_USER u on u.uid = s.uid
+left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
 
 left join (
     select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
