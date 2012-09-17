@@ -109,4 +109,12 @@ public interface CmResourcePanel {
      * @return
      */
     public ResourceViewerState getInitialMode();
+
+
+    /** Should the resource's panel content panel
+     *  be transparent
+     *  
+     * @return
+     */
+    boolean shouldContainerBeTransparent();
 }

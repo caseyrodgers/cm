@@ -86,6 +86,14 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             return DisplayMode.TUTOR;
         }        
     }
+    
+    
+    
+    
+    @Override
+    public boolean shouldContainerBeTransparent() {
+        return true;
+    }
 
 
     @Override

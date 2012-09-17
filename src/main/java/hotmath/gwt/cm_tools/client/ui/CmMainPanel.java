@@ -17,10 +17,11 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.Direction;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
 import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.info.Info;

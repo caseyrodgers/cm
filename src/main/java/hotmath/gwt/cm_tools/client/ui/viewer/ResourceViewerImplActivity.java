@@ -11,7 +11,6 @@ import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
 import pl.rmalinowski.gwt2swf.client.utils.PlayerVersion;
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -49,12 +48,13 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
         }
         return panel;
     }
-
     
     static {
         publishNativeRpaFlashInfrastructure();
     }
 
+    
+    
     
     /** Store the last loaded __lastItemData 
      *  ONLY when operating in a RPA configuration.

@@ -196,7 +196,7 @@ public class CmResourceContentPanel extends ContentPanel {
         /** if tutor, then make background transparent
          *  TODO: move from here..
          */
-        if(panel instanceof ResourceViewerImplTutor) {
+        if(panel.shouldContainerBeTransparent()) {
             getBody().applyStyles("background: transparent;border: none;");
         }
         

@@ -117,4 +117,9 @@ public class CmResourcePanelImplDefault extends FlowLayoutContainer implements C
     public List<Widget> getContainerTools() {
         return null;
     }
+    
+    @Override
+    public boolean shouldContainerBeTransparent() {
+        return false;
+    }
 }
