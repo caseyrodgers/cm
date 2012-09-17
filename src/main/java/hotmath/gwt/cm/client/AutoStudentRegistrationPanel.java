@@ -9,7 +9,7 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper_Old;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  *
  */
-public class AutoStudentRegistrationPanel extends CmMainResourceWrapper_Old {
+public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
 
     FormPanel _formPanel;
     
@@ -53,6 +53,8 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper_Old {
     TextField<String> birthDate;
     
     public AutoStudentRegistrationPanel() {
+        
+        super(WrapperType.OPTIMIZED);
         
         _formPanel = new FormPanel();
         _formPanel.setStyleName("register-student-form-panel");

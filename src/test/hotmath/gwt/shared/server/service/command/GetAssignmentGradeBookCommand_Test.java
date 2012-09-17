@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
 import hotmath.util.HMConnectionPool;
@@ -14,7 +14,7 @@ public class GetAssignmentGradeBookCommand_Test extends TestCase {
     
     public void testIt() throws Exception {
         GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(7);
-        CmList<StudentDto> students = new GetAssignmentGradeBookCommand().execute(HMConnectionPool.getConnection(), action);
+        CmList<StudentAssignment> students = new GetAssignmentGradeBookCommand().execute(HMConnectionPool.getConnection(), action);
         assertNotNull(students);
     }
 

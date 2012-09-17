@@ -90,7 +90,7 @@ public class CmMainResourceWrapper {
                         container.forceLayout();
                     }
                     else {
-                        int h = CmMainResourceWrapper_Old.getCalculatedHeight(CmMainPanel.__lastInstance, resourcePanel);
+                        int h = getCalculatedHeight(CmMainPanel.__lastInstance, resourcePanel);
                         if (h > 0) {
                             CmLogger.debug("fireWindowResized: h==" + h);
                             container.setHeight(h);
@@ -107,13 +107,22 @@ public class CmMainResourceWrapper {
 
     }
 
-    static public Integer getCalculatedHeight(Widget container) {
+    static protected Integer getCalculatedHeight(Widget container, CmResourcePanel panel) {
+
         if (container == null) {
             return 0;
         }
+
         int HEADER_FOOTER_GUTTER = 10;
-        int h = container.getOffsetHeight() - HEADER_FOOTER_GUTTER;
-        return h;
+        if (panel.getOptimalHeight() == -1) {
+            int h = container.getOffsetHeight() - HEADER_FOOTER_GUTTER;
+            if (h < panel.getMinHeight()) {
+                h = panel.getMinHeight();
+            }
+            return h;
+        } else {
+            return panel.getOptimalHeight();
+        }
     }
 
     public String getCurrentTitle() {

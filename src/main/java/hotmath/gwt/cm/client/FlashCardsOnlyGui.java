@@ -2,7 +2,8 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper_Old;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
 
 import java.util.List;
 
@@ -15,9 +16,11 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  *
  */
-public class FlashCardsOnlyGui extends CmMainResourceWrapper_Old {
+public class FlashCardsOnlyGui extends CmMainResourceWrapper {
     
     public FlashCardsOnlyGui() {
+        
+        super(WrapperType.OPTIMIZED);
         
         getResourceWrapper().add(new Button("Flash Cards"));
         
