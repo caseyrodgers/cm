@@ -23,16 +23,14 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.IconButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
@@ -95,8 +93,8 @@ public class QuizContext implements CmContext {
     public void resetContext() {
     }
 
-    public List<Component> getTools() {
-        List<Component> list = new ArrayList<Component>();
+    public List<Widget> getTools() {
+        List<Widget> list = new ArrayList<Widget>();
 
         text = new Text();
         text.setText(" ");

@@ -128,7 +128,7 @@ public class CatchupMath2 implements EntryPoint {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
-                        if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
+                        if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContentWrapper != null) {
                             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
                         }
                     }
@@ -383,7 +383,7 @@ public class CatchupMath2 implements EntryPoint {
             public void onSuccess() {
                 _mainContainer.removeAll();
                 _mainContainer.setLayout(new FitLayout());
-                _mainContainer.add(new AutoStudentRegistrationPanel());
+                _mainContainer.add(new AutoStudentRegistrationPanel().getResourceWrapper());
                 _mainContainer.layout();
             }
         });

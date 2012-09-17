@@ -8,7 +8,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -18,13 +18,13 @@ import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * add the quiz resource as the default
@@ -51,7 +51,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 
     public Widget getWestWidget() {
 
-        LayoutContainer cp = new LayoutContainer();
+        FlowLayoutContainer cp = new FlowLayoutContainer();
         cp.setStyleName("quiz-page-resource");
         String html = "";
         if (UserInfo.getInstance().getTestName().indexOf("Auto-Enrollment") > -1) {
@@ -71,8 +71,8 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
                         + "<p>Work out your answers carefully on our whiteboard or on paper.</p>";
             }
         }
-        cp.add(new Html(html));
-        cp.add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));
+        cp.add(new HTML(html));
+        cp.add(new HTML(CatchupMathTools.FEEDBACK_MESSAGE));
 
         int currentQuiz = UserInfo.getInstance().getTestSegment();
 
@@ -94,7 +94,7 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
          * combination
          * 
          */
-        CmResourcePanelImplDefault resourcePanel = new CmResourcePanelImplWithWhiteboard() {
+        CmResourcePanel resourcePanel = new CmResourcePanelImplWithWhiteboard() {
             @Override
             protected DisplayMode getInitialWhiteboardDisplay() {
                 return DisplayMode.TUTOR;
@@ -113,22 +113,25 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
             }
 
             @Override
-            public List<Component> getContainerTools() {
-                ArrayList<Component> list2 = new ArrayList<Component>();
+            public List<Widget> getContainerTools() {
+                ArrayList<Widget> list2 = new ArrayList<Widget>();
                 if (CmShared.getQueryParameter("debug") != null || UserInfoBase.getInstance().getMode() == Mode.TEACHER_MODE) {
-                    list2.add(new Button("Mark Correct", new SelectionListener<ButtonEvent>() {
+                    list2.add(new TextButton("Mark Correct", new SelectHandler() {
                         @Override
-                        public void componentSelected(ButtonEvent ce) {
+                        public void onSelect(SelectEvent event) {
                             qp.markAllAnswersCorrect();
                         }
                     }));
                 }
-                list2.add(new Button("Check Quiz", new SelectionListener<ButtonEvent>() {
-                    public void componentSelected(ButtonEvent ce) {
+                list2.add(new TextButton("Check Quiz",new SelectHandler() {
+                    
+                    @Override
+                    public void onSelect(SelectEvent event) {
                         ContextController.getInstance().doNext();
                     }
+                        
                 }));
-                List<Component> list = super.getContainerTools();
+                List<Widget> list = super.getContainerTools();
                 list2.addAll(list);
                 return list2;
             }
@@ -145,11 +148,12 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
         };
 
         resourcePanel.addResource(qp, "Quiz");
+        //resourcePanel.setScrollMode(ScrollMode.AUTOY);
         
         QuizContext qc = (QuizContext) getContext();
         qc.setTitle(_htmlResult.getTitle());
 
-        CmMainPanel.__lastInstance._mainContent.showResource(resourcePanel, _htmlResult.getTitle());
+        CmMainPanel.__lastInstance.showResource(resourcePanel, _htmlResult.getTitle());
 
         ContextController.getInstance().setCurrentContext(qc);
 

@@ -1,14 +1,17 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.user.client.ui.Widget;
 
 public interface CmResourcePanel {
+    
+    
+    void addResource(Widget w, String title);
+    
 	
 	/** Does this panel allow maximizing the content?
 	 * 
@@ -96,7 +99,7 @@ public interface CmResourcePanel {
      * 
      * @return
      */
-    public List<Component> getContainerTools();
+    public List<Widget> getContainerTools();
     
     
     

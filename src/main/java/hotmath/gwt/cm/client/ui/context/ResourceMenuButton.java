@@ -5,24 +5,26 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.SubMenuItem;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.menu.CheckMenuItem;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.CheckChangeEvent;
+import com.sencha.gxt.widget.core.client.event.CheckChangeEvent.CheckChangeHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.menu.CheckMenuItem;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
+
 
 /** Create a button with an optional attached menu
  *  to display CM resources where the proper placement is calculated
@@ -32,7 +34,7 @@ import com.google.gwt.user.client.Window;
  * @author casey
  *
  */
-class ResourceMenuButton extends Button {
+class ResourceMenuButton extends TextButton {
     PrescriptionSessionDataResource resource;
     
     String initialValue;
@@ -42,7 +44,7 @@ class ResourceMenuButton extends Button {
         this.initialValue = getText();
         this.resource = resource;            
         addStyleName("resource-button");
-        setWidth(185);
+        setWidth(175);
         
         
         if(resource.getSubMenuItems().size() > 0) {
@@ -63,10 +65,10 @@ class ResourceMenuButton extends Button {
         }
         else {
         	resouresToRegister.addAll(resource.getItems());
-            addSelectionListener(new SelectionListener<ButtonEvent>() {
-                 public void componentSelected(ButtonEvent ce) {
-                     CmHistoryManager.loadResourceIntoHistory(resource.getType(),"0");
-                 };
+        	addSelectHandler(new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    CmHistoryManager.loadResourceIntoHistory(resource.getType(),"0");                }
             });
         }
 
@@ -75,14 +77,19 @@ class ResourceMenuButton extends Button {
          * 
          * @TODO: need a MVC pattern for menu items
          */
-        addListener(Events.BeforeSelect, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+        
+        addHandler(new BeforeSelectionHandler<String>() {
+            @Override
+            public void onBeforeSelection(BeforeSelectionEvent<String> event) {
+                
+                Window.alert("Before Select ResourceMenuButton");
+                
                 if(getMenu() == null)
                     return;
               
                 checkCompletion();
             }
-        });
+        },BeforeSelectionEvent.getType());
         
         /** Register resource items for this type.  This allows
          * the history mechanism to locate the proper resource to show.
@@ -93,6 +100,8 @@ class ResourceMenuButton extends Button {
         
         checkCompletion();
     }
+    
+    
     
     
     /** subtract the menu length from the menu.
@@ -134,7 +143,7 @@ class ResourceMenuButton extends Button {
             else 
                 viewed++;
             if(getMenu() != null) {
-                MenuItem mi = (MenuItem)getMenu().getItem(i);
+                MenuItem mi = (MenuItem)getMenu().getWidget(i);
                 if(mi instanceof CheckMenuItem) {
                     ((CheckMenuItem)mi).setChecked( rpp.isViewed() );
                 }
@@ -196,12 +205,17 @@ class ResourceMenuButton extends Button {
     			final CheckMenuItem citem = new CheckMenuItem(id.getTitle());
     			citem.setChecked(id.isViewed(), true);
     			item = citem;
-    			item.addListener(Events.CheckChange, new Listener<BaseEvent>() {
-    				@Override
-    				public void handleEvent(BaseEvent be) {
-    					citem.setChecked(id.isViewed(),true);
-    				}
-    			});
+    			
+
+    			item.addHandler(new CheckChangeHandler<CheckMenuItem>() {
+
+    		        @Override
+    		        public void onCheckChange(CheckChangeEvent<CheckMenuItem> event) {
+    		            citem.setChecked(id.isViewed(),true);
+    		        }
+    		      },CheckChangeEvent.getType());
+
+    			
     		}
     		else {
     			item = new MenuItem(id.getTitle());
@@ -210,23 +224,23 @@ class ResourceMenuButton extends Button {
     		item.setHideOnClick(true);
 
     		menu.add(item);
-    		item.addSelectionListener(new SelectionListener<MenuEvent>() {
-    			public void componentSelected(MenuEvent ce) {
-
-    				/** Remove any existing resource viewers 
-    				 * 
-    				 * @TODO: This needs to be centralized  (throw a CLOSE event?)
-    				 */
-    				Integer ordinalPosition=-1;
-    				for(int i=0,t=resource.getItems().size();i<t;i++) {
-    					if(resource.getItems().get(i).getFile().equals(id.getFile())) {
-    						ordinalPosition=i;
-    						break;
-    					}
-    				}
-    				CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
-    			}
-    		});
+    		item.addSelectionHandler(new SelectionHandler<Item>() {
+                @Override
+                public void onSelection(SelectionEvent<Item> event) {
+                    /** Remove any existing resource viewers 
+                     * 
+                     * @TODO: This needs to be centralized  (throw a CLOSE event?)
+                     */
+                    Integer ordinalPosition=-1;
+                    for(int i=0,t=resource.getItems().size();i<t;i++) {
+                        if(resource.getItems().get(i).getFile().equals(id.getFile())) {
+                            ordinalPosition=i;
+                            break;
+                        }
+                    }
+                    CmHistoryManager.loadResourceIntoHistory(resource.getType(),ordinalPosition.toString());
+                }
+            });
     	}
 
     	if(resource.getType().equals("practice") && isComplete) { 
@@ -259,10 +273,11 @@ class ResourceMenuButton extends Button {
             	final InmhItemData id = sid.getItemData().get(0);
             	resouresToRegister.add(id);
             	final MenuItem citem = new MenuItem(sid.getItemData().get(0).getTitle());
-            	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
-                    public void componentSelected(MenuEvent ce) {
-                    	resourceWasClicked(id);
-                    }
+            	citem.addSelectionHandler(new SelectionHandler<Item>() {
+            	    @Override
+            	    public void onSelection(SelectionEvent<Item> event) {
+            	        resourceWasClicked(id);            	        
+            	    }
                 });
             	menu.add(citem);
             }
@@ -290,10 +305,11 @@ class ResourceMenuButton extends Button {
             	final InmhItemData id = smi.getItemData().get(0);
             	resouresToRegister.add(id);
             	final MenuItem citem = new MenuItem(smi.getItemData().get(0).getTitle());
-            	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
-                    public void componentSelected(MenuEvent ce) {
-                    	resourceWasClicked(id);
-                    }
+            	citem.addSelectionHandler(new SelectionHandler<Item>() {
+            	    @Override
+            	    public void onSelection(SelectionEvent<Item> event) {
+            	        resourceWasClicked(id);            	        
+            	    }
                 });
             	menu.add(citem);
     		}
@@ -315,11 +331,13 @@ class ResourceMenuButton extends Button {
         for(final InmhItemData id: list) {
         	resouresToRegister.add(id);
         	final MenuItem citem = new MenuItem(id.getTitle());
-        	citem.addSelectionListener(new SelectionListener<MenuEvent>() {
-                public void componentSelected(MenuEvent ce) {
-                	resourceWasClicked(id);
-                }
+        	citem.addSelectionHandler(new SelectionHandler<Item>() {
+        	    @Override
+        	    public void onSelection(SelectionEvent<Item> event) {
+        	        resourceWasClicked(id);        	    
+        	    }
             });
+             
         	subMenu.add(citem);
         }
         return subMenu;
@@ -365,24 +383,11 @@ class ResourceMenuButton extends Button {
      * 
      */
     private void indicateCompletion() {
-        setIconStyle("resource-menu-button-complete-icon");
-        VerticalPanel vp = (VerticalPanel)getParent();
+        //setIconStyle("resource-menu-button-complete-icon");
+        VerticalLayoutContainer vp = (VerticalLayoutContainer)getParent();
         if(vp != null) {
-           vp.layout(true);
+           vp.forceLayout();
         }
     }
 }
 
-
-class EmptyListener extends SelectionListener<ButtonEvent> {
-    
-    PrescriptionSessionDataResource resource;
-    public EmptyListener(PrescriptionSessionDataResource resource) {
-        this.resource = resource;
-    }
-
-    @Override
-    public void componentSelected(ButtonEvent ce) {
-        CatchupMathTools.showAlert("There are no " + resource.getLabel() + " available for the current lesson."); 
-    }
-}

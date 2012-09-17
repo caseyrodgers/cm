@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -22,10 +23,13 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextField;
@@ -54,10 +58,18 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     BorderLayoutContainer _main = new BorderLayoutContainer();
     
     TextField _assignmentStatus = new TextField();
-    public StudentAssignmentViewerPanel() {
+    
+    
+    public StudentAssignmentViewerPanel(final CallbackOnComplete callback) {
         
-        
-        getHeader().setVisible(false);
+        TextButton btnReturn = new TextButton("Return to your program");
+        btnReturn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.isComplete();
+            }
+        });
+        addTool(btnReturn);
         
         problemListPanel = new ProblemListPanel(new Callback() {
             @Override

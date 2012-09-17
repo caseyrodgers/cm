@@ -16,6 +16,10 @@ public class GWindow extends Window {
             addCloseButton();
         }
     }
+    
+    public void close() {
+        hide();
+    }
 
     public void setFocusObject() {
         setFocusWidget(getButtonBar().getWidget(0));

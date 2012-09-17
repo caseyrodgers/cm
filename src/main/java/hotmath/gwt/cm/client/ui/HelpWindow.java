@@ -53,6 +53,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 public class HelpWindow extends CmWindow {
 
@@ -319,10 +320,10 @@ public class HelpWindow extends CmWindow {
      */
     private void setBackgroundStyle(String newStyle) {
         
-        LayoutContainer panelToChange = null;
+        Widget panelToChange = null;
         
         if(CmMainPanel.__lastInstance != null) {
-            panelToChange = CmMainPanel.__lastInstance._mainContent;
+            panelToChange = CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper();
         }
         else {
             panelToChange = WelcomePanel.__instance;

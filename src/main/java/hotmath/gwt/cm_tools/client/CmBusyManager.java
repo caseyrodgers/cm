@@ -6,6 +6,7 @@ import java.util.List;
 import com.extjs.gxt.ui.client.widget.Viewport;
 import com.google.gwt.user.client.ui.RootPanel;
 
+
 /** Provides central control over the 'isBusy'
  *  status of the app.
  *  
@@ -25,6 +26,7 @@ public class CmBusyManager {
 
 	
 	static Viewport __viewPort;
+	static com.sencha.gxt.widget.core.client.container.Viewport __viewPort3;
 	
 	/** Set the main viewport used for isBusy masking
 	 * 
@@ -34,6 +36,9 @@ public class CmBusyManager {
 		__viewPort = viewPort;
 	}
 	
+	static public void setViewPort(com.sencha.gxt.widget.core.client.container.Viewport viewPort) {
+	    __viewPort3 = viewPort;
+	}
 
 	/**
      * Display or hide the modal busy dialog
@@ -50,7 +55,6 @@ public class CmBusyManager {
      * @param showMask
      */
     static public void setBusy(boolean trueFalse, boolean showMask) {
-    	
         if(trueFalse) {
         	// push it
             BusyState bs = new BusyState(showMask);
@@ -82,11 +86,15 @@ public class CmBusyManager {
     static private void showBusy(BusyState state) {
     	//System.out.println("showBusy " + __busyStates.size() + ": " + state.useMask);
     	if(state.useMask) {
-    		__viewPort.mask();
+    		if(__viewPort != null)
+    		    __viewPort.mask();
     	}
-    	RootPanel.get("loading").setVisible(true);
+    	showLoading(true);
     }
     
+   static public void showLoading(boolean yesNo) {
+       RootPanel.get("loading").setVisible(yesNo);       
+   }
     
     /** Make the busy window disappear, 
      * no matter the state */
@@ -106,16 +114,18 @@ public class CmBusyManager {
     		}
     		if(!hasDeeperMask) {
     			//System.out.println("Removing mask");
-    	        __viewPort.unmask();
+    		    if(__viewPort != null)
+    	            __viewPort.unmask();
     		}
     	}
     	
     	if(__busyStates.size() == 0) {
     		// System.out.println("Removing busy indicator");
-    	    RootPanel.get("loading").setVisible(false);
+    	    showLoading(false);
     	}
     	
-    	__viewPort.unmask();
+    	if(__viewPort != null)
+    	    __viewPort.unmask();
     }
     
     /** Force reset of the isBusy stack and

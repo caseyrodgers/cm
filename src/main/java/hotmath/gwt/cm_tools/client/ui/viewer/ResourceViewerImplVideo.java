@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.shared.client.CmShared;
 import pl.rmalinowski.gwt2swf.client.ui.SWFSettings;
 import pl.rmalinowski.gwt2swf.client.ui.SWFWidget;
@@ -29,7 +29,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
 	@Override
 	public Boolean allowMaximize() {
-		return false;
+		return true;
 	}
 
 	public ResourceViewerState getInitialMode() {
@@ -37,7 +37,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 	}
 
 	public Widget getResourcePanel() {
-		removeAll();
+		clear();
 		if (!SWFObjectUtil.isVersionIsValid(new PlayerVersion(9))) {
 			Html html = new Html(CmShared.FLASH_ALT_CONTENT);
 			addResource(html, getResourceItem().getTitle());

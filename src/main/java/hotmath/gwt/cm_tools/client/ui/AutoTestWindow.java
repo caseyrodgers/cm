@@ -58,8 +58,8 @@ public class AutoTestWindow extends ContentPanel {
     public void addLogMessage(String msg) {
 
         if(!(getParent() == CmMainPanel.__lastInstance)) {
-            CmMainPanel.__lastInstance.add(this, new BorderLayoutData(LayoutRegion.SOUTH));
-            CmMainPanel.__lastInstance.layout();
+            CmMainPanel.__lastInstance.setSouthWidget(this);
+            CmMainPanel.__lastInstance.forceLayout();
         }
         
         
@@ -89,7 +89,7 @@ public class AutoTestWindow extends ContentPanel {
             public void componentSelected(ButtonEvent ce) {
                 UserInfo.getInstance().setAutoTestMode(false);
                 CmMainPanel.__lastInstance.remove(AutoTestWindow.this);
-                CmMainPanel.__lastInstance.layout();
+                CmMainPanel.__lastInstance.forceLayout();
                 __instance = null;
             }
         });

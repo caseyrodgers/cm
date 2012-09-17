@@ -102,9 +102,11 @@ public class RetryActionManager {
         /** check for error condition 
          */
         CmLogger.debug("Action class: " + action.getAction());
+        /*
         if(action.getAction() instanceof GetQuizResultsHtmlAction) {
             sendStandardErrorFeedback(action.getErrorDescription());
         }
+        */
         
         checkQueue();
     }

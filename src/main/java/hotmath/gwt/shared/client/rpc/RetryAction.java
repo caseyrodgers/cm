@@ -206,7 +206,7 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
     }
 
     private boolean isInformationalOnlyException(Throwable th) {
-        if(th.getMessage().indexOf("test has already been checked") > -1) {
+        if(th.getMessage() != null && th.getMessage().indexOf("test has already been checked") > -1) {
             return true;
         }
         else {

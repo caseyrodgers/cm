@@ -198,7 +198,10 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
  		else
  			passCombo.disable();
 
-		boolean sectionSelectAvail = (Boolean)advOptionsMap.get("SECTION_SELECT_AVAIL");
+ 		boolean sectionSelectAvail=false;
+		if(advOptionsMap.containsKey("SECTION_SELECT_AVAIL")) {
+		    sectionSelectAvail = (Boolean)advOptionsMap.get("SECTION_SELECT_AVAIL");
+		}
 		if (! sectionSelectAvail)
 			sectionCombo.disable();
 		else

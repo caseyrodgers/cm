@@ -1,15 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui.resource_viewer;
 
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 
 /** 
@@ -20,7 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  *
  */
-public class CmResourcePanelImplDefault extends LayoutContainer implements CmResourcePanel {
+public class CmResourcePanelImplDefault extends FlowLayoutContainer implements CmResourcePanel {
     
     InmhItemData item;
     
@@ -41,15 +40,10 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
 
     public void addResource(Widget w, String title, String styleName) {
         
-        removeAll();
-        
-        setLayout(new FitLayout());
+        clear();
         add(w);
         
-        
-        // setTitle(title);
-        
-        layout();
+        //forceLayout();
     }
 
     @Override
@@ -103,14 +97,14 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
         String url = item.getFile();
         String html = "<iframe frameborder='no' width='100%' height='400px' src='" + url + "'></iframe>";
         
-        addResource(new Html(html),item.getTitle());
+        addResource(new HTML(html),item.getTitle());
         
         return this;
     }
 
     @Override
     public void removeResourcePanel() {
-        removeAll();
+        clear();
     }
 
     
@@ -120,7 +114,7 @@ public class CmResourcePanelImplDefault extends LayoutContainer implements CmRes
     }
     
     @Override
-    public List<Component> getContainerTools() {
+    public List<Widget> getContainerTools() {
         return null;
     }
 }

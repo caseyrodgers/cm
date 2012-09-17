@@ -25,7 +25,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.FooterPanel;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerWindow;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
@@ -37,20 +37,11 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
-import hotmath.gwt.shared.client.util.CmNotifyManager;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -58,6 +49,10 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.Viewport;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -77,12 +72,13 @@ public class CatchupMath implements EntryPoint {
         return __thisInstance;
     }
 
-    Viewport _mainPort;
-    LayoutContainer _prescriptionPort;
+    public Viewport _mainPort;
+    BorderLayoutContainer _mainPortWrapper = new BorderLayoutContainer();
+    
 
     static CatchupMath __thisInstance;
 
-    LayoutContainer _mainContainer;
+    public SimpleContainer _mainContainer;
     HeaderPanel _headerPanel;
 
     /**
@@ -100,26 +96,35 @@ public class CatchupMath implements EntryPoint {
 
         // GXT.setDefaultTheme(Theme.GRAY, true);
 
-        _mainPort = new Viewport();
+        _mainPort = new Viewport() {
+            protected void onWindowResize(int width, int height) {
+                super.onWindowResize(width, height);
+                if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContentWrapper != null) {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
+                }
+              }
+        };
+        _mainPort.setWidget(_mainPortWrapper);
+
 
         CmBusyManager.setViewPort(_mainPort);
 
-        _mainPort.setLayout(new BorderLayout());
-        BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 38);
+        BorderLayoutData bdata = new BorderLayoutData(38);
         _headerPanel = new HeaderPanel();
-        _mainPort.add(_headerPanel, bdata);
+        _mainPortWrapper.setNorthWidget(_headerPanel, bdata);
 
-        _mainContainer = new LayoutContainer();
+        
+        _mainContainer = new SimpleContainer();
         _mainContainer.setStyleName("main-container");
         _mainContainer.getElement().setId("main-container");
 
-        bdata = new BorderLayoutData(LayoutRegion.CENTER);
-        _mainPort.add(_mainContainer, bdata);
+        bdata = new BorderLayoutData();
+        _mainPortWrapper.setCenterWidget(_mainContainer, bdata);
 
-        bdata = new BorderLayoutData(LayoutRegion.SOUTH, 20);
+        bdata = new BorderLayoutData(20);
         if (CmShared.getQueryParameter("debug") != null || CmShared.getQueryParameter("debug_uid") != null) {
             FooterPanel footer = new FooterPanel();
-            _mainPort.add(footer, new BorderLayoutData(LayoutRegion.SOUTH, 20));
+            _mainPortWrapper.setSouthWidget(footer, new BorderLayoutData(20));
         }
 
         /** Turn on debugging CSS */
@@ -127,11 +132,18 @@ public class CatchupMath implements EntryPoint {
             _mainPort.addStyleName("debug-on");
         }
 
+        
         /**
          * Add the main panel to the "hm_content" div on the CatchupMath.html
          * 
          */
         RootPanel.get("main-content").add(_mainPort);
+
+        
+        
+        // testing!
+        //_mainContainer.add(new CmMainPanel(new TestingCmGuiDefinition()));
+        
 
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
             public void loginSuccessful(Integer uid) {
@@ -139,21 +151,8 @@ public class CatchupMath implements EntryPoint {
             }
         });
 
-        CmNotifyManager.getInstance().notify("This is a test notification");
-    }
 
-    public void installMainPanelListener() {
-        /**
-         * Install listener to track any changes to the main window
-         * 
-         */
-        _mainPort.addListener(Events.Resize, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContent != null) {
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
-                }
-            }
-        });
+//        CmNotifyManager.getInstance().notify("This is a test notification");
     }
 
     /**
@@ -220,6 +219,8 @@ public class CatchupMath implements EntryPoint {
             e.printStackTrace();
             CatchupMathTools.showAlert("There has been a problem creating the user object: " + e.getMessage());
         }
+        
+        CmBusyManager.showLoading(false);
     }
 
     /**
@@ -275,10 +276,11 @@ public class CatchupMath implements EntryPoint {
 
     private void startNormalOperations() {
 
-        installMainPanelListener();
+        
 
         History.addValueChangeHandler(new CatchupMathHistoryListener());
 
+        
         /**
          * Don't allow bookmark to move past server's location
          * 
@@ -303,6 +305,8 @@ public class CatchupMath implements EntryPoint {
             }
         });
 
+        
+        
         String ac = CmShared.getQueryParameterValue("type");
         if (ac.equals("auto_test_net")) {
             /** should we only run net test? */
@@ -317,12 +321,17 @@ public class CatchupMath implements EntryPoint {
     }
 
     private void jumpToFirstLocation() {
+        
+        
+
+        
         CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
             @Override
             public void programFlow(CmProgramFlowAction flowResponse) {
 
                 switch (flowResponse.getPlace()) {
                 case QUIZ:
+                    
                     /**
                      * show the quiz panel with data included in the next action
                      * object.
@@ -351,6 +360,38 @@ public class CatchupMath implements EntryPoint {
             }
         });
     }
+    
+    public void showAssignments_gwt() {
+        
+        final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                _mainPortWrapper.setCenterWidget(_mainContainer);
+                _mainPort.forceLayout();                 
+            }
+        });
+        
+//        new CallbackOnComplete() {
+//           @Override
+//            public void isComplete() {
+//                // remove assignment panel (last panel added)
+//                _mainPort.remove(_mainPort.getWidget(_mainPort.getItems().size()-1));
+//                
+//                // put back main panel
+//                BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
+//                _mainPort.add(_mainContainer, bdata);
+//                _mainPort.layout(true);                 
+//            }
+//        }).asWidget();
+
+        
+
+        _mainPortWrapper.remove(_mainContainer);
+        BorderLayoutData bdata = new BorderLayoutData();
+        _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);
+        _mainPort.forceLayout();
+    }    
+    
 
     /**
      * Helper page to create the Login page
@@ -379,10 +420,10 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 HeaderPanel.__instance.enable();
 
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.clear();
                 _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition(quizHtml)));
-                _mainContainer.layout();
+                
+                _mainContainer.forceLayout();
             }
         });
     }
@@ -396,10 +437,10 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 HeaderPanel.__instance.enable();
 
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.clear();
                 _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition(segmentNumber)));
-                _mainContainer.layout();
+                
+                _mainContainer.forceLayout();
             }
         });
     }
@@ -410,11 +451,10 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 HeaderPanel.__instance.enable();
 
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.clear();
                 _mainContainer.add(new WelcomePanel());
-
-                _mainContainer.layout();
+                
+                _mainContainer.forceLayout();
             }
         });
     }
@@ -457,18 +497,17 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 HeaderPanel.__instance.enable();
 
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.clear();
                 PrescriptionCmGuiDefinition prescriptionGui = new PrescriptionCmGuiDefinition();
                 _mainContainer.add(new CmMainPanel(prescriptionGui));
-                _mainContainer.layout();
+                
+                _mainContainer.forceLayout();
 
                 /**
                  * set the data returned from the server as the initial lesson
                  * shown
                  */
-                prescriptionGui.setPrescriptionData(prescriptionResponse, prescriptionResponse.getPrescriptionData()
-                        .getCurrSession().getSessionNumber());
+                prescriptionGui.setPrescriptionData(prescriptionResponse, prescriptionResponse.getPrescriptionData().getCurrSession().getSessionNumber());
             }
         });
     }
@@ -483,10 +522,8 @@ public class CatchupMath implements EntryPoint {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
-                _mainContainer.add(new AutoStudentRegistrationPanel());
-                _mainContainer.layout();
+                _mainContainer.clear();
+                _mainContainer.add(new AutoStudentRegistrationPanel().getResourceWrapper());
             }
         });
     }
@@ -496,10 +533,8 @@ public class CatchupMath implements EntryPoint {
 
             @Override
             public void onSuccess() {
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
-                _mainContainer.add(new ParallelProgramPasswordPanel());
-                _mainContainer.layout();
+                _mainContainer.clear();
+                _mainContainer.add(new ParallelProgramPasswordPanel().getResourceWrapper());
             }
         });
     }
@@ -508,10 +543,8 @@ public class CatchupMath implements EntryPoint {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-                _mainContainer.removeAll();
-                _mainContainer.setLayout(new FitLayout());
+                _mainContainer.clear();
                 _mainContainer.add(new EndOfProgramPanel());
-                _mainContainer.layout();
             }
         });
     }
@@ -564,4 +597,14 @@ public class CatchupMath implements EntryPoint {
 
                                                           $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt(Ljava/lang/String;);
                                                           }-*/;
+}
+
+
+
+class TestWidget extends BorderLayoutContainer {
+    public TestWidget() {
+        getElement().setAttribute("style", "background: green");
+        
+        setCenterWidget(new Label("TEst"));
+    }
 }

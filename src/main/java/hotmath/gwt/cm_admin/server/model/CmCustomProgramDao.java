@@ -3,7 +3,6 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -80,7 +79,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
 
             /** for every entry with a specified subject */
             ResultSet rs = stmt
-                    .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static order by lesson");
+                    .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where file = 'topics/slope.html' order by lesson");
             while (rs.next()) {
                 CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"),rs.getString("subject"));
 

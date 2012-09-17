@@ -18,7 +18,9 @@ import com.google.gwt.user.client.ui.Widget;
 public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     public ResourceViewerImplActivity() {
         addStyleName("resource-viewer-impl-activity");
-        setScrollMode(Scroll.AUTOY);
+        
+        
+        // setScrollMode(Scroll.AUTOY);
         
         __useRpaInfrastructure=false;
     }

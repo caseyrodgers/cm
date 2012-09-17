@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelContainer.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -13,17 +15,16 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 
 /** Provides a container that has a whiteboard and tutor section
@@ -31,23 +32,25 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  *
  */
-public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelImplDefault {
+public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer implements CmResourcePanel {
 
     public enum DisplayMode{TUTOR,WHITEBOARD};
     
     DisplayMode _displayMode;
     static DisplayMode __lastDisplayMode = null;
     
-    static Button _saveWhiteboard;
-    static {
-        _saveWhiteboard = new Button("Save Whiteboard");
+    static TextButton _saveWhiteboard;
+    static {    
+        _saveWhiteboard = new TextButton("Save Whiteboard");
         _saveWhiteboard.setVisible(false);
-        _saveWhiteboard.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        
+        _saveWhiteboard.addSelectHandler(new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_SAVE));
+            public void onSelect(SelectEvent event) {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_SAVE));                
             }
         });
+        
         
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
@@ -96,6 +99,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
      */
     @Override
     public ResourceViewerState getInitialMode() {
+
         if(_displayMode == DisplayMode.WHITEBOARD) {
             return ResourceViewerState.MAXIMIZED;
         }
@@ -104,32 +108,58 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
         }
     }
     
-    Button _showWorkBtn;
-    public List<Component> getContainerTools() {
+    private void test() {
+        if(DisplayMode.WHITEBOARD == _displayMode) {
+            setDisplayMode(DisplayMode.TUTOR);
+        }
+        else { 
+            setDisplayMode(DisplayMode.WHITEBOARD);
+        }
+        
+    }
+    
+    TextButton _showWorkBtn;
+    public List<Widget> getContainerTools() {
         String btnText = _displayMode == DisplayMode.WHITEBOARD?"Hide Whiteboard":"Show Whiteboard";
-        _showWorkBtn = new Button(btnText,new SelectionListener<ButtonEvent>() {
+        _showWorkBtn = new TextButton(btnText, new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 
-                if(_showWorkBtn.getText().indexOf("Show") > -1) {
+        
+                TextButton btn = null;
+                if(event.getSource() instanceof TextButton) {
+                    btn = ((TextButton)event.getSource());
+                }
+                 
+                _showWorkBtn = btn;
+                
+                if(btn != null && btn.getText().indexOf("Show") > -1) {
                     setDisplayMode(DisplayMode.WHITEBOARD);
                 }
                 else {
+                    setDisplayMode(DisplayMode.TUTOR);
+                    
                     if(_wasMaxBeforeWhiteboard) {
-                        CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(CmResourcePanelImplWithWhiteboard.this);
+                        
+                        //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MAXIMIZE_RESOURCE));
+                        
+                        // CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(CmResourcePanelImplWithWhiteboard.this);
                     }
                     else {
-                        CmMainPanel.__lastInstance._mainContent.currentContainer.setOptimized(CmResourcePanelImplWithWhiteboard.this);
+                        //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_OPTIMIZE_RESOURCE));
+                        
+                        //CmMainPanel.__lastInstance._mainContent.currentContainer.setOptimized(CmResourcePanelImplWithWhiteboard.this);
                     }
                     
-                    setDisplayMode(DisplayMode.TUTOR);
+                    //setDisplayMode(DisplayMode.TUTOR);
                     
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_CLOSED));
                 }
             }
         });
-        
-        List<Component> tools = new ArrayList<Component>();
+                
+        List<Widget> tools = new ArrayList<Widget>();
         tools.add(_saveWhiteboard);
         tools.add(_showWorkBtn);
         return tools;
@@ -176,25 +206,29 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
      * 
      * @param displayMode
      */
+    static int x = 1;
     public void setDisplayMode(DisplayMode displayMode) {
-        removeAll();
+        
+        _displayMode = displayMode;
+        __lastDisplayMode = _displayMode;
+        
+        clear();
+        
         if(displayMode == DisplayMode.TUTOR) {
         	if(_showWorkBtn != null)
                 _showWorkBtn.setText("Show Whiteboard");
         	_saveWhiteboard.setVisible(false);
-        	remove(_showWorkPanel);
         	add(getTutorDisplay());
-            CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
-            
-            setLayout(new FitLayout());
-            layout(true);
+            //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         }
         else {
-            if(CmMainPanel.__lastInstance._mainContent.currentContainer != null) {
-        		_wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.currentContainer.isMaximized();
-                CmMainPanel.__lastInstance._mainContent.currentContainer.setMaximize(this,_wasMaxBeforeWhiteboard,false);
-                CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(false);
-        	}
+            
+            if(_showWorkBtn != null)
+                _showWorkBtn.setText("Hide Whiteboard");
+
+            /** show whiteboard panel
+             * 
+             */
             _showWorkPanel = new ShowWorkPanel(new CmAsyncRequestImplDefault() {
 				@Override
 				public void requestComplete(String requestData) {
@@ -203,47 +237,124 @@ public abstract class CmResourcePanelImplWithWhiteboard extends CmResourcePanelI
 			});
             setupShowWorkPanel(_showWorkPanel);
 
-            LayoutContainer lcTutor = new LayoutContainer(new FitLayout());
-            lcTutor.setScrollMode(Scroll.AUTO);
-            lcTutor.add(getTutorDisplay());
-            
-            LayoutContainer lcMain = new LayoutContainer(new BorderLayout());
-            
-            lcMain.addStyleName("whiteboard-container");
-            lcMain.setStyleAttribute("background", "transparent");
-            lcMain.setScrollMode(Scroll.NONE);
 
-            BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST, .50f);
-            bld.setSplit(false);
-            lcMain.add(lcTutor,bld);
-            
 
-            bld = new BorderLayoutData(LayoutRegion.EAST, .50f);
+            SimpleContainer lcTutor = new SimpleContainer();
+            lcTutor.setWidget(getTutorDisplay());
+            
+            BorderLayoutContainer borderLayoutContainer = new BorderLayoutContainer();
+            borderLayoutContainer.addStyleName("whiteboard-container");
+            
+            BorderLayoutData bld = new BorderLayoutData(.50f);
             bld.setSplit(false);
             
-            lcMain.add(_showWorkPanel, bld);
-        
-            if(_showWorkBtn != null)
-               _showWorkBtn.setText("Hide Whiteboard");
             
-            add(lcMain);
+            /** always add a scrollable panel
+             * 
+             */
+            FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+            flowContainer.setScrollMode(ScrollMode.AUTOY);
+            flowContainer.add(getTutorDisplay());
+            
+            borderLayoutContainer.setWestWidget(flowContainer,bld);
+
+            bld = new BorderLayoutData(.50f);
+            bld.setSplit(false);
+            
+            borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
+            //lcMain.setEastWidget(new TextButton("Test"), bld);
+            
+            add(borderLayoutContainer);
+
+//            if(CmMainPanel.__lastInstance._mainContent.currentContainer != null) {
+//                //_wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.is
+//                //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MAXIMIZE_RESOURCE));
+//            }
+            
         }
         
-        _displayMode = displayMode;
-        __lastDisplayMode = _displayMode;
-        
-        layout(true);
 
+        forceLayout();
+        
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_CONTAINER_REFRESH));
     }
     
-    @Override
     public void addResource(Widget w, String title) {
         if(_displayMode == DisplayMode.WHITEBOARD) {
-            setLayout(new FitLayout());
             setDisplayMode(DisplayMode.WHITEBOARD);
         }
-        else 
-            super.addResource(w,title);
+        else{
+            clear();
+            
+            setId("flowLayoutParent");
+            FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+            flowContainer.setId("FLowLayoutContainer");
+            flowContainer.setScrollMode(ScrollMode.AUTOY);
+            flowContainer.add(w);
+
+            add(flowContainer);
+            //CmMainPanel.__lastInstance.forceLayout();
+        }
+    }
+    
+
+
+    @Override
+    public Integer getMinHeight() {
+        return 400;
+    }
+
+    @Override
+    public Integer getOptimalHeight() {
+        return -1;
+    }
+
+    @Override
+    public Integer getOptimalWidth() {
+        return 500;
+    }
+
+    @Override
+    public Boolean showContainer() {
+        return true;
+    }
+
+    @Override
+    public String getContainerStyleName() {
+        return null;
+    }
+
+    @Override
+    public InmhItemData getResourceItem() {
+        return item;
+    }
+    
+    @Override
+    public Boolean allowClose() {
+        return true;
+    }
+
+
+    @Override
+    public Widget getResourcePanel() {
+        String url = item.getFile();
+        String html = "<iframe frameborder='no' width='100%' height='400px' src='" + url + "'></iframe>";
+        
+        addResource(new HTML(html),item.getTitle());
+        
+        return this;
+    }
+
+    @Override
+    public void removeResourcePanel() {
+        clear();
+    }
+
+    
+    InmhItemData item;
+    
+    @Override
+    public void setResourceItem(InmhItemData item) {
+        this.item = item;
     }
 }

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <%@page import="hotmath.gwt.cm_tools.client.data.HaLoginInfo"%>
 <%
   /** Provide a wrapper around CM Student initialization to allow for pre-fetching data
@@ -17,6 +17,9 @@
   <script type="text/javascript"
       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
+
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
+
   <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
   <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-gray.css" />
   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
@@ -38,6 +41,7 @@
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
     <script type="text/javascript" language="javascript" src="/cm_student/cm_student.nocache.js"></script>
     <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
+
 <!--
 <script type="text/javascript" language="javascript" src="/js/base64.js"></script>
 <script type="text/javascript" language="javascript" src="/js/tutor6.js"></script>

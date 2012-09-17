@@ -98,11 +98,7 @@ public enum EventType{
      * 
      */
     EVENT_TYPE_USERCHANGED,
-    
-    /** Fired when a new context tooltip needs to be shown
-     * 
-     */
-    EVENT_TYPE_CONTEXT_TOOLTIP_SHOW,
+
 
     /** Fired when the Student Grid is filtered, used to keep 
      * a child window in sync with the student's current filtered set.
@@ -210,6 +206,17 @@ public enum EventType{
     /** Fired after Assignments have been checked on server
      * 
      */
-    EVENT_TYPE_ASSIGNMENTS_UPDATED
-   
+    EVENT_TYPE_ASSIGNMENTS_UPDATED, 
+    
+    
+    /** Fired when the current resource should be maximized
+     * 
+     */
+    EVENT_TYPE_MAXIMIZE_RESOURCE, 
+    
+    /** Fired when current resource should be optimized
+     * 
+     */
+    
+    EVENT_TYPE_OPTIMIZE_RESOURCE;
 }

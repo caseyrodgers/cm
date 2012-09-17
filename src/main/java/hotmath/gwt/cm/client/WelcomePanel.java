@@ -4,24 +4,20 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class WelcomePanel extends LayoutContainer {
+public class WelcomePanel extends CenterLayoutContainer {
 
-    Button _goBtn;
+    TextButton _goBtn;
 
     static public WelcomePanel __instance;
     public WelcomePanel() {
@@ -29,35 +25,38 @@ public class WelcomePanel extends LayoutContainer {
         
         addStyleName("cm-welcome-panel");
         addStyleName(UserInfo.getInstance().getBackgroundStyle());
-        setLayout(new CenterLayout());
 
-        setScrollMode(Scroll.AUTO);
         ContentPanel main = new ContentPanel();
 
-        main.setHeading("Welcome to Catchup Math");
+        main.setHeadingText("Welcome to Catchup Math");
 
         if (CmShared.getQueryParameterValue("type").equals("1")) {
-            main.setSize(370,190);
-            main.add(new SampleSessionInfo(), new BorderLayoutData(LayoutRegion.CENTER));
+            main.setPixelSize(370,190);
+            main.add(new SampleSessionInfo());
         } else if (CmShared.getQueryParameterValue("type").equals("2") || UserInfo.getInstance().getViewCount() == 0) {
-            main.setSize(330, 200);
-            main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER));
+            main.setPixelSize(330, 200);
+            main.add(new StandardInfo());
         } else {
-            main.setSize(350, 200);
-            main.add(new StandardInfo(), new BorderLayoutData(LayoutRegion.CENTER, 200));
+            main.setPixelSize(350, 200);
+            main.add(new StandardInfo());
         }
 
-        _goBtn = new Button("Begin Catchup Math");
+        _goBtn = new TextButton("Begin Catchup Math");
         _goBtn.setId("welcome-panel-go");
-        _goBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                startup();
+        _goBtn.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                startup();                
             }
-        });
+        })
+        ;
         main.addButton(_goBtn);
-        main.setButtonAlign(HorizontalAlignment.CENTER);
-        main.setStyleAttribute("background", "#DEDEDE");
-        main.setStyleAttribute("padding", "0 5px 0 5px");
+
+        main.setButtonAlign(BoxLayoutPack.CENTER);
+        
+        main.getElement().setAttribute("style","background:#DEDEDE;");
+        //main.setStyleAttribute("padding", "0 5px 0 5px");
 
         add(main);
     }

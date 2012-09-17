@@ -1,14 +1,13 @@
 package hotmath.gwt.cm.client.ui;
 
+import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -50,17 +49,23 @@ public class HeaderPanel extends LayoutContainer {
 		setStyleName("header-panel");
 		
 		_assignmentsAnchor = new Anchor("You Have Assignments");
+		_assignmentsAnchor.addStyleName("assigments_anchor");
 		_assignmentsAnchor.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new StudentAssignmentViewerWindow(new CallbackOnComplete() {
-                    @Override
-                    public void isComplete() {
-                    }
-                });
+                
+//                new StudentAssignmentViewerWindow(new CallbackOnComplete() {
+//                    @Override
+//                    public void isComplete() {
+//                    }
+//                });
+                
+                CatchupMath.getThisInstance().showAssignments_gwt();
             }
+            
+            
         });
-		_assignmentsAnchor.getElement().setAttribute("style", "color: red;font-weight: bold;width: 200px;position: absolute;top:8px;left:200px");
+		
 		add(_assignmentsAnchor);
 		
 		_helloInfo.setStyleName("hello-info");
@@ -103,7 +108,7 @@ public class HeaderPanel extends LayoutContainer {
 	  		            boolean tr = CmMainPanel.__lastInstance == null;
 	  		            if(CmMainPanel.__lastInstance != null) {
 	  		                /** note we set a default heading, no matter what the test type */
-			                CmMainPanel.__lastInstance._westPanel.setHeading(context.getContextSubTitle());
+			                CmMainPanel.__lastInstance._westPanelWrapper.setHeadingText(context.getContextSubTitle());
 	  		            }
 	  		            break;
 			    	case EVENT_TYPE_TOPIC_CHANGED:

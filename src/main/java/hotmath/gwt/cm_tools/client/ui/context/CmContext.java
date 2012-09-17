@@ -3,7 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.context;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.Component;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /** A context is a single state of a GUI form.
@@ -74,7 +74,7 @@ public interface CmContext {
 	 * 
 	 * @return
 	 */
-	public List<Component> getTools();
+	public List<Widget> getTools();
 	
 	
 	/** Return the sub title used and placed in the header of west panel

@@ -5,15 +5,15 @@ import hotmath.gwt.cm_tools.client.ui.ContextChangeListener;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 /** The information about the user's current state in the program
  * 
  * @author casey
  *
  */
-class PrescriptionInfoPanel extends LayoutContainer {
+class PrescriptionInfoPanel extends FlowLayoutContainer {
     PrescriptionCmGuiDefinition cmDef;
     public PrescriptionInfoPanel(PrescriptionCmGuiDefinition cm) {
         cmDef = cm;
@@ -21,10 +21,10 @@ class PrescriptionInfoPanel extends LayoutContainer {
 
         String html = "<p>Use any menu items you wish, before or after trying " +
                       "the Required Practice problems.</p>";
-        Html htmlO = new Html(html);
+        HTML htmlO = new HTML(html);
         add(htmlO);
         
-        add(new Html(CatchupMathTools.FEEDBACK_MESSAGE));
+        add(new HTML(CatchupMathTools.FEEDBACK_MESSAGE));
         
         ContextController.getInstance().addContextChangeListener(new ContextChangeListener() {
             public void contextChanged(CmContext context) {

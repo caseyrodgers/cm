@@ -32,7 +32,6 @@ import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.IconButton;
@@ -76,9 +75,9 @@ public class PrescriptionContext implements CmContext {
     IconButton _chooseButton;
     Text       _buttonText;
 
-    public List<Component> getTools() {
+    public List<Widget> getTools() {
         
-        List<Component> list = new ArrayList<Component>();
+        List<Widget> list = new ArrayList<Widget>();
         
         _buttonText = new Text();
         _buttonText.setText(" ");

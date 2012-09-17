@@ -17,13 +17,13 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
-public class QuizPage extends LayoutContainer {
+public class QuizPage extends FlowLayoutContainer {
 	
     static QuizPage __lastInstance;
 	
@@ -32,7 +32,7 @@ public class QuizPage extends LayoutContainer {
 	
 	public QuizPage(boolean loadActive, QuizHtmlResult quizInfo) {
 	    __lastInstance = this;
-	    setScrollMode(Scroll.AUTOY);
+	    setScrollMode(ScrollMode.AUTOY);
 		setStyleName("quiz-panel");
 
 		setQuizHtmlResult(quizInfo);
@@ -97,7 +97,7 @@ public class QuizPage extends LayoutContainer {
      */
 	private void displayQuizHtml(String quizHtml) {
 	    
-		Html html = new Html(quizHtml);
+	    HTML html = new HTML(quizHtml);
 		if(CmShared.getQueryParameter("debug") != "") {
 		    html.addStyleName("debug-mode");
 		}

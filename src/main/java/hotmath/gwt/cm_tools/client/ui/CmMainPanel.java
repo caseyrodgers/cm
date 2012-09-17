@@ -1,8 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -11,35 +16,31 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Direction;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.fx.FxConfig;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.LayoutRegion;
+import com.sencha.gxt.core.client.util.Margins;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.info.Info;
 
-public class CmMainPanel extends LayoutContainer {
+public class CmMainPanel extends BorderLayoutContainer {
 
 	public static CmMainPanel __lastInstance;
 
-	public CmMainResourceContainer _mainContent;
+	public CmMainResourceWrapper _mainContentWrapper;
 
 	// @TODO: setup event/listener to manager
 	// state change
 	public CmGuiDefinition cmGuiDef;
 	// west panel is static to allow access
 	// to the title.
-	public ContentPanel _westPanel;
+	public BorderLayoutContainer _westPanel;
+	public ContentPanel _westPanelWrapper = new ContentPanel();
 
 	CmResourcePanel _lastResourceViewer;
+	CmResourceContentPanel _lastResourceContentPanel;
 
 	/**
 	 * Main Catchup Math application area.
@@ -60,55 +61,63 @@ public class CmMainPanel extends LayoutContainer {
 	public CmMainPanel(final CmGuiDefinition cmGuiDef) {
 
 		__lastInstance = this;
-		setStyleAttribute("position", "relative");
-		setScrollMode(Scroll.NONE);
+		
+		getElement().setAttribute("style","position:relative;");
+		
+		
+		_mainContentWrapper = new    CmMainResourceWrapper(WrapperType.OPTIMIZED);
+		
 		this.cmGuiDef = cmGuiDef;
-		BorderLayout bl = new BorderLayout() {
-			public void layout() {
-				super.layout();
-				if (_westPanel.getHeader().getToolCount() > 0) {
-					_westPanel.getHeader().getTool(0).setToolTip("Hide");
-				}
-			}
-		};
-		setLayout(bl);
-		_mainContent = new CmMainResourceContainer();
-
-		_westPanel = new ContentPanel();
+		
+		_westPanel = new BorderLayoutContainer();
 
 		_westPanel.addStyleName("main-panel-west");
-		_westPanel.setLayout(new BorderLayout());
+		
+		
 		// _westPanel.setAnimCollapse(true);
-		_westPanel.getHeader().addStyleName("cm-main-panel-header");
-		_westPanel.setBorders(false);
-		BorderLayoutData westData = new BorderLayoutData(LayoutRegion.WEST, 226);
+		_westPanelWrapper.getHeader().addStyleName("cm-main-panel-header");
+		_westPanelWrapper.setBorders(true);
+		BorderLayoutData westData = new BorderLayoutData(250);
 		westData.setSplit(false);
 		westData.setCollapsible(true);
 
-		_westPanel.add(cmGuiDef.getWestWidget(), new BorderLayoutData(LayoutRegion.CENTER));
-
-		add(_westPanel, westData);
+		BorderLayoutData westCenterData = new BorderLayoutData();
+		westCenterData.setMargins(new Margins(10));
+		
+		_westPanel.setCenterWidget(cmGuiDef.getWestWidget(), westCenterData);
+		
+		_westPanelWrapper.setWidget(_westPanel);
+		setWestWidget(_westPanelWrapper, westData);
 
 		addTools();
 
-		BorderLayoutData centerData = new BorderLayoutData(LayoutRegion.CENTER);
-		// centerData.setMargins(new Margins(1, 0,1, 1));
-		centerData.setSplit(false);
-		add(_mainContent, centerData);
+		setMainPanelContainer();
 
-		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                Widget w = cmGuiDef.getCenterWidget();
-                if (w != null) {
-                    _mainContent.add(w);
-                }
-            }
-        });
+        //_mainContent.getElement().setAttribute("style", "background: red");
+		if(cmGuiDef.getCenterWidget() != null) {
+		    _mainContentWrapper.getResourceWrapper().add(cmGuiDef.getCenterWidget());
+		}
 	}
+	
+	@Override
+	public void forceLayout() {
+	    // TODO Auto-generated method stub
+	    super.forceLayout();
+	}
+	
+	public void setMainPanelContainer() {
+
+        BorderLayoutData centerData = new BorderLayoutData();
+        centerData.setCollapsible(true);
+        centerData.setMargins(new Margins(1, 0,1, 1));
+        centerData.setSplit(true);
+	    
+	    setCenterWidget(_mainContentWrapper.getResourceWrapper(), centerData);
+	}
+	
 
 	public void expandResourceButtons() {
-		((BorderLayout) getLayout()).expand(LayoutRegion.WEST);
+		expand(LayoutRegion.WEST);
 	}
 
 	/**
@@ -121,16 +130,15 @@ public class CmMainPanel extends LayoutContainer {
 	 * 
 	 */
 	private void addTools() {
-		List<Component> comps = this.cmGuiDef.getContext().getTools();
+		List<Widget> comps = this.cmGuiDef.getContext().getTools();
 
 		// Add the special prev/next buttons to horizontal panel
-		LayoutContainer lc = new LayoutContainer();
+		FlowLayoutContainer lc = new FlowLayoutContainer();
 		lc.setStyleName("cm-main-panel-button-panel");
-
-		for (Component c : comps) {
+		for (Widget c : comps) {
 			lc.add(c);
 		}
-		_westPanel.add(lc, new BorderLayoutData(LayoutRegion.NORTH, 65));
+		_westPanel.setNorthWidget(lc, new BorderLayoutData(75));
 	}
 
 	/**
@@ -138,7 +146,7 @@ public class CmMainPanel extends LayoutContainer {
 	 * 
 	 */
 	public void removeResource() {
-		__lastInstance._mainContent.removeResource();
+		Info.display("Info", "Remove Resource");
 	}
 
 	static private boolean _isWhiteboardVisible;
@@ -172,14 +180,19 @@ public class CmMainPanel extends LayoutContainer {
 							break;
 
 						case EVENT_TYPE_WINDOW_RESIZED:
-							__lastInstance._mainContent.fireWindowResized();
+							__lastInstance._mainContentWrapper.fireWindowResized();
 							break;
-
-						case EVENT_TYPE_CONTEXT_TOOLTIP_SHOW:
-							ContextTooltipPanel.getInstance()
-									.setContextTooltip(
-											(String) event.getEventData());
-							break;
+							
+							
+						case EVENT_TYPE_MAXIMIZE_RESOURCE:
+						    __lastInstance.maximizeResource();
+						    break;
+						    
+						    
+                        case EVENT_TYPE_OPTIMIZE_RESOURCE:
+                            __lastInstance.optimizeResource();
+                            break;
+						    
 
 						case EVENT_TYPE_WHITEBOARD_READY:
 							setWhiteboardIsVisible(true);
@@ -189,7 +202,16 @@ public class CmMainPanel extends LayoutContainer {
 						case EVENT_TYPE_WHITEBOARD_CLOSED:
 							setWhiteboardIsVisible(false);
 							setQuizQuestionDisplayAsActive(null);
+							
+							
+							__lastInstance.maximizeResource();
 							break;
+							
+							
+						case EVENT_TYPE_RESOURCE_CONTAINER_REFRESH:
+						    //__lastInstance.maximizeResource();
+						    break;
+							    
 
 						case EVENT_TYPE_MODAL_WINDOW_OPEN:
 							/**
@@ -197,7 +219,7 @@ public class CmMainPanel extends LayoutContainer {
 							 * whiteboard
 							 */
 							if (__lastInstance != null
-								&& __lastInstance._mainContent != null
+								&& __lastInstance._mainContentWrapper != null
 								&& __lastInstance._lastResourceViewer != null
 								&& (__lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
 							         && ((CmResourcePanelImplWithWhiteboard)__lastInstance._lastResourceViewer).isWhiteboardActive()
@@ -208,13 +230,13 @@ public class CmMainPanel extends LayoutContainer {
 									 * z-order issues
 									 * 
 									 */
-									__lastInstance._mainContent.removeAll();
+									__lastInstance._mainContentWrapper.getResourceWrapper().clear();
 							}
 							break;
 
 						case EVENT_TYPE_MODAL_WINDOW_CLOSED:
 							if (__lastInstance != null
-									&& __lastInstance._mainContent != null
+									&& __lastInstance._mainContentWrapper != null
 									&& __lastInstance._lastResourceViewer != null
 									&& __lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
 	                                && (__lastInstance._lastResourceViewer instanceof CmResourcePanelImplWithWhiteboard
@@ -223,7 +245,7 @@ public class CmMainPanel extends LayoutContainer {
 								       /** If whiteboard is active, restore any resources
 								        * 
 								        */
-										__lastInstance._mainContent.showResource();
+										__lastInstance.showLastResource();
 										
 										/** Trigger a refresh to allow any viewer to reset any
 										 *  data that might be reset if panel is removed/added.
@@ -235,7 +257,7 @@ public class CmMainPanel extends LayoutContainer {
 							
                         case EVENT_TYPE_MODAL_WINDOW_CLEAR:
                             if (__lastInstance != null) {
-                                __lastInstance._mainContent = null;
+                                __lastInstance._mainContentWrapper = null;
                                 __lastInstance = null;
                             }
 						}
@@ -258,7 +280,26 @@ public class CmMainPanel extends LayoutContainer {
 												$wnd.setQuizActiveQuestion_Gwt = @hotmath.gwt.cm_tools.client.ui.CmMainPanel::setQuizQuestionActive_Gwt(Ljava/lang/String;);
 												}-*/;
 
-	static private String __lastQuestionPid;
+	/** Have to create a new Wrapper each time .. other objects
+	 *  are reused, include the content panel and the resource viewer.
+	 */
+	public void maximizeResource() {
+	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED);
+	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText()));
+	    setCenterWidget(_mainContentWrapper.getResourceWrapper()); // _mainContentWrapper.getResourceWrapper());
+	    
+	    forceLayout();
+    }
+	
+	protected void optimizeResource() {
+	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
+	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText()));
+        setCenterWidget(_mainContentWrapper.getResourceWrapper()); // _mainContentWrapper.getResourceWrapper());	    
+        
+        forceLayout();
+	}
+
+    static private String __lastQuestionPid;
 
 	/**
 	 * called by external JS each time a testset question has been made current.
@@ -303,83 +344,83 @@ public class CmMainPanel extends LayoutContainer {
 	static public native void setWhiteboardIsVisible(boolean whiteboardVisible) /*-{
 																				   $wnd.setWhiteboardIsVisible(whiteboardVisible);
 																				   }-*/;
-}
 
-/**
- * Display a dropdown tooltip below the main context buttons
- * 
- * @author casey
- * 
- */
-class ContextTooltipPanel extends LayoutContainer {
+	
+	
+    /**
+     * Display a single resource, remove any previous
+     * 
+     * Do not track its view
+     * 
+     * @param resourceItem
+     */
+    public void showResource(final InmhItemData resourceItem) {
+        Info.display("Info", "Showing resource: " + resourceItem.getFile());
+        try {
+            ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
+                @Override
+                public void onUnavailable() {
+                    CatchupMathTools.showAlert("Resource not available");
+                }
 
-	static private ContextTooltipPanel __instance;
+                @Override
+                public void onSuccess(ResourceViewerFactory instance) {
+                    try {
+                        CmResourcePanel viewer = instance.create(resourceItem);
+                        showResource(viewer, resourceItem.getTitle());
+                    } catch (Exception e) {
+                        CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());
+                    }
+                }
+            };
+            ResourceViewerFactory.createAsync(client);
+        } catch (Exception hme) {
+            hme.printStackTrace();
+            CatchupMathTools.showAlert("Error: " + hme.getMessage());
+        }
+    }
+    
+    public void showLastResource() {
+        showResource(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText());
+    }
+    
+    
 
-	static public ContextTooltipPanel getInstance() {
-		if (__instance == null)
-			__instance = new ContextTooltipPanel();
-		return __instance;
-	}
+    public void showResource(CmResourcePanel panel, String title) {
+        
+        
+        if(_lastResourceViewer != null) {
+            _lastResourceViewer.removeResourcePanel();
+        }
+        
+        _lastResourceViewer = panel;
+        Info.display("Info", "Showing resource: " + title);
+        
+        
+        switch(panel.getInitialMode()) {
+            case MAXIMIZED:
+                _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED);
+                break;
+                
+            case OPTIMIZED:
+                _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
+                break;
+        }
+        
+        _lastResourceContentPanel = new CmResourceContentPanel(panel, title);
+        _mainContentWrapper.setContentPanel(_lastResourceContentPanel);
+        
+        
+        _lastResourceContentPanel.setHeadingText(title);
 
-	static final int TIP_SHOW_MILLS = 2000;
-	Timer tipTimer;
-
-	private ContextTooltipPanel() {
-		addStyleName("context-tooltip-panel");
-		setStyleAttribute("position", "absolute");
-		setStyleAttribute("top", "50px");
-		setStyleAttribute("left", "0");
-		setStyleAttribute("width", "100%");
-	}
-
-	/**
-	 * Display tooltip in drop down area
-	 * 
-	 * If tip is already being displayed and is different then we want to cancel
-	 * curent display and show new one.
-	 * 
-	 * @param tooltip
-	 */
-	public void setContextTooltip(String tooltip) {
-
-		if (tipTimer != null) {
-			tipTimer.cancel();
-			tipTimer = null;
-		}
-
-		String html = "<p style='padding: 10px;background: yellow;'>" + tooltip
-				+ "</p>";
-
-		removeAll();
-		setStyleAttribute("top", "50px");
-		setStyleAttribute("left", "0");
-		add(new Html(html));
-
-		CmMainPanel.__lastInstance._westPanel.add(this);
-		CmMainPanel.__lastInstance._westPanel.layout();
-		el().slideIn(Direction.DOWN, new FxConfig(500));
-
-		tipTimer = new Timer() {
-			@Override
-			public void run() {
-				/**
-				 * remove this widget from parent
-				 * 
-				 * @TODO: remove variable access, use event?
-				 */
-				// CmMainPanel.__lastInstance._westPanel.remove(TooltipContentPanel.this);
-				// CmMainPanel.__lastInstance.layout();
-				try {
-					el().fadeOut(FxConfig.NONE);
-					CmMainPanel.__lastInstance._westPanel
-							.remove(ContextTooltipPanel.this);
-					CmMainPanel.__lastInstance.layout();
-				} finally {
-					tipTimer = null;
-				}
-			}
-		};
-		tipTimer.schedule(TIP_SHOW_MILLS);
-	}
-
+        BorderLayoutData centerData = new BorderLayoutData();
+        centerData.setCollapsible(true);
+        centerData.setMargins(new Margins(1, 0,1, 1));
+        centerData.setSplit(true);
+        
+        //setCenterWidget(new TextButton("Test"));
+        setCenterWidget(_mainContentWrapper.getResourceWrapper(), centerData);
+        
+        forceLayout();
+    }
 }

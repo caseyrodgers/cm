@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import com.sencha.gxt.widget.core.client.info.Info;
+
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 
@@ -12,11 +14,14 @@ public class CmLogger  {
             __instance = new CmLogger();
         return __instance;
     }
+    
+    boolean isEnabled=false;
     CmLoggerWindow window;
     public CmLogger() { }
     
     
     public void enable(boolean yesNo) {
+        isEnabled = yesNo;
     	if(!yesNo) {
     		window.clearLog();
     		window.close();
@@ -58,6 +63,11 @@ public class CmLogger  {
     private void _debug(String msg) {
     	if(window != null) {
     		window._debug(msg);
+    	}
+    	else {
+            if(window == null && CmShared.getQueryParameter("debug") != null) {
+                Info.display("Debug", msg);
+            }
     	}
     }
 }

@@ -26,7 +26,7 @@ public class StudentAssignmentViewerWindow extends GWindow {
 
     BorderLayoutContainer _mainContainer;
     private Widget createUi() {
-        return new StudentAssignmentViewerPanel();
+        return new StudentAssignmentViewerPanel(onComplete);
     }
 
 }

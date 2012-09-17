@@ -32,15 +32,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.fx.FxConfig;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
 
@@ -60,18 +55,25 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     }
 
    
-    LayoutContainer _main;
+    FlowLayoutContainer _main;
 
     private Widget createGui() {
-        _main = new LayoutContainer();
-        _main.setLayout(new FitLayout());
+        _main = new FlowLayoutContainer();
 
         _guiWidget = new PrescriptionResourcePanel();
-        _main.add(_guiWidget, new BorderLayoutData(LayoutRegion.CENTER, .75f));
+        _main.add(_guiWidget);
 
-        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance), new BorderLayoutData(LayoutRegion.SOUTH, .30f));
-
-        _main.layout();
+        //BorderLayoutData southData = new BorderLayoutData(.30f);
+        _main.add(new PrescriptionInfoPanel(PrescriptionCmGuiDefinition.__instance));
+        
+        
+        new Timer() {
+            @Override
+            public void run() {
+                showHelpPanel();
+            }
+        }.schedule(1000);
+        
         return _main;
     }
     
@@ -103,8 +105,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
         final int sessionNumberF = sessionNumber;
 
         // clear any existing resource
-        CmMainPanel.__lastInstance._mainContent.removeResource();
-        CmMainPanel.__lastInstance._mainContent.layout();
+        CmMainPanel.__lastInstance.removeResource();
 
         CmBusyManager.setBusy(true);
 
@@ -188,14 +189,14 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     if (location.getResourceNumber() > -1) {
 
                         InmhItemData itemData = resourceList.get(location.getResourceNumber());
-                        CmMainPanel.__lastInstance._mainContent.showResource(itemData);
+                        CmMainPanel.__lastInstance.showResource(itemData);
 
                     } else {
                         String resourceId = location.getResourceId();
                         InmhItemData item = new InmhItemData();
                         item.setType(resourceTypeToView);
                         item.setFile(resourceId);
-                        CmMainPanel.__lastInstance._mainContent.showResource(item);
+                        CmMainPanel.__lastInstance.showResource(item);
                     }
                 }
             }
@@ -286,20 +287,19 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
             @Override
             public void run() {
                 String html = 
-                          "<div class='info'>" 
+                          "<div class='info' style='width: 400px;margin: auto;'>" 
                         + "<b>Catchup Math: the more you do, the more you learn!</b>" + "<ul>"
                         + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(null);return false;'>How to use Catchup Math</li>"
                         + "<li><a style='color: white' href='#' onclick='showMotivationalVideo_Gwt(\"musa\");return false;'>Professor Musa Video</li>"
                         + "</ul></div>";
                 
-                Html ohtml = new Html(html);
+                HTML ohtml = new HTML(html);
                 ohtml.addStyleName("prescription-help-panel");
-                CmMainPanel.__lastInstance._mainContent.removeAll();
-                CmMainPanel.__lastInstance._mainContent.setLayout(new CenterLayout());
-                CmMainPanel.__lastInstance._mainContent.add(ohtml);
-                CmMainPanel.__lastInstance._mainContent.layout();
+                CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().clear();
+                CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().add(ohtml);
+                CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().forceLayout();
 
-                ohtml.el().fadeIn(FxConfig.NONE);
+                //ohtml.getElement().<FxElement>cast().fadeToggle();
             }
         };
         t.schedule(1);

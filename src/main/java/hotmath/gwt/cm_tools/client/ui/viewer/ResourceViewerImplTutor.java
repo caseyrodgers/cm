@@ -31,26 +31,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.WindowEvent;
 import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
@@ -60,7 +58,9 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     public ResourceViewerImplTutor() {
         _instance = this;
         addStyleName(STYLE_NAME);
-        setScrollMode(Scroll.AUTOY);
+        
+        
+        //setScrollMode(ScrollMode.AUTOY);
 
         /** If in debug mode, the provide double click on
          * the tutor loads the solution editor for the current
@@ -68,8 +68,10 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
          *
          */
         if(CmShared.getQueryParameter("debug") != null) {
-            addListener(Events.OnDoubleClick, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
+            
+            addHandler(new DoubleClickHandler() {
+                @Override
+                public void onDoubleClick(DoubleClickEvent event) {
                     final String pid = getResourceItem().getFile();
                     MessageBox.confirm("Edit Solution", "Edit solution " +  pid + " with Solution Editor?", new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
@@ -80,8 +82,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                         }
                     });
                 }
-            });
-            sinkEvents(Event.ONDBLCLICK);
+            },DoubleClickEvent.getType());
+            
         }
 
 
@@ -207,7 +209,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         if(probNum >  0) {
             String title = "Problem " + probNum + " of " + limit;
             InfoPopupBox.display(new CmInfoConfig("Problem Set Status",title));
-            CmMainPanel.__lastInstance._mainContent.currentContainer.setHeading(title);
+            
+            
+            
+            Info.display("Info", "Set resource title to '" + title + "'");
+            //CmMainPanel.__lastInstance._mainContentWrapper._lastContainer.setHeadingHtml(title);
         }
     }
 
@@ -266,8 +272,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     }
 
     public void removeResourcePanel() {
-        removeAll();
-        layout();
+        clear();
+        //forceLayout();
         tutorPanel = null;
     }
 
@@ -280,8 +286,8 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
     }
 
 
-    public List<Component> getContainerTools() {
-        List<Component> tools = new ArrayList<Component>();
+    public List<Widget> getContainerTools() {
+        List<Widget> tools = new ArrayList<Widget>();
         tools.add(new Button("How to Use This", new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -339,7 +345,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
                 // CmMainPanel.__lastInstance._mainContent.addControl(showWorkBtn);
                 if (CmMainPanel.__lastInstance != null)
-                    CmMainPanel.__lastInstance._mainContent.layout();
+                    CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().forceLayout();
 
                 try {
                     /**
@@ -381,7 +387,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 finally {
                     CmBusyManager.setBusy(false);
                 }
-                layout();
+                //forceLayout();
             }
         }.register();
     }
@@ -590,7 +596,7 @@ class ShowHowToUseDialog extends CmWindow {
         "<div style='padding: 10px 5px;'>" +
          "<p>Work out your answer using pencil and paper or the Whiteboard. " +
          "Some teachers may require this.</p>" +
-         "<p>If you see an 'Enter Your Answer' input box, you can enter your" +
+         "<p>If you see an 'Enter Your Answer' input box, you can enter your " +
          "answer there to check your work.</p>" +
         "</div>";
 }

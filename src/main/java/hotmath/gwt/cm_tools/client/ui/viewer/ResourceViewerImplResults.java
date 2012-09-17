@@ -12,12 +12,11 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard {
@@ -28,7 +27,8 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
     public ResourceViewerImplResults() {
         addStyleName(STYLE_NAME);
-        setScrollMode(Scroll.AUTOY);
+        
+        //setScrollMode(ScrollMode.AUTOY);
     }
 
     @Override
@@ -63,37 +63,39 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
 
     public Widget getResourcePanel() {
 
-        new RetryAction<QuizResultsMetaInfo>() {
-
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            public void oncapture(QuizResultsMetaInfo result) {
-                try {
-                    RpcData rdata = result.getRpcData();
-                    String html = rdata.getDataAsString("quiz_html");
-                    String resultJson = rdata.getDataAsString("quiz_result_json");
-                    int total = rdata.getDataAsInt("quiz_question_count");
-                    int correct = rdata.getDataAsInt("quiz_correct_count");
-                    _title = rdata.getDataAsString("title");
-
-                    _quizPanel = new Html(html);
-
-                    addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
-
-                    processQuestions(resultJson);
-
-                    CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
-                } finally {
-                    CmBusyManager.setBusy(false);
+        if(_quizPanel == null) {
+            new RetryAction<QuizResultsMetaInfo>() {
+    
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true);
+                    GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(UserInfo.getInstance().getRunId());
+                    setAction(action);
+                    CmShared.getCmService().execute(action, this);
                 }
-            }
-        }.register();
+    
+                public void oncapture(QuizResultsMetaInfo result) {
+                    try {
+                        RpcData rdata = result.getRpcData();
+                        String html = rdata.getDataAsString("quiz_html");
+                        String resultJson = rdata.getDataAsString("quiz_result_json");
+                        int total = rdata.getDataAsInt("quiz_question_count");
+                        int correct = rdata.getDataAsInt("quiz_correct_count");
+                        _title = rdata.getDataAsString("title");
+    
+                        _quizPanel = new HTML(html);
+    
+                        addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
+    
+                        processQuestions(resultJson);
+    
+                        CmMainPanel.setQuizQuestionDisplayAsActive(CmMainPanel.getLastQuestionPid());
+                    } finally {
+                        CmBusyManager.setBusy(false);
+                    }
+                }
+            }.register();
+        }
 
         return this;
     }

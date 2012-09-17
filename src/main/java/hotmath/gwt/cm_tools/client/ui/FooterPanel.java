@@ -3,23 +3,17 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.shared.client.CmShared;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
-public class FooterPanel extends LayoutContainer {
+public class FooterPanel extends FlowLayoutContainer {
 
 	public FooterPanel() {
 		setStyleName("footer-panel");
-	}
-
-	@Override
-	protected void onRender(Element parent, int index) {
-		super.onRender(parent, index);
-
+		
 		String html = "<ul class='h-menu'>";
 
 		if (CmShared.getQueryParameter("debug") != null) {
@@ -32,7 +26,7 @@ public class FooterPanel extends LayoutContainer {
 
 		html += "</ul>" + "<div>Brought to you by Hotmath.com</div>";
 
-		add(new Html(html));
+		add(new HTML(html));
 	}
 
 	private static void showPrescriptionSession_Gwt() {

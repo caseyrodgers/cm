@@ -63,9 +63,18 @@ public class CmShared implements EntryPoint {
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
+                
+                
+                if(CmShared.getQueryParameter("debug") != null) {
+                    CatchupMathTools.showAlert("Uncaught Exception", e.toString());
+                    e.printStackTrace();
+                }
+                
                 try {
                     String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
                     CmShared.getCmService().execute(
+                            
+                            
                             new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(),nameAndTime,null,CmShared.getStackTraceAsString(e)),
                             new AsyncCallback<RpcData>() {
                         @Override

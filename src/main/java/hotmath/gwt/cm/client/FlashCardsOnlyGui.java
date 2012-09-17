@@ -2,12 +2,12 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper_Old;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /** Provides Self Registration login screen and validation
@@ -15,11 +15,11 @@ import com.extjs.gxt.ui.client.widget.button.Button;
  * @author casey
  *
  */
-public class FlashCardsOnlyGui extends CmMainResourceContainer {
+public class FlashCardsOnlyGui extends CmMainResourceWrapper_Old {
     
     public FlashCardsOnlyGui() {
         
-        add(new Button("Flash Cards"));
+        getResourceWrapper().add(new Button("Flash Cards"));
         
         ContextController.getInstance().setCurrentContext(new CmContext() {
             
@@ -32,7 +32,7 @@ public class FlashCardsOnlyGui extends CmMainResourceContainer {
             }
             
             //@Override
-            public List<Component> getTools() {
+            public List<Widget> getTools() {
                 return null;
             }
             

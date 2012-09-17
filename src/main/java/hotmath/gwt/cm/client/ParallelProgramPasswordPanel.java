@@ -9,12 +9,8 @@ import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceContainer;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper_Old;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
-import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
-import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.rpc.action.ParallelProgramLoginAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
@@ -26,7 +22,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.KeyListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -36,11 +31,11 @@ import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.form.Validator;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 
 
 /** 
@@ -49,7 +44,7 @@ import com.google.gwt.user.client.ui.Label;
  * @author bob
  *
  */
-public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
+public class ParallelProgramPasswordPanel extends CmMainResourceWrapper_Old {
 
     FormPanel _formPanel;
     
@@ -132,8 +127,7 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
         FormButtonBinding binding = new FormButtonBinding(_formPanel);  
 
         _formPanel.setStyleAttribute("margin-top", "20px");
-        setLayout(new CenterLayout());
-        add(_formPanel);
+        getResourceWrapper().add(_formPanel);
         
         ContextController.getInstance().setCurrentContext(new CmContext() {
             
@@ -146,7 +140,7 @@ public class ParallelProgramPasswordPanel extends CmMainResourceContainer {
             }
             
             @Override
-            public List<Component> getTools() {
+            public List<Widget> getTools() {
                 return null;
             }
             

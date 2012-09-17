@@ -18,11 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.fx.FxConfig;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.fx.client.FxElement;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
  * Defines the main accordion widget containing the resources
@@ -30,7 +30,7 @@ import com.extjs.gxt.ui.client.widget.VerticalPanel;
  * @author casey
  * 
  */
-public class PrescriptionResourcePanel extends LayoutContainer {
+public class PrescriptionResourcePanel extends SimpleContainer {
 
     static PrescriptionResourcePanel __instance;
     PrescriptionData pData;
@@ -58,11 +58,11 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     	this.pData = pData;
         List<PrescriptionSessionDataResource> resources = pData.getCurrSession().getInmhResources();
 
-        removeAll();
+        clear();
         registeredResources.clear();
         
-        setScrollMode(Scroll.NONE);
-        VerticalPanel vp = new VerticalPanel();
+        //setScrollMode(ScrollMode.NONE);
+        VerticalLayoutContainer  vp = new VerticalLayoutContainer();
         addStyleName("prescription-cm-gui-definition-resource-panel");
 
         boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
@@ -95,15 +95,19 @@ public class PrescriptionResourcePanel extends LayoutContainer {
             }
             
         }
-        add(vp);
+        
+        
+        FlowLayoutContainer flc = new FlowLayoutContainer();
+        
+        flc.add(vp);
         /**
          * Add the standard resources
          * 
          */
-        VerticalPanel fs = new VerticalPanel();
+        VerticalLayoutContainer fs = new VerticalLayoutContainer();
         // <div style='margin-left: -7px;margin-top: 10px;font-size: .8em;color: white;'>Other Resources</div>
         
-        fs.add(new Html("<hr class='resource-separator'/>"));
+        fs.add(new HTML("<hr class='resource-separator'/>"));
         ResourceMenuButton rbtn = new ResourceMenuButton(review);
         if(isCustomProgram) {
             rbtn.setEnabled(false);
@@ -116,9 +120,9 @@ public class PrescriptionResourcePanel extends LayoutContainer {
     		fs.add(btn);
     		resourceButtons.put(resource.getType(), btn);
         }
-        add(fs);
-        
-        layout();
+        flc.add(fs);
+
+        setWidget(flc);
     }
 
 
@@ -127,7 +131,7 @@ public class PrescriptionResourcePanel extends LayoutContainer {
      * 
      */
     public void indicateRequiredPracticeComplete() {
-    	resourceButtons.get("practice").el().blink(new FxConfig());
+    	resourceButtons.get("practice").getElement().<FxElement>cast().blink();
     }
 
     public void updateCheckMarks(String resourceType) {
