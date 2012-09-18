@@ -15,11 +15,11 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
-import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import com.allen_sauer.gwt.log.client.Log;

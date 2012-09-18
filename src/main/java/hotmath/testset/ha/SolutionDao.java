@@ -93,4 +93,15 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
             }
         });
     }
+
+    public String getSolutionXML(String pid) {
+        String sql = "select solutionxml from SOLUTIONS where problemindex = ?";
+        return getJdbcTemplate().queryForObject(sql,new Object[]{pid},
+                new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("solutionxml");
+            }
+        });
+    }
 }

@@ -22,11 +22,11 @@ import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.SearchView;
 import hotmath.gwt.cm_mobile3.client.view.SearchViewImpl;
-import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
-import hotmath.gwt.cm_mobile3.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;

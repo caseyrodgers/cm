@@ -114,7 +114,7 @@ public class QuizPage extends FlowLayoutContainer {
 
 	    initializeQuiz();
 
-	    CmLogger.debug("QuizPage: marking user selections: " + this);
+	    CmLogger.debug("QuizPage: marking user selections");
 	    
 	    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override

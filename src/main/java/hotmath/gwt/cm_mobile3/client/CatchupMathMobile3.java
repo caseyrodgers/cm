@@ -11,7 +11,6 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImp
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
-import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -30,6 +29,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -22,6 +22,12 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
+/** Problem listing for a single Assignment
+ * 
+ * 
+ * @author casey
+ *
+ */
 public class ProblemListPanel extends SimpleContainer {
     
     public interface ProblemListPanelProperties extends PropertyAccess<String> {
@@ -40,7 +46,7 @@ public class ProblemListPanel extends SimpleContainer {
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
         
         ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(),50, "Problem");
-        ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),50, "Status");
+        ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),100, "Status");
         
         List<ColumnConfig<StudentProblemDto, ?>> l = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
         

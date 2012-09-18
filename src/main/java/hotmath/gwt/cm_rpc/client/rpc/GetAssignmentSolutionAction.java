@@ -1,12 +1,14 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+
 
 /** Return solution information for a given user and pid
  * 
  * @author casey
  *
  */
-public class GetAssignmentSolutionAction extends ActionBase implements Action<SolutionInfo> {
+public class GetAssignmentSolutionAction extends ActionBase implements Action<AssignmentProblem> {
     
     String pid;
     int uid;

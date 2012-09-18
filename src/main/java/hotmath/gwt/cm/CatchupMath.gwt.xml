@@ -19,6 +19,7 @@
       <inherits name='pl.rmalinowski.gwt2swf.GWT2SWF' />
       -->
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
+            
       <entry-point class='hotmath.gwt.cm.client.CatchupMath'/>
 
       <!--       

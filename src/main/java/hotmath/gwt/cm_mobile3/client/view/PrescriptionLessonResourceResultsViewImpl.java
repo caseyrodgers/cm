@@ -10,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 
 import java.util.List;

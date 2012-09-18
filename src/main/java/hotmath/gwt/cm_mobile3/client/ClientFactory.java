@@ -11,9 +11,9 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.SearchView;
-import hotmath.gwt.cm_mobile3.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 
 import com.google.gwt.event.shared.EventBus;
 
