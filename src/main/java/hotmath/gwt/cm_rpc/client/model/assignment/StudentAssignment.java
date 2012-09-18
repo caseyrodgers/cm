@@ -24,6 +24,7 @@ public class StudentAssignment implements Response {
     private Assignment assignment;
     private String studentName;
     private CmList<StudentProblemDto> assigmentStatuses;
+    private CmList<StudentLessonDto> lessonStatuses;
 
     public StudentAssignment(){}
     
@@ -81,4 +82,12 @@ public class StudentAssignment implements Response {
     public String getStatus() {
         return assignment.getStatus();
     }
+
+	public List<StudentLessonDto> getLessonStatuses() {
+		return lessonStatuses;
+	}
+
+	public void setLessonStatuses(CmList<StudentLessonDto> lessonList) {
+		lessonStatuses = lessonList;
+	}
 }
