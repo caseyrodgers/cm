@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -293,6 +294,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         Assignment assignment = getAssignment(assignKey);
         
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
+        
+        __logger.debug("getAssignmentGradeBook(): assigKey: " + assignKey);
 
         /**
          *  get assignment problem status list for all users
@@ -313,12 +316,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return prob;
             }
         });
+        __logger.debug("getAssignmentGradeBook(): problemStatuses.size(): " + problemStatuses.size());
 
         /**
          * create student assignments for all users
          */
         int uid = 0;
         CmList<StudentProblemDto> probList = null;
+        Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
         for (StudentProblemDto probDto : problemStatuses) {
         	if (probDto.getUid() != uid) {
         		probList = new CmArrayList<StudentProblemDto>();
@@ -326,9 +331,74 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         		StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
         		stuAssignment.setStudentName(nameMap.get(uid));
         		stuAssignments.add(stuAssignment);
+        		stuAssignMap.put(uid,  stuAssignment);
         	}
         	probList.add(probDto);
         }
+
+        /**
+         * add lesson status for each user | lesson
+         */
+        uid = 0;
+        String lessonName = "";
+        int completed = 0;
+        int pending = 0;
+        int count = 0;
+        CmList<StudentLessonDto> lessonList = null;
+        StudentLessonDto lessonStatus = null;
+        for (StudentProblemDto probDto : problemStatuses) {
+        	if (probDto.getUid() != uid) {
+        		if (lessonList != null) {
+        	        __logger.debug("getAssignmentGradeBook(): lessonList.size(): " + lessonList.size());        			
+        		}
+        		if (lessonStatus != null) {
+        			if (pending != 0) {
+        				lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+        			}
+        			else {
+        				lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
+        			}
+        		}
+        		uid = probDto.getUid();
+        		StudentAssignment stuAssignment = stuAssignMap.get(uid);
+        		lessonList = new CmArrayList<StudentLessonDto>();
+        		stuAssignment.setLessonStatuses(lessonList);
+        		lessonName = "";
+        	}
+        	if (! lessonName.equals(probDto.getProblem().getLesson())) {
+        		if (lessonName != null && lessonName.trim().length() > 0) {
+        			if (pending != 0) {
+            			lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+        			}
+        			else {
+            			lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
+        			}
+        		}
+        		completed = 0;
+        		pending = 0;
+        		count = 0;
+        		lessonName = probDto.getProblem().getLesson();
+        		lessonStatus = new StudentLessonDto(uid, lessonName, null);
+        		lessonList.add(lessonStatus);
+        	}
+        	count++;
+        	String probStatus = probDto.getStatus();
+        	if ("-".equals(probStatus.trim())) continue;
+        	if ("answered".equalsIgnoreCase(probStatus) ||
+        		"viewed".equalsIgnoreCase(probStatus)) {
+        		completed++;
+        	}
+        	if ("pending".equalsIgnoreCase(probStatus)) {
+        		pending++;
+        	}
+        }
+		if (pending != 0) {
+			lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+		}
+		else {
+			lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
+		}
+        __logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
 
         return stuAssignments;
     }
