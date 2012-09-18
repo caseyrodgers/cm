@@ -50,12 +50,12 @@ public class AssignmentsContentPanel extends ContentPanel {
     
     Grid<Assignment> _grid;
     
-    GradeBookPanel gradeBookPanel;
+    GradeBookPanel _gradeBookPanel;
     GroupDto _currentGroup;
     
     public AssignmentsContentPanel(GradeBookPanel gradeBookPanel) {
         
-        this.gradeBookPanel = gradeBookPanel;
+        this._gradeBookPanel = gradeBookPanel;
 
         //getHeader().addTool(createGradebookButton());
         getHeader().addTool(createNewButton());
@@ -93,12 +93,10 @@ public class AssignmentsContentPanel extends ContentPanel {
         },DoubleClickEvent.getType());
         
         _grid.addHandler(new ClickHandler() {
-
 			@Override
 			public void onClick(ClickEvent arg0) {
 				showGradeBookForSelectedAssignment();
 			}
-
         }, ClickEvent.getType());
         
         add(_grid);
@@ -106,13 +104,13 @@ public class AssignmentsContentPanel extends ContentPanel {
     
 
     public void loadAssignentsFor(GroupDto group) {
-        _currentGroup=group;
+        _currentGroup = group;
         readAssignmentData(group);
     }
 
 
     private void showGradeBookForSelectedAssignment() {
-        if(gradeBookPanel == null) {
+        if(_gradeBookPanel == null) {
             return;
         }
         
@@ -120,7 +118,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         if(asgn == null) {
             return;
         }
-        gradeBookPanel.showGradeBookFor(asgn);
+        _gradeBookPanel.showGradeBookFor(asgn);
     }
     
     

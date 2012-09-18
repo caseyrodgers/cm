@@ -2,12 +2,9 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.UnassignStudentsFromAssignmentAction;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -15,17 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -42,7 +32,8 @@ public class GradeBookPanel extends ContentPanel {
     ListStore<StudentAssignment> _store;
     
     public GradeBookPanel(){
-        setHeadingText("Gradebook for selected Assignment");
+        super.setHeadingText("Gradebook for selected Assignment");
+        super.getHeader().setHeight("30px");
 
         nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 100, "Student");
         nameCol.setRowHeader(true);
@@ -98,12 +89,12 @@ public class GradeBookPanel extends ContentPanel {
      *
      * @param saList
      */
-    private void configureColumns(CmList<StudentAssignment> saList) {
+    private void configureColumns(List<StudentAssignment> saList) {
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
 
         if (saList != null && saList.size() > 0) {
     		StudentAssignment sa = saList.get(0);
-    		List<StudentProblemDto> asList = sa.getAssigmentStatuses();
+    		List<StudentLessonDto> lessonList = sa.getLessonStatuses();
 
             nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
             nameCol.setRowHeader(true);
@@ -111,11 +102,11 @@ public class GradeBookPanel extends ContentPanel {
             colConfList.add(nameCol);
 
             int idx = 0;
-            for (StudentProblemDto as : asList) {
+            for (StudentLessonDto lesson : lessonList) {
                 ColumnConfig<StudentAssignment, String> statusCol =
-                		new ColumnConfig<StudentAssignment, String>(new StudentAssignmentStatusValueProvider(idx), 60,
-                				"Prob " + (idx+1));
-                statusCol.setToolTip(new SafeHtmlBuilder().appendEscaped(as.getPidLabel()).toSafeHtml());
+                		new ColumnConfig<StudentAssignment, String>(new StudentAssignmentLessonStatusValueProvider(idx), 120,
+                				lesson.getLessonName());
+                statusCol.setToolTip(new SafeHtmlBuilder().appendEscaped(lesson.getLessonName()).toSafeHtml());
                 colConfList.add(statusCol);
                 idx++;
             }
@@ -137,6 +128,31 @@ public class GradeBookPanel extends ContentPanel {
 		@Override
 		public String getValue(StudentAssignment stuAssignment) {
         	return stuAssignment.getAssigmentStatuses().get(idx).getStatus();
+		}
+
+		@Override
+		public void setValue(StudentAssignment object, String value) {
+		}
+
+		@Override
+		public String getPath() {
+			return null;
+		}
+
+    }
+
+    private class StudentAssignmentLessonStatusValueProvider extends Object implements ValueProvider<StudentAssignment, String> {
+
+    	private int idx;
+
+    	StudentAssignmentLessonStatusValueProvider(int idx) {
+    	    super();
+    	    this.idx = idx;
+    	}
+    	
+		@Override
+		public String getValue(StudentAssignment stuAssignment) {
+        	return stuAssignment.getLessonStatuses().get(idx).getStatus();
 		}
 
 		@Override
