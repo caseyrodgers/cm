@@ -72,7 +72,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid, Date fromDate, Date toDate)
             throws Exception {
         List<StudentActivityModel> samList = null;
-
+        
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -210,12 +210,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         
         currentRunId = 0;
         lessonsCompleted = 0;
+        final Map<Integer, Integer> lessonsCompletedMap = new HashMap<Integer, Integer>();
+
         List<StudentActivityModel> list = this.getJdbcTemplate().query(sql,
                 new Object[] { uid, uid, uid, uid, uid, uid, uid, uid, uid }, new RowMapper<StudentActivityModel>() {
                     public StudentActivityModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         StudentActivityModel model;
                         try {
-                            model = loadStudentActivityRow(rs, cmaDao);
+                            model = loadStudentActivityRow(rs, cmaDao, lessonsCompletedMap);
                         } catch (Exception e) {
                             LOGGER.error(String.format("Error getting Student Activity for uid: %d", uid), e);
                             throw new SQLException(e.getMessage());
@@ -383,13 +385,15 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	private List<StudentActivityModel> loadStudentActivity(final Connection conn, ResultSet rs) throws Exception {
 
         List<StudentActivityModel> l = new ArrayList<StudentActivityModel>();
+        Map<Integer, Integer> lessonsCompletedMap = new HashMap<Integer, Integer>();
+
         CmAdminDao cmaDao = CmAdminDao.getInstance();
 
         currentRunId = 0;
         lessonsCompleted = 0;
 
         while (rs.next()) {
-            StudentActivityModel m = loadStudentActivityRow(rs, cmaDao);
+            StudentActivityModel m = loadStudentActivityRow(rs, cmaDao, lessonsCompletedMap);
             l.add(m);
         }
 
@@ -460,7 +464,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         sam.setIsArchived(0);
     }
 
-    private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao) throws SQLException, Exception {
+    private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao, Map<Integer, Integer> lessonsCompletedMap) throws SQLException, Exception {
         StudentActivityModel m = new StudentActivityModel();
 
         boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
@@ -495,8 +499,11 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         int runId = rs.getInt("test_run_id");
 
         if (runId != currentRunId) {
+        	if (currentRunId != 0) {
+        		lessonsCompletedMap.put(currentRunId, lessonsCompleted);
+        	}
             currentRunId = runId;
-            lessonsCompleted = 0;
+            lessonsCompleted = (lessonsCompletedMap.get(runId) != null)?lessonsCompletedMap.get(runId):0;
         }
         m.setRunId(runId);
 
