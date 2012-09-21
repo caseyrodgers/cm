@@ -23,6 +23,7 @@ public class StudentAssignment implements Response {
     private int uid;
     private Assignment assignment;
     private String studentName;
+    private String homeworkStatus;
     private CmList<StudentProblemDto> assigmentStatuses;
     private CmList<StudentLessonDto> lessonStatuses;
 
@@ -52,6 +53,14 @@ public class StudentAssignment implements Response {
 
     public String getStudentName() {
 		return studentName;
+	}
+
+	public void setHomeworkStatus(String homeworkStatus) {
+		this.homeworkStatus = homeworkStatus;
+	}
+
+    public String getHomeworkStatus() {
+		return homeworkStatus;
 	}
 
 	public void setStudentName(String studentName) {
