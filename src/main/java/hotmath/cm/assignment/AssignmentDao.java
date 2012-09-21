@@ -341,66 +341,90 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * add lesson status for each user | lesson
+         * add assignment status
          */
         uid = 0;
         String lessonName = "";
         int completed = 0;
         int pending = 0;
         int count = 0;
+        int totCompleted = 0;
+        int totPending = 0;
+        int totCount = 0;
+        String status = "";
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
         for (StudentProblemDto probDto : problemStatuses) {
-            if (probDto.getUid() != uid) {
-                if (lessonList != null) {
-                    __logger.debug("getAssignmentGradeBook(): lessonList.size(): " + lessonList.size());                    
-                }
-                if (lessonStatus != null) {
-                    if (pending != 0) {
-                        lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
-                    }
-                    else {
-                        lessonStatus.setStatus(String.format("%d of %d completed", completed, count));                      
-                    }
-                }
-                uid = probDto.getUid();
-                StudentAssignment stuAssignment = stuAssignMap.get(uid);
-                lessonList = new CmArrayList<StudentLessonDto>();
-                stuAssignment.setLessonStatuses(lessonList);
-                lessonName = "";
-            }
-            if (! lessonName.equals(probDto.getProblem().getLesson())) {
-                if (lessonName != null && lessonName.trim().length() > 0) {
-                    if (pending != 0) {
-                        lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
-                    }
-                    else {
-                        lessonStatus.setStatus(String.format("%d of %d completed", completed, count));                      
-                    }
-                }
-                completed = 0;
-                pending = 0;
-                count = 0;
-                lessonName = probDto.getProblem().getLesson();
-                lessonStatus = new StudentLessonDto(uid, lessonName, null);
-                lessonList.add(lessonStatus);
-            }
-            count++;
-            String probStatus = probDto.getStatus();
-            if ("-".equals(probStatus.trim())) continue;
-            if ("answered".equalsIgnoreCase(probStatus) ||
-                "viewed".equalsIgnoreCase(probStatus)) {
-                completed++;
-            }
-            if ("pending".equalsIgnoreCase(probStatus)) {
-                pending++;
-            }
+        	if (probDto.getUid() != uid) {
+        		if (lessonStatus != null) {
+        			if (pending != 0) {
+        				lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+        			}
+        			else {
+        				lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
+        			}
+        		}
+        		uid = probDto.getUid();
+        		StudentAssignment stuAssignment = stuAssignMap.get(uid);
+        		lessonList = new CmArrayList<StudentLessonDto>();
+        		stuAssignment.setLessonStatuses(lessonList);
+        		if ((totCompleted + totPending) > 0 && (totCompleted + totPending) < totCount) status = "In Progress";
+        		else if ((totCompleted + totPending) > 0 && (totCompleted + totPending) == totCount) status = "Ready to Grade";
+        		else if ((totCompleted + totPending) == 0) status = "Not Started";
+        		stuAssignment.setHomeworkStatus(status);
+    	        __logger.debug("getAssignmentGradeBook(): status: " + status);
+        		lessonName = "";
+        		totCount = 0;
+        		totCompleted = 0;
+        		totPending = 0;
+        	}
+        	if (! lessonName.equals(probDto.getProblem().getLesson())) {
+        		if (lessonName != null && lessonName.trim().length() > 0) {
+        			if (lessonStatus != null) {
+        				if (pending != 0) {
+        					lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+        				}
+        				else {
+        					lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
+        				}
+        			}
+        		}
+        		completed = 0;
+        		pending = 0;
+        		count = 0;
+        		lessonName = probDto.getProblem().getLesson();
+        		lessonStatus = new StudentLessonDto(uid, lessonName, null);
+        		lessonList.add(lessonStatus);
+        	}
+        	count++;
+        	totCount++;
+        	String probStatus = probDto.getStatus();
+        	if ("-".equals(probStatus.trim())) continue;
+        	if ("answered".equalsIgnoreCase(probStatus) ||
+        		"viewed".equalsIgnoreCase(probStatus)) {
+        		completed++;
+        		totCompleted++;
+        	}
+        	if ("pending".equalsIgnoreCase(probStatus)) {
+        		pending++;
+        		totPending++;
+        	}
         }
-        if (pending != 0) {
-            lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+
+        if (lessonStatus != null) {
+        	if (pending != 0) {
+        		lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
+        	}
+        	else {
+        		lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
+        	}
         }
-        else {
-            lessonStatus.setStatus(String.format("%d of %d completed", completed, count));                      
-        }
+
+		if ((totCompleted + totPending) > 0 && (totCompleted + totPending) < totCount) status = "In Progress";
+		else if ((totCompleted + totPending) > 0 && (totCompleted + totPending) == totCount) status = "Ready to Grade";
+		else if ((totCompleted + totPending) == 0) status = "Not Started";
+		stuAssignMap.get(uid).setHomeworkStatus(status);
+        __logger.debug("getAssignmentGradeBook(): status: " + status);
         __logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
 
         return stuAssignments;

@@ -29,17 +29,22 @@ public class GradeBookPanel extends ContentPanel {
     List<ColumnConfig<StudentAssignment, ?>> colConfList;
     ColumnModel<StudentAssignment> colMdl;
     ColumnConfig<StudentAssignment, String> nameCol;
+    ColumnConfig<StudentAssignment, String> statusCol;
     ListStore<StudentAssignment> _store;
     
     public GradeBookPanel(){
         super.setHeadingText("Gradebook for selected Assignment");
         super.getHeader().setHeight("30px");
 
-        nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 100, "Student");
+        nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
         nameCol.setRowHeader(true);
+
+        statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 100, "Status");
+        statusCol.setRowHeader(true);
 
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
         colConfList.add(nameCol);
+        colConfList.add(statusCol);
         colMdl = new ColumnModel<StudentAssignment>(colConfList);
         
         _store = new ListStore<StudentAssignment>(saProps.uid());
@@ -99,7 +104,11 @@ public class GradeBookPanel extends ContentPanel {
             nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
             nameCol.setRowHeader(true);
 
+            statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 100, "Status");
+            statusCol.setRowHeader(true);
+
             colConfList.add(nameCol);
+            colConfList.add(statusCol);
 
             int idx = 0;
             for (StudentLessonDto lesson : lessonList) {
