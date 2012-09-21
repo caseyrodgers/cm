@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -74,12 +77,29 @@ public class GradeBookPanel extends ContentPanel {
                 _gradebookGrid.getView().setColumnLines(true);
                 _gradebookGrid.getView().setAutoExpandColumn(nameCol);
                 
+                _gradebookGrid.addHandler(new DoubleClickHandler() {
+                    @Override
+                    public void onDoubleClick(DoubleClickEvent event) {
+                        showAssignmentGrading();
+                    }
+                },DoubleClickEvent.getType());
+                
                 setWidget(_gradebookGrid);
             }
-
-            
-            
         }.register();                
+    }
+
+    private void showAssignmentGrading() {
+        StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
+        if(studentAssignment != null) {
+            new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
+                @Override
+                public void isComplete() {
+                    //TODO: 
+                }
+            });        
+        }
+
     }
 
     /**
