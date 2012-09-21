@@ -36,21 +36,14 @@ public class GradeBookPanel extends ContentPanel {
         super.setHeadingText("Gradebook for selected Assignment");
         super.getHeader().setHeight("30px");
 
-        nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
-        nameCol.setRowHeader(true);
-
-        statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 100, "Status");
-        statusCol.setRowHeader(true);
-
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
-        colConfList.add(nameCol);
-        colConfList.add(statusCol);
+        initColumns();
         colMdl = new ColumnModel<StudentAssignment>(colConfList);
         
         _store = new ListStore<StudentAssignment>(saProps.uid());
         
     }
-    
+
     Assignment _lastUsedAssignment;
     public void showGradeBookFor(Assignment assignment) {
         _lastUsedAssignment = assignment;
@@ -101,14 +94,7 @@ public class GradeBookPanel extends ContentPanel {
     		StudentAssignment sa = saList.get(0);
     		List<StudentLessonDto> lessonList = sa.getLessonStatuses();
 
-            nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
-            nameCol.setRowHeader(true);
-
-            statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 100, "Status");
-            statusCol.setRowHeader(true);
-
-            colConfList.add(nameCol);
-            colConfList.add(statusCol);
+            initColumns();
 
             int idx = 0;
             for (StudentLessonDto lesson : lessonList) {
@@ -124,6 +110,17 @@ public class GradeBookPanel extends ContentPanel {
         colMdl = new ColumnModel<StudentAssignment>(colConfList);
     	
     }
+
+	private void initColumns() {
+		nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
+        nameCol.setRowHeader(true);
+
+        statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 85, "Status");
+        statusCol.setRowHeader(true);
+
+        colConfList.add(nameCol);
+        colConfList.add(statusCol);
+	}
 
     private class StudentAssignmentStatusValueProvider extends Object implements ValueProvider<StudentAssignment, String> {
 
