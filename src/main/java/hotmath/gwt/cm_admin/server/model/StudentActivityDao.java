@@ -195,9 +195,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         return totList;
     }
 
-    int currentRunId = 0;
-    int lessonsCompleted = 0;
-
     public List<StudentActivityModel> getStudentActivity(final int uid, final boolean includeTimeOnTask) throws Exception {
         return getStudentActivity(uid, includeTimeOnTask, null, null);
     }
@@ -208,8 +205,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         final CmAdminDao cmaDao = CmAdminDao.getInstance();
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY");
         
-        currentRunId = 0;
-        lessonsCompleted = 0;
         final Map<Integer, Integer> lessonsCompletedMap = new HashMap<Integer, Integer>();
 
         List<StudentActivityModel> list = this.getJdbcTemplate().query(sql,
@@ -389,9 +384,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         CmAdminDao cmaDao = CmAdminDao.getInstance();
 
-        currentRunId = 0;
-        lessonsCompleted = 0;
-
         while (rs.next()) {
             StudentActivityModel m = loadStudentActivityRow(rs, cmaDao, lessonsCompletedMap);
             l.add(m);
@@ -498,13 +490,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
         int runId = rs.getInt("test_run_id");
 
-        if (runId != currentRunId) {
-        	if (currentRunId != 0) {
-        		lessonsCompletedMap.put(currentRunId, lessonsCompleted);
-        	}
-            currentRunId = runId;
-            lessonsCompleted = (lessonsCompletedMap.get(runId) != null)?lessonsCompletedMap.get(runId):0;
-        }
+        int lessonsCompleted = (lessonsCompletedMap.get(runId) != null)?lessonsCompletedMap.get(runId):0;
+
         m.setRunId(runId);
 
         StringBuilder sb = new StringBuilder();
@@ -546,6 +533,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             m.setLessonsViewed(lessonsViewed);
             lessonsCompleted += lessonsViewed;
             m.setLessonsCompleted(lessonsCompleted);
+            lessonsCompletedMap.put(runId, lessonsCompleted);
 
             m.setTimeOnTask(rs.getInt("time_on_task") * lessonsViewed);
 
