@@ -19,6 +19,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -45,6 +48,7 @@ public class GradeBookPanel extends ContentPanel {
         
         _store = new ListStore<StudentAssignment>(saProps.uid());
         
+        addGradeButton();
     }
 
     Assignment _lastUsedAssignment;
@@ -191,5 +195,20 @@ public class GradeBookPanel extends ContentPanel {
 		}
 
     }
+    
+    private void addGradeButton() {
+
+    	TextButton btn = new TextButton("Grade");
+    	btn.setToolTip("View and Grade Assignment");
+    	btn.addSelectHandler(new SelectHandler() {
+    		@Override
+    		public void onSelect(SelectEvent event) {
+    			showAssignmentGrading();
+    		}
+    	});
+
+    	addTool(btn);
+    }
+
 
 }
