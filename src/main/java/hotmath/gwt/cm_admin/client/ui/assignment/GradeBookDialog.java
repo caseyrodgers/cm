@@ -105,7 +105,7 @@ public class GradeBookDialog {
         BorderLayoutData data = new BorderLayoutData();
         agPanel.setBorders(true);
         agPanel.setLayoutData(data);
-        con.setWestWidget(agPanel);
+        con.setCenterWidget(agPanel);
 
 //        window.addButton(new TextButton("Save",new SelectHandler() {
 //            @Override
