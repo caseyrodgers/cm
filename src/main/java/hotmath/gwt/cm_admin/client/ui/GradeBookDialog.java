@@ -54,10 +54,10 @@ public class GradeBookDialog extends CmWindow {
         addHomeworkSelector();
         addDetailsButton();
         addCloseButton();
-        setVisible(true);
 
         readServerData();
 
+        setVisible(true);
     }
 
     private void addDetailsButton() {
@@ -72,8 +72,8 @@ public class GradeBookDialog extends CmWindow {
             }
 
         });
-        detailsBtn.setStyleAttribute("padding-right", "35px");
-        detailsBtn.setStyleAttribute("padding-top", "2px");
+        detailsBtn.setStyleAttribute("padding-right", "50px");
+        detailsBtn.setStyleAttribute("padding-top", "4px");
 
         getButtonBar().add(detailsBtn);    	
     }
