@@ -340,7 +340,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         /**
-         * add lesson status for each user | lesson
+         * add lesson status for each user/lesson
          * add assignment status
          */
         uid = 0;
@@ -354,39 +354,28 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String status = "";
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
+
         for (StudentProblemDto probDto : problemStatuses) {
+
         	if (probDto.getUid() != uid) {
         		if (lessonStatus != null) {
-        			if (pending != 0) {
-        				lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
-        			}
-        			else {
-        				lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
-        			}
+                	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+        			stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
+        			__logger.debug("getAssignmentGradeBook(): status: " + stuAssignMap.get(uid).getHomeworkStatus());
         		}
-        		uid = probDto.getUid();
-        		StudentAssignment stuAssignment = stuAssignMap.get(uid);
-        		lessonList = new CmArrayList<StudentLessonDto>();
-        		stuAssignment.setLessonStatuses(lessonList);
-        		if ((totCompleted + totPending) > 0 && (totCompleted + totPending) < totCount) status = "In Progress";
-        		else if ((totCompleted + totPending) > 0 && (totCompleted + totPending) == totCount) status = "Ready to Grade";
-        		else if ((totCompleted + totPending) == 0) status = "Not Started";
-        		stuAssignment.setHomeworkStatus(status);
-    	        __logger.debug("getAssignmentGradeBook(): status: " + status);
-        		lessonName = "";
-        		totCount = 0;
-        		totCompleted = 0;
-        		totPending = 0;
+    			lessonName = "";
+    			totCount = 0;
+    			totCompleted = 0;
+    			totPending = 0;
+    			uid = probDto.getUid();
+    			lessonList = new CmArrayList<StudentLessonDto>();
+    			stuAssignMap.get(uid).setLessonStatuses(lessonList);
         	}
+
         	if (! lessonName.equals(probDto.getProblem().getLesson())) {
-        		if (lessonName != null && lessonName.trim().length() > 0) {
+        		if (lessonName.trim().length() > 0) {
         			if (lessonStatus != null) {
-        				if (pending != 0) {
-        					lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
-        				}
-        				else {
-        					lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
-        				}
+                    	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         			}
         		}
         		completed = 0;
@@ -396,10 +385,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         		lessonStatus = new StudentLessonDto(uid, lessonName, null);
         		lessonList.add(lessonStatus);
         	}
+
         	count++;
         	totCount++;
-        	String probStatus = probDto.getStatus();
-        	if ("-".equals(probStatus.trim())) continue;
+        	String probStatus = probDto.getStatus().trim();
+        	if ("-".equals(probStatus)) continue;
         	if ("answered".equalsIgnoreCase(probStatus) ||
         		"viewed".equalsIgnoreCase(probStatus)) {
         		completed++;
@@ -412,25 +402,29 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         if (lessonStatus != null) {
-        	if (pending != 0) {
-        		lessonStatus.setStatus(String.format("%d of %d completed, %d pending", completed, count, pending));
-        	}
-        	else {
-        		lessonStatus.setStatus(String.format("%d of %d completed", completed, count));        				
-        	}
+        	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         }
+		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
+		__logger.debug("getAssignmentGradeBook(): homework status: " + stuAssignMap.get(uid).getHomeworkStatus());
 
-		if ((totCompleted + totPending) > 0 && (totCompleted + totPending) < totCount) status = "In Progress";
-		else if ((totCompleted + totPending) > 0 && (totCompleted + totPending) == totCount) status = "Ready to Grade";
-		else if ((totCompleted + totPending) == 0) status = "Not Started";
-		stuAssignMap.get(uid).setHomeworkStatus(status);
-        __logger.debug("getAssignmentGradeBook(): status: " + status);
-        __logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
+		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
 
         return stuAssignments;
     }
 
-    
+    private String getLessonStatus(int count, int completed, int pending) {
+		return (pending != 0) ?
+			String.format("%d of %d completed, %d pending", completed, count, pending) :
+			String.format("%d of %d completed", completed, count);        				
+    }
+
+    private String getHomeworkStatus(int totCount, int totCompleted, int totPending) {
+    	String status = "Not Started";
+		if ((totCompleted + totPending) > 0) {
+			status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
+		}
+        return status;
+    }
 
     /**
      * Assign students to assignment. Return messages indicating each error s
