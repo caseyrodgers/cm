@@ -16,17 +16,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.PreviewEvent;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Info;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -57,7 +53,8 @@ public class AssignmentsContentPanel extends ContentPanel {
         
         this._gradeBookPanel = gradeBookPanel;
 
-        //getHeader().addTool(createGradebookButton());
+        super.setHeadingText("Assignments");
+
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         getHeader().addTool(createDelButton());
@@ -108,7 +105,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         readAssignmentData(group);
     }
 
-
     private void showGradeBookForSelectedAssignment() {
         if(_gradeBookPanel == null) {
             return;
@@ -120,7 +116,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
         _gradeBookPanel.showGradeBookFor(asgn);
     }
-    
     
     private void readAssignmentData(final GroupDto group) {
         new RetryAction<CmList<Assignment>>() {
@@ -139,12 +134,11 @@ public class AssignmentsContentPanel extends ContentPanel {
                     List<Assignment> selectedList = new ArrayList<Assignment>();
                     selectedList.add(assignments.get(0));
                     _grid.getSelectionModel().setSelection(selectedList);
+                    showGradeBookForSelectedAssignment();
                 }
             }
         }.register();        
     }
-
-
 
     private void createNewAssignment() {
         
@@ -230,7 +224,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
         
     }
-
     
     private Widget createDelButton() {
         TextButton btn = new TextButton("Del");
@@ -265,19 +258,6 @@ public class AssignmentsContentPanel extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
                 createNewAssignment();
-            }
-
-        });
-        return btn;
-    }
-
-    private Widget createGradebookButton() {
-        TextButton btn = new TextButton("Gradebook");
-        btn.setToolTip("Gradebook for selected assignment");
-        btn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-            	showGradeBookForSelectedAssignment();
             }
 
         });
