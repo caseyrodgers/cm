@@ -34,6 +34,7 @@ import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -298,8 +299,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
         
-        __logger.debug("getAssignmentGradeBook(): assigKey: " + assignKey);
-
         /**
          *  get assignment problem status list for all users
          */
@@ -319,7 +318,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return prob;
             }
         });
-        __logger.debug("getAssignmentGradeBook(): problemStatuses.size(): " + problemStatuses.size());
 
         /**
          * create student assignments for all users
@@ -351,7 +349,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int totCompleted = 0;
         int totPending = 0;
         int totCount = 0;
-        String status = "";
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
 
@@ -361,7 +358,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         		if (lessonStatus != null) {
                 	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         			stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
-        			__logger.debug("getAssignmentGradeBook(): status: " + stuAssignMap.get(uid).getHomeworkStatus());
         		}
     			lessonName = "";
     			totCount = 0;
@@ -405,9 +401,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         }
 		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
-		__logger.debug("getAssignmentGradeBook(): homework status: " + stuAssignMap.get(uid).getHomeworkStatus());
 
-		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
+		if (__logger.isDebugEnabled())
+    		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
 
         return stuAssignments;
     }
@@ -702,6 +698,39 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 __logger.error("Error setting assignment pid status", e);
             }
         }
+    }
+
+    /**
+     * Update a Student's Assignment status
+     * 
+     * @param studentAssignment
+     * @return
+     */
+    public int[] updateStudentAssignmentStatus(StudentAssignment studentAssignment) {
+    	List<StudentProblemDto> list = studentAssignment.getAssigmentStatuses();
+    	StringBuilder sb = new StringBuilder();
+    	for (StudentProblemDto sp : list) {
+    		sb.append(String.format("label: %s, status: %s\n", sp.getPidLabel(), sp.getStatus()));
+    	}
+    	__logger.debug("problem-status: " + sb.toString());
+
+    	List<Object[]> batch = new ArrayList<Object[]>();
+    	for (StudentProblemDto sp : studentAssignment.getAssigmentStatuses()) {
+    		Object[] values = new Object[] {
+    				sp.getStatus(),
+    				studentAssignment.getAssignment().getAssignKey(),
+    				sp.getPid(),
+    				studentAssignment.getUid()};
+    		batch.add(values);
+    	}
+    	SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
+    	int[] updateCounts = template.batchUpdate(
+    			"update CM_ASSIGNMENT_PID_STATUS set status = ? where assign_key = ? and pid = ? and uid = ?",
+    			batch);
+
+    	//TODO: also update CM_ASSIGNMENT_PID_ANSWERS
+
+    	return updateCounts;
     }
 
 }

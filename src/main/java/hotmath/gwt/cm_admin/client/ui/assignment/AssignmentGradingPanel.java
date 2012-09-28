@@ -28,6 +28,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
     StudentAssignment _studentAssignment;
     Grid<StudentProblemDto> _gradingGrid;
+    GridEditing<StudentProblemDto> editing;
     List<ColumnConfig<StudentProblemDto, ?>> colConfList;
     ColumnModel<StudentProblemDto> colMdl;
     ColumnConfig<StudentProblemDto, String> problemCol;
@@ -109,7 +110,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         combo.add(ProblemStatus.INCORRECT);
         combo.setForceSelection(true);
 
-        final GridEditing<StudentProblemDto> editing = createGridEditing(_gradingGrid);
+        editing = createGridEditing(_gradingGrid);
         editing.addEditor(statusCol, new Converter<String, ProblemStatus>() {
      
           @Override
