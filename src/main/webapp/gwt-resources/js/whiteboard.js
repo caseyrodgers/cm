@@ -237,7 +237,7 @@ var Whiteboard = (function () {
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
-console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
+
         var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
         var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
@@ -253,13 +253,14 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
 		G_vmlCanvasManager.initElement(origcanvas);
 		G_vmlCanvasManager.initElement(graphcanvas);
 		G_vmlCanvasManager.initElement(topcanvas);
-		//console.log("DEBUG_IE: G_vmlCanvasManager available");
+		console.log("DEBUG_IE: G_vmlCanvasManager available");
 	}else{
 	console.log("DEBUG_IE: G_vmlCanvasManager not available");
 	}
 	}catch(error){
 	console.log("DEBUG_IE:"+error);
 	}
+	console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         screen_width = docWidth - leftOff - 27;
         screen_height = docHeight - topOff - 27;
         if (screen_width > 800) {
