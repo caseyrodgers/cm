@@ -249,13 +249,16 @@ var Whiteboard = (function () {
         topcanvas = $get_Element("#tcanvas");
 		try{
 	if (typeof G_vmlCanvasManager != "undefined") {
-		G_vmlCanvasManager.initElement(canvas);		
+		canvas=G_vmlCanvasManager.initElement(canvas);		
 		console.log("DEBUG_IE: G_vmlCanvasManager available");
 	}else{
 	console.log("DEBUG_IE: G_vmlCanvasManager not available");
 	}
 	}catch(error){
 	console.log("DEBUG_IE:"+error);
+	for(var m in error){
+	console.log("ERR: "+m+" --> "+error[m]);
+	}
 	}
 	console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
 	try{
@@ -277,7 +280,7 @@ var Whiteboard = (function () {
 	console.log("DEBUG_IE:"+error);
 	}
 	try{
-	if (typeof G_vmlCanvasManager != "undefined") {		
+	if (typeof G_vmlCanvasManager != "undefined") {
 		G_vmlCanvasManager.initElement(topcanvas);		
 	}else{
 	console.log("DEBUG_IE: G_vmlCanvasManager not available");
