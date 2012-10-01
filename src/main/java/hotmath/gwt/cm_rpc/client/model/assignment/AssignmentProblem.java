@@ -14,10 +14,14 @@ public class AssignmentProblem implements Response{
     
     private SolutionInfo info;
     private ProblemType problemType;
+    private int userId;
+    private int assignKey;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(SolutionInfo info, ProblemType problemType) {
+    public AssignmentProblem(int userId, int assignKey, SolutionInfo info, ProblemType problemType) {
+        this.userId = userId;
+        this.assignKey = assignKey;
         this.info = info;
         this.problemType = problemType;
     }
@@ -36,5 +40,27 @@ public class AssignmentProblem implements Response{
 
     public void setProblemType(ProblemType problemType) {
         this.problemType = problemType;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getAssignKey() {
+        return assignKey;
+    }
+
+    public void setAssignKey(int assignKey) {
+        this.assignKey = assignKey;
+    }
+
+    @Override
+    public String toString() {
+        return "AssignmentProblem [info=" + info + ", problemType=" + problemType + ", userId=" + userId
+                + ", assignKey=" + assignKey + "]";
     }
 }

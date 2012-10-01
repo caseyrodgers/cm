@@ -12,8 +12,10 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
@@ -102,6 +104,9 @@ public class CatchupMath implements EntryPoint {
                 if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContentWrapper != null) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
                 }
+                if(CmRpc.EVENT_BUS != null) {
+                    CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+                }
               }
         };
         _mainPort.setWidget(_mainPortWrapper);
@@ -168,6 +173,13 @@ public class CatchupMath implements EntryPoint {
                 startType = "";
 
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
+            
+            
+//            if(true) {
+//                showAssignments_gwt();
+//                return;
+//            }
+            
 
             if (CmShared.getQueryParameterValue("type").equals("su")) {
                 UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
@@ -219,8 +231,9 @@ public class CatchupMath implements EntryPoint {
             e.printStackTrace();
             CatchupMathTools.showAlert("There has been a problem creating the user object: " + e.getMessage());
         }
-        
-        CmBusyManager.showLoading(false);
+        finally {
+            CmBusyManager.showLoading(false);
+        }
     }
 
     /**

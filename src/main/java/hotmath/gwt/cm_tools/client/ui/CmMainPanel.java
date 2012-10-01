@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
@@ -147,7 +149,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 * 
 	 */
 	public void removeResource() {
-		Info.display("Info", "Remove Resource");
+	    __lastInstance._mainContentWrapper.getResourceWrapper().clear();
 	}
 
 	static private boolean _isWhiteboardVisible;
@@ -261,6 +263,12 @@ public class CmMainPanel extends BorderLayoutContainer {
                                 __lastInstance._mainContentWrapper = null;
                                 __lastInstance = null;
                             }
+                            
+                            
+                            
+                        case EVENT_TYPE_TOPIC_CHANGED:
+                            __lastInstance.removeResource();
+                            break;
 						}
 					}
 				});

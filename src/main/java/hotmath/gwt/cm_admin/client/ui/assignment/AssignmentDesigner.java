@@ -136,9 +136,7 @@ public class AssignmentDesigner extends SimpleContainer {
                 
                 /** select first problem, if any */
                 if(false && assignment.getPids().size() > 0) {
-                    List<ProblemDto> selectedNodes = new ArrayList<ProblemDto>();
-                    selectedNodes.add(assignment.getPids().get(0));
-                    _listView.getGrid().getSelectionModel().setSelection(selectedNodes);
+                    _listView.getGrid().getSelectionModel().select(assignment.getPids().get(0), false);
                 }
             }
             

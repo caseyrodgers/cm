@@ -6,6 +6,12 @@
         font: 12pt "Times New Roman", Times, serif;
 }
 
+#tutoroutput p {
+	font: 12pt "Times New Roman", Times, serif;
+	text-align: left;
+	color: black;
+}
+
 #steps_head {
 	display: none;
 }
@@ -36,7 +42,7 @@
 }
 
 
-/** tutor sytles */
+/** tutor styles */
 #show-work-force,#tutoring_button {
    display: none;
 }
@@ -88,6 +94,14 @@
 #steps_next {
   margin-right: 60px;
   margin-left: 20px;
+}
+
+.hm-steps_next {
+  margin-right: 60px;
+  margin-left: 20px;
+}
+
+.hm-steps_prev {
 }
 
 #steps_prev {

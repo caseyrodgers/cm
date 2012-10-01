@@ -70,7 +70,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
                     	System.currentTimeMillis()-startTime));
 
             startTime = System.currentTimeMillis();
-            SolutionInfo solutionInfo = new SolutionInfo(solutionHtml,sp.getData(),hasShowWork);
+            SolutionInfo solutionInfo = new SolutionInfo(pid,solutionHtml,sp.getData(),hasShowWork);
             if (logger.isDebugEnabled()) logger.debug(String.format("+++ execute(): SolutionInfo() done in: %d msec",
                     	System.currentTimeMillis()-startTime));
             

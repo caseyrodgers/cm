@@ -17,13 +17,14 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.ui.viewer.TutorWrapperPanel;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 
 import java.util.ArrayList;
@@ -35,9 +36,6 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -534,7 +532,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
 
     static ResourceViewerImplTutor _instance;
     static {
-        publishNative();
+        //publishNative();
 
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
@@ -574,29 +572,4 @@ class ShowWorkExampleWindow extends Window {
         add(frame);
         setVisible(true);
     }
-}
-
-
-class ShowHowToUseDialog extends CmWindow {
-    public ShowHowToUseDialog() {
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        setModal(true);
-        setSize(350,200);
-        setHeading("How To Use This");
-        add(new Html(html));
-        addCloseButton();
-        addWindowListener(new WindowListener() {
-                @Override
-                public void windowHide(WindowEvent we) {
-                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-                }
-        });
-    }
-    String html =
-        "<div style='padding: 10px 5px;'>" +
-         "<p>Work out your answer using pencil and paper or the Whiteboard. " +
-         "Some teachers may require this.</p>" +
-         "<p>If you see an 'Enter Your Answer' input box, you can enter your " +
-         "answer there to check your work.</p>" +
-        "</div>";
 }

@@ -30,7 +30,7 @@ public class GetGradeBookDataCommand implements ActionHandler<GetGradeBookDataAc
     public CmList<GradeBookModel> execute(Connection conn, GetGradeBookDataAction action) throws Exception {
         CmList<GradeBookModel> cmList = new CmArrayList<GradeBookModel>();
 
-        String dateRange = action.getStudentGridAction().getDateRange();
+        String dateRange = action.getStudentGridAction()!=null?action.getStudentGridAction().getDateRange():null;
         logger.debug("dateRange: " + dateRange);
         String[] dates;
         if (dateRange == null || dateRange.length() < 1) {

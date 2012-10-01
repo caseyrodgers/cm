@@ -8,82 +8,8 @@
 
 var _productionMode = false;
 
-/** replacement for YUI events */
-var HmEvents = {
-    eventTutorInitialized : {
-        listeners : [],
-        subscribe : function(callBack) {
-            var hel = HmEvents.eventTutorInitialized.listeners;
-            hel[hel.length] = callBack;
-        },
-        fire : function(args) {
-            var hel = HmEvents.eventTutorInitialized.listeners;
-            for ( var i = 0; i < hel.length; i++) {
-                hel[i](args,[]);
-            }
-        }
-    },
 
-    eventTutorLastStep : {
-        listeners : [],
-        subscribe : function(callBack) {
-            var hel = HmEvents.eventTutorLastStep.listeners;
-            hel[hel.length] = callBack;
-        },
-        fire : function() {
-            var hel = HmEvents.eventTutorLastStep.listeners;
-            for ( var i = 0; i < hel.length; i++) {
-                hel[i]([]);
-            }
-        }
-    },
 
-    eventTutorWidgetComplete : {
-        listeners : [],
-        subscribe : function(callBack) {
-            var hel = HmEvents.eventTutorWidgetComplete.listeners;
-            hel[hel.length] = callBack;
-        },
-        fire : function(data) {
-            var hel = HmEvents.eventTutorWidgetComplete.listeners;
-            for ( var i = 0; i < hel.length; i++) {
-                hel[i](null, [ data ]);
-            }
-        }
-    },
-
-    eventTutorSetComplete : {
-        listeners : [],
-        subscribe : function(callBack) {
-            var hel = HmEvents.eventTutorSetComplete.listeners;
-            hel[hel.length] = callBack;
-        },
-        fire : function(args) {
-            var hel = HmEvents.eventTutorSetComplete.listeners;
-            for ( var i = 0; i < hel.length; i++) {
-                hel[i](null,[args]);
-            }
-        }
-    },
-
-    eventTutorChangeStep : {
-        listeners : [],
-        subscribe : function(callBack) {
-            var hel = HmEvents.eventTutorChangeStep.listeners;
-            hel[hel.length] = callBack;
-        },
-        fire : function(args) {
-            var hel = HmEvents.eventTutorChangeStep.listeners;
-            for ( var i = 0; i < hel.length; i++) {
-                hel[i](null,[args]);
-            }
-        }
-    }
-}
-
-function $get(name) {
-    return document.getElementById(name);
-}
 
 /**
  * Process MathJAX asynchronously
@@ -96,6 +22,39 @@ HmEvents.eventTutorInitialized.subscribe(function() {
         alert("MathJAX processing failed: " + e);
     }
 });
+
+
+/**
+ * register a listener with Tutor to be notified when last step is reached. This
+ * is used to only advance when the solution has actually been completed.
+ *
+ *
+ * solutionHasBeenViewed_Gwt is defined GWT source: PrescriptionCmGuiDefinition
+ *
+ */
+HmEvents.eventTutorLastStep.subscribe(function (x) {
+    solutionHasBeenViewed_Gwt(String(x));
+});
+
+
+/**
+ * Registered listener to be notified after solution is loaded fully If
+ * _shouldExpandSteps is true, the move to last step.
+ *
+ */
+HmEvents.eventTutorInitialized.subscribe(function (x) {
+    gwt_solutionHasBeenInitialized();
+});
+
+
+
+
+
+
+
+function $get(name) {
+    return document.getElementById(name);
+}
 
 /** Tutor routines */
 function setStepsInfoHelp() {
@@ -159,7 +118,7 @@ var TutorManager = {
     },
     showPreviousStep : function() {
         if (TutorManager.currentStepUnit < 0) {
-            TutorManager.showMessage('No previous step');
+            TutorManager.showMessage('no previous step');
             return;
         } else {
             while (TutorManager.currentStepUnit > -1) {
@@ -308,7 +267,13 @@ function enabledButton(btn, yesNo) {
     if (!yesNo) {
         clazz += ' disabled';
     }
-    $get(btn).className = clazz;
+    var b = $get(btn);
+    if(b) {
+       b.className = clazz;
+    }
+    else {
+        alert('required button with id [' + btn + '] not found');
+    }
 }
 
 // StepUnit is a basic unit
@@ -512,7 +477,7 @@ function setState(n, onoff) {
 function scrollToStep(num) {
     var stb = document.getElementById('scrollTo-button');
     if (stb) {
-        var top = DL_GetElementTop(stb);
+        var top = _getElementTop(stb);
         var visibleSize = getViewableSize();
         var scrollXy = getScrollXY();
         var visTop = scrollXy[1];
@@ -737,3 +702,64 @@ function deleteStep(x) {
          return true;
      }
 }
+
+
+
+
+function _getElementTop(eElement)
+{
+    if (!eElement && this)                    // if argument is invalid
+    {                                         // (not specified, is null or is
+												// 0)
+        eElement = this;                       // and function is a method
+    }                                         // identify the element as the
+												// method owner
+
+    var DL_bIE = document.all ? true : false; // initialize var to identify IE
+
+    var nTopPos = eElement.offsetTop;       // initialize var to store
+											// calculations
+    var eParElement = eElement.offsetParent;  // identify first offset parent
+												// element
+
+    while (eParElement != null)
+    {                                         // move up through element
+												// hierarchy
+        if(DL_bIE)
+        {
+            if(eParElement.tagName == "TD")     // if parent a table cell,
+												// then...
+            {
+                nTopPos += eParElement.clientTop; // append cell border width
+													// to calcs
+            }
+        }
+
+        nTopPos += eParElement.offsetTop;    // append top offset of parent
+        eParElement = eParElement.offsetParent; // and move up the element
+												// hierarchy
+    }                                         // until no more offset parents
+												// exist
+    return nTopPos;                          // return the number calculated
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

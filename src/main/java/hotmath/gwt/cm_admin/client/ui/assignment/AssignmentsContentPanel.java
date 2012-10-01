@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -142,6 +143,11 @@ public class AssignmentsContentPanel extends ContentPanel {
 
     private void createNewAssignment() {
         
+        if(_currentGroup == null) {
+            CmMessageBox.showAlert("You need to select a group first.");
+            return;
+        }
+        
         Assignment newAss = new Assignment();
         newAss.setAssignmentName("My New Assignment: " + new Date());
         newAss.setGroupId(_currentGroup.getGroupId());
@@ -159,6 +165,10 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private void deleteSelectedAssignment() {
+        if(_currentGroup == null) {
+            CmMessageBox.showAlert("You need to select a group first.");
+            return;
+        }
         
         final Assignment ass = _grid.getSelectionModel().getSelectedItem();
         if(ass == null) {
@@ -180,6 +190,10 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
 
     private void deleteAssignment(final Assignment ass) {
+        if(_currentGroup == null) {
+            return;
+        }
+        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -213,6 +227,10 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private void editCurrentAssignment() {
+        if(_currentGroup == null) {
+            CmMessageBox.showAlert("You need to select a group first.");
+            return;
+        }        
         Assignment data = _grid.getSelectionModel().getSelectedItem();
         if(data != null) {
             new EditAssignmentDialog(data, new CallbackOnComplete() {

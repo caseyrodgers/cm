@@ -6,14 +6,17 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class SolutionInfo implements Response,IsSerializable {
 
+    String pid;
 	String html;
 	String js;
 	SolutionContext context;
 	boolean hasShowWork;
 	
+	
 	   
     public SolutionInfo() {}
-    public SolutionInfo(String html, String js, boolean hasShowWork) {
+    public SolutionInfo(String pid, String html, String js, boolean hasShowWork) {
+        this.pid = pid;
         this.html = html;
         this.js = js;
         this.hasShowWork = hasShowWork;
@@ -50,9 +53,16 @@ public class SolutionInfo implements Response,IsSerializable {
 	public void setHasShowWork(boolean hasShowWork) {
 		this.hasShowWork = hasShowWork;
 	}
+	
+    public String getPid() {
+        return pid;
+    }
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
     @Override
     public String toString() {
-        return "SolutionInfo [html=" + html.length() + ", js=" + js.length() + ", context=" + context
+        return "SolutionInfo [pid=" + pid + ", html=" + html.length() + ", js=" + js.length() + ", context=" + context
                 + ", hasShowWork=" + hasShowWork + "]";
     }
 }

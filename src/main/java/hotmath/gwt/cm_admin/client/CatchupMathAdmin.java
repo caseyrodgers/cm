@@ -5,21 +5,21 @@ import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
-import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
+import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-
-import java.util.Date;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -55,7 +55,11 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         instance = this;
 
-        mainPort = new Viewport();
+        mainPort = new Viewport() {
+            protected void onWindowResize(int width, int height) {
+                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+            }
+        };
         CmBusyManager.setViewPort(mainPort);
         
         mainPort.setLayout(new BorderLayout());
@@ -75,17 +79,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         
         
         if(false) {
-            Assignment ass = new Assignment(1,0, "Test","Test",new Date(),null,null,"");
-            new EditAssignmentDialog(ass, new CallbackOnComplete() {
-                
-                @Override
-                public void isComplete() {
-                }
-            });
-            return;
-            
-            //new AssignmentManagerDialog2(2);
-            //return;
+//            new AssignmentManagerDialog2(2);
+//            return;
 //            AddProblemDialog.showDialog(new Callback() {
 //                @Override
 //                public void problemsAdded(List<ProblemDto> problemsAdded) {
@@ -110,6 +105,21 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     
     private void completeLoginProcess(final int uid) {
+        
+        
+        
+//        if(false) {
+//            StudentModelExt sme = new StudentModelExt();
+//            StudentActivityModel activityModel = new StudentActivityModel();
+//            activityModel.setRunId(1196000);
+//            activityModel.setTestId(0);
+//            sme.setUid(27554);
+//            new StudentShowWorkWindow(sme, activityModel);
+//            
+//            return;
+//        }
+        
+        
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {

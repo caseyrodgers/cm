@@ -1,11 +1,11 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.model.StudentShowWorkModelPojo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.rpc.action.GetStudentShowWorkAction;
 
 import java.sql.Connection;
@@ -16,10 +16,10 @@ import java.sql.Connection;
  * @author casey
  *
  */
-public class GetStudentShowWorkCommand implements ActionHandler<GetStudentShowWorkAction, CmList<StudentShowWorkModel>>{
+public class GetStudentShowWorkCommand implements ActionHandler<GetStudentShowWorkAction, CmList<StudentShowWorkModelPojo>>{
 
     @Override
-    public CmList<StudentShowWorkModel> execute(final Connection conn, GetStudentShowWorkAction action) throws Exception {
+    public CmList<StudentShowWorkModelPojo> execute(final Connection conn, GetStudentShowWorkAction action) throws Exception {
         return CmStudentDao.getInstance().getStudentShowWork(conn, action.getUid(), action.getRunId());
     }
 

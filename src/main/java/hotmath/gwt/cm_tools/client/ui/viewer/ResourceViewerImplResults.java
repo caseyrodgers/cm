@@ -1,11 +1,16 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -41,11 +46,12 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         // TODO Auto-generated method stub
         return 520;
     }
-
+    
     @Override
-    public void whiteboardIsReady() {
-        // ShowWorkPanel.setWhiteboardIsReadonly();
+    public ResourceViewerState getInitialMode() {
+        return ResourceViewerState.MAXIMIZED;
     }
+
 
     /**
      * Select the correct question response for question for pid
@@ -105,6 +111,29 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         hideAnswerResults();
         markAnswers(resultJson);
     }
+    
+    @Override
+    public void loadWhiteboardData(final ShowWorkPanel showWorkPanel) {
+
+        new RetryAction<CmList<WhiteboardCommand>>() {
+            
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), "quiz:quiz",  UserInfo.getInstance().getRunId());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {
+                try {
+                    showWorkPanel.loadWhiteboard(whiteboardCommands);
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
+            }
+        }.register();        
+    }
 
     /**
      * Parse JSONized array of HaTestRunResult objects
@@ -159,6 +188,6 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
             /** use the default for the quiz */
             pid = "quiz:" + UserInfo.getInstance().getTestId();
         }
-        whiteboardPanel.setPid(pid);
+        whiteboardPanel.setupForPid(pid);
     }
 }

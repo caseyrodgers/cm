@@ -141,7 +141,6 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
     
     public void setPrescriptionData(PrescriptionSessionResponse prescriptionResponse, int sessionNumber) {
         if (prescriptionResponse != null) {
-            
             CmLogger.debug("Data: " + prescriptionResponse + ", Context: " + context + ", UserInfo: " + UserInfo.getInstance());
             
             UserInfo.getInstance().setSessionNumber(sessionNumber);

@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.CmUserException;
 import hotmath.gwt.cm_rpc.client.model.CmProgramAssign;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_rpc.client.model.StudentShowWorkModelPojo;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
@@ -1603,9 +1604,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<StudentShowWorkModel> getStudentShowWork(final Connection conn, int uid, Integer runId) throws Exception {
+    public CmList<StudentShowWorkModelPojo> getStudentShowWork(final Connection conn, int uid, Integer runId) throws Exception {
 
-        CmList<StudentShowWorkModel> swModels = new CmArrayList<StudentShowWorkModel>();
+        CmList<StudentShowWorkModelPojo> swModels = new CmArrayList<StudentShowWorkModelPojo>();
         PreparedStatement ps = null;
         ResultSet rs = null;
 
@@ -1637,12 +1638,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 Date dte = new Date(timeMills);
                 String dteStr = dteForat.format(dte);
 
-                StudentShowWorkModel s = new StudentShowWorkModel();
+                StudentShowWorkModelPojo s = new StudentShowWorkModelPojo();
                 s.setPid(pid);
-                s.setInsertTimeMills(timeMills);
-                s.setViewTime(dteStr);
-                s.setLabel("");
-
+                s.setInsertTime(timeMills);
+                s.setViewTimeKey(dteStr);
                 swModels.add(s);
             }
         } catch (Exception e) {

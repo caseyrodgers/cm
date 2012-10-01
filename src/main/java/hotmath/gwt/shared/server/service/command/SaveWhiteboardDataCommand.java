@@ -1,17 +1,15 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.lwl.CmTutoringDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
-import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 
 import org.apache.log4j.Logger;
 
@@ -34,41 +32,13 @@ public class SaveWhiteboardDataCommand implements ActionHandler<SaveWhiteboardDa
             rData = new ClearWhiteboardDataCommand().execute(conn,new ClearWhiteboardDataAction(action.getUid(), action.getRid(),action.getPid()));
         }
         else {
-            PreparedStatement pstat = null;
-            try {
-                String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
-                        + " values(?,?,?,?,?,?) ";
-                pstat = conn.prepareStatement(sql);
-    
-                pstat.setInt(1, action.getUid());
-                pstat.setString(2, action.getPid());
-                pstat.setString(3, "draw");
-                pstat.setString(4, action.getCommandData());
-                pstat.setLong(5, System.currentTimeMillis());
-                
-                pstat.setInt(6, action.getRid());
-    
-                if (pstat.executeUpdate() != 1)
-                    throw new Exception("Could not save whiteboard data (why?)");
-                
-                rData.putData("status", "OK");
-            } catch (Exception e) {
-                throw new CmRpcException(e);
-            } finally {
-                SqlUtilities.releaseResources(null, pstat, null);
-            }
+            new CmTutoringDao().saveWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getCommandData());
         }
-        
         return rData;
-    }
-    
-    private void clearWhiteBoard(final Connection conn) throws Exception {
-
     }
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return SaveWhiteboardDataAction.class;
     }
-
 }

@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -31,8 +32,8 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
 
     @Override
     public AssignmentProblem execute(Connection conn, GetAssignmentSolutionAction action) throws Exception {
-        SolutionInfo info = new GetSolutionCommand().execute(conn,  new hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction(0,  0, action.getPid()));
-        AssignmentProblem assProb = new AssignmentProblem(info,determineProblemType(info.getHtml()));
+        SolutionInfo info = new GetSolutionCommand().execute(conn,  new GetSolutionAction(action.getUid(),  0, action.getPid()));
+        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,determineProblemType(info.getHtml()));
     
         AssignmentDao.getInstance().setAssignmentPidStatus(action.getAssignKey(),action.getUid(),action.getPid());
         
@@ -51,7 +52,7 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         try {
             if (html.indexOf("input_widget") > -1) {
                 return ProblemType.INPUT_WIDGET;
-            } else if (html.indexOf("hm_question_def") > -1) {
+            } else if (false && html.indexOf("hm_question_def") > -1) {
                 return ProblemType.MULTI_CHOICE;
             }
         }

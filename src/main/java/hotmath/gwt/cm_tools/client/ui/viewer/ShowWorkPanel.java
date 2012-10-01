@@ -49,7 +49,7 @@ public class ShowWorkPanel extends Frame {
      * @param callbackAfterWhiteboardInitialized
      *            If non null, then called after WB has been initialized.
      */
-    public ShowWorkPanel(CmAsyncRequest callbackAfterWhiteboardInitialized) {
+    private ShowWorkPanel(CmAsyncRequest callbackAfterWhiteboardInitialized) {
         super("/gwt-resources/show_work_panel_student.html");
         
         __lastInstance = this;

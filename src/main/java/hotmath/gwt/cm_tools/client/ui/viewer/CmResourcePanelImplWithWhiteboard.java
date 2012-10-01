@@ -1,12 +1,16 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -20,8 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -101,19 +105,12 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         return true;
     }
     
-    /** If display is in WHITEBOARD mode then
-     * make sure to expand display.  If in 
-     * TUTOR mode, then initially show in OPTIMIZED mode.
+    /** Expand the tutor view initailly to support to
+     * allow addition of whiteboard.
      */
     @Override
     public ResourceViewerState getInitialMode() {
-
-        if(_displayMode == DisplayMode.WHITEBOARD) {
             return ResourceViewerState.MAXIMIZED;
-        }
-        else {
-            return ResourceViewerState.OPTIMIZED;
-        }
     }
     
     private void test() {
@@ -194,11 +191,19 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
     abstract public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel);
     
     
+    /** Allow for sub classes to load data in custom way
+     * 
+     * @param showWorkPanel
+     */
+    public void loadWhiteboardData(ShowWorkPanel showWorkPanel) {
+        CmLogger.debug("Load whiteboard data, default null implmentation");
+    }
+    
     /** Called after the whiteboard has been initialized
      * 
      */
     public void whiteboardIsReady() {
-    	/** empty */
+        loadWhiteboardData(_showWorkPanel);
     }
     
     ShowWorkPanel _showWorkPanel;
@@ -237,15 +242,34 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             /** show whiteboard panel
              * 
              */
-            _showWorkPanel = new ShowWorkPanel(new CmAsyncRequestImplDefault() {
-				@Override
-				public void requestComplete(String requestData) {
-					whiteboardIsReady();
-				}
-			});
+//            _showWorkPanel = new ShowWorkPanel(new CmAsyncRequestImplDefault() {
+//				@Override
+//				public void requestComplete(String requestData) {
+//					whiteboardIsReady();
+//				}
+//			});
+//            setupShowWorkPanel(_showWorkPanel);
+
+
+            
+            
+            _showWorkPanel = new ShowWorkPanel(new ShowWorkProxy() {
+                @Override
+                public void showWorkIsReady() {
+                    whiteboardIsReady();
+                }
+                
+                @Override
+                public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+                    return new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid, commandType, data);
+                }
+                
+                @Override
+                public void windowResized() {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
+                }              
+            });
             setupShowWorkPanel(_showWorkPanel);
-
-
 
             SimpleContainer lcTutor = new SimpleContainer();
             lcTutor.setWidget(getTutorDisplay());

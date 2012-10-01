@@ -30,6 +30,8 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -213,6 +215,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             _rootPanel.addStyleName("landscape");
             _rootPanel.removeStyleName("portrait");
         }
+        
+        
+        CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
     }    
     /**
      * TODO: Move to a central Controller

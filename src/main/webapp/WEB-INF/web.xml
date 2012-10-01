@@ -144,6 +144,16 @@
     </url-pattern>
   </servlet-mapping>
 
+  <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_tutor/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+
+
+
+
   <servlet>
     <servlet-name>GeneratePDFService</servlet-name>
     <servlet-class>

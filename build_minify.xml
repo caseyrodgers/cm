@@ -29,6 +29,7 @@
 
                    cm_core-min.js
             	   browser_info_tools-min.js            	
+            	   hm_events-min.js
             	   tutor_tablet-min.js
                	   dom_utils-min.js            	
 

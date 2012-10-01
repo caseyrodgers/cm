@@ -1,8 +1,12 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
@@ -10,17 +14,17 @@ import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
-import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -143,7 +147,29 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
 
             @Override
             public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-                whiteboardPanel.setPid(ShowWorkPanel.QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
+                whiteboardPanel.setupForPid(ShowWorkPanel.QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
+            }
+            
+            @Override
+            public void loadWhiteboardData(final ShowWorkPanel showWorkPanel) {
+                new RetryAction<CmList<WhiteboardCommand>>() {
+                    
+                    @Override
+                    public void attempt() {
+                        CmBusyManager.setBusy(true);
+                        GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), "quiz:quiz",  UserInfo.getInstance().getRunId());
+                        setAction(action);
+                        CmShared.getCmService().execute(action, this);
+                    }
+
+                    public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {
+                        try {
+                            showWorkPanel.loadWhiteboard(whiteboardCommands);
+                        } finally {
+                            CmBusyManager.setBusy(false);
+                        }
+                    }
+                }.register();                
             }
         };
 

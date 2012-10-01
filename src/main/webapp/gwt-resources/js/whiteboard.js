@@ -7,13 +7,15 @@
  *
  *   NOTE: detachWhiteboard not needed.
  */
-if (typeof console === "undefined") {
+if (typeof console == "undefined") {
     console = {
         log: function (x) {
             // empty
         }
     };
 }
+
+
 var Whiteboard = (function () {
     var wb = {};
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -82,36 +84,36 @@ var Whiteboard = (function () {
             }
             //alert(mq_holder.src)
             /*var holder
-		if($get_Element('#mquill_hold')){
-		console.log("mquill_hold exists")
-		holder=$('mquill_hold');
-		}else{
-		console.log("mquill_hold dont exists")
-		holder=document.createElement('div')
-		$(holder).attr('id','mquill_hold')
-		$(holder).prependTo("#canvas-container");
-		var img=document.createElement('img');
-		$(img).appendTo($(holder));
-		img.onload=function(){
-		
-		context.drawImage(this,xp,yp,this.width+5,this.height+5)
-		$(this).remove();
-		alert(this.width+":"+this.height);
-		}
-		
-		
-		
-		}*/
+                if($get_Element('#mquill_hold')){
+                console.log("mquill_hold exists")
+                holder=$('mquill_hold');
+                }else{
+                console.log("mquill_hold dont exists")
+                holder=document.createElement('div')
+                $(holder).attr('id','mquill_hold')
+                $(holder).prependTo("#canvas-container");
+                var img=document.createElement('img');
+                $(img).appendTo($(holder));
+                img.onload=function(){
+
+                context.drawImage(this,xp,yp,this.width+5,this.height+5)
+                $(this).remove();
+                alert(this.width+":"+this.height);
+                }
+
+
+
+                }*/
             /*var txtbox=document.createElement('span');
-		txtbox.style.position='absolute';
-		txtbox.style.left=x0+"px";
-		txtbox.style.top=y0+"px";
-		
-		$(txtbox).addClass('mathquill-embedded-latex');
-		//$('.mathquill-embedded-latex').remove()
-		$(txtbox).prependTo($('#mquill_hold')).mathquill();
-		$(txtbox).mathquill('latex',txt);
-		txtbox.style.display='none';*/
+                txtbox.style.position='absolute';
+                txtbox.style.left=x0+"px";
+                txtbox.style.top=y0+"px";
+
+                $(txtbox).addClass('mathquill-embedded-latex');
+                //$('.mathquill-embedded-latex').remove()
+                $(txtbox).prependTo($('#mquill_hold')).mathquill();
+                $(txtbox).mathquill('latex',txt);
+                txtbox.style.display='none';*/
             //context.drawImage(
             /*context.fillStyle=col?col:wb.globalStrokeColor
         for (var i = 0; i < str.length; i++) {
@@ -167,6 +169,14 @@ var Whiteboard = (function () {
                 hideTextBox();
             }
         }
+        
+        
+        var _docWidth = 0; 
+        var _docHeight = 0;
+        var _viewPort = null;
+        wb.setWhiteboardViewPort = function(width, height) {
+        	_viewPort = {width: width, height: height};
+        }
 
         function viewport() {
             var e = window,
@@ -177,10 +187,17 @@ var Whiteboard = (function () {
                 e = document.documentElement || document.body;
             }
 
-            return {
-                width: e[a + 'Width'],
-                height: e[a + 'Height']
+            
+            if(_viewPort == null) {
+            	alert('Whiteboard setup: _docWidth/_docHeight must be set by calling setWhiteboardViewPort(width, height)');
             }
+            
+             return _viewPort;
+             
+//            return {
+//                width: e[a + 'Width'],
+//                height: e[a + 'Height']
+//            }
         }
 
         function getDocHeight() {
@@ -206,26 +223,32 @@ var Whiteboard = (function () {
     /** main HTML document object */
     var mainDoc;
     var isIE = getInternetExplorerVersion() != -1;
-	
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
+
+
+
+        setupMathQuill(); // defined in mathquil;.js
+
+
         mainDoc = mainDocIn;
-		setTimeout(function(){
-		var renderWB=false;
-		//var init=function(){
-		console.log('off_ht_0: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-		//setTimeout(function(){renderWB=true;console.log('off_ht_timer: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())},1000)
-		
-		var parentDiv=$("#wb-container").parent()
-		if(parentDiv){
-		//parentDiv.css('position','absolute');
-		}
         canvas = $get_Element("#canvas");
-		
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
-if (docWidth > 600) {
+
+        var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+        var leftOff = $get_Element("#tools").offsetLeft + 15;
+        var vscrollObj = {}
+        var hscrollObj = {}
+        wb.globalStrokeColor = "#000000";
+        wb.mode = 'student';
+        origcanvas = $get_Element("#ocanvas");
+        graphcanvas = $get_Element("#gcanvas");
+        topcanvas = $get_Element("#tcanvas");
+        screen_width = docWidth - leftOff - 27;
+        screen_height = docHeight - topOff - 27;
+        if (screen_width > 800) {
             //alert($('#tools button').css('width'));
             $('#tools').css('height', '35px');
             $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
@@ -235,7 +258,7 @@ if (docWidth > 600) {
             $('#button_save').text("Save");
             //$('#button_clear').text("CL");
         } else {
-            $('#tools').css('height', '28px');
+            $('#tools').css('height', '25px');
             $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
             $('#button_clear').css('width', '25px');
             $('#button_clear').css('height', '25px');
@@ -243,64 +266,15 @@ if (docWidth > 600) {
             $('#button_save').text("S");
 
         }
-		var off_left=$get_Element("#tools").offsetLeft;
-		var off_top=$get_Element("#tools").offsetTop;
-		var off_ht=$get_Element("#tools").offsetHeight;
-        var topOff = off_ht + off_top + 15;
-        var leftOff = off_left + 15;
-		
-        var vscrollObj = {}
-        var hscrollObj = {}
-        wb.globalStrokeColor = "#000000";
-        wb.mode = 'student';
-        origcanvas = $get_Element("#ocanvas");
-        graphcanvas = $get_Element("#gcanvas");
-        topcanvas = $get_Element("#tcanvas");
-		canvas.width=2000;
-		canvas.height=2620;
-		origcanvas.width=2000;
-		origcanvas.height=2620;
-		graphcanvas.width=2000;
-		graphcanvas.height=2620;
-		topcanvas.width=2000;
-		topcanvas.height=2620;
-		var ccnt=$get_Element("#canvas-container");
-		$("#canvas-container").css('width','2000px');
-		$("#canvas-container").css('height','2620px');
-		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").offsetLeft+":"+$get_Element("#tools").offsetTop)
-		if(IS_IPHONE||docWidth <= 600){
-		dox=5
-		doy=5
-		}else{
-		dox=12
-		doy=12
-		}
-		//dox=doy=0;
-        screen_width = docWidth - leftOff-dox;
-        screen_height = docHeight - topOff-doy;
-        
-		console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
         $get_Element('#drawsection').style.width = (screen_width) + 'px';
         $get_Element('#drawsection').style.height = (screen_height) + 'px';
         $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
-        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
-        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
+        $get_Element('#vscroller').style.left = (screen_width + 5) + 'px';
+        $get_Element('#vscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop) + 'px';
 
         $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
-        $get_Element('#hscroller').style.left = (off_left) + 'px';
-        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
-		var posData="";
-		posData+="Screen-Width:"+docWidth+"\n";
-		posData+="Screen-Height:"+docHeight+"\n";
-		posData+="wb-Width:"+screen_width+"\n";
-		posData+="wb-Height:"+screen_height+"\n";
-		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
-		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
-		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
-		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
-		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
-		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
-		console.log(posData);
+        $get_Element('#hscroller').style.left = (0) + 'px';
+        $get_Element('#hscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + screen_height + 5) + 'px';
         var cmd_keys = {};
         var nav_keys = {};
         cmd_keys["frac"] = "/";
@@ -371,16 +345,20 @@ if (docWidth > 600) {
             $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
             $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
         }
-        $(window).resize(function (event) {
+        $(window).resize(function () {
             adjustToolbar()
-			
         });
 
         function adjustToolbar() {
             var siz = viewport()
             var docWidth = siz.width;
             var docHeight = siz.height;
-if (docWidth > 600) {
+
+            var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+            var leftOff = $get_Element("#tools").offsetLeft + 15;
+            screen_width = docWidth - leftOff - 27;
+            screen_height = docHeight - topOff - 27;
+            if (screen_width > 800) {
                 //alert($('#tools button').css('width'));
                 $('#tools').css('height', '35px');
                 $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
@@ -399,46 +377,6 @@ if (docWidth > 600) {
                 $('#button_save').text("S");
 
             }
-			//setTimeout(function(){
-			var off_left=$get_Element("#tools").offsetLeft;
-		var off_top=$get_Element("#tools").offsetTop;
-			var off_ht=$get_Element("#tools").offsetHeight;
-            var topOff = off_ht + off_top + 15
-            var leftOff = off_left + 15;
-           if(IS_IPHONE||docWidth <= 600){
-		dox=5
-		doy=5
-		}else{
-		dox=12
-		doy=12
-		}
-		//dox=doy=0;
-        screen_width = docWidth - leftOff -dox;
-        screen_height = docHeight - topOff -doy;
-           console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-        $get_Element('#drawsection').style.width = (screen_width) + 'px';
-        $get_Element('#drawsection').style.height = (screen_height) + 'px';
-        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
-        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
-        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
-
-        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
-        $get_Element('#hscroller').style.left = (off_left) + 'px';
-        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
-		var posData="";
-		posData+="Screen-Width:"+docWidth+"\n";
-		posData+="Screen-Height:"+docHeight+"\n";
-		posData+="wb-Width:"+screen_width+"\n";
-		posData+="wb-Height:"+screen_height+"\n";
-		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
-		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
-		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
-		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
-		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
-		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
-		console.log(posData); 
-		positionScroller();
-		//},100);
         }
 
         function initThumbDrag(_event) {
@@ -637,9 +575,9 @@ if (docWidth > 600) {
         height = screen_height; //canvas.height;
         context.font = origcontext.font = topcontext.font = "12px sans-serif";
         /*context.save();
-		context.fillStyle='white'
-		context.fillRect(0,0,width,height)
-		context.restore();*/
+                context.fillStyle='white'
+                context.fillRect(0,0,width,height)
+                context.restore();*/
         gr2D = new Image();
         gr2D.src = _imageBaseDir + 'gr2D.png';
         nL = new Image();
@@ -656,24 +594,24 @@ if (docWidth > 600) {
         offY = $get_Element("#canvas-container").offsetTop;
         // alert(offX+":"+offY);
         /*var getCanvasPos = function(){
-			var obj = $get_Element("#canvas-container");
-			var top = 0;
-			var left = 0;
-			while (obj.tagName != "BODY") {
-				top += obj.offsetTop;
-				left += obj.offsetLeft;
-				console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
+                        var obj = $get_Element("#canvas-container");
+                        var top = 0;
+                        var left = 0;
+                        while (obj.tagName != "BODY") {
+                                top += obj.offsetTop;
+                                left += obj.offsetLeft;
+                                console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
                                 if(obj.offsetParent === null)
                                     break;
-				obj = obj.offsetParent;
-			}
-			offX=left;
-			offY=top;
-			return {
-				top: top,
-				left: left
-			};
-		};*/
+                                obj = obj.offsetParent;
+                        }
+                        offX=left;
+                        offY=top;
+                        return {
+                                top: top,
+                                left: left
+                        };
+                };*/
         function getCanvasPos() {
             console.log("getCanvasPos processing!");
             var box = canvas.getBoundingClientRect();
@@ -780,7 +718,7 @@ if (docWidth > 600) {
             renderText();
             //check()
         }
-		if($get_Element("#button_save")){
+                if($get_Element("#button_save")){
         $get_Element("#button_save").onclick = function (event) {
             wb.saveWhiteboard();
         };
@@ -830,23 +768,6 @@ if (docWidth > 600) {
             killTouchListeners();
         }
         //
-		function positionScroller(){
-		var scrubH = (canvas.width - screen_width) / (screen_width - 30);
-		var scrubV = (canvas.height - screen_height) / (screen_height - 30);
-		var currPosH=parseInt($get_Element('#canvas-container').style.left);
-		currPosH=currPosH?currPosH:0
-		currPosH = currPosH > 0 ? 0 : currPosH
-		currPosH = currPosH < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosH;
-        $get_Element('#hscroll_thumb').style.left = (-currPosH / scrubH) + "px";
-		$get_Element('#canvas-container').style.left = currPosH + "px";
-		var currPosV=parseInt($get_Element('#canvas-container').style.top);
-		currPosV=currPosV?currPosV:0
-		currPosV = currPosV > 0 ? 0 : currPosV
-        currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
-        $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
-		$get_Element('#canvas-container').style.top = currPosV + "px";
-		console.log("SCROLLER_THUMB_POS:"+scrubH+":"+scrubV+":"+(-currPosH)+":"+(-currPosV))
-		}
         function scrollTheCanvas(event) {
             checkForScroll(event);
             //setTimeout(function(){checkForScroll(event)},100)
@@ -869,8 +790,8 @@ if (docWidth > 600) {
                 return
             }
 
-            var cposX = ($get_Element("#wb-container").style.left);
-            var cposY = ($get_Element("#wb-container").style.top);
+            var cposX = ($get_Element("#container").style.left);
+            var cposY = ($get_Element("#container").style.top);
 
             cposX = cposX ? parseInt(cposX) : 0;
             cposY = cposY ? parseInt(cposY) : 0;
@@ -1222,13 +1143,6 @@ if (docWidth > 600) {
             currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
             $get_Element('#canvas-container').style.top = currPosY + "px"
             $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
-			//
-			var currPosX = swipe_nx ? swipe_nx : 0;
-            currPosX = parseInt(currPosX)
-            currPosX = currPosX > 0 ? 0 : currPosX
-            currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
-            $get_Element('#canvas-container').style.left = currPosX + "px"
-            $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
             console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
         }
 
@@ -1243,7 +1157,6 @@ if (docWidth > 600) {
             c.removeEventListener("touchmove", startSwipe)
             c.removeEventListener("touchend", stopSwipe)
             $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
-			$get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
             //console.log("Touch END x:" + touch.pageX + ", y:" + touch.pageY);
         }
 
@@ -1343,7 +1256,6 @@ if (docWidth > 600) {
 
         }
         canvas.focus()
-		},100);
     }
 
     function $get_Element(n) {
@@ -1409,7 +1321,7 @@ if (docWidth > 600) {
         $get_Element("#button_nL").style.border = '1px solid #000000';
         $('.mathquill-embedded-latex').remove();
         if (boo) {
-            clear(true);
+            clearWhiteboard(true);
         }
     }
 
@@ -1497,9 +1409,9 @@ if (docWidth > 600) {
         cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         /*context.save()
-		context.fillStyle='rgba(255,255,255,255)'
-		context.fillRect(0, 0, canvas.width, canvas.height);
-		context.restore();*/
+                context.fillStyle='rgba(255,255,255,255)'
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.restore();*/
         context.beginPath();
     }
 
@@ -1527,9 +1439,9 @@ if (docWidth > 600) {
             //updateCanvas();
             //
             /*topcontext.save();
-		    topcontext.fillStyle='white';
-		    topcontext.fillRect(x - ep / 2, y - ep / 2, ew, ew);
-		    topcontext.restore();*/
+                    topcontext.fillStyle='white';
+                    topcontext.fillRect(x - ep / 2, y - ep / 2, ew, ew);
+                    topcontext.restore();*/
             return;
         }
         origcontext.clearRect(x - ep / 2, y - ep / 2, ew, ew);
@@ -1792,7 +1704,18 @@ if (docWidth > 600) {
             if (cmdArray[l] instanceof Array) {
                 var arg = cmdArray[l][1];
                 arg = arg == undefined ? [] : arg;
-                this[cmdArray[l][0]].apply(scope, arg);
+                
+                //alert('cmdArray[l][0]: ' + cmdArray[l][0]);
+                //alert('data: ' + this[cmdArray[l][0]])
+                var command = cmdArray[l][0];
+                // make unique to whiteboard, otherwise
+                // other code can override.
+                if(command == 'clear') {
+                	resetWhiteBoard(false);
+                }
+                else {
+                    this[command].apply(scope, arg);
+                }
             } else if (cmdArray[l].indexOf("dataArr") != -1) {
 
                 draw(cmdArray[l]);
@@ -1866,7 +1789,7 @@ if (docWidth > 600) {
         return Number(n);
     }
 
-    function clear(boo) {
+    clearWhiteboard = function(boo) {
         if (!boo) {
             resetWhiteBoard(false)
         }

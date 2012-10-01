@@ -69,7 +69,7 @@ public class ResourceViewerFactory {
 		        rp = new ResourceViewerImplRppFlashCard();
 		    }
 		    else {
-		        rp = new ResourceViewerImplTutor();
+		        rp = new ResourceViewerImplTutor2();
 		    }
 		} else if (type.equals("video")) {
 			rp = new ResourceViewerImplVideo();
@@ -84,7 +84,7 @@ public class ResourceViewerFactory {
 		} else if (type.equals("results")) {
 			rp = new ResourceViewerImplResults();
 		} else if (type.equals("cmextra")) {
-			rp = new ResourceViewerImplTutor();
+			rp = new ResourceViewerImplTutor2();
 		} else if (type.equals("flashcard")) {
 			rp = new ResourceViewerImplFlashCard();
         } else if (type.equals("flashcard_spanish")) {

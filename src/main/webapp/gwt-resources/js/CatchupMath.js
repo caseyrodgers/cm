@@ -84,41 +84,12 @@ function scrollToStep(num) {
     // if the DOM is changed
     // Perhaps, this needs to call GWT JNSI and have it do the scrolling, or at
     // least provide the source of the scrolling panel ... ?
-    var objDiv = document.getElementById("tutor_embedded").parentNode.parentNode;
+    var objDiv = document.getElementById("tutoroutput").parentNode.parentNode;
     objDiv.scrollTop = objDiv.scrollHeight;
 }
 
 
 
-/**
- * register a listener with Tutor to be notified when last step is reached. This
- * is used to only advance when the solution has actually been completed.
- *
- *
- * solutionHasBeenViewed_Gwt is defined GWT source: PrescriptionCmGuiDefinition
- *
- */
-HmEvents.eventTutorLastStep.subscribe(function (x) {
-    solutionHasBeenViewed_Gwt(x);
-});
-
-
-
-
-
-
-
-/**
- * Registered listener to be notified after solution is loaded fully If
- * _shouldExpandSteps is true, the move to last step.
- *
- */
-HmEvents.eventTutorInitialized.subscribe(function (x) {
-    gwt_solutionHasBeenInitialized();
-    if (_shouldExpandSteps) {
-        expandAllSteps();
-    }
-});
 
 /**
  * Register a listener with Tutor to be notified when first step is accessed

@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_tools.client.ui.viewer;
+package hotmath.gwt.shared.client.ui.viewer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

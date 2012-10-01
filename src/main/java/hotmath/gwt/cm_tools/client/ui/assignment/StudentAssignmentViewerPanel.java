@@ -7,7 +7,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
-import hotmath.gwt.cm_tools.client.ui.assignment.ProblemListPanel.Callback;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.Callback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -15,6 +15,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
@@ -26,6 +27,7 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.MarginData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -36,7 +38,13 @@ import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 /** 
+ *
+ * Container for editing an Assignment.   
  * 
+ * Has a list of problems which when selected show the tutor/whiteboard
+ * of the current assigment problem.
+ * 
+ * Fires AssignmentProblemLoadedEvent
  * 
   Student can click on any non-closed row to work on the assignment,
   and sees a screen with all problem numbers along with current status: (
@@ -52,8 +60,8 @@ import com.sencha.gxt.widget.core.client.info.Info;
 public class StudentAssignmentViewerPanel extends ContentPanel {
     
     
-    StudentAssignmentTutorDisplayPanel tutorPanel = new StudentAssignmentTutorDisplayPanel();
-    ProblemListPanel problemListPanel; 
+    AssignmentStudentTutorAndShowWorkPanel _assignmentTutorAndShowWorkPanel;
+    AssignmentProblemListPanel problemListPanel; 
     
     BorderLayoutContainer _main = new BorderLayoutContainer();
     
@@ -71,10 +79,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         });
         addTool(btnReturn);
         
-        problemListPanel = new ProblemListPanel(new Callback() {
+        problemListPanel = new AssignmentProblemListPanel(new Callback() {
             @Override
-            public void problemSelected(ProblemDto problem) {
-                loadTutorProblemStatement(problem);
+            public void problemSelected(String title, ProblemDto problem) {
+
+                loadTutorProblemStatement(title, problem);
             }
         });
         
@@ -82,7 +91,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         bData.setSplit(true);
         bData.setCollapsible(true);
         _main.setNorthWidget(createHeaderPanel(),bData);
-        _main.setCenterWidget(createTutorDisplayPanel());
+        _main.setCenterWidget(createEmptyPanel("Choose an Assignment"));
         
         addStyleName("StudentAssignmentViewerPanel");
         setWidget(_main);
@@ -92,10 +101,25 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         readAssignmentNamesFromServer();
     }
     
+    private CenterLayoutContainer createEmptyPanel(String msg) {
+        CenterLayoutContainer c = new CenterLayoutContainer();
+        c.getElement().setAttribute("style", "background-color: white");
+        String html = "<h1 style='font-size: 25px'>" + msg + "</h1>";
+        c.add(new HTML(html));
+        return c;
+    }
     
-    private void loadTutorProblemStatement(ProblemDto problem) {
+    
+    private void loadTutorProblemStatement(String title, ProblemDto problem) {
+        _assignmentTutorAndShowWorkPanel = null;
+        if(_assignmentTutorAndShowWorkPanel == null) {
+            _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel();
+            _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
+            _tutorArea.forceLayout();
+        }
+        
         Info.display("Load", "Load problem: " + problem);
-        tutorPanel.loadProblem(UserInfoBase.getInstance().getUid(), _studentAssignment.getAssignment().getAssignKey(),problem);
+        _assignmentTutorAndShowWorkPanel.loadProblem(title, UserInfoBase.getInstance().getUid(), _studentAssignment.getAssignment().getAssignKey(),problem);
     }
 
     public void readAssignmentNamesFromServer() {
@@ -114,16 +138,19 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     }
    
     
-    private IsWidget createTutorDisplayPanel() {
+    BorderLayoutContainer _tutorArea;
+    private IsWidget createAssignmentDisplayPanel() {
+        _tutorArea = new BorderLayoutContainer();
+
+        _tutorArea.setCenterWidget(createEmptyPanel("Choose a problem"));
         
-        BorderLayoutContainer tutorArea = new BorderLayoutContainer();
-        tutorArea.setCenterWidget(tutorPanel);
+
         BorderLayoutData bData = new BorderLayoutData(300);
         bData.setSplit(true);
         bData.setCollapsible(true);
-        tutorArea.setWestWidget(problemListPanel,bData);
+        _tutorArea.setWestWidget(problemListPanel,bData);
         
-        return tutorArea;
+        return _tutorArea;
     }
     
     ComboBox<Assignment> _assignmentCombo;
@@ -177,9 +204,14 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 
     
     StudentAssignment _studentAssignment;
+    boolean assignmentAreaDrawn=false;
     private void loadAssignment(StudentAssignment assignment) {
-        
-        
+        if(!assignmentAreaDrawn) {
+            _main.setCenterWidget(createAssignmentDisplayPanel());
+            assignmentAreaDrawn = true;
+            _main.forceLayout();
+        }
+
         _studentAssignment = assignment;
         problemListPanel.loadAssignment(assignment);
         

@@ -4,6 +4,7 @@
        -->
       <inherits name='com.google.gwt.user.theme.clean.Clean'/>
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
+      <inherits name='hotmath.gwt.cm_tutor.CmTutor'/>
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
             
       <!--

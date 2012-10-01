@@ -15,23 +15,30 @@
 %>
 <html>
   <head>
-    <!--  For Tutor/Show Work -->
-    <link rel="stylesheet" href="/assets/css/reset.css" type="text/css"/>
-    <link rel="stylesheet" href="/css/bookindex_with_tutor_combined.css" type="text/css"/>
-    <link rel="stylesheet" type="text/css" href="/css/testset.css" />
-    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath.css" />    
-    <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
-    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
-    <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
-    
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Catchup Math Admin</title>
-    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
-    <link rel="stylesheet" type="text/css" href="/gwt-resources/css/loading_image.css" />
+  <head>
+
     <script type="text/javascript"
       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
     </script>
 
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Catchup Math Admin</title>
+
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
+
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
+
+
+  <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
+  <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/whiteboard.css" />
+  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/mathquill/mathquill.css" />
+
+
+    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
   </head>
 
   <body>
@@ -46,13 +53,12 @@
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
   </body>
+    <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
+    <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMathAdmin.js"></script>
+    <script src='http://code.jquery.com/jquery-1.8.1.min.js'></script>
+    <script src='/gwt-resources/js/whiteboard.js'></script>
+    <script src='/gwt-resources/js/mathquill/mathquill.js'></script>
 
-     <script src="/js/cm_with_tutor_combined.js"></script>
-     <script src="/gwt-resources/js/cm_core.js"></script>
-     <script src="/gwt-resources/js/CatchupMath.js"></script>
-     <script type="text/javascript" language="javascript" src="/gwt-resources/js/quiz.js"></script>
-     <script type="text/javascript" language="javascript" src="/gwt-resources/js/swfobject/swfobject.js"></script>
-     <script type="text/javascript" language="javascript" src="/js/hm_mathjax.js"></script>
      <script>
          var __securityKey = '<%= securityKey %>'
      </script>

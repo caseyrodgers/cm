@@ -325,7 +325,7 @@ public class AddProblemDialog extends GWindow {
         _tree.setWidth(300);
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.TRI);
-        _tree.setAutoSelect(true);
+        //_tree.setAutoSelect(true);
         
 
         final DelayedTask task = new DelayedTask() {

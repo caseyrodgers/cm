@@ -29,14 +29,14 @@
 
 	<repositories>
 
-               		<repository>
-	        <id>sencha-commercial-release</id>
-	  <name>Sencha commercial releases</name>
-	  <url>https://maven.sencha.com/repo/commercial-release/</url>
-	  </repository>
+		<repository>
+			<id>sencha-commercial-release</id>
+			<name>Sencha commercial releases</name>
+			<url>https://maven.sencha.com/repo/commercial-release/</url>
+		</repository>
 
 
-               <repository>
+		<repository>
 			<id>gson</id>
 			<url>http://google-gson.googlecode.com/svn/mavenrepo</url>
 			<snapshots>
@@ -78,13 +78,9 @@
 			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
 		</repository>
 
-<!--
-		<repository>
-			<id>bramosystems-releases</id>
-			<name>Bramosystems Release Repository</name>
-			<url>http://downloads.bramosystems.com/maven2/releases</url>
-		</repository>
--->
+		<!-- <repository> <id>bramosystems-releases</id> <name>Bramosystems Release 
+			Repository</name> <url>http://downloads.bramosystems.com/maven2/releases</url> 
+			</repository> -->
 
 
 	</repositories>
@@ -332,13 +328,13 @@
 		</dependency>
 
 
-<!-- Deal with change to GWTBrige (Ext uses old) -->
-<dependency>
-  <groupId>com.google.web.bindery</groupId>
-  <artifactId>requestfactory-server</artifactId>
-  <version>${gwtVersion}</version>
-  <scope>runtime</scope>
-</dependency>
+		<!-- Deal with change to GWTBrige (Ext uses old) -->
+		<dependency>
+			<groupId>com.google.web.bindery</groupId>
+			<artifactId>requestfactory-server</artifactId>
+			<version>${gwtVersion}</version>
+			<scope>runtime</scope>
+		</dependency>
 
 
 		<!-- Gson: Java to Json conversion -->
@@ -640,20 +636,32 @@
 					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
 					<jsFinalFile>CatchupMath_combined.js</jsFinalFile>
 					<cssSourceFiles>
+
 						<param>../../../../../../hotmath2/web/css/testset.css</param>
 						<param>../../../../../../hotmath2/web/css/default.css</param>
 						<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
-						<param>../../../../../../hotmath2/web/css/bookindex_with_tutor_combined.css</param>
+
+						<param>tutor_layout_tablet.css</param>
 						<param>CatchupMath.css</param>
 						<param>loading_image.css</param>
 					</cssSourceFiles>
 					<jsSourceFiles>
-						<param>../../../../../../hotmath2/web/js/cm_with_tutor_combined.js</param>
+						<param>hm_events.js</param>
+						<param>tutor_tablet.js</param>
+
+
+						<param>../../../../../../hotmath2/web/js/tutor_widget_combined.js</param>
+
+						<param>dom_utils.js</param>
 						<param>cm_core.js</param>
-                                                <param>quiz.js</param>                      
+						<param>quiz.js</param>
 						<param>CatchupMath.js</param>
 						<param>swfobject/swfobject.js</param>
-                                                <param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
+						<param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
+
+
+						<param>whiteboard.js</param>
+
 					</jsSourceFiles>
 				</configuration>
 			</plugin>
@@ -679,7 +687,7 @@
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
 						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
-    			                        <module>hotmath.gwt.hm_mobile.HmMobile</module>
+						<module>hotmath.gwt.hm_mobile.HmMobile</module>
 						<!-- <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> -->
 						<!-- <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
