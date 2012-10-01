@@ -149,6 +149,8 @@ if (!document.createElement('canvas').getContext) {
         // just remove all childNodes. We could hide all elements and remove
         // text nodes but who really cares about the fallback content.
 		try{
+		console.log("D-0:"+el)
+		console.log("D-1:"+el.innerHTML)
         el.innerHTML = '';
 }catch(error){
 console.log("D-ERROR:"+error)
