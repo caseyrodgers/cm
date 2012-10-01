@@ -236,7 +236,7 @@ var Whiteboard = (function () {
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
-
+console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
         var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
