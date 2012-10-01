@@ -124,6 +124,7 @@ if (!document.createElement('canvas').getContext) {
     init_: function(doc) {
       // find all canvas elements
       var els = doc.getElementsByTagName('canvas');
+	  console.log("NUM OF CANVAS ELEMENTS IN DOCUMENT: "+els.length)
       for (var i = 0; i < els.length; i++) {
         this.initElement(els[i]);
       }
