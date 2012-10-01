@@ -247,6 +247,19 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
+		try{
+	if (typeof G_vmlCanvasManager != "undefined") {
+		G_vmlCanvasManager.initElement(canvas);
+		G_vmlCanvasManager.initElement(origcanvas);
+		G_vmlCanvasManager.initElement(graphcanvas);
+		G_vmlCanvasManager.initElement(topcanvas);
+		//console.log("DEBUG_IE: G_vmlCanvasManager available");
+	}else{
+	console.log("DEBUG_IE: G_vmlCanvasManager not available");
+	}
+	}catch(error){
+	console.log("DEBUG_IE:"+error);
+	}
         screen_width = docWidth - leftOff - 27;
         screen_height = docHeight - topOff - 27;
         if (screen_width > 800) {
