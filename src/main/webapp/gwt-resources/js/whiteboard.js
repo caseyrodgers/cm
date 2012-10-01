@@ -258,6 +258,7 @@ var Whiteboard = (function () {
 	console.log("DEBUG_IE:"+error);
 	}
 	console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
+	try{
 	if (typeof G_vmlCanvasManager != "undefined") {		
 		G_vmlCanvasManager.initElement(graphcanvas);		
 	}else{
@@ -266,6 +267,7 @@ var Whiteboard = (function () {
 	}catch(error){
 	console.log("DEBUG_IE:"+error);
 	}
+	try{
 	if (typeof G_vmlCanvasManager != "undefined") {		
 		G_vmlCanvasManager.initElement(origcanvas);		
 	}else{
@@ -274,6 +276,7 @@ var Whiteboard = (function () {
 	}catch(error){
 	console.log("DEBUG_IE:"+error);
 	}
+	try{
 	if (typeof G_vmlCanvasManager != "undefined") {		
 		G_vmlCanvasManager.initElement(topcanvas);		
 	}else{
