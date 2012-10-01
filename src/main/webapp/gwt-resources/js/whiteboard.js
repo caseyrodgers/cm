@@ -249,7 +249,7 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         topcanvas = $get_Element("#tcanvas");
 		try{
 	if (typeof G_vmlCanvasManager != "undefined") {
-		var parent_cont=$("#canvas_container")
+		var parent_cont=$get_Element("#canvas_container")
 		parent_cont.removeChild(canvas)
 		parent_cont.removeChild(origcanvas)
 		parent_cont.removeChild(graphcanvas)
