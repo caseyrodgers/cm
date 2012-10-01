@@ -148,8 +148,11 @@ if (!document.createElement('canvas').getContext) {
         // Remove fallback content. There is no way to hide text nodes so we
         // just remove all childNodes. We could hide all elements and remove
         // text nodes but who really cares about the fallback content.
+		try{
         el.innerHTML = '';
-
+}catch(error){
+console.log("D-ERROR:"+error)
+}
         // do not use inline function because that will leak memory
         el.attachEvent('onpropertychange', onPropertyChange);
         el.attachEvent('onresize', onResize);
