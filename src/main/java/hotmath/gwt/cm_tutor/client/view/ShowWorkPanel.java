@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -49,6 +50,7 @@ public class ShowWorkPanel extends Composite {
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
+                Log.debug("Calling initializeWhiteboard with element: " + getWidget().getElement());
                 initializeWhiteboard(getWidget().getElement());
                 _whiteboardOutCallback.showWorkIsReady();
             }
@@ -119,29 +121,33 @@ public class ShowWorkPanel extends Composite {
     
     
     /**
-     * send an array of commands. Each element in array is a command and an
-     * array of data. For example, one draw', but a bunch of draw requests.
+     * send an array of commands to whiteboard. 
+     * 
+     * Each element in array is a command and an array of data. 
      */
     static public native void updateWhiteboard(String flashId, String command, String commandData) /*-{
-         var cmdArray = [];
-         if(command == 'draw') {
-             cmdArray = [['draw',[commandData]]];
-         }
-         else if(command == 'clear') {
-             cmdArray = [['clear',[]]];
-         }
-                                                                                                   
-         var realArray = [];
-         for (var i = 0, t = cmdArray.length; i < t; i++) {
-             var ele = [];
-             ele[0] = cmdArray[i][0];
-             ele[1] = cmdArray[i][1];
-             realArray[i] = ele;
-         }
-         
-         //alert('updateWhiteboard: ' + realArray);
-         
-         $wnd.Whiteboard.updateWhiteboard(realArray);
+        var cmdArray = [];
+        if (command == 'draw') {
+            cmdArray = [
+                ['draw', [commandData]]
+            ];
+        } else if (command == 'clear') {
+            cmdArray = [
+                ['clear', []]
+            ];
+        }
+
+        var realArray = [];
+        for (var i = 0, t = cmdArray.length; i < t; i++) {
+            var ele = [];
+            ele[0] = cmdArray[i][0];
+            ele[1] = cmdArray[i][1];
+            realArray[i] = ele;
+        }
+
+        //alert('updateWhiteboard: ' + realArray);
+
+        $wnd.Whiteboard.updateWhiteboard(realArray);
     }-*/;
 
     
@@ -249,31 +255,37 @@ public class ShowWorkPanel extends Composite {
     }
     
     private native void setExternalJsniHooks(ShowWorkPanel x) /*-{
-                                                                    // overide methods in the Whiteboard instance
-                                                                    $wnd.Whiteboard.whiteboardOut = function(data, boo) {
-                                                                        x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
+        // overide methods in the Whiteboard instance
+        $wnd.Whiteboard.whiteboardOut = function (data, boo) {
+            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
 
-                                                                    }
-                                                                    $wnd.Whiteboard.saveWhiteboard = function() {
-                                                                            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardSave_Gwt()();
-                                                                    }
-                                                                }-*/;
+        }
+        $wnd.Whiteboard.saveWhiteboard = function () {
+            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardSave_Gwt()();
+        }
+    }-*/;
 
-    protected native void initializeWhiteboard(Element ele)/*-{
-                                                  if(typeof $wnd.Whiteboard == 'undefined') {
-                                                      alert('Whiteboard JS is not loaded');
-                                                      return;
-                                                  }
-                         
-                                                  var height = Number($wnd.grabComputedHeight(ele))+15;
-                                                  var width = Number($wnd.grabComputedWidth(ele))+15;
-                                                  $wnd.Whiteboard.setWhiteboardViewPort(width,height);
-                                                  $wnd.Whiteboard.initWhiteboard($doc);
-                                              }-*/;
+    private native void initializeWhiteboard(Element ele)/*-{
+    try {
+        if (typeof $wnd.Whiteboard == 'undefined') {
+            alert('Whiteboard JS is not loaded');
+            return;
+        }
+        
+        // tell the Whiteboard object the size of the parent container
+        var height = Number($wnd.grabComputedHeight(ele)) + 15;
+        var width = Number($wnd.grabComputedWidth(ele)) + 15;
+        $wnd.Whiteboard.setWhiteboardViewPort(width, height);
+        $wnd.Whiteboard.initWhiteboard($doc);
+    } catch (e) {
+        alert('error initializing whiteboard: ' + e);
+        return;
+    }
+  }-*/;
 
     static public native void disconnectWhiteboard()/*-{
-                                                    $wnd.Whiteboard.disconnectWhiteboard($doc);
-                                                    }-*/;
+        $wnd.Whiteboard.disconnectWhiteboard($doc);
+    }-*/;
     
     
     

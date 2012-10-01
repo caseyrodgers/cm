@@ -169,13 +169,13 @@ var Whiteboard = (function () {
                 hideTextBox();
             }
         }
-        
-        
-        var _docWidth = 0; 
+
+
+        var _docWidth = 0;
         var _docHeight = 0;
         var _viewPort = null;
         wb.setWhiteboardViewPort = function(width, height) {
-        	_viewPort = {width: width, height: height};
+                _viewPort = {width: width, height: height};
         }
 
         function viewport() {
@@ -187,13 +187,13 @@ var Whiteboard = (function () {
                 e = document.documentElement || document.body;
             }
 
-            
+
             if(_viewPort == null) {
-            	alert('Whiteboard setup: _docWidth/_docHeight must be set by calling setWhiteboardViewPort(width, height)');
+                alert('Whiteboard setup: _docWidth/_docHeight must be set by calling setWhiteboardViewPort(width, height)');
             }
-            
+
              return _viewPort;
-             
+
 //            return {
 //                width: e[a + 'Width'],
 //                height: e[a + 'Height']
@@ -1704,14 +1704,14 @@ var Whiteboard = (function () {
             if (cmdArray[l] instanceof Array) {
                 var arg = cmdArray[l][1];
                 arg = arg == undefined ? [] : arg;
-                
+
                 //alert('cmdArray[l][0]: ' + cmdArray[l][0]);
                 //alert('data: ' + this[cmdArray[l][0]])
                 var command = cmdArray[l][0];
                 // make unique to whiteboard, otherwise
                 // other code can override.
                 if(command == 'clear') {
-                	resetWhiteBoard(false);
+                        resetWhiteBoard(false);
                 }
                 else {
                     this[command].apply(scope, arg);

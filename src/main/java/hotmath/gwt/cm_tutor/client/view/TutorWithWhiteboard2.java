@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -48,7 +49,8 @@ public class TutorWithWhiteboard2 extends Composite {
             
             @Override
             public void showWorkIsReady() {
-                System.out.println("Show Work Panel is ready");
+                Log.debug("Show Work is ready");
+                _tutorPanel.loadSolution(_uid, _assignKey, _testPid);
                 loadAssignmentWhiteboardData(_uid, _assignKey, _testPid);
             }
             
@@ -57,25 +59,19 @@ public class TutorWithWhiteboard2 extends Composite {
                 //
             }   
         });
+        
         sp.setWidget(_showWWork);
         sp.setWidth("300px");
         docPan.add(sp,DockPanel.EAST);
         
         initWidget(docPan);
-        
-        /** execute initialize only after HTML is loaded */
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                _showWWork.initializeWhiteboard(getWidget().getElement());
-                
-                _tutorPanel.loadSolution(_uid, _assignKey, _testPid);
-            }
-        });
     }
     
     
     private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
+        
+        Log.debug("Load assignment whiteboard: " + uid + ", " + assignKey + ", " + pid);
+                
         _uid = uid;
         _assignKey = assignKey;
         _pid = pid;
@@ -89,7 +85,7 @@ public class TutorWithWhiteboard2 extends Composite {
 
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
-                System.out.println("Error getting whiteboard data: " + caught.toString());
+                Log.error("Error getting whiteboard data: " + caught.toString(), caught);
             };
         });
     }    

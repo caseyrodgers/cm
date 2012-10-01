@@ -1,9 +1,10 @@
 <module rename-to="cm_tutor">
+
 	<inherits name="com.google.gwt.user.User" />
 	<inherits name='hotmath.gwt.cm_mobile_shared.CatchupMathMobileShared' />
 	<inherits name="com.google.code.gwt.storage.Html5Storage" />
     <inherits name='com.google.gwt.json.JSON' />
-    
+
 	<entry-point class="hotmath.gwt.cm_tutor.client.CmTutor" />
 </module>
     
