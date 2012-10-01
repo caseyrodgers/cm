@@ -4,8 +4,12 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentAction;
+import hotmath.gwt.cm_rpc.client.rpc.UpdateStudentAssignmentStatusAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -22,6 +26,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -29,6 +34,7 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
@@ -50,8 +56,8 @@ public class GradeBookDialog {
     StudentAssignment _stuAssignment;
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
+    AssignmentGradingPanel agPanel;
 
-    AssignmentDesigner _assignmentDesigner;
     public GradeBookDialog(StudentAssignment stuAssignment, final CallbackOnComplete callbackOnComplete) {
         this._stuAssignment = stuAssignment;
         final GWindow window = new GWindow(false);
@@ -101,20 +107,32 @@ public class GradeBookDialog {
 
         con.setNorthWidget(header);
 
-        AssignmentGradingPanel agPanel = new AssignmentGradingPanel(stuAssignment);
+        BorderLayoutContainer blContainer = new BorderLayoutContainer();
+
+        agPanel = new AssignmentGradingPanel(stuAssignment);
         BorderLayoutData data = new BorderLayoutData();
+        data.setSize(400.0);
         agPanel.setBorders(true);
         agPanel.setLayoutData(data);
-        con.setCenterWidget(agPanel);
+        blContainer.setWestWidget(agPanel);
 
-//        window.addButton(new TextButton("Save",new SelectHandler() {
-//            @Override
-//            public void onSelect(SelectEvent event) {
-//                saveStudentGradeBook();
-//                window.hide();
-//                callbackOnComplete.isComplete();
-//            }
-//        }));
+        FlowLayoutContainer flContainer = new FlowLayoutContainer();
+        flContainer.setScrollMode(ScrollMode.AUTO);
+        flContainer.add(QuestionViewerPanel.getInstance());
+
+        blContainer.setCenterWidget(flContainer);
+        blContainer.forceLayout();
+
+        con.add(blContainer);
+
+        window.addButton(new TextButton("Save",new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                saveStudentGradeBook();
+                window.hide();
+                //callbackOnComplete.isComplete();
+            }
+        }));
 
         window.addCloseButton();
 
@@ -164,17 +182,28 @@ public class GradeBookDialog {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                int adminId = UserInfoBase.getInstance().getUid();
-                //SaveGradeBookAction action = null;
-                //setAction(action);
-                //CmShared.getCmService().execute(action, this);
+   
+                ListStore<StudentProblemDto> spStore = agPanel._store;
+
+                // commit any edits
+                spStore.commitChanges();
+                
+                CmList<StudentProblemDto> spList = new CmArrayList<StudentProblemDto>();
+                spList.addAll(spStore.getAll());
+
+                _stuAssignment.setAssigmentStatuses(spList);
+
+                UpdateStudentAssignmentStatusAction action = new UpdateStudentAssignmentStatusAction(_stuAssignment);
+
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
             }
 
             @Override
             public void oncapture(RpcData results) {
                 CmBusyManager.setBusy(false);
                 
-                Info.display("GradeBook Saved", "GradeBook (" + _stuAssignment.getAssignment().getAssignKey() + ") saved successfully");
+                Info.display("Student Assignment Status Saved", "Assignment (" + _stuAssignment.getAssignment().getAssignKey() + ") saved successfully");
             }
             
             public void onFailure(Throwable error) {
