@@ -1421,6 +1421,7 @@ if (!document.createElement('canvas').getContext) {
   CanvasGradient = CanvasGradient_;
   CanvasPattern = CanvasPattern_;
   DOMException = DOMException_;
+    console.log("EXCANVAS_INIT:::")
 })();
 
 } // if
