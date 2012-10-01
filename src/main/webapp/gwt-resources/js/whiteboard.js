@@ -237,7 +237,7 @@ var Whiteboard = (function () {
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
-
+console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
         var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
@@ -249,41 +249,37 @@ var Whiteboard = (function () {
         topcanvas = $get_Element("#tcanvas");
 		try{
 	if (typeof G_vmlCanvasManager != "undefined") {
-		canvas=G_vmlCanvasManager.initElement(canvas);		
-		console.log("DEBUG_IE: G_vmlCanvasManager available");
-	}else{
-	console.log("DEBUG_IE: G_vmlCanvasManager not available");
-	}
-	}catch(error){
-	console.log("DEBUG_IE:"+error);
-	for(var m in error){
-	console.log("ERR: "+m+" --> "+error[m]);
-	}
-	}
-	console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
-	try{
-	if (typeof G_vmlCanvasManager != "undefined") {		
-		G_vmlCanvasManager.initElement(graphcanvas);		
-	}else{
-	console.log("DEBUG_IE: G_vmlCanvasManager not available");
-	}
-	}catch(error){
-	console.log("DEBUG_IE:"+error);
-	}
-	try{
-	if (typeof G_vmlCanvasManager != "undefined") {		
-		G_vmlCanvasManager.initElement(origcanvas);		
-	}else{
-	console.log("DEBUG_IE: G_vmlCanvasManager not available");
-	}
-	}catch(error){
-	console.log("DEBUG_IE:"+error);
-	}
-	try{
-	if (typeof G_vmlCanvasManager != "undefined") {
-		G_vmlCanvasManager.initElement(topcanvas);		
-	}else{
-	console.log("DEBUG_IE: G_vmlCanvasManager not available");
+		var parent_cont=$("#canvas_container")
+		parent_cont.removeChild(canvas)
+		parent_cont.removeChild(origcanvas)
+		parent_cont.removeChild(graphcanvas)
+		parent_cont.removeChild(topcanvas)
+		//
+		canvas=document.createElement('canvas')
+		canvas.width=800;
+		canvas.height=500;
+		$(canvas).attr('id','canvas')
+		//
+		origcanvas=document.createElement('canvas')
+		origcanvas.width=800;
+		origcanvas.height=500;
+		$(origcanvas).attr('id','ocanvas')
+		//
+		graphcanvas=document.createElement('canvas')
+		graphcanvas.width=800;
+		graphcanvas.height=500;
+		$(graphcanvas).attr('id','gcanvas')
+		//
+		topcanvas=document.createElement('canvas')
+		topcanvas.width=800;
+		topcanvas.height=500;
+		$(topcanvas).attr('id','tcanvas')
+		//
+		$(parent_cont).prepend(ocanvas,gcanvas,tcanvas,canvas);
+		G_vmlCanvasManager.initElement(canvas);
+		G_vmlCanvasManager.initElement(origcanvas);
+		G_vmlCanvasManager.initElement(graphcanvas);
+		G_vmlCanvasManager.initElement(topcanvas);
 	}
 	}catch(error){
 	console.log("DEBUG_IE:"+error);
