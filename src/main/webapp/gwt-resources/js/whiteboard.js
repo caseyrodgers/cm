@@ -277,7 +277,7 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
 		topcanvas.height=500;
 		$(topcanvas).attr('id','tcanvas')
 		//
-		$(parent_cont).prepend(ocanvas,gcanvas,tcanvas,canvas);
+		$(parent_cont).prepend(origcanvas,graphcanvas,topcanvas,canvas);
 		G_vmlCanvasManager.initElement(canvas);
 		G_vmlCanvasManager.initElement(origcanvas);
 		G_vmlCanvasManager.initElement(graphcanvas);
