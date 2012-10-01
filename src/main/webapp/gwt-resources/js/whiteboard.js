@@ -232,6 +232,7 @@ var Whiteboard = (function () {
 
 
         mainDoc = mainDocIn;
+		setTimeout(function(){
         canvas = $get_Element("#canvas");
         var siz = viewport()
         var docWidth = siz.width;
@@ -1256,6 +1257,7 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
 
         }
         canvas.focus()
+		},100);
     }
 
     function $get_Element(n) {
