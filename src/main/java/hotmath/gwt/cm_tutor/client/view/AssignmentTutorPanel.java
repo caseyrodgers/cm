@@ -8,7 +8,6 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 
@@ -101,8 +100,7 @@ public class AssignmentTutorPanel extends Composite {
 
             _tutorPanel.externallyLoadedTutor(problem.getInfo(),getWidget(), item.getFile(), item.getWidgetJsonArgs(), problem.getInfo().getJs(),problem.getInfo().getHtml(), resourceTitle, true, false, variableContext);
             
-            
-            CmRpc.EVENT_BUS.fireEvent(new AssignmentProblemLoadedEvent(problem));
+            // CmRpc.EVENT_BUS.fireEvent(new AssignmentProblemLoadedEvent(problem));
             
         } catch (Exception e) {
             e.printStackTrace();
