@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -11,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
@@ -29,7 +29,7 @@ public class AssignmentTutorPanel extends Composite {
 
     public AssignmentTutorPanel() {
         __lastInstance = this;
-        _tutorPanel = new TutorWrapperPanel(false, false,false, new TutorCallback() {
+        _tutorPanel = new TutorWrapperPanel(false, false,false, true, new TutorCallback() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);
@@ -113,12 +113,12 @@ public class AssignmentTutorPanel extends Composite {
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
-                Window.alert("Tutor Widget Answer saved");
+                Log.debug("Tutor Widget Answer saved");
             }
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
-                Window.alert(caught.getMessage());
+                Log.debug("Error saving tutor widget input value",caught);
             }
         });
     }

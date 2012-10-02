@@ -14,6 +14,8 @@ public class LessonDto extends FolderDto implements Response {
     
     List<ProblemDto> problems = new ArrayList<ProblemDto>();
     
+    public LessonDto() {}
+    
     public LessonDto(int id, int testDefId,String subject,String lessonName) {
         super(id, lessonName);
         this.testDefId = testDefId;

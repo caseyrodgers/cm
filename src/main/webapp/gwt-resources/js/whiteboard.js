@@ -15,7 +15,6 @@ if (typeof console == "undefined") {
     };
 }
 
-
 var Whiteboard = (function () {
     var wb = {};
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;

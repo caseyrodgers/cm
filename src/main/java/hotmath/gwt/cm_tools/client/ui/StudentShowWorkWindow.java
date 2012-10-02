@@ -202,7 +202,7 @@ public class StudentShowWorkWindow extends GWindow {
             solItem.setType("practice");
             solItem.setFile(pid);
             
-            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, new TutorCallback() {
+            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallback() {
                 
                 @Override
                 public void tutorWidgetComplete(String inputValue, boolean correct) {
@@ -311,7 +311,7 @@ public class StudentShowWorkWindow extends GWindow {
             solItem.setType("practice");
             solItem.setFile(pid);
             
-            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, new TutorCallback() {
+            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallback() {
                 
                 @Override
                 public void tutorWidgetComplete(String inputValue, boolean correct) {

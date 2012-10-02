@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
@@ -27,6 +28,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -822,5 +824,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     	return updateCounts;
     }
+    
+    public Collection<? extends LessonDto> getAvailableLessons() {
+        String sql = "select distinct lesson, subject from HA_PROGRAM_LESSONS where subject> '' order by lesson, subject";
+        List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
+            @Override
+            public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new LessonDto(0, 0,rs.getString("subject"), rs.getString("lesson") + " (" + rs.getString("subject") + ")");
+            }
+        });
+        return problems;
+    }    
 
 }

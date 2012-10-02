@@ -96,7 +96,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             return;
 
         
-        tutorPanel = new TutorWrapperPanel(true, false, false, new TutorCallback() {
+        tutorPanel = new TutorWrapperPanel(true, false, false, true, new TutorCallback() {
             
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
@@ -274,7 +274,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::gwt_solutionHasBeenInitialized(Ljava/lang/String;)(solutionVariablesJson);
         }
         catch(e) {
-            alert('error saving solution context: ' + e);}
+            alert('JSNI: error saving solution context: ' + e);}
         }
          // override global functions defined in tutor_dynamic
          //

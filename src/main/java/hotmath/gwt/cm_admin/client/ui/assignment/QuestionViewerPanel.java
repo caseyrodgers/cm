@@ -36,7 +36,7 @@ public class QuestionViewerPanel extends ContentPanel {
 
     
     private QuestionViewerPanel() {
-        tutorPanel = new TutorWrapperPanel(false,false,false,new TutorCallback() {
+        tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallback() {
             
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {

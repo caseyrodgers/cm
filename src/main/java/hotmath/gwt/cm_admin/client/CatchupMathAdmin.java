@@ -5,21 +5,23 @@ import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
+import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog.Callback;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
-import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -76,19 +78,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
-        
-        
-        if(false) {
-//            new AssignmentManagerDialog2(2);
-//            return;
-//            AddProblemDialog.showDialog(new Callback() {
-//                @Override
-//                public void problemsAdded(List<ProblemDto> problemsAdded) {
-//                }
-//            });
-//            return;
-        }
-        
+
         
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
@@ -119,6 +109,20 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //            return;
 //        }
         
+        
+        
+        
+        if(false) {
+//            new AssignmentManagerDialog2(2);
+//            return;
+            AddProblemDialog.showDialog(new Callback() {
+                @Override
+                public void problemsAdded(List<ProblemDto> problemsAdded) {
+                }
+            });
+            return;
+        }
+                
         
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentLessonListingPanel.CallbackOnSelectedLesson;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
@@ -31,6 +32,8 @@ import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,6 +48,8 @@ import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.TabItemConfig;
+import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -71,6 +76,9 @@ public class AddProblemDialog extends GWindow {
     ContentPanel _treePanel;
     BorderLayoutContainer _mainContainer;
     
+    TreeStore<BaseDto> _treeStore;
+    AssignmentLessonListingPanel _treeFlatPanel;
+    TabPanel _tabPanel; 
     public AddProblemDialog() {
         super(false);
 
@@ -83,12 +91,36 @@ public class AddProblemDialog extends GWindow {
         _mainContainer = new BorderLayoutContainer();
         BorderLayoutData westData = new BorderLayoutData();
         westData.setSize(400);
-        _mainContainer.setWestWidget(_treePanel,  westData);        
+
+        
+        _treeFlatPanel = new AssignmentLessonListingPanel(new CallbackOnSelectedLesson() {
+            @Override
+            public void lessonWasSelected() {
+                Window.alert("Lesson was selected");
+            }
+        });
+        
+        _tabPanel = new TabPanel();
+        _tabPanel.add(_treePanel, new TabItemConfig("Program Tree", false));
+        _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Available Lessons", false));
+        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
+            @Override
+            public void onSelection(SelectionEvent<Widget> event) {
+                if(_tabPanel.getActiveWidget() != _treePanel) {
+                    // is flat tree
+                    updateFlattenTree();
+                }
+                
+            }
+        });
+        _mainContainer.setWestWidget(_tabPanel,  westData);        
 
 
         CenterLayoutContainer centered = new CenterLayoutContainer();
         centered.setWidget(new Label("Loading data ..."));
         _treePanel.setWidget(centered);
+     
+        
 
         
         addHideHandler(new HideHandler() {
@@ -103,6 +135,10 @@ public class AddProblemDialog extends GWindow {
         setWidget(_mainContainer);
 
         readDataAndBuildTree();
+    }
+    
+    private void updateFlattenTree() {
+        _treeFlatPanel.refreshData();
     }
 
     public void setupViewerGui() {
@@ -134,7 +170,7 @@ public class AddProblemDialog extends GWindow {
     }
     
     /** Some lessons might not have had their problems read from the server.
-     * We do not want to make the user manually expand the problems (and see them).
+     * We do not want to make the user manually expand the problems to see them.
      * 
      * @param callback
      */
@@ -241,6 +277,8 @@ public class AddProblemDialog extends GWindow {
     Tree<BaseDto, String> _tree;
 
     public Widget makeTree() {
+        
+        _treeStore = new TreeStore<BaseDto>(new KeyProvider());
 
         RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
 
@@ -295,17 +333,17 @@ public class AddProblemDialog extends GWindow {
                 return parent instanceof FolderDto;
             }
         };
-        TreeStore<BaseDto> store = new TreeStore<BaseDto>(new KeyProvider());
-        loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(store));
+        
+        loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(_treeStore));
 
         for (BaseDto base : _root.getChildren()) {
-            store.add(base);
+            _treeStore.add(base);
             if (base instanceof FolderDto) {
-                processFolder(store, (FolderDto) base);
+                processFolder(_treeStore, (FolderDto) base);
             }
         }
 
-        _tree = new Tree<BaseDto, String>(store, new ValueProvider<BaseDto, String>() {
+        _tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
 
             @Override
             public String getValue(BaseDto object) {
@@ -363,9 +401,8 @@ public class AddProblemDialog extends GWindow {
         };
 
         _tree.setCell(cell);
-
+   
         return _tree;
-
     }
 
     private void getLessonItemsRPC(final int testDefId, final String subject, final int sectionNumber,
@@ -396,7 +433,7 @@ public class AddProblemDialog extends GWindow {
         }.register();
     }
 
-    private void getLessonProblemItemsRPC(final String lesson, final String subject,
+    static public void getLessonProblemItemsRPC(final String lesson, final String subject,
             final AsyncCallback<List<BaseDto>> callback) {
 
         new RetryAction<CmList<ProblemDto>>() {
@@ -439,18 +476,6 @@ public class AddProblemDialog extends GWindow {
     }
 
 
-
-    public static FolderDto getMusicRootFolder() {
-        FolderDto root = makeFolder("Root");
-
-        List<FolderDto> gradeLevelNodes = null;// createGradeLevelNodes();
-        List<BaseDto> rootChildren = new ArrayList<BaseDto>();
-
-        rootChildren.addAll(gradeLevelNodes);
-        root.setChildren(rootChildren);
-
-        return root;
-    }
 
     ProgramListing _programListing;
 

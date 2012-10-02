@@ -109,7 +109,8 @@ public class AssessmentPrescription {
         }
         logger.info("Creating prescription for client info: " + clientEnvironment);
 
-        // assign weights to items
+        // For each lesson assigned to quiz questions
+        //
         int sessNum = 0;
         for (InmhItemData itemData : itemsData) {
 
@@ -355,7 +356,7 @@ public class AssessmentPrescription {
     }
     
     
-    private List<RppWidget> expandProblemSetPids(RppWidget rpp) throws Exception {
+    static public List<RppWidget> expandProblemSetPids(RppWidget rpp) throws Exception {
         List<RppWidget> expandedPids = new ArrayList<RppWidget>();
         
         if(rpp.isProblemSet()) {
@@ -369,7 +370,7 @@ public class AssessmentPrescription {
     }
     
     
-    private List<RppWidget> createPsudoProblemSetPids(RppWidget rpp) throws Exception {
+    static private List<RppWidget> createPsudoProblemSetPids(RppWidget rpp) throws Exception {
         List<RppWidget> expandedPids = new ArrayList<RppWidget>();
         int numPidsNeeded = JsonUtil.getProblemSetPidCount(rpp.getWidgetJsonArgs());
         if(numPidsNeeded > 0) {

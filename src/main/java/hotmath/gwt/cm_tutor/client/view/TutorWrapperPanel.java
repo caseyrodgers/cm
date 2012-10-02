@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.cm.Log4jInit;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -9,10 +10,12 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,6 +37,10 @@ public class TutorWrapperPanel extends Composite {
     Element buttonBar;
     
     
+    @UiField
+    Element debugInfo;
+
+    boolean saveVariableContext;
 
     private TutorCallback tutorCallback;
 
@@ -42,9 +49,10 @@ public class TutorWrapperPanel extends Composite {
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
-    public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, TutorCallback tutorCallback) {
+    public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
 
         this.tutorCallback = tutorCallback;
+        this.saveVariableContext = saveVariableContext;
         initWidget(uiBinder.createAndBindUi(this));
 
         if(!showButtonBar) {
@@ -62,15 +70,20 @@ public class TutorWrapperPanel extends Composite {
 
     public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig,
             final CallbackAfterSolutionLoaded callback) {
+        
+        
+        Log.debug("TutorWrapperPanel->loadSolution: " + pid);
+        
         GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance()
                 .getRunId(), pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
             @Override
             public void onSuccess(SolutionInfo result) {
                 try {
+                    
+                    Log.debug("TutorWrapperPanel->Solution loaded: " + pid);
+                    
                     _solutionInfo = result;
-    
-                    //System.out.println("SolutionInfo: " + result);
     
                     String variableContext = null;
                     if (_solutionInfo.getContext() != null) {
@@ -79,7 +92,6 @@ public class TutorWrapperPanel extends Composite {
     
                     initializeTutor(TutorWrapperPanel.this, pid, jsonConfig, result.getJs(), result.getHtml(), title,
                             hasShowWork, shouldExpandSolution, variableContext);
-    
                     callback.solutionLoaded(result);
                 }
                 finally {
@@ -89,6 +101,7 @@ public class TutorWrapperPanel extends Composite {
 
             @Override
             public void onFailure(Throwable caught) {
+                Log.error("Error loading solution", caught);
                 caught.printStackTrace();
                 Window.alert(caught.getClass().getName() + ":" + caught.getMessage());
                 callback.solutionLoaded(null);
@@ -137,7 +150,12 @@ public class TutorWrapperPanel extends Composite {
     
     
     private void initializeTutor(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
+        
+        Log.debug("Solution loading: " + pid);
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
+        
+        
+        debugInfo.setInnerHTML(pid);
         
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
@@ -217,7 +235,7 @@ public class TutorWrapperPanel extends Composite {
                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenInitialized(Ljava/lang/String;Ljava/lang/String;I)(solutionVariablesJson,pid,probNum);
        }
        catch(e) {
-           alert('error saving solution context: ' + e);}
+           alert('error saving solution context in JSNI: ' + e);}
        }
     
        $wnd.gwt_getSolutionProblemContext = function(probNum) {
@@ -240,6 +258,13 @@ public class TutorWrapperPanel extends Composite {
     }
 
     private void gwt_solutionHasBeenInitialized(final String variablesJson, final String pid, final int problemNumber) {
+        
+        
+        if(!saveVariableContext) {
+            Log.debug("Not saving solution context for: " + pid);
+            return;
+        }
+        
         /**
          * if this is already stored in variables, then no need to save on
          * server
@@ -256,7 +281,7 @@ public class TutorWrapperPanel extends Composite {
              */
 
         } else {
-            SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfo.getInstance().getUid(), UserInfo
+            SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfoBase.getInstance().getUid(), UserInfo
                     .getInstance().getRunId(), pid, problemNumber, variablesJson);
             CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
                 @Override
