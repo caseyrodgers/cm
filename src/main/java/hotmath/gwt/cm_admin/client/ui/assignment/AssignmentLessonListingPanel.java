@@ -13,6 +13,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -146,6 +147,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
         }
 
         FlowLayoutContainer con = new FlowLayoutContainer();
+        con.setScrollMode(ScrollMode.AUTOY);
         con.addStyleName("margin-10");
 
         final Tree<BaseDto, String> tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
