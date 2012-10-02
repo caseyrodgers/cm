@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.GradeBookDialog;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -97,7 +96,12 @@ public class GradeBookPanel extends ContentPanel {
     private void showAssignmentGrading() {
         StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
         if(studentAssignment != null) {
-            new GradeBookDialog(studentAssignment.getUid());
+            new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
+                @Override
+                public void isComplete() {
+                    //TODO: 
+                }
+            });        
         }
 
     }
