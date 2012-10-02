@@ -227,11 +227,11 @@ var Whiteboard = (function () {
 
 
 
-        setupMathQuill(); // defined in mathquil;.js
+        setupMathQuill(); // defined in mathquill.js
 
 
         mainDoc = mainDocIn;
-		setTimeout(function(){
+                setTimeout(function(){
         canvas = $get_Element("#canvas");
         var siz = viewport()
         var docWidth = siz.width;
@@ -246,45 +246,45 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
-		try{
-	if (typeof G_vmlCanvasManager != "undefined") {
-		var parent_cont=$get_Element("#canvas-container")
-		console.log("DEBUG_IE parent_cont: "+parent_cont);
-		console.log("DEBUG_IE: parent_cont.removeChild"+parent_cont.removeChild);
-		parent_cont.removeChild(canvas)
-		parent_cont.removeChild(origcanvas)
-		parent_cont.removeChild(graphcanvas)
-		parent_cont.removeChild(topcanvas)
-		//
-		canvas=document.createElement('canvas')
-		canvas.width=800;
-		canvas.height=500;
-		$(canvas).attr('id','canvas')
-		//
-		origcanvas=document.createElement('canvas')
-		origcanvas.width=800;
-		origcanvas.height=500;
-		$(origcanvas).attr('id','ocanvas')
-		//
-		graphcanvas=document.createElement('canvas')
-		graphcanvas.width=800;
-		graphcanvas.height=500;
-		$(graphcanvas).attr('id','gcanvas')
-		//
-		topcanvas=document.createElement('canvas')
-		topcanvas.width=800;
-		topcanvas.height=500;
-		$(topcanvas).attr('id','tcanvas')
-		//
-		$(parent_cont).prepend(origcanvas,graphcanvas,topcanvas,canvas);
-		G_vmlCanvasManager.initElement(canvas);
-		G_vmlCanvasManager.initElement(origcanvas);
-		G_vmlCanvasManager.initElement(graphcanvas);
-		G_vmlCanvasManager.initElement(topcanvas);
-	}
-	}catch(error){
-	console.log("DEBUG_IE:"+error);
-	}
+                try{
+        if (typeof G_vmlCanvasManager != "undefined") {
+                var parent_cont=$get_Element("#canvas-container")
+                console.log("DEBUG_IE parent_cont: "+parent_cont);
+                console.log("DEBUG_IE: parent_cont.removeChild"+parent_cont.removeChild);
+                parent_cont.removeChild(canvas)
+                parent_cont.removeChild(origcanvas)
+                parent_cont.removeChild(graphcanvas)
+                parent_cont.removeChild(topcanvas)
+                //
+                canvas=document.createElement('canvas')
+                canvas.width=800;
+                canvas.height=500;
+                $(canvas).attr('id','canvas')
+                //
+                origcanvas=document.createElement('canvas')
+                origcanvas.width=800;
+                origcanvas.height=500;
+                $(origcanvas).attr('id','ocanvas')
+                //
+                graphcanvas=document.createElement('canvas')
+                graphcanvas.width=800;
+                graphcanvas.height=500;
+                $(graphcanvas).attr('id','gcanvas')
+                //
+                topcanvas=document.createElement('canvas')
+                topcanvas.width=800;
+                topcanvas.height=500;
+                $(topcanvas).attr('id','tcanvas')
+                //
+                $(parent_cont).prepend(origcanvas,graphcanvas,topcanvas,canvas);
+                G_vmlCanvasManager.initElement(canvas);
+                G_vmlCanvasManager.initElement(origcanvas);
+                G_vmlCanvasManager.initElement(graphcanvas);
+                G_vmlCanvasManager.initElement(topcanvas);
+        }
+        }catch(error){
+        console.log("DEBUG_IE:"+error);
+        }
         screen_width = docWidth - leftOff - 27;
         screen_height = docHeight - topOff - 27;
         if (screen_width > 800) {
@@ -1295,7 +1295,7 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
 
         }
         canvas.focus()
-		},100);
+                },100);
     }
 
     function $get_Element(n) {

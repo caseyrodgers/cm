@@ -163,6 +163,9 @@ public class ShowWorkPanel extends Composite {
             eatNextWhiteboardOut = false;
             return;
         }
+        
+        Log.debug("whitebordOut_Gwt: JSON length " + json.length());
+        
         /**
          * If json is simple string 'clear', then force a full clear and
          * remove all chart data for this user/pid. Otherwise, it is a
@@ -241,13 +244,19 @@ public class ShowWorkPanel extends Composite {
         if(whiteboardActions.getActions().size() == 0)
             return;
         
+        
+        Log.debug("saveWhiteboardToServer: actions=" + whiteboardActions.getActions().size());
+        
         CmTutor.getCmService().execute(whiteboardActions, new AsyncCallback<CmList<Response>>() {
             @Override
             public void onSuccess(CmList<Response> result) {
+                
+                Log.debug("saveWhiteboardToServer: complete");
                 whiteboardActions.getActions().clear();
             }
             @Override
             public void onFailure(Throwable caught) {
+                Log.debug("saveWhiteboardToServer: error", caught);
                 caught.printStackTrace();
                 Window.alert(caught.getMessage());
             }
