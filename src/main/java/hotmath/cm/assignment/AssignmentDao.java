@@ -1,5 +1,7 @@
 package hotmath.cm.assignment;
 
+import hotmath.assessment.InmhItemData;
+import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
@@ -20,6 +22,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.spring.SpringManager;
 
 import java.sql.Connection;
@@ -222,23 +225,46 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param gradeLevel
      * @return
      */
-    public List<ProblemDto> getLessonProblemsFor(Connection conn, String lesson, String subject) {
-        String sql = "select * from HA_PROGRAM_LESSONS where lesson = ? and subject = ? order by id";
+    public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lesson, String subject) {
 
         final int count[] = new int[1];
+
+        String sql = "select * from HA_PROGRAM_LESSONS where lesson = ? and subject = ? order by id";
+
+        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", "topics/number-line.html",
+                "Test Number Line"));
+        List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
+        try {
+            List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment pid");
+            for (RppWidget w : rpps) {
+                // dont expand pids
+                String defaultLabel = getDefaultLabel(lesson, (++count[0]));
+
+                problemsAll.add(new ProblemDto(0, lesson, defaultLabel, w.getFile()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lesson, subject },
                 new RowMapper<ProblemDto>() {
                     @Override
                     public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-                        String defaultLabel = rs.getString("lesson") + ": #" + (++count[0]);
+                        String defaultLabel = getDefaultLabel(lesson, (++count[0]));
 
                         return new ProblemDto(0, rs.getString("lesson"), defaultLabel, rs.getString("pid"));
                     }
                 });
-        return problems;
+
+        problemsAll.addAll(problems);
+
+        return problemsAll;
     }
 
+    private String getDefaultLabel(String lesson, int i) {
+        return lesson + ": #" + i;
+    }
 
     public List<Assignment> getAssignments(int aid, int groupId) throws PropertyLoadFileException {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
