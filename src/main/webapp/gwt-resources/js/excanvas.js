@@ -1427,7 +1427,7 @@ console.log("D-ERROR:"+error)
   CanvasGradient = CanvasGradient_;
   CanvasPattern = CanvasPattern_;
   DOMException = DOMException_;
-    console.log("EXCANVAS_INIT:::")
+    console.log("EXCANVAS_INIT :::")
 })();
 
 } // if
