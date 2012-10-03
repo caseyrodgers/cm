@@ -198,12 +198,17 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public StudentUserProgramModel loadProgramInfoForTest(Integer testId) throws Exception {
-        
-        StudentUserProgramModel sm =  getJdbcTemplate().queryForObject(
+    	StudentUserProgramModel sm = null;
+        try {
+            sm =  getJdbcTemplate().queryForObject(
                 CmMultiLinePropertyReader.getInstance().getProperty("LOAD_USER_PROGRAM_FOR_TEST_SQL"),
                 new Object[] { testId },
                 new StudentUserProgramRowMapper());
-        
+        }
+        catch (Exception e) {
+        	logger.error("ERROR loadProgramInfoForTestId(): testId: " + testId, e);
+        	throw new Exception("ERROR for testId: " + testId, e);
+        }
         return sm;
     }
 
