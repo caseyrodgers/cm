@@ -10,6 +10,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
@@ -33,6 +34,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     ColumnModel<StudentProblemDto> colMdl;
     ColumnConfig<StudentProblemDto, String> problemCol;
     ColumnConfig<StudentProblemDto, String> statusCol;
+    ColumnConfig<StudentProblemDto, String> gradedCol;
     ListStore<StudentProblemDto> _store;
 
     enum ProblemStatus {
@@ -62,6 +64,29 @@ public class AssignmentGradingPanel extends ContentPanel {
     	}
     }      
 
+    enum GradedStatus {
+    	NO("No"), YES("Yes");
+    	static GradedStatus parseString(String object) {
+    		if (GradedStatus.NO.toString().equals(object)) {
+    			return GradedStatus.NO;
+    		} else if (GradedStatus.YES.toString().equals(object)) {
+    			return GradedStatus.YES;
+    		} else {
+    			return GradedStatus.NO;
+    		}
+    	}
+    	private String status;
+
+    	GradedStatus(String status) {
+    		this.status = status;
+    	}
+
+    	@Override
+    	public String toString() {
+    		return status;
+    	}
+    }      
+
     public AssignmentGradingPanel(StudentAssignment studentAssignment){
         super.setHeadingText("Problems for Student/Assignment");
         super.getHeader().setHeight("30px");
@@ -72,10 +97,15 @@ public class AssignmentGradingPanel extends ContentPanel {
         statusCol = new ColumnConfig<StudentProblemDto, String>(spProps.status(), 100, "Status");
         statusCol.setRowHeader(true);
 
+        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 50, "Graded");
+//        gradedCol = new ColumnConfig<StudentProblemDto, String>(new StudentProblemGradedStatusValueProvider(), 50,
+//        				"Graded");
+        gradedCol.setRowHeader(true);
 
         colConfList = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
         colConfList.add(problemCol);
         colConfList.add(statusCol);
+        colConfList.add(gradedCol);
         colMdl = new ColumnModel<StudentProblemDto>(colConfList);
 
         _studentAssignment = studentAssignment;
@@ -109,6 +139,35 @@ public class AssignmentGradingPanel extends ContentPanel {
         combo.add(ProblemStatus.CORRECT);
         combo.add(ProblemStatus.INCORRECT);
         combo.setForceSelection(true);
+        combo.setPropertyEditor(new PropertyEditor<ProblemStatus>() {
+            
+            @Override
+            public ProblemStatus parse(CharSequence text) throws ParseException {
+              return ProblemStatus.parseString(text.toString());
+            }
+       
+            @Override
+            public String render(ProblemStatus object) {
+              return object == null ? ProblemStatus.NONE.toString() : object.toString();
+            }
+          });
+        
+        SimpleComboBox<GradedStatus> gradedCombo = new SimpleComboBox<GradedStatus>(new StringLabelProvider<GradedStatus>());
+        gradedCombo.setTriggerAction(TriggerAction.ALL);
+        gradedCombo.add(GradedStatus.NO);
+        gradedCombo.add(GradedStatus.YES);
+        gradedCombo.setPropertyEditor(new PropertyEditor<GradedStatus>() {
+            
+            @Override
+            public GradedStatus parse(CharSequence text) throws ParseException {
+              return GradedStatus.parseString(text.toString());
+            }
+       
+            @Override
+            public String render(GradedStatus object) {
+              return object == null ? GradedStatus.NO.toString() : object.toString();
+            }
+          });
 
         editing = createGridEditing(_gradingGrid);
         editing.addEditor(statusCol, new Converter<String, ProblemStatus>() {
@@ -124,6 +183,19 @@ public class AssignmentGradingPanel extends ContentPanel {
           }
      
         }, combo);
+        editing.addEditor(gradedCol, new Converter<String, GradedStatus>() {
+            
+            @Override
+            public String convertFieldValue(GradedStatus object) {
+              return object == null ? GradedStatus.NO.toString() : object.toString();
+            }
+       
+            @Override
+            public GradedStatus convertModelValue(String object) {
+              return GradedStatus.parseString(object);
+            }
+       
+          }, gradedCombo);
         
         setWidget(_gradingGrid);
 
@@ -132,5 +204,28 @@ public class AssignmentGradingPanel extends ContentPanel {
     protected GridEditing<StudentProblemDto> createGridEditing(Grid<StudentProblemDto> editableGrid) {
         return new GridInlineEditing<StudentProblemDto>(editableGrid);
     }
+/*
+    private class StudentProblemGradedStatusValueProvider extends Object implements ValueProvider<StudentProblemDto, String> {
 
+    	StudentProblemGradedStatusValueProvider() {
+    	    super();
+    	}
+    	
+		@Override
+		public String getValue(StudentProblemDto stuProbDto) {
+        	return stuProbDto.isGraded()?GradedStatus.YES.toString():GradedStatus.NO.toString();
+		}
+
+		@Override
+		public void setValue(StudentProblemDto stuProbDto, String value) {
+			stuProbDto.setIsGraded(value.equalsIgnoreCase(GradedStatus.YES.toString()));
+		}
+
+		@Override
+		public String getPath() {
+			return null;
+		}
+
+    }
+*/    
 }

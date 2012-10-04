@@ -7,7 +7,7 @@ public class StudentProblemDto implements Response {
     private int uid;
     private ProblemDto problem;
     private String status;
-
+    private String isGraded;
     
     public StudentProblemDto() {
     }
@@ -34,7 +34,6 @@ public class StudentProblemDto implements Response {
         this.problem = problem;
     }
 
-
     
     public String getStatus() {
         return status;
@@ -44,7 +43,15 @@ public class StudentProblemDto implements Response {
         this.status = status;
     }
 
-    public String getPidLabel() {
+    public String getIsGraded() {
+		return isGraded;
+	}
+
+	public void setIsGraded(String isGraded) {
+		this.isGraded = isGraded;
+	}
+
+	public String getPidLabel() {
         return getProblem().getLabel();
     }
     
@@ -52,7 +59,7 @@ public class StudentProblemDto implements Response {
         return problem.getPid();
     }
 
-    @Override
+	@Override
     public String toString() {
         return "StudentProblemDto [uid=" + uid + ", problem=" + problem + ", status=" + status + "]";
     }

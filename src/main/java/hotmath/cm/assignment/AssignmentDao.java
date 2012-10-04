@@ -342,9 +342,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     nameMap.put(uid, rs.getString("user_name"));
                 }
                 prob.setUid(uid);
-                ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
-                prob.setProblem(dummy);
+                ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
+                prob.setProblem(probDto);
                 prob.setStatus(rs.getString("status"));
+                prob.setIsGraded((rs.getInt("is_graded")>0)?"Yes":"No");
                 return prob;
             }
         });
@@ -836,6 +837,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	for (StudentProblemDto sp : studentAssignment.getAssigmentStatuses()) {
     		Object[] values = new Object[] {
     				sp.getStatus(),
+    				sp.getIsGraded().equalsIgnoreCase("YES")?1:0,
     				studentAssignment.getAssignment().getAssignKey(),
     				sp.getPid(),
     				studentAssignment.getUid()};
@@ -843,7 +845,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	}
     	SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
     	int[] updateCounts = template.batchUpdate(
-    			"update CM_ASSIGNMENT_PID_STATUS set status = ? where assign_key = ? and pid = ? and uid = ?",
+    			"update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ? where assign_key = ? and pid = ? and uid = ?",
     			batch);
 
     	//TODO: also update CM_ASSIGNMENT_PID_ANSWERS
