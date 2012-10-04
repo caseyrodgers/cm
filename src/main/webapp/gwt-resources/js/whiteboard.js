@@ -14,7 +14,6 @@ if (typeof console == "undefined") {
         }
     };
 }
-
 var Whiteboard = (function () {
     var wb = {};
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -222,23 +221,42 @@ var Whiteboard = (function () {
     /** main HTML document object */
     var mainDoc;
     var isIE = getInternetExplorerVersion() != -1;
+	
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
-
-
-
         setupMathQuill(); // defined in mathquill.js
-
-
         mainDoc = mainDocIn;
-                setTimeout(function(){
+        setTimeout(function(){
         canvas = $get_Element("#canvas");
         var siz = viewport()
         var docWidth = siz.width;
         var docHeight = siz.height;
 console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
-        var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
-        var leftOff = $get_Element("#tools").offsetLeft + 15;
+if (docWidth > 600) {
+            //alert($('#tools button').css('width'));
+            $('#tools').css('height', '35px');
+            $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
+            $('#button_clear').css('width', '45px');
+            $('#button_clear').css('height', '30px');
+            $('#button_clear').text("Clear");
+            $('#button_save').text("Save");
+            //$('#button_clear').text("CL");
+        } else {
+            $('#tools').css('height', '28px');
+            $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
+            $('#button_clear').css('width', '25px');
+            $('#button_clear').css('height', '25px');
+            $('#button_clear').text("CL");
+            $('#button_save').text("S");
+
+        }
+		var off_left=$get_Element("#tools").offsetLeft;
+		var off_top=$get_Element("#tools").offsetTop;
+		var off_ht=$get_Element("#tools").offsetHeight;
+        var topOff = off_ht + off_top + 15;
+        var leftOff = off_left + 15;
+        //var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
+        //var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
         var hscrollObj = {}
         wb.globalStrokeColor = "#000000";
@@ -246,6 +264,25 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         origcanvas = $get_Element("#ocanvas");
         graphcanvas = $get_Element("#gcanvas");
         topcanvas = $get_Element("#tcanvas");
+		canvas.width=2000;
+		canvas.height=2620;
+		origcanvas.width=2000;
+		origcanvas.height=2620;
+		graphcanvas.width=2000;
+		graphcanvas.height=2620;
+		topcanvas.width=2000;
+		topcanvas.height=2620;
+		var ccnt=$get_Element("#canvas-container");
+		$("#canvas-container").css('width','2000px');
+		$("#canvas-container").css('height','2620px');
+		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").offsetLeft+":"+$get_Element("#tools").offsetTop)
+		if(IS_IPHONE||docWidth <= 600){
+		dox=5
+		doy=5
+		}else{
+		dox=12
+		doy=12
+		}
                 try{
         if (typeof G_vmlCanvasManager != "undefined") {
                 var parent_cont=$get_Element("#canvas-container")
@@ -257,23 +294,23 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
                 parent_cont.removeChild(topcanvas)
                 //
                 canvas=document.createElement('canvas')
-                canvas.width=800;
-                canvas.height=500;
+                canvas.width=2000;
+                canvas.height=2620;
                 $(canvas).attr('id','canvas')
                 //
                 origcanvas=document.createElement('canvas')
-                origcanvas.width=800;
-                origcanvas.height=500;
+                origcanvas.width=2000;
+                origcanvas.height=2620;
                 $(origcanvas).attr('id','ocanvas')
                 //
                 graphcanvas=document.createElement('canvas')
-                graphcanvas.width=800;
-                graphcanvas.height=500;
+                graphcanvas.width=2000;
+                graphcanvas.height=2620;
                 $(graphcanvas).attr('id','gcanvas')
                 //
                 topcanvas=document.createElement('canvas')
-                topcanvas.width=800;
-                topcanvas.height=500;
+                topcanvas.width=20000;
+                topcanvas.height=2620;
                 $(topcanvas).attr('id','tcanvas')
                 //
                 $(parent_cont).prepend(origcanvas,graphcanvas,topcanvas,canvas);
@@ -285,9 +322,11 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
         }catch(error){
         console.log("DEBUG_IE:"+error);
         }
-        screen_width = docWidth - leftOff - 27;
-        screen_height = docHeight - topOff - 27;
-        if (screen_width > 800) {
+        //screen_width = docWidth - leftOff - 27;
+       // screen_height = docHeight - topOff - 27;
+	   screen_width = docWidth - leftOff-dox;
+        screen_height = docHeight - topOff-doy;
+        /*if (screen_width > 800) {
             //alert($('#tools button').css('width'));
             $('#tools').css('height', '35px');
             $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
@@ -313,7 +352,29 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
 
         $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
         $get_Element('#hscroller').style.left = (0) + 'px';
-        $get_Element('#hscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + screen_height + 5) + 'px';
+        $get_Element('#hscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + screen_height + 5) + 'px';*/
+		console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
+        $get_Element('#drawsection').style.width = (screen_width) + 'px';
+        $get_Element('#drawsection').style.height = (screen_height) + 'px';
+        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
+        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
+
+        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+        $get_Element('#hscroller').style.left = (off_left) + 'px';
+        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
+		var posData="";
+		posData+="Screen-Width:"+docWidth+"\n";
+		posData+="Screen-Height:"+docHeight+"\n";
+		posData+="wb-Width:"+screen_width+"\n";
+		posData+="wb-Height:"+screen_height+"\n";
+		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
+		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
+		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
+		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
+		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
+		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
+		console.log(posData);
         var cmd_keys = {};
         var nav_keys = {};
         cmd_keys["frac"] = "/";
@@ -388,7 +449,7 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
             adjustToolbar()
         });
 
-        function adjustToolbar() {
+        /*function adjustToolbar() {
             var siz = viewport()
             var docWidth = siz.width;
             var docHeight = siz.height;
@@ -416,6 +477,70 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
                 $('#button_save').text("S");
 
             }
+        }*/
+		function adjustToolbar() {
+            var siz = viewport()
+            var docWidth = siz.width;
+            var docHeight = siz.height;
+if (docWidth > 600) {
+                //alert($('#tools button').css('width'));
+                $('#tools').css('height', '35px');
+                $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
+                $('#button_clear').css('width', '45px');
+                $('#button_clear').css('height', '30px');
+                //$('#button_clear').text("CL");
+                $('#button_clear').text("Clear");
+                $('#button_save').text("Save");
+            } else {
+
+                $('#tools').css('height', '25px');
+                $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
+                $('#button_clear').css('width', '25px');
+                $('#button_clear').css('height', '25px');
+                $('#button_clear').text("CL");
+                $('#button_save').text("S");
+
+            }
+			//setTimeout(function(){
+			var off_left=$get_Element("#tools").offsetLeft;
+		var off_top=$get_Element("#tools").offsetTop;
+			var off_ht=$get_Element("#tools").offsetHeight;
+            var topOff = off_ht + off_top + 15
+            var leftOff = off_left + 15;
+           if(IS_IPHONE||docWidth <= 600){
+		dox=5
+		doy=5
+		}else{
+		dox=12
+		doy=12
+		}
+		//dox=doy=0;
+        screen_width = docWidth - leftOff -dox;
+        screen_height = docHeight - topOff -doy;
+           console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
+        $get_Element('#drawsection').style.width = (screen_width) + 'px';
+        $get_Element('#drawsection').style.height = (screen_height) + 'px';
+        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
+        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
+
+        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+        $get_Element('#hscroller').style.left = (off_left) + 'px';
+        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
+		var posData="";
+		posData+="Screen-Width:"+docWidth+"\n";
+		posData+="Screen-Height:"+docHeight+"\n";
+		posData+="wb-Width:"+screen_width+"\n";
+		posData+="wb-Height:"+screen_height+"\n";
+		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
+		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
+		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
+		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
+		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
+		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
+		console.log(posData); 
+		positionScroller();
+		//},100);
         }
 
         function initThumbDrag(_event) {
@@ -807,6 +932,23 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
             killTouchListeners();
         }
         //
+		function positionScroller(){
+		var scrubH = (canvas.width - screen_width) / (screen_width - 30);
+		var scrubV = (canvas.height - screen_height) / (screen_height - 30);
+		var currPosH=parseInt($get_Element('#canvas-container').style.left);
+		currPosH=currPosH?currPosH:0
+		currPosH = currPosH > 0 ? 0 : currPosH
+		currPosH = currPosH < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosH;
+        $get_Element('#hscroll_thumb').style.left = (-currPosH / scrubH) + "px";
+		$get_Element('#canvas-container').style.left = currPosH + "px";
+		var currPosV=parseInt($get_Element('#canvas-container').style.top);
+		currPosV=currPosV?currPosV:0
+		currPosV = currPosV > 0 ? 0 : currPosV
+        currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
+        $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
+		$get_Element('#canvas-container').style.top = currPosV + "px";
+		console.log("SCROLLER_THUMB_POS:"+scrubH+":"+scrubV+":"+(-currPosH)+":"+(-currPosV))
+		}
         function scrollTheCanvas(event) {
             checkForScroll(event);
             //setTimeout(function(){checkForScroll(event)},100)
@@ -829,8 +971,8 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
                 return
             }
 
-            var cposX = ($get_Element("#container").style.left);
-            var cposY = ($get_Element("#container").style.top);
+            var cposX = ($get_Element("#wb-container").style.left);
+            var cposY = ($get_Element("#wb-container").style.top);
 
             cposX = cposX ? parseInt(cposX) : 0;
             cposY = cposY ? parseInt(cposY) : 0;
@@ -1182,9 +1324,16 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
             currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
             $get_Element('#canvas-container').style.top = currPosY + "px"
             $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+            //console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
+			//
+			var currPosX = swipe_nx ? swipe_nx : 0;
+            currPosX = parseInt(currPosX)
+            currPosX = currPosX > 0 ? 0 : currPosX
+            currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
+            $get_Element('#canvas-container').style.left = currPosX + "px"
+            $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
             console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
         }
-
         function stopSwipe(_event) {
             swipe_ox = swipe_ox + swipe_dx
             swipe_oy = swipe_oy + swipe_dy
@@ -1196,6 +1345,7 @@ console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
             c.removeEventListener("touchmove", startSwipe)
             c.removeEventListener("touchend", stopSwipe)
             $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+			$get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
             //console.log("Touch END x:" + touch.pageX + ", y:" + touch.pageY);
         }
 
