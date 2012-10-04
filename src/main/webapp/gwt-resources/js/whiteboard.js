@@ -277,11 +277,11 @@ if (docWidth > 600) {
 		$("#canvas-container").css('height','2620px');
 		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").offsetLeft+":"+$get_Element("#tools").offsetTop)
 		if(IS_IPHONE||docWidth <= 600){
-		dox=5
-		doy=5
+		dox=12
+		doy=12
 		}else{
-		dox=0
-		doy=0
+		dox=19
+		doy=19
 		}
                 try{
         if (typeof G_vmlCanvasManager != "undefined") {
@@ -508,11 +508,11 @@ if (docWidth > 600) {
             var topOff = off_ht + off_top + 15
             var leftOff = off_left + 15;
            if(IS_IPHONE||docWidth <= 600){
-		dox=5
-		doy=5
+		dox=12
+		doy=12
 		}else{
-		dox=0;
-		doy=0;
+		dox=19;
+		doy=19;
 		}
 		//dox=doy=0;
         screen_width = docWidth - leftOff -dox;
