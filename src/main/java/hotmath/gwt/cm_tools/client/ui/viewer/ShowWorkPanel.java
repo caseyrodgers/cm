@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import org.jfree.util.Log;
+
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
@@ -118,6 +120,8 @@ public class ShowWorkPanel extends Frame {
             eatNextWhiteboardOut = false;
             return;
         }
+        
+        Log.debug("whiteboaurdOut characters: " + json.length());
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARDUPDATED, this.pid));
 

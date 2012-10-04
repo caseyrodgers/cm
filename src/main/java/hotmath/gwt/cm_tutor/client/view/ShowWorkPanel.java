@@ -30,8 +30,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ShowWorkPanel extends Composite {
-
-    
     static public ShowWorkPanel __lastInstance;
     
     static public final String QUIZ_PREFIX = "quiz:";
@@ -39,6 +37,14 @@ public class ShowWorkPanel extends Composite {
     ShowWorkProxy _whiteboardOutCallback;
     String pid;
     String title;
+    
+    
+    @UiField
+    CheckBox showProblem;
+    
+    @UiField
+    Element canvasBackground;
+    
     public ShowWorkPanel(ShowWorkProxy whiteboardOutCallback) {
         this._whiteboardOutCallback = whiteboardOutCallback; 
         initWidget(uiBinder.createAndBindUi(this));
@@ -51,7 +57,7 @@ public class ShowWorkPanel extends Composite {
             @Override
             public void execute() {
                 Log.debug("Calling initializeWhiteboard with element: " + getWidget().getElement());
-                initializeWhiteboard(getWidget().getElement());
+                jsni_initializeWhiteboard(getWidget().getElement());
                 _whiteboardOutCallback.showWorkIsReady();
             }
         });
@@ -81,7 +87,7 @@ public class ShowWorkPanel extends Composite {
     }
     
     public void resizeWhiteboard() {
-        initializeWhiteboard(getWidget().getElement());
+        jnsi_resizeWhiteboard();
         _whiteboardOutCallback.windowResized();
     }
     
@@ -109,23 +115,14 @@ public class ShowWorkPanel extends Composite {
     native private void initializeWidgets() /*-{
         AuthorApi.initializeWidgets();
     }-*/; 
-    
-    
-    
-    @UiField
-    CheckBox showProblem;
-    
-    @UiField
-    Element canvasBackground;
-    
-    
+
     
     /**
      * send an array of commands to whiteboard. 
      * 
      * Each element in array is a command and an array of data. 
      */
-    static public native void updateWhiteboard(String flashId, String command, String commandData) /*-{
+    private native void jsni_updateWhiteboard(String flashId, String command, String commandData) /*-{
         var cmdArray = [];
         if (command == 'draw') {
             cmdArray = [
@@ -222,14 +219,14 @@ public class ShowWorkPanel extends Composite {
         final String flashId = "";
         
         try {
-            updateWhiteboard(flashId, "clear",null);
+            jsni_updateWhiteboard(flashId, "clear",null);
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Log.debug("Error loading whiteboard: " + e);
         }
         for (int i = 0, t = commands.size(); i < t; i++) {
             try {
-                updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
+                jsni_updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Error processing whiteboard command: " + e.getMessage());
@@ -274,7 +271,7 @@ public class ShowWorkPanel extends Composite {
         }
     }-*/;
 
-    private native void initializeWhiteboard(Element ele)/*-{
+    private native void jsni_initializeWhiteboard(Element ele)/*-{
     try {
         if (typeof $wnd.Whiteboard == 'undefined') {
             alert('Whiteboard JS is not loaded');
@@ -291,8 +288,13 @@ public class ShowWorkPanel extends Composite {
         return;
     }
   }-*/;
+    
+    
+    private native void jnsi_resizeWhiteboard()/*-{
+        //Whiteboard.resizeWhiteboard();
+    }-*/;
 
-    static public native void disconnectWhiteboard()/*-{
+    static private native void jsni_disconnectWhiteboard()/*-{
         $wnd.Whiteboard.disconnectWhiteboard($doc);
     }-*/;
     

@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
+import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.CallbackAfterSolutionLoaded;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
@@ -27,7 +28,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -202,23 +202,7 @@ public class StudentShowWorkWindow extends GWindow {
             solItem.setType("practice");
             solItem.setFile(pid);
             
-            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallback() {
-                
-                @Override
-                public void tutorWidgetComplete(String inputValue, boolean correct) {
-                    CmLogger.debug("Tutor Widget Input value:" + inputValue);
-                }
-                
-                @Override
-                public void onNewProblem(int problemNumber) {
-                    CatchupMathTools.showAlert("onNewProblem");
-                }
-                
-                @Override
-                public void solutionHasBeenViewed(String value) {
-                    CmLogger.debug("Solution has been viewed");                    
-                }
-            });
+            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallbackDefault());
             
             
             final BorderLayoutContainer borderLayout = new BorderLayoutContainer();
@@ -311,23 +295,7 @@ public class StudentShowWorkWindow extends GWindow {
             solItem.setType("practice");
             solItem.setFile(pid);
             
-            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallback() {
-                
-                @Override
-                public void tutorWidgetComplete(String inputValue, boolean correct) {
-                    CmLogger.debug("Tutor Widget Input value:" + inputValue);
-                }
-                
-                @Override
-                public void onNewProblem(int problemNumber) {
-                    CatchupMathTools.showAlert("onNewProblem");
-                }
-                
-                @Override
-                public void solutionHasBeenViewed(String value) {
-                    CmLogger.debug("Solution has been viewed");
-                }
-            });
+            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallbackDefault());
             
             
             final BorderLayoutContainer borderLayout = new BorderLayoutContainer();

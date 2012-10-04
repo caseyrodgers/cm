@@ -33,7 +33,9 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
     @Override
     public AssignmentProblem execute(Connection conn, GetAssignmentSolutionAction action) throws Exception {
         SolutionInfo info = new GetSolutionCommand().execute(conn,  new GetSolutionAction(action.getUid(),  0, action.getPid()));
-        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,determineProblemType(info.getHtml()));
+        
+        String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
+        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,determineProblemType(info.getHtml()),lastUserWidgetValue);
     
         AssignmentDao.getInstance().setAssignmentPidStatus(action.getAssignKey(),action.getUid(),action.getPid());
         

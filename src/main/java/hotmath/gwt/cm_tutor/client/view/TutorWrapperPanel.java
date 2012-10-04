@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.cm.Log4jInit;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -10,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,17 +54,20 @@ public class TutorWrapperPanel extends Composite {
         initWidget(uiBinder.createAndBindUi(this));
 
         if(!showButtonBar) {
-            buttonBar.setAttribute("style", "display: none");
+            buttonBar.addClassName("display_none");
         }
         if (!showWhiteboardButton) {
-            whiteboardButton.setAttribute("style", "display:none");
+            whiteboardButton.addClassName("display_none");
         }
         if (!showReturnButton) {
-            returnButton.setAttribute("style", "display:none");
+            returnButton.addClassName("display_none");
         }
     }
     
     
+    public void setTutorWidgetValue(String value) {
+        jsni_setTutorWidgetValue(value);
+    }
 
     public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig,
             final CallbackAfterSolutionLoaded callback) {
@@ -74,8 +75,7 @@ public class TutorWrapperPanel extends Composite {
         
         Log.debug("TutorWrapperPanel->loadSolution: " + pid);
         
-        GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance()
-                .getRunId(), pid);
+        GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<SolutionInfo>() {
             @Override
             public void onSuccess(SolutionInfo result) {
@@ -154,11 +154,17 @@ public class TutorWrapperPanel extends Composite {
         Log.debug("Solution loading: " + pid);
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
         
-        
         debugInfo.setInnerHTML(pid);
+        
+        setTutorWidgetValue("999");
         
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
+    
+    
+    private native void jsni_setTutorWidgetValue(String value)/*-{
+        $wnd.setWidgetValueFromJson(value);
+    }-*/;
     
     
     
@@ -281,29 +287,54 @@ public class TutorWrapperPanel extends Composite {
              */
 
         } else {
-            SaveSolutionContextAction action = new SaveSolutionContextAction(UserInfoBase.getInstance().getUid(), UserInfo
-                    .getInstance().getRunId(), pid, problemNumber, variablesJson);
-            CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
-                @Override
-                public void onSuccess(RpcData result) {
-                    _solutionInfo.setContext(new SolutionContext(pid, problemNumber, variablesJson));
-                    System.out.println("Context saved");
-                }
-
-                @Override
-                public void onFailure(Throwable caught) {
-                    caught.printStackTrace();
-                    System.out.println("Error saving solution context: " + caught);
-                }
-            });
+            SaveSolutionContextAction action = tutorCallback.getSaveSolutionContextAction(variablesJson, pid, problemNumber);
+            Log.debug("tutorCallback, save action, " +  action);
+            if(action != null) {
+                CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+                    @Override
+                    public void onSuccess(RpcData result) {
+                        _solutionInfo.setContext(new SolutionContext(pid, problemNumber, variablesJson));
+                        System.out.println("Context saved");
+                    }
+    
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        caught.printStackTrace();
+                        System.out.println("Error saving solution context: " + caught);
+                    }
+                });
+            }
         }
     }
 
     public static interface TutorCallback {
+        /** When the NewProblem button is pressed 
+         * 
+         * @param problemNumber
+         */
         void onNewProblem(int problemNumber);
 
+        /** Return the action used to save this context, null if
+         *  no context save should happen.
+         *  
+         * @param variablesJson
+         * @param pid
+         * @param problemNumber
+         * @return
+         */
+        SaveSolutionContextAction getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber);
+
+        /** Called when the tutor widget input is complete
+         * 
+         * @param inputValue
+         * @param correct
+         */
         void tutorWidgetComplete(String inputValue, boolean correct);
 
+        /** Call after the last step has been viewed in a solution
+         * 
+         * @param value
+         */
         void solutionHasBeenViewed(String value);
     }
     

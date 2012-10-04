@@ -13,8 +13,6 @@ import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -23,6 +21,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class TutorWithWhiteboard2 extends Composite {
 
     String _testPid = "test_dynamic_practice_addition_1_1$3";
+    //String _testPid = "test_dynamic_graphs_1_2_5";
 
     AssignmentTutorPanel _tutorPanel;
     ShowWorkPanel _showWWork;

@@ -8,7 +8,6 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
@@ -29,20 +28,10 @@ public class AssignmentTutorPanel extends Composite {
 
     public AssignmentTutorPanel() {
         __lastInstance = this;
-        _tutorPanel = new TutorWrapperPanel(false, false,false, true, new TutorCallback() {
+        _tutorPanel = new TutorWrapperPanel(false, false,false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);
-            }
-            
-            @Override
-            public void onNewProblem(int problemNumber) {
-                Window.alert("onNewProblem");
-            }
-            
-            @Override
-            public void solutionHasBeenViewed(String value) {
-                System.out.print("Solution has been viewed: " + value);
             }
         });
         
@@ -99,6 +88,8 @@ public class AssignmentTutorPanel extends Composite {
             InmhItemData item = new InmhItemData("solution", problem.getInfo().getPid(), resourceTitle);
 
             _tutorPanel.externallyLoadedTutor(problem.getInfo(),getWidget(), item.getFile(), item.getWidgetJsonArgs(), problem.getInfo().getJs(),problem.getInfo().getHtml(), resourceTitle, true, false, variableContext);
+            
+            _tutorPanel.setTutorWidgetValue(problem.getLastUserWidgetValue());
             
             // CmRpc.EVENT_BUS.fireEvent(new AssignmentProblemLoadedEvent(problem));
             

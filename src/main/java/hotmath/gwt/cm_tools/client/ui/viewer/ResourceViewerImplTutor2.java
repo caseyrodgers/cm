@@ -20,9 +20,9 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
+import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.CallbackAfterSolutionLoaded;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -96,8 +96,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             return;
 
         
-        tutorPanel = new TutorWrapperPanel(true, false, false, true, new TutorCallback() {
-            
+        tutorPanel = new TutorWrapperPanel(true, false, false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 if(correct) {
@@ -106,14 +105,17 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             }
             
             @Override
-            public void onNewProblem(int problemNumber) {
-                CatchupMathTools.showAlert("onNewProblem");
-            }
-            
-            @Override
             public void solutionHasBeenViewed(String value) {
                 solutionHasBeenViewed_Gwt(value);
             }
+            
+            @Override
+            public SaveSolutionContextAction getSaveSolutionContextAction(String variablesJson, String pid,
+                    int problemNumber) {
+                return new SaveSolutionContextAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid, problemNumber, variablesJson);
+            }
+            
+     
         });
         tutorPanel.addStyleName("tutor_solution_wrapper");
         addResource(tutorPanel, getResourceItem().getTitle());

@@ -16,18 +16,28 @@ public class AssignmentProblem implements Response{
     private ProblemType problemType;
     private int userId;
     private int assignKey;
+    private String lastUserWidgetValue;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, SolutionInfo info, ProblemType problemType) {
+    public AssignmentProblem(int userId, int assignKey, SolutionInfo info, ProblemType problemType, String lastUserWidgetValue) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.info = info;
         this.problemType = problemType;
+        this.lastUserWidgetValue = lastUserWidgetValue;
     }
 
     public SolutionInfo getInfo() {
         return info;
+    }
+
+    public String getLastUserWidgetValue() {
+        return lastUserWidgetValue;
+    }
+
+    public void setLastUserWidgetValue(String lastUserWidgetValue) {
+        this.lastUserWidgetValue = lastUserWidgetValue;
     }
 
     public void setInfo(SolutionInfo info) {
@@ -61,6 +71,7 @@ public class AssignmentProblem implements Response{
     @Override
     public String toString() {
         return "AssignmentProblem [info=" + info + ", problemType=" + problemType + ", userId=" + userId
-                + ", assignKey=" + assignKey + "]";
+                + ", assignKey=" + assignKey + ", lastUserWidgetValue=" + lastUserWidgetValue + "]";
     }
+
 }

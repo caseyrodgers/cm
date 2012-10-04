@@ -1,5 +1,6 @@
 package hotmath.cm.assignment;
 
+import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.InmhItemData;
 import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
@@ -231,16 +232,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         String sql = "select * from HA_PROGRAM_LESSONS where lesson = ? and subject = ? order by id";
 
-        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", "topics/number-line.html",
-                "Test Number Line"));
+        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", "topics/number-line.html",    "Test Number Line"));
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
         try {
             List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment pid");
             for (RppWidget w : rpps) {
-                // dont expand pids
-                String defaultLabel = getDefaultLabel(lesson, (++count[0]));
-
-                problemsAll.add(new ProblemDto(0, lesson, defaultLabel, w.getFile()));
+                for(RppWidget ew: AssessmentPrescription.expandProblemSetPids(w)) {
+                    String defaultLabel = getDefaultLabel(lesson, (++count[0]));
+                    problemsAll.add(new ProblemDto(0, lesson, defaultLabel, w.getFile()));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -780,11 +780,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 ps.setInt(1, assignKey);
                 ps.setInt(2, uid);
                 ps.setString(3, pid);
-                ps.setString(4, value);
+                ps.setString(4, clearUpString(value));
                 ps.setInt(5, correct?1:0);
                 return ps;
             }
         });
+    }
+    
+    private String clearUpString(String value) {
+        if(value != null) {
+            value = value.trim();
+        }
+        value = value.replace("\\n", "");
+        return value;
     }
     
     public void saveWhiteboardData(final Integer uid, final int assignKey, final String pid, CommandType commandType,
@@ -856,8 +864,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	return updateCounts;
     }
     
+    
     public Collection<? extends LessonDto> getAvailableLessons() {
-        String sql = "select distinct lesson, subject from HA_PROGRAM_LESSONS where subject> '' order by lesson, subject";
+        String sql = "select distinct lesson, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject";
         List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
             @Override
             public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -865,6 +874,22 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
         return problems;
+    }
+
+    public String getAssignmentLastWidgetInputValue(int uid, int assignKey, String pid) {
+        String sql = "select * from  CM_ASSIGNMENT_PID_ANSWERS where user_id = ? and assign_key = ? and pid = ? order by id desc";
+        List<String> values = getJdbcTemplate().query(sql, new Object[]{uid,assignKey, pid}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("answer");
+            }
+        });
+
+        String value=null;
+        if(values.size() > 0) {
+            value = values.get(0);
+        }
+        return value;
     }    
 
 }
