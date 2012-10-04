@@ -322,7 +322,7 @@ if (docWidth > 600) {
                 $(graphcanvas).attr('id','gcanvas')
                 //
                 topcanvas=document.createElement('canvas')
-                topcanvas.width=20000;
+                topcanvas.width=2000;
                 topcanvas.height=2620;
                 $(topcanvas).attr('id','tcanvas')
                 //
