@@ -72,11 +72,22 @@ var Whiteboard = (function () {
             holder_x = x0
             holder_y = y0
             //mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
+			
             if (lastTxt == txt) {
                 context.drawImage(mq_holder, holder_x, holder_y);
                 //alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
                 updateCanvas();
             } else {
+			var mq_holder = new Image();
+			mq_holder.onload = function () {
+
+        context.drawImage(this, holder_x, holder_y);
+        // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+		
+        updateCanvas();
+		mq_holder=null;
+		delete this;
+    }
                 mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
                 lastTxt = txt
             }
