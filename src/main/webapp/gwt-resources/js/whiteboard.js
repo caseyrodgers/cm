@@ -459,7 +459,7 @@ if (docWidth > 600) {
             $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
         }
         $(window).resize(function () {
-           // adjustToolbar()
+            adjustToolbar()
         });
 
         /*function adjustToolbar() {
