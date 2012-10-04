@@ -418,9 +418,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         	String probStatus = probDto.getStatus().trim();
         	if ("-".equals(probStatus)) continue;
         	if ("answered".equalsIgnoreCase(probStatus) ||
-        		"viewed".equalsIgnoreCase(probStatus)) {
+        		"viewed".equalsIgnoreCase(probStatus)   ||
+        		"correct".equalsIgnoreCase(probStatus)  ||
+        		"incorrect".equalsIgnoreCase(probStatus)) {
         		completed++;
         		totCompleted++;
+        		continue;
         	}
         	if ("pending".equalsIgnoreCase(probStatus)) {
         		pending++;
