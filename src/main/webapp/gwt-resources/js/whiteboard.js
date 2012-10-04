@@ -69,8 +69,8 @@ var Whiteboard = (function () {
             var y0 = yp ? yp : clickY
             var colr = col ? col : '#000000'
             var ht = 15;
-            holder_x = x0
-            holder_y = y0
+            var holder_x = x0
+            var holder_y = y0
             //mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
 			
             if (lastTxt == txt) {
