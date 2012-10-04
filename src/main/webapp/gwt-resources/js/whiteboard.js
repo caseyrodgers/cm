@@ -253,8 +253,8 @@ if (docWidth > 600) {
 		var off_left=$get_Element("#tools").offsetLeft;
 		var off_top=$get_Element("#tools").offsetTop;
 		var off_ht=$get_Element("#tools").offsetHeight;
-        var topOff = off_ht + off_top ;
-        var leftOff = off_left ;
+        var topOff = off_ht + off_top + 15;
+        var leftOff = off_left + 15;
         //var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
         //var leftOff = $get_Element("#tools").offsetLeft + 15;
         var vscrollObj = {}
@@ -280,8 +280,8 @@ if (docWidth > 600) {
 		dox=5
 		doy=5
 		}else{
-		dox=12
-		doy=12
+		dox=0
+		doy=0
 		}
                 try{
         if (typeof G_vmlCanvasManager != "undefined") {
@@ -505,14 +505,14 @@ if (docWidth > 600) {
 			var off_left=$get_Element("#tools").offsetLeft;
 		var off_top=$get_Element("#tools").offsetTop;
 			var off_ht=$get_Element("#tools").offsetHeight;
-            var topOff = off_ht + off_top;
-            var leftOff = off_left;
+            var topOff = off_ht + off_top + 15
+            var leftOff = off_left + 15;
            if(IS_IPHONE||docWidth <= 600){
 		dox=5
 		doy=5
 		}else{
-		dox=12
-		doy=12
+		dox=0;
+		doy=0;
 		}
 		//dox=doy=0;
         screen_width = docWidth - leftOff -dox;
