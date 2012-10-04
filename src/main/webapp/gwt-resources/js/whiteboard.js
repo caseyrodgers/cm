@@ -175,7 +175,9 @@ var Whiteboard = (function () {
         wb.setWhiteboardViewPort = function(width, height) {
                 _viewPort = {width: width, height: height};
         }
-
+wb.resizeWhiteboard=function(){
+adjustToolbar()
+}
         function viewport() {
             var e = window,
                 a = 'inner';
@@ -277,8 +279,8 @@ if (docWidth > 600) {
 		$("#canvas-container").css('height','2620px');
 		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").offsetLeft+":"+$get_Element("#tools").offsetTop)
 		if(IS_IPHONE||docWidth <= 600){
-		dox=12
-		doy=12
+		dox=IS_IPHONE?5:19
+		doy=IS_IPHONE?5:19
 		}else{
 		dox=19
 		doy=19
@@ -508,8 +510,8 @@ if (docWidth > 600) {
             var topOff = off_ht + off_top + 15
             var leftOff = off_left + 15;
            if(IS_IPHONE||docWidth <= 600){
-		dox=12
-		doy=12
+		dox=IS_IPHONE?5:19
+		doy=IS_IPHONE?5:19
 		}else{
 		dox=19;
 		doy=19;
