@@ -45,7 +45,8 @@ import com.sencha.gxt.widget.core.client.info.Info;
  * Has a list of problems which when selected show the tutor/whiteboard
  * of the current assigment problem.
  * 
- * Fires AssignmentProblemLoadedEvent
+ * Fires AssignmentProblemLoadedEvent when a new problem is loaded.
+ * 
  * 
   Student can click on any non-closed row to work on the assignment,
   and sees a screen with all problem numbers along with current status: (

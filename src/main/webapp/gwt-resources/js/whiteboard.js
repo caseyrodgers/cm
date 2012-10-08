@@ -1,11 +1,13 @@
-/** Define Whiteboard API:
- *
- *   initWhitegboard(document);   // initialze whiteboard and prepare for new use
- *   updateWhiteboard(cmdArray);  // write to the whiteboard, sending command and JSON
- *   whiteboardOut(data);         // changes to whiteboard and published here.
- *   saveWhiteboard();            // called when user/system requests persisting whitebroard data.
- *
- *   NOTE: detachWhiteboard not needed.
+/**
+ * Define Whiteboard API:
+ * 
+ * initWhitegboard(document); // initialze whiteboard and prepare for new use
+ * updateWhiteboard(cmdArray); // write to the whiteboard, sending command and
+ * JSON whiteboardOut(data); // changes to whiteboard and published here.
+ * saveWhiteboard(); // called when user/system requests persisting whitebroard
+ * data.
+ * 
+ * NOTE: detachWhiteboard not needed.
  */
 if (typeof console == "undefined") {
     console = {
@@ -61,79 +63,73 @@ var Whiteboard = (function () {
         }
         //
         function renderText(xt, xp, yp, col) {
-            //var txt = xt ? xt : $get_Element("#editable-math").value;
+            // var txt = xt ? xt : $get_Element("#editable-math").value;
             var txt = xt ? xt : $('#editable-math').mathquill('latex');
 
-            //var str = txt.split("\n")
+            // var str = txt.split("\n")
             var x0 = xp ? xp : clickX
             var y0 = yp ? yp : clickY
             var colr = col ? col : '#000000'
             var ht = 15;
             var holder_x = x0
             var holder_y = y0
-            //mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
-			
+            // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
+
             if (lastTxt == txt) {
                 context.drawImage(mq_holder, holder_x, holder_y);
-                //alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+                // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
                 updateCanvas();
             } else {
-			var mq_holder = new Image();
-			mq_holder.onload = function () {
+                var mq_holder = new Image();
+                mq_holder.onload = function () {
 
-        context.drawImage(this, holder_x, holder_y);
-        // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-		
-        updateCanvas();
-		mq_holder=null;
-		delete this;
-    }
+                    context.drawImage(this, holder_x, holder_y);
+                    // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+
+                    updateCanvas();
+                    mq_holder = null;
+                    delete this;
+                }
                 mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
                 lastTxt = txt
             }
-            //alert(mq_holder.src)
-            /*var holder
-                if($get_Element('#mquill_hold')){
-                console.log("mquill_hold exists")
-                holder=$('mquill_hold');
-                }else{
-                console.log("mquill_hold dont exists")
-                holder=document.createElement('div')
-                $(holder).attr('id','mquill_hold')
-                $(holder).prependTo("#canvas-container");
-                var img=document.createElement('img');
-                $(img).appendTo($(holder));
-                img.onload=function(){
-
-                context.drawImage(this,xp,yp,this.width+5,this.height+5)
-                $(this).remove();
-                alert(this.width+":"+this.height);
-                }
-
-
-
-                }*/
-            /*var txtbox=document.createElement('span');
-                txtbox.style.position='absolute';
-                txtbox.style.left=x0+"px";
-                txtbox.style.top=y0+"px";
-
-                $(txtbox).addClass('mathquill-embedded-latex');
-                //$('.mathquill-embedded-latex').remove()
-                $(txtbox).prependTo($('#mquill_hold')).mathquill();
-                $(txtbox).mathquill('latex',txt);
-                txtbox.style.display='none';*/
-            //context.drawImage(
-            /*context.fillStyle=col?col:wb.globalStrokeColor
-        for (var i = 0; i < str.length; i++) {
-            context.fillText(str[i], x0, y0)
-            y0 += ht
-        }*/
+            // alert(mq_holder.src)
+            /*
+             * var holder if($get_Element('#mquill_hold')){
+             * console.log("mquill_hold exists") holder=$('mquill_hold'); }else{
+             * console.log("mquill_hold dont exists")
+             * holder=document.createElement('div')
+             * $(holder).attr('id','mquill_hold')
+             * $(holder).prependTo("#canvas-container"); var
+             * img=document.createElement('img'); $(img).appendTo($(holder));
+             * img.onload=function(){
+             * 
+             * context.drawImage(this,xp,yp,this.width+5,this.height+5)
+             * $(this).remove(); alert(this.width+":"+this.height); }
+             * 
+             * 
+             *  }
+             */
+            /*
+             * var txtbox=document.createElement('span');
+             * txtbox.style.position='absolute'; txtbox.style.left=x0+"px";
+             * txtbox.style.top=y0+"px";
+             * 
+             * $(txtbox).addClass('mathquill-embedded-latex');
+             * //$('.mathquill-embedded-latex').remove()
+             * $(txtbox).prependTo($('#mquill_hold')).mathquill();
+             * $(txtbox).mathquill('latex',txt); txtbox.style.display='none';
+             */
+            // context.drawImage(
+            /*
+             * context.fillStyle=col?col:wb.globalStrokeColor for (var i = 0; i <
+             * str.length; i++) { context.fillText(str[i], x0, y0) y0 += ht }
+             */
 
             if (!xt) {
                 updateText(txt, x0, y0, colr);
                 sendData();
-                //$get_Element("#editable-math").value = "";
+                // $get_Element("#editable-math").value = "";
 
                 $('#editable-math').mathquill('latex', "");
                 $get_Element("#inputBox").style.display = 'none';
@@ -180,53 +176,58 @@ var Whiteboard = (function () {
         }
 
 
-        var _docWidth = 0;
-        var _docHeight = 0;
-        var _viewPort = null;
-        wb.setWhiteboardViewPort = function(width, height) {
-                _viewPort = {width: width, height: height};
-        }
-wb.resizeWhiteboard=function(){
-adjustToolbar()
-}
-        function viewport() {
-            var e = window,
-                a = 'inner';
+    var _docWidth = 0;
+    var _docHeight = 0;
+    var _viewPort = null;
+    wb.setWhiteboardViewPort = function (width, height) {
+        _viewPort = {
+            width: width,
+            height: height
+        };
+    }
+    wb.resizeWhiteboard = function () {
+        adjustToolbar()
+    }
 
-            if (!('innerWidth' in window)) {
-                a = 'client';
-                e = document.documentElement || document.body;
-            }
+    function viewport() {
+        var e = window,
+            a = 'inner';
 
-
-            if(_viewPort == null) {
-                alert('Whiteboard setup: _docWidth/_docHeight must be set by calling setWhiteboardViewPort(width, height)');
-            }
-
-             return _viewPort;
-
-//            return {
-//                width: e[a + 'Width'],
-//                height: e[a + 'Height']
-//            }
-        }
-
-        function getDocHeight() {
-            var D = document;
-            return Math.max(
-            Math.max(D.body.scrollHeight, D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
+        if (!('innerWidth' in window)) {
+            a = 'client';
+            e = document.documentElement || document.body;
         }
 
 
-
-        /** Define as functions to allow removing
-         *
-         * @param event
-         */
-
-        function touchStartFunction(event) {
-            event.preventDefault();
+        if (_viewPort == null) {
+            alert('Whiteboard setup: _docWidth/_docHeight must be set by calling setWhiteboardViewPort(width, height)');
         }
+
+        return _viewPort;
+
+        // return {
+        // width: e[a + 'Width'],
+        // height: e[a + 'Height']
+        // }
+    }
+
+    function getDocHeight() {
+        var D = document;
+        return Math.max(
+        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight), Math.max(D.body.offsetHeight, D.documentElement.offsetHeight), Math.max(D.body.clientHeight, D.documentElement.clientHeight));
+    }
+
+
+
+    /**
+     * Define as functions to allow removing
+     * 
+     * @param event
+     */
+
+    function touchStartFunction(event) {
+        event.preventDefault();
+    }
     var touchMoveFunction = touchStartFunction;
 
     var _imageBaseDir = '/gwt-resources/images/whiteboard/';
@@ -234,255 +235,28 @@ adjustToolbar()
     /** main HTML document object */
     var mainDoc;
     var isIE = getInternetExplorerVersion() != -1;
-	
+
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
         setupMathQuill(); // defined in mathquill.js
         mainDoc = mainDocIn;
-        setTimeout(function(){
-        canvas = $get_Element("#canvas");
-        var siz = viewport()
-        var docWidth = siz.width;
-        var docHeight = siz.height;
-console.log("CANVAS_IN_IE: "+canvas+":"+canvas.getContext);
-if (docWidth > 600) {
-            //alert($('#tools button').css('width'));
-            $('#tools').css('height', '35px');
-            $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
-            $('#button_clear').css('width', '45px');
-            $('#button_clear').css('height', '30px');
-            $('#button_clear').text("Clear");
-            $('#button_save').text("Save");
-            //$('#button_clear').text("CL");
-        } else {
-            $('#tools').css('height', '28px');
-            $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
-            $('#button_clear').css('width', '25px');
-            $('#button_clear').css('height', '25px');
-            $('#button_clear').text("CL");
-            $('#button_save').text("S");
-
-        }
-		var off_left=$get_Element("#tools").offsetLeft;
-		var off_top=$get_Element("#tools").offsetTop;
-		var off_ht=$get_Element("#tools").offsetHeight;
-        var topOff = off_ht + off_top + 15;
-        var leftOff = off_left + 15;
-        //var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
-        //var leftOff = $get_Element("#tools").offsetLeft + 15;
-        var vscrollObj = {}
-        var hscrollObj = {}
-        wb.globalStrokeColor = "#000000";
-        wb.mode = 'student';
-        origcanvas = $get_Element("#ocanvas");
-        graphcanvas = $get_Element("#gcanvas");
-        topcanvas = $get_Element("#tcanvas");
-		canvas.width=2000;
-		canvas.height=2620;
-		origcanvas.width=2000;
-		origcanvas.height=2620;
-		graphcanvas.width=2000;
-		graphcanvas.height=2620;
-		topcanvas.width=2000;
-		topcanvas.height=2620;
-		var ccnt=$get_Element("#canvas-container");
-		$("#canvas-container").css('width','2000px');
-		$("#canvas-container").css('height','2620px');
-		console.log('off_ht_1: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").offsetLeft+":"+$get_Element("#tools").offsetTop)
-		if(IS_IPHONE||docWidth <= 600){
-		dox=IS_IPHONE?5:19
-		doy=IS_IPHONE?5:19
-		}else{
-		dox=19
-		doy=19
-		}
-                try{
-        if (typeof G_vmlCanvasManager != "undefined") {
-                var parent_cont=$get_Element("#canvas-container")
-                console.log("DEBUG_IE parent_cont: "+parent_cont);
-                console.log("DEBUG_IE: parent_cont.removeChild"+parent_cont.removeChild);
-                parent_cont.removeChild(canvas)
-                parent_cont.removeChild(origcanvas)
-                parent_cont.removeChild(graphcanvas)
-                parent_cont.removeChild(topcanvas)
-                //
-                canvas=document.createElement('canvas')
-                canvas.width=2000;
-                canvas.height=2620;
-                $(canvas).attr('id','canvas')
-                //
-                origcanvas=document.createElement('canvas')
-                origcanvas.width=2000;
-                origcanvas.height=2620;
-                $(origcanvas).attr('id','ocanvas')
-                //
-                graphcanvas=document.createElement('canvas')
-                graphcanvas.width=2000;
-                graphcanvas.height=2620;
-                $(graphcanvas).attr('id','gcanvas')
-                //
-                topcanvas=document.createElement('canvas')
-                topcanvas.width=2000;
-                topcanvas.height=2620;
-                $(topcanvas).attr('id','tcanvas')
-                //
-                $(parent_cont).prepend(origcanvas,graphcanvas,topcanvas,canvas);
-                G_vmlCanvasManager.initElement(canvas);
-                G_vmlCanvasManager.initElement(origcanvas);
-                G_vmlCanvasManager.initElement(graphcanvas);
-                G_vmlCanvasManager.initElement(topcanvas);
-        }
-        }catch(error){
-        console.log("DEBUG_IE:"+error);
-        }
-        //screen_width = docWidth - leftOff - 27;
-       // screen_height = docHeight - topOff - 27;
-	   screen_width = docWidth - leftOff-dox;
-        screen_height = docHeight - topOff-doy;
-        /*if (screen_width > 800) {
-            //alert($('#tools button').css('width'));
-            $('#tools').css('height', '35px');
-            $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
-            $('#button_clear').css('width', '45px');
-            $('#button_clear').css('height', '30px');
-            $('#button_clear').text("Clear");
-            $('#button_save').text("Save");
-            //$('#button_clear').text("CL");
-        } else {
-            $('#tools').css('height', '25px');
-            $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
-            $('#button_clear').css('width', '25px');
-            $('#button_clear').css('height', '25px');
-            $('#button_clear').text("CL");
-            $('#button_save').text("S");
-
-        }
-        $get_Element('#drawsection').style.width = (screen_width) + 'px';
-        $get_Element('#drawsection').style.height = (screen_height) + 'px';
-        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
-        $get_Element('#vscroller').style.left = (screen_width + 5) + 'px';
-        $get_Element('#vscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop) + 'px';
-
-        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
-        $get_Element('#hscroller').style.left = (0) + 'px';
-        $get_Element('#hscroller').style.top = ($get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + screen_height + 5) + 'px';*/
-		console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-        $get_Element('#drawsection').style.width = (screen_width) + 'px';
-        $get_Element('#drawsection').style.height = (screen_height) + 'px';
-        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
-        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
-        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
-
-        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
-        $get_Element('#hscroller').style.left = (off_left) + 'px';
-        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
-		var posData="";
-		posData+="Screen-Width:"+docWidth+"\n";
-		posData+="Screen-Height:"+docHeight+"\n";
-		posData+="wb-Width:"+screen_width+"\n";
-		posData+="wb-Height:"+screen_height+"\n";
-		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
-		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
-		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
-		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
-		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
-		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
-		console.log(posData);
-        var cmd_keys = {};
-        var nav_keys = {};
-        cmd_keys["frac"] = "/";
-        cmd_keys["power"] = "^";
-        cmd_keys["sqrt"] = "\\sqrt";
-        cmd_keys["prod"] = "*";
-        cmd_keys["div"] = "÷";
-        cmd_keys["neq"] = "\\ne";
-        nav_keys["Up"] = "Up";
-        nav_keys["Down"] = "Down";
-        nav_keys["Right"] = "Right";
-        nav_keys["Left"] = "Left";
-        nav_keys["Backspace"] = "Backspace";
-        if (!IS_TOUCH_ONLY) {
-
-            //$(".keypad").hide();
-            //alert($(".keypad").is(":visible"))
-        } else {
-
-        }
-        //alert($("button").on)
-        function mathquill_focus() {
-            $(".mathquill-editable").focus();
-        }
-
-        function navigate(key) {
-            //var event = _event ? _event : window.event;
-            //var target=event.target?event.target:event.srcElement
-            //var key=$(target).attr("value");
-            var h = $(".mathquill-editable").data("[[mathquill internal data]]").block
-            h.keydown({
-                which: key,
-                shiftKey: 0
-            })
-
-        }
-
-        $(".keypad").on("click", "button", function (event) {
-            var key = $(this).attr("value")
-            var h = $(".mathquill-editable");
-            if (cmd_keys[key]) {
-                h.mathquill('cmd', cmd_keys[key]);
-            } else if (nav_keys[key]) {
-                navigate(nav_keys[key])
-            } else {
-                h.mathquill('write', $(this).text())
-            }
-
-            setTimeout(function () {
-                mathquill_focus()
-            }, 100)
-        });
-        if (document.addEventListener) {
-            var thumb_h = $get_Element('#hscroll_thumb');
-            thumb_h.addEventListener("mousedown", initThumbDrag, false)
-            thumb_h.addEventListener('touchstart', touchStartFunction, false);
-            thumb_h.addEventListener('touchmove', touchMoveFunction, false);
-            // attach the touchstart, touchmove, touchend event listeners.
-            thumb_h.addEventListener('touchstart', initThumbDrag, false);
-            //
-            var thumb_v = $get_Element('#vscroll_thumb');
-            thumb_v.addEventListener("mousedown", initThumbDrag, false)
-            thumb_v.addEventListener('touchstart', touchStartFunction, false);
-            thumb_v.addEventListener('touchmove', touchMoveFunction, false);
-            // attach the touchstart, touchmove, touchend event listeners.
-            thumb_v.addEventListener('touchstart', initThumbDrag, false);
-        } else {
-            $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
-            $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
-        }
-        $(window).resize(function () {
-            adjustToolbar()
-        });
-
-        /*function adjustToolbar() {
+        setTimeout(function () {
+            canvas = $get_Element("#canvas");
             var siz = viewport()
             var docWidth = siz.width;
             var docHeight = siz.height;
-
-            var topOff = $get_Element("#tools").offsetHeight + $get_Element("#tools").offsetTop + 15
-            var leftOff = $get_Element("#tools").offsetLeft + 15;
-            screen_width = docWidth - leftOff - 27;
-            screen_height = docHeight - topOff - 27;
-            if (screen_width > 800) {
-                //alert($('#tools button').css('width'));
+            console.log("CANVAS_IN_IE: " + canvas + ":" + canvas.getContext);
+            if (docWidth > 600) {
+                // alert($('#tools button').css('width'));
                 $('#tools').css('height', '35px');
                 $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
                 $('#button_clear').css('width', '45px');
                 $('#button_clear').css('height', '30px');
-                //$('#button_clear').text("CL");
                 $('#button_clear').text("Clear");
                 $('#button_save').text("Save");
+                // $('#button_clear').text("CL");
             } else {
-
-                $('#tools').css('height', '25px');
+                $('#tools').css('height', '28px');
                 $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
                 $('#button_clear').css('width', '25px');
                 $('#button_clear').css('height', '25px');
@@ -490,799 +264,1049 @@ if (docWidth > 600) {
                 $('#button_save').text("S");
 
             }
-        }*/
-		function adjustToolbar() {
-            var siz = viewport()
-            var docWidth = siz.width;
-            var docHeight = siz.height;
-if (docWidth > 600) {
-                //alert($('#tools button').css('width'));
-                $('#tools').css('height', '35px');
-                $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
-                $('#button_clear').css('width', '45px');
-                $('#button_clear').css('height', '30px');
-                //$('#button_clear').text("CL");
-                $('#button_clear').text("Clear");
-                $('#button_save').text("Save");
-            } else {
-
-                $('#tools').css('height', '25px');
-                $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
-                $('#button_clear').css('width', '25px');
-                $('#button_clear').css('height', '25px');
-                $('#button_clear').text("CL");
-                $('#button_save').text("S");
-
-            }
-			//setTimeout(function(){
-			var off_left=$get_Element("#tools").offsetLeft;
-		var off_top=$get_Element("#tools").offsetTop;
-			var off_ht=$get_Element("#tools").offsetHeight;
-            var topOff = off_ht + off_top + 15
+            var off_left = $get_Element("#tools").offsetLeft;
+            var off_top = $get_Element("#tools").offsetTop;
+            var off_ht = $get_Element("#tools").offsetHeight;
+            var topOff = off_ht + off_top + 15;
             var leftOff = off_left + 15;
-           if(IS_IPHONE||docWidth <= 600){
-		dox=IS_IPHONE?5:19
-		doy=IS_IPHONE?5:19
-		}else{
-		dox=19;
-		doy=19;
-		}
-		//dox=doy=0;
-        screen_width = docWidth - leftOff -dox;
-        screen_height = docHeight - topOff -doy;
-           console.log('off_ht_2: '+$get_Element("#tools").offsetHeight+":"+$get_Element("#tools").style.height+":"+$("#tools").height())
-        $get_Element('#drawsection').style.width = (screen_width) + 'px';
-        $get_Element('#drawsection').style.height = (screen_height) + 'px';
-        $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
-        $get_Element('#vscroller').style.left = (screen_width + 3+off_left) + 'px';
-        $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
-
-        $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
-        $get_Element('#hscroller').style.left = (off_left) + 'px';
-        $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
-		var posData="";
-		posData+="Screen-Width:"+docWidth+"\n";
-		posData+="Screen-Height:"+docHeight+"\n";
-		posData+="wb-Width:"+screen_width+"\n";
-		posData+="wb-Height:"+screen_height+"\n";
-		posData+="wb-off-top:"+$get_Element("#tools").offsetTop+"\n";
-		posData+="wb-off-height:"+$get_Element("#tools").offsetHeight+":"+off_ht+"\n";
-		posData+="vscroller-off-top:"+$get_Element('#vscroller').style.top+"\n";
-		posData+="vscroller-off-left:"+$get_Element('#vscroller').style.left+"\n";
-		posData+="hscroller-off-top:"+$get_Element('#hscroller').style.top+"\n";
-		posData+="hscroller-off-left:"+$get_Element('#hscroller').style.left+"\n";
-		console.log(posData); 
-		positionScroller();
-		//},100);
-        }
-
-        function initThumbDrag(_event) {
-            //console.log("INIT_THUMB");
-            var event = _event ? _event : window.event;
-            isTouchEnabled = event.type.indexOf('touch') > -1
-            if (isTouchEnabled) {
-                $get_Element('#hscroll_thumb').removeEventListener("mousedown", initThumbDrag, false);
-
-            }
-
-            event = isTouchEnabled ? _event.changedTouches[0] : event;
-            if (event.preventDefault) {
-                event.preventDefault();
+            // var topOff = $get_Element("#tools").offsetHeight +
+            // $get_Element("#tools").offsetTop + 15
+            // var leftOff = $get_Element("#tools").offsetLeft + 15;
+            var vscrollObj = {}
+            var hscrollObj = {}
+            wb.globalStrokeColor = "#000000";
+            wb.mode = 'student';
+            origcanvas = $get_Element("#ocanvas");
+            graphcanvas = $get_Element("#gcanvas");
+            topcanvas = $get_Element("#tcanvas");
+            canvas.width = 2000;
+            canvas.height = 2620;
+            origcanvas.width = 2000;
+            origcanvas.height = 2620;
+            graphcanvas.width = 2000;
+            graphcanvas.height = 2620;
+            topcanvas.width = 2000;
+            topcanvas.height = 2620;
+            var ccnt = $get_Element("#canvas-container");
+            $("#canvas-container").css('width', '2000px');
+            $("#canvas-container").css('height', '2620px');
+            console.log('off_ht_1: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").offsetLeft + ":" + $get_Element("#tools").offsetTop)
+            if (IS_IPHONE || docWidth <= 600) {
+                dox = IS_IPHONE ? 5 : 19
+                doy = IS_IPHONE ? 5 : 19
             } else {
-                event.returnValue = false;
+                dox = 19
+                doy = 19
             }
-            getCanvasPos();
-            var dx, dy;
-
-            if (event.pageX != undefined) {
-                dx = event.pageX - offX;
-                dy = event.pageY - offY;
-            } else {
-                dx = event.clientX - offX
-                dy = event.clientY - offY
-            }
-            var scroll = 'v';
-            var pos = 'top';
-            var scrollObj = vscrollObj;
-            var mouse_pos = dy
-            var dim = 'height';
-            var sdim = screen_height;
-            var target = event.target ? event.target : event.srcElement
-            if (target == $get_Element('#hscroll_thumb')) {
-                scroll = 'h';
-                pos = 'left';
-                scrollObj = hscrollObj;
-                mouse_pos = dx;
-                dim = 'width';
-                sdim = screen_width;
-            }
-            var spos = $get_Element('#' + scroll + 'scroll_thumb').style[pos]
-            spos = spos ? spos : 0
-            var scpos = $get_Element('#canvas-container').style[pos]
-            scpos = scpos ? scpos : 0
-            scrollObj.sy = parseInt(spos)
-            scrollObj.screeny = parseInt(scpos)
-            scrollObj.my = mouse_pos;
-            scrollObj.dragged = true;
-            scrollObj.scrub = (canvas[dim] - sdim) / (sdim - 30)
-            console.log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
-            if (document.addEventListener) {
-                if (isTouchEnabled) {
-                    document.addEventListener("touchend", stopThumbDrag, false);
-                    document.addEventListener("touchmove", startThumbDrag, false);
-                    $get_Element('#' + scroll + 'scroll_thumb').addEventListener("touchend", stopThumbDrag, false);
-                } else {
-                    document.addEventListener("mouseup", stopThumbDrag, false);
-                    document.addEventListener("mousemove", startThumbDrag, false);
-                    $get_Element('#' + scroll + 'scroll_thumb').addEventListener("mouseup", stopThumbDrag, false);
+            try {
+                if (typeof G_vmlCanvasManager != "undefined") {
+                    var parent_cont = $get_Element("#canvas-container")
+                    console.log("DEBUG_IE parent_cont: " + parent_cont);
+                    console.log("DEBUG_IE: parent_cont.removeChild" + parent_cont.removeChild);
+                    parent_cont.removeChild(canvas)
+                    parent_cont.removeChild(origcanvas)
+                    parent_cont.removeChild(graphcanvas)
+                    parent_cont.removeChild(topcanvas)
+                    //
+                    canvas = document.createElement('canvas')
+                    canvas.width = 2000;
+                    canvas.height = 2620;
+                    $(canvas).attr('id', 'canvas')
+                    //
+                    origcanvas = document.createElement('canvas')
+                    origcanvas.width = 2000;
+                    origcanvas.height = 2620;
+                    $(origcanvas).attr('id', 'ocanvas')
+                    //
+                    graphcanvas = document.createElement('canvas')
+                    graphcanvas.width = 2000;
+                    graphcanvas.height = 2620;
+                    $(graphcanvas).attr('id', 'gcanvas')
+                    //
+                    topcanvas = document.createElement('canvas')
+                    topcanvas.width = 2000;
+                    topcanvas.height = 2620;
+                    $(topcanvas).attr('id', 'tcanvas')
+                    //
+                    $(parent_cont).prepend(origcanvas, graphcanvas, topcanvas, canvas);
+                    G_vmlCanvasManager.initElement(canvas);
+                    G_vmlCanvasManager.initElement(origcanvas);
+                    G_vmlCanvasManager.initElement(graphcanvas);
+                    G_vmlCanvasManager.initElement(topcanvas);
                 }
-            } else {
-                document.onmousemove = startThumbDrag;
-                $get_Element('#' + scroll + 'scroll_thumb').onmouseup = stopThumbDrag;
-                document.onmouseup = stopThumbDrag;
+            } catch (error) {
+                console.log("DEBUG_IE:" + error);
             }
-        }
-
-        function startThumbDrag(_event) {
-
-            if (!vscrollObj.dragged && !hscrollObj.dragged) {
-                return
-            }
-            var event = _event ? _event : window.event;
-            event = isTouchEnabled ? event.changedTouches[0] : event;
-            if (event.preventDefault) {
-                event.preventDefault();
-            } else {
-                event.returnValue = false;
-            }
-            //getCanvasPos();
-            var dx, dy;
-            if (event.pageX != undefined) {
-                dx = event.pageX - offX;
-                dy = event.pageY - offY;
-            } else {
-                dx = event.clientX - offX
-                dy = event.clientY - offY
-            }
-            var scroll = 'v';
-            var pos = 'top';
-            var scrollObj = vscrollObj;
-            var mouse_pos = dy
-            var dim = 'height';
-            var sdim = screen_height;
-            var neg = -1
-            if (hscrollObj.dragged) {
-                scroll = 'h';
-                pos = 'left';
-                scrollObj = hscrollObj;
-                mouse_pos = dx;
-                dim = 'width';
-                sdim = screen_width;
-                neg = -1
-            }
-            var change = mouse_pos - scrollObj.my
-            var newpos = scrollObj.sy + change
-            newpos = newpos < 0 ? 0 : newpos
-            newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
-            if (newpos >= 0 && newpos <= sdim - 30) {
-                var currPos = scrollObj.screeny - (change * scrollObj.scrub);
-                currPos = currPos > 0 ? 0 : currPos
-                currPos = currPos < neg * (canvas[dim] - sdim) ? -(canvas[dim] - sdim) : currPos;
-                //console.log("ON_SCROLL_SCRUB:"+scrollObj.sy+":"+change+":"+currPos);
-                $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
-                $get_Element('#canvas-container').style[pos] = currPos + "px";
-            }
-
-        }
-
-        function stopThumbDrag(_event) {
-            //console.log("STOP_SCROLL_SCRUB:");
-            if (!vscrollObj.dragged && !hscrollObj.dragged) {
-                return
-            }
-            var event = _event ? _event : window.event;
-            event = isTouchEnabled ? event.changedTouches[0] : event;
-            if (event.preventDefault) {
-                event.preventDefault();
-            } else {
-                event.returnValue = false;
-            }
-            //getCanvasPos();
-            var dx, dy;
-            if (event.pageX != undefined) {
-                dx = event.pageX - offX;
-                dy = event.pageY - offY;
-            } else {
-                dx = event.clientX - offX;
-                dy = event.clientY - offY;
-            }
-            var scroll = 'v';
-            var pos = 'top';
-            var scrollObj = vscrollObj;
-            var mouse_pos = dy
-            var dim = 'height';
-            var sdim = screen_height;
-            var neg = -1
-            if (hscrollObj.dragged) {
-                scroll = 'h';
-                pos = 'left';
-                scrollObj = hscrollObj;
-                mouse_pos = dx;
-                dim = 'width';
-                sdim = screen_width;
-                neg = -1
-            }
-            var change = mouse_pos - scrollObj.my
-            var newpos = scrollObj.sy + change
-            newpos = newpos < 0 ? 0 : newpos
-            newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
-            if (newpos >= 0 && newpos <= sdim - 30) {
-                var currPos = scrollObj.screeny - (change * scrollObj.scrub);
-                currPos = currPos > 0 ? 0 : currPos
-                currPos = currPos < neg * (canvas[dim] - sdim) ? -(canvas[dim] - sdim) : currPos;
-                $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
-                $get_Element('#canvas-container').style[pos] = currPos + "px";
-            }
-            if (document.addEventListener) {
-                if (isTouchEnabled) {
-                    document.removeEventListener("mousemove", startThumbDrag, false);
-                    document.removeEventListener("touchmove", startThumbDrag, false);
-
-                } else {
-
-                    document.removeEventListener("mousemove", startThumbDrag, false);
-
-                }
-            } else {
-                document.onmousemove = null;
-            }
-            scrollObj.dragged = false;
-            console.log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
-        }
-        //canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width = docWidth - leftOff;
-        // canvas.height = origcanvas.height = graphcanvas.height = topcanvas.height = docHeight - topOff;
-        //console.log("A   " + canvas.width + ":" + canvas.height + ":" + docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
-        context = canvas.getContext("2d");
-        origcontext = origcanvas.getContext("2d");
-        graphcontext = graphcanvas.getContext("2d");
-        topcontext = topcanvas.getContext("2d");
-        //canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=5000;
-        //canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=5000;
-        width = screen_width; //canvas.width;
-        height = screen_height; //canvas.height;
-        context.font = origcontext.font = topcontext.font = "12px sans-serif";
-        /*context.save();
-                context.fillStyle='white'
-                context.fillRect(0,0,width,height)
-                context.restore();*/
-        gr2D = new Image();
-        gr2D.src = _imageBaseDir + 'gr2D.png';
-        nL = new Image();
-        nL.src = _imageBaseDir + 'nL.png';
-        graphMode = '';
-        gr2D_xp = nL_xp = (screen_width - 300) / 2;
-        gr2D_yp = (screen_height - 300) / 2;
-        nL_yp = (screen_height - 100) / 2;
-        gr2D_w = 300;
-        gr2D_h = 300;
-        nL_w = 300;
-        nL_h = 100;
-        offX = $get_Element("#canvas-container").offsetLeft;
-        offY = $get_Element("#canvas-container").offsetTop;
-        // alert(offX+":"+offY);
-        /*var getCanvasPos = function(){
-                        var obj = $get_Element("#canvas-container");
-                        var top = 0;
-                        var left = 0;
-                        while (obj.tagName != "BODY") {
-                                top += obj.offsetTop;
-                                left += obj.offsetLeft;
-                                console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
-                                if(obj.offsetParent === null)
-                                    break;
-                                obj = obj.offsetParent;
-                        }
-                        offX=left;
-                        offY=top;
-                        return {
-                                top: top,
-                                left: left
-                        };
-                };*/
-        function getCanvasPos() {
-            console.log("getCanvasPos processing!");
-            var box = canvas.getBoundingClientRect();
-            console.log("canvas bound= top: " + box.top + " left:" + box.left);
-            var body = mainDoc.body;
-            var docElem = mainDoc.documentElement;
-            var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
-            var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
-            var clientTop = docElem.clientTop || body.clientTop || 0;
-            var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-            console.log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
-            var top = box.top + scrollTop - clientTop;
-            var left = box.left + scrollLeft - clientLeft;
-            offX = Math.round(left);
-            offY = Math.round(top);
-            console.log("OFFSET: top=" + offY + " left=" + offX);
-            return {
-                top: offY,
-                left: offX
-            }
-        }
-        console.log("getCanvasPos calling!");
-        getCanvasPos();
-        console.log("getCanvasPos CALL END!");
-        graphicData = {}
-        tool_id = {};
-        tool_id['eraser'] = 0;
-        tool_id['pencil'] = 1;
-        tool_id['text'] = 2;
-        tool_id['line'] = 3;
-        tool_id['rect'] = 4;
-        tool_id['oval'] = 5;
-        // tool_id['ellipse']=5;
-        tool_id['gr2D'] = 11;
-        tool_id['nL'] = 12;
-        drawingLayer = '1';
-        if (currentTool != 'pencil') {
-            if (currentTool == 'text' || $get_Element("#inputBox").style.display == 'block') {
-                hideTextBox();
-            }
-            resetButtonHighlite();
-            currentTool = 'pencil';
-        }
-        $get_Element("#button_pencil").style.border = '2px solid #ff9900';
-
-        // Events
-        // drawRect(0,0,width,height,'#ff0000');
-        $get_Element("#button_text").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='crosshair';
-            currentTool = 'text';
-            buttonHighlite(currentTool)
-        };
-        $get_Element("#button_pencil").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
-            currentTool = 'pencil';
-            buttonHighlite(currentTool)
-        };
-        $get_Element("#button_rect").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='crosshair';
-            currentTool = 'rect';
-            buttonHighlite(currentTool)
-        };
-        $get_Element("#button_line").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='crosshair';
-            currentTool = 'line';
-            buttonHighlite(currentTool)
-        };
-        $get_Element("#button_oval").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='crosshair';
-            currentTool = 'oval';
-            buttonHighlite(currentTool)
-        };
-        $get_Element("#button_gr2D").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
-            currentTool = 'gr2D';
-            showHideGraph('gr2D')
-            buttonHighlite('pencil')
-        };
-        $get_Element("#button_nL").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
-            currentTool = 'nL';
-            showHideGraph('nL')
-            buttonHighlite('pencil')
-        };
-        $get_Element("#button_clear").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
-            // resetWhiteBoard();
-            currentTool = 'pencil'
-            buttonHighlite(currentTool)
-            hideTextBox();
-            // penDown=false;
-            // graphMode='';
-            // origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
-            resetWhiteBoard(true);
-        };
-        $get_Element("#button_eraser").onclick = function (event) {
-            // $get_Element("#drawsection").style.cursor='url("imgs/eraser.png"),auto';
-            // resetWhiteBoard();
-            currentTool = 'eraser'
-            buttonHighlite(currentTool)
-        };
-        //
-        $get_Element("#done_btn").onclick = function (event) {
-            renderText();
-            //check()
-        }
-                if($get_Element("#button_save")){
-        $get_Element("#button_save").onclick = function (event) {
-            wb.saveWhiteboard();
-        };
-}
-        //
-        function killMouseListeners() {
-
-            if (document.addEventListener) {
-                canvas.removeEventListener("mousedown", ev_onmousedown, false);
-                canvas.removeEventListener("mouseup", ev_onmouseup, false);
-                canvas.removeEventListener("mousemove", ev_onmousemove, false);
-
-            } else {
-                canvas.detachEvent("onmousedown", ev_onmousedown);
-                canvas.detachEvent("onmouseup", ev_onmouseup);
-                canvas.detachEvent("onmousemove", ev_onmousemove);
-            }
-        }
-
-        function killTouchListeners() {
-            if (document.addEventListener) {
-
-
-                // touchscreen specific - to prevent web page being scrolled while drawing
-                canvas.removeEventListener('touchstart', touchStartFunction, false);
-                canvas.removeEventListener('touchmove', touchMoveFunction, false);
-
-                // attach the touchstart, touchmove, touchend event listeners.
-                canvas.removeEventListener('touchstart', ev_onmousedown, false);
-                canvas.removeEventListener('touchmove', ev_onmousemove, false);
-                canvas.removeEventListener('touchend', ev_onmouseup, false);
-
-            } else {
-                // touchscreen specific - to prevent web page being scrolled while drawing
-                canvas.detachEvent('touchstart', touchStartFunction);
-                canvas.detachEvent('touchmove', touchMoveFunction);
-
-                // attach the touchstart, touchmove, touchend event listeners.
-                canvas.detachEvent('touchstart', ev_onmousedown);
-                canvas.detachEvent('touchmove', ev_onmousemove);
-                canvas.detachEvent('touchend', ev_onmouseup);
-            }
-        }
-
-        function __killListeners() {
-            killMouseListeners();
-            killTouchListeners();
-        }
-        //
-		function positionScroller(){
-		var scrubH = (canvas.width - screen_width) / (screen_width - 30);
-		var scrubV = (canvas.height - screen_height) / (screen_height - 30);
-		var currPosH=parseInt($get_Element('#canvas-container').style.left);
-		currPosH=currPosH?currPosH:0
-		currPosH = currPosH > 0 ? 0 : currPosH
-		currPosH = currPosH < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosH;
-        $get_Element('#hscroll_thumb').style.left = (-currPosH / scrubH) + "px";
-		$get_Element('#canvas-container').style.left = currPosH + "px";
-		var currPosV=parseInt($get_Element('#canvas-container').style.top);
-		currPosV=currPosV?currPosV:0
-		currPosV = currPosV > 0 ? 0 : currPosV
-        currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
-        $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
-		$get_Element('#canvas-container').style.top = currPosV + "px";
-		console.log("SCROLLER_THUMB_POS:"+scrubH+":"+scrubV+":"+(-currPosH)+":"+(-currPosV))
-		}
-        function scrollTheCanvas(event) {
-            checkForScroll(event);
-            //setTimeout(function(){checkForScroll(event)},100)
-        }
-
-        function checkForScroll(_event) {
-            //console.log("CHECK_FOR_SCROLL")
-            var event = _event ? _event : window.event;
-            isTouchEnabled = event.type.indexOf('touch') > -1;
-            var dx, dy, dist;
-
-            if (event.pageX != undefined) {
-                dx = event.pageX - offX;
-                dy = event.pageY - offY;
-            } else {
-                dx = event.clientX - offX
-                dy = event.clientY - offY
-            }
-            if (penDown) {
-                return
-            }
-
-            var cposX = ($get_Element("#wb-container").style.left);
-            var cposY = ($get_Element("#wb-container").style.top);
-
-            cposX = cposX ? parseInt(cposX) : 0;
-            cposY = cposY ? parseInt(cposY) : 0;
-            //console.log((dx-cposX)+":"+screen_width+"||"+(dy-cposY)+":"+screen_height)
-            if (dx - cposX >= screen_width) {
-                doRightScroll();
-                setTimeout(function () {
-                    checkForScroll(_event)
-                }, 100)
-            } else if (dy - cposY >= screen_height) {
-                doUpScroll();
-                setTimeout(function () {
-                    checkForScroll(_event)
-                }, 100)
-            } else {
-                //clearInterval(scrollInt);
-            }
-        }
-
-        function doRightScroll() {
-            var delta = -2
-            var currPos = $get_Element('#canvas-container').style.left;
-            currPos = currPos ? currPos : 0;
-            currPos = parseInt(currPos) + (delta * 10);
-            currPos = currPos > 0 ? 0 : currPos
-            currPos = currPos < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPos;
-            var scrub = (canvas.width - screen_width) / (screen_width - 30)
-            $get_Element('#canvas-container').style.left = currPos + "px";
-            $get_Element('#hscroll_thumb').style.left = (-currPos / scrub) + "px";
-        }
-
-        function doUpScroll() {
-            var delta = -2
-            var currPos = $get_Element('#canvas-container').style.top;
-            currPos = currPos ? currPos : 0;
-            currPos = parseInt(currPos) + (delta * 10);
-            currPos = currPos > 0 ? 0 : currPos
-            currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
-            var scrub = (canvas.height - screen_height) / (screen_height - 30)
-            $get_Element('#canvas-container').style.top = currPos + "px";
-            $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
-        }
-        //
-        var ev_onmousedown = function (_event) {
-            //alert("MDOWN")
-            var event = _event ? _event : window.event;
-            var tevent = event
-            isTouchEnabled = event.type.indexOf('touch') > -1
-            if (isTouchEnabled) {
-                canvas.removeEventListener("mousedown", ev_onmousedown, false);
-                canvas.removeEventListener("mouseup", ev_onmouseup, false);
-                canvas.removeEventListener("mousemove", ev_onmousemove, false);
-            }
-            getCanvasPos();
+            // screen_width = docWidth - leftOff - 27;
+            // screen_height = docHeight - topOff - 27;
+            screen_width = docWidth - leftOff - dox;
+            screen_height = docHeight - topOff - doy;
             /*
-             * else{ canvas.removeEventListener('touchstart',ev_onmousedown, false);
-             * canvas.removeEventListener('touchmove',ev_onmousemove, false);
-             * canvas.removeEventListener('touchend',ev_onmouseup, false); }
+             * if (screen_width > 800) { //alert($('#tools button').css('width'));
+             * $('#tools').css('height', '35px'); $('#tools
+             * button').removeClass('small_tool_button').addClass("big_tool_button")
+             * $('#button_clear').css('width', '45px');
+             * $('#button_clear').css('height', '30px');
+             * $('#button_clear').text("Clear"); $('#button_save').text("Save");
+             * //$('#button_clear').text("CL"); } else { $('#tools').css('height',
+             * '25px'); $('#tools
+             * button').removeClass('big_tool_button').addClass("small_tool_button")
+             * $('#button_clear').css('width', '25px');
+             * $('#button_clear').css('height', '25px');
+             * $('#button_clear').text("CL"); $('#button_save').text("S");
+             *  } $get_Element('#drawsection').style.width = (screen_width) + 'px';
+             * $get_Element('#drawsection').style.height = (screen_height) + 'px';
+             * $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+             * $get_Element('#vscroller').style.left = (screen_width + 5) + 'px';
+             * $get_Element('#vscroller').style.top =
+             * ($get_Element("#tools").offsetHeight +
+             * $get_Element("#tools").offsetTop) + 'px';
+             * 
+             * $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+             * $get_Element('#hscroller').style.left = (0) + 'px';
+             * $get_Element('#hscroller').style.top =
+             * ($get_Element("#tools").offsetHeight +
+             * $get_Element("#tools").offsetTop + screen_height + 5) + 'px';
              */
+            console.log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $("#tools").height())
+            $get_Element('#drawsection').style.width = (screen_width) + 'px';
+            $get_Element('#drawsection').style.height = (screen_height) + 'px';
+            $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+            $get_Element('#vscroller').style.left = (screen_width + 3 + off_left) + 'px';
+            $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
 
+            $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+            $get_Element('#hscroller').style.left = (off_left) + 'px';
+            $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
+            var posData = "";
+            posData += "Screen-Width:" + docWidth + "\n";
+            posData += "Screen-Height:" + docHeight + "\n";
+            posData += "wb-Width:" + screen_width + "\n";
+            posData += "wb-Height:" + screen_height + "\n";
+            posData += "wb-off-top:" + $get_Element("#tools").offsetTop + "\n";
+            posData += "wb-off-height:" + $get_Element("#tools").offsetHeight + ":" + off_ht + "\n";
+            posData += "vscroller-off-top:" + $get_Element('#vscroller').style.top + "\n";
+            posData += "vscroller-off-left:" + $get_Element('#vscroller').style.left + "\n";
+            posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
+            posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
+            console.log(posData);
+            var cmd_keys = {};
+            var nav_keys = {};
+            cmd_keys["frac"] = "/";
+            cmd_keys["power"] = "^";
+            cmd_keys["sqrt"] = "\\sqrt";
+            cmd_keys["prod"] = "*";
+            cmd_keys["div"] = "÷";
+            cmd_keys["neq"] = "\\ne";
+            nav_keys["Up"] = "Up";
+            nav_keys["Down"] = "Down";
+            nav_keys["Right"] = "Right";
+            nav_keys["Left"] = "Left";
+            nav_keys["Backspace"] = "Backspace";
+            if (!IS_TOUCH_ONLY) {
 
-            event = isTouchEnabled ? _event.changedTouches[0] : event;
-
-            var dx, dy, dist;
-
-            if (event.pageX != undefined) {
-                dx = event.pageX - offX;
-                dy = event.pageY - offY;
+                // $(".keypad").hide();
+                // alert($(".keypad").is(":visible"))
             } else {
-                dx = event.clientX - offX
-                dy = event.clientY - offY
+
             }
-            // alert(dx+":"+canvas.width)
-            //console.log(dy + ":" + event.clientY + ":" + event.layerY + ":" + event.pageY + ":" + offY);
-            context.lineWidth = 2.0;
-            context.strokeStyle = wb.globalStrokeColor;
+            // alert($("button").on)
+            function mathquill_focus() {
+                $(".mathquill-editable").focus();
+            }
 
-            var currPos = $get_Element('#canvas-container').style.left;
-            currPos = currPos ? parseInt(currPos) : 0;
-            var click_pos = dx + currPos
-            console.log("MOUSE_DOWN " + dx + ":" + width + ":::" + click_pos + ":" + screen_width)
+            function navigate(key) {
+                // var event = _event ? _event : window.event;
+                // var target=event.target?event.target:event.srcElement
+                // var key=$(target).attr("value");
+                var h = $(".mathquill-editable").data("[[mathquill internal data]]").block
+                h.keydown({
+                    which: key,
+                    shiftKey: 0
+                })
 
-            if (click_pos >= 0 && click_pos < screen_width) {
-                if (isTouchEnabled) {
-                    if (tevent.touches.length > 1) {
-                        penDown = false;
-                        rendering = false;
-                        initSwipe(_event);
-                        return
-                    }
-                }
-                penDown = true;
-                rendering = false;
-                clickX = dx;
-                clickY = dy;
-                x = dx;
-                y = dy;
+            }
 
-                if (!graphicData.dataArr) {
-                    graphicData.dataArr = [];
-
-                }
-                graphicData.id = tool_id[currentTool];
-                console.log("CURRENT_TOOL:" + currentTool);
-                if (currentTool == 'pencil') {
-                    context.beginPath();
-                    context.moveTo(clickX, clickY);
-                } else if (currentTool == 'eraser') {
-                    erase(x, y);
-                }
-                drawcolor = colorToNumber(context.strokeStyle)
-                if (currentTool == 'text') {
-                    penDown = false;
-
-                    graphicData.dataArr[0] = {
-                        x: x,
-                        y: y,
-                        text: "",
-                        color: drawcolor,
-                        name: "",
-                        layer: drawingLayer
-                    };
-                    // alert("0:: "+graphicData.dataArr[0])
-                    showTextBox();
+            $(".keypad").on("click", "button", function (event) {
+                var key = $(this).attr("value")
+                var h = $(".mathquill-editable");
+                if (cmd_keys[key]) {
+                    h.mathquill('cmd', cmd_keys[key]);
+                } else if (nav_keys[key]) {
+                    navigate(nav_keys[key])
                 } else {
-                    graphicData.dataArr[graphicData.dataArr.length] = {
-                        x: x,
-                        y: y,
-                        id: "move",
-                        color: drawcolor,
-                        name: "",
-                        layer: drawingLayer
-                    };
-                    if (isIE && (currentTool == 'gr2D' || currentTool == 'nl')) {
-                        context.beginPath();
-                        context.moveTo(clickX, clickY);
-                    }
+                    h.mathquill('write', $(this).text())
                 }
-            } else {
-                penDown = false;
-            }
-            if (event.preventDefault) {
-                event.preventDefault()
-            } else {
-                event.returnValue = false
-            };
-            // _event.stopPropagation();
-        };
 
-        var ev_onmouseup = function (_event) {
-            var event = _event ? _event : window.event;
-            event = event.type.indexOf('touch') > -1 ? _event.targetTouches[0] : event;
+                setTimeout(function () {
+                    mathquill_focus()
+                }, 100)
+            });
+            if (document.addEventListener) {
+                var thumb_h = $get_Element('#hscroll_thumb');
+                thumb_h.addEventListener("mousedown", initThumbDrag, false)
+                thumb_h.addEventListener('touchstart', touchStartFunction, false);
+                thumb_h.addEventListener('touchmove', touchMoveFunction, false);
+                // attach the touchstart, touchmove, touchend event listeners.
+                thumb_h.addEventListener('touchstart', initThumbDrag, false);
+                //
+                var thumb_v = $get_Element('#vscroll_thumb');
+                thumb_v.addEventListener("mousedown", initThumbDrag, false)
+                thumb_v.addEventListener('touchstart', touchStartFunction, false);
+                thumb_v.addEventListener('touchmove', touchMoveFunction, false);
+                // attach the touchstart, touchmove, touchend event listeners.
+                thumb_v.addEventListener('touchstart', initThumbDrag, false);
+            } else {
+                $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
+                $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
+            }
+            $(window).resize(function () {
+                adjustToolbar()
+            });
+
             /*
-             * if(penDown){ x = event.layerX?event.layerX:event.pageX-offX; y =
-             * event.layerY?event.layerY:event.pageY-offY; }
+             * function adjustToolbar() { var siz = viewport() var docWidth =
+             * siz.width; var docHeight = siz.height;
+             * 
+             * var topOff = $get_Element("#tools").offsetHeight +
+             * $get_Element("#tools").offsetTop + 15 var leftOff =
+             * $get_Element("#tools").offsetLeft + 15; screen_width = docWidth -
+             * leftOff - 27; screen_height = docHeight - topOff - 27; if
+             * (screen_width > 800) { //alert($('#tools button').css('width'));
+             * $('#tools').css('height', '35px'); $('#tools
+             * button').removeClass('small_tool_button').addClass("big_tool_button")
+             * $('#button_clear').css('width', '45px');
+             * $('#button_clear').css('height', '30px');
+             * //$('#button_clear').text("CL"); $('#button_clear').text("Clear");
+             * $('#button_save').text("Save"); } else {
+             * 
+             * $('#tools').css('height', '25px'); $('#tools
+             * button').removeClass('big_tool_button').addClass("small_tool_button")
+             * $('#button_clear').css('width', '25px');
+             * $('#button_clear').css('height', '25px');
+             * $('#button_clear').text("CL"); $('#button_save').text("S");
+             *  } }
              */
-            penDown = false;
-            //alert(rendering);
-            if (swipe_action == 'on') {
-                swipe_action = 'off'
-                return
-            }
-            if (rendering) {
-
-                if (currentTool == 'rect' || currentTool == 'oval') {
-                    graphicData.dataArr[0].w = w0
-                    graphicData.dataArr[0].h = h0
-                    graphicData.dataArr[0].xs = w0 / 400
-                    graphicData.dataArr[0].ys = h0 / 400
-                } else if (currentTool == 'line' || currentTool == 'pencil' || currentTool == 'eraser') {
-                    // alert(_event.type+": "+clickX+":"+clickY+":"+x+":"+y);
-                    // {x:x-clickX, y:y-clickY, id:"line"}
-                    var xp = x - clickX
-                    var yp = y - clickY
-                    xp = currentTool == 'eraser' ? x : xp
-                    yp = currentTool == 'eraser' ? y : yp
-                    graphicData.dataArr[graphicData.dataArr.length] = {
-                        x: xp,
-                        y: yp,
-                        id: "line"
-                    };
-                }
-                if (currentTool != 'eraser') {
-                    updateCanvas();
-                    context.beginPath();
-                } else if (currentTool == 'eraser' && isIE) {
-                    updateCanvas();
-                    context.beginPath();
-                }
-                sendData();
-                rendering = false;
-            } else if (currentTool == 'eraser' && isIE) {
-                //alert("A");
-                updateCanvas();
-                context.beginPath();
-                alert(rendering);
-            } else {
-
-                if (currentTool != 'text') {
-                    resetArrays()
+            function adjustToolbar() {
+                var siz = viewport()
+                var docWidth = siz.width;
+                var docHeight = siz.height;
+                if (docWidth > 600) {
+                    // alert($('#tools button').css('width'));
+                    $('#tools').css('height', '35px');
+                    $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
+                    $('#button_clear').css('width', '45px');
+                    $('#button_clear').css('height', '30px');
+                    // $('#button_clear').text("CL");
+                    $('#button_clear').text("Clear");
+                    $('#button_save').text("Save");
                 } else {
-                    //alert("B");
-                    setTimeout(__focus);
-                    //$('.mathquill-editable').focus();
+
+                    $('#tools').css('height', '25px');
+                    $('#tools button').removeClass('big_tool_button').addClass("small_tool_button")
+                    $('#button_clear').css('width', '25px');
+                    $('#button_clear').css('height', '25px');
+                    $('#button_clear').text("CL");
+                    $('#button_save').text("S");
+
                 }
+                // setTimeout(function(){
+                var off_left = $get_Element("#tools").offsetLeft;
+                var off_top = $get_Element("#tools").offsetTop;
+                var off_ht = $get_Element("#tools").offsetHeight;
+                var topOff = off_ht + off_top + 15
+                var leftOff = off_left + 15;
+                if (IS_IPHONE || docWidth <= 600) {
+                    dox = IS_IPHONE ? 5 : 19
+                    doy = IS_IPHONE ? 5 : 19
+                } else {
+                    dox = 19;
+                    doy = 19;
+                }
+                // dox=doy=0;
+                screen_width = docWidth - leftOff - dox;
+                screen_height = docHeight - topOff - doy;
+                console.log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $("#tools").height())
+                $get_Element('#drawsection').style.width = (screen_width) + 'px';
+                $get_Element('#drawsection').style.height = (screen_height) + 'px';
+                $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
+                $get_Element('#vscroller').style.left = (screen_width + 3 + off_left) + 'px';
+                $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
+
+                $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
+                $get_Element('#hscroller').style.left = (off_left) + 'px';
+                $get_Element('#hscroller').style.top = (off_ht + off_top + screen_height + 3) + 'px';
+                var posData = "";
+                posData += "Screen-Width:" + docWidth + "\n";
+                posData += "Screen-Height:" + docHeight + "\n";
+                posData += "wb-Width:" + screen_width + "\n";
+                posData += "wb-Height:" + screen_height + "\n";
+                posData += "wb-off-top:" + $get_Element("#tools").offsetTop + "\n";
+                posData += "wb-off-height:" + $get_Element("#tools").offsetHeight + ":" + off_ht + "\n";
+                posData += "vscroller-off-top:" + $get_Element('#vscroller').style.top + "\n";
+                posData += "vscroller-off-left:" + $get_Element('#vscroller').style.left + "\n";
+                posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
+                posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
+                console.log(posData);
+                positionScroller();
+                // },100);
             }
-        };
 
-        var ev_onmousemove = function (_event) {
-            var event = _event ? _event : window.event;
-            event = event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
-            if (penDown) {
-                rendering = true;
-                // console.log("MMOVE")
-                if (currentTool != 'pencil' && currentTool != 'text') {
-                    //console.log("MMOVE: "+isIE)
-                    if (isIE && currentTool != 'eraser') {
+            function initThumbDrag(_event) {
+                // console.log("INIT_THUMB");
+                var event = _event ? _event : window.event;
+                isTouchEnabled = event.type.indexOf('touch') > -1
+                if (isTouchEnabled) {
+                    $get_Element('#hscroll_thumb').removeEventListener("mousedown", initThumbDrag, false);
 
-                        context.clearRect(0, 0, canvas.width, canvas.height);
-                    } else if (!isIE) {
-                        context.clearRect(0, 0, canvas.width, canvas.height);
-                    }
                 }
 
-                // x = event.layerX?event.layerX:event.pageX-offX;
-                // y = event.layerY?event.layerY:event.pageY-offY;
-                //getCanvasPos()
+                event = isTouchEnabled ? _event.changedTouches[0] : event;
+                if (event.preventDefault) {
+                    event.preventDefault();
+                } else {
+                    event.returnValue = false;
+                }
+                getCanvasPos();
+                var dx, dy;
+
                 if (event.pageX != undefined) {
-                    x = event.pageX - offX;
-                    y = event.pageY - offY;
+                    dx = event.pageX - offX;
+                    dy = event.pageY - offY;
                 } else {
-                    x = event.clientX - offX
-                    y = event.clientY - offY
+                    dx = event.clientX - offX
+                    dy = event.clientY - offY
+                }
+                var scroll = 'v';
+                var pos = 'top';
+                var scrollObj = vscrollObj;
+                var mouse_pos = dy
+                var dim = 'height';
+                var sdim = screen_height;
+                var target = event.target ? event.target : event.srcElement
+                if (target == $get_Element('#hscroll_thumb')) {
+                    scroll = 'h';
+                    pos = 'left';
+                    scrollObj = hscrollObj;
+                    mouse_pos = dx;
+                    dim = 'width';
+                    sdim = screen_width;
+                }
+                var spos = $get_Element('#' + scroll + 'scroll_thumb').style[pos]
+                spos = spos ? spos : 0
+                var scpos = $get_Element('#canvas-container').style[pos]
+                scpos = scpos ? scpos : 0
+                scrollObj.sy = parseInt(spos)
+                scrollObj.screeny = parseInt(scpos)
+                scrollObj.my = mouse_pos;
+                scrollObj.dragged = true;
+                scrollObj.scrub = (canvas[dim] - sdim) / (sdim - 30)
+                console.log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
+                if (document.addEventListener) {
+                    if (isTouchEnabled) {
+                        document.addEventListener("touchend", stopThumbDrag, false);
+                        document.addEventListener("touchmove", startThumbDrag, false);
+                        $get_Element('#' + scroll + 'scroll_thumb').addEventListener("touchend", stopThumbDrag, false);
+                    } else {
+                        document.addEventListener("mouseup", stopThumbDrag, false);
+                        document.addEventListener("mousemove", startThumbDrag, false);
+                        $get_Element('#' + scroll + 'scroll_thumb').addEventListener("mouseup", stopThumbDrag, false);
+                    }
+                } else {
+                    document.onmousemove = startThumbDrag;
+                    $get_Element('#' + scroll + 'scroll_thumb').onmouseup = stopThumbDrag;
+                    document.onmouseup = stopThumbDrag;
+                }
+            }
+
+            function startThumbDrag(_event) {
+
+                if (!vscrollObj.dragged && !hscrollObj.dragged) {
+                    return
+                }
+                var event = _event ? _event : window.event;
+                event = isTouchEnabled ? event.changedTouches[0] : event;
+                if (event.preventDefault) {
+                    event.preventDefault();
+                } else {
+                    event.returnValue = false;
+                }
+                // getCanvasPos();
+                var dx, dy;
+                if (event.pageX != undefined) {
+                    dx = event.pageX - offX;
+                    dy = event.pageY - offY;
+                } else {
+                    dx = event.clientX - offX
+                    dy = event.clientY - offY
+                }
+                var scroll = 'v';
+                var pos = 'top';
+                var scrollObj = vscrollObj;
+                var mouse_pos = dy
+                var dim = 'height';
+                var sdim = screen_height;
+                var neg = -1
+                if (hscrollObj.dragged) {
+                    scroll = 'h';
+                    pos = 'left';
+                    scrollObj = hscrollObj;
+                    mouse_pos = dx;
+                    dim = 'width';
+                    sdim = screen_width;
+                    neg = -1
+                }
+                var change = mouse_pos - scrollObj.my
+                var newpos = scrollObj.sy + change
+                newpos = newpos < 0 ? 0 : newpos
+                newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
+                if (newpos >= 0 && newpos <= sdim - 30) {
+                    var currPos = scrollObj.screeny - (change * scrollObj.scrub);
+                    currPos = currPos > 0 ? 0 : currPos
+                    currPos = currPos < neg * (canvas[dim] - sdim) ? -(canvas[dim] - sdim) : currPos;
+                    // console.log("ON_SCROLL_SCRUB:"+scrollObj.sy+":"+change+":"+currPos);
+                    $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
+                    $get_Element('#canvas-container').style[pos] = currPos + "px";
                 }
 
-                if (currentTool == 'rect' || currentTool == 'oval') {
+            }
 
-                    x0 = clickX;
-                    y0 = clickY;
-                    w0 = x - clickX;
-                    h0 = y - clickY;
-                    if (currentTool == 'rect') {
-                        drawRect(x0, y0, w0, h0, wb.globalStrokeColor)
-                    }
-                    if (currentTool == 'oval') {
-                        drawOval(x0, y0, w0, h0, wb.globalStrokeColor)
+            function stopThumbDrag(_event) {
+                // console.log("STOP_SCROLL_SCRUB:");
+                if (!vscrollObj.dragged && !hscrollObj.dragged) {
+                    return
+                }
+                var event = _event ? _event : window.event;
+                event = isTouchEnabled ? event.changedTouches[0] : event;
+                if (event.preventDefault) {
+                    event.preventDefault();
+                } else {
+                    event.returnValue = false;
+                }
+                // getCanvasPos();
+                var dx, dy;
+                if (event.pageX != undefined) {
+                    dx = event.pageX - offX;
+                    dy = event.pageY - offY;
+                } else {
+                    dx = event.clientX - offX;
+                    dy = event.clientY - offY;
+                }
+                var scroll = 'v';
+                var pos = 'top';
+                var scrollObj = vscrollObj;
+                var mouse_pos = dy
+                var dim = 'height';
+                var sdim = screen_height;
+                var neg = -1
+                if (hscrollObj.dragged) {
+                    scroll = 'h';
+                    pos = 'left';
+                    scrollObj = hscrollObj;
+                    mouse_pos = dx;
+                    dim = 'width';
+                    sdim = screen_width;
+                    neg = -1
+                }
+                var change = mouse_pos - scrollObj.my
+                var newpos = scrollObj.sy + change
+                newpos = newpos < 0 ? 0 : newpos
+                newpos = newpos > sdim - 30 ? sdim - 30 : newpos;
+                if (newpos >= 0 && newpos <= sdim - 30) {
+                    var currPos = scrollObj.screeny - (change * scrollObj.scrub);
+                    currPos = currPos > 0 ? 0 : currPos
+                    currPos = currPos < neg * (canvas[dim] - sdim) ? -(canvas[dim] - sdim) : currPos;
+                    $get_Element('#' + scroll + 'scroll_thumb').style[pos] = newpos + "px";
+                    $get_Element('#canvas-container').style[pos] = currPos + "px";
+                }
+                if (document.addEventListener) {
+                    if (isTouchEnabled) {
+                        document.removeEventListener("mousemove", startThumbDrag, false);
+                        document.removeEventListener("touchmove", startThumbDrag, false);
+
+                    } else {
+
+                        document.removeEventListener("mousemove", startThumbDrag, false);
+
                     }
                 } else {
-                    if (currentTool == 'line') {
+                    document.onmousemove = null;
+                }
+                scrollObj.dragged = false;
+                console.log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
+            }
+            // canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width
+            // = docWidth - leftOff;
+            // canvas.height = origcanvas.height = graphcanvas.height =
+            // topcanvas.height = docHeight - topOff;
+            // console.log("A " + canvas.width + ":" + canvas.height + ":" +
+            // docWidth + ":" + docHeight + ":" + leftOff + ":" + topOff);
+            context = canvas.getContext("2d");
+            origcontext = origcanvas.getContext("2d");
+            graphcontext = graphcanvas.getContext("2d");
+            topcontext = topcanvas.getContext("2d");
+            // canvas.width=origcanvas.width=graphcanvas.width=topcanvas.width=5000;
+            // canvas.height=origcanvas.height=graphcanvas.height=topcanvas.height=5000;
+            width = screen_width; // canvas.width;
+            height = screen_height; // canvas.height;
+            context.font = origcontext.font = topcontext.font = "12px sans-serif";
+            /*
+             * context.save(); context.fillStyle='white'
+             * context.fillRect(0,0,width,height) context.restore();
+             */
+            gr2D = new Image();
+            gr2D.src = _imageBaseDir + 'gr2D.png';
+            nL = new Image();
+            nL.src = _imageBaseDir + 'nL.png';
+            graphMode = '';
+            gr2D_xp = nL_xp = (screen_width - 300) / 2;
+            gr2D_yp = (screen_height - 300) / 2;
+            nL_yp = (screen_height - 100) / 2;
+            gr2D_w = 300;
+            gr2D_h = 300;
+            nL_w = 300;
+            nL_h = 100;
+            offX = $get_Element("#canvas-container").offsetLeft;
+            offY = $get_Element("#canvas-container").offsetTop;
+            // alert(offX+":"+offY);
+            /*
+             * var getCanvasPos = function(){ var obj =
+             * $get_Element("#canvas-container"); var top = 0; var left = 0; while
+             * (obj.tagName != "BODY") { top += obj.offsetTop; left +=
+             * obj.offsetLeft;
+             * console.log(obj.tagName+":"+obj.offsetParent+":"+top+":"+left);
+             * if(obj.offsetParent === null) break; obj = obj.offsetParent; }
+             * offX=left; offY=top; return { top: top, left: left }; };
+             */
+            function getCanvasPos() {
+                console.log("getCanvasPos processing!");
+                var box = canvas.getBoundingClientRect();
+                console.log("canvas bound= top: " + box.top + " left:" + box.left);
+                var body = mainDoc.body;
+                var docElem = mainDoc.documentElement;
+                var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+                var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+                var clientTop = docElem.clientTop || body.clientTop || 0;
+                var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+                console.log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
+                var top = box.top + scrollTop - clientTop;
+                var left = box.left + scrollLeft - clientLeft;
+                offX = Math.round(left);
+                offY = Math.round(top);
+                console.log("OFFSET: top=" + offY + " left=" + offX);
+                return {
+                    top: offY,
+                    left: offX
+                }
+            }
+            console.log("getCanvasPos calling!");
+            getCanvasPos();
+            console.log("getCanvasPos CALL END!");
+            graphicData = {}
+            tool_id = {};
+            tool_id['eraser'] = 0;
+            tool_id['pencil'] = 1;
+            tool_id['text'] = 2;
+            tool_id['line'] = 3;
+            tool_id['rect'] = 4;
+            tool_id['oval'] = 5;
+            // tool_id['ellipse']=5;
+            tool_id['gr2D'] = 11;
+            tool_id['nL'] = 12;
+            drawingLayer = '1';
+            if (currentTool != 'pencil') {
+                if (currentTool == 'text' || $get_Element("#inputBox").style.display == 'block') {
+                    hideTextBox();
+                }
+                resetButtonHighlite();
+                currentTool = 'pencil';
+            }
+            $get_Element("#button_pencil").style.border = '2px solid #ff9900';
+
+            // Events
+            // drawRect(0,0,width,height,'#ff0000');
+            $get_Element("#button_text").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='crosshair';
+                currentTool = 'text';
+                buttonHighlite(currentTool)
+            };
+            $get_Element("#button_pencil").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
+                currentTool = 'pencil';
+                buttonHighlite(currentTool)
+            };
+            $get_Element("#button_rect").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='crosshair';
+                currentTool = 'rect';
+                buttonHighlite(currentTool)
+            };
+            $get_Element("#button_line").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='crosshair';
+                currentTool = 'line';
+                buttonHighlite(currentTool)
+            };
+            $get_Element("#button_oval").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='crosshair';
+                currentTool = 'oval';
+                buttonHighlite(currentTool)
+            };
+            $get_Element("#button_gr2D").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
+                currentTool = 'gr2D';
+                showHideGraph('gr2D')
+                buttonHighlite('pencil')
+            };
+            $get_Element("#button_nL").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
+                currentTool = 'nL';
+                showHideGraph('nL')
+                buttonHighlite('pencil')
+            };
+            $get_Element("#button_clear").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='url("imgs/pencil.png"),auto';
+                // resetWhiteBoard();
+                currentTool = 'pencil'
+                buttonHighlite(currentTool)
+                hideTextBox();
+                // penDown=false;
+                // graphMode='';
+                // origcanvas.width=graphcanvas.width=topcanvas.width=canvas.width=width;
+                resetWhiteBoard(true);
+            };
+            $get_Element("#button_eraser").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='url("imgs/eraser.png"),auto';
+                // resetWhiteBoard();
+                currentTool = 'eraser'
+                buttonHighlite(currentTool)
+            };
+            //
+            $get_Element("#done_btn").onclick = function (event) {
+                renderText();
+                // check()
+            }
+            if ($get_Element("#button_save")) {
+                $get_Element("#button_save").onclick = function (event) {
+                    wb.saveWhiteboard();
+                };
+            }
+            //
+            function killMouseListeners() {
+
+                if (document.addEventListener) {
+                    canvas.removeEventListener("mousedown", ev_onmousedown, false);
+                    canvas.removeEventListener("mouseup", ev_onmouseup, false);
+                    canvas.removeEventListener("mousemove", ev_onmousemove, false);
+
+                } else {
+                    canvas.detachEvent("onmousedown", ev_onmousedown);
+                    canvas.detachEvent("onmouseup", ev_onmouseup);
+                    canvas.detachEvent("onmousemove", ev_onmousemove);
+                }
+            }
+
+            function killTouchListeners() {
+                if (document.addEventListener) {
+
+
+                    // touchscreen specific - to prevent web page being scrolled
+                    // while drawing
+                    canvas.removeEventListener('touchstart', touchStartFunction, false);
+                    canvas.removeEventListener('touchmove', touchMoveFunction, false);
+
+                    // attach the touchstart, touchmove, touchend event listeners.
+                    canvas.removeEventListener('touchstart', ev_onmousedown, false);
+                    canvas.removeEventListener('touchmove', ev_onmousemove, false);
+                    canvas.removeEventListener('touchend', ev_onmouseup, false);
+
+                } else {
+                    // touchscreen specific - to prevent web page being scrolled
+                    // while drawing
+                    canvas.detachEvent('touchstart', touchStartFunction);
+                    canvas.detachEvent('touchmove', touchMoveFunction);
+
+                    // attach the touchstart, touchmove, touchend event listeners.
+                    canvas.detachEvent('touchstart', ev_onmousedown);
+                    canvas.detachEvent('touchmove', ev_onmousemove);
+                    canvas.detachEvent('touchend', ev_onmouseup);
+                }
+            }
+
+            function __killListeners() {
+                killMouseListeners();
+                killTouchListeners();
+            }
+            //
+            function positionScroller() {
+                var scrubH = (canvas.width - screen_width) / (screen_width - 30);
+                var scrubV = (canvas.height - screen_height) / (screen_height - 30);
+                var currPosH = parseInt($get_Element('#canvas-container').style.left);
+                currPosH = currPosH ? currPosH : 0
+                currPosH = currPosH > 0 ? 0 : currPosH
+                currPosH = currPosH < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosH;
+                $get_Element('#hscroll_thumb').style.left = (-currPosH / scrubH) + "px";
+                $get_Element('#canvas-container').style.left = currPosH + "px";
+                var currPosV = parseInt($get_Element('#canvas-container').style.top);
+                currPosV = currPosV ? currPosV : 0
+                currPosV = currPosV > 0 ? 0 : currPosV
+                currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
+                $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
+                $get_Element('#canvas-container').style.top = currPosV + "px";
+                console.log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
+            }
+
+            function scrollTheCanvas(event) {
+                checkForScroll(event);
+                // setTimeout(function(){checkForScroll(event)},100)
+            }
+
+            function checkForScroll(_event) {
+                // console.log("CHECK_FOR_SCROLL")
+                var event = _event ? _event : window.event;
+                isTouchEnabled = event.type.indexOf('touch') > -1;
+                var dx, dy, dist;
+
+                if (event.pageX != undefined) {
+                    dx = event.pageX - offX;
+                    dy = event.pageY - offY;
+                } else {
+                    dx = event.clientX - offX
+                    dy = event.clientY - offY
+                }
+                if (penDown) {
+                    return
+                }
+
+                var cposX = ($get_Element("#wb-container").style.left);
+                var cposY = ($get_Element("#wb-container").style.top);
+
+                cposX = cposX ? parseInt(cposX) : 0;
+                cposY = cposY ? parseInt(cposY) : 0;
+                // console.log((dx-cposX)+":"+screen_width+"||"+(dy-cposY)+":"+screen_height)
+                if (dx - cposX >= screen_width) {
+                    doRightScroll();
+                    setTimeout(function () {
+                        checkForScroll(_event)
+                    }, 100)
+                } else if (dy - cposY >= screen_height) {
+                    doUpScroll();
+                    setTimeout(function () {
+                        checkForScroll(_event)
+                    }, 100)
+                } else {
+                    // clearInterval(scrollInt);
+                }
+            }
+
+            function doRightScroll() {
+                var delta = -2
+                var currPos = $get_Element('#canvas-container').style.left;
+                currPos = currPos ? currPos : 0;
+                currPos = parseInt(currPos) + (delta * 10);
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPos;
+                var scrub = (canvas.width - screen_width) / (screen_width - 30)
+                $get_Element('#canvas-container').style.left = currPos + "px";
+                $get_Element('#hscroll_thumb').style.left = (-currPos / scrub) + "px";
+            }
+
+            function doUpScroll() {
+                var delta = -2
+                var currPos = $get_Element('#canvas-container').style.top;
+                currPos = currPos ? currPos : 0;
+                currPos = parseInt(currPos) + (delta * 10);
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
+                var scrub = (canvas.height - screen_height) / (screen_height - 30)
+                $get_Element('#canvas-container').style.top = currPos + "px";
+                $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+            }
+            //
+            var ev_onmousedown = function (_event) {
+                // alert("MDOWN")
+                var event = _event ? _event : window.event;
+                var tevent = event
+                isTouchEnabled = event.type.indexOf('touch') > -1
+                if (isTouchEnabled) {
+                    canvas.removeEventListener("mousedown", ev_onmousedown, false);
+                    canvas.removeEventListener("mouseup", ev_onmouseup, false);
+                    canvas.removeEventListener("mousemove", ev_onmousemove, false);
+                }
+                getCanvasPos();
+                /*
+                 * else{ canvas.removeEventListener('touchstart',ev_onmousedown,
+                 * false); canvas.removeEventListener('touchmove',ev_onmousemove,
+                 * false); canvas.removeEventListener('touchend',ev_onmouseup,
+                 * false); }
+                 */
+
+
+                event = isTouchEnabled ? _event.changedTouches[0] : event;
+
+                var dx, dy, dist;
+
+                if (event.pageX != undefined) {
+                    dx = event.pageX - offX;
+                    dy = event.pageY - offY;
+                } else {
+                    dx = event.clientX - offX
+                    dy = event.clientY - offY
+                }
+                // alert(dx+":"+canvas.width)
+                // console.log(dy + ":" + event.clientY + ":" + event.layerY + ":" +
+                // event.pageY + ":" + offY);
+                context.lineWidth = 2.0;
+                context.strokeStyle = wb.globalStrokeColor;
+
+                var currPos = $get_Element('#canvas-container').style.left;
+                currPos = currPos ? parseInt(currPos) : 0;
+                var click_pos = dx + currPos
+                console.log("MOUSE_DOWN " + dx + ":" + width + ":::" + click_pos + ":" + screen_width)
+
+                if (click_pos >= 0 && click_pos < screen_width) {
+                    if (isTouchEnabled) {
+                        if (tevent.touches.length > 1) {
+                            penDown = false;
+                            rendering = false;
+                            initSwipe(_event);
+                            return
+                        }
+                    }
+                    penDown = true;
+                    rendering = false;
+                    clickX = dx;
+                    clickY = dy;
+                    x = dx;
+                    y = dy;
+
+                    if (!graphicData.dataArr) {
+                        graphicData.dataArr = [];
+
+                    }
+                    graphicData.id = tool_id[currentTool];
+                    console.log("CURRENT_TOOL:" + currentTool);
+                    if (currentTool == 'pencil') {
                         context.beginPath();
                         context.moveTo(clickX, clickY);
-                        drawLine();
                     } else if (currentTool == 'eraser') {
                         erase(x, y);
+                    }
+                    drawcolor = colorToNumber(context.strokeStyle)
+                    if (currentTool == 'text') {
+                        penDown = false;
+
+                        graphicData.dataArr[0] = {
+                            x: x,
+                            y: y,
+                            text: "",
+                            color: drawcolor,
+                            name: "",
+                            layer: drawingLayer
+                        };
+                        // alert("0:: "+graphicData.dataArr[0])
+                        showTextBox();
+                    } else {
                         graphicData.dataArr[graphicData.dataArr.length] = {
                             x: x,
                             y: y,
-                            id: "line"
+                            id: "move",
+                            color: drawcolor,
+                            name: "",
+                            layer: drawingLayer
                         };
-                    } else {
+                        if (isIE && (currentTool == 'gr2D' || currentTool == 'nl')) {
+                            context.beginPath();
+                            context.moveTo(clickX, clickY);
+                        }
+                    }
+                } else {
+                    penDown = false;
+                }
+                if (event.preventDefault) {
+                    event.preventDefault()
+                } else {
+                    event.returnValue = false
+                };
+                // _event.stopPropagation();
+            };
+
+            var ev_onmouseup = function (_event) {
+                var event = _event ? _event : window.event;
+                event = event.type.indexOf('touch') > -1 ? _event.targetTouches[0] : event;
+                /*
+                 * if(penDown){ x = event.layerX?event.layerX:event.pageX-offX; y =
+                 * event.layerY?event.layerY:event.pageY-offY; }
+                 */
+                penDown = false;
+                // alert(rendering);
+                if (swipe_action == 'on') {
+                    swipe_action = 'off'
+                    return
+                }
+                if (rendering) {
+
+                    if (currentTool == 'rect' || currentTool == 'oval') {
+                        graphicData.dataArr[0].w = w0
+                        graphicData.dataArr[0].h = h0
+                        graphicData.dataArr[0].xs = w0 / 400
+                        graphicData.dataArr[0].ys = h0 / 400
+                    } else if (currentTool == 'line' || currentTool == 'pencil' || currentTool == 'eraser') {
+                        // alert(_event.type+": "+clickX+":"+clickY+":"+x+":"+y);
+                        // {x:x-clickX, y:y-clickY, id:"line"}
+                        var xp = x - clickX
+                        var yp = y - clickY
+                        xp = currentTool == 'eraser' ? x : xp
+                        yp = currentTool == 'eraser' ? y : yp
                         graphicData.dataArr[graphicData.dataArr.length] = {
-                            x: x - clickX,
-                            y: y - clickY,
+                            x: xp,
+                            y: yp,
                             id: "line"
                         };
-                        //console.log("DRAW_LINE_PENCIL: "+x+":"+y);
-                        drawLine();
+                    }
+                    if (currentTool != 'eraser') {
+                        updateCanvas();
+                        context.beginPath();
+                    } else if (currentTool == 'eraser' && isIE) {
+                        updateCanvas();
+                        context.beginPath();
+                    }
+                    sendData();
+                    rendering = false;
+                } else if (currentTool == 'eraser' && isIE) {
+                    // alert("A");
+                    updateCanvas();
+                    context.beginPath();
+                    alert(rendering);
+                } else {
+
+                    if (currentTool != 'text') {
+                        resetArrays()
+                    } else {
+                        // alert("B");
+                        setTimeout(__focus);
+                        // $('.mathquill-editable').focus();
+                    }
+                }
+            };
+
+            var ev_onmousemove = function (_event) {
+                var event = _event ? _event : window.event;
+                event = event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
+                if (penDown) {
+                    rendering = true;
+                    // console.log("MMOVE")
+                    if (currentTool != 'pencil' && currentTool != 'text') {
+                        // console.log("MMOVE: "+isIE)
+                        if (isIE && currentTool != 'eraser') {
+
+                            context.clearRect(0, 0, canvas.width, canvas.height);
+                        } else if (!isIE) {
+                            context.clearRect(0, 0, canvas.width, canvas.height);
+                        }
                     }
 
+                    // x = event.layerX?event.layerX:event.pageX-offX;
+                    // y = event.layerY?event.layerY:event.pageY-offY;
+                    // getCanvasPos()
+                    if (event.pageX != undefined) {
+                        x = event.pageX - offX;
+                        y = event.pageY - offY;
+                    } else {
+                        x = event.clientX - offX
+                        y = event.clientY - offY
+                    }
+
+                    if (currentTool == 'rect' || currentTool == 'oval') {
+
+                        x0 = clickX;
+                        y0 = clickY;
+                        w0 = x - clickX;
+                        h0 = y - clickY;
+                        if (currentTool == 'rect') {
+                            drawRect(x0, y0, w0, h0, wb.globalStrokeColor)
+                        }
+                        if (currentTool == 'oval') {
+                            drawOval(x0, y0, w0, h0, wb.globalStrokeColor)
+                        }
+                    } else {
+                        if (currentTool == 'line') {
+                            context.beginPath();
+                            context.moveTo(clickX, clickY);
+                            drawLine();
+                        } else if (currentTool == 'eraser') {
+                            erase(x, y);
+                            graphicData.dataArr[graphicData.dataArr.length] = {
+                                x: x,
+                                y: y,
+                                id: "line"
+                            };
+                        } else {
+                            graphicData.dataArr[graphicData.dataArr.length] = {
+                                x: x - clickX,
+                                y: y - clickY,
+                                id: "line"
+                            };
+                            // console.log("DRAW_LINE_PENCIL: "+x+":"+y);
+                            drawLine();
+                        }
+
+                    }
+                }
+                if (event.preventDefault) {
+                    event.preventDefault()
+                } else {
+                    event.returnValue = false
+                };
+                // _event.stopPropagation();
+            };
+
+            function initSwipe(_event) {
+                var event = _event ? _event : window.event;
+                var c = $get_Element('#canvas-container')
+                var tl = 0;
+                if (event.touches) {
+                    console.log(event.touches.length)
+                    tl = event.touches.length
+                } else {
+                    console.log("NOT TOUCH ENABLED!")
+                }
+                console.log("TOUCHES: " + tl);
+                if (tl >= 2) {
+                    event.preventDefault();
+                    var tarr = event.touches
+                    var tp = {}
+                    var tx = 0;
+                    var ty = 0;
+                    var tlen = tarr.length
+                    for (var t = 0; t < tlen; t++) {
+                        tx += tarr[t].pageX
+                        ty += tarr[t].pageY
+                    }
+                    var touch = {
+                        pageX: tx / tlen,
+                        pageY: ty / tlen
+                    };
+                    swipe_sx = touch.pageX
+                    swipe_sy = touch.pageY
+                    console.log("TOUCHE_POS: " + swipe_sx + ":" + swipe_sy);
+                    swipe_nx = 0
+                    swipe_ny = 0
+                    swipe_action = 'on'
+                    c.addEventListener("touchmove", startSwipe)
+                    c.addEventListener("touchend", stopSwipe)
                 }
             }
-            if (event.preventDefault) {
-                event.preventDefault()
-            } else {
-                event.returnValue = false
-            };
-            // _event.stopPropagation();
-        };
 
-        function initSwipe(_event) {
-            var event = _event ? _event : window.event;
-            var c = $get_Element('#canvas-container')
-            var tl = 0;
-            if (event.touches) {
-                console.log(event.touches.length)
-                tl = event.touches.length
-            } else {
-                console.log("NOT TOUCH ENABLED!")
-            }
-            console.log("TOUCHES: " + tl);
-            if (tl >= 2) {
+            function startSwipe(_event) {
+                var event = _event ? _event : window.event;
                 event.preventDefault();
                 var tarr = event.touches
                 var tp = {}
                 var tx = 0;
                 var ty = 0;
                 var tlen = tarr.length
+                if (tlen < 2) {
+                    return
+                }
                 for (var t = 0; t < tlen; t++) {
                     tx += tarr[t].pageX
                     ty += tarr[t].pageY
@@ -1291,174 +1315,150 @@ if (docWidth > 600) {
                     pageX: tx / tlen,
                     pageY: ty / tlen
                 };
-                swipe_sx = touch.pageX
-                swipe_sy = touch.pageY
-                console.log("TOUCHE_POS: " + swipe_sx + ":" + swipe_sy);
-                swipe_nx = 0
-                swipe_ny = 0
-                swipe_action = 'on'
-                c.addEventListener("touchmove", startSwipe)
-                c.addEventListener("touchend", stopSwipe)
-            }
-        }
-
-        function startSwipe(_event) {
-            var event = _event ? _event : window.event;
-            event.preventDefault();
-            var tarr = event.touches
-            var tp = {}
-            var tx = 0;
-            var ty = 0;
-            var tlen = tarr.length
-            if (tlen < 2) {
-                return
-            }
-            for (var t = 0; t < tlen; t++) {
-                tx += tarr[t].pageX
-                ty += tarr[t].pageY
-            }
-            var touch = {
-                pageX: tx / tlen,
-                pageY: ty / tlen
-            };
-            swipe_mx = touch.pageX
-            swipe_my = touch.pageY
-            swipe_dx = swipe_mx - swipe_sx
-            swipe_dy = swipe_my - swipe_sy
-            swipe_nx = swipe_ox + swipe_dx
-            swipe_ny = swipe_oy + swipe_dy
-            if (tlen < 2) {
-                return
-            }
-            //$get('canvas-container').style.left=dx+"px"
-            var currPosY = swipe_ny ? swipe_ny : 0;
-            currPosY = parseInt(currPosY)
-            currPosY = currPosY > 0 ? 0 : currPosY
-            currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
-            $get_Element('#canvas-container').style.top = currPosY + "px"
-            $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
-            //console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
-			//
-			var currPosX = swipe_nx ? swipe_nx : 0;
-            currPosX = parseInt(currPosX)
-            currPosX = currPosX > 0 ? 0 : currPosX
-            currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
-            $get_Element('#canvas-container').style.left = currPosX + "px"
-            $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
-            console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
-        }
-        function stopSwipe(_event) {
-            swipe_ox = swipe_ox + swipe_dx
-            swipe_oy = swipe_oy + swipe_dy
-            var event = _event ? _event : window.event;
-            //var touch=event.changedTouches[0]
-            event.preventDefault();
-            //swipe_action='stop';
-            var c = $get_Element('#canvas-container')
-            c.removeEventListener("touchmove", startSwipe)
-            c.removeEventListener("touchend", stopSwipe)
-            $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
-			$get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
-            //console.log("Touch END x:" + touch.pageX + ", y:" + touch.pageY);
-        }
-
-        function getvscrolldata() {
-            var currPos = $get_Element('#canvas-container').style.top;
-            currPos = currPos ? currPos : 0;
-            currPos = parseInt(currPos)
-            currPos = currPos > 0 ? 0 : currPos
-            currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
-            var scrub = (canvas.height - screen_height) / (screen_height - 30);
-            return {
-                p: currPos,
-                s: scrub,
-                t: (-currPos / scrub)
-            }
-        }
-
-        function gethscrolldata() {
-            var currPos = $get_Element('#canvas-container').style.left;
-            currPos = currPos ? currPos : 0;
-            currPos = parseInt(currPos)
-            currPos = currPos > 0 ? 0 : currPos
-            currPos = currPos < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPos;
-            var scrub = (canvas.width - screen_width) / (screen_width - 30);
-            return {
-                p: currPos,
-                s: scrub,
-                t: (-currPos / scrub)
-            };
-        }
-
-        function moveObject(event) {
-            var delta = 0;
-
-            if (!event) event = window.event;
-
-            // normalize the delta
-            if (event.wheelDelta) {
-
-                // IE and Opera
-                delta = event.wheelDelta / 60;
-
-            } else if (event.detail) {
-
-                // W3C
-                delta = -event.detail / 2;
+                swipe_mx = touch.pageX
+                swipe_my = touch.pageY
+                swipe_dx = swipe_mx - swipe_sx
+                swipe_dy = swipe_my - swipe_sy
+                swipe_nx = swipe_ox + swipe_dx
+                swipe_ny = swipe_oy + swipe_dy
+                if (tlen < 2) {
+                    return
+                }
+                // $get('canvas-container').style.left=dx+"px"
+                var currPosY = swipe_ny ? swipe_ny : 0;
+                currPosY = parseInt(currPosY)
+                currPosY = currPosY > 0 ? 0 : currPosY
+                currPosY = currPosY < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosY;
+                $get_Element('#canvas-container').style.top = currPosY + "px"
+                $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+                // console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" +
+                // swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
+                //
+                var currPosX = swipe_nx ? swipe_nx : 0;
+                currPosX = parseInt(currPosX)
+                currPosX = currPosX > 0 ? 0 : currPosX
+                currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
+                $get_Element('#canvas-container').style.left = currPosX + "px"
+                $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
+                console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
             }
 
-            var currPos = $get_Element('#canvas-container').style.top;
-            currPos = currPos ? currPos : 0;
-            //console.log("DELTA:"+delta+":"+currPos);
-            //calculating the next position of the object
-            currPos = parseInt(currPos) + (delta * 10);
-            currPos = currPos > 0 ? 0 : currPos
-            currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
-            var scrub = (canvas.height - screen_height) / (screen_height - 30)
-            $get_Element('#canvas-container').style.top = currPos + "px";
-            $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
-            //console.log("AFTER:"+currPos+":"+(currPos/scrub));
-            //moving the position of the object
-            //document.getElementById('scroll').style.top = currPos+"px";
-            //document.getElementById('scroll').innerHTML = event.wheelDelta + ":" + event.detail;
-        }
-        document.onmousewheel = moveObject;
-        __killListeners()
-        if (document.addEventListener) {
-            canvas.addEventListener("mousedown", ev_onmousedown, false);
-            canvas.addEventListener("mouseup", ev_onmouseup, false);
-            canvas.addEventListener("mousemove", ev_onmousemove, false);
+            function stopSwipe(_event) {
+                swipe_ox = swipe_ox + swipe_dx
+                swipe_oy = swipe_oy + swipe_dy
+                var event = _event ? _event : window.event;
+                // var touch=event.changedTouches[0]
+                event.preventDefault();
+                // swipe_action='stop';
+                var c = $get_Element('#canvas-container')
+                c.removeEventListener("touchmove", startSwipe)
+                c.removeEventListener("touchend", stopSwipe)
+                $get_Element('#vscroll_thumb').style.top = getvscrolldata().t + "px";
+                $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
+                // console.log("Touch END x:" + touch.pageX + ", y:" + touch.pageY);
+            }
 
-            // touchscreen specific - to prevent web page being scrolled while drawing
-            canvas.addEventListener('touchstart', touchStartFunction, false);
-            canvas.addEventListener('touchmove', touchMoveFunction, false);
+            function getvscrolldata() {
+                var currPos = $get_Element('#canvas-container').style.top;
+                currPos = currPos ? currPos : 0;
+                currPos = parseInt(currPos)
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
+                var scrub = (canvas.height - screen_height) / (screen_height - 30);
+                return {
+                    p: currPos,
+                    s: scrub,
+                    t: (-currPos / scrub)
+                }
+            }
 
-            // attach the touchstart, touchmove, touchend event listeners.
-            canvas.addEventListener('touchstart', ev_onmousedown, false);
-            canvas.addEventListener('touchmove', ev_onmousemove, false);
-            canvas.addEventListener('touchend', ev_onmouseup, false);
-            //
-            //document.addEventListener('DOMMouseScroll', moveObject, false);
-            //$get_Element('#container').addEventListener('mousemove', scrollTheCanvas, false);
-        } else {
-            canvas.attachEvent("onmousedown", ev_onmousedown);
-            canvas.attachEvent("onmouseup", ev_onmouseup);
-            canvas.attachEvent("onmousemove", ev_onmousemove);
+            function gethscrolldata() {
+                var currPos = $get_Element('#canvas-container').style.left;
+                currPos = currPos ? currPos : 0;
+                currPos = parseInt(currPos)
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPos;
+                var scrub = (canvas.width - screen_width) / (screen_width - 30);
+                return {
+                    p: currPos,
+                    s: scrub,
+                    t: (-currPos / scrub)
+                };
+            }
+
+            function moveObject(event) {
+                var delta = 0;
+
+                if (!event) event = window.event;
+
+                // normalize the delta
+                if (event.wheelDelta) {
+
+                    // IE and Opera
+                    delta = event.wheelDelta / 60;
+
+                } else if (event.detail) {
+
+                    // W3C
+                    delta = -event.detail / 2;
+                }
+
+                var currPos = $get_Element('#canvas-container').style.top;
+                currPos = currPos ? currPos : 0;
+                // console.log("DELTA:"+delta+":"+currPos);
+                // calculating the next position of the object
+                currPos = parseInt(currPos) + (delta * 10);
+                currPos = currPos > 0 ? 0 : currPos
+                currPos = currPos < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPos;
+                var scrub = (canvas.height - screen_height) / (screen_height - 30)
+                $get_Element('#canvas-container').style.top = currPos + "px";
+                $get_Element('#vscroll_thumb').style.top = (-currPos / scrub) + "px";
+                // console.log("AFTER:"+currPos+":"+(currPos/scrub));
+                // moving the position of the object
+                // document.getElementById('scroll').style.top = currPos+"px";
+                // document.getElementById('scroll').innerHTML = event.wheelDelta +
+                // ":" + event.detail;
+            }
+            document.onmousewheel = moveObject;
+            __killListeners()
+            if (document.addEventListener) {
+                canvas.addEventListener("mousedown", ev_onmousedown, false);
+                canvas.addEventListener("mouseup", ev_onmouseup, false);
+                canvas.addEventListener("mousemove", ev_onmousemove, false);
+
+                // touchscreen specific - to prevent web page being scrolled while
+                // drawing
+                canvas.addEventListener('touchstart', touchStartFunction, false);
+                canvas.addEventListener('touchmove', touchMoveFunction, false);
+
+                // attach the touchstart, touchmove, touchend event listeners.
+                canvas.addEventListener('touchstart', ev_onmousedown, false);
+                canvas.addEventListener('touchmove', ev_onmousemove, false);
+                canvas.addEventListener('touchend', ev_onmouseup, false);
+                //
+                // document.addEventListener('DOMMouseScroll', moveObject, false);
+                // $get_Element('#container').addEventListener('mousemove',
+                // scrollTheCanvas, false);
+            } else {
+                canvas.attachEvent("onmousedown", ev_onmousedown);
+                canvas.attachEvent("onmouseup", ev_onmouseup);
+                canvas.attachEvent("onmousemove", ev_onmousemove);
 
 
-            // touchscreen specific - to prevent web page being scrolled while drawing
-            canvas.attachEvent('touchstart', touchStartFunction);
-            canvas.attachEvent('touchmove', touchMoveFunction);
+                // touchscreen specific - to prevent web page being scrolled while
+                // drawing
+                canvas.attachEvent('touchstart', touchStartFunction);
+                canvas.attachEvent('touchmove', touchMoveFunction);
 
-            // attach the touchstart, touchmove, touchend event listeners.
-            canvas.attachEvent('touchstart', ev_onmousedown);
-            canvas.attachEvent('touchmove', ev_onmousemove);
-            canvas.attachEvent('touchend', ev_onmouseup);
-            //
+                // attach the touchstart, touchmove, touchend event listeners.
+                canvas.attachEvent('touchstart', ev_onmousedown);
+                canvas.attachEvent('touchmove', ev_onmousemove);
+                canvas.attachEvent('touchend', ev_onmouseup);
+                //
 
-        }
-        canvas.focus()
-                },100);
+            }
+            canvas.focus()
+        }, 100);
     }
 
     function $get_Element(n) {
@@ -1467,7 +1467,7 @@ if (docWidth > 600) {
     }
 
     function updateText(txt, x, y, c) {
-        //alert("UT:"+txt)
+        // alert("UT:"+txt)
         graphicData.dataArr[0].text = escape(txt);
         graphicData.dataArr[0].x = x;
         graphicData.dataArr[0].y = y;
@@ -1481,31 +1481,31 @@ if (docWidth > 600) {
         // $get_Element("#inputBox").style.position="absolute";
         $get_Element("#inputBox").style.top = clickY + "px";
         $get_Element("#inputBox").style.left = clickX + "px";
-        //$('#editable-math').mathquill('latex', "");
+        // $('#editable-math').mathquill('latex', "");
         // $("#editable-math").focus();
 
         setTimeout(__focus);
-        //alert($("textarea").value)
+        // alert($("textarea").value)
         // alert($get_Element("#inputBox").style.top+":"+$get_Element("#inputBox").style.left)
     }
 
     function __focus() {
-        //$("#editable-math").focus();
+        // $("#editable-math").focus();
 
-        //$("#editable-math").focus();
+        // $("#editable-math").focus();
 
-        //alert(isIE);
+        // alert(isIE);
         if (isIE || isTouchEnabled) {
             $("textarea").focus();
         } else {
             $('.mathquill-editable').focus();
         }
 
-        //alert()
+        // alert()
     }
 
     function hideTextBox() {
-        //$get_Element("#editable-math").value = "";
+        // $get_Element("#editable-math").value = "";
         $("#editable-math").mathquill('redraw');
         $get_Element("#inputBox").style.display = 'none';
     }
@@ -1514,7 +1514,8 @@ if (docWidth > 600) {
 
         penDown = false;
         graphMode = '';
-        //origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = width;
+        // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
+        // = width;
         origcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         topcontext.clearRect(0, 0, canvas.width, canvas.height);
@@ -1606,15 +1607,16 @@ if (docWidth > 600) {
     function updateCanvas() {
         var cntxt = drawingLayer == '1' ? origcontext : topcontext
         if (currentTool == 'eraser') {
-            //cntxt=origcontext;
+            // cntxt=origcontext;
         }
-        //console.log(cntxt);
+        // console.log(cntxt);
         cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
-        /*context.save()
-                context.fillStyle='rgba(255,255,255,255)'
-                context.fillRect(0, 0, canvas.width, canvas.height);
-                context.restore();*/
+        /*
+         * context.save() context.fillStyle='rgba(255,255,255,255)'
+         * context.fillRect(0, 0, canvas.width, canvas.height);
+         * context.restore();
+         */
         context.beginPath();
     }
 
@@ -1629,7 +1631,7 @@ if (docWidth > 600) {
             context.save();
             context.beginPath();
             context.fillStyle = 'white';
-            //context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
+            // context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
             graphics.moveTo(x0 - eR, y0 - eR);
             graphics.lineTo(x0 + eR, y0 - eR);
             graphics.lineTo(x0 + eR, y0 + eR);
@@ -1639,12 +1641,13 @@ if (docWidth > 600) {
             context.closePath();
             context.fill();
             context.restore();
-            //updateCanvas();
+            // updateCanvas();
             //
-            /*topcontext.save();
-                    topcontext.fillStyle='white';
-                    topcontext.fillRect(x - ep / 2, y - ep / 2, ew, ew);
-                    topcontext.restore();*/
+            /*
+             * topcontext.save(); topcontext.fillStyle='white';
+             * topcontext.fillRect(x - ep / 2, y - ep / 2, ew, ew);
+             * topcontext.restore();
+             */
             return;
         }
         origcontext.clearRect(x - ep / 2, y - ep / 2, ew, ew);
@@ -1697,7 +1700,7 @@ if (docWidth > 600) {
             }
             if (graphicData.id == 1 && graphicData.dataArr.length > 500) {
                 var jStr = convertObjToString(graphicData);
-                //currentObj.tempData = convertStringToObj(jStr);
+                // currentObj.tempData = convertStringToObj(jStr);
                 // ExternalInterface.call("console.log","A")
                 var ptC = graphicData.dataArr.length
                 var segArr = []
@@ -1797,7 +1800,7 @@ if (docWidth > 600) {
     function resetArrays() {
         graphicData.dataArr = null;
         graphicData = {};
-        //alert("RESET_ARRAYS_CALLED");
+        // alert("RESET_ARRAYS_CALLED");
     }
 
     function getToolFromID(id) {
@@ -1825,17 +1828,19 @@ if (docWidth > 600) {
             console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
         }
     }
+    
+    
     // ### RENDER OBJECT TO WHITEBOARD
     function renderObj(obj) {
-    	try {
-    	    renderObjAux(obj);
-    	}
-    	catch(e) {
-    		alert('error rendering: ' + e);
-    	}
+        try {
+            renderObjAux(obj);
+        } catch (e) {
+            console.log('error rendering: ' + e);
+        }
     }
+
     function renderObjAux(obj) {
-    	
+
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
         var line_rgb = obj.lineColor;
@@ -1913,22 +1918,21 @@ if (docWidth > 600) {
     }
     updateWhiteboard = function (cmdArray) {
         var oaL = cmdArray.length;
-        
+
         for (var l = 0; l < oaL; l++) {
             if (cmdArray[l] instanceof Array) {
-            	
+
                 var arg = cmdArray[l][1];
                 arg = arg == undefined ? [] : arg;
 
-                //alert('cmdArray[l][0]: ' + cmdArray[l][0]);
-                //alert('data: ' + this[cmdArray[l][0]])
+                // alert('cmdArray[l][0]: ' + cmdArray[l][0]);
+                // alert('data: ' + this[cmdArray[l][0]])
                 var command = cmdArray[l][0];
                 // make unique to whiteboard, otherwise
                 // other code can override.
-                if(command == 'clear') {
-                        resetWhiteBoard(false);
-                }
-                else {
+                if (command == 'clear') {
+                    resetWhiteBoard(false);
+                } else {
                     this[command].apply(scope, arg);
                 }
             } else if (cmdArray[l].indexOf("dataArr") != -1) {
@@ -1941,13 +1945,14 @@ if (docWidth > 600) {
         // updateScroller();
     }
 
-    /** Map GWT array type to JS Array.
-     *
-     *  TODO: not sure why this is needed, otherwise
-     *        instanceof Array seems to fail.
-     *
-     *        cmdArray is already an array in JSNI.
-     *
+    /**
+     * Map GWT array type to JS Array.
+     * 
+     * TODO: not sure why this is needed, otherwise instanceof Array seems to
+     * fail.
+     * 
+     * cmdArray is already an array in JSNI.
+     * 
      * @param cmdArray
      */
     function gwt_updatewhiteboard(cmdArray) {
@@ -1976,9 +1981,9 @@ if (docWidth > 600) {
     }
     //
     /**
-** SETS THE WHITEBOARD MODE AS TEACHER MODE
-++ ON TEACHER MODE THE DRAWING COLOR WILL BE SET AS RED
-*/
+     * * SETS THE WHITEBOARD MODE AS TEACHER MODE ++ ON TEACHER MODE THE DRAWING
+     * COLOR WILL BE SET AS RED
+     */
     wb.setAsTeacherMode = function (boo) {
         var b = boo === undefined ? true : boo
         if (b) {
@@ -2004,7 +2009,7 @@ if (docWidth > 600) {
         return Number(n);
     }
 
-    clearWhiteboard = function(boo) {
+    clearWhiteboard = function (boo) {
         if (!boo) {
             resetWhiteBoard(false)
         }
@@ -2018,8 +2023,9 @@ if (docWidth > 600) {
         console.log('default whiteboard save');
     }
 
-    /** API method used to externalize handling of JSON data
-     *
+    /**
+     * API method used to externalize handling of JSON data
+     * 
      * @param data
      * @param boo
      */

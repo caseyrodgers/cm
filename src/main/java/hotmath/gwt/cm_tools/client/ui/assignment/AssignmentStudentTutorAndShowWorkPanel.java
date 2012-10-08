@@ -63,6 +63,8 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         bd.setMargins(new Margins(5, 10, 5, 5));
         container.setCenterWidget(_tutorPanel, bd);
         setWidget(container);
+        
+        loadTutor(title, uid, assignKey, problem);
     }
     
     
@@ -90,7 +92,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         return new SaveAssignmentWhiteboardDataAction(UserInfoBase.getInstance().getUid(),_assignKey, _pid,comamndType, commandData);        
     }
 
-    public void loadProblem(String title, int uid, int assignKey, ProblemDto problem) {
+    private void loadTutor(String title, int uid, int assignKey, ProblemDto problem) {
         setHeadingText(title);
         _tutorPanel.loadSolution(uid, assignKey, problem.getPid());
 

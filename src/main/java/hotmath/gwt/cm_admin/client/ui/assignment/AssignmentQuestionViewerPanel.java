@@ -3,11 +3,15 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
@@ -15,6 +19,7 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxyDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -88,6 +93,12 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                     _showWork.setAsTeacherMode(true);
                     forceLayout();
                 }
+                
+                @Override
+                public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType,
+                        String data) {
+                        return new SaveAssignmentWhiteboardDataAction(UserInfoBase.getInstance().getUid(),_assignmentProblem.getAssignKey(), _assignmentProblem.getInfo().getPid(),commandType, data);        
+                }
             });
             
             _showWorkWrapper.setWidget(_showWork);
@@ -109,7 +120,6 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
             }
 
             public void onFailure(Throwable caught) {
-                caught.printStackTrace();
                 Log.error("Error getting whiteboard data: " + caught.toString(), caught);
             };
         });

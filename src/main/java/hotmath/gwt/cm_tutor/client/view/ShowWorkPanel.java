@@ -133,29 +133,26 @@ public class ShowWorkPanel extends Composite {
      * Each element in array is a command and an array of data.
      */
     private native void jsni_updateWhiteboard(String flashId, String command, String commandData) /*-{
-                                                                                                  var cmdArray = [];
-                                                                                                  if (command == 'draw') {
-                                                                                                  cmdArray = [
-                                                                                                  ['draw', [commandData]]
-                                                                                                  ];
-                                                                                                  } else if (command == 'clear') {
-                                                                                                  cmdArray = [
-                                                                                                  ['clear', []]
-                                                                                                  ];
-                                                                                                  }
+        var cmdArray = [];
+        if (command == 'draw') {
+            cmdArray = [
+                ['draw', [commandData]]
+            ];
+        } else if (command == 'clear') {
+            cmdArray = [
+                ['clear', []]
+            ];
+        }
 
-                                                                                                  var realArray = [];
-                                                                                                  for (var i = 0, t = cmdArray.length; i < t; i++) {
-                                                                                                  var ele = [];
-                                                                                                  ele[0] = cmdArray[i][0];
-                                                                                                  ele[1] = cmdArray[i][1];
-                                                                                                  realArray[i] = ele;
-                                                                                                  }
-
-                                                                                                  //alert('updateWhiteboard: ' + realArray);
-
-                                                                                                  $wnd.Whiteboard.updateWhiteboard(realArray);
-                                                                                                  }-*/;
+        var realArray = [];
+        for (var i = 0, t = cmdArray.length; i < t; i++) {
+            var ele = [];
+            ele[0] = cmdArray[i][0];
+            ele[1] = cmdArray[i][1];
+            realArray[i] = ele;
+        }
+        $wnd.Whiteboard.updateWhiteboard(realArray);
+    }-*/;
 
     protected void whiteboardSave_Gwt() {
         saveWhiteboardToServer();
@@ -205,7 +202,7 @@ public class ShowWorkPanel extends Composite {
         try {
             jsni_updateWhiteboard(flashId, "clear", null);
         } catch (Exception e) {
-            Log.debug("Error loading whiteboard: " + e);
+            Log.debug("Error clearing whiteboard: " + e);
         }
         for (int i = 0, t = commands.size(); i < t; i++) {
             try {
@@ -255,21 +252,21 @@ public class ShowWorkPanel extends Composite {
     }-*/;
 
     private native void jsni_initializeWhiteboard(Element ele)/*-{
-                                                              try {
-                                                              if (typeof $wnd.Whiteboard == 'undefined') {
-                                                              alert('Whiteboard JS is not loaded');
-                                                              return;
-                                                              }
+        try {
+            if (typeof $wnd.Whiteboard == 'undefined') {
+                alert('Whiteboard JS is not loaded');
+                return;
+            }
 
-                                                              // tell the Whiteboard object the size of the parent container
-                                                              var height = Number($wnd.grabComputedHeight(ele)) + 15;
-                                                              var width = Number($wnd.grabComputedWidth(ele)) + 15;
-                                                              $wnd.Whiteboard.setWhiteboardViewPort(width, height);
-                                                              $wnd.Whiteboard.initWhiteboard($doc);
-                                                              } catch (e) {
-                                                              alert('error initializing whiteboard: ' + e);
-                                                              return;
-                                                              }
+            // tell the Whiteboard object the size of the parent container
+            var height = Number($wnd.grabComputedHeight(ele)) + 15;
+            var width = Number($wnd.grabComputedWidth(ele)) + 15;
+            $wnd.Whiteboard.setWhiteboardViewPort(width, height);
+            $wnd.Whiteboard.initWhiteboard($doc);
+        } catch (e) {
+            alert('error initializing whiteboard: ' + e);
+            return;
+        }
                                                               }-*/;
 
     private native void jnsi_resizeWhiteboard()/*-{
