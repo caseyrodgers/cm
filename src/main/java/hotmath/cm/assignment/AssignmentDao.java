@@ -549,7 +549,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             groups.addAll(getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<GroupDto>() {
                 @Override
                 public GroupDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    String label = rs.getString("name") + " [" + rs.getInt("student_count") + ", "
+                    String label = rs.getString("name") + " [u=" + rs.getInt("student_count") + ",a="
                             + rs.getInt("assignment_count") + "]";
                     return new GroupDto(rs.getInt("group_id"), label);
                 }
@@ -909,6 +909,23 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             value = values.get(0);
         }
         return value;
+    }
+
+    public void closeAssignment(final int uid, final int assignKey) {
+        int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update CM_ASSIGNMENT set status = 'Closed' where uid = ? and assign_id = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, uid);
+                ps.setInt(2, assignKey);
+                return ps;
+            }
+        });       
+
+        if(cnt != 1) {
+            __logger.debug("Assignment not closed: " + uid + ", " + assignKey);
+        }
     }    
 
 }

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
@@ -17,13 +18,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.ui.Widget;
-
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -56,6 +57,7 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         super.setHeadingText("Assignments");
 
+        getHeader().addTool(createCloseButton());
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         getHeader().addTool(createDelButton());
@@ -243,6 +245,46 @@ public class AssignmentsContentPanel extends ContentPanel {
         
     }
     
+    private void closeSelectedAssignment() {
+        if(_currentGroup == null) {
+            CmMessageBox.showAlert("You need to select a group first.");
+            return;
+        }        
+        
+        final Assignment data = _grid.getSelectionModel().getSelectedItem();
+        if(data != null) {
+            
+            if(!data.getStatus().equals("Close")) {
+                final ConfirmMessageBox cm = new ConfirmMessageBox("Close Assignment", "Are you sure you want to close this assignment?");
+                cm.addHideHandler(new HideHandler() {
+                    @Override
+                    public void onHide(HideEvent event) {
+                        if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                            closeAssignment(data);
+                        }
+                    }
+                });
+                
+            }
+        }
+    }
+    
+    private void closeAssignment(final Assignment ass) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CloseAssignmentAction action = new CloseAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(RpcData data) {
+                Log.debug("Assignment closed successfully: " + data);
+            }
+        }.register();        
+    }
+    
     private Widget createDelButton() {
         TextButton btn = new TextButton("Del");
         btn.setToolTip("Delete selected assignment");
@@ -276,6 +318,19 @@ public class AssignmentsContentPanel extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
                 createNewAssignment();
+            }
+
+        });
+        return btn;
+    }
+    
+    private Widget createCloseButton() {
+        TextButton btn = new TextButton("Close");
+        btn.setToolTip("Close selected assignment");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                closeSelectedAssignment();    
             }
 
         });

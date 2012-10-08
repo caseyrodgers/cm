@@ -103,7 +103,6 @@ public class AssignmentManagerDialog2  {
         combo.setEmptyText("--Select Associated Group--");
         combo.setForceSelection(true);
         
-        
         return combo;
     }
 
