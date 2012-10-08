@@ -380,6 +380,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int totCompleted = 0;
         int totPending = 0;
         int totCount = 0;
+        int totCorrect = 0;
+        int totIncorrect = 0;
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
 
@@ -389,9 +391,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         		if (lessonStatus != null) {
                 	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         			stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
+        			stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
         		}
     			lessonName = "";
     			totCount = 0;
+    			totCorrect = 0;
+    			totIncorrect = 0;
     			totCompleted = 0;
     			totPending = 0;
     			uid = probDto.getUid();
@@ -416,13 +421,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         	count++;
         	totCount++;
         	String probStatus = probDto.getStatus().trim();
-        	if ("-".equals(probStatus)) continue;
+        	if ("not viewed".equalsIgnoreCase(probStatus)) continue;
         	if ("answered".equalsIgnoreCase(probStatus) ||
         		"viewed".equalsIgnoreCase(probStatus)   ||
         		"correct".equalsIgnoreCase(probStatus)  ||
         		"incorrect".equalsIgnoreCase(probStatus)) {
         		completed++;
         		totCompleted++;
+        		if (probStatus.toLowerCase().indexOf("orrect") > 0)
+        			probDto.setIsGraded("Yes");
+        		totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
+        		totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
         		continue;
         	}
         	if ("pending".equalsIgnoreCase(probStatus)) {
@@ -435,6 +444,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         }
 		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
+		stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
 
 		if (__logger.isDebugEnabled())
     		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
@@ -454,6 +464,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 			status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
 		}
         return status;
+    }
+
+    private String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect) {
+    	String grade = "-";
+		if ((totCorrect + totIncorrect) == totCount) {
+			int percent = Math.round(((float)totCorrect / (float)totCount) * 100.0f);
+			grade = String.format("%d%s", percent, "%");
+		}
+        return grade;
     }
 
     /**
