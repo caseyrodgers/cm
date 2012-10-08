@@ -89,7 +89,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     }    
 
     private Action<? extends Response> createWhiteBoardSaveAction(String pid, CommandType comamndType, String commandData) {
-        return new SaveAssignmentWhiteboardDataAction(UserInfoBase.getInstance().getUid(),_assignKey, _pid,comamndType, commandData);        
+        return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _pid,comamndType, commandData);        
     }
 
     private void loadTutor(String title, int uid, int assignKey, ProblemDto problem) {

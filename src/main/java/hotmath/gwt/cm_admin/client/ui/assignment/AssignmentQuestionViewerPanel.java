@@ -97,7 +97,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 @Override
                 public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType,
                         String data) {
-                        return new SaveAssignmentWhiteboardDataAction(UserInfoBase.getInstance().getUid(),_assignmentProblem.getAssignKey(), _assignmentProblem.getInfo().getPid(),commandType, data);        
+                        return new SaveAssignmentWhiteboardDataAction(_assignmentProblem.getUserId(),_assignmentProblem.getAssignKey(), _assignmentProblem.getInfo().getPid(),commandType, data);        
                 }
             });
             
