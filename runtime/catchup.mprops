@@ -3601,8 +3601,10 @@ order by u.uid, problem_id
 ##
 .key=GET_GRADE_BOOK_DATA_3
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid, ifnull(s.status, '-') as status, q.correct, q.id, q.answer, 
-       ifnull(q.create_datetime,s.modify_datetime) as update_datetime, ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+       ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
+       ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
+       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
 
 from CM_ASSIGNMENT a 
 join HA_USER u on u.group_id = a.group_id

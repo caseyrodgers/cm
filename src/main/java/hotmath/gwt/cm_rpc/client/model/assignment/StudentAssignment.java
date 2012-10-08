@@ -24,6 +24,7 @@ public class StudentAssignment implements Response {
     private Assignment assignment;
     private String studentName;
     private String homeworkStatus;
+    private String homeworkGrade;
     private CmList<StudentProblemDto> assigmentStatuses;
     private CmList<StudentLessonDto> lessonStatuses;
 
@@ -55,16 +56,24 @@ public class StudentAssignment implements Response {
 		return studentName;
 	}
 
-	public void setHomeworkStatus(String homeworkStatus) {
-		this.homeworkStatus = homeworkStatus;
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
 	}
 
     public String getHomeworkStatus() {
 		return homeworkStatus;
 	}
 
-	public void setStudentName(String studentName) {
-		this.studentName = studentName;
+	public void setHomeworkStatus(String homeworkStatus) {
+		this.homeworkStatus = homeworkStatus;
+	}
+
+	public String getHomeworkGrade() {
+		return homeworkGrade;
+	}
+
+	public void setHomeworkGrade(String homeworkGrade) {
+		this.homeworkGrade = homeworkGrade;
 	}
 
 	public List<StudentProblemDto> getAssigmentStatuses() {

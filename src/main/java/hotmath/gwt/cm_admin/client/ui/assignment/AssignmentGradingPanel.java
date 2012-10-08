@@ -39,14 +39,14 @@ public class AssignmentGradingPanel extends ContentPanel {
     ListStore<StudentProblemDto> _store;
 
     enum ProblemStatus {
-    	NONE("-"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect");
+    	NOT_VIEWED("Not viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect");
     	static ProblemStatus parseString(String object) {
     		if (ProblemStatus.VIEWED.toString().equals(object)) {
     			return ProblemStatus.VIEWED;
     		} else if (ProblemStatus.CORRECT.toString().equals(object)) {
     			return ProblemStatus.CORRECT;
-    		} else if (ProblemStatus.NONE.toString().equals(object)) {
-    			return ProblemStatus.NONE;
+    		} else if (ProblemStatus.NOT_VIEWED.toString().equals(object)) {
+    			return ProblemStatus.NOT_VIEWED;
     		} else if (ProblemStatus.PENDING.toString().equals(object)) {
     			return ProblemStatus.PENDING;
     		} else {
@@ -135,11 +135,11 @@ public class AssignmentGradingPanel extends ContentPanel {
      
           @Override
           public String render(ProblemStatus object) {
-            return object == null ? ProblemStatus.NONE.toString() : object.toString();
+            return object == null ? ProblemStatus.NOT_VIEWED.toString() : object.toString();
           }
         });
         combo.setTriggerAction(TriggerAction.ALL);
-        combo.add(ProblemStatus.NONE);
+        combo.add(ProblemStatus.NOT_VIEWED);
         combo.add(ProblemStatus.VIEWED);
         combo.add(ProblemStatus.PENDING);
         combo.add(ProblemStatus.CORRECT);
@@ -154,7 +154,7 @@ public class AssignmentGradingPanel extends ContentPanel {
        
             @Override
             public String render(ProblemStatus object) {
-              return object == null ? ProblemStatus.NONE.toString() : object.toString();
+              return object == null ? ProblemStatus.NOT_VIEWED.toString() : object.toString();
             }
           });
         
@@ -180,7 +180,7 @@ public class AssignmentGradingPanel extends ContentPanel {
      
           @Override
           public String convertFieldValue(ProblemStatus object) {
-            return object == null ? ProblemStatus.NONE.toString() : object.toString();
+            return object == null ? ProblemStatus.NOT_VIEWED.toString() : object.toString();
           }
      
           @Override
