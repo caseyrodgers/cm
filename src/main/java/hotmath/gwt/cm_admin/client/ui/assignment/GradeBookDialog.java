@@ -1,30 +1,22 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.ProblemSelectionCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.UpdateStudentAssignmentStatusAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.shared.DateTimeFormat;
-import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
@@ -34,8 +26,8 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -57,8 +49,9 @@ public class GradeBookDialog {
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
     AssignmentGradingPanel agPanel;
+    AssignmentQuestionViewerPanel _questionViewer = new AssignmentQuestionViewerPanel();
 
-    public GradeBookDialog(StudentAssignment stuAssignment, final CallbackOnComplete callbackOnComplete) {
+    public GradeBookDialog(final StudentAssignment stuAssignment, final CallbackOnComplete callbackOnComplete) {
         this._stuAssignment = stuAssignment;
         final GWindow window = new GWindow(false);
         window.setPixelSize(800,600);
@@ -109,7 +102,12 @@ public class GradeBookDialog {
 
         BorderLayoutContainer blContainer = new BorderLayoutContainer();
 
-        agPanel = new AssignmentGradingPanel(stuAssignment);
+        agPanel = new AssignmentGradingPanel(stuAssignment, new ProblemSelectionCallback() {
+            @Override
+            public void problemWasSelected(ProblemDto selection) {
+                _questionViewer.viewQuestion(stuAssignment, selection);
+            }
+        });
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(400.0);
         agPanel.setBorders(true);
@@ -118,7 +116,7 @@ public class GradeBookDialog {
 
         FlowLayoutContainer flContainer = new FlowLayoutContainer();
         flContainer.setScrollMode(ScrollMode.AUTO);
-        flContainer.add(QuestionViewerPanel.getInstance());
+        flContainer.add(_questionViewer);
 
         blContainer.setCenterWidget(flContainer);
         blContainer.forceLayout();

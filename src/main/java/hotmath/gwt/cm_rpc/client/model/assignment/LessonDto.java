@@ -9,6 +9,7 @@ import java.util.List;
 public class LessonDto extends FolderDto implements Response {
     
     String lessonName;
+    String lessonFile;
     int testDefId;
     String subject;
     
@@ -16,11 +17,12 @@ public class LessonDto extends FolderDto implements Response {
     
     public LessonDto() {}
     
-    public LessonDto(int id, int testDefId,String subject,String lessonName) {
+    public LessonDto(int id, int testDefId,String subject,String lessonName, String lessonFile) {
         super(id, lessonName);
         this.testDefId = testDefId;
         this.subject = subject;
         this.lessonName = lessonName;
+        this.lessonFile = lessonFile;
     }
 
     public String getLessonName() {
@@ -55,5 +57,18 @@ public class LessonDto extends FolderDto implements Response {
         this.subject = subject;
     }
 
+    public String getLessonFile() {
+        return lessonFile;
+    }
+
+    public void setLessonFile(String lessonFile) {
+        this.lessonFile = lessonFile;
+    }
+
+    @Override
+    public String toString() {
+        return "LessonDto [lessonName=" + lessonName + ", lessonFile=" + lessonFile + ", testDefId=" + testDefId
+                + ", subject=" + subject + ", problems=" + problems + "]";
+    }
 
 }

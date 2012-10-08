@@ -4,13 +4,15 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ProgramLesson implements CmTreeNode, IsSerializable {
     String name;
+    String file;
     CmTreeNode parent;
 
     public ProgramLesson() {
         
     }
-    public ProgramLesson(String name) {
+    public ProgramLesson(String name, String file) {
         this.name = name;
+        this.file = file;
     }
     public String getName() {
         return name;
@@ -31,9 +33,21 @@ public class ProgramLesson implements CmTreeNode, IsSerializable {
     public int getLevel() {
         return ProgramListing.LEVEL_LESS;
     }
-    
-	@Override
+
+    public String getFile() {
+        return file;
+    }
+    public void setFile(String file) {
+        this.file = file;
+    }
+    @Override
 	public CmTreeNode getParent() {
 		return parent;
 	}
+    
+    
+    @Override
+    public String toString() {
+        return "ProgramLesson [name=" + name + ", file=" + file + ", parent=" + parent + "]";
+    }    
 }

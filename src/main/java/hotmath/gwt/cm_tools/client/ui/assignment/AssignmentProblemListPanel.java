@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
@@ -223,7 +224,7 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         CmRpc.EVENT_BUS.addHandler(ShowWorkModifiedEvent.TYPE, new ShowWorkModifiedHandler() {
             @Override
             public void whiteboardUpdated(ShowWorkPanel showWorkPanel) {
-                CmLogger.debug("Whiteboard updated, update the associated problem");
+                Log.debug("Whiteboard updated, update the associated problem");
                 __lastInstance.whiteboardUpdated();
             }
         });

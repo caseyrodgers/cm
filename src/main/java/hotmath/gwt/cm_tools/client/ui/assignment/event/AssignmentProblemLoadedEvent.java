@@ -4,6 +4,11 @@ import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/** Inform UI that a new AssignmentProblem has been loaded
+ * 
+ * @author casey
+ *
+ */
 public class AssignmentProblemLoadedEvent extends GwtEvent<AssignmentProblemLoadedHandler> {
 
     AssignmentProblem assignmentProblem;

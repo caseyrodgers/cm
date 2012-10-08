@@ -21,7 +21,7 @@ public class GetProgramLessonProblemsCommand implements ActionHandler<GetProgram
 
     @Override
     public CmList<ProblemDto> execute(final Connection conn, GetProgramLessonProblemsAction action) throws Exception {
-        List<ProblemDto> problems = AssignmentDao.getInstance().getLessonProblemsFor(conn,action.getLesson(), action.getSubject());
+        List<ProblemDto> problems = AssignmentDao.getInstance().getLessonProblemsFor(conn,action.getLesson(),action.getFile(), action.getSubject());
         CmList<ProblemDto> data = new CmArrayList<ProblemDto>();
         data.addAll(problems);
         return data;

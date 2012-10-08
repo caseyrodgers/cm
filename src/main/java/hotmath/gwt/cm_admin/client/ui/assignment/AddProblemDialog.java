@@ -208,7 +208,7 @@ public class AddProblemDialog extends GWindow {
                 
                 MultiActionRequestAction mAction = new  MultiActionRequestAction();
                 for(LessonDto l: lessonsNeeded) {
-                    GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(l.getLessonName(), l.getSubject());
+                    GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(l.getLessonName(), l.getLessonFile(),l.getSubject());
                     mAction.getActions().add(action);
                 }
                 setAction(mAction);
@@ -292,7 +292,7 @@ public class AddProblemDialog extends GWindow {
                         getLessonItemsRPC(s.getTestDefId(), s.getSubject(), s.getSection(), callback);
                     } else if (loadConfig instanceof LessonDto) {
                         LessonDto l = (LessonDto) loadConfig;
-                        getLessonProblemItemsRPC(l.getLessonName(), l.getSubject(), callback);
+                        getLessonProblemItemsRPC(l.getLessonName(), l.getLessonFile(), l.getSubject(), callback);
                     }
                 }
 
@@ -306,7 +306,7 @@ public class AddProblemDialog extends GWindow {
                     } else if (loadConfig instanceof SectionDto) {
                         List<BaseDto> base = new ArrayList<BaseDto>();
                         SectionDto secDto = (SectionDto) loadConfig;
-                        secDto.getLessons().add(new LessonDto(10, secDto.getTestDefId(), secDto.getSubject(), "Test"));
+                        secDto.getLessons().add(new LessonDto(10, secDto.getTestDefId(), secDto.getSubject(), "Test", "TestFile"));
 
                         for (LessonDto lo : ((SectionDto) loadConfig).getLessons()) {
                             base.add(lo);
@@ -425,7 +425,7 @@ public class AddProblemDialog extends GWindow {
                 List<BaseDto> data = new ArrayList<BaseDto>();
                 for (int i = 0, t = lessons.size(); i < t; i++) {
                     ProgramLesson pt = lessons.get(i);
-                    data.add(new LessonDto(++BaseDto.autoId, testDefId, subject, pt.getLabel()));
+                    data.add(new LessonDto(++BaseDto.autoId, testDefId, subject, pt.getLabel(), pt.getFile()));
                 }
                 callback.onSuccess(data);
             }
@@ -433,13 +433,13 @@ public class AddProblemDialog extends GWindow {
         }.register();
     }
 
-    static public void getLessonProblemItemsRPC(final String lesson, final String subject,
+    static public void getLessonProblemItemsRPC(final String lesson, final String file, final String subject,
             final AsyncCallback<List<BaseDto>> callback) {
 
         new RetryAction<CmList<ProblemDto>>() {
             @Override
             public void attempt() {
-                GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(lesson, subject);
+                GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(lesson, file, subject);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

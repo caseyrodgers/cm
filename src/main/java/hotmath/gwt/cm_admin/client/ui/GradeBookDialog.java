@@ -47,6 +47,8 @@ public class GradeBookDialog extends CmWindow {
         setHeading("Grade Book View");
         setSize("640px", "480px");
         setLayout(new FillLayout());
+        
+        setMaximizable(true);
 
         getButtonBar().setStyleAttribute("position", "relative");
         addHomeworkSelector();
@@ -91,7 +93,7 @@ public class GradeBookDialog extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 GetGradeBookDataAction action = new GetGradeBookDataAction(uid);
-                action.setStudentGridAction(StudentGridPanel.instance._pageAction);
+                action.setStudentGridAction(StudentGridPanel.instance!=null?StudentGridPanel.instance._pageAction:null);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

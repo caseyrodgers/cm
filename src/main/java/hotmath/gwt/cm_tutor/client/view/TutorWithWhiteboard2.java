@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
 

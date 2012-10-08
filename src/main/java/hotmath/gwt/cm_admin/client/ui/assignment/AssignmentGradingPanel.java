@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 
@@ -8,9 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
-
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
-import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
@@ -22,6 +21,8 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.editing.GridEditing;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
 public class AssignmentGradingPanel extends ContentPanel {
 
@@ -87,7 +88,12 @@ public class AssignmentGradingPanel extends ContentPanel {
     	}
     }      
 
-    public AssignmentGradingPanel(StudentAssignment studentAssignment){
+    static public interface ProblemSelectionCallback {
+        void problemWasSelected(ProblemDto selection);
+    }
+    ProblemSelectionCallback _callBack;
+    public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack){
+        _callBack = callBack;
         super.setHeadingText("Problems for Student/Assignment");
         super.getHeader().setHeight("30px");
 
@@ -196,6 +202,14 @@ public class AssignmentGradingPanel extends ContentPanel {
             }
        
           }, gradedCombo);
+        
+        
+        _gradingGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
+                _callBack.problemWasSelected(event.getSelection().get(0).getProblem());
+            }
+        });
         
         setWidget(_gradingGrid);
 

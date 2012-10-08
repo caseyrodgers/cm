@@ -263,7 +263,7 @@ public class CmProgramListingDao {
             rs = stmt.executeQuery(sql);
             
             while(rs.next()) {
-                lessons.add(new ProgramLesson(rs.getString("lesson")));
+                lessons.add(new ProgramLesson(rs.getString("lesson"), rs.getString("file")));
             }
             logger.info(String.format("+++ getLessonsFor(): found %d lessons", lessons.size()));
             return lessons;

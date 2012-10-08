@@ -1827,6 +1827,15 @@ if (docWidth > 600) {
     }
     // ### RENDER OBJECT TO WHITEBOARD
     function renderObj(obj) {
+    	try {
+    	    renderObjAux(obj);
+    	}
+    	catch(e) {
+    		alert('error rendering: ' + e);
+    	}
+    }
+    function renderObjAux(obj) {
+    	
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
         var line_rgb = obj.lineColor;
@@ -1836,6 +1845,7 @@ if (docWidth > 600) {
         var idName;
         drawingLayer = graphic_data[0].layer ? graphic_data[0].layer : drawingLayer;
         drawingLayer = isIE ? '1' : drawingLayer;
+
         context.lineWidth = 2.0;
         var col = "#" + graphic_data[0].color.toString(16);
         context.strokeStyle = col;
@@ -1903,8 +1913,10 @@ if (docWidth > 600) {
     }
     updateWhiteboard = function (cmdArray) {
         var oaL = cmdArray.length;
+        
         for (var l = 0; l < oaL; l++) {
             if (cmdArray[l] instanceof Array) {
+            	
                 var arg = cmdArray[l][1];
                 arg = arg == undefined ? [] : arg;
 

@@ -65,6 +65,13 @@ public class TutorWrapperPanel extends Composite {
     }
     
     
+    /** Set the tutor widget's value as defined 
+     *  by each individual tutor widget type.  
+     *  
+     *  {type: 'string',value:'the value'};
+     *  {type: 'object',value: {prop: 'test'}};
+     * @param value
+     */
     public void setTutorWidgetValue(String value) {
         jsni_setTutorWidgetValue(value);
     }
@@ -155,9 +162,7 @@ public class TutorWrapperPanel extends Composite {
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
         
         debugInfo.setInnerHTML(pid);
-        
-        setTutorWidgetValue("999");
-        
+
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     

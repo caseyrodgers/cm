@@ -10,12 +10,20 @@ import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 public class GetProgramLessonProblemsAction implements Action<CmList<ProblemDto>>{
 
     String lesson;
+    String file;
     String subject;
     
     public GetProgramLessonProblemsAction() {}
-    public GetProgramLessonProblemsAction(String lesson, String subject) {
+    public GetProgramLessonProblemsAction(String lesson, String file, String subject) {
         this.lesson = lesson;
+        this.file = file;
         this.subject = subject;
+    }
+    public String getFile() {
+        return file;
+    }
+    public void setFile(String file) {
+        this.file = file;
     }
     public String getLesson() {
         return lesson;
@@ -31,7 +39,7 @@ public class GetProgramLessonProblemsAction implements Action<CmList<ProblemDto>
     }
     @Override
     public String toString() {
-        return "GetProgramLessonProblemsAction [lesson=" + lesson + ", subject=" + subject + "]";
+        return "GetProgramLessonProblemsAction [lesson=" + lesson + ", file=" + file + ", subject=" + subject + "]";
     }
 
 }

@@ -118,7 +118,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
                 if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                      if (loadConfig instanceof LessonDto) {
                         LessonDto l = (LessonDto) loadConfig;
-                        AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(), l.getSubject(), callback);
+                        AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback);
                     }
                 }
             }

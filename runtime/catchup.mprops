@@ -2396,7 +2396,7 @@ WHERE  cp.id=?
 
 .key=GET_PROGRAM_LESSONS
 
-SELECT DISTINCT lesson
+SELECT DISTINCT lesson, file
 FROM  HA_PROGRAM_LESSONS_static
 WHERE pid in ($$PIDLIST$$)
 ORDER BY lesson

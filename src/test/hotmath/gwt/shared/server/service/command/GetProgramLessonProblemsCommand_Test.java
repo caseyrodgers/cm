@@ -13,7 +13,7 @@ public class GetProgramLessonProblemsCommand_Test extends TestCase {
     }
     
     public void testCreate() throws Exception {
-        GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction("Square", "Ess");
+        GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction("Square", "topics/number-line.html","Ess");
         CmList<ProblemDto> data = new GetProgramLessonProblemsCommand().execute(HMConnectionPool.getConnection(),action);
         assertTrue(data.size() > 0);
     }

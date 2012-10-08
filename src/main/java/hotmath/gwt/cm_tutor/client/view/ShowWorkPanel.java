@@ -51,14 +51,21 @@ public class ShowWorkPanel extends Composite {
         
         showProblem.setVisible(false);
         
-        
+        Log.debug("Calling initializeWhiteboard with element: " + getWidget().getElement());
         /** execute initialize only after HTML is loaded */
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                Log.debug("Calling initializeWhiteboard with element: " + getWidget().getElement());
+                Log.debug("Calling showWorkIsReady");
                 jsni_initializeWhiteboard(getWidget().getElement());
-                _whiteboardOutCallback.showWorkIsReady();
+
+                /** callback after rendering due to wb intialization */
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        _whiteboardOutCallback.showWorkIsReady();
+                    }
+                });
             }
         });
         setExternalJsniHooks(this);
@@ -96,6 +103,14 @@ public class ShowWorkPanel extends Composite {
         setProblemStatement();
     }
     
+    public void setAsTeacherMode(boolean yesNo) {
+        jsni_setAsTeacherMode(yesNo);
+    }
+    
+    private native void jsni_setAsTeacherMode(boolean yesNo)/*-{
+        $wnd.Whiteboard.setAsTeacherMode(yesNo);
+    }-*/;
+    
 
     private void setProblemStatement() {
         String problemStatement = "PROBLEM STATEMENT";
@@ -113,7 +128,7 @@ public class ShowWorkPanel extends Composite {
     }
     
     native private void initializeWidgets() /*-{
-        AuthorApi.initializeWidgets();
+        $wnd.AuthorApi.initializeWidgets();
     }-*/; 
 
     
@@ -177,38 +192,15 @@ public class ShowWorkPanel extends Composite {
         if(action != null) {
             whiteboardActions.getActions().add(action);
         }
-        
-
-        CmRpc.EVENT_BUS.fireEvent(new ShowWorkModifiedEvent(this));
 
         // do every time...
         saveWhiteboardToServer();
+
+        CmRpc.EVENT_BUS.fireEvent(new ShowWorkModifiedEvent(this));
     }
     
     
-    public interface ShowWorkProxy {
-        
-        /** Create the appropriate action added to list of commands saved for this whiteboard
-         * 
-         * Return null for no save operation.
-         * 
-         * @param commandType
-         * @param data
-         */
-       Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data);
-       
-       /** Indicate the whiteboard is ready for operation
-        * 
-        */
-       void  showWorkIsReady();
-       
-       
-       /** Fired when the window has been resized
-        * 
-        */
-       void windowResized();
-       
-    }
+
     
 
     /** Provide generate way to load data externally
@@ -216,8 +208,8 @@ public class ShowWorkPanel extends Composite {
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
+        Log.debug("Loading whiteboard with " + commands.size() + " commands");
         final String flashId = "";
-        
         try {
             jsni_updateWhiteboard(flashId, "clear",null);
         }
@@ -226,10 +218,10 @@ public class ShowWorkPanel extends Composite {
         }
         for (int i = 0, t = commands.size(); i < t; i++) {
             try {
+                //Log.debug("processing whiteboard command: " + commands.get(i));
                 jsni_updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
             } catch (Exception e) {
-                e.printStackTrace();
-                System.out.println("Error processing whiteboard command: " + e.getMessage());
+                Log.error("Error processing whiteboard command: " + e.getMessage(), e);
             }
         }
     }
@@ -267,6 +259,7 @@ public class ShowWorkPanel extends Composite {
 
         }
         $wnd.Whiteboard.saveWhiteboard = function () {
+            alert('save whiteboard');
             x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardSave_Gwt()();
         }
     }-*/;
@@ -291,7 +284,7 @@ public class ShowWorkPanel extends Composite {
     
     
     private native void jnsi_resizeWhiteboard()/*-{
-        //Whiteboard.resizeWhiteboard();
+        Whiteboard.resizeWhiteboard();
     }-*/;
 
     static private native void jsni_disconnectWhiteboard()/*-{
@@ -315,5 +308,55 @@ public class ShowWorkPanel extends Composite {
                 });
             }
         });
+    }
+    
+    
+    static public interface ShowWorkProxy {
+        
+        /** Create the appropriate action added to list of commands saved for this whiteboard
+         * 
+         * Return null for no save operation.
+         * 
+         * @param commandType
+         * @param data
+         */
+       Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data);
+       
+       /** Indicate the whiteboard is ready for operation
+        * 
+        */
+       void  showWorkIsReady();
+       
+       
+       /** Fired when the window has been resized
+        * 
+        */
+       void windowResized();
+       
+    }
+    
+    /** no op dummy proxy
+     * 
+     * @author casey
+     *
+     */
+    static public class ShowWorkProxyDefault implements ShowWorkProxy {
+
+        @Override
+        public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+            Log.debug("Not saving whiteboard changes");
+            return null;
+        }
+
+        @Override
+        public void showWorkIsReady() {
+            Log.debug("Show Work Panel is ready");
+        }
+
+        @Override
+        public void windowResized() {
+            Log.debug("Show Work Panel was resized");
+        }
+        
     }
 }

@@ -9,9 +9,8 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.cm_tutor.client.view.AssignmentTutorPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxyDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -20,7 +19,9 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 
-/** Shown to students when displaying a single tutor
+/** Shown to students when displaying a single tutor.
+ * 
+ * Saves widget data
  * 
  * @author casey
  *
@@ -49,20 +50,10 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
 
     
     private ShowWorkPanel createWhiteBoard() {
-        return new ShowWorkPanel(new ShowWorkProxy() {
-            
-            @Override
-            public void showWorkIsReady() {
-                //Window.alert("Show work is ready, loading data ...");
-            }
-            
+        return new ShowWorkPanel(new ShowWorkProxyDefault() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 return createWhiteBoardSaveAction(pid, commandType, data);
-            }
-            
-            @Override
-            public void windowResized() {
             }
         });
     }

@@ -226,32 +226,32 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param gradeLevel
      * @return
      */
-    public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lesson, String subject) {
+    public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lessonName,String lessonFile, String subject) {
 
         final int count[] = new int[1];
 
         String sql = "select * from HA_PROGRAM_LESSONS where lesson = ? and subject = ? order by id";
 
-        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", "topics/number-line.html",    "Test Number Line"));
+        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", lessonFile, lessonName));
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
         try {
-            List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment pid");
+            List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment_pid");
             for (RppWidget w : rpps) {
                 for(RppWidget ew: AssessmentPrescription.expandProblemSetPids(w)) {
-                    String defaultLabel = getDefaultLabel(lesson, (++count[0]));
-                    problemsAll.add(new ProblemDto(0, lesson, defaultLabel, w.getFile()));
+                    String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
+                    problemsAll.add(new ProblemDto(0, lessonName, defaultLabel, ew.getFile()));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lesson, subject },
+        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject },
                 new RowMapper<ProblemDto>() {
                     @Override
                     public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-                        String defaultLabel = getDefaultLabel(lesson, (++count[0]));
+                        String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
 
                         return new ProblemDto(0, rs.getString("lesson"), defaultLabel, rs.getString("pid"));
                     }
@@ -866,11 +866,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     
     
     public Collection<? extends LessonDto> getAvailableLessons() {
-        String sql = "select distinct lesson, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject";
+        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject";
         List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
             @Override
             public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new LessonDto(0, 0,rs.getString("subject"), rs.getString("lesson") + " (" + rs.getString("subject") + ")");
+                return new LessonDto(0, 0,rs.getString("subject"), rs.getString("lesson") + " (" + rs.getString("subject") + ")", rs.getString("file"));
             }
         });
         return problems;
