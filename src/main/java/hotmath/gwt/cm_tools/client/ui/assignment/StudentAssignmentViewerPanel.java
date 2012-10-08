@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -111,15 +112,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     
     private void loadTutorProblemStatement(String title, ProblemDto problem) {
-        _assignmentTutorAndShowWorkPanel = null;
-        if(_assignmentTutorAndShowWorkPanel == null) {
-            _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel();
-            _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
-            _tutorArea.forceLayout();
-        }
+        Log.debug("Load", "loadTutorProblemStatement: " + problem);
         
-        Info.display("Load", "Load problem: " + problem);
-        _assignmentTutorAndShowWorkPanel.loadProblem(title, UserInfoBase.getInstance().getUid(), _studentAssignment.getAssignment().getAssignKey(),problem);
+        // create new each time
+        _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel(title, UserInfoBase.getInstance().getUid(), _studentAssignment.getAssignment().getAssignKey(),problem);
+        _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
+        _tutorArea.forceLayout();
     }
 
     public void readAssignmentNamesFromServer() {

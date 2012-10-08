@@ -13,6 +13,9 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxyDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -31,13 +34,27 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     ShowWorkPanel _showWork;
     AssignmentTutorPanel _tutorPanel = new AssignmentTutorPanel();
     
-    public AssignmentStudentTutorAndShowWorkPanel() {
+    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, final int assignKey, final ProblemDto problem) {
+        _uid = uid;
+        _assignKey = assignKey;
+        _pid = problem.getPid();
+
         BorderLayoutContainer container = new BorderLayoutContainer();
         BorderLayoutData bd = new BorderLayoutData(.50);
         bd.setSplit(true);
         bd.setCollapsible(true);
         
-        _showWork = createWhiteBoard();
+        _showWork = new ShowWorkPanel(new ShowWorkProxyDefault() {
+            @Override
+            public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+                return createWhiteBoardSaveAction(pid, commandType, data);
+            }
+            
+            @Override
+            public void showWorkIsReady() {
+                loadAssignmentWhiteboardData(uid, assignKey, problem.getPid());
+            }
+        });
         container.setEastWidget(_showWork,  bd);
         
         bd = new BorderLayoutData();
@@ -47,35 +64,24 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         container.setCenterWidget(_tutorPanel, bd);
         setWidget(container);
     }
-
-    
-    private ShowWorkPanel createWhiteBoard() {
-        return new ShowWorkPanel(new ShowWorkProxyDefault() {
-            @Override
-            public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                return createWhiteBoardSaveAction(pid, commandType, data);
-            }
-        });
-    }
     
     
     int _uid, _assignKey;
     String _pid;
-    public void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
-        _uid = uid;
-        _assignKey = assignKey;
-        _pid = pid;
-        
+    private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);
         CmTutor.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
-            public void onSuccess(CmList<WhiteboardCommand> commands) {
-                _showWork.loadWhiteboard(commands);
+            public void onSuccess(final CmList<WhiteboardCommand> commands) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        _showWork.loadWhiteboard(commands);                    }
+                });
             }
 
             public void onFailure(Throwable caught) {
-                caught.printStackTrace();
-                System.out.println("Error getting whiteboard data: " + caught.toString());
+                Log.error("Error getting whiteboard data: " + caught.toString(), caught);
             };
         });
     }    
