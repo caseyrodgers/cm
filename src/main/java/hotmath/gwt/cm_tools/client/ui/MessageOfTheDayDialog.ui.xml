@@ -27,13 +27,15 @@
 	</ui:style>
 
     <g:HTMLPanel styleName='{style.main}'>
-       <h1>Back to School Suggestions:</h1>
+       <h1>New Built-in Custom Program for CCSS Optional Standards</h1>
        <ul>
            <li>
-              For mainstream classes: Take students to the computer lab and have them complete the Proficiency Program for their last math course.  This will fill in gaps from "Summer Slide."
+              We added a new built-in Custom Program called Optional Topics that
+              includes lessons for topics in the CCSS optional category.
            </li>
            <li>
-              For Intervention and Special Ed classes: Have them complete the Essentials Proficiency Program (or Foundations A and B) for a thorough review of basic math topics.
+              You can copy the Optional Topics custom program to choose desired
+              lessons, and also use it for creating custom quizzes.
            </li>
         </ul>
 	</g:HTMLPanel>
