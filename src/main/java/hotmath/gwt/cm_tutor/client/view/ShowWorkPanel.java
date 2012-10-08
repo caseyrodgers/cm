@@ -43,7 +43,7 @@ public class ShowWorkPanel extends Composite {
 
     @UiField
     Element canvasBackground;
-    
+
     boolean isReady;
 
     public ShowWorkPanel(ShowWorkProxy whiteboardOutCallback) {
@@ -76,7 +76,7 @@ public class ShowWorkPanel extends Composite {
     public boolean isReady() {
         return isReady;
     }
-    
+
     public void setupForPid(String pid) {
         this.pid = pid;
     }
@@ -129,7 +129,7 @@ public class ShowWorkPanel extends Composite {
 
     /**
      * send an array of commands to whiteboard.
-     * 
+     *
      * Each element in array is a command and an array of data.
      */
     private native void jsni_updateWhiteboard(String flashId, String command, String commandData) /*-{
@@ -196,7 +196,7 @@ public class ShowWorkPanel extends Composite {
 
     /**
      * Provide generate way to load data externally
-     * 
+     *
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
@@ -242,10 +242,10 @@ public class ShowWorkPanel extends Composite {
         });
     }
 
-    private native void setExternalJsniHooks(ShowWorkPanel x) /*-{
+    private native void setExternalJsniHooks(ShowWorkPanel x)/*-{
         // overide methods in the Whiteboard instance
         $wnd.Whiteboard.whiteboardOut = function (data, boo) {
-            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava / lang / String; Z)(data, boo);
+            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
 
         }
         $wnd.Whiteboard.saveWhiteboard = function () {
@@ -260,7 +260,7 @@ public class ShowWorkPanel extends Composite {
                                                               alert('Whiteboard JS is not loaded');
                                                               return;
                                                               }
-                                                              
+
                                                               // tell the Whiteboard object the size of the parent container
                                                               var height = Number($wnd.grabComputedHeight(ele)) + 15;
                                                               var width = Number($wnd.grabComputedWidth(ele)) + 15;
@@ -301,9 +301,9 @@ public class ShowWorkPanel extends Composite {
         /**
          * Create the appropriate action added to list of commands saved for
          * this whiteboard
-         * 
+         *
          * Return null for no save operation.
-         * 
+         *
          * @param commandType
          * @param data
          */
@@ -311,13 +311,13 @@ public class ShowWorkPanel extends Composite {
 
         /**
          * Indicate the whiteboard is ready for operation
-         * 
+         *
          */
         void showWorkIsReady();
 
         /**
          * Fired when the window has been resized
-         * 
+         *
          */
         void windowResized();
 
@@ -325,9 +325,9 @@ public class ShowWorkPanel extends Composite {
 
     /**
      * no op dummy proxy
-     * 
+     *
      * @author casey
-     * 
+     *
      */
     static public class ShowWorkProxyDefault implements ShowWorkProxy {
 
