@@ -461,16 +461,16 @@ var Whiteboard = (function () {
                 $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
-			/*
+			
             $(window).resize(function () {
 			console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
-            });*/
-			window.onresize=null;
+            });
+			/*
 			window.onresize=function(evt){
 			    console.log("INTERNAL CALL::WINDOW_RESIZE::");
                 adjustToolbar();
-			}
+			}*/
 
             /*
              * function adjustToolbar() { var siz = viewport() var docWidth =
