@@ -180,6 +180,7 @@ var Whiteboard = (function () {
     var _docHeight = 0;
     var _viewPort = null;
     wb.setWhiteboardViewPort = function (width, height) {
+	console.log("EXTERNAL CALL::setWhiteboardViewPort:: "+width+":"+height)
         _viewPort = {
             width: width,
             height: height
