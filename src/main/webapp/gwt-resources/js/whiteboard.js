@@ -461,6 +461,7 @@ var Whiteboard = (function () {
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
             $(window).resize(function () {
+			console.log("WINDOW_RESIZED::CALL adjustToolbar")
                 adjustToolbar()
             });
 
