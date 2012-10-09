@@ -9,9 +9,6 @@
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
       
 
-      <set-property name="user.agent" value="safari" />
-      
-
       <!--
       <set-property name="gxt.user.agent" value="ie6,ie7,ie8,ie9,safari3,safari4,safari5,chrome,gecko1_8,gecko1_9" />
       <set-property name="gxt.user.agent" values="ie6,ie7,gecko" />
