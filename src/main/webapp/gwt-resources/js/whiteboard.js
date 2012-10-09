@@ -466,6 +466,7 @@ var Whiteboard = (function () {
 			console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
             });*/
+			window.onresize=null;
 			window.onresize=function(evt){
 			    console.log("INTERNAL CALL::WINDOW_RESIZE::");
                 adjustToolbar();
