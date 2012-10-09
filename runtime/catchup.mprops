@@ -3648,6 +3648,8 @@ from CM_GROUP g
         group by a.group_id
   ) ac on ac.group_id = g.id
 where id in ($$UID_LIST$$)
+and   admin_id > 0
+and   is_self_reg = 0
 group by group_id
 
 
