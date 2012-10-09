@@ -186,6 +186,7 @@ var Whiteboard = (function () {
         };
     }
     wb.resizeWhiteboard = function () {
+	console.log("EXTERNAL CALL::resizeWhiteboard::")
         adjustToolbar()
     }
 
@@ -461,7 +462,7 @@ var Whiteboard = (function () {
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
             $(window).resize(function () {
-			console.log("WINDOW_RESIZED::CALL adjustToolbar")
+			console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
             });
 
