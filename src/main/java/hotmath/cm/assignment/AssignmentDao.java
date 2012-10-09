@@ -443,8 +443,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         if (lessonStatus != null) {
         	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         }
-		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
-		stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+        if(stuAssignMap.size() > 0) {
+            stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
+            stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+        }
 
 		if (__logger.isDebugEnabled())
     		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());

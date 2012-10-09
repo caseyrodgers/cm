@@ -57,9 +57,9 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         super.setHeadingText("Assignments");
 
-        getHeader().addTool(createCloseButton());
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
+        getHeader().addTool(createCloseButton());
         getHeader().addTool(createDelButton());
         setCollapsible(false);
 

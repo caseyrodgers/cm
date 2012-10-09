@@ -164,6 +164,8 @@ public class AddProblemDialog extends GWindow {
                     activeTree = _treeFlatPanel._tree;
                 }
                 makeSureLessonProblemsReadMaybeAsync(activeTree, _callbackOnComplete);
+                
+                hide();
             }
         });
         btn.setToolTip("Add all selected problems to current assignment");
