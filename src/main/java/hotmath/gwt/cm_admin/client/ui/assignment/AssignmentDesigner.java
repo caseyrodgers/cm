@@ -305,7 +305,7 @@ class AssignmentProblemListView extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                AddProblemDialog.showDialog(new AddProblemDialog.Callback() {
+                AddProblemDialog.showDialog(new AddProblemDialog.AddProblemsCallback() {
                     @Override
                     public void problemsAdded(List<ProblemDto> problemsAdded) {
                         addProblemsToAssignment(problemsAdded);

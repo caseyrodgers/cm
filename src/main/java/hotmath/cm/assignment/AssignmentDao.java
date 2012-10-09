@@ -885,7 +885,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     
     
     public Collection<? extends LessonDto> getAvailableLessons() {
-        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject";
+        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject limit 10";
         List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
             @Override
             public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {

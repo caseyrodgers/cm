@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
@@ -11,9 +12,16 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.core.client.util.DelayedTask;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -25,6 +33,8 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
+import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.form.StoreFilterField;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tree.Tree;
@@ -40,6 +50,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
 
     Grid<LessonDto> _grid;
     BorderLayoutContainer _main;
+    Tree<BaseDto, String> _tree;
 
     public AssignmentLessonListingPanel(CallbackOnSelectedLesson callBack) {
         _callBack = callBack;
@@ -95,6 +106,14 @@ public class AssignmentLessonListingPanel extends ContentPanel {
         theReturn.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
         return theReturn;
     }
+    
+    private static FolderDto makeLesson(LessonDto lessonDto) {
+        LessonDto theReturn = lessonDto;
+        theReturn.setId(++BaseDto.autoId);
+        theReturn.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
+        return theReturn;
+    }
+
 
     
     private void processFolder(TreeStore<BaseDto> store, FolderDto folder) {
@@ -114,9 +133,9 @@ public class AssignmentLessonListingPanel extends ContentPanel {
 
             @Override
             public void load(BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
-
                 if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                      if (loadConfig instanceof LessonDto) {
+                         Log.debug("Loading lesson problems: " + loadConfig);
                         LessonDto l = (LessonDto) loadConfig;
                         AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback);
                     }
@@ -134,7 +153,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
         _root = makeFolder("Root");
         List<BaseDto> children = new ArrayList<BaseDto>();
         for(LessonDto l: lessons) {
-            children.add(makeFolder(l.getLessonName()));  // new LessonDto(autoId++,0,"All",l.getLessonName()));
+            children.add(makeLesson(l));  // new LessonDto(autoId++,0,"All",l.getLessonName()));
         }
         _root.setChildren(children);
         
@@ -150,7 +169,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
         con.setScrollMode(ScrollMode.AUTOY);
         con.addStyleName("margin-10");
 
-        final Tree<BaseDto, String> tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
+        _tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
 
             @Override
             public String getValue(BaseDto object) {
@@ -166,13 +185,48 @@ public class AssignmentLessonListingPanel extends ContentPanel {
                 return "name";
             }
         });
-        tree.setLoader(loader);
-        tree.setWidth(300);
-        tree.setCheckable(true);
-        tree.setCheckStyle(CheckCascade.TRI);        
-        tree.setWidth(300);
+        _tree.setLoader(loader);
+        _tree.setWidth(300);
+        _tree.setCheckable(true);
+        _tree.setCheckStyle(CheckCascade.TRI);        
+        _tree.setWidth(300);
+        
+        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(), "click") {
+            @Override
+            public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
+                    ValueUpdater<String> valueUpdater) {
+                super.onBrowserEvent(context, parent, value, event, valueUpdater);
+                if ("click".equals(event.getType())) {
+                    BaseDto base = _tree.getSelectionModel().getSelectedItem();
+                    if (base instanceof ProblemDto) {
+                        ProblemDto p = (ProblemDto)base;
+                        Log.debug("View Question", "Viewing " + p.getLabel());
+                        
+                        QuestionViewerPanel.getInstance().viewQuestion(p);
+                    }
+                }
+            }
+        };
+        _tree.setCell(cell);
+        
+        
+        final DelayedTask task = new DelayedTask() {
+            @Override
+            public void onExecute() {
+                Log.debug(_tree.getCheckedSelection().size() + " problem(s) selected");
+            }
+        };
+        _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
+            @Override
+            public void onCheckChanged(CheckChangedEvent<BaseDto> event) {
+                task.delay(100);
+            }
+        });
+        
+        
+        
         // tree.getStyle().setLeafIcon(ExampleImages.INSTANCE.music());
-        con.add(tree);
+        con.add(_tree);
         
         
         StoreFilterField<BaseDto> filter = new StoreFilterField<BaseDto>() {
@@ -192,12 +246,13 @@ public class AssignmentLessonListingPanel extends ContentPanel {
               }
             }
           };
-          filter.bind(_treeStore);
+       //   filter.bind(_treeStore);
         
-        _main.setCenterWidget(con);
+        //_main.setCenterWidget(con);
+        setWidget(con);
         
-        BorderLayoutData blc = new BorderLayoutData(70);
-        _main.setNorthWidget(filter, blc);
+        //BorderLayoutData blc = new BorderLayoutData(70);
+        //_main.setNorthWidget(filter, blc);
         
         forceLayout();
     }

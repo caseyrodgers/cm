@@ -6,5 +6,6 @@
       <inherits name='com.google.gwt.http.HTTP' />
              
       <entry-point class='hotmath.gwt.shared.client.CmShared'/>
+      
 </module>
 

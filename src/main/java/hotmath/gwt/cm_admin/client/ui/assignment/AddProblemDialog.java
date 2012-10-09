@@ -28,6 +28,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
@@ -70,7 +71,7 @@ public class AddProblemDialog extends GWindow {
 
     static AddProblemDialog __sharedInstance;
 
-    Callback _callbackOnComplete;
+    AddProblemsCallback _callbackOnComplete;
     AssignmentLessonData _lessonData;
     QuestionViewerPanel _questionViewer;
     ContentPanel _treePanel;
@@ -155,18 +156,18 @@ public class AddProblemDialog extends GWindow {
         TextButton btn = new TextButton("Add selected problems", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                makeSureLessonProblemsReadMaybeAsync(_callbackOnComplete);
+                Tree<BaseDto, String> activeTree=null;
+                if(_tabPanel.getActiveWidget() == _treePanel) {
+                    activeTree = _tree;
+                }
+                else {
+                    activeTree = _treeFlatPanel._tree;
+                }
+                makeSureLessonProblemsReadMaybeAsync(activeTree, _callbackOnComplete);
             }
         });
         btn.setToolTip("Add all selected problems to current assignment");
         return btn;
-    }
-    
-
-    private void uncheckAll() {
-        for (BaseDto d : _tree.getCheckedSelection()) {
-            _tree.setChecked(d, CheckState.UNCHECKED);
-        }
     }
     
     /** Some lessons might not have had their problems read from the server.
@@ -174,9 +175,9 @@ public class AddProblemDialog extends GWindow {
      * 
      * @param callback
      */
-    private void makeSureLessonProblemsReadMaybeAsync(final Callback callback) {
+    static public void makeSureLessonProblemsReadMaybeAsync( Tree<BaseDto, String> tree, final AddProblemsCallback callback) {
         final List<ProblemDto> problems = new ArrayList<ProblemDto>();
-        List<BaseDto> checked = _tree.getCheckedSelection();
+        List<BaseDto> checked = tree.getCheckedSelection();
         
         List<LessonDto> lessonsNeeded = new ArrayList<LessonDto>();
         for (BaseDto d : checked) {
@@ -191,17 +192,17 @@ public class AddProblemDialog extends GWindow {
         }
         
         if(lessonsNeeded.size() > 0) {
-           readProblemsForLessonsAndCallBack(lessonsNeeded,callback,problems);
+           readProblemsForLessonsAndCallBack(tree, lessonsNeeded,callback,problems);
         }
         else {
             // no need for async
-            callBackToServer(callback,problems);
+            callBackToServer(tree, callback,problems);
         }
     }    
     
     
 
-    private void readProblemsForLessonsAndCallBack(final List<LessonDto> lessonsNeeded, final Callback callback, final List<ProblemDto> problems) {
+    static private void readProblemsForLessonsAndCallBack(final Tree<BaseDto, String> tree, final List<LessonDto> lessonsNeeded, final AddProblemsCallback callback, final List<ProblemDto> problems) {
         new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
@@ -238,19 +239,22 @@ public class AddProblemDialog extends GWindow {
                     }
                 }
                 problems.addAll(data);
-                callBackToServer(callback,problems);
+                callBackToServer(tree, callback,problems);
             }
 
         }.register();        
     }
 
-    private void callBackToServer(Callback callback, List<ProblemDto> problems) {
-        _callbackOnComplete.problemsAdded(problems);
-        hide();
-        uncheckAll();
+    static private void callBackToServer( Tree<BaseDto, String> tree, AddProblemsCallback callback, List<ProblemDto> problems) {
+        
+        Log.debug("Problems added: " + problems.size());
+        callback.problemsAdded(problems);
+        for (BaseDto d : tree.getCheckedSelection()) {
+            tree.setChecked(d, CheckState.UNCHECKED);
+        }
     }
 
-    private void setCallback(Callback callbackOnComplete) {
+    private void setCallback(AddProblemsCallback callbackOnComplete) {
         _callbackOnComplete = callbackOnComplete;
     }
 
@@ -392,7 +396,7 @@ public class AddProblemDialog extends GWindow {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
                         ProblemDto p = (ProblemDto)base;
-                        Info.display("View Question", "Viewing " + p.getLabel());
+                        Log.debug("View Question", "Viewing " + p.getLabel());
                         
                         QuestionViewerPanel.getInstance().viewQuestion(p);
                     }
@@ -459,7 +463,7 @@ public class AddProblemDialog extends GWindow {
     }
 
     
-    public static void showDialog(Callback callbackOnComplete) {
+    public static void showDialog(AddProblemsCallback callbackOnComplete) {
         if (__sharedInstance == null) {
             __sharedInstance = new AddProblemDialog();
         }
@@ -538,7 +542,7 @@ public class AddProblemDialog extends GWindow {
     }
     
     
-    public interface Callback {
+    public interface AddProblemsCallback {
         void problemsAdded(List<ProblemDto> problemsAdded);
     }
 }

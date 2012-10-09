@@ -13,13 +13,14 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.info.Info;
@@ -40,8 +41,9 @@ public class AssignmentManagerDialog2  {
         this.aid = aid;
         
         Window window = new GWindow(true);
-        window.setPixelSize(950,400);
+        window.setPixelSize(950,500);
         window.setHeadingHtml("Assignment Manager");
+        window.setMaximizable(true);
 
         final BorderLayoutContainer con = new BorderLayoutContainer();
         con.setBorders(true);
@@ -49,11 +51,13 @@ public class AssignmentManagerDialog2  {
         BorderLayoutData northData = new BorderLayoutData(30);
         northData.setMargins(new Margins(10));
 
-        FlowLayoutContainer header = new FlowLayoutContainer();
+        HorizontalLayoutContainer header = new HorizontalLayoutContainer();
         
         _groupCombo = createGroupNameCombo();
         
         header.add(new FieldLabel(_groupCombo, "Group Name"));
+        String msg = "<p style='margin-left: 20px;font-size: .9em;'>NOTE: Assignments are linked to groups.  Each student in a group will be assigned all the assignments defined for that group.</p>";
+        header.add(new HTML(msg));
         
         con.setNorthWidget(header, northData);
         
@@ -62,10 +66,14 @@ public class AssignmentManagerDialog2  {
         
         BorderLayoutData westData = new BorderLayoutData();
         westData.setSize(440);
+        westData.setCollapsible(true);
+        westData.setFloatable(true);
         con.setWestWidget(_assignmentsPanel,  westData);
         
         BorderLayoutData eastData = new BorderLayoutData();
         eastData.setSize(490);
+        
+
         con.setCenterWidget(gbPanel, eastData);
         
         window.setWidget(con);
@@ -86,7 +94,7 @@ public class AssignmentManagerDialog2  {
         ComboBox<GroupDto> combo = new ComboBox<GroupDto>(groupStore, props.name());
         loadGroupNames();
 
-        combo.setToolTip("Select a group in which Assignments are associated with.");
+        combo.setToolTip("Select a group in which Assignments are associated with. [users=N, students_in_group=N]");
         combo.setWidth(200);
         combo.setTypeAhead(false);
         combo.setTriggerAction(TriggerAction.ALL);

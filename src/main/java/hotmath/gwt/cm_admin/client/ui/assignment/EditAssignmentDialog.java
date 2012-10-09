@@ -171,7 +171,7 @@ public class EditAssignmentDialog {
                 return d;
             }
         }
-        return null;
+        return _assignmentStatus.getStore().get(0);
     }
 
 
