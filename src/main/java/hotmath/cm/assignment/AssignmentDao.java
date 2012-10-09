@@ -266,7 +266,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return lesson + ": #" + i;
     }
 
-    public List<Assignment> getAssignments(int aid, int groupId) throws PropertyLoadFileException {
+    public List<Assignment> getAssignments(int aid2, int groupId) throws PropertyLoadFileException {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
 
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { groupId }, new RowMapper<Assignment>() {
@@ -549,7 +549,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             groups.addAll(getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<GroupDto>() {
                 @Override
                 public GroupDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    String label = rs.getString("name") + " [u=" + rs.getInt("student_count") + ",a="
+                    String label = rs.getString("name") + " [" + rs.getInt("student_count") + ", "
                             + rs.getInt("assignment_count") + "]";
                     return new GroupDto(rs.getInt("group_id"), label);
                 }
@@ -915,10 +915,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "update CM_ASSIGNMENT set status = 'Closed' where uid = ? and assign_id = ?";
+                String sql = "update CM_ASSIGNMENT set status = 'Closed' where assign_key = ?";
                 PreparedStatement ps = con.prepareStatement(sql);
-                ps.setInt(1, uid);
-                ps.setInt(2, assignKey);
+                ps.setInt(1, assignKey);
                 return ps;
             }
         });       

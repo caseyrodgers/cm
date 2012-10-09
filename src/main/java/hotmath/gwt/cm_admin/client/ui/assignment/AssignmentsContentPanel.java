@@ -264,6 +264,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                         }
                     }
                 });
+                cm.setVisible(true);
                 
             }
         }
@@ -281,6 +282,10 @@ public class AssignmentsContentPanel extends ContentPanel {
 
             public void oncapture(RpcData data) {
                 Log.debug("Assignment closed successfully: " + data);
+                
+                ass.setStatus("Closed");
+                
+                _grid.getStore().update(ass);
             }
         }.register();        
     }

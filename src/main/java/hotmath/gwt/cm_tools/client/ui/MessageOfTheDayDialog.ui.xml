@@ -26,7 +26,7 @@
 	    }
 	</ui:style>
 
-    <g:HTMLPanel styleName='{style.main}'>
+    <g:HTMLPanel styleName='{style.main}' ui:field='mainPanel'>
        <h1>New Built-in Custom Program for CCSS Optional Standards</h1>
        <ul>
            <li>
