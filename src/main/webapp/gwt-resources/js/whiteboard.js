@@ -461,11 +461,11 @@ var Whiteboard = (function () {
                 $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
-			
-            $(window).resize(function () {
+			function resize_wb(){
 			console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
-            });
+			}
+            $(window).resize(resize_wb);
 			/*
 			window.onresize=function(evt){
 			    console.log("INTERNAL CALL::WINDOW_RESIZE::");
