@@ -7,9 +7,16 @@ import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog.AddProblemsCallback;
+import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookDialog;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -21,6 +28,8 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -214,28 +223,34 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //        
 //        pan.viewQuestion(studentAssignment, problem);
         
-//      if(true) {
-//          String pid="";
-//          int groupId=10;
-//          String name="Test";
-//          String comments = "Test";
-//          Date dueDate = new Date();
-//          CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-//          List<Integer> uids = new ArrayList<Integer>();
-//          final String status="";
-//          Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(),groupId, name, comments, dueDate,pids,uids,status);
-//          
-//          final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
-//                  
-//          CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {{
-//              add(new StudentProblemDto(uid,problem,status));  
-//          }};
-//          StudentAssignment stuAssignment = new StudentAssignment(uid,ass, statuses);
-//          GradeBookDialog gb = new GradeBookDialog(2);
-//          //AssignmentGradingPanel agp = new AssignmentGradingPanel(stuAssignment);
-//          
-//          return;
-//      }
+      if(true) {
+          final int uid=2;
+          String pid="";
+          int groupId=10;
+          String name="Test";
+          String comments = "Test";
+          Date dueDate = new Date();
+          CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
+          List<Integer> uids = new ArrayList<Integer>();
+          final String status="";
+          Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(),groupId, name, comments, dueDate,pids,uids,status);
+          
+          final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
+                  
+          CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {{
+              add(new StudentProblemDto(uid,problem,status));  
+          }};
+          StudentAssignment stuAssignment = new StudentAssignment(uid,ass, statuses);
+          GradeBookDialog gb = new GradeBookDialog(stuAssignment,new CallbackOnComplete() {
+            
+            @Override
+            public void isComplete() {
+            }
+        });
+          //AssignmentGradingPanel agp = new AssignmentGradingPanel(stuAssignment);
+          
+          return;
+      }
       
 //      if(false) {
 //          StudentModelExt sme = new StudentModelExt();
@@ -251,7 +266,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
       
       
       
-      if(true) {
+      if(false) {
 //          new AssignmentManagerDialog2(2);
 //          return;
           AddProblemDialog.showDialog(new AddProblemsCallback() {

@@ -105,8 +105,8 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     private CenterLayoutContainer createEmptyPanel(String msg) {
         CenterLayoutContainer c = new CenterLayoutContainer();
-        c.getElement().setAttribute("style", "background-color: white");
-        String html = "<h1 style='font-size: 25px'>" + msg + "</h1>";
+        c.getElement().setAttribute("style", "background-color: gray");
+        String html = "<h1 style='font-size: 25px;color: #666'>" + msg + "</h1>";
         c.add(new HTML(html));
         return c;
     }

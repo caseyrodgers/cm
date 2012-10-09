@@ -17,6 +17,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
@@ -121,7 +122,7 @@ public class GradeBookDialog {
         blContainer.setCenterWidget(flContainer);
         blContainer.forceLayout();
 
-        con.add(blContainer);
+        con.setCenterWidget(blContainer);
 
         window.addButton(new TextButton("Save",new SelectHandler() {
             @Override

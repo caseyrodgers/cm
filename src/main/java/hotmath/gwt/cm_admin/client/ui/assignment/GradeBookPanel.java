@@ -99,7 +99,6 @@ public class GradeBookPanel extends ContentPanel {
                         showAssignmentGrading();
                     }
                 },DoubleClickEvent.getType());
-                
                 setWidget(_gradebookGrid);
                 forceLayout();
             }

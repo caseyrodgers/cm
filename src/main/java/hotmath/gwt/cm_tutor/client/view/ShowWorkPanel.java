@@ -270,7 +270,7 @@ public class ShowWorkPanel extends Composite {
                                                               }-*/;
 
     private native void jnsi_resizeWhiteboard()/*-{
-                                               Whiteboard.resizeWhiteboard();
+                                               $wnd.Whiteboard.resizeWhiteboard();
                                                }-*/;
 
     static private native void jsni_disconnectWhiteboard()/*-{
