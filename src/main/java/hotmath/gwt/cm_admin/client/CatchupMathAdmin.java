@@ -20,9 +20,12 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
+import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -223,9 +226,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //        
 //        pan.viewQuestion(studentAssignment, problem);
         
-      if(true) {
+      if(false) {
           final int uid=2;
-          String pid="";
+          String pid="test_dynamic_graphs_1_2_3$4";
           int groupId=10;
           String name="Test";
           String comments = "Test";
@@ -252,16 +255,16 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
           return;
       }
       
-//      if(false) {
-//          StudentModelExt sme = new StudentModelExt();
-//          StudentActivityModel activityModel = new StudentActivityModel();
-//          activityModel.setRunId(1196000);
-//          activityModel.setTestId(0);
-//          sme.setUid(27554);
-//          new StudentShowWorkWindow(sme, activityModel);
-//          
-//          return;
-//      }
+      if(true) {
+          StudentModelExt sme = new StudentModelExt();
+          StudentActivityModel activityModel = new StudentActivityModel();
+          activityModel.setRunId(1196000);
+          activityModel.setTestId(0);
+          sme.setUid(27554);
+          new StudentShowWorkWindow(sme, activityModel);
+          
+          return;
+      }
       
       
       

@@ -156,6 +156,10 @@ public class StudentDetailsWindow extends CmWindow {
         getButtonBar().add(dateRange);
 
         setVisible(true);
+        
+        
+        setZIndex(10);
+
     }
 
 	private Menu buildDebugMenu() {

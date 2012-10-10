@@ -2,6 +2,8 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.ProblemSelectionCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -17,9 +19,9 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
-import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -28,7 +30,6 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -115,11 +116,7 @@ public class GradeBookDialog {
         agPanel.setLayoutData(data);
         blContainer.setWestWidget(agPanel);
 
-        FlowLayoutContainer flContainer = new FlowLayoutContainer();
-        flContainer.setScrollMode(ScrollMode.AUTO);
-        flContainer.add(_questionViewer);
-
-        blContainer.setCenterWidget(flContainer);
+        blContainer.setCenterWidget(_questionViewer);
         blContainer.forceLayout();
 
         con.setCenterWidget(blContainer);

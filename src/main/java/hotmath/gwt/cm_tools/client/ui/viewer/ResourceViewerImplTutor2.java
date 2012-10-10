@@ -408,9 +408,6 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
      * Load the tutor
      *
      */
-    
-
-
     /**
      * Mark the pid as being viewed called from external JS
      *

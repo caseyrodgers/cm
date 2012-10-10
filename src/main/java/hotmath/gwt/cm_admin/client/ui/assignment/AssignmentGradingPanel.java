@@ -14,6 +14,9 @@ import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.PropertyEditor;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -103,7 +106,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         statusCol = new ColumnConfig<StudentProblemDto, String>(spProps.status(), 100, "Status");
         statusCol.setRowHeader(true);
 
-        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 50, "Graded");
+        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 75, "Accepted");
 //        gradedCol = new ColumnConfig<StudentProblemDto, String>(new StudentProblemGradedStatusValueProvider(), 50,
 //        				"Graded");
         gradedCol.setRowHeader(true);
@@ -211,8 +214,34 @@ public class AssignmentGradingPanel extends ContentPanel {
             }
         });
         
+        /** select first one */
+        if(_gradingGrid.getStore().size() > 0) {
+            _gradingGrid.getSelectionModel().select(false,  _gradingGrid.getStore().get(0));
+        }
+        
+        addTool(createAcceptAllButton());
+        
+        
         setWidget(_gradingGrid);
 
+    }
+    
+    private TextButton createAcceptAllButton() {
+        TextButton btn = new TextButton("Accept All");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                markAllAccepted();
+            }
+        });
+        return btn;
+    }
+    
+    private void markAllAccepted() {
+        for(StudentProblemDto s: _gradingGrid.getStore().getAll()) {
+            s.setIsGraded("Accepted");
+            _gradingGrid.getStore().update(s);
+        }
     }
     
     protected GridEditing<StudentProblemDto> createGridEditing(Grid<StudentProblemDto> editableGrid) {

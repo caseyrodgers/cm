@@ -9,9 +9,9 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
@@ -19,7 +19,6 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefau
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -33,6 +32,7 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
@@ -76,6 +76,9 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 }
             }
         });
+        
+        
+        addTool(new TextButton("Accept"));
         
         setWidget(_tabPanel);
     }

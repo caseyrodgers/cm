@@ -77,7 +77,7 @@ public class StudentShowWorkWindow extends GWindow {
         this.student = student;
         this.activityModel = activityModel;
         
-        setPixelSize(800, 700);
+        setPixelSize(900, 700);
         setResizable(true);
 
         String title = "Show Work for " + student.getName();
@@ -194,8 +194,6 @@ public class StudentShowWorkWindow extends GWindow {
             _showWorkPanel.setupForPid(pid);
             
             
-            TabPanel tabPanel = new TabPanel();
-            tabPanel.add(_showWorkPanel, new TabItemConfig("Whiteboard", true));
             
             
             
@@ -206,21 +204,32 @@ public class StudentShowWorkWindow extends GWindow {
             TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallbackDefault());
             
             
-            final BorderLayoutContainer borderLayout = new BorderLayoutContainer();
-
-            BorderLayoutData ld = new BorderLayoutData(400);
-            ld.setSplit(true);
-            ld.setCollapsible(true);
-            ld.setFloatable(true);
-
-            
-            
             FlowLayoutContainer tutorFlow = new FlowLayoutContainer();
-            tutorFlow.setScrollMode(ScrollMode.AUTOY);
+            tutorFlow.setScrollMode(ScrollMode.AUTO);
             tutorFlow.add(tutorPanel);
-            
-            tabPanel.add(tutorFlow, new TabItemConfig("Tutor", true));
 
+            BorderLayoutContainer borderLayoutContainer = new BorderLayoutContainer();
+            borderLayoutContainer.addStyleName("whiteboard-container");
+            
+
+            BorderLayoutData bld = new BorderLayoutData();
+            bld.setSplit(false);
+            bld.setFloatable(false);
+            bld.setCollapsible(false);
+            borderLayoutContainer.setCenterWidget(tutorFlow,bld);
+
+            bld = new BorderLayoutData(.50f);
+            bld.setSplit(false);
+            bld.setFloatable(false);
+            bld.setCollapsible(false);
+            bld.setCollapsed(false);
+            
+            borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
+            
+            _mainBorderPanel.setCenterWidget(borderLayoutContainer);
+            
+            _mainBorderPanel.forceLayout();
+            
             
             tutorPanel.loadSolution(pid, "Show Work",true, false, solItem.getWidgetJsonArgs(), new CallbackAfterSolutionLoaded() {
                 @Override
@@ -229,11 +238,6 @@ public class StudentShowWorkWindow extends GWindow {
                     forceLayout();
                 }
             });
-            
-            _mainBorderPanel.setCenterWidget(tabPanel);
-            
-            _mainBorderPanel.forceLayout();
-            
         } catch (Exception e) {
             Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
         }
