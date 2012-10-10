@@ -1,9 +1,7 @@
 package hotmath.gwt.shared.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
@@ -11,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** Manages a queue of action requests making
@@ -53,7 +52,7 @@ public class RetryActionManager {
     public void registerAction(RetryAction action) {
         _actions.add(action);
 
-        CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
+        Log.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
         
         checkQueue();
     }
@@ -84,24 +83,24 @@ public class RetryActionManager {
         CmShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
-                CmLogger.info("Feedback saved: " + comments);
+                Log.info("Feedback saved: " + comments);
             }
             @Override
             public void onFailure(Throwable caught) {
-                CmLogger.error("Error saving feedback: " + caught);
+                Log.error("Error saving feedback: " + caught);
             }
         });        
     }
     
     @SuppressWarnings("rawtypes")
     public void requestComplete(RetryAction action) {
-        CmLogger.debug("RetryActionManager: requestComplete: " + action);
+        Log.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
         
         
         /** check for error condition 
          */
-        CmLogger.debug("Action class: " + action.getAction());
+        Log.debug("Action class: " + action.getAction());
         /*
         if(action.getAction() instanceof GetQuizResultsHtmlAction) {
             sendStandardErrorFeedback(action.getErrorDescription());
@@ -128,7 +127,7 @@ public class RetryActionManager {
     @SuppressWarnings("rawtypes")    
     public void checkQueue() {
         if(_busy) {
-            CmLogger.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");
+            Log.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");
             return;
         }
         
@@ -137,7 +136,7 @@ public class RetryActionManager {
             RetryAction action = _actions.get(s);
             _actions.remove(s);
             
-            CmLogger.debug("RetryActionManager: checkQueue attempt: " + action);            
+            Log.debug("RetryActionManager: checkQueue attempt: " + action);            
             _busy = true;
             
             action.setStartTime();

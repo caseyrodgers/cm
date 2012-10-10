@@ -10,7 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxyDefault;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -44,7 +44,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         bd.setSplit(true);
         bd.setCollapsible(true);
         
-        _showWork = new ShowWorkPanel(new ShowWorkProxyDefault() {
+        _showWork = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 return createWhiteBoardSaveAction(pid, commandType, data);

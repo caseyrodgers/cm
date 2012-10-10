@@ -15,7 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxyDefault;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -85,7 +85,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
      */
     private void setupShowWorkIfRequired() {
         if(_showWork == null) {
-            _showWork = new ShowWorkPanel(new ShowWorkProxyDefault(){
+            _showWork = new ShowWorkPanel(new ShowWorkPanelCallbackDefault(){
                 @Override
                 public void showWorkIsReady() {
                     loadShowWork();

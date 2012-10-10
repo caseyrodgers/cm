@@ -310,6 +310,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             flowContainer.add(w);
 
             add(flowContainer);
+            forceLayout();
             //CmMainPanel.__lastInstance.forceLayout();
         }
     }

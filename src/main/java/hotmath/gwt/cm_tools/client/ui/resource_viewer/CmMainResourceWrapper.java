@@ -6,6 +6,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.Container;
@@ -168,4 +169,5 @@ public class CmMainResourceWrapper {
     public WrapperType getWrapperMode() {
         return _wrapperType;
     }
+
 }

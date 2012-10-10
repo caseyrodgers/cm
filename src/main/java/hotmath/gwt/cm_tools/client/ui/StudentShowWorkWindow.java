@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
@@ -19,13 +20,13 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.CallbackAfterSolutionLoaded;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentShowWorkAction;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -180,7 +181,7 @@ public class StudentShowWorkWindow extends GWindow {
                 
                 @Override
                 public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                    return null;
+                    return new SaveWhiteboardDataAction(student.getUid(),activityModel.getRunId(), pid, commandType, data);
                 }
                 
                 
@@ -234,7 +235,7 @@ public class StudentShowWorkWindow extends GWindow {
             _mainBorderPanel.forceLayout();
             
         } catch (Exception e) {
-            CmLogger.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
+            Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
         }
     }
 
@@ -330,7 +331,7 @@ public class StudentShowWorkWindow extends GWindow {
             });
             
         } catch (Exception e) {
-            CmLogger.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
+            Log.error("Error creating Show Work panel for student: " + pid + "," + student.getUid(), e);
         }
     }
     
@@ -351,9 +352,11 @@ public class StudentShowWorkWindow extends GWindow {
         _listView.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentShowWorkModelPojo>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentShowWorkModelPojo> event) {
-                String pid = _listView.getSelectionModel().getSelectedItem().getPid(); 
-                CmLogger.debug("StudentShoworkWindow: " + "Loading solution: " + pid);
-                setCenterPanelForPid(pid);
+                if(_listView.getSelectionModel().getSelectedItem() != null) {
+                    String pid = _listView.getSelectionModel().getSelectedItem().getPid(); 
+                    Log.debug("StudentShoworkWindow: " + "Loading solution: " + pid);
+                    setCenterPanelForPid(pid);
+                }
             }
         });
         
@@ -372,7 +375,7 @@ public class StudentShowWorkWindow extends GWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CmLogger.debug("StudentShowWorkWindow: reading student show work list");
+                Log.debug("StudentShowWorkWindow: reading student show work list");
                 GetStudentShowWorkAction action = new GetStudentShowWorkAction(student.getUid(), activityModel.getRunId());
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
@@ -386,7 +389,7 @@ public class StudentShowWorkWindow extends GWindow {
                 else {
                     createDataList(list);
                 }
-                CmLogger.debug("StudentShowWorkWindow: student show work read successfully");
+                Log.debug("StudentShowWorkWindow: student show work read successfully");
             }
 
             public void onFailure(Throwable caught) {

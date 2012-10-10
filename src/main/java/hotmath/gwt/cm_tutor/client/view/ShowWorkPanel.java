@@ -270,8 +270,8 @@ public class ShowWorkPanel extends Composite {
                                                               }-*/;
 
     private native void jnsi_resizeWhiteboard()/*-{
-                                               $wnd.Whiteboard.resizeWhiteboard();
-                                               }-*/;
+        $wnd.Whiteboard.resizeWhiteboard();
+     }-*/;
 
     static private native void jsni_disconnectWhiteboard()/*-{
                                                           $wnd.Whiteboard.disconnectWhiteboard($doc);
@@ -326,7 +326,7 @@ public class ShowWorkPanel extends Composite {
      * @author casey
      *
      */
-    static public class ShowWorkProxyDefault implements ShowWorkPanelCallback {
+    static public class ShowWorkPanelCallbackDefault implements ShowWorkPanelCallback {
 
         @Override
         public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {

@@ -1473,3 +1473,7 @@ SolutionSetCompleteDialog .results{
    padding: 20px;
 }
 
+
+.background_transparent {
+	background: transparent;
+}

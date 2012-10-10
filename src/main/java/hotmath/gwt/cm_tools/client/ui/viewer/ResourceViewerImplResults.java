@@ -23,6 +23,8 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard {
     String _title;
@@ -90,7 +92,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
                         _title = rdata.getDataAsString("title");
     
                         _quizPanel = new HTML(html);
-    
+                        
                         addResource(_quizPanel, getResourceItem().getTitle() + ": " + correct + " out of " + total);
     
                         processQuestions(resultJson);

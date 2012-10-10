@@ -187,7 +187,7 @@ var Whiteboard = (function () {
         };
     }
     wb.resizeWhiteboard = function () {
-            console.log("EXTERNAL CALL::resizeWhiteboard::")
+        console.log("EXTERNAL CALL::resizeWhiteboard::")
         adjustToolbar()
     }
 
@@ -500,6 +500,12 @@ var Whiteboard = (function () {
                 var siz = viewport()
                 var docWidth = siz.width;
                 var docHeight = siz.height;
+                
+                // if whiteboard is not active
+                if($get_Element('#tools') == null) {
+                	return;
+                }
+                
                 if (docWidth > 600) {
                     // alert($('#tools button').css('width'));
                     $('#tools').css('height', '35px');

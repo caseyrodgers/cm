@@ -18,6 +18,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.Direction;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
@@ -25,6 +26,7 @@ import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.info.Info;
 
@@ -178,8 +180,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 
 						case EVENT_TYPE_RESOURCE_VIEWER_CLOSE:
 							__lastInstance.expandResourceButtons();
-							__lastInstance._lastResourceViewer = (CmResourcePanel) event
-									.getEventData();
+							__lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
 							break;
 
 						case EVENT_TYPE_WINDOW_RESIZED:
@@ -430,6 +431,13 @@ public class CmMainPanel extends BorderLayoutContainer {
         //setCenterWidget(new TextButton("Test"));
         setCenterWidget(_mainContentWrapper.getResourceWrapper(), centerData);
         
+        forceLayout();
+    }
+
+    public void showCenterMessage(HTML ohtml) {
+        _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
+        _mainContentWrapper.getResourceWrapper().add(ohtml);
+        setCenterWidget(_mainContentWrapper.getResourceWrapper());
         forceLayout();
     }
 }

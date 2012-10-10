@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -61,7 +62,8 @@ public class StudentShowWorkDisplayWindow extends Window {
             
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                return null;
+                int runId=UserInfo.getInstance().getRunId();
+                return new SaveWhiteboardDataAction(student.getUid(),runId, pid, commandType, data);
             }
             
             @Override

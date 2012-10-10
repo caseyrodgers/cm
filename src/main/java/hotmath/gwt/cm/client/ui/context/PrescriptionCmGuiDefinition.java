@@ -294,10 +294,7 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 
                 HTML ohtml = new HTML(html);
                 ohtml.addStyleName("prescription-help-panel");
-                CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().clear();
-                CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().add(ohtml);
-                CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper().forceLayout();
-
+                CmMainPanel.__lastInstance.showCenterMessage(ohtml);
                 //ohtml.getElement().<FxElement>cast().fadeToggle();
             }
         };

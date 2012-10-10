@@ -36,16 +36,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.info.Info;
 
 public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard {
@@ -395,11 +395,10 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
 
     public List<Widget> getContainerTools() {
         List<Widget> tools = new ArrayList<Widget>();
-        tools.add(new Button("How to Use This", new SelectionListener<ButtonEvent>() {
+        tools.add(new TextButton("How to Use This", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                new ShowHowToUseDialog().setVisible(true);
-            }
+            public void onSelect(SelectEvent event) {
+                new ShowHowToUseDialog().setVisible(true);            }
         }));
         tools.addAll(super.getContainerTools());
         return tools;
