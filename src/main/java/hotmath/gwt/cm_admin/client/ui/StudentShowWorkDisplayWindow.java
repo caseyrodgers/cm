@@ -14,7 +14,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -37,7 +37,7 @@ public class StudentShowWorkDisplayWindow extends Window {
         
         UserInfo user = new UserInfo(student.getUid(), 0);
         UserInfo.setInstance(user);
-        _showWorkPanel = new ShowWorkPanel(new ShowWorkProxy() {
+        _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallback() {
             @Override
             public void showWorkIsReady() {
                 new RetryAction<CmList<WhiteboardCommand>>() {

@@ -34,7 +34,7 @@ public class ShowWorkPanel extends Composite {
 
     static public final String QUIZ_PREFIX = "quiz:";
 
-    ShowWorkProxy _whiteboardOutCallback;
+    ShowWorkPanelCallback _whiteboardOutCallback;
     String pid;
     String title;
 
@@ -46,7 +46,7 @@ public class ShowWorkPanel extends Composite {
 
     boolean isReady;
 
-    public ShowWorkPanel(ShowWorkProxy whiteboardOutCallback) {
+    public ShowWorkPanel(ShowWorkPanelCallback whiteboardOutCallback) {
         this._whiteboardOutCallback = whiteboardOutCallback;
         initWidget(uiBinder.createAndBindUi(this));
 
@@ -293,7 +293,7 @@ public class ShowWorkPanel extends Composite {
         });
     }
 
-    static public interface ShowWorkProxy {
+    static public interface ShowWorkPanelCallback {
 
         /**
          * Create the appropriate action added to list of commands saved for
@@ -326,7 +326,7 @@ public class ShowWorkPanel extends Composite {
      * @author casey
      *
      */
-    static public class ShowWorkProxyDefault implements ShowWorkProxy {
+    static public class ShowWorkProxyDefault implements ShowWorkPanelCallback {
 
         @Override
         public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {

@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.Callback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -101,6 +102,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         
         readAssignmentNamesFromServer();
+        
+        
+        if(CmMainPanel.__lastInstance != null) {
+            CmMainPanel.__lastInstance.removeResource();
+        }
     }
     
     private CenterLayoutContainer createEmptyPanel(String msg) {

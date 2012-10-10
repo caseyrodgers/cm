@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -35,6 +36,12 @@ public class AssignmentTutorPanel extends Composite {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);
+            }
+            
+            @Override
+            public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid,
+                    int problemNumber) {
+                return new SaveAssignmentSolutionContextAction(_assProblem.getUserId(), _assignKey, _assProblem.getInfo().getPid(), 0, variablesJson);
             }
         });
         

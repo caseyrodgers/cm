@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -24,7 +25,7 @@ public class TutorCallbackDefault implements TutorCallback {
 
 
     @Override
-    public SaveSolutionContextAction getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
+    public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
         return null;
     }
     

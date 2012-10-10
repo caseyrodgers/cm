@@ -1,12 +1,12 @@
 /**
  * Define Whiteboard API:
- * 
+ *
  * initWhitegboard(document); // initialze whiteboard and prepare for new use
  * updateWhiteboard(cmdArray); // write to the whiteboard, sending command and
  * JSON whiteboardOut(data); // changes to whiteboard and published here.
  * saveWhiteboard(); // called when user/system requests persisting whitebroard
  * data.
- * 
+ *
  * NOTE: detachWhiteboard not needed.
  */
 if (typeof console == "undefined") {
@@ -103,18 +103,18 @@ var Whiteboard = (function () {
              * $(holder).prependTo("#canvas-container"); var
              * img=document.createElement('img'); $(img).appendTo($(holder));
              * img.onload=function(){
-             * 
+             *
              * context.drawImage(this,xp,yp,this.width+5,this.height+5)
              * $(this).remove(); alert(this.width+":"+this.height); }
-             * 
-             * 
+             *
+             *
              *  }
              */
             /*
              * var txtbox=document.createElement('span');
              * txtbox.style.position='absolute'; txtbox.style.left=x0+"px";
              * txtbox.style.top=y0+"px";
-             * 
+             *
              * $(txtbox).addClass('mathquill-embedded-latex');
              * //$('.mathquill-embedded-latex').remove()
              * $(txtbox).prependTo($('#mquill_hold')).mathquill();
@@ -180,14 +180,14 @@ var Whiteboard = (function () {
     var _docHeight = 0;
     var _viewPort = null;
     wb.setWhiteboardViewPort = function (width, height) {
-	console.log("EXTERNAL CALL::setWhiteboardViewPort:: "+width+":"+height)
+        console.log("EXTERNAL CALL::setWhiteboardViewPort:: "+width+":"+height)
         _viewPort = {
             width: width,
             height: height
         };
     }
     wb.resizeWhiteboard = function () {
-	console.log("EXTERNAL CALL::resizeWhiteboard::")
+            console.log("EXTERNAL CALL::resizeWhiteboard::")
         adjustToolbar()
     }
 
@@ -223,7 +223,7 @@ var Whiteboard = (function () {
 
     /**
      * Define as functions to allow removing
-     * 
+     *
      * @param event
      */
 
@@ -363,7 +363,7 @@ var Whiteboard = (function () {
              * $get_Element('#vscroller').style.top =
              * ($get_Element("#tools").offsetHeight +
              * $get_Element("#tools").offsetTop) + 'px';
-             * 
+             *
              * $get_Element('#hscroll_track').style.width = (screen_width) + 'px';
              * $get_Element('#hscroller').style.left = (0) + 'px';
              * $get_Element('#hscroller').style.top =
@@ -462,21 +462,21 @@ var Whiteboard = (function () {
                 $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
-			function resize_wb(){
-			console.log("INTERNAL CALL::WINDOW_RESIZE::")
+                        function resize_wb(){
+                        console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
-			}
+                        }
             $(window).resize(resize_wb);
-			/*
-			window.onresize=function(evt){
-			    console.log("INTERNAL CALL::WINDOW_RESIZE::");
+                        /*
+                        window.onresize=function(evt){
+                            console.log("INTERNAL CALL::WINDOW_RESIZE::");
                 adjustToolbar();
-			}*/
+                        }*/
 
             /*
              * function adjustToolbar() { var siz = viewport() var docWidth =
              * siz.width; var docHeight = siz.height;
-             * 
+             *
              * var topOff = $get_Element("#tools").offsetHeight +
              * $get_Element("#tools").offsetTop + 15 var leftOff =
              * $get_Element("#tools").offsetLeft + 15; screen_width = docWidth -
@@ -488,7 +488,7 @@ var Whiteboard = (function () {
              * $('#button_clear').css('height', '30px');
              * //$('#button_clear').text("CL"); $('#button_clear').text("Clear");
              * $('#button_save').text("Save"); } else {
-             * 
+             *
              * $('#tools').css('height', '25px'); $('#tools
              * button').removeClass('big_tool_button').addClass("small_tool_button")
              * $('#button_clear').css('width', '25px');
@@ -496,7 +496,7 @@ var Whiteboard = (function () {
              * $('#button_clear').text("CL"); $('#button_save').text("S");
              *  } }
              */
-            function adjustToolbar() {
+            adjustToolbar = function() {
                 var siz = viewport()
                 var docWidth = siz.width;
                 var docHeight = siz.height;
@@ -1837,8 +1837,8 @@ var Whiteboard = (function () {
             console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
         }
     }
-    
-    
+
+
     // ### RENDER OBJECT TO WHITEBOARD
     function renderObj(obj) {
         try {
@@ -1956,12 +1956,12 @@ var Whiteboard = (function () {
 
     /**
      * Map GWT array type to JS Array.
-     * 
+     *
      * TODO: not sure why this is needed, otherwise instanceof Array seems to
      * fail.
-     * 
+     *
      * cmdArray is already an array in JSNI.
-     * 
+     *
      * @param cmdArray
      */
     function gwt_updatewhiteboard(cmdArray) {
@@ -2034,7 +2034,7 @@ var Whiteboard = (function () {
 
     /**
      * API method used to externalize handling of JSON data
-     * 
+     *
      * @param data
      * @param boo
      */

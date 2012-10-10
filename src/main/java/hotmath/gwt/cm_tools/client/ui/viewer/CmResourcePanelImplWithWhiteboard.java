@@ -10,7 +10,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -22,6 +22,7 @@ import java.util.List;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -242,18 +243,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             /** show whiteboard panel
              * 
              */
-//            _showWorkPanel = new ShowWorkPanel(new CmAsyncRequestImplDefault() {
-//				@Override
-//				public void requestComplete(String requestData) {
-//					whiteboardIsReady();
-//				}
-//			});
-//            setupShowWorkPanel(_showWorkPanel);
-
-
-            
-            
-            _showWorkPanel = new ShowWorkPanel(new ShowWorkProxy() {
+            _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallback() {
                 @Override
                 public void showWorkIsReady() {
                     whiteboardIsReady();
@@ -271,14 +261,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             });
             setupShowWorkPanel(_showWorkPanel);
 
-            SimpleContainer lcTutor = new SimpleContainer();
-            lcTutor.setWidget(getTutorDisplay());
-            
             BorderLayoutContainer borderLayoutContainer = new BorderLayoutContainer();
             borderLayoutContainer.addStyleName("whiteboard-container");
-            
-            BorderLayoutData bld = new BorderLayoutData(.50f);
-            bld.setSplit(false);
             
             
             /** always add a scrollable panel
@@ -287,22 +271,23 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             FlowLayoutContainer flowContainer = new FlowLayoutContainer();
             flowContainer.setScrollMode(ScrollMode.AUTOY);
             flowContainer.add(getTutorDisplay());
-            
-            borderLayoutContainer.setWestWidget(flowContainer,bld);
+
+            BorderLayoutData bld = new BorderLayoutData();
+            bld.setSplit(true);
+            bld.setFloatable(true);
+            bld.setCollapsible(true);
+            borderLayoutContainer.setCenterWidget(flowContainer,bld);
 
             bld = new BorderLayoutData(.50f);
             bld.setSplit(false);
+            bld.setFloatable(true);
+            bld.setCollapsible(true);
+            bld.setCollapsed(true);
             
-            borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
-            //lcMain.setEastWidget(new TextButton("Test"), bld);
-            
+            ContentPanel cp = new ContentPanel();
+            cp.setWidget(_showWorkPanel);
+            borderLayoutContainer.setEastWidget(cp, bld);
             add(borderLayoutContainer);
-
-//            if(CmMainPanel.__lastInstance._mainContent.currentContainer != null) {
-//                //_wasMaxBeforeWhiteboard = CmMainPanel.__lastInstance._mainContent.is
-//                //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MAXIMIZE_RESOURCE));
-//            }
-            
         }
         
 

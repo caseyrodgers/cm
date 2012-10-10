@@ -18,7 +18,7 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
  * 
  * The container is retrieved via the getResourceWrapper method.
  * 
- * The wrapper is either maximzied or optmized. Each requires a different
+ * The wrapper is either maximized or optimized. Each requires a different
  * concrete object and is handled via composition.
  * 
  * 

@@ -14,7 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,7 +49,7 @@ public class TutorWithWhiteboard2 extends Composite {
         _tutorPanel.setWidth("400px");
         docPan.add(_tutorPanel,DockPanel.CENTER);
 
-        _showWWork = new ShowWorkPanel(new ShowWorkProxy() {
+        _showWWork = new ShowWorkPanel(new ShowWorkPanelCallback() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _pid,commandType, data);

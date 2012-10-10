@@ -15,7 +15,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkProxy;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.CallbackAfterSolutionLoaded;
@@ -156,7 +156,7 @@ public class StudentShowWorkWindow extends GWindow {
             
             
             
-            _showWorkPanel = new ShowWorkPanel(new ShowWorkProxy() {
+            _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallback() {
                 @Override
                 public void showWorkIsReady() {
                     new RetryAction<CmList<WhiteboardCommand>>() {
@@ -253,7 +253,7 @@ public class StudentShowWorkWindow extends GWindow {
             
             
             
-            _showWorkPanel = new ShowWorkPanel(new ShowWorkProxy() {
+            _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallback() {
                 @Override
                 public void showWorkIsReady() {
                     new RetryAction<CmList<WhiteboardCommand>>() {

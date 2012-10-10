@@ -3,9 +3,9 @@ package hotmath.gwt.cm_tutor.client.view;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
@@ -292,7 +292,7 @@ public class TutorWrapperPanel extends Composite {
              */
 
         } else {
-            SaveSolutionContextAction action = tutorCallback.getSaveSolutionContextAction(variablesJson, pid, problemNumber);
+            Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, pid, problemNumber);
             Log.debug("tutorCallback, save action, " +  action);
             if(action != null) {
                 CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
@@ -327,7 +327,7 @@ public class TutorWrapperPanel extends Composite {
          * @param problemNumber
          * @return
          */
-        SaveSolutionContextAction getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber);
+        Action<RpcData>  getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber);
 
         /** Called when the tutor widget input is complete
          * 
