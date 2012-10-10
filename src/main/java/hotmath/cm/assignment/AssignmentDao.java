@@ -731,7 +731,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param uid
      * @param pid
      */
-    public void setAssignmentPidStatus(final int assignKey, final int uid, final String pid) {
+    public void makeSurePidStatusExists(final int assignKey, final int uid, final String pid) {
         try {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
@@ -927,6 +927,63 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         if(cnt != 1) {
             __logger.debug("Assignment not closed: " + uid + ", " + assignKey);
         }
+    }
+
+    /** Save the solution context for this assignment problem.
+     * 
+     * First make sure to remove any existing variables, then insert.
+     * 
+     * @param uid
+     * @param assignKey
+     * @param pid
+     * @param variables
+     */
+    public void saveAssignmentSolutionContext(final int uid, final int assignKey, final String pid, final String variables) {
+        
+        /** Delete first */
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "delete from CM_ASSIGNMENT_PID_CONTEXT where uid = ? and assign_key = ? and pid = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, uid);
+                ps.setInt(2, assignKey);
+                ps.setString(3, pid);
+                return ps;
+            }
+        });
+        
+        /** Then always insert */
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into CM_ASSIGNMENT_PID_CONTEXT(uid, assign_key, pid, variables, time_viewed)values(?,?,?,?,now())";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, uid);
+                ps.setInt(2, assignKey);
+                ps.setString(3, pid);
+                ps.setString(4, variables);
+
+                return ps;
+            }
+        });
+    }
+    
+
+    public String getSolutionContext(int uid, int assignKey, String pid) {
+        String sql = "select * from  CM_ASSIGNMENT_PID_CONTEXT where uid = ? and assign_key = ? and pid = ?";
+        List<String> values = getJdbcTemplate().query(sql, new Object[]{uid,assignKey, pid}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString("variables");
+            }
+        });
+
+        String value=null;
+        if(values.size() > 0) {
+            value = values.get(0);
+        }
+        return value;
     }    
 
 }
