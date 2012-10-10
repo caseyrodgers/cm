@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.WelcomePanel;
+import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -68,11 +69,13 @@ public class HelpWindow extends CmWindow {
         setHeading("Catchup Math Help Window, version: " +
         		   CatchupMathVersionInfo.getBuildVersion());
 
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
-
         if (CmMainPanel.__lastInstance != null) {
+            CmMainPanel.__lastInstance.removeResource();
+            PrescriptionCmGuiDefinition.showHelpPanel();
             CmMainPanel.__lastInstance.expandResourceButtons();
         }
+
+        //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
         Button closeBtn = new Button("Close");
         closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -84,7 +87,7 @@ public class HelpWindow extends CmWindow {
         
         addWindowListener(new WindowListener() {
         	public void windowHide(com.extjs.gxt.ui.client.event.WindowEvent we) {
-            	EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
+            	//EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
         	}
         });
         

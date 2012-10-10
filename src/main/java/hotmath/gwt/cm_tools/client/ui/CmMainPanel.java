@@ -152,6 +152,8 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 */
 	public void removeResource() {
 	    __lastInstance._mainContentWrapper.getResourceWrapper().clear();
+	    _lastResourceViewer = null;
+	    _lastResourceContentPanel = null;
 	}
 
 	static private boolean _isWhiteboardVisible;

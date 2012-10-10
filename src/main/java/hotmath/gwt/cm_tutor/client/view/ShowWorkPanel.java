@@ -92,7 +92,7 @@ public class ShowWorkPanel extends Composite {
     }
 
     public void resizeWhiteboard() {
-        jnsi_resizeWhiteboard();
+        jnsi_resizeWhiteboard(getWidget().getElement());
         _whiteboardOutCallback.windowResized();
     }
 
@@ -269,7 +269,11 @@ public class ShowWorkPanel extends Composite {
         }
                                                               }-*/;
 
-    private native void jnsi_resizeWhiteboard()/*-{
+    private native void jnsi_resizeWhiteboard(Element ele)/*-{
+        // tell the Whiteboard object the size of the parent container
+        var height = Number($wnd.grabComputedHeight(ele)) + 15;
+        var width = Number($wnd.grabComputedWidth(ele)) + 15;
+        $wnd.Whiteboard.setWhiteboardViewPort(width, height);
         $wnd.Whiteboard.resizeWhiteboard();
      }-*/;
 

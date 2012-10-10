@@ -269,7 +269,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
              * 
              */
             FlowLayoutContainer flowContainer = new FlowLayoutContainer();
-            flowContainer.setScrollMode(ScrollMode.AUTOY);
+            flowContainer.setScrollMode(ScrollMode.AUTO);
             flowContainer.add(getTutorDisplay());
 
             BorderLayoutData bld = new BorderLayoutData();
@@ -280,13 +280,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
 
             bld = new BorderLayoutData(.50f);
             bld.setSplit(false);
-            bld.setFloatable(true);
-            bld.setCollapsible(true);
-            bld.setCollapsed(true);
+            bld.setFloatable(false);
+            bld.setCollapsible(false);
+            bld.setCollapsed(false);
             
-            ContentPanel cp = new ContentPanel();
-            cp.setWidget(_showWorkPanel);
-            borderLayoutContainer.setEastWidget(cp, bld);
+            borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
             add(borderLayoutContainer);
         }
         
