@@ -4,7 +4,7 @@ package hotmath.gwt.cm_rpc.client.rpc;
 public class SaveAssignmentSolutionContextAction implements Action<RpcData> {
     
     private int uid;
-    private Object assignKey;
+    private int assignKey;
     private String pid;
     private int problemNumber;
     private String variablesJson;
@@ -27,11 +27,11 @@ public class SaveAssignmentSolutionContextAction implements Action<RpcData> {
         this.uid = uid;
     }
 
-    public Object getAssignKey() {
+    public int getAssignKey() {
         return assignKey;
     }
 
-    public void setAssignKey(Object assignKey) {
+    public void setAssignKey(int assignKey) {
         this.assignKey = assignKey;
     }
 

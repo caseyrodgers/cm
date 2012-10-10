@@ -67,7 +67,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     public int saveAssignement(final int aid, final Assignment ass) {
         /**
          * insert or update the new Assignment record and save the key
-         * 
+         *
          * make sure to set the assignKey[0] variable to assign_key
          */
 
@@ -80,7 +80,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             /**
              * is new
-             * 
+             *
              */
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
@@ -101,7 +101,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         } else {
             /**
              * is update
-             * 
+             *
              */
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
@@ -126,7 +126,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * save the PIDS contained in this Assignment
-         * 
+         *
          */
         if (ass.getPids() != null && ass.getPids().size() > 0) {
             String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson)values(?,?,?,?)";
@@ -154,7 +154,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Fetch a persisted Assignment from DB
-     * 
+     *
      * @param assKey
      * @return
      */
@@ -176,7 +176,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * now read all pids assigned to this Assignment
-         * 
+         *
          */
         final int count[] = new int[1];
         sql = "select * from CM_ASSIGNMENT_PIDS where assign_key = ? order by id";
@@ -201,7 +201,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * get list of each prof program *
-         * 
+         *
          */
         String sql = "select * from HA_TEST_DEF where is_active  = 1 and prog_id = 'Prof' order by load_order";
         List<String> pids = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<String>() {
@@ -220,7 +220,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Return list of problems associated with named lesson
-     * 
+     *
      * @param conn
      * @param lesson
      * @param gradeLevel
@@ -289,7 +289,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     /**
      * delete the PIDS contained in this Assignment
-     * 
+     *
      */
     private void deleteAssignmentPids(final int assKey) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
@@ -309,7 +309,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * Delete the assignment record
-         * 
+         *
          */
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -322,13 +322,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
     }
 
-    
+
     public CmList<StudentAssignment> getAssignmentGradeBook(final int assignKey) throws Exception {
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
         Assignment assignment = getAssignment(assignKey);
-        
+
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
-        
+
         /**
          *  get assignment problem status list for all users
          */
@@ -387,99 +387,99 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         for (StudentProblemDto probDto : problemStatuses) {
 
-        	if (probDto.getUid() != uid) {
-        		if (lessonStatus != null) {
-                	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-        			stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
-        			stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
-        		}
-    			lessonName = "";
-    			totCount = 0;
-    			totCorrect = 0;
-    			totIncorrect = 0;
-    			totCompleted = 0;
-    			totPending = 0;
-    			uid = probDto.getUid();
-    			lessonList = new CmArrayList<StudentLessonDto>();
-    			stuAssignMap.get(uid).setLessonStatuses(lessonList);
-        	}
+                if (probDto.getUid() != uid) {
+                        if (lessonStatus != null) {
+                        lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+                                stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
+                                stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+                        }
+                        lessonName = "";
+                        totCount = 0;
+                        totCorrect = 0;
+                        totIncorrect = 0;
+                        totCompleted = 0;
+                        totPending = 0;
+                        uid = probDto.getUid();
+                        lessonList = new CmArrayList<StudentLessonDto>();
+                        stuAssignMap.get(uid).setLessonStatuses(lessonList);
+                }
 
-        	if (! lessonName.equals(probDto.getProblem().getLesson())) {
-        		if (lessonName.trim().length() > 0) {
-        			if (lessonStatus != null) {
-                    	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-        			}
-        		}
-        		completed = 0;
-        		pending = 0;
-        		count = 0;
-        		lessonName = probDto.getProblem().getLesson();
-        		lessonStatus = new StudentLessonDto(uid, lessonName, null);
-        		lessonList.add(lessonStatus);
-        	}
+                if (! lessonName.equals(probDto.getProblem().getLesson())) {
+                        if (lessonName.trim().length() > 0) {
+                                if (lessonStatus != null) {
+                        lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+                                }
+                        }
+                        completed = 0;
+                        pending = 0;
+                        count = 0;
+                        lessonName = probDto.getProblem().getLesson();
+                        lessonStatus = new StudentLessonDto(uid, lessonName, null);
+                        lessonList.add(lessonStatus);
+                }
 
-        	count++;
-        	totCount++;
-        	String probStatus = probDto.getStatus().trim();
-        	if ("not viewed".equalsIgnoreCase(probStatus)) continue;
-        	if ("answered".equalsIgnoreCase(probStatus) ||
-        		"viewed".equalsIgnoreCase(probStatus)   ||
-        		"correct".equalsIgnoreCase(probStatus)  ||
-        		"incorrect".equalsIgnoreCase(probStatus)) {
-        		completed++;
-        		totCompleted++;
-        		if (probStatus.toLowerCase().indexOf("orrect") > 0)
-        			probDto.setIsGraded("Yes");
-        		totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
-        		totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
-        		continue;
-        	}
-        	if ("pending".equalsIgnoreCase(probStatus)) {
-        		pending++;
-        		totPending++;
-        	}
+                count++;
+                totCount++;
+                String probStatus = probDto.getStatus().trim();
+                if ("not viewed".equalsIgnoreCase(probStatus)) continue;
+                if ("answered".equalsIgnoreCase(probStatus) ||
+                        "viewed".equalsIgnoreCase(probStatus)   ||
+                        "correct".equalsIgnoreCase(probStatus)  ||
+                        "incorrect".equalsIgnoreCase(probStatus)) {
+                        completed++;
+                        totCompleted++;
+                        if (probStatus.toLowerCase().indexOf("orrect") > 0)
+                                probDto.setIsGraded("Yes");
+                        totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
+                        totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
+                        continue;
+                }
+                if ("pending".equalsIgnoreCase(probStatus)) {
+                        pending++;
+                        totPending++;
+                }
         }
 
         if (lessonStatus != null) {
-        	lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+                lessonStatus.setStatus(getLessonStatus(count, completed, pending));
         }
         if(stuAssignMap.size() > 0) {
             stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
             stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
         }
 
-		if (__logger.isDebugEnabled())
-    		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
+                if (__logger.isDebugEnabled())
+                __logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
 
         return stuAssignments;
     }
 
     private String getLessonStatus(int count, int completed, int pending) {
-		return (pending != 0) ?
-			String.format("%d of %d completed, %d pending", completed, count, pending) :
-			String.format("%d of %d completed", completed, count);        				
+                return (pending != 0) ?
+                        String.format("%d of %d completed, %d pending", completed, count, pending) :
+                        String.format("%d of %d completed", completed, count);
     }
 
     private String getHomeworkStatus(int totCount, int totCompleted, int totPending) {
-    	String status = "Not Started";
-		if ((totCompleted + totPending) > 0) {
-			status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
-		}
+        String status = "Not Started";
+                if ((totCompleted + totPending) > 0) {
+                        status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
+                }
         return status;
     }
 
     private String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect) {
-    	String grade = "-";
-		if ((totCorrect + totIncorrect) == totCount) {
-			int percent = Math.round(((float)totCorrect / (float)totCount) * 100.0f);
-			grade = String.format("%d%s", percent, "%");
-		}
+        String grade = "-";
+                if ((totCorrect + totIncorrect) == totCount) {
+                        int percent = Math.round(((float)totCorrect / (float)totCount) * 100.0f);
+                        grade = String.format("%d%s", percent, "%");
+                }
         return grade;
     }
 
     /**
      * Assign students to assignment. Return messages indicating each error s
-     * 
+     *
      * @param assignKey
      * @param students
      * @return
@@ -617,8 +617,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * Read list of assignment problem statues for this user
-         * 
-         * 
+         *
+         *
          */
         String sql = "select * from  CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ?";
 
@@ -637,7 +637,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         /**
          * Make sure there is a status for each
-         * 
+         *
          */
         CmList<StudentProblemDto> allStatus = new CmArrayList<StudentProblemDto>();
 
@@ -666,7 +666,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Get Assignment data for specified assignment and student UIDs
-     * 
+     *
      * @param assignKey
      * @param userIds
      * @return
@@ -726,7 +726,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Make sure there is a status record for this assignment PID
-     * 
+     *
      * @param assignKey
      * @param uid
      * @param pid
@@ -755,7 +755,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    
+
     /**
      * Return whiteboard data associated with this named assignment/pid
      *
@@ -775,8 +775,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-    
-    
+
+
     public void saveAssignmentProblemStatus(final int uid, final int assignKey, final String pid, final String status) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -807,7 +807,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-    
+
     private String clearUpString(String value) {
         if(value != null) {
             value = value.trim();
@@ -815,7 +815,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         value = value.replace("\\n", "");
         return value;
     }
-    
+
     public void saveWhiteboardData(final Integer uid, final int assignKey, final String pid, CommandType commandType,
             final String commandData) {
         if (commandType == CommandType.CLEAR) {
@@ -853,41 +853,41 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     /**
      * Update a Student's Assignment status
-     * 
+     *
      * @param studentAssignment
      * @return
      */
     public int[] updateStudentAssignmentStatus(StudentAssignment studentAssignment) {
-    	List<StudentProblemDto> list = studentAssignment.getAssigmentStatuses();
-    	StringBuilder sb = new StringBuilder();
-    	for (StudentProblemDto sp : list) {
-    		sb.append(String.format("label: %s, status: %s\n", sp.getPidLabel(), sp.getStatus()));
-    	}
-    	__logger.debug("problem-status: " + sb.toString());
+        List<StudentProblemDto> list = studentAssignment.getAssigmentStatuses();
+        StringBuilder sb = new StringBuilder();
+        for (StudentProblemDto sp : list) {
+                sb.append(String.format("label: %s, status: %s\n", sp.getPidLabel(), sp.getStatus()));
+        }
+        __logger.debug("problem-status: " + sb.toString());
 
-    	List<Object[]> batch = new ArrayList<Object[]>();
-    	for (StudentProblemDto sp : studentAssignment.getAssigmentStatuses()) {
-    		Object[] values = new Object[] {
-    				sp.getStatus(),
-    				sp.getIsGraded().equalsIgnoreCase("YES")?1:0,
-    				studentAssignment.getAssignment().getAssignKey(),
-    				sp.getPid(),
-    				studentAssignment.getUid()};
-    		batch.add(values);
-    	}
-    	SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
-    	int[] updateCounts = template.batchUpdate(
-    			"update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ? where assign_key = ? and pid = ? and uid = ?",
-    			batch);
+        List<Object[]> batch = new ArrayList<Object[]>();
+        for (StudentProblemDto sp : studentAssignment.getAssigmentStatuses()) {
+                Object[] values = new Object[] {
+                                sp.getStatus(),
+                                sp.getIsGraded().equalsIgnoreCase("YES")?1:0,
+                                studentAssignment.getAssignment().getAssignKey(),
+                                sp.getPid(),
+                                studentAssignment.getUid()};
+                batch.add(values);
+        }
+        SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
+        int[] updateCounts = template.batchUpdate(
+                        "update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ? where assign_key = ? and pid = ? and uid = ?",
+                        batch);
 
-    	//TODO: also update CM_ASSIGNMENT_PID_ANSWERS
+        //TODO: also update CM_ASSIGNMENT_PID_ANSWERS
 
-    	return updateCounts;
+        return updateCounts;
     }
-    
-    
+
+
     public Collection<? extends LessonDto> getAvailableLessons() {
-        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject limit 10";
+        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject";
         List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
             @Override
             public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -922,7 +922,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 ps.setInt(1, assignKey);
                 return ps;
             }
-        });       
+        });
 
         if(cnt != 1) {
             __logger.debug("Assignment not closed: " + uid + ", " + assignKey);
@@ -930,16 +930,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /** Save the solution context for this assignment problem.
-     * 
+     *
      * First make sure to remove any existing variables, then insert.
-     * 
+     *
      * @param uid
      * @param assignKey
      * @param pid
      * @param variables
      */
     public void saveAssignmentSolutionContext(final int uid, final int assignKey, final String pid, final String variables) {
-        
+
         /** Delete first */
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -952,7 +952,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
-        
+
         /** Then always insert */
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
@@ -968,7 +968,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-    
+
 
     public String getSolutionContext(int uid, int assignKey, String pid) {
         String sql = "select * from  CM_ASSIGNMENT_PID_CONTEXT where uid = ? and assign_key = ? and pid = ?";
@@ -984,6 +984,5 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             value = values.get(0);
         }
         return value;
-    }    
-
+    }
 }

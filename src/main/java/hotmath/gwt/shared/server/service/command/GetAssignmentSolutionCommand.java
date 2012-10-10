@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -34,10 +35,15 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
     public AssignmentProblem execute(Connection conn, GetAssignmentSolutionAction action) throws Exception {
         SolutionInfo info = new GetSolutionCommand().execute(conn,  new GetSolutionAction(action.getUid(),  0, action.getPid()));
         
+        SolutionContext context = new SolutionContext();
+        context.setContextJson(AssignmentDao.getInstance().getSolutionContext(action.getUid(),action.getAssignKey(),action.getPid()));
+        info.setContext(context);
+        
         String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
+        
         AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,determineProblemType(info.getHtml()),lastUserWidgetValue);
     
-        AssignmentDao.getInstance().setAssignmentPidStatus(action.getAssignKey(),action.getUid(),action.getPid());
+        AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
         
         return assProb;
     }
