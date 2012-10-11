@@ -17,10 +17,12 @@ var HmEvents = {
     eventWidgetInitialized : {
         listeners : [],
         subscribe : function(callBack) {
+		console.log("eventWidgetInitialized: onsubscribe:: "+callBack)
             var hel = HmEvents.eventWidgetInitialized.listeners;
             hel[hel.length] = callBack;
         },
         fire : function(args) {
+		console.log("eventWidgetInitialized: onfire:: "+args)
             var hel = HmEvents.eventWidgetInitialized.listeners;
             for ( var i = 0; i < hel.length; i++) {
                 hel[i](args,[]);
