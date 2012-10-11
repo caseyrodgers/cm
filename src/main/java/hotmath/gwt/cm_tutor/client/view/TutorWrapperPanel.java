@@ -285,27 +285,27 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
 
-        if (_solutionInfo.getContext() != null) {
+        if (_solutionInfo.getContext() != null && _solutionInfo.getContext().getContextJson() != null) {
             /**
              * only store first one, each subsequent read on same prescription
              * (run_id) will have the existing context restored.
              */
+            Log.debug("Context is already saved: " + pid);
 
         } else {
+            Log.debug("Saving solution context: " + pid);
             Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, pid, problemNumber);
-            Log.debug("tutorCallback, save action, " +  action);
-            if(action != null) {
+            if(action != null) {    
                 CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
                     @Override
                     public void onSuccess(RpcData result) {
                         _solutionInfo.setContext(new SolutionContext(pid, problemNumber, variablesJson));
-                        System.out.println("Context saved");
+                        Log.debug("Context saved");
                     }
     
                     @Override
                     public void onFailure(Throwable caught) {
-                        caught.printStackTrace();
-                        System.out.println("Error saving solution context: " + caught);
+                        Log.debug("Error saving solution context: " + caught, caught);
                     }
                 });
             }

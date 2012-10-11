@@ -18,6 +18,8 @@ import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 
 /** Provide Generic access to a single solution in an Assignment
@@ -49,8 +51,13 @@ public class AssignmentTutorPanel extends Composite {
         _tutorPanel.addStyleName("tutor_solution_wrapper");
         isEpp = true;
         _tutorPanel.addStyleName("is_epp");
+        
+        
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.setScrollMode(ScrollMode.AUTO);
+        flow.add(_tutorPanel);
 
-        initWidget(_tutorPanel);
+        initWidget(flow);
     }
     
     

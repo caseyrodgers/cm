@@ -175,10 +175,10 @@ public class CatchupMath implements EntryPoint {
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
             
             
-//            if(true) {
-//                showAssignments_gwt();
-//                return;
-//            }
+            if(true) {
+                showAssignments_gwt();
+                return;
+            }
             
 
             if (CmShared.getQueryParameterValue("type").equals("su")) {
