@@ -175,7 +175,7 @@ public class CatchupMath implements EntryPoint {
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
             
             
-            if(true) {
+            if(false) {
                 showAssignments_gwt();
                 return;
             }

@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
@@ -71,7 +72,7 @@ public class AssignmentTutorPanel extends Composite {
     }
 
     AssignmentProblem _assProblem;
-    public void loadSolution(final int uid, final int assignKey, String pid) {
+    public void loadSolution(final int uid, final int assignKey, final String pid) {
 
         GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(uid,assignKey, pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
@@ -82,7 +83,8 @@ public class AssignmentTutorPanel extends Composite {
 
             @Override
             public void onFailure(Throwable caught) {
-                Log.error("Error loading solution", caught);
+                Log.error("Error loading solution: " + pid, caught);
+                CmMessageBox.showAlert("Error loading solution", "There was a problem talking to the server");
             }
         });
     }
