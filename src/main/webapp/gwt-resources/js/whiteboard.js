@@ -1473,7 +1473,8 @@ var Whiteboard = (function () {
                 //
 
             }
-            canvas.focus()
+            canvas.focus();
+			wb.whiteboardIsReady();
         }, 100);
     }
 
@@ -2064,6 +2065,10 @@ var Whiteboard = (function () {
     wb.disconnectWhiteboard = function (documentObject) {
         alert('default whiteboard disconnect');
         /** empty */
+    }
+	
+    wb.whiteboardIsReady = function() {
+        alert('the whiteboard is 100% ready to rock and roll')
     }
 
     return wb;
