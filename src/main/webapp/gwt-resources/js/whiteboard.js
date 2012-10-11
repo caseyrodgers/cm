@@ -1522,8 +1522,11 @@ var Whiteboard = (function () {
 
     function hideTextBox() {
         // $get_Element("#editable-math").value = "";
+		var disp=$get_Element("#inputBox").style.display
+		if(disp=='block'){
         $("#editable-math").mathquill('redraw');
         $get_Element("#inputBox").style.display = 'none';
+		}
     }
 
     function resetWhiteBoard(boo) {
