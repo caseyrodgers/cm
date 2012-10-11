@@ -106,12 +106,13 @@ public class GradeBookPanel extends ContentPanel {
     }
 
     private void showAssignmentGrading() {
-        StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
+        final StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
         if(studentAssignment != null) {
             new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
                 @Override
                 public void isComplete() {
-                    //TODO: 
+                	// reload all data
+                	readData(_lastUsedAssignment);
                 }
             });        
         }

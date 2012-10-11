@@ -1,9 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.ProblemSelectionCallback;
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.UpdateGradeCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.CmRpc;
-import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -19,8 +18,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ResizeEvent;
-import com.google.gwt.event.logical.shared.ResizeHandler;
+
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -49,6 +47,7 @@ public class GradeBookDialog {
     TextArea _comments = new TextArea();
     StudentAssignment _stuAssignment;
     DateField _dueDate;
+    TextField _grade = new TextField();
     ComboBox<AssignmentStatusDto> _assignmentStatus;
     AssignmentGradingPanel agPanel;
     AssignmentQuestionViewerPanel _questionViewer = new AssignmentQuestionViewerPanel();
@@ -77,15 +76,24 @@ public class GradeBookDialog {
         studentNameLabel.setLabelWidth(FIELD_LABEL_LEN);        
         header.add(studentNameLabel);
 
+        _grade.setReadOnly(true);
+        _grade.setWidth(50);
+        _grade.setValue(getHomeworkGrade());
+        FieldLabel gradeLabel = new FieldLabel(_grade, "Grade");
+        gradeLabel.setLabelWidth(FIELD_LABEL_LEN);
+        
+        HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
+        hCon.add(gradeLabel);
+ 
         _dueDate = new DateField();
         _dueDate.setReadOnly(true);
         _dueDate.setWidth(100);
         _dueDate.setValue(stuAssignment.getAssignment().getDueDate());
         FieldLabel dueDateLabel = new FieldLabel(_dueDate, "Due Date");
         dueDateLabel.setLabelWidth(FIELD_LABEL_LEN);
-
-        HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
-        hCon.add(dueDateLabel);
+        HorizontalLayoutData hlData = new HorizontalLayoutData();
+        hlData.setMargins(new Margins(0, 20,0, 20));
+        hCon.add(dueDateLabel, hlData);
 
         _assignmentStatus = createAssignmentStatusCombo();
         _assignmentStatus.setValue(determineAssignmentStatus(stuAssignment.getAssignment()));
@@ -104,12 +112,20 @@ public class GradeBookDialog {
 
         BorderLayoutContainer blContainer = new BorderLayoutContainer();
 
+        UpdateGradeCallback updateGradeCallback = new UpdateGradeCallback() {
+        	@Override
+        	public void updateGrade(int percent) {
+        		String value = percent + "%";
+        		_grade.setValue(value);
+        	}
+        };
+
         agPanel = new AssignmentGradingPanel(stuAssignment, new ProblemSelectionCallback() {
             @Override
             public void problemWasSelected(ProblemDto selection) {
                 _questionViewer.viewQuestion(stuAssignment, selection);
             }
-        });
+        }, updateGradeCallback);
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(400.0);
         agPanel.setBorders(true);
@@ -126,7 +142,7 @@ public class GradeBookDialog {
             public void onSelect(SelectEvent event) {
                 saveStudentGradeBook();
                 window.hide();
-                //callbackOnComplete.isComplete();
+                callbackOnComplete.isComplete();
             }
         }));
 
@@ -137,7 +153,20 @@ public class GradeBookDialog {
         window.show();        
     }
     
-    private AssignmentStatusDto determineAssignmentStatus(Assignment assignment) {
+    private String getHomeworkGrade() {
+    	int percent = 0;
+    	int numCorrect = 0;
+
+    	for (StudentProblemDto dto : _stuAssignment.getAssigmentStatuses()) {
+    		numCorrect += (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.toString())) ? 1 : 0;
+    	}
+    	if (_stuAssignment.getAssigmentStatuses().size() > 0)
+        	percent = Math.round((float)numCorrect * 100.0f / (float)_stuAssignment.getAssigmentStatuses().size());
+
+		return percent + "%";
+	}
+
+	private AssignmentStatusDto determineAssignmentStatus(Assignment assignment) {
         for(AssignmentStatusDto d: _assignmentStatus.getStore().getAll()) {
             if(d.getStatus().equals(assignment.getStatus())) {
                 return d;

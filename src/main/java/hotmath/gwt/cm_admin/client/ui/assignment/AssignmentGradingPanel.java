@@ -6,9 +6,13 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
@@ -24,6 +28,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.editing.GridEditing;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -40,33 +45,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     ColumnConfig<StudentProblemDto, String> statusCol;
     ColumnConfig<StudentProblemDto, String> gradedCol;
     ListStore<StudentProblemDto> _store;
-
-    enum ProblemStatus {
-    	NOT_VIEWED("Not viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect");
-    	static ProblemStatus parseString(String object) {
-    		if (ProblemStatus.VIEWED.toString().equals(object)) {
-    			return ProblemStatus.VIEWED;
-    		} else if (ProblemStatus.CORRECT.toString().equals(object)) {
-    			return ProblemStatus.CORRECT;
-    		} else if (ProblemStatus.NOT_VIEWED.toString().equals(object)) {
-    			return ProblemStatus.NOT_VIEWED;
-    		} else if (ProblemStatus.PENDING.toString().equals(object)) {
-    			return ProblemStatus.PENDING;
-    		} else {
-    			return ProblemStatus.INCORRECT;
-    		}
-    	}
-    	private String status;
-
-    	ProblemStatus(String status) {
-    		this.status = status;
-    	}
-
-    	@Override
-    	public String toString() {
-    		return status;
-    	}
-    }      
+    Map<String, Integer> _correctIncorrectMap;
 
     enum GradedStatus {
     	NO("No"), YES("Yes");
@@ -94,9 +73,20 @@ public class AssignmentGradingPanel extends ContentPanel {
     static public interface ProblemSelectionCallback {
         void problemWasSelected(ProblemDto selection);
     }
-    ProblemSelectionCallback _callBack;
-    public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack){
-        _callBack = callBack;
+
+    ProblemSelectionCallback _problemSelectionCallBack;
+
+    static public interface UpdateGradeCallback {
+    	void updateGrade(int percent);
+    }
+
+    UpdateGradeCallback _updateGradeCallback;
+
+    public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack, UpdateGradeCallback updateGradeCallback){
+        _problemSelectionCallBack = callBack;
+        _updateGradeCallback = updateGradeCallback;
+        _correctIncorrectMap = new HashMap<String,Integer>();
+        
         super.setHeadingText("Problems for Student/Assignment");
         super.getHeader().setHeight("30px");
 
@@ -149,7 +139,6 @@ public class AssignmentGradingPanel extends ContentPanel {
         combo.add(ProblemStatus.INCORRECT);
         combo.setForceSelection(true);
         combo.setPropertyEditor(new PropertyEditor<ProblemStatus>() {
-            
             @Override
             public ProblemStatus parse(CharSequence text) throws ParseException {
               return ProblemStatus.parseString(text.toString());
@@ -159,14 +148,39 @@ public class AssignmentGradingPanel extends ContentPanel {
             public String render(ProblemStatus object) {
               return object == null ? ProblemStatus.NOT_VIEWED.toString() : object.toString();
             }
-          });
-        
+        });
+        combo.addValueChangeHandler(new ValueChangeHandler<ProblemStatus>() {
+
+			@Override
+			public void onValueChange(ValueChangeEvent<ProblemStatus> vcEvent) {
+				ProblemStatus pStatus = vcEvent.getValue();
+				StudentProblemDto dto = _gradingGrid.getSelectionModel().getSelectedItem();
+				String pid = dto.getPid();
+				if (pStatus.equals(ProblemStatus.CORRECT) || pStatus.equals(ProblemStatus.INCORRECT)) {
+					_correctIncorrectMap.put(pid, (pStatus.equals(ProblemStatus.CORRECT)?1:0));
+					dto.setIsGraded(GradedStatus.YES.toString());
+				}
+				else {
+					_correctIncorrectMap.put(pid, null);
+					dto.setIsGraded(GradedStatus.NO.toString());
+				}
+				int numCorrect = 0;
+				for (StudentProblemDto sbDto : _store.getAll()) {
+					Integer value = _correctIncorrectMap.get(sbDto.getPid());
+					numCorrect += (value != null && value.intValue() > 0) ? 1 : 0;
+				}
+				int percent = Math.round((float)numCorrect*100.0f/(float)_gradingGrid.getStore().getAll().size());
+				_updateGradeCallback.updateGrade(percent);
+				_gradingGrid.getView().refresh(false);
+			}
+        	
+        });
+/*        
         SimpleComboBox<GradedStatus> gradedCombo = new SimpleComboBox<GradedStatus>(new StringLabelProvider<GradedStatus>());
         gradedCombo.setTriggerAction(TriggerAction.ALL);
         gradedCombo.add(GradedStatus.NO);
         gradedCombo.add(GradedStatus.YES);
         gradedCombo.setPropertyEditor(new PropertyEditor<GradedStatus>() {
-            
             @Override
             public GradedStatus parse(CharSequence text) throws ParseException {
               return GradedStatus.parseString(text.toString());
@@ -176,8 +190,8 @@ public class AssignmentGradingPanel extends ContentPanel {
             public String render(GradedStatus object) {
               return object == null ? GradedStatus.NO.toString() : object.toString();
             }
-          });
-
+        });
+*/
         editing = createGridEditing(_gradingGrid);
         editing.addEditor(statusCol, new Converter<String, ProblemStatus>() {
      
@@ -192,6 +206,7 @@ public class AssignmentGradingPanel extends ContentPanel {
           }
      
         }, combo);
+/*
         editing.addEditor(gradedCol, new Converter<String, GradedStatus>() {
             
             @Override
@@ -205,12 +220,12 @@ public class AssignmentGradingPanel extends ContentPanel {
             }
        
           }, gradedCombo);
-        
+*/        
         
         _gradingGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
-                _callBack.problemWasSelected(event.getSelection().get(0).getProblem());
+                _problemSelectionCallBack.problemWasSelected(event.getSelection().get(0).getProblem());
             }
         });
         
@@ -239,7 +254,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     
     private void markAllAccepted() {
         for(StudentProblemDto s: _gradingGrid.getStore().getAll()) {
-            s.setIsGraded("Accepted");
+            s.setIsGraded("Yes");
             _gradingGrid.getStore().update(s);
         }
     }
