@@ -24,7 +24,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 public class TutorWithWhiteboard2 extends Composite {
 
-    String _testPid = "test_dynamic_practice_addition_1_1$3";
+    //String _testPid = "test_dynamic_practice_addition_1_1$3";
+    String _testPid = "test_dynamic_graphs_1_2_5$1";
     //String _testPid = "test_dynamic_graphs_1_2_5";
 
     TutorWrapperPanel _tutorPanel;

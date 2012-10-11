@@ -94,7 +94,7 @@ public class AssignmentManagerDialog2  {
         ComboBox<GroupDto> combo = new ComboBox<GroupDto>(groupStore, props.name());
         loadGroupNames();
 
-        combo.setToolTip("Select a group in which Assignments are associated with. [users=N, students_in_group=N]");
+        combo.setToolTip("Select a group in which Assignments are associated with. [students=N, assignments=N]");
         combo.setWidth(200);
         combo.setTypeAhead(false);
         combo.setTriggerAction(TriggerAction.ALL);
