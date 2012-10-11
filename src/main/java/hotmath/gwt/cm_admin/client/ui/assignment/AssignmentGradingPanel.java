@@ -46,6 +46,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     ColumnConfig<StudentProblemDto, String> gradedCol;
     ListStore<StudentProblemDto> _store;
     Map<String, Integer> _correctIncorrectMap;
+    StudentProblemDto _lastProblem;
 
     enum GradedStatus {
     	NO("No"), YES("Yes");
@@ -85,7 +86,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack, UpdateGradeCallback updateGradeCallback){
         _problemSelectionCallBack = callBack;
         _updateGradeCallback = updateGradeCallback;
-        _correctIncorrectMap = new HashMap<String,Integer>();
+        _correctIncorrectMap = initCorrectIncorrectMap(studentAssignment);
         
         super.setHeadingText("Problems for Student/Assignment");
         super.getHeader().setHeight("30px");
@@ -154,24 +155,25 @@ public class AssignmentGradingPanel extends ContentPanel {
 			@Override
 			public void onValueChange(ValueChangeEvent<ProblemStatus> vcEvent) {
 				ProblemStatus pStatus = vcEvent.getValue();
-				StudentProblemDto dto = _gradingGrid.getSelectionModel().getSelectedItem();
-				String pid = dto.getPid();
+
+				String pid = _lastProblem.getPid();
 				if (pStatus.equals(ProblemStatus.CORRECT) || pStatus.equals(ProblemStatus.INCORRECT)) {
 					_correctIncorrectMap.put(pid, (pStatus.equals(ProblemStatus.CORRECT)?1:0));
-					dto.setIsGraded(GradedStatus.YES.toString());
+					_lastProblem.setIsGraded(GradedStatus.YES.toString());
 				}
 				else {
 					_correctIncorrectMap.put(pid, null);
-					dto.setIsGraded(GradedStatus.NO.toString());
+					_lastProblem.setIsGraded(GradedStatus.NO.toString());
 				}
 				int numCorrect = 0;
 				for (StudentProblemDto sbDto : _store.getAll()) {
 					Integer value = _correctIncorrectMap.get(sbDto.getPid());
 					numCorrect += (value != null && value.intValue() > 0) ? 1 : 0;
 				}
-				int percent = Math.round((float)numCorrect*100.0f/(float)_gradingGrid.getStore().getAll().size());
+				int percent = Math.round((float)numCorrect*100.0f/(float)_store.getAll().size());
 				_updateGradeCallback.updateGrade(percent);
-				_gradingGrid.getView().refresh(false);
+	            _gradingGrid.getStore().update(_lastProblem);
+
 			}
         	
         });
@@ -226,6 +228,7 @@ public class AssignmentGradingPanel extends ContentPanel {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
                 _problemSelectionCallBack.problemWasSelected(event.getSelection().get(0).getProblem());
+                _lastProblem = event.getSelection().get(0);
             }
         });
         
@@ -241,7 +244,18 @@ public class AssignmentGradingPanel extends ContentPanel {
 
     }
     
-    private TextButton createAcceptAllButton() {
+    private Map<String, Integer> initCorrectIncorrectMap(StudentAssignment studentAssignment) {
+    	Map<String, Integer> map = new HashMap<String,Integer>();
+
+    	for (StudentProblemDto dto : studentAssignment.getAssigmentStatuses()) {
+    		if (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.toString())) {
+    			map.put(dto.getPid(), 1);
+    		}
+    	}
+    	return map;
+	}
+
+	private TextButton createAcceptAllButton() {
         TextButton btn = new TextButton("Accept All");
         btn.addSelectHandler(new SelectHandler() {
             @Override
@@ -253,9 +267,9 @@ public class AssignmentGradingPanel extends ContentPanel {
     }
     
     private void markAllAccepted() {
-        for(StudentProblemDto s: _gradingGrid.getStore().getAll()) {
-            s.setIsGraded("Yes");
-            _gradingGrid.getStore().update(s);
+        for(StudentProblemDto dto: _gradingGrid.getStore().getAll()) {
+            dto.setIsGraded("Yes");
+            _gradingGrid.getStore().update(dto);
         }
     }
     
