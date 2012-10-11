@@ -462,11 +462,12 @@ var Whiteboard = (function () {
                 $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
-                        function resize_wb(){
-                        console.log("INTERNAL CALL::WINDOW_RESIZE::")
+            function resize_wb() {
+                console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
-                        }
-            $(window).resize(resize_wb);
+            }
+			 window.onresize=resize_wb;
+           // $(window).resize(resize_wb);
                         /*
                         window.onresize=function(evt){
                             console.log("INTERNAL CALL::WINDOW_RESIZE::");
