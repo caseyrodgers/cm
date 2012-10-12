@@ -34,7 +34,13 @@ public class AssignmentTutorPanel extends Composite {
 
     TutorWrapperPanel _tutorPanel;
 
-    public AssignmentTutorPanel() {
+    AssignmentTutorPanelCallback _callBack;
+    
+    interface AssignmentTutorPanelCallback {
+        void tutorWidgetValueUpdated(String value, boolean correct);
+    }
+    public AssignmentTutorPanel(AssignmentTutorPanelCallback callBack) {
+        _callBack = callBack;
         __lastInstance = this;
         _tutorPanel = new TutorWrapperPanel(false, false,false, true, new TutorCallbackDefault() {
             @Override
@@ -47,6 +53,7 @@ public class AssignmentTutorPanel extends Composite {
                     int problemNumber) {
                 return new SaveAssignmentSolutionContextAction(_assProblem.getUserId(), _assignKey, _assProblem.getInfo().getPid(), 0, variablesJson);
             }
+            
         });
         
         _tutorPanel.addStyleName("tutor_solution_wrapper");
@@ -121,6 +128,11 @@ public class AssignmentTutorPanel extends Composite {
 
     }
 
+    /** Save user's input widget value to server
+     * 
+     * @param inputValue
+     * @param yesNo
+     */
     private void processTutorWidgetComplete(String inputValue, boolean yesNo) {
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
@@ -132,6 +144,8 @@ public class AssignmentTutorPanel extends Composite {
                 Log.error("Error saving tutor widget input value.",caught);
             }
         });
+        
+        _callBack.tutorWidgetValueUpdated(inputValue,  yesNo);
     }
 
 }

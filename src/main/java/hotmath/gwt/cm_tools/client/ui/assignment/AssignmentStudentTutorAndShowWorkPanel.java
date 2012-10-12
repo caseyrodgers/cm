@@ -8,10 +8,10 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -32,13 +32,30 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
 
     ShowWorkPanel _showWork;
-    AssignmentTutorPanel _tutorPanel = new AssignmentTutorPanel();
+    AssignmentTutorPanel _tutorPanel;
+    AssignmentStudentTutorAndShowWorkPanelCallback _callBack;
     
-    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, final int assignKey, final ProblemDto problem) {
+    interface AssignmentStudentTutorAndShowWorkPanelCallback {
+         void tutorWidgetValueUpdated(String value, boolean correct);
+    }
+    
+    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, final int assignKey, final ProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
+        _callBack = callBack;
         _uid = uid;
         _assignKey = assignKey;
         _pid = problem.getPid();
 
+        
+        /** create callback to pass along when tutor widget value changed
+         *  
+         */
+        _tutorPanel = new AssignmentTutorPanel(new AssignmentTutorPanelCallback() {
+            @Override
+            public void tutorWidgetValueUpdated(String value, boolean correct) {
+                _callBack.tutorWidgetValueUpdated(value, correct);
+            }
+        });
+        
         BorderLayoutContainer container = new BorderLayoutContainer();
         BorderLayoutData bd = new BorderLayoutData(.50);
         bd.setSplit(true);

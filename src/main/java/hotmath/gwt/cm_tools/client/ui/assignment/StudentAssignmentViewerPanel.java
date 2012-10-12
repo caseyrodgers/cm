@@ -8,7 +8,8 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.Callback;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.AssignmentProblemListCallback;
+import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWorkPanel.AssignmentStudentTutorAndShowWorkPanelCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -64,7 +65,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     
     AssignmentStudentTutorAndShowWorkPanel _assignmentTutorAndShowWorkPanel;
-    AssignmentProblemListPanel problemListPanel; 
+    AssignmentProblemListPanel _problemListPanel; 
     
     BorderLayoutContainer _main = new BorderLayoutContainer();
     
@@ -82,10 +83,9 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         });
         addTool(btnReturn);
         
-        problemListPanel = new AssignmentProblemListPanel(new Callback() {
+        _problemListPanel = new AssignmentProblemListPanel(new AssignmentProblemListCallback() {
             @Override
             public void problemSelected(String title, ProblemDto problem) {
-
                 loadTutorProblemStatement(title, problem);
             }
         });
@@ -122,7 +122,16 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         Log.debug("Load", "loadTutorProblemStatement: " + problem);
         
         // create new each time
-        _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel(title, UserInfoBase.getInstance().getUid(), _studentAssignment.getAssignment().getAssignKey(),problem);
+        int uid = UserInfoBase.getInstance().getUid();
+        int assignKey =_studentAssignment.getAssignment().getAssignKey();
+        _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel(title, uid, assignKey,problem, new AssignmentStudentTutorAndShowWorkPanelCallback() {
+            
+            @Override
+            public void tutorWidgetValueUpdated(String value, boolean correct) {
+                Log.debug("Widget Update", "StudentAssignmentViewerPanel: " + value);
+                _problemListPanel.tutorWidgetValueChanged(value, correct);
+            }
+        });
         _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
         _tutorArea.forceLayout();
     }
@@ -153,7 +162,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         BorderLayoutData bData = new BorderLayoutData(300);
         bData.setSplit(true);
         bData.setCollapsible(true);
-        _tutorArea.setWestWidget(problemListPanel,bData);
+        _tutorArea.setWestWidget(_problemListPanel,bData);
         
         return _tutorArea;
     }
@@ -218,7 +227,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         }
 
         _studentAssignment = assignment;
-        problemListPanel.loadAssignment(assignment);
+        _problemListPanel.loadAssignment(assignment);
         
         _assignmentStatus.setValue(assignment.getStatus());
     }

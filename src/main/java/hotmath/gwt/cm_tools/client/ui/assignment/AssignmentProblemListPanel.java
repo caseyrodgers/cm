@@ -54,10 +54,10 @@ public class AssignmentProblemListPanel extends SimpleContainer {
       }
     
     
-    Callback _callBack;
+    AssignmentProblemListCallback _callBack;
     Grid<StudentProblemDto> _grid;
     
-    public AssignmentProblemListPanel(Callback callback) {
+    public AssignmentProblemListPanel(AssignmentProblemListCallback callback) {
         this._callBack = callback;
 
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
@@ -155,6 +155,17 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         }
     }
 
+    public void tutorWidgetValueChanged(String value, boolean correct) {
+        
+        StudentProblemDto prob = _grid.getSelectionModel().getSelectedItem();
+        if(prob != null) {
+            /** Since a widget value has been set, it is either Correct or Incorrect
+             * 
+             */
+            prob.setStatus(correct?"Correct":"Incorrect");
+            _grid.getStore().update(prob);
+        }
+    }
     
     
     private void saveAssignmentProblemStatusToServer(final StudentProblemDto prob) {
@@ -213,8 +224,8 @@ public class AssignmentProblemListPanel extends SimpleContainer {
             _grid.getSelectionModel().select(_grid.getStore().get(0), false);
         }
     }
-    
-    public interface Callback {
+
+    public interface AssignmentProblemListCallback {
         void problemSelected(String title, ProblemDto problem);
     }
     
@@ -235,6 +246,15 @@ public class AssignmentProblemListPanel extends SimpleContainer {
                 __lastInstance.setAssignmentLoaded(assProb);
             }
         });
+        
+//        CmRpc.EVENT_BUS.addHandler(TutorWidgetValueChangedEvent.TYPE, new TutorWidgetValueChangedHandler() {
+//            @Override
+//            public void widgetValueChanged(String value, boolean correct) {
+//                Log.debug("Assignment Tutor widget value changed handled (" + correct + "): " + value);
+//                __lastInstance.tutorWidgetValueChanged(value, correct);
+//            }
+//        });
+
     }
 
 }

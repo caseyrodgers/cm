@@ -622,7 +622,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          */
         String sql = "select * from  CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ?";
 
-        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, uid },
+        final List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, uid },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -634,6 +634,30 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         return prob;
                     }
                 });
+        
+
+        for(StudentProblemDto prob: problemStatuses) {
+            /** get last input value for this problem
+             * 
+             */
+            sql = "Select * from CM_ASSIGNMENT_PID_ANSWERS where assign_key = ? and user_id = ? and pid = ? order by id desc limit 1";
+            List<Boolean> pidAnswers = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, prob.getPid() },
+                    new RowMapper<Boolean>() {
+                        @Override
+                        public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                            return rs.getInt("correct")==0?false:true;
+                        }
+                    });
+
+            /** If there is an answer, then update the status
+             *  accordingly.  
+             *  
+             *  TODO: remove status from PID_STATUS?  is it needed?
+             */
+            if(pidAnswers.size() > 0) {
+                prob.setStatus(pidAnswers.get(0)?"Correct":"Incorrect");
+            }
+        }
 
         /**
          * Make sure there is a status for each
