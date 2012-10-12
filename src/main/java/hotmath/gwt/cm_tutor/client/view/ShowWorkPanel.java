@@ -45,6 +45,12 @@ public class ShowWorkPanel extends Composite {
     Element canvasBackground;
 
     boolean isReady;
+    
+    interface MyUiBinder extends UiBinder<Widget, ShowWorkPanel> {
+    }
+
+    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
+
 
     public ShowWorkPanel(ShowWorkPanelCallback whiteboardOutCallback) {
         this._whiteboardOutCallback = whiteboardOutCallback;
@@ -57,9 +63,14 @@ public class ShowWorkPanel extends Composite {
             @Override
             public void execute() {
                 Log.debug("Calling initializeWhiteboard with element: " + getWidget().getElement());
+                
+                // call initialization.  This will call
+                // whiteboardIsReady, which will then do 
+                // the callback.  This way we know the whiteboard
+                // is 100% ready.
                 jsni_initializeWhiteboard(getWidget().getElement());
+                
                 Log.debug("Calling showWorkIsReady");
-                _whiteboardOutCallback.showWorkIsReady();
                 isReady = true;
             }
         });
@@ -67,11 +78,13 @@ public class ShowWorkPanel extends Composite {
 
         __lastInstance = this;
     }
-
-    interface MyUiBinder extends UiBinder<Widget, ShowWorkPanel> {
+    
+    
+    private void whiteboardIsReady() {
+        Log.debug("whiteboardIsReady called from external JS");
+        _whiteboardOutCallback.showWorkIsReady();
     }
 
-    private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     public boolean isReady() {
         return isReady;
@@ -252,6 +265,13 @@ public class ShowWorkPanel extends Composite {
     }-*/;
 
     private native void jsni_initializeWhiteboard(Element ele)/*-{
+    
+        var that = this;
+        
+        $wnd.Whiteboard.whiteboardIsReady = function() {
+            that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardIsReady()();
+        }
+
         try {
             if (typeof $wnd.Whiteboard == 'undefined') {
                 alert('Whiteboard JS is not loaded');
@@ -263,6 +283,8 @@ public class ShowWorkPanel extends Composite {
             var width = Number($wnd.grabComputedWidth(ele)) + 15;
             $wnd.Whiteboard.setWhiteboardViewPort(width, height);
             $wnd.Whiteboard.initWhiteboard($doc);
+            
+            
         } catch (e) {
             alert('error initializing whiteboard: ' + e);
             return;

@@ -2068,7 +2068,7 @@ var Whiteboard = (function () {
     }
 	
     wb.whiteboardIsReady = function() {
-        alert('the whiteboard is 100% ready to rock and roll')
+        alert('This is the default whiteboardIsReady, it should be overridden in GWT');
     }
 
     return wb;

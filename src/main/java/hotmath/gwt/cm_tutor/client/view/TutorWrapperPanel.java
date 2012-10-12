@@ -129,6 +129,7 @@ public class TutorWrapperPanel extends Composite {
      * @param correct
      */
     public void tutorWidgetComplete(String inputValue, boolean correct) {
+        Log.debug("tutorWidgetComplete (in GWT) called: " + inputValue);
         if (this.tutorCallback != null) {
             this.tutorCallback.tutorWidgetComplete(inputValue, correct);
         } else {
@@ -168,7 +169,7 @@ public class TutorWrapperPanel extends Composite {
     
     
     private native void jsni_setTutorWidgetValue(String value)/*-{
-        $wnd.setWidgetValueFromJson(value);
+        $wnd.TutorSolutionWidgetValues.setTutorWidgetValues(value);
     }-*/;
     
     

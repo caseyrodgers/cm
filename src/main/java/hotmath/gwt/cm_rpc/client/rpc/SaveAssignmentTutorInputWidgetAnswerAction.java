@@ -62,7 +62,7 @@ public class SaveAssignmentTutorInputWidgetAnswerAction implements Action<RpcDat
     public String toString() {
         String valueStr = value!=null?value.replace("\n", " "):"";
         return "SaveAssignmentTutorInputWidgetAnswerAction [assignKey=" + assignKey + ", pid=" + pid + ", correct="
-                + correct + ", uid=" + uid + ", value=" + valueStr + "]";
+                + correct + ", uid=" + uid + ", value=" + (valueStr!=null ? "(len=" + valueStr.length() + ")":null) + "]";
     }
     
 }
