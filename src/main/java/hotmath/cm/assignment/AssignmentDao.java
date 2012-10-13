@@ -833,10 +833,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private String clearUpString(String value) {
-        if(value != null) {
-            value = value.trim();
-        }
-        value = value.replace("\\n", "");
+    	if (value != null) {
+            value = value.trim().replace("\\n", "");
+    	}
         return value;
     }
 
