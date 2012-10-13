@@ -4,14 +4,11 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
-import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
@@ -22,7 +19,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -68,12 +65,13 @@ public class GradeBookPanel extends ContentPanel {
         _lastUsedAssignment = assignment;
         readData(_lastUsedAssignment);
     }
-    
+
     private void readData(final Assignment assignment) {
-        Info.display("GradeBookPanel", "readData(): assignKey: " + assignment.getAssignKey());
         new RetryAction<CmList<StudentAssignment>>() {
             @Override
             public void attempt() {
+                CmBusyManager.setBusy(true);
+
                 GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(assignment.getAssignKey());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -99,6 +97,7 @@ public class GradeBookPanel extends ContentPanel {
                         showAssignmentGrading();
                     }
                 },DoubleClickEvent.getType());
+                CmBusyManager.setBusy(false);
                 setWidget(_gradebookGrid);
                 forceLayout();
             }
