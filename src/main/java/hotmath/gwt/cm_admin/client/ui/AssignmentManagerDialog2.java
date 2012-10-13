@@ -14,6 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
+
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
@@ -36,6 +37,7 @@ public class AssignmentManagerDialog2  {
 
     int aid;
     AssignmentsContentPanel _assignmentsPanel;
+    GradeBookPanel _gbPanel;
     ComboBox<GroupDto> _groupCombo;
     public AssignmentManagerDialog2(int aid) {
         this.aid = aid;
@@ -61,8 +63,8 @@ public class AssignmentManagerDialog2  {
         
         con.setNorthWidget(header, northData);
         
-        GradeBookPanel gbPanel = new GradeBookPanel();
-        _assignmentsPanel = new AssignmentsContentPanel(gbPanel);
+        _gbPanel = new GradeBookPanel();
+        _assignmentsPanel = new AssignmentsContentPanel(_gbPanel);
         
         BorderLayoutData westData = new BorderLayoutData();
         westData.setSize(440);
@@ -74,7 +76,7 @@ public class AssignmentManagerDialog2  {
         eastData.setSize(490);
         
 
-        con.setCenterWidget(gbPanel, eastData);
+        con.setCenterWidget(_gbPanel, eastData);
         
         window.setWidget(con);
         
@@ -83,6 +85,7 @@ public class AssignmentManagerDialog2  {
     
     private void loadGroupInfo(GroupDto group) {
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
+        _gbPanel.clear();
         _assignmentsPanel.loadAssignentsFor(group);
     }
     
@@ -94,7 +97,7 @@ public class AssignmentManagerDialog2  {
         ComboBox<GroupDto> combo = new ComboBox<GroupDto>(groupStore, props.name());
         loadGroupNames();
 
-        combo.setToolTip("Select a group in which Assignments are associated with. [students=N, assignments=N]");
+        combo.setToolTip("Select a group with [N students, M assignments]");
         combo.setWidth(200);
         combo.setTypeAhead(false);
         combo.setTriggerAction(TriggerAction.ALL);
