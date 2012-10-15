@@ -324,156 +324,162 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
 
     public CmList<StudentAssignment> getAssignmentGradeBook(final int assignKey) throws Exception {
-        CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
-        Assignment assignment = getAssignment(assignKey);
+    	CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
+    	Assignment assignment = getAssignment(assignKey);
 
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
 
-        /**
-         *  get assignment problem status list for all users
-         */
-        final Map<Integer, String> nameMap = new HashMap<Integer,String>();
-        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey}, new RowMapper<StudentProblemDto>() {
-            @Override
-            public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                StudentProblemDto prob = new StudentProblemDto();
-                Integer uid = rs.getInt("uid");
-                if (! nameMap.containsKey(uid)) {
-                    nameMap.put(uid, rs.getString("user_name"));
-                }
-                prob.setUid(uid);
-                ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
-                prob.setProblem(probDto);
-                prob.setStatus(rs.getString("status"));
-                prob.setIsGraded((rs.getInt("is_graded")>0)?"Yes":"No");
-                return prob;
-            }
-        });
+    	/**
+    	 *  get assignment problem status list for all users
+    	 */
+    	final Map<Integer, String> nameMap = new HashMap<Integer,String>();
+    	List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey}, new RowMapper<StudentProblemDto>() {
+    		@Override
+    		public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+    			StudentProblemDto prob = new StudentProblemDto();
+    			Integer uid = rs.getInt("uid");
+    			if (! nameMap.containsKey(uid)) {
+    				nameMap.put(uid, rs.getString("user_name"));
+    			}
+    			prob.setUid(uid);
+    			ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
+    			prob.setProblem(probDto);
+    			prob.setStatus(rs.getString("status"));
+    			prob.setIsGraded((rs.getInt("is_graded")>0)?"Yes":"No");
+    			return prob;
+    		}
+    	});
 
-        /**
-         * create student assignments for all users
-         */
-        int uid = 0;
-        CmList<StudentProblemDto> probList = null;
-        Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
-        for (StudentProblemDto probDto : problemStatuses) {
-            if (probDto.getUid() != uid) {
-                probList = new CmArrayList<StudentProblemDto>();
-                uid = probDto.getUid();
-                StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
-                stuAssignment.setStudentName(nameMap.get(uid));
-                stuAssignments.add(stuAssignment);
-                stuAssignMap.put(uid,  stuAssignment);
-            }
-            probList.add(probDto);
-        }
+    	/**
+    	 * create student assignments for all users
+    	 */
+    	int uid = 0;
+    	CmList<StudentProblemDto> probList = null;
+    	Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
+    	for (StudentProblemDto probDto : problemStatuses) {
+    		if (probDto.getUid() != uid) {
+    			probList = new CmArrayList<StudentProblemDto>();
+    			uid = probDto.getUid();
+    			StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
+    			stuAssignment.setStudentName(nameMap.get(uid));
+    			stuAssignments.add(stuAssignment);
+    			stuAssignMap.put(uid,  stuAssignment);
+    		}
+    		probList.add(probDto);
+    	}
 
-        /**
-         * add lesson status for each user/lesson
-         * add assignment status
-         */
-        uid = 0;
-        String lessonName = "";
-        int completed = 0;
-        int pending = 0;
-        int count = 0;
-        int totCompleted = 0;
-        int totPending = 0;
-        int totCount = 0;
-        int totCorrect = 0;
-        int totIncorrect = 0;
-        CmList<StudentLessonDto> lessonList = null;
-        StudentLessonDto lessonStatus = null;
+    	/**
+    	 * add lesson status for each user/lesson
+    	 * add assignment status
+    	 */
+    	uid = 0;
+    	String lessonName = "";
+    	int completed = 0;
+    	int pending = 0;
+    	int count = 0;
+    	int totGraded = 0;
+    	int totCompleted = 0;
+    	int totPending = 0;
+    	int totCount = 0;
+    	int totCorrect = 0;
+    	int totIncorrect = 0;
+    	CmList<StudentLessonDto> lessonList = null;
+    	StudentLessonDto lessonStatus = null;
 
-        for (StudentProblemDto probDto : problemStatuses) {
+    	for (StudentProblemDto probDto : problemStatuses) {
 
-                if (probDto.getUid() != uid) {
-                        if (lessonStatus != null) {
-                        lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-                                stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
-                                stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
-                        }
-                        lessonName = "";
-                        totCount = 0;
-                        totCorrect = 0;
-                        totIncorrect = 0;
-                        totCompleted = 0;
-                        totPending = 0;
-                        uid = probDto.getUid();
-                        lessonList = new CmArrayList<StudentLessonDto>();
-                        stuAssignMap.get(uid).setLessonStatuses(lessonList);
-                }
+    		if (probDto.getUid() != uid) {
+    			if (lessonStatus != null) {
+    				lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    				stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    				stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+    			}
+    			lessonName = "";
+    			totCount = 0;
+    			totCorrect = 0;
+    			totIncorrect = 0;
+    			totCompleted = 0;
+    			totPending = 0;
+    			totGraded = 0;
+    			uid = probDto.getUid();
+    			lessonList = new CmArrayList<StudentLessonDto>();
+    			stuAssignMap.get(uid).setLessonStatuses(lessonList);
+    		}
 
-                if (! lessonName.equals(probDto.getProblem().getLesson())) {
-                        if (lessonName.trim().length() > 0) {
-                                if (lessonStatus != null) {
-                        lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-                                }
-                        }
-                        completed = 0;
-                        pending = 0;
-                        count = 0;
-                        lessonName = probDto.getProblem().getLesson();
-                        lessonStatus = new StudentLessonDto(uid, lessonName, null);
-                        lessonList.add(lessonStatus);
-                }
+    		if (! lessonName.equals(probDto.getProblem().getLesson())) {
+    			if (lessonName.trim().length() > 0) {
+    				if (lessonStatus != null) {
+    					lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    				}
+    			}
+    			completed = 0;
+    			pending = 0;
+    			count = 0;
+    			lessonName = probDto.getProblem().getLesson();
+    			lessonStatus = new StudentLessonDto(uid, lessonName, null);
+    			lessonList.add(lessonStatus);
+    		}
 
-                count++;
-                totCount++;
-                String probStatus = probDto.getStatus().trim();
-                if ("not viewed".equalsIgnoreCase(probStatus)) continue;
-                if ("answered".equalsIgnoreCase(probStatus) ||
-                        "viewed".equalsIgnoreCase(probStatus)   ||
-                        "correct".equalsIgnoreCase(probStatus)  ||
-                        "incorrect".equalsIgnoreCase(probStatus)) {
-                        completed++;
-                        totCompleted++;
-                        if (probStatus.toLowerCase().indexOf("orrect") > 0)
-                                probDto.setIsGraded("Yes");
-                        totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
-                        totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
-                        continue;
-                }
-                if ("pending".equalsIgnoreCase(probStatus)) {
-                        pending++;
-                        totPending++;
-                }
-        }
+    		count++;
+    		totCount++;
+    		String probStatus = probDto.getStatus().trim();
+    		if ("not viewed".equalsIgnoreCase(probStatus)) continue;
+    		if ("answered".equalsIgnoreCase(probStatus) ||
+                "viewed".equalsIgnoreCase(probStatus)   ||
+                "correct".equalsIgnoreCase(probStatus)  ||
+                "incorrect".equalsIgnoreCase(probStatus)) {
+    			completed++;
+    			totCompleted++;
+    			totGraded += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
+    			if (probStatus.toLowerCase().indexOf("orrect") > 0)
+    				probDto.setIsGraded("Yes");
+    			totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
+    			totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
+    			continue;
+    		}
+    		if ("pending".equalsIgnoreCase(probStatus)) {
+    			pending++;
+    			totPending++;
+    		}
+    	}
 
-        if (lessonStatus != null) {
-                lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-        }
-        if(stuAssignMap.size() > 0) {
-            stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending));
-            stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
-        }
+    	if (lessonStatus != null) {
+    		lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    	}
+    	if(stuAssignMap.size() > 0) {
+    		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    		stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+    	}
 
-                if (__logger.isDebugEnabled())
-                __logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
+    	if (__logger.isDebugEnabled())
+    		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
 
-        return stuAssignments;
+    	return stuAssignments;
     }
 
     private String getLessonStatus(int count, int completed, int pending) {
-                return (pending != 0) ?
-                        String.format("%d of %d completed, %d pending", completed, count, pending) :
-                        String.format("%d of %d completed", completed, count);
+        return (pending != 0) ?
+            String.format("%d of %d completed, %d pending", completed, count, pending) :
+            String.format("%d of %d completed", completed, count);
     }
 
-    private String getHomeworkStatus(int totCount, int totCompleted, int totPending) {
+    private String getHomeworkStatus(int totCount, int totCompleted, int totPending, int totAccepted) {
         String status = "Not Started";
-                if ((totCompleted + totPending) > 0) {
-                        status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
-                }
+        if (totAccepted > 0 && totAccepted == totCount) {
+        	status = "Graded";
+        }
+        else if ((totCompleted + totPending) > 0) {
+            status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
+        }
         return status;
     }
 
     private String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect) {
         String grade = "-";
-                if ((totCorrect + totIncorrect) == totCount) {
-                        int percent = Math.round(((float)totCorrect / (float)totCount) * 100.0f);
-                        grade = String.format("%d%s", percent, "%");
-                }
+        if ((totCorrect + totIncorrect) == totCount) {
+           int percent = Math.round(((float)totCorrect / (float)totCount) * 100.0f);
+           grade = String.format("%d%s", percent, "%");
+        }
         return grade;
     }
 
@@ -816,6 +822,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
+
     public void saveTutorInputWidgetAnswer(final int uid, final int assignKey, final String pid,final String value, final boolean correct) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
