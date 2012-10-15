@@ -363,7 +363,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList);
     			stuAssignment.setStudentName(nameMap.get(uid));
     			stuAssignments.add(stuAssignment);
-    			stuAssignMap.put(uid,  stuAssignment);
+    			stuAssignMap.put(uid, stuAssignment);
     		}
     		probList.add(probDto);
     	}
@@ -483,6 +483,138 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return grade;
     }
 
+    public List<StudentAssignment> getAssignmentWorkForStudent(int userId) throws Exception {
+
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_WORK_FOR_STUDENT");
+    	String stuName = null;
+    	
+    	List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {userId, userId, userId}, new RowMapper<StudentProblemDto>() {
+    		@Override
+    		public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+    			StudentProblemDto prob = new StudentProblemDto();
+    			Integer uid = rs.getInt("uid");
+    			prob.setUid(uid);
+    			ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"),
+    					rs.getInt("assign_key"));
+    			prob.setProblem(probDto);
+    			prob.setStatus(rs.getString("status"));
+    			prob.setIsGraded((rs.getInt("is_graded")>0)?"Yes":"No");
+    			return prob;
+    		}
+    	});
+
+    	/**
+    	 * create student/assignments for all assignments
+    	 */
+    	CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
+
+    	int lastAssignKey = 0;
+    	CmList<StudentProblemDto> probList = null;
+    	Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
+    	for (StudentProblemDto probDto : problemStatuses) {
+    		if (probDto.getProblem().getAssignKey() != lastAssignKey) {
+    			probList = new CmArrayList<StudentProblemDto>();
+    			lastAssignKey = probDto.getProblem().getAssignKey();
+    			Assignment assignment = getAssignment(lastAssignKey);
+    			StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList);
+    			stuAssignment.setStudentName(stuName);
+    			stuAssignments.add(stuAssignment);
+    			stuAssignMap.put(lastAssignKey, stuAssignment);
+    		}
+    		probList.add(probDto);
+    	}
+
+    	/**
+    	 * add lesson status for each lesson
+    	 * add assignment status
+    	 */
+    	String lessonName = "";
+    	int completed = 0;
+    	int pending = 0;
+    	int count = 0;
+    	int totGraded = 0;
+    	int totCompleted = 0;
+    	int totPending = 0;
+    	int totCount = 0;
+    	int totCorrect = 0;
+    	int totIncorrect = 0;
+    	lastAssignKey = 0;
+    	CmList<StudentLessonDto> lessonList = null;
+    	StudentLessonDto lessonStatus = null;
+
+    	for (StudentProblemDto probDto : problemStatuses) {
+
+    		if (probDto.getProblem().getAssignKey() != lastAssignKey) {
+    			if (lessonStatus != null) {
+    				lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    				stuAssignMap.get(lastAssignKey).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    				stuAssignMap.get(lastAssignKey).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+    			}
+    			lessonName = "";
+    			totCount = 0;
+    			totCorrect = 0;
+    			totIncorrect = 0;
+    			totCompleted = 0;
+    			totPending = 0;
+    			totGraded = 0;
+    			lastAssignKey = probDto.getProblem().getAssignKey();
+    			lessonList = new CmArrayList<StudentLessonDto>();
+    			stuAssignMap.get(lastAssignKey).setLessonStatuses(lessonList);
+    		}
+
+    		if (! lessonName.equals(probDto.getProblem().getLesson())) {
+    			if (lessonName.trim().length() > 0) {
+    				if (lessonStatus != null) {
+    					lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    				}
+    			}
+    			completed = 0;
+    			pending = 0;
+    			count = 0;
+    			lessonName = probDto.getProblem().getLesson();
+    			lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
+    			lessonList.add(lessonStatus);
+    		}
+
+    		count++;
+    		totCount++;
+    		String probStatus = probDto.getStatus().trim();
+    		if ("not viewed".equalsIgnoreCase(probStatus)) continue;
+    		if ("answered".equalsIgnoreCase(probStatus) ||
+                "viewed".equalsIgnoreCase(probStatus)   ||
+                "correct".equalsIgnoreCase(probStatus)  ||
+                "incorrect".equalsIgnoreCase(probStatus)) {
+    			completed++;
+    			totCompleted++;
+    			totGraded += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
+    			/*
+    			if (probStatus.toLowerCase().indexOf("orrect") > 0)
+    				probDto.setIsGraded("Yes");
+    		    */
+    			totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
+    			totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
+    			continue;
+    		}
+    		if ("pending".equalsIgnoreCase(probStatus)) {
+    			pending++;
+    			totPending++;
+    		}
+    	}
+
+    	if (lessonStatus != null) {
+    		lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    	}
+    	if (stuAssignMap.size() > 0) {
+    		stuAssignMap.get(lastAssignKey).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    		stuAssignMap.get(lastAssignKey).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+    	}
+
+    	if (__logger.isDebugEnabled())
+    		__logger.debug("getAssignmentGradeBook(): stuAssignments.size(): " + stuAssignments.size());
+
+    	return stuAssignments;
+    }
+
     /**
      * Assign students to assignment. Return messages indicating each error s
      *
@@ -598,7 +730,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-                // create a psudo name
+                // create a pseudo name
                 String comments = rs.getString("comments");
                 String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
 

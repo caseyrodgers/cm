@@ -3598,35 +3598,6 @@ left join (
 where u.uid in ( $$UID_LIST$$ )
 order by u.uid, problem_id
 
-##
-.key=GET_GRADE_BOOK_DATA_3
-
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
-       ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
-       ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
-       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
-
-from CM_ASSIGNMENT a 
-join HA_USER u on u.group_id = a.group_id
-join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
-
-left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
-
-left join (
-    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
-    from CM_ASSIGNMENT_PID_ANSWERS pa
-    group by pa.user_id, pa.assign_key, pa.pid ) l
-    on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
-    
-left join (
-    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer, pa.is_graded
-    from CM_ASSIGNMENT_PID_ANSWERS pa) q
-    on q.id=l.max_id
-    
-where a.assign_key=?
-order by u.user_name, problem_id
-
-  
   
   
 ##############################
@@ -3670,3 +3641,68 @@ from   CM_ASSIGNMENT a
               on p.assign_key = a.assign_key
 where  a.group_id = ?
 order  by last_modified desc 
+
+##
+.key=GET_GRADE_BOOK_DATA_3
+
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+       ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
+       ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
+       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
+
+from CM_ASSIGNMENT a 
+join HA_USER u on u.group_id = a.group_id
+join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
+
+left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
+
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    group by pa.user_id, pa.assign_key, pa.pid ) l
+    on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
+    
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer, pa.is_graded
+    from CM_ASSIGNMENT_PID_ANSWERS pa) q
+    on q.id=l.max_id
+    
+where a.assign_key=?
+order by u.user_name, problem_id
+
+  
+##
+.key=GET_ASSIGNMENT_WORK_FOR_STUDENT
+
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+       ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
+       ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
+       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
+
+from HA_USER u
+
+join CM_ASSIGNMENT a on a.assign_key in (
+    select distinct assign_key from CM_ASSIGNMENT_PID_STATUS ps where uid=?
+    union
+    select distinct assign_key from CM_ASSIGNMENT_PID_ANSWERS pa where user_id=? )
+
+join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
+
+left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
+
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    group by pa.user_id, pa.assign_key, pa.pid ) l
+    on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
+    
+left join (
+    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer, pa.is_graded
+    from CM_ASSIGNMENT_PID_ANSWERS pa) q
+    on q.id=l.max_id
+    
+where u.uid = ?
+order by u.user_name, a.assign_key, problem_id
+
+  
+  

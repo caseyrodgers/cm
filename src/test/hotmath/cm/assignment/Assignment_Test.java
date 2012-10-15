@@ -51,4 +51,16 @@ public class Assignment_Test extends TestCase {
     	assertTrue(list.size() > 0);
     }
 
+    public void testGetAssignmentGradeBook() throws Exception {
+    	CmList<StudentAssignment> list = AssignmentDao.getInstance().getAssignmentGradeBook(9);
+    	
+    	assertTrue(list.size() > 0);
+    }
+
+    public void testGetAssignmentWorkForStudent() throws Exception {
+    	List<StudentAssignment> list = AssignmentDao.getInstance().getAssignmentWorkForStudent(27554);
+    	
+    	assertTrue(list.size() > 0);
+    }
+
 }
