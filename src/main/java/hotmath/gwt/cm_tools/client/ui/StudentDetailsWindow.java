@@ -350,14 +350,16 @@ public class StudentDetailsWindow extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate, toDate;
-                if (dateRange.isDefault()) {
-                	fromDate = null;
-                	toDate = null;
-                }
-                else {
-                	fromDate = dateRange.getFromDate();
-                	toDate = dateRange.getToDate();
+                Date fromDate=null, toDate=null;
+                if(dateRange != null) {
+                    if (dateRange.isDefault()) {
+                    	fromDate = null;
+                    	toDate = null;
+                    }
+                    else {
+                    	fromDate = dateRange.getFromDate();
+                    	toDate = dateRange.getToDate();
+                    }
                 }
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(),
                         new GeneratePdfAction(PdfType.STUDENT_DETAIL, sm.getAdminUid(), Arrays.asList(sm.getUid()),

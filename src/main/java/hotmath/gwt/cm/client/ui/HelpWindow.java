@@ -305,6 +305,8 @@ public class HelpWindow extends CmWindow {
             }));
             add(lc);
         }
+        setVisible(true);
+        setZIndex(5);
     }
     
 

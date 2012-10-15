@@ -83,7 +83,7 @@ public class HeaderPanel extends LayoutContainer {
 					GWT.runAsync(new CmRunAsyncCallback() {
 						@Override
 						public void onSuccess() {
-							new HelpWindow().setVisible(true);					
+							new HelpWindow();
 						}
 					});
 				}
