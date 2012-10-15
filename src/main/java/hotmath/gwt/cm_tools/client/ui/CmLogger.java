@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import com.sencha.gxt.widget.core.client.info.Info;
-
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.util.CmInfoConfig;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 
 public class CmLogger  {
@@ -69,5 +69,7 @@ public class CmLogger  {
                 Info.display("Debug", msg);
             }
     	}
+    	
+    	Log.debug(msg);
     }
 }

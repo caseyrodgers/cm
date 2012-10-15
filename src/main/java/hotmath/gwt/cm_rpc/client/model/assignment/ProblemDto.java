@@ -9,11 +9,25 @@ public class ProblemDto extends BaseDto implements Response {
     
     String label, pid, lesson;
     ProblemType problemType;
+    int assignKey;
     public ProblemDto(int id, String lesson, String label, String pid) {
+        this(id,lesson,label,pid,0);
+    }
+    
+    public ProblemDto(int id, String lesson, String label, String pid, int assignKey) {
         super(id, label);
         this.label = label;
         this.lesson = lesson;
         this.pid = pid;
+        this.assignKey = assignKey;
+    }
+
+    public int getAssignKey() {
+        return assignKey;
+    }
+
+    public void setAssignKey(int assignKey) {
+        this.assignKey = assignKey;
     }
 
     public ProblemType getProblemType() {
@@ -51,7 +65,7 @@ public class ProblemDto extends BaseDto implements Response {
     @Override
     public String toString() {
         return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType
-                + "]";
+                + ", assignKey=" + assignKey + "]";
     }
 
 }

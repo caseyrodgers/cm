@@ -19,10 +19,11 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
-import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -164,10 +165,43 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
                 }
             }
         });
+        
+        TextButton crash = new TextButton("Crash Test");
+        final int times[] = {0};
+        crash.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                
+                Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+                    @Override
+                    public boolean execute() {
+                        if(times[0]++ < 10) {
+                            CmLogger.debug("Crash test #" + times[0]);
+                        
+                            long tl = times[0];
+                            if(tl/2 == 0) {
+                                setDisplayMode(DisplayMode.TUTOR);
+                            }
+                            else {
+                                setDisplayMode(DisplayMode.WHITEBOARD);
+                            }
+                            return true;
+                        }
+                        else {
+                            times[0] = 0;
+                            CmLogger.debug("CRASH TEST COMPLETE");
+                            return false;
+                        }
+                    }
+                }, 5000);
+            }
+        });
                 
         List<Widget> tools = new ArrayList<Widget>();
         tools.add(_saveWhiteboard);
         tools.add(_showWorkBtn);
+        tools.add(crash);
         return tools;
     }
     

@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class RetryActionManager {
     public void registerAction(RetryAction action) {
         _actions.add(action);
 
-        Log.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
+        CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
         
         checkQueue();
     }
@@ -94,7 +95,7 @@ public class RetryActionManager {
     
     @SuppressWarnings("rawtypes")
     public void requestComplete(RetryAction action) {
-        Log.debug("RetryActionManager: requestComplete: " + action);
+        CmLogger.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
         
         
@@ -127,7 +128,7 @@ public class RetryActionManager {
     @SuppressWarnings("rawtypes")    
     public void checkQueue() {
         if(_busy) {
-            Log.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");
+            //Log.debug("RetryActionManager: checkQueue (" + _actions.size() + "): isBusy");
             return;
         }
         
@@ -136,7 +137,7 @@ public class RetryActionManager {
             RetryAction action = _actions.get(s);
             _actions.remove(s);
             
-            Log.debug("RetryActionManager: checkQueue attempt: " + action);            
+            //Log.debug("RetryActionManager: checkQueue attempt: " + action);            
             _busy = true;
             
             action.setStartTime();

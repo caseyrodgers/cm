@@ -13,8 +13,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.omg.stub.java.rmi._Remote_Stub;
-
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -78,10 +76,12 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                  * version disable button
                  */
                 if(__spanishButton != null) {
-                    if (!__isSpanish && !result.isHasSpanish())
+                    if (!__isSpanish && !result.isHasSpanish()) {
                         __spanishButton.setEnabled(false);
-                    else
+                    }
+                    else {
                         __spanishButton.setEnabled(true);
+                    }
                 }
                 
                 
@@ -102,10 +102,12 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                 @Override
                 public void onSelect(SelectEvent event) {
                     __isSpanish = __spanishButton.getText().equals("Spanish");
-                    if (__isSpanish)
+                    if (__isSpanish) {
                         __spanishButton.setText("English");
-                    else
+                    }
+                    else {
                         __spanishButton.setText("Spanish");
+                    }
                     getLessonData();
                 }
             });
