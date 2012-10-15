@@ -408,6 +408,8 @@ public class HelpWindow extends CmWindow {
                     public void oncapture(StudentModelI student) {
                         CmBusyManager.setBusy(false);
                         new StudentDetailsWindow(new StudentModelExt(student));
+                        
+                        HelpWindow.this.hide();  // hide to deal with z-order issue
                     }
                 }.register();
             }
