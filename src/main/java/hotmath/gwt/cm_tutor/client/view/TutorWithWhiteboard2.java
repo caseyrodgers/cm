@@ -24,8 +24,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 
 public class TutorWithWhiteboard2 extends Composite {
 
-    String _testPid = "test_dynamic_practice_addition_1_1$3";
+    //String _testPid = "test_dynamic_practice_addition_1_1$3";
     //String _testPid = "test_dynamic_graphs_1_2_5$1";
+    String _testPid = "alg2ptests3_coursetest_1_algebra2practicetest_1_1";
 
     TutorWrapperPanel _tutorPanel;
     ShowWorkPanel _showWWork;
@@ -120,8 +121,7 @@ public class TutorWithWhiteboard2 extends Composite {
         }
 
     }
-    
-    
+
     private void processTutorWidgetComplete(String inputValue, boolean yesNo) {
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {

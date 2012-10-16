@@ -15,7 +15,6 @@ function initializeQuiz() {
 var uniquer = 1;
 function initializeQuizQuestion(question) {
     var tag = 'answer_' + uniquer;
-    var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     var answers = question.getElementsByTagName("li");
     for ( var i = 0, t = answers.length; i < t; i++) {
         answer = answers[i];

@@ -47,7 +47,7 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
     public SolutionInfo execute(final Connection conn, GetSolutionAction action) throws Exception {
         try {
             long startTime = System.currentTimeMillis();
-            String pid = action.getPid();
+            String pid = "prealgptests2_coursetest_1_pre-algebrapracticetest_10_1"; // action.getPid();
             int uid = action.getUid();
             
             ProblemID ppid = new ProblemID(pid);
