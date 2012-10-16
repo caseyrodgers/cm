@@ -240,13 +240,41 @@ var Whiteboard = (function () {
 
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
-		if(context){
-		var _width= 1;
-        origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width=_width;
-		context = null;
-            origcontext = null;
-            graphcontext = null;
-            topcontext = null;
+		if (context) {
+		    var _width = 0;
+		    origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = _width;
+		    origcanvas.height = graphcanvas.height = topcanvas.height = canvas.width = _width;
+		    if (isIE) {
+		        $(canvas).css({
+		            'width': '0px',
+		            'height': '0px'
+		        })
+		        $(canvas).empty();
+		        $(origcanvas).css({
+		            'width': '0px',
+		            'height': '0px'
+		        })
+		        $(origcanvas).empty();
+		        $(graphcanvas).css({
+		            'width': '0px',
+		            'height': '0px'
+		        })
+		        $(graphcanvas).empty();
+		        $(topcanvas).css({
+		            'width': '0px',
+		            'height': '0px'
+		        })
+		        $(topcanvas).empty();
+		    }else{
+		    canvas = null;
+		    origcanvas = null;
+		    graphcanvas = null;
+		    topcanvas = null;
+		    context = null;
+		    origcontext = null;
+		    graphcontext = null;
+		    topcontext = null;
+			}
 		}
         setupMathQuill(); // defined in mathquill.js
         mainDoc = mainDocIn;
@@ -317,6 +345,14 @@ var Whiteboard = (function () {
                     parent_cont.removeChild(origcanvas)
                     parent_cont.removeChild(graphcanvas)
                     parent_cont.removeChild(topcanvas)
+					canvas = null;
+		    		origcanvas = null;
+		    		graphcanvas = null;
+		    		topcanvas = null;
+		    		context = null;
+		    		origcontext = null;
+		    		graphcontext = null;
+		    		topcontext = null;
                     //
                     canvas = document.createElement('canvas')
                     canvas.width = 2000;
