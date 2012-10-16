@@ -1879,8 +1879,9 @@ var Whiteboard = (function () {
         var idName;
         drawingLayer = graphic_data[0].layer ? graphic_data[0].layer : drawingLayer;
         drawingLayer = isIE ? '1' : drawingLayer;
-
+if(context.lineWidth!=2){
         context.lineWidth = 2.0;
+		}
         var col = "#" + graphic_data[0].color.toString(16);
         context.strokeStyle = col;
         var deb = ""
