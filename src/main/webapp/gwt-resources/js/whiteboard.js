@@ -1537,10 +1537,12 @@ var Whiteboard = (function () {
         graphMode = '';
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
         // = width;
-        origcontext.clearRect(0, 0, canvas.width, canvas.height);
+		var _width=canvas.width;
+        origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width=_width
+        /*origcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         topcontext.clearRect(0, 0, canvas.width, canvas.height);
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, canvas.width, canvas.height);*/
         drawingLayer = '1'
         $get_Element("#button_gr2D").style.border = '1px solid #000000';
         $get_Element("#button_nL").style.border = '1px solid #000000';
