@@ -241,6 +241,8 @@ var Whiteboard = (function () {
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
 		if(context){
+		var _width= 1;
+        origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width=_width;
 		context = null;
             origcontext = null;
             graphcontext = null;
