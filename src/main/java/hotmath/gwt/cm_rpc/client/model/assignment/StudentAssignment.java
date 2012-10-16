@@ -28,6 +28,11 @@ public class StudentAssignment implements Response {
     private CmList<StudentProblemDto> assigmentStatuses;
     private CmList<StudentLessonDto> lessonStatuses;
 
+    private int problemCount;
+    private int problemCompletedCount;
+    private int problemPendingCount;
+
+
     public StudentAssignment(){}
     
     public StudentAssignment(int uid, Assignment assignment, CmList<StudentProblemDto> assignmentStatuses) {
@@ -84,7 +89,31 @@ public class StudentAssignment implements Response {
         this.assigmentStatuses = assigmentStatuses;
     }
 
-    @Override
+    public int getProblemCount() {
+		return problemCount;
+	}
+
+	public void setProblemCount(int problemCount) {
+		this.problemCount = problemCount;
+	}
+
+	public int getProblemCompletedCount() {
+		return problemCompletedCount;
+	}
+
+	public void setProblemCompletedCount(int problemCompletedCount) {
+		this.problemCompletedCount = problemCompletedCount;
+	}
+
+	public int getProblemPendingCount() {
+		return problemPendingCount;
+	}
+
+	public void setProblemPendingCount(int problemPendingCount) {
+		this.problemPendingCount = problemPendingCount;
+	}
+
+	@Override
     public String toString() {
         return "StudentAssignment [uid=" + uid + ", assignment=" + assignment + ", assigmentStatuses="
                 + assigmentStatuses + "]";

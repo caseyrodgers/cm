@@ -3,6 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.FileUtil;
 import hotmath.cm.util.report.GroupAssessmentReport;
+import hotmath.cm.util.report.StudentAssignmentReport;
 import hotmath.cm.util.report.StudentDetailReport;
 import hotmath.cm.util.report.StudentListReport;
 import hotmath.cm.util.report.StudentReportCard;
@@ -54,14 +55,17 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     			for(StudentModelI sm: studentPool) {
     				studentUids.add(sm.getUid());
     			}
+    			logger.info("page action NOT NULL");
     		}
     		else {
+    			logger.info("page action NULL");
     			studentUids = action.getStudentUids();
     		}
     		PdfType pdfType = action.getPdfType();
     		Date fromDate = action.getFromDate();
     		Date toDate = action.getToDate();
 
+			logger.info("student UIDS.size(): " + ((studentUids != null)? studentUids.size():0));
     		String reportId = CmAdminDao.getInstance().getPrintableStudentReportId(studentUids);
 
     		ByteArrayOutputStream baos = null;
@@ -77,6 +81,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     			reportName = sd.getReportName();
     		}
     		else if (pdfType == PdfType.REPORT_CARD) {
+    			logger.info("creating Report Card");
     			StudentReportCard sr = new StudentReportCard();
     			baos = sr.makePdf(conn, reportId, adminId, fromDate, toDate);
     			reportName = sr.getReportName();
@@ -86,12 +91,18 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     			gr.setFilterMap(action.getFilterMap());
     			baos = gr.makePdf(conn, reportId, adminId);
     			reportName = gr.getReportName();
-    		}    
+    		}
     		else if(pdfType == PdfType.STUDENT_LIST) {
     			StudentListReport slr = new StudentListReport(action.getTitle());
     			slr.setFilterMap(action.getFilterMap());
     			baos = slr.makePdf(conn, reportId, adminId, action.getStudentUids());
     			reportName = slr.getReportName();
+    		}
+    		else if(pdfType == PdfType.ASSIGNMENT_REPORT) {
+    			StudentAssignmentReport sar = new StudentAssignmentReport(action.getTitle());
+    			sar.setFilterMap(action.getFilterMap());
+    			baos = sar.makePdf(conn, reportId, adminId, action.getStudentUids());
+    			reportName = sar.getReportName();
     		}
     		else {
     			throw new IllegalArgumentException("Unrecognized report type: " + pdfType);

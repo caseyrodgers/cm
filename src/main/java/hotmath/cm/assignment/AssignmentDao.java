@@ -547,8 +547,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		if (probDto.getProblem().getAssignKey() != lastAssignKey) {
     			if (lessonStatus != null) {
     				lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-    				stuAssignMap.get(lastAssignKey).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
-    				stuAssignMap.get(lastAssignKey).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+
+    				StudentAssignment sa = stuAssignMap.get(lastAssignKey);
+    				sa.setProblemCount(totCount);
+    				sa.setProblemPendingCount(totPending);
+    				sa.setProblemCompletedCount(totCompleted);
+    				sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    				sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
     			}
     			lessonName = "";
     			totCount = 0;
@@ -605,8 +610,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		lessonStatus.setStatus(getLessonStatus(count, completed, pending));
     	}
     	if (stuAssignMap.size() > 0) {
-    		stuAssignMap.get(lastAssignKey).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
-    		stuAssignMap.get(lastAssignKey).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+			StudentAssignment sa = stuAssignMap.get(lastAssignKey);
+			sa.setProblemCount(totCount);
+			sa.setProblemPendingCount(totPending);
+			sa.setProblemCompletedCount(totCompleted);
+			sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+			sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
     	}
 
     	if (__logger.isDebugEnabled())

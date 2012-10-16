@@ -838,6 +838,8 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
 
         menu.add(defineReportCardItem(grid));
 
+        menu.add(defineAssignmentReportItem(grid));
+
         btn.setMenu(menu);
 
         return btn;
@@ -908,6 +910,59 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                             GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.REPORT_CARD, _cmAdminMdl
                                     .getId(), studentUids, fromDate, toDate);
                             new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Report Card", pdfAction);
+                        }
+                    });
+                } else {
+                    if (studentCount < 1)
+                        CatchupMathTools.showAlert("Report Cards", "No students currently displayed.");
+                    else
+                        CatchupMathTools.showAlert("Report Cards", currentStudentCount
+                                + " students selected, please choose a 'Group' and/or use 'Text Search' to select "
+                                + MAX_REPORT_CARD + " or fewer students.");
+                }
+            }
+        });
+    }
+
+    private MyMenuItem defineAssignmentReportItem(final Grid<StudentModelExt> grid) {
+
+        return new MyMenuItem("Student Assignment Report", "Display printable assignment report", new SelectionListener<MenuEvent>() {
+            @Override
+            public void componentSelected(MenuEvent ce) {
+            	StudentModelExt student = getSelectedStudent();
+            	if (student == null) {
+                    CatchupMathTools.showAlert("Please select a student.");
+                    return;
+            	}
+                ListStore<StudentModelExt> store = grid.getStore();
+
+                final List<Integer> studentUids = new ArrayList<Integer>();
+                studentUids.add(student.getUid());
+
+                //TODO: multiple students
+                //for (StudentModelExt sm : store.getModels()) {
+                //	studentUids.add(sm.getUid());
+                //}
+
+                int studentCount = studentUids.size();
+                //if (studentCount > 0 && currentStudentCount <= MAX_REPORT_CARD) {
+                if (studentCount > 0) {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+
+                        @Override
+                        public void onSuccess() {
+                            DateRangePanel dateRange = DateRangePanel.getInstance();
+                            Date fromDate=null, toDate=null;
+                            if (dateRange != null) {
+                            	if (dateRange.isDefault() == false) {
+                                	fromDate = dateRange.getFromDate();
+                                	toDate = dateRange.getToDate();
+                                }
+                            }
+
+                            GeneratePdfAction pdfAction = new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
+                            		_cmAdminMdl.getId(), studentUids, fromDate, toDate);
+                            new PdfWindow(_cmAdminMdl.getId(), "Catchup Math Student Assignment Report", pdfAction);
                         }
                     });
                 } else {

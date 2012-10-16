@@ -121,38 +121,40 @@ public class GeneratePdfAction implements Action<CmWebResource>{
     }
 
     public enum PdfType{
-        /** student report card report
-         * 
+        /**
+         * student report card report
          */
         REPORT_CARD, 
-        
-        /** student detail report
-         * 
+
+        /**
+         * student detail report
          */
         STUDENT_DETAIL, 
-        
-        /** student summary report for admins
-         * 
+
+        /** 
+         * student summary report for admins
          */
         STUDENT_SUMMARY, 
-        
-        
-        /** Assessment report from the Assessment window
-         * 
+
+        /**
+         * Assessment report from the Assessment window
          */
         GROUP_ASSESSMENT,
-        
-        
-        /** Student list report
-         * 
+
+        /**
+         *  Student list report
          */
         STUDENT_LIST,
-        
-    
+
         /**  
          * Generalized highlight report
-         * 
          */
-        HIGHLIGHT_REPORT
+        HIGHLIGHT_REPORT,
+
+        /**
+         * assignment report
+         */
+        ASSIGNMENT_REPORT 
+        
     };
 }
