@@ -7,7 +7,6 @@ public class StudentLessonDto implements Response {
     private int uid;
     private String lessonName;
     private String status;
-
     
     public StudentLessonDto() {
     }
