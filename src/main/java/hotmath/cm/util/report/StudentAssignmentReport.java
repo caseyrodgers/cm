@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.sql.Connection;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,8 @@ public class StudentAssignmentReport {
 	
 	private String reportName;
     private String title;
+    
+    private SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private static Logger logger = Logger.getLogger(StudentAssignmentReport.class);
 
@@ -113,21 +116,23 @@ public class StudentAssignmentReport {
 			document.add(Chunk.NEWLINE);
 			document.add(Chunk.NEWLINE);			
 
-			Table tbl = new Table(4);
+			Table tbl = new Table(5);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
 			
-			addHeader("Assignment", "35%", tbl);
-			addHeader("Status", "25%", tbl);
-			addHeader("Grade", "10%", tbl);
-			addHeader("Problem Status", "30%", tbl);
+			addHeader("Assignment", "30%", tbl);
+			addHeader("Due Date", "15%", tbl);
+			addHeader("Status", "23%", tbl);
+			addHeader("Grade", "7%", tbl);
+			addHeader("Problem Status", "25%", tbl);
 
 			tbl.endHeaders();
 
 			int i = 0;
 			for (StudentAssignment sa : saList) {
-				addCell(sa.getAssignment().getAssignmentName(), tbl, ++i);
+				addCell(sa.getAssignment().getComments(), tbl, ++i);
+				addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, i);
 				addCell(sa.getHomeworkStatus(), tbl, i);
 				addCell(sa.getHomeworkGrade(), tbl, i);
 				addCell(getStatus(sa), tbl, i);
