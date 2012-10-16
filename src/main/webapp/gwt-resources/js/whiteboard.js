@@ -240,6 +240,12 @@ var Whiteboard = (function () {
 
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
+		if(context){
+		context = null;
+            origcontext = null;
+            graphcontext = null;
+            topcontext = null;
+		}
         setupMathQuill(); // defined in mathquill.js
         mainDoc = mainDocIn;
         setTimeout(function () {
