@@ -750,7 +750,18 @@ function _getElementTop(eElement)
 
 
 
-
+//External JS glue code for GWT to collect
+// answers to multiple choice questions
+// set TutorPanelWrapper
+//
+// called from dynamically loaded question HTML
+function tutor_questionGuessChanged(o) {
+    var id = o.getAttribute('id');
+    var selection = o.getAttribute('option_number');
+    var value = o.getAttribute('value');
+    
+    gwt_tutorQuestionGuessChanged(id, selection, value);
+}
 
 
 

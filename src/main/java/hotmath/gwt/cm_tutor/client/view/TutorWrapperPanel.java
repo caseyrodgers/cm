@@ -180,6 +180,7 @@ public class TutorWrapperPanel extends Composite {
      */
     private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) /*-{
     
+        
         var that = this;
         $wnd.solutionSetComplete = function(numCorrect, limit) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::solutionSetComplete_Gwt(II)(numCorrect,limit);
@@ -197,13 +198,11 @@ public class TutorWrapperPanel extends Composite {
         }
         
         $wnd.TutorDynamic.setSolutionTitle = function(probNum, total) {
-            var that = this;
             $wnd.TutorDynamic.setSolutionTitle = 
             function() { 
                 that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::setSolutionTitle_Gwt(II)(probNum,total); 
             }
         }
-        
         
         $wnd.tutorWidgetCompleteAux = function(yesNo) {
            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetCompleteAux(Z)(yesNo);
@@ -233,7 +232,6 @@ public class TutorWrapperPanel extends Composite {
         }
 
         
-        
        // called from CatchupMath.js event.tutorHasBeenInitialized
        // used to store current tutor context on server providing
        // a way to restore the tutor to its current var defs.
@@ -259,9 +257,21 @@ public class TutorWrapperPanel extends Composite {
            };
        }
        
+       
+       $wnd.gwt_tutorQuestionGuessChanged = function(id,selection,value) {
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
+       }
+       
        $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext);
    }-*/;    
 
+    
+    
+    private void gwt_tutorQuestionGuessChanged(String id, String selection, String correct) {
+        boolean isCorrect = correct != null && correct.equalsIgnoreCase("true")?true:false;
+        this.tutorCallback.tutorWidgetComplete(selection, isCorrect); 
+    }
+    
     SolutionInfo _solutionInfo;
     Map<Integer, String> _variableContexts = new HashMap<Integer, String>();
 

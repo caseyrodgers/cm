@@ -78,14 +78,14 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
     
     /**
      * 
+     *
+     * decorate HTML with input elements
+     * to allow tracking of selected values
      * 
-          var tag = 'answer_' + uniquer;
-          var answers = question.getElementsByTagName("li");
-          
-          
-
-
-
+     * 
+     * tutor_questionGuessChanged defined in tutor_tablet.js
+     * 
+     * 
      * @param htmlRaw
      * @return
      */
@@ -95,6 +95,7 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         htmlRaw = "<div id='q_wrapper'>" + htmlRaw + "</div>";
         String tag = "answer_" + __uniquer;
         Document doc = Jsoup.parseBodyFragment(htmlRaw);
+        int optionNumber=0;
         for(Element li: doc.getElementsByTag("li")) {
 
             String isCorrect = li.attr("correct");
@@ -116,13 +117,13 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
 
             /** append the input element */
             String inputElement = "<span class='question-input' style='margin-right: 10px'>"
-                + "<input value='"
+                + "<input option_number='" + (++optionNumber) + "' value='"
                 + trueOrFalse
                 + "' type='radio' name='"
                 + tag
                 + "' id='"
                 + id
-                + "' onclick='questionGuessChanged(this)'/>"
+                + "' onclick='tutor_questionGuessChanged(this)'/>"
                 + "</span>";
 
             answerEle.html(inputElement + answerEle.html());
