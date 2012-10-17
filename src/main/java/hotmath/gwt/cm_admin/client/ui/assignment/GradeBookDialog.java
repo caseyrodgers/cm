@@ -3,6 +3,8 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.ProblemSelectionCallback;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.UpdateGradeCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -18,7 +20,8 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.core.client.GWT;
-
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -149,8 +152,19 @@ public class GradeBookDialog {
         window.addCloseButton();
 
         window.setWidget(con);
+        
+        
+        window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+            }
+        });
 
-        window.show();        
+        window.show();    
+        
+        
+        
     }
     
     private String getHomeworkGrade() {
