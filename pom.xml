@@ -78,9 +78,13 @@
 			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
 		</repository>
 
-		<!-- <repository> <id>bramosystems-releases</id> <name>Bramosystems Release 
-			Repository</name> <url>http://downloads.bramosystems.com/maven2/releases</url> 
-			</repository> -->
+<!--
+		<repository>
+			<id>bramosystems-releases</id>
+			<name>Bramosystems Release Repository</name>
+			<url>http://downloads.bramosystems.com/maven2/releases</url>
+		</repository>
+-->
 
 
 	</repositories>
@@ -643,7 +647,6 @@
 					<cssFinalFile>CatchupMath_combined.css</cssFinalFile>
 					<jsFinalFile>CatchupMath_combined.js</jsFinalFile>
 					<cssSourceFiles>
-
 						<param>../../../../../../hotmath2/web/css/testset.css</param>
 						<param>../../../../../../hotmath2/web/css/default.css</param>
 						<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
@@ -655,7 +658,6 @@
 					<jsSourceFiles>
 						<param>hm_events.js</param>
 						<param>tutor_tablet.js</param>
-
 
 						<param>../../../../../../hotmath2/web/js/tutor_widget_combined.js</param>
 
@@ -673,16 +675,13 @@
 				</configuration>
 			</plugin>
 
-
-
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
 				<version>2.2.0</version>
 
 				<configuration>
-                                        <extraJvmArgs>-XX:MaxPermSize=512m -Xmx1024m</extraJvmArgs>
+					<extraJvmArgs>-XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dgwt.logLevel=INFO</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -790,8 +789,6 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-
-
 
 				</executions>
 			</plugin>
