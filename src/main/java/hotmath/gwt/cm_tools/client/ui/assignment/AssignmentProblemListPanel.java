@@ -164,6 +164,9 @@ public class AssignmentProblemListPanel extends SimpleContainer {
              */
             prob.setStatus(correct?"Correct":"Incorrect");
             _grid.getStore().update(prob);
+            
+            
+            saveAssignmentProblemStatusToServer(prob);
         }
     }
     
