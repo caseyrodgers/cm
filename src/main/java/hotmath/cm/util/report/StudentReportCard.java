@@ -1,16 +1,16 @@
 package hotmath.cm.util.report;
 
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -81,7 +81,10 @@ public class StudentReportCard {
     }
 
     private String reportName;
-    
+
+    public StudentReportCard() {
+    }
+
     @SuppressWarnings("unchecked")
     public ByteArrayOutputStream makePdf(final Connection conn, String reportId, Integer adminId,
     		Date fromDate, Date toDate) throws Exception {
@@ -90,6 +93,8 @@ public class StudentReportCard {
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
         CmAdminDao adminDao = CmAdminDao.getInstance();
+
+        AssignmentDao asgDao = AssignmentDao.getInstance();
 
         AccountInfoModel info = adminDao.getAccountInfo(adminId);
         
@@ -147,6 +152,8 @@ public class StudentReportCard {
         	if (rc.getPrescribedLessonList() != null && rc.getPrescribedLessonList().size() > 0) {
         		addLessons(rc, sm.getProgram().getCustom().isCustom(), document);
         	}
+
+        	addAssignmentInfo(sm.getUid(), asgDao, document);
 
         	document.add(Chunk.NEWLINE);
         	document.add(Chunk.NEWLINE);
@@ -326,6 +333,76 @@ public class StudentReportCard {
         document.add(Chunk.NEWLINE);
     }
 
+	private void addAssignmentInfo(int uid, AssignmentDao asgDao, Document document) throws Exception {
+    	List<StudentAssignment> asgList = asgDao.getAssignmentWorkForStudent(uid);
+
+    	int totalCount = 0;
+    	int completedCount = 0;
+    	int gradedCount = 0;
+    	int correctCount = 0;
+    	int incorrectCount = 0;
+    	int pendingCount = 0;
+    	int notViewedCount = 0;
+    	int viewedCount = 0;
+    	
+    	for (StudentAssignment asg : asgList) {
+    		List<StudentProblemDto> pList = asg.getAssigmentStatuses();
+    		for (StudentProblemDto probDto : pList) {
+        		totalCount++;
+        		String probStatus = probDto.getStatus().trim();
+        		if ("not viewed".equalsIgnoreCase(probStatus)) {
+        			notViewedCount++;
+        			continue;
+        		}
+        		if ("answered".equalsIgnoreCase(probStatus) ||
+                    "correct".equalsIgnoreCase(probStatus)  ||
+                    "incorrect".equalsIgnoreCase(probStatus)) {
+        			completedCount++;
+        			gradedCount += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
+        			if (probStatus.toLowerCase().indexOf("orrect") > 0)
+        				probDto.setIsGraded("Yes");
+        			correctCount += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
+        			incorrectCount += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
+        			continue;
+        		}
+        		if ("viewed".equalsIgnoreCase(probStatus)) {
+        			viewedCount++;
+        		}
+        		if ("pending".equalsIgnoreCase(probStatus)) {
+        			pendingCount++;
+        		}
+    		}
+    	}
+
+    	if (totalCount > 0) {
+    		PdfPTable assignTbl = new PdfPTable(1);
+    		assignTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+    		Phrase label = buildSectionLabel("Assignment Problems");
+    		Paragraph total = buildSectionContent("Total: ", String.valueOf(totalCount), true);
+    		Paragraph completed = buildSectionContent("Completed: ", String.valueOf(correctCount + incorrectCount), true);
+    		Paragraph pending = buildSectionContent("Pending: ", String.valueOf(pendingCount + viewedCount), true);
+    		Paragraph notViewed = buildSectionContent("Not started: ", String.valueOf(notViewedCount), true);
+
+    		String grade = "n/a";
+    		if ((correctCount + incorrectCount) > 0 ) {
+                int percent = Math.round(((float)correctCount / (float)(correctCount+incorrectCount)) * 100.0f);
+                grade = String.format("%d%s", percent, "%");
+    		}
+    		Paragraph avgScore = buildSectionContent("Avg grade: ", grade, true);
+
+    		assignTbl.addCell(label);
+    		assignTbl.addCell(total);
+    		assignTbl.addCell(completed);
+    		assignTbl.addCell(pending);
+    		assignTbl.addCell(notViewed);
+    		assignTbl.addCell(avgScore);
+    		assignTbl.setWidthPercentage(100.0f);
+    		assignTbl.setSpacingBefore(20.0f);
+    		document.add(assignTbl);
+    		document.add(Chunk.NEWLINE);
+    	}
+		
+	}
     private Phrase buildSectionLabel(String label) {
         Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
         chunk.setUnderline(0.5f, -3f);
