@@ -61,14 +61,17 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         this._callBack = callback;
 
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
-        
-        ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(),50, "Problem");
-        ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),100, "Status");
-        
+
         List<ColumnConfig<StudentProblemDto, ?>> l = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
-        
+
+        ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(),50, "Problem");
         l.add(labelCol);
-        l.add(labelStatus);
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),100, "Status");
+            l.add(labelStatus);
+        }
+        
         ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);        
 
         ListStore<StudentProblemDto> store = new ListStore<StudentProblemDto>(props.pid());

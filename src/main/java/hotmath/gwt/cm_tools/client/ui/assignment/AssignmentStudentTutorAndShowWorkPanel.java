@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -16,6 +17,7 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefau
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -39,10 +41,10 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
          void tutorWidgetValueUpdated(String value, boolean correct);
     }
     
-    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, final int assignKey, final ProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
+    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, Assignment assignment, final ProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
         _callBack = callBack;
         _uid = uid;
-        _assignKey = assignKey;
+        _assignKey = assignment.getAssignKey();
         _pid = problem.getPid();
 
         
@@ -69,7 +71,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
             
             @Override
             public void showWorkIsReady() {
-                loadAssignmentWhiteboardData(uid, assignKey, problem.getPid());
+                loadAssignmentWhiteboardData(uid, _assignKey, problem.getPid());
             }
         });
         container.setEastWidget(_showWork,  bd);
@@ -81,9 +83,18 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         container.setCenterWidget(_tutorPanel, bd);
         setWidget(container);
         
-        loadTutor(title, uid, assignKey, problem);
+        loadTutor(title, uid, _assignKey, problem);
+        
+        
+        if(!assignment.isEditable()) {
+            addReadOnlyMask(getElement());
+        }
     }
     
+    
+    private void addReadOnlyMask(Element ele) {
+        mask("Closed");
+    }
     
     int _uid, _assignKey;
     String _pid;

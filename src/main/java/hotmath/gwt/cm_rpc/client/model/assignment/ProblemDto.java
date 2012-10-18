@@ -1,8 +1,10 @@
 package hotmath.gwt.cm_rpc.client.model.assignment;
 
+import java.util.Comparator;
+
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-public class ProblemDto extends BaseDto implements Response {
+public class ProblemDto extends BaseDto implements Response{
     
     static public enum ProblemType {INPUT_WIDGET, MULTI_CHOICE, WHITEBOARD}; 
     public ProblemDto(){}
@@ -68,5 +70,4 @@ public class ProblemDto extends BaseDto implements Response {
         return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType
                 + ", assignKey=" + assignKey + "]";
     }
-
 }

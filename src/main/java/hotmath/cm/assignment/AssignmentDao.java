@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
@@ -166,8 +167,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             assignment = getJdbcTemplate().queryForObject(sql, new Object[] { assKey }, new RowMapper<Assignment>() {
                 @Override
                 public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs
-                            .getString("comments"), rs.getDate("due_date"), null, null, rs.getString("status"));
+                    
+                    Date dueDate = rs.getDate("due_date");
+                    String status = determineAssignmentCurrentStatus(dueDate, rs.getString("status"));
+                    return new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), dueDate, null, null, status);
                 }
             });
         } catch (Exception e) {
@@ -219,7 +222,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * Return list of problems associated with named lesson
+     * Return list of problems associated with named lesson. 
+     * 
+     * At most MAX_PROBLEMS (12) are returned
+     * 
+     * Makes sure that solutions with widgets are returned first
+     * 
      *
      * @param conn
      * @param lesson
@@ -228,6 +236,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      */
     public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lessonName,String lessonFile, String subject) {
 
+        int MAX_PROBLEMS=12;
+        
         final int count[] = new int[1];
 
         String sql = "select * from HA_PROGRAM_LESSONS where lesson = ? and subject = ? order by id";
@@ -259,7 +269,30 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         problemsAll.addAll(problems);
 
-        return problemsAll;
+        
+        /** Try to select only problems with widgets first
+         * 
+         */
+        List<ProblemDto> problemsFiltered = new ArrayList<ProblemDto>();
+        for(ProblemDto pt: problemsAll) {
+            if(pt.getProblemType() != ProblemType.WHITEBOARD) {
+                problemsFiltered.add(pt);
+            }
+        }
+        /** Then add any whiteboard only questions to bottom
+         * 
+         */
+        for(ProblemDto pt: problemsAll) {
+            if(!problemsFiltered.contains(pt)) {
+                problemsFiltered.add(pt);
+            }
+        }
+        if(problemsFiltered.size() > MAX_PROBLEMS) {
+            return problemsFiltered.subList(0, MAX_PROBLEMS);
+        }
+        else {
+            return problemsFiltered;
+        }
     }
 
     private String getDefaultLabel(String lesson, int i) {
@@ -275,16 +308,37 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 // create a psudo name
                 String comments = rs.getString("comments");
-                String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
+                
+                Date dueDate = rs.getDate("due_date");
+                String status = determineAssignmentCurrentStatus(dueDate, rs.getString("status"));
+                
+                String assignmentName = _createAssignmentName(dueDate, comments, status);
 
                 Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
-                        .getString("comments"), rs.getDate("due_date"), null, null, rs.getString("status"));
+                        .getString("comments"), dueDate, null, null, status);
 
                 ass.setProblemCount(rs.getInt("problem_count"));
                 return ass;
             }
         });
         return problems;
+    }
+    
+    /** Return dynamic status .. meaning value might be expired
+     *  if pased the due_date.  This woudl be true no matter
+     *  the current setting of status in CM_ASSIGNMENT
+     *  
+     * @param dueDate
+     * @param status
+     * @return
+     */
+    private String determineAssignmentCurrentStatus(Date dueDate, String status) {
+        if(status.equalsIgnoreCase("open") &&  dueDate.getTime() < System.currentTimeMillis()) {
+            return "Expired";
+        }
+        else {
+            return status;
+        }
     }
 
     /**
@@ -732,8 +786,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public List<Assignment> getAssignmentsForUser(int uid) {
 
-        String sql = "select a.* " + " from HA_USER u " + " JOIN CM_GROUP g on g.id = u.group_id "
-                + " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " + " where u.uid = ? ";
+        String sql = "select a.* " + " from HA_USER u " + " JOIN CM_GROUP g on g.id = u.group_id " +
+                " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " + " where u.uid = ? " +
+                " order by a.due_date";
+                
 
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Assignment>() {
             @Override
@@ -741,7 +797,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 // create a pseudo name
                 String comments = rs.getString("comments");
-                String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
+                String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments, rs.getString("status"));
 
                 Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
                         .getString("comments"), rs.getDate("due_date"), null, null, rs.getString("status"));
@@ -751,8 +807,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return problems;
     }
 
-    private String _createAssignmentName(Date dueDate, String comments) {
-        return "Due Date: " + dueDate + (comments != null ? " - " + comments : "");
+    private String _createAssignmentName(Date dueDate, String comments, String status) {
+        String statusLabel = "";
+        if(status != null) {
+            if(status.equalsIgnoreCase("closed")) {
+                statusLabel = " (Closed) ";
+            }
+        }
+        return "Due Date: " + dueDate +  statusLabel + (comments != null ? " - " + comments : "");
     }
 
     public StudentAssignment getStudentAssignment(final int uid, int assignKey) throws Exception {

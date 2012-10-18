@@ -47,6 +47,34 @@ public class Assignment implements Response{
         this.uids = uids;
         this.status = status;
     }
+    
+    
+    public String getStatusLabel() {
+        if(isExpired()) {
+            return "Expired";
+        }
+        else {
+            return getStatus();
+        }
+    }
+    
+    /** Is this assignment editable at all
+     * 
+     * @return
+     */
+    public boolean isEditable() {
+        return isExpired() || status.equalsIgnoreCase("closed");
+    }
+    
+    /** Determine, based on data
+     * in object if this assignment 
+     * has expired.
+     * 
+     * @return
+     */
+    public boolean isExpired() {
+        return dueDate.getTime() < System.currentTimeMillis();
+    }
 
     public int getGroupId() {
         return groupId;

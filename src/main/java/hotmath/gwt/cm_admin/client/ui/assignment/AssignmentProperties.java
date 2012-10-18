@@ -19,4 +19,5 @@ public interface AssignmentProperties extends PropertyAccess<String> {
     ValueProvider<Assignment, Integer> problemCount();
     ValueProvider<Assignment, String> comments();
     ValueProvider<Assignment, String> status();
+    ValueProvider<Assignment, Boolean> expired();
   }

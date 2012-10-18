@@ -59,7 +59,7 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
-        getHeader().addTool(createCloseButton());
+        // getHeader().addTool(createCloseButton());
         getHeader().addTool(createDelButton());
         setCollapsible(false);
 

@@ -57,7 +57,7 @@ public class GradeBookPanel extends ContentPanel {
         _store = new ListStore<StudentAssignment>(saProps.uid());
         
         addGradeButton();
-        addAcceptAllButton();
+        //addAcceptAllButton();
     }
 
     Assignment _lastUsedAssignment;

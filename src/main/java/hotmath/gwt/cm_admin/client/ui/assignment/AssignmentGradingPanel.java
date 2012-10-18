@@ -43,7 +43,6 @@ public class AssignmentGradingPanel extends ContentPanel {
     ColumnModel<StudentProblemDto> colMdl;
     ColumnConfig<StudentProblemDto, String> problemCol;
     ColumnConfig<StudentProblemDto, String> statusCol;
-    ColumnConfig<StudentProblemDto, String> gradedCol;
     ListStore<StudentProblemDto> _store;
     Map<String, Integer> _correctIncorrectMap;
     StudentProblemDto _lastProblem;
@@ -97,15 +96,15 @@ public class AssignmentGradingPanel extends ContentPanel {
         statusCol = new ColumnConfig<StudentProblemDto, String>(spProps.status(), 100, "Status");
         statusCol.setRowHeader(true);
 
-        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 75, "Accepted");
+//        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 75, "Accepted");
 //        gradedCol = new ColumnConfig<StudentProblemDto, String>(new StudentProblemGradedStatusValueProvider(), 50,
 //        				"Graded");
-        gradedCol.setRowHeader(true);
+//        gradedCol.setRowHeader(true);
 
         colConfList = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
         colConfList.add(problemCol);
         colConfList.add(statusCol);
-        colConfList.add(gradedCol);
+        //colConfList.add(gradedCol);
         colMdl = new ColumnModel<StudentProblemDto>(colConfList);
 
         _studentAssignment = studentAssignment;

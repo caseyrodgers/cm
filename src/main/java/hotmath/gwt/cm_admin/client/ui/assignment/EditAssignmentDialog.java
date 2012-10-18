@@ -16,6 +16,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.Date;
 
+import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -135,7 +136,7 @@ public class EditAssignmentDialog {
         hCon.add(_statusLabel, hData);
 
         header.add(hCon);
-                
+        
         
         con.setNorthWidget(header);
         
@@ -160,6 +161,8 @@ public class EditAssignmentDialog {
         window.addCloseButton();
         
         window.setWidget(con);
+        
+        
         
         window.show();        
     }
@@ -188,6 +191,7 @@ public class EditAssignmentDialog {
         ListStore<AssignmentStatusDto> assStore = new ListStore<AssignmentStatusDto>(props.status());
         assStore.add(new AssignmentStatusDto("Open"));
         assStore.add(new AssignmentStatusDto("Closed"));
+        assStore.add(new AssignmentStatusDto("Expired"));
    
         ComboBox<AssignmentStatusDto> combo = new ComboBox<AssignmentStatusDto>(assStore, props.statusLabel());
         

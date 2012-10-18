@@ -124,7 +124,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         // create new each time
         int uid = UserInfoBase.getInstance().getUid();
         int assignKey =_studentAssignment.getAssignment().getAssignKey();
-        _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel(title, uid, assignKey,problem, new AssignmentStudentTutorAndShowWorkPanelCallback() {
+        _assignmentTutorAndShowWorkPanel = new AssignmentStudentTutorAndShowWorkPanel(title, uid, _studentAssignment.getAssignment(),problem, new AssignmentStudentTutorAndShowWorkPanelCallback() {
             
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {

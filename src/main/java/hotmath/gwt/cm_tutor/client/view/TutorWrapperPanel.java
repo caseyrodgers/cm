@@ -63,8 +63,7 @@ public class TutorWrapperPanel extends Composite {
             returnButton.addClassName("display_none");
         }
     }
-    
-    
+
     /** Set the tutor widget's value as defined 
      *  by each individual tutor widget type.  
      *  
@@ -117,10 +116,6 @@ public class TutorWrapperPanel extends Composite {
 
     }
     
-    static public interface CallbackAfterSolutionLoaded {
-        void solutionLoaded(SolutionInfo solutionInfo);
-    }
-
 
     /**
      * When the input widget has been updated
@@ -378,4 +373,9 @@ public class TutorWrapperPanel extends Composite {
             Window.alert("gwt_tutorNewProblem: no callback defined");
         }
     }
+    
+    static public interface CallbackAfterSolutionLoaded {
+        void solutionLoaded(SolutionInfo solutionInfo);
+    }
+
 }

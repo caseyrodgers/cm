@@ -77,9 +77,6 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
             }
         });
         
-        
-        addTool(new TextButton("Accept"));
-        
         setWidget(_tabPanel);
     }
 
