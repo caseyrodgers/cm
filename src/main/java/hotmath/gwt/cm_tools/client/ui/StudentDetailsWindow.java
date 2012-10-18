@@ -112,6 +112,7 @@ public class StudentDetailsWindow extends CmWindow {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
+        toolBar.add(displayAssignmentReportToolItem(studentModel));
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
@@ -391,6 +392,34 @@ public class StudentDetailsWindow extends CmWindow {
                 }
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(
                         PdfType.REPORT_CARD, sm.getAdminUid(), Arrays.asList(sm.getUid()),
+                        fromDate, toDate));
+            }
+        });
+        return ti;
+    }
+
+    private Button displayAssignmentReportToolItem(final StudentModelExt sm) {
+        Button ti = new Button();
+        // ti.setIconStyle("printer-icon");
+        ti.setText("Assignment Report");
+        ti.setToolTip("Display a printable assignment report");
+        ti.addStyleName("student-details-panel-sw-btn");
+
+        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate, toDate;
+                if (dateRange.isDefault()) {
+                	fromDate = null;
+                	toDate = null;
+                }
+                else {
+                	fromDate = dateRange.getFromDate();
+                	toDate = dateRange.getToDate();
+                }
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(
+                        PdfType.ASSIGNMENT_REPORT, sm.getAdminUid(), Arrays.asList(sm.getUid()),
                         fromDate, toDate));
             }
         });
