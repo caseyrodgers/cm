@@ -147,10 +147,6 @@ public class CmMainPanel extends BorderLayoutContainer {
 	 * 
 	 */
 	public void removeResource() {
-	    if(ContextController.getInstance().getTheContext() instanceof QuizContext) {
-	        return;
-	    }
-	    
 	    __lastInstance._mainContentWrapper.getResourceWrapper().clear();
 	    _lastResourceViewer = null;
 	    _lastResourceContentPanel = null;
