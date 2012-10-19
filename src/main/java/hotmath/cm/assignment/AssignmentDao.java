@@ -325,7 +325,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
     
     /** Return dynamic status .. meaning value might be expired
-     *  if pased the due_date.  This woudl be true no matter
+     *  if past the due_date.  This would be true no matter
      *  the current setting of status in CM_ASSIGNMENT
      *  
      * @param dueDate
@@ -431,12 +431,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	int completed = 0;
     	int pending = 0;
     	int count = 0;
+    	int viewed = 0;
     	int totGraded = 0;
     	int totCompleted = 0;
     	int totPending = 0;
     	int totCount = 0;
     	int totCorrect = 0;
     	int totIncorrect = 0;
+    	int totViewed = 0;
     	CmList<StudentLessonDto> lessonList = null;
     	StudentLessonDto lessonStatus = null;
 
@@ -444,8 +446,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     		if (probDto.getUid() != uid) {
     			if (lessonStatus != null) {
-    				lessonStatus.setStatus(getLessonStatus(count, completed, pending));
-    				stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    				lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
+    				stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
     				stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
     			}
     			lessonName = "";
@@ -455,6 +457,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			totCompleted = 0;
     			totPending = 0;
     			totGraded = 0;
+    			totViewed = 0;
     			uid = probDto.getUid();
     			lessonList = new CmArrayList<StudentLessonDto>();
     			stuAssignMap.get(uid).setLessonStatuses(lessonList);
@@ -463,12 +466,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		if (! lessonName.equals(probDto.getProblem().getLesson())) {
     			if (lessonName.trim().length() > 0) {
     				if (lessonStatus != null) {
-    					lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    					lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
     				}
     			}
     			completed = 0;
     			pending = 0;
     			count = 0;
+    			viewed = 0;
     			lessonName = probDto.getProblem().getLesson();
     			lessonStatus = new StudentLessonDto(uid, lessonName, null);
     			lessonList.add(lessonStatus);
@@ -478,8 +482,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		totCount++;
     		String probStatus = probDto.getStatus().trim();
     		if ("not viewed".equalsIgnoreCase(probStatus)) continue;
+
+    		//TODO: is "answered" an actual status?
     		if ("answered".equalsIgnoreCase(probStatus) ||
-                "viewed".equalsIgnoreCase(probStatus)   ||
                 "correct".equalsIgnoreCase(probStatus)  ||
                 "incorrect".equalsIgnoreCase(probStatus)) {
     			completed++;
@@ -495,13 +500,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			pending++;
     			totPending++;
     		}
+    		else if ("viewed".equalsIgnoreCase(probStatus)) {
+    			viewed++;
+    			totViewed++;
+    		}
     	}
 
     	if (lessonStatus != null) {
-    		lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    		lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
     	}
     	if(stuAssignMap.size() > 0) {
-    		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
     		stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
     	}
 
@@ -511,18 +520,28 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	return stuAssignments;
     }
 
-    private String getLessonStatus(int count, int completed, int pending) {
-        return (pending != 0) ?
-            String.format("%d of %d completed, %d pending", completed, count, pending) :
-            String.format("%d of %d completed", completed, count);
+    private String getLessonStatus(int count, int completed, int pending, int viewed) {
+    	if (pending != 0 && viewed != 0) {
+            return String.format("%d of %d completed, %d pending, %d viewed", completed, count, pending, viewed);
+    	}
+    	else if (pending != 0) {
+    		return String.format("%d of %d completed, %d pending", completed, count, pending);
+    	}
+    	else if (viewed != 0) {
+    		return String.format("%d of %d completed, %d viewed", completed, count, viewed);
+    	}
+    	else {
+    		return String.format("%d of %d completed", completed, count);
+    	}
     }
 
-    private String getHomeworkStatus(int totCount, int totCompleted, int totPending, int totAccepted) {
+    private String getHomeworkStatus(int totCount, int totCompleted, int totPending, int totAccepted, int totViewed) {
         String status = "Not Started";
         if (totAccepted > 0 && totAccepted == totCount) {
         	status = "Graded";
         }
-        else if ((totCompleted + totPending) > 0) {
+        //TODO: should this include totViewed?
+        else if ((totCompleted + totPending + totViewed) > 0) {
             status = ((totCompleted + totPending) < totCount) ? "In Progress" : "Ready to Grade";
         }
         return status;
@@ -586,12 +605,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     	int completed = 0;
     	int pending = 0;
     	int count = 0;
+    	int viewed = 0;
     	int totGraded = 0;
     	int totCompleted = 0;
     	int totPending = 0;
     	int totCount = 0;
     	int totCorrect = 0;
     	int totIncorrect = 0;
+    	int totViewed = 0;
     	lastAssignKey = 0;
     	CmList<StudentLessonDto> lessonList = null;
     	StudentLessonDto lessonStatus = null;
@@ -600,13 +621,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     		if (probDto.getProblem().getAssignKey() != lastAssignKey) {
     			if (lessonStatus != null) {
-    				lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    				lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
 
     				StudentAssignment sa = stuAssignMap.get(lastAssignKey);
     				sa.setProblemCount(totCount);
     				sa.setProblemPendingCount(totPending);
     				sa.setProblemCompletedCount(totCompleted);
-    				sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+    				sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
     				sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
     			}
     			lessonName = "";
@@ -616,6 +637,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			totCompleted = 0;
     			totPending = 0;
     			totGraded = 0;
+    			totViewed = 0;
     			lastAssignKey = probDto.getProblem().getAssignKey();
     			lessonList = new CmArrayList<StudentLessonDto>();
     			stuAssignMap.get(lastAssignKey).setLessonStatuses(lessonList);
@@ -624,12 +646,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		if (! lessonName.equals(probDto.getProblem().getLesson())) {
     			if (lessonName.trim().length() > 0) {
     				if (lessonStatus != null) {
-    					lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    					lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
     				}
     			}
     			completed = 0;
     			pending = 0;
     			count = 0;
+    			viewed = 0;
     			lessonName = probDto.getProblem().getLesson();
     			lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
     			lessonList.add(lessonStatus);
@@ -640,7 +663,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		String probStatus = probDto.getStatus().trim();
     		if ("not viewed".equalsIgnoreCase(probStatus)) continue;
     		if ("answered".equalsIgnoreCase(probStatus) ||
-                "viewed".equalsIgnoreCase(probStatus)   ||
                 "correct".equalsIgnoreCase(probStatus)  ||
                 "incorrect".equalsIgnoreCase(probStatus)) {
     			completed++;
@@ -658,17 +680,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			pending++;
     			totPending++;
     		}
+    		else if ("viewed".equalsIgnoreCase(probStatus)) {
+    			viewed++;
+    			totViewed++;
+    		}
     	}
 
     	if (lessonStatus != null) {
-    		lessonStatus.setStatus(getLessonStatus(count, completed, pending));
+    		lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
     	}
     	if (stuAssignMap.size() > 0) {
 			StudentAssignment sa = stuAssignMap.get(lastAssignKey);
 			sa.setProblemCount(totCount);
 			sa.setProblemPendingCount(totPending);
 			sa.setProblemCompletedCount(totCompleted);
-			sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded));
+			sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
 			sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
     	}
 
