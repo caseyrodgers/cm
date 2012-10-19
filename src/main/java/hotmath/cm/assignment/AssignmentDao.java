@@ -786,9 +786,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public List<Assignment> getAssignmentsForUser(int uid) {
 
-        String sql = "select a.* " + " from HA_USER u " + " JOIN CM_GROUP g on g.id = u.group_id " +
-                " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " + " where u.uid = ? " +
-                " order by a.due_date";
+        /** Sort so active/unexpired assignments are on top
+         * 
+         */
+        String sql = 
+                "select  due_date < now() as is_expired, a.* " +
+                "from   HA_USER u " +
+                " join CM_GROUP g " +
+                " on g.id = u.group_id " +
+                " join CM_ASSIGNMENT a " +
+                " on a.group_id = u.group_id " +
+                " where  u.uid = ? " + 
+                " order by is_expired, a.due_date ";
                 
 
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Assignment>() {
@@ -798,9 +807,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 // create a pseudo name
                 String comments = rs.getString("comments");
                 String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments, rs.getString("status"));
+                Date dueDate = rs.getDate("due_date");
 
+                String status = determineAssignmentCurrentStatus(dueDate, rs.getString("status"));
+                
                 Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
-                        .getString("comments"), rs.getDate("due_date"), null, null, rs.getString("status"));
+                        .getString("comments"),dueDate, null, null, status);
                 return ass;
             }
         });
@@ -809,9 +821,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     private String _createAssignmentName(Date dueDate, String comments, String status) {
         String statusLabel = "";
-        if(status != null) {
-            if(status.equalsIgnoreCase("closed")) {
-                statusLabel = " (Closed) ";
+        if(dueDate.getTime() < System.currentTimeMillis()) {
+            statusLabel = " (Expired)";
+        }
+        else {
+            if(status != null) {
+                if(status.equalsIgnoreCase("closed")) {
+                    statusLabel = " (Closed) ";
+                }
             }
         }
         return "Due Date: " + dueDate +  statusLabel + (comments != null ? " - " + comments : "");

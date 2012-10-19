@@ -21,7 +21,6 @@ public class FooterPanel extends FlowLayoutContainer {
 			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionData_Gwt();return false;'>prescription data</a></li>";
 			html += "<li><a href='javascript:void(0)' onclick='showPrescriptionSession_Gwt();return false;'>prescription sessions</a></li>";
 			html += "<li><a href='javascript:void(0)' onclick='startAutoTest_Gwt();return false;'>Auto Test</a></li>";
-			html += "<li><a href='javascript:void(0)' onclick='startCrashTest_Gwt();return false;'>Crash Test</a></li>";
 			html += "<li>CM_HOME_URL: " + CmShared.CM_HOME_URL + "</li>";
 		}
 

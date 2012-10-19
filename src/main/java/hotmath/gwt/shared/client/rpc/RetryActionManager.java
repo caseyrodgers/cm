@@ -2,7 +2,6 @@ package hotmath.gwt.shared.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class RetryActionManager {
     public void registerAction(RetryAction action) {
         _actions.add(action);
 
-        CmLogger.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
+        Log.debug("RetryActionManager: registerAction (" + _actions.size() + "): " + action);
         
         checkQueue();
     }
@@ -95,7 +94,7 @@ public class RetryActionManager {
     
     @SuppressWarnings("rawtypes")
     public void requestComplete(RetryAction action) {
-        CmLogger.debug("RetryActionManager: requestComplete: " + action);
+        Log.debug("RetryActionManager: requestComplete: " + action);
         _busy = false;
         
         
