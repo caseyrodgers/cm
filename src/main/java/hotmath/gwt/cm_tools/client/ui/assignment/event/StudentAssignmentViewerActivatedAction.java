@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment.event;
 
-import hotmath.gwt.cm_tools.client.ui.assignment.action.StudentAssignmentViewerActivatedHandler;
+import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
 
