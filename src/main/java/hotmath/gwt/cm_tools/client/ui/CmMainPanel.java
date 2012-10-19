@@ -1,7 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.assignment.action.StudentAssignmentViewerActivatedAction;
+import hotmath.gwt.cm_tools.client.ui.assignment.action.StudentAssignmentViewerActivatedHandler;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
@@ -15,6 +18,8 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
+
+import org.jfree.util.Log;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
@@ -159,6 +164,16 @@ public class CmMainPanel extends BorderLayoutContainer {
 
 	static {
 		publishNative();
+		
+		/** Configure normal CM system when Assignments are activated
+		 * 
+		 */
+		CmRpc.EVENT_BUS.addHandler(StudentAssignmentViewerActivatedAction.TYPE, new StudentAssignmentViewerActivatedHandler() {
+            @Override
+            public void assignmentGuiActivated() {
+                Log.debug("Student Assignments are activated");
+            }
+        });
 
 		/**
 		 * Implement a static listener for performance reasons
