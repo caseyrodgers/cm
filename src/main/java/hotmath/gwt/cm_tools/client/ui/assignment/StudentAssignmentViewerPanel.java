@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -10,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.AssignmentProblemListCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWorkPanel.AssignmentStudentTutorAndShowWorkPanelCallback;
+import hotmath.gwt.cm_tools.client.ui.assignment.action.StudentAssignmentViewerActivatedAction;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -103,10 +105,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         readAssignmentNamesFromServer();
         
-        
-        if(CmMainPanel.__lastInstance != null) {
-            CmMainPanel.__lastInstance.removeResource();
-        }
+        CmRpc.EVENT_BUS.fireEvent(new StudentAssignmentViewerActivatedAction());
     }
     
     private CenterLayoutContainer createEmptyPanel(String msg) {
