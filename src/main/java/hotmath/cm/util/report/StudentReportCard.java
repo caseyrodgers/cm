@@ -337,16 +337,53 @@ public class StudentReportCard {
     	List<StudentAssignment> asgList = asgDao.getAssignmentWorkForStudent(uid);
 
     	int totalCount = 0;
-    	int completedCount = 0;
     	int gradedCount = 0;
     	int correctCount = 0;
     	int incorrectCount = 0;
     	int pendingCount = 0;
     	int notViewedCount = 0;
     	int viewedCount = 0;
-    	
+    	int asgCount = 0;
+
+    	int completedCount = 0;
+        int notStartedCount = 0;
+        int readyToGradeCount = 0;
+        int inProgressCount = 0;
+    	List<Integer> percentList = new ArrayList<Integer>();
+
     	for (StudentAssignment asg : asgList) {
+    		
+    		if (asgCount > 0) {
+    			
+    			if (gradedCount == totalCount) {
+    				completedCount++;
+                    int percent = Math.round((((float)correctCount / (float)totalCount)) * 100.0f);
+                    percentList.add(percent);
+    			}
+    			//TODO: should this include viewedCount?
+    			else if ((correctCount + incorrectCount + pendingCount) == totalCount) {
+    				readyToGradeCount++;
+    			}
+    			else if (notViewedCount == totalCount) {
+    				notStartedCount++;
+    			}
+    			else if (pendingCount > 0 || viewedCount > 0) {
+    				inProgressCount++;
+    			}
+    			
+    			// reset counts
+    		    correctCount = 0;
+    		    gradedCount = 0;
+    		    incorrectCount = 0;
+    		    notViewedCount = 0;
+    		    pendingCount = 0;
+    		    totalCount = 0;
+    		    viewedCount = 0;
+    		}
+    		asgCount++;
+    		
     		List<StudentProblemDto> pList = asg.getAssigmentStatuses();
+
     		for (StudentProblemDto probDto : pList) {
         		totalCount++;
         		String probStatus = probDto.getStatus().trim();
@@ -354,13 +391,11 @@ public class StudentReportCard {
         			notViewedCount++;
         			continue;
         		}
+        		//TODO: is "answered" an actual status?
         		if ("answered".equalsIgnoreCase(probStatus) ||
                     "correct".equalsIgnoreCase(probStatus)  ||
                     "incorrect".equalsIgnoreCase(probStatus)) {
-        			completedCount++;
         			gradedCount += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
-        			if (probStatus.toLowerCase().indexOf("orrect") > 0)
-        				probDto.setIsGraded("Yes");
         			correctCount += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
         			incorrectCount += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
         			continue;
@@ -368,34 +403,58 @@ public class StudentReportCard {
         		if ("viewed".equalsIgnoreCase(probStatus)) {
         			viewedCount++;
         		}
-        		if ("pending".equalsIgnoreCase(probStatus)) {
+        		else if ("pending".equalsIgnoreCase(probStatus)) {
         			pendingCount++;
         		}
     		}
     	}
 
-    	if (totalCount > 0) {
+    	if (asgCount > 0) {
+
+    		if (gradedCount == totalCount) {
+    			completedCount++;
+    			int percent = Math.round((((float)correctCount / (float)totalCount)) * 100.0f);
+    			percentList.add(percent);
+    		}
+    		//TODO: should this include viewedCount?
+    		else if ((correctCount + incorrectCount + pendingCount) == totalCount) {
+    			readyToGradeCount++;
+    		}
+    		else if (notViewedCount == totalCount) {
+    			notStartedCount++;
+    		}
+    		else if (pendingCount > 0 || viewedCount > 0) {
+    			inProgressCount++;
+    		}
+
     		PdfPTable assignTbl = new PdfPTable(1);
     		assignTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-    		Phrase label = buildSectionLabel("Assignment Problems");
-    		Paragraph total = buildSectionContent("Total: ", String.valueOf(totalCount), true);
-    		Paragraph completed = buildSectionContent("Completed: ", String.valueOf(correctCount + incorrectCount), true);
-    		Paragraph pending = buildSectionContent("Pending: ", String.valueOf(pendingCount + viewedCount), true);
-    		Paragraph notViewed = buildSectionContent("Not started: ", String.valueOf(notViewedCount), true);
+    		Phrase label = buildSectionLabel("Assignments");
+    		Paragraph total = buildSectionContent("Assigned: ", String.valueOf(asgCount), true);
+    		Paragraph completed = buildSectionContent("Completed: ", String.valueOf(completedCount), true);
+    		Paragraph pending = buildSectionContent("Ready to Grade: ", String.valueOf(readyToGradeCount), true);
+    		Paragraph inProgress = buildSectionContent("In Progress: ", String.valueOf(inProgressCount), true);
+    		Paragraph notStarted = buildSectionContent("Not started: ", String.valueOf(notStartedCount), true);
 
     		String grade = "n/a";
-    		if ((correctCount + incorrectCount) > 0 ) {
-                int percent = Math.round(((float)correctCount / (float)(correctCount+incorrectCount)) * 100.0f);
-                grade = String.format("%d%s", percent, "%");
+    		if (percentList.size() > 0 ) {
+    			int totalPercent = 0;
+    			for (int percent : percentList) {
+    				totalPercent += percent;
+    			}
+    			int percent = Math.round( (float)totalPercent / (float)percentList.size() );
+    			grade = String.format("%d%s", percent, "%");
     		}
-    		Paragraph avgScore = buildSectionContent("Avg grade: ", grade, true);
+    		Paragraph avgScore = buildSectionContent("Average Grade: ", grade, true);
 
     		assignTbl.addCell(label);
     		assignTbl.addCell(total);
     		assignTbl.addCell(completed);
-    		assignTbl.addCell(pending);
-    		assignTbl.addCell(notViewed);
     		assignTbl.addCell(avgScore);
+    		assignTbl.addCell(pending);
+    		assignTbl.addCell(inProgress);
+    		assignTbl.addCell(notStarted);
+
     		assignTbl.setWidthPercentage(100.0f);
     		assignTbl.setSpacingBefore(20.0f);
     		document.add(assignTbl);
