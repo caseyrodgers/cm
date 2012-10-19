@@ -3,8 +3,8 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedHandler;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
+import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedHandler;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
@@ -19,8 +19,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import java.util.List;
 
-import org.jfree.util.Log;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
