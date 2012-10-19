@@ -12,6 +12,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 
 public class PdfWindow extends CmWindow {
@@ -48,16 +49,24 @@ public class PdfWindow extends CmWindow {
             public void oncapture(CmWebResource webResource) {
                 CatchupMathTools.setBusy(false);
                 
-                Frame frame = new Frame();
-                frame.setWidth("100%");
-                frame.setHeight("480px");
-                frame.setUrl(webResource.getUrl());
+                /** Was blanking out screen in IE 
+                 * 
+                 */
+                String features = "resizable=yes,scrollbars=yes,status=yes";
+                Window.open(webResource.getUrl(), "Catchupmath PDF Viewer", features);
+                return;
                 
-                removeAll();
-                setLayout(new FitLayout());
-                add(frame);
+//                
+//                Frame frame = new Frame();
+//                frame.setWidth("100%");
+//                frame.setHeight("480px");
+//                frame.setUrl(webResource.getUrl());
+//
+//                removeAll();
+//                setLayout(new FitLayout());
+//                add(frame);
                 
-                setVisible(true);
+//                setVisible(true);
             }
         }.register();
     }
