@@ -681,7 +681,7 @@
 				<version>2.2.0</version>
 
 				<configuration>
-					<extraJvmArgs>-XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dgwt.logLevel=INFO</extraJvmArgs>
+					<extraJvmArgs>-XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=INFO</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -693,6 +693,7 @@
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
+						<module>hotmath.gwt.cm_tutor.CmTutor</module>
 						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
