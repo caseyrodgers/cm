@@ -16,7 +16,7 @@ public class TutorViewerPanelSimple extends Composite {
     public TutorViewerPanelSimple(String pid) {
         this.pid = pid;
         _tutorWrapper = new TutorWrapperPanel(true, false, false, false, new TutorCallbackDefault());
-        _tutorWrapper.loadSolution(pid,  pid, false, false, "{}", new CallbackAfterSolutionLoaded() {
+        _tutorWrapper.loadSolution(pid,  pid, false, false,null, new CallbackAfterSolutionLoaded() {
             @Override
             public void solutionLoaded(SolutionInfo solutionInfo) {
                 Log.debug("Solution was loaded: " + solutionInfo.getPid());
