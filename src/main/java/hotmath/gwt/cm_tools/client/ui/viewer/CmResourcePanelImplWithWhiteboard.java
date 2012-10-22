@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.Res
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
+import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -165,43 +166,48 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
                 }
             }
         });
-        
-        TextButton crash = new TextButton("Crash Test");
-        final int times[] = {0};
-        crash.addSelectHandler(new SelectHandler() {
-            
-            @Override
-            public void onSelect(SelectEvent event) {
-                
-                Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-                    @Override
-                    public boolean execute() {
-                        if(times[0]++ < 10) {
-                            CmLogger.debug("Crash test #" + times[0]);
-                        
-                            long tl = times[0];
-                            if(tl/2 == 0) {
-                                setDisplayMode(DisplayMode.TUTOR);
-                            }
-                            else {
-                                setDisplayMode(DisplayMode.WHITEBOARD);
-                            }
-                            return true;
-                        }
-                        else {
-                            times[0] = 0;
-                            CmLogger.debug("CRASH TEST COMPLETE");
-                            return false;
-                        }
-                    }
-                }, 5000);
-            }
-        });
+
                 
         List<Widget> tools = new ArrayList<Widget>();
         tools.add(_saveWhiteboard);
         tools.add(_showWorkBtn);
-        tools.add(crash);
+        
+        TextButton crash = new TextButton("Crash Test");
+        final int times[] = {0};
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            // add whiteboard crash button if in debug mode
+            crash.addSelectHandler(new SelectHandler() {
+                
+                @Override
+                public void onSelect(SelectEvent event) {
+                    
+                    Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+                        @Override
+                        public boolean execute() {
+                            if(times[0]++ < 10) {
+                                CmLogger.debug("Crash test #" + times[0]);
+                            
+                                long tl = times[0];
+                                if(tl/2 == 0) {
+                                    setDisplayMode(DisplayMode.TUTOR);
+                                }
+                                else {
+                                    setDisplayMode(DisplayMode.WHITEBOARD);
+                                }
+                                return true;
+                            }
+                            else {
+                                times[0] = 0;
+                                CmLogger.debug("CRASH TEST COMPLETE");
+                                return false;
+                            }
+                        }
+                    }, 5000);
+                }
+            });        
+            tools.add(crash);
+        }
         return tools;
     }
     
