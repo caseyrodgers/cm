@@ -53,9 +53,12 @@
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
   </body>
-    <script src='/gwt-resources/js/excanvas.js'></script>
+    
     <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
     <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMathAdmin.js"></script>
+    
+    <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
+    
     <script src='http://code.jquery.com/jquery-1.8.1.min.js'></script>
     <script src='/gwt-resources/js/whiteboard.js'></script>
     <script src='/gwt-resources/js/mathquill/mathquill.js'></script>

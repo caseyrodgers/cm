@@ -124,7 +124,7 @@ if (!document.createElement('canvas').getContext) {
     init_: function(doc) {
       // find all canvas elements
       var els = doc.getElementsByTagName('canvas');
-	  console.log("NUM OF CANVAS ELEMENTS IN DOCUMENT: "+els.length)
+          console.log("NUM OF CANVAS ELEMENTS IN DOCUMENT: "+els.length)
       for (var i = 0; i < els.length; i++) {
         this.initElement(els[i]);
       }
@@ -148,9 +148,9 @@ if (!document.createElement('canvas').getContext) {
         // Remove fallback content. There is no way to hide text nodes so we
         // just remove all childNodes. We could hide all elements and remove
         // text nodes but who really cares about the fallback content.
-		try{
-		console.log("D-0:"+el)
-		console.log("D-1:"+el.innerHTML)
+                try{
+                console.log("D-0:"+el)
+                console.log("D-1:"+el.innerHTML)
         el.innerHTML = '';
 }catch(error){
 console.log("D-ERROR:"+error)
@@ -816,17 +816,17 @@ console.log("D-ERROR:"+error)
     } else {
       throw Error('Invalid number of arguments');
     }
-// Start of patch 
-        if(image.tagName == 'canvas'){ 
-                var outerDiv = document.createElement('div'); 
-                outerDiv.style.position = 'absolute'; 
-                outerDiv.style.left = dx + 'px'; 
-                outerDiv.style.top = dy + 'px'; 
-                outerDiv.innerHTML = image.outerHTML; 
-                this.element_.insertAdjacentHTML("BeforeEnd", outerDiv.outerHTML ); 
-                return; 
-        } 
-// End of patch 
+// Start of patch
+        if(image.tagName == 'canvas'){
+                var outerDiv = document.createElement('div');
+                outerDiv.style.position = 'absolute';
+                outerDiv.style.left = dx + 'px';
+                outerDiv.style.top = dy + 'px';
+                outerDiv.innerHTML = image.outerHTML;
+                this.element_.insertAdjacentHTML("BeforeEnd", outerDiv.outerHTML );
+                return;
+        }
+// End of patch
     var d = getCoords(this, dx, dy);
 
     var w2 = sw / 2;
