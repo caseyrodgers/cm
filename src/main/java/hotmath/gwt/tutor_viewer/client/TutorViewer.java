@@ -1,14 +1,15 @@
-package hotmath.gwt.cm_tutor.client;
+package hotmath.gwt.tutor_viewer.client;
 
 
 
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_tutor.client.view.TutorWithWhiteboardViewer;
+import hotmath.gwt.tutor_viewer.client.ui.TutorViewerPanelSimple;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -19,27 +20,27 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class CmTutor implements EntryPoint {
+public class TutorViewer implements EntryPoint {
 
-    public CmTutor() {
+    public TutorViewer() {
     }
     
     public void onModuleLoad() {
-        if(RootPanel.get("cm_whiteboard-main") != null) {
-            UserInfo.setInstance(new UserInfo());
-            TutorWithWhiteboardViewer tutorWhiteboard = new TutorWithWhiteboardViewer();
-            RootPanel.get("cm_whiteboard-main").add(tutorWhiteboard);
-            
-            
-            
-            Window.addResizeHandler(new ResizeHandler() {
-                @Override
-                public void onResize(ResizeEvent event) {
-                    Log.debug("Window has been resized");
-                    CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
-                }
-              });
+        UserInfo.setInstance(new UserInfo());
+        
+        String pid = CmGwtUtils.getQueryParameter("pid");
+        if(pid == null) {
+            Window.alert("pid parameter must be specified on the URL");
         }
+        RootPanel.get().add(new TutorViewerPanelSimple(pid));
+        
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                Log.debug("Window has been resized");
+                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+            }
+          });
     }
     
     

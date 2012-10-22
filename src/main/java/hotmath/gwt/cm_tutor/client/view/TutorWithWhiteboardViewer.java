@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
-public class TutorWithWhiteboard2 extends Composite {
+public class TutorWithWhiteboardViewer extends Composite {
 
     //String _testPid = "test_dynamic_practice_addition_1_1$3";
     //String _testPid = "test_dynamic_graphs_1_2_5$1";
@@ -37,7 +37,7 @@ public class TutorWithWhiteboard2 extends Composite {
     AssignmentProblem _assProblem;
     String _pid;
 
-    public TutorWithWhiteboard2() {
+    public TutorWithWhiteboardViewer() {
         SimplePanel sp = new SimplePanel();
 
         final DockPanel docPan = new DockPanel();

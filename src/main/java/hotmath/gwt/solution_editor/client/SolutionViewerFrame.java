@@ -80,7 +80,7 @@ public class SolutionViewerFrame extends Window {
     }
     
     private void showFrame() {
-        String url = "/gwt-resources/solution_editor/tutor_view.html?pid=" + pid;
+        String url = "/tutor_viewer/TutorViewer.html?pid=" + pid;
         if(_config != null && _config.length() > 0) {
             url += "&config=" + _config;
         }

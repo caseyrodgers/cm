@@ -150,6 +150,15 @@
       /cm_tutor/services/cmService
     </url-pattern>
   </servlet-mapping>
+  
+  
+    <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /tutor_viewer/services/cmService
+    </url-pattern>
+  </servlet-mapping>
+  
 
 
 

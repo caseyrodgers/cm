@@ -59,6 +59,7 @@ public class EditAssignmentDialog {
         this._assignment = assignment;
         final GWindow window = new GWindow(false);
         window.setPixelSize(800,600);
+        window.setMaximizable(true);
         
         if(assignment.getAssignKey() == 0) {
             window.setHeadingHtml("Edit Assignment: " + assignment.getAssignmentName());

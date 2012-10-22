@@ -69,30 +69,30 @@ function scrollToStep(num) {
 
 _enableJsWidgets = true
 
-/** setup click handler to open widget editor */
-function _showTutorWidget() {
-    var widgetDiv = $get('hm_flash_widget');
-    if (!widgetDiv)
-        return;
-    
-    widgetDiv.onclick = function() {
-        tutorWidgetClicked_gwt();
-    };
-}
-
-_createGuiWrapper = function() {
-
-    /** FIX, this must be specified ... 
-     * 
-     */
-    var guiWrapper = _widgetDiv;
-
-    guiWrapper.setAttribute("style", "position: relative;");
-    var html = "     <div id='hm_flash_widget_indicator' style='position: absolute;right: 5px;top: 25px;display: none;'>&nbsp;</div>"
-            + "     <div id='hm_flash_widget_head' onclick='showFlashObject();'>&nbsp;</div>";
-    guiWrapper.innerHTML = html;
-    return guiWrapper;
-}
+///** setup click handler to open widget editor */
+//function _showTutorWidget() {
+//    var widgetDiv = $get('hm_flash_widget');
+//    if (!widgetDiv)
+//        return;
+//    
+//    widgetDiv.onclick = function() {
+//        tutorWidgetClicked_gwt();
+//    };
+//}
+//
+//_createGuiWrapper = function() {
+//
+//    /** FIX, this must be specified ... 
+//     * 
+//     */
+//    var guiWrapper = _widgetDiv;
+//
+//    guiWrapper.setAttribute("style", "position: relative;");
+//    var html = "     <div id='hm_flash_widget_indicator' style='position: absolute;right: 5px;top: 25px;display: none;'>&nbsp;</div>"
+//            + "     <div id='hm_flash_widget_head' onclick='showFlashObject();'>&nbsp;</div>";
+//    guiWrapper.innerHTML = html;
+//    return guiWrapper;
+//}
 
 
 function initializeSolutionEditor() {

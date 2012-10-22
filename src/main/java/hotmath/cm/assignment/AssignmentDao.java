@@ -504,14 +504,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			viewed++;
     			totViewed++;
     		}
-    	}
+    		
 
-    	if (lessonStatus != null) {
-    		lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
-    	}
-    	if(stuAssignMap.size() > 0) {
-    		stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-    		stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+            if (lessonStatus != null) {
+                lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
+            }
+            if(stuAssignMap.size() > 0) {
+                stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
+                stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+            }
+
     	}
 
     	if (__logger.isDebugEnabled())

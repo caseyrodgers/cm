@@ -59,6 +59,7 @@ public class GradeBookDialog {
         this._stuAssignment = stuAssignment;
         final GWindow window = new GWindow(false);
         window.setPixelSize(800,600);
+        window.setMaximizable(true);
 
         window.setHeadingHtml("Assignment: " + stuAssignment.getAssignment().getAssignmentName());
 
