@@ -235,9 +235,6 @@ public class AssignmentGradingPanel extends ContentPanel {
             _gradingGrid.getSelectionModel().select(false,  _gradingGrid.getStore().get(0));
         }
         
-        addTool(createAcceptAllButton());
-        
-        
         setWidget(_gradingGrid);
 
     }
@@ -252,17 +249,6 @@ public class AssignmentGradingPanel extends ContentPanel {
     	}
     	return map;
 	}
-
-	private TextButton createAcceptAllButton() {
-        TextButton btn = new TextButton("Accept All");
-        btn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                markAllAccepted();
-            }
-        });
-        return btn;
-    }
     
     private void markAllAccepted() {
         for(StudentProblemDto dto: _gradingGrid.getStore().getAll()) {

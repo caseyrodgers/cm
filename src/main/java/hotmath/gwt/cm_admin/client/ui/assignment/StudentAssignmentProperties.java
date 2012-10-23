@@ -16,4 +16,6 @@ public interface StudentAssignmentProperties extends PropertyAccess<String> {
 	ValueProvider<StudentAssignment, String> homeworkStatus();
 
 	ValueProvider<StudentAssignment, String> homeworkGrade();
+	
+	ValueProvider<StudentAssignment, String> studentDetailStatus();
 }

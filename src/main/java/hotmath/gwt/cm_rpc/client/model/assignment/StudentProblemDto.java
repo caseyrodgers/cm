@@ -58,6 +58,10 @@ public class StudentProblemDto implements Response {
     public String getPid() {
         return problem.getPid();
     }
+    
+    public boolean isCorrect() {
+        return status != null && status.equalsIgnoreCase("correct");
+    }
 
 	@Override
     public String toString() {

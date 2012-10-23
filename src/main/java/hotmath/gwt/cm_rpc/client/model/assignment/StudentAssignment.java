@@ -31,6 +31,8 @@ public class StudentAssignment implements Response {
     private int problemCount;
     private int problemCompletedCount;
     private int problemPendingCount;
+    
+    private String studentDetailStatus;
 
 
     public StudentAssignment(){}
@@ -137,4 +139,14 @@ public class StudentAssignment implements Response {
 	public void setLessonStatuses(CmList<StudentLessonDto> lessonList) {
 		lessonStatuses = lessonList;
 	}
+
+    public String getStudentDetailStatus() {
+        return studentDetailStatus;
+    }
+
+    public void setStudentDetailStatus(String studentDetailStatus) {
+        this.studentDetailStatus = studentDetailStatus;
+    }
+	
+	
 }

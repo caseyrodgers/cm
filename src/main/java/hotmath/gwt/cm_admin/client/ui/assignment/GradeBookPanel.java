@@ -43,6 +43,7 @@ public class GradeBookPanel extends ContentPanel {
     ColumnConfig<StudentAssignment, String> nameCol;
     ColumnConfig<StudentAssignment, String> statusCol;
     ColumnConfig<StudentAssignment, String> gradeCol;
+    ColumnConfig<StudentAssignment, String> detailStatus;    
     ListStore<StudentAssignment> _store;
     
     public GradeBookPanel(){
@@ -87,7 +88,7 @@ public class GradeBookPanel extends ContentPanel {
                 _gradebookGrid.setWidth(480);
                 _gradebookGrid.getView().setStripeRows(true);
                 _gradebookGrid.getView().setColumnLines(true);
-                //_gradebookGrid.getView().setAutoExpandColumn(nameCol);
+                _gradebookGrid.getView().setAutoExpandColumn(detailStatus);
                 
                 _gradebookGrid.addHandler(new DoubleClickHandler() {
                     @Override
@@ -122,6 +123,10 @@ public class GradeBookPanel extends ContentPanel {
      * @param saList
      */
     private void configureColumns(List<StudentAssignment> saList) {
+        if(true)
+            return;
+        
+        
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
 
         if (saList != null && saList.size() > 0) {
@@ -154,10 +159,15 @@ public class GradeBookPanel extends ContentPanel {
 
         gradeCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Grade");
         gradeCol.setRowHeader(true);
+        
+        detailStatus = new ColumnConfig<StudentAssignment, String>(saProps.studentDetailStatus(), 150, "Details");
+        detailStatus.setRowHeader(true);
+        
 
         colConfList.add(nameCol);
         colConfList.add(statusCol);
         colConfList.add(gradeCol);
+        colConfList.add(detailStatus);
 	}
 
     private class StudentAssignmentStatusValueProvider extends Object implements ValueProvider<StudentAssignment, String> {
