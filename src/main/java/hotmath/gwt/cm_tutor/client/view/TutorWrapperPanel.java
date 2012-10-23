@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetValueChangedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +22,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsRenderable;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TutorWrapperPanel extends Composite {
@@ -71,7 +73,9 @@ public class TutorWrapperPanel extends Composite {
      *  {type: 'object',value: {prop: 'test'}};
      * @param value
      */
+    String _lastWidgetValue;
     public void setTutorWidgetValue(String value) {
+        _lastWidgetValue = value;
         jsni_setTutorWidgetValue(value);
     }
 
@@ -118,17 +122,30 @@ public class TutorWrapperPanel extends Composite {
     
 
     /**
-     * When the input widget has been updated
+     * When the input widget has been updated.
+     * 
+     * If tutor is in readonly mode, then disallow.
+     * 
+     * Inform callback of either case. 
      * 
      * @param inputValue
      * @param correct
      */
     public void tutorWidgetComplete(String inputValue, boolean correct) {
         Log.debug("tutorWidgetComplete (in GWT) called: " + inputValue);
-        if (this.tutorCallback != null) {
-            this.tutorCallback.tutorWidgetComplete(inputValue, correct);
-        } else {
-            Window.alert("tutorWidgetComplete not defined");
+        
+        if(_readOnly) {
+            jsni_setTutorWidgetValue(_lastWidgetValue);
+            this.tutorCallback.tutorWidgetCompleteDenied(inputValue, correct);
+            return;
+        }
+        else {
+            
+            if (this.tutorCallback != null) {
+                this.tutorCallback.tutorWidgetComplete(inputValue, correct);
+            } else {
+                Window.alert("tutorWidgetComplete not defined");
+            }
         }
     }
 
@@ -318,37 +335,6 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
-    public static interface TutorCallback {
-        /** When the NewProblem button is pressed 
-         * 
-         * @param problemNumber
-         */
-        void onNewProblem(int problemNumber);
-
-        /** Return the action used to save this context, null if
-         *  no context save should happen.
-         *  
-         * @param variablesJson
-         * @param pid
-         * @param problemNumber
-         * @return
-         */
-        Action<RpcData>  getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber);
-
-        /** Called when the tutor widget input is complete
-         * 
-         * @param inputValue
-         * @param correct
-         */
-        void tutorWidgetComplete(String inputValue, boolean correct);
-
-        /** Call after the last step has been viewed in a solution
-         * 
-         * @param value
-         */
-        void solutionHasBeenViewed(String value);
-    }
-    
     
     protected void solutionHasBeenViewed_Gwt(String value) {
         this.tutorCallback.solutionHasBeenViewed(value);
@@ -378,4 +364,46 @@ public class TutorWrapperPanel extends Composite {
         void solutionLoaded(SolutionInfo solutionInfo);
     }
 
+
+    boolean _readOnly;
+    public void setReadOnly(boolean b) {
+        _readOnly = b;
+    }
+
+    
+    public static interface TutorCallback {
+        /** When the NewProblem button is pressed 
+         * 
+         * @param problemNumber
+         */
+        void onNewProblem(int problemNumber);
+
+        /** Return the action used to save this context, null if
+         *  no context save should happen.
+         *  
+         * @param variablesJson
+         * @param pid
+         * @param problemNumber
+         * @return
+         */
+        Action<RpcData>  getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber);
+
+        /** Called when the tutor widget input is complete
+         * 
+         * @param inputValue
+         * @param correct
+         */
+        void tutorWidgetComplete(String inputValue, boolean correct);
+        
+        /** Called if a widget value change was detected when 
+         * such change is not allowed.
+         */
+        void tutorWidgetCompleteDenied(String inputValue, boolean correct);
+
+        /** Call after the last step has been viewed in a solution
+         * 
+         * @param value
+         */
+        void solutionHasBeenViewed(String value);
+    }    
 }

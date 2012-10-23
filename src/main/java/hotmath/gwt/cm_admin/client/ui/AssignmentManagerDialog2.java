@@ -39,6 +39,7 @@ public class AssignmentManagerDialog2  {
     AssignmentsContentPanel _assignmentsPanel;
     GradeBookPanel _gbPanel;
     ComboBox<GroupDto> _groupCombo;
+    BorderLayoutContainer _mainContainer;
     public AssignmentManagerDialog2(int aid) {
         this.aid = aid;
         
@@ -47,8 +48,8 @@ public class AssignmentManagerDialog2  {
         window.setHeadingHtml("Assignment Manager");
         window.setMaximizable(true);
 
-        final BorderLayoutContainer con = new BorderLayoutContainer();
-        con.setBorders(true);
+        _mainContainer = new BorderLayoutContainer();
+        _mainContainer.setBorders(true);
 
         BorderLayoutData northData = new BorderLayoutData(30);
         northData.setMargins(new Margins(10));
@@ -61,7 +62,7 @@ public class AssignmentManagerDialog2  {
         String msg = "<p style='margin-left: 20px;font-size: .9em;'>NOTE: Assignments are linked to groups.  Each student in a group will be assigned all the assignments defined for that group.</p>";
         header.add(new HTML(msg));
         
-        con.setNorthWidget(header, northData);
+        _mainContainer.setNorthWidget(header, northData);
         
         _gbPanel = new GradeBookPanel();
         _assignmentsPanel = new AssignmentsContentPanel(_gbPanel);
@@ -70,15 +71,15 @@ public class AssignmentManagerDialog2  {
         westData.setSize(440);
         westData.setCollapsible(true);
         westData.setFloatable(true);
-        con.setWestWidget(_assignmentsPanel,  westData);
+        _mainContainer.setWestWidget(_assignmentsPanel,  westData);
         
         BorderLayoutData eastData = new BorderLayoutData();
         eastData.setSize(490);
         
 
-        con.setCenterWidget(_gbPanel, eastData);
+        _mainContainer.setCenterWidget(_gbPanel, eastData);
         
-        window.setWidget(con);
+        window.setWidget(_mainContainer);
         
         window.show();
     }
@@ -101,7 +102,6 @@ public class AssignmentManagerDialog2  {
         combo.setWidth(200);
         combo.setTypeAhead(false);
         combo.setTriggerAction(TriggerAction.ALL);
-        combo.expand();
         
         combo.addSelectionHandler(new SelectionHandler<GroupDto>() {
             
@@ -129,6 +129,9 @@ public class AssignmentManagerDialog2  {
 
             public void oncapture(CmList<GroupDto> groupInfos) {
                 _groupCombo.getStore().addAll(groupInfos);
+                
+                _groupCombo.expand();
+                _mainContainer.forceLayout();
             }
         }.register();                
     }

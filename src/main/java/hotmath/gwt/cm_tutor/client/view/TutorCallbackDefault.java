@@ -26,8 +26,13 @@ public class TutorCallbackDefault implements TutorCallback {
 
     @Override
     public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
+        Log.debug("TutorCallbackDefault: getSaveSolutionContextAction");
         return null;
     }
     
+    @Override
+    public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
+        Log.debug("TutorCallbackDefault: tutorWidgetCompleteDenied");
+    }
 
 }

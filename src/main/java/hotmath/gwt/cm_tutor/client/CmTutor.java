@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tutor.client;
 
 
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
@@ -27,7 +28,9 @@ public class CmTutor implements EntryPoint {
     public void onModuleLoad() {
         if(RootPanel.get("cm_whiteboard-main") != null) {
             UserInfo.setInstance(new UserInfo());
-            TutorWithWhiteboardViewer tutorWhiteboard = new TutorWithWhiteboardViewer();
+            
+            String pid = CmGwtUtils.getQueryParameter("pid");
+            TutorWithWhiteboardViewer tutorWhiteboard = new TutorWithWhiteboardViewer(pid);
             RootPanel.get("cm_whiteboard-main").add(tutorWhiteboard);
             
             

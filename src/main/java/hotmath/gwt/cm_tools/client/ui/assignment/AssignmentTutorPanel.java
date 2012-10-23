@@ -39,7 +39,7 @@ public class AssignmentTutorPanel extends Composite {
     interface AssignmentTutorPanelCallback {
         void tutorWidgetValueUpdated(String value, boolean correct);
     }
-    public AssignmentTutorPanel(AssignmentTutorPanelCallback callBack) {
+    public AssignmentTutorPanel(boolean isEditable, AssignmentTutorPanelCallback callBack) {
         _callBack = callBack;
         __lastInstance = this;
         _tutorPanel = new TutorWrapperPanel(false, false,false, true, new TutorCallbackDefault() {
@@ -54,7 +54,15 @@ public class AssignmentTutorPanel extends Composite {
                 return new SaveAssignmentSolutionContextAction(_assProblem.getUserId(), _assignKey, _assProblem.getInfo().getPid(), 0, variablesJson);
             }
             
+            @Override
+            public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
+                CmMessageBox.showAlert("Changes are not allowed.");
+            }
+            
         });
+        if(!isEditable) {
+            _tutorPanel.setReadOnly(true);
+        }
         
         _tutorPanel.addStyleName("tutor_solution_wrapper");
         isEpp = true;

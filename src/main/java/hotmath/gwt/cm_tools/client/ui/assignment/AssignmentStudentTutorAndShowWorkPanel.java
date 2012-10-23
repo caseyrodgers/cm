@@ -51,7 +51,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         /** create callback to pass along when tutor widget value changed
          *  
          */
-        _tutorPanel = new AssignmentTutorPanel(new AssignmentTutorPanelCallback() {
+        _tutorPanel = new AssignmentTutorPanel(assignment.isEditable(),new AssignmentTutorPanelCallback() {
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 _callBack.tutorWidgetValueUpdated(value, correct);
@@ -84,17 +84,8 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         setWidget(container);
         
         loadTutor(title, uid, _assignKey, problem);
-        
-        
-        if(!assignment.isEditable()) {
-            addReadOnlyMask(getElement());
-        }
     }
-    
-    
-    private void addReadOnlyMask(Element ele) {
-        mask("Closed");
-    }
+
     
     int _uid, _assignKey;
     String _pid;

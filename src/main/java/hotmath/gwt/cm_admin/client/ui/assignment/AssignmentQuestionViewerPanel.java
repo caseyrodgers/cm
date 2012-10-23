@@ -3,16 +3,21 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
@@ -32,7 +37,6 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
@@ -53,15 +57,24 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
     SimpleContainer _showWorkWrapper;
 
     public AssignmentQuestionViewerPanel() {
-        _tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault());
+        _tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault(){
+            @Override
+            public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
+                CmMessageBox.showAlert("Not Allowed", "Changes to value are not allowed.<br/>Use the whiteboard to show corrections.");
+            }
+        });
+        _tutorPanel.setReadOnly(true);
+        
         setHeadingHtml("Question Display");
         _tutorPanel.setVisible(false);
         
         _tabPanel = new TabPanel();
         
         final FlowLayoutContainer flowPanel = new FlowLayoutContainer();
+        
         flowPanel.add(_tutorPanel);
         flowPanel.setScrollMode(ScrollMode.AUTO);
+        
         _tabPanel.add(flowPanel,new TabItemConfig("Question"));
 
         _showWorkWrapper = new SimpleContainer();
@@ -78,9 +91,24 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         });
         
         setWidget(_tabPanel);
-        
-        
-        flowPanel.mask();
+    }
+    
+    
+    private void saveAssignmentProblemStatusToServer(final StudentProblemDto prob) {
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                String status = prob.getStatus();
+                int thisUserUid=_assignmentProblem.getUserId();
+                SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(thisUserUid,_assignmentProblem.getAssignKey(),prob.getPid(),status);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(RpcData data) {
+                CmLogger.debug("Assignment problem status saved: " + data);
+            }
+        }.register();   
     }
 
     /** Lazy initialize show work, call load async
@@ -160,8 +188,6 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                     if(assignmentProblem.getLastUserWidgetValue() != null) {
                         _tutorPanel.setTutorWidgetValue(assignmentProblem.getLastUserWidgetValue());
                     }
-                    
-                    //setupShowWorkIfRequired();                    
                 }
                 catch(Exception e) {
                     e.printStackTrace();

@@ -8,7 +8,8 @@ public class CmMessageBox {
         
     }
     public static void showAlert(String title, String message) {
-        MessageBox box = new MessageBox(title, message);
+        String html = "<p style='padding: 5px;width: 350px;'>" + message + "</p>";
+        MessageBox box = new MessageBox(title, html);
         box.setVisible(true);
     }
 }

@@ -63,7 +63,7 @@ public class Assignment implements Response{
      * @return
      */
     public boolean isEditable() {
-        return !isExpired() && !status.equalsIgnoreCase("closed");
+        return !status.equalsIgnoreCase("closed");
     }
     
     /** Determine, based on data

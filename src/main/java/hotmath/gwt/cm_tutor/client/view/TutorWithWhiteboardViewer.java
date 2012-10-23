@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
@@ -27,7 +28,7 @@ public class TutorWithWhiteboardViewer extends Composite {
     //String _testPid = "test_dynamic_practice_addition_1_1$3";
     //String _testPid = "test_dynamic_graphs_1_2_5$1";
     // String _testPid = "alg2ptests3_coursetest_1_algebra2practicetest_1_1";
-    String _testPid = "cmextras_1_1_1_83_1";
+    // String _testPid = "cmextras_1_1_1_83_1";
 
     TutorWrapperPanel _tutorPanel;
     ShowWorkPanel _showWWork;
@@ -35,9 +36,11 @@ public class TutorWithWhiteboardViewer extends Composite {
     int _uid=2755;
     int _assignKey=9;
     AssignmentProblem _assProblem;
-    String _pid;
+    String _testPid;
 
-    public TutorWithWhiteboardViewer() {
+    public TutorWithWhiteboardViewer(String pid) {
+        
+        _testPid = pid;
         SimplePanel sp = new SimplePanel();
 
         final DockPanel docPan = new DockPanel();
@@ -47,14 +50,23 @@ public class TutorWithWhiteboardViewer extends Composite {
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);
             }
+            
+            @Override
+            public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
+                Window.alert("No changes allowed");
+            }
         });
+        
+        //_tutorPanel.setReadOnly(true);
+        
+        
         _tutorPanel.setWidth("400px");
         docPan.add(_tutorPanel,DockPanel.CENTER);
 
         _showWWork = new ShowWorkPanel(new ShowWorkPanelCallback() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _pid,commandType, data);
+                return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _testPid,commandType, data);
             }
             
             @Override
@@ -142,7 +154,7 @@ public class TutorWithWhiteboardViewer extends Composite {
                 
         _uid = uid;
         _assignKey = assignKey;
-        _pid = pid;
+        _testPid = pid;
         
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);

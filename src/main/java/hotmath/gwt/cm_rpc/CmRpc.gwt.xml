@@ -5,11 +5,10 @@
      say `INFO`, via the `log_level` URL parameter:
      http[s]://hostame:port/yourmodule/Yourmodule.html?log_level=INFO
   -->
-  <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
-  <extend-property name="log_level" values="INFO"/>
-
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
 	<!-- Hide the Log window, just send to stdout
 	    <set-property name="log_DivLogger" value="DISABLED" />
+	    <extend-property name="log_level" values="INFO"/>
 	 -->
 
 	<entry-point class='hotmath.gwt.cm_rpc.client.CmRpc' />
