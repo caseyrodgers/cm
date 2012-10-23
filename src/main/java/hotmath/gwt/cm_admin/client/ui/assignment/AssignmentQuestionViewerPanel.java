@@ -78,6 +78,9 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         });
         
         setWidget(_tabPanel);
+        
+        
+        flowPanel.mask();
     }
 
     /** Lazy initialize show work, call load async

@@ -101,6 +101,7 @@ public class AssignmentManagerDialog2  {
         combo.setWidth(200);
         combo.setTypeAhead(false);
         combo.setTriggerAction(TriggerAction.ALL);
+        combo.expand();
         
         combo.addSelectionHandler(new SelectionHandler<GroupDto>() {
             
