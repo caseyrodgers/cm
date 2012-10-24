@@ -3,6 +3,11 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -10,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -18,9 +24,8 @@ import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.event.CompleteEditEvent;
+import com.sencha.gxt.widget.core.client.event.CompleteEditEvent.CompleteEditHandler;
 import com.sencha.gxt.widget.core.client.form.PropertyEditor;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -109,6 +114,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         _studentAssignment = studentAssignment;
         List<StudentProblemDto> problems = _studentAssignment.getAssigmentStatuses();
         _store = new ListStore<StudentProblemDto>(spProps.pid());
+        _store.setAutoCommit(true);
         _store.addAll(problems);
 
         _gradingGrid = new Grid<StudentProblemDto>(_store, colMdl);
@@ -116,6 +122,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         _gradingGrid.getView().setStripeRows(true);
         _gradingGrid.getView().setColumnLines(true);
         _gradingGrid.getView().setAutoExpandColumn(problemCol);
+        
         
         SimpleComboBox<ProblemStatus> combo = new SimpleComboBox<ProblemStatus>(new StringLabelProvider<ProblemStatus>());
         combo.setPropertyEditor(new PropertyEditor<ProblemStatus>() {
@@ -258,7 +265,46 @@ public class AssignmentGradingPanel extends ContentPanel {
     }
     
     protected GridEditing<StudentProblemDto> createGridEditing(Grid<StudentProblemDto> editableGrid) {
-        return new GridInlineEditing<StudentProblemDto>(editableGrid);
+        GridInlineEditing<StudentProblemDto> editor = new GridInlineEditing<StudentProblemDto>(editableGrid);
+        editor.addCompleteEditHandler(new CompleteEditHandler<StudentProblemDto>() {
+            @Override
+            public void onCompleteEdit(CompleteEditEvent<StudentProblemDto> event) {
+                saveChange(_gradingGrid.getStore().get(event.getEditCell().getRow()));
+            }
+        });
+        
+        return editor;
+    }
+
+    private void saveChange(final StudentProblemDto selectedItem) {
+        Log.debug("Saving to server: " + selectedItem);
+        
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(selectedItem.getUid(),_studentAssignment.getAssignment().getAssignKey(),selectedItem.getPid(),selectedItem.getStatus());
+                   setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData results) {
+                CmBusyManager.setBusy(false);
+                Log.debug("Problem status was updated on server");
+            }
+            
+            public void onFailure(Throwable error) {
+                CmBusyManager.setBusy(false);
+                Log.debug("Error while saving problem status", error);
+                super.onFailure(error);
+            }
+
+        }.register();
+
+        
+        
+        
     }
 /*
     private class StudentProblemGradedStatusValueProvider extends Object implements ValueProvider<StudentProblemDto, String> {
