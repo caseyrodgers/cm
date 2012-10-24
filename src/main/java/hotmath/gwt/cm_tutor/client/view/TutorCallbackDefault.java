@@ -35,4 +35,9 @@ public class TutorCallbackDefault implements TutorCallback {
         Log.debug("TutorCallbackDefault: tutorWidgetCompleteDenied");
     }
 
+    @Override
+    public void showWhiteboard() {
+        Log.debug("TutorCallbackDefault: showWhiteboard");
+    }
+
 }

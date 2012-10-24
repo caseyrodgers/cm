@@ -53,11 +53,30 @@ public class ShowWorkPanel extends Composite {
 
 
     public ShowWorkPanel(ShowWorkPanelCallback whiteboardOutCallback) {
+        this(whiteboardOutCallback, true);
+    }
+    
+    public ShowWorkPanel(ShowWorkPanelCallback whiteboardOutCallback,boolean setupWhiteboardNow) {
         this._whiteboardOutCallback = whiteboardOutCallback;
         initWidget(uiBinder.createAndBindUi(this));
 
         showProblem.setVisible(false);
 
+        setExternalJsniHooks(this);
+        
+        
+        if(setupWhiteboardNow) {
+            setupWhiteboard();
+        }
+
+        __lastInstance = this;
+    }
+    
+    
+    /** Call after the whiteboard had been inserted into DOM
+     * 
+     */
+    public void setupWhiteboard() {
         /** execute initialize only after HTML is loaded */
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
@@ -73,10 +92,7 @@ public class ShowWorkPanel extends Composite {
                 Log.debug("Calling showWorkIsReady");
                 isReady = true;
             }
-        });
-        setExternalJsniHooks(this);
-
-        __lastInstance = this;
+        });        
     }
     
     
@@ -111,7 +127,7 @@ public class ShowWorkPanel extends Composite {
 
     @UiHandler("showProblem")
     protected void handleShowProblem(ClickEvent ce) {
-        setProblemStatement();
+        setProblemStatement("The Problem Statement");
     }
 
     public void setAsTeacherMode(boolean yesNo) {
@@ -122,10 +138,8 @@ public class ShowWorkPanel extends Composite {
                                                             $wnd.Whiteboard.setAsTeacherMode(yesNo);
                                                             }-*/;
 
-    private void setProblemStatement() {
-        String problemStatement = "PROBLEM STATEMENT";
-
-        if (showProblem.getValue()) {
+    public void setProblemStatement(String problemStatement) {
+        if (true) { // showProblem.getValue()) {
             canvasBackground.setInnerHTML("<div>" + problemStatement + "</div>");
             canvasBackground.setAttribute("style", "display: block");
 
@@ -137,8 +151,8 @@ public class ShowWorkPanel extends Composite {
     }
 
     native private void initializeWidgets() /*-{
-                                            $wnd.AuthorApi.initializeWidgets();
-                                            }-*/;
+        $wnd.AuthorApi.initializeWidgets();
+    }-*/;
 
     /**
      * send an array of commands to whiteboard.
@@ -292,9 +306,12 @@ public class ShowWorkPanel extends Composite {
                                                               }-*/;
 
     private native void jnsi_resizeWhiteboard(Element ele)/*-{
+    
         // tell the Whiteboard object the size of the parent container
         var height = Number($wnd.grabComputedHeight(ele)) + 15;
         var width = Number($wnd.grabComputedWidth(ele)) + 15;
+        
+        
         $wnd.Whiteboard.setWhiteboardViewPort(width, height);
         $wnd.Whiteboard.resizeWhiteboard();
      }-*/;
@@ -310,7 +327,7 @@ public class ShowWorkPanel extends Composite {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
-                        if (__lastInstance != null) {
+                        if (__lastInstance != null && __lastInstance.isReady()) {
                             __lastInstance.resizeWhiteboard();
                         }
                     }

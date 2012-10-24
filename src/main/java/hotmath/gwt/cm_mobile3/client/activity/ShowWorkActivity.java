@@ -13,8 +13,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -69,13 +67,13 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         });
             
         
-        /** execute initialize only after HTML is loaded */
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-            @Override
-            public void execute() {
-                initializeWhiteboard();
-            }
-        });
+//        /** execute initialize only after HTML is loaded */
+//        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+//            @Override
+//            public void execute() {
+//                initializeWhiteboard();
+//            }
+//        });
     }
 
     @Override
@@ -162,9 +160,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     }-*/;
     
     
-    private native void initializeWhiteboard()/*-{
-        $wnd.Whiteboard.initWhiteboard($doc);
-    }-*/;
+//    private native void initializeWhiteboard()/*-{
+//        $wnd.Whiteboard.initWhiteboard($doc);
+//    }-*/;
     
     static public native void disconnectWhiteboard()/*-{
         $wnd.Whiteboard.disconnectWhiteboard($doc);

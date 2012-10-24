@@ -9,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
-import hotmath.gwt.cm_tutor.client.event.TutorWidgetValueChangedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +21,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsRenderable;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TutorWrapperPanel extends Composite {
@@ -195,7 +193,7 @@ public class TutorWrapperPanel extends Composite {
         
         var that = this;
         $wnd.solutionSetComplete = function(numCorrect, limit) {
-            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::solutionSetComplete_Gwt(II)(numCorrect,limit);
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionSetComplete(II)(numCorrect,limit);
         }
     
     
@@ -212,7 +210,7 @@ public class TutorWrapperPanel extends Composite {
         $wnd.TutorDynamic.setSolutionTitle = function(probNum, total) {
             $wnd.TutorDynamic.setSolutionTitle = 
             function() { 
-                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::setSolutionTitle_Gwt(II)(probNum,total); 
+                that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_setSolutionTitle(II)(probNum,total); 
             }
         }
         
@@ -239,10 +237,13 @@ public class TutorWrapperPanel extends Composite {
         
         // called when the solution has been fully
         // initialized and ready to be interacted with 
-        $wnd.solutionHasBeenViewed_Gwt = function(value) {
-            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::solutionHasBeenViewed_Gwt(Ljava/lang/String;)(value);
+        $wnd.gwt_solutionHasBeenViewed = function(value) {
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenViewed(Ljava/lang/String;)(value);
         }
-
+        
+        $wnd.gwt_showWhiteboard = function() {
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
+        }
         
        // called from CatchupMath.js event.tutorHasBeenInitialized
        // used to store current tutor context on server providing
@@ -277,6 +278,9 @@ public class TutorWrapperPanel extends Composite {
        $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext);
    }-*/;    
 
+    private void gwt_showWhiteBoard() {
+        this.tutorCallback.showWhiteboard();
+    }
     
     
     private void gwt_tutorQuestionGuessChanged(String id, String selection, String correct) {
@@ -336,15 +340,15 @@ public class TutorWrapperPanel extends Composite {
     }
 
     
-    protected void solutionHasBeenViewed_Gwt(String value) {
+    protected void gwt_solutionHasBeenViewed(String value) {
         this.tutorCallback.solutionHasBeenViewed(value);
     }
 
     /** Define by whiteboard/CM contract */
-    protected void solutionSetComplete_Gwt(int numCorrect, int limit) {
+    protected void gwt_solutionSetComplete(int numCorrect, int limit) {
     }
 
-    protected void setSolutionTitle_Gwt(int probNum, int total) {
+    protected void gwt_setSolutionTitle(int probNum, int total) {
         Window.alert("Set Solution Title via GWT");
 
     }
@@ -405,5 +409,10 @@ public class TutorWrapperPanel extends Composite {
          * @param value
          */
         void solutionHasBeenViewed(String value);
+        
+        /** Show the associated whiteboard for this tutor
+         * 
+         */
+        void showWhiteboard(); 
     }    
 }

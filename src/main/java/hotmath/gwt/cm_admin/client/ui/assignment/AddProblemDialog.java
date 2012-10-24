@@ -84,15 +84,13 @@ public class AddProblemDialog extends GWindow {
         super(false);
 
         setHeadingHtml("Add problems to Assignment");
-        setPixelSize(820, 600);
+        setPixelSize(700, 480);
+        setMaximizable(true);
         addButton(createAddSelectionButton());
         addCloseButton();
 
         _treePanel = new ContentPanel();
         _mainContainer = new BorderLayoutContainer();
-        BorderLayoutData westData = new BorderLayoutData();
-        westData.setSize(400);
-
         
         _treeFlatPanel = new AssignmentLessonListingPanel(new CallbackOnSelectedLesson() {
             @Override
@@ -100,6 +98,11 @@ public class AddProblemDialog extends GWindow {
                 Window.alert("Lesson was selected");
             }
         });
+
+
+        CenterLayoutContainer centered = new CenterLayoutContainer();
+        centered.setWidget(new Label("Loading data ..."));
+        _treePanel.setWidget(centered);        
         
         _tabPanel = new TabPanel();
         _tabPanel.add(_treePanel, new TabItemConfig("Program Tree", false));
@@ -111,18 +114,15 @@ public class AddProblemDialog extends GWindow {
                     // is flat tree
                     updateFlattenTree();
                 }
-                
             }
         });
-        _mainContainer.setWestWidget(_tabPanel,  westData);        
-
-
-        CenterLayoutContainer centered = new CenterLayoutContainer();
-        centered.setWidget(new Label("Loading data ..."));
-        _treePanel.setWidget(centered);
-     
         
+        BorderLayoutData data = new BorderLayoutData();
+        data.setSize(.50);
+        data.setSplit(true);
+        data.setCollapsible(true);
 
+        _mainContainer.setCenterWidget(_tabPanel, data);        
         
         addHideHandler(new HideHandler() {
             @Override
@@ -131,7 +131,7 @@ public class AddProblemDialog extends GWindow {
             }
         });
         
-        setupViewerGui();
+        //setupViewerGui();
         
         setWidget(_mainContainer);
 
@@ -144,12 +144,11 @@ public class AddProblemDialog extends GWindow {
 
     public void setupViewerGui() {
         BorderLayoutData eastData = new BorderLayoutData();
-        eastData.setSize(400);
+        eastData.setSize(.50);
         eastData.setSplit(true);
-        FlowLayoutContainer flow = new FlowLayoutContainer();
-        flow.add(QuestionViewerPanel.getInstance());
-        flow.setScrollMode(ScrollMode.AUTO);
-        _mainContainer.setEastWidget(flow,eastData);
+        eastData.setCollapsible(true);
+
+        _mainContainer.setEastWidget(QuestionViewerPanel.getInstance(),eastData);
     }
     
     private Widget createAddSelectionButton() {
@@ -471,6 +470,7 @@ public class AddProblemDialog extends GWindow {
         }
 
         __sharedInstance.setupViewerGui();
+        __sharedInstance.forceLayout();
         __sharedInstance.setCallback(callbackOnComplete);
         __sharedInstance.show();
     }

@@ -42,13 +42,17 @@ public class MessageOfTheDayDialog extends Window {
             }
         });
         addButton(okBtn);
-        setVisible(true);
-        
         
         CmShared.getCmService().execute(new GetMessageOfTheDayAction(), new AsyncCallback<StringHolder>() {
             
             public void onSuccess(StringHolder result) {
-                mainPanel.getElement().setInnerHTML(result.getResponse());
+                if(result.getResponse() == null || result.getResponse().length() == 0) {
+                    removeFromParent();
+                }
+                else {
+                    mainPanel.getElement().setInnerHTML(result.getResponse());
+                    setVisible(true);
+                }
             }
             
             @Override

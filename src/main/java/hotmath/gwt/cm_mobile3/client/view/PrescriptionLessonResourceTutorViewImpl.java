@@ -8,12 +8,16 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-import hotmath.gwt.cm_mobile_shared.client.view.TutorMobileWrapperPanel;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,20 +31,30 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 
 	ProblemNumber problem;
 	
-    TutorMobileWrapperPanel tutorPanel;
+    TutorWrapperPanel tutorPanel;
     SolutionResponse lastResponse;
     String _title;
     
-    static {
-        setupJsniStatic();
-    }
-    
 	public PrescriptionLessonResourceTutorViewImpl() {
-	    tutorPanel = new TutorMobileWrapperPanel();
+	    tutorPanel = new TutorWrapperPanel(true,true,true,true,new TutorCallbackDefault(){
+	        @Override
+	        public void solutionHasBeenViewed(String value) {
+	            presenter.markSolutionAsComplete();
+	        }
+	        
+	        @Override
+	        public void onNewProblem(int problemNumber) {
+	            tutorNewProblem();
+	        }
+	        
+	        @Override
+	        public void showWhiteboard() {
+	            presenter.showWhiteboard(getTitle());
+	        }
+	        
+	    });
 	    initWidget(tutorPanel);
 	    setStyleName("prescriptionLessonResourceTutorViewImpl");
-	    
-	    setupJsniInstance(this);
 	}
 
 	Presenter presenter;
@@ -59,11 +73,12 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    
 	    this.lastResponse = solution;
 	    this.problem = solution.getProblem();
-	    this.tutorPanel.setPid(solution.getProblem().getPid());
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-				initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(), solution.getSolutionData(), solution.getTutorHtml(),problem.getProblem(), false, false, solution.getSolutionVariableContext() );
+			    SolutionInfo si = new SolutionInfo(solution.getProblem().getPid(),solution.getTutorHtml(),solution.getSolutionData(),false);
+			    si.setContext(new SolutionContext(solution.getProblem().getPid(), 0, solution.getSolutionVariableContext()));
+				tutorPanel.externallyLoadedTutor(si, getWidget(),si.getPid(), null, si.getJs(), si.getHtml(), _title, false, false, si.getContext().getContextJson());
 				
 				tutorPanel.setVisible(true);				
 			}
@@ -130,9 +145,6 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         pp = MessageBox.showMessage(flowPanel,null);
 	}
 	
-	private void showWhiteboard_Gwt() {
-	    presenter.showWhiteboard(getTitle());
-	}
 	
 	PopupPanel pp; 
 	private void solutionSetComplete_Gwt(int correct, int limit) {
@@ -154,7 +166,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	}
 	
 	private void resetTutor_Gwt() {
-	    initializeTutor(PrescriptionLessonResourceTutorViewImpl.this, problem.getPid(), presenter.getItemData().getWidgetJsonArgs(),lastResponse.getSolutionData(), lastResponse.getTutorHtml(),problem.getProblem(), false, false,null);
+	    Log.debug("reset tutor not implemented");
 	}
 	
 	public static int __probNum;
@@ -168,7 +180,10 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    else {
 	        title = "Problem 1 of 1";
 	    }
-	    this.tutorPanel.setTutorTitle(title);
+	    
+	    
+	    Log.debug("NEED TO SET TITLE: " + title);
+	    //this.tutorPanel.setTutorTitle(title);
 	}
 	
 	private void tutorWidgetCompleteAux(boolean yesNo) {
@@ -180,70 +195,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	    }
 	}
 	
-	/** initialize external tutor JS/HTML and provide
-	 *  glue between external JS methods and GWT.
-	 *  
-	 */
-    private native void initializeTutor(PrescriptionLessonResourceTutorViewImpl instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) /*-{
-    
-          $wnd.solutionSetComplete = function(numCorrect, limit) {
-              instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::solutionSetComplete_Gwt(II)(numCorrect,limit);
-          }
-          
-          $wnd.TutorDynamic.setSolutionTitle = function(probNum, total) {
-             instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::setSolutionTitle_Gwt(II)(probNum,total);
-          }
-          
-          
-          $wnd.tutorWidgetCompleteAux = function(yesNo) {
-             instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::tutorWidgetCompleteAux(Z)(yesNo);
-          }
-          
-          $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext);
-          
-          // Customize Tutor HTML for Mobile 
-          var tutorFooter = $doc.getElementById('steps_tail');
-          if(tutorFooter) {
-              try {
-                 var showWhiteboard = $doc.getElementById('show_whiteboard_button');
-                 if(!showWhiteboard) {
-                     showWhiteboard = $doc.createElement("button");
-                     showWhiteboard.className = 'sexybutton sexy_cm_silver';
-                     showWhiteboard.id = 'show_whiteboard_button';
-                     showWhiteboard.innerHTML = "<span><span>Whiteboard</span></span>";
-                     tutorFooter.appendChild(showWhiteboard);
-                 }
-                 
-                 showWhiteboard = $doc.getElementById('show_whiteboard_button');
-                 showWhiteboard.onclick = function() {
-                     instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::showWhiteboard_Gwt()();
-                 };
-              }
-              catch(E) {
-                 alert(E);
-             }
-          }
-    }-*/;
-
-    
-    public void gwt_solutionHasBeenViewed() {
-        presenter.markSolutionAsComplete();
-    }
+	
 
     static private native void expandAllSteps() /*-{
                                           $wnd.expandAllSteps();
                                           }-*/;
-
-    native private void setupJsniInstance(PrescriptionLessonResourceTutorViewImpl instance) /*-{
-    	$wnd.gwt_solutionHasBeenViewed = function(){
-    	    instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::gwt_solutionHasBeenViewed()();
-    	 };
-    	 
-        $wnd.gwt_tutorNewProblem = function(){
-            instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::tutorNewProblem()();
-         };    	 
-
-    }-*/;
     
     native private static void setupJsniStatic() /*-{
         $wnd.gwt_scrollToBottomOfScrollPanel = @hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl::scrollToBottom(I);

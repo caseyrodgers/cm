@@ -16,7 +16,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -58,7 +57,7 @@ public class EditAssignmentDialog {
     public EditAssignmentDialog(Assignment assignment, final CallbackOnComplete callbackOnComplete) {
         this._assignment = assignment;
         final GWindow window = new GWindow(false);
-        window.setPixelSize(800,600);
+        window.setPixelSize(700,480);
         window.setMaximizable(true);
         
         if(assignment.getAssignKey() == 0) {

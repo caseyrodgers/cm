@@ -44,7 +44,7 @@ public class AssignmentManagerDialog2  {
         this.aid = aid;
         
         Window window = new GWindow(true);
-        window.setPixelSize(950,500);
+        window.setPixelSize(700, 480);
         window.setHeadingHtml("Assignment Manager");
         window.setMaximizable(true);
 
@@ -68,14 +68,13 @@ public class AssignmentManagerDialog2  {
         _assignmentsPanel = new AssignmentsContentPanel(_gbPanel);
         
         BorderLayoutData westData = new BorderLayoutData();
-        westData.setSize(440);
+        westData.setSize(360);
         westData.setCollapsible(true);
         westData.setFloatable(true);
         _mainContainer.setWestWidget(_assignmentsPanel,  westData);
         
         BorderLayoutData eastData = new BorderLayoutData();
-        eastData.setSize(490);
-        
+        eastData.setSize(400);
 
         _mainContainer.setCenterWidget(_gbPanel, eastData);
         

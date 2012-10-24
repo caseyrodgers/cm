@@ -11,6 +11,8 @@
 	
     <inherits name='hotmath.gwt.form_factor.FormFactor' />
     
+        <inherits name='hotmath.gwt.cm_tutor.CmTutor' />
+    
     <!-- Use ClientFactoryImpl by default -->
     <replace-with class="hotmath.gwt.cm_mobile3.client.ClientFactoryImplMobile">
         <when-type-is class="hotmath.gwt.cm_mobile3.client.ClientFactory" />

@@ -226,7 +226,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //        
 //        pan.viewQuestion(studentAssignment, problem);
         
-      if(true) {
+      if(false) {
           final int uid=2;
           String pid="test_dynamic_graphs_1_2_3$4";
           int groupId=10;
@@ -255,7 +255,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
           return;
       }
       
-      if(true) {
+      if(false) {
           StudentModelExt sme = new StudentModelExt();
           StudentActivityModel activityModel = new StudentActivityModel();
           activityModel.setRunId(1196000);
@@ -269,7 +269,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
       
       
       
-      if(false) {
+      if(true) {
 //          new AssignmentManagerDialog2(2);
 //          return;
           AddProblemDialog.showDialog(new AddProblemsCallback() {

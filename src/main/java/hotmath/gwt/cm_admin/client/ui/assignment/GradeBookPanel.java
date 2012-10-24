@@ -20,11 +20,13 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -97,7 +99,11 @@ public class GradeBookPanel extends ContentPanel {
                     }
                 },DoubleClickEvent.getType());
                 CmBusyManager.setBusy(false);
-                setWidget(_gradebookGrid);
+                
+                FlowLayoutContainer scrollWrapper = new FlowLayoutContainer();
+                scrollWrapper.setScrollMode(ScrollMode.AUTO);
+                scrollWrapper.add(_gradebookGrid);
+                setWidget(scrollWrapper);
                 forceLayout();
             }
         }.register();                

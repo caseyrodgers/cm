@@ -29,11 +29,9 @@ HmEvents.eventTutorInitialized.subscribe(function() {
  * is used to only advance when the solution has actually been completed.
  *
  *
- * solutionHasBeenViewed_Gwt is defined GWT source: PrescriptionCmGuiDefinition
- *
  */
 HmEvents.eventTutorLastStep.subscribe(function (x) {
-    solutionHasBeenViewed_Gwt(String(x));
+	gwt_solutionHasBeenViewed(String(x));
 });
 
 
@@ -234,11 +232,12 @@ var TutorManager = {
     newProblem : function() {
         var cnt = TutorManager.context.probNum;
         var total = TutorManager.context.jsonConfig?TutorManager.context.jsonConfig.limit:0;
+        
         gwt_tutorNewProblem(cnt+1, total);
     },
 
     showWhiteboard: function() {
-        // non-event .. should be overridden
+        gwt_showWhiteboard();
     },
 
     showStepUnit: function(x) {
