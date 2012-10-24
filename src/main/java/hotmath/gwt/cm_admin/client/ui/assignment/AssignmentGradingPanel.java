@@ -115,7 +115,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         _studentAssignment = studentAssignment;
         List<StudentProblemDto> problems = _studentAssignment.getAssigmentStatuses();
         _store = new ListStore<StudentProblemDto>(spProps.pid());
-        _store.setAutoCommit(true);
+        //_store.setAutoCommit(true);
         _store.addAll(problems);
 
         _gradingGrid = new Grid<StudentProblemDto>(_store, colMdl);

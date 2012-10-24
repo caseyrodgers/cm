@@ -154,26 +154,34 @@ public class GradeBookDialog {
             }
         }));
         
-        window.addHideHandler(new HideHandler() {
+        TextButton closeButton = new TextButton("Close");
+        closeButton.addSelectHandler(new SelectHandler() {
             @Override
-            public void onHide(HideEvent event) {
+            public void onSelect(SelectEvent event) {
                 if(agPanel.isChanges()) {
-                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes", "There are pending changes, do you want to save them to the server?");
+                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes", "There are pending changes. Do you want to not save them?");
                     box.addHideHandler(new HideHandler() {
                         @Override
                         public void onHide(HideEvent event) {
                             Dialog btn = (Dialog) event.getSource();
                             if(!btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
-                                window.setVisible(true);
+                                
                             }
                             else {
                                 saveStudentGradeBook();
+                                window.hide();
                             }
                         }
                     });
+                    box.setVisible(true);
+                }
+                else {
+                    window.hide();
                 }
             }
         });
+        
+        window.addButton(closeButton);
 
         window.addCloseButton();
 
