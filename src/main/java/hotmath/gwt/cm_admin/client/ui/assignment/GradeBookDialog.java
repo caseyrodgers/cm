@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -28,12 +29,16 @@ import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.Dialog;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
@@ -41,7 +46,6 @@ import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 public class GradeBookDialog {
     private static final int MAX_FIELD_LEN = 400;
@@ -149,6 +153,27 @@ public class GradeBookDialog {
                 callbackOnComplete.isComplete();
             }
         }));
+        
+        window.addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                if(agPanel.isChanges()) {
+                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes", "There are pending changes, do you want to save them to the server?");
+                    box.addHideHandler(new HideHandler() {
+                        @Override
+                        public void onHide(HideEvent event) {
+                            Dialog btn = (Dialog) event.getSource();
+                            if(!btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
+                                window.setVisible(true);
+                            }
+                            else {
+                                saveStudentGradeBook();
+                            }
+                        }
+                    });
+                }
+            }
+        });
 
         window.addCloseButton();
 
@@ -219,6 +244,8 @@ public class GradeBookDialog {
     
     private void saveStudentGradeBook() {
         
+        Log.debug("Saving gradebook to server");
+        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -243,12 +270,16 @@ public class GradeBookDialog {
             @Override
             public void oncapture(RpcData results) {
                 CmBusyManager.setBusy(false);
+
+                agPanel.setChanges(false);
                 
-                Info.display("Student Assignment Status Saved", "Assignment (" + _stuAssignment.getAssignment().getAssignKey() + ") saved successfully");
+                Log.debug("Student assignment status (" + _stuAssignment.getAssignment().getAssignKey() + ") saved successfully");
             }
             
             public void onFailure(Throwable error) {
                 CmBusyManager.setBusy(false);
+                
+                Log.debug("Error saving statdent assignment status", error);
                 super.onFailure(error);
             }
 

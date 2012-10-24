@@ -33,6 +33,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.editing.GridEditing;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -264,16 +265,25 @@ public class AssignmentGradingPanel extends ContentPanel {
         }
     }
     
+    boolean areChanges=false;
     protected GridEditing<StudentProblemDto> createGridEditing(Grid<StudentProblemDto> editableGrid) {
         GridInlineEditing<StudentProblemDto> editor = new GridInlineEditing<StudentProblemDto>(editableGrid);
         editor.addCompleteEditHandler(new CompleteEditHandler<StudentProblemDto>() {
             @Override
             public void onCompleteEdit(CompleteEditEvent<StudentProblemDto> event) {
-                saveChange(_gradingGrid.getStore().get(event.getEditCell().getRow()));
+                areChanges = true;
             }
         });
         
         return editor;
+    }
+    
+    public boolean isChanges() {
+        return areChanges;
+    }
+    
+    public void setChanges(boolean yesNo) {
+        areChanges = yesNo;
     }
 
     private void saveChange(final StudentProblemDto selectedItem) {
@@ -282,7 +292,9 @@ public class AssignmentGradingPanel extends ContentPanel {
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                CmBusyManager.setBusy(true);
+                Info.display("Saving", "Updating problem status on server");
+                
+                Log.debug("Updating problem status on server");
                 SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(selectedItem.getUid(),_studentAssignment.getAssignment().getAssignKey(),selectedItem.getPid(),selectedItem.getStatus());
                    setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -301,10 +313,6 @@ public class AssignmentGradingPanel extends ContentPanel {
             }
 
         }.register();
-
-        
-        
-        
     }
 /*
     private class StudentProblemGradedStatusValueProvider extends Object implements ValueProvider<StudentProblemDto, String> {
