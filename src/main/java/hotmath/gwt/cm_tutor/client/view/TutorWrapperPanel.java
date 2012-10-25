@@ -34,6 +34,8 @@ public class TutorWrapperPanel extends Composite {
     @UiField
     Element buttonBar;
     
+    @UiField
+    Element readonlyMask;
     
     @UiField
     Element debugInfo;
@@ -167,6 +169,7 @@ public class TutorWrapperPanel extends Composite {
     }
     
     
+    
     private void initializeTutor(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
         
         Log.debug("Solution loading: " + pid);
@@ -174,6 +177,7 @@ public class TutorWrapperPanel extends Composite {
         
         debugInfo.setInnerHTML(pid);
 
+        
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     
@@ -370,10 +374,50 @@ public class TutorWrapperPanel extends Composite {
 
 
     boolean _readOnly;
+    boolean _maskShown;
     public void setReadOnly(boolean b) {
         _readOnly = b;
+        
+        int w = getWidget().getElement().getOffsetWidth();
+        int h = getWidget().getElement().getOffsetHeight();
+        
+        
+        jsni_setupReadonlyMask(getWidget().getElement(), w + "px", h + "px");
+        
+        Log.debug("Setting tutor readonly mask to size: " + w + ", " + h);
+//        
+//        if(_readOnly && !_maskShown) {
+//            _maskShown = true;
+//            showReadOnlyMask(readonlyMask);
+//        }
+//        else if(!_readOnly && _maskShown) {
+//            _maskShown = false;
+//            removeReadOnlyMask(readonlyMask);
+//        }
     }
 
+    
+    native private void jsni_setupReadonlyMask(Element ele, String width, String height) /*-{
+        try {
+           ele.style.display = 'block';
+           ele.style.width = width;
+           ele.style.height = height;
+           
+           ele.style.display = 'block';
+        }
+        catch(e) {
+            alert(e);
+        }
+    }-*/;
+
+    native private void showReadOnlyMask(Element ele) /*-{
+        $wnd.TutorManager.setReadOnlyMask(ele);
+    }-*/;
+    
+    native private void removeReadOnlyMask(Element ele) /*-{
+        $wnd.TutorManager.removeReadOnlyMask(ele);
+    }-*/;
+    
     
     public static interface TutorCallback {
         /** When the NewProblem button is pressed 

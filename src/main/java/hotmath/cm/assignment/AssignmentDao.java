@@ -186,9 +186,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<ProblemDto> pids = getJdbcTemplate().query(sql, new Object[] { assKey }, new RowMapper<ProblemDto>() {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String label = rs.getString("lesson") + " #" + (++count[0]);
                 String pid = rs.getString("pid");
-                return new ProblemDto(0, rs.getString("lesson"), label, pid);
+                return new ProblemDto(0, rs.getString("lesson"), rs.getString("label"), pid);
             }
         });
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();

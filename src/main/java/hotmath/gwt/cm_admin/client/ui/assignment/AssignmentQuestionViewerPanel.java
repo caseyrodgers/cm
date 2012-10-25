@@ -63,7 +63,6 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 CmMessageBox.showAlert("Not Allowed", "Changes to value are not allowed.<br/>Use the whiteboard to show corrections.");
             }
         });
-        _tutorPanel.setReadOnly(true);
         
         setHeadingHtml("Question Display");
         _tutorPanel.setVisible(false);
@@ -188,6 +187,11 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                     if(assignmentProblem.getLastUserWidgetValue() != null) {
                         _tutorPanel.setTutorWidgetValue(assignmentProblem.getLastUserWidgetValue());
                     }
+                    
+                    
+                    
+                    
+                    _tutorPanel.setReadOnly(true);
                 }
                 catch(Exception e) {
                     e.printStackTrace();

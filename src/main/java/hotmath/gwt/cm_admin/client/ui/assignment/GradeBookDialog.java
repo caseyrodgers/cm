@@ -159,18 +159,16 @@ public class GradeBookDialog {
             @Override
             public void onSelect(SelectEvent event) {
                 if(agPanel.isChanges()) {
-                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes", "There are pending changes. Do you want to not save them?");
+                    ConfirmMessageBox box = new ConfirmMessageBox("Pending changes", "There are pending changes.  Would you like to save them?");
                     box.addHideHandler(new HideHandler() {
                         @Override
                         public void onHide(HideEvent event) {
                             Dialog btn = (Dialog) event.getSource();
-                            if(!btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
-                                
-                            }
-                            else {
+                            if(btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
                                 saveStudentGradeBook();
-                                window.hide();
                             }
+                            
+                            window.hide();
                         }
                     });
                     box.setVisible(true);
@@ -182,8 +180,6 @@ public class GradeBookDialog {
         });
         
         window.addButton(closeButton);
-
-        window.addCloseButton();
 
         window.setWidget(con);
         

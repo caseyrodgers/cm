@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 /** Display tutor/question XML 
  * 
@@ -37,7 +38,10 @@ public class QuestionViewerPanel extends ContentPanel {
         tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault());
         setHeadingHtml("Question Display");
         tutorPanel.setVisible(false);
-        setWidget(tutorPanel);
+        
+        FlowLayoutContainer flowWrapper = new FlowLayoutContainer();
+        flowWrapper.add(tutorPanel);
+        setWidget(flowWrapper);
     }
 
     TutorWrapperPanel tutorPanel;

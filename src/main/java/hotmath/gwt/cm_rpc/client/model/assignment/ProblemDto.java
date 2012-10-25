@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_rpc.client.model.assignment;
 
-import java.util.Comparator;
-
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ProblemDto extends BaseDto implements Response{

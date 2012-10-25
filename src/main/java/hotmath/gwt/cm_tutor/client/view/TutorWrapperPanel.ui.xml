@@ -1,13 +1,33 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
     xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    
+    <ui:style>
+        .tutorOutput {
+            position: relative;
+        } 
+        
+        .readonlyMask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 500px;
+            height: 300px;
+            background: red;
+            display: none;
+        }
+    </ui:style>
+    
 
     <g:HTMLPanel>
         <!-- HOTMATH BODY START -->
         <div id="tutoroutput" style='display: block;position: relative;'>
+            <div ui:field="readonlyMask" class='{style.readonlyMask}'></div>
             <div class='problem-title' ui:field="title"></div>
             <div id='tutor_raw_steps_wrapper'>
                   <span style='font-type: italic;color: #666'>Loading ...</span>
             </div>
+            
+            
 
             <span ui:field='buttonBar'>
             <div id='steps_tail'>
