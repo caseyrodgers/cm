@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tutor.client.view;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
@@ -15,7 +17,12 @@ import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -35,7 +42,7 @@ public class TutorWrapperPanel extends Composite {
     Element buttonBar;
     
     @UiField
-    Element readonlyMask;
+    DivElement readonlyMask;
     
     @UiField
     Element debugInfo;
@@ -49,8 +56,11 @@ public class TutorWrapperPanel extends Composite {
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
+    static TutorWrapperPanel __lastInstance;
+    
     public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
 
+        __lastInstance = this;
         this.tutorCallback = tutorCallback;
         this.saveVariableContext = saveVariableContext;
         initWidget(uiBinder.createAndBindUi(this));
@@ -176,9 +186,31 @@ public class TutorWrapperPanel extends Composite {
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
         
         debugInfo.setInnerHTML(pid);
-
-        
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
+    }
+    
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        
+        setupReadonlyMask(true);
+    }
+    private void setupReadonlyMask(boolean readOnly) {
+        _readOnly=readOnly;
+        Log.debug("Setting readonly mask: " + readOnly);
+        if(readOnly) {
+            int w = getWidget().getElement().getOffsetWidth();
+            int h = getWidget().getElement().getOffsetHeight();
+            Log.debug("Setting tutor readonly mask to size: " + w + ", " + h);
+            
+            readonlyMask.getStyle().setOpacity(.1);
+            readonlyMask.getStyle().setWidth(w, Unit.PX);
+            readonlyMask.getStyle().setHeight(h, Unit.PX);
+            readonlyMask.getStyle().setDisplay(Display.BLOCK);
+        }
+        else {
+            readonlyMask.getStyle().setDisplay(Display.NONE);
+        }
     }
     
     
@@ -187,6 +219,9 @@ public class TutorWrapperPanel extends Composite {
     }-*/;
     
     
+    private void gwt_tutorIsReadonlyMessage() {
+        tutorCallback.tutorWidgetCompleteDenied(null, false);
+    }
     
     /** initialize external tutor JS/HTML and provide glue between external JS
      * methods and GWT.
@@ -249,6 +284,11 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
         }
         
+        
+        $wnd.gwt_tutorIsReadonlyMessage = function() {
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorIsReadonlyMessage()();
+        }
+
        // called from CatchupMath.js event.tutorHasBeenInitialized
        // used to store current tutor context on server providing
        // a way to restore the tutor to its current var defs.
@@ -284,6 +324,13 @@ public class TutorWrapperPanel extends Composite {
 
     private void gwt_showWhiteBoard() {
         this.tutorCallback.showWhiteboard();
+    }
+    
+    private void resizeTutor() {
+        Log.debug("Resizing tutor");
+        if(_readOnly) {
+            setupReadonlyMask(_readOnly);
+        }
     }
     
     
@@ -374,50 +421,26 @@ public class TutorWrapperPanel extends Composite {
 
 
     boolean _readOnly;
-    boolean _maskShown;
     public void setReadOnly(boolean b) {
         _readOnly = b;
-        
-        int w = getWidget().getElement().getOffsetWidth();
-        int h = getWidget().getElement().getOffsetHeight();
-        
-        
-        jsni_setupReadonlyMask(getWidget().getElement(), w + "px", h + "px");
-        
-        Log.debug("Setting tutor readonly mask to size: " + w + ", " + h);
-//        
-//        if(_readOnly && !_maskShown) {
-//            _maskShown = true;
-//            showReadOnlyMask(readonlyMask);
-//        }
-//        else if(!_readOnly && _maskShown) {
-//            _maskShown = false;
-//            removeReadOnlyMask(readonlyMask);
-//        }
+    }
+    
+    static {
+        CmRpc.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
+            @Override
+            public void onWindowResized(WindowHasBeenResizedEvent windowHasBeenResizedEvent) {
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if (__lastInstance != null) {
+                            __lastInstance.resizeTutor();
+                        }
+                    }
+                });
+            }
+        });
     }
 
-    
-    native private void jsni_setupReadonlyMask(Element ele, String width, String height) /*-{
-        try {
-           ele.style.display = 'block';
-           ele.style.width = width;
-           ele.style.height = height;
-           
-           ele.style.display = 'block';
-        }
-        catch(e) {
-            alert(e);
-        }
-    }-*/;
-
-    native private void showReadOnlyMask(Element ele) /*-{
-        $wnd.TutorManager.setReadOnlyMask(ele);
-    }-*/;
-    
-    native private void removeReadOnlyMask(Element ele) /*-{
-        $wnd.TutorManager.removeReadOnlyMask(ele);
-    }-*/;
-    
     
     public static interface TutorCallback {
         /** When the NewProblem button is pressed 

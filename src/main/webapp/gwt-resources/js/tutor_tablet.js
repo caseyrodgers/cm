@@ -242,14 +242,6 @@ var TutorManager = {
 
     showStepUnit: function(x) {
           showStepUnit(x);
-    },
-    
-    setReadOnlyMask: function(ele) {
-    	
-        var height = Number(grabComputedHeight(ele.parentNode)) + 15;
-        var width = Number(grabComputedWidth(ele.parentNode)) + 15;
-        
-        alert('Set readonly: ' + ele + " " + height + ", " + width);
     }
 }
 

@@ -10,10 +10,13 @@
             position: absolute;
             top: 0;
             left: 0;
-            width: 500px;
-            height: 300px;
-            background: red;
+            background: gray;
+            z-index: 1000;
             display: none;
+        }
+        
+        .readonlyMaskText {
+            margin: auto;
         }
     </ui:style>
     
@@ -21,7 +24,9 @@
     <g:HTMLPanel>
         <!-- HOTMATH BODY START -->
         <div id="tutoroutput" style='display: block;position: relative;'>
-            <div ui:field="readonlyMask" class='{style.readonlyMask}'></div>
+            <div ui:field="readonlyMask" class='{style.readonlyMask}' onclick='gwt_tutorIsReadonlyMessage()'>
+               <div class='{style.readonlyMaskText}'>Read Only</div>
+            </div>
             <div class='problem-title' ui:field="title"></div>
             <div id='tutor_raw_steps_wrapper'>
                   <span style='font-type: italic;color: #666'>Loading ...</span>

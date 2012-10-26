@@ -12,6 +12,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 /** Display tutor/question XML 
  * 
@@ -35,7 +36,12 @@ public class QuestionViewerPanel extends ContentPanel {
 
     
     private QuestionViewerPanel() {
-        tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault());
+        tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault() {
+            @Override
+            public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
+                Info.display("Tutor Readonly", "This solution is read only.  You can add comments and corrections to the whiteboard.");
+            }
+        });
         setHeadingHtml("Question Display");
         tutorPanel.setVisible(false);
         

@@ -1,7 +1,12 @@
 package hotmath.gwt.cm_tools.client.ui.CmWindow;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ResizeEvent;
+import com.extjs.gxt.ui.client.event.ResizeListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -17,6 +22,14 @@ public class CmWindow extends Window {
     
     public CmWindow() {
         getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
+        
+        
+        getResizable().addResizeListener(new ResizeListener() {
+            @Override
+            public void handleEvent(ResizeEvent e) {
+                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+            }
+        });
     }
 
     /** Add removed close method
