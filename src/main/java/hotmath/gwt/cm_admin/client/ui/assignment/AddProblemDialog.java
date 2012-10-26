@@ -399,7 +399,7 @@ public class AddProblemDialog extends GWindow {
                         ProblemDto p = (ProblemDto)base;
                         Log.debug("View Question", "Viewing " + p.getLabel());
                         
-                        QuestionViewerPanel.getInstance().viewQuestion(p);
+                        QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
                 }
             }

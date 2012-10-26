@@ -197,7 +197,7 @@ public class TutorWrapperPanel extends Composite {
          *  is inserted into DOM, otherwise the resize
          *  of the mask does not know the dimensions.
          */
-        setupReadonlyMask(true);
+        setupReadonlyMask(_readOnly);
     }
     private void setupReadonlyMask(boolean readOnly) {
         _readOnly=readOnly;

@@ -91,7 +91,7 @@ public class AssignmentDesigner extends SimpleContainer {
         _listView = new AssignmentProblemListView(_assignment, new Callback() {
             @Override
             public void problemHasBeenSelected(ProblemDto problem) {
-                QuestionViewerPanel.getInstance().viewQuestion(problem);   
+                QuestionViewerPanel.getInstance().viewQuestion(problem, false);   
             }
         });
         BorderLayoutData data = new BorderLayoutData();
