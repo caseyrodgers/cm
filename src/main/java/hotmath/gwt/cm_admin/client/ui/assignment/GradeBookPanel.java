@@ -19,6 +19,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -58,6 +59,10 @@ public class GradeBookPanel extends ContentPanel {
         _store = new ListStore<StudentAssignment>(saProps.uid());
         
         addGradeButton();
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            addLoadCmStudentButton();
+        }
         //addAcceptAllButton();
     }
 
@@ -224,6 +229,23 @@ public class GradeBookPanel extends ContentPanel {
 			return null;
 		}
 
+    }
+    
+    private void addLoadCmStudentButton() {
+
+        TextButton btn = new TextButton("Login as Student");
+        btn.setToolTip("Create new window and login to CM Student");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                StudentAssignment st = _gradebookGrid.getSelectionModel().getSelectedItem();
+                if(st != null) {
+                    Window.open("/loginService?uid="+st.getUid() + "&debug=true", "_blank","menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
+                }
+            }
+        });
+
+        addTool(btn);
     }
     
     private void addGradeButton() {
