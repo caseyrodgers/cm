@@ -14,7 +14,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
-
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
@@ -40,7 +39,9 @@ public class AssignmentManagerDialog2  {
     GradeBookPanel _gbPanel;
     ComboBox<GroupDto> _groupCombo;
     BorderLayoutContainer _mainContainer;
-    public AssignmentManagerDialog2(int aid) {
+    private int _groupIdToLoad;
+    public AssignmentManagerDialog2(int groupIdToLoad, int aid) {
+        _groupIdToLoad = groupIdToLoad;
         this.aid = aid;
         
         Window window = new GWindow(true);
@@ -79,6 +80,7 @@ public class AssignmentManagerDialog2  {
         _mainContainer.setCenterWidget(_gbPanel, eastData);
         
         window.setWidget(_mainContainer);
+
         
         window.show();
     }
@@ -129,7 +131,25 @@ public class AssignmentManagerDialog2  {
             public void oncapture(CmList<GroupDto> groupInfos) {
                 _groupCombo.getStore().addAll(groupInfos);
                 
-                _groupCombo.expand();
+                
+                
+                
+                boolean groupSelected=false;
+                if(_groupIdToLoad > 0) {
+                    for(GroupDto gd: _groupCombo.getStore().getAll()) {
+                        if(gd.getGroupId() == _groupIdToLoad) {
+                            _groupCombo.setValue(gd);
+                            loadGroupInfo(gd);
+                            groupSelected=true;
+                            break;
+                        }
+                    }
+                }
+                
+                if(!groupSelected) {
+                    _groupCombo.expand();
+                }
+                
                 _mainContainer.forceLayout();
             }
         }.register();                

@@ -817,8 +817,14 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
+                        
                         //new GradeBookDialog(_cmAdminMdl.getId());
-                        new AssignmentManagerDialog2(_cmAdminMdl.getId());
+                        int groupIdToLoad = 0;
+                        StudentModelExt selected = grid.getSelectionModel().getSelectedItem();
+                        if(selected != null) {
+                            groupIdToLoad = Integer.parseInt(selected.getGroupId());
+                        }
+                        new AssignmentManagerDialog2(groupIdToLoad, _cmAdminMdl.getId());
                     }
                 });
             }

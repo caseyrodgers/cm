@@ -51,6 +51,10 @@ public class AssignmentsContentPanel extends ContentPanel {
     GradeBookPanel _gradeBookPanel;
     GroupDto _currentGroup;
     
+    /** Contains grid of assignments
+     * 
+     * @param gradeBookPanel
+     */
     public AssignmentsContentPanel(GradeBookPanel gradeBookPanel) {
         
         this._gradeBookPanel = gradeBookPanel;
