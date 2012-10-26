@@ -5,9 +5,12 @@
        -->
       
       <inherits name='hotmath.gwt.cm_tools.CatchupMathTools'/>
-      <inherits name='hotmath.gwt.cm_tutor.CmTutor'/>
-      <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
       
+      <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
+
+      <add-linker name="xsiframe"/>
+      <set-configuration-property name="devModeRedirectEnabled" value="true"/>
+      <set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>      
 
       <!--
       <set-property name="gxt.user.agent" value="ie6,ie7,ie8,ie9,safari3,safari4,safari5,chrome,gecko1_8,gecko1_9" />
