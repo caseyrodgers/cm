@@ -51,8 +51,12 @@ public class QuestionViewerPanel extends ContentPanel {
     }
 
     TutorWrapperPanel tutorPanel;
-
+    
     public void viewQuestion(final ProblemDto problem) {
+        viewQuestion(problem, false);
+    }
+
+    public void viewQuestion(final ProblemDto problem, final boolean isReadOnly) {
 
         new RetryAction<SolutionInfo>() {
             @Override
