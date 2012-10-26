@@ -33,6 +33,8 @@ public class StudentAssignment implements Response {
     private int problemPendingCount;
     
     private String studentDetailStatus;
+    
+    boolean isComplete;
 
 
     public StudentAssignment(){}
@@ -41,6 +43,22 @@ public class StudentAssignment implements Response {
         this.uid = uid;
         this.assignment = assignment;
         this.assigmentStatuses = assignmentStatuses;
+    }
+
+    /** Return true if this Assignment is 
+     *  considered complete from the student's
+     *  point of view.
+     *  
+     *  
+     * @return
+     */
+    public boolean isComplete() {
+        for(StudentProblemDto spd: assigmentStatuses) {
+            if(!spd.isComplete()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int getUid() {

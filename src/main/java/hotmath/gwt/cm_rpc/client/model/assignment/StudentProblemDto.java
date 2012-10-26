@@ -67,4 +67,22 @@ public class StudentProblemDto implements Response {
     public String toString() {
         return "StudentProblemDto [uid=" + uid + ", problem=" + problem + ", status=" + status + "]";
     }
+
+	/** Return true if this student problem is considered 'complete'. 
+	 * 
+	 * Complete means the user has done something with the problem, either
+	 * answered the widget or drawn on the whiteboard.
+	 * 
+	 * @return
+	 */
+    public boolean isComplete() {
+        String s = status.toLowerCase();
+        if(s.equals("not viewed")) {
+            return false;
+        }
+        else {
+            // all others?
+            return true;
+        }
+    }
 }

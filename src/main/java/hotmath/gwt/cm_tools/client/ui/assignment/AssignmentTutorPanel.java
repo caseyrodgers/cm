@@ -128,6 +128,9 @@ public class AssignmentTutorPanel extends Composite {
                 _tutorPanel.setTutorWidgetValue(problem.getLastUserWidgetValue());
             }
             
+            
+            _tutorPanel.setVisible(true);
+
             CmRpc.EVENT_BUS.fireEvent(new AssignmentProblemLoadedEvent(problem));
             
         } catch (Exception e) {

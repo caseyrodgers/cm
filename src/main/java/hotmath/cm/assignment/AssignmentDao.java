@@ -901,6 +901,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return "Due Date: " + dueDate +  statusLabel + (comments != null ? " - " + comments : "");
     }
 
+    
+    /** Return the assignment for a given student
+     * 
+     * @param uid
+     * @param assignKey
+     * @return
+     * @throws Exception
+     */
     public StudentAssignment getStudentAssignment(final int uid, int assignKey) throws Exception {
 
         StudentAssignment studentAssignment = new StudentAssignment();
@@ -929,7 +937,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 });
         
 
+        boolean isComplete=true;
         for(StudentProblemDto prob: problemStatuses) {
+            
             /** get last input value for this problem
              * 
              */
@@ -949,6 +959,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
              */
             if(pidAnswers.size() > 0) {
                 prob.setStatus(pidAnswers.get(0)?"Correct":"Incorrect");
+            }
+            
+            
+            if(!prob.isComplete() && isComplete) {
+                isComplete = false;
             }
         }
 

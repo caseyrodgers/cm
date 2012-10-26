@@ -1,5 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -15,6 +20,13 @@ public class GWindow extends Window {
         if(addCloseButton) {
             addCloseButton();
         }
+        
+        addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+            }
+        });
     }
     
     public void close() {

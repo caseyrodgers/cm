@@ -193,6 +193,10 @@ public class TutorWrapperPanel extends Composite {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         
+        /** Call the readonly mask only once the widget
+         *  is inserted into DOM, otherwise the resize
+         *  of the mask does not know the dimensions.
+         */
         setupReadonlyMask(true);
     }
     private void setupReadonlyMask(boolean readOnly) {

@@ -5,7 +5,6 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.UpdateGr
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -55,7 +54,7 @@ public class GradeBookDialog {
     StudentAssignment _stuAssignment;
     DateField _dueDate;
     TextField _grade = new TextField();
-    ComboBox<AssignmentStatusDto> _assignmentStatus;
+    TextField _assignmentStatus;
     AssignmentGradingPanel agPanel;
     AssignmentQuestionViewerPanel _questionViewer = new AssignmentQuestionViewerPanel();
 
@@ -103,8 +102,8 @@ public class GradeBookDialog {
         hlData.setMargins(new Margins(0, 20,0, 20));
         hCon.add(dueDateLabel, hlData);
 
-        _assignmentStatus = createAssignmentStatusCombo();
-        _assignmentStatus.setValue(determineAssignmentStatus(stuAssignment.getAssignment()));
+        _assignmentStatus = new TextField();
+        _assignmentStatus.setText(stuAssignment.getHomeworkStatus());
         _assignmentStatus.setReadOnly(true);
         hCon.add(_assignmentStatus);
 
@@ -209,15 +208,6 @@ public class GradeBookDialog {
 
 		return percent + "%";
 	}
-
-	private AssignmentStatusDto determineAssignmentStatus(Assignment assignment) {
-        for(AssignmentStatusDto d: _assignmentStatus.getStore().getAll()) {
-            if(d.getStatus().equals(assignment.getStatus())) {
-                return d;
-            }
-        }
-        return null;
-    }
 
 
     public interface EditAssignDialogProperties extends PropertyAccess<String> {
