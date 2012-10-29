@@ -67,10 +67,8 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(),50, "Problem");
         l.add(labelCol);
         
-        if(CmShared.getQueryParameter("debug") != null) {
-            ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),100, "Status");
-            l.add(labelStatus);
-        }
+        ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),100, "Status");
+        l.add(labelStatus);
         
         ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);        
 

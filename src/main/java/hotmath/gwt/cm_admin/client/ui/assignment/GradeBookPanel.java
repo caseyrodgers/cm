@@ -63,19 +63,26 @@ public class GradeBookPanel extends ContentPanel {
         
         addGradeButton();
         
-        setWidget(createDefaultMessage());
-        
         if(CmShared.getQueryParameter("debug") != null) {
             addLoadCmStudentButton();
         }
+        
+        showDefaultMessage();
+        
         //addAcceptAllButton();
     }
     
-    private Widget createDefaultMessage() {
+
+    /** Show default empty GradeBookPanel message
+     * 
+     */
+    public void showDefaultMessage() {
         HTML defaultMsg = new HTML("Choose an Assignment");
         CenterLayoutContainer clc = new CenterLayoutContainer();
         clc.add(defaultMsg);
-        return clc;
+        setWidget(clc);
+        
+        forceLayout();
     }
 
     Assignment _lastUsedAssignment;
@@ -322,4 +329,5 @@ public class GradeBookPanel extends ContentPanel {
             }
         }.register();        
     }
+
 }

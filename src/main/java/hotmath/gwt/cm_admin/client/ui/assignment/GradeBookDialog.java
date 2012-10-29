@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.UpdateStudentAssignmentStatusAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -85,7 +86,7 @@ public class GradeBookDialog {
 
         _grade.setReadOnly(true);
         _grade.setWidth(50);
-        _grade.setValue(getHomeworkGrade());
+        _grade.setValue(GradeBookUtils.getHomeworkGrade(_stuAssignment.getAssigmentStatuses()));
         FieldLabel gradeLabel = new FieldLabel(_grade, "Grade");
         gradeLabel.setLabelWidth(FIELD_LABEL_LEN);
         
@@ -195,19 +196,7 @@ public class GradeBookDialog {
         
         
     }
-    
-    private String getHomeworkGrade() {
-    	int percent = 0;
-    	int numCorrect = 0;
 
-    	for (StudentProblemDto dto : _stuAssignment.getAssigmentStatuses()) {
-    		numCorrect += (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.toString())) ? 1 : 0;
-    	}
-    	if (_stuAssignment.getAssigmentStatuses().size() > 0)
-        	percent = Math.round((float)numCorrect * 100.0f / (float)_stuAssignment.getAssigmentStatuses().size());
-
-		return percent + "%";
-	}
 
 
     public interface EditAssignDialogProperties extends PropertyAccess<String> {

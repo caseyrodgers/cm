@@ -51,6 +51,7 @@ import com.sencha.gxt.widget.core.client.info.Info;
  * 
  * Fires AssignmentProblemLoadedEvent when a new problem is loaded.
  * 
+ * Has a head showing relevant data for assignment.
  * 
   Student can click on any non-closed row to work on the assignment,
   and sees a screen with all problem numbers along with current status: (
@@ -129,6 +130,9 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 Log.debug("Widget Update", "StudentAssignmentViewerPanel: " + value);
                 _problemListPanel.tutorWidgetValueChanged(value, correct);
+                
+                /** Update grade textfield with current grade */
+                _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
             }
         });
         _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
@@ -168,17 +172,19 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     ComboBox<Assignment> _assignmentCombo;
     
+    TextField _grade = new TextField();
+    
     private IsWidget createHeaderPanel() {
         FlowLayoutContainer header = new FlowLayoutContainer();
         header.setStyleName("header");
-
-         _assignmentCombo = createAssignmentCombo();
-         
-         _assignmentStatus.setReadOnly(true);
+        _assignmentCombo = createAssignmentCombo();
+        _assignmentStatus.setReadOnly(true);
+        _grade.setReadOnly(true);
          
         header.setLayoutData(new MarginData(10));
         header.add(new MyFieldLabel(_assignmentCombo,"Assignment Name"));
         header.add(new MyFieldLabel(_assignmentStatus,"Assignment Status"));
+        header.add(new MyFieldLabel(_grade,"Grade"));
         
         return header;
     }
@@ -229,6 +235,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _problemListPanel.loadAssignment(assignment);
         
         _assignmentStatus.setValue(assignment.getStatus());
+        _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
     }
 
     private void readAssignmentFromServer(final Assignment assignment) {

@@ -87,6 +87,7 @@ public class AssignmentManagerDialog2  {
     
     private void loadGroupInfo(GroupDto group) {
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
+        _gbPanel.showDefaultMessage();
         _assignmentsPanel.loadAssignentsFor(group);
     }
     

@@ -136,13 +136,12 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void oncapture(CmList<Assignment> assignments) {
                 _grid.getStore().clear();
                 _grid.getStore().addAll(assignments);
-                
-                if(assignments.size() > 0) {
-                    List<Assignment> selectedList = new ArrayList<Assignment>();
-                    selectedList.add(assignments.get(0));
-                    _grid.getSelectionModel().setSelection(selectedList);
-                    showGradeBookForSelectedAssignment();
-                }
+//                if(assignments.size() > 0) {
+//                    List<Assignment> selectedList = new ArrayList<Assignment>();
+//                    selectedList.add(assignments.get(0));
+//                    _grid.getSelectionModel().setSelection(selectedList);
+//                    showGradeBookForSelectedAssignment();
+//                }
             }
         }.register();        
     }

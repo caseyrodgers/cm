@@ -562,18 +562,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private String getLessonStatus(int count, int completed, int pending, int viewed) {
+        
+        String ret="";
+        viewed = (completed + pending + viewed);  // all viewed 
+        
     	if (pending != 0 && viewed != 0) {
-            return String.format("%d of %d completed, %d pending, %d viewed", completed, count, pending, viewed);
+    	    ret = String.format("%d of %d completed, %d pending, %d viewed", completed, count, pending, viewed);
     	}
     	else if (pending != 0) {
-    		return String.format("%d of %d completed, %d pending", completed, count, pending);
+    	    ret = String.format("%d of %d completed, %d pending", completed, count, pending);
     	}
     	else if (viewed != 0) {
-    		return String.format("%d of %d completed, %d viewed", completed, count, viewed);
+    	    ret = String.format("%d of %d completed, %d viewed", completed, count, viewed);
     	}
     	else {
-    		return String.format("%d of %d completed", completed, count);
+    	    ret = String.format("%d of %d completed", completed, count);
     	}
+    	
+    	return ret;
     }
 
     private String getHomeworkStatus(int totCount, int totCompleted, int totPending, int totAccepted, int totViewed) {
