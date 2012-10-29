@@ -20,6 +20,8 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -27,6 +29,7 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
@@ -60,10 +63,19 @@ public class GradeBookPanel extends ContentPanel {
         
         addGradeButton();
         
+        setWidget(createDefaultMessage());
+        
         if(CmShared.getQueryParameter("debug") != null) {
             addLoadCmStudentButton();
         }
         //addAcceptAllButton();
+    }
+    
+    private Widget createDefaultMessage() {
+        HTML defaultMsg = new HTML("Choose an Assignment");
+        CenterLayoutContainer clc = new CenterLayoutContainer();
+        clc.add(defaultMsg);
+        return clc;
     }
 
     Assignment _lastUsedAssignment;

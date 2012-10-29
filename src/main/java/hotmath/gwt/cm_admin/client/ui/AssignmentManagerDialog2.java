@@ -87,7 +87,6 @@ public class AssignmentManagerDialog2  {
     
     private void loadGroupInfo(GroupDto group) {
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
-        _gbPanel.clear();
         _assignmentsPanel.loadAssignentsFor(group);
     }
     
@@ -130,9 +129,6 @@ public class AssignmentManagerDialog2  {
 
             public void oncapture(CmList<GroupDto> groupInfos) {
                 _groupCombo.getStore().addAll(groupInfos);
-                
-                
-                
                 
                 boolean groupSelected=false;
                 if(_groupIdToLoad > 0) {
