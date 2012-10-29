@@ -51,6 +51,16 @@ public class CmMultiLinePropertyReader extends AbstractCmMultiLinePropertyReader
 
         return __instance;
     }
+    
+    
+    @Override
+    public String getProperty(String key) {
+        String propVal = super.getProperty(key);
+        if(propVal == null) {
+            __logger.debug("no property for: " + key);
+        }
+        return propVal;
+    }
 
     
     /** Add a Flusher to allow properties to be reset without system restart/compile
