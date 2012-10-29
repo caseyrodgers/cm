@@ -1,9 +1,9 @@
-package hotmath.gwt.cm_admin.client.ui.assignment;
+package hotmath.gwt.cm_tools.client.ui.assignment;
 
 public enum ProblemStatus {
 
 	NOT_VIEWED("Not viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect");
-	static ProblemStatus parseString(String object) {
+	static public ProblemStatus parseString(String object) {
 		if (ProblemStatus.VIEWED.toString().equals(object)) {
 			return ProblemStatus.VIEWED;
 		} else if (ProblemStatus.CORRECT.toString().equals(object)) {
