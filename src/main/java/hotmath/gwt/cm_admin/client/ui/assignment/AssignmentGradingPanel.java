@@ -20,6 +20,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.sencha.gxt.cell.core.client.form.CheckBoxCell;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
@@ -88,6 +89,8 @@ public class AssignmentGradingPanel extends ContentPanel {
 
     UpdateGradeCallback _updateGradeCallback;
 
+    private ColumnConfig<StudentProblemDto, Boolean> hasShowWorkCol;
+
     public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack, UpdateGradeCallback updateGradeCallback){
         _problemSelectionCallBack = callBack;
         _updateGradeCallback = updateGradeCallback;
@@ -101,6 +104,23 @@ public class AssignmentGradingPanel extends ContentPanel {
 
         statusCol = new ColumnConfig<StudentProblemDto, String>(spProps.status(), 100, "Status");
         statusCol.setRowHeader(true);
+        
+        hasShowWorkCol = new ColumnConfig<StudentProblemDto, Boolean>(spProps.hasShowWork(), 100, "Has Show Work");
+        hasShowWorkCol.setRowHeader(true);
+        
+        CheckBoxCell cCell = new CheckBoxCell() {
+              @Override
+              public boolean handlesSelection() {
+                return false;
+              }
+              
+              @Override
+            public boolean isReadOnly() {
+                // TODO Auto-generated method stub
+                return true;
+            }
+        };
+        hasShowWorkCol.setCell(cCell);
 
 //        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 75, "Accepted");
 //        gradedCol = new ColumnConfig<StudentProblemDto, String>(new StudentProblemGradedStatusValueProvider(), 50,
@@ -110,6 +130,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         colConfList = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
         colConfList.add(problemCol);
         colConfList.add(statusCol);
+        colConfList.add(hasShowWorkCol);
         //colConfList.add(gradedCol);
         colMdl = new ColumnModel<StudentProblemDto>(colConfList);
 
@@ -145,6 +166,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         combo.add(ProblemStatus.PENDING);
         combo.add(ProblemStatus.CORRECT);
         combo.add(ProblemStatus.INCORRECT);
+        combo.add(ProblemStatus.HALF_CREDIT);
         combo.setForceSelection(true);
         combo.setPropertyEditor(new PropertyEditor<ProblemStatus>() {
             @Override
@@ -164,7 +186,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 				ProblemStatus pStatus = vcEvent.getValue();
 
 				String pid = _lastProblem.getPid();
-				if (pStatus.equals(ProblemStatus.CORRECT) || pStatus.equals(ProblemStatus.INCORRECT)) {
+				if (pStatus.equals(ProblemStatus.CORRECT) || pStatus.equals(ProblemStatus.INCORRECT) || pStatus.equals(ProblemStatus.HALF_CREDIT)) {
 					_correctIncorrectMap.put(pid, (pStatus.equals(ProblemStatus.CORRECT)?1:0));
 					_lastProblem.setIsGraded(GradedStatus.YES.toString());
 				}

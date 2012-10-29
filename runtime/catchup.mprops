@@ -3648,7 +3648,8 @@ order  by last_modified desc
 select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
-       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
+       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded,
+       w.has_show_work
 
 from CM_ASSIGNMENT a 
 join HA_USER u on u.group_id = a.group_id
@@ -3666,6 +3667,14 @@ left join (
     select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer, pa.is_graded
     from CM_ASSIGNMENT_PID_ANSWERS pa) q
     on q.id=l.max_id
+    
+left join (
+    select user_id, pid,1 as has_show_work
+    from CM_ASSIGNMENT_PID_WHITEBOARD 
+    where assign_key = ?
+    limit 1
+    ) w on w.pid = p.pid and w.user_id = u.uid
+            
     
 where a.assign_key=?
 order by u.user_name, problem_id
@@ -3705,4 +3714,24 @@ where u.uid = ?
 order by u.user_name, a.assign_key, problem_id
 
   
+  
+  
+  
+  
+  
+.KEY=GET_STUDENT_ASSIGNMENT
+
+select p.*, w.has_show_work
+from   CM_ASSIGNMENT_PID_STATUS p
+       left join (select pid, 1 as has_show_work,
+                         Count(*)
+                  from   CM_ASSIGNMENT_PID_WHITEBOARD
+                  where  assign_key = ?
+                         and user_id = ?
+                  group  by pid) w
+              on w.pid = p.pid
+where  p.assign_key = ?
+       and p.uid = ?
+       
+        
   

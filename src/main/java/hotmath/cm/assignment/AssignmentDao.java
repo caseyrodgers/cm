@@ -386,19 +386,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          *  get assignment problem status list for all users
          */
         final Map<Integer, String> nameMap = new HashMap<Integer,String>();
-        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey}, new RowMapper<StudentProblemDto>() {
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey,assignKey}, new RowMapper<StudentProblemDto>() {
             @Override
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                StudentProblemDto prob = new StudentProblemDto();
                 Integer uid = rs.getInt("uid");
                 if (! nameMap.containsKey(uid)) {
                     nameMap.put(uid, rs.getString("user_name"));
                 }
-                prob.setUid(uid);
+
                 ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
-                prob.setProblem(probDto);
-                prob.setStatus(rs.getString("status"));
+                StudentProblemDto prob = new StudentProblemDto(uid,probDto,rs.getString("status"), rs.getInt("has_show_work")!=0);
+
                 prob.setIsGraded((rs.getInt("is_graded")>0)?"Yes":"No");
+
                 return prob;
             }
         });
@@ -927,17 +927,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          *
          *
          */
-        String sql = "select * from  CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ?";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT");
 
-        final List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, uid },
+        final List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, assignKey, uid },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        StudentProblemDto prob = new StudentProblemDto();
-                        prob.setUid(uid);
                         ProblemDto dummy = new ProblemDto(0, null, null, rs.getString("pid"));
-                        prob.setProblem(dummy);
-                        prob.setStatus(rs.getString("status"));
+                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), rs.getInt("has_show_work")!=0);
                         return prob;
                     }
                 });
@@ -1029,16 +1026,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        StudentProblemDto prob = new StudentProblemDto();
                         Integer uid = rs.getInt("uid");
+                        
                         if (!nameMap.containsKey(uid)) {
                             nameMap.put(uid, rs.getString("user_name"));
                         }
-                        prob.setUid(uid);
                         ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs
                                 .getString("label"), rs.getString("pid"));
-                        prob.setProblem(dummy);
-                        prob.setStatus(rs.getString("status"));
+                        
+                        StudentProblemDto prob = new StudentProblemDto(uid,dummy,rs.getString("status"), rs.getInt("has_show_work")!=0);
+                        
                         return prob;
                     }
                 });

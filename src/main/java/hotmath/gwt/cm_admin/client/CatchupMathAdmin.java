@@ -241,7 +241,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
           final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
                   
           CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {{
-              add(new StudentProblemDto(uid,problem,status));  
+              add(new StudentProblemDto(uid,problem,status, false));  
           }};
           StudentAssignment stuAssignment = new StudentAssignment(uid,ass, statuses);
           GradeBookDialog gb = new GradeBookDialog(stuAssignment,new CallbackOnComplete() {

@@ -3,7 +3,6 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -18,11 +17,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -39,6 +35,12 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
+/** Shows grid of all students in assignment 
+ * and the summary of the selected assignment.
+ *  
+ * @author casey
+ *
+ */
 public class GradeBookPanel extends ContentPanel {
 
     private StudentAssignmentProperties saProps = GWT.create(StudentAssignmentProperties.class);
@@ -68,7 +70,6 @@ public class GradeBookPanel extends ContentPanel {
         }
         
         showDefaultMessage();
-        
         //addAcceptAllButton();
     }
     
@@ -107,8 +108,6 @@ public class GradeBookPanel extends ContentPanel {
 
                 _store = new ListStore<StudentAssignment>(saProps.uid());
                 _store.addAll(saList);
-                
-            	configureColumns(saList);
 
                 _gradebookGrid = new Grid<StudentAssignment>(_store, colMdl);
                 _gradebookGrid.setWidth(480);
@@ -147,38 +146,6 @@ public class GradeBookPanel extends ContentPanel {
 
     }
 
-    /**
-     * configure the grid based on current assignment
-     *
-     * @param saList
-     */
-    private void configureColumns(List<StudentAssignment> saList) {
-        if(true)
-            return;
-        
-        
-        colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
-
-        if (saList != null && saList.size() > 0) {
-    		StudentAssignment sa = saList.get(0);
-    		List<StudentLessonDto> lessonList = sa.getLessonStatuses();
-
-            initColumns();
-
-            int idx = 0;
-            for (StudentLessonDto lesson : lessonList) {
-                ColumnConfig<StudentAssignment, String> statusCol =
-                		new ColumnConfig<StudentAssignment, String>(new StudentAssignmentLessonStatusValueProvider(idx), 120,
-                				lesson.getLessonName());
-                statusCol.setToolTip(new SafeHtmlBuilder().appendEscaped(lesson.getLessonName()).toSafeHtml());
-                colConfList.add(statusCol);
-                idx++;
-            }
-
-    	}
-        colMdl = new ColumnModel<StudentAssignment>(colConfList);
-    	
-    }
 
 	private void initColumns() {
 		nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
@@ -200,55 +167,6 @@ public class GradeBookPanel extends ContentPanel {
         colConfList.add(detailStatus);
 	}
 
-    private class StudentAssignmentStatusValueProvider extends Object implements ValueProvider<StudentAssignment, String> {
-
-    	private int idx;
-
-    	StudentAssignmentStatusValueProvider(int idx) {
-    	    super();
-    	    this.idx = idx;
-    	}
-    	
-		@Override
-		public String getValue(StudentAssignment stuAssignment) {
-        	return stuAssignment.getAssigmentStatuses().get(idx).getStatus();
-		}
-
-		@Override
-		public void setValue(StudentAssignment object, String value) {
-		}
-
-		@Override
-		public String getPath() {
-			return null;
-		}
-
-    }
-
-    private class StudentAssignmentLessonStatusValueProvider extends Object implements ValueProvider<StudentAssignment, String> {
-
-    	private int idx;
-
-    	StudentAssignmentLessonStatusValueProvider(int idx) {
-    	    super();
-    	    this.idx = idx;
-    	}
-    	
-		@Override
-		public String getValue(StudentAssignment stuAssignment) {
-        	return stuAssignment.getLessonStatuses().get(idx).getStatus();
-		}
-
-		@Override
-		public void setValue(StudentAssignment object, String value) {
-		}
-
-		@Override
-		public String getPath() {
-			return null;
-		}
-
-    }
     
     private void addLoadCmStudentButton() {
 
@@ -281,19 +199,6 @@ public class GradeBookPanel extends ContentPanel {
     	addTool(btn);
     }
 
-    private void addAcceptAllButton() {
-        TextButton btn = new TextButton("Accept");
-        btn.setToolTip("Accept the selected student's assignment.");
-        btn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                closeSelectedAssignment();
-            }
-        });
-
-        addTool(btn);
-    }
-    
     private void closeSelectedAssignment() {
         final Assignment data = _lastUsedAssignment;
         if(data != null) {

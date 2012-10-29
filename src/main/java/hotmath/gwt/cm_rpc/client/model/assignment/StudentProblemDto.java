@@ -8,14 +8,24 @@ public class StudentProblemDto implements Response {
     private ProblemDto problem;
     private String status;
     private String isGraded;
+    private boolean hasShowWork;
     
     public StudentProblemDto() {
     }
 
-    public StudentProblemDto(int uid, ProblemDto problem, String status) {
+    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork) {
         this.uid = uid;
         this.problem = problem;
         this.status = status;
+        this.hasShowWork = hasShowWork;
+    }
+
+    public boolean isHasShowWork() {
+        return hasShowWork;
+    }
+
+    public void setHasShowWork(boolean hasShowWork) {
+        this.hasShowWork = hasShowWork;
     }
 
     public int getUid() {
