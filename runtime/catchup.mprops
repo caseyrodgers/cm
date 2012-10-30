@@ -3691,6 +3691,7 @@ left join (
     select user_id, pid,count(*),1 as has_show_work
     from CM_ASSIGNMENT_PID_WHITEBOARD 
     where assign_key = ?
+    and is_admin = 0
     group by user_id,pid
     ) w on w.pid = p.pid and w.user_id = u.uid
             
@@ -3755,7 +3756,7 @@ from   CM_ASSIGNMENT_PID_STATUS p
                          and user_id = ?
                   group  by pid) w
               on w.pid = p.pid
-       left join (select pid, 1 as has_show_work,
+       left join (select pid, 1 as has_show_work_admin,
                          Count(*)
                   from   CM_ASSIGNMENT_PID_WHITEBOARD
                   where  assign_key = ?
