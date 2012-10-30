@@ -1,9 +1,11 @@
 package hotmath.testset.ha;
 
 import hotmath.ProblemID;
+import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.spring.SpringManager;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -92,6 +94,59 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
+    }
+
+    public void saveSolutionContextCompressed(final int runId, final String pid, final int problemNumber, final String contextJson) {
+    	getJdbcTemplate().update(new PreparedStatementCreator() {
+    		@Override
+    		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    			PreparedStatement ps = null;
+    			String sql = "insert into HA_SOLUTION_CONTEXT_COMPRESSED(time_viewed, run_id, pid, problem_number, variables)values(?,?,?,?,?)";
+    			ps = con.prepareStatement(sql);
+
+    			ps.setDate(1, new Date(System.currentTimeMillis()));
+    			ps.setInt(2, runId);
+    			ps.setString(3, pid);
+    			ps.setInt(4, problemNumber);
+
+    			byte[] inBytes = null;
+    			try {
+    				inBytes = contextJson.getBytes("UTF-8");
+
+    				byte[] outBytes = CompressHelper.compress(inBytes);
+    				ps.setBytes(5, outBytes);
+
+    				if (__logger.isDebugEnabled()) __logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
+    			} catch (UnsupportedEncodingException e) {
+    				__logger.error(String.format("*** Error saving solution context for run_id: %d, pid: %s, prob#: %d",
+    						runId, pid, problemNumber), e);
+    				throw new SQLException(e.getLocalizedMessage());
+    			}
+    			return ps;
+    		}
+    	});
+    }
+
+    public String getSolutionContextCompressedString(int runId, String pid) {
+        ProblemID pidO = new ProblemID(pid);
+        //TODO: remove following hard coding
+        pidO.setProblemSetProblemNumber(1);
+        String sql = "select variables from HA_SOLUTION_CONTEXT_COMPRESSED where run_id = ? and pid = ? and problem_number = ? limit 1";
+        List<String> matches = getJdbcTemplate().query(sql,
+                new Object[]{runId,pid,pidO.getProblemSetProblemNumber()},
+                new RowMapper<String>() {
+                    @Override
+                    public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    	byte[] compressed = rs.getBytes("variables");
+                    	try {
+                    		return CompressHelper.decompress(compressed, 0, null);
+                    	}
+                    	catch (Exception e) {
+                    		throw new SQLException(e.getMessage());
+                    	}
+                    }
+                });
+        return matches.size() > 0?matches.get(0):null;
     }
 
     public String getSolutionXML(String pid) {
