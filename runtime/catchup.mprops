@@ -3576,7 +3576,8 @@ from (
 
 select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
        ifnull(s.status, '-') as status, q.correct, q.id, q.answer, 
-       ifnull(q.create_datetime, s.modify_datetime) as update_datetime
+       ifnull(q.create_datetime, s.modify_datetime) as update_datetime,
+       w.has_show_work, w2.has_show_work_admin
 
 from HA_USER u
 join CM_ASSIGNMENT a on a.assign_key = ?
@@ -3594,6 +3595,23 @@ left join (
     select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
     from CM_ASSIGNMENT_PID_ANSWERS pa) q
   on q.id=l.max_id
+  
+left join (
+    select user_id, pid,count(*),1 as has_show_work
+    from CM_ASSIGNMENT_PID_WHITEBOARD 
+    where assign_key = ?
+    group by user_id,pid
+    ) w on w.pid = p.pid and w.user_id = u.uid
+            
+
+left join (
+    select user_id, pid,count(*),1 as has_show_work_admin
+    from CM_ASSIGNMENT_PID_WHITEBOARD 
+    where assign_key = ?
+    and is_admin = 1
+    group by user_id,pid
+    ) w2 on w2.pid = p.pid and w2.user_id = u.uid
+  
 
 where u.uid in ( $$UID_LIST$$ )
 order by u.uid, problem_id
@@ -3649,7 +3667,7 @@ select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded,
-       w.has_show_work
+       w.has_show_work, w.has_show_work_admin
 
 from CM_ASSIGNMENT a 
 join HA_USER u on u.group_id = a.group_id
@@ -3676,6 +3694,14 @@ left join (
     group by user_id,pid
     ) w on w.pid = p.pid and w.user_id = u.uid
             
+
+left join (
+    select user_id, pid,count(*),1 as has_show_work_admin
+    from CM_ASSIGNMENT_PID_WHITEBOARD 
+    where assign_key = ?
+    and is_admin = 1
+    group by user_id,pid
+    ) w2 on w2.pid = p.pid and w2.user_id = u.uid
     
 where a.assign_key=?
 order by u.user_name, problem_id
@@ -3720,7 +3746,7 @@ order by u.user_name, a.assign_key, problem_id
   
 .key=GET_STUDENT_ASSIGNMENT
 
-select p.*, w.has_show_work
+select p.*, w.has_show_work, w2.has_show_work_admin
 from   CM_ASSIGNMENT_PID_STATUS p
        left join (select pid, 1 as has_show_work,
                          Count(*)
@@ -3729,5 +3755,14 @@ from   CM_ASSIGNMENT_PID_STATUS p
                          and user_id = ?
                   group  by pid) w
               on w.pid = p.pid
+       left join (select pid, 1 as has_show_work,
+                         Count(*)
+                  from   CM_ASSIGNMENT_PID_WHITEBOARD
+                  where  assign_key = ?
+                         and user_id = ?
+                         and is_admin = 1
+                  group  by pid) w2
+              on w2.pid = p.pid
+              
 where  p.assign_key = ?
        and p.uid = ?

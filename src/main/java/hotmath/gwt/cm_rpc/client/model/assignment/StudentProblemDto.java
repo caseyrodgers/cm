@@ -9,15 +9,25 @@ public class StudentProblemDto implements Response {
     private String status;
     private String isGraded;
     private boolean hasShowWork;
+    private boolean hasShowWorkAdmin;
     
     public StudentProblemDto() {
     }
 
-    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork) {
+    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin) {
         this.uid = uid;
         this.problem = problem;
         this.status = status;
         this.hasShowWork = hasShowWork;
+        this.hasShowWorkAdmin = hasShowWorkAdmin;
+    }
+
+    public boolean isHasShowWorkAdmin() {
+        return hasShowWorkAdmin;
+    }
+
+    public void setHasShowWorkAdmin(boolean hasShowWorkAdmin) {
+        this.hasShowWorkAdmin = hasShowWorkAdmin;
     }
 
     public boolean isHasShowWork() {

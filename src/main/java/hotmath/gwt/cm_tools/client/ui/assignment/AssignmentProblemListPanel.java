@@ -51,11 +51,12 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         ModelKeyProvider<StudentProblemDto> pid();
         ValueProvider<StudentProblemDto, String> pidLabel();
         ValueProvider<StudentProblemDto, String> status();
+        ValueProvider<StudentProblemDto, Boolean> hasShowWorkAdmin();
       }
     
     
     AssignmentProblemListCallback _callBack;
-    Grid<StudentProblemDto> _grid;
+    Grid<StudentProblemDto> _studentProblemGrid;
     
     public AssignmentProblemListPanel(AssignmentProblemListCallback callback) {
         this._callBack = callback;
@@ -70,26 +71,29 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.status(),100, "Status");
         l.add(labelStatus);
         
+        ColumnConfig<StudentProblemDto, Boolean> labelComment = new ColumnConfig<StudentProblemDto, Boolean>(props.hasShowWorkAdmin(),50, "Teacher Comment");
+        l.add(labelComment);
+
         ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);        
 
         ListStore<StudentProblemDto> store = new ListStore<StudentProblemDto>(props.pid());
                 
-        _grid = new Grid<StudentProblemDto>(store, cm);
+        _studentProblemGrid = new Grid<StudentProblemDto>(store, cm);
         
-        _grid.getView().setAutoExpandColumn(labelCol);
-        _grid.getView().setStripeRows(true);
-        _grid.getView().setColumnLines(true);
-        _grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        _studentProblemGrid.getView().setAutoExpandColumn(labelCol);
+        _studentProblemGrid.getView().setStripeRows(true);
+        _studentProblemGrid.getView().setColumnLines(true);
+        _studentProblemGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         
 
-        _grid.addHandler(new DoubleClickHandler() {
+        _studentProblemGrid.addHandler(new DoubleClickHandler() {
             @Override
             public void onDoubleClick(DoubleClickEvent event) {
                 //loadProblem()
             }
         },DoubleClickEvent.getType());
         
-        _grid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
+        _studentProblemGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
                 if(event.getSelection().size() > 0) {
@@ -98,7 +102,7 @@ public class AssignmentProblemListPanel extends SimpleContainer {
             }
         });
 
-        add(_grid);
+        add(_studentProblemGrid);
         
         
         __lastInstance = this;
@@ -111,7 +115,7 @@ public class AssignmentProblemListPanel extends SimpleContainer {
         
         if(studentProb.getStatus().equals("Not Viewed")) {
             studentProb.setStatus("Viewed");
-            _grid.getStore().update(studentProb);
+            _studentProblemGrid.getStore().update(studentProb);
         }
     }
     
@@ -123,7 +127,7 @@ public class AssignmentProblemListPanel extends SimpleContainer {
      */
     private void whiteboardUpdated() {
         
-        StudentProblemDto prob = _grid.getSelectionModel().getSelectedItem();
+        StudentProblemDto prob = _studentProblemGrid.getSelectionModel().getSelectedItem();
         if(prob != null) {
             
             switch(_assignmentProblem.getProblemType()) {
@@ -134,7 +138,7 @@ public class AssignmentProblemListPanel extends SimpleContainer {
                         prob.getProblem().setProblemType( _assignmentProblem.getProblemType() );
                         prob.setStatus("Pending");
                         
-                        _grid.getStore().update(prob);
+                        _studentProblemGrid.getStore().update(prob);
                         
                         
                         saveAssignmentProblemStatusToServer(prob);
@@ -158,13 +162,13 @@ public class AssignmentProblemListPanel extends SimpleContainer {
 
     public void tutorWidgetValueChanged(String value, boolean correct) {
         
-        StudentProblemDto prob = _grid.getSelectionModel().getSelectedItem();
+        StudentProblemDto prob = _studentProblemGrid.getSelectionModel().getSelectedItem();
         if(prob != null) {
             /** Since a widget value has been set, it is either Correct or Incorrect
              * 
              */
             prob.setStatus(correct?"Correct":"Incorrect");
-            _grid.getStore().update(prob);
+            _studentProblemGrid.getStore().update(prob);
             
             
             saveAssignmentProblemStatusToServer(prob);
@@ -214,18 +218,18 @@ public class AssignmentProblemListPanel extends SimpleContainer {
     StudentAssignment _assignment;
     public void loadAssignment(StudentAssignment assignment) {
         _assignment = assignment;
-        _grid.getSelectionModel().setSelection(new ArrayList<StudentProblemDto>());
+        _studentProblemGrid.getSelectionModel().setSelection(new ArrayList<StudentProblemDto>());
         try {
-            _grid.getStore().clear();
+            _studentProblemGrid.getStore().clear();
         }
         catch(Exception e) {
             e.printStackTrace();
         }
-        _grid.getStore().addAll(assignment.getAssigmentStatuses());
+        _studentProblemGrid.getStore().addAll(assignment.getAssigmentStatuses());
         
         // select first, if available
-        if(_grid.getStore().size() > 0) {
-            _grid.getSelectionModel().select(_grid.getStore().get(0), false);
+        if(_studentProblemGrid.getStore().size() > 0) {
+            _studentProblemGrid.getSelectionModel().select(_studentProblemGrid.getStore().get(0), false);
         }
     }
 

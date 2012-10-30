@@ -386,7 +386,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          *  get assignment problem status list for all users
          */
         final Map<Integer, String> nameMap = new HashMap<Integer,String>();
-        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey,assignKey}, new RowMapper<StudentProblemDto>() {
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] {assignKey,assignKey, assignKey}, new RowMapper<StudentProblemDto>() {
             @Override
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Integer uid = rs.getInt("uid");
@@ -395,7 +395,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 }
 
                 ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
-                StudentProblemDto prob = new StudentProblemDto(uid,probDto,rs.getString("status"), rs.getInt("has_show_work")!=0);
+                
+                boolean hasShowWork = rs.getInt("has_show_work")!=0;
+                boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin")!=0;
+                StudentProblemDto prob = new StudentProblemDto(uid,probDto,rs.getString("status"), hasShowWork, hasShowWorkAdmin);
 
                 prob.setIsGraded((rs.getInt("is_graded")>0)?"Yes":"No");
 
@@ -934,7 +937,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                         ProblemDto dummy = new ProblemDto(0, null, null, rs.getString("pid"));
-                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), rs.getInt("has_show_work")!=0);
+                        boolean hasShowWork = rs.getInt("has_show_work")!=0;
+                        boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin")!=0;
+                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin);
                         return prob;
                     }
                 });
@@ -1022,7 +1027,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * get assignment problem status list for all users
          */
         final Map<Integer, String> nameMap = new HashMap<Integer, String>();
-        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey },
+        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -1034,7 +1039,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs
                                 .getString("label"), rs.getString("pid"));
                         
-                        StudentProblemDto prob = new StudentProblemDto(uid,dummy,rs.getString("status"), rs.getInt("has_show_work")!=0);
+                        boolean hasShowWork = rs.getInt("has_show_work")!=0;
+                        boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin")!=0;
+                        StudentProblemDto prob = new StudentProblemDto(uid,dummy,rs.getString("status"), hasShowWork, hasShowWorkAdmin);
                         
                         return prob;
                     }
