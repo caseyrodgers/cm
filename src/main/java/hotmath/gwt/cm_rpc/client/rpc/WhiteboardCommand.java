@@ -9,15 +9,24 @@ package hotmath.gwt.cm_rpc.client.rpc;
  */
 public class WhiteboardCommand implements Response {
     
+    boolean isAdmin;
     String command;
     String data;
     
     public WhiteboardCommand() {}
-    public WhiteboardCommand(String command, String data) {
+    public WhiteboardCommand(String command, String data, boolean isAdmin) {
         this.command = command;
         this.data = data;
+        this.isAdmin = isAdmin;
     }
 
+    
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
     public String getCommand() {
         return command;
     }

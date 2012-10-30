@@ -14,6 +14,7 @@ public class SaveAssignmentWhiteboardDataAction implements Action<RpcData> {
     Integer uid;
     String pid;
     String commandData;
+    boolean isAdmin;
     
     
     CommandType commandType;
@@ -22,12 +23,23 @@ public class SaveAssignmentWhiteboardDataAction implements Action<RpcData> {
     public SaveAssignmentWhiteboardDataAction() {}
      
     
-    public SaveAssignmentWhiteboardDataAction(int uid, int assignKey, String pid, CommandType commandType, String commandData) {
+    public SaveAssignmentWhiteboardDataAction(int uid, int assignKey, String pid, CommandType commandType, String commandData, boolean isAdmin) {
         this.uid = uid;
         this.assignKey = assignKey;
         this.pid = pid;
         this.commandType = commandType;
         this.commandData = commandData;
+        this.isAdmin = isAdmin;
+    }
+
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 
 

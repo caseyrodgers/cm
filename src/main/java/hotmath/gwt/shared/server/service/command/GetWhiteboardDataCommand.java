@@ -37,7 +37,7 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
 
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {
-                WhiteboardCommand rd = new WhiteboardCommand(rs.getString("command"), rs.getString("command_data"));
+                WhiteboardCommand rd = new WhiteboardCommand(rs.getString("command"), rs.getString("command_data"), false);
                 data.add(rd);
             }
 

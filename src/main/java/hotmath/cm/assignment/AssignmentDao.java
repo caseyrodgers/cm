@@ -843,7 +843,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         __logger.debug("Getting number of of assignments for '" + uid + "'");
 
         String sql = "select count(*) as cnt " + " from HA_USER u " + " JOIN CM_GROUP g on g.id = u.group_id "
-                + " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " + " where u.uid = ? ";
+                + " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " + " where u.uid = ? and a.status = 'Open' ";
 
         List<Integer> cnt = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
             @Override
@@ -1105,7 +1105,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public WhiteboardCommand mapRow(ResultSet rs, int rowNum) throws SQLException {
                 WhiteboardCommand wCommand = new WhiteboardCommand(rs.getString("command"), rs
-                        .getString("command_data"));
+                        .getString("command_data"), rs.getInt("is_admin")!=0?true:false);
                 return wCommand;
             }
         });
@@ -1152,7 +1152,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public void saveWhiteboardData(final Integer uid, final int assignKey, final String pid, CommandType commandType,
-            final String commandData) {
+            final String commandData, final boolean isAdmin) {
         if (commandType == CommandType.CLEAR) {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
@@ -1170,8 +1170,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key) "
-                            + " values(?,?,?,?,?,?) ";
+                    String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin) "
+                            + " values(?,?,?,?,?,?, ?) ";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, uid);
                     ps.setString(2, pid);
@@ -1179,6 +1179,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(4, commandData);
                     ps.setLong(5, System.currentTimeMillis());
                     ps.setInt(6, assignKey);
+                    ps.setInt(7, isAdmin?1:0);
 
                     return ps;
                 }

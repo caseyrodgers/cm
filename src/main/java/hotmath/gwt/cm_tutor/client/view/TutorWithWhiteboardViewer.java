@@ -66,7 +66,7 @@ public class TutorWithWhiteboardViewer extends Composite {
         _showWWork = new ShowWorkPanel(new ShowWorkPanelCallback() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _testPid,commandType, data);
+                return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _testPid,commandType, data, false);
             }
             
             @Override

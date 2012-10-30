@@ -3668,11 +3668,12 @@ left join (
     from CM_ASSIGNMENT_PID_ANSWERS pa) q
     on q.id=l.max_id
     
+    
 left join (
-    select user_id, pid,1 as has_show_work
+    select user_id, pid,count(*),1 as has_show_work
     from CM_ASSIGNMENT_PID_WHITEBOARD 
     where assign_key = ?
-    limit 1
+    group by user_id,pid
     ) w on w.pid = p.pid and w.user_id = u.uid
             
     
@@ -3712,14 +3713,12 @@ left join (
     
 where u.uid = ?
 order by u.user_name, a.assign_key, problem_id
-
   
   
   
   
   
-  
-.KEY=GET_STUDENT_ASSIGNMENT
+.key=GET_STUDENT_ASSIGNMENT
 
 select p.*, w.has_show_work
 from   CM_ASSIGNMENT_PID_STATUS p
@@ -3732,6 +3731,3 @@ from   CM_ASSIGNMENT_PID_STATUS p
               on w.pid = p.pid
 where  p.assign_key = ?
        and p.uid = ?
-       
-        
-  

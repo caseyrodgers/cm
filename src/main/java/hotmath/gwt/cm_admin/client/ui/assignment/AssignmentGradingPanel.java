@@ -202,9 +202,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 				int percent = Math.round((float)numCorrect*100.0f/(float)_store.getAll().size());
 				_updateGradeCallback.updateGrade(percent);
 	            _gradingGrid.getStore().update(_lastProblem);
-
 			}
-        	
         });
 /*        
         SimpleComboBox<GradedStatus> gradedCombo = new SimpleComboBox<GradedStatus>(new StringLabelProvider<GradedStatus>());

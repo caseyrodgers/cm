@@ -18,7 +18,7 @@ public class SaveAssignmentWhiteboardDataCommand implements ActionHandler<SaveAs
 
     @Override
     public RpcData execute(Connection conn, SaveAssignmentWhiteboardDataAction action) throws Exception {
-        AssignmentDao.getInstance().saveWhiteboardData(action.getUid(),action.getAssignKey(),action.getPid(),action.getCommandType(),action.getCommandData());
+        AssignmentDao.getInstance().saveWhiteboardData(action.getUid(),action.getAssignKey(),action.getPid(),action.getCommandType(),action.getCommandData(), action.isAdmin());
         return new RpcData("status=OK");
     }
 
