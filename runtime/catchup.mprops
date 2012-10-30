@@ -3667,7 +3667,7 @@ select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded,
-       w.has_show_work, w.has_show_work_admin
+       w.has_show_work, w2.has_show_work_admin
 
 from CM_ASSIGNMENT a 
 join HA_USER u on u.group_id = a.group_id
