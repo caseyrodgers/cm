@@ -15,7 +15,7 @@
   <head>
   <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
   <script type="text/javascript"
-      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+      src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
   </script>
 
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
