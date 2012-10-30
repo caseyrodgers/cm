@@ -148,7 +148,7 @@ public class HeaderPanel extends LayoutContainer {
 	        _assignmentsAnchor.setText("You have Assignments");
 	    }
 	    else {
-	        _assignmentsAnchor.setText("You do not have Assignments");
+	        _assignmentsAnchor.setText("&nbsp;");
 	    }
 	}
 	
