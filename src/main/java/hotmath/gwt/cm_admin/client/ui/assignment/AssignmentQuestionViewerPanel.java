@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -88,6 +90,10 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 if(_tabPanel.getActiveWidget() != flowPanel) {
                     setupShowWorkIfRequired();
                 }
+                
+                
+                /** Make sure the tutor/whiteboard are sized correctly */
+                CmRpc.EVENT_BUS.fireEvent(new  WindowHasBeenResizedEvent());
             }
         });
         

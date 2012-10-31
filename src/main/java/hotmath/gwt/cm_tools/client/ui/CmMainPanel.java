@@ -171,6 +171,13 @@ public class CmMainPanel extends BorderLayoutContainer {
             @Override
             public void assignmentGuiActivated() {
                 Log.debug("Student Assignments are activated");
+                
+                /** Remove any resource due to tutor using
+                 *  hardcoded ids. 
+                 */
+                if(__lastInstance != null) {
+                    __lastInstance.removeResource();
+                }
             }
         });
 
