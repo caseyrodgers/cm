@@ -1893,7 +1893,7 @@ var Whiteboard = (function () {
     // function that converts flash object to JSON string
     function convertObjToString(obj) {
         try {
-            var s = JSON.stringify(obj);
+            var s = jQuery.stringify(obj);
             return s;
         } catch (ex) {
             console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
