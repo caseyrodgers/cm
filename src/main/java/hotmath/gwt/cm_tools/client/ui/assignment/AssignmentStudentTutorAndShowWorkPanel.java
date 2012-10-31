@@ -18,10 +18,15 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 /** Manages the student's assignment view of the tutor and whiteboard
  * 
@@ -34,6 +39,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     ShowWorkPanel _showWork;
     AssignmentTutorPanel _tutorPanel;
     AssignmentStudentTutorAndShowWorkPanelCallback _callBack;
+    ProblemDto _problem;
     
     interface AssignmentStudentTutorAndShowWorkPanelCallback {
          void tutorWidgetValueUpdated(String value, boolean correct);
@@ -43,7 +49,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         _callBack = callBack;
         _uid = uid;
         _assignKey = assignment.getAssignKey();
-        _pid = problem.getPid();
+        _problem = problem;
 
         
         /** create callback to pass along when tutor widget value changed
@@ -79,14 +85,34 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         bd.setCollapsible(true);
         bd.setMargins(new Margins(5, 10, 5, 5));
         container.setCenterWidget(_tutorPanel, bd);
+        
+        
+        
+        addTool(createShowLessonButton());
+        
+        
         setWidget(container);
         
         loadTutor(title, uid, _assignKey, problem);
     }
 
     
+    private Widget createShowLessonButton() {
+        TextButton showLesson = new TextButton("Show Lesson");
+        showLesson.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showAssociatedLesson();
+            }
+        });
+        return showLesson;
+    }
+
+    private void showAssociatedLesson() {
+        Info.display("Show Lesson", "Show lesson for: " + _problem.getLesson());
+    }
+
     int _uid, _assignKey;
-    String _pid;
     private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);
@@ -106,7 +132,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     }    
 
     private Action<? extends Response> createWhiteBoardSaveAction(String pid, CommandType comamndType, String commandData) {
-        return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _pid,comamndType, commandData, false);        
+        return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _problem.getPid(),comamndType, commandData, false);        
     }
 
     private void loadTutor(String title, int uid, int assignKey, ProblemDto problem) {
