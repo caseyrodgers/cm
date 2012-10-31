@@ -25,16 +25,21 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridViewConfig;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -45,7 +50,7 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
  * @author casey
  * 
  */
-public class AssignmentProblemListPanel extends SimpleContainer {
+public class AssignmentProblemListPanel extends ContentPanel {
 
     static AssignmentProblemListPanel __lastInstance;
 
@@ -65,6 +70,9 @@ public class AssignmentProblemListPanel extends SimpleContainer {
     public AssignmentProblemListPanel(AssignmentProblemListCallback callback) {
         this._callBack = callback;
 
+        setHeadingHtml("Problems in Assignment");
+        addTool(createNextProblemButton());
+        
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
 
         List<ColumnConfig<StudentProblemDto, ?>> l = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
@@ -125,9 +133,31 @@ public class AssignmentProblemListPanel extends SimpleContainer {
             }
         });
         
-        add(_studentProblemGrid);
+        setWidget(_studentProblemGrid);
 
         __lastInstance = this;
+    }
+
+    private Widget createNextProblemButton() {
+        TextButton b = new TextButton("Next Problem");
+        b.setToolTip("Move to the next incomplete problem.");
+        b.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                moveToNextIncompleteProblem();
+            }
+        });
+        return b;
+    }
+    
+    private void moveToNextIncompleteProblem() {
+        StudentProblemDto selected = _studentProblemGrid.getSelectionModel().getSelectedItem();
+        for(StudentProblemDto s: _studentProblemGrid.getStore().getAll()) {
+            if(!s.isComplete() && selected != s) {
+                _studentProblemGrid.getSelectionModel().select(s, false);
+                break;
+            }
+        }
     }
 
     private void loadProblemStatement(StudentProblemDto studentProb) {

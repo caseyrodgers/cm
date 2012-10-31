@@ -8,7 +8,6 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.AssignmentProblemListCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWorkPanel.AssignmentStudentTutorAndShowWorkPanelCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;

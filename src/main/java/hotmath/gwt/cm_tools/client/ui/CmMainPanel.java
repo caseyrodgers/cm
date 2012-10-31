@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -176,7 +177,12 @@ public class CmMainPanel extends BorderLayoutContainer {
                  *  hardcoded ids. 
                  */
                 if(__lastInstance != null) {
-                    __lastInstance.removeResource();
+                    if(ContextController.getInstance().getTheContext() instanceof QuizContext) {
+                        // skip it, leave it up
+                    }
+                    else {
+                        __lastInstance.removeResource();
+                    }
                 }
             }
         });

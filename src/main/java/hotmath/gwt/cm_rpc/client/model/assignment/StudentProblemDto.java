@@ -97,7 +97,7 @@ public class StudentProblemDto implements Response {
 	 */
     public boolean isComplete() {
         String s = status.toLowerCase();
-        if(s.equals("not viewed")) {
+        if(s.contains("viewed")) {   // viewed and not viewed
             return false;
         }
         else {
