@@ -1765,10 +1765,16 @@ var Whiteboard = (function () {
                 textRendering = false;
                 return;
             }
+            
+            
             if (graphicData.id == 1 && graphicData.dataArr.length > 500) {
+            	
                 var jStr = convertObjToString(graphicData);
                 // currentObj.tempData = convertStringToObj(jStr);
                 // ExternalInterface.call("console.log","A")
+                
+                
+                
                 var ptC = graphicData.dataArr.length
                 var segArr = []
                 var buf
@@ -1782,10 +1788,13 @@ var Whiteboard = (function () {
                     x: header.x,
                     y: header.y
                 }
+                
+                alert('test 6');
                 var nname = header.name
                 // ExternalInterface.call("console.log","B")
                 var segC = 0;
                 var nheader;
+                
                 while (ptC > 0) {
                     segC++;
                     buf = Math.min(500, ptC);
@@ -1818,12 +1827,14 @@ var Whiteboard = (function () {
                 for (var z = 0; z < segArr.length; z++) {
                     sendDataToSERVER(segArr[z]);
                 }
+                
                 console.log("Sending json string_segemented line -segments  : " + segArr.length);
                 render = false;
                 resetArrays();
                 textRendering = false;
                 return;
             }
+            
             render = false;
             // var jsonStr = convertObjToString(graphicData);
             console.log("Sending Data string for: " + graphicData.id);
@@ -1836,7 +1847,9 @@ var Whiteboard = (function () {
     function sendDataToSERVER(jsdata) {
         var jsonStr = convertObjToString(jsdata);
         console.log("Sending json string: " + jsonStr);
+        
         wb.whiteboardOut(jsonStr, true);
+        
         try {
             if (supports_localStorage()) {
                 localStorage['jstr'] = jsonStr

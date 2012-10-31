@@ -412,26 +412,19 @@ h1, h2, h3, h4 {
 }
 .resource-wrapper {
 }
+
+
+
 .prescription-info-panel {
-        background: #43464B;
-        color: #C0C662;
+        background: transparent;
         padding: 20px;
 }
 .prescription-info-panel p {
         margin-bottom: 10px;
+        color: #D1D5D8;
 }
-.prescription-info-panel .form-field {
-        color: #C0C662;
-        font-weight: bold;
-        margin-right: 10px;
-        width: 75px;
-}
-.prescription-info-panel .form-value {
-        color: #C0C662;
-        width: 200px;
-}
-.prescription-info-panel {
-}
+
+
 
 .cm-main-panel-header div {
 	font-size: 1em !important;

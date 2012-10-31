@@ -194,7 +194,12 @@ public class ShowWorkPanel extends Composite {
             eatNextWhiteboardOut = false;
             return;
         }
-
+        
+        if(json == null) { 
+            Log.debug("whitebordOut_Gwt: JSON is null");
+            return;
+        }
+        
         Log.debug("whitebordOut_Gwt: JSON length " + json.length());
 
         /**

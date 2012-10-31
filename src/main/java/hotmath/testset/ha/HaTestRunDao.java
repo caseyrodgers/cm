@@ -134,12 +134,16 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
         List<SessionTopic> list = getJdbcTemplate().query(sql, new Object[] { runId, runId }, new RowMapper<SessionTopic>() {
             @Override
             public SessionTopic mapRow(ResultSet rs, int rowNum) throws SQLException {
-                boolean completed = rs.getDate("date_completed") != null;
-                SessionTopic st = new SessionTopic(rs.getString("lesson_name"), completed);
+
                 int itemCount = rs.getInt("item_count");
                 int useCount = rs.getInt("use_count");
+                
+                boolean completed = (useCount >= itemCount);
                 String status = String.format("%d of %d", useCount, itemCount);
+                
+                SessionTopic st = new SessionTopic(rs.getString("lesson_name"), completed);
                 st.setTopicStatus(status);
+                
                 return st;
             }
         });
