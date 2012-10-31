@@ -1,7 +1,7 @@
 package hotmath.testset.ha;
 
-import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.SolutionDao;
@@ -32,19 +32,33 @@ public class SolutionDao_Test extends CmDbTestCase {
         dao = (SolutionDao)manager.getBeanFactory().getBean("hotmath.testset.ha.SolutionDao");
     }
 
-    public void testSaveSolutionContextCompressed() throws Exception {
-        int runId = 1;
-        String pid = "compression_test";
+    public void testSaveSolutionContext() throws Exception {
+        int runId = 3;
+        String pid = "test_bob_multi-frac_1_1_1$1";
         int problemNumber = 1;
-        dao.saveSolutionContextCompressed(runId, pid, problemNumber, _contextJson);
+        dao.saveSolutionContext(runId, pid, problemNumber, _contextJson);
         assertTrue(true);
     }
 
-    public void testgetSolutionContextCompressed() throws Exception {
-        int runId = 1;
-        String pid = "compression_test";
-        String solnCtx = dao.getSolutionContextCompressedString(runId, pid);
+    public void testgetSolutionContextStringCompressed() throws Exception {
+        int runId = 2;
+        String pid = "test_bob_multi-frac_1_1_1$1";
+        String solnCtx = dao.getSolutionContextString(runId, pid);
         assertTrue(solnCtx.equals(_contextJson));
+    }
+
+    public void testgetSolutionContextString() throws Exception {
+        int runId = 1188284;
+        String pid = "test_flashcards_reducing-fractions_1_1_1$3";
+        String solnCtx = dao.getSolutionContextString(runId, pid);
+        assertTrue(solnCtx != null);
+    }
+
+    public void testgetSolutionContext() throws Exception {
+        int runId = 1188284;
+        String pid = "test_flashcards_reducing-fractions_1_1_1$3";
+        SolutionContext solnCtx = dao.getSolutionContext(runId, pid);
+        assertTrue(solnCtx != null);
     }
 
 }

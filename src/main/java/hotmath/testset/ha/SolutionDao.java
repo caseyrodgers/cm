@@ -58,42 +58,79 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 new RowMapper<SolutionContext>() {
                     @Override
                     public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new SolutionContext(pid, rs.getInt("problem_number"), rs.getString("variables"));
+                    	String solnCtx;
+                    	try {
+                        	solnCtx = loadSolutionContextString(rs);
+                    	}
+                    	catch( Exception e) {
+                    		throw new SQLException(e);
+                    	}
+                        return new SolutionContext(pid, rs.getInt("problem_number"), solnCtx);
                     }
                 });
         return matches.size()>0?matches.get(0):null;
     }
     
     public String getSolutionContextString(int runId, String pid) {
-        ProblemID pidO = new ProblemID(pid);
-        String sql = "select variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? and problem_number = ?";
+        final ProblemID pidO = new ProblemID(pid);
+        final String sql = "select variables from HA_SOLUTION_CONTEXT where run_id = ? and pid = ? and problem_number = ?";
         List<String> matches = getJdbcTemplate().query(sql,
                 new Object[]{runId,pid,pidO.getProblemSetProblemNumber()},
                 new RowMapper<String>() {
                     @Override
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return rs.getString("variables");
+                    	__logger.debug("problem_number: " + pidO.getProblemNumber());
+                    	try {
+                    		return loadSolutionContextString(rs);
+                    	}
+                    	catch (Exception e) {
+                    		throw new SQLException(e.getMessage());
+                    	}
                     }
                 });
         return matches.size() > 0?matches.get(0):null;
     }
+    
+    private String loadSolutionContextString(ResultSet rs) throws Exception {
+    	byte[] compressed = rs.getBytes("variables");
+    	if (compressed[0] != "{".getBytes("UTF-8")[0]) {
+    		return CompressHelper.decompress(compressed);
+    	}
+    	else {
+    		return rs.getString("variables");
+    	}
+
+    }
 
     public void saveSolutionContext(final int runId, final String pid, final int problemNumber, final String contextJson) {
-        getJdbcTemplate().update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement ps = null;
-                String sql = "insert into HA_SOLUTION_CONTEXT(time_viewed, run_id, pid, problem_number, variables)values(?,?,?,?,?)";
-                ps = con.prepareStatement(sql);
+    	getJdbcTemplate().update(new PreparedStatementCreator() {
+    		@Override
+    		public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    			PreparedStatement ps = null;
+    			String sql = "insert into HA_SOLUTION_CONTEXT(time_viewed, run_id, pid, problem_number, variables)values(?,?,?,?,?)";
+    			ps = con.prepareStatement(sql);
 
-                ps.setDate(1, new Date(System.currentTimeMillis()));
-                ps.setInt(2, runId);
-                ps.setString(3, pid);
-                ps.setInt(4, problemNumber);
-                ps.setString(5, contextJson);
-                return ps;
-            }
-        });
+    			ps.setDate(1, new Date(System.currentTimeMillis()));
+    			ps.setInt(2, runId);
+    			ps.setString(3, pid);
+    			ps.setInt(4, problemNumber);
+
+    			byte[] inBytes = null;
+    			try {
+    				inBytes = contextJson.getBytes("UTF-8");
+
+    				byte[] outBytes = CompressHelper.compress(inBytes);
+    				ps.setBytes(5, outBytes);
+
+    				if (__logger.isDebugEnabled()) __logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
+    			} catch (UnsupportedEncodingException e) {
+    				__logger.error(String.format("*** Error saving solution context for run_id: %d, pid: %s, prob#: %d",
+    						runId, pid, problemNumber), e);
+    				throw new SQLException(e.getLocalizedMessage());
+    			}
+    			return ps;
+    		}
+    	});
     }
 
     public void saveSolutionContextCompressed(final int runId, final String pid, final int problemNumber, final String contextJson) {
@@ -139,7 +176,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                     public String mapRow(ResultSet rs, int rowNum) throws SQLException {
                     	byte[] compressed = rs.getBytes("variables");
                     	try {
-                    		return CompressHelper.decompress(compressed, 0, null);
+                    		return CompressHelper.decompress(compressed);
                     	}
                     	catch (Exception e) {
                     		throw new SQLException(e.getMessage());
