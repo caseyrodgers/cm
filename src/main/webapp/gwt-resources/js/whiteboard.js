@@ -16,46 +16,6 @@ if (typeof console == "undefined") {
         }
     };
 }
-/**
-Jquery stringify extension  for browsers which doesnt  have support for JSON  
-source: https://gist.github.com/754454
-*/
-jQuery.extend({
-    stringify  : function stringify(obj) {         
-        if ("JSON" in window) {
-            return JSON.stringify(obj);
-        }
-
-        var t = typeof (obj);
-        if (t != "object" || obj === null) {
-            // simple data type
-            if (t == "string") obj = '"' + obj + '"';
-
-            return String(obj);
-        } else {
-            // recurse array or object
-            var n, v, json = [], arr = (obj && obj.constructor == Array);
-
-            for (n in obj) {
-                v = obj[n];
-                t = typeof(v);
-                if (obj.hasOwnProperty(n)) {
-                    if (t == "string") {
-                        v = '"' + v + '"';
-                    } else if (t == "object" && v !== null){
-                        v = jQuery.stringify(v);
-                    }
-
-                    json.push((arr ? "" : '"' + n + '":') + String(v));
-                }
-            }
-
-            return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
-        }
-    }
-});
-//
-
 var Whiteboard = (function () {
     var wb = {};
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -1933,7 +1893,7 @@ var Whiteboard = (function () {
     // function that converts flash object to JSON string
     function convertObjToString(obj) {
         try {
-            var s = jQuery.stringify(obj);
+            var s =stringify(obj);
             return s;
         } catch (ex) {
             console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
@@ -1948,7 +1908,43 @@ var Whiteboard = (function () {
             console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
         }
     }
+//
+/**
+json stringify method for browsers which doesnt  have support for JSON  
+source: https://gist.github.com/754454
+*/
+function stringify(obj) {         
+        if ("JSON" in window) {
+            return JSON.stringify(obj);
+        }
 
+        var t = typeof (obj);
+        if (t != "object" || obj === null) {
+            // simple data type
+            if (t == "string") obj = '"' + obj + '"';
+
+            return String(obj);
+        } else {
+            // recurse array or object
+            var n, v, json = [], arr = (obj && obj.constructor == Array);
+
+            for (n in obj) {
+                v = obj[n];
+                t = typeof(v);
+                if (obj.hasOwnProperty(n)) {
+                    if (t == "string") {
+                        v = '"' + v + '"';
+                    } else if (t == "object" && v !== null){
+                        v = jQuery.stringify(v);
+                    }
+
+                    json.push((arr ? "" : '"' + n + '":') + String(v));
+                }
+            }
+
+            return (arr ? "[" : "{") + String(json) + (arr ? "]" : "}");
+        }
+    }
 
     // ### RENDER OBJECT TO WHITEBOARD
     function renderObj(obj) {
