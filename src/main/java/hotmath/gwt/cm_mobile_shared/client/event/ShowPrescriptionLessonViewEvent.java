@@ -1,4 +1,6 @@
-package hotmath.gwt.cm_mobile3.client.event;
+package hotmath.gwt.cm_mobile_shared.client.event;
+
+import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewHandler;
 
 import com.google.gwt.event.shared.GwtEvent;
 

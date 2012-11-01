@@ -13,6 +13,7 @@ public class LessonPrescriptionViewer extends GWindow {
         
         setHeadingHtml("Lesson: " + lessonName);
         setPixelSize(600, 800);
+        setMinimizable(true);
         
         showLessonPrescription(lessonName);
         

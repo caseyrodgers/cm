@@ -169,5 +169,11 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="TOPIC_SEARCH_PRESCRIPTION"
+       maxElementsInMemory="50"
+       overflowToDisk="false">
+</cache>
+
+
 
 </ehcache>

@@ -87,12 +87,14 @@ public class CmCacheManager  {
 		ACTIVITY_TIMES,
 		
 		/** List of all custom program lesson names */
-		ALL_CUSTOM_PROGRAM_LESSONS, ALL_CUSTOM_QUIZ_LESSONS
+		ALL_CUSTOM_PROGRAM_LESSONS, ALL_CUSTOM_QUIZ_LESSONS,
+		
+		/** anonymous topic searches */
+		TOPIC_SEARCH_PRESCRIPTION
 	};
 
 	private void flushCache() {
-		if (logger.isDebugEnabled())
-			logger.debug("Shutting down EHCache");
+		logger.debug("Shutting down EHCache");
 		CacheManager.getInstance().shutdown();
 	}
 

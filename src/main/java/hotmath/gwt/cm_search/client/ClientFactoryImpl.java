@@ -1,12 +1,14 @@
 package hotmath.gwt.cm_search.client;
 
 
+import hotmath.gwt.cm_search.client.view.ReviewView;
+import hotmath.gwt.cm_search.client.view.ReviewViewImpl;
 import hotmath.gwt.cm_search.client.view.SearchView;
 import hotmath.gwt.cm_search.client.view.SearchViewImpl;
-import hotmath.gwt.cm_search.client.view.TutorView;
-import hotmath.gwt.cm_search.client.view.TutorViewImpl;
 import hotmath.gwt.cm_search.client.view.TopicView;
 import hotmath.gwt.cm_search.client.view.TopicViewImpl;
+import hotmath.gwt.cm_search.client.view.TutorView;
+import hotmath.gwt.cm_search.client.view.TutorViewImpl;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -18,6 +20,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private final SearchView searchView = new SearchViewImpl();
     private final TopicView topicView = new TopicViewImpl();
     private final TutorView tutorView = new TutorViewImpl();
+    private final ReviewView reviewView = new ReviewViewImpl();
 
     @Override
     public EventBus getEventBus() {
@@ -42,6 +45,11 @@ public class ClientFactoryImpl implements ClientFactory {
     @Override
     public TutorView getTopicResourceTutorView() {
         return tutorView;
+    }
+
+    @Override
+    public ReviewView getReviewView() {
+        return reviewView;
     }
     
 }

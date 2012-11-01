@@ -86,16 +86,21 @@ public class TopicViewImpl extends AbstractPagePanel implements TopicView {
         
         for(PrescriptionSessionDataResource resource: lessonData.getInmhResources()) {
             
-            if(resource.getType().equals("results")) {
-                continue;
-            }
-            if(resource.getType().equals("activity"))
-                continue;
-            
             if(resource.getItems().size() == 0) {
                 continue;
             }
             
+            String itemType = resource.getType();
+            /** skip these types */
+            if(itemType.equals("results") || itemType.equals("activity") || itemType.equals("cmextra")) {
+                continue;
+            }
+            
+            if(itemType.equals("practice")) {
+                resource.setLabel("Practice Problems");
+                resource.setDescription("Practice math tutorials");
+            }
+                        
             ListItem li = new ListItem();
             li.setStyleName("resourceType");
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));

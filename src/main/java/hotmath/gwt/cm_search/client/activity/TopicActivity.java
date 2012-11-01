@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_search.client.activity;
 
-import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -8,12 +7,12 @@ import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_search.client.ClientFactory;
+import hotmath.gwt.cm_search.client.places.ReviewPlace;
 import hotmath.gwt.cm_search.client.places.SearchPlace;
 import hotmath.gwt.cm_search.client.places.TopicPlace;
 import hotmath.gwt.cm_search.client.places.TutorPlace;
+import hotmath.gwt.cm_search.client.places.VideoPlace;
 import hotmath.gwt.cm_search.client.view.TopicView;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -76,8 +75,14 @@ public class TopicActivity extends AbstractActivity implements TopicView.Present
         if(resourceItem.getType().equals("practice")) {
             return new TutorPlace(resourceItem.getFile());
         }
+        else if(resourceItem.getType().equals("review")) {
+            return new ReviewPlace(resourceItem.getFile());
+        }
+        else if(resourceItem.getType().equals("video")) {
+            return new VideoPlace(resourceItem);
+        }
         else {
-           return new SearchPlace("casey");
+           return new SearchPlace("");
         }
     }
 }

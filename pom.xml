@@ -698,6 +698,7 @@
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
 						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
+						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
 						<!-- <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> -->
 						<!-- <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>

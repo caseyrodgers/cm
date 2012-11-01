@@ -12,8 +12,6 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
-import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoView;
-import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
@@ -25,6 +23,8 @@ import hotmath.gwt.cm_mobile3.client.view.SearchViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
+import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
+import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 

@@ -2,6 +2,9 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.AssessmentPrescriptionCustomMobile;
+import hotmath.cm.util.CatchupMathProperties;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
@@ -38,11 +41,16 @@ import org.apache.log4j.Logger;
 public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescriptionAction, PrescriptionSessionResponse> {
 
     static Logger __logger = Logger.getLogger(GetPrescriptionCommand.class);
-
+    
     @Override
     public PrescriptionSessionResponse execute(final Connection conn, GetTopicPrescriptionAction action) throws Exception {
+
+        PrescriptionSessionResponse res = (PrescriptionSessionResponse)CmCacheManager.getInstance().retrieveFromCache(CacheName.TOPIC_SEARCH_PRESCRIPTION, action.getTopicFile());
+        if(res != null) {
+            return res;
+        }
         
-        int userSharedUser = 24412;
+        int userSharedUser = CatchupMathProperties.getInstance().getProblemAsInt("topic_search_shared_user", 24412);
         
         
         String lesson = action.getTopicFile();
@@ -60,7 +68,10 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         lessonModels.add(new CustomLessonModel(getTopicLessonTitle(conn, lesson), lesson, "General"));
         
         AssessmentPrescription prescription = new AssessmentPrescriptionCustomMobile(conn, testRun, lessonModels);
-        return GetPrescriptionCommand.createPrescriptionResponse(conn, prescription, 0);
+        res = GetPrescriptionCommand.createPrescriptionResponse(conn, prescription, 0);
+        
+        CmCacheManager.getInstance().addToCache(CacheName.TOPIC_SEARCH_PRESCRIPTION, action.getTopicFile(), res);      
+        return res;
     }
 
     

@@ -52,6 +52,19 @@ public class CatchupMathProperties extends Properties {
             throw new PropertyLoadFileException(e);
         }
     }
+    
+    public int getProblemAsInt(String prop, int defNum) {
+        String val = getProperty(prop);
+        if(val == null) {
+            try {
+                return Integer.parseInt(val);
+            }
+            catch(NumberFormatException nfe) {
+                __log.error(nfe);
+            }
+        }
+        return defNum;
+    }
 
     /**
      * return absolute local directory where the catchup math deployed webapp

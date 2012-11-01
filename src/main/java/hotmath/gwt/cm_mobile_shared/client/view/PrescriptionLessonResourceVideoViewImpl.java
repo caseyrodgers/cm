@@ -1,10 +1,9 @@
-package hotmath.gwt.cm_mobile3.client.view;
+package hotmath.gwt.cm_mobile_shared.client.view;
 
-import hotmath.gwt.cm_mobile3.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
 
 import java.util.List;
 
@@ -134,10 +133,10 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
             var videoEl = videos[0]; // just first
             var autoPlay = function() {
                 videoEl.play();
-                instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsReady()();                
+                instance.@hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsReady()();                
             }
             var videoEnded = function() {
-                     instance.@hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsComplete()();
+                     instance.@hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoViewImpl::gwt_videoIsComplete()();
             }
             videoEl.addEventListener('canplaythrough',autoPlay,false);
             videoEl.addEventListener('ended',videoEnded,false);
