@@ -154,7 +154,7 @@ public class GradeBookPanel extends ContentPanel {
         statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 85, "Status");
         statusCol.setRowHeader(true);
 
-        gradeCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Grade");
+        gradeCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Score");
         gradeCol.setRowHeader(true);
         
         detailStatus = new ColumnConfig<StudentAssignment, String>(saProps.studentDetailStatus(), 150, "Details");
@@ -187,7 +187,7 @@ public class GradeBookPanel extends ContentPanel {
     
     private void addGradeButton() {
 
-    	TextButton btn = new TextButton("Grade");
+    	TextButton btn = new TextButton("Score");
     	btn.setToolTip("View and Grade the selected student's Assignment");
     	btn.addSelectHandler(new SelectHandler() {
     		@Override

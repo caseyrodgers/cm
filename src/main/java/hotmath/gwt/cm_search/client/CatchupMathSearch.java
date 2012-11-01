@@ -34,13 +34,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler {
 
 
-    static Map<String, String> _queryParameters = null;
-    static public String getQueryParameter(String name) {
-        if(_queryParameters == null) {
-            _queryParameters = readQueryString();
-        }
-        return _queryParameters.get(name);
-    }
     
     private Place defaultPlace = new SearchPlace("");
     private SimplePanel appWidget = new SimplePanel();
@@ -50,18 +43,8 @@ public class CatchupMathSearch implements EntryPoint, OrientationChangedHandler 
     static public EventBus __eventBus = __clientFactory.getEventBus();
     static {
         setupJsHooks();
-
     }
 
-    static private Map<String, String> readQueryString() {
-        Map<String, String> m = new HashMap<String, String>();
-        Map<String, List<String>> query = Window.Location.getParameterMap();
-        for (String s : query.keySet()) {
-            m.put(s, query.get(s).get(0));
-        }
-        Window.Location.getHostName();
-        return m;
-    }
     
     
 

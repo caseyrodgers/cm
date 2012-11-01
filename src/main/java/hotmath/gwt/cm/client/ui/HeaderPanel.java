@@ -48,7 +48,7 @@ public class HeaderPanel extends LayoutContainer {
 
 		setStyleName("header-panel");
 		
-		_assignmentsAnchor = new Anchor("You Have Assignments");
+		_assignmentsAnchor = new Anchor("Assignments");
 		_assignmentsAnchor.addStyleName("assigments_anchor");
 		_assignmentsAnchor.addClickHandler(new ClickHandler() {
             @Override
@@ -144,11 +144,15 @@ public class HeaderPanel extends LayoutContainer {
 	
 	
 	private void updateAssignmentMessage(boolean incompleteAssignments) {
+	    if(true)
+	        return;
+	    
+	    
 	    if(incompleteAssignments) {
 	        _assignmentsAnchor.setText("You have Assignments");
 	    }
 	    else {
-	        _assignmentsAnchor.setText("");
+	        _assignmentsAnchor.setText("You do not have Assignments");
 	    }
 	}
 	

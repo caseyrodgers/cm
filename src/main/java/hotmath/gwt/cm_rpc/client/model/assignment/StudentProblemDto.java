@@ -62,6 +62,24 @@ public class StudentProblemDto implements Response {
     public void setStatus(String status) {
         this.status = status;
     }
+    
+    /** Return the label shown as the status
+     * for this problem to the student.
+     * 
+     * Viewed/Not viewed is simply unanswered
+     * 
+     * @return
+     */
+    public String getStatusForStudent() {
+        String s = getStatus();
+       if(s.toLowerCase().contains("viewed")) {
+           // viewed, not viewed
+           return "Not Answered";
+       }
+       else {
+           return s;
+       }
+    }
 
     public String getIsGraded() {
 		return isGraded;

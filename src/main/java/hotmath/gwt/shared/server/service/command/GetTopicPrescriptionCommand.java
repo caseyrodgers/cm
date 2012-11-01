@@ -43,6 +43,12 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
     public PrescriptionSessionResponse execute(final Connection conn, GetTopicPrescriptionAction action) throws Exception {
         
         int userSharedUser = 24412;
+        
+        
+        String lesson = action.getTopicFile();
+        if(!lesson.endsWith(".html")) {
+            lesson = lookupLessonFileFromName(conn, lesson);
+        }
 
         HaTest custTest = HaTestDao.getInstance().createTest(userSharedUser,HaTestDefDao.getInstance().getTestDef(CmProgram.CUSTOM_PROGRAM.getDefId()), HaTestDao.EMPTY_TEST);
         StudentUserProgramModel userProgram = new StudentUserProgramModel();
@@ -51,13 +57,35 @@ public class GetTopicPrescriptionCommand implements ActionHandler<GetTopicPrescr
         testRun.setHaTest(custTest);
         
         List<CustomLessonModel> lessonModels = new ArrayList<CustomLessonModel>();
-        lessonModels.add(new CustomLessonModel(getTopicLessonTitle(conn, action.getTopicFile()), action.getTopicFile(), "General"));
+        lessonModels.add(new CustomLessonModel(getTopicLessonTitle(conn, lesson), lesson, "General"));
         
         AssessmentPrescription prescription = new AssessmentPrescriptionCustomMobile(conn, testRun, lessonModels);
         return GetPrescriptionCommand.createPrescriptionResponse(conn, prescription, 0);
     }
 
     
+    private String lookupLessonFileFromName(Connection conn, String lesson) throws Exception {
+        PreparedStatement p=null;
+        try {
+            String sql = "select distinct file from HA_PROGRAM_LESSONS where lesson = ?";
+            p = conn.prepareStatement(sql);
+            
+            p.setString(1, lesson);
+            ResultSet rs = p.executeQuery();
+            if(!rs.first()) {
+                throw new Exception("No lesson file found: " + lesson);
+            }
+            else {
+                String file = rs.getString("file");
+                return file;
+            }
+        }
+        finally {
+            SqlUtilities.releaseResources(null,  p, null);
+        }
+    }
+
+
     private String getTopicLessonTitle(final Connection conn, String file) throws Exception {
         PreparedStatement ps = null;
         try {

@@ -39,6 +39,7 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridViewConfig;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -139,7 +140,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     private Widget createNextProblemButton() {
         TextButton b = new TextButton("Next Problem");
-        b.setToolTip("Move to the next incomplete problem.");
+        b.setToolTip("Move to the next unanswered problem.");
         b.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -154,9 +155,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
         for(StudentProblemDto s: _studentProblemGrid.getStore().getAll()) {
             if(!s.isComplete() && selected != s) {
                 _studentProblemGrid.getSelectionModel().select(s, false);
-                break;
+                return;
             }
         }
+        
+        Info.display("Assignment Complete", "There are no unanswered problems.");
     }
 
     private void loadProblemStatement(StudentProblemDto studentProb) {

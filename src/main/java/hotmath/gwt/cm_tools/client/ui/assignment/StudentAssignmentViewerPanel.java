@@ -45,8 +45,8 @@ import com.sencha.gxt.widget.core.client.info.Info;
  *
  * Container for editing an Assignment.   
  * 
- * Has a list of problems which when selected show the tutor/whiteboard
- * of the current assigment problem.
+ * Has a list/grid of problems which when selected show the tutor/whiteboard
+ * of the current assignment problem.
  * 
  * Fires AssignmentProblemLoadedEvent when a new problem is loaded.
  * 
@@ -183,7 +183,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         header.setLayoutData(new MarginData(10));
         header.add(new MyFieldLabel(_assignmentCombo,"Assignment Name"));
         header.add(new MyFieldLabel(_assignmentStatus,"Assignment Status"));
-        header.add(new MyFieldLabel(_grade,"Grade"));
+        header.add(new MyFieldLabel(_grade,"Score"));
         
         return header;
     }

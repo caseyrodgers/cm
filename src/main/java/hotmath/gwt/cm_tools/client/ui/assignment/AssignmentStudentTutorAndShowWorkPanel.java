@@ -26,9 +26,9 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.info.Info;
 
-/** Manages the student's assignment view of the tutor and whiteboard
+/** Manages the student's assignment view of
+ *  a single tutor and its associated whiteboard
  * 
  * 
  * @author casey
@@ -109,7 +109,8 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     }
 
     private void showAssociatedLesson() {
-        Info.display("Show Lesson", "Show lesson for: " + _problem.getLesson());
+        Log.debug("Show lesson for: " + _problem.getLesson());
+        new LessonPrescriptionViewer(_problem.getLesson());
     }
 
     int _uid, _assignKey;
