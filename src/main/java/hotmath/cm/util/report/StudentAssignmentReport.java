@@ -48,7 +48,6 @@ public class StudentAssignmentReport {
 		this.title = title;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, int adminId,
 			List<Integer> studentUids) {
 		ByteArrayOutputStream baos = null;
@@ -62,7 +61,7 @@ public class StudentAssignmentReport {
 
             AssignmentDao asgDao = AssignmentDao.getInstance();
             List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid);
-            if (saList == null || saList.isEmpty()) return null;
+            // if (saList == null || saList.isEmpty()) return null;
 
         	CmStudentDao studentDao = CmStudentDao.getInstance();
         	StudentModelI sm = studentDao.getStudentModel(stuUid); 
@@ -76,7 +75,7 @@ public class StudentAssignmentReport {
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			Phrase date     = buildLabelContent("Date: ", printDate);
 		    
-			Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
+			//Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
 			Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
 
 			String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
@@ -88,20 +87,16 @@ public class StudentAssignmentReport {
 				sb.append("-").append(sm.getName().replaceAll(" ", ""));
 			reportName = sb.toString();
 
-			PdfPTable pdfTbl = new PdfPTable(3);
+			PdfPTable pdfTbl = new PdfPTable(2);
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
 			pdfTbl.addCell(school);
 			pdfTbl.addCell(admin);
-			pdfTbl.addCell(expires);
+			pdfTbl.addCell(date);
 			
 			pdfTbl.addCell(student);
 			pdfTbl.addCell(showWork);
 			pdfTbl.addCell(new Phrase(" "));
-
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(date);
 
 			pdfTbl.setTotalWidth(600.0f);
 
@@ -146,7 +141,7 @@ public class StudentAssignmentReport {
 			document.close();
 
 		} catch (Exception e) {
-			logger.error(String.format("*** Error generating student detail for aid: %d, uid: %d",
+			logger.error(String.format("*** Error generating assignment report for aid: %d, uid: %d",
 				adminId, stuUid), e);
 		}
 		return baos;
