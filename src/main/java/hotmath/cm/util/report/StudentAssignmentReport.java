@@ -87,7 +87,7 @@ public class StudentAssignmentReport {
 				sb.append("-").append(sm.getName().replaceAll(" ", ""));
 			reportName = sb.toString();
 
-			PdfPTable pdfTbl = new PdfPTable(2);
+			PdfPTable pdfTbl = new PdfPTable(3);
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
 			pdfTbl.addCell(school);
