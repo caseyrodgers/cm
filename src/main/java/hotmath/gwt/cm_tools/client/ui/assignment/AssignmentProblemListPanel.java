@@ -61,7 +61,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         ValueProvider<StudentProblemDto, String> status();
 
-        ValueProvider<StudentProblemDto, Boolean> hasShowWorkAdmin();
+        ValueProvider<StudentProblemDto, String> statusForStudent();
     }
 
     AssignmentProblemListCallback _callBack;
@@ -82,7 +82,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
         l.add(labelCol);
 
         ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(
-                props.status(), 100, "Status");
+                props.statusForStudent(), 100, "Status");
         l.add(labelStatus);
 
         ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);

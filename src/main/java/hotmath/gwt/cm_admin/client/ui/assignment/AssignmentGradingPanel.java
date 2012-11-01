@@ -22,6 +22,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.sencha.gxt.cell.core.client.form.CheckBoxCell;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
@@ -33,6 +34,7 @@ import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridViewConfig;
 import com.sencha.gxt.widget.core.client.grid.editing.GridEditing;
 import com.sencha.gxt.widget.core.client.grid.editing.GridInlineEditing;
 import com.sencha.gxt.widget.core.client.info.Info;
@@ -89,7 +91,6 @@ public class AssignmentGradingPanel extends ContentPanel {
 
     UpdateGradeCallback _updateGradeCallback;
 
-    private ColumnConfig<StudentProblemDto, Boolean> hasShowWorkCol;
 
     public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack, UpdateGradeCallback updateGradeCallback){
         _problemSelectionCallBack = callBack;
@@ -104,23 +105,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
         statusCol = new ColumnConfig<StudentProblemDto, String>(spProps.status(), 100, "Status");
         statusCol.setRowHeader(true);
-        
-        hasShowWorkCol = new ColumnConfig<StudentProblemDto, Boolean>(spProps.hasShowWork(), 100, "Has Show Work");
-        hasShowWorkCol.setRowHeader(true);
-        
-        CheckBoxCell cCell = new CheckBoxCell() {
-              @Override
-              public boolean handlesSelection() {
-                return false;
-              }
-              
-              @Override
-            public boolean isReadOnly() {
-                // TODO Auto-generated method stub
-                return true;
-            }
-        };
-        hasShowWorkCol.setCell(cCell);
+
 
 //        gradedCol = new ColumnConfig<StudentProblemDto, String>(spProps.isGraded(), 75, "Accepted");
 //        gradedCol = new ColumnConfig<StudentProblemDto, String>(new StudentProblemGradedStatusValueProvider(), 50,
@@ -130,7 +115,6 @@ public class AssignmentGradingPanel extends ContentPanel {
         colConfList = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
         colConfList.add(problemCol);
         colConfList.add(statusCol);
-        colConfList.add(hasShowWorkCol);
         //colConfList.add(gradedCol);
         colMdl = new ColumnModel<StudentProblemDto>(colConfList);
 
@@ -145,6 +129,26 @@ public class AssignmentGradingPanel extends ContentPanel {
         _gradingGrid.getView().setStripeRows(true);
         _gradingGrid.getView().setColumnLines(true);
         _gradingGrid.getView().setAutoExpandColumn(problemCol);
+        
+        /** highlight problems with showwork */
+        _gradingGrid.getView().setViewConfig(new GridViewConfig<StudentProblemDto>() {
+
+            @Override
+            public String getRowStyle(StudentProblemDto model, int rowIndex) {
+                if (model != null) {
+                    if (model.isHasShowWork()) {
+                        return "assign-showwork-admin";
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getColStyle(StudentProblemDto model,
+                    ValueProvider<? super StudentProblemDto, ?> valueProvider, int rowIndex, int colIndex) {
+                return null;
+            }
+        });        
         
         
         SimpleComboBox<ProblemStatus> combo = new SimpleComboBox<ProblemStatus>(new StringLabelProvider<ProblemStatus>());
