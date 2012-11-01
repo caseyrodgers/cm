@@ -1935,7 +1935,7 @@ function stringify(obj) {
                     if (t == "string") {
                         v = '"' + v + '"';
                     } else if (t == "object" && v !== null){
-                        v = jQuery.stringify(v);
+                        v = stringify(v);
                     }
 
                     json.push((arr ? "" : '"' + n + '":') + String(v));
