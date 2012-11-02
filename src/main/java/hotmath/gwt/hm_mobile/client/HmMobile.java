@@ -61,7 +61,10 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -132,10 +135,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         
         try {
         	Controller.installEventBus(__clientFactory.getEventBus());
-            _rootPanel.add(createApplicationPanel());
-    
-            _rootPanel.getElement().getStyle().setProperty("display", "inline");
-    
             Screen screen = new Screen();
             screen.addHandler(this);
             orientationChanged(screen.getScreenOrientation());
@@ -145,6 +144,10 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             History.addValueChangeHandler(new HmMobileHistoryListener());
 
             if(__forcedSubject.isForcedSubject()) {
+                
+                _rootPanel.add(createApplicationPanel());
+                _rootPanel.getElement().getStyle().setProperty("display", "inline");
+
                 if(__forcedSubject.isOnlyOne()) {
                     /** disable back, this is new home
                      * 
@@ -155,19 +158,23 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 else {
                     ((CategoryListViewImpl)HmMobile.__clientFactory.getCategoryListView()).setTitle(__forcedSubject.getTitle());
                 }
+                
+                History.fireCurrentHistoryState();
+                
+                __clientFactory.getEventBus().fireEvent(new EnableDisplayZoomEvent(false));
+                
+                if(!InitialMessage.hasBeenSeen()) {
+                    new InitialMessage().showCentered();
+                }
             }
-
-           
-            
-            History.fireCurrentHistoryState();
+            else {
+                __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
+                _rootPanel.add(new HmMobileNotAvailableDialog());
+            }
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
             
-            __clientFactory.getEventBus().fireEvent(new EnableDisplayZoomEvent(false));
             
-            if(!InitialMessage.hasBeenSeen()) {
-            	new InitialMessage().showCentered();
-            }
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -484,4 +491,23 @@ class MyControlPanel extends ControlPanel {
     public MyControlPanel() {
         super(__defaultList);
     }
+}
+
+
+ 
+class HmMobileNotAvailableDialog extends SimplePanel {
+   public HmMobileNotAvailableDialog() {
+       PopupPanel popupPanel = new PopupPanel(false,  true);
+       popupPanel.setSize("540px", "380px");
+
+       String html = "<h1>The free beta is now closed.</h1>" +
+                     "<p>Thank you for participating in our free beta of Hotmath Mobile.</p> " +
+                     "<p>We will soon have mobile apps for Hotmath.  Or, you will be able to use passwords available at Hotmath.com.</p> " +
+                     "<p>Check back soon for more information.</p>" +
+                     "Thank you!</p> ";
+       
+       html = "<div style='margin: 10px;'>" + html + "</div>";
+       setWidget(new HTML(html));
+   }
+    
 }

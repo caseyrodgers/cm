@@ -55,7 +55,7 @@ public class CatchupMathProperties extends Properties {
     
     public int getProblemAsInt(String prop, int defNum) {
         String val = getProperty(prop);
-        if(val == null) {
+        if(val != null) {
             try {
                 return Integer.parseInt(val);
             }
