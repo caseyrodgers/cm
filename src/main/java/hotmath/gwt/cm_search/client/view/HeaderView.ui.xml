@@ -1,0 +1,25 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+	    .header {
+	       background: #00BDBD;
+	       padding: 2px;
+	    }
+	    
+	    .header span {
+	       margin-left: 15px;
+	       font-weight: bold;
+	       font-color: #666;
+	       font-size: 1.2em;
+	    }
+	</ui:style>
+
+	<g:HTMLPanel styleName='prescriptionLessonViewImpl'>
+	    <div class='{style.header}'>
+	        <g:Button ui:field='backButton'> &#60;&#60; Back</g:Button>
+	        <span ui:field='title'></span>
+	    </div>
+	</g:HTMLPanel>
+
+</ui:UiBinder> 

@@ -5,33 +5,30 @@ import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_search.client.view.HeaderView.HeaderCallback;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ReviewViewImpl extends AbstractPagePanel implements ReviewView {
+public class VideoViewImpl extends AbstractPagePanel implements VideoView {
     
     Presenter presenter;
     
-    @UiField HTMLPanel lessonText;
-    @UiField HeadingElement lessonTitle;
-    @UiField HeaderView headerView;
+    @UiField HTMLPanel mainPanel;
+    @UiField HeaderView headerPanel;
     
-    interface MyUiBinder extends UiBinder<Widget, ReviewViewImpl> {
+    interface MyUiBinder extends UiBinder<Widget, VideoViewImpl> {
     }
 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
 
     
-    public ReviewViewImpl() {
+    public VideoViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         
-        headerView.setCallback(new HeaderCallback() {
+        headerPanel.setCallback(new HeaderCallback() {
             @Override
             public void goBack() {
                 History.back();
@@ -40,16 +37,16 @@ public class ReviewViewImpl extends AbstractPagePanel implements ReviewView {
     }
 
 
+
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
-
     @Override
-    public void loadLesson(String title, String lesson) {
-        //lessonTitle.setInnerHTML(title);
-        lessonText.add(new HTML(lesson));
+    public void loadVideo(String title, Widget viewShared) {
+        headerPanel.setHeaderTitle(title);
+        mainPanel.add(viewShared);
     }
     
 }

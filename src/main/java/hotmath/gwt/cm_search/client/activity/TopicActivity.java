@@ -73,7 +73,7 @@ public class TopicActivity extends AbstractActivity implements TopicView.Present
     
     private Place determinePlace(InmhItemData resourceItem) {
         if(resourceItem.getType().equals("practice")) {
-            return new TutorPlace(resourceItem.getFile());
+            return new TutorPlace(resourceItem);
         }
         else if(resourceItem.getType().equals("review")) {
             return new ReviewPlace(resourceItem.getFile());

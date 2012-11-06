@@ -9,6 +9,8 @@ import hotmath.gwt.cm_search.client.view.TopicView;
 import hotmath.gwt.cm_search.client.view.TopicViewImpl;
 import hotmath.gwt.cm_search.client.view.TutorView;
 import hotmath.gwt.cm_search.client.view.TutorViewImpl;
+import hotmath.gwt.cm_search.client.view.VideoView;
+import hotmath.gwt.cm_search.client.view.VideoViewImpl;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -21,7 +23,14 @@ public class ClientFactoryImpl implements ClientFactory {
     private final TopicView topicView = new TopicViewImpl();
     private final TutorView tutorView = new TutorViewImpl();
     private final ReviewView reviewView = new ReviewViewImpl();
-
+    private final VideoView videoView = new VideoViewImpl();
+    
+    
+    @Override
+    public VideoView getVideoView() {
+        return videoView;
+    }
+    
     @Override
     public EventBus getEventBus() {
         return eventBus;

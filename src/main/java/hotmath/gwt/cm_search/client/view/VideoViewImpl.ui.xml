@@ -2,10 +2,14 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui"
 	xmlns:cm="urn:import:hotmath.gwt.cm_search.client.view">
 
+	<ui:style>
+	</ui:style>
+
 	<g:HTMLPanel styleName='prescriptionLessonViewImpl'>
-	   <cm:HeaderView ui:field="headerView"></cm:HeaderView>
-	   <h1 ui:field="lessonTitle"></h1>
-	   <g:HTMLPanel ui:field='lessonText' styleName='lessonText'></g:HTMLPanel>
+	    <cm:HeaderView ui:field='headerPanel'></cm:HeaderView>
+	    
+	    <g:HTMLPanel ui:field='mainPanel'>
+	    </g:HTMLPanel>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 

@@ -5,6 +5,7 @@ import hotmath.gwt.cm_search.client.view.ReviewView;
 import hotmath.gwt.cm_search.client.view.SearchView;
 import hotmath.gwt.cm_search.client.view.TopicView;
 import hotmath.gwt.cm_search.client.view.TutorView;
+import hotmath.gwt.cm_search.client.view.VideoView;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -17,4 +18,5 @@ public interface ClientFactory {
     TopicView getTopicView();
     TutorView getTopicResourceTutorView();
     ReviewView getReviewView();
+    VideoView getVideoView();
 }

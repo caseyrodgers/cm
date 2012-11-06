@@ -445,7 +445,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         String server = CmShared.getServerForCmStudent();
         String url = server + "/loginService?uid=" + sm.getUid() + "&" + mode;
-        Window.open(url, "_blank", "location=1,menubar=1,resizable=1,scrollbars=yes");
+        
+        String options = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
+        Window.open(url, "_blank", options);
     }
 
     /**

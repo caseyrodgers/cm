@@ -26,12 +26,16 @@ public class VideoActivity extends AbstractActivity implements VideoView.Present
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
-        PrescriptionLessonResourceVideoView view = new PrescriptionLessonResourceVideoViewImpl();
+        PrescriptionLessonResourceVideoView viewShared = new PrescriptionLessonResourceVideoViewImpl();
         PrescriptionLessonResourceVideoActivity cmActivity = new PrescriptionLessonResourceVideoActivity(eventBus, place.getResource());
-        cmActivity.setupView(view);
+        cmActivity.setupView(viewShared);
         
-        panel.setWidget((Widget)view);
+        VideoView videoView = clientFactory.getVideoView();
         
+        String title = place.getResource()!=null?place.getResource().getTitle():"Video View";
+        videoView.loadVideo(title, (Widget)viewShared);
+        
+        panel.setWidget(videoView);
     }
     
 }

@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface TutorView extends IsWidget {
     void setPresenter(Presenter presenter);
-    void loadSolution(SolutionResponse solution);
+    void loadSolution(String title, SolutionResponse solution);
     static public interface Presenter {
         void prepareView(TopicView view);
         void markSolutionAsComplete();
