@@ -6,6 +6,7 @@ import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -120,6 +121,9 @@ public class AssignmentManagerDialog2  {
     }
 
     private void loadGroupNames() {
+        
+        CatchupMathTools.setBusy(true);
+        
         new RetryAction<CmList<GroupDto>>() {
             @Override
             public void attempt() {
@@ -129,6 +133,9 @@ public class AssignmentManagerDialog2  {
             }
 
             public void oncapture(CmList<GroupDto> groupInfos) {
+                
+                CatchupMathTools.setBusy(false);
+                
                 _groupCombo.getStore().addAll(groupInfos);
                 
                 boolean groupSelected=false;

@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -125,6 +126,8 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private void readAssignmentData(final GroupDto group) {
+        
+        CatchupMathTools.setBusy(true);
         new RetryAction<CmList<Assignment>>() {
             @Override
             public void attempt() {
@@ -134,6 +137,8 @@ public class AssignmentsContentPanel extends ContentPanel {
             }
 
             public void oncapture(CmList<Assignment> assignments) {
+                CatchupMathTools.setBusy(false);
+                
                 _grid.getStore().clear();
                 _grid.getStore().addAll(assignments);
 //                if(assignments.size() > 0) {

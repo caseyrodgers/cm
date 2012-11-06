@@ -17,10 +17,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.sencha.gxt.cell.core.client.form.CheckBoxCell;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.Converter;
@@ -101,6 +102,34 @@ public class AssignmentGradingPanel extends ContentPanel {
         super.getHeader().setHeight("30px");
 
         problemCol = new ColumnConfig<StudentProblemDto, String>(spProps.pidLabel(), 120, "Problem");
+
+        problemCol.setCell(new AbstractCell<String>() {
+            @Override
+            public void render(Context context, String value, SafeHtmlBuilder sb) {
+                
+                StudentProblemDto studProb = _gradingGrid.getStore().get(context.getIndex());
+                String typeTag = "";
+                if(studProb != null && studProb.getProblem() != null) {
+                    switch(studProb.getProblem().getProblemType()) {
+                        case INPUT_WIDGET:
+                            typeTag = "(iw) ";
+                            break;
+                            
+                        case MULTI_CHOICE:
+                            typeTag = "(mc) ";
+                            break;
+                            
+                        case WHITEBOARD:
+                            typeTag = "(w) ";
+                            break;
+                           
+                    }
+                }
+                String colHtml = "<span>" + typeTag + "&nbsp;" + value + "</span>";
+              sb.appendHtmlConstant(colHtml);
+            }
+          });
+        
         problemCol.setRowHeader(true);
 
         statusCol = new ColumnConfig<StudentProblemDto, String>(spProps.status(), 100, "Status");

@@ -4,11 +4,11 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ProblemDto extends BaseDto implements Response{
     
-    static public enum ProblemType {INPUT_WIDGET, MULTI_CHOICE, WHITEBOARD}; 
+    static public enum ProblemType {INPUT_WIDGET, MULTI_CHOICE, WHITEBOARD, UNKNOWN}; 
     public ProblemDto(){}
     
     String label, pid, lesson;
-    ProblemType problemType;
+    ProblemType problemType = ProblemType.UNKNOWN;
     int assignKey;
 
     public ProblemDto(int id, String lesson, String label, String pid) {

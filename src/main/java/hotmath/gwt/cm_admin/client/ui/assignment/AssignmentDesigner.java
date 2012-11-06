@@ -214,7 +214,7 @@ class AssignmentProblemListView extends ContentPanel {
         problemListGrid.getView().setStripeRows(true);
         problemListGrid.getView().setColumnLines(true);
         problemListGrid.setBorders(false);
-     
+        
         problemListGrid.setColumnReordering(true);
         
         problemListGrid.getSelectionModel().addSelectionHandler(new SelectionHandler<ProblemDto>() {
