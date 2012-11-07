@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.Window;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.info.Info;
@@ -46,6 +47,7 @@ public class QuestionViewerPanel extends ContentPanel {
         tutorPanel.setVisible(false);
         
         FlowLayoutContainer flowWrapper = new FlowLayoutContainer();
+        flowWrapper.setScrollMode(ScrollMode.AUTOY);
         flowWrapper.add(tutorPanel);
         setWidget(flowWrapper);
     }
