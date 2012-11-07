@@ -1405,7 +1405,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      */
     static public ProblemType determineProblemType(String html)  {
         try {
-            if (html.indexOf("hm_flash_widget") > -1) {
+            if (html.indexOf("hm_flash_widget") > -1
+                    || html.indexOf("hotmath:flash") > -1) {
                 return ProblemType.INPUT_WIDGET;
             } else if (html.indexOf("hm_question_def") > -1) {
                 return ProblemType.MULTI_CHOICE;
