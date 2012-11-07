@@ -7,6 +7,8 @@ import hotmath.gwt.cm_rpc.client.rpc.AddAssignmentProblemsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -181,6 +183,12 @@ class AssignmentProblemListView extends ContentPanel {
             
         };        
         ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(v, 50, "Problem Number");
+        nameCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
+            @Override
+            public ProblemDto getProblem(int which) {
+                return problemListGrid.getStore().get(which);
+            }
+        }));
      
         List<ColumnConfig<ProblemDto, ?>> l = new ArrayList<ColumnConfig<ProblemDto, ?>>();
         l.add(nameCol);

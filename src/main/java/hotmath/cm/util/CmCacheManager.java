@@ -90,7 +90,12 @@ public class CmCacheManager  {
 		ALL_CUSTOM_PROGRAM_LESSONS, ALL_CUSTOM_QUIZ_LESSONS,
 		
 		/** anonymous topic searches */
-		TOPIC_SEARCH_PRESCRIPTION
+		TOPIC_SEARCH_PRESCRIPTION, 
+		
+		/** distinct list of assigment problems
+		 *  and any problem type information
+		 */
+		ASSIGNMENT_PROBLEMS
 	};
 
 	private void flushCache() {

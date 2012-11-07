@@ -7,6 +7,8 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.assignment.ProblemStatus;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -17,11 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.Converter;
@@ -103,32 +103,12 @@ public class AssignmentGradingPanel extends ContentPanel {
 
         problemCol = new ColumnConfig<StudentProblemDto, String>(spProps.pidLabel(), 120, "Problem");
 
-        problemCol.setCell(new AbstractCell<String>() {
+        problemCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
             @Override
-            public void render(Context context, String value, SafeHtmlBuilder sb) {
-                
-                StudentProblemDto studProb = _gradingGrid.getStore().get(context.getIndex());
-                String typeTag = "";
-                if(studProb != null && studProb.getProblem() != null) {
-                    switch(studProb.getProblem().getProblemType()) {
-                        case INPUT_WIDGET:
-                            typeTag = "(iw) ";
-                            break;
-                            
-                        case MULTI_CHOICE:
-                            typeTag = "(mc) ";
-                            break;
-                            
-                        case WHITEBOARD:
-                            typeTag = "(w) ";
-                            break;
-                           
-                    }
-                }
-                String colHtml = "<span>" + typeTag + "&nbsp;" + value + "</span>";
-              sb.appendHtmlConstant(colHtml);
+            public ProblemDto getProblem(int which) {
+                return _gradingGrid.getStore().get(which).getProblem();
             }
-          });
+        }));
         
         problemCol.setRowHeader(true);
 

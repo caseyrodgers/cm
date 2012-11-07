@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -64,6 +65,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
     
     private void readDataAndBuildTree() {
 
+        CatchupMathTools.setBusy(true);
         new RetryAction<CmList<LessonDto>>() {
             @Override
             public void attempt() {
@@ -73,6 +75,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
             }
 
             public void oncapture(CmList<LessonDto> lessons) {
+                CatchupMathTools.setBusy(false);
                 makeTree(lessons);
             }
 
@@ -173,7 +176,12 @@ public class AssignmentLessonListingPanel extends ContentPanel {
 
             @Override
             public String getValue(BaseDto object) {
-                return object.getName();
+                if(object instanceof ProblemDto) {
+                    return ((ProblemDto)object).getLabel();
+                }
+                else {
+                    return object.getName();
+                }
             }
 
             @Override

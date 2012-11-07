@@ -35,6 +35,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -352,7 +354,12 @@ public class AddProblemDialog extends GWindow {
 
             @Override
             public String getValue(BaseDto object) {
-                return object.getName();
+                if(object instanceof ProblemDto) {
+                    return ((ProblemDto)object).getLabel();
+                }
+                else {
+                    return object.getName();
+                }
             }
 
             @Override
@@ -370,7 +377,6 @@ public class AddProblemDialog extends GWindow {
         _tree.setCheckStyle(CheckCascade.TRI);
         //_tree.setAutoSelect(true);
         
-
         final DelayedTask task = new DelayedTask() {
 
             @Override
@@ -403,11 +409,39 @@ public class AddProblemDialog extends GWindow {
                     }
                 }
             }
+
         };
 
         _tree.setCell(cell);
    
         return _tree;
+    }
+    
+    
+    private String getProblemLabel(ProblemDto problem) {
+        String style="";
+        switch(problem.getProblemType()) {
+        case INPUT_WIDGET:
+            style = ".widget_type-input";
+            break;
+            
+        case MULTI_CHOICE:
+            style = ".widget_type-multi";
+            break;
+            
+            
+        case WHITEBOARD:
+            style = ".widget_type-whiteboard";
+            break;
+            
+            
+        case UNKNOWN:
+            default:
+                style = ".widget_type-unknown";
+                break;
+        }
+        
+        return "<span style='" + style + "'>" + problem.getLabel() + "</span>";
     }
 
     private void getLessonItemsRPC(final int testDefId, final String subject, final int sectionNumber,

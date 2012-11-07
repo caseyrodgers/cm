@@ -47,7 +47,7 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         
         String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
         
-        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,determineProblemType(info.getHtml()),lastUserWidgetValue);
+        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue);
     
         AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
         
@@ -133,32 +133,6 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         return cooked;
     }
     
-    
-    
-    
-    
 
-    /**
-     * Given the a problem PID, determine the type of problem
-     * 
-     * Meaning what type of input is required
-     * 
-     * @param defaultLabel
-     * @return
-     */
-    public ProblemType determineProblemType(String html)  {
-        try {
-            if (html.indexOf("input_widget") > -1) {
-                return ProblemType.INPUT_WIDGET;
-            } else if (false && html.indexOf("hm_question_def") > -1) {
-                return ProblemType.MULTI_CHOICE;
-            }
-        }
-        catch(Exception e) {
-            __logger.error("Error determining problem type: " + html, e);
-        }
-
-        return ProblemType.WHITEBOARD; 
-    }
 
 }

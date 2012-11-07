@@ -187,14 +187,55 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String pid = rs.getString("pid");
-                return new ProblemDto(0, rs.getString("lesson"), rs.getString("label"), pid);
+                return new ProblemDto(0, rs.getString("lesson"), rs.getString("label"), pid, null, 0);
             }
         });
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
         cmPids.addAll(pids);
         assignment.setPids(cmPids);
+        
+        updateProblemTypes(assignment.getPids());
 
         return assignment;
+    }
+
+    /** Set the appropriate problem types for all problems 
+     * in assingment.  THis is dynamic because the type
+     * can be changed by the author at any time.
+     * 
+     * 
+     * @param assignment
+     */
+    private void updateProblemTypes(final List<ProblemDto> problems) {
+        String list="";
+        for(ProblemDto problem:  problems) {
+            if(list.length()>0) {
+                list += ",";
+            }
+            
+            list += "'" + problem.getPidOnly() + "'";
+        }
+
+        String sql = "select problemindex, solutionxml from SOLUTIONS where problemindex in (" + list + ")";
+        getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String pid = rs.getString("problemindex");
+                String xml = rs.getString("solutionxml");
+                
+                boolean found=false;
+                for(ProblemDto problem:  problems) {
+                    if(problem.getPidOnly().equals(pid)) {
+                        problem.setProblemType(determineProblemType(xml));
+                        found=true;
+                    }
+                }
+                return "OK";
+            }
+        });
+
+        
+        
     }
 
     public AssignmentLessonData getAssignmentLessonData() {
@@ -248,12 +289,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             for (RppWidget w : rpps) {
                 for(RppWidget ew: AssessmentPrescription.expandProblemSetPids(w)) {
                     String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                    problemsAll.add(new ProblemDto(0, lessonName, defaultLabel, ew.getFile()));
+                    problemsAll.add(new ProblemDto(0, lessonName, defaultLabel, ew.getFile(), null, 0));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
 
         List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject },
                 new RowMapper<ProblemDto>() {
@@ -262,11 +304,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                         String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
 
-                        return new ProblemDto(0, rs.getString("lesson"), defaultLabel, rs.getString("pid"));
+                        return new ProblemDto(0, rs.getString("lesson"), defaultLabel, rs.getString("pid"),null,0);
                     }
                 });
 
         problemsAll.addAll(problems);
+        
+        
+        updateProblemTypes(problemsAll);
 
         
         /** Try to select only problems with widgets first
@@ -286,12 +331,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 problemsFiltered.add(pt);
             }
         }
-        if(problemsFiltered.size() > MAX_PROBLEMS) {
-            return problemsFiltered.subList(0, MAX_PROBLEMS);
-        }
-        else {
-            return problemsFiltered;
-        }
+       
+        return problemsFiltered;
     }
 
     private String getDefaultLabel(String lesson, int i) {
@@ -393,8 +434,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 if (! nameMap.containsKey(uid)) {
                     nameMap.put(uid, rs.getString("user_name"));
                 }
-
-                ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"));
+                
+                ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"),null,0);
                 
                 boolean hasShowWork = rs.getInt("has_show_work")!=0;
                 boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin")!=0;
@@ -405,6 +446,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return prob;
             }
         });
+        
+        
 
         /**
          * create student assignments for all users
@@ -441,6 +484,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int totCorrect = 0;
         int totIncorrect = 0;
         int totViewed = 0;
+        
+        
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
 
@@ -526,9 +571,25 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          * 
          */
-        for(Integer u: stuAssignMap.keySet()) {
-            StudentAssignment sa = stuAssignMap.get(u);
+        for(StudentAssignment sa: stuAssignments) {
             setStudentDetailStatus(sa);
+
+            for(StudentProblemDto sd: sa.getAssigmentStatuses()) {
+
+                /** Make sure the problem type is set for each student
+                 * problem.  The information is shared from the assignment
+                 * base list because problem type is determined at runtime.
+                 * 
+                 */
+                ProblemDto studentProblem = sd.getProblem();
+                String pid = studentProblem.getPidOnly();
+                for(ProblemDto pd: assignment.getPids()) {
+                    if(pd.getPidOnly().equals(pid)) {
+                        studentProblem.setProblemType(pd.getProblemType());
+                    }
+                }
+            }
+
         }
         
         return stuAssignments;
@@ -617,7 +678,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     			StudentProblemDto prob = new StudentProblemDto();
     			Integer uid = rs.getInt("uid");
     			prob.setUid(uid);
-    			ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"),
+    			ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"),null,
     					rs.getInt("assign_key"));
     			prob.setProblem(probDto);
     			prob.setStatus(rs.getString("status"));
@@ -936,7 +997,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        ProblemDto dummy = new ProblemDto(0, null, null, rs.getString("pid"));
+                        ProblemDto dummy = new ProblemDto(0, null, null, rs.getString("pid"),null,0);
                         boolean hasShowWork = rs.getInt("has_show_work")!=0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin")!=0;
                         StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin);
@@ -1037,7 +1098,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                             nameMap.put(uid, rs.getString("user_name"));
                         }
                         ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs
-                                .getString("label"), rs.getString("pid"));
+                                .getString("label"), rs.getString("pid"),null,0);
                         
                         boolean hasShowWork = rs.getInt("has_show_work")!=0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin")!=0;
@@ -1327,5 +1388,36 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             value = values.get(0);
         }
         return value;
+    }
+    
+    
+    
+    
+    
+
+    /**
+     * Given the a problem PID, determine the type of problem
+     * 
+     * Meaning what type of input is required
+     * 
+     * @param defaultLabel
+     * @return
+     */
+    static public ProblemType determineProblemType(String html)  {
+        try {
+            if (html.indexOf("hm_flash_widget") > -1) {
+                return ProblemType.INPUT_WIDGET;
+            } else if (html.indexOf("hm_question_def") > -1) {
+                return ProblemType.MULTI_CHOICE;
+            }
+            else {
+                return ProblemType.WHITEBOARD;
+            }
+        }
+        catch(Exception e) {
+            __logger.error("Error determining problem type: " + html, e);
+        }
+
+        return ProblemType.UNKNOWN; 
     }
 }
