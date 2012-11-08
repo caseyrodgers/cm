@@ -177,7 +177,7 @@ public class AssignmentLessonListingPanel extends ContentPanel {
             @Override
             public String getValue(BaseDto object) {
                 if(object instanceof ProblemDto) {
-                    return ((ProblemDto)object).getLabel();
+                    return ((ProblemDto)object).getLabelWithType();
                 }
                 else {
                     return object.getName();

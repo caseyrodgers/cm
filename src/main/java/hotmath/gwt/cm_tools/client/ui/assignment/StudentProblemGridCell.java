@@ -25,7 +25,7 @@ public class StudentProblemGridCell extends AbstractCell<String> {
         @Override
         public void render(Context context, String value, SafeHtmlBuilder sb) {
             ProblemDto studProb = callBack.getProblem(context.getIndex());
-            String colHtml = studProb.getLabel();
+            String colHtml = studProb.getLabelWithType();
             sb.appendHtmlConstant(colHtml);
         }
 

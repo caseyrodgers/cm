@@ -49,7 +49,7 @@ public class ProblemDto extends BaseDto implements Response {
     }
 
     public String getLabel() {
-        return label + " " + getProblemTypeName();
+        return label;
     }
 
     public void setLabel(String label) {
@@ -113,5 +113,9 @@ public class ProblemDto extends BaseDto implements Response {
         }
 
         return typeTag;
+    }
+
+    public String getLabelWithType() {
+        return getLabel() + " " + getProblemTypeName();
     }
 }

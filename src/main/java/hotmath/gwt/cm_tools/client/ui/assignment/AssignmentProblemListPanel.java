@@ -186,7 +186,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
             switch (_assignmentProblem.getProblemType()) {
             case WHITEBOARD:
-
+            case INPUT_WIDGET:
+            case MULTI_CHOICE:
                 if (prob.getStatus().equalsIgnoreCase("Viewed")) {
                     // update the problem type to current type
                     prob.getProblem().setProblemType(_assignmentProblem.getProblemType());
@@ -198,8 +199,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
                     break;
                 }
 
-            case INPUT_WIDGET:
-            case MULTI_CHOICE:
                 // whiteboard entry does not change status
                 break;
 

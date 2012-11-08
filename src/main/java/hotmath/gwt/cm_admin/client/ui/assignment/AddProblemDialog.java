@@ -350,7 +350,7 @@ public class AddProblemDialog extends GWindow {
             @Override
             public String getValue(BaseDto object) {
                 if(object instanceof ProblemDto) {
-                    return ((ProblemDto)object).getLabel();
+                    return ((ProblemDto)object).getLabelWithType();
                 }
                 else {
                     return object.getName();
@@ -412,32 +412,6 @@ public class AddProblemDialog extends GWindow {
         return _tree;
     }
     
-    
-    private String getProblemLabel(ProblemDto problem) {
-        String style="";
-        switch(problem.getProblemType()) {
-        case INPUT_WIDGET:
-            style = ".widget_type-input";
-            break;
-            
-        case MULTI_CHOICE:
-            style = ".widget_type-multi";
-            break;
-            
-            
-        case WHITEBOARD:
-            style = ".widget_type-whiteboard";
-            break;
-            
-            
-        case UNKNOWN:
-            default:
-                style = ".widget_type-unknown";
-                break;
-        }
-        
-        return "<span style='" + style + "'>" + problem.getLabel() + "</span>";
-    }
 
     private void getLessonItemsRPC(final int testDefId, final String subject, final int sectionNumber,
             final AsyncCallback<List<BaseDto>> callback) {
