@@ -150,6 +150,8 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             }
 
             public void oncapture(CmList<Assignment> assignments) {
+                CatchupMathTools.setBusy(false);
+
                 if(assignments.size() == 0) {
                     showNoAssignmentMessage();
                 }
