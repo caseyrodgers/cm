@@ -230,6 +230,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         found=true;
                     }
                 }
+                assert(found);
                 return "OK";
             }
         });

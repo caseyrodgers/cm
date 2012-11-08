@@ -66,7 +66,10 @@ public class HeaderPanel extends LayoutContainer {
             
         });
 		
-		add(_assignmentsAnchor);
+		
+		if(!UserInfo.getInstance().isDemoUser()) {
+		    add(_assignmentsAnchor);
+		}
 		
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);

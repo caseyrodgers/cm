@@ -62,7 +62,7 @@ public class ProblemDto extends BaseDto implements Response {
      * @return
      */
     public String getPidOnly() {
-        return getPid().split("\\$")[0];
+        return getPid().split("\\$")[0].trim();
     }
 
     /**
