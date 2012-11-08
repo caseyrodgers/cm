@@ -1,5 +1,6 @@
 package hotmath.gwt.cm.client;
 
+
 import hotmath.gwt.cm.client.history.CatchupMathHistoryListener;
 import hotmath.gwt.cm.client.history.CmHistoryManager;
 import hotmath.gwt.cm.client.history.CmLocation;
@@ -43,6 +44,7 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -376,33 +378,33 @@ public class CatchupMath implements EntryPoint {
     
     public void showAssignments_gwt() {
         
-        final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
+        GWT.runAsync(new RunAsyncCallback() {
+            
             @Override
-            public void isComplete() {
-                _mainPortWrapper.setCenterWidget(_mainContainer);
-                _mainPort.forceLayout();                 
+            public void onSuccess() {
+                final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        _mainPortWrapper.setCenterWidget(_mainContainer);
+                        _mainPort.forceLayout();                 
+                    }
+                });
+
+
+                _mainPortWrapper.remove(_mainContainer);
+                BorderLayoutData bdata = new BorderLayoutData();
+                _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);
+                _mainPort.forceLayout();
+            }
+            
+            @Override
+            public void onFailure(Throwable reason) {
+                reason.printStackTrace();
+                Log.error("Error loading assignments GUI: " + reason.getMessage());
             }
         });
         
-//        new CallbackOnComplete() {
-//           @Override
-//            public void isComplete() {
-//                // remove assignment panel (last panel added)
-//                _mainPort.remove(_mainPort.getWidget(_mainPort.getItems().size()-1));
-//                
-//                // put back main panel
-//                BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.CENTER);
-//                _mainPort.add(_mainContainer, bdata);
-//                _mainPort.layout(true);                 
-//            }
-//        }).asWidget();
 
-        
-
-        _mainPortWrapper.remove(_mainContainer);
-        BorderLayoutData bdata = new BorderLayoutData();
-        _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);
-        _mainPort.forceLayout();
     }    
     
 

@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.AssignmentProblemListCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWorkPanel.AssignmentStudentTutorAndShowWorkPanelCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
@@ -72,9 +73,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     BorderLayoutContainer _main = new BorderLayoutContainer();
     
     TextField _assignmentStatus = new TextField();
+    private CallbackOnComplete _callBack;
     
     
     public StudentAssignmentViewerPanel(final CallbackOnComplete callback) {
+        _callBack = callback;
         
         TextButton btnReturn = new TextButton("Return to your program");
         btnReturn.addSelectHandler(new SelectHandler() {
@@ -100,8 +103,6 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         addStyleName("StudentAssignmentViewerPanel");
         setWidget(_main);
-        
-        
         
         readAssignmentNamesFromServer();
         
@@ -139,6 +140,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     }
 
     public void readAssignmentNamesFromServer() {
+        CatchupMathTools.setBusy(true);
         new RetryAction<CmList<Assignment>>() {
             @Override
             public void attempt() {
@@ -148,11 +150,22 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             }
 
             public void oncapture(CmList<Assignment> assignments) {
-                _assignmentCombo.getStore().addAll(assignments);
+                if(assignments.size() == 0) {
+                    showNoAssignmentMessage();
+                }
+                else {
+                    CatchupMathTools.setBusy(false);
+                    _assignmentCombo.getStore().addAll(assignments);
+                }
             }
         }.register();          
     }
    
+    
+    private void showNoAssignmentMessage() {
+        CatchupMathTools.showAlert("No Assignments found.");
+        _callBack.isComplete();
+    }
     
     BorderLayoutContainer _tutorArea;
     private IsWidget createAssignmentDisplayPanel() {

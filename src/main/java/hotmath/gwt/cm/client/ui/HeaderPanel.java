@@ -59,17 +59,20 @@ public class HeaderPanel extends LayoutContainer {
 //                    public void isComplete() {
 //                    }
 //                });
-                
-                CatchupMath.getThisInstance().showAssignments_gwt();
+        
+                if(!UserInfo.getInstance().isDemoUser()) {
+                    CatchupMath.getThisInstance().showAssignments_gwt();
+                }
+                else {
+                    CatchupMathTools.showAlert("Assignments are not available for demo accounts");
+                }
             }
             
             
         });
 		
 		
-		if(!UserInfo.getInstance().isDemoUser()) {
-		    add(_assignmentsAnchor);
-		}
+		add(_assignmentsAnchor);
 		
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);
@@ -147,10 +150,6 @@ public class HeaderPanel extends LayoutContainer {
 	
 	
 	private void updateAssignmentMessage(boolean incompleteAssignments) {
-	    if(true)
-	        return;
-	    
-	    
 	    if(incompleteAssignments) {
 	        _assignmentsAnchor.setText("You have Assignments");
 	    }

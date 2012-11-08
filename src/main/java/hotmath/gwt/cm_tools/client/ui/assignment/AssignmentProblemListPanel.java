@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
 import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
@@ -79,6 +80,12 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(
                 props.pidLabel(), 50, "Problem");
+        labelCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
+            @Override
+            public ProblemDto getProblem(int which) {
+                return _studentProblemGrid.getStore().get(which).getProblem();
+            }
+        }));
         l.add(labelCol);
 
         ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(
