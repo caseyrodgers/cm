@@ -45,7 +45,6 @@ import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Label;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
@@ -145,12 +144,6 @@ public class CatchupMath implements EntryPoint {
          * 
          */
         RootPanel.get("main-content").add(_mainPort);
-
-        
-        
-        // testing!
-        //_mainContainer.add(new CmMainPanel(new TestingCmGuiDefinition()));
-        
 
         CmShared.handleLoginProcessAsync(new CmLoginAsync() {
             public void loginSuccessful(Integer uid) {
@@ -612,14 +605,4 @@ public class CatchupMath implements EntryPoint {
 
                                                           $wnd.showMotivationalVideo_Gwt = @hotmath.gwt.cm.client.CatchupMath::showMotivationalVideo_Gwt(Ljava/lang/String;);
                                                           }-*/;
-}
-
-
-
-class TestWidget extends BorderLayoutContainer {
-    public TestWidget() {
-        getElement().setAttribute("style", "background: green");
-        
-        setCenterWidget(new Label("TEst"));
-    }
 }

@@ -96,8 +96,6 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         });
         
         BorderLayoutData bData = new BorderLayoutData(100);
-        bData.setSplit(true);
-        bData.setCollapsible(true);
         _main.setNorthWidget(createHeaderPanel(),bData);
         _main.setCenterWidget(createEmptyPanel("Choose an Assignment"));
         
@@ -255,6 +253,8 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     private void readAssignmentFromServer(final Assignment assignment) {
         Info.display("Load Assignment", "Loading: " + assignment);
         
+        CatchupMathTools.setBusy(true);
+        
         new RetryAction<StudentAssignment>() {
             @Override
             public void attempt() {
@@ -264,6 +264,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             }
 
             public void oncapture(StudentAssignment assignment) {
+                CatchupMathTools.setBusy(false);
                 loadAssignment(assignment);
             }
         }.register();          
