@@ -4,6 +4,8 @@ package hotmath.gwt.cm_core.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
+
 /** Manages the global event-bus for 
  * registering/firing events for mobile
  * 
@@ -49,6 +51,7 @@ public class EventBus {
      * @param event
      */
     public void fireEvent(CmEvent event) {
+        Log.debug("Firing CmEvent: " + event.getEventType());
         for(int i=0, t=listeners.size();i<t;i++) {
             CmEventListener l=listeners.get(i);
             l.handleEvent(event);

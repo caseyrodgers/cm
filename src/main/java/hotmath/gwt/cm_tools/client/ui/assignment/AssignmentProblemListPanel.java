@@ -88,9 +88,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
         }));
         l.add(labelCol);
 
-        ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(
+        if(callback.showStatus()) {
+            ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(
                 props.statusForStudent(), 100, "Status");
-        l.add(labelStatus);
+            l.add(labelStatus);
+        }
 
         ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);
 
@@ -294,6 +296,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     public interface AssignmentProblemListCallback {
         void problemSelected(String title, ProblemDto problem);
+
+        boolean showStatus();
     }
 
     static {

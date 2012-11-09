@@ -628,7 +628,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     private String getLessonStatus(int count, int completed, int pending, int viewed) {
         
-        String ret="";
+        String ret;
         viewed = (completed + pending + viewed);  // all viewed 
         
     	if (pending != 0 && viewed != 0) {
@@ -924,7 +924,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public List<Assignment> getAssignmentsForUser(int uid) {
 
-        /** Sort so active/unexpired assignments are on top
+        /** Sort so active/not-expired assignments are on top
          * 
          */
         String sql = 

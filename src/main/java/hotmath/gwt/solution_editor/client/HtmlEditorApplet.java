@@ -1,5 +1,6 @@
 package hotmath.gwt.solution_editor.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Html;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -45,7 +46,7 @@ public class HtmlEditorApplet extends LayoutContainer {
 
     static public void htmlEditorSaveAndClose(String text) {
         _lastText = text;
-        System.out.println("applet save and close!");
+        Log.debug("applet save and close!");
         __lastInstance.callback.saveAndCloseWindow(text);
     }
     

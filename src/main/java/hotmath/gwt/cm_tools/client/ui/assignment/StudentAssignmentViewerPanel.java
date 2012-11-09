@@ -93,6 +93,16 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             public void problemSelected(String title, ProblemDto problem) {
                 loadTutorProblemStatement(title, problem);
             }
+            
+            @Override
+            public boolean showStatus() {
+                if(CmShared.getQueryParameter("debug") != null) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
         });
         
         BorderLayoutData bData = new BorderLayoutData(100);
@@ -194,8 +204,8 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _grade.setReadOnly(true);
          
         header.setLayoutData(new MarginData(10));
-        header.add(new MyFieldLabel(_assignmentCombo,"Assignment Name"));
-        header.add(new MyFieldLabel(_assignmentStatus,"Assignment Status"));
+        header.add(new MyFieldLabel(_assignmentCombo,"Name"));
+        header.add(new MyFieldLabel(_assignmentStatus,"Status"));
         header.add(new MyFieldLabel(_grade,"Score"));
         
         return header;
