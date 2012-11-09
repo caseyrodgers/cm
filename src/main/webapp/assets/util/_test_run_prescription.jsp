@@ -17,5 +17,5 @@
 </head>
 <body>
 <h1>Prescription for run_id: <%= runId  %></h1>
-<%= assPres.getSessions().size() %>
+lessons: <%= assPres.getSessions().size() %>, level: <%= assPres.getGradeLevel() %>, pids: <%= assPres.getTestRun().getPidList() %>
 </body>
