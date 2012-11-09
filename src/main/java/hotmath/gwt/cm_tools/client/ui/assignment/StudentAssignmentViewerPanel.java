@@ -213,7 +213,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     public interface StudentAssignmentViewerPanelProperties extends PropertyAccess<String> {
         ModelKeyProvider<Assignment> assignKey();
-        LabelProvider<Assignment> assignmentName();
+        LabelProvider<Assignment> assignmentLabel();
       }
     
     private ComboBox<Assignment> createAssignmentCombo() {
@@ -221,7 +221,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         StudentAssignmentViewerPanelProperties props = GWT.create(StudentAssignmentViewerPanelProperties.class);
         ListStore<Assignment> assStore = new ListStore<Assignment>(props.assignKey());
    
-        ComboBox<Assignment> combo = new ComboBox<Assignment>(assStore, props.assignmentName());
+        ComboBox<Assignment> combo = new ComboBox<Assignment>(assStore, props.assignmentLabel());
         combo.setToolTip("Select an Assignment to work with.");
         combo.setWidth(400);
         combo.setTypeAhead(false);

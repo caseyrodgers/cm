@@ -169,8 +169,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
                     
                     Date dueDate = rs.getDate("due_date");
-                    String status = determineAssignmentCurrentStatus(dueDate, rs.getString("status"));
-                    return new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), dueDate, null, null, status);
+                    return new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), dueDate, null, null, rs.getString("status"));
                 }
             });
         } catch (Exception e) {
@@ -351,35 +350,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 String comments = rs.getString("comments");
                 
                 Date dueDate = rs.getDate("due_date");
-                String status = determineAssignmentCurrentStatus(dueDate, rs.getString("status"));
                 
-                String assignmentName = _createAssignmentName(dueDate, comments, status);
+                String assignmentName = _createAssignmentName(dueDate, comments);
 
                 Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
-                        .getString("comments"), dueDate, null, null, status);
+                        .getString("comments"), dueDate, null, null, rs.getString("status"));
 
                 ass.setProblemCount(rs.getInt("problem_count"));
                 return ass;
             }
         });
         return problems;
-    }
-    
-    /** Return dynamic status .. meaning value might be expired
-     *  if past the due_date.  This would be true no matter
-     *  the current setting of status in CM_ASSIGNMENT
-     *  
-     * @param dueDate
-     * @param status
-     * @return
-     */
-    private String determineAssignmentCurrentStatus(Date dueDate, String status) {
-        if(status.equalsIgnoreCase("open") &&  dueDate.getTime() < System.currentTimeMillis()) {
-            return "Expired";
-        }
-        else {
-            return status;
-        }
     }
 
     /**
@@ -944,32 +925,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 // create a pseudo name
                 String comments = rs.getString("comments");
-                String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments, rs.getString("status"));
+                String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
                 Date dueDate = rs.getDate("due_date");
 
-                String status = determineAssignmentCurrentStatus(dueDate, rs.getString("status"));
-                
                 Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
-                        .getString("comments"),dueDate, null, null, status);
+                        .getString("comments"),dueDate, null, null, rs.getString("status"));
                 return ass;
             }
         });
         return problems;
     }
 
-    private String _createAssignmentName(Date dueDate, String comments, String status) {
-        String statusLabel = "";
-        if(dueDate.getTime() < System.currentTimeMillis()) {
-            statusLabel = " (Expired)";
-        }
-        else {
-            if(status != null) {
-                if(status.equalsIgnoreCase("closed")) {
-                    statusLabel = " (Closed) ";
-                }
-            }
-        }
-        return "Due Date: " + dueDate +  statusLabel + (comments != null ? " - " + comments : "");
+    private String _createAssignmentName(Date dueDate, String comments) {
+        return "Due Date: " + dueDate + (comments != null ? " - " + comments : "");
     }
 
     

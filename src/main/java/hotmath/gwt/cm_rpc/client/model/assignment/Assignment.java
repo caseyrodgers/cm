@@ -58,6 +58,18 @@ public class Assignment implements Response{
         }
     }
     
+    public String getAssignmentLabel() {
+        String label = getAssignmentName();
+        if(isExpired()) {
+            label += " (Expired)";
+        }
+        else if (!isEditable()) {
+            label += " (Closed)";
+        }
+        
+        return label;
+    }
+    
     /** Is this assignment editable at all
      * 
      * @return
@@ -70,10 +82,13 @@ public class Assignment implements Response{
      * in object if this assignment 
      * has expired.
      * 
+     * Expires the day after the expiration date (inclusive)
+     * 
      * @return
      */
     public boolean isExpired() {
-        return dueDate.getTime() < System.currentTimeMillis();
+        int millsInDay = 86400000;
+        return dueDate.getTime() < (System.currentTimeMillis() - millsInDay);
     }
 
     public int getGroupId() {
