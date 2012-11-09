@@ -66,8 +66,8 @@ public class EditAssignmentDialog {
             window.setHeadingHtml("Create Assignment: " + assignment.getAssignmentName());
         }
 
-        final BorderLayoutContainer con = new BorderLayoutContainer();
-        con.setBorders(true);
+        final BorderLayoutContainer mainBorderPanel = new BorderLayoutContainer();
+        mainBorderPanel.setBorders(true);
         
         VerticalLayoutContainer header = new VerticalLayoutContainer();
         _assignmentName.setWidth(MAX_FIELD_LEN);
@@ -138,13 +138,13 @@ public class EditAssignmentDialog {
         header.add(hCon);
         
         
-        con.setNorthWidget(header);
+        mainBorderPanel.setNorthWidget(header);
         
         _assignmentDesigner = new AssignmentDesigner(_assignment);
         BorderLayoutData data = new BorderLayoutData();
         _assignmentDesigner.setBorders(true);
         _assignmentDesigner.setLayoutData(data);
-        con.setCenterWidget(_assignmentDesigner);
+        mainBorderPanel.setCenterWidget(_assignmentDesigner);
         
         
         
@@ -160,7 +160,7 @@ public class EditAssignmentDialog {
         
         window.addCloseButton();
         
-        window.setWidget(con);
+        window.setWidget(mainBorderPanel);
         
         
         

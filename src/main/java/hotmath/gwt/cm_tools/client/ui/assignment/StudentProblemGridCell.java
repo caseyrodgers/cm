@@ -15,6 +15,12 @@ public class StudentProblemGridCell extends AbstractCell<String> {
         private ProblemGridCellCallback callBack;
         
         public static interface ProblemGridCellCallback {
+            /** Return the ProblemDto that represents the
+             *  named index.
+             *  
+             * @param which
+             * @return
+             */
             ProblemDto getProblem(int which);
         }
 

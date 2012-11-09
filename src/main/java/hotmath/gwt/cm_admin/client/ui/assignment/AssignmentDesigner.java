@@ -73,7 +73,11 @@ public class AssignmentDesigner extends SimpleContainer {
     BorderLayoutContainer _mainContainer;
     private Widget createUi() {
         _mainContainer = new BorderLayoutContainer();
-        _mainContainer.setWestWidget(createProblemList());
+        BorderLayoutData ld = new BorderLayoutData();
+        ld.setSize(.5d);
+        ld.setCollapsible(true);
+        ld.setSplit(true);
+        _mainContainer.setWestWidget(createProblemList(), ld);
         setupViewerGui();
         return _mainContainer;
     }
@@ -84,7 +88,10 @@ public class AssignmentDesigner extends SimpleContainer {
         FlowLayoutContainer fc = new FlowLayoutContainer();
         fc.setScrollMode(ScrollMode.AUTO);
         fc.add(QuestionViewerPanel.getInstance());
-        _mainContainer.setCenterWidget(fc);
+        
+        BorderLayoutData bd = new BorderLayoutData();
+        bd.setSplit(true);
+        _mainContainer.setCenterWidget(fc, bd);
         _mainContainer.forceLayout();
     }
     

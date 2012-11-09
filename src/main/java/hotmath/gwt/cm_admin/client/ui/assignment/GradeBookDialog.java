@@ -67,8 +67,8 @@ public class GradeBookDialog {
 
         window.setHeadingHtml("Assignment: " + stuAssignment.getAssignment().getAssignmentName());
 
-        final BorderLayoutContainer con = new BorderLayoutContainer();
-        con.setBorders(true);
+        final BorderLayoutContainer mainBorderPanel = new BorderLayoutContainer();
+        mainBorderPanel.setBorders(true);
 
         VerticalLayoutContainer header = new VerticalLayoutContainer();
         
@@ -116,7 +116,7 @@ public class GradeBookDialog {
 
         header.add(hCon);
 
-        con.setNorthWidget(header);
+        mainBorderPanel.setNorthWidget(header);
 
         BorderLayoutContainer blContainer = new BorderLayoutContainer();
 
@@ -136,6 +136,8 @@ public class GradeBookDialog {
         }, updateGradeCallback);
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(400.0);
+        data.setSplit(true);
+        data.setCollapsible(true);
         agPanel.setBorders(true);
         agPanel.setLayoutData(data);
         blContainer.setWestWidget(agPanel);
@@ -143,7 +145,7 @@ public class GradeBookDialog {
         blContainer.setCenterWidget(_questionViewer);
         blContainer.forceLayout();
 
-        con.setCenterWidget(blContainer);
+        mainBorderPanel.setCenterWidget(blContainer);
 
         window.addButton(new TextButton("Save",new SelectHandler() {
             @Override
@@ -181,7 +183,7 @@ public class GradeBookDialog {
         
         window.addButton(closeButton);
 
-        window.setWidget(con);
+        window.setWidget(mainBorderPanel);
         
         
         window.addResizeHandler(new ResizeHandler() {

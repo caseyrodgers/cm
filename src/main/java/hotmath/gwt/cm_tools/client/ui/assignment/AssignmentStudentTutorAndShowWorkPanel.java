@@ -78,7 +78,9 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
                 loadAssignmentWhiteboardData(uid, _assignKey, problem.getPid());
             }
         });
-        container.setEastWidget(_showWork,  bd);
+        ContentPanel cpWrapper = new ContentPanel();
+        cpWrapper.setWidget(_showWork);
+        container.setEastWidget(cpWrapper,  bd);
         
         bd = new BorderLayoutData();
         bd.setSplit(true);
