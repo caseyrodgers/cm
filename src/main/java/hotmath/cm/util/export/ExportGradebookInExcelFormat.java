@@ -30,7 +30,7 @@ public class ExportGradebookInExcelFormat {
 	
 	private static final Logger LOGGER = Logger.getLogger(ExportGradebookInExcelFormat.class);
 	
-	private static final String DATE_FMT = "%1$tY-%1$tm-%1$td";
+	private static final String DATE_FMT = "%1$tm-%1$td";
 	
 	private static final String PCNT_FMT = "%3.0f%s";
 	
@@ -90,7 +90,7 @@ public class ExportGradebookInExcelFormat {
 	}
 
 	private static String[] headings = {
-		"Student", "Due Date", "Status", "Score", "Summary"
+		"Student", "Average"
 	};
 	
 	public ByteArrayOutputStream export() throws Exception {
@@ -123,9 +123,13 @@ public class ExportGradebookInExcelFormat {
 
 	    Map<String, CellStyle> styles = createStyles(wb);
 		
+	    Row cmRow = sheet.createRow(0);
+	    Cell cmCell = cmRow.createCell(0);
+	    cmCell.setCellValue("CatchupMath Grade Book");
+        cmCell.setCellStyle(styles.get("title"));
+
         int idx = 1;
-	    sheet.createRow(0);
-	    Row titleRow = sheet.createRow(idx++);
+        Row titleRow = sheet.createRow(idx++);
 	    Cell titleCell = titleRow.createCell(0);
 	    StringBuilder sb = new StringBuilder();
 	    sb.append(title).append(" ").append(filterDescr);
@@ -137,7 +141,7 @@ public class ExportGradebookInExcelFormat {
 	    headerRow.setHeightInPoints(12.75f);
 
 	    int numAssignments = (assignmentList != null) ? assignmentList.size() : 0;
-	    int[] charCount = new int[numAssignments*4 + 1];
+	    int[] charCount = new int[numAssignments + 2];
 
         Cell cell = headerRow.createCell(0);
         cell.setCellValue(headings[0]);
@@ -145,14 +149,17 @@ public class ExportGradebookInExcelFormat {
         charCount[0] = headings[0].length();
 
         int k = 1;
-        for (int i = 0; i < numAssignments; i++) {
-        	for (int j=1; j < 5; j++) {
-    	        cell = headerRow.createCell(k);
-    	        cell.setCellValue(headings[j]);
-    	        cell.setCellStyle(styles.get("header"));
-    	        charCount[k++] = headings[j].length();
-        	}
-	    }
+        for (Assignment asg : assignmentList) {
+	        cell = headerRow.createCell(k);
+	        String dueDate = String.format(DATE_FMT, asg.getDueDate());
+	        cell.setCellValue(dueDate);
+	        cell.setCellStyle(styles.get("header"));
+	        charCount[k++] = dueDate.length();
+        }
+        cell = headerRow.createCell(k);
+        cell.setCellValue(headings[1]);
+        cell.setCellStyle(styles.get("header"));
+        charCount[k] = headings[1].length();
 
 	    for (Integer uid : studentList) {
 
@@ -164,47 +171,23 @@ public class ExportGradebookInExcelFormat {
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < (studentNameMap.get(uid).length() + 5)) charCount[col] = studentNameMap.get(uid).length() + 5;
 
+	        int totalScore = 0;
 	        List<StudentAssignment> sasList = studentAssignMap.get(uid);
 	        for (StudentAssignment sas : sasList) {
-			    cell = row.createCell(++col);
-			    String dueDate = String.format(DATE_FMT, sas.getAssignment().getDueDate());
-		        cell.setCellValue(dueDate);
-		        cell.setCellStyle(styles.get("data"));
-		        if (charCount[col] < dueDate.length()) charCount[col] = dueDate.length();
-	        	
-			    cell = row.createCell(++col);
-			    String status = sas.getStatus();
-		        cell.setCellValue(status);
-		        cell.setCellStyle(styles.get("data"));
-		        if (charCount[col] < status.length()) charCount[col] = status.length();
-	        	
 			    cell = row.createCell(++col);
 			    String score = sas.getHomeworkGrade();
 		        cell.setCellValue(score);
 		        cell.setCellStyle(styles.get("data"));
 		        if (charCount[col] < score.length()) charCount[col] = score.length();
-	        	
-			    cell = row.createCell(++col);
-			    String summary = sas.getHomeworkStatus();
-		        cell.setCellValue(summary);
-		        cell.setCellStyle(styles.get("data"));
-		        if (charCount[col] < summary.length()) charCount[col] = summary.length();
-	        	
+		        totalScore += Integer.parseInt(score.substring(0, score.length()-1)); 
 	        }
+	        String avgScore = String.format(PCNT_FMT, (double)totalScore/(double)sasList.size(), "%");
+		    cell = row.createCell(++col);
+	        cell.setCellValue(avgScore);
+	        cell.setCellStyle(styles.get("data"));
+	        if (charCount[col] < avgScore.length()) charCount[col] = avgScore.length();
 
 	        for (int i=sasList.size(); i < numAssignments; i++) {
-			    cell = row.createCell(++col);
-		        cell.setCellValue("");
-		        cell.setCellStyle(styles.get("data"));
-	        	
-			    cell = row.createCell(++col);
-		        cell.setCellValue("");
-		        cell.setCellStyle(styles.get("data"));
-	        	
-			    cell = row.createCell(++col);
-		        cell.setCellValue("");
-		        cell.setCellStyle(styles.get("data"));
-	        	
 			    cell = row.createCell(++col);
 		        cell.setCellValue("");
 		        cell.setCellStyle(styles.get("data"));

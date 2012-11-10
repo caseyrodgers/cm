@@ -22,7 +22,6 @@ import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.gwt.shared.client.rpc.action.ExportGradebookAction;
-import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -39,6 +38,8 @@ import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -146,6 +147,22 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
     			AssignmentDao asgDao = AssignmentDao.getInstance();
 
     			List<Assignment> asgList = asgDao.getAssignments(adminUid, groupId);
+
+    			// sort assignments by ascending due date
+    			Collections.sort(asgList, new Comparator<Assignment>() {
+					@Override
+					public int compare(Assignment asg1, Assignment asg2) {
+						Date date1 = asg1.getDueDate();
+						Date date2 = asg2.getDueDate();
+						if (date1 == null && date2 != null) return -1;
+						if (date1 != null && date2 == null) return 1;
+						if (date1 == date2) {
+							return asg1.getAssignKey() - asg2.getAssignKey();
+						}
+						return date1.compareTo(date2);
+					}
+    			});
+    			
     			List<Integer> uidList = new ArrayList<Integer>();
     			
     			Map<Integer, CmList<StudentAssignment>> asgMap = new HashMap<Integer, CmList<StudentAssignment>>();
