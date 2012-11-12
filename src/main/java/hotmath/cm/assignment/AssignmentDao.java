@@ -639,8 +639,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         return status;
     }
-
-    private String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect) {
+    private String getHomeworkGrade(int totCount, double totCorrect, int totIncorrect) {
         String grade = "-";
         if ((totCorrect + totIncorrect) == totCount) {
            int percent = Math.round(((float)totCorrect / (float)totCount) * 100.0f);
