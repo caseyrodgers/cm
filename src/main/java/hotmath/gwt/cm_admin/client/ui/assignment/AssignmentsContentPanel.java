@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
@@ -10,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.assignment.ExportGradebooksDialog;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -25,6 +27,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -62,6 +65,7 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         super.setHeadingText("Assignments");
 
+        getHeader().addTool(createExportButton());
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         // getHeader().addTool(createCloseButton());
@@ -150,6 +154,34 @@ public class AssignmentsContentPanel extends ContentPanel {
             }
         }.register();        
     }
+
+    private void exportAssignmentGradebooks() {
+        
+        if(_currentGroup == null) {
+            CmMessageBox.showAlert("You need to select a group first.");
+            return;
+        }
+
+        List<Assignment> list = _grid.getStore().getAll();
+        if (list.isEmpty()) {
+            CmMessageBox.showAlert("Selected group has no assignments.");
+            return;
+        }
+
+        //TODO: add student count to GroupDto
+        String name = _currentGroup.getName();
+        String grpName = name.substring(0, name.indexOf("[")).trim();
+        String stuCount = name.substring(name.indexOf("[")+1, name.indexOf(","));
+        int count = (stuCount != null) ? Integer.parseInt(stuCount) : 0;
+        if (count == 0) {
+            CmMessageBox.showAlert("Selected group has no students.");
+            return;
+        }
+        
+        new ExportGradebooksDialog(StudentGridPanel.instance.getPageAction().getAdminId(), _currentGroup.getGroupId(),
+        		grpName);
+    }
+    
 
     private void createNewAssignment() {
         
@@ -324,6 +356,19 @@ public class AssignmentsContentPanel extends ContentPanel {
         return btn;
     }
         
+    private Widget createExportButton() {
+        TextButton btn = new TextButton("Export");
+        btn.setToolTip("Export Group's Assignment Grade Books");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                exportAssignmentGradebooks();
+            }
+
+        });
+        return btn;
+    }
+    
     private Widget createNewButton() {
         TextButton btn = new TextButton("New");
         btn.setToolTip("Create new assignment");
