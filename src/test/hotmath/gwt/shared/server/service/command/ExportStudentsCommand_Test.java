@@ -24,7 +24,7 @@ public class ExportStudentsCommand_Test extends CmDbTestCase {
         GetStudentGridPageAction pageAction = new GetStudentGridPageAction();
         pageAction.setAdminId(584);
 
-        ExportGradebookAction exportAction = new ExportGradebookAction(584, 2281, pageAction);
+        ExportGradebookAction exportAction = new ExportGradebookAction(584, 2281, null, pageAction);
         exportAction.setEmailAddress("bobhall@hotmath.com");
         ExportGradebookCommand cmd = new ExportGradebookCommand();
         cmd.setRunInSeparateThread(false);
