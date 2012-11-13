@@ -3,7 +3,6 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.shared.client.rpc.action.ExportGradebookAction;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 
@@ -22,11 +21,11 @@ public class ExportStudentsCommand_Test extends CmDbTestCase {
     
     public void testCreate() throws Exception {
         GetStudentGridPageAction pageAction = new GetStudentGridPageAction();
-        pageAction.setAdminId(584);
+        pageAction.setAdminId(71);
 
-        ExportGradebookAction exportAction = new ExportGradebookAction(584, 2281, null, pageAction);
+        ExportStudentsAction exportAction = new ExportStudentsAction(71, pageAction);
         exportAction.setEmailAddress("bobhall@hotmath.com");
-        ExportGradebookCommand cmd = new ExportGradebookCommand();
+        ExportStudentsCommand cmd = new ExportStudentsCommand();
         cmd.setRunInSeparateThread(false);
         StringHolder sh = cmd.execute(conn, exportAction);
         assertTrue(sh != null);
