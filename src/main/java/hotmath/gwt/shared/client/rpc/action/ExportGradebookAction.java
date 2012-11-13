@@ -7,6 +7,12 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * 
+ * @author bob
+ *
+ */
+
 @SuppressWarnings("serial")
 public class ExportGradebookAction implements Action<StringHolder>{
 
@@ -22,10 +28,11 @@ public class ExportGradebookAction implements Action<StringHolder>{
 	public ExportGradebookAction() {
 	}
     
-    public ExportGradebookAction(Integer adminId, Integer groupId, GetStudentGridPageAction pageAction) {
+    public ExportGradebookAction(Integer adminId, Integer groupId, String groupName, GetStudentGridPageAction pageAction) {
         this.pageAction = pageAction;
         this.adminId = adminId;
         this.groupId = groupId;
+        this.groupName = groupName;
         this.pageAction.setAdminId(adminId);
     }
 
