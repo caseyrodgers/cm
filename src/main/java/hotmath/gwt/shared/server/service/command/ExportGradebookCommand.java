@@ -69,7 +69,7 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
 
 		StringHolder sh = new StringHolder();
 	    StringBuilder sb = new StringBuilder();
-	    
+
 	    if (studentList.size() > 0) {
     	    sb.append("Grade book export for Group ").append(action.getGroupName()).append(" will be emailed to ");
 	        sb.append(action.getEmailAddress());
@@ -243,9 +243,6 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
     				msgBuff.append("with ").append(sb.toString());
     			}
 				msgBuff.append(" is attached.");
-				msgBuff.append(NEW_LINE).append(NEW_LINE);
-
-				msgBuff.append("Note that the spreadsheet has two sheets, one for Summary and one for Details.");				
 
     			String[] toEmailAddrs = new String[2];
     			toEmailAddrs[0] = emailAddr;
