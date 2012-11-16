@@ -58,7 +58,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     @Override
     public StringHolder execute(Connection conn, ExportStudentsAction action) throws Exception {
 
-    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
+    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
 
 		StringHolder sh = new StringHolder();
 	    StringBuilder sb = new StringBuilder();
@@ -139,7 +139,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			List<String> uidList = new ArrayList<String> ();
 
     			for (StudentModelExt sm : studentList) {
-    				StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), fromDate, toDate);
+    				StudentReportCardModelI rc = rcDao.getStudentReportCard(sm.getUid(), fromDate, toDate);
     				rc.setStudentUid(sm.getUid());
     				rcList.add(rc);
     				uidList.add(String.valueOf(sm.getUid()));

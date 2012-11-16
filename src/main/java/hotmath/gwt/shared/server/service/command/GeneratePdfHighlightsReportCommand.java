@@ -19,7 +19,7 @@ public class GeneratePdfHighlightsReportCommand implements ActionHandler<Generat
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfHighlightsReportAction action) throws Exception {
         
-        List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
+        List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
         if(studentPool.size() == 0)
             return null;
        

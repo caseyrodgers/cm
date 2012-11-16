@@ -68,7 +68,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
      */
     @SuppressWarnings("unchecked")
     public CmList<CustomLessonModel> getAllLessons(final Connection conn) throws Exception {
-        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null);
+        CmList<CustomLessonModel> list = (CmList<CustomLessonModel>)CmCacheManager.getInstance().retrieveFromCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,CmCacheManager.KEY_ALL);
         if(list != null) {
             return list;
         }
@@ -79,7 +79,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
 
             /** for every entry with a specified subject */
             ResultSet rs = stmt
-                    .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where file = 'topics/slope.html' order by lesson");
+                    .executeQuery("select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static  order by lesson");
             while (rs.next()) {
                 CustomLessonModel clm = new CustomLessonModel(rs.getString("lesson"), rs.getString("file"),rs.getString("subject"));
 
@@ -126,7 +126,7 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
                 }
             });
             
-            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,null,lessons);
+            CmCacheManager.getInstance().addToCache(CacheName.ALL_CUSTOM_PROGRAM_LESSONS,CmCacheManager.KEY_ALL,lessons);
             
             return lessons;
         } finally {

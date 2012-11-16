@@ -71,12 +71,21 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public StudentUserProgramModel loadProgramInfoCurrent(final Integer userId) throws Exception {
-        StudentUserProgramModel student = this.getJdbcTemplate().queryForObject(
+        List<StudentUserProgramModel> students = getJdbcTemplate().query(
                 CmMultiLinePropertyReader.getInstance().getProperty("CURRENT_USER_PROGRAM_SQL"),
                 new Object[] { userId }, new StudentUserProgramModelMapper(userId));
 
-        HaTestDef td = HaTestDefDao.getInstance().getTestDef(student.getTestDefId());
-        student.setTestDef(td);
+        
+        StudentUserProgramModel student=null;
+        if(students.size() > 0) {
+            student = students.get(0);
+            
+            HaTestDef td = HaTestDefDao.getInstance().getTestDef(student.getTestDefId());
+            student.setTestDef(td);
+        }
+        else {
+            student = new StudentUserProgramModel();
+        }
 
         return student;
     }

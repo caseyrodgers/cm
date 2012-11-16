@@ -56,7 +56,7 @@ public class StudentSummaryReport {
 
             setReportName(info);
             
-            sList = studentDao.getSummariesForActiveStudents(conn, adminId);
+            sList = studentDao.getSummariesForActiveStudents(adminId);
             filterDescription = ReportUtils.getFilterDescription(conn, adminId, adminDao, filterMap);
         }
         finally {

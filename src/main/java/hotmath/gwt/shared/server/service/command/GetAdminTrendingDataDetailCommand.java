@@ -18,7 +18,7 @@ public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdmin
     @Override
     public CmList<StudentModelExt> execute(Connection conn, GetAdminTrendingDataDetailAction action) throws Exception {
         
-        studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getDataAction());
+        studentPool = new GetStudentGridPageCommand().getStudentPool(action.getDataAction());
         if(studentPool.size() == 0)
             throw new CmRpcException("No students found");
         

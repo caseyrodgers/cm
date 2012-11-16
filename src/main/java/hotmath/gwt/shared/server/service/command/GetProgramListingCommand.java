@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
 
 import java.sql.Connection;
 
@@ -14,11 +15,11 @@ import java.sql.Connection;
  * @author casey
  *
  */
-public class GetProgramListingCommand implements ActionHandler<GetProgramListingAction, ProgramListing>{
+public class GetProgramListingCommand implements ActionHandler<GetProgramListingAction, ProgramListing>, ActionHandlerManualConnectionManagement{
 
     @Override
     public ProgramListing execute(final Connection conn, GetProgramListingAction action) throws Exception {
-        ProgramListing pr = new CmProgramListingDao().getProgramListing(conn, action.getAdminId());
+        ProgramListing pr = new CmProgramListingDao().getProgramListing(action.getAdminId());
         return pr;
     }
 

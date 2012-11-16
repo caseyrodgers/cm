@@ -15,6 +15,7 @@ import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.StudentUserProgramModel;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -43,11 +44,13 @@ public class CmProgramListingDao {
      * @return
      * @throws Exception
      */
-    public ProgramListing getProgramListing(final Connection conn, int __adminId) throws Exception {
+    public ProgramListing getProgramListing(int __adminId) throws Exception {
         String sql = "select * from HA_PROG_DEF where id in ('Prof','Chap','Grad Prep') order by load_order asc";
         PreparedStatement stmt = null;
         ResultSet rs = null;
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             stmt = conn.prepareStatement(sql);
             rs = stmt.executeQuery();
             ProgramListing pr = new ProgramListing();
@@ -70,7 +73,7 @@ public class CmProgramListingDao {
 
             return pr;
         } finally {
-            SqlUtilities.releaseResources(rs, stmt, null);
+            SqlUtilities.releaseResources(rs, stmt, conn);
         }
     }
 
@@ -193,10 +196,13 @@ public class CmProgramListingDao {
      * @return
      * @throws Exception
      */
-    public CmList<ProgramLesson> getLessonsFor(final Connection conn, int testDefId, int segment, String chapter, int sectionCount) throws Exception {
+    public CmList<ProgramLesson> getLessonsFor(int testDefId, int segment, String chapter, int sectionCount) throws Exception {
         Statement stmt = null;
         ResultSet rs = null;
+        Connection conn = null;
         try {
+            conn = HMConnectionPool.getConnection();
+            
         	if (logger.isDebugEnabled())
                 logger.debug(String.format("+++ getLessonsFor(): testDefId: %d, segment: %d, chapter: %s",
                 	testDefId, segment, (chapter != null)?chapter:"n/a"));
@@ -269,7 +275,7 @@ public class CmProgramListingDao {
             return lessons;
         }
         finally {
-            SqlUtilities.releaseResources(rs, stmt, null);
+            SqlUtilities.releaseResources(rs, stmt, conn);
         }
     }
 

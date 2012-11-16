@@ -99,7 +99,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(1, vals[0]);
             ps.setString(2, vals[1]);
             
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -127,7 +127,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(3, vals[0]);
             ps.setString(4, vals[1]);
 
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -155,7 +155,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(3, vals[0]);
             ps.setString(4, vals[1]);
             
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             
             ResultSet rs = ps.executeQuery();
@@ -192,7 +192,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(3, vals[0]);
             ps.setString(4, vals[1]);
             
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -234,7 +234,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(1, vals[0]);
             ps.setString(2, vals[1]);
 
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -303,7 +303,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(1, vals[0]);
             ps.setString(2, vals[1]);
             
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -333,7 +333,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(1, vals[0]);
             ps.setString(2, vals[1]);
             
-            __logger.info("report sql: " + ps);
+            __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -421,7 +421,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         try {
             ps = conn.createStatement();
             
-            __logger.info("report sql: " + sql);
+            __logger.debug("report sql: " + sql);
             
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {
@@ -465,7 +465,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         try {
             ps = conn.createStatement();
             
-            __logger.info("report sql: " + sql);
+            __logger.debug("report sql: " + sql);
             
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {

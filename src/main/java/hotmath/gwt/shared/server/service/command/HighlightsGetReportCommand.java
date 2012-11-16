@@ -36,7 +36,7 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
             }
             
             
-            List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getStudentGridPageAction());
+            List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridPageAction());
             if(studentPool.size() == 0)
                 return list;
             

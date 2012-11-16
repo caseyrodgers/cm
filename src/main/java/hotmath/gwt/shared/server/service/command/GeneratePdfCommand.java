@@ -50,7 +50,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		Integer adminId = action.getAdminId();
     		List<Integer> studentUids = null;
     		if(action.getPageAction() != null) {
-    			List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
+    			List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
     			studentUids = new ArrayList<Integer>();
     			for(StudentModelI sm: studentPool) {
     				studentUids.add(sm.getUid());

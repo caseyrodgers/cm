@@ -161,21 +161,23 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         return studentSql;
     }
 
-    public List<StudentModelI> getSummariesForActiveStudents(final Connection conn, Integer adminUid) throws Exception {
-        return getStudentSummaries(conn, adminUid, true);
+    public List<StudentModelI> getSummariesForActiveStudents(Integer adminUid) throws Exception {
+        return getStudentSummaries(adminUid, true);
     }
 
-    public List<StudentModelI> getSummariesForInactiveStudents(final Connection conn, Integer adminUid) throws Exception {
-        return getStudentSummaries(conn, adminUid, false);
+    public List<StudentModelI> getSummariesForInactiveStudents(Integer adminUid) throws Exception {
+        return getStudentSummaries(adminUid, false);
     }
 
-    public List<StudentModelI> getStudentSummaries(final Connection conn, Integer adminUid, Boolean isActive) throws Exception {
+    public List<StudentModelI> getStudentSummaries(Integer adminUid, Boolean isActive) throws Exception {
         List<StudentModelI> l = null;
 
         PreparedStatement ps = null;
         ResultSet rs = null;
 
+        Connection conn = null;
         try {
+            conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(getStudentSql(StudentSqlType.ALL_STUDENTS_FOR_ADMIN, false));
             ps.setInt(1, adminUid);
             ps.setInt(2,adminUid);
@@ -189,12 +191,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             __logger.error(String.format("*** Error getting student summaries for Admin uid: %d", adminUid), e);
             throw new Exception("*** Error getting student summary data ***");
         } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
+            SqlUtilities.releaseResources(rs, ps, conn);
         }
         return l;
     }
 
-    public List<StudentModelI> getStudentSummaries(final Connection conn, Integer adminUid, List<Integer> uids, Boolean isActive) throws Exception {
+    public List<StudentModelI> getStudentSummaries(Integer adminUid, List<Integer> uids, Boolean isActive) throws Exception {
         List<StudentModelI> l = null;
 
         String uidStr = getUidString(uids);
@@ -204,8 +206,11 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
         PreparedStatement ps = null;
         ResultSet rs = null;
+        
+        Connection conn=null;
 
         try {
+                conn = HMConnectionPool.getConnection();
                 ps = conn.prepareStatement(sqlWithUids);
                 ps.setInt(1, adminUid);
                 ps.setInt(2, adminUid);
@@ -221,7 +226,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             throw new Exception("*** Error getting student summary data ***");
         }
         finally {
-                SqlUtilities.releaseResources(rs, ps, null);
+                SqlUtilities.releaseResources(rs, ps, conn);
         }
 
         return l;
@@ -2300,7 +2305,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("LOAD_ACTIVE_INFO");
         StudentActiveInfo activeInfo = null;
         try {
-            activeInfo = this.getJdbcTemplate().queryForObject(
+            List<StudentActiveInfo> activeInfos = this.getJdbcTemplate().query(
                 sql,
                 new Object[]{userId},
                 new RowMapper<StudentActiveInfo>() {
@@ -2321,6 +2326,17 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                         }
                     }
                 });
+            
+            if(activeInfos.size() > 0) {
+                assert(activeInfos.size() == 1);
+                activeInfo = activeInfos.get(0);
+            }
+            else {
+                /** No Active Info for this user, create a dummy/empty one
+                 * 
+                 */
+                activeInfo = new StudentActiveInfo();
+            }
         }
         catch (Exception e) {
         	__logger.error(String.format("Error querying for StudentActiveInfo; userId: %d, SQL; %s", userId, sql), e);

@@ -54,7 +54,7 @@ public class GetStudentGridPageCommand implements
     public CmStudentPagingLoadResult<StudentModelExt> execute(Connection conn, GetStudentGridPageAction action)
             throws Exception {
 
-        List<StudentModelExt> studentPool = getStudentPool(conn, action);
+        List<StudentModelExt> studentPool = getStudentPool(action);
 
         
         /**
@@ -80,7 +80,7 @@ public class GetStudentGridPageCommand implements
     }
     
     @SuppressWarnings("unchecked")
-    public List<StudentModelExt> getStudentPool(final Connection conn, GetStudentGridPageAction action) throws Exception {
+    public List<StudentModelExt> getStudentPool(GetStudentGridPageAction action) throws Exception {
 
 
         PagingLoadConfig config = action!=null?action.getLoadConfig():null;
@@ -98,7 +98,7 @@ public class GetStudentGridPageCommand implements
         if (action.isForceRefresh() || _allStudents == null) {
             if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " creating _allStudents");
             _allStudents = new ArrayList<StudentModelExt>();
-            for (StudentModelI smi : CmStudentDao.getInstance().getStudentSummaries(conn, action.getAdminId(), true)) {
+            for (StudentModelI smi : CmStudentDao.getInstance().getStudentSummaries(action.getAdminId(), true)) {
                 _allStudents.add(new StudentModelExt(smi));
             }
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
@@ -149,31 +149,6 @@ public class GetStudentGridPageCommand implements
                 }
             }
             
-            /*
-             * if searched student models (studentPool) are fully populated we are done,
-             * otherwise check unmatched and not fully populated student models for
-             * possible matches and add to QS student pool. 
-             */
-            /**
-             * student models are fully populated when first read, no need to check
-             */
-            if (false ) {
-            Map<Integer, StudentModelExt> nfpMap = collectNotFullyPopulated(studentPool);
-            removeOverlap(nfpMap, qsStudentPool);
-
-            if (nfpMap.size() > 0) {
-                logger.debug("aid=" + action.getAdminId() + " applying quick_search");
-            	List<Integer> uidMatchList = new StudentQuickSearcher(conn,nfpMap.keySet()).doQuickSearch(search); 
-
-            	/*
-            	 * add any matches to QS student pool
-            	 */
-                for (Integer uid : uidMatchList) {
-            	    qsStudentPool.add(nfpMap.get(uid));
-            	}
-            }
-            }
-
             studentPool = qsStudentPool;
             if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " quick_search student pool: " + studentPool.size());
         }

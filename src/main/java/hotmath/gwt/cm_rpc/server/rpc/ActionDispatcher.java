@@ -253,6 +253,9 @@ public class ActionDispatcher {
 									actionId, HMConnectionPool.getInstance()
 											.getConnectionCount()));
 				}
+				
+				
+				logger.debug("Skipping DB create");
 				conn = HMConnectionPool.getConnection();
 			} else {
 				if (logger.isInfoEnabled()) {

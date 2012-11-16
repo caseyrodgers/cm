@@ -9,10 +9,12 @@ import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement;
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
 import hotmath.testset.ha.SolutionDao;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -29,7 +31,7 @@ import org.apache.log4j.Logger;
  * Return RpcData with the following members: solutionHtml, hasShowWork
  * 
  */
-public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionInfo> {
+public class GetSolutionCommand implements ActionHandler<GetSolutionAction, SolutionInfo>, ActionHandlerManualConnectionManagement {
 	
 	private static final Logger logger = Logger.getLogger(GetSolutionCommand.class);
 
@@ -44,8 +46,10 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
     }
 
     @Override
-    public SolutionInfo execute(final Connection conn, GetSolutionAction action) throws Exception {
+    public SolutionInfo execute(final Connection connNotNused, GetSolutionAction action) throws Exception {
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             long startTime = System.currentTimeMillis();
             String pid = action.getPid();
             int uid = action.getUid();
@@ -83,6 +87,9 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);
             throw new CmRpcException(e);
+        }
+        finally {
+            SqlUtilities.releaseResources(null, null, conn);
         }
     }
 

@@ -95,9 +95,12 @@ public class CmCacheManager  {
 		/** distinct list of assigment problems
 		 *  and any problem type information
 		 */
-		ASSIGNMENT_PROBLEMS
+		ASSIGNMENT_PROBLEMS 
+		
 	};
 
+	final static public String KEY_ALL="all";
+	
 	private void flushCache() {
 		logger.debug("Shutting down EHCache");
 		CacheManager.getInstance().shutdown();

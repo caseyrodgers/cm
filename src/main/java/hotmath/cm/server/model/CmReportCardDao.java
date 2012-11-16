@@ -16,6 +16,7 @@ import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.StudentUserProgramModel;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -59,18 +60,21 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 
 	/**
 	 */
-	 public StudentReportCardModelI getStudentReportCard(final Connection conn, Integer studentUid, Date beginDate, Date endDate) throws Exception {
+	 public StudentReportCardModelI getStudentReportCard(Integer studentUid, Date beginDate, Date endDate) throws Exception {
 
 		 StudentReportCardModelI rval = new StudentReportCardModel();
+		 Connection conn=null;
 		 try {
 
+		     conn = HMConnectionPool.getConnection();
+		     
 			 CmUserProgramDao upDao = CmUserProgramDao.getInstance();
 
 			 List<StudentUserProgramModel> list = upDao.loadProgramInfoAll(conn, studentUid);
 
 			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
 			 StudentActivityDao saDao = StudentActivityDao.getInstance();
-			 List<StudentActivityModel> samList = saDao.getStudentActivity(conn, studentUid, beginDate, endDate);
+			 List<StudentActivityModel> samList = saDao.getStudentActivity(studentUid, beginDate, endDate);
 			 setFirstLastActivityDate(rval, samList);
 
 			 List<StudentUserProgramModel> filteredList = findMatchingUserPrograms(list, samList);
@@ -158,7 +162,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 logger.error(String.format("*** Error getting report card for Student uid: %d", studentUid), e);
 			 throw new Exception("*** Error getting student report card data ***");
 		 } finally {
-			 SqlUtilities.releaseResources(null, null, null);
+			 SqlUtilities.releaseResources(null, null, conn);
 		 }
 		 return rval;
 	 }

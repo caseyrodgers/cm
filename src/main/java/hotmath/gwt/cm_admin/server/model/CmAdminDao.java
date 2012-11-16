@@ -512,13 +512,15 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    public List<StudyProgramModel> getProgramDefinitions(final Connection conn, int uid) throws Exception {
+    public List<StudyProgramModel> getProgramDefinitions(int uid) throws Exception {
 
         List<StudyProgramModel> rval = null;
 
         PreparedStatement pstmt = null;
         ResultSet rs = null;
+        Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
             pstmt = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty(
                     "ADMIN_PROGRAM_DEFINITIONS"));
             pstmt.setInt(1, uid);
@@ -527,7 +529,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             rval = loadProgramDefinitions(rs);
             return rval;
         } finally {
-            SqlUtilities.releaseResources(rs, pstmt, null);
+            SqlUtilities.releaseResources(rs, pstmt, conn);
         }
     }
 

@@ -7,9 +7,9 @@
 
 .key=DEMO_USER_ID
 
-###727
+727
 
-29004
+###29004
 
 
 
@@ -75,7 +75,7 @@ LEFT JOIN (
         JOIN HA_TEST_RUN r on r.run_id = l.run_id
         JOIN HA_TEST t on t.test_id = r.test_id
         JOIN HA_USER u on u.uid = t.user_id
-     where u.admin_id = ?
+     where u.uid = ?
      and date_completed is not null
      group by r.run_id
 ) rl on rl.run_id = r.run_id             

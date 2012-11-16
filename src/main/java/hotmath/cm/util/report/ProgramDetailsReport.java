@@ -132,7 +132,7 @@ public class ProgramDetailsReport {
                                     
                                     if (pSect.isSelected()) {
                                     	List<ProgramLesson> list =
-                                        	dao.getLessonsFor(conn, pSect.getTestDefId(), pSect.getNumber(), pSect.getParent().getLabel(), sectList.size());
+                                        	dao.getLessonsFor(pSect.getTestDefId(), pSect.getNumber(), pSect.getParent().getLabel(), sectList.size());
                                     	StringBuilder sb = new StringBuilder();
                                     	int i = 0;
                                     	int limit = 120;

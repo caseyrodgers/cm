@@ -25,7 +25,7 @@ public class GetSummariesForActiveStudentsCommand implements ActionHandler<GetSu
         CmStudentDao dao = CmStudentDao.getInstance();
         
         CmList<StudentModelI> cmList = new CmArrayList<StudentModelI>();
-        cmList.addAll(dao.getSummariesForActiveStudents(conn, action.getAdminId()));
+        cmList.addAll(dao.getSummariesForActiveStudents(action.getAdminId()));
         
         return cmList;
     }

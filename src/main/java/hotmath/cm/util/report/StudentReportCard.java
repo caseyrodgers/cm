@@ -110,7 +110,7 @@ public class StudentReportCard {
         baos = new ByteArrayOutputStream();
         PdfWriter writer = PdfWriter.getInstance(document, baos);
 
-        List<StudentModelI> smList = studentDao.getStudentSummaries(conn, adminId, studentUids, true);
+        List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
 
         StringBuilder sb = new StringBuilder();
         sb.append("CM-ReportCard");
@@ -137,7 +137,7 @@ public class StudentReportCard {
     	
         for (StudentModelI sm : smList) {
         	
-            StudentReportCardModelI rc = rcDao.getStudentReportCard(conn, sm.getUid(), fromDate, toDate);
+            StudentReportCardModelI rc = rcDao.getStudentReportCard(sm.getUid(), fromDate, toDate);
 
         	addStudentInfo(school, sm, rc, document);
         	

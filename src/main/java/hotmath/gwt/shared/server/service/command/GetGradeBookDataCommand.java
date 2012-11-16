@@ -41,7 +41,7 @@ public class GetGradeBookDataCommand implements ActionHandler<GetGradeBookDataAc
         }
         logger.debug("dates: " + dates[0] + ", " + dates[1]);
         
-    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(conn, action.getStudentGridAction());
+    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridAction());
         List<Integer> uidList = new ArrayList<Integer>();
         for (StudentModelExt m : studentList) {
         	uidList.add(m.getUid());

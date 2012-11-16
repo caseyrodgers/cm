@@ -65,7 +65,7 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
     @Override
     public StringHolder execute(Connection conn, ExportGradebookAction action) throws Exception {
 
-    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(conn, action.getPageAction());
+    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
 
 		StringHolder sh = new StringHolder();
 	    StringBuilder sb = new StringBuilder();

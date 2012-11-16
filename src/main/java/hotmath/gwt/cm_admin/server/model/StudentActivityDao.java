@@ -9,6 +9,7 @@ import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -58,8 +59,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid) throws Exception {
-        return getStudentActivity(conn, uid, null, null);
+    public List<StudentActivityModel> getStudentActivity(int uid) throws Exception {
+        return getStudentActivity(uid, null, null);
     }
 
     /**
@@ -69,7 +70,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public List<StudentActivityModel> getStudentActivity(final Connection conn, int uid, Date fromDate, Date toDate)
+    public List<StudentActivityModel> getStudentActivity(int uid, Date fromDate, Date toDate)
             throws Exception {
         List<StudentActivityModel> samList = null;
         
@@ -78,7 +79,10 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
 		LOGGER.info(String.format("getStudentActivity(Connection, int, Date, Date): uid: %d", uid));
 
+		Connection conn=null;
         try {
+            conn = HMConnectionPool.getConnection();
+            
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ACTIVITY"));
             ps.setInt(1, uid);
             ps.setInt(2, uid);
@@ -114,7 +118,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             LOGGER.error(String.format("*** Error getting student details for student uid: %d", uid), e);
             throw new Exception("*** Error getting student details ***");
         } finally {
-            SqlUtilities.releaseResources(rs, ps, null);
+            SqlUtilities.releaseResources(rs, ps, conn);
         }
         return samList;
     }
@@ -430,31 +434,6 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	private boolean isQuiz(StudentActivityModel sam) {
 		return (sam.getIsCustomQuiz() || sam.getIsQuiz());
 	}
-
-	private void setDefaults(StudentActivityModel sam) {
-        // setup default values
-        sam.setActivity("");
-
-        sam.setIsCustomQuiz(false);
-        sam.setIsPassing(false);
-        sam.setIsQuiz(false);
-        sam.setLessonCount(0);
-        sam.setLessonsViewed(0);
-        sam.setLessonsCompleted(0);
-        sam.setProgramDescr("");
-        sam.setProgramType("");
-        sam.setResult("");
-        sam.setRunId(0);
-        sam.setSectionCount(0);
-        sam.setSectionNum(0);
-        sam.setStart("");
-        sam.setStop("");
-        sam.setTestId(0);
-        sam.setTimeOnTask(0);
-        sam.setUseDate("");
-        sam.setIsArchivedStyle("");
-        sam.setIsArchived(0);
-    }
 
     private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao, Map<Integer, Integer> lessonsCompletedMap) throws SQLException, Exception {
         StudentActivityModel m = new StudentActivityModel();

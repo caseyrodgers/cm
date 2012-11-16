@@ -58,7 +58,7 @@ public class StudentDetailReport {
         	StudentModelI sm = studentDao.getStudentModelBase(conn, stuUid, false);
         	
         	StudentActivityDao activityDao = StudentActivityDao.getInstance();
-        	List<StudentActivityModel> sList = activityDao.getStudentActivity(conn, stuUid, fromDate, toDate);
+        	List<StudentActivityModel> sList = activityDao.getStudentActivity(stuUid, fromDate, toDate);
 						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
