@@ -280,7 +280,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         final int count[] = new int[1];
 
-        String sql = "select * from HA_PROGRAM_LESSONS where lesson = ? and subject = ? order by id";
+        String sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
 
         InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", lessonFile, lessonName));
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
@@ -1259,7 +1259,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
 
     public Collection<? extends LessonDto> getAvailableLessons() {
-        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS where subject > '' order by lesson, subject";
+        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where subject > '' order by lesson, subject";
         List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
             @Override
             public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {
