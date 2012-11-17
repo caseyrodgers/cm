@@ -1969,8 +1969,10 @@ function stringify(obj) {
 if(context.lineWidth!=2){
         context.lineWidth = 2.0;
 		}
+		if(graphic_data[0].color!==undefined){
         var col = "#" + graphic_data[0].color.toString(16);
         context.strokeStyle = col;
+		}
         var deb = ""
         console.log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
