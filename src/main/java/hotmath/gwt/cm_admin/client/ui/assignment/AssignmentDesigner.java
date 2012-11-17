@@ -85,13 +85,9 @@ public class AssignmentDesigner extends SimpleContainer {
     
     private void setupViewerGui() {
         
-        FlowLayoutContainer fc = new FlowLayoutContainer();
-        fc.setScrollMode(ScrollMode.AUTO);
-        fc.add(QuestionViewerPanel.getInstance());
-        
         BorderLayoutData bd = new BorderLayoutData();
         bd.setSplit(true);
-        _mainContainer.setCenterWidget(fc, bd);
+        _mainContainer.setCenterWidget(QuestionViewerPanel.getInstance(), bd);
         _mainContainer.forceLayout();
     }
     
