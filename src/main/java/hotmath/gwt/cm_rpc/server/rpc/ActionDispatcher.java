@@ -248,7 +248,7 @@ public class ActionDispatcher {
 			 */
 			if (!(actionHandler instanceof ActionHandlerManualConnectionManagement)) {
 				if (logger.isInfoEnabled()) {
-					logger.info(String
+					logger.debug(String
 							.format("RPC Action: (ID:%s) about to request DB Connection, openConnectionCount: (%d)",
 									actionId, HMConnectionPool.getInstance()
 											.getConnectionCount()));
@@ -259,7 +259,7 @@ public class ActionDispatcher {
 				conn = HMConnectionPool.getConnection();
 			} else {
 				if (logger.isInfoEnabled()) {
-					logger.info(String
+					logger.debug(String
 							.format("RPC Action: (ID:%s) DB Connection not requested, openConnectionCount: (%d)",
 									actionId, HMConnectionPool.getInstance()
 											.getConnectionCount()));

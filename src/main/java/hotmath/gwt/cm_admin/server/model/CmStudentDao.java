@@ -575,7 +575,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
     public StudentModelI addStudentTemplate(StudentModelI sm, String templateType) throws Exception {
 
-    	__logger.info("+++ progId: " + sm.getProgram().getProgramId());
+    	__logger.debug("+++ progId: " + sm.getProgram().getProgramId());
 
         int count = getJdbcTemplate().update(
     	        "insert into HA_USER_TEMPLATE (name, password, admin_id, group_id, prog_inst_id, type, limit_games, show_work_required, stop_at_program_end, create_date) " +
@@ -955,7 +955,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ci.setUserId(0);
                 ci.setUserType(ClientInfo.UserType.UNKNOWN);
             }
-            __logger.info(String.format("+++ updateStudent(): (userId:%d,userType:%s) elapsed time: %d msec",
+            __logger.debug(String.format("+++ updateStudent(): (userId:%d,userType:%s) elapsed time: %d msec",
                 ci.getUserId(), ci.getUserType(), System.currentTimeMillis() - startTime));
         }
         return sm;
@@ -1135,7 +1135,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             throw new Exception(String.format("*** Error occurred while updating Student: %s ***", sm.getName()));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
-            __logger.info(String.format("+++ updateStudentProgram(): (userId:%d, userType:%s), elapsed time: %d msec",
+            __logger.debug(String.format("+++ updateStudentProgram(): (userId:%d, userType:%s), elapsed time: %d msec",
                 ClientInfoHolder.get().getUserId(), ClientInfoHolder.get().getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
@@ -1189,7 +1189,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ps.setString(6, sm.getJson());
                 ps.setNull(7, Types.INTEGER);  /** custom program is null */
             }
-            __logger.info(ps);
+            __logger.debug(ps);
             
             int result = ps.executeUpdate();
             if (result == 1) {
@@ -1209,7 +1209,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
                 info.setActiveSegmentSlot(randStartSeg);
             }
-            __logger.info("Setting Active Info: " + info);
+            __logger.debug("Setting Active Info: " + info);
             setActiveInfo(conn, sm.getUid(), info);
         } catch (Exception e) {
             String m = String.format("*** Error adding student program for student with uid: %d", sm.getUid());
@@ -1223,7 +1223,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 ci.setUserId(0);
                 ci.setUserType(UserType.UNKNOWN);
             }
-            __logger.info(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
+            __logger.debug(String.format("+++ addStudentProgram(): (userId:%d,userType:%s), elapsed time: %d",
                         ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
         }
         return sm;
@@ -1276,7 +1276,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                ps.setString(6, sm.getJson());
                ps.setNull(7, Types.INTEGER);  /** custom program is null */
            }
-           __logger.info("--- addStudentProgramForTemplate(): SQL: " + ps.toString());
+           __logger.debug("--- addStudentProgramForTemplate(): SQL: " + ps.toString());
            
            int result = ps.executeUpdate();
            if (result == 1) {
@@ -1296,7 +1296,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                int randStartSeg = SbUtilities.getRandomNumber(testDef.getNumAlternateTests());
                info.setActiveSegmentSlot(randStartSeg);
            }
-           __logger.info("Setting Active Info: " + info);
+           __logger.debug("Setting Active Info: " + info);
            setActiveInfo(conn, sm.getUid(), info);
        } catch (Exception e) {
            String m = String.format("*** Error adding student program for student template with id: %d", sm.getUid());
@@ -1310,7 +1310,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                ci.setUserId(0);
                ci.setUserType(UserType.UNKNOWN);
            }
-           __logger.info(String.format("+++ addStudentProgramForTemplate(): (userId:%d,userType:%s), elapsed time: %d",
+           __logger.debug(String.format("+++ addStudentProgramForTemplate(): (userId:%d,userType:%s), elapsed time: %d",
                        ci.getUserId(), ci.getUserType(), System.currentTimeMillis()-startTime));
        }
        return sm;
@@ -1973,7 +1973,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
            throw new Exception(String.format("*** Error obtaining data for student with UID: %d", uid));
        } finally {
            SqlUtilities.releaseResources(rs, ps, null);
-           __logger.info(String.format("End getStudentModelBaseForTemplate(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
+           __logger.debug(String.format("End getStudentModelBaseForTemplate(), UID: %d, elapsed seconds: %d", uid, ((System.currentTimeMillis() - timeStart)/1000)));
        }
    }
 
