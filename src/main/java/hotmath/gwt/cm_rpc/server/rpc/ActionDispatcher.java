@@ -219,7 +219,7 @@ public class ActionDispatcher {
 		String c[] = action.getClass().getName().split("\\.");
 		String clazzName = c[c.length - 1];
 
-		logger.info(String
+		logger.debug(String
 				.format("RPC Action (userId:%d,userType:%s) (ID:%s) executing: %s toString: %s",
 						clientInfo.getUserId(), clientInfo.getUserType(),
 						actionId, clazzName, action.toString()));
@@ -523,7 +523,7 @@ public class ActionDispatcher {
 	private Class getActionCommand(Action<? extends Response> action)
 			throws Exception {
 		if (!commands.containsKey(action.getClass())) {
-			logger.info("Auto registering action: " + action.getClass());
+			logger.debug("Auto registering action: " + action.getClass());
 			String actionName = action.getClass().getName();
 			if (actionName.endsWith("Action")) {
 
@@ -574,7 +574,7 @@ public class ActionDispatcher {
 			String commandClass = place + cmdName;
 			try {
 				/** create instance and get object */
-				logger.info("Auto registering action command: " + cmdName);
+				logger.debug"Auto registering action command: " + cmdName);
 				cmdClass = Class.forName(commandClass);
 				break;
 			} catch (ClassNotFoundException ie) {
@@ -598,7 +598,7 @@ public class ActionDispatcher {
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	public void registerCommands(Class[] commands) {
-		logger.info("Adding " + commands.length + " commands");
+		logger.debug("Adding " + commands.length + " commands");
 		for (Class command : commands) {
 			addCommand(command);
 		}
