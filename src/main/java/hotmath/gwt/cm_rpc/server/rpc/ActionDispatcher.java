@@ -317,13 +317,13 @@ public class ActionDispatcher {
 			if (conn != null) {
 				SqlUtilities.releaseResources(null, null, conn);
 				if (logger.isInfoEnabled()) {
-					logger.info(String
+					logger.debug(String
 							.format("RPC Action: (ID:%s) DB Connection closed, openConnectionCount: (%d)",
 									actionId, HMConnectionPool.getInstance()
 											.getConnectionCount()));
 				}
 				if (HMConnectionPool.getInstance().getConnectionCount() > CONNECTION_WARNING_THRESHOLD) {
-					logger.warn(String
+					logger.debug(String
 							.format("RPC Action: DB openConnectionCount: %d over threshold: %d",
 									HMConnectionPool.getInstance()
 											.getConnectionCount(),
@@ -332,7 +332,7 @@ public class ActionDispatcher {
 			} else if (actionHandler != null
 					&& (actionHandler instanceof ActionHandlerManualConnectionManagement)) {
 				if (logger.isInfoEnabled()) {
-					logger.info(String
+					logger.debug(String
 							.format("RPC Action: (ID:%s) DB Connection not closed, openConnectionCount: (%d)",
 									actionId, HMConnectionPool.getInstance()
 											.getConnectionCount()));
@@ -343,13 +343,13 @@ public class ActionDispatcher {
 			long executeTimeMills = (now - timeStart);
 
 			if (!failed)
-				logger.info(String
+				logger.debug(String
 						.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s complete; elapsed time: %d msec",
 								clientInfo.getUserId(),
 								clientInfo.getUserType(), actionId, clazzName,
 								action.toString(), executeTimeMills));
 			else
-				logger.info(String
+				logger.debug(String
 						.format("RPC Action (userId:%d,userType:%s) (ID:%s) %s toString: %s - %s FAILED; elapsed time: %d msec",
 								clientInfo.getUserId(),
 								clientInfo.getUserType(), actionId, clazzName,
