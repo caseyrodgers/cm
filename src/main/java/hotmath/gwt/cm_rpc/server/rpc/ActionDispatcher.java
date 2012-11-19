@@ -277,7 +277,7 @@ public class ActionDispatcher {
 			}
 			
 			if (actionType == ActionType.OTHER) {
-				logger.warn(String.format(
+				logger.debug(String.format(
 						"=== RPC Action [%s] not in ActionTypeMap!", clazzName));
 			}
 
