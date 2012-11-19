@@ -211,7 +211,7 @@ public class ActionDispatcher {
 		if (clientInfo == null) {
 			clientInfo = new ClientInfo();
 			clientInfo.setUserType(UserType.UNKNOWN);
-			logger.warn("+++ execute(): ClientInfo from ThreadLocal is NULL");
+			logger.debug("+++ execute(): ClientInfo from ThreadLocal is NULL");
 		}
 		clientInfo.setActionId(actionId);
 
