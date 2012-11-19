@@ -574,7 +574,7 @@ public class ActionDispatcher {
 			String commandClass = place + cmdName;
 			try {
 				/** create instance and get object */
-				logger.debug"Auto registering action command: " + cmdName);
+				logger.debug("Auto registering action command: " + cmdName);
 				cmdClass = Class.forName(commandClass);
 				break;
 			} catch (ClassNotFoundException ie) {
