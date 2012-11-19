@@ -102,6 +102,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
 
     }
 
+    /** Should we allow overritting of existing Solution Context?
+     * 
+     * @param runId
+     * @param pid
+     * @param problemNumber
+     * @param contextJson
+     */
     public void saveSolutionContext(final int runId, final String pid, final int problemNumber, final String contextJson) {
     	getJdbcTemplate().update(new PreparedStatementCreator() {
     		@Override

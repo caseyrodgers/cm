@@ -97,13 +97,13 @@ public class LoginService extends HttpServlet {
 		clientInfo.setUserId(-1);
     	String actionId = new StringBuilder().append(startDate).append(".").append("LOGIN").toString();
     	
-        LOGGER.info(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) executing: %s toString: %s",
+        LOGGER.debug(String.format("RPC Action (userId:%d,userType:%s) (ID:%s) executing: %s toString: %s",
             	clientInfo.getUserId(), clientInfo.getUserType(), actionId, LoginService.class.getName(), (action != null)?action:"NULL"));
 
 		Connection conn=null;
 		try {
 
-        	LOGGER.info(String.format("RPC Action: (ID:%s) about to request DB Connection, openConnectionCount: (%d)", actionId,
+        	LOGGER.debug(String.format("RPC Action: (ID:%s) about to request DB Connection, openConnectionCount: (%d)", actionId,
         			HMConnectionPool.getInstance().getConnectionCount()));
 
 		    conn = HMConnectionPool.getConnection();
@@ -309,7 +309,7 @@ public class LoginService extends HttpServlet {
 		finally {
 		    SqlUtilities.releaseResources(null, null, conn);
 
-            LOGGER.info(String.format("RPC Action: (ID:%s) DB Connection %s, openConnectionCount: (%d)",
+            LOGGER.debug(String.format("RPC Action: (ID:%s) DB Connection %s, openConnectionCount: (%d)",
             		actionId, (conn != null)?"closed":"NULL, not closed", HMConnectionPool.getInstance().getConnectionCount()));
             if (HMConnectionPool.getInstance().getConnectionCount() > ActionDispatcher.CONNECTION_WARNING_THRESHOLD) {
             	LOGGER.warn(String.format("RPC Action: DB openConnectionCount: %d over threshold: %d", HMConnectionPool.getInstance().getConnectionCount(), ActionDispatcher.CONNECTION_WARNING_THRESHOLD));

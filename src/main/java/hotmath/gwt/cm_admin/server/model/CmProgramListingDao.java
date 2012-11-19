@@ -271,7 +271,7 @@ public class CmProgramListingDao {
             while(rs.next()) {
                 lessons.add(new ProgramLesson(rs.getString("lesson"), rs.getString("file")));
             }
-            logger.info(String.format("+++ getLessonsFor(): found %d lessons", lessons.size()));
+            logger.debug(String.format("+++ getLessonsFor(): found %d lessons", lessons.size()));
             return lessons;
         }
         finally {
