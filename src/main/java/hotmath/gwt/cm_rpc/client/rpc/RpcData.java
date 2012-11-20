@@ -2,6 +2,7 @@ package hotmath.gwt.cm_rpc.client.rpc;
 
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -74,4 +75,20 @@ public class RpcData implements Response, IsSerializable {
     public int getDataAsInt(String name) {
         return Integer.parseInt((String)rpcData.get(name));
     }
+
+
+    @Override
+    public String toString() {
+        String val=null;
+        Iterator<String> it = rpcData.keySet().iterator();
+        while(it.hasNext()) {
+            if(val != null) {
+                val += ", ";
+            }
+            String ks = it.next();
+            val +=  ks + "=" + rpcData.get(ks);
+        }
+        return val;
+    }
+    
 }

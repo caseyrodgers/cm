@@ -15,7 +15,6 @@ import hotmath.gwt.shared.server.service.command.SolutionHTMLCreatorImplFileSyst
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
-import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;
 

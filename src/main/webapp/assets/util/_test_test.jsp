@@ -1,5 +1,4 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-
 <%@page import="hotmath.testset.ha.HaUserDao"%>
 <%@page import="hotmath.testset.ha.HaUser"%>
 <%@page import="java.sql.Connection"%>
@@ -15,8 +14,7 @@
 <%@page import="hotmath.testset.ha.HaTestConfig"%>
 <%@page import="hotmath.testset.ha.HaTestDef"%>
 <%@page import="java.util.List"%>
-<head>
-<%@ page contentType="text/plain" import="sb.util.*,hotmath.concordance.*, hotmath.*,hotmath.testset.*, hotmath.help.*" %>
+<%@ page contentType="text/html" import="sb.util.*,hotmath.concordance.*, hotmath.*,hotmath.testset.*, hotmath.help.*" %>
 <%
     String arg = request.getParameter("test");
     if(arg == null) {
@@ -62,6 +60,7 @@
     
     //testIds = HaTestDefDao.getInstance().getTestIdsForSegment(userProgram, segment, testDef.getTextCode(), "Course Test", testConfig,2);
 %>
+<head>
 </head>
 <body>
 info: <%= testIds.size() + ", " + solsPerSeg + ", " + segPnStart + ", " + segPnEnd %>
@@ -73,12 +72,10 @@ TEST 2 Created: <%= testIds.size() %>
 <%
     for(String id: testIds) {
         %>
-        <%= id + "\n" %>
+        <%= id + "\n" %>, 
         <%
     }
-     %>
-    }
-
 %>
+
 </body>
 </html>
