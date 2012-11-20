@@ -33,7 +33,7 @@ public class CmRequestStressTest extends Thread {
         int cnt = SbUtilities.getInt(as[0]);
         
         for(int i=0;i<cnt;i++) {
-            //new CmRequestStressTest(i).startTest();
+            new CmRequestStressTest(i, 10).startTest();
         }
     }
 }
