@@ -1479,7 +1479,7 @@ var Whiteboard = (function () {
                 // document.getElementById('scroll').innerHTML = event.wheelDelta +
                 // ":" + event.detail;
             }
-            document.onmousewheel = moveObject;
+            $get_Element('#drawsection').onmousewheel = moveObject;
             __killListeners()
             if (document.addEventListener) {
                 canvas.addEventListener("mousedown", ev_onmousedown, false);
