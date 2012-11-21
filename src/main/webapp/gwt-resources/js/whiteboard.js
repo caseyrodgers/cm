@@ -75,7 +75,7 @@ var Whiteboard = (function () {
             var holder_y = y0
             // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
 
-            if (lastTxt == txt) {
+            if (false) {
                 context.drawImage(mq_holder, holder_x, holder_y);
                 // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
                 updateCanvas();
