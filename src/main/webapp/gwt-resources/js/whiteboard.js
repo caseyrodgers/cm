@@ -80,17 +80,17 @@ var Whiteboard = (function () {
                 // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
                 updateCanvas();
             } else {
-                var mq_holder = new Image();
-                mq_holder.onload = function () {
+                var _mq_holder = new Image();
+                _mq_holder.onload = function () {
 
                     context.drawImage(this, holder_x, holder_y);
                     // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
 
                     updateCanvas();
-                    mq_holder = null;
+                    _mq_holder = null;
                     delete this;
                 }
-                mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+                _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
                 lastTxt = txt
             }
             // alert(mq_holder.src)
