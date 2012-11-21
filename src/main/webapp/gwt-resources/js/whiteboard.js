@@ -88,7 +88,7 @@ var Whiteboard = (function () {
 
                     updateCanvas();
                     _mq_holder = null;
-                    delete this;
+                    delete _mq_holder;
                 }
                 _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
                 lastTxt = txt
