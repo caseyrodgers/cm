@@ -19,7 +19,7 @@ case $1 in
     
     httpd)
     
-        hpids=`ps -eo pid,user,args | grep httpd | grep apache | grep -v grep | awk '{print $1}'`;
+        hpids=`ps -eo pid,user,args | grep httpd | grep apache | egrep -v "grep|java" | awk '{print $1}'`;
         pidarg=`echo $hpids | sed 's/ /,/g'`;
         hcpu=`pidstat 1 1 -p $pidarg | grep Average | grep -v CPU | awk '{print $6}' | sed 's/\.//'`;
         
