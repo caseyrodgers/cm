@@ -6,7 +6,7 @@
 case $1 in
 
     mysql)
-        pid=`ps -eo pid,user,args | grep mysql | grep port | grep -v grep | awk '{print $1}'`;
+        pid=`ps -eo pid,user,args | grep mysql | grep port | egrep -v "grep|java" | awk '{print $1}'`;
         cpu=`pidstat 1 1 -p $pid | grep Average | awk '{print $6}'`;
         echo -n $cpu;
         ;;
