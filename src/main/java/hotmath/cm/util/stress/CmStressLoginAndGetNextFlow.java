@@ -19,7 +19,7 @@ public class CmStressLoginAndGetNextFlow implements StressTest {
     }
 
     @Override
-    public void runTest(int uid, String uName, String uPass) throws Exception {
+    public void runTest(int aid, int uid, String uName, String uPass) throws Exception {
 
         LoginAction login = new LoginAction(uName, uPass);
         HaUserLoginInfo loginInfo = ActionDispatcher.getInstance().execute(login);

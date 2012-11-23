@@ -23,12 +23,14 @@ public class CmStressThread extends Thread {
     boolean stopThread;
     private String testClassName;
     private int uid;
+    private int aid;
 
     static int __counter;
 
     final static Logger __logger = Logger.getLogger(CmStressThread.class);
 
-    public CmStressThread(int uid, String userName, String pass, int delay, String testClassName) {
+    public CmStressThread(int aid, int uid, String userName, String pass, int delay, String testClassName) {
+        this.aid = aid;
         this.uid = uid;
         this.user = userName;
         this.pass = pass;
@@ -52,7 +54,7 @@ public class CmStressThread extends Thread {
 
     @Override
     public String toString() {
-        return "CmStress [user=" + user + ", pass=" + pass + ", uid=" + uid + ", delay=" + delay + ", id=" + id + "]";
+        return "CmStress [user=" + user + ", pass=" + pass + ", aid=" + aid + ", uid=" + uid + ", delay=" + delay + ", id=" + id + "]";
     }
 
     @Override
@@ -64,7 +66,7 @@ public class CmStressThread extends Thread {
             __logger.info(id + " test start [delay=" + delay + "] (" + testClassName + ")");
             
             StressTest test = (StressTest)Class.forName(testClassName).newInstance();
-            test.runTest(this.uid, this.user, this.pass);
+            test.runTest(this.aid, this.uid, this.user, this.pass);
             
             __logger.info(id + " test complete, time: " + (System.currentTimeMillis() - start) / 1000);
 

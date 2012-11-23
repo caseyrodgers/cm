@@ -18,7 +18,7 @@ import hotmath.gwt.shared.client.rpc.action.LoginAction;
  */
 public class CmStressJustLogin extends Thread implements StressTest {
 
-    public void runTest(int uid, String user, String pass) throws Exception {
+    public void runTest(int aid, int uid, String user, String pass) throws Exception {
         LoginAction login = new LoginAction(user, pass);
         HaUserLoginInfo loginInfo = ActionDispatcher.getInstance().execute(login);
     }

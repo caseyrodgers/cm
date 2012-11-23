@@ -40,23 +40,27 @@ public class CmStressRunner {
         Connection conn = null;
         PreparedStatement ps = null;
         try {
-            String sql = "select a.user_name, u.user_passcode,u.uid " + "from HA_ADMIN a "
+            String sql = "select a.user_name, u.user_passcode,u.uid,u.admin_id " + "from HA_ADMIN a "
                     + " JOIN SUBSCRIBERS s on s.id = a.subscriber_id " + " JOIN HA_USER u on u.admin_id = a.aid "
                     + " JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id " 
-                    + " where u.is_active = 1 and a.aid = ? " 
+                    + " where u.is_active = 1 " 
                     + " and u.admin_id != 13 " + " and u.date_created > '2010-11-01' "
                     + " and is_auto_create_template = 0 " + " order by rand() " + " limit " + count;
             conn = HMConnectionPool.getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setInt(1, adminId);
+            
+            if(adminId > 0) {
+                sql += " and a.aid = " + adminId;
+            }
 
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String uName = rs.getString("user_name");
                 String uPass = rs.getString("user_passcode");
                 int uid = rs.getInt("uid");
+                int aid = rs.getInt("admin_id");
                 
-                new CmStressThread(uid, uName, uPass,delay, this.testClassName).runTest();
+                new CmStressThread(aid, uid, uName, uPass,delay, this.testClassName).runTest();
             }
 
         } catch (Exception e) {
