@@ -27,7 +27,7 @@ public class CmStressRunner {
         this.adminId = adminId;
         this.count = count;
         this.delay = delay;
-        this.testClassName = testClassName!=null?testClassName:CmStressImplDefault.class.getName();
+        this.testClassName = testClassName!=null?testClassName:CmStressLoginAndGetActiveFlow.class.getName();
         
         
         // error early

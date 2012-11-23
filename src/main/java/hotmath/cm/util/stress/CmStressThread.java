@@ -26,7 +26,7 @@ public class CmStressThread extends Thread {
 
     static int __counter;
 
-    final static Logger __logger = Logger.getLogger(CmStressImplDefault.class);
+    final static Logger __logger = Logger.getLogger(CmStressLoginAndGetActiveFlow.class);
 
     public CmStressThread(int uid, String userName, String pass, int delay, String testClassName) {
         this.uid = uid;

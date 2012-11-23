@@ -15,11 +15,11 @@ import org.apache.log4j.Logger;
  * 
  * 
  */
-public class CmStressImplDefault implements StressTest {
+public class CmStressLoginAndGetActiveFlow implements StressTest {
 
-    final static Logger __logger = Logger.getLogger(CmStressImplDefault.class);
+    final static Logger __logger = Logger.getLogger(CmStressLoginAndGetActiveFlow.class);
 
-    public CmStressImplDefault() {
+    public CmStressLoginAndGetActiveFlow() {
 
     }
 
