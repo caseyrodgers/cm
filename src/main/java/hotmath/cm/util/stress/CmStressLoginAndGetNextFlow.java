@@ -7,8 +7,6 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
 import hotmath.gwt.shared.client.rpc.action.LoginAction;
 
-import org.apache.log4j.Logger;
-
 /**
  * 
  * Test Login and GET the CURRENT flow action in user's current program.
@@ -16,9 +14,6 @@ import org.apache.log4j.Logger;
  * 
  */
 public class CmStressLoginAndGetNextFlow implements StressTest {
-
-    final static Logger __logger = Logger.getLogger(CmStressLoginAndGetNextFlow.class);
-
     public CmStressLoginAndGetNextFlow() {
 
     }
