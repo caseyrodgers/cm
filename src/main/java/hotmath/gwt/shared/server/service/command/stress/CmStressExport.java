@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command.stress;
 
 import hotmath.HotMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
+import hotmath.cm.util.stress.CmStressImplDefault;
 import hotmath.gwt.cm_rpc.server.rpc.ContextListener;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
@@ -39,7 +40,7 @@ public class CmStressExport extends Thread {
 
 	static int __counter;
 
-	final static Logger __logger = Logger.getLogger(CmStress.class);
+	final static Logger __logger = Logger.getLogger(CmStressImplDefault.class);
 
 	public CmStressExport(int aid, int delay, String emailAddress) {
 		this.aid = aid;

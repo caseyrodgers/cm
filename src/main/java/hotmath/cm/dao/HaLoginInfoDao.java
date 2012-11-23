@@ -184,15 +184,16 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");
             
-            /** Update the extended info is separate thread to release any hold
-             * during update lock.
-             *
-             */
             if (user.getUserType() == UserType.STUDENT) {
+                
+                /** Update the extended info is separate thread to release any hold
+                 * during update lock.
+                 *
+                 */
                 new Thread() {
                     public void run() {
                         try {
-                            HaUserExtendedDao.updateUserExtendedLastLogin(conn, user.getUserKey());
+                            HaUserExtendedDao.updateUserExtendedLastLogin(user.getUserKey());
                         }
                         catch(Exception e2) {
                             __logger.error("Error updating extended data for: " + user);

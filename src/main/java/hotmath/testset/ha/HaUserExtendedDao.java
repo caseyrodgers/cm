@@ -6,7 +6,9 @@ import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
+import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.spring.SpringManager;
+import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
@@ -393,18 +395,20 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
     	
     }
 
-    static public void updateUserExtendedLastLogin(Connection conn, Integer userId) throws Exception {
+    static public void updateUserExtendedLastLogin(Integer userId) throws Exception {
     	
     	/*
     	 * if row exists update it, otherwise insert new row
     	 */
     	String sql = "select * from HA_USER_EXTENDED where user_id = ?";
     	
+    	Connection conn = null;
     	ResultSet rs = null;
     	PreparedStatement stmt = null;
     	PreparedStatement stmt2 = null;
 
 		try {
+		    conn = HMConnectionPool.getConnection();
     		stmt = conn.prepareStatement(sql);
     		stmt.setInt(1, userId);
     		rs = stmt.executeQuery();
@@ -429,7 +433,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
     		throw new HotMathException("Error updating User extended data");
     	}
     	finally {
-    		SqlUtilities.releaseResources(rs, stmt, null);
+    		SqlUtilities.releaseResources(rs, stmt, conn);
     		SqlUtilities.releaseResources(null, stmt2, null);
     	}
     	
