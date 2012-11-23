@@ -45,14 +45,15 @@ public class CmStressRunner {
                     + " JOIN CM_USER_PROGRAM p on p.id = u.user_prog_id " 
                     + " where u.is_active = 1 " 
                     + " and u.admin_id != 13 " + " and u.date_created > '2010-11-01' "
-                    + " and is_auto_create_template = 0 " + " order by rand() " + " limit " + count;
-            conn = HMConnectionPool.getConnection();
-            ps = conn.prepareStatement(sql);
-            
+                    + " and is_auto_create_template = 0 ";
             if(adminId > 0) {
                 sql += " and a.aid = " + adminId;
             }
+            
+            sql  += " order by rand() " + " limit " + count;
 
+            conn = HMConnectionPool.getConnection();
+            ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String uName = rs.getString("user_name");

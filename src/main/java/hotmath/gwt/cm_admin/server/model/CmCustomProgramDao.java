@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.server.model;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao.ProgramSegment;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -533,7 +534,12 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
         Connection conn=null;
         try {
             conn = HMConnectionPool.getConnection();
-            ProgramSegment segment = readProgramSegments(conn, programId).get(segmentSlot-1);
+            
+            List<ProgramSegment> segments = readProgramSegments(conn, programId);
+            if(segments.size() < (segmentSlot-1)) {
+                throw new CmException("Test segment not found, problemId: " + programId + ", segment: " + segmentSlot);
+            }
+            ProgramSegment segment = segments.get(segmentSlot-1);
             CustomLessonModel theQuiz = segment.getQuiz();
             
             Integer quid = theQuiz != null?theQuiz.getQuizId():null;
