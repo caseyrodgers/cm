@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
@@ -31,6 +32,8 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
         }
         return __instance;
     }
+    
+    static Logger __logger = Logger.getLogger(HaLoginInfoDao.class);
     
     private HaLoginInfoDao(){}
 
@@ -150,7 +153,7 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public String addLoginInfo(final Connection conn, HaBasicUser user, ClientEnvironment clientEnv, boolean isRealLogin) throws Exception {
+    public String addLoginInfo(final Connection conn, final HaBasicUser user, ClientEnvironment clientEnv, boolean isRealLogin) throws Exception {
         PreparedStatement pstat = null;
 
         try {
@@ -181,8 +184,21 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
             if(pstat.executeUpdate() != 1)
                 throw new Exception("could not not insert new HA_USER_LOGIN record");
             
+            /** Update the extended info is separate thread to release any hold
+             * during update lock.
+             *
+             */
             if (user.getUserType() == UserType.STUDENT) {
-                HaUserExtendedDao.updateUserExtendedLastLogin(conn, user.getUserKey());
+                new Thread() {
+                    public void run() {
+                        try {
+                            HaUserExtendedDao.updateUserExtendedLastLogin(conn, user.getUserKey());
+                        }
+                        catch(Exception e2) {
+                            __logger.error("Error updating extended data for: " + user);
+                        }
+                    }
+                }.start();
             }
             
             return key;

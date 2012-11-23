@@ -1545,7 +1545,10 @@ from   HA_TEST_RUN r
          on r.test_id = t.test_id
        left join HA_TEST_RUN_RESULTS s
          on s.run_id = r.run_id
+       left join HA_TEST_IDS ids
+          on (ids.test_id = t.test_id and ids.pid = s.pid)
 where  r.run_id = ?
+order by ids.tid
 
 
 .key=TEST_RUN_LOOK_FOR_TESTS
