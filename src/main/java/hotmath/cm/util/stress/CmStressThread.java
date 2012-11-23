@@ -52,7 +52,7 @@ public class CmStressThread extends Thread {
 
     @Override
     public String toString() {
-        return "CmStress [user=" + user + ", pass=" + pass + ", delay=" + delay + ", id=" + id + "]";
+        return "CmStress [user=" + user + ", pass=" + pass + ", uid=" + uid + ", delay=" + delay + ", id=" + id + "]";
     }
 
     @Override

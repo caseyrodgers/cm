@@ -228,7 +228,7 @@ public class CmProgramFlow {
              * NOTE: this changes the active info
              * 
              * */
-            CreateTestRunAction testRunAction = new CreateTestRunAction(activeInfo.getActiveTestId());
+            CreateTestRunAction testRunAction = new CreateTestRunAction(activeInfo.getActiveTestId(),student.getUid());
             CreateTestRunResponse testRunResponse = new CreateTestRunCommand().execute(conn, testRunAction);
             action = testRunResponse.getNextAction();
             if (testRunResponse.getSessionCount() > 0) {

@@ -330,7 +330,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
 
     
     public void testCreateTestRun() throws Exception {
-        CreateTestRunAction action = new CreateTestRunAction(TEST_ID);
+        CreateTestRunAction action = new CreateTestRunAction(TEST_ID,_user.getUid());
         CreateTestRunResponse response = ActionDispatcher.getInstance().execute(action);
         
         assertNotNull(response.getRunId() > 0);
