@@ -1,11 +1,10 @@
 package hotmath.cm.util.stress;
 
+import hotmath.gwt.cm_rpc.client.rpc.AutoAdvanceUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;
-import hotmath.gwt.shared.client.rpc.action.LoginAction;
 
 /**
  * 
@@ -21,16 +20,12 @@ public class CmStressLoginAndGetNextFlow implements StressTest {
     @Override
     public void runTest(int aid, int uid, String uName, String uPass) throws Exception {
 
-        LoginAction login = new LoginAction(uName, uPass);
-        HaUserLoginInfo loginInfo = ActionDispatcher.getInstance().execute(login);
-
-        int userId = loginInfo.getHaLoginInfo().getUserId();
-
-        GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(userId, FlowType.NEXT);
+        GetCmProgramFlowAction flowAction = new GetCmProgramFlowAction(uid, FlowType.NEXT);
         CmProgramFlowAction flowActive = ActionDispatcher.getInstance().execute(flowAction);
 
         switch (flowActive.getPlace()) {
         case AUTO_ADVANCED_PROGRAM:
+            doAutoAdvance(uid);
             break;
 
         case AUTO_PLACEMENT:
@@ -49,4 +44,9 @@ public class CmStressLoginAndGetNextFlow implements StressTest {
         }
     }
 
+    
+    private void doAutoAdvance(int uid) throws Exception {
+        AutoAdvanceUserAction action = new AutoAdvanceUserAction(uid);
+        ActionDispatcher.getInstance().execute(action);
+    }
 }
