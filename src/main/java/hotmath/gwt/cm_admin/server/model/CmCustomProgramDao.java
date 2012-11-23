@@ -536,8 +536,8 @@ public class CmCustomProgramDao extends SimpleJdbcDaoSupport {
             conn = HMConnectionPool.getConnection();
             
             List<ProgramSegment> segments = readProgramSegments(conn, programId);
-            if(segments.size() < (segmentSlot-1)) {
-                throw new CmException("Test segment not found, problemId: " + programId + ", segment: " + segmentSlot);
+            if(segments.size() < segmentSlot) {
+                throw new CmException("Program segment not found, problemId: " + programId + ", segment: " + segmentSlot);
             }
             ProgramSegment segment = segments.get(segmentSlot-1);
             CustomLessonModel theQuiz = segment.getQuiz();

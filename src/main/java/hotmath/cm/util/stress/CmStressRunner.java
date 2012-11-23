@@ -47,12 +47,15 @@ public class CmStressRunner {
                     + " and is_auto_create_template = 0 ";
             if (adminId > 0) {
                 sql += " and a.aid = " + adminId;
-            } else {
+            } else if(adminId == -1) {
                 /**
                  * use external table
                  * 
                  */
                 sql += " and u.uid in (select uid from CM_STRESS_RUNNER_UIDS where used = 0)";
+            }
+            else {
+                // all admins
             }
 
             sql += " order by rand() " + " limit " + count;
