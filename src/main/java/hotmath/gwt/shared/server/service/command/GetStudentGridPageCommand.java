@@ -189,7 +189,7 @@ public class GetStudentGridPageCommand implements
          * Should the student pool be sorted?
          * 
          */
-        if (config != null && config.getSortInfo().getSortField() != null) {
+        if (config != null && config.getSortInfo() != null && config.getSortInfo().getSortField() != null) {
             final String sortField = config.getSortInfo().getSortField();
             if (sortField != null) {
             	
