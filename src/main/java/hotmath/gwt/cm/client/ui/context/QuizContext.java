@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -225,6 +226,25 @@ public class QuizContext implements CmContext {
                 else {
                     showQuizResults(testRunInfo);
                 }
+            }
+            
+            public void onFailure(Throwable error) {
+                super.onFailure(error);
+                
+                if(error.getMessage().contains("This test has already been checked")) {
+                    CatchupMathTools.showAlert("Already checked", "This test has already been checked.  The current page needs to be reloaded", new CmAsyncRequest() {
+                        @Override
+                        public void requestFailed(int code, String text) {
+                        }
+                        
+                        @Override
+                        public void requestComplete(String requestData) {
+                            CmShared.reloadUser();
+                        }
+                    });
+                    
+                }
+                
             }
         }.register();
     }
