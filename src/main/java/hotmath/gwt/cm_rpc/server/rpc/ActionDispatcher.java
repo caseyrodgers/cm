@@ -200,8 +200,7 @@ public class ActionDispatcher {
 	public <T extends Response> T execute(Action<T> action)
 			throws CmRpcException {
 
-		String actionId = new StringBuilder().append(startDate).append(".")
-				.append(++counter).toString();
+		String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();
 
 		boolean failed = false;
 		String errMsg = null;

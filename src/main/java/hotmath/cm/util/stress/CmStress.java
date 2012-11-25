@@ -20,8 +20,8 @@ public class CmStress {
         SbUtilities.addOptions(as);
 
         int aid = SbUtilities.getInt(SbUtilities.getOption("2", "-admin_id"));
-        int count = SbUtilities.getInt(SbUtilities.getOption("100", "-count"));
-        int delay = SbUtilities.getInt(SbUtilities.getOption("1000", "-delay"));
+        int count = SbUtilities.getInt(SbUtilities.getOption("1", "-count"));
+        int delay = SbUtilities.getInt(SbUtilities.getOption("1", "-delay"));
         String testClassName = SbUtilities.getOption(null, "-test_class");
         
         

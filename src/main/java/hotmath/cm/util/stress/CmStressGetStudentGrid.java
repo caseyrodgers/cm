@@ -1,10 +1,10 @@
 package hotmath.cm.util.stress;
 
-import java.util.Collection;
-import java.util.Map;
-
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
+
+import java.util.Collection;
+import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.SortDir;
 import com.extjs.gxt.ui.client.data.PagingLoadConfig;
@@ -17,7 +17,12 @@ public class CmStressGetStudentGrid implements StressTest {
 
     @Override
     public void runTest(int aid, int uid, String uName, String uPass) throws Exception {
-        PagingLoadConfig pConfig = new PagingLoadConfig() {
+        PagingLoadConfig pConfig = new MyPagingLoadConfig();
+        GetStudentGridPageAction pageAction = new GetStudentGridPageAction(aid,pConfig);
+        ActionDispatcher.getInstance().execute(pageAction);
+    }
+    
+    class MyPagingLoadConfig implements PagingLoadConfig {
 
             @Override
             public SortDir getSortDir() {
@@ -108,11 +113,7 @@ public class CmStressGetStudentGrid implements StressTest {
                 // TODO Auto-generated method stub
                 return 0;
             }
-               
-        };
-        
-        GetStudentGridPageAction pageAction = new GetStudentGridPageAction(aid,pConfig);
-        ActionDispatcher.getInstance().execute(pageAction);
+            
     }
 
 }
