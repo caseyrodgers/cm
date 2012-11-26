@@ -190,16 +190,17 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
                  * during update lock.
                  *
                  */
-                new Thread() {
-                    public void run() {
-                        try {
-                            HaUserExtendedDao.updateUserExtendedLastLogin(user.getUserKey());
-                        }
-                        catch(Exception e2) {
-                            __logger.error("Error updating extended data for: " + user);
-                        }
-                    }
-                }.start();
+//                new Thread() {
+//                    public void run() {
+//                        try {
+//                            HaUserExtendedDao.updateUserExtendedLastLogin(user.getUserKey());
+//                        }
+//                        catch(Exception e2) {
+//                            __logger.error("Error updating extended data for: " + user);
+//                        }
+//                    }
+//                }.start();
+                HaUserExtendedDao.updateUserExtendedLastLogin(user.getUserKey());
             }
             
             return key;
