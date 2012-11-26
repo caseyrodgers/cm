@@ -197,7 +197,7 @@ public class ActionDispatcher {
 	 * @throws Exception
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <T extends Response> T execute(Action<T> action)
+	public <T extends Response> T execute(Action<T> action, Connection connectionToUse)
 			throws CmRpcException {
 
 		String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();
@@ -254,8 +254,16 @@ public class ActionDispatcher {
 				}
 				
 				
-				logger.debug("Skipping DB create");
-				conn = HMConnectionPool.getConnection();
+				
+				if(connectionToUse == null) {
+	                logger.debug("Creating new connection");
+
+				    conn = HMConnectionPool.getConnection();
+				}
+				else { 
+				    logger.debug("Setting connection to passed value");
+				    conn = connectionToUse;
+				}
 			} else {
 				if (logger.isInfoEnabled()) {
 					logger.debug(String
@@ -314,6 +322,12 @@ public class ActionDispatcher {
 
 		} finally {
 			if (conn != null) {
+			    
+			    
+			    if(connectionToUse != null) {
+			        conn = null; // do not close
+			    }
+			    
 				SqlUtilities.releaseResources(null, null, conn);
 				if (logger.isInfoEnabled()) {
 					logger.debug(String
@@ -357,6 +371,10 @@ public class ActionDispatcher {
 			incrementProcessingTime(actionType, executeTimeMills);
 		}
 	}
+	public <T extends Response> T execute(Action<T> action) throws CmRpcException {
+	    return execute(action, null);
+	}
+	
 
 	/**
 	 * Send error notification to errors@hotmath.com to allow real time tracking

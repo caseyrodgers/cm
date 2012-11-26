@@ -151,7 +151,7 @@ public class LoginService extends HttpServlet {
 			 *  
 			 */
 			
-			HaUserLoginInfo userLoginInfo = new LoginCommand().execute(conn, loginAction);
+			HaUserLoginInfo userLoginInfo = ActionDispatcher.getInstance().execute(loginAction, conn);
 
 			HaBasicUser cmUser = userLoginInfo.getHaUser();
 			HaLoginInfo loginInfo = userLoginInfo.getHaLoginInfo();
