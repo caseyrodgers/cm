@@ -145,6 +145,9 @@ public class LoginService extends HttpServlet {
 			 * and redirected to login error page.  
 			 * 
 			 * cmUser will never be null.
+			 * 
+			 * Why bypass ActionDispatcher?  
+			 * To allow use of already created connection.
 			 *  
 			 */
 			
@@ -274,7 +277,7 @@ public class LoginService extends HttpServlet {
     						ppDao.reassignMainProgram(loginInfo.getUserId());
     					}
     
-    					UserLoginResponse response = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName()));
+    					UserLoginResponse response = new GetUserInfoCommand().execute(conn, new GetUserInfoAction(loginInfo.getUserId(),loginInfo.getLoginName(),req.getParameter("debug")!=null));
     					//UserInfo userInfo = response.getUserInfo();
     					String jsonizedUserInfo = Jsonizer.toJson(response);
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);

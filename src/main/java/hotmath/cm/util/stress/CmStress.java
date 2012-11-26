@@ -19,8 +19,8 @@ public class CmStress {
         new ContextListener();
         SbUtilities.addOptions(as);
 
-        int aid = SbUtilities.getInt(SbUtilities.getOption("2", "-admin_id"));
-        int count = SbUtilities.getInt(SbUtilities.getOption("1", "-count"));
+        int aid = SbUtilities.getInt(SbUtilities.getOption("0", "-admin_id"));
+        int count = SbUtilities.getInt(SbUtilities.getOption("100", "-count"));
         int delay = SbUtilities.getInt(SbUtilities.getOption("1", "-delay"));
         String testClassName = SbUtilities.getOption(null, "-test_class");
         

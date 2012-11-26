@@ -69,6 +69,7 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		HaLoginInfo loginInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, cmUser, new ClientEnvironment(action.getBrowserInfo()),isRealLogin);
 
 		return new HaUserLoginInfo(cmUser, loginInfo);
+		
 	}
 
     public Class<? extends Action<? extends Response>> getActionType() {

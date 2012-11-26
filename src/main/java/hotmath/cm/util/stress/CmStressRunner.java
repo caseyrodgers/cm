@@ -72,10 +72,12 @@ public class CmStressRunner {
                 String uPass = rs.getString("user_passcode");
                 int uid = rs.getInt("uid");
                 int aid = rs.getInt("admin_id");
+                
+                System.out.println(uName + "\t" + uPass);
 
-                new CmStressThread(aid, uid, uName, uPass, delay, this.testClassName).runTest();
+                // new CmStressThread(aid, uid, uName, uPass, delay, this.testClassName).runTest();
 
-                conn.createStatement().execute("update CM_STRESS_RUNNER_UIDS set used = 1 where uid = " + uid);
+                // conn.createStatement().execute("update CM_STRESS_RUNNER_UIDS set used = 1 where uid = " + uid);
             } while (rs.next());
 
         } catch (Exception e) {

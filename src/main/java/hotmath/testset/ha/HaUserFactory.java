@@ -39,10 +39,10 @@ public class HaUserFactory {
         Connection conn = null;
         try {
 			conn = HMConnectionPool.getConnection();
-			return loginToCatchup(conn, user, pwd);
+			 return loginToCatchup(conn, user, pwd);
         }
         finally {
-        	
+        	SqlUtilities.releaseResources(null, null, conn);
         }
 	}
 	
@@ -99,14 +99,14 @@ public class HaUserFactory {
 					admin.setAdminId(rs.getInt("aid"));
 					admin.setEmail(rs.getString("student_email"));
 					admin.setPartner(rs.getString("partner_key"));
-					java.sql.Date date = rs.getDate("date_expire");
+					java.sql.Date date = new java.sql.Date(System.currentTimeMillis() + (1000 * 60 * 24 * 7)); // rs.getDate("date_expire");
 					if (date != null)
 						admin.setExpireDate(new Date(date.getTime()));
+                    __logger.info(String.format(
+                            "+++ date_expire: %s, isExpired: ", date,admin.isExpired()));
+					
 					admin.setAccountType(rs.getString("account_type"));
 
-					__logger.info(String.format(
-							"+++ date_expire: %s, isExpired: ", date,
-							admin.isExpired()));
 
 					__logger.info("Logging in user (CM Admin): " + user);
 
@@ -139,7 +139,7 @@ public class HaUserFactory {
 					student.setLoginName(user);
 					student.setAccountType(rs.getString("type"));
 					student.setPartner(rs.getString("partner_key"));
-					java.sql.Date date = rs.getDate("date_expire");
+					java.sql.Date date = new java.sql.Date(System.currentTimeMillis() + (1000 * 60 * 24 * 7)); // new GregorianCalendar().get; // rs.getDate("date_expire");
 					if (date != null)
 						student.setExpireDate(new Date(date.getTime()));
 
@@ -188,6 +188,7 @@ public class HaUserFactory {
 				SqlUtilities.releaseResources(rs, pstat, null);
 			}
 
+			
 			// Check for a Parallel Program Login
 			// If the username matches a School password and the password matches the Password of
 			// of a Parallel Program that belongs to an Admin associated with that School (password) then

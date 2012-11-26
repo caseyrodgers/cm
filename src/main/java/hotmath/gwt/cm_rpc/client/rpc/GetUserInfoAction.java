@@ -6,12 +6,17 @@ public class GetUserInfoAction implements Action<UserLoginResponse>{
     
     int userId;
     String loginName;
+    private boolean isDebug;
 
     public GetUserInfoAction() {}
     
     public GetUserInfoAction(int userId, String loginName) {
+        this(userId, loginName, false);
+    }
+    public GetUserInfoAction(int userId, String loginName, boolean isDebug) {
         this.userId = userId;
         this.loginName = loginName;
+        this.isDebug = isDebug;
     }
     public int getUserId() {
         return userId;
@@ -29,6 +34,14 @@ public class GetUserInfoAction implements Action<UserLoginResponse>{
 	}
     
     
+    public boolean isDebug() {
+        return isDebug;
+    }
+
+    public void setDebug(boolean isDebug) {
+        this.isDebug = isDebug;
+    }
+
     @Override
     public String toString() {
         return "GetUserInfoAction [userId=" + userId + ", loginName=" + loginName +  "]";

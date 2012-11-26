@@ -56,7 +56,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
              * Only Essentials and Essentials Topics are allowed for free accounts
              */
             HaAdmin admin = CmAdminDao.getInstance().getAdmin(sm.getAdminUid());
-            if(admin.isFreeAccount()) {
+            if(admin.isFreeAccount() && !action.isDebug()) {
                 if(userProgram.getTestDef().getTestDefId() != CmProgram.ESSENTIALS.getDefId() 
                         && !(userProgram.getTestDef().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId() && userProgram.getCustomProgramName().equals("Essentials Topics"))) {
                     throw new CmExceptionFreeProgramDenied(action.getUserId(), userProgram.getTestName());
