@@ -1773,7 +1773,7 @@ var Whiteboard = (function () {
 		//drawImage workaround for IE to fix high memory usage
             var cn = $($(cnvs).children()[0]);
             var cv = $($(canvas).children()[0]);
-            var el = '<div style="position:absolute;width:1px;height:1px;">' + $($(canvas).html()).html() + '</div>'
+            var el = '' + $($(canvas).html()).html() + ''
             cn.append(el);
         } else {
             cntxt.drawImage(canvas, 0, 0);
