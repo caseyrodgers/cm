@@ -73,7 +73,7 @@ public class CmStressRunner {
                 int uid = rs.getInt("uid");
                 int aid = rs.getInt("admin_id");
                 
-                System.out.println(uName + "\t" + uPass);
+                System.out.println(uName + "\t" + uPass + "\t" + aid + "\t" + uid);
 
                 // new CmStressThread(aid, uid, uName, uPass, delay, this.testClassName).runTest();
 
