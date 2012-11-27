@@ -95,8 +95,12 @@ public class CmCacheManager  {
 		/** distinct list of assigment problems
 		 *  and any problem type information
 		 */
-		ASSIGNMENT_PROBLEMS 
+		ASSIGNMENT_PROBLEMS, 
 		
+		/** Temporary look up information for admins
+		 * 
+		 */
+		ADMIN_INFO 
 	};
 
 	final static public String KEY_ALL="all";

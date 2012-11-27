@@ -41,6 +41,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -596,6 +597,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         haAdmin.setAdminId(rs.getInt("aid"));
                         haAdmin.setUserName(rs.getString("user_name"));
                         haAdmin.setPassword(rs.getString("passcode"));
+                        haAdmin.setExpireDate(rs.getDate("expire_date"));
                         haAdmin.setFreeAccount(rs.getInt("is_free") == 0?false:true);
                         return haAdmin;
                 }
@@ -1085,6 +1087,22 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
+    }
+
+    public Date getAdminExpireDate(int adminId) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_EXPIRE_DATE");
+        Date dateExpire = getJdbcTemplate().queryForObject(
+                sql, 
+                new Object[] { adminId},
+                new RowMapper<Date>() {
+                    public Date mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        
+                        return rs.getDate("date_expire");
+                        
+                    }
+                }
+                );
+        return dateExpire;
     }
 
 }

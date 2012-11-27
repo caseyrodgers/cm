@@ -2122,6 +2122,7 @@ and replace(a.passcode,' ','') = replace(?,' ','')
 
 select u.uid,
        u.user_name,
+       u.admin_id,
        s.type,
        h.partner_key
 from   HA_USER u
@@ -2133,6 +2134,13 @@ where s.password = ?
 and replace(u.user_passcode,' ','') = replace(?,' ','') 
 and u.is_active = 1
 
+
+.key=GET_EXPIRE_DATE
+
+select max(date_expire) as date_expire 
+from SUBSCRIBERS_SERVICES ss
+   JOIN HA_ADMIN h on ( h.subscriber_id = ss.subscriber_id and service_name = 'catchup')
+where   h.aid = ?
 
 
 .key=USER_LOGIN_INDIV

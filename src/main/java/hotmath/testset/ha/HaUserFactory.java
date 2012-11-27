@@ -1,5 +1,7 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMessagePropertyReader;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
@@ -99,11 +101,11 @@ public class HaUserFactory {
 					admin.setAdminId(rs.getInt("aid"));
 					admin.setEmail(rs.getString("student_email"));
 					admin.setPartner(rs.getString("partner_key"));
-					java.sql.Date date = new java.sql.Date(System.currentTimeMillis() + (1000 * 60 * 24 * 7)); // rs.getDate("date_expire");
-					if (date != null)
-						admin.setExpireDate(new Date(date.getTime()));
+
+					admin.setExpireDate(AdminInfoCache.getExpireDate(admin.getAdminId()));
+					
                     __logger.info(String.format(
-                            "+++ date_expire: %s, isExpired: ", date,admin.isExpired()));
+                            "+++ date_expire: %s, isExpired: ", admin.getExpireDate(),admin.isExpired()));
 					
 					admin.setAccountType(rs.getString("account_type"));
 
@@ -139,9 +141,7 @@ public class HaUserFactory {
 					student.setLoginName(user);
 					student.setAccountType(rs.getString("type"));
 					student.setPartner(rs.getString("partner_key"));
-					java.sql.Date date = new java.sql.Date(System.currentTimeMillis() + (1000 * 60 * 24 * 7)); // new GregorianCalendar().get; // rs.getDate("date_expire");
-					if (date != null)
-						student.setExpireDate(new Date(date.getTime()));
+					student.setExpireDate(AdminInfoCache.getExpireDate(rs.getInt("admin_id")));
 
 					__logger.info("Logging in user (school student "
 							+ rs.getString("type") + "): " + user);

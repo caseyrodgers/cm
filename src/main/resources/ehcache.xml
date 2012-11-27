@@ -179,4 +179,10 @@
        overflowToDisk="false">
 </cache>
 
+<cache name="ADMIN_INFO"
+       maxElementsInMemory="50"
+       overflowToDisk="false">
+</cache>
+
+
 </ehcache>

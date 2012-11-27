@@ -150,7 +150,6 @@ public class LoginService extends HttpServlet {
 			 * To allow use of already created connection.
 			 *  
 			 */
-			
 			HaUserLoginInfo userLoginInfo = ActionDispatcher.getInstance().execute(loginAction, conn);
 
 			HaBasicUser cmUser = userLoginInfo.getHaUser();
