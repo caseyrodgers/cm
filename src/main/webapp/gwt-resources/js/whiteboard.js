@@ -1736,6 +1736,7 @@ var Whiteboard = (function () {
             addImage: addGraph
         });
         sendData();
+		currentTool = 'pencil';
     }
 
     function mouseOverGraph() {
@@ -1773,12 +1774,12 @@ var Whiteboard = (function () {
 		//drawImage workaround for IE to fix high memory usage
             var cn = $($(cnvs).children()[0]);
             var cv = $($(canvas).children()[0]);
-            var el = '' + $($(canvas).html()).html() + ''
+            var el = '<div style="position:absolute;">' + $($(canvas).html()).html() + '</div><div style="position: absolute; filter: alpha(opacity=0); BACKGROUND-COLOR: red; overflow: hidden;"></div>'
             cn.append(el);
         } else {
             cntxt.drawImage(canvas, 0, 0);
         }
-       // cntxt.drawImage(canvas, 0, 0);
+        //cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         /*
          * context.save() context.fillStyle='rgba(255,255,255,255)'
