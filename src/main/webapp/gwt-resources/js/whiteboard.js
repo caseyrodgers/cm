@@ -1778,7 +1778,7 @@ var Whiteboard = (function () {
         } else {
             cntxt.drawImage(canvas, 0, 0);
         }
-        cntxt.drawImage(canvas, 0, 0);
+       // cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
         /*
          * context.save() context.fillStyle='rgba(255,255,255,255)'
