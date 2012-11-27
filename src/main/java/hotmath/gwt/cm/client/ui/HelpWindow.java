@@ -14,9 +14,9 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
@@ -30,44 +30,48 @@ import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
-public class HelpWindow extends CmWindow {
+public class HelpWindow extends GWindow {
 
     ComboBox<BackgroundModel> bgCombo;
 
     public HelpWindow() {
-        setAutoHeight(true);
-        setWidth(490);
+
+        super(false);
+        setPixelSize(490, 500);
+        
+        FlowLayoutContainer flc = new FlowLayoutContainer();
+
         setModal(true);
         setResizable(false);
-        addStyleName("help-window");
-        setHeading("Catchup Math Help Window, version: " +
-        		   CatchupMathVersionInfo.getBuildVersion());
+        //  addStyleName("help-window");
+        setHeadingText("Catchup Math Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
 
         if (CmMainPanel.__lastInstance != null) {
             CmMainPanel.__lastInstance.removeResource();
@@ -75,71 +79,214 @@ public class HelpWindow extends CmWindow {
             CmMainPanel.__lastInstance.expandResourceButtons();
         }
 
-        //EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
+        // EventBus.getInstance().fireEvent(new
+        // CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
-        Button closeBtn = new Button("Close");
-        closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        TextButton closeBtn = new TextButton("Close");
+        closeBtn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 HelpWindow.this.close();
             }
         });
         addButton(closeBtn);
-        
-        addWindowListener(new WindowListener() {
-        	public void windowHide(com.extjs.gxt.ui.client.event.WindowEvent we) {
-            	//EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
-        	}
-        });
-        
 
-        Html messageArea = new Html();
+        HTML messageArea = new HTML();
         try {
             String html = ContextController.getInstance().getTheContext().getStatusMessage();
-            messageArea = new Html(html);
-            
+            messageArea = new HTML(html);
+
         } catch (Exception e) {
             CmLogger.error("Error getting context help", e);
-            messageArea.setHtml("Catchup Math makes learning fun!");
+            messageArea.setHTML("Catchup Math makes learning fun!");
         }
-        
-        
+
         messageArea.addStyleName("help-window-message-area");
 
-        VerticalPanel vp = new VerticalPanel();
-        
+
         FieldSet fs = new FieldSet();
-        fs.setHeading("Using Catchup Math");
+        fs.setHeadingText("Using Catchup Math");
         fs.add(messageArea);
-        Button howTo = new Button("Video: How to use Catchup Math");
-        howTo.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        TextButton howTo = new TextButton("Video: How to use Catchup Math");
+        howTo.addSelectHandler(new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 new StudentHowToFlashWindow();
             }
         });
         fs.add(howTo);
+
+        flc.add(fs);
         
-        vp.add(fs);
-        
-        
-        if(CmShared.getQueryParameter("debug") != null) {
+        if (CmShared.getQueryParameter("debug") != null) {
             FieldSet fsDebug = new FieldSet();
-            fsDebug.setHeading("Debug Info");
-            fsDebug.add(new Html(UserInfo.getInstance().getUserStatus()));
-            vp.add(fsDebug);
+            fsDebug.setHeadingText("Debug Info");
+            fsDebug.add(new HTML(UserInfo.getInstance().getUserStatus()));
+            flc.add(fsDebug);
         }
 
+        bgCombo = createBackgroundCombo();
+
+        fs = new FieldSet();
+        fs.setHeadingText("Wallpaper");
+        Label lab = new Label("Set which image to use for your Catchup Math wallpaper.");
+        lab.addStyleName("bg-image-label");
+        fs.add(lab);
+        fs.add(bgCombo);
+
+        flc.add(fs);
+
+
+
+        if (UserInfo.getInstance().isSingleUser() || CmShared.getQueryParameter("debug") != null) {
+            fs = new FieldSet();
+            // fs.setLayout(new FlowLayout());
+            ToolBar  hlc = new ToolBar();
+            fs.setHeadingText("Configuration");
+            fs.addStyleName("help-window-additional-options");
+            TextButton btn = new MyOptionButton("Setup Catchup Math");
+            btn.setToolTip("Modify your Catchup Math settings.");
+            btn.addSelectHandler(new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    showStudentConfiguration();
+                }
+            });
+            btn.addStyleName("button");
+            hlc.add(btn);
+
+            btn = new MyOptionButton("Restart");
+            btn.setToolTip("Restart the current program.");
+            btn.addStyleName("button");
+            btn.addSelectHandler(new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    final ConfirmMessageBox mb = new ConfirmMessageBox("Restart Program",
+                            "Are you sure you would like to restart your current program?");
+                    mb.addHideHandler(new HideHandler() {
+                        public void onHide(HideEvent event) {
+                            if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
+                                CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
+                            }
+                        }
+                    });
+                }
+            });
+            hlc.add(btn);
+            fs.add(hlc);
+
+            flc.add(fs);
+        }
+
+
+        fs = new FieldSet();
+        ToolBar tb = new ToolBar();
+
+        fs.addStyleName("help-window-additional-options");
+        fs.setHeadingText("Additional Options");
+
+        TextButton btn = new MyOptionButton("Support");
+        btn.addStyleName("button");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
+            }
+        });
+        tb.add(btn);
+
+        btn = new MyOptionButton("Student History");
+        btn.setToolTip("View your history of quizzes, reviews and show work efforts.");
+        btn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showStudentHistory();
+            }
+        });
+
+        TextButton btnFeedback = new MyOptionButton("Feedback");
+        btnFeedback.addStyleName("button");
+        btnFeedback.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showFeedbackPanel_Gwt();
+            }
+        });
+        tb.add(btnFeedback);
+
+        TextButton btnComputerCheck = new MyOptionButton("Computer Check");
+        btnComputerCheck.addStyleName("button");
+        btnComputerCheck.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new ComputerCheckWindow();
+            }
+        });
+        tb.add(btnComputerCheck);
+
+        /** Only the owner of the account has access to history */
+        if (!UserInfo.getInstance().isActiveUser())
+            btn.setEnabled(false);
+
+        /** Do not allow Student History for demo user */
+        if (UserInfo.getInstance().isDemoUser())
+            btn.setEnabled(false);
+
+        btn.addStyleName("button");
+        tb.add(btn);
+        fs.add(tb);
+
+        flc.add(fs);
         
+        if (CmShared.getQueryParameter("debug") != null) {
+            HorizontalLayoutContainer hContainer = new HorizontalLayoutContainer();
+            hContainer.add(new TextButton("Show CmLogger", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+                        @Override
+                        public void onSuccess() {
+                            CmLogger.getInstance().enable(true);
+                        }
+                    });
+                }
+            }));
+            hContainer.add(new TextButton("Connection Check", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    GWT.runAsync(new CmRunAsyncCallback() {
+                        @Override
+                        public void onSuccess() {
+                            new NetTestWindow(TestApplication.CM_STUDENT, UserInfo.getInstance().getUid()).runTests();
+                        }
+                    });
+                }
+            }));
+            flc.add(hContainer);
+        }
         
-        
-        bgCombo = new ComboBox<BackgroundModel>();
-        bgCombo.setStore(getBackgroundListStores());
-        bgCombo.setEditable(false);
-        bgCombo.addStyleName("help-window-bg-combo");
-        bgCombo.setEmptyText("-- Select Wallpaper --");
-        bgCombo.setTriggerAction(TriggerAction.ALL);
-        bgCombo.addSelectionChangedListener(new SelectionChangedListener<BackgroundModel>() {
-            public void selectionChanged(final SelectionChangedEvent<BackgroundModel> se) {
+        setWidget(flc);
+        setVisible(true);
+    }
+
+    public interface BackgroundProperties extends PropertyAccess<String> {
+        ModelKeyProvider<BackgroundModel> type();
+        LabelProvider<BackgroundModel> style();
+    }
+
+    private ComboBox<BackgroundModel> createBackgroundCombo() {
+
+        BackgroundProperties props = GWT.create(BackgroundProperties.class);
+        ListStore<BackgroundModel> groupStore = new ListStore<BackgroundModel>(props.type());
+
+        ComboBox<BackgroundModel> combo = new ComboBox<BackgroundModel>(groupStore, props.style());
+        combo.setStore(getBackgroundListStores(groupStore));
+        combo.setWidth(300);
+        combo.addStyleName("help-window-bg-combo");
+        combo.setEmptyText("-- Select Wallpaper --");
+        combo.setTriggerAction(TriggerAction.ALL);
+        combo.addSelectionHandler(new SelectionHandler<BackgroundModel>() {
+            public void onSelection(final com.google.gwt.event.logical.shared.SelectionEvent<BackgroundModel> event) {
 
                 /**
                  * @TODO: use better check
@@ -152,202 +299,69 @@ public class HelpWindow extends CmWindow {
                     return;
                 }
 
-                
                 new RetryAction<RpcData>() {
                     @Override
                     public void attempt() {
                         CmBusyManager.setBusy(true);
                         CmServiceAsync s = CmShared.getCmService();
-                        SetBackgroundStyleAction action = new SetBackgroundStyleAction(UserInfo.getInstance().getUid(), se.getSelectedItem().getBackgroundStyle());
+                        SetBackgroundStyleAction action = new SetBackgroundStyleAction(UserInfo.getInstance().getUid(),
+                                event.getSelectedItem().getStyle());
                         setAction(action);
-                        s.execute(action,this);
+                        s.execute(action, this);
                     }
+
                     public void oncapture(RpcData result) {
                         CmBusyManager.setBusy(false);
                         try {
-                            String newStyle = se.getSelectedItem().getBackgroundStyle();
+                            String newStyle = event.getSelectedItem().getStyle();
                             setBackgroundStyle(newStyle);
                         } finally {
                             CatchupMathTools.setBusy(false);
                         }
                     }
                 }.register();
-            }
-        });
-
-        fs = new FieldSet();
-        fs.setHeading("Wallpaper");
-        Label lab = new Label("Set which image to use for your Catchup Math wallpaper.");
-        lab.addStyleName("bg-image-label");
-        fs.add(lab);
-        fs.add(bgCombo);
-
-        vp.add(fs);
-
-        if (UserInfo.getInstance().isSingleUser() || CmShared.getQueryParameter("debug") != null) {
-            fs = new FieldSet();
-            fs.setLayout(new FlowLayout());
-            fs.setHeading("Configuration");
-            fs.addStyleName("help-window-additional-options");
-            Button btn = new MyOptionButton("Setup Catchup Math");
-            btn.setToolTip("Modify your Catchup Math settings.");
-            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    showStudentConfiguration();
-                }
-            });
-            btn.addStyleName("button");
-            fs.add(btn);
-
-            btn = new MyOptionButton("Restart");
-            btn.setToolTip("Restart the current program.");
-            btn.addStyleName("button");
-            btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    MessageBox.confirm("Restart Program",
-                            "Are you sure you would like to restart your current program?",
-                            new Listener<MessageBoxEvent>() {
-                                public void handleEvent(MessageBoxEvent be) {
-                                    if (be.getButtonClicked().getText().equals("Yes")) {
-                                        CmShared.resetProgram_Gwt(UserInfo.getInstance().getUid());
-                                    }
-                                }
-                            });
-                }
-            });
-            fs.add(btn);
-
-            vp.add(fs);
-        }
-
-        fs = new FieldSet();
-        fs.setLayout(new FlowLayout());
-        fs.addStyleName("help-window-additional-options");
-        fs.setHeading("Additional Options");
-
-        SelectionListener<ButtonEvent> selList = new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CatchupMathTools.showAlert("Not available");
-            }
-        };
-
-        Button btn = new MyOptionButton("Support");
-        btn.addStyleName("button");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
-            }
-        });
-        fs.add(btn);
-        btn = new MyOptionButton("Student History");
-        btn.setToolTip("View your history of quizzes, reviews and show work efforts.");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                showStudentHistory();
-            }
+            };
         });
         
-        Button btnFeedback = new MyOptionButton("Feedback");
-        btnFeedback.addStyleName("button");
-        btnFeedback.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                showFeedbackPanel_Gwt();
-            }
-        });
-        fs.add(btnFeedback);
 
-
-        Button btnComputerCheck = new MyOptionButton("Computer Check");
-        btnComputerCheck.addStyleName("button");
-        btnComputerCheck.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                new ComputerCheckWindow();
-            }
-        });
-        fs.add(btnComputerCheck);
-        /** Only the owner of the account has access to history */
-        if (!UserInfo.getInstance().isActiveUser())
-            btn.setEnabled(false);
-
-        /** Do not allow Student History for demo user */
-        if (UserInfo.getInstance().isDemoUser())
-            btn.setEnabled(false);
-
-        btn.addStyleName("button");
-        fs.add(btn);
-
-        vp.add(fs);
-        add(vp);
-        
-        
-        if(CmShared.getQueryParameter("debug") != null) {
-            LayoutContainer lc = new HorizontalPanel();
-            lc.add(new Button("Show CmLogger",new SelectionListener<ButtonEvent>() {
-                @Override
-                public void componentSelected(ButtonEvent ce) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            CmLogger.getInstance().enable(true);                        
-                        }
-                    });
-                }
-            }));
-            lc.add(new Button("Connection Check", new SelectionListener<ButtonEvent>() {
-                public void componentSelected(ButtonEvent ce) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            new NetTestWindow(TestApplication.CM_STUDENT,UserInfo.getInstance().getUid()).runTests();
-                        }
-                    });
-                }
-            }));
-            add(lc);
-        }
-        setVisible(true);
-        setZIndex(5);
+        return combo;
     }
-    
 
     /**
-     * Remove any previous wallpaper styles, and make
-     * sure this is the only one active.
+     * Remove any previous wallpaper styles, and make sure this is the only one
+     * active.
      * 
-     * Must check state of systemt to change the appropriate
-     * panel. 
-     *
+     * Must check state of systemt to change the appropriate panel.
+     * 
      * @TODO: create EventType and listen for change to remove static calls.
      * 
-     * NOTE: all wallpaper styles start with 'resource-container-'.
-     * The welcome panel starts with 'cm-welcome-panel'
+     *        NOTE: all wallpaper styles start with 'resource-container-'. The
+     *        welcome panel starts with 'cm-welcome-panel'
      * 
      */
     private void setBackgroundStyle(String newStyle) {
-        
+
         Widget panelToChange = null;
-        
-        if(CmMainPanel.__lastInstance != null) {
+
+        if (CmMainPanel.__lastInstance != null) {
             panelToChange = CmMainPanel.__lastInstance._mainContentWrapper.getResourceWrapper();
-        }
-        else {
+        } else {
             panelToChange = WelcomePanel.__instance;
         }
-        
-        if(panelToChange != null) {
+
+        if (panelToChange != null) {
             String styleName = panelToChange.getStyleName();
             if (styleName != null) {
                 String names[] = styleName.split(" ");
                 for (int i = 0; i < names.length; i++) {
-                    if (names[i].startsWith("resource-container-") ||
-                            names[i].startsWith("cm-welcome-panel")) {
-                            panelToChange.removeStyleName(names[i]);
-                        }
+                    if (names[i].startsWith("resource-container-") || names[i].startsWith("cm-welcome-panel")) {
+                        panelToChange.removeStyleName(names[i]);
+                    }
                 }
             }
             panelToChange.addStyleName(newStyle);
         }
-        
+
         UserInfo.getInstance().setBackgroundStyle(newStyle);
     }
 
@@ -359,26 +373,26 @@ public class HelpWindow extends CmWindow {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
-            new RetryAction<StudentModelI>() {
-    
-                @Override
-                public void attempt() {
-                    CmBusyManager.setBusy(true);
-                    GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
-                    setAction(action);
-                    CmShared.getCmService().execute(action,this);
-                }
-                public void oncapture(StudentModelI student) {
-                    try {
-                        CmAdminModel adminModel = new CmAdminModel();
-                        adminModel.setId(student.getAdminUid());
-                        new RegisterStudent(student, adminModel).showWindow();
+                new RetryAction<StudentModelI>() {
+
+                    @Override
+                    public void attempt() {
+                        CmBusyManager.setBusy(true);
+                        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+                        setAction(action);
+                        CmShared.getCmService().execute(action, this);
                     }
-                    finally {
-                        CmBusyManager.setBusy(false);
+
+                    public void oncapture(StudentModelI student) {
+                        try {
+                            CmAdminModel adminModel = new CmAdminModel();
+                            adminModel.setId(student.getAdminUid());
+                            new RegisterStudent(student, adminModel).showWindow();
+                        } finally {
+                            CmBusyManager.setBusy(false);
+                        }
                     }
-                }
-            }.register();
+                }.register();
             }
         });
     }
@@ -392,9 +406,9 @@ public class HelpWindow extends CmWindow {
      * information is current and not what it was on login.
      */
     private void showStudentHistory() {
-        
+
         GWT.runAsync(new CmRunAsyncCallback() {
-            
+
             @Override
             public void onSuccess() {
                 new RetryAction<StudentModelI>() {
@@ -405,123 +419,133 @@ public class HelpWindow extends CmWindow {
                         setAction(action);
                         CmShared.getCmService().execute(action, this);
                     }
+
                     public void oncapture(StudentModelI student) {
                         CmBusyManager.setBusy(false);
                         new StudentDetailsWindow(new StudentModelExt(student));
-                        
-                        HelpWindow.this.hide();  // hide to deal with z-order issue
+
+                        HelpWindow.this.hide(); // hide to deal with z-order
+                                                // issue
                     }
                 }.register();
             }
         });
     }
 
-
-    /** Return two dim array showing registered
-     *  and available background wallpapers.
+    /**
+     * Return two dim array showing registered and available background
+     * wallpapers.
+     * 
      * @return
      */
     public static String[][] getBackgrounds() {
 
-   	 String bgs[][] = {
-    		{"Catchup Math","resource-container"},
-    		{"Clouds","resource-container-clouds"},
-    		{"Forest","resource-container-forest"},
-    		{"Meadow","resource-container-sunrise"},
-    		{"Mountain Bike","resource-container-bike1"},
-    		{"Snowman","resource-container-snowman"},
-    		{"Sunfield","resource-container-sunfield"},
-    		{"Tulips","resource-container-tulips"},
-    		{"Neutral","resource-container-neutral"},
-    		{"Redish","resource-container-redish"},
-    		{"No background image","resource-container-none"}
-    };
-    return bgs;
-   }
+        String bgs[][] = { { "Catchup Math", "resource-container" }, { "Clouds", "resource-container-clouds" },
+                { "Forest", "resource-container-forest" }, { "Meadow", "resource-container-sunrise" },
+                { "Mountain Bike", "resource-container-bike1" }, { "Snowman", "resource-container-snowman" },
+                { "Sunfield", "resource-container-sunfield" }, { "Tulips", "resource-container-tulips" },
+                { "Neutral", "resource-container-neutral" }, { "Redish", "resource-container-redish" },
+                { "No background image", "resource-container-none" } };
+        return bgs;
+    }
 
-    
-    public  ListStore<BackgroundModel> getBackgroundListStores() {
-        ListStore<BackgroundModel> backgrounds = new ListStore<BackgroundModel>();
+    public ListStore<BackgroundModel> getBackgroundListStores(ListStore<BackgroundModel> store) {
         String bgMap[][] = getBackgrounds();
-        for(String s[]: bgMap) {
-        	backgrounds.add(new BackgroundModel(s[0],s[1]));
+        for (String s[] : bgMap) {
+            store.add(new BackgroundModel(s[0], s[1]));
         }
-        return backgrounds;
+        return store;
     }
 
     static public void showFeedbackPanel_Gwt() {
-        
+
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        
-        MessageBox.prompt("Feedback","Enter Catchup Math feedback.",true,new Listener<MessageBoxEvent> () {
-            public void handleEvent(MessageBoxEvent be) {
-                final String value = be.getValue();
-                if(value == null || value.length() == 0)
-                    return;
-                
-                new RetryAction<RpcData>() {
-                    @Override
-                    public void attempt() {
-                        CmBusyManager.setBusy(true);
-                        CmServiceAsync s = CmShared.getCmService();
-                        SaveFeedbackAction action = new SaveFeedbackAction(value, "", getFeedbackStateInfo());
-                        setAction(action);
-                        s.execute(action,this);
-                    }
-                    public void oncapture(RpcData result) {
-                    	CatchupMathTools.showAlert("Feedback saved");
-                        CmBusyManager.setBusy(false);
-                    }
-                }.register();
+
+        final PromptMessageBox mb = new PromptMessageBox("Feedback", "Enter Catchup Math feedback.");
+        mb.addHideHandler(new HideHandler() {
+            public void onHide(HideEvent event) {
+                if (mb.getHideButton() == mb.getButtonById(PredefinedButton.OK.name())) {
+
+                    final String value = mb.getValue();
+                    if (value == null || value.length() == 0)
+                        return;
+
+                    new RetryAction<RpcData>() {
+                        @Override
+                        public void attempt() {
+                            CmBusyManager.setBusy(true);
+                            CmServiceAsync s = CmShared.getCmService();
+                            SaveFeedbackAction action = new SaveFeedbackAction(value, "", getFeedbackStateInfo());
+                            setAction(action);
+                            s.execute(action, this);
+                        }
+
+                        public void oncapture(RpcData result) {
+                            CatchupMathTools.showAlert("Feedback saved");
+                            CmBusyManager.setBusy(false);
+                        }
+                    }.register();
+                }
             }
         });
+        mb.setWidth(300);
+        mb.show();
     }
-    
 
-    /** Return string that represents current state of CM
+    /**
+     * Return string that represents current state of CM
      * 
      */
     static private String getFeedbackStateInfo() {
-       String msg = "user_agent=" + CmShared.getBrowserInfo() + ", " + ContextController.getInstance().toString();
-       return msg;
-    }
-}
-        
-
-class BackgroundModel extends BaseModelData {
-
-	public BackgroundModel(String text, String style) {
-		set("text", text);
-		set("bg_style", style);
-	}
-	
-    public String getBackgroundName() {
-        return get("text");
-    }
-
-    public String getBackgroundStyle() {
-        return get("bg_style");
+        String msg = "user_agent=" + CmShared.getBrowserInfo() + ", " + ContextController.getInstance().toString();
+        return msg;
     }
 }
 
-class MyOptionButton extends Button {
-    
+class BackgroundModel  {
+
+    private String text;
+    private String style;
+
+    public BackgroundModel(String text, String style) {
+        this.text = text;
+        this.style = style;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+}
+
+class MyOptionButton extends TextButton {
+
     public MyOptionButton(String name) {
         super(name);
-        setWidth(110);        
+        setWidth(110);
     }
 }
 
-
-class ComputerCheckWindow extends CmWindow {
+class ComputerCheckWindow extends GWindow {
     public ComputerCheckWindow() {
-        setHeading("Computer Check");
+        super(true);
+        setHeadingText("Computer Check");
         addCloseButton();
         setModal(true);
-        setSize(640,650);
-        setLayout(new FitLayout());
-        add(new ComputerCheckIFrame());
-        
+        setPixelSize(640, 650);
+
+        setWidget(new ComputerCheckIFrame());
         setVisible(true);
     }
 }
