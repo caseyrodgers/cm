@@ -42,6 +42,9 @@ var Whiteboard = (function () {
     var IS_IPHONE = navigator.userAgent.match(/iPhone/i) != null;
     var IS_OPERA = navigator.userAgent.match(/Opera/i) != null;
     var IS_TOUCH_ONLY = IS_IPAD || IS_ANDROID || IS_KINDLE || IS_IPHONE
+	//boolean whether calculator is enabled for this whiteboard
+    var enable_calc = true;
+	//
     mq_holder.onload = function () {
 
         context.drawImage(this, holder_x, holder_y);
@@ -62,6 +65,73 @@ var Whiteboard = (function () {
             return rv;
         }
         //
+	/**
+          *internal methods to: disable,enable calculator and show or hide them
+          */
+    function showCalc() {
+        console.log("SHOW_CALC")
+        if ($('#calc_hold').html() || !enable_calc) {} else {
+            var calc_x = screen_width - 325
+            var calc_y = $get_Element("#tools").offsetTop + $get_Element("#tools").offsetHeight;
+            var ch = '<div id="calc_hold" style="width:325px;position:absolute;left:' + calc_x + 'px;top:' + calc_y + 'px"></div>'
+            var calc_hold = $('#container').append($(ch))
+            console.log("SHOW_HIDE_CALC-s2")
+            $('#calc_hold').calculator({
+                layout: $.calculator.scientificLayout
+            });
+            $get_Element("#button_calc").style.border = '2px solid #ff0000';
+        }
+    }
+
+    function hideCalc() {
+        if ($('#calc_hold').html()) {
+            console.log("HIDE_CALC")
+            $('#calc_hold').remove();
+            $get_Element("#button_calc").style.border = '1px solid #000000';
+        }
+    }
+
+    function _enableCalc() {
+        $('#button_calc').css('background-image', 'url(' + _imageBaseDir + 'calculator.png)');
+    }
+
+    function _disableCalc() {
+        hideCalc()
+        $('#button_calc').css('background-image', 'url(' + _imageBaseDir + 'calculator_no.png)');
+        console.log($('#button_calc').css('backgroundImage'))
+    }
+            function showHideCalc() {
+                console.log("SHOW_HIDE_CALC")
+                if ($('#calc_hold').html()) {
+                    console.log("SHOW_HIDE_CALC-s0")
+                    hideCalc()
+                } else {
+                    console.log("SHOW_HIDE_CALC-s1")
+                    showCalc()
+                }
+            }
+
+            function mouseOverCalc(event) {
+                if (!$('#calc_hold').html()) {
+                    return false;
+                }
+                getCanvasPos();
+                var mx = event.layerX ? event.layerX : event.pageX - offX;
+                var my = event.layerY ? event.layerY : event.pageY - offY;
+                var box = $('#canvas-container').position();
+                var xp, yp, wi, hi
+                xp = screen_width - 325 - box.left
+                yp = 0 - box.top
+                wi = 325
+                hi = $('#calc_hold').height()
+                console.log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
+                if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
+                    return true;
+                }
+                return false;
+            }	
+	//end of calc internal methods
+    //
         function renderText(xt, xp, yp, col) {
             // var txt = xt ? xt : $get_Element("#editable-math").value;
             var txt = xt ? xt : $('#editable-math').mathquill('latex');
@@ -278,6 +348,14 @@ var Whiteboard = (function () {
 		}
         setupMathQuill(); // defined in mathquill.js
         mainDoc = mainDocIn;
+		//position calc button in toolbar
+		if($get_Element('#button_calc')){
+        $('#button_calc').css({
+            'position': 'absolute',
+            'right': '5px'
+        });
+		}
+		//
         setTimeout(function () {
             canvas = $get_Element("#canvas");
             var siz = viewport()
@@ -885,6 +963,15 @@ var Whiteboard = (function () {
 
             // Events
             // drawRect(0,0,width,height,'#ff0000');
+			if($get_Element("#button_calc")){
+			$get_Element("#button_calc").onclick = function (event) {
+                // $get_Element("#drawsection").style.cursor='crosshair';
+                if (enable_calc) {
+                    showHideCalc();
+                }
+            };
+			}
+            //
             $get_Element("#button_text").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='crosshair';
                 currentTool = 'text';
@@ -1122,7 +1209,11 @@ var Whiteboard = (function () {
                 var click_pos = dx + currPos
                 console.log("MOUSE_DOWN " + dx + ":" + width + ":::" + click_pos + ":" + screen_width)
 
-                if (click_pos >= 0 && click_pos < screen_width) {
+                if (mouseOverCalc(event)) {
+                    penDown = false;
+                    return
+                } else if (click_pos >= 0 && click_pos < screen_width) {
+				hideCalc()
                     if (isTouchEnabled) {
                         if (tevent.touches.length > 1) {
                             penDown = false;
@@ -2167,6 +2258,23 @@ if(context.lineWidth!=2){
 	
     wb.whiteboardIsReady = function() {
         alert('This is the default whiteboardIsReady, it should be overridden in GWT');
+    }
+	/**
+* Exposed methods to: disable,enable calculator and show or hide them
+*/
+    wb.disableCalculator = function () {
+        enable_calc = false;
+        _disableCalc()
+    }
+    wb.enableCalculator = function () {
+        enable_calc = true;
+        _enableCalc()
+    }
+    wb.hideCalculator = function () {
+        hideCalc();
+    }
+    wb.showCalculator = function () {
+        showCalc();
     }
 
     return wb;
