@@ -1800,6 +1800,7 @@ var Whiteboard = (function () {
             context.save();
             context.beginPath();
             context.fillStyle = 'white';
+			context.lineWidth = 0;
             // context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
             graphics.moveTo(x0 - eR, y0 - eR);
             graphics.lineTo(x0 + eR, y0 - eR);
@@ -2083,8 +2084,8 @@ if(context.lineWidth!=2){
                 x1 = graphic_data[i].x;
                 y1 = graphic_data[i].y;
                 deb += x1 + ":" + y1 + "||"
-                erase(x1, y1)
-
+                erase(x1, y1);
+if(isIE){updateCanvas();}
 
             }
         }
