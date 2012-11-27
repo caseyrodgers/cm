@@ -17,8 +17,8 @@ public class AdminInfoCache {
         AdminCachedInfo admin = (AdminCachedInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.ADMIN_INFO, adminId);
         if(admin == null) {
             Date expireDate = CmAdminDao.getInstance().getAdminExpireDate(adminId);
-            
-            CmCacheManager.getInstance().addToCache(CacheName.ADMIN_INFO, adminId, new AdminCachedInfo(expireDate));
+            admin = new AdminCachedInfo(expireDate);
+            CmCacheManager.getInstance().addToCache(CacheName.ADMIN_INFO, adminId, admin);
         }
         return admin;
     }
