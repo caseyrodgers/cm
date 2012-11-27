@@ -1763,7 +1763,8 @@ var Whiteboard = (function () {
     }
 
     function updateCanvas() {
-        var cntxt = drawingLayer == '1' ? origcontext : topcontext
+        var cntxt = drawingLayer == '1' ? origcontext : topcontext;
+		var cnvs = drawingLayer == '1' ? origcanvas : topcanvas;
         if (currentTool == 'eraser') {
             // cntxt=origcontext;
         }
