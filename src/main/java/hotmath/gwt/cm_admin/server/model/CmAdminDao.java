@@ -597,7 +597,6 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         haAdmin.setAdminId(rs.getInt("aid"));
                         haAdmin.setUserName(rs.getString("user_name"));
                         haAdmin.setPassword(rs.getString("passcode"));
-                        haAdmin.setExpireDate(rs.getDate("expire_date"));
                         haAdmin.setFreeAccount(rs.getInt("is_free") == 0?false:true);
                         return haAdmin;
                 }
