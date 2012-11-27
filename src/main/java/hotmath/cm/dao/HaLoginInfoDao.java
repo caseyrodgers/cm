@@ -12,12 +12,14 @@ import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaUserExtendedDao;
 import hotmath.util.sql.SqlUtilities;
 
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
@@ -138,10 +140,6 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
         }
     }    
     
-
-    static int __login_key_uniquer=0;
-    static String lock="";
-    
     /** 
      *  Create new login record.
      *  
@@ -158,15 +156,10 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
 
         try {
             /** during login storm we can have duplicates on mills alone
-             *  so we use the static uniquer
+             *  so we use the unique id
              * 
-             * TODO: make thread-safe.
              */
-        	String key=null;
-            synchronized(lock) {
-            	__login_key_uniquer++;
-            	key = "cm_" + System.currentTimeMillis() + "_" + __login_key_uniquer;
-            }
+        	String key="cm_" + RandomUtil.genRandom32Hex();
              
             // first see if user is in admin
             String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_LOGIN_INFO");
@@ -209,5 +202,33 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
             SqlUtilities.releaseResources(null, pstat, null);
         }
     }
+    
+    
   
+}
+
+
+class RandomUtil {
+    // Maxim: Copied from UUID implementation :)
+    private static volatile SecureRandom numberGenerator = null;
+    private static final long MSB = 0x8000000000000000L;
+
+    public static String genRandom32Hex() {
+        SecureRandom ng = numberGenerator;
+        if (ng == null) {
+            numberGenerator = ng = new SecureRandom();
+        }
+
+        return Long.toHexString(MSB | ng.nextLong()) + Long.toHexString(MSB | ng.nextLong());
+    }
+
+    public static void main(String[] args) {
+        System.out.println(UUID.randomUUID().toString());
+        System.out.println(RandomUtil.genRandom32Hex());
+
+        System.out.println();
+        System.out.println(Long.toHexString(0x8000000000000000L |21));
+        System.out.println(Long.toBinaryString(0x8000000000000000L |21));
+        System.out.println(Long.toHexString(Long.MAX_VALUE + 1));
+    }
 }
