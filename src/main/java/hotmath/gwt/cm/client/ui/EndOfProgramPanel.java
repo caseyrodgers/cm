@@ -7,20 +7,19 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class EndOfProgramPanel extends LayoutContainer {
+public class EndOfProgramPanel extends CenterLayoutContainer {
     public EndOfProgramPanel() {
         
         ContentPanel lc = new ContentPanel();
-        lc.setHeading("Program Completed");
+        lc.setHeadingText("Program Completed");
         lc.setWidth(400);
         lc.setHeight(200);
         addStyleName(UserInfo.getInstance().getBackgroundStyle());
@@ -28,15 +27,13 @@ public class EndOfProgramPanel extends LayoutContainer {
         if(CmShared.getQueryParameter("debug") != null) {
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_LOGOUT));
         }
-        lc.add(new Html(EndOfProgramWindow.msg));
-        lc.addButton(new Button("OK",new SelectionListener<ButtonEvent>() {
+        lc.add(new HTML(EndOfProgramWindow.msg));
+        lc.addButton(new TextButton("OK",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                Window.Location.assign("/");
+            public void onSelect(SelectEvent event) {
+                Window.Location.assign("/");            
             }
         }));
-        
-        setLayout(new CenterLayout());
-        add(lc);
+        setWidget(lc);
     }
 }

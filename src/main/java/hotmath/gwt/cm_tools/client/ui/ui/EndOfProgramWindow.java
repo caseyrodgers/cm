@@ -1,15 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui.ui;
 
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /** Standard dialog to show when users are set to 
  *  stop after completing active program.
@@ -17,7 +17,7 @@ import com.google.gwt.user.client.Window;
  * @author casey
  *
  */
-public class EndOfProgramWindow extends CmWindow {
+public class EndOfProgramWindow extends GWindow {
 
     public static String msg = 
         "<div style='background: white; padding: 20px;'>" +
@@ -26,44 +26,40 @@ public class EndOfProgramWindow extends CmWindow {
         "</div>";
     
     public EndOfProgramWindow() {
-        addStyleName("end-of-program-window");
-        setHeading("Program Completed!");
+        super(false);
+        
+        setPixelSize(300,175);
+        setResizable(false);
         setModal(true);
         
+        addStyleName("end-of-program-window");
+        setHeadingText("Program Completed!");
 
-        
-        setClosable(false);
-        
         if(CmShared.getQueryParameter("debug") == null) {
             setClosable(false);
         }
-        
-        add(new Html(msg));
-        
-        addButton(new Button("OK", new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("OK", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                Window.Location.assign("/");
+            public void onSelect(SelectEvent event) {
+                Window.Location.assign("/");            
             }
         }));
-        setSize(300,175);
-        setResizable(false);
+        
+        setWidget(new HTML(msg));
         setVisible(true);
     } 
     
     
-    private Button createCheckButton() {
-        
-        Button btn = new Button("Check for Newly Assigned Program");
+    private TextButton createCheckButton() {
+        TextButton btn = new TextButton("Check for Newly Assigned Program");
         btn.setToolTip("Check to see if a new program has been assigned.");
-        btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        btn.addSelectHandler(new SelectHandler() {
+            public void onSelect(SelectEvent event) {
                 InfoPopupBox.display("Check for program assignment", "Checking for new program assignment...");
                 SystemSyncChecker.checkForUpdate();
             }
+            
         });
-        
         return btn;
     }
 }
