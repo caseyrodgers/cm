@@ -12,8 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.ui.EndOfProgramWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -23,33 +22,36 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.grid.GridViewConfig;
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
+import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridViewConfig;
+import com.sencha.gxt.widget.core.client.info.Info;
 
-public class PrescriptionLessonChooserDialog extends CmWindow {
+public class PrescriptionLessonChooserDialog extends GWindow {
 
     private static AboutDialogUiBinder uiBinder = GWT.create(AboutDialogUiBinder.class);
 
@@ -58,68 +60,109 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
     PrescriptionData pData;
     Grid<LessonChoice> _grid;
-    Button _nextSegment;
+    TextButton _nextSegment;
 
-    public PrescriptionLessonChooserDialog() {
-        setSize("450px", "380px");
-        setHeading("Choose Lesson");
+    
+    
+    private PrescriptionLessonChooserDialog() {
+        super(false);
+
+        setPixelSize(450, 380);
+        setHeadingText("Choose Lesson");
         setResizable(false);
         setModal(true);
-        setScrollMode(Scroll.AUTOY);
+
+        CenterLayoutContainer loading = new CenterLayoutContainer();
+        loading.setWidget(new HTML("Loading ..."));
+        setWidget(loading);
         addStyleName(PrescriptionLessonChooserDialog.class.getName());
 
-        _nextSegment = new Button("Next Quiz", new SelectionListener<ButtonEvent>() {
+        _nextSegment = new TextButton("Next Quiz", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
 
-                CmLogger.info("NextQuiz: pData.areAllLessonsCompleted() = " + pData.areAllLessonsCompleted() + ", " +
-                        pData.getCountCompletedTopics() + ", " + pData.getSessionTopics().size());
+                CmLogger.debug("NextQuiz: pData.areAllLessonsCompleted() = " + pData.areAllLessonsCompleted() + ", "
+                        + pData.getCountCompletedTopics() + ", " + pData.getSessionTopics().size());
                 if (CmShared.getQueryParameter("debug") == null && !pData.areAllLessonsCompleted()) {
-                    InfoPopupBox.display("Not Finished", "Please complete all lessons first");
+                    Info.display("Not Finished", "Please complete all lessons first");
                     return;
                 }
-
-
-                MessageBox.confirm("Continue?", "Ready to move to next quiz?", new Listener<MessageBoxEvent>() {
-                    @Override
-                    public void handleEvent(MessageBoxEvent be) {
-                        if(be.getButtonClicked().getText().equals("Yes")) {
+                
+                final ConfirmMessageBox mb = new ConfirmMessageBox("Continue?", "Ready to move to next quiz?");
+                mb.addHideHandler(new HideHandler() {
+                    public void onHide(HideEvent event) {
+                        if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
                             doMoveNextAux();
                         }
                     }
                 });
+                mb.setVisible(true);
             }
         });
         addButton(_nextSegment);
 
-        addButton(new Button("Select Lesson", new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Select Lesson", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 loadSelectedLesson();
             }
         }));
 
         addCloseButton();
-        
-        
-        addWindowListener(new WindowListener() {
+
+        addHideHandler(new HideHandler() {
             @Override
-            public void windowHide(WindowEvent we) {
+            public void onHide(HideEvent event) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
             }
         });
-        
-    }
-    
-    int scrollIntoView = 0;
 
-    public void showDialog(PrescriptionData pData) {
+    }
+
+    public interface LessonProperties extends PropertyAccess<String> {
+        ModelKeyProvider<LessonChoice> id();
+        ValueProvider<LessonChoice, String> topic();
+        ValueProvider<LessonChoice, String> status();
+        ValueProvider<LessonChoice, Boolean> complete();
+    }
+
+    private Grid<LessonChoice> createGrid(LessonProperties props) {
         
+        List<ColumnConfig<LessonChoice, ?>> cols = defineColumns(props);
+        ColumnModel<LessonChoice> cm = new ColumnModel<LessonChoice>(cols);
+        ListStore<LessonChoice> store = new ListStore<LessonChoice>(props.id());
+        Grid<LessonChoice> grid = new Grid<LessonChoice>(store, cm);
+
+        grid.getView().setAutoExpandColumn(cols.get(0));
+        grid.getView().setStripeRows(true);
+        grid.getView().setColumnLines(true);
+        grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        grid.getView().setAutoExpandColumn(cols.get(0));
+
+        grid.setWidth("440px");
+        grid.setHeight("300px");
+
+        grid.getView().setViewConfig(new GVC());
+
+        grid.addHandler(new DoubleClickHandler() {
+            @Override
+            public void onDoubleClick(DoubleClickEvent event) {
+                loadSelectedLesson();
+            }
+        }, DoubleClickEvent.getType());
+
+        return grid;
+    }
+
+    int scrollIntoView = 0;
+    int _id;
+    public void showDialog(PrescriptionData pData) {
+
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 
-
         this.pData = null;
-        
+
         if (this.pData != pData) {
             if (_grid != null) {
                 remove(_grid);
@@ -127,44 +170,45 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
             this.pData = pData;
 
-            final ListStore<LessonChoice> store = new ListStore<LessonChoice>();
-            int recCnt=0;
-            int nextLesson=-1;
-            int currentIndex=-1;
+            LessonProperties props = GWT.create(LessonProperties.class);
+            _grid = createGrid(props);
+            final ListStore<LessonChoice> store = _grid.getStore();
+            store.clear();
+
+            int recCnt = 0;
+            int nextLesson = -1;
+            int currentIndex = -1;
             for (SessionTopic st : pData.getSessionTopics()) {
-                String status = st.getTopicStatus(); // 
+                String status = st.getTopicStatus(); //
 
                 String currentLessonTopic = pData.getCurrSession().getTopic();
-                if(st.getTopic().equals(currentLessonTopic)) {
+                if (st.getTopic().equals(currentLessonTopic)) {
                     status = getLessonStatus(st);
-                    if(!st.isComplete()) {
+                    if (!st.isComplete()) {
                         currentIndex = recCnt;
                     }
                 }
-                LessonChoice lc = new LessonChoice(st.getTopic(), st.isComplete(), status);
+                LessonChoice lc = new LessonChoice(_id++, st.getTopic(), st.isComplete(), status);
                 store.add(lc);
-                
-                if(nextLesson < 0 && !st.isComplete()) {
+
+                if (nextLesson < 0 && !st.isComplete()) {
                     nextLesson = recCnt;
                 }
 
                 recCnt++;
             }
-            
-            
             scrollIntoView = nextLesson;
-            _grid = defineGrid(store, defineColumns());
-            add(_grid);
+            setWidget(_grid);
 
             /**
              * 
              */
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                
+
                 @Override
                 public void execute() {
                     List<LessonChoice> selectedList = new ArrayList<LessonChoice>();
-                    selectedList.add(store.getAt(scrollIntoView));
+                    selectedList.add(store.get(scrollIntoView));
                     _grid.getSelectionModel().setSelection(selectedList);
                     _grid.getView().ensureVisible(scrollIntoView, 0, true);
                 }
@@ -187,29 +231,29 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         setVisible(true);
     }
 
-    
-    /** handles real time analysis is current lesson topic
+    /**
+     * handles real time analysis is current lesson topic
      * 
      * NOTE: side-effect of setting isComplete
      * 
      * */
     private String getLessonStatus(SessionTopic lesson) {
-        
-        for(PrescriptionSessionDataResource pr: pData.getCurrSession().getInmhResources()) {
-            if(pr.getType().equals("practice")) {
-                int totalRp=0;
-                int completeRp=0;
-                for(InmhItemData item: pr.getItems()) {
+
+        for (PrescriptionSessionDataResource pr : pData.getCurrSession().getInmhResources()) {
+            if (pr.getType().equals("practice")) {
+                int totalRp = 0;
+                int completeRp = 0;
+                for (InmhItemData item : pr.getItems()) {
                     totalRp++;
-                    if(item.isViewed()) {
+                    if (item.isViewed()) {
                         completeRp++;
                     }
                 }
 
-                if(totalRp == completeRp) {
+                if (totalRp == completeRp) {
                     lesson.setComplete(true);
                 }
-                
+
                 return completeRp + " of " + totalRp;
             }
         }
@@ -285,44 +329,23 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
     }
 
     private void handleNotPassedQuiz() {
-        String msg = "Are you ready to be quizzed again on this section?";
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
-        MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                if (be.getButtonClicked().getText().equals("Yes")) {
+        
+        final ConfirmMessageBox mb = new ConfirmMessageBox("Ready for next Quiz?","Are you ready to be quizzed again on this section?");
+        mb.addHideHandler(new HideHandler() {
+            public void onHide(HideEvent event) {
+                if (mb.getHideButton() == mb.getButtonById(PredefinedButton.YES.name())) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLEAR, null));
                     hide();
                     CmProgramFlowClientManager.retakeProgramSegment();
                 }
             }
         });
+        mb.setVisible(true);
     }
 
-    
     public void showCentered() {
         center();
-    }
-
-    Grid<LessonChoice> defineGrid(final ListStore<LessonChoice> store, ColumnModel cm) {
-
-        final Grid<LessonChoice> grid = new Grid<LessonChoice>(store, cm);
-        grid.setAutoExpandColumn("topic");
-        grid.setBorders(true);
-        grid.setStripeRows(true);
-        grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        grid.addListener(Events.CellDoubleClick, new Listener<GridEvent<LessonChoice>>() {
-            public void handleEvent(GridEvent<LessonChoice> be) {
-                loadSelectedLesson();
-            }
-        });
-
-        grid.setWidth("440px");
-        grid.setHeight("300px");
-
-        grid.getView().setViewConfig(new GVC());
-
-        return grid;
     }
 
     private void loadSelectedLesson() {
@@ -330,7 +353,7 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
             LessonChoice lesson = _grid.getSelectionModel().getSelectedItem();
             boolean found = false;
             int sessionNumber = 0;
-            for (LessonChoice item : _grid.getStore().getModels()) {
+            for (LessonChoice item : _grid.getStore().getAll()) {
                 if (item == lesson) {
                     found = true;
                     break;
@@ -349,53 +372,31 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
         }
     }
 
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig column = new ColumnConfig();
-        column.setId("topic");
-        column.setHeader("Lesson");
-        column.setWidth(160);
-        column.setSortable(false);
-        configs.add(column);
-
-        column = new ColumnConfig();
-        column.setId("isComplete");
-        column.setHeader("Completed");
-        column.setWidth(80);
-        column.setSortable(false);
-        column.setColumnStyleName("is_complete");
-        column.setRenderer(new GridCellRenderer<LessonChoice>() {
+    private List<ColumnConfig<LessonChoice, ?>> defineColumns(LessonProperties props) {
+        List<ColumnConfig<LessonChoice, ?>> cols = new ArrayList<ColumnConfig<LessonChoice,?>>();
+        cols.add(new ColumnConfig<LessonChoice, String>(props.topic(), 160,  "Lesson"));
+        cols.add(new ColumnConfig<LessonChoice, String>(props.status(), 50,  "Status"));
+        
+        ColumnConfig<LessonChoice, Boolean> compCol = new ColumnConfig<LessonChoice, Boolean>(props.complete(), 80,  "Completed");
+        compCol.setColumnTextClassName("is_complete");
+        compCol.setCell(new AbstractCell<Boolean>() {
             @Override
-            public Object render(LessonChoice model, String property, ColumnData config, int rowIndex, int colIndex,
-                    ListStore<LessonChoice> store, Grid<LessonChoice> grid) {
-
-                if (model.isComplete()) {
-                    return "<img src='/gwt-resources/images/check_black.png'/>";
+            public void render(com.google.gwt.cell.client.Cell.Context context, Boolean value, SafeHtmlBuilder sb) {
+                if (value) {
+                    sb.appendHtmlConstant("<img src='/gwt-resources/images/check_black.png'/>");
                 } else {
-                    return "";
+                    sb.appendHtmlConstant("");
                 }
             }
         });
-        configs.add(column);
-
-        column = new ColumnConfig();
-        column.setId("status");
-        column.setHeader("Status");
-        column.setWidth(120);
-        column.setSortable(false);
-        configs.add(column);
-
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        cols.add(compCol);
+        
+        return cols;
     }
 
     static PrescriptionLessonChooserDialog __instance;
 
     static public PrescriptionLessonChooserDialog getSharedInstance() {
-        
-        __instance = null; // force new for debuggin.
-        
         if (__instance == null) {
             __instance = new PrescriptionLessonChooserDialog();
         }
@@ -404,11 +405,16 @@ public class PrescriptionLessonChooserDialog extends CmWindow {
 
 }
 
-class GVC extends GridViewConfig {
+class GVC implements GridViewConfig<LessonChoice> {
     @Override
-    public String getRowStyle(ModelData model, int rowIndex, ListStore<ModelData> ds) {
+    public String getColStyle(LessonChoice model, ValueProvider<? super LessonChoice, ?> valueProvider, int rowIndex,
+            int colIndex) {
+        return null;
+    }
+    @Override
+    public String getRowStyle(LessonChoice model, int rowIndex) {
         if (model != null) {
-            return model.get("style");
+            return model.getStyle();
         }
         return "";
     }

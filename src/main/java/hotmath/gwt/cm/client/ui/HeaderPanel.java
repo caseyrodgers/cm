@@ -72,7 +72,9 @@ public class HeaderPanel extends LayoutContainer {
         });
 		
 		
-		add(_assignmentsAnchor);
+		if(CmShared.getQueryParameter("debug") != null) {
+		    add(_assignmentsAnchor);
+		}
 		
 		_helloInfo.setStyleName("hello-info");
 		add(_helloInfo);
