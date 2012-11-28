@@ -532,6 +532,7 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 _mainContainer.clear();
                 _mainContainer.add(new AutoStudentRegistrationPanel().getResourceWrapper());
+                _mainContainer.forceLayout();
             }
         });
     }
@@ -543,6 +544,7 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 _mainContainer.clear();
                 _mainContainer.add(new ParallelProgramPasswordPanel().getResourceWrapper());
+                _mainContainer.forceLayout();
             }
         });
     }
@@ -553,6 +555,7 @@ public class CatchupMath implements EntryPoint {
             public void onSuccess() {
                 _mainContainer.clear();
                 _mainContainer.add(new EndOfProgramPanel());
+                _mainContainer.forceLayout();
             }
         });
     }
