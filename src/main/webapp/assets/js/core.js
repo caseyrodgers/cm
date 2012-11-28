@@ -282,11 +282,10 @@ function formatQuote(quote) {
 
 var _overlay = null;
 
-function showDialog(msg, title) {
-        showDialog(msg, title, 2);
-}
-
 function showDialog(msg, title, indexVal) {
+	if(!indexVal) {
+		indexVal = 999;
+	}
     if (_overlay) {
         _overlay.hide();
     }
