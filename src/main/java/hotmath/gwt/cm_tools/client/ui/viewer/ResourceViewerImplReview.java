@@ -32,7 +32,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     public ResourceViewerImplReview() {
         addStyleName(STYLE_NAME);
         
-        setScrollMode(ScrollMode.AUTOY);
+        setScrollMode(ScrollMode.AUTO);
     }
 
     @Override
@@ -118,10 +118,5 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
 
     public Integer getOptimalWidth() {
         return 550;
-    }
-
-    @Override
-    public ResourceViewerState getInitialMode() {
-        return ResourceViewerState.OPTIMIZED;
     }
 }
