@@ -181,7 +181,8 @@
 
 <cache name="ADMIN_INFO"
        maxElementsInMemory="50"
-       overflowToDisk="false">
+       overflowToDisk="false"
+       timeToLiveSeconds="7200">
 </cache>
 
 

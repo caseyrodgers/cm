@@ -205,11 +205,11 @@ h1, h2, h3, h4 {
 
 .header-panel-logout-btn {
         background: url(../images/logout.png) no-repeat center left !important;
-        height: 34px;
+        height: 34px !important;
         position: absolute;
         right: 100px;
         top: 2px;
-        width: 92px;
+        width: 92px !important;
 }
 .header-panel-logout-btn-over {
         background: url(../images/logout-over.png) no-repeat center left !important;
@@ -229,11 +229,11 @@ h1, h2, h3, h4 {
 
 .header-panel-help-btn {
         background: url(../images/help.png) no-repeat center left !important;
-        height: 34px;
+        height: 34px !important;
         position: absolute;
         right: 20px;
         top: 2px;
-        width: 76px;
+        width: 76px !important;
 }
 .header-panel-help-btn-over {
         background: url(../images/help-over.png) no-repeat center left!important;

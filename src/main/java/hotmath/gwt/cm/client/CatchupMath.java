@@ -166,6 +166,8 @@ public class CatchupMath implements EntryPoint {
             String startType = UserInfoBase.getInstance().getCmStartType();
             if (startType == null)
                 startType = "";
+            
+            //startType = "AUTO_CREATE";
 
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
             

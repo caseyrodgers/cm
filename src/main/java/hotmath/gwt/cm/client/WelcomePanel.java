@@ -4,10 +4,10 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 
-import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
@@ -91,14 +91,14 @@ public class WelcomePanel extends CenterLayoutContainer {
      * @author casey
      * 
      */
-    class SampleSessionInfo extends Html {
+    class SampleSessionInfo extends HTML {
 
         public SampleSessionInfo() {
 
             String html = "<h1>Try a Pre-algebra Session Right Now</h1>"
                     + "<p>Please <b>mark at least one quiz problem wrong</b> so you experience the review and practice.</p>";
 
-            setHtml(html);
+            setHTML(html);
         }
     }
 
@@ -108,7 +108,7 @@ public class WelcomePanel extends CenterLayoutContainer {
      * @author casey
      * 
      */
-    class StandardInfo extends Html {
+    class StandardInfo extends HTML {
         public StandardInfo() {
             String html = "";
             if(UserInfo.getInstance().getRunId() > 0){
@@ -122,7 +122,7 @@ public class WelcomePanel extends CenterLayoutContainer {
                     "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' " +
                     " href='#' onclick='showMotivationalVideo_Gwt();return false;'>Video: How to use Catchup Math</a>";
             
-            setHtml(html);
+            setHTML(html);
         }
     }
 }
