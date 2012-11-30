@@ -61,11 +61,11 @@
             while (rs2.next()) {
             	int lid = rs2.getInt("lid");
                 if (oldLid != lid) {
-                	if (idx++ == lidList.size()) {
+                	if (idx == lidList.size()) {
                 		// reset
                 		idx = 0;
                 	}
-            		newLid = lidList.get(idx);
+            		newLid = lidList.get(idx++);
                 }
                 oldLid = lid;
                 // reassign lid
