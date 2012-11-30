@@ -71,7 +71,7 @@
                 // reassign lid
                 __logger.info("change lid from: " + lid + " to " + newLid);
                 ps3.setInt(1, newLid);
-                ps3.setInt(2, rs.getInt("id"));
+                ps3.setInt(2, rs2.getInt("id"));
                 ps3.executeUpdate();
             }
 
