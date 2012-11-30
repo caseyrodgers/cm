@@ -36,7 +36,7 @@
             String sql2 = "select id, lid, run_id from HA_TEST_RUN_LESSON_PID_FIX where run_id = ? order by lid";
             String sql3 = "update HA_TEST_RUN_LESSON_PID_FIX set lid = ? where id = ?";
 
-            List<Integer> lidList = null;
+            List<Integer> lidList = new ArrayList<Integer>();
             int counter = 0;
             while (rs.next()) {
             	if (counter++ == 10) break;
