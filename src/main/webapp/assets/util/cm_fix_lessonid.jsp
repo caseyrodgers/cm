@@ -15,6 +15,18 @@
        */
        Logger __logger = Logger.getRootLogger();
 
+       String endVal = request.getParameter("endVal");
+       String startVal = request.getParameter("startVal");
+       
+       int start = 0;
+       if (startVal != null) {
+    	   start = Integer.parseInt(endVal); 
+       }
+       int end = 0;
+       if (endVal != null) {
+    	   end = Integer.parseInt(endVal); 
+       }
+
         __logger.info("Updating HA_TEST_RUN_LESSON_PID lid");
         Connection conn=null;
         PreparedStatement ps = null;
@@ -44,9 +56,15 @@
 	            	//if (counter++ == 10) break;
                 	__logger.info("counter: " + counter++);
 	  				__logger.info("lidList: " + lidList.size());
-    				__logger.info("lidList: " + lidList.get(0));
 	     			__logger.info("oldRunId: " + oldRunId);
     
+	     			if (counter < start) {
+	     				counter++;
+	     				continue; // number already processed
+	     			}
+	     			
+	     			if (counter > end) break;
+	     			
 	    			ps2 = conn.prepareStatement(sql2);
 	    			ps3 = conn.prepareStatement(sql3);
 	    			ps2.setInt(1, oldRunId);
@@ -63,11 +81,12 @@
 	    						idx = 0;
 			 		    	}
 						    newLid = lidList.get(idx++);
+						    __logger.info("changing lid from: " + lid + " to "
+								  	+ newLid);
 					    }
 					    oldLid = lid;
+
 					    // reassign lid
-					    __logger.info("change lid from: " + lid + " to "
-						  	+ newLid);
 					    ps3.setInt(1, newLid);
 					    ps3.setInt(2, rs2.getInt("id"));
 					    ps3.executeUpdate();
