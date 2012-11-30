@@ -33,7 +33,7 @@
                 
             int oldRunId = 0;
 
-            String sql2 = "select id, lid, run_id from HA_TEST_RUN_LESSON_FIX where run_id = ? order by lid";
+            String sql2 = "select id, lid, run_id from HA_TEST_RUN_LESSON_PID_FIX where run_id = ? order by lid";
             String sql3 = "update HA_TEST_RUN_LESSON_PID_FIX set lid = ? where id = ?";
 
             List<Integer> lidList = null;
@@ -44,7 +44,7 @@
             		oldRunId = runId;
             		lidList = new ArrayList<Integer>();
             	}
-            	lidList.add(rs.getInt("lid"));
+            	lidList.add(rs.getInt("id"));
             }
             __logger.info("lidList: " + lidList.size());
             __logger.info("lidList: " + lidList.get(0));
