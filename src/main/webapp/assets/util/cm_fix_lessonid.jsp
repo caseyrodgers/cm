@@ -39,10 +39,10 @@
             List<Integer> lidList = new ArrayList<Integer>();
             int counter = 0;
             while (rs.next()) {
-            	if (counter++ == 10) break;
             	__logger.info("counter: " + counter);
             	int runId = rs.getInt("run_id");
 			    if (runId != oldRunId && oldRunId > 0) {
+	            	if (counter++ == 10) break;
 	  				__logger.info("lidList: " + lidList.size());
     				__logger.info("lidList: " + lidList.get(0));
 	     			__logger.info("oldRunId: " + oldRunId);
