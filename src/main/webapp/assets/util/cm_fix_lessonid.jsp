@@ -42,8 +42,8 @@
             	if (counter++ == 10) break;
             	__logger.info("counter: " + counter);
             	int runId = rs.getInt("run_id");
-			    if (runId != oldRunId) {
-    				__logger.info("lidList: " + lidList.size());
+			    if (runId != oldRunId && oldRunId > 0) {
+	  				__logger.info("lidList: " + lidList.size());
     				__logger.info("lidList: " + lidList.get(0));
 	     			__logger.info("oldRunId: " + oldRunId);
     
@@ -72,20 +72,20 @@
 					    ps3.setInt(2, rs2.getInt("id"));
 					    ps3.executeUpdate();
 				    }
-				    oldRunId = runId;
 				    lidList = new ArrayList<Integer>();
-			   }
-			lidList.add(rs.getInt("id"));
-		}
+			    }
+				oldRunId = runId;
+			    lidList.add(rs.getInt("id"));
+		    }
 
-	} catch (Exception e) {
-		__logger.error(e);
-	} finally {
-		SqlUtilities.releaseResources(null, ps3, null);
-		SqlUtilities.releaseResources(rs2, ps2, null);
-		SqlUtilities.releaseResources(rs, ps, conn);
-	}
-	__logger.info("Completed updating HA_TEST_RUN_LESSON_PID_FIX");
+    	} catch (Exception e) {
+	    	__logger.error(e);
+	    } finally {
+		    SqlUtilities.releaseResources(null, ps3, null);
+		    SqlUtilities.releaseResources(rs2, ps2, null);
+		    SqlUtilities.releaseResources(rs, ps, conn);
+	    }
+	    __logger.info("Completed updating HA_TEST_RUN_LESSON_PID_FIX");
 %>
   <body>
     <h1>
