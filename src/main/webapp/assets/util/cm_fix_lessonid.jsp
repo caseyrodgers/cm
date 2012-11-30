@@ -76,7 +76,7 @@
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            __logger.error(e);
         } finally {
             SqlUtilities.releaseResources(null, ps3, null);
             SqlUtilities.releaseResources(rs2, ps2, null);
