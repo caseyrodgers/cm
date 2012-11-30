@@ -37,12 +37,12 @@
             String sql3 = "update HA_TEST_RUN_LESSON_PID_FIX set lid = ? where id = ?";
 
             List<Integer> lidList = new ArrayList<Integer>();
-            int counter = 0;
+            int counter = 1;
             while (rs.next()) {
-            	__logger.info("counter: " + counter);
             	int runId = rs.getInt("run_id");
 			    if (runId != oldRunId && oldRunId > 0) {
-	            	if (counter++ == 10) break;
+	            	//if (counter++ == 10) break;
+                	__logger.info("counter: " + counter++);
 	  				__logger.info("lidList: " + lidList.size());
     				__logger.info("lidList: " + lidList.get(0));
 	     			__logger.info("oldRunId: " + oldRunId);
