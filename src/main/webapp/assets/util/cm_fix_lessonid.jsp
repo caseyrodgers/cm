@@ -20,7 +20,7 @@
        
        int start = 0;
        if (startVal != null) {
-    	   start = Integer.parseInt(endVal); 
+    	   start = Integer.parseInt(startVal); 
        }
        int end = 0;
        if (endVal != null) {
