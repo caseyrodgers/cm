@@ -53,14 +53,14 @@
             while (rs.next()) {
             	int runId = rs.getInt("run_id");
 			    if (runId != oldRunId && oldRunId > 0) {
-	            	//if (counter++ == 10) break;
-                	__logger.info("counter: " + counter++);
+			    	counter++;
+                	__logger.info("counter: " + counter);
 	  				__logger.info("lidList: " + lidList.size());
 	     			__logger.info("oldRunId: " + oldRunId);
     
 	     			if (counter < start) {
-	     				counter++;
-	     				continue; // number already processed
+	     				oldRunId = runId;
+	     				continue;
 	     			}
 	     			
 	     			if (counter > end) break;
