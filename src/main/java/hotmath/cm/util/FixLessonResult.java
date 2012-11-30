@@ -16,7 +16,7 @@ public class FixLessonResult {
     
     
     public FixLessonResult(int start, int limit) throws Exception {
-        String sql1 = "select rid, answer_index from HA_TEST_RUN_RESULTS_TMP where rid >= ?" + " LIMIT " + limit;
+        String sql1 = "select rid, answer_index from HA_TEST_RUN_RESULTS_TMP where rid >= ?" + " order by rid LIMIT " + limit;
         String sql2 = "update HA_TEST_RUN_RESULTS set answer_index = ? where rid = ?";
         
         Connection conn=null;
@@ -31,18 +31,27 @@ public class FixLessonResult {
             
             ResultSet rs = ps.executeQuery();
             int cnt=0;
+            int lastRid = 0;
             while(rs.next()) {
                 int rid = rs.getInt("rid");
                 int answerIndex = rs.getInt("answer_index");
+           
+                lastRid = rid;
 
-                __logger.info("Updating row: " + cnt++ + " rid=" + rid);
+                if((cnt++ % 1000)==0) {
+                    __logger.info("Updating row: " + cnt++ + " rid=" + rid);
+                }
                 
                 psUpdate.setInt(1, answerIndex);
                 psUpdate.setInt(2, rid);
-                psUpdate.execute();
+
+
+                if(psUpdate.executeUpdate() != 1) {
+                    __logger.error("COULD NOT UPDATE RECORD: " + rid);
+		}
             }
             
-            __logger.info("UPDATE COMPLETE");
+            __logger.info("UPDATE COMPLETE, last RID=" + lastRid);
             
         }
         finally {
@@ -60,6 +69,8 @@ public class FixLessonResult {
         catch(Exception e) {
             e.printStackTrace();
         }
+
+	System.exit(0);
     }
 }
 
