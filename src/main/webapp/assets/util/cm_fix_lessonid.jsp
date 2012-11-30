@@ -37,42 +37,45 @@
             String sql3 = "update HA_TEST_RUN_LESSON_PID_FIX set lid = ? where id = ?";
 
             List<Integer> lidList = null;
+            int counter = 0;
             while (rs.next()) {
+            	if (counter++ == 10) break;
             	int runId = rs.getInt("run_id");
             	if (runId != oldRunId) {
-            		if (oldRunId != 0) break;
+            		if (oldRunId != 0) {
+                        __logger.info("lidList: " + lidList.size());
+                        __logger.info("lidList: " + lidList.get(0));
+                        __logger.info("oldRunId: " + oldRunId);
+                            
+                        ps2 = conn.prepareStatement(sql2);
+                        ps3 = conn.prepareStatement(sql3);
+                        ps2.setInt(1, oldRunId);
+                        rs2 = ps2.executeQuery();
+
+                        int oldLid = 0;
+                        int newLid = 0;
+                        int idx = 0;
+                        while (rs2.next()) {
+                        	int lid = rs2.getInt("lid");
+                            if (oldLid != lid) {
+                            	if (idx == lidList.size()) {
+                            		// reset
+                            		idx = 0;
+                            	}
+                        		newLid = lidList.get(idx++);
+                            }
+                            oldLid = lid;
+                            // reassign lid
+                            __logger.info("change lid from: " + lid + " to " + newLid);
+                            ps3.setInt(1, newLid);
+                            ps3.setInt(2, rs2.getInt("id"));
+                            ps3.executeUpdate();
+                        }
+            		}
             		oldRunId = runId;
             		lidList = new ArrayList<Integer>();
             	}
             	lidList.add(rs.getInt("id"));
-            }
-            __logger.info("lidList: " + lidList.size());
-            __logger.info("lidList: " + lidList.get(0));
-            __logger.info("oldRunId: " + oldRunId);
-                
-            ps2 = conn.prepareStatement(sql2);
-            ps3 = conn.prepareStatement(sql3);
-            ps2.setInt(1, oldRunId);
-            rs2 = ps2.executeQuery();
-
-            int oldLid = 0;
-            int newLid = 0;
-            int idx = 0;
-            while (rs2.next()) {
-            	int lid = rs2.getInt("lid");
-                if (oldLid != lid) {
-                	if (idx == lidList.size()) {
-                		// reset
-                		idx = 0;
-                	}
-            		newLid = lidList.get(idx++);
-                }
-                oldLid = lid;
-                // reassign lid
-                __logger.info("change lid from: " + lid + " to " + newLid);
-                ps3.setInt(1, newLid);
-                ps3.setInt(2, rs2.getInt("id"));
-                ps3.executeUpdate();
             }
 
         } catch (Exception e) {
