@@ -11,6 +11,7 @@ import java.util.List;
 
 
 public class FixLessonId {
+
     public void doIt(int start, int limit) {
         Connection conn=null;
         PreparedStatement ps = null;
@@ -34,7 +35,7 @@ public class FixLessonId {
 
             List<Integer> lidList = new ArrayList<Integer>();
             int counter = 1;
-            int lastId;
+            int lastId = 0 ;
             while (rs.next()) {
 
             	int runId = rs.getInt("run_id");
@@ -80,7 +81,8 @@ public class FixLessonId {
                 oldRunId = runId;
                 lidList.add(rs.getInt("id"));
             }
-        } catch (Exception e) {
+            System.out.println("lastId: " + lastId);
+        } catch (Exception e) { 
 	    	e.printStackTrace();
 	    } finally {
 		    SqlUtilities.releaseResources(null, ps3, null);
@@ -88,7 +90,7 @@ public class FixLessonId {
 		    SqlUtilities.releaseResources(rs, ps, conn);
 	    }
 	    System.out.println("Completed updating HA_TEST_RUN_LESSON_PID_FIX");
-	    }
+	}
     
     static public void main(String as[]) {
         try {
