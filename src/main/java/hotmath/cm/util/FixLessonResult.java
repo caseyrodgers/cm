@@ -46,9 +46,9 @@ public class FixLessonResult {
                 psUpdate.setInt(2, runId);
                 psUpdate.setString(3, pid);
 
-                if (psUpdate.executeUpdate() != 1) {
-                    __logger.error("COULD NOT UPDATE RECORD: " + rid);
-                }
+                if(psUpdate.executeUpdate() != 1) {
+                    /// __logger.error("COULD NOT UPDATE RECORD: " + rid);
+		}
             }
 
             __logger.info("UPDATE COMPLETE, last RID=" + lastRid);
