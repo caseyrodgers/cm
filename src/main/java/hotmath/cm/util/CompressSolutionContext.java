@@ -64,8 +64,6 @@ public class CompressSolutionContext {
         				ps2.setBytes(1, outBytes);
            				ps2.setInt(2, id);
 
-        				if (__logger.isDebugEnabled()) __logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
-
         				if (ps2.executeUpdate() != 1) {
                         	__logger.error("COULD NOT UPDATE RECORD: id: " + id);
                         }
