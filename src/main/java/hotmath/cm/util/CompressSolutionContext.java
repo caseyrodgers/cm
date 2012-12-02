@@ -23,6 +23,7 @@ public class CompressSolutionContext {
         PreparedStatement ps = null;
         PreparedStatement ps2 = null;
         ResultSet rs = null;
+        long startTime = System.currentTimeMillis();
 
         try {
             conn = HMConnectionPool.getConnection();
@@ -82,7 +83,7 @@ public class CompressSolutionContext {
 		    SqlUtilities.releaseResources(null, ps2, null);
 		    SqlUtilities.releaseResources(rs, ps, conn);
 	    }
-	    __logger.info("Completed updating HA_SOLUTION_CONTEXQT");
+	    __logger.info("Completed updating HA_SOLUTION_CONTEXT in: " + (System.currentTimeMillis()-startTime) + " msec");
 	}
     
     static public void main(String as[]) {
