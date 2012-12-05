@@ -1,20 +1,17 @@
 package hotmath.cm.lwl;
 
 import hotmath.cm.signup.HotmathSubscriberServiceTutoringSchoolStudent;
+import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.gwt.shared.server.service.command.ClearWhiteboardDataCommand;
 import hotmath.lwl.LWLIntegrationManager;
 import hotmath.lwl.LWLIntegrationManager.LwlAccountInfo;
-import hotmath.lwl.LWLIntegrationManager.LwlSourceApplication;
 import hotmath.lwl.LWLIntegrationManager.LwlAccountInfo.SchoolType;
+import hotmath.lwl.LWLIntegrationManager.LwlSourceApplication;
 import hotmath.subscriber.HotMathSubscriber;
 import hotmath.subscriber.HotMathSubscriberManager;
 import hotmath.subscriber.HotMathSubscriberSignupInfo;
@@ -286,10 +283,19 @@ public class CmTutoringDao {
             pstat.setLong(5, System.currentTimeMillis());
 
             pstat.setInt(6, rid);
+			byte[] inBytes = null;
+			inBytes = commandData.getBytes("UTF-8");
+
+			byte[] outBytes = CompressHelper.compress(inBytes);
+			pstat.setBytes(4, outBytes);
+
+			if (logger.isDebugEnabled()) logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
 
             if (pstat.executeUpdate() != 1)
                 throw new Exception("Could not save whiteboard data (why?)");
         } catch (Exception e) {
+        	logger.error(String.format("*** Error saving whiteboard for userId: %d, rid: %d, pid: %s",
+						uid, rid, pid), e);
             throw new CmRpcException(e);
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);

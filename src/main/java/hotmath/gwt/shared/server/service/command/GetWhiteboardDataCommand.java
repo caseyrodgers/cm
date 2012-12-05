@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -37,7 +38,7 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
 
             ResultSet rs = pstat.executeQuery();
             while (rs.next()) {
-                WhiteboardCommand rd = new WhiteboardCommand(rs.getString("command"), rs.getString("command_data"), false);
+                WhiteboardCommand rd = new WhiteboardCommand(rs.getString("command"), loadCommandData(rs), false);
                 data.add(rd);
             }
 
@@ -47,6 +48,16 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
         } finally {
             SqlUtilities.releaseResources(null, pstat, null);
         }        
+    }
+    
+    private String loadCommandData(ResultSet rs) throws Exception {
+    	byte[] compressed = rs.getBytes("command_data");
+    	if (compressed[0] != "{".getBytes("UTF-8")[0]) {
+    		return CompressHelper.decompress(compressed);
+    	}
+    	else {
+    		return rs.getString("command_data");
+    	}
     }
 
     @Override
