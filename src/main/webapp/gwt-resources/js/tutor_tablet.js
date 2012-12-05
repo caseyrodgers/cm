@@ -64,6 +64,7 @@ function getNextMoveTo() {
 
 
 var TutorManager = {
+	isVisible: -1,
     currentRealStep : -1,
     currentStepUnit : -1,
     stepUnitsMo : [],
@@ -88,8 +89,13 @@ var TutorManager = {
         TutorManager.loadTutorData(solutionData, stepText, solutionVariableContext);
         TutorManager.analyzeLoadedData();
 
-        /* mark next button as active */
-        enabledNext(true);
+        if(!$get('tutor_steps_wrapper')) {
+        	TutorManager.isVisible = false;
+        }
+        else {
+            /* mark next button as active */
+            enabledNext(true);
+        }
 
         /** hookup any question steps */
         // HmEvents.eventTutorInitialized.fire();
@@ -150,6 +156,7 @@ var TutorManager = {
     loadTutorData : function(solutionData, stepText, solutionVariableContext) {
         try {
             TutorManager.tutorData = eval("(" + solutionData + ")");
+            _tutorData = TutorManager.tutorData; // set global
 
             processTutorData(TutorManager.tutorData, stepText, solutionVariableContext);
 
@@ -161,13 +168,19 @@ var TutorManager = {
         // gwt_resetTutor();
 
         var tutor = document.getElementById('tutor_raw_steps_wrapper');
-        tutor.innerHTML = TutorManager.stepText;
+        if(tutor) {
+            tutor.innerHTML = TutorManager.stepText;
+        }
 
         TutorManager.currentRealStep = -1;
         TutorManager.currentStepUnit = -1;
         TutorManager.loadTutorData(TutorManager.solutionData,TutorManager.stepText);
         TutorManager.analyzeLoadedData();
-        setButtonState();
+        
+        if(TutorManager.isVisible) {
+            setButtonState();
+        }
+        
         TutorDynamic.resetTutor();
     },
 
@@ -242,7 +255,20 @@ var TutorManager = {
 
     showStepUnit: function(x) {
           showStepUnit(x);
+    },
+    
+    
+    generateContext: function(pid, solutionData, jsonConfig) {
+    	if(pid != null) {
+	    	TutorManager.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
+    	}
+    	else {
+    		TutorDynamic.refreshProblem();
+    	}
+        var myContext = getTutorVariableContextJson(TutorManager.tutorData._variables);
+        return myContext;
     }
+    
 }
 
 function setButtonState() {

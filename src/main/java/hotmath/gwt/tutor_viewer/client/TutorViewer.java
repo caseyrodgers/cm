@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContextPanel;
 import hotmath.gwt.tutor_viewer.client.ui.TutorViewerPanelSimple;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -28,11 +29,28 @@ public class TutorViewer implements EntryPoint {
     public void onModuleLoad() {
         UserInfo.setInstance(new UserInfo());
         
-        String pid = CmGwtUtils.getQueryParameter("pid");
-        if(pid == null) {
-            Window.alert("pid parameter must be specified on the URL");
+        if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
+            String book = CmGwtUtils.getQueryParameter("book");
+            if(book==null) {
+                Window.alert("'book' parameter must be specified");
+            }
+            else {
+                RootPanel.get().add(new GenerateTutorContextsAll().createContexts(book));
+            }
         }
-        RootPanel.get().add(new TutorViewerPanelSimple(pid));
+        else {
+            String pid = CmGwtUtils.getQueryParameter("pid");
+            if(pid == null) {
+                Window.alert("pid parameter must be specified on the URL");
+            }
+            
+            if(CmGwtUtils.getQueryParameter("generate_context") != null) {
+                RootPanel.get().add(new GenerateTutorContextPanel().createContexts(pid));
+            }
+            else {
+                RootPanel.get().add(new TutorViewerPanelSimple(pid));
+            }
+        }
         
         Window.addResizeHandler(new ResizeHandler() {
             @Override

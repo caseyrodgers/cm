@@ -114,6 +114,7 @@ public class SolutionStepEditor extends ContentPanel {
                 showInfo();
             }
         }));
+        
     }
     
     public SolutionMeta getMeta() {
@@ -358,6 +359,7 @@ public class SolutionStepEditor extends ContentPanel {
     static private native void mathJaxProcess() /*-{
          $wnd.processMathJax();
     }-*/;
+ 
 }
 
 

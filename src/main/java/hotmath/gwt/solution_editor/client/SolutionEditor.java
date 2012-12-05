@@ -148,7 +148,13 @@ public class SolutionEditor implements EntryPoint {
         }),td);
         
         
-       
+        tb.add(new Button("Generate Context", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                generateContexts();
+            }
+        }));
+
         Menu viewMenu = new Menu();
         MenuItem mi = new MenuItem("Tutor",new SelectionListener<MenuEvent>() {
             public void componentSelected(MenuEvent ce) {
@@ -367,6 +373,12 @@ public class SolutionEditor implements EntryPoint {
     native void publishNative(SolutionEditor se) /*-{
        $wnd.tutorWidgetClicked_gwt =   @hotmath.gwt.solution_editor.client.SolutionEditor::tutorWidgetClicked_gwt();
     }-*/;
+    
+   
+    
+    private void generateContexts() {
+        new SolutionContextCreatorDialog(__pidToLoad);
+    }
 }
 
 
