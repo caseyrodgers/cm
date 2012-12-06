@@ -59,6 +59,8 @@ public class GenerateTutorContextPanel extends Composite {
             @Override
             public void onSuccess(RpcData result) {
                 addViewerLinks(pid, contexts.size());
+                
+                addLogMessage("Saved " + contexts.size() + " contexts for " + pid);
             }
             @Override
             public void onFailure(Throwable caught) {

@@ -22,6 +22,8 @@ public class ShowTutorContextPanel extends GenerateTutorContextPanel {
             @Override
             public void onSuccess(CmList<SolutionContext> contexts) {
                 addViewerLinks(pid, contexts.size());
+                
+                addLogMessage("contexts shown: " + contexts.size());
             }
             @Override
             public void onFailure(Throwable caught) {
