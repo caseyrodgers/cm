@@ -46,7 +46,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -148,12 +147,8 @@ public class SolutionEditor implements EntryPoint {
         }),td);
         
         
-        tb.add(new Button("Generate Context", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                generateContexts();
-            }
-        }));
+        
+        tb.add(createGenerateContextButton());
 
         Menu viewMenu = new Menu();
         MenuItem mi = new MenuItem("Tutor",new SelectionListener<MenuEvent>() {
@@ -201,6 +196,16 @@ public class SolutionEditor implements EntryPoint {
         return tb;
     }
     
+
+    private Widget createGenerateContextButton() {
+        Button Button = new Button("Variable Contexts", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                generateContexts();
+            }
+        });
+        return Button;
+    }
 
     private void loadSolutionIntoEditor() {
         SolutionSearcherDialog.showSharedDialog(new Callback() {

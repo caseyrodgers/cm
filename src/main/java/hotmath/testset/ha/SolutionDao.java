@@ -292,4 +292,21 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         });
         return pids;
     }
+
+    /** Return all global contexts defined for this pid
+     * 
+     * @param pid
+     * @return
+     */
+    public List<SolutionContext> getGlobalSolutionContextAll(String pid) {
+        String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? order by problem_number";
+        List<SolutionContext> pids = getJdbcTemplate().query(sql,new Object[]{pid},
+                new RowMapper<SolutionContext>() {
+            @Override
+            public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new SolutionContext(rs.getString("pid"),rs.getInt("problem_number"), rs.getString("variables"));
+            }
+        });
+        return pids;
+    }
 }

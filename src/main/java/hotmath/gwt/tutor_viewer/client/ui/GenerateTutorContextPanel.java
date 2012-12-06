@@ -27,35 +27,28 @@ public class GenerateTutorContextPanel extends Composite {
     final static String DEFAULT_CONFIG = "{\"limit\":10}";
     public String _jsonConfig;
     public GenerateTutorContextPanel() {
-        _jsonConfig = CmGwtUtils.getQueryParameterValue("config");
+        _jsonConfig = CmGwtUtils.getQueryParameter("config");
         if(_jsonConfig == null) {
             _jsonConfig = DEFAULT_CONFIG;
         }
 
         _textArea.setSize("100%", "100px");
+        _textArea.setReadOnly(true);
         _mainPanel.add(_textArea);
         
         initWidget(_mainPanel);
     }
     
     public Widget createContexts(final String pid) {
+
+        addLogMessage("Creating solution contexts: " + pid + ", " + _jsonConfig);
         new GenerateTutorContext(pid,  _jsonConfig, new GenerateTutorContextCallback() {
             @Override
             public void contextsCreated(List<String> contexts) {
                 saveContexts(pid, contexts);
             }
         });
-        
-        _textArea.setText("Creating solution contexts: " + _jsonConfig);
-        
         return this;
-    }
-    
-    
-    protected void addLogMessage(String msg) {
-        _textArea.setText(_textArea.getText() + "\n" + msg);
-
-        _textArea.getElement().setScrollTop(_textArea.getElement().getScrollHeight());
     }
     
 
@@ -95,5 +88,11 @@ public class GenerateTutorContextPanel extends Composite {
         var that = this;
         return $wnd.TutorManager.generateContext(pid, js, jsonConfig);
     }-*/;
-
+    
+    
+    protected void addLogMessage(String msg) {
+        _textArea.setText(_textArea.getText() + "\n" + msg);
+        _textArea.getElement().setScrollTop(_textArea.getElement().getScrollHeight());
+    }
+    
 }

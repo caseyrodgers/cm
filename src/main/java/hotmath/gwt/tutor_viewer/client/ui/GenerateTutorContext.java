@@ -51,7 +51,6 @@ public class GenerateTutorContext {
      * @param count
      */
     private void generateContexts(final String pid, String js, String config) {
-        Log.info("Creating contexts for: " + pid);
         _contexts.clear();
         
         final int count = extractCountFromConfig(config);
@@ -65,18 +64,15 @@ public class GenerateTutorContext {
         callBack.contextsCreated(_contexts);
     }
     
-    private int extractCountFromConfig(String config) {
-        int start = config.indexOf("limit:") + 7;
-        int end=start;
-        for(;end<config.length();end++) {
-            char c = config.charAt(end);
-            if(c == ',' || c == ' ' || c == '}') {
-                break;
-            }
-        }
-        String sn = config.substring(start, end);
-        return Integer.parseInt(sn);
-    }
+    /** Evaluate the configuration and extract the limit field
+     * 
+     * @param config
+     * @return
+     */
+    private native int extractCountFromConfig(String config) /*-{
+        var con = eval('(' + config + ')');
+        return con.limit;
+    }-*/;
     
     private native String _nativeGenerateContext(String pid, String js, String jsonConfig) /*-{
     

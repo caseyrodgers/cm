@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmService;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContextPanel;
+import hotmath.gwt.tutor_viewer.client.ui.ShowTutorContextPanel;
 import hotmath.gwt.tutor_viewer.client.ui.TutorViewerPanelSimple;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -44,12 +45,17 @@ public class TutorViewer implements EntryPoint {
                 Window.alert("pid parameter must be specified on the URL");
             }
             
-            if(CmGwtUtils.getQueryParameter("generate_context") != null) {
+            if(CmGwtUtils.getQueryParameter("show_context") != null) {
+                RootPanel.get().add(new ShowTutorContextPanel().showAllContexts(pid));
+            }
+            else if(CmGwtUtils.getQueryParameter("generate_context") != null) {
                 RootPanel.get().add(new GenerateTutorContextPanel().createContexts(pid));
             }
             else {
                 RootPanel.get().add(new TutorViewerPanelSimple(pid));
             }
+            
+            
         }
         
         Window.addResizeHandler(new ResizeHandler() {
