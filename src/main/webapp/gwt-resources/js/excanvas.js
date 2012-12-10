@@ -1315,7 +1315,7 @@ console.log("D-ERROR:"+error)
     this.drawText_(text, x, y, maxWidth, true);
   };
 
-  contextPrototype.measureText = function(text) {
+/*contextPrototype.measureText = function(text) {
     if (!this.textMeasureEl_) {
       var s = '<span style="position:absolute;' +
           'top:-20000px;left:0;padding:0;margin:0;border:none;' +
@@ -1327,6 +1327,25 @@ console.log("D-ERROR:"+error)
     this.textMeasureEl_.innerHTML = '';
     this.textMeasureEl_.style.font = this.font;
     // Don't use innerHTML or innerText because they allow markup/whitespace.
+    this.textMeasureEl_.appendChild(doc.createTextNode(text));
+    return {width: this.textMeasureEl_.offsetWidth};
+  };*/
+  contextPrototype.measureText = function(text) {
+    if (!this.textMeasureEl_) {
+      // We should also parse the font style, as it is done in the drawing
+      // methods.
+      var s = '<span style="position:absolute;' +
+          'top:-20000px;left:0;padding:0;margin:0;border:none;' +
+          'white-space:pre;font:' + this.font + '"></span>';
+      this.element_.insertAdjacentHTML('beforeEnd', s);
+      this.textMeasureEl_ = this.element_.lastChild;
+    }
+    var doc = this.element_.ownerDocument;
+    this.textMeasureEl_.innerHTML = '';
+    // Don't use innerHTML or innerText because they allow markup/whitespace.
+	var fontStyle = getComputedStyle(processFontStyle(this.font), this.element_),
+	fontStyleString = buildStyle(fontStyle);
+	this.textMeasureEl_.style.font = fontStyleString;
     this.textMeasureEl_.appendChild(doc.createTextNode(text));
     return {width: this.textMeasureEl_.offsetWidth};
   };
