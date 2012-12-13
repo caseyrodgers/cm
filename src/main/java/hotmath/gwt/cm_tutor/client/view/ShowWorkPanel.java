@@ -302,7 +302,7 @@ public class ShowWorkPanel extends Composite {
             var height = Number($wnd.grabComputedHeight(ele)) + 15;
             var width = Number($wnd.grabComputedWidth(ele)) + 15;
             
-            alert('setting whiteboard size: ' + height + ', ' + width);
+            //alert('setting whiteboard size: ' + height + ', ' + width);
             $wnd.Whiteboard.setWhiteboardViewPort(width, height);
             $wnd.Whiteboard.initWhiteboard($doc);
             
