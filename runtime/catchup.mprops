@@ -2,17 +2,6 @@
 ## General properties
 #############
 
-### uid used as demo user template
-#### will be child of demo admin_id=13 
-
-.key=DEMO_USER_ID
-
-727
-
-###29004
-
-
-
 # 
 #  Contains all static text entries used by Catchup Math
 #

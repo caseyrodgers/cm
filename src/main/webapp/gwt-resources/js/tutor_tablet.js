@@ -64,7 +64,7 @@ function getNextMoveTo() {
 
 
 var TutorManager = {
-	isVisible: -1,
+	isVisible: false,
     currentRealStep : -1,
     currentStepUnit : -1,
     stepUnitsMo : [],
@@ -89,7 +89,7 @@ var TutorManager = {
         TutorManager.loadTutorData(solutionData, stepText, solutionVariableContext);
         TutorManager.analyzeLoadedData();
 
-        if(!$get('tutor_steps_wrapper')) {
+        if(!$get('tutoroutput')) {
         	TutorManager.isVisible = false;
         }
         else {
@@ -272,8 +272,7 @@ var TutorManager = {
 }
 
 function setButtonState() {
-    setState('step',
-            TutorManager.currentStepUnit < (TutorManager.stepUnits.length - 1));
+    setState('step', TutorManager.currentStepUnit < (TutorManager.stepUnits.length - 1));
     setState('back', TutorManager.currentStepUnit > -1);
 }
 

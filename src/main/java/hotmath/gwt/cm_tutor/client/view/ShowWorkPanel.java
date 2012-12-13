@@ -288,6 +288,7 @@ public class ShowWorkPanel extends Composite {
         var that = this;
         
         $wnd.Whiteboard.whiteboardIsReady = function() {
+            // callback into Java 
             that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardIsReady()();
         }
 
@@ -300,6 +301,8 @@ public class ShowWorkPanel extends Composite {
             // tell the Whiteboard object the size of the parent container
             var height = Number($wnd.grabComputedHeight(ele)) + 15;
             var width = Number($wnd.grabComputedWidth(ele)) + 15;
+            
+            alert('setting whiteboard size: ' + height + ', ' + width);
             $wnd.Whiteboard.setWhiteboardViewPort(width, height);
             $wnd.Whiteboard.initWhiteboard($doc);
             

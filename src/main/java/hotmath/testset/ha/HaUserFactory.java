@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMessagePropertyReader;
@@ -316,10 +317,9 @@ public class HaUserFactory {
 
 			pstat = conn.prepareStatement(sql);
 
-			int demoId = Integer.parseInt(CmMultiLinePropertyReader
-					.getInstance().getProperty("DEMO_USER_ID").trim());
+			int demoId = CatchupMathProperties.getInstance().getProblemAsInt("demo.user_id",727);
 
-			__logger.debug("Creating demo user with DEMO_USER_ID = " + demoId);
+			__logger.debug("Creating demo user with demo.user_id = " + demoId);
 
 			pstat.setInt(1, demoId);
 			rs = pstat.executeQuery();

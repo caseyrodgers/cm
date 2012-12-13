@@ -14,6 +14,7 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Widget;
 
 public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView {
     
@@ -49,6 +50,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
         /** make sure the whiteboard is initialized
          * 
          */
+        Widget w = getParent();
         if(!_showWorkPanel.isReady()) {
             _showWorkPanel.setupWhiteboard();
         }

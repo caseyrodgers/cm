@@ -75,8 +75,9 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 String title = token.getResourceFile();
                 ShowWorkActivity activity = new ShowWorkActivity(eb, pid, title, SharedData.getUserInfo().getRunId());
                 ShowWorkView view = cf.getShowWorkView();
-                view.setPresenter(activity);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
+                view.setPresenter(activity);
+
             } else if (type.equals("lesson")) {
                 PrescriptionLessonActivity activity = new PrescriptionLessonActivity(cf, eb);
                 PrescriptionLessonView view = cf.getPrescriptionLessonView();
