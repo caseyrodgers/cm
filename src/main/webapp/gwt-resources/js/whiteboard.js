@@ -406,6 +406,7 @@ var Whiteboard = (function () {
             var ccnt = $get_Element("#canvas-container");
             $("#canvas-container").css('width', '2000px');
             $("#canvas-container").css('height', '2620px');
+
             console.log('off_ht_1: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").offsetLeft + ":" + $get_Element("#tools").offsetTop)
             if (IS_IPHONE || docWidth <= 600) {
                 dox = IS_IPHONE ? 5 : 19
@@ -1609,7 +1610,7 @@ var Whiteboard = (function () {
 
             }
             canvas.focus();
-			wb.whiteboardIsReady();
+  	    wb.whiteboardIsReady();
         }, 100);
     }
 
