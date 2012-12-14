@@ -1,45 +1,32 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm.client.history.CmHistoryManager;
-import hotmath.gwt.cm.client.history.CmLocation;
-import hotmath.gwt.cm.client.history.CmLocation.LocationType;
 import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.context.CmAutoTest.ResourceObject;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
-import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
-import hotmath.gwt.cm_tools.client.ui.ui.EndOfProgramWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class PrescriptionContext implements CmContext {
 
@@ -73,24 +60,25 @@ public class PrescriptionContext implements CmContext {
     }
 
     IconButton _chooseButton;
-    Text       _buttonText;
+    HTML       _buttonText;
 
     public List<Widget> getTools() {
         
         List<Widget> list = new ArrayList<Widget>();
         
-        _buttonText = new Text();
+        _buttonText = new HTML();
         _buttonText.setText(" ");
         _buttonText.addStyleName("cm-main-panel-prev-next-text");
-        _buttonText.setEnabled(true);
+        //_buttonText.setEnabled(true);
         
         list.add(_buttonText);
-        _buttonText.enable();
+        //_buttonText.enable();
         
         
-        _chooseButton = new IconButtonWithTooltip("cm-main-panel-choose-icon", Direction.NEXT);
-        _chooseButton.addListener(Events.Select, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+        _chooseButton = new IconButtonWithTooltip("cm-main-panel-choose-icon");
+        _chooseButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 PrescriptionLessonChooserDialog.getSharedInstance().showDialog(prescriptionData);
             }
         });
@@ -100,194 +88,17 @@ public class PrescriptionContext implements CmContext {
     }
 
     public void gotoNextTopic() {
-
-        /**
-         * deal with anomaly of no missed questions .. move to the next
-         * quiz/section
-         */
-        final boolean hasPrescription = UserInfo.getInstance().isCustomProgram()
-                || !(UserInfo.getInstance().getCorrectPercent() == 100);
-
-        // before anything can happen, the user must view the required practice
-        // problems
-        boolean allViewed = true;
-        if (hasPrescription) {
-            for (PrescriptionSessionDataResource r : prescriptionData.getCurrSession().getInmhResources()) {
-                if (!r.getType().equals("practice"))
-                    continue;
-
-                for (InmhItemData id : r.getItems()) {
-                    if (!id.isViewed()) {
-                        allViewed = false;
-                        break;
-                    }
-                }
-            }
-            /**
-             * If all required solutions have not been viewed, then force user
-             * to do so
-             * 
-             * if 'debug' parameter is on URL, then this check is skipped
-             */
-            if ((UserInfo.getInstance().isActiveUser() && !allViewed) && 
-                    (CmShared.getQueryParameter("debug") == null && UserInfoBase.getInstance().getMode() == Mode.STUDENT_MODE)) {
-
-                /**
-                 * Expand the practice problems.
-                 * 
-                 */
-                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                        .updateCheckMarks("practice");
-
-                /**
-                 * show an appropriate message for either RPA or RPP
-                 * 
-                 */
-                String msg = null;
-                if (!prescriptionData.getCurrSession().isSessionRpa()) {
-                    msg = "Please view all required practice problem answers to the very last step.";
-                } else {
-                    msg = "Please complete all required practice activities.";
-                }
-
-                /**
-                 * make resource area is clean
-                 * 
-                 */
-                ((PrescriptionCmGuiDefinition) CmMainPanel.__lastInstance.cmGuiDef)._guiWidget
-                        .updateCheckMarks("practice");
-
-                new RequiredPracticeCompleteDialog("More Practice Required", msg);
-
-                // InfoPopupBox.display("More Practice Required", msg);
-
-                // CatchupMathTools.showAlert("More Practice Required",msg,new
-                // CmAsyncRequestImplDefault() {
-                // @Override
-                // public void requestComplete(String requestData) {
-                // ((PrescriptionCmGuiDefinition)
-                // CmMainPanel.__lastInstance.cmGuiDef)._guiWidget.expandResourcePracticeProblems();
-                // }
-                // });
-                ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
-
-                return;
-            }
-        }
-
-        doMoveNextAux(hasPrescription);
+        CmMessageBox.showAlert("Prescription Context doNext should not be called");
     }
 
-    private void doMoveNextAux(boolean hasPrescription) {
-        
-        
-        if(CmShared.getQueryParameter("mark_lesson_as_complete") != null) {
-            PrescriptionResourcePanel.setLessonCompleted(null);
-        }
 
-
-        /**
-         * The current session number
-         * 
-         */
-        int sessionNumber = (hasPrescription) ? prescriptionData.getCurrSession().getSessionNumber() : 0;
-        boolean thereAreNoMoreSessions = (!hasPrescription)
-                || !((sessionNumber + 1) < (prescriptionData.getSessionTopics().size()));
-
-        correctPercent = UserInfo.getInstance().getCorrectPercent();
-        if (!hasPrescription || thereAreNoMoreSessions) {
-
-            /**
-             * hard exit after completion of prescription for any demo
-             * 
-             */
-            if (UserInfo.getInstance().isDemoUser()) {
-                new SampleDemoMessageWindow();
-                return;
-            }
-
-            // there are no more sessions, so need to move to the 'next'.
-            // Next might be the same Quiz, the next Quiz or AutoAdvance.
-
-            int passPercentRequired = UserInfo.getInstance().getPassPercentRequired();
-            if (!UserInfo.getInstance().isActiveUser()) {
-                CatchupMathTools.showAlert("You are a visitor and cannot jump to the next quiz.");
-                ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
-                return;
-            }
-
-            CmLogger.debug("Correct percent: " + correctPercent + ", " + passPercentRequired);
-
-            if (UserInfo.getInstance().isCustomProgram() || correctPercent >= passPercentRequired) {
-                /**
-                 * user passed the quiz
-                 * 
-                 */
-                handlePassedQuiz();
-            } else {
-                /**
-                 * user did not pass quiz
-                 * 
-                 */
-                handleNotPassedQuiz();
-            }
-            return;
-        } else {
-            sessionNumber++; // if valid..
-            CmHistoryManager.getInstance().addHistoryLocation(new CmLocation(LocationType.PRESCRIPTION, sessionNumber));
-
-            // prescriptionCm.getAsyncDataFromServer(sessionNumber);
-        }
-    }
-
-    private void handleNotPassedQuiz() {
-        String msg = "Are you ready to be quizzed again on this section?";
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
-        MessageBox.confirm("Ready for next Quiz?", msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
-                if (be.getButtonClicked().getText().equals("Yes")) {
-                    CmProgramFlowClientManager.retakeProgramSegment();
-                } else {
-                    ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
-                }
-            }
-        });
-
-    }
-
-    private void handlePassedQuiz() {
-        /**
-         * User has passed this section, and is ready to move to next
-         * quiz/autoAdvance
-         */
-        if (UserInfo.getInstance().isDemoUser()) {
-            new SampleDemoMessageWindow();
-            return;
-        }
-
-        Window.alert("onCompletion: " + UserInfo.getInstance().getOnCompletion());
-
-        /**
-         * are there more Quizzes in this program?
-         */
-        boolean areMoreSegments = (!UserInfo.getInstance().isCustomProgram() && (UserInfo.getInstance().getTestSegment() < UserInfo.getInstance().getProgramSegmentCount()));
-        if (areMoreSegments) {
-            new PassedSectionWindow();
-        } else {
-            if (UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
-                new EndOfProgramWindow();
-            } else {
-                QuizCheckResultsWindow.autoAdvanceUser();
-            }
-        }
-    }
 
     public void gotoPreviousTopic() {
         final int cs = prescriptionData.getCurrSession().getSessionNumber();
         if (cs < 1) {
-            MessageBox.alert("On First", "No previous topics.", new Listener<MessageBoxEvent>() {
-                public void handleEvent(MessageBoxEvent be) {
+            CmMessageBox.showAlert("On First", "No previous topics.", new CallbackOnComplete() {
+                @Override
+                public void isComplete() {
                     ContextController.getInstance().setCurrentContext(PrescriptionContext.this);
                 }
             });
@@ -448,29 +259,9 @@ public class PrescriptionContext implements CmContext {
      * 
      */
     class IconButtonWithTooltip extends IconButton {
-    	
-    	final Direction direction;
-    	
-        public IconButtonWithTooltip(String style, Direction dir) {
+        public IconButtonWithTooltip(String style) {
             super(style);
-
-            this.direction = dir;
-            
-            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-
-                	String tip = getTooltipText(direction, prescriptionData);
-
-                    _buttonText.setText(tip);
-                }
-            });
-            addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                	_buttonText.setText("");
-                }
-            });
+            setToolTip("Choose the next topic or quiz");
         }
     }
 

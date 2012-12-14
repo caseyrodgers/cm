@@ -1,73 +1,71 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm.client.ui.HelpWindow;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class ContextChangeMessage extends CmWindow {
+
+
+public class ContextChangeMessage extends GWindow {
 
     public ContextChangeMessage(String lesson) {
-        setStyleName("context-change-message");
-        setHeading("Current Topic");
+        super(false);
+        
+        VerticalLayoutContainer vertCont = new VerticalLayoutContainer();
+        
+        addStyleName("context-change-message");
+        setHeadingText("Current Topic");
         setModal(true);
-        setSize(330, 150);
+        setPixelSize(330, 150);
 
-        LayoutContainer lc = new LayoutContainer();
+        SimpleContainer sc1 = new SimpleContainer();
         String html = "<p>Your topic for review and practice is now:</p>" + "<b>" + lesson + "</b>";
+        sc1.setWidget(new HTML(html));
 
-        setLayout(new FitLayout());
-        lc.add(new Html(html));
-
-        LayoutContainer lca = new LayoutContainer();
-        lca.addStyleName("suggest-div");
+        vertCont.add(sc1);
+        
+        SimpleContainer sc2 = new SimpleContainer();
+        sc2.addStyleName("suggest-div");
 
         html = "<ul>" + 
                "<li>Use the Help button for feedback and progress</li> " + 
                "<li>Check for new Flash Cards and Games</li> " + 
                "<li>Use our whiteboard to work out the problems</li>" + "</ul>";
 
-        lca.add(new Html(html));
+        sc2.setWidget(new HTML(html));
 
-        lc.add(lca);
-
-        add(lc);
-
+        vertCont.add(sc2);
         
-        Button help = new Button("Help");
-        help.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
+        setWidget(vertCont);
+        
+        TextButton help = new TextButton("Help", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 new HelpWindow().setVisible(true);
             }
         });
         addButton(help);
         
-        Button close = new Button("Begin Lesson");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
+        TextButton close = new TextButton("Begin Lesson", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 close();
             }
         });
         addButton(close);
 
         
-        /** Perform operations when ever the window is dismissed
-         * 
-         */
-        addWindowListener(new WindowListener() {
-        	@Override
-        	public void windowHide(WindowEvent we) {
+        addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
                 PrescriptionCmGuiDefinition.showHelpPanel();                
                 setVisible(false);
         	}

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
+
 import java.util.ArrayList;
 import java.util.List;
 

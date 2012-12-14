@@ -9,30 +9,31 @@ import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class QuizCheckResultsWindow extends CmWindow {
+public class QuizCheckResultsWindow extends GWindow {
 
     public QuizCheckResultsWindow(final CreateTestRunResponse runInfo) {
+        
+        super(false);
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         this.setModal(true);
-        this.setAutoHeight(true);
         this.setWidth(330);
         this.setClosable(false);
         this.setResizable(false);
         this.setStyleName("auto-assignment-window");
-        this.setHeading("Quiz Results");
+        this.setHeadingText("Quiz Results");
 
         final int correct = runInfo.getCorrect();
         final int total = runInfo.getTotal();
@@ -81,13 +82,12 @@ public class QuizCheckResultsWindow extends CmWindow {
             }
         }
 
-        Html html = new Html(msg);
+        HTML html = new HTML(msg);
         this.add(html);
 
-        Button close = new Button();
-        close.setText("Continue");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        TextButton close = new TextButton("Continue", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 CmProgramFlowAction nextAction = runInfo.getNextAction();
                 switch (nextAction.getPlace()) {
                 case PRESCRIPTION:

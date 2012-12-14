@@ -174,7 +174,7 @@ public class CatchupMath implements EntryPoint {
             
             
             if(true) {
-                new SampleDemoMessageWindow();
+                //new SampleDemoMessageWindow();
                 //new RequiredPracticeCompleteDialog("TEst Title", "Test Msg");
                 //new PassedSectionWindow();
                 //new ContextChangeMessage("Test Message");

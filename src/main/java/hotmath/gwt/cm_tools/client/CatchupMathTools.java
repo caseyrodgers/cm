@@ -1,7 +1,9 @@
 package hotmath.gwt.cm_tools.client;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -12,9 +14,6 @@ import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -68,20 +67,21 @@ public class CatchupMathTools implements EntryPoint {
 
     static public void showAlert(String title, String msg) {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+        CmMessageBox.showAlert(title, msg, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));                
             }
-        });
+        });      
     }
 
     static public void showAlert(String title, String msg, final CmAsyncRequest callback) {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
+        CmMessageBox.showAlert(title, msg, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
                 if (callback != null)
-                    callback.requestComplete(be.getValue());
-                
+                    callback.requestComplete(null);
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
             }
         });
@@ -89,11 +89,12 @@ public class CatchupMathTools implements EntryPoint {
 
     static public void showAlert(String title, String msg, final CmAsyncRequest callback, final String arg) {
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        MessageBox.alert(title, msg, new Listener<MessageBoxEvent>() {
-            public void handleEvent(MessageBoxEvent be) {
+        
+        CmMessageBox.showAlert(title, msg, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
                 if (callback != null)
                     callback.requestComplete(arg);
-                
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
             }
         });

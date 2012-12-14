@@ -688,7 +688,7 @@
 				<version>2.5.0-rc2</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1M -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=INFO</extraJvmArgs>
+					<extraJvmArgs>-Xss1M -XX:MaxPermSize=1024m -Xms1024m -Xmx1024m -Dgwt.logLevel=INFO</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>

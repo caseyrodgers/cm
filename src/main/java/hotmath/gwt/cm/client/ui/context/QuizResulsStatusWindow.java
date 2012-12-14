@@ -1,12 +1,14 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Window;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-public class QuizResulsStatusWindow extends Window {
+import com.google.gwt.user.client.ui.HTML;
+
+public class QuizResulsStatusWindow extends GWindow {
     
     public QuizResulsStatusWindow(int correct, int total) {
-        setStyleName("quiz-results-status-window");
+        super(false);
+        addStyleName("quiz-results-status-window");
         setWidth(525);
         setHeight(400);
         
@@ -17,8 +19,8 @@ public class QuizResulsStatusWindow extends Window {
                       "</div>" +
                       "<div class='footer'></div>";
 
-        add(new Html(html));
-        setHeading("Quiz Results");
+        add(new HTML(html));
+        setHeadingText("Quiz Results");
     }
 
 }

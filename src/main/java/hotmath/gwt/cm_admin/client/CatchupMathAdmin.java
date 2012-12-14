@@ -17,7 +17,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -76,7 +76,8 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                 CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         };
-        CmBusyManager.setViewPort(mainPort);
+        CatchupMathTools.showAlert("OLD VIEWPORT NOT USED", "CHANGE TO NEW VIEWPORT");
+        //CmBusyManager.setViewPort(mainPort);
         
         mainPort.setLayout(new BorderLayout());
         

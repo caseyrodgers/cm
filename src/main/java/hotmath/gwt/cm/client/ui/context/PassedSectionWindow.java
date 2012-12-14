@@ -4,28 +4,29 @@ import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.StandardFlowCallback;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /** Shown after a user has completed a complete program segment
  *
  * @author casey
  *
  */
-public class PassedSectionWindow extends CmWindow {
+public class PassedSectionWindow extends GWindow {
 
     public PassedSectionWindow() {
+        super(false);
         addStyleName("passed-section-window");
         String msg = null;
         if(UserInfo.getInstance().isCustomProgram()) {
@@ -35,26 +36,26 @@ public class PassedSectionWindow extends CmWindow {
             msg = "<p>You passed this section!</p>";
         }
         msg += "<p>You will now be shown the next quiz.</p>";
-        setHeading("Congratulations");
+        setHeadingText("Congratulations");
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
 
+        setPixelSize(375,200);
         setClosable(false);
         setModal(true);
-        add(new Html(msg));
+        add(new HTML(msg));
         setResizable(false);
         addButton(
-            new Button("Congratulations Video", new SelectionListener<ButtonEvent>() {
+            new TextButton("Congratulations Video", new SelectHandler() {
                 @Override
-                public void componentSelected(ButtonEvent ce) {
+                public void onSelect(SelectEvent event) {
                     new GenericVideoPlayerForMona(MonaVideo.PASS_QUIZ);
                 }
             }));
 
-        addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Continue",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                
+            public void onSelect(SelectEvent event) {
                 CmProgramFlowClientManager.getNextActiveProgramState(new StandardFlowCallback() {
                     @Override
                     public void programFlow(CmProgramFlowAction flowResponse) {
@@ -68,9 +69,9 @@ public class PassedSectionWindow extends CmWindow {
         }));
 
 
-        addWindowListener(new WindowListener() {
+        addHideHandler(new HideHandler() {
             @Override
-            public void windowHide(WindowEvent we) {
+            public void onHide(HideEvent event) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
             }
         });

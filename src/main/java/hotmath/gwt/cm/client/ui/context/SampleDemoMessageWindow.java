@@ -1,13 +1,13 @@
 package hotmath.gwt.cm.client.ui.context;
 
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 /** Sample complete thank you message.
  * 
@@ -16,10 +16,18 @@ import com.extjs.gxt.ui.client.widget.Window;
  * @author casey
  *
  */
-public class SampleDemoMessageWindow extends Window {
+public class SampleDemoMessageWindow extends GWindow {
 
     public SampleDemoMessageWindow() {
         
+        super(false);
+        setModal(true);
+        setPixelSize(400, 200);
+        setHeadingText("Thank You");
+        setClosable(false);
+        setResizable(false);
+        addStyleName("demo-complete-window");
+
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));
         
         String msg = "<p>Thank you for trying a Catchup Math Pre-Algebra Session.</p>  "
@@ -29,18 +37,13 @@ public class SampleDemoMessageWindow extends Window {
                 + "<a href='http://catchupmath.com/colleges.html'>Colleges</a>, "
                 + "or <a href='http://catchupmath.com/students.html'>Students</a> pages "
                 + "for more information.</p>";
-        setClosable(false);   // end of the road
-        setStyleName("demo-complete-window");
-        setHeight(140);
-        setWidth(400);
-        setHeading("Thank You");
-        setModal(true);
-        add(new Html(msg));
+        
+        add(new HTML(msg));
         setVisible(true);
         
-        addWindowListener(new WindowListener() {
+        addHideHandler(new HideHandler() {
             @Override
-            public void windowHide(WindowEvent we) {
+            public void onHide(HideEvent event) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED, this));
             }
         });

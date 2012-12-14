@@ -3,8 +3,8 @@ package hotmath.gwt.cm_tools.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.Viewport;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.widget.core.client.container.Viewport;
 
 
 /** Provides central control over the 'isBusy'
@@ -25,7 +25,6 @@ public class CmBusyManager {
 	static List<BusyState> __busyStates = new ArrayList<BusyState>();
 
 	
-	static Viewport __viewPort;
 	static com.sencha.gxt.widget.core.client.container.Viewport __viewPort3;
 	
 	/** Set the main viewport used for isBusy masking
@@ -33,11 +32,7 @@ public class CmBusyManager {
 	 * @param viewPort
 	 */
 	static public void setViewPort(Viewport viewPort) {
-		__viewPort = viewPort;
-	}
-	
-	static public void setViewPort(com.sencha.gxt.widget.core.client.container.Viewport viewPort) {
-	    __viewPort3 = viewPort;
+		__viewPort3 = viewPort;
 	}
 
 	/**
@@ -86,8 +81,8 @@ public class CmBusyManager {
     static private void showBusy(BusyState state) {
     	//System.out.println("showBusy " + __busyStates.size() + ": " + state.useMask);
     	if(state.useMask) {
-    		if(__viewPort != null)
-    		    __viewPort.mask();
+    		if(__viewPort3 != null)
+    		    __viewPort3.mask();
     	}
     	showLoading(true);
     }
@@ -114,8 +109,8 @@ public class CmBusyManager {
     		}
     		if(!hasDeeperMask) {
     			//System.out.println("Removing mask");
-    		    if(__viewPort != null)
-    	            __viewPort.unmask();
+    		    if(__viewPort3 != null)
+    	            __viewPort3.unmask();
     		}
     	}
     	
@@ -124,8 +119,8 @@ public class CmBusyManager {
     	    showLoading(false);
     	}
     	
-    	if(__viewPort != null)
-    	    __viewPort.unmask();
+    	if(__viewPort3 != null)
+    	    __viewPort3.unmask();
     }
     
     /** Force reset of the isBusy stack and

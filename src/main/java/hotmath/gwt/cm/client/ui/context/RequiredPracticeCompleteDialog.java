@@ -1,36 +1,42 @@
 package hotmath.gwt.cm.client.ui.context;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 /** Shown when a RPP/RPA is completed 
  * 
  * @author casey
  *
  */
-public class RequiredPracticeCompleteDialog extends CmWindow {
+public class RequiredPracticeCompleteDialog extends GWindow {
 	
 	public RequiredPracticeCompleteDialog(String title, String msg) {
+	    super(true);
+	    
 		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 
 		setStyleName("required-practice-complete-dialog");
-		setSize(330, 210);
+		setPixelSize(330, 210);
 		setModal(true);
-		setHeading(title);
-		add(new Html("<p style='font-weight: bold;'>" + msg + "</p>"));
-		add(new UserProgramAdvancementPanel(PrescriptionResourcePanel.__instance.pData, this));
+		setHeadingText(title);
 		
-		setClosable(true);
-		addCloseButton();
-		addWindowListener(new WindowListener() {
-			@Override
-			public void windowHide(WindowEvent we) {
+		VerticalLayoutContainer vert = new VerticalLayoutContainer();
+		
+		vert.add(new HTML("<p style='font-weight: bold;'>" + msg + "</p>"));
+		vert.add(new UserProgramAdvancementPanel(PrescriptionResourcePanel.__instance.pData, this));
+		
+		setWidget(vert);
+		
+		addHideHandler(new HideHandler() {
+		    @Override
+		    public void onHide(HideEvent event) {
 				EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
 			}
 		});

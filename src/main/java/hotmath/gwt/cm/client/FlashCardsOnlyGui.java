@@ -3,12 +3,11 @@ package hotmath.gwt.cm.client;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 
 
 /** Provides Self Registration login screen and validation
@@ -22,7 +21,7 @@ public class FlashCardsOnlyGui extends CmMainResourceWrapper {
         
         super(WrapperType.OPTIMIZED);
         
-        getResourceWrapper().add(new Button("Flash Cards"));
+        getResourceWrapper().add(new TextButton("Flash Cards"));
         
         ContextController.getInstance().setCurrentContext(new CmContext() {
             

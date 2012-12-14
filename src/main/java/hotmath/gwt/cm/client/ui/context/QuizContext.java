@@ -18,20 +18,12 @@ import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
-import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Text;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
@@ -39,6 +31,9 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * Where in the quiz is the user?
@@ -50,7 +45,7 @@ public class QuizContext implements CmContext {
 
     QuizCmGuiDefinition guiDef;
     String title;
-    Text   text;
+    HTML   text;
 
     public QuizContext(QuizCmGuiDefinition guiDef) {
         this.guiDef = guiDef;
@@ -97,33 +92,25 @@ public class QuizContext implements CmContext {
     public List<Widget> getTools() {
         List<Widget> list = new ArrayList<Widget>();
 
-        text = new Text();
+        text = new HTML();
         text.setText(" ");
         text.addStyleName("cm-main-panel-quiz-text");
-        text.setEnabled(true);
 
         IconButtonWithTooltip btn = new IconButtonWithTooltip("cm-main-panel-next-quiz", "Done taking the quiz");
 
-        btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent ce) {
+        btn.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                // TODO Auto-generated method stub
                 ContextController.getInstance().doNext();
             }
         });
 
         list.add(btn);
         list.add(text);
-        text.enable();
         
         return list;
-    }
-
-    private void showNextPlacmentQuiz() {
-        CatchupMathTools.showAlert("Quiz results", "Good job - we'll now give another quiz.",
-                new CmAsyncRequestImplDefault() {
-                    public void requestComplete(String requestData) {
-                        CatchupMath.getThisInstance().showQuizPanel(-1);
-                    }
-                });
     }
 
     private void showQuizResults(CreateTestRunResponse runInfo) {
@@ -276,23 +263,9 @@ public class QuizContext implements CmContext {
      * 
      */
     class IconButtonWithTooltip extends IconButton {
-    	
         public IconButtonWithTooltip(String style, final String tipText) {
             super(style);
-
-            addListener(Events.OnMouseOver, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-
-                    text.setText(tipText);
-                }
-            });
-            addListener(Events.OnMouseOut, new Listener<BaseEvent>() {
-                @Override
-                public void handleEvent(BaseEvent be) {
-                	text.setText("");
-                }
-            });
+            setToolTip(tipText);
         }
     }
 }
