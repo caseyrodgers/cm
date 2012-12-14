@@ -338,11 +338,11 @@ h1, h2, h3, h4 {
 .cm-main-panel-choose-icon {
         background: url(/gwt-resources/images/choose_topic.png) no-repeat center
                 left !important;
-        height: 46px;
+        height: 46px !important;
         position: absolute;
-        right: 0;
+        right: 2px;
         top: 2px;
-        width: 244px;
+        width: 244px !important;
 }
 .cm-main-panel-choose-icon-over {
         background: url(/gwt-resources/images/choose_topic-over.png) no-repeat

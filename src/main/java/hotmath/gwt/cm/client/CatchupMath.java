@@ -12,6 +12,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
+import hotmath.gwt.cm.client.ui.context.SampleDemoMessageWindow;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -172,9 +173,12 @@ public class CatchupMath implements EntryPoint {
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
             
             
-            if(false) {
-                showAssignments_gwt();
-                return;
+            if(true) {
+                new SampleDemoMessageWindow();
+                //new RequiredPracticeCompleteDialog("TEst Title", "Test Msg");
+                //new PassedSectionWindow();
+                //new ContextChangeMessage("Test Message");
+               // showParallelProgramPasswordPanel();
             }
             
 
