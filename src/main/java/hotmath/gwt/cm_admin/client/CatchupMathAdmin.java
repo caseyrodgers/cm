@@ -76,7 +76,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                 CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         };
-        CatchupMathTools.showAlert("OLD VIEWPORT NOT USED", "CHANGE TO NEW VIEWPORT");
         //CmBusyManager.setViewPort(mainPort);
         
         mainPort.setLayout(new BorderLayout());

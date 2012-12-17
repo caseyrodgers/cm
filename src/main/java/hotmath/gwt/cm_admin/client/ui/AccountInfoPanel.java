@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModelImplGxt2;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -29,7 +30,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	
 	private XTemplate template;
 	private HTML html;
-	private AccountInfoModel model;
+	private AccountInfoModelImplGxt2 model;
 	private CmAdminModel cmAdminModel;
 	private Boolean haveDisplayedOverLimitMsg = false;
 
@@ -92,10 +93,10 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 	 * @param model
 	 */
 	public void setAccountInfoModel(AccountInfoModel model) {
-		this.model = model;
+		this.model = AccountInfoModelImplGxt2.create(model);
 		
 		if(model.getIsFreeAccount()) {
-		    model.set("is-free-account-label", "<span style='color: red;margin-left: 15px;'>Free Account for Essentials</span>");
+		    this.model.set("is-free-account-label", "<span style='color: red;margin-left: 15px;'>Free Account for Essentials</span>");
 		}
 		template.overwrite(html.getElement(), Util.getJsObject(this.model));
 		

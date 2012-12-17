@@ -387,13 +387,13 @@ h1, h2, h3, h4 {
     background-color: #43464B;
 }
 .cm-main-panel-next-quiz {
-        background: url(/gwt-resources/images/check_quiz.png) no-repeat center
-                left !important;
-        height: 51px;
-        left: 0;
+        background: url(/gwt-resources/images/check_quiz.png) no-repeat center left !important;
+        background: url(/gwt-resources/images/choose_topic.png) no-repeat center left !important;
+        height: 46px !important;
+        width: 244px !important;
         position: absolute;
-        top: 0;
-        width: 248px;
+        right: 2px;
+        top: 2px;
 }
 .cm-main-panel-next-quiz-over {
         background: url(/gwt-resources/images/check_quiz-over.png) no-repeat
@@ -895,10 +895,7 @@ img.resource-item-complete {
 #loading-error {
         font-weight: bold;
 }
-.report-card-info-panel {
-        padding: 10px;
-        text-align: center;
-}
+
 .context-change-message {
         text-align: center;
 }

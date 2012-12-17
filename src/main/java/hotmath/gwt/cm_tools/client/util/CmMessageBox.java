@@ -18,8 +18,9 @@ public class CmMessageBox {
         showAlert(title, message, null);
     }
 
-    public static void showAlert(String msg, String title, final CallbackOnComplete onComplete) {
+    public static void showAlert(String title,String msg, final CallbackOnComplete onComplete) {
         AlertMessageBox d = new AlertMessageBox(title, msg);
+        d.setWidth(300);
         HideHandler hideHandler = new HideHandler() {
             @Override
             public void onHide(HideEvent event) {

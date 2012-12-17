@@ -10,7 +10,7 @@ public class QuizResulsStatusWindow extends GWindow {
         super(false);
         addStyleName("quiz-results-status-window");
         setWidth(525);
-        setHeight(400);
+        setHeight(300);
         
         setModal(true);
         String html = "<div class='head'></div>" +

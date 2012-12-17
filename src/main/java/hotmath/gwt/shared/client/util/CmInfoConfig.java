@@ -1,11 +1,12 @@
 package hotmath.gwt.shared.client.util;
 
-import com.extjs.gxt.ui.client.widget.InfoConfig;
+import com.sencha.gxt.widget.core.client.info.DefaultInfoConfig;
 
-public class CmInfoConfig extends InfoConfig {
+
+public class CmInfoConfig extends DefaultInfoConfig {
     public CmInfoConfig(String t, String m) {
         super(t, m);
-        display = 6000;
-        width = 221;
+        setDisplay(6000);
+        setWidth(221);
     }
 }

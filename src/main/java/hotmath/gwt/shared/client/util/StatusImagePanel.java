@@ -4,12 +4,11 @@ import hotmath.cm.status.StatusPie;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.VerticalPanel;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
-public class StatusImagePanel extends VerticalPanel {
+public class StatusImagePanel extends VerticalLayoutContainer {
     
     /** Display image that represents the requested state
      * 
@@ -20,7 +19,7 @@ public class StatusImagePanel extends VerticalPanel {
      */
     final int MAX_STATUS_IMAGES=35;
     PrescriptionData pData;
-    LayoutContainer _mainPanel = new LayoutContainer();
+    FlowLayoutContainer _mainPanel = new FlowLayoutContainer();
     
     public StatusImagePanel(PrescriptionData pData) {
         this.pData = pData;
@@ -36,7 +35,7 @@ public class StatusImagePanel extends VerticalPanel {
      *  
      */
     public void updateStatus() {
-        _mainPanel.removeAll();
+        _mainPanel.clear();
         
         
         int total=pData.getSessionTopics().size();
@@ -61,12 +60,8 @@ public class StatusImagePanel extends VerticalPanel {
                       "<span>" + msg + "</span>";
         }
         
-        _mainPanel.add(new Html(html));
-        layout();
+        _mainPanel.add(new HTML(html));
+        forceLayout();
     }
-    
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
-    }
+
 }

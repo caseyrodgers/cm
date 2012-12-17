@@ -12,7 +12,6 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
-import hotmath.gwt.cm.client.ui.context.SampleDemoMessageWindow;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -43,6 +42,7 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
+import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -172,16 +172,6 @@ public class CatchupMath implements EntryPoint {
 
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
             
-            
-            if(true) {
-                //new SampleDemoMessageWindow();
-                //new RequiredPracticeCompleteDialog("TEst Title", "Test Msg");
-                //new PassedSectionWindow();
-                //new ContextChangeMessage("Test Message");
-               // showParallelProgramPasswordPanel();
-            }
-            
-
             if (CmShared.getQueryParameterValue("type").equals("su")) {
                 UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
             }

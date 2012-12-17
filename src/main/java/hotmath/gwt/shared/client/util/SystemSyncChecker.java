@@ -14,13 +14,13 @@ import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /** Display a message from central server
  * 
@@ -55,7 +55,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         setVisible(true);
     }
     
-    public SystemSyncChecker(String title, String msg, Button btn) {
+    public SystemSyncChecker(String title, String msg, TextButton btn) {
         super(title, msg, btn);
         _theWindow = this;
         setVisible(true);
@@ -112,9 +112,9 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                 	 if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
 	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
 	                             
-	                             new Button("Logout", new SelectionListener<ButtonEvent>() {
+	                             new TextButton("Logout", new SelectHandler() {
 	                                 @Override
-	                                 public void componentSelected(ButtonEvent ce) {
+	                                public void onSelect(SelectEvent event) {
 	                                     Window.Location.assign("/login.html");
 	                                 }
 	                             }));

@@ -8,15 +8,10 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
-import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
@@ -24,7 +19,6 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
@@ -369,31 +363,31 @@ public class HelpWindow extends GWindow {
      * 
      */
     private void showStudentConfiguration() {
-        GWT.runAsync(new CmRunAsyncCallback() {
-            @Override
-            public void onSuccess() {
-                new RetryAction<StudentModelI>() {
-
-                    @Override
-                    public void attempt() {
-                        CmBusyManager.setBusy(true);
-                        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
-                        setAction(action);
-                        CmShared.getCmService().execute(action, this);
-                    }
-
-                    public void oncapture(StudentModelI student) {
-                        try {
-                            CmAdminModel adminModel = new CmAdminModel();
-                            adminModel.setId(student.getAdminUid());
-                            new RegisterStudent(student, adminModel).showWindow();
-                        } finally {
-                            CmBusyManager.setBusy(false);
-                        }
-                    }
-                }.register();
-            }
-        });
+//        GWT.runAsync(new CmRunAsyncCallback() {
+//            @Override
+//            public void onSuccess() {
+//                new RetryAction<StudentModelI>() {
+//
+//                    @Override
+//                    public void attempt() {
+//                        CmBusyManager.setBusy(true);
+//                        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+//                        setAction(action);
+//                        CmShared.getCmService().execute(action, this);
+//                    }
+//
+//                    public void oncapture(StudentModelI student) {
+//                        try {
+//                            CmAdminModel adminModel = new CmAdminModel();
+//                            adminModel.setId(student.getAdminUid());
+//                            new RegisterStudent(student, adminModel).showWindow();
+//                        } finally {
+//                            CmBusyManager.setBusy(false);
+//                        }
+//                    }
+//                }.register();
+//            }
+//        });
     }
 
     /**
@@ -406,29 +400,29 @@ public class HelpWindow extends GWindow {
      */
     private void showStudentHistory() {
 
-        GWT.runAsync(new CmRunAsyncCallback() {
-
-            @Override
-            public void onSuccess() {
-                new RetryAction<StudentModelI>() {
-                    @Override
-                    public void attempt() {
-                        CmBusyManager.setBusy(true);
-                        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
-                        setAction(action);
-                        CmShared.getCmService().execute(action, this);
-                    }
-
-                    public void oncapture(StudentModelI student) {
-                        CmBusyManager.setBusy(false);
-                        new StudentDetailsWindow(new StudentModelExt(student));
-
-                        HelpWindow.this.hide(); // hide to deal with z-order
-                                                // issue
-                    }
-                }.register();
-            }
-        });
+//        GWT.runAsync(new CmRunAsyncCallback() {
+//
+//            @Override
+//            public void onSuccess() {
+//                new RetryAction<StudentModelI>() {
+//                    @Override
+//                    public void attempt() {
+//                        CmBusyManager.setBusy(true);
+//                        GetStudentModelAction action = new GetStudentModelAction(UserInfo.getInstance().getUid());
+//                        setAction(action);
+//                        CmShared.getCmService().execute(action, this);
+//                    }
+//
+//                    public void oncapture(StudentModelI student) {
+//                        CmBusyManager.setBusy(false);
+//                        new StudentDetailsWindow(new StudentModelExt(student));
+//
+//                        HelpWindow.this.hide(); // hide to deal with z-order
+//                                                // issue
+//                    }
+//                }.register();
+//            }
+//        });
     }
 
     /**
@@ -503,20 +497,20 @@ public class HelpWindow extends GWindow {
 
 class BackgroundModel  {
 
-    private String text;
+    private String type;
     private String style;
 
-    public BackgroundModel(String text, String style) {
-        this.text = text;
+    public BackgroundModel(String type, String style) {
+        this.type = type;
         this.style = style;
     }
 
-    public String getText() {
-        return text;
+    public String getType() {
+        return type;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getStyle() {
@@ -526,6 +520,7 @@ class BackgroundModel  {
     public void setStyle(String style) {
         this.style = style;
     }
+    
 }
 
 class MyOptionButton extends TextButton {

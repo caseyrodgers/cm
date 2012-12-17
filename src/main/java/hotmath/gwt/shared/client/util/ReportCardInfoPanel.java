@@ -2,23 +2,25 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 
 /** Panel that contains minimal information about 
  *  user's current state within CM
  *  
  * @author casey
+ * 
+ * 
+ * TODO: Not USED?
  *
  */
-public class ReportCardInfoPanel extends LayoutContainer {
+public class ReportCardInfoPanel extends FlowLayoutContainer {
     UserInfo user;
     public ReportCardInfoPanel(UserInfo user) {
         this.user = user;
-        setStyleName("report-card-info-panel");
         String html = getInfoHtml();
-        add(new Html(html));
+        add(new HTML(html));
     }
     
     

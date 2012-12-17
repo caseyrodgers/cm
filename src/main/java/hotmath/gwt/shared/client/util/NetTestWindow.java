@@ -2,7 +2,7 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
@@ -13,66 +13,88 @@ import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
 
-public class NetTestWindow extends CmWindow {
+public class NetTestWindow extends GWindow {
+    
+    
+    public interface NetTestProperties extends PropertyAccess<String> {
+        @Path("name")
+        ModelKeyProvider<NetTestModel> id();
+        ValueProvider<NetTestModel, String> name();
+        ValueProvider<NetTestModel, Long> size();
+        ValueProvider<NetTestModel, Long> time();
+    }
+    
+    
+    private static final NetTestProperties props = GWT.create(NetTestProperties.class);
     
     Grid<NetTestModel> _grid;
-    ListStore<NetTestModel> store = new ListStore<NetTestModel>();
-    Button _btnCheck;
+    TextButton _btnCheck;
     TestApplication testApplication;
     Integer uid;
 
     public NetTestWindow(TestApplication testApp, Integer uid) {
-        this.testApplication = testApp;
-        this.uid = uid;
-        _grid = defineGrid(store,defineColumns());
-        setLayout(new BorderLayout());
-        
+        super(true);
+        setHeadingText("Connection Check");
         setHeight(300);
-        setHeading("Connection Check");
         setModal(true);
         setResizable(true);
+        
+        
+        this.testApplication = testApp;
+        this.uid = uid;
+        
+        ListStore<NetTestModel> store = new ListStore<NetTestModel>(props.id());
+        _grid = defineGrid(store,defineColumns());
+        
+        BorderLayoutContainer borderLayout = new BorderLayoutContainer();
+        
         String html = "<p style='padding: 10px;'>Press Check to inform Catchup Math about your connection to the Internet.</p>";
-        add(new Html(html), new BorderLayoutData(LayoutRegion.NORTH,40));
-        add(_grid, new BorderLayoutData(LayoutRegion.CENTER));
+        borderLayout.setNorthWidget(new HTML(html), new BorderLayoutData(40));
+        borderLayout.setCenterWidget(_grid);
      
         if(CmShared.getQueryParameter("debug")!=null) {
-            addButton(new Button("Stop Tests", new SelectionListener<ButtonEvent>() {
+            addButton(new TextButton("Stop Tests", new SelectHandler() {
                 @Override
-                public void componentSelected(ButtonEvent ce) {
+                public void onSelect(SelectEvent event) {
                     stopTimer();
                 }
             }));
         }
-        _btnCheck = new Button("Check",new SelectionListener<ButtonEvent>() {
+        _btnCheck = new TextButton("Check",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 runTests();
             }
         });
         addButton(_btnCheck);
-        addButton(new Button("Close",new SelectionListener<ButtonEvent>() {
+        addButton(new TextButton("Close",new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 stopTimer();
                 close();
             }
         }));
+        
+        setWidget(borderLayout);
         setVisible(true);
     }
     
@@ -99,33 +121,12 @@ public class NetTestWindow extends CmWindow {
         }        
     }
     
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-
-        ColumnConfig group = new ColumnConfig();
-        group.setId("name");
-        group.setHeader("Test Name");
-        group.setWidth(120);
-        group.setSortable(true);
-        configs.add(group);
-        
-        ColumnConfig usage = new ColumnConfig();
-        usage.setId("size");
-        usage.setHeader("Size");
-        usage.setWidth(48);
-        usage.setSortable(true);
-        configs.add(usage);
-        ColumnModel cm = new ColumnModel(configs);
-        
-
-        ColumnConfig time = new ColumnConfig();
-        time.setId("time");
-        time.setHeader("Time");
-        time.setWidth(48);
-        time.setSortable(true);
-        configs.add(time);
-                
-        return cm;
+    private ColumnModel<ColumnConfig<NetTestModel,?>> defineColumns() {
+        ArrayList<ColumnConfig<NetTestModel, ?>> configs = new ArrayList<ColumnConfig<NetTestModel,?>>();
+        configs.add(new ColumnConfig<NetTestModel, String>(props.name(), 120, "Test Name"));
+        configs.add(new ColumnConfig<NetTestModel, Long>(props.size(), 48, "Size"));
+        configs.add(new ColumnConfig<NetTestModel, Long>(props.time(), 48, "Time"));
+        return new ColumnModel(configs);
     }
     
     
@@ -153,7 +154,7 @@ public class NetTestWindow extends CmWindow {
             }
         });
         
-        _grid.getStore().removeAll();
+        _grid.getStore().clear();
         
         runTest(0, Math.round(TEST_MULTIPLIER));
     }
@@ -208,7 +209,7 @@ public class NetTestWindow extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.SAVE_RESULTS, NetTestWindow.this.uid, _grid.getStore().getModels());
+                RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.SAVE_RESULTS, NetTestWindow.this.uid, _grid.getStore().getAll());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -217,12 +218,7 @@ public class NetTestWindow extends CmWindow {
             public void oncapture(NetTestModel value) {
                 CmBusyManager.setBusy(false);
                 if(CmShared.getQueryParameter("debug")==null) {
-                    CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.",new CmAsyncRequestImplDefault() {
-                        @Override
-                        public void requestComplete(String requestData) {
-                            //
-                        }
-                    });
+                    CatchupMathTools.showAlert("Thank you", "Thank you.  The results have been saved on our server.");
                 }
             }
         }.register();
@@ -231,7 +227,6 @@ public class NetTestWindow extends CmWindow {
     private Grid<NetTestModel> defineGrid(final ListStore<NetTestModel> store, ColumnModel cm) {
         final Grid<NetTestModel> grid = new Grid<NetTestModel>(store, cm);
         grid.setBorders(true);
-        grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         grid.setWidth("200px");

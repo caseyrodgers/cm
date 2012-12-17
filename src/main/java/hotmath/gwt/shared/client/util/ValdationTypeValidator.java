@@ -1,7 +1,10 @@
 package hotmath.gwt.shared.client.util;
 
-import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.form.Validator;
+import java.util.List;
+
+import com.google.gwt.editor.client.Editor;
+import com.sencha.gxt.widget.core.client.form.Validator;
+
 
 /** Provides simple method to apply validation for GXT forms
  * 
@@ -14,15 +17,15 @@ public class ValdationTypeValidator implements Validator {
         public ValdationTypeValidator(ValidationType type){
           this.type = type;
         }
-        
-        
+
         @Override
-        public String validate(Field<?> field, String value) {
-          String res = null;
-          if(!value.matches(type.regex)){
-            res = value + "isn't a valid " + type.name;
-          }
-          return res;
+        public List validate(Editor editor, Object value) {
+//            String res = null;
+//            if(!value.matches(type.regex)){
+//              res = value + "isn't a valid " + type.name;
+//            }
+//            return res;
+            return  null;
         }
 
 }

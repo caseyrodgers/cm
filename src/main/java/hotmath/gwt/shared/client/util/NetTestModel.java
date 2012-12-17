@@ -1,49 +1,62 @@
 package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.model.BaseModel;
 
 
-public class NetTestModel extends BaseModel implements Response {
+public class NetTestModel implements Response {
+    private String name;
+    private String results;
+    private int number;
+    private long size;
+    private long time;
+
     public NetTestModel() {}
     
     public NetTestModel(String testName, String testResults) {
-        set("name", testName);
-        set("results", testResults);
-        set("number", -1);
-        set("size", (long)-1);
-        set("time", (long)-1);
+        this.name = testName;
+        this.results = testResults;
+        this.number = -1;
+        this.size = (long)-1;
+        this.time = (long)-1;
     }
-    
+
     public String getName() {
-        return get("name");
+        return name;
     }
-    
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getResults() {
-        return get("results");
+        return results;
     }
-    
-    public Long  getTime() {
-        return get("time");
+
+    public void setResults(String results) {
+        this.results = results;
     }
-    
-    public void setTime(Long time) {
-        set("time", time);
+
+    public int getNumber() {
+        return number;
     }
-    
-    public Long getSize() {
-        return get("size");
+
+    public void setNumber(int number) {
+        this.number = number;
     }
-    
-    public void setSize(Long size) {
-        set("size", size);
-    }    
-    
-    public Integer getNumber() {
-        return get("number");
+
+    public long getSize() {
+        return size;
     }
-    
-    public void setNumber(Integer num) {
-        set("number", num);
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }

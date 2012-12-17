@@ -68,7 +68,7 @@ public class HeaderPanel extends FlowLayoutContainer {
             @Override
             public void onSelect(SelectEvent event) {
 
-                if (currentEvent.getShiftKey()) {
+                if (currentEvent != null && currentEvent.getShiftKey()) {
                     String url = CmShared.getServerForCmStudent() + "/loginService?debug=true&uid="
                             + UserInfo.getInstance().getUid();
                     CatchupMathTools.showAlert("Catchup Math Connection URL", url);

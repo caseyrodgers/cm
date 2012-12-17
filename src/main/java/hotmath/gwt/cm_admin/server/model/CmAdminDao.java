@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModelImplPojo;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -418,7 +419,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                 new RowMapper<AccountInfoModel>() {
                     public AccountInfoModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         try {
-                            AccountInfoModel ai = new AccountInfoModel();
+                            AccountInfoModel ai = new AccountInfoModelImplPojo();
                             ai.setSubscriberId(rs.getString("id"));
                             ai.setSchoolName(rs.getString("school_name"));
                             ai.setSchoolUserName(rs.getString("responsible_name"));

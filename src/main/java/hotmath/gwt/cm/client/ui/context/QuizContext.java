@@ -12,8 +12,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.NextPanelInfo;
-import hotmath.gwt.cm_tools.client.ui.NextPanelInfoImplDefault;
 import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
@@ -23,12 +21,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.IconButton;
@@ -80,10 +73,6 @@ public class QuizContext implements CmContext {
         String title = getTitle();
         return title + "<h2>Section " + (UserInfo.getInstance().getTestSegment()) + " of "
                 + UserInfo.getInstance().getProgramSegmentCount() + "</h2>";
-    }
-
-    public NextPanelInfo getNextPanelInfo() {
-        return new QuizContextNextPanelInfo();
     }
 
     public void resetContext() {
@@ -268,31 +257,4 @@ public class QuizContext implements CmContext {
             setToolTip(tipText);
         }
     }
-}
-
-class QuizContextNextPanelInfo extends NextPanelInfoImplDefault {
-
-    public void doNext() {
-        CatchupMathTools.showAlert("Do next from the quiz");
-    }
-
-    public Widget getNextPanelWidget() {
-        LayoutContainer cp = new LayoutContainer();
-        cp.setStyleName("quiz-next-panel");
-        cp.add(new HTML("When ready, you can "));
-        Anchor a = new Anchor("Check Your Test.");
-        a.addClickHandler(new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                // History.newItem("pres=0");
-                History.newItem("pres=1");
-            }
-        });
-        cp.add(a);
-        cp.add(new HTML(
-                "<p style='margin-top: 15px;'>After checking your test Catchup Math will assign a personal set of "
-                        + "review and practice problems to guide you through " + " your trouble spots.</p>"));
-        return cp;
-    }
-
-
 }
