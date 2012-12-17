@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.util.HMConnectionPool;
 import junit.framework.TestCase;
 
 public class CustomQuizQuestionManager_Test extends TestCase {
@@ -11,5 +12,6 @@ public class CustomQuizQuestionManager_Test extends TestCase {
     public void testCreate() throws Exception {
         new CustomQuizQuestionManager();
     }
+
 
 }

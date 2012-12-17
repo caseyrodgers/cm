@@ -1,7 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.util.CmCacheManager;
-import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmCustomProgramDao;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
