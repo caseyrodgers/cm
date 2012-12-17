@@ -131,9 +131,17 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
         else {
         	// update custom Quiz
         	updateCustomQuiz(quizDef);
-        	if (quizDef.isInUse() == false) deleteCustomQuizIds(quizDef);
+        	
+        	/** we have to update the pids if we get to this place.
+        	 *  The check needs to be before here.
+        	 *  
+        	 *  The control should be allowed if debug=true
+        	 */
+        	deleteCustomQuizIds(quizDef);
         }
-        if (quizDef.isInUse() == false) addCustomQuizIds(quizId, ids);
+        
+        /** if call is made, also do update */
+        addCustomQuizIds(quizId, ids);
 
         return quizId;
     }

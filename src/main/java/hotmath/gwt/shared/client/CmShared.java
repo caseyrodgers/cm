@@ -29,6 +29,7 @@ import java.util.Map;
 
 import pl.rmalinowski.gwt2swf.client.utils.SWFObjectUtil;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
@@ -45,12 +46,12 @@ public class CmShared implements EntryPoint {
     static {
         setupServices();
     }
-    
+
     static public String __loginName;
 
     @Override
     public void onModuleLoad() {
-        if(getQueryParameter("show_log") != null) {
+        if (getQueryParameter("show_log") != null) {
             GWT.runAsync(new CmRunAsyncCallback() {
                 @Override
                 public void onSuccess() {
@@ -58,41 +59,39 @@ public class CmShared implements EntryPoint {
                 }
             });
         }
-        
-        
+
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
-                
-                
-                if(CmShared.getQueryParameter("debug") != null) {
+
+                if (CmShared.getQueryParameter("debug") != null) {
                     CatchupMathTools.showAlert("Uncaught Exception", e.toString());
                     e.printStackTrace();
                 }
-                
+
                 try {
                     String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
                     CmShared.getCmService().execute(
-                            
-                            
-                            new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(),nameAndTime,null,CmShared.getStackTraceAsString(e)),
-                            new AsyncCallback<RpcData>() {
-                        @Override
-                        public void onSuccess(RpcData result) {
-                            CmLogger.info("Retry operation logged");
-                        }
 
-                        @Override
-                        public void onFailure(Throwable exe) {
-                            if(CmShared.getQueryParameter("debug") != null)
-                                Window.alert("Error sending info about uncaught exception: " + exe);
-                        }
-                    });
-                }
-                catch(Exception x) {
+                            new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(),
+                                    nameAndTime, null, CmShared.getStackTraceAsString(e)),
+                            new AsyncCallback<RpcData>() {
+                                @Override
+                                public void onSuccess(RpcData result) {
+                                    CmLogger.info("Retry operation logged");
+                                }
+
+                                @Override
+                                public void onFailure(Throwable exe) {
+                                    if (CmShared.getQueryParameter("debug") != null)
+                                        Window.alert("Error sending info about uncaught exception: " + exe);
+                                }
+                            });
+                } catch (Exception x) {
                     CmLogger.error("Uncaught exception: " + x.getMessage(), x);
                 }
-        }});
+            }
+        });
     }
 
     static Map<String, String> _queryParameters = new HashMap<String, String>();
@@ -108,7 +107,7 @@ public class CmShared implements EntryPoint {
     static public String getQueryParameter(String name) {
         return _queryParameters.get(name);
     }
-    
+
     static public void setQueryParameter(String name, String value) {
         _queryParameters.put(name, value);
     }
@@ -116,18 +115,20 @@ public class CmShared implements EntryPoint {
     static public void removeQueryParameter(String name) {
         _queryParameters.remove(name);
     }
-    
-    /** Return parameter for value or empty string if not set
+
+    /**
+     * Return parameter for value or empty string if not set
      * 
      * @param name
      * @return
      */
     static public String getQueryParameterValue(String name) {
         String v = _queryParameters.get(name);
-        return (v != null)?v:"";
+        return (v != null) ? v : "";
     }
 
-    /** return string used to launch cm_student.
+    /**
+     * return string used to launch cm_student.
      * 
      * This is complicated due to various deployment arrangements.
      * 
@@ -161,27 +162,27 @@ public class CmShared implements EntryPoint {
             + "<a href='http://www.adobe.com/go/getflashplayer'><img src='http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>"
             + "</p>" + "</div>";
 
-    
     static {
         _queryParameters = readQueryString();
-        
+
         EventBus.getInstance().addEventListener(new CmEventListener() {
-            
+
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventType() == EventType.EVENT_TYPE_MATHJAX_RENDER) {
-                    /** Call JSNI routine to process any embedded MathML
+                if (event.getEventType() == EventType.EVENT_TYPE_MATHJAX_RENDER) {
+                    /**
+                     * Call JSNI routine to process any embedded MathML
                      * 
                      */
                     CmLogger.info("Processing MathML with MathJax");
-                    //processMathJax();
+                    // processMathJax();
                 }
             }
         });
     }
-    
 
-    /** Return the current browser User Agent
+    /**
+     * Return the current browser User Agent
      * 
      * @return
      */
@@ -190,24 +191,24 @@ public class CmShared implements EntryPoint {
             String userAgent = getUserAgent();
             String flashVersion = "Flash version: " + SWFObjectUtil.getPlayerVersion().toString();
             return userAgent + ", " + flashVersion;
-        }
-        catch(Throwable th) {
+        } catch (Throwable th) {
             th.printStackTrace();
             return "Could not read browser info: " + th.getMessage();
         }
     }
+
     public static native String getUserAgent() /*-{
-        return navigator.userAgent.toLowerCase();
-    }-*/;
+                                               return navigator.userAgent.toLowerCase();
+                                               }-*/;
 
     static native void processMathJax() /*-{
-        // defined in CatchupMath.js
-        $wnd.processMathJax();
-    }-*/; 
-    
+                                        // defined in CatchupMath.js
+                                        $wnd.processMathJax();
+                                        }-*/;
+
     /**
-     * Verify login attempt by reading security key and making sure it
-     * Validated only once ..
+     * Verify login attempt by reading security key and making sure it Validated
+     * only once ..
      * 
      * If cookie contains current key, assume already verified.
      * 
@@ -219,11 +220,12 @@ public class CmShared implements EntryPoint {
      */
     static public void handleLoginProcessAsync(final CmLoginAsync callback) {
         try {
-            /** Provide shortcut, single argument entry for debugging a user
+            /**
+             * Provide shortcut, single argument entry for debugging a user
              */
-            if(_queryParameters.get("debug_uid") != null) {
+            if (_queryParameters.get("debug_uid") != null) {
                 _queryParameters.put("debug", "true");
-                _queryParameters.put("uid",_queryParameters.get("debug_uid"));
+                _queryParameters.put("uid", _queryParameters.get("debug_uid"));
             }
             // first see if run_id is passed, if so
             // the user is in 'view' mode and we must
@@ -231,14 +233,14 @@ public class CmShared implements EntryPoint {
             // current state as the user moves around system.
             int userId = 0;
 
-//            if (_queryParameters.get("uid") != null) {
-//            	userId = Integer.parseInt(_queryParameters.get("uid"));
-//            }
-            /** 
-             *  for testing, if uid is passed allow override.
+            // if (_queryParameters.get("uid") != null) {
+            // userId = Integer.parseInt(_queryParameters.get("uid"));
+            // }
+            /**
+             * for testing, if uid is passed allow override.
              */
             if (userId > 0) {
-            	callback.loginSuccessful(userId);
+                callback.loginSuccessful(userId);
             } else {
                 final String key2 = getSecurityKey();
                 if (key2 == null || key2.length() == 0) {
@@ -246,7 +248,7 @@ public class CmShared implements EntryPoint {
                 }
 
                 boolean needToValidate = false;
-                final String cmJson = getLoginInfoFromExtenalJs(); 
+                final String cmJson = getLoginInfoFromExtenalJs();
                 // Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
                 if (cmJson != null) {
@@ -262,112 +264,106 @@ public class CmShared implements EntryPoint {
                         needToValidate = false;
                     }
                     String cmStartType = o.get("type").isString().stringValue();
-                    if(cmStartType != null) {
-                    	UserInfoBase.getInstance().setCmStartType(cmStartType);
+                    if (cmStartType != null) {
+                        UserInfoBase.getInstance().setCmStartType(cmStartType);
                     }
 
-                    if(o.containsKey("partner")) {
-                    	String partner = o.get("partner").isString().stringValue();
-                    	if(partner != null && partner.length() > 1) {
-                    		if(partner.equals(CmPartner.LCOM.key)) {
-                    			UserInfoBase.getInstance().setPartner(CmPartner.LCOM);
-                    		}
-                    		else {
-                    			CmLogger.error("Invalid partner setup for user: " + partner);
-                    		}
-                    	}
+                    if (o.containsKey("partner")) {
+                        String partner = o.get("partner").isString().stringValue();
+                        if (partner != null && partner.length() > 1) {
+                            if (partner.equals(CmPartner.LCOM.key)) {
+                                UserInfoBase.getInstance().setPartner(CmPartner.LCOM);
+                            } else {
+                                CmLogger.error("Invalid partner setup for user: " + partner);
+                            }
+                        }
                     }
-                    
+
                     String email = o.get("email").isString().stringValue();
                     UserInfoBase.getInstance().setEmail(email);
-                    
-                    if(CmShared.getQueryParameter("mode") != null && CmShared.getQueryParameter("mode").equals("t")) {
-                        UserInfoBase.getInstance().setMode(Mode.TEACHER_MODE);    
+
+                    if (CmShared.getQueryParameter("mode") != null && CmShared.getQueryParameter("mode").equals("t")) {
+                        UserInfoBase.getInstance().setMode(Mode.TEACHER_MODE);
                     }
-            		
-            		EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_LOGIN));
+
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_LOGIN));
                 }
                 if (!needToValidate) {
                     callback.loginSuccessful(userId);
                 } else {
-                	throw new CmException("Invalid login operation!");
+                    throw new CmException("Invalid login operation!");
                 }
             }
 
         } catch (Exception e) {
             displayLoginError(e);
         }
-        
+
         SystemSyncChecker.monitorVersionChanges();
     }
-    
-    
-    /** Reload the current user's page allowing any changed
-     * program configuration to take effect.
+
+    /**
+     * Reload the current user's page allowing any changed program configuration
+     * to take effect.
      * 
-     * Make sure there is a uid parameter to deal 
-     * with possible GETs
+     * Make sure there is a uid parameter to deal with possible GETs
      * 
      */
     static public void reloadUser() {
-        String queryString="";
-        boolean hasUid=false;
-        for(String k: _queryParameters.keySet()) {
-           if(queryString.length() > 0) {
-               queryString += "&";
-           }
-           if(k.equals("uid")) {
-               hasUid=true;
-           }
-           queryString += k + "=" + _queryParameters.get(k);
+        String queryString = "";
+        boolean hasUid = false;
+        for (String k : _queryParameters.keySet()) {
+            if (queryString.length() > 0) {
+                queryString += "&";
+            }
+            if (k.equals("uid")) {
+                hasUid = true;
+            }
+            queryString += k + "=" + _queryParameters.get(k);
         }
-        if(!hasUid) {
-            if(queryString.length() > 0) {
+        if (!hasUid) {
+            if (queryString.length() > 0) {
                 queryString += "&";
             }
             queryString += "uid=" + UserInfo.getInstance().getUid();
         }
         Window.Location.replace("/loginService?" + queryString);
-    }    
-    
-    
+    }
+
     static public String getSecurityKey() {
-    	String key = _queryParameters.get("key");
-    	if(key == null) {
-    		// see if key in JS variable
-    		key = getSecurityKeyFromExternalJs();
-    	}
-    	
-    	return key;
+        String key = _queryParameters.get("key");
+        if (key == null) {
+            // see if key in JS variable
+            key = getSecurityKeyFromExternalJs();
+        }
+
+        return key;
     }
 
     static private void displayLoginError(Exception exception) {
         exception.printStackTrace();
         CmLogger.error("Login error: ", exception);
-        
 
         String msg = "We suggest you refresh this page by pressing the F5 function key.";
         if (_queryParameters.get("debug") != null)
             msg += "<br/>" + exception.getMessage() + "";
 
-        if(exception instanceof CmExceptionLoginInvalid) {
-            /** provide message, but force back to home page
+        if (exception instanceof CmExceptionLoginInvalid) {
+            /**
+             * provide message, but force back to home page
              * 
              */
             CatchupMathTools.showAlert("Login Error", msg, new CmAsyncRequestImplDefault() {
                 @Override
                 public void requestComplete(String requestData) {
-                    Window.Location.assign(CmShared.CM_HOME_URL);                    
+                    Window.Location.assign(CmShared.CM_HOME_URL);
                 }
             });
-        }
-        else {
+        } else {
             /** show window that cannot be dismissed .. END OF LINE */
             Window.alert(msg);
         }
     }
-
-   
 
     /**
      * Convert string+list to string+string of all URL parameters
@@ -396,75 +392,67 @@ public class CmShared implements EntryPoint {
         String hostName = Window.Location.getHostName();
         if (hostName.indexOf("hotmath.com") > -1) {
             hostName = "catchupmath.com";
-        } 
-        else {
+        } else {
             String hostPort = Window.Location.getPort();
-            int port = (hostPort != null && hostPort.trim().length() > 0) ?
-            		Integer.parseInt(hostPort) : 80;
+            int port = (hostPort != null && hostPort.trim().length() > 0) ? Integer.parseInt(hostPort) : 80;
             // only append port number if > 80
             if (port > 80) {
                 hostName += ":" + port;
             }
         }
-        
+
         String url = "http://" + hostName;
         return url;
     }
-    
-    
-    /** 
-     *  Get the single CmServiceAsync instance to all
-     *  for sending RPC commands.
-     *  
+
+    /**
+     * Get the single CmServiceAsync instance to all for sending RPC commands.
+     * 
      * @return
      */
     static CmServiceAsync _serviceInstance;
+
     static public CmServiceAsync getCmService() {
         return _serviceInstance;
     }
-    
 
     static private void setupServices() {
-        CmLogger.info("CatchupMathTools: Setting up services");
-        
-        
+        Log.info("CatchupMathTools: Setting up services");
+
         String point = GWT.getModuleBaseURL();
         if (!point.endsWith("/"))
             point += "/";
-        
-        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
+
+        final CmServiceAsync cmService = (CmServiceAsync) GWT.create(CmService.class);
         ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
         _serviceInstance = cmService;
-        
-        
+
         registerGlobalGwtJsMethods();
     }
-    
-    static private native void registerGlobalGwtJsMethods() /*-{
-        $wnd.resetProgram_Gwt = @hotmath.gwt.shared.client.CmShared::resetProgram_Gwt();
-    }-*/;
 
-    /** create JSNI to return KEY JS variable set during login
+    static private native void registerGlobalGwtJsMethods() /*-{
+                                                            $wnd.resetProgram_Gwt = @hotmath.gwt.shared.client.CmShared::resetProgram_Gwt();
+                                                            }-*/;
+
+    /**
+     * create JSNI to return KEY JS variable set during login
      * 
      * @return
      */
     static private native String getSecurityKeyFromExternalJs() /*-{
-        return $wnd.__securityKey;
-    }-*/;
-    
-    
-    /** return the generic loginInfo jsonized string from bootstrap html 
+                                                                return $wnd.__securityKey;
+                                                                }-*/;
+
+    /**
+     * return the generic loginInfo jsonized string from bootstrap html
      * 
      * @return
      */
     static private native String getLoginInfoFromExtenalJs() /*-{
-        var d = $doc.getElementById('login_info');
-        return d.innerHTML;
-    }-*/;
-    
-    
-    
-    
+                                                             var d = $doc.getElementById('login_info');
+                                                             return d.innerHTML;
+                                                             }-*/;
+
     static private native String getHostName() /*-{
                                                var host = window.location.host;
                                                if(host.indexOf("hotmath.com") > -1) {
@@ -478,7 +466,7 @@ public class CmShared implements EntryPoint {
                                                }
                                                return host;
                                                }-*/;
-    
+
     /**
      * Reset the current user's path through CM
      * 
@@ -486,32 +474,29 @@ public class CmShared implements EntryPoint {
     static public void resetProgram_Gwt() {
         resetProgram_Gwt(UserInfo.getInstance().getUid());
     }
-    
+
     static public void resetProgram_Gwt(final int uid) {
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
                 CmServiceAsync s = CmShared.getCmService();
-                int altTest=0;
+                int altTest = 0;
                 try {
                     altTest = Integer.parseInt(CmShared.getQueryParameter("alt_test"));
                     CmLogger.info("Resetting to alternate test " + altTest);
+                } catch (Exception e) {
+                    // quiet
                 }
-                catch(Exception e) {
-                    //quiet
-                }
-                
-                s.execute(new ResetUserAction(uid,altTest),
-                        new CmAsyncCallback<RpcData>() {
-                            @Override
-                            public void onSuccess(RpcData result) {
-                                refreshPage();
-                            }
-                        });
+
+                s.execute(new ResetUserAction(uid, altTest), new CmAsyncCallback<RpcData>() {
+                    @Override
+                    public void onSuccess(RpcData result) {
+                        refreshPage();
+                    }
+                });
             }
         });
-    }    
-    
+    }
 
     /**
      * Reload current page
@@ -520,27 +505,26 @@ public class CmShared implements EntryPoint {
     static public void refreshPage() {
         CmShared.reloadUser();
     }
-    
-    /** Return stack trace as string, or null if 
-     * throwable is null.
+
+    /**
+     * Return stack trace as string, or null if throwable is null.
      * 
      * @param th
      * @return
      */
     static public String getStackTraceAsString(Throwable th) {
-        if(th == null)
+        if (th == null)
             return null;
-        
-        
+
         final StringBuilder result = new StringBuilder();
-        if(th instanceof StatusCodeException)
-            result.append("HTTP ERROR CODE: ").append(((StatusCodeException)th).getStatusCode()).append("\n");
-                
+        if (th instanceof StatusCodeException)
+            result.append("HTTP ERROR CODE: ").append(((StatusCodeException) th).getStatusCode()).append("\n");
+
         result.append(th.toString()).append("\n");
 
-        for (StackTraceElement element : th.getStackTrace() ){
-            result.append( element ).append("\n");
+        for (StackTraceElement element : th.getStackTrace()) {
+            result.append(element).append("\n");
         }
         return result.toString();
-    }    
+    }
 }

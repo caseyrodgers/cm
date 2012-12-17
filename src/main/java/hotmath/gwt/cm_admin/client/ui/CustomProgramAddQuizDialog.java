@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.MathJaxRenderNeededEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAllCustomQuizLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -510,7 +512,7 @@ public class CustomProgramAddQuizDialog extends Window {
         _listQuestions.getStore().add(models);
 
         String id = _listQuestions.getId();
-        hideAnswerResults(id, answers);
+        jsni_hideAnswerResults(id, answers);
     }
 
     private void showQuestionsInCustomQuiz(List<QuizQuestionModel> questions, String id) {
@@ -519,22 +521,25 @@ public class CustomProgramAddQuizDialog extends Window {
             QuizQuestionModel question = questions.get(i);
             answers.push(question.getCorrectAnswer());
         }
-        hideAnswerResults(id, answers);
+        jsni_hideAnswerResults(id, answers);
     }
 
     private native JsArrayInteger createArray() /*-{
                                                 return [];
                                                 }-*/;
 
-    private native void hideAnswerResults(String id, JsArrayInteger answers) /*-{
-                                                                             try {
-                                                                             var questionList = $doc.getElementById(id);
-                                                                             $wnd.prepareCustomQuizForDisplay(questionList, answers);
-                                                                             }
-                                                                             catch(e) {
-                                                                             alert(e);
-                                                                             }
-                                                                             }-*/;
+    private native void jsni_hideAnswerResults(String id, JsArrayInteger answers) /*-{
+        try {
+            var questionList = $doc.getElementById(id);
+            $wnd.prepareCustomQuizForDisplay(questionList, answers);
+            
+            
+            $wnd.processMathJax();
+        }
+        catch(e) {
+            alert(e);
+        }
+   }-*/;
 
     Label _totalCount = new Label("Count: 0");
     private LayoutContainer createBodyPanel() {

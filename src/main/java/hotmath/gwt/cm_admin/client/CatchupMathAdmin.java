@@ -17,7 +17,6 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
@@ -72,28 +71,26 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
         mainPort = new Viewport() {
             protected void onWindowResize(int width, int height) {
-                super.onWindowResize(width,  height);
+                super.onWindowResize(width, height);
                 CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         };
-        //CmBusyManager.setViewPort(mainPort);
-        
+        // CmBusyManager.setViewPort(mainPort);
+
         mainPort.setLayout(new BorderLayout());
-        
+
         BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 40);
         headerPanel = new HeaderPanel();
         mainPort.add(headerPanel, bdata);
 
-        
         mainContainer = new LayoutContainer();
         mainContainer.setStyleName("main-container");
         mainContainer.setLayout(new FitLayout());
-        
+
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
 
-        
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
@@ -102,32 +99,29 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                     public void loginSuccessful(Integer uid) {
                         completeLoginProcess(uid);
                     }
-                });        
+                });
             }
         });
     }
 
-    
     private void completeLoginProcess(final int uid) {
 
-        if(CmShared.getQueryParameter("setup_tests") != null) {
+        if (CmShared.getQueryParameter("setup_tests") != null) {
             Log.debug("Running manual setup tests.");
             setupAnyTests();
             return;
         }
-                
-        
+
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {
                 Log.debug("Message of day callback complete.");
             }
         });
-        
-        
+
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setId(uid);
-        
+
         infoPanel = new AccountInfoPanel(cmAdminMdl);
         studentGrid = new StudentGridPanel(cmAdminMdl);
 
@@ -138,23 +132,22 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         if (initToken.length() == 0) {
             History.newItem("main");
         }
-        
+
         History.addValueChangeHandler(this);
-        
+
         History.fireCurrentHistoryState();
-        
-        if(UserInfoBase.getInstance().getEmail() == null || UserInfoBase.getInstance().getEmail().length() == 0) {
+
+        if (UserInfoBase.getInstance().getEmail() == null || UserInfoBase.getInstance().getEmail().length() == 0) {
             new CollectEmailFromUserDialog();
-        }        
+        }
     }
 
-    
     private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
         mainContainer.removeAll();
 
         mainContainer.setLayout(new BorderLayout());
-        
+
         mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 120));
         mainContainer.add(studentGrid, new BorderLayoutData(LayoutRegion.CENTER));
 
@@ -169,7 +162,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainContainer.add(new StudentShowWorkPanel());
         mainContainer.layout();
     }
-
 
     public void showMe() {
         ;
@@ -196,90 +188,93 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     public AccountInfoPanel getAccountInfoPanel() {
         return infoPanel;
     }
-    
-    
+
     private void setupAnyTests() {
-        
-//        GWindow gw = new GWindow(true);
-//        AssignmentQuestionViewerPanel pan = new AssignmentQuestionViewerPanel();
-//        gw.setWidget(pan);
-//        gw.setVisible(true);
-//
-//        
-//      final int uid = UserInfoBase.getInstance().getUid();
-//      String pid="alg2ptests3_coursetest_1_algebra2practicetest_20_1";
-//      int groupId=10;
-//      String name="Test";
-//      String comments = "Test";
-//      Date dueDate = new Date();
-//      CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-//      List<Integer> uids = new ArrayList<Integer>();
-//      final String status="";
-//      Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(),groupId, name, comments, dueDate,pids,uids,status);
-//      
-//      final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
-//              
-//      CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {{
-//          add(new StudentProblemDto(uid,problem,status));  
-//      }};
-//      StudentAssignment studentAssignment = new StudentAssignment(uid,ass, statuses);
-//        
-//        pan.viewQuestion(studentAssignment, problem);
-        
-      if(false) {
-          final int uid=2;
-          String pid="test_dynamic_graphs_1_2_3$4";
-          int groupId=10;
-          String name="Test";
-          String comments = "Test";
-          Date dueDate = new Date();
-          CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-          List<Integer> uids = new ArrayList<Integer>();
-          final String status="";
-          Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(),groupId, name, comments, dueDate,pids,uids,status);
-          
-          final ProblemDto problem = new ProblemDto(0,"lesson","label", pid, null, 0);
-                  
-          CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {{
-              add(new StudentProblemDto(uid,problem,status, true, true));  
-          }};
-          StudentAssignment stuAssignment = new StudentAssignment(uid,ass, statuses);
-          GradeBookDialog gb = new GradeBookDialog(stuAssignment,new CallbackOnComplete() {
-            
-            @Override
-            public void isComplete() {
-            }
-        });
-          //AssignmentGradingPanel agp = new AssignmentGradingPanel(stuAssignment);
-          
-          return;
-      }
-      
-      if(false) {
-          StudentModelExt sme = new StudentModelExt();
-          StudentActivityModel activityModel = new StudentActivityModel();
-          activityModel.setRunId(1196000);
-          activityModel.setTestId(0);
-          sme.setUid(27554);
-          new StudentShowWorkWindow(sme, activityModel);
-          
-          return;
-      }
-      
-      
-      
-      
-      if(true) {
-//          new AssignmentManagerDialog2(2);
-//          return;
-          AddProblemDialog.showDialog(new AddProblemsCallback() {
-              @Override
-              public void problemsAdded(List<ProblemDto> problemsAdded) {
-              }
-          });
-          return;
-      }        
+
+        // GWindow gw = new GWindow(true);
+        // AssignmentQuestionViewerPanel pan = new
+        // AssignmentQuestionViewerPanel();
+        // gw.setWidget(pan);
+        // gw.setVisible(true);
+        //
+        //
+        // final int uid = UserInfoBase.getInstance().getUid();
+        // String pid="alg2ptests3_coursetest_1_algebra2practicetest_20_1";
+        // int groupId=10;
+        // String name="Test";
+        // String comments = "Test";
+        // Date dueDate = new Date();
+        // CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
+        // List<Integer> uids = new ArrayList<Integer>();
+        // final String status="";
+        // Assignment ass = new
+        // Assignment(UserInfoBase.getInstance().getUid(),groupId, name,
+        // comments, dueDate,pids,uids,status);
+        //
+        // final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
+        //
+        // CmList<StudentProblemDto> statuses = new
+        // CmArrayList<StudentProblemDto>() {{
+        // add(new StudentProblemDto(uid,problem,status));
+        // }};
+        // StudentAssignment studentAssignment = new StudentAssignment(uid,ass,
+        // statuses);
+        //
+        // pan.viewQuestion(studentAssignment, problem);
+
+        if (false) {
+            final int uid = 2;
+            String pid = "test_dynamic_graphs_1_2_3$4";
+            int groupId = 10;
+            String name = "Test";
+            String comments = "Test";
+            Date dueDate = new Date();
+            CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
+            List<Integer> uids = new ArrayList<Integer>();
+            final String status = "";
+            Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(), groupId, name, comments, dueDate,
+                    pids, uids, status);
+
+            final ProblemDto problem = new ProblemDto(0, "lesson", "label", pid, null, 0);
+
+            CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {
+                {
+                    add(new StudentProblemDto(uid, problem, status, true, true));
+                }
+            };
+            StudentAssignment stuAssignment = new StudentAssignment(uid, ass, statuses);
+            GradeBookDialog gb = new GradeBookDialog(stuAssignment, new CallbackOnComplete() {
+
+                @Override
+                public void isComplete() {
+                }
+            });
+            // AssignmentGradingPanel agp = new
+            // AssignmentGradingPanel(stuAssignment);
+
+            return;
+        }
+
+        if (false) {
+            StudentModelExt sme = new StudentModelExt();
+            StudentActivityModel activityModel = new StudentActivityModel();
+            activityModel.setRunId(1196000);
+            activityModel.setTestId(0);
+            sme.setUid(27554);
+            new StudentShowWorkWindow(sme, activityModel);
+
+            return;
+        }
+
+        if (true) {
+            // new AssignmentManagerDialog2(2);
+            // return;
+            AddProblemDialog.showDialog(new AddProblemsCallback() {
+                @Override
+                public void problemsAdded(List<ProblemDto> problemsAdded) {
+                }
+            });
+            return;
+        }
     }
 }
-
-
