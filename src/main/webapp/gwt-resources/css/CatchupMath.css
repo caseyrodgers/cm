@@ -874,9 +874,7 @@ img.resource-item-complete {
 }
 .prescription-cm-gui-definition-resource-panel {}
 
- .resource-button {
-        margin-top: 10px;
-}
+
 .prescription-cm-gui-definition-resource-panel .resource-separator {
 	color: #94C3F5; /** #0071BC; */
 	padding: 0; 

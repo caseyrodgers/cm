@@ -13,15 +13,14 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 
 /**
@@ -30,11 +29,10 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
  * @author casey
  * 
  */
-public class PrescriptionResourcePanel extends SimpleContainer {
+public class PrescriptionResourcePanel extends FlowLayoutContainer {
 
     static PrescriptionResourcePanel __instance;
     PrescriptionData pData;
-    List<PrescriptionSessionDataResource> registeredResources = new ArrayList<PrescriptionSessionDataResource>();
     Map<String, ResourceMenuButton> resourceButtons = new HashMap<String, ResourceMenuButton>();
 
     boolean isReady;
@@ -42,27 +40,18 @@ public class PrescriptionResourcePanel extends SimpleContainer {
     public PrescriptionResourcePanel() {
         __instance = this;
         setStyleName("prescription-resource-panel");
+        
+        setScrollMode(ScrollMode.AUTOY);
     }
-    
-
-    public List<PrescriptionSessionDataResource> getRegisteredResources() {
-        return registeredResources;
-    }
-
-    public void setRegisteredResources(List<PrescriptionSessionDataResource> registeredResources) {
-        this.registeredResources = registeredResources;
-    }
-
     
     public void buildUi(PrescriptionData pData) {
     	this.pData = pData;
         List<PrescriptionSessionDataResource> resources = pData.getCurrSession().getInmhResources();
 
         clear();
-        registeredResources.clear();
         
         //setScrollMode(ScrollMode.NONE);
-        VerticalLayoutContainer  vp = new VerticalLayoutContainer();
+        VerticalLayoutContainer  vertPanelResources = new VerticalLayoutContainer();
         addStyleName("prescription-cm-gui-definition-resource-panel");
 
         boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
@@ -78,11 +67,9 @@ public class PrescriptionResourcePanel extends SimpleContainer {
                 continue;
             }
             
-            ResourceMenuButton btn = new ResourceMenuButton(resource);
+            ResourceMenuButton btnResource = new ResourceMenuButton(resource);
 
-            registeredResources.add(resource);
-
-            resourceButtons.put(resource.getType(), btn);
+            resourceButtons.put(resource.getType(), btnResource);
             
             /** if a Custom Program, then make sure the results
              * button is disabled .. there are no quizzes.
@@ -91,38 +78,37 @@ public class PrescriptionResourcePanel extends SimpleContainer {
             	review = resource;
             }
             else {
-            	vp.add(btn);	
+                add(btnResource);
+                add(new HTML("<div> &nbsp; </div>"));
             }
             
         }
         
+        //flowLayoutMain.add(vertPanelResources);
         
-        FlowLayoutContainer flc = new FlowLayoutContainer();
         
-        flc.add(vp);
         /**
          * Add the standard resources
          * 
          */
-        VerticalLayoutContainer fs = new VerticalLayoutContainer();
-        // <div style='margin-left: -7px;margin-top: 10px;font-size: .8em;color: white;'>Other Resources</div>
+
         
-        fs.add(new HTML("<hr class='resource-separator'/>"));
+        add(new HTML("<hr class='resource-separator'/>"));
+        add(new HTML("<div> &nbsp; </div>"));
+        
         ResourceMenuButton rbtn = new ResourceMenuButton(review);
         if(isCustomProgram) {
             rbtn.setEnabled(false);
         }
-        fs.add(rbtn);
+        add(rbtn);
+        add(new HTML("<div> &nbsp; </div>"));
         
         for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
-    		registeredResources.add(resource);
     		ResourceMenuButton btn = new ResourceMenuButton(resource);
-    		fs.add(btn);
+    		add(btn);
+    		add(new HTML("<div> &nbsp; </div>"));
     		resourceButtons.put(resource.getType(), btn);
         }
-        flc.add(fs);
-
-        setWidget(flc);
     }
 
 
