@@ -1,6 +1,6 @@
 
 require(['CatchupMath_combined'], function(x) {
-        alert('catchup math js loaded');
+        console.log('catchup math js loaded');
     });
 
 
