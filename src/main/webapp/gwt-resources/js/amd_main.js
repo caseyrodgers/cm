@@ -1,3 +1,10 @@
+if (typeof console === "undefined") {
+    console = {
+        log: function (x) {
+            // empty
+        }
+    };
+}
 
 require(['CatchupMath_combined'], function(x) {
         console.log('catchup math js loaded');

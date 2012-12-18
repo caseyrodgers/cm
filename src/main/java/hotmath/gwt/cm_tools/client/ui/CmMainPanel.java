@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
@@ -320,17 +321,22 @@ public class CmMainPanel extends BorderLayoutContainer {
 	public void maximizeResource() {
 	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.MAXIMIZED);
 	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText()));
-	    setCenterWidget(_mainContentWrapper.getResourceWrapper()); // _mainContentWrapper.getResourceWrapper());
+	    setCenterWidget(_mainContentWrapper.getResourceWrapper());
 	    
 	    forceLayout();
+	    
+	    
+	    CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
     }
 	
 	protected void optimizeResource() {
 	    _mainContentWrapper = new CmMainResourceWrapper(WrapperType.OPTIMIZED);
 	    _mainContentWrapper.setContentPanel(new CmResourceContentPanel(_lastResourceViewer,_lastResourceContentPanel.getHeader().getText()));
-        setCenterWidget(_mainContentWrapper.getResourceWrapper()); // _mainContentWrapper.getResourceWrapper());	    
+        setCenterWidget(_mainContentWrapper.getResourceWrapper());	    
         
         forceLayout();
+        
+        CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
 	}
 
     static private String __lastQuestionPid;

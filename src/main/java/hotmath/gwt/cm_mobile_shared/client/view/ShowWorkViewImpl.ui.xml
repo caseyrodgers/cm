@@ -33,8 +33,7 @@
                 <div ui:field="canvasBackground" class="{style.problemStatement}">
                 </div>
                 <div id="canvas-container">
-                    <canvas id="ocanvas" width="800" height="500">(Your browser
-                        doesn't support canvas)</canvas>
+                    <canvas id="ocanvas" width="800" height="500"></canvas>
                     <canvas id="gcanvas" width="800" height="500"></canvas>
                     <canvas id="tcanvas" width="800" height="500"></canvas>
                     <canvas id="canvas" width="800" height="500"></canvas>
