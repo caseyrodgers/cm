@@ -22,10 +22,10 @@
 
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
 
-<!-- 
-<link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
-<link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-gray.css" />
--->
+        <!-- 
+            <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
+            <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-gray.css" />
+        -->
   
         <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
@@ -47,21 +47,23 @@
         <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
         <script type="text/javascript" language="javascript" src="/cm_student/cm_student.nocache.js"></script>
     
-        <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
-        
         <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
-   
+
+        <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main"></script>
+        <!-- 
+        <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
         <script src='http://code.jquery.com/jquery-1.8.1.min.js'></script>
         <script src='/gwt-resources/js/whiteboard.js'></script>
         <script src='/gwt-resources/js/mathquill/mathquill.js'></script>
+         -->
         
-<!--
-<script type="text/javascript" language="javascript" src="/js/base64.js"></script>
-<script type="text/javascript" language="javascript" src="/js/tutor6.js"></script>
-<script type="text/javascript" language="javascript" src="/js/tutor_widget.js"></script>
-<script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
-<script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
--->
+        <!--
+        <script type="text/javascript" language="javascript" src="/js/base64.js"></script>
+        <script type="text/javascript" language="javascript" src="/js/tutor6.js"></script>
+        <script type="text/javascript" language="javascript" src="/js/tutor_widget.js"></script>
+        <script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
+        <script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
+        -->
 
         <script>
             /** for debugging */

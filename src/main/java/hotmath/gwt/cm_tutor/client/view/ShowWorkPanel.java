@@ -278,40 +278,41 @@ public class ShowWorkPanel extends Composite {
 
         }
         $wnd.Whiteboard.saveWhiteboard = function () {
-            alert('save whiteboard');
             x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardSave_Gwt()();
         }
     }-*/;
 
     private native void jsni_initializeWhiteboard(Element ele)/*-{
-    
-        var that = this;
-        
-        $wnd.Whiteboard.whiteboardIsReady = function() {
-            // callback into Java 
-            that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardIsReady()();
-        }
 
-        try {
-            if (typeof $wnd.Whiteboard == 'undefined') {
-                alert('Whiteboard JS is not loaded');
+        // load all Whiteboard external dependencies
+        //
+        var that = this;
+        $wnd.requireJsLoad_whiteboard(function(wb) {
+            $wnd.Whiteboard.whiteboardIsReady = function() {
+                // callback into Java 
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardIsReady()();
+            }
+    
+            try {
+                if (typeof $wnd.Whiteboard == 'undefined') {
+                    alert('Whiteboard JS is not loaded');
+                    return;
+                }
+    
+                // tell the Whiteboard object the size of the parent container
+                var height = Number($wnd.grabComputedHeight(ele)) + 15;
+                var width = Number($wnd.grabComputedWidth(ele)) + 15;
+                
+                //alert('setting whiteboard size: ' + height + ', ' + width);
+                $wnd.Whiteboard.setWhiteboardViewPort(width, height);
+                $wnd.Whiteboard.initWhiteboard($doc);
+            } catch (e) {
+                alert('error initializing whiteboard: ' + e);
                 return;
             }
-
-            // tell the Whiteboard object the size of the parent container
-            var height = Number($wnd.grabComputedHeight(ele)) + 15;
-            var width = Number($wnd.grabComputedWidth(ele)) + 15;
-            
-            //alert('setting whiteboard size: ' + height + ', ' + width);
-            $wnd.Whiteboard.setWhiteboardViewPort(width, height);
-            $wnd.Whiteboard.initWhiteboard($doc);
-            
-            
-        } catch (e) {
-            alert('error initializing whiteboard: ' + e);
-            return;
-        }
-                                                              }-*/;
+        });
+        
+    }-*/;
 
     private native void jnsi_resizeWhiteboard(Element ele)/*-{
     
