@@ -51,12 +51,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
          * 
          */
         Widget w = getParent();
-        if(!_showWorkPanel.isReady()) {
-            _showWorkPanel.setupWhiteboard();
-        }
-        else {
-            setPresenterAsync(presenter);
-        }
+        _showWorkPanel.setupWhiteboard();
     }
 
     /** at this point we know the whiteboard is ready and waiting
