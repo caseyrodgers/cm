@@ -62,9 +62,6 @@ public class ShowWorkPanel extends Composite {
 
         showProblem.setVisible(false);
 
-        setExternalJsniHooks(this);
-        
-        
         if(setupWhiteboardNow) {
             setupWhiteboard();
         }
@@ -270,28 +267,26 @@ public class ShowWorkPanel extends Composite {
             }
         });
     }
-
-    private native void setExternalJsniHooks(ShowWorkPanel x)/*-{
-        // overide methods in the Whiteboard instance
-        $wnd.Whiteboard.whiteboardOut = function (data, boo) {
-            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
-
-        }
-        $wnd.Whiteboard.saveWhiteboard = function () {
-            x.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardSave_Gwt()();
-        }
-    }-*/;
-
     private native void jsni_initializeWhiteboard(Element ele)/*-{
 
         // load all Whiteboard external dependencies
         //
         var that = this;
         $wnd.requireJsLoad_whiteboard(function(wb) {
+        
+            // overide methods in the Whiteboard instance
+            $wnd.Whiteboard.whiteboardOut = function (data, boo) {
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
+            }
+            $wnd.Whiteboard.saveWhiteboard = function () {
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardSave_Gwt()();
+            }
+        
             $wnd.Whiteboard.whiteboardIsReady = function() {
                 // callback into Java 
                 that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardIsReady()();
             }
+    
     
             try {
                 if (typeof $wnd.Whiteboard == 'undefined') {

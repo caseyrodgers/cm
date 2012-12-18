@@ -10,7 +10,7 @@ require(['CatchupMath_combined'], function(x) {
 function requireJsLoad_whiteboard(funcToCall, whiteboardOut) {
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
-        require(['whiteboard','mathquill/mathquill'], function(x) {
+        require(['whiteboard-min','mathquill/mathquill'], function(x) {
             funcToCall(x);
         });
     }
