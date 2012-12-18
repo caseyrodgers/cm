@@ -43,6 +43,16 @@
         </div>  
         <div id='debug-panel'></div>
         <div id='main-content'></div>
+
+        <script> 
+            if (typeof console === "undefined") {
+                console = {
+                    log: function (x) {
+                       // empty
+                    }
+                };
+            }
+        </script>
         <!-- OPTIONAL: include this if you want history support -->
         <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
         <script type="text/javascript" language="javascript" src="/cm_student/cm_student.nocache.js"></script>

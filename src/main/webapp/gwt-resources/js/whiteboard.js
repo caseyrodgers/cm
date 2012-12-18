@@ -2254,7 +2254,7 @@ if(isIE){updateCanvas();}
      */
 
     wb.whiteboardOut = function (data, boo) {
-    	alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data");
+    	alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
     }
 
     wb.disconnectWhiteboard = function (documentObject) {
