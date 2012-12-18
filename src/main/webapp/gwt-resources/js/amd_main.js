@@ -7,10 +7,10 @@ require(['CatchupMath_combined'], function(x) {
 /** define highlevel, externalized from GWT requirejs load helper methods
  */
 // load all code required to run the whiteboard
-function requireJsLoad_whiteboard(funcToCall) {
+function requireJsLoad_whiteboard(funcToCall, whiteboardOut) {
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
-        require(['whiteboard-min','mathquill/mathquill'], function(x) {
+        require(['whiteboard','mathquill/mathquill'], function(x) {
             funcToCall(x);
         });
     }

@@ -2254,14 +2254,7 @@ if(isIE){updateCanvas();}
      */
 
     wb.whiteboardOut = function (data, boo) {
-        // alert('default whiteboard out: ' + data);
-        // console.log(data);
-        /*
-         * if(boo){ var flashObject=getFlashMovie('sw_wb');
-         * data=data.split("\\").join("") data=data.substring(1,data.length-1);
-         * flashObject.updateWhiteboard([["draw",[data]]]);
-         * //renderFlashWhiteBoard(data); }else{ renderJSWhiteBoard(data) }
-         */
+    	alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data");
     }
 
     wb.disconnectWhiteboard = function (documentObject) {
