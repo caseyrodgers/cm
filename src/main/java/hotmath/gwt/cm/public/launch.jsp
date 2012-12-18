@@ -66,14 +66,6 @@
         <script src='/gwt-resources/js/whiteboard.js'></script>
         <script src='/gwt-resources/js/mathquill/mathquill.js'></script>
          -->
-        
-        <!--
-        <script type="text/javascript" language="javascript" src="/js/base64.js"></script>
-        <script type="text/javascript" language="javascript" src="/js/tutor6.js"></script>
-        <script type="text/javascript" language="javascript" src="/js/tutor_widget.js"></script>
-        <script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
-        <script type="text/javascript" language="javascript" src="/js/tutor_author_api.js"></script>
-        -->
 
         <script>
             /** for debugging */
