@@ -26,14 +26,14 @@ public class QuizCheckResultsWindow extends GWindow {
     public QuizCheckResultsWindow(final CreateTestRunResponse runInfo) {
         
         super(false);
+        this.setModal(true);
+        setPixelSize(350,250);
+        setClosable(false);
+        setResizable(false);
+        setStyleName("auto-assignment-window");
+        setHeadingText("Quiz Results");
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-        this.setModal(true);
-        this.setWidth(330);
-        this.setClosable(false);
-        this.setResizable(false);
-        this.setStyleName("auto-assignment-window");
-        this.setHeadingText("Quiz Results");
 
         final int correct = runInfo.getCorrect();
         final int total = runInfo.getTotal();
@@ -42,8 +42,6 @@ public class QuizCheckResultsWindow extends GWindow {
         String reviewLessons = "<p class='prescription-info'> "
                 + "You have <span style='font-size: 120%;font-weight: bold'>" + lessonCount + "</span>  review "
                 + (lessonCount == 1 ? "topic" : "topics") + " to study before advancing to the next quiz." + "</p>";
-
-        boolean forceStop = false;
 
         String msg = "";
         if (UserInfo.getInstance().isCustomProgram()) {

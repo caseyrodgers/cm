@@ -49,7 +49,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
             final String flashId="";
             public void onSuccess(hotmath.gwt.cm_rpc.client.rpc.CmList<WhiteboardCommand> commands) {
-                eventBus.fireEvent(new SystemIsBusyEvent(false));                
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                
+                updateWhiteboard(flashId,"clear","");
                 for(int i=0,t=commands.size(); i < t; i++) {
                     try {
                         updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());

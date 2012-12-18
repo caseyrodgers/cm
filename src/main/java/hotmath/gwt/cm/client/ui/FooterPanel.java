@@ -1,6 +1,7 @@
-package hotmath.gwt.cm_tools.client.ui;
+package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_tools.client.ui.AutoTestWindow;
 import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.core.client.GWT;
@@ -77,9 +78,9 @@ public class FooterPanel extends FlowLayoutContainer {
 	 * 
 	 */
 	static private native void publishNative() /*-{
-		$wnd.showPrescriptionData_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionData_Gwt();
-		$wnd.showPrescriptionSession_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::showPrescriptionSession_Gwt();
-		$wnd.startAutoTest_Gwt = @hotmath.gwt.cm_tools.client.ui.FooterPanel::startAutoTest_Gwt();
+		$wnd.showPrescriptionData_Gwt = @hotmath.gwt.cm.client.ui.FooterPanel::showPrescriptionData_Gwt();
+		$wnd.showPrescriptionSession_Gwt = @hotmath.gwt.cm.client.ui.FooterPanel::showPrescriptionSession_Gwt();
+		$wnd.startAutoTest_Gwt = @hotmath.gwt.cm.client.ui.FooterPanel::startAutoTest_Gwt();
 	}-*/;
 
 	static {

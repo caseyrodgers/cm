@@ -162,41 +162,8 @@ public class CmQuizzesDao extends SimpleJdbcDaoSupport  {
 
     
     public CmList<QuizQuestion> getQuestionsFor(final Connection conn, String lessonFile, String subject, boolean getHtml) throws Exception {
-        CmList<QuizQuestion> list = new CmArrayList<QuizQuestion>();
-        
-        
-        int gradeLevel = 999;
-        return CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, gradeLevel);
-        
-//
-//        PreparedStatement ps = null;
-//        try {
-//            String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_LESSON_QUIZZES");
-//            ps = conn.prepareStatement(sql);
-//            ps.setString(1, lessonFile);
-//            int gradeLevel = 999; // get all for now getGradeLevelFor(subject);
-//            ps.setInt(2, gradeLevel);
-//
-//            int num=1;
-//            ResultSet rs = ps.executeQuery();
-//            while (rs.next()) {
-//                String questionId = rs.getString("program_name") + ": " + (num);
-//                String pid = rs.getString("guid");
-//                String quizHtml="";
-//                int correctAnswer=-1;
-//                if(getHtml) {
-//                    QuizQuestionParsed quizQuestion = getQuestionHtml(conn, num, pid);
-//                    quizHtml = quizQuestion.getStatement();
-//                    correctAnswer = quizQuestion.getCorrectAnswer();
-//                }
-//                num++;
-//                
-//                list.add(new QuizQuestion(questionId,lessonFile, rs.getString("program_name"), pid, quizHtml, correctAnswer));
-//            }
-//        } finally {
-//            SqlUtilities.releaseResources(null, ps, null);
-//        }
-//        return list;
+        int FORCED_GRADE_LEVEL = 999;
+        return CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, FORCED_GRADE_LEVEL);
     }
     
     

@@ -7,11 +7,9 @@ import com.google.gwt.user.client.ui.HTML;
 public class QuizResulsStatusWindow extends GWindow {
     
     public QuizResulsStatusWindow(int correct, int total) {
-        super(false);
-        addStyleName("quiz-results-status-window");
-        setWidth(525);
-        setHeight(300);
-        
+        super(true);
+        setStyleName("quiz-results-status-window");
+        setPixelSize(525, 400);
         setModal(true);
         String html = "<div class='head'></div>" +
                       "<div class='content'>" +

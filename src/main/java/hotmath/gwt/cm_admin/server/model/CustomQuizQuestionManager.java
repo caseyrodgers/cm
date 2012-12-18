@@ -102,8 +102,6 @@ public class CustomQuizQuestionManager {
         }
         else {
             for(String pid: lessonInfo.pids) {
-                
-                
                 List<String> activePids = getActivePids(conn, pid);
                 
                 for(String activePid: activePids) {
