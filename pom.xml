@@ -674,10 +674,6 @@
 						<param>CatchupMath.js</param>
 						<param>swfobject/swfobject.js</param>
 						<param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
-
-
-						<param>whiteboard.js</param>
-
 					</jsSourceFiles>
 				</configuration>
 			</plugin>
@@ -688,7 +684,7 @@
 				<version>2.5.0-rc2</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1M -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=INFO</extraJvmArgs>
+					<extraJvmArgs>-Xss1M -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=ERROR</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -700,14 +696,19 @@
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
-						<module>hotmath.gwt.cm_tutor.CmTutor</module>
-						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
-						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
-						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
-						<!-- <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> -->
-						<!-- <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
+ 				                <module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
+				                <module>hotmath.gwt.tutor_viewer.TutorViewer</module>
+						<!-- 
+   						     <module>hotmath.gwt.cm_search.CatchupMathSearch</module>
+						     <module>hotmath.gwt.cm_tutor.CmTutor</module>
+
+                                                     <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
+
+
+						     <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> 
+                                                -->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
