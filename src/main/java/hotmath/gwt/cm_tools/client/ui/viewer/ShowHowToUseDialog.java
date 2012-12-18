@@ -1,30 +1,18 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.event.WindowEvent;
-import com.extjs.gxt.ui.client.event.WindowListener;
-import com.extjs.gxt.ui.client.widget.Html;
+import com.google.gwt.user.client.ui.HTML;
 
 
 
-class ShowHowToUseDialog extends CmWindow {
+class ShowHowToUseDialog extends GWindow {
     public ShowHowToUseDialog() {
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
+        super(true);
         setModal(true);
-        setSize(350,200);
-        setHeading("How To Use This");
-        add(new Html(html));
-        addCloseButton();
-        addWindowListener(new WindowListener() {
-                @Override
-                public void windowHide(WindowEvent we) {
-                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-                }
-        });
+        setPixelSize(350,200);
+        setHeadingText("How To Use This");
+        add(new HTML(html));
     }
     String html =
         "<div style='padding: 10px 5px;'>" +
