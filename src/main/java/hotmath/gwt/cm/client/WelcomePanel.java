@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
 import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.core.client.GWT;
@@ -27,6 +28,7 @@ public class WelcomePanel extends CenterLayoutContainer {
         addStyleName(UserInfo.getInstance().getBackgroundStyle());
 
         ContentPanel main = new ContentPanel();
+        main.addStyleName("welcome-wrapper");
 
         main.setHeadingText("Welcome to Catchup Math");
 
@@ -52,10 +54,17 @@ public class WelcomePanel extends CenterLayoutContainer {
         })
         ;
         main.addButton(_goBtn);
+        
+        
+//        main.addButton(new TextButton("Calculator", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                CalculatorWindow.getInstance().setVisible(true);
+//            }
+//        }));
 
         main.setButtonAlign(BoxLayoutPack.CENTER);
         
-        main.getElement().setAttribute("style","background:#DEDEDE;");
         //main.setStyleAttribute("padding", "0 5px 0 5px");
 
         add(main);

@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
+import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
@@ -51,13 +52,13 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.CardPanel;
 import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
@@ -70,10 +71,7 @@ import com.google.gwt.user.client.Timer;
  *
  */
 
-public class RegisterStudent extends LayoutContainer implements ProcessTracker {
-	
-	protected CmWindow _window;
-	
+public class RegisterStudent extends FormPanel implements ProcessTracker {
 	private boolean isNew;
 	private boolean skipComboSet;
 	private boolean loading;
@@ -146,21 +144,42 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 		}
 
 		cmAdminMdl = cm;
-		_window = new CmWindow();
-		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
-		    public void handleEvent(BaseEvent be) {
-		        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-		        _groupSelector.release();
-		    }
-		});
-		_window.add(createForm());
- 	     
         skipComboSet = isNew;
 
+        createForm();
 		setComboBoxSelections();
 	}
 
+	
+	CmWindow _window;
 	public void showWindow() {
+	    if(_window == null) {
+            _window = new CmWindow();
+            _window.addListener(Events.Hide, new Listener<BaseEvent>() {
+                public void handleEvent(BaseEvent be) {
+                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
+                    _groupSelector.release();
+                }
+            });
+            _window.add(this, new BorderLayoutData(LayoutRegion.CENTER));
+            
+            _window.setHeading((isNew)?"Register a New Student":"Edit Student");
+            _window.setWidth(formWidth + 40);
+            _window.setHeight(formHeight + 20);
+            _window.setResizable(false);
+            _window.setDraggable(true);
+            _window.setModal(true);
+
+            /**
+             *  Assign buttons to the button bar on the Window
+             */
+            _formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
+            for(Button btn: getActionButtons()) {
+                btn.addStyleName("register-student-btn");
+                _window.addButton(btn);
+            }
+	    }
+	    
         _window.show();
         if (isNew) {
            userName.focus();
@@ -192,7 +211,7 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	GroupSelectorWidget _groupSelector;
 
 	protected FormPanel createForm() {
-		_formPanel = new FormPanel();
+		_formPanel = this; // new FormPanel();
 		_formPanel.addStyleName("register-student-form-panel");
 		_formPanel.setLabelWidth(120);
 		_formPanel.setHeight(formHeight);
@@ -277,23 +296,6 @@ public class RegisterStudent extends LayoutContainer implements ProcessTracker {
 	    _fsProgram.add(cardPanel);
         _formPanel.add(_fsProgram);
 
-        _window.setHeading((isNew)?"Register a New Student":"Edit Student");
-        _window.setWidth(formWidth + 40);
-        _window.setHeight(formHeight + 20);
-        _window.setLayout(new FitLayout());
-        _window.setResizable(false);
-        _window.setDraggable(true);
-        _window.setModal(true);
-
-        /**
-         *  Assign buttons to the button bar on the Window
-         */
-        _formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
-        for(Button btn: getActionButtons()) {
-            btn.addStyleName("register-student-btn");
-            _window.addButton(btn);
-        }
-        
         /** Seems like a bug with setting focus, so the only way to 
          *  it to work is to set a timer and hope ... 
          *  

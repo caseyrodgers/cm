@@ -26,13 +26,13 @@
             <link rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-all.css" />
             <link class="gray" rel="stylesheet" type="text/css" href="/gwt-resources/gxt-2.2.3/css/gxt-gray.css" />
         -->
-  
         <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
   
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/whiteboard.css" />
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/mathquill/mathquill.css" />
+        <link rel="stylesheet" type="text/css" href="/gwt-resources/js/calculator/jquery.calculator.css" />
     </head>
     <body>
         <div id="loading">

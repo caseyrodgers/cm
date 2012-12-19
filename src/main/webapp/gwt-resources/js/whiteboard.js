@@ -42,9 +42,9 @@ var Whiteboard = (function () {
     var IS_IPHONE = navigator.userAgent.match(/iPhone/i) != null;
     var IS_OPERA = navigator.userAgent.match(/Opera/i) != null;
     var IS_TOUCH_ONLY = IS_IPAD || IS_ANDROID || IS_KINDLE || IS_IPHONE
-	//boolean whether calculator is enabled for this whiteboard
+        //boolean whether calculator is enabled for this whiteboard
     var enable_calc = true;
-	//
+        //
     mq_holder.onload = function () {
 
         context.drawImage(this, holder_x, holder_y);
@@ -65,7 +65,7 @@ var Whiteboard = (function () {
             return rv;
         }
         //
-	/**
+        /**
           *internal methods to: disable,enable calculator and show or hide them
           */
     function showCalc() {
@@ -74,7 +74,7 @@ var Whiteboard = (function () {
             var calc_x = screen_width - 325
             var calc_y = $get_Element("#tools").offsetTop + $get_Element("#tools").offsetHeight;
             var ch = '<div id="calc_hold" style="width:325px;position:absolute;left:' + calc_x + 'px;top:' + calc_y + 'px"></div>'
-            var calc_hold = $('#container').append($(ch))
+            var calc_hold = $('#main-content').append($(ch))
             console.log("SHOW_HIDE_CALC-s2")
             $('#calc_hold').calculator({
                 layout: $.calculator.scientificLayout
@@ -129,8 +129,8 @@ var Whiteboard = (function () {
                     return true;
                 }
                 return false;
-            }	
-	//end of calc internal methods
+            }
+        //end of calc internal methods
     //
         function renderText(xt, xp, yp, col) {
             // var txt = xt ? xt : $get_Element("#editable-math").value;
@@ -310,53 +310,54 @@ var Whiteboard = (function () {
 
     wb.initWhiteboard = function (mainDocIn) {
         console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
-		if (context) {
-		    var _width = 0;
-		    origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = _width;
-		    origcanvas.height = graphcanvas.height = topcanvas.height = canvas.width = _width;
-		    if (isIE) {
-		        $(canvas).css({
-		            'width': '0px',
-		            'height': '0px'
-		        })
-		        $(canvas).empty();
-		        $(origcanvas).css({
-		            'width': '0px',
-		            'height': '0px'
-		        })
-		        $(origcanvas).empty();
-		        $(graphcanvas).css({
-		            'width': '0px',
-		            'height': '0px'
-		        })
-		        $(graphcanvas).empty();
-		        $(topcanvas).css({
-		            'width': '0px',
-		            'height': '0px'
-		        })
-		        $(topcanvas).empty();
-		    }else{
-		    canvas = null;
-		    origcanvas = null;
-		    graphcanvas = null;
-		    topcanvas = null;
-		    context = null;
-		    origcontext = null;
-		    graphcontext = null;
-		    topcontext = null;
-			}
-		}
+                if (context) {
+                    var _width = 0;
+                    origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = _width;
+                    origcanvas.height = graphcanvas.height = topcanvas.height = canvas.width = _width;
+                    if (isIE) {
+                        $(canvas).css({
+                            'width': '0px',
+                            'height': '0px'
+                        })
+                        $(canvas).empty();
+                        $(origcanvas).css({
+                            'width': '0px',
+                            'height': '0px'
+                        })
+                        $(origcanvas).empty();
+                        $(graphcanvas).css({
+                            'width': '0px',
+                            'height': '0px'
+                        })
+                        $(graphcanvas).empty();
+                        $(topcanvas).css({
+                            'width': '0px',
+                            'height': '0px'
+                        })
+                        $(topcanvas).empty();
+                    }else{
+                    canvas = null;
+                    origcanvas = null;
+                    graphcanvas = null;
+                    topcanvas = null;
+                    context = null;
+                    origcontext = null;
+                    graphcontext = null;
+                    topcontext = null;
+                        }
+                }
         setupMathQuill(); // defined in mathquill.js
         mainDoc = mainDocIn;
-		//position calc button in toolbar
-		if($get_Element('#button_calc')){
+                //position calc button in toolbar
+                if($get_Element('#button_calc')){
         $('#button_calc').css({
             'position': 'absolute',
             'right': '5px'
         });
-		}
-		//
+                }
+                //
         setTimeout(function () {
+
             canvas = $get_Element("#canvas");
             var siz = viewport()
             var docWidth = siz.width;
@@ -380,6 +381,7 @@ var Whiteboard = (function () {
                 $('#button_save').text("S");
 
             }
+            
             var off_left = $get_Element("#tools").offsetLeft;
             var off_top = $get_Element("#tools").offsetTop;
             var off_ht = $get_Element("#tools").offsetHeight;
@@ -424,14 +426,14 @@ var Whiteboard = (function () {
                     parent_cont.removeChild(origcanvas)
                     parent_cont.removeChild(graphcanvas)
                     parent_cont.removeChild(topcanvas)
-					canvas = null;
-		    		origcanvas = null;
-		    		graphcanvas = null;
-		    		topcanvas = null;
-		    		context = null;
-		    		origcontext = null;
-		    		graphcontext = null;
-		    		topcontext = null;
+                                        canvas = null;
+                                origcanvas = null;
+                                graphcanvas = null;
+                                topcanvas = null;
+                                context = null;
+                                origcontext = null;
+                                graphcontext = null;
+                                topcontext = null;
                     //
                     canvas = document.createElement('canvas')
                     canvas.width = 2000;
@@ -589,7 +591,7 @@ var Whiteboard = (function () {
                 console.log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
             }
-			 //window.onresize=resize_wb;
+                         //window.onresize=resize_wb;
            $(window).resize(resize_wb);
                         /*
                         window.onresize=function(evt){
@@ -624,12 +626,12 @@ var Whiteboard = (function () {
                 var siz = viewport()
                 var docWidth = siz.width;
                 var docHeight = siz.height;
-                
+
                 // if whiteboard is not active
                 if($get_Element('#tools') == null) {
-                	return;
+                        return;
                 }
-                
+
                 if (docWidth > 600) {
                     // alert($('#tools button').css('width'));
                     $('#tools').css('height', '35px');
@@ -964,14 +966,14 @@ var Whiteboard = (function () {
 
             // Events
             // drawRect(0,0,width,height,'#ff0000');
-			if($get_Element("#button_calc")){
-			$get_Element("#button_calc").onclick = function (event) {
+                        if($get_Element("#button_calc")){
+                        $get_Element("#button_calc").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='crosshair';
                 if (enable_calc) {
                     showHideCalc();
                 }
             };
-			}
+                        }
             //
             $get_Element("#button_text").onclick = function (event) {
                 // $get_Element("#drawsection").style.cursor='crosshair';
@@ -1214,7 +1216,7 @@ var Whiteboard = (function () {
                     penDown = false;
                     return
                 } else if (click_pos >= 0 && click_pos < screen_width) {
-				hideCalc()
+                                hideCalc()
                     if (isTouchEnabled) {
                         if (tevent.touches.length > 1) {
                             penDown = false;
@@ -1610,7 +1612,7 @@ var Whiteboard = (function () {
 
             }
             canvas.focus();
-  	    wb.whiteboardIsReady();
+            wb.whiteboardIsReady();
         }, 100);
     }
 
@@ -1659,12 +1661,12 @@ var Whiteboard = (function () {
 
     function hideTextBox() {
         // $get_Element("#editable-math").value = "";
-		var disp=$get_Element("#inputBox").style.display
-		if(disp=='block'){
+                var disp=$get_Element("#inputBox").style.display
+                if(disp=='block'){
         //$("#editable-math").mathquill('redraw');
-		$('#editable-math').mathquill('latex', "");
+                $('#editable-math').mathquill('latex', "");
         $get_Element("#inputBox").style.display = 'none';
-		}
+                }
     }
 
     function resetWhiteBoard(boo) {
@@ -1673,7 +1675,7 @@ var Whiteboard = (function () {
         graphMode = '';
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
         // = width;
-		var _width=canvas.width;
+                var _width=canvas.width;
         origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width=_width
         /*origcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
@@ -1737,7 +1739,7 @@ var Whiteboard = (function () {
             addImage: addGraph
         });
         sendData();
-		currentTool = 'pencil';
+                currentTool = 'pencil';
     }
 
     function mouseOverGraph() {
@@ -1766,13 +1768,13 @@ var Whiteboard = (function () {
 
     function updateCanvas() {
         var cntxt = drawingLayer == '1' ? origcontext : topcontext;
-		var cnvs = drawingLayer == '1' ? origcanvas : topcanvas;
+                var cnvs = drawingLayer == '1' ? origcanvas : topcanvas;
         if (currentTool == 'eraser') {
             // cntxt=origcontext;
         }
         // console.log(cntxt);
-		if (isIE) {
-		//drawImage workaround for IE to fix high memory usage
+                if (isIE) {
+                //drawImage workaround for IE to fix high memory usage
             var cn = $($(cnvs).children()[0]);
             var cv = $($(canvas).children()[0]);
             var el = '<div style="position:absolute;">' + $($(canvas).html()).html() + '</div><div style="position: absolute; filter: alpha(opacity=0); BACKGROUND-COLOR: red; overflow: hidden;"></div>'
@@ -1801,7 +1803,7 @@ var Whiteboard = (function () {
             context.save();
             context.beginPath();
             context.fillStyle = 'white';
-			context.lineWidth = 0;
+                        context.lineWidth = 0;
             // context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
             graphics.moveTo(x0 - eR, y0 - eR);
             graphics.lineTo(x0 + eR, y0 - eR);
@@ -1869,16 +1871,16 @@ var Whiteboard = (function () {
                 textRendering = false;
                 return;
             }
-            
-            
+
+
             if (graphicData.id == 1 && graphicData.dataArr.length > 500) {
-            	
+
                 var jStr = convertObjToString(graphicData);
                 // currentObj.tempData = convertStringToObj(jStr);
                 // ExternalInterface.call("console.log","A")
-                
-                
-                
+
+
+
                 var ptC = graphicData.dataArr.length
                 var segArr = []
                 var buf
@@ -1892,13 +1894,13 @@ var Whiteboard = (function () {
                     x: header.x,
                     y: header.y
                 }
-                
+
                 alert('test 6');
                 var nname = header.name
                 // ExternalInterface.call("console.log","B")
                 var segC = 0;
                 var nheader;
-                
+
                 while (ptC > 0) {
                     segC++;
                     buf = Math.min(500, ptC);
@@ -1931,14 +1933,14 @@ var Whiteboard = (function () {
                 for (var z = 0; z < segArr.length; z++) {
                     sendDataToSERVER(segArr[z]);
                 }
-                
+
                 console.log("Sending json string_segemented line -segments  : " + segArr.length);
                 render = false;
                 resetArrays();
                 textRendering = false;
                 return;
             }
-            
+
             render = false;
             // var jsonStr = convertObjToString(graphicData);
             console.log("Sending Data string for: " + graphicData.id);
@@ -1951,9 +1953,9 @@ var Whiteboard = (function () {
     function sendDataToSERVER(jsdata) {
         var jsonStr = convertObjToString(jsdata);
         console.log("Sending json string: " + jsonStr);
-        
+
         wb.whiteboardOut(jsonStr, true);
-        
+
         try {
             if (supports_localStorage()) {
                 localStorage['jstr'] = jsonStr
@@ -2014,10 +2016,10 @@ var Whiteboard = (function () {
     }
 //
 /**
-json stringify method for browsers which doesnt  have support for JSON  
+json stringify method for browsers which doesnt  have support for JSON
 source: https://gist.github.com/754454
 */
-function stringify(obj) {         
+function stringify(obj) {
         if ("JSON" in window) {
             return JSON.stringify(obj);
         }
@@ -2072,11 +2074,11 @@ function stringify(obj) {
         drawingLayer = isIE ? '1' : drawingLayer;
 if(context.lineWidth!=2){
         context.lineWidth = 2.0;
-		}
-		if(graphic_data[0].color!==undefined){
+                }
+                if(graphic_data[0].color!==undefined){
         var col = "#" + graphic_data[0].color.toString(16);
         context.strokeStyle = col;
-		}
+                }
         var deb = ""
         console.log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
@@ -2254,18 +2256,18 @@ if(isIE){updateCanvas();}
      */
 
     wb.whiteboardOut = function (data, boo) {
-    	alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
+        alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
     }
 
     wb.disconnectWhiteboard = function (documentObject) {
         alert('default whiteboard disconnect');
         /** empty */
     }
-	
+
     wb.whiteboardIsReady = function() {
         alert('This is the default whiteboardIsReady, it should be overridden in GWT');
     }
-	/**
+        /**
 * Exposed methods to: disable,enable calculator and show or hide them
 */
     wb.disableCalculator = function () {

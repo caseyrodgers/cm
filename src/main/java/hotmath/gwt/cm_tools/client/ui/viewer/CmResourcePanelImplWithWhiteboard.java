@@ -172,42 +172,50 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         tools.add(_saveWhiteboard);
         tools.add(_showWorkBtn);
         
-        TextButton crash = new TextButton("Crash Test");
+        TextButton calculator = new TextButton("Calculator", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CalculatorWindow.getInstance().setVisible(true);
+            }
+        });
+        tools.add(calculator);
+        
         final int times[] = {0};
         
-        if(CmShared.getQueryParameter("debug") != null) {
-            // add whiteboard crash button if in debug mode
-            crash.addSelectHandler(new SelectHandler() {
-                
-                @Override
-                public void onSelect(SelectEvent event) {
-                    
-                    Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
-                        @Override
-                        public boolean execute() {
-                            if(times[0]++ < 10) {
-                                CmLogger.debug("Crash test #" + times[0]);
-                            
-                                long tl = times[0];
-                                if(tl/2 == 0) {
-                                    setDisplayMode(DisplayMode.TUTOR);
-                                }
-                                else {
-                                    setDisplayMode(DisplayMode.WHITEBOARD);
-                                }
-                                return true;
-                            }
-                            else {
-                                times[0] = 0;
-                                CmLogger.debug("CRASH TEST COMPLETE");
-                                return false;
-                            }
-                        }
-                    }, 5000);
-                }
-            });        
-            tools.add(crash);
-        }
+//        if(CmShared.getQueryParameter("debug") != null) {
+//            TextButton crash = new TextButton("Crash Test");
+//            // add whiteboard crash button if in debug mode
+//            crash.addSelectHandler(new SelectHandler() {
+//                
+//                @Override
+//                public void onSelect(SelectEvent event) {
+//                    
+//                    Scheduler.get().scheduleFixedDelay(new RepeatingCommand() {
+//                        @Override
+//                        public boolean execute() {
+//                            if(times[0]++ < 10) {
+//                                CmLogger.debug("Crash test #" + times[0]);
+//                            
+//                                long tl = times[0];
+//                                if(tl/2 == 0) {
+//                                    setDisplayMode(DisplayMode.TUTOR);
+//                                }
+//                                else {
+//                                    setDisplayMode(DisplayMode.WHITEBOARD);
+//                                }
+//                                return true;
+//                            }
+//                            else {
+//                                times[0] = 0;
+//                                CmLogger.debug("CRASH TEST COMPLETE");
+//                                return false;
+//                            }
+//                        }
+//                    }, 5000);
+//                }
+//            });        
+//            tools.add(crash);
+//        }
         return tools;
     }
     

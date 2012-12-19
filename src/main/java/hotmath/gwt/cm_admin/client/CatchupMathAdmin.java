@@ -10,6 +10,7 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog.AddProblemsCal
 import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookDialog;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -17,17 +18,23 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
+import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
+import hotmath.gwt.cm_tools.client.ui.StudentDetailsPanel;
 import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
@@ -76,6 +83,25 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             }
         };
         // CmBusyManager.setViewPort(mainPort);
+        
+        
+        String launchSub = CmShared.getQueryParameter("load");
+        if(launchSub != null) {
+            if(launchSub.startsWith("student_details")) {
+                
+                Log.info("Launching tool Student Details");
+                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
+                launchOnlyStudentDetails(studentUid);
+                return;
+            }
+            else if(launchSub.startsWith("student_registration")) {
+                Log.info("Launching tool Student Registration");
+                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
+                launchOnlyStudentRegistration(studentUid);
+                return;
+            }
+        }
+
 
         mainPort.setLayout(new BorderLayout());
 
@@ -90,6 +116,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
 
         RootPanel.get("main-content").add(mainPort);
+        
 
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
@@ -104,20 +131,17 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         });
     }
 
+
     private void completeLoginProcess(final int uid) {
-
-        if (CmShared.getQueryParameter("setup_tests") != null) {
-            Log.debug("Running manual setup tests.");
-            setupAnyTests();
-            return;
-        }
-
+        
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {
                 Log.debug("Message of day callback complete.");
             }
         });
+        
+        
 
         cmAdminMdl = new CmAdminModel();
         cmAdminMdl.setId(uid);
@@ -276,5 +300,63 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             });
             return;
         }
+    }
+    
+
+    private void launchOnlyStudentRegistration(final int studentUid) {
+        GWT.runAsync(new CmRunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                new RetryAction<StudentModelI>() {
+
+                    @Override
+                    public void attempt() {
+                        CmBusyManager.setBusy(true);
+                        GetStudentModelAction action = new GetStudentModelAction(studentUid);
+                        setAction(action);
+                        CmShared.getCmService().execute(action, this);
+                    }
+
+                    public void oncapture(StudentModelI student) {
+                        try {
+                            CmBusyManager.setBusy(false);
+                            CmAdminModel adminModel = new CmAdminModel();
+                            adminModel.setId(student.getAdminUid());
+                            
+                            mainPort.setLayout(new FitLayout());
+                            mainPort.add(new RegisterStudent(student, adminModel));
+                            RootPanel.get().add(mainPort);
+                        } finally {
+                            CmBusyManager.setBusy(false);
+                        }
+                    }
+                }.register();
+            }
+        });
+    }    
+    
+    private void launchOnlyStudentDetails(final int studentUid) {
+      GWT.runAsync(new CmRunAsyncCallback() {
+
+          @Override
+          public void onSuccess() {
+              new RetryAction<StudentModelI>() {
+                  @Override
+                  public void attempt() {
+                      CmBusyManager.setBusy(true);
+                      GetStudentModelAction action = new GetStudentModelAction(studentUid);
+                      setAction(action);
+                      CmShared.getCmService().execute(action, this);
+                  }
+
+                  public void oncapture(StudentModelI student) {
+                      CmBusyManager.setBusy(false);
+                      mainPort.setLayout(new FitLayout());
+                      mainPort.add(new StudentDetailsPanel(new StudentModelExt(student)));
+                      RootPanel.get().add(mainPort);
+                  }
+              }.register();
+          }
+      });
     }
 }

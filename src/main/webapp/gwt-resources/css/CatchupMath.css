@@ -931,6 +931,10 @@ img.resource-item-complete {
            
 }
 
+.cm-welcome-panel .welcome-wrapper {
+    background:#DEDEDE;
+}
+
 .cm-welcome-panel h1 {
         margin-top: 15px;
         padding: 0 0 0 10px;
@@ -953,14 +957,6 @@ img.resource-item-complete {
         margin-left: 10px;
         text-decoration: none;
 }
-
-
-
-
-
-
-
-
 
 
 

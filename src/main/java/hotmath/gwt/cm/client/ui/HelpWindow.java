@@ -12,12 +12,11 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
+import hotmath.gwt.cm_tools.client.util.IFramedPanelWindow;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
@@ -177,6 +176,16 @@ public class HelpWindow extends GWindow {
 
         fs.addStyleName("help-window-additional-options");
         fs.setHeadingText("Additional Options");
+
+        
+        TextButton calculator = new TextButton("Calculator", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CalculatorWindow.getInstance().setVisible(true);
+            }
+        });
+        tb.add(calculator);
+        
 
         TextButton btn = new MyOptionButton("Support");
         btn.addStyleName("button");
@@ -363,6 +372,9 @@ public class HelpWindow extends GWindow {
      * 
      */
     private void showStudentConfiguration() {
+        String url = "/cm_admin/launch.jsp?load=student_registration:" + UserInfo.getInstance().getUid();
+        new IFramedPanelWindow(url).setVisible(true);
+        hide();
 //        GWT.runAsync(new CmRunAsyncCallback() {
 //            @Override
 //            public void onSuccess() {
@@ -399,7 +411,10 @@ public class HelpWindow extends GWindow {
      * information is current and not what it was on login.
      */
     private void showStudentHistory() {
-
+        String url = "/cm_admin/launch.jsp?load=student_details:" + UserInfo.getInstance().getUid();
+        new IFramedPanelWindow(url).setVisible(true);
+        hide();
+        
 //        GWT.runAsync(new CmRunAsyncCallback() {
 //
 //            @Override
@@ -451,8 +466,6 @@ public class HelpWindow extends GWindow {
     }
 
     static public void showFeedbackPanel_Gwt() {
-
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
 
         final PromptMessageBox mb = new PromptMessageBox("Feedback", "Enter Catchup Math feedback.");
         mb.addHideHandler(new HideHandler() {

@@ -273,7 +273,6 @@ public class ShowWorkPanel extends Composite {
         //
         var that = this;
         $wnd.requireJsLoad_whiteboard(function(wb) {
-        
             // overide methods in the Whiteboard instance
             $wnd.Whiteboard.whiteboardOut = function (data, boo) {
                 that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
@@ -286,8 +285,6 @@ public class ShowWorkPanel extends Composite {
                 // callback into Java 
                 that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel::whiteboardIsReady()();
             }
-    
-    
             try {
                 if (typeof $wnd.Whiteboard == 'undefined') {
                     alert('Whiteboard JS is not loaded');
