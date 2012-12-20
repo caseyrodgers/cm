@@ -9,7 +9,6 @@ public class CalculatorWindow extends GWindow {
     private static CalculatorWindow __instance;
 
     public static CalculatorWindow getInstance() {
-        __instance = null;
         if(__instance == null) {
             __instance = new CalculatorWindow();
         }
