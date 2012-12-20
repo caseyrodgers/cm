@@ -54,6 +54,15 @@
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
   </body>
     
+  <script> 
+       if (typeof console === "undefined") {
+           console = {
+               log: function (x) {
+                  // empty
+               }
+           };
+       }
+   </script>
     
    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main"></script>
     

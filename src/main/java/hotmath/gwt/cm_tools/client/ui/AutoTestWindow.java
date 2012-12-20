@@ -7,19 +7,29 @@ import hotmath.gwt.shared.client.CmShared;
 
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.Slider;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.client.GWT;
+import com.sencha.gxt.core.client.Style.ScrollDirection;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.Slider;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToggleButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+
 
 public class AutoTestWindow extends ContentPanel {
+	
+
+	public interface LogProperties extends PropertyAccess<String> {
+		ModelKeyProvider<LogModel> id();
+		ValueProvider<LogModel, String> message();
+	}
+
     
     private static AutoTestWindow __instance;
     public static AutoTestWindow getInstance() {
@@ -28,29 +38,26 @@ public class AutoTestWindow extends ContentPanel {
         return __instance;
     }
     
+    LogProperties props = GWT.create(LogProperties.class);
+    
 
-    ListView<LogModel> _listView = new ListView<LogModel>();
+    ListView<LogModel, String> _listView;
+    
     ToggleButton _logEnable;
     private AutoTestWindow() {
         
+    	
         CmShared.setQueryParameter("test_rpp_only", "true");
 
-        setSize(500,200);
-        setHeading("Auto Test Log");
-        setLayout(new FitLayout());
+        setPixelSize(500,200);
+        setHeadingText("Auto Test Log");
         
-        _listView.setSimpleTemplate("<div>{message}</div>");
-        ListStore<LogModel> store =new ListStore<LogModel>();
-        _listView.setStore(store);
-
-
+        ListStore<LogModel> store  =new ListStore<LogModel>(props.id());
+        _listView = new ListView<LogModel, String>(store, props.message());
+        
         add(_listView);
         
         setupTools();
-
-        _listView.getStore().setMonitorChanges(true);
-        
-        // addLogMessage("Auto Test ready");
     }
     
     public void addLogMessage(String msg) {
@@ -61,19 +68,20 @@ public class AutoTestWindow extends ContentPanel {
         }
         
         
-        if(!_logEnable.isPressed()) {
+        if(!_logEnable.getValue()) {
             return;
         }
         
         
         LogModel lm = new LogModel(msg);
         _listView.getStore().add(lm);
-        int scrollTop = _listView.el().getScrollTop();
-        int size = _listView.el().getHeight();
+        
+        int scrollTop = _listView.getElement().getScrollTop();
+        int size = _listView.getElement().getClientHeight();
         
         
-        _listView.el().scrollTo("top",  scrollTop + size);
-        _listView.getSelectionModel().select(_listView.getStore().getCount(), false);
+        _listView.getElement().scrollTo(ScrollDirection.TOP, scrollTop + size);
+        _listView.getSelectionModel().select(_listView.getStore().size(), false);
     }
     
     
@@ -81,10 +89,10 @@ public class AutoTestWindow extends ContentPanel {
     private void setupTools() {
 
 
-        Button close = new Button("Close");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
-            public void componentSelected(ButtonEvent ce) {
+        TextButton close = new TextButton("Close");
+        close.addSelectHandler(new SelectHandler() {
+        	@Override
+        	public void onSelect(SelectEvent event) {
                 UserInfo.getInstance().setAutoTestMode(false);
                 CmMainPanel.__lastInstance.remove(AutoTestWindow.this);
                 CmMainPanel.__lastInstance.forceLayout();
@@ -94,12 +102,12 @@ public class AutoTestWindow extends ContentPanel {
         close.setToolTip("Close the auto test window");
         
         final ToggleButton run = new ToggleButton("Run");
-        run.toggle(true);
-        run.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
-            public void componentSelected(ButtonEvent ce) {
-                
-                if(run.isPressed()) {
+        run.setValue(true);
+        run.addSelectHandler(new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
+                if(run.getValue()) {
                     addLogMessage("Starting auto test");
                     startAutoTest();
                 }
@@ -114,12 +122,13 @@ public class AutoTestWindow extends ContentPanel {
         
         final ToggleButton rppOnly = new ToggleButton("RPP/RPA only");
         if(CmShared.getQueryParameter("test_rpp_only") != null) {
-            rppOnly.toggle(true);
+            rppOnly.setValue(true);
         }
-        rppOnly.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                if(rppOnly.isPressed()) {
+        rppOnly.addSelectHandler(new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
+                if(rppOnly.getValue()) {
                     addLogMessage("Enabling RPP only mode");
                     CmShared.setQueryParameter("test_rpp_only", "true");
                 }
@@ -133,7 +142,7 @@ public class AutoTestWindow extends ContentPanel {
         
         
         _logEnable = new ToggleButton("Enable Log");
-        _logEnable.toggle(true);
+        _logEnable.setValue(true);
 
         _waitTimeForSingleResourceSlider.setWidth(100);
         _waitTimeForSingleResourceSlider.setMaxValue(3000*4);
@@ -145,22 +154,17 @@ public class AutoTestWindow extends ContentPanel {
         getHeader().addTool(run);
         getHeader().addTool(rppOnly);
         getHeader().addTool(_logEnable);
-        Button clear = new Button("Clear", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                _listView.getStore().removeAll();
+        TextButton clear = new TextButton("Clear", new SelectHandler() {
+        	@Override
+        	public void onSelect(SelectEvent event) {
+                _listView.getStore().clear();
             }
         });
         clear.setToolTip("Clear the log window");
         getHeader().addTool(clear);
         getHeader().addTool(close);
     }
-    
-    class TestType extends BaseModelData {
-    	public TestType(String text) {
-    		set("text", text);
-    	}
-    }
+
     
     public void startAutoTest() {
         UserInfo.getInstance().setAutoTestMode(true);
@@ -175,15 +179,24 @@ public class AutoTestWindow extends ContentPanel {
 }
 
 
-class LogModel extends BaseModel {
-    
+
+
+class LogModel  {
+ 
+	int id;
+	String message;
     public LogModel(String msg) {
+    	id++;
         setMessage(msg);
+    }
+    
+    public int getId() {
+    	return id;
     }
     
     public void setMessage(String message) {
         String time = getFormatedTime();
-        set("message",time + " " + message);
+        this.message = time + " " + message;
     }
     
     /** Return the formated time (no SimpleDateFormated in GWT)
@@ -197,6 +210,6 @@ class LogModel extends BaseModel {
         return time;
     }
     public String getMessage() {
-        return get("message");
+        return this.message;
     }
 }
