@@ -872,7 +872,9 @@ img.resource-item-complete {
         background: #43464B;
         padding: 10px 15px 15px 15px;
 }
-.prescription-cm-gui-definition-resource-panel {}
+.prescription-cm-gui-definition-resource-panel .resource-filler{
+	height: 5px;
+}
 
 
 .prescription-cm-gui-definition-resource-panel .resource-separator {

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.fx.client.FxElement;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
@@ -56,6 +57,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
 
         boolean isCustomProgram = UserInfo.getInstance().isCustomProgram();
 
+        
         PrescriptionSessionDataResource review=null;
         // setTitle("Choose a resource type, then click one of its items.");
         for (PrescriptionSessionDataResource resource : resources) {
@@ -79,7 +81,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             }
             else {
                 add(btnResource);
-                add(new HTML("<div> &nbsp; </div>"));
+                add(createFiller());
             }
             
         }
@@ -94,26 +96,30 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
 
         
         add(new HTML("<hr class='resource-separator'/>"));
-        add(new HTML("<div> &nbsp; </div>"));
+        add(createFiller());
         
         ResourceMenuButton rbtn = new ResourceMenuButton(review);
         if(isCustomProgram) {
             rbtn.setEnabled(false);
         }
         add(rbtn);
-        add(new HTML("<div> &nbsp; </div>"));
+        add(createFiller());
         
         for (PrescriptionSessionDataResource resource : new CmInmhStandardResources()) {
     		ResourceMenuButton btn = new ResourceMenuButton(resource);
     		add(btn);
-    		add(new HTML("<div> &nbsp; </div>"));
+    		add(createFiller());
     		resourceButtons.put(resource.getType(), btn);
         }
     }
 
 
     
-    /** make an indication that the current RPP has completed
+    private Widget createFiller() {
+    	return new HTML("<div class='resource-filler'> &nbsp; </div>");
+    }
+
+	/** make an indication that the current RPP has completed
      * 
      */
     public void indicateRequiredPracticeComplete() {

@@ -288,7 +288,7 @@ public class CustomProgramAddQuizDialog extends Window {
         	if (isModifiable == true) tool.enable();
         	else tool.disable();
         }
-        _panelQuestions.getHeader().setVisible(isModifiable);
+        //_panelQuestions.getHeader().setVisible(isModifiable);
     }
     
     private void addSelectedQuestionToCustomQuiz() {
