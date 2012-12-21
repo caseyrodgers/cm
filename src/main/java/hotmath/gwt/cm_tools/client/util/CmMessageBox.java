@@ -31,6 +31,8 @@ public class CmMessageBox {
         };
         d.addHideHandler(hideHandler);
         d.show();
+        
+        d.toFront();
     }
 
     public static void confirm(String title, String msg, final ConfirmCallback onComplete) {
@@ -47,6 +49,8 @@ public class CmMessageBox {
         };
         confirm.addHideHandler(hideHandler);
         confirm.setVisible(true);
+        
+        confirm.toFront();
     }
     
     static public interface ConfirmCallback {

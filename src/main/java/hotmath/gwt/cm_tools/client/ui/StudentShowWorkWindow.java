@@ -77,8 +77,9 @@ public class StudentShowWorkWindow extends GWindow {
         this.student = student;
         this.activityModel = activityModel;
         
-        setPixelSize(900, 700);
+        setPixelSize(700,400);
         setResizable(true);
+        setMaximizable(true);
 
         String title = "Show Work for " + student.getName();
         if(programName != null)

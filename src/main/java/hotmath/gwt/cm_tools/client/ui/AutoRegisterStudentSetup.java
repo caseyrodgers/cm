@@ -30,10 +30,10 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	public AutoRegisterStudentSetup(StudentModel sm, CmAdminModel cm) {
 	    super(sm, cm);
 	    
+	    createWindow();
 	    _window.setHeading("Self Registration Setup");
 	    _fsProfile.removeAll();
-
-	    _window.setHeight(350);
+	    _window.setHeight(400);
         
         _groupTag = new TextField<String>();  
         _groupTag.setFieldLabel("Group Name");
