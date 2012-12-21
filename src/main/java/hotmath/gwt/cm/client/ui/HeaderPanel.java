@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -70,9 +71,7 @@ public class HeaderPanel extends FlowLayoutContainer {
             	
             	Event currentEvent = helpButton.getCurrentEvent();
                 if (currentEvent != null && currentEvent.getShiftKey()) {
-                    String url = CmShared.getServerForCmStudent() + "/loginService?debug=true&uid="
-                            + UserInfo.getInstance().getUid();
-                    CatchupMathTools.showAlert("Catchup Math Connection URL", url);
+                	new ShowDebugUrlWindow();
                 } else {
                     GWT.runAsync(new CmRunAsyncCallback() {
                         @Override

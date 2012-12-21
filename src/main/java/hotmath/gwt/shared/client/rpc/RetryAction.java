@@ -7,8 +7,8 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -18,14 +18,14 @@ import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
 import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /** Provide retry operation for GWT RPC 
  * 
@@ -225,9 +225,9 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                 + getClass().getName());
 
         
-        final CmWindow win = new CmWindow();
-        win.setHeading("Server Warning");
-        win.setSize(350,200);
+        final GWindow win = new GWindow(false);
+        win.setHeadingText("Server Warning");
+        win.setPixelSize(350,200);
         win.setModal(true);
         win.setResizable(false);
         
@@ -237,15 +237,14 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
                     "Sorry for the inconvenience!" +
                     "</p>";
         
-        win.setLayout(new FitLayout());
-        win.add(new Html(msg));
+        win.add(new HTML(msg));
         
-        win.addButton(new Button("Continue",new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        win.addButton(new TextButton("Continue",new SelectHandler() {
+        	@Override
+        	public void onSelect(SelectEvent event) {
                 win.close();
             }
         }));
-        
         win.setVisible(true);
     }
     
