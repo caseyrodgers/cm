@@ -16,11 +16,6 @@
         
     <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
         <!-- Combine CM JS into a single download
-
-                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/prototype.js
-                  ../../../../../../hotmath2/web/jlibs/scripty2-2.0.0_b1/dist/s2.js
-
-
         -->
         <delete file="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" />
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" append="true">
@@ -32,19 +27,10 @@
             	   hm_events-min.js
             	   tutor_tablet-min.js
                	   dom_utils-min.js            	
-
             	   quiz-min.js
-                   
-                   ../../../../../../hotmath2/web/jlibs/jquery-1.7/jquery.min.js
-
                    ../../../../../../hotmath2/web/js/tutor_widget_combined.js
 
-                   spin-min.js
-            	
                    CatchupMathMobile3-min.js
-
-                   mathquill/mathquill.js
-                   whiteboard-min.js
               " />
         </concat>
     </target>

@@ -47,10 +47,10 @@ ant
 #
 if [ $n -eq 1 ]; then
     echo Building full CM package w/o mvn update
-    mvn -o package minify:minify 
+    mvn -o package minify:minify  -Dgwt.compiler.force=false -o
 else
     echo Building full CM package with mvn update
-    mvn package minify:minify 
+    mvn package minify:minify -Dgwt.compiler.force=true
 fi
 
 
@@ -92,4 +92,4 @@ cp src/main/webapp/ROOT.xml ~/dist/cm_tomcat/conf/Catalina/localhost
 # be rough
 #
 echo Restarting all java processes
-killall -9 java
+#killall -9 java
