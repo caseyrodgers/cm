@@ -280,7 +280,14 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         	if(_showWorkBtn != null)
                 _showWorkBtn.setText("Show Whiteboard");
         	_saveWhiteboard.setVisible(false);
-        	add(getTutorDisplay());
+            /** always add a scrollable panel
+             * 
+             */
+            FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+            flowContainer.setScrollMode(ScrollMode.AUTO);
+            flowContainer.add(getTutorDisplay());
+            
+        	add(flowContainer);
             //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         }
         else {
