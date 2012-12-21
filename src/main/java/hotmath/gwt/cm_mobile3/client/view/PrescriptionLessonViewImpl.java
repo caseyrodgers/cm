@@ -93,6 +93,10 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
                 continue;
             }
             
+            if(resource.getType().equals("cmextra")) {
+            	continue;
+            }
+            
             ListItem li = new ListItem();
             li.setStyleName("resourceType");
             li.add(new HTMLPanel("<b>" + resource.getLabel() + "</b><span> -- " + resource.getDescription() + "</span>"));

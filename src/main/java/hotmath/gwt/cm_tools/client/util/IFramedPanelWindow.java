@@ -11,7 +11,8 @@ public class IFramedPanelWindow extends GWindow {
         super(true);
         setModal(true);
         setPixelSize(500,400);
-        setResizable(false);
+        setResizable(true);
+        setMaximizable(true);
         
         
         Frame frame = new Frame(url);

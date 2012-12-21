@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -209,7 +211,10 @@ public class NetTestWindow extends GWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.SAVE_RESULTS, NetTestWindow.this.uid, _grid.getStore().getAll());
+                
+                CmList<NetTestModel> list = new CmArrayList<NetTestModel>();
+                list.addAll(_grid.getStore().getAll());
+                RunNetTestAction action = new RunNetTestAction(testApplication, TestAction.SAVE_RESULTS, NetTestWindow.this.uid, list);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

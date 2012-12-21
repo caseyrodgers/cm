@@ -40,13 +40,13 @@ import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 public class HelpWindow extends GWindow {
@@ -241,19 +241,7 @@ public class HelpWindow extends GWindow {
         flc.add(fs);
         
         if (CmShared.getQueryParameter("debug") != null) {
-            HorizontalLayoutContainer hContainer = new HorizontalLayoutContainer();
-            hContainer.add(new TextButton("Show CmLogger", new SelectHandler() {
-                @Override
-                public void onSelect(SelectEvent event) {
-                    GWT.runAsync(new CmRunAsyncCallback() {
-                        @Override
-                        public void onSuccess() {
-                            CmLogger.getInstance().enable(true);
-                        }
-                    });
-                }
-            }));
-            hContainer.add(new TextButton("Connection Check", new SelectHandler() {
+            tb.add(new TextButton("Connection Check", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
                     GWT.runAsync(new CmRunAsyncCallback() {
@@ -264,7 +252,6 @@ public class HelpWindow extends GWindow {
                     });
                 }
             }));
-            flc.add(hContainer);
         }
         
         setWidget(flc);
@@ -487,7 +474,7 @@ public class HelpWindow extends GWindow {
                         }
 
                         public void oncapture(RpcData result) {
-                            CatchupMathTools.showAlert("Feedback saved");
+                            Info.display("INfo", "Feedback saved");
                             CmBusyManager.setBusy(false);
                         }
                     }.register();

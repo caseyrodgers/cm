@@ -113,9 +113,10 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
                  * install new data ..
                  * 
                  */
-                SharedData.getFlowAction().getPrescriptionResponse().setPrescriptionData(result.getPrescriptionData());
-                userInfo.setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
-                view.setLesson(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
+                PrescriptionSessionResponse res = SharedData.getFlowAction().getPrescriptionResponse();
+                res.setPrescriptionData(result.getPrescriptionData());
+                userInfo.setSessionNumber(res.getPrescriptionData().getCurrSession().getSessionNumber());
+                view.setLesson(res.getPrescriptionData().getCurrSession());
             }
 
             @Override
