@@ -289,6 +289,7 @@ public class CmMainPanel extends BorderLayoutContainer {
                                 __lastInstance._mainContentWrapper = null;
                                 __lastInstance = null;
                             }
+                            break;
                             
                             
                             
