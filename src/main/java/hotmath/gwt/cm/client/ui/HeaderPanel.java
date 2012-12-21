@@ -37,7 +37,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 
     Label _headerText;
     HTML _helloInfo = new HTML();
-    private IconButton helpButton;
+    private MyIconButton helpButton;
     Anchor _assignmentsAnchor;
 
     public HeaderPanel() {
@@ -63,11 +63,12 @@ public class HeaderPanel extends FlowLayoutContainer {
         _helloInfo.setStyleName("hello-info");
         add(_helloInfo);
 
-        helpButton = new IconButton("header-panel-help-btn");
+        helpButton = new MyIconButton("header-panel-help-btn");
         helpButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-
+            	
+            	Event currentEvent = helpButton.getCurrentEvent();
                 if (currentEvent != null && currentEvent.getShiftKey()) {
                     String url = CmShared.getServerForCmStudent() + "/loginService?debug=true&uid="
                             + UserInfo.getInstance().getUid();
@@ -143,13 +144,6 @@ public class HeaderPanel extends FlowLayoutContainer {
         // no op
     }
 
-    Event currentEvent;
-    @Override
-    public void onBrowserEvent(Event event) {
-        currentEvent = event;
-        super.onBrowserEvent(event);
-        currentEvent = null;
-    }
 
     private void updateAssignmentMessage(boolean incompleteAssignments) {
         if (incompleteAssignments) {
@@ -236,4 +230,24 @@ public class HeaderPanel extends FlowLayoutContainer {
         CatchupMathTools.showAlert("Set Header info");
     }
 
+}
+
+
+class MyIconButton extends IconButton {
+	Event currentEvent;
+	
+	public MyIconButton(String style) {
+		super(style);
+	}
+    
+    @Override
+    public void onBrowserEvent(Event event) {
+        currentEvent = event;
+        super.onBrowserEvent(event);
+        currentEvent = null;
+    }
+    
+    public Event getCurrentEvent() {
+    	return currentEvent;
+    }
 }
