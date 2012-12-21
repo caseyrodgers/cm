@@ -43,10 +43,9 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     static HTML _mainHtmlPanel = new HTML();
     public Widget getResourcePanel() {
         addResource(_mainHtmlPanel, getResourceItem().getTitle());
+
+        getLessonData();
         
-        if(_mainHtmlPanel.getHTML().length() == 0) {
-            getLessonData();
-        }
         return this;
     }
 
