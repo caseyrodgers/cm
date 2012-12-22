@@ -26,30 +26,29 @@ public class CompressHelper {
 
 	public static String decompress(byte[] inBytes) throws DataFormatException, UnsupportedEncodingException {
 		long startTime = System.currentTimeMillis();
-		String result = decompress(inBytes, null);
+		String result = decompressOuter(inBytes);
 		if (LOGGER.isDebugEnabled())
 			LOGGER.debug(String.format("decompress(): in: %d, out: %d, took: %d msec",
 					inBytes.length, result.length(), System.currentTimeMillis() - startTime));
 		return result;
 	}
 
-	private static String decompress(byte[] inBytes, Inflater inflater) throws DataFormatException, UnsupportedEncodingException {
-
+	private static String decompressOuter(byte[] inBytes) throws DataFormatException, UnsupportedEncodingException {
 		StringBuffer sb = new StringBuffer();
-		if (inflater == null) {
-    		inflater = new Inflater();
-    		inflater.setInput(inBytes);
+    	Inflater inflater = new Inflater();
+    	inflater.setInput(inBytes);
+		while (inflater.finished() == false) {
+			sb.append(decompressInner(inBytes, inflater));
 		}
-		byte[] outBytes = new byte[5000];
-		int byteCount = inflater.inflate(outBytes, 0, outBytes.length);
-		sb.append(new String(outBytes, 0, byteCount, "UTF-8"));
-		if (inflater.finished() == false) {
-			sb.append(decompress(inBytes, inflater));
-		}
-		else {
-    		inflater.end();
-		}
+    	inflater.end();
 		return sb.toString();
 	}
+
+	private static String decompressInner(byte[] inBytes, Inflater inflater) throws DataFormatException, UnsupportedEncodingException {
+		byte[] outBytes = new byte[10000];
+		int byteCount = inflater.inflate(outBytes, 0, outBytes.length);
+		return new String(outBytes, 0, byteCount, "UTF-8");
+	}
+
 
 }
