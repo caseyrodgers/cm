@@ -19,6 +19,7 @@ public class StudentHowToFlashWindow extends GWindow {
         setHeadingText(title);
         setPixelSize(775,640);
         drawFlashFrame();
+        setMaximizable(true);
         setVisible(true);
     }
     

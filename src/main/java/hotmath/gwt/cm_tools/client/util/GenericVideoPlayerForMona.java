@@ -7,7 +7,8 @@ public class GenericVideoPlayerForMona extends GenericVideoPlayer {
     
     public GenericVideoPlayerForMona(MonaVideo video) {
         super(video.getFile(),video.getTitle());
-        setSize(330,320);
+        setPixelSize(330,320);
+        setModal(true);
         setVisible(true);
     }
     
@@ -20,7 +21,7 @@ public class GenericVideoPlayerForMona extends GenericVideoPlayer {
         private String file;
         
         MonaVideo(String file, String t) {
-            this.title = title;
+            this.title = t;
             this.file = file;
         }
 

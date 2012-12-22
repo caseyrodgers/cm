@@ -65,11 +65,11 @@ public class HelpWindow extends GWindow {
         //  addStyleName("help-window");
         setHeadingText("Catchup Math Help Window, version: " + CatchupMathVersionInfo.getBuildVersion());
 
-        if (CmMainPanel.__lastInstance != null) {
-            CmMainPanel.__lastInstance.removeResource();
-            PrescriptionCmGuiDefinition.showHelpPanel();
-            CmMainPanel.__lastInstance.expandResourceButtons();
-        }
+//        if (CmMainPanel.__lastInstance != null) {
+//            CmMainPanel.__lastInstance.removeResource();
+//            PrescriptionCmGuiDefinition.showHelpPanel();
+//            CmMainPanel.__lastInstance.expandResourceButtons();
+//        }
 
         // EventBus.getInstance().fireEvent(new
         // CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN, this));

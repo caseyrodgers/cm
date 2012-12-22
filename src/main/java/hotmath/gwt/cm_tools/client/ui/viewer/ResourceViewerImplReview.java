@@ -5,7 +5,6 @@ import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanelImplDefault;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -25,7 +24,7 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     static final String STYLE_NAME = "resource-viewer-impl-review";
 
     static boolean __isSpanish;
-    static TextButton __spanishButton;
+    TextButton _spanishButton;
 
     boolean itemHasSpanish;
 
@@ -74,12 +73,12 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
                  * if in English mode, and lesson does not have a Spanish
                  * version disable button
                  */
-                if(__spanishButton != null) {
+                if(_spanishButton != null) {
                     if (!__isSpanish && !result.isHasSpanish()) {
-                        __spanishButton.setEnabled(false);
+                        _spanishButton.setEnabled(false);
                     }
                     else {
-                        __spanishButton.setEnabled(true);
+                        _spanishButton.setEnabled(true);
                     }
                 }
                 
@@ -93,25 +92,25 @@ public class ResourceViewerImplReview extends CmResourcePanelImplDefault {
     public List<Widget> getContainerTools() {
         List<Widget> tools = new ArrayList<Widget>();
 
-        if (__spanishButton == null) {
+        if (_spanishButton == null) {
 
-            __spanishButton = new TextButton("Spanish");
-            __spanishButton.addSelectHandler(new SelectHandler() {
+            _spanishButton = new TextButton("Spanish");
+            _spanishButton.addSelectHandler(new SelectHandler() {
                 
                 @Override
                 public void onSelect(SelectEvent event) {
-                    __isSpanish = __spanishButton.getText().equals("Spanish");
+                    __isSpanish = _spanishButton.getText().equals("Spanish");
                     if (__isSpanish) {
-                        __spanishButton.setText("English");
+                        _spanishButton.setText("English");
                     }
                     else {
-                        __spanishButton.setText("Spanish");
+                        _spanishButton.setText("Spanish");
                     }
                     getLessonData();
                 }
             });
         }
-        tools.add(__spanishButton);
+        tools.add(_spanishButton);
         return tools;
     }
 
