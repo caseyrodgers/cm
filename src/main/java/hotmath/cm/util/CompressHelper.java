@@ -37,17 +37,19 @@ public class CompressHelper {
 		StringBuffer sb = new StringBuffer();
     	Inflater inflater = new Inflater();
     	inflater.setInput(inBytes);
-		while (inflater.finished() == false) {
-			sb.append(decompressInner(inBytes, inflater));
+    	int byteCount[] = new int[1];
+    	byteCount[0] = 1;
+		while (inflater.finished() == false  && byteCount[0] > 0) {
+			sb.append(decompressInner(inBytes, inflater, byteCount));
 		}
     	inflater.end();
 		return sb.toString();
 	}
 
-	private static String decompressInner(byte[] inBytes, Inflater inflater) throws DataFormatException, UnsupportedEncodingException {
-		byte[] outBytes = new byte[10000];
-		int byteCount = inflater.inflate(outBytes, 0, outBytes.length);
-		return new String(outBytes, 0, byteCount, "UTF-8");
+	private static String decompressInner(byte[] inBytes, Inflater inflater, int[] byteCount) throws DataFormatException, UnsupportedEncodingException {
+		byte[] outBytes = new byte[5000];
+		byteCount[0] = inflater.inflate(outBytes, 0, outBytes.length);
+		return new String(outBytes, 0, byteCount[0], "UTF-8");
 	}
 
 
