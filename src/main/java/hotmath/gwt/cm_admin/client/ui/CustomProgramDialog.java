@@ -3,26 +3,24 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
-import hotmath.gwt.shared.client.model.CustomQuizInfoModel;
 import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ArchiveCustomQuizAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramDefinitionAction.ActionType;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
-import hotmath.gwt.shared.client.rpc.action.CustomQuizInfoAction;
 import hotmath.gwt.shared.client.rpc.action.CustomQuizUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
@@ -256,7 +254,7 @@ public class CustomProgramDialog extends CmWindow {
         if (asCopy) {
             sel1 = _listViewCq.getSelectionModel().getSelectedItem();
             if (sel1 == null) {
-                CatchupMathTools.showAlert("Select a custom quiz first");
+                CmMessageBoxGxt2.showAlert("Select a custom quiz first");
                 return;
             }
         }
@@ -305,7 +303,7 @@ public class CustomProgramDialog extends CmWindow {
     private void infoForProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
-            CatchupMathTools.showAlert("Select a custom program first");
+            CmMessageBoxGxt2.showAlert("Select a custom program first");
             return;
         }
 
@@ -315,7 +313,7 @@ public class CustomProgramDialog extends CmWindow {
     private void infoForQuiz() {
         final CustomLessonModel sel = _listViewCq.getSelectionModel().getSelectedItem();
         if (sel == null) {
-            CatchupMathTools.showAlert("Select a custom program quiz");
+            CmMessageBoxGxt2.showAlert("Select a custom program quiz");
             return;
         }
 
@@ -325,7 +323,7 @@ public class CustomProgramDialog extends CmWindow {
     private void editCustomProgram(boolean asCopy) {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
-            CatchupMathTools.showAlert("Select a custom program first");
+            CmMessageBoxGxt2.showAlert("Select a custom program first");
             return;
         }
         editProgram(sel, asCopy);
@@ -356,7 +354,7 @@ public class CustomProgramDialog extends CmWindow {
         CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
 
         if (quiz.getIsArchived() == true) {
-            CatchupMathTools.showAlert("Custom Quiz is archived and cannot be deleted.");
+            CmMessageBoxGxt2.showAlert("Custom Quiz is archived and cannot be deleted.");
             return;
         }
         final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(), 
@@ -451,17 +449,17 @@ public class CustomProgramDialog extends CmWindow {
     private void deleteCustomProgram() {
         final CustomProgramModel sel = _listViewCp.getSelectionModel().getSelectedItem();
         if (sel == null) {
-            CatchupMathTools.showAlert("Select a custom program first");
+            CmMessageBoxGxt2.showAlert("Select a custom program first");
             return;
         }
 
         if (sel.getIsArchived()) {
-            CatchupMathTools.showAlert("This custom program has been archived and cannot be deleted.");
+            CmMessageBoxGxt2.showAlert("This custom program has been archived and cannot be deleted.");
             return;
         }
 
         if (!_isDebug && sel.getIsTemplate()) {
-            CatchupMathTools.showAlert("This program is built-in and cannot be deleted.");
+            CmMessageBoxGxt2.showAlert("This program is built-in and cannot be deleted.");
             return;
         }
 

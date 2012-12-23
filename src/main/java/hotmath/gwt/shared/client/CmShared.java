@@ -65,7 +65,7 @@ public class CmShared implements EntryPoint {
             public void onUncaughtException(Throwable e) {
 
                 if (CmShared.getQueryParameter("debug") != null) {
-                    CatchupMathTools.showAlert("Uncaught Exception", e.toString());
+                    Window.alert("Uncaught Exception: " + e.toString());
                     e.printStackTrace();
                 }
 

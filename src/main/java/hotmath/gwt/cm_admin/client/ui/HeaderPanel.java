@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -38,7 +38,7 @@ public class HeaderPanel extends LayoutContainer {
 			public void componentSelected(IconButtonEvent ce) {
             	if(ce.getEvent().getCtrlKey()) {
 					String url = CmShared.getServerForCmStudent() + "/loginService?type=ADMIN&debug=true&uid=" + StudentGridPanel.instance._cmAdminMdl.getId();
-					CatchupMathTools.showAlert("Catchup Math Connection URL", url);
+					CmMessageBoxGxt2.showAlert("Catchup Math Connection URL", url);
 				}            	
             	else 
             		new HelpWindow();
@@ -117,7 +117,7 @@ public class HeaderPanel extends LayoutContainer {
 						Window.Location.assign(partner.onCloseLink);
 					}
 					catch(Exception e) {
-					    CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+					    CmMessageBoxGxt2.showAlert("Error returning to our partner page: " + e.getMessage());
 					}
 				}
 				else {

@@ -20,6 +20,7 @@ import hotmath.gwt.cm_tools.client.model.StudyProgramExt;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -59,7 +60,6 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
 
@@ -672,7 +672,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 						getChapterListRPC(progId, subjectId, true, chapStore);
 					} catch (Exception e) {
 						e.printStackTrace();
-						CatchupMathTools.showAlert(e.getMessage());
+						CmMessageBoxGxt2.showAlert(e.getMessage());
 					}
 				}
 			}
@@ -899,7 +899,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 			public void onFailure(Throwable caught) {
 				CmBusyManager.setBusy(false);
 				if (caught.getMessage().indexOf("already in use") > -1) {
-					CatchupMathTools.showAlert("Password In Use",
+					CmMessageBoxGxt2.showAlert("Password In Use",
 							"This password is currently in use");
 					return;
 				}
@@ -962,7 +962,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 					_window.close();
 				}
 				else {
-					CatchupMathTools.showAlert("Save Complete");
+					CmMessageBoxGxt2.showAlert("Save Complete");
 				}
 				
 				EventBus.getInstance().fireEvent(
@@ -982,7 +982,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 			StudyProgramExt sp = setProgramSelection();
 
 			if (sp == null) {
-				CatchupMathTools.showAlert("Program not found!");
+				CmMessageBoxGxt2.showAlert("Program not found!");
 				loading = false;
 				return;
 			}
@@ -1496,7 +1496,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 					_window.close();
 				}
 				else {
-					CatchupMathTools.showAlert("Save complete");
+					CmMessageBoxGxt2.showAlert("Save complete");
 				}
 			}
 		}

@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -12,6 +11,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -20,6 +20,9 @@ import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.GetGroupAggregateInfoAction;
 import hotmath.gwt.shared.client.rpc.action.GetTemplateForSelfRegGroupAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
@@ -46,9 +49,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ManageGroupsWindow extends CmWindow {
     
@@ -90,7 +90,7 @@ public class ManageGroupsWindow extends CmWindow {
     private GroupInfoModel getGroupInfo() {
         GroupInfoModel gim =_grid.getSelectionModel().getSelectedItem();
         if (gim == null) {
-            CatchupMathTools.showAlert("Please select a group first");
+            CmMessageBoxGxt2.showAlert("Please select a group first");
         }
         return gim;
     }
@@ -123,7 +123,7 @@ public class ManageGroupsWindow extends CmWindow {
                 final GroupInfoModel gim = getGroupInfo();
                 if (gim != null) {
                     if (gim.getAdminId() == 0) {
-                        CatchupMathTools.showAlert("This group cannot be renamed.");
+                        CmMessageBoxGxt2.showAlert("This group cannot be renamed.");
                         return;
                     }
                     
@@ -145,7 +145,7 @@ public class ManageGroupsWindow extends CmWindow {
                 final GroupInfoModel gim = getGroupInfo();
                 if (gim != null) {
                     if (gim.getAdminId() == 0) {
-                        CatchupMathTools.showAlert("This group cannot be removed.");
+                        CmMessageBoxGxt2.showAlert("This group cannot be removed.");
                         return;
                     }
                         
@@ -164,7 +164,7 @@ public class ManageGroupsWindow extends CmWindow {
                 final GroupInfoModel gim = getGroupInfo();
                 if (gim != null) {
                     if (gim.getCount() == 0) {
-                        CatchupMathTools.showAlert("There are no students to unregister.");
+                        CmMessageBoxGxt2.showAlert("There are no students to unregister.");
                         return;
                     }
                     String msg = "Are you sure you want to unregister the " + getCountString(gim) + " assigned to group '" + gim.getName() + "'?";
@@ -196,7 +196,7 @@ public class ManageGroupsWindow extends CmWindow {
                         }
                     }
                     else {
-                        CatchupMathTools.showAlert("There are no students assigned to this group.");
+                        CmMessageBoxGxt2.showAlert("There are no students assigned to this group.");
                     }
                 }
             }
@@ -207,7 +207,7 @@ public class ManageGroupsWindow extends CmWindow {
                 final GroupInfoModel gim = getGroupInfo();
                 if (gim != null) {
                     if (gim.getCount() == 0) {
-                        CatchupMathTools.showAlert("There are no students assigned to this group.");
+                        CmMessageBoxGxt2.showAlert("There are no students assigned to this group.");
                         return;
                     }
 
@@ -249,7 +249,7 @@ public class ManageGroupsWindow extends CmWindow {
             public void handleEvent(SelectionEvent<StudentModelExt> se) {
 
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CatchupMathTools.showAlert("On click");
+                    CmMessageBoxGxt2.showAlert("On click");
                 }
             }
         });
@@ -365,7 +365,7 @@ public class ManageGroupsWindow extends CmWindow {
                 CmBusyManager.setBusy(false);
                 
                 if(caught.getMessage().indexOf("you entered") > 0) {
-                    CatchupMathTools.showAlert("Problem renaming group", caught.getMessage());
+                    CmMessageBoxGxt2.showAlert("Problem renaming group", caught.getMessage());
                     RetryActionManager.getInstance().requestComplete(this);
                     return;
                 }

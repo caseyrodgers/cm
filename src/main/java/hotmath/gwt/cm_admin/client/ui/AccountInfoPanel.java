@@ -10,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
@@ -137,7 +138,7 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
                              "We will contact you soon about upgrading your license, or you " +
                              "may wish to unregister students no longer active.  Thank you " +
                              "for using Catchup Math!";
-                CatchupMathTools.showAlert("Number of Students Exceeds License", msg);
+                CmMessageBoxGxt2.showAlert("Number of Students Exceeds License", msg);
                 haveDisplayedOverLimitMsg = true;
             }
             ai.setStudentCountStyle("fld-warn");

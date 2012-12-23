@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
@@ -61,7 +61,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
                     });
                 }
                 catch(CmException cm) {
-                    CatchupMathTools.showAlert("First, make sure all values on form are valid");
+                    CmMessageBoxGxt2.showAlert("First, make sure all values on form are valid");
                 }
             }
         });

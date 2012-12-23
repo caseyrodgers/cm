@@ -2,7 +2,6 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -11,6 +10,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -75,7 +75,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
     private ParallelProgramModel getGridItem() {
         ParallelProgramModel mdl = grid.getSelectionModel().getSelectedItem();
         if (mdl == null) {
-            CatchupMathTools.showAlert("Please make a selection first");
+            CmMessageBoxGxt2.showAlert("Please make a selection first");
         }
         return mdl;
     }
@@ -129,7 +129,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 
                 if (ppm != null) {
                     if (ppm.getStudentCount() > 0) {
-                        CatchupMathTools.showAlert("Selection is in use and cannot be removed.");
+                        CmMessageBoxGxt2.showAlert("Selection is in use and cannot be removed.");
                         return;
                     }
                     MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new Listener<MessageBoxEvent>() {
@@ -149,7 +149,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
                 if (ppm != null) {
 
                     if (ppm.getStudentCount() < 1) {
-                        CatchupMathTools.showAlert("Selection has no usage, nothing to display.");
+                        CmMessageBoxGxt2.showAlert("Selection has no usage, nothing to display.");
                         return;
                     }
 
@@ -185,7 +185,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
 			@Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert("Problem getting Parallel Program", caught.getMessage());
+                CmMessageBoxGxt2.showAlert("Problem getting Parallel Program", caught.getMessage());
                 RetryActionManager.getInstance().requestComplete(this);
             }
 
@@ -214,7 +214,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             public void handleEvent(SelectionEvent<StudentModelExt> se) {
 
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CatchupMathTools.showAlert("On click");
+                    CmMessageBoxGxt2.showAlert("On click");
                 }
             }
         });
@@ -290,7 +290,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             @Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
-                CatchupMathTools.showAlert("Problem removing Parallel Program", caught.getMessage());
+                CmMessageBoxGxt2.showAlert("Problem removing Parallel Program", caught.getMessage());
                 RetryActionManager.getInstance().requestComplete(this);
             }
 

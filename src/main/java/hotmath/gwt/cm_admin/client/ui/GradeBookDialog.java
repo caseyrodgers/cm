@@ -2,11 +2,11 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetGradeBookDataAction;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -137,9 +137,9 @@ public class GradeBookDialog extends CmWindow {
         grid.getSelectionModel().setFiresEvents(true);
         grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<BaseEvent>() {
             public void handleEvent(final BaseEvent be) {
-                CatchupMathTools.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
+                CmMessageBoxGxt2.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CatchupMathTools.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
+                    CmMessageBoxGxt2.showAlert("RDC: selected: " + grid.getSelectionModel().getSelectedItems().size());
                 }
             }
         });
@@ -267,7 +267,7 @@ public class GradeBookDialog extends CmWindow {
     private GradeBookModel getGridItem() {
         GradeBookModel mdl = _grid.getSelectionModel().getSelectedItem();
         if (mdl == null) {
-            CatchupMathTools.showAlert("Please select a student");
+            CmMessageBoxGxt2.showAlert("Please select a student");
         }
         return mdl;
     }

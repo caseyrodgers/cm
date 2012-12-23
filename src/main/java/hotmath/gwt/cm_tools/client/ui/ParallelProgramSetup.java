@@ -2,11 +2,11 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.action.SaveParallelProgramAction;
@@ -114,7 +114,7 @@ public class ParallelProgramSetup extends RegisterStudent {
 	    				});
 	    			}
 	    			catch(CmException cm) {
-	    				// CatchupMathTools.showAlert("First, make sure all values on form are valid");
+	    				// CmMessageBoxGxt2.showAlert("First, make sure all values on form are valid");
 	    			}
 	    		}
 	    	});
@@ -154,7 +154,7 @@ public class ParallelProgramSetup extends RegisterStudent {
             @Override
             public void onFailure(Throwable caught) {
                 CmLogger.error("Error saving", caught);
-                CatchupMathTools.showAlert("Problem occurred while saving: " + caught.getMessage());
+                CmMessageBoxGxt2.showAlert("Problem occurred while saving: " + caught.getMessage());
             }
         });	    
 	}

@@ -2,13 +2,13 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfParallelProgramUsageReportAction;
@@ -118,7 +118,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
 		detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
 		    public void componentSelected(MenuEvent ce) {
 		        ParallelProgramUsageModel m = ppumGrid.getSelectionModel().getSelectedItem();
-		        CatchupMathTools.showAlert("UserID: " + m.getUserId());
+		        CmMessageBoxGxt2.showAlert("UserID: " + m.getUserId());
 		    }
 		});
 		Menu menu = new Menu();
@@ -268,7 +268,7 @@ public class ParallelProgramUsageWindow extends CmWindow {
     private ParallelProgramUsageModel getGridItem() {
         ParallelProgramUsageModel mdl = ppumGrid.getSelectionModel().getSelectedItem();
         if (mdl == null) {
-            CatchupMathTools.showAlert("Please make a selection first");
+            CmMessageBoxGxt2.showAlert("Please make a selection first");
         }
         return mdl;
     }

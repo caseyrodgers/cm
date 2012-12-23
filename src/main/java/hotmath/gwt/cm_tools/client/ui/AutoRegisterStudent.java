@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.util.CmException;
 
 import java.util.ArrayList;
@@ -14,9 +14,9 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 
 public class AutoRegisterStudent extends RegisterStudent {
 	
@@ -112,7 +112,7 @@ public class AutoRegisterStudent extends RegisterStudent {
 					});
 				}
 				catch(CmException cm) {
-					CatchupMathTools.showAlert("First, make sure all values on form are valid");
+					CmMessageBoxGxt2.showAlert("First, make sure all values on form are valid");
 				}
 			}
 		});

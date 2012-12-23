@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -78,7 +78,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
                     });
                 }
                 catch(CmException cm) {
-                    // CatchupMathTools.showAlert("First, make sure all values on form are valid");
+                    // CmMessageBoxGxt2.showAlert("First, make sure all values on form are valid");
                 }
             }
         });
@@ -105,7 +105,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	    
 	    String group = student.getGroup();
 	    if(group == null) {
-	        CatchupMathTools.showAlert("Group must be specified");
+	        CmMessageBoxGxt2.showAlert("Group must be specified");
 	        return;
 	    }
 	    
@@ -125,7 +125,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
             @Override
             public void onFailure(Throwable caught) {
                 caught.printStackTrace();
-                CatchupMathTools.showAlert("Problem occurred while saving setup information: " + caught.getMessage());
+                CmMessageBoxGxt2.showAlert("Problem occurred while saving setup information: " + caught.getMessage());
             }
         });	    
 	}

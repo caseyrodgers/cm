@@ -1,16 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
-import hotmath.gwt.cm_rpc.client.event.MathJaxRenderNeededEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAllCustomQuizLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.CustomQuizId;
@@ -297,7 +295,7 @@ public class CustomProgramAddQuizDialog extends Window {
             
             for(int i=0,t=_listCustomQuiz.getStore().getCount();i<t;i++) {
                 if(_listCustomQuiz.getStore().getAt(i).equals(question)) {
-                    CatchupMathTools.showAlert("This question is already in the custom quiz.");
+                    CmMessageBoxGxt2.showAlert("This question is already in the custom quiz.");
                     markSelectedItem(_listCustomQuiz, _listCustomQuiz.getStore().getAt(i));
                     return;
                 }
@@ -320,7 +318,7 @@ public class CustomProgramAddQuizDialog extends Window {
 
     private void removeAllSelectedQuestionFromCustomQuiz() {
         if(_listCustomQuiz.getStore().getCount() == 0) {
-            CatchupMathTools.showAlert("No questions in custom quiz to delete.");
+            CmMessageBoxGxt2.showAlert("No questions in custom quiz to delete.");
         }
         else {
             MessageBox.confirm("Remove Questions", "Remove all questions from custom quiz?",
@@ -364,14 +362,14 @@ public class CustomProgramAddQuizDialog extends Window {
         try {
             final List<CustomQuizId> ids = getCustomQuizIds();
             if (ids.size() == 0) {
-                CatchupMathTools.showAlert("There are no questions assigned to this custom quiz.");
+                CmMessageBoxGxt2.showAlert("There are no questions assigned to this custom quiz.");
                 return;
             }
             
             saveCustomQuizAux();
         } catch (Exception e) {
             e.printStackTrace();
-            CatchupMathTools.showAlert("Could Not Save", e.getMessage());
+            CmMessageBoxGxt2.showAlert("Could Not Save", e.getMessage());
         }
     }
 
@@ -629,7 +627,7 @@ public class CustomProgramAddQuizDialog extends Window {
                  markSelectedItem(_listCustomQuiz, question);
             }
             else {
-                CatchupMathTools.showAlert("This is already the last question in the custom quiz.");
+                CmMessageBoxGxt2.showAlert("This is already the last question in the custom quiz.");
             }
         }
         else {
@@ -638,7 +636,7 @@ public class CustomProgramAddQuizDialog extends Window {
     }
 
     private void showMustSelectQuestionMessage() {
-        CatchupMathTools.showAlert("Select a question first.");
+        CmMessageBoxGxt2.showAlert("Select a question first.");
     }
     
     private void moveSelectedQuestionInProgramUp() {
@@ -652,7 +650,7 @@ public class CustomProgramAddQuizDialog extends Window {
                 markSelectedItem(_listCustomQuiz, question);
             }
             else {
-                CatchupMathTools.showAlert("This is already the first question in the custom quiz.");
+                CmMessageBoxGxt2.showAlert("This is already the first question in the custom quiz.");
             }
         }
         else {

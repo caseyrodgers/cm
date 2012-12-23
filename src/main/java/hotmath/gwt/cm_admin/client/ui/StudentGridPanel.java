@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
@@ -21,6 +20,7 @@ import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -299,7 +299,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void oncapture(RpcData result) {
                 CmBusyManager.setBusy(false);
                 if(!result.getDataAsString("status").equals("OK")) {
-                    CatchupMathTools.showAlert("Error resetting user: " + result);
+                    CmMessageBoxGxt2.showAlert("Error resetting user: " + result);
                 }
                 else {
                     InfoPopupBox.display("Reset User", "User '" + uid + "' reset successfully");
@@ -436,7 +436,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         
         if (sm.getProgram().getIsActiveProgram() == false) {
             if(CmShared.getQueryParameter("debug") == null) {
-                CatchupMathTools.showAlert("Student is using a Parallel Program, login is not possible at this time.");
+                CmMessageBoxGxt2.showAlert("Student is using a Parallel Program, login is not possible at this time.");
             }
         	return;
         }
@@ -469,7 +469,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         if (sm == null)
             return;
 
-        CatchupMathTools.showAlert("UID: " + sm.getUid());
+        CmMessageBoxGxt2.showAlert("UID: " + sm.getUid());
     }
 
     private ToolBar createToolbar() {
@@ -569,7 +569,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                         GridSelectionModel<StudentModelExt> sel = _grid.getSelectionModel();
                         List<StudentModelExt> l = sel.getSelection();
                         if (l.size() == 0) {
-                            CatchupMathTools.showAlert("Please select a student.");
+                            CmMessageBoxGxt2.showAlert("Please select a student.");
                         } else {
                             final StudentModelExt sm = l.get(0);
 
@@ -753,7 +753,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
         GridSelectionModel<StudentModelExt> sel = _grid.getSelectionModel();
         List<StudentModelExt> l = sel.getSelection();
         if (l.size() == 0) {
-            CatchupMathTools.showAlert("Please select a student.");
+            CmMessageBoxGxt2.showAlert("Please select a student.");
         } else {
             final StudentModelExt sm = l.get(0);
             GWT.runAsync(new CmRunAsyncCallback() {
@@ -774,7 +774,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                 GridSelectionModel<StudentModelExt> sel = grid.getSelectionModel();
                 final List<StudentModelExt> l = sel.getSelection();
                 if (l.size() == 0) {
-                    CatchupMathTools.showAlert("Please select a student.");
+                    CmMessageBoxGxt2.showAlert("Please select a student.");
                 } else {
                     showStudentDetails(l.get(0));
                 }
@@ -877,7 +877,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                                 }
                             });
                         } else {
-                            CatchupMathTools.showAlert("No students currently displayed.");
+                            CmMessageBoxGxt2.showAlert("No students currently displayed.");
                         }
                     }
                 });
@@ -922,9 +922,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     });
                 } else {
                     if (studentCount < 1)
-                        CatchupMathTools.showAlert("Report Cards", "No students currently displayed.");
+                        CmMessageBoxGxt2.showAlert("Report Cards", "No students currently displayed.");
                     else
-                        CatchupMathTools.showAlert("Report Cards", currentStudentCount
+                        CmMessageBoxGxt2.showAlert("Report Cards", currentStudentCount
                                 + " students selected, please choose a 'Group' and/or use 'Text Search' to select "
                                 + MAX_REPORT_CARD + " or fewer students.");
                 }
@@ -939,7 +939,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
             public void componentSelected(MenuEvent ce) {
             	StudentModelExt student = getSelectedStudent();
             	if (student == null) {
-                    CatchupMathTools.showAlert("Please select a student.");
+                    CmMessageBoxGxt2.showAlert("Please select a student.");
                     return;
             	}
                 ListStore<StudentModelExt> store = grid.getStore();
@@ -975,9 +975,9 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     });
                 } else {
                     if (studentCount < 1)
-                        CatchupMathTools.showAlert("Report Cards", "No students currently displayed.");
+                        CmMessageBoxGxt2.showAlert("Report Cards", "No students currently displayed.");
                     else
-                        CatchupMathTools.showAlert("Report Cards", currentStudentCount
+                        CmMessageBoxGxt2.showAlert("Report Cards", currentStudentCount
                                 + " students selected, please choose a 'Group' and/or use 'Text Search' to select "
                                 + MAX_REPORT_CARD + " or fewer students.");
                 }
@@ -1152,7 +1152,7 @@ public class StudentGridPanel extends LayoutContainer implements CmAdminDataRefr
                     sb.append((unregisterErrorCount > 1) ? " students." : " student.");
                 }
 
-                CatchupMathTools.showAlert(sb.toString());
+                CmMessageBoxGxt2.showAlert(sb.toString());
 
                 CmAdminDataReader.getInstance().fireRefreshData();
             }

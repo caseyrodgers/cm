@@ -3,7 +3,6 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.CustomProgramAddQuizDialog.Callback;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
@@ -11,14 +10,15 @@ import hotmath.gwt.cm_tools.client.model.CustomLessonModel.Type;
 import hotmath.gwt.cm_tools.client.model.CustomProgramModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 import hotmath.gwt.shared.client.model.IntValueHolder;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction;
-import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.CustomProgramAction.ActionType;
+import hotmath.gwt.shared.client.rpc.action.CustomProgramUsageCountAction;
 import hotmath.gwt.shared.client.rpc.action.DeleteCustomQuizAction;
 
 import java.util.ArrayList;
@@ -405,12 +405,12 @@ public class CustomProgramDesignerDialog extends CmWindow {
         // validate ..
         String pn = _programName.getValue();
         if(pn == null || pn.length() == 0) {
-            CatchupMathTools.showAlert("Please enter a custom program name");
+            CmMessageBoxGxt2.showAlert("Please enter a custom program name");
             return;
         }
         
         if(_listSelected.getStore().getCount() == 0) {
-            CatchupMathTools.showAlert("There are no lessons assigned to this custom program.");
+            CmMessageBoxGxt2.showAlert("There are no lessons assigned to this custom program.");
             return;
         }
         
@@ -435,10 +435,10 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 CmBusyManager.setBusy(false);
                 String msg = error.getMessage();
                 if(msg.indexOf("Duplicate") > -1) {
-                    CatchupMathTools.showAlert("Could not save Custom Program: duplicate program name");
+                    CmMessageBoxGxt2.showAlert("Could not save Custom Program: duplicate program name");
                 }
                 else if(msg.indexOf("invalid") > -1)
-                    CatchupMathTools.showAlert(msg);
+                    CmMessageBoxGxt2.showAlert(msg);
                 else
                     super.onFailure(error);
             }

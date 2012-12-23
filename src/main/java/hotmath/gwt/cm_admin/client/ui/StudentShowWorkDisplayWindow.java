@@ -9,11 +9,11 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
+import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 import hotmath.gwt.shared.client.CmShared;
@@ -87,7 +87,7 @@ public class StudentShowWorkDisplayWindow extends Window {
 				
 				@Override
 				public void onUnavailable() {
-					CatchupMathTools.showAlert("Error creating resource: " + solItem);
+					CmMessageBoxGxt2.showAlert("Error creating resource: " + solItem);
 				}
 				
 				@Override
@@ -98,7 +98,7 @@ public class StudentShowWorkDisplayWindow extends Window {
 		                 layout();
 				    }
 				    catch(Exception e) {
-				    	CatchupMathTools.showAlert("Error creating resource: " + e.getLocalizedMessage());
+				    	CmMessageBoxGxt2.showAlert("Error creating resource: " + e.getLocalizedMessage());
 				    }
 				}
 			};
