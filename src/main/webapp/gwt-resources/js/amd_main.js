@@ -1,4 +1,4 @@
-require(['CatchupMath_combined'], function(x) {
+require(['CatchupMath_combined', 'qtip/jquery.qtip-1.0.0-rc3.min'], function(x) {
         console.log('catchup math js loaded');
     });
 
