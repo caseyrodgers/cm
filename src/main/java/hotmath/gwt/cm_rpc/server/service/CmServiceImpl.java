@@ -42,7 +42,10 @@ public class CmServiceImpl extends RemoteServiceServlet implements CmService {
     }
     
     
-    /** Override to force expires/headers to deal with IOS caching Post requests 
+    /** Override to force expires/headers to deal with IOS caching Post requests
+     * 
+     *  see:
+     *  https://groups.google.com/forum/?fromgroups=#!topic/google-web-toolkit/CWkgCXLi8tA
      * 
      */
     @Override
