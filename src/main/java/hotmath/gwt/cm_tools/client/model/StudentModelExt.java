@@ -44,6 +44,7 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
     public static final String LIMIT_GAMES_KEY = "limit-games";
     public static final String STOP_AT_PROGRAM_END_KEY = "stop-at-program-end";
+	public static final String SECTION_IS_SETTABLE = "section-is-settable";
     
     private Boolean hasExtendedData = false;
 

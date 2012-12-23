@@ -75,7 +75,7 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
 		this.passPercentReqd = passPercentReqd;
 		this.currentSection = String.valueOf((Integer) advOptionsMap.get(StudentModelExt.SECTION_NUM_KEY));
 		this.sectionCount = (Integer) advOptionsMap.get(StudentModelExt.SECTION_COUNT_KEY);
-		this.sectionIsSettable = (Boolean) advOptionsMap.get("section-is-settable");
+		this.sectionIsSettable = (Boolean) advOptionsMap.get(StudentModelExt.SECTION_IS_SETTABLE);
 		this.progStopIsSettable = (Boolean) advOptionsMap.get("prog-stop-is-settable");
 
 		advOptWindow = new CmWindow();
@@ -199,8 +199,8 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
  			passCombo.disable();
 
  		boolean sectionSelectAvail=false;
-		if(advOptionsMap.containsKey("SECTION_SELECT_AVAIL")) {
-		    sectionSelectAvail = (Boolean)advOptionsMap.get("SECTION_SELECT_AVAIL");
+		if(advOptionsMap.containsKey(StudentModelExt.SECTION_IS_SETTABLE)) {
+		    sectionSelectAvail = (Boolean)advOptionsMap.get(StudentModelExt.SECTION_IS_SETTABLE);
 		}
 		if (! sectionSelectAvail)
 			sectionCombo.disable();

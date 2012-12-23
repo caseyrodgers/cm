@@ -423,7 +423,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 			if (activeSection == null)
 				activeSection = 0;
 			advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
-			advOptionsMap.put("section-is-settable", sectionSelectAvail);
+			advOptionsMap.put(StudentModelExt.SECTION_IS_SETTABLE, sectionSelectAvail);
 
 			if ("custom-adv-opt-btn".equals(ce.getButton().getId())) {
 				ssm.setStopAtProgramEnd(true);
