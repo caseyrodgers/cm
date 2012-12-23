@@ -11,7 +11,6 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.Res
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -20,8 +19,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -178,6 +175,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
                 CalculatorWindow.getInstance().setVisible(true);
             }
         });
+        
+        if(UserInfo.getInstance().isDisableCalcAlways() || isQuiz() && UserInfo.getInstance().isDisableCalcQuizzes()) {
+        	calculator.setEnabled(false);
+        }
+        
         tools.add(calculator);
         
         final int times[] = {0};
@@ -219,6 +221,13 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         return tools;
     }
     
+    /** Is this panel a Quiz
+     * 
+     * @return
+     */
+    public boolean isQuiz() {
+    	return false;
+    }
 
     
     boolean _wasMaxBeforeWhiteboard;

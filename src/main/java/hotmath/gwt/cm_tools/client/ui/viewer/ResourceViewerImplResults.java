@@ -23,8 +23,6 @@ import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
 public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard {
     String _title;
@@ -54,6 +52,10 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         return ResourceViewerState.MAXIMIZED;
     }
 
+    @Override
+    public boolean isQuiz() {
+    	return true;
+    }
 
     /**
      * Select the correct question response for question for pid

@@ -158,8 +158,8 @@ public class RegisterStudentAdvancedOptions extends LayoutContainer {
         disableCalcQuizzes.add(isDisableCalcQuizzes);
         advOptions.add(disableCalcQuizzes);
 
+		sectionCombo = new SectionNumberCombo(sectionCount);
         if (sectionIsSettable) {
-    		sectionCombo = new SectionNumberCombo(sectionCount);
             setSectionNumberSelection();
 		    advOptions.add(sectionCombo);
         }

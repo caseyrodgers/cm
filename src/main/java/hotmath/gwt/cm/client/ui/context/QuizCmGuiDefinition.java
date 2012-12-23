@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
+import hotmath.gwt.cm_tools.client.ui.viewer.IsQuiz;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -35,7 +36,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  * 
  * @TODO: which quiz?
  */
-public class QuizCmGuiDefinition implements CmGuiDefinition {
+public class QuizCmGuiDefinition implements CmGuiDefinition  {
     int testSegment;
     
     public QuizCmGuiDefinition(int segmentNumber) {
@@ -99,6 +100,13 @@ public class QuizCmGuiDefinition implements CmGuiDefinition {
          * 
          */
         CmResourcePanel resourcePanel = new CmResourcePanelImplWithWhiteboard() {
+        	
+        	@Override
+        	public boolean isQuiz() {
+        		return true;
+        	}
+        	
+        	
             @Override
             protected DisplayMode getInitialWhiteboardDisplay() {
                 return DisplayMode.TUTOR;

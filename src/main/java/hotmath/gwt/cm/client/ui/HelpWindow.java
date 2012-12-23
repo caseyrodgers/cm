@@ -198,10 +198,22 @@ public class HelpWindow extends GWindow {
                             }
                         }
                     });
+                    mb.setVisible(true);
                 }
             });
             addtionalTb.add(restartButton);
         }
+        
+        TextButton studentDetailsBtn = new MyOptionButton("Student History", "View your history of quizzes, reviews and show work efforts.", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showStudentHistory();
+            }
+        });
+        /** Do not allow Student History for demo user */
+        if (UserInfo.getInstance().isDemoUser())
+        	studentDetailsBtn.setEnabled(false);
+        addtionalTb.add(studentDetailsBtn);
         
         TextButton calculator = new TextButton("Calculator", new SelectHandler() {
             @Override
@@ -209,21 +221,13 @@ public class HelpWindow extends GWindow {
                 CalculatorWindow.getInstance().setVisible(true);
             }
         });
+        if(UserInfo.getInstance().isDisableCalcAlways()) {
+        	calculator.setEnabled(false);
+        }
         addtionalTb.add(calculator);
         
 
-        TextButton studentDetailsBtn = new MyOptionButton("Student History", "View your history of quizzes, reviews and show work efforts.", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                showStudentHistory();
-            }
-        });
-
-        /** Do not allow Student History for demo user */
-        if (UserInfo.getInstance().isDemoUser())
-        	studentDetailsBtn.setEnabled(false);
         
-        addtionalTb.add(studentDetailsBtn);
         if (CmShared.getQueryParameter("debug") != null) {
         	addtionalTb.add(new TextButton("Connection Check", new SelectHandler() {
                 @Override
@@ -345,7 +349,6 @@ public class HelpWindow extends GWindow {
     private void showStudentConfiguration() {
         String url = "/cm_admin/launch.jsp?load=student_registration:" + UserInfo.getInstance().getUid();
         new IFramedPanelWindow(url).setVisible(true);
-        hide();
 //        GWT.runAsync(new CmRunAsyncCallback() {
 //            @Override
 //            public void onSuccess() {
