@@ -11,6 +11,8 @@ import hotmath.gwt.cm_rpc.server.rpc.ContextListener;
 
 import java.text.SimpleDateFormat;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.log4j.Logger;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -37,6 +39,17 @@ public class CmServiceImpl extends RemoteServiceServlet implements CmService {
     @Override
     public <T extends Response> T execute(Action<T> action) throws CmRpcException {
         return ActionDispatcher.getInstance().execute(action);
+    }
+    
+    
+    /** Override to force expires/headers to deal with IOS caching Post requests 
+     * 
+     */
+    @Override
+    protected void onAfterResponseSerialized(String serializedResponse) {
+        HttpServletResponse response = getThreadLocalResponse();
+        response.setDateHeader("Expires", 0L);  // always expired
+        response.setHeader("Cache-Control", "no-cache");
     }
     
     /**
