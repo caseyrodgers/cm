@@ -125,8 +125,11 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 		this(sm, cm, false);
 	}
 
-	public RegisterStudent(StudentModelI sm, CmAdminModel cm,
-			boolean excludeAutoEnroll) {
+	public RegisterStudent(StudentModelI sm, CmAdminModel cm, boolean excludeAutoEnroll) {
+		this(sm, cm, excludeAutoEnroll, false);
+	}
+	
+	public RegisterStudent(StudentModelI sm, CmAdminModel cm,boolean excludeAutoEnroll, boolean addSaveButton) {
 
 		this.excludeAutoEnroll = excludeAutoEnroll;
 
@@ -151,6 +154,12 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 
 		createForm();
 		setComboBoxSelections();
+		
+		
+		if(addSaveButton) {
+			_formPanel.addButton(saveButton(_fsProgram, _formPanel));
+		}
+		
 	}
 
 	protected void createWindow() {
@@ -174,7 +183,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 		/**
 		 * Assign buttons to the button bar on the Window
 		 */
-		_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
+		
 		for (Button btn : getActionButtons()) {
 			btn.addStyleName("register-student-btn");
 			_window.addButton(btn);
@@ -199,7 +208,7 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 	 * 
 	 * @return
 	 */
-	protected List<Button> getActionButtons() {
+	public List<Button> getActionButtons() {
 		List<Button> list = new ArrayList<Button>();
 		Button cancelBtn = cancelButton();
 		cancelBtn.addStyleName("register-student-cancel");
@@ -221,6 +230,9 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 
 	protected FormPanel createForm() {
 		_formPanel = this; // new FormPanel();
+		
+		_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
+		
 		_formPanel.addStyleName("register-student-form-panel");
 		_formPanel.setLabelWidth(120);
 		_formPanel.setHeight(formHeight);
@@ -946,7 +958,13 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 
 			public void oncapture(StudentModelI ai) {
 				CmBusyManager.setBusy(false);
-				_window.close();
+				if(_window != null) {
+					_window.close();
+				}
+				else {
+					CatchupMathTools.showAlert("Save Complete");
+				}
+				
 				EventBus.getInstance().fireEvent(
 						new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,
 								ai.getProgramChanged()));
@@ -1474,7 +1492,12 @@ public class RegisterStudent extends FormPanel implements ProcessTracker {
 				updateUserRPC(sm, stuChanged, progChanged, progIsNew,
 						passcodeChanged, passPercentChanged, sectionNumChanged);
 			} else {
-				_window.close();
+				if(_window != null) {
+					_window.close();
+				}
+				else {
+					CatchupMathTools.showAlert("Save complete");
+				}
 			}
 		}
 	}

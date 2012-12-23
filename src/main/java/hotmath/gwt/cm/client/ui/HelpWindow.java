@@ -94,18 +94,56 @@ public class HelpWindow extends GWindow {
 
         messageArea.addStyleName("help-window-message-area");
 
-
         FieldSet fs = new FieldSet();
         fs.setHeadingText("Using Catchup Math");
-        fs.add(messageArea);
-        TextButton howTo = new TextButton("Video: How to use Catchup Math");
-        howTo.addSelectHandler(new SelectHandler() {
+        FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+        flowContainer.add(messageArea);
+    
+        ToolBar toolBar = new ToolBar();
+        
+        TextButton howTo = new MyOptionButton("Using Catchup Math", "Video: How to use Catchup Math", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new StudentHowToFlashWindow();
             }
         });
-        fs.add(howTo);
+        toolBar.add(howTo);
+
+        TextButton supportBtn = new MyOptionButton("Support", "Get support help", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
+            }
+        });
+        toolBar.add(supportBtn);
+
+        TextButton btnFeedback = new MyOptionButton("Feedback", "Provide feedback", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showFeedbackPanel_Gwt();
+            }
+        });
+        toolBar.add(btnFeedback);
+
+        TextButton btnComputerCheck = new MyOptionButton("Computer Check", "Verify your computer can run Catchup Math", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new ComputerCheckWindow();
+            }
+        });
+        toolBar.add(btnComputerCheck);
+
+        /** Only the owner of the account has access to history */
+        if (!UserInfo.getInstance().isActiveUser())
+            supportBtn.setEnabled(false);
+
+
+        supportBtn.addStyleName("button");
+        toolBar.add(supportBtn);
+	
+        flowContainer.add(toolBar);
+        
+        fs.setWidget(flowContainer);
 
         flc.add(fs);
         
@@ -128,28 +166,27 @@ public class HelpWindow extends GWindow {
         flc.add(fs);
 
 
+        FieldSet fsAdditional = new FieldSet();
+        FlowLayoutContainer additionalFlow = new FlowLayoutContainer();
+        fsAdditional.setHeadingText("Additional Options and Configuration");
+        ToolBar  addtionalTb = new ToolBar();
+
+        additionalFlow.add(addtionalTb);
+        fsAdditional.setWidget(additionalFlow);
+        
+        flc.add(fsAdditional);
 
         if (UserInfo.getInstance().isSingleUser() || CmShared.getQueryParameter("debug") != null) {
-            fs = new FieldSet();
-            // fs.setLayout(new FlowLayout());
-            ToolBar  hlc = new ToolBar();
-            fs.setHeadingText("Configuration");
-            fs.addStyleName("help-window-additional-options");
-            TextButton btn = new MyOptionButton("Setup Catchup Math");
-            btn.setToolTip("Modify your Catchup Math settings.");
-            btn.addSelectHandler(new SelectHandler() {
+
+            TextButton setupButton = new MyOptionButton("Setup Catchup Math","Modify your Catchup Math settings.", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
                     showStudentConfiguration();
                 }
             });
-            btn.addStyleName("button");
-            hlc.add(btn);
+            addtionalTb.add(setupButton);
 
-            btn = new MyOptionButton("Restart");
-            btn.setToolTip("Restart the current program.");
-            btn.addStyleName("button");
-            btn.addSelectHandler(new SelectHandler() {
+            TextButton restartButton = new MyOptionButton("Restart", "Restart the current program.",new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
                     final ConfirmMessageBox mb = new ConfirmMessageBox("Restart Program",
@@ -163,19 +200,8 @@ public class HelpWindow extends GWindow {
                     });
                 }
             });
-            hlc.add(btn);
-            fs.add(hlc);
-
-            flc.add(fs);
+            addtionalTb.add(restartButton);
         }
-
-
-        fs = new FieldSet();
-        ToolBar tb = new ToolBar();
-
-        fs.addStyleName("help-window-additional-options");
-        fs.setHeadingText("Additional Options");
-
         
         TextButton calculator = new TextButton("Calculator", new SelectHandler() {
             @Override
@@ -183,64 +209,23 @@ public class HelpWindow extends GWindow {
                 CalculatorWindow.getInstance().setVisible(true);
             }
         });
-        tb.add(calculator);
+        addtionalTb.add(calculator);
         
 
-        TextButton btn = new MyOptionButton("Support");
-        btn.addStyleName("button");
-        btn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
-            }
-        });
-        tb.add(btn);
-
-        btn = new MyOptionButton("Student History");
-        btn.setToolTip("View your history of quizzes, reviews and show work efforts.");
-        btn.addSelectHandler(new SelectHandler() {
+        TextButton studentDetailsBtn = new MyOptionButton("Student History", "View your history of quizzes, reviews and show work efforts.", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 showStudentHistory();
             }
         });
 
-        TextButton btnFeedback = new MyOptionButton("Feedback");
-        btnFeedback.addStyleName("button");
-        btnFeedback.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                showFeedbackPanel_Gwt();
-            }
-        });
-        tb.add(btnFeedback);
-
-        TextButton btnComputerCheck = new MyOptionButton("Computer Check");
-        btnComputerCheck.addStyleName("button");
-        btnComputerCheck.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                new ComputerCheckWindow();
-            }
-        });
-        tb.add(btnComputerCheck);
-
-        /** Only the owner of the account has access to history */
-        if (!UserInfo.getInstance().isActiveUser())
-            btn.setEnabled(false);
-
         /** Do not allow Student History for demo user */
         if (UserInfo.getInstance().isDemoUser())
-            btn.setEnabled(false);
-
-        btn.addStyleName("button");
-        tb.add(btn);
-        fs.add(tb);
-
-        flc.add(fs);
+        	studentDetailsBtn.setEnabled(false);
         
+        addtionalTb.add(studentDetailsBtn);
         if (CmShared.getQueryParameter("debug") != null) {
-            tb.add(new TextButton("Connection Check", new SelectHandler() {
+        	addtionalTb.add(new TextButton("Connection Check", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
                     GWT.runAsync(new CmRunAsyncCallback() {
@@ -252,7 +237,7 @@ public class HelpWindow extends GWindow {
                 }
             }));
         }
-        
+
         setWidget(flc);
         setVisible(true);
     }
@@ -524,8 +509,9 @@ class BackgroundModel  {
 
 class MyOptionButton extends TextButton {
 
-    public MyOptionButton(String name) {
-        super(name);
+    public MyOptionButton(String name, String tooltip, SelectHandler selHandler) {
+        super(name,selHandler);
+        setToolTip(tooltip);
         setWidth(110);
     }
 }

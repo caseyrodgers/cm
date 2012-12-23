@@ -10,7 +10,6 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog.AddProblemsCal
 import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookDialog;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -45,9 +44,12 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -324,7 +326,20 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                             adminModel.setId(student.getAdminUid());
                             
                             mainPort.setLayout(new FitLayout());
-                            mainPort.add(new RegisterStudent(student, adminModel));
+                            
+                            RegisterStudent rs = new RegisterStudent(student, adminModel, true, true);
+                    		/**
+                    		 * Assign buttons to the button bar on the Window
+                    		 */
+                            ButtonBar bb = new ButtonBar();
+                    		for (Button btn : rs.getActionButtons()) {
+                    			btn.addStyleName("register-student-btn");
+                    			String txt = btn.getText();
+                    			if(txt.equals("Save")) {
+                    				bb.add(btn);
+                    			}
+                    		}
+                    		mainPort.add(rs);
                             RootPanel.get().add(mainPort);
                         } finally {
                             CmBusyManager.setBusy(false);

@@ -691,9 +691,7 @@ img.resource-item-complete {
 .help-window li {
         font-size: 1em;
 }
-.help-window .button {
-        width: 250px;
-}
+
 .bg-image-label {
         color: blue;
         margin-bottom: 10px;

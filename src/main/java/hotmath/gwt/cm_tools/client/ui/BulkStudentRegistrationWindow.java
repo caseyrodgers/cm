@@ -112,7 +112,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		_window.show();
 	}
 
-	protected List<Button> getActionButtons() {
+	public List<Button> getActionButtons() {
 		List<Button> list = new ArrayList<Button>();
 
 		Button autoCreate = new Button("Upload");

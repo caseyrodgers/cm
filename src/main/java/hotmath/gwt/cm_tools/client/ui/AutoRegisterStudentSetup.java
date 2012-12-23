@@ -57,7 +57,7 @@ public class AutoRegisterStudentSetup extends RegisterStudent {
 	}
 	
 
-	protected List<Button> getActionButtons() {
+	public List<Button> getActionButtons() {
 	    List<Button> list = new ArrayList<Button>();
         
         Button autoCreate = new Button("Save");
