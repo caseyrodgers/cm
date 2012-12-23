@@ -51,18 +51,12 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
     }
     
     private String loadCommandData(ResultSet rs) throws Exception {
-    	try {
-    		String s = rs.getString("command_data");
-	    	byte[] compressed = rs.getBytes("command_data");
-	    	if (compressed[0] != "{".getBytes("UTF-8")[0]) {
-	    		return CompressHelper.decompress(compressed);
-	    	}
-	    	else {
-	    		return rs.getString("command_data");
-	    	}
+    	byte[] compressed = rs.getBytes("command_data");
+    	if (compressed != null && compressed[0] != "{".getBytes("UTF-8")[0]) {
+    		return CompressHelper.decompress(compressed);
     	}
-    	catch(Exception e) {
-    		throw e;
+    	else {
+    		return rs.getString("command_data");
     	}
     }
 
