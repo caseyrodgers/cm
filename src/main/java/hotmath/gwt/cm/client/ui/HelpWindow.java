@@ -1,7 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.WelcomePanel;
-import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;

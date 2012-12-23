@@ -70,7 +70,7 @@ public class HeaderPanel extends FlowLayoutContainer {
             public void onSelect(SelectEvent event) {
             	
             	Event currentEvent = helpButton.getCurrentEvent();
-                if (currentEvent != null && currentEvent.getShiftKey()) {
+                if (currentEvent != null && currentEvent.getCtrlKey()) {
                 	new ShowDebugUrlWindow();
                 } else {
                     GWT.runAsync(new CmRunAsyncCallback() {
