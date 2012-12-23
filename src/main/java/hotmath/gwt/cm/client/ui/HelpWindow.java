@@ -243,16 +243,16 @@ public class HelpWindow extends GWindow {
     }
 
     public interface BackgroundProperties extends PropertyAccess<String> {
-        ModelKeyProvider<BackgroundModel> type();
-        LabelProvider<BackgroundModel> style();
+        ModelKeyProvider<BackgroundModel> style();
+        LabelProvider<BackgroundModel> type();
     }
 
     private ComboBox<BackgroundModel> createBackgroundCombo() {
 
         BackgroundProperties props = GWT.create(BackgroundProperties.class);
-        ListStore<BackgroundModel> groupStore = new ListStore<BackgroundModel>(props.type());
+        ListStore<BackgroundModel> groupStore = new ListStore<BackgroundModel>(props.style());
 
-        ComboBox<BackgroundModel> combo = new ComboBox<BackgroundModel>(groupStore, props.style());
+        ComboBox<BackgroundModel> combo = new ComboBox<BackgroundModel>(groupStore, props.type());
         combo.setStore(getBackgroundListStores(groupStore));
         combo.setWidth(300);
         combo.addStyleName("help-window-bg-combo");
