@@ -122,7 +122,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), "quiz:quiz",  UserInfo.getInstance().getRunId());
+                GetWhiteboardDataAction action = new GetWhiteboardDataAction(UserInfo.getInstance().getUid(), "quiz:quiz",  0);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

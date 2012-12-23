@@ -16,7 +16,7 @@ public class ShowDebugUrlWindow extends GWindow {
 	public ShowDebugUrlWindow() {
 		super(true);
 		setHeadingText("Debug URL");
-		setPixelSize(400,50);
+		setPixelSize(450,50);
         String url = CmShared.getServerForCmStudent() + "/loginService?debug=true&uid="  + UserInfo.getInstance().getUid();
         Anchor anchor = new Anchor(url);
         anchor.setHref(url);
