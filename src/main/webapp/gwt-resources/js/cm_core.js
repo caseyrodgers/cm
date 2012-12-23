@@ -1,3 +1,36 @@
+ /** Create question element */
+
+function _createQuestionStep(el) {
+    // first child div is the question
+    var divs = el.getElementsByTagName('div');
+
+    for (var d = 0, t = divs.length; d < t; d++) {
+        var del = divs[d];
+        if (d == 0) {
+            // the question text
+        } else if ((d % 2) != 0) {
+            // a choice
+            var html = "<img class='ques_icon' src='/images/tutor5/hint_question-16x16.gif' onclick='_questionExpandResult(this)'/>";
+            del.innerHTML = html + del.innerHTML;
+        } else {
+            del.style.display = 'none';
+        }
+    }
+}
+
+
+
+function _questionExpandResult(el) {
+	try {
+		el.parentElement.parentNode.children[1].className = 'question-choice';
+		el.parentElement.parentNode.children[1].style.display = 'block';
+	}
+	catch(e) {
+		console.log('error showing question : ' + e);
+	}
+}
+
+
 /** core Catchup Math routines
  *
  */
