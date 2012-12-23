@@ -150,7 +150,9 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
         else {
-            
+        	
+        	jsni_moveToFirstStep();
+        	
             if (this.tutorCallback != null) {
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
             } else {
@@ -159,6 +161,13 @@ public class TutorWrapperPanel extends Composite {
         }
     }
 
+    
+    /** Move to the first step, if not not already viewed */
+    private native void jsni_moveToFirstStep() /*-{
+        if ($wnd.getCurrentStepUnitNumber() < 1) {
+            $wnd.gotoStepUnit(0);
+        }
+    }-*/;
     
     /** Allow solution XML to loaded externally
      * 

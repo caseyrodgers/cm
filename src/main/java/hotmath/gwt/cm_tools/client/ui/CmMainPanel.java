@@ -396,7 +396,6 @@ public class CmMainPanel extends BorderLayoutContainer {
      * @param resourceItem
      */
     public void showResource(final InmhItemData resourceItem) {
-        Info.display("Info", "Showing resource: " + resourceItem.getFile());
         try {
             ResourceViewerFactory.ResourceViewerFactory_Client client = new ResourceViewerFactory.ResourceViewerFactory_Client() {
                 @Override
