@@ -533,8 +533,9 @@ img.resource-item-complete {
         background-image: url(/gwt-resources/images/bg/default.png);
         background-position: center bottom;
         background-repeat: no-repeat;
-        max-height: 1065px;
-        max-width: 1600px;
+        /* max-height: 1065px;
+           #max-width: 1600px;
+        */
 }
 
 .resource-container-forest {
