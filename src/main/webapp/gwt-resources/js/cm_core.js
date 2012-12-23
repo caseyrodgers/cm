@@ -1,4 +1,4 @@
- /** Create question element */
+ /** Create question element and add call onclick to expand result */
 
 function _createQuestionStep(el) {
     // first child div is the question
