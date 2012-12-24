@@ -453,7 +453,7 @@ public class CmShared implements EntryPoint {
                                                              return d.innerHTML;
                                                              }-*/;
 
-    static private native String getHostName() /*-{
+    static public native String getHostName() /*-{
                                                var host = window.location.host;
                                                if(host.indexOf("hotmath.com") > -1) {
                                                host = "http://catchupmath.com";

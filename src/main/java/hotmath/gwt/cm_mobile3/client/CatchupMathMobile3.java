@@ -90,41 +90,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     @Override
     public void onModuleLoad() {
         __instance = this;
-        
-if(true) {
-        	
-	
-        	FlowPanel fp = new FlowPanel();
-            Anchor btn = new Anchor("This is a test");
-            btn.addClickHandler(new ClickHandler() {
-                
-                @Override
-                public void onClick(ClickEvent event) {
-                    Window.alert("TEST");
-                }
-            });
-            fp.add(btn);
-            
-            RootPanel.get("main-content").add(fp);
-            if(true) {
-            	return;
-            }
-            
-            
-            Button btn2 = new Button();
-            btn2.addClickHandler(new ClickHandler() {
-            	@Override
-            	public void onClick(ClickEvent event) {
-            		Window.alert("TEST 2");
-            	}
-			});
-            fp.add(btn2);
-            RootPanel.get("main-content").add(fp);
-            return;
-        }
-        
-        
-        
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {

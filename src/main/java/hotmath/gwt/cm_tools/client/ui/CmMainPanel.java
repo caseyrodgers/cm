@@ -434,8 +434,6 @@ public class CmMainPanel extends BorderLayoutContainer {
         }
         
         _lastResourceViewer = panel;
-        Info.display("Info", "Showing resource: " + title);
-        
         
         switch(panel.getInitialMode()) {
             case MAXIMIZED:
