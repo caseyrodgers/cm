@@ -36,6 +36,8 @@ import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.hssf.record.formula.functions.T;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -43,11 +45,14 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -85,6 +90,41 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     @Override
     public void onModuleLoad() {
         __instance = this;
+        
+if(true) {
+        	
+	
+        	FlowPanel fp = new FlowPanel();
+            Anchor btn = new Anchor("This is a test");
+            btn.addClickHandler(new ClickHandler() {
+                
+                @Override
+                public void onClick(ClickEvent event) {
+                    Window.alert("TEST");
+                }
+            });
+            fp.add(btn);
+            
+            RootPanel.get("main-content").add(fp);
+            if(true) {
+            	return;
+            }
+            
+            
+            Button btn2 = new Button();
+            btn2.addClickHandler(new ClickHandler() {
+            	@Override
+            	public void onClick(ClickEvent event) {
+            		Window.alert("TEST 2");
+            	}
+			});
+            fp.add(btn2);
+            RootPanel.get("main-content").add(fp);
+            return;
+        }
+        
+        
+        
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
@@ -130,7 +170,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         new LoadingDialog(__clientFactory.getEventBus());
         _rootPanel = RootPanel.get("main-content");
         
-        if(false) {
+        if(true) {
+        	
+        	FlowPanel fp = new FlowPanel();
             Anchor btn = new Anchor("This is a test");
             btn.addClickHandler(new ClickHandler() {
                 
@@ -139,7 +181,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     Window.alert("TEST");
                 }
             });
-            _rootPanel.add(btn);
+            fp.add(btn);
+            
+            Button btn2 = new Button();
+            btn2.addClickHandler(new ClickHandler() {
+            	@Override
+            	public void onClick(ClickEvent event) {
+            		Window.alert("TEST 2");
+            	}
+			});
+            fp.add(btn2);
+            _rootPanel.add(fp);
             return;
         }
         
