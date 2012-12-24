@@ -36,8 +36,6 @@ import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.poi.hssf.record.formula.functions.T;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -45,8 +43,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -135,32 +131,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         new LoadingDialog(__clientFactory.getEventBus());
         _rootPanel = RootPanel.get("main-content");
         
-        if(true) {
-        	
-        	FlowPanel fp = new FlowPanel();
-            Anchor btn = new Anchor("This is a test");
-            btn.addClickHandler(new ClickHandler() {
-                
-                @Override
-                public void onClick(ClickEvent event) {
-                    Window.alert("TEST");
-                }
-            });
-            fp.add(btn);
-            
-            Button btn2 = new Button();
-            btn2.addClickHandler(new ClickHandler() {
-            	@Override
-            	public void onClick(ClickEvent event) {
-            		Window.alert("TEST 2");
-            	}
-			});
-            fp.add(btn2);
-            _rootPanel.add(fp);
-            return;
-        }
-        
-        
         try {
             
             if(CatchupMathMobileShared.getQueryParameter("debug")==null) {
@@ -168,7 +138,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 String userAgent = getUserAgent();
                 //Window.alert("User Agent: " + userAgent);
                 
-                if(userAgent.toLowerCase().indexOf("ipad") == -1  && userAgent.toLowerCase().indexOf("android") == -1) {
+                String ualc = userAgent.toLowerCase();
+                if(ualc.indexOf("ipad") == -1  && ualc.indexOf("android") == -1 && ualc.indexOf("iphone") == -1 ) {
                     Location.assign("/cm_mobile_not_supported.html");
                     // _rootPanel.add(new BrowserNotSupportedPanel());
                     return;
