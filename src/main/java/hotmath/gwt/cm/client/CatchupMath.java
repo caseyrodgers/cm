@@ -69,7 +69,7 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Return last create instance
-     * 
+     *
      * @return
      */
     public static CatchupMath getThisInstance() {
@@ -78,7 +78,7 @@ public class CatchupMath implements EntryPoint {
 
     public Viewport _mainPort;
     BorderLayoutContainer _mainPortWrapper = new BorderLayoutContainer();
-    
+
 
     static CatchupMath __thisInstance;
 
@@ -87,7 +87,7 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Flag to indicate message about show work has been given (one per login)
-     * 
+     *
      */
     public static boolean __hasBeenInformedAboutShowWork;
 
@@ -95,8 +95,8 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-        
-        
+
+
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
 
@@ -122,7 +122,7 @@ public class CatchupMath implements EntryPoint {
         _headerPanel = new HeaderPanel();
         _mainPortWrapper.setNorthWidget(_headerPanel, bdata);
 
-        
+
         _mainContainer = new SimpleContainer();
         _mainContainer.setStyleName("main-container");
         _mainContainer.getElement().setId("main-container");
@@ -141,10 +141,10 @@ public class CatchupMath implements EntryPoint {
             _mainPort.addStyleName("debug-on");
         }
 
-        
+
         /**
          * Add the main panel to the "hm_content" div on the CatchupMath.html
-         * 
+         *
          */
         RootPanel.get("main-content").add(_mainPort);
 
@@ -160,20 +160,22 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Called when successfully logged into CM server
-     * 
+     *
      * @param uid
      */
     private void processLoginComplete(final Integer uid) {
+        //Window.alert("LOGIN COMPLETE");
+
         try {
             String jsonUserInfo = getUserInfoFromExtenalJs();
             String startType = UserInfoBase.getInstance().getCmStartType();
             if (startType == null)
                 startType = "";
-            
+
             //startType = "AUTO_CREATE";
 
             CmDestination firstLocation = UserInfoDao.loadUserAndReturnFirstAction(jsonUserInfo);
-            
+
             if (CmShared.getQueryParameterValue("type").equals("su")) {
                 UserInfo.getInstance().setUserAccountType(UserInfo.UserType.SINGLE_USER);
             }
@@ -189,7 +191,7 @@ public class CatchupMath implements EntryPoint {
             if (startType.equals("AUTO_CREATE")) {
                 /**
                  * self registration
-                 * 
+                 *
                  * mark as not owner, since this is templated.
                  */
                 UserInfo.getInstance().setActiveUser(false);
@@ -198,7 +200,7 @@ public class CatchupMath implements EntryPoint {
                 /**
                  * Parallel Program - need student's password which must be
                  * associated with same account as Parallel Program
-                 * 
+                 *
                  */
                 UserInfo.getInstance().setActiveUser(false);
                 showParallelProgramPasswordPanel();
@@ -216,7 +218,7 @@ public class CatchupMath implements EntryPoint {
             } else {
                 /**
                  * Otherwise, show the welcome screen to new visits
-                 * 
+                 *
                  */
                 showWelcomePanel();
             }
@@ -231,7 +233,7 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * return the user_info data passed in the bootstrap html
-     * 
+     *
      * @return
      */
     static private native String getUserInfoFromExtenalJs() /*-{
@@ -241,10 +243,10 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * read token containing the uid, test and run ids:
-     * 
+     *
      * uid:tid:runid
-     * 
-     * 
+     *
+     *
      * @param di
      */
     private void setDebugOverrideInformation(String di) {
@@ -261,9 +263,9 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Startup the history and initial history state check
-     * 
+     *
      * This should happen just once during program operation
-     * 
+     *
      */
     public void startNormalOperation() {
         GWT.runAsync(new RunAsyncCallback() {
@@ -282,21 +284,21 @@ public class CatchupMath implements EntryPoint {
 
     private void startNormalOperations() {
 
-        
+
 
         History.addValueChangeHandler(new CatchupMathHistoryListener());
 
-        
+
         /**
          * Don't allow bookmark to move past server's location
-         * 
+         *
          */
         // History.fireCurrentHistoryState();
 
         /**
          * Register an event lister waiting to see if user's data change. If it
          * does, we must reset this user
-         * 
+         *
          */
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             public void handleEvent(CmEvent event) {
@@ -311,8 +313,8 @@ public class CatchupMath implements EntryPoint {
             }
         });
 
-        
-        
+
+
         String ac = CmShared.getQueryParameterValue("type");
         if (ac.equals("auto_test_net")) {
             /** should we only run net test? */
@@ -327,17 +329,17 @@ public class CatchupMath implements EntryPoint {
     }
 
     private void jumpToFirstLocation() {
-        
-        
 
-        
+
+
+
         CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
             @Override
             public void programFlow(CmProgramFlowAction flowResponse) {
 
                 switch (flowResponse.getPlace()) {
                 case QUIZ:
-                    
+
                     /**
                      * show the quiz panel with data included in the next action
                      * object.
@@ -366,18 +368,18 @@ public class CatchupMath implements EntryPoint {
             }
         });
     }
-    
+
     public void showAssignments_gwt() {
-        
+
         GWT.runAsync(new RunAsyncCallback() {
-            
+
             @Override
             public void onSuccess() {
                 final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
                         _mainPortWrapper.setCenterWidget(_mainContainer);
-                        _mainPort.forceLayout();                 
+                        _mainPort.forceLayout();
                     }
                 });
 
@@ -387,23 +389,23 @@ public class CatchupMath implements EntryPoint {
                 _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);
                 _mainPort.forceLayout();
             }
-            
+
             @Override
             public void onFailure(Throwable reason) {
                 reason.printStackTrace();
                 Log.error("Error loading assignments GUI: " + reason.getMessage());
             }
         });
-        
 
-    }    
-    
+
+    }
+
 
     /**
      * Helper page to create the Login page
-     * 
+     *
      * @TODO: get out of main
-     * 
+     *
      */
     public void showLoginPage() {
         History.newItem("login");
@@ -411,9 +413,9 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Helper page to create the Quiz page
-     * 
+     *
      * @TODO: get out of main
-     * 
+     *
      */
     public void showQuizPanel(int segmentNumber) {
         showQuizPanel_gwt(segmentNumber);
@@ -428,13 +430,13 @@ public class CatchupMath implements EntryPoint {
 
                 _mainContainer.clear();
                 _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition(quizHtml)));
-                
+
                 _mainContainer.forceLayout();
             }
         });
     }
 
-    
+
     public void showQuizPanel_gwt(final int segmentNumber) {
 
         GWT.runAsync(new CmRunAsyncCallback() {
@@ -445,7 +447,7 @@ public class CatchupMath implements EntryPoint {
 
                 _mainContainer.clear();
                 _mainContainer.add(new CmMainPanel(new QuizCmGuiDefinition(segmentNumber)));
-                
+
                 _mainContainer.forceLayout();
             }
         });
@@ -459,7 +461,7 @@ public class CatchupMath implements EntryPoint {
 
                 _mainContainer.clear();
                 _mainContainer.add(new WelcomePanel());
-                
+
                 _mainContainer.forceLayout();
             }
         });
@@ -467,9 +469,9 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Helper page to create the Prescription page
-     * 
+     *
      * @TODO: get out of main
-     * 
+     *
      */
     public void showPrescriptionPanel() {
         CmLocation location = new CmLocation(LocationType.PRESCRIPTION, UserInfo.getInstance().getSessionNumber());
@@ -482,14 +484,14 @@ public class CatchupMath implements EntryPoint {
         if (ContextController.getInstance().getTheContext() instanceof PrescriptionContext) {
             /**
              * PrescriptionPage is currently in view, simply update its display
-             * 
+             *
              */
             PrescriptionCmGuiDefinition.__instance.getAsyncDataFromServer(UserInfo.getInstance().getSessionNumber());
 
         } else {
             /**
              * Load the PrescriptionContext
-             * 
+             *
              */
             showPrescriptionPanel_gwt(prescriptionResponse);
         }
@@ -506,7 +508,7 @@ public class CatchupMath implements EntryPoint {
                 _mainContainer.clear();
                 PrescriptionCmGuiDefinition prescriptionGui = new PrescriptionCmGuiDefinition();
                 _mainContainer.add(new CmMainPanel(prescriptionGui));
-                
+
                 _mainContainer.forceLayout();
 
                 /**
@@ -520,9 +522,9 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Display the Auto Registration panel
-     * 
+     *
      * Does not push onto history stack.
-     * 
+     *
      */
     public void showAutoRegistration_gwt() {
         GWT.runAsync(new CmRunAsyncCallback() {
@@ -561,7 +563,7 @@ public class CatchupMath implements EntryPoint {
     /**
      * Provides helper method to load a resource into the current
      * PrespccriptionContext
-     * 
+     *
      * @param type
      * @param file
      */
@@ -591,9 +593,9 @@ public class CatchupMath implements EntryPoint {
 
     /**
      * Push a GWT method onto the global space for the app window
-     * 
+     *
      * This will be called from CatchupMath.js:doResourceLoad
-     * 
+     *
      */
     static private native void publishNative() /*-{
                                                // Set global variable to signal that CM system has been initialized.
