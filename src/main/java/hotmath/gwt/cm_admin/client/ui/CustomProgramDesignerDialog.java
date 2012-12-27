@@ -249,7 +249,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
      * @param bar
      */
     static public void createButtonBarLedgend(ButtonBar bar) {
-        String ledgend = "<div style='position: absolute; top: 2px; left: 0;width: 350px;'>"
+        String legend = "<div style='position: absolute; top: 2px; left: 0;width: 350px;'>"
             + "<div style='margin-right: 3px;float: left;' class='ess'>Essentials</div>"
             + "<div style='margin-right: 3px;float: left;' class='pre-alg'>Pre-Algebra</div>"
             + "<div style='margin-right: 3px;float: left;' class='alg1'>Algebra 1</div>"
@@ -258,7 +258,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             + "</div>";
 
         bar.setStyleAttribute("position", "relative");
-        Html html = new Html(ledgend);
+        Html html = new Html(legend);
         html.setToolTip("This color indicates highest appropriate level for the lesson.");
         bar.add(html);        
     }
