@@ -46,10 +46,10 @@ ant
 # build the CM package
 #
 if [ $n -eq 1 ]; then
-    echo Building full CM package w/o mvn update
-    mvn -o package minify:minify  -Dgwt.compiler.force=false -o
+    echo Building full CM package w/o mvn update and w/o GWT compile forced
+    mvn -o package minify:minify -Dgwt.compiler.force=false
 else
-    echo Building full CM package with mvn update
+    echo Building full CM package with mvn update and with GWT compile forced
     mvn package minify:minify -Dgwt.compiler.force=true
 fi
 
@@ -91,5 +91,5 @@ cp src/main/webapp/ROOT.xml ~/dist/cm_tomcat/conf/Catalina/localhost
 
 # be rough
 #
-echo Restarting all java processes
+echo NOT Restarting all java processes
 #killall -9 java
