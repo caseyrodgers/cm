@@ -11,14 +11,13 @@
 		<gwtVersion>2.5.0</gwtVersion>
 		<gwtHome>${basedir}/libs/2.5.0</gwtHome>
 		<org.springframework.version>3.0.5.RELEASE</org.springframework.version>
+		<gxt.version>3.0.1</gxt.version>
 	</properties>
 
 	<pluginRepositories>
 		<!-- <pluginRepository> <id>gwt-maven-plugins</id> <url>http://snapshots.repository.codehaus.org/ 
 			</url> </pluginRepository> -->
 	</pluginRepositories>
-
-
 
 
 	<!-- <scm> <connection>scm:cvs:pserver:casey@hotmath.kattare.com:/home/cvsroot/CVSBASE:cm</connection> 
@@ -108,11 +107,16 @@
 		<dependency>
 			<groupId>com.sencha.gxt</groupId>
 			<artifactId>gxt</artifactId>
-			<version>3.0.1</version>
+			<version>${gxt.version}</version>
 			<scope>compile</scope>
 		</dependency>
 
-
+		<dependency>
+			<groupId>com.sencha.gxt</groupId>
+			<artifactId>gxt-chart</artifactId>
+			<version>${gxt.version}</version>
+		</dependency>
+    
 		<dependency>
 			<groupId>com.bramosystems.oss.player</groupId>
 			<artifactId>bst-player-api</artifactId>
@@ -684,7 +688,7 @@
 				<version>2.5.0</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1M -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=ERROR</extraJvmArgs>
+					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=ERROR</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -698,17 +702,14 @@
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
- 				                <module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
-				                <module>hotmath.gwt.tutor_viewer.TutorViewer</module>
-						<!-- 
-   						     <module>hotmath.gwt.cm_search.CatchupMathSearch</module>
-						     <module>hotmath.gwt.cm_tutor.CmTutor</module>
-
-                                                     <module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
-
-
-						     <runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> 
-                                                -->
+						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
+						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
+						<!--
+						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
+						<module>hotmath.gwt.cm_tutor.CmTutor</module>
+						<module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
+						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
+						-->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
@@ -729,17 +730,17 @@
 					<dependency>
 						<groupId>com.google.gwt</groupId>
 						<artifactId>gwt-user</artifactId>
-						<version>2.5.0</version>
+						<version>${gwtVersion}</version>
 					</dependency>
 					<dependency>
 						<groupId>com.google.gwt</groupId>
 						<artifactId>gwt-dev</artifactId>
-						<version>2.5.0</version>
+						<version>${gwtVersion}</version>
 					</dependency>
 					<dependency>
 						<groupId>com.google.gwt</groupId>
 						<artifactId>gwt-servlet</artifactId>
-						<version>2.5.0</version>
+						<version>${gwtVersion}</version>
 					</dependency>
 				</dependencies>
 			</plugin>
