@@ -40,8 +40,8 @@ body {
 	top: 3px;
 	right: 520px	; 
 	background :url(/gwt-resources/images/admin_getting_started.png) no-repeat center left !important;
-	height: 32px;
-	width: 144px;
+	height: 32px !important;
+	width: 144px !important;
 	background: url(/gwt-resources/images/admin_getting_started.png)
 		no-repeat center left !important;
 }
@@ -56,8 +56,8 @@ body {
 	right: 362px;
 	background: url(/gwt-resources/images/training_videos_normal.png)
 		no-repeat center left !important;
-	height: 32px;
-	width: 144px;
+	height: 32px !important;
+	width: 144px !important;
 	top: 3px;
 }
 
@@ -71,8 +71,8 @@ body {
 	top: 3px;
 	right: 205px; 
 	background :url(/gwt-resources/images/recent_updates-3_normal.png) no-repeat center left !important;
-	height: 32px;
-	width: 144px;
+	height: 32px !important;
+	width: 144px !important;
 	background: url(/gwt-resources/images/recent_updates-3_normal.png)
 		no-repeat center left !important;
 }
@@ -103,7 +103,6 @@ body {
 }
 
 .main-container {
-	height: 400px;
 	overflow: auto;
 	padding: 0 20px 20px 20px;
 	position: relative;
@@ -161,9 +160,6 @@ body {
 	font-weight: bold;
 }
 
-.register-student-fieldset {
-	margin-top: 20px;
-}
 
 .register-student-proto-fieldset {
 	height: 120px !important;
@@ -278,13 +274,17 @@ body {
 }
 
 .student-grid-panel-grid {
-	height: 200px;
+	/* height: 200px; */
 }
 
 .student-grid-panel-grid-container {
 	height: 450px;
 	margin-left: 100px;
 	width: 800px;
+}
+
+.student-grid-wrapper {
+	border: 1px solid #99BBE8;
 }
 
 .student-grid-panel-toolbar {
@@ -447,12 +447,9 @@ program-details-panel .x-ftree2-node-over {
     line-height: 1.3em;
 }
 
-.highlights-data-window .date-range-label {
-    position: absolute;
-    left: 0;
-    top: 0;
+.date-range-label {
     color: blue;
-    padding: 5px 10px 0 0;
+    margin-right: 50px;
 }
 
 
@@ -529,4 +526,10 @@ program-details-panel .x-ftree2-node-over {
 .custom-quiz-no-modify-text {
     color: red;
     font-weight: bold;
+}
+
+
+/** allow adding image to button bar */
+.student-details-window-button-bar {
+   position: relative;	
 }

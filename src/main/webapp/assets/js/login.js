@@ -1,3 +1,14 @@
+/** Set focus to user name on page load
+ * 
+ */ 
+YUI().use('event',function(Y) {
+  Y.on("domready", function() {
+    document.getElementById('fld_user').focus();
+  }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
+});
+
+
+
 /** validate login attempt.  If both user/pass are
  *  set send to server, otherwise show error and
  *  do not send to server.
