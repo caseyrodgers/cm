@@ -793,7 +793,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private TextButton displayPrintableReportToolItem(final Grid<StudentModelI> grid) {
-        TextButton btn = new TextButton();
+        TextButton btn = new TextButton("Print");
         // btn.setIconStyle("printer-icon");
         btn.setToolTip("Create a file for printing or sharing");
 
