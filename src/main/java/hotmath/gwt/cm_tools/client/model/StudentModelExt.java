@@ -63,7 +63,6 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(SECTION_NUM_KEY, student.getSectionNum());
         set(USER_PROGRAM_KEY, student.getProgram().getProgramId());
         set(CHAPTER_KEY, student.getChapter());
-b
 
         setLastQuiz(student.getLastQuiz());
         setLastLogin(student.getLastLogin());
