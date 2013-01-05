@@ -1,22 +1,28 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
+import java.util.Comparator;
+
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.SortDir;
+import com.sencha.gxt.data.shared.Store.StoreSortInfo;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+
 
 /** Provide central control of the group selection box
  * 
@@ -34,18 +40,20 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 	private boolean inRegistrationMode;
 	private ProcessTracker pTracker;
 	private String id;
+	LabelProvider<GroupInfoModel> groupLabel;
 
     public static final String NO_FILTERING = "--- No Filtering ---";
-    
+
 
 	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupInfoModel> groupStore,
-		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc) {
+		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc, LabelProvider<GroupInfoModel> groupLabel) {
 
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
         this.inRegistrationMode = inRegistrationMode;
         this.pTracker = pTracker;
         this.id = id;
+        this.groupLabel = groupLabel;
 
         /** Only refresh on startup if requested.  This is to prevent loading twice on 
          *  startup of StudentGridPanel ... once in constructor and once when
@@ -57,14 +65,13 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
         CmAdminDataReader.getInstance().addReader(this);
 	}
-
+	
 	public ComboBox<GroupInfoModel> groupCombo() {
-		final ComboBox<GroupInfoModel> combo = new ComboBox<GroupInfoModel>();
-		combo.setFieldLabel("Group");
+		final ComboBox<GroupInfoModel> combo = new ComboBox<GroupInfoModel>(groupStore, groupLabel);
+		// combo.setFieldLabel("Group");
 		combo.setForceSelection(false);
-		combo.setDisplayField(GroupInfoModel.GROUP_NAME);
 		combo.setEditable(false);
-		combo.setMaxLength(30);
+		// combo.setMaxLength(30);
 		combo.setAllowBlank(false);
 		combo.setTriggerAction(TriggerAction.ALL);
 		combo.setStore(groupStore);
@@ -74,11 +81,20 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		combo.setSelectOnFocus(true);
 		combo.setEmptyText("-- select a group --");
 		combo.setWidth(280);
+        
+		combo.getStore().addSortInfo(new StoreSortInfo<GroupInfoModel>(new Comparator<GroupInfoModel>() {
+            @Override
+            public int compare(GroupInfoModel o1, GroupInfoModel o2) {
+                return o1.getGroupName().compareTo(o1.getGroupName());
+            }
+        }, SortDir.ASC));
 
-	    combo.addSelectionChangedListener(new SelectionChangedListener<GroupInfoModel>() {
-			public void selectionChanged(SelectionChangedEvent<GroupInfoModel> se) {
-			    GroupInfoModel gm = se.getSelectedItem();
-	        	if (gm != null && inRegistrationMode && gm.getName().equals(GroupInfoModel.NEW_GROUP)) {
+	    combo.addSelectionHandler(new SelectionHandler<GroupInfoModel>() {
+            
+            @Override
+            public void onSelection(SelectionEvent<GroupInfoModel> event) {
+			    GroupInfoModel gm = event.getSelectedItem();
+	        	if (gm != null && inRegistrationMode && gm.getGroupName().equals(GroupInfoModel.NEW_GROUP)) {
 	        		new GroupWindow(null, cmAdminMdl, combo, true, null);
 	        	}
 	        }
@@ -101,7 +117,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 		    }
             public void oncapture(CmList<GroupInfoModel> result) {
 
-                groupStore.removeAll();
+                groupStore.clear();
 
                 // append 'New Group' to end of List if in Reg mode
                 if (inRegistrationMode) {
@@ -115,10 +131,10 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
                     GroupInfoModel gm = new GroupInfoModel();
                     gm.setGroupName(NO_FILTERING);
                     gm.setId(GroupInfoModel.NO_FILTERING);
-                    groupStore.insert(gm, 0);
+                    groupStore.add(0, gm);
                 }
 
-                groupStore.add(result);
+                groupStore.addAll(result);
                 
                 pTracker.completeStep();
                 pTracker.finish();
@@ -130,7 +146,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
 	@Override
 	public void refreshData() {
-	     getGroupListRPC(cmAdminMdl.getId(), groupStore);
+	     getGroupListRPC(cmAdminMdl.getUid(), groupStore);
 	}
 
 	/** Must remove the reader from the main data refresher once no longer needed.

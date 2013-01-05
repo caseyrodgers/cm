@@ -7,8 +7,10 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.CmTemplateFormaters.StudentDetailsTemplate;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -16,44 +18,41 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Util;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.core.client.XTemplates.XTemplate;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
+import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 /*
  * Displays historical record of Student activity in reverse chronological order
@@ -65,14 +64,16 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 
-public class StudentDetailsPanel extends LayoutContainer {
+public class StudentDetailsPanel extends BorderLayoutContainer {
 
-    StudentModelExt studentModel;
-    private HTML html;
+    StudentModelI studentModel;
     private XTemplate template;
     private Grid<StudentActivityModel> samGrid;
     private Label _studentCount;
     private Label dateRange = new Label();
+    StudentDetailsTemplate detailTemplate = GWT.create(StudentDetailsTemplate.class);
+    DetailsProperties detailsProps = GWT.create(DetailsProperties.class);
+    HTML studentInfoPanel;
 
     /**
      * Create StudentDetailsWindow for student. Shows all student activity for
@@ -82,22 +83,23 @@ public class StudentDetailsPanel extends LayoutContainer {
      * 
      * @param studentModel
      */
-    public StudentDetailsPanel(final StudentModelExt studentModel) {
+    public StudentDetailsPanel(final StudentModelI studentModel) {
         this.studentModel = studentModel;
 
-        ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>();
-        ColumnModel cm = defineColumns();
+        ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>(detailsProps.id());
+
+        ColumnModel<StudentActivityModel> cm = defineColumns();
 
         samGrid = new Grid<StudentActivityModel>(store, cm);
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        samGrid.getSelectionModel().setFiresEvents(true);
-        samGrid.setStripeRows(true);
+        // samGrid.getSelectionModel().setFiresEvents(true);
+        samGrid.getView().setStripeRows(true);
         samGrid.setWidth(565);
         samGrid.setHeight(225);
 
-        samGrid.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<StudentActivityModel>() {
+        samGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentActivityModel>() {
             @Override
-            public void selectionChanged(SelectionChangedEvent<StudentActivityModel> se) {
+            public void onSelectionChanged(SelectionChangedEvent<StudentActivityModel> event) {
                 enableDisableButtons();
             }
         });
@@ -106,35 +108,34 @@ public class StudentDetailsPanel extends LayoutContainer {
         toolBar.add(showWorkBtn());
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
-        
-        if(CmShared.getQueryParameter("debug") != null) {
+
+        if (CmShared.getQueryParameter("debug") != null) {
             toolBar.add(displayAssignmentReportToolItem(studentModel));
         }
-        
+
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
-        setLayout(new BorderLayout());
         addStyleName("student-details-window-container");
 
-        LayoutContainer lc = new LayoutContainer();
-        lc.add(studentInfoPanel());
-        lc.add(toolBar);
-        add(lc, new BorderLayoutData(LayoutRegion.NORTH, 50));
-
-        LayoutContainer gridContainer = new LayoutContainer();
-        gridContainer.setLayout(new FitLayout());
-        gridContainer.setStyleName("student-details-panel-grid");
-        gridContainer.add(samGrid);
-        gridContainer.setHeight(250);
+        FlowLayoutContainer flowLay = new FlowLayoutContainer();
+        studentInfoPanel = new HTML(renderDetailsTemplate(studentModel));
+        studentInfoPanel.setHeight("45px");
+        flowLay.add(studentInfoPanel);
         
-        add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
+        flowLay.add(toolBar);
+        setNorthWidget(flowLay, new BorderLayoutData(85));
+
+        SimpleContainer simpContainer = new SimpleContainer();
+        //simpContainer.setStyleName("student-details-panel-grid");
+        simpContainer.setWidget(samGrid);
+        //simpContainer.setHeight(250);
+
+        setCenterWidget(simpContainer);
 
         _studentCount = new Label();
         _studentCount.addStyleName("students-count");
-
-        template.overwrite(html.getElement(), Util.getJsObject(studentModel));
 
         getStudentActivityRPC(store, studentModel);
 
@@ -147,55 +148,60 @@ public class StudentDetailsPanel extends LayoutContainer {
         dateRange.addStyleName("date-range-label");
     }
 
-	private Menu buildDebugMenu() {
-		MenuItem detailDebug = new MenuItem("Debug Info");
-		detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
-		    public void componentSelected(MenuEvent ce) {
-		        StudentActivityModel m = samGrid.getSelectionModel().getSelectedItem();
-		        CatchupMathTools.showAlert("testId: " + m.getTestId() + ", runId: " + m.getRunId());
-		    }
-		});
-		Menu menu = new Menu();
-		menu.add(detailDebug);
+    private Menu buildDebugMenu() {
+        MenuItem detailDebug = new MenuItem("Debug Info");
+        detailDebug.addSelectionHandler(new SelectionHandler<Item>() {
+            
+            @Override
+            public void onSelection(SelectionEvent<Item> event) {
+                StudentActivityModel m = samGrid.getSelectionModel().getSelectedItem();
+                CatchupMathTools.showAlert("testId: " + m.getTestId() + ", runId: " + m.getRunId());
+            }
+        });
+        Menu menu = new Menu();
+        menu.add(detailDebug);
 
-		MenuItem resetHistory = new MenuItem("Reset To Here");
-		resetHistory.setToolTip("Reset student's history to this point");
-		resetHistory.addSelectionListener(new SelectionListener<MenuEvent>() {
-		    public void componentSelected(MenuEvent ce) {
-		        StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
-		        resetHistory(sm);
-		    }
-		});
-		menu.add(resetHistory);
-		return menu;
-	}
-	
-	private void resetHistory(final StudentActivityModel studentModel) {
-	    MessageBox.confirm("Reset History","Are you sure you want to reset this student's history to this point, erasing all later entries?", new Listener<MessageBoxEvent>() {
-	        @Override
-	        public void handleEvent(MessageBoxEvent be) {
-	            if(!be.isCancelled()) {
-	                resetHistoryAux(studentModel);
-	            }
-	        }
-	    });
-	}
-	private void resetHistoryAux(final StudentActivityModel studentActivity) {
-	    
-	    new RetryAction<RpcData>() {
+        MenuItem resetHistory = new MenuItem("Reset To Here");
+        resetHistory.setToolTip("Reset student's history to this point");
+        resetHistory.addSelectionHandler(new SelectionHandler<Item>() {
+            public void onSelection(SelectionEvent<Item> event) {
+                StudentActivityModel sm = samGrid.getSelectionModel().getSelectedItem();
+                resetHistory(sm);
+            }
+        });
+        menu.add(resetHistory);
+        return menu;
+    }
+
+    private void resetHistory(final StudentActivityModel studentModel) {
+        CmMessageBox.confirm("Reset History","Are you sure you want to reset this student's history to this point, erasing all later entries?" , new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if (yesNo) {
+                    resetHistoryAux(studentModel);
+                }
+            }
+        });
+    }
+
+    private void resetHistoryAux(final StudentActivityModel studentActivity) {
+
+        new RetryAction<RpcData>() {
             public void oncapture(RpcData list) {
                 getStudentActivityRPC(samGrid.getStore(), studentModel);
-                hotmath.gwt.shared.client.eventbus.EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
+                hotmath.gwt.shared.client.eventbus.EventBus.getInstance().fireEvent(
+                        new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
             }
 
             @Override
             public void attempt() {
-                ResetStudentActivityAction action = new ResetStudentActivityAction(studentModel.getUid(),studentActivity.getTestId(), studentActivity.getRunId());
+                ResetStudentActivityAction action = new ResetStudentActivityAction(studentModel.getUid(),
+                        studentActivity.getTestId(), studentActivity.getRunId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
         }.register();
-	}
+    }
 
     /**
      * Enable or disable buttons depending on user state.
@@ -208,7 +214,7 @@ public class StudentDetailsPanel extends LayoutContainer {
      */
     private void enableDisableButtons() {
 
-        if (this.samGrid.getStore().getCount() == 0) {
+        if (this.samGrid.getStore().size() == 0) {
             _showTopicsBtn.disable();
             _showWorkButton.disable();
             _showQuizResults.disable();
@@ -223,58 +229,58 @@ public class StudentDetailsPanel extends LayoutContainer {
                     _showTopicsBtn.disable();
                 else
                     _showTopicsBtn.enable();
-                
-                if(sam.getIsQuiz() && sam.getRunId() > 0) {
+
+                if (sam.isQuiz() && sam.getRunId() > 0) {
                     _showQuizResults.enable();
                     _showWorkButton.disable();
-                }
-                else {
+                } else {
                     _showQuizResults.disable();
-                   _showWorkButton.enable();
+                    _showWorkButton.enable();
                 }
             }
         }
     }
 
-    Button _showTopicsBtn, _showWorkButton, _showQuizResults;
+   TextButton _showTopicsBtn, _showWorkButton, _showQuizResults;
 
-    private Button showQuizResultsBtn() {
-        _showQuizResults = new Button("Quiz Results", new SelectionListener<ButtonEvent>() {
+    private TextButton showQuizResultsBtn() {
+        _showQuizResults = new TextButton("Quiz Results", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 StudentActivityModel sam = samGrid.getSelectionModel().getSelectedItem();
                 new ShowQuizResultsDialog(sam.getRunId());
             }
         });
         _showQuizResults.addStyleName("student-details-panel-sw-btn");
         _showQuizResults.disable();
-        
+
         return _showQuizResults;
     }
-    private Button showTopicsBtn() {
-        SelectionListener<ButtonEvent> stListener = new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+
+    private TextButton showTopicsBtn() {
+
+        _showTopicsBtn = new TextButton("Show Topics");
+        _showTopicsBtn.disable();
+        _showTopicsBtn.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
                 showTopicsForSelected();
             }
-        };
-
-        _showTopicsBtn = new Button("Show Topics");
-        _showTopicsBtn.disable();
-        _showTopicsBtn.addSelectionListener(stListener);
+        });
         _showTopicsBtn.addStyleName("student-details-panel-sw-btn");
         return _showTopicsBtn;
     }
 
-    private Button showWorkBtn() {
-        SelectionListener<ButtonEvent> swListener = new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+    private TextButton showWorkBtn() {
+        _showWorkButton = new TextButton("Show Work");
+        _showWorkButton.disable();
+        _showWorkButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 showWorkForSelected();
             }
-        };
-
-        _showWorkButton = new Button("Show Work");
-        _showWorkButton.disable();
-        _showWorkButton.addSelectionListener(swListener);
+        });
         _showWorkButton.addStyleName("student-details-panel-sw-btn");
         return _showWorkButton;
     }
@@ -289,11 +295,12 @@ public class StudentDetailsPanel extends LayoutContainer {
             CatchupMathTools.showAlert("Select a Quiz or Review from the list first");
             return;
         }
-        
-        /** only show list if a Review is selected, quizzes do not have lessons
+
+        /**
+         * only show list if a Review is selected, quizzes do not have lessons
          * 
          */
-        if(sam.getRunId() == 0) {
+        if (sam.getRunId() == 0) {
             CatchupMathTools.showAlert("Topics not shown unless Quiz is completed");
             return;
         }
@@ -314,163 +321,126 @@ public class StudentDetailsPanel extends LayoutContainer {
         new StudentShowWorkWindow(studentModel, sam);
     }
 
-
-    private Button displayPrintableReportToolItem(final StudentModelExt sm) {
-        Button ti = new Button();
-        ti.setIconStyle("printer-icon");
-        ti.setToolTip("Display a printable student detail report");
-        ti.addStyleName("student-details-panel-pr-btn");
-
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+    private TextButton displayPrintableReportToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("Print", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate=null, toDate=null;
-                if(dateRange != null) {
+                Date fromDate = null, toDate = null;
+                if (dateRange != null) {
                     if (dateRange.isDefault()) {
-                    	fromDate = null;
-                    	toDate = null;
-                    }
-                    else {
-                    	fromDate = dateRange.getFromDate();
-                    	toDate = dateRange.getToDate();
+                        fromDate = null;
+                        toDate = null;
+                    } else {
+                        fromDate = dateRange.getFromDate();
+                        toDate = dateRange.getToDate();
                     }
                 }
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(),
                         new GeneratePdfAction(PdfType.STUDENT_DETAIL, sm.getAdminUid(), Arrays.asList(sm.getUid()),
-                        		fromDate, toDate));
+                                fromDate, toDate));
             }
         });
+        //ti.setIconStyle("printer-icon");
+        ti.setToolTip("Display a printable student detail report");
+        ti.addStyleName("student-details-panel-pr-btn");
         return ti;
     }
 
-    private Button displayReportCardToolItem(final StudentModelExt sm) {
-        Button ti = new Button();
+    private TextButton displayReportCardToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("Report Card", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate, toDate;
+                if (dateRange.isDefault()) {
+                    fromDate = null;
+                    toDate = null;
+                } else {
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
+                }
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(
+                        PdfType.REPORT_CARD, sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
+            }
+        });
         // ti.setIconStyle("printer-icon");
         ti.setText("Report Card");
         ti.setToolTip("Display a printable report card");
         ti.addStyleName("student-details-panel-sw-btn");
-
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate, toDate;
-                if (dateRange.isDefault()) {
-                	fromDate = null;
-                	toDate = null;
-                }
-                else {
-                	fromDate = dateRange.getFromDate();
-                	toDate = dateRange.getToDate();
-                }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(
-                        PdfType.REPORT_CARD, sm.getAdminUid(), Arrays.asList(sm.getUid()),
-                        fromDate, toDate));
-            }
-        });
         return ti;
     }
 
-    private Button displayAssignmentReportToolItem(final StudentModelExt sm) {
-        Button ti = new Button();
+    private TextButton displayAssignmentReportToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("Assignment Report", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate, toDate;
+                if (dateRange.isDefault()) {
+                    fromDate = null;
+                    toDate = null;
+                } else {
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
+                }
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(),
+                        new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT, sm.getAdminUid(), Arrays.asList(sm.getUid()),
+                                fromDate, toDate));
+            }
+        });
         // ti.setIconStyle("printer-icon");
-        ti.setText("Assignment Report");
         ti.setToolTip("Display a printable assignment report");
         ti.addStyleName("student-details-panel-sw-btn");
 
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate, toDate;
-                if (dateRange.isDefault()) {
-                	fromDate = null;
-                	toDate = null;
-                }
-                else {
-                	fromDate = dateRange.getFromDate();
-                	toDate = dateRange.getToDate();
-                }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(
-                        PdfType.ASSIGNMENT_REPORT, sm.getAdminUid(), Arrays.asList(sm.getUid()),
-                        fromDate, toDate));
-            }
-        });
         return ti;
     }
 
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    private ColumnModel<StudentActivityModel> defineColumns() {
 
-        ColumnConfig date = new ColumnConfig();
-        date.setId(StudentActivityModel.USE_DATE_KEY);
-        date.setHeader("Date");
-        date.setWidth(75);
-        date.setSortable(false);
-        date.setMenuDisabled(true);
-        configs.add(date);
+        ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
 
-        ColumnConfig program = new ColumnConfig();
-        program.setId(StudentActivityModel.PROGRAM_KEY);
-        program.setHeader("Program");
-        program.setWidth(120);
-        program.setSortable(false);
-        program.setMenuDisabled(true);
-        program.setRenderer(new GridCellRenderer<StudentActivityModel>() {
-			@Override
-			public Object render(StudentActivityModel sam, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<StudentActivityModel> store, Grid<StudentActivityModel> grid) {
-                if (sam.getIsArchived() != 0)
-                    return "<span class='" + sam.getIsArchivedStyle() + "'>" +  sam.getProgramDescr() + "</span>";
-                else {
-                	return sam.getProgramDescr();
+        configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.useDate(), 75, "Date"));
+        configs.get(configs.size()-1).setSortable(false);
+        configs.get(configs.size()-1).setMenuDisabled(true);
+
+        configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.program(), 120, "Program"));
+        configs.get(configs.size() - 1).setCell(new AbstractCell() {
+            @Override
+            public void render(Context context, Object value, SafeHtmlBuilder sb) {
+                StudentActivityModel sam = samGrid.getStore().get(context.getIndex());
+                String html = "";
+                if (sam.isArchived()) {
+                    html = "<span class='" + sam.getIsArchivedStyle() + "'>" + sam.getProgramDescr() + "</span>";
+                } else {
+                    html = sam.getProgramDescr();
                 }
-			}
+                sb.appendEscaped(html);
+            }
         });
-        configs.add(program);
 
-        ColumnConfig programType = new ColumnConfig();
-        programType.setId(StudentActivityModel.PROGRAM_TYPE_KEY);
-        programType.setHeader("Prog-Type");
-        programType.setWidth(115);
-        programType.setSortable(false);
-        programType.setMenuDisabled(true);
-        configs.add(programType);
-
-        ColumnConfig activity = new ColumnConfig();
-        activity.setId(StudentActivityModel.ACTIVITY_KEY);
-        activity.setHeader("Activity");
-        activity.setWidth(90);
-        activity.setSortable(false);
-        activity.setMenuDisabled(true);
-        configs.add(activity);
-
-        ColumnConfig result = new ColumnConfig();
-        result.setId(StudentActivityModel.RESULT_KEY);
-        result.setHeader("Result");
-        result.setWidth(165);
-        result.setSortable(false);
-        result.setMenuDisabled(true);
-        configs.add(result);
+        configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.programType(), 115, "Prog-Type"));
+        configs.get(configs.size()-1).setSortable(false);
+        configs.get(configs.size()-1).setMenuDisabled(true);
         
-        ColumnConfig timeOnTask = new ColumnConfig();
-        timeOnTask.setId(StudentActivityModel.TIME_ON_TASK_KEY);
-        timeOnTask.setHeader("Time");
-        timeOnTask.setWidth(63);
-        timeOnTask.setSortable(true);
-        timeOnTask.setMenuDisabled(true);
-        configs.add(timeOnTask);
-
-        ColumnModel cm = new ColumnModel(configs);
+        configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.activity(), 90, "Activity"));
+        configs.get(configs.size()-1).setSortable(false);
+        configs.get(configs.size()-1).setMenuDisabled(true);
+        
+        
+        configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.result(), 165, "Result"));
+        configs.get(configs.size()-1).setSortable(false);
+        configs.get(configs.size()-1).setMenuDisabled(true);
+        
+        
+        configs.add(new ColumnConfig<StudentActivityModel, Integer>(detailsProps.timeOnTask(), 63, "Time"));
+        configs.get(configs.size()-1).setSortable(true);
+        configs.get(configs.size()-1).setMenuDisabled(true);
+        
+        ColumnModel<StudentActivityModel> cm = new ColumnModel<StudentActivityModel>(configs);
         return cm;
     }
 
-    private Widget studentInfoPanel() {
-        defineStudentInfoTemplate();
-        return html;
-    }
 
     /**
      * Define the template for the header (does not add to container)
@@ -478,35 +448,26 @@ public class StudentDetailsPanel extends LayoutContainer {
      * Defines the global 'html' object, filled in via RPC call.
      * 
      */
-    private void defineStudentInfoTemplate() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<div class='detail-info'>");
-        sb.append("<div class='form left'>");
-        sb.append("  <div class='fld'><label>Password:</label><div>{");
-        sb.append(StudentModelExt.PASSCODE_KEY).append("}&nbsp;</div></div>");
-        sb.append("</div>");
-        sb.append("<div class='form right'>");
-        sb.append("  <div class='fld'><label>Show Work:</label><div>{");
-        sb.append(StudentModelExt.SHOW_WORK_STATE_KEY).append("}&nbsp;</div></div>");
-        sb.append("</div>");
-        sb.append("</div>");
-
-        template = XTemplate.create(sb.toString());
-        html = new HTML();
-
-        html.setHeight("35px"); // to eliminate the jump when setting values in
-        // template
+    private String renderDetailsTemplate(StudentModelI studentActivity) {
+        try {
+            return detailTemplate.render(studentActivity).asString();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+        return "";
     }
 
-    protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, final StudentModelExt sm) {
+    protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, final StudentModelI sm) {
 
         CmBusyManager.setBusy(true);
 
         new RetryAction<CmList<StudentActivityModel>>() {
             public void oncapture(CmList<StudentActivityModel> list) {
                 try {
-                    store.removeAll();
-                    store.add(list);
+                    store.clear();
+                    store.addAll(list);
 
                     _studentCount.setText("count: " + list.size());
 
@@ -522,23 +483,36 @@ public class StudentDetailsPanel extends LayoutContainer {
             public void attempt() {
                 CmServiceAsync s = CmShared.getCmService();
                 DateRangePanel p = DateRangePanel.getInstance();
-                Date fromDate = p != null?p.getFromDate():null;
-                Date toDate = p != null ?p.getToDate():null;
-                
+                Date fromDate = p != null ? p.getFromDate() : null;
+                Date toDate = p != null ? p.getToDate() : null;
+
                 GetStudentActivityAction action = new GetStudentActivityAction(sm, fromDate, toDate);
                 setAction(action);
                 s.execute(action, this);
             }
         }.register();
     }
-    
-	private void refreshDateRangeLabel() {
-	    if(DateRangePanel.getInstance() != null) {
-	        dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
-	    }
-	}
-    
-    public Component getDateRange() {
+
+    private void refreshDateRangeLabel() {
+        if (DateRangePanel.getInstance() != null) {
+            dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
+        }
+    }
+
+    public Widget getDateRange() {
         return dateRange;
-    }    
+    }
 }
+
+
+interface DetailsProperties extends PropertyAccess<String> {
+    ModelKeyProvider<StudentActivityModel> id();
+    ValueProvider<StudentActivityModel, String> message();
+    ValueProvider<StudentActivityModel, String> useDate();
+    ValueProvider<StudentActivityModel, String> program();
+    ValueProvider<StudentActivityModel, String> programType();
+    ValueProvider<StudentActivityModel, String> activity();
+    ValueProvider<StudentActivityModel, String> result();
+    ValueProvider<StudentActivityModel, Integer> timeOnTask();
+}
+

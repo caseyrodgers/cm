@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -9,7 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author casey
  *
  */
-public class StudentProgramModel implements IsSerializable {
+public class StudentProgramModel implements Response {
 
     Integer programId;
     String  subjectId;

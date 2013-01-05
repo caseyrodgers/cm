@@ -17,9 +17,9 @@ public interface StudentModelI extends Response {
 
 	public void setGroup(String group);
 	
-	public String getGroupId();
+	public int getGroupId();
 	
-	public void setGroupId(String groupId);
+	public void setGroupId(int groupId);
 
 	public void setSectionCount(Integer sectionCount);
 	
@@ -100,4 +100,11 @@ public interface StudentModelI extends Response {
 	public StudentSettingsModel getSettings();
 	
 	public void setSettings(StudentSettingsModel optionSettings);
+	
+	
+	public boolean getHasExtendedData();
+	public void setHasExtendedData(boolean extended);
+	
+    public void setShowWorkState(String swState);
+    public String getShowWorkState();
 }

@@ -2,33 +2,50 @@ package hotmath.gwt.cm_tools.client.model;
 
 //import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-public class StudyProgramExt extends BaseModelData {
-
-    private static final long serialVersionUID = 5574506049604177840L;
+public class StudyProgramExt implements Response {
+    
     StudyProgramModel program;
+    String title;
+    String shortTitle;
+    String descr;
+    boolean needsSubject;
+    boolean needsChapters;
+    boolean needsPassPercent;
+    String customProgramName;
+    int customProgramId;
+    int customQuizId;
+    String customQuizName;
+    int sectionCount;
+    CmProgramType programType;
+
+    String styleIsFree, styleIsCustomProgram, styleIsTemplate, styleIsArchived, label;
+
 
     public StudyProgramExt(StudyProgramModel program, String title, String shortTitle, String descr,
-            Integer needsSubject, Integer needsChapters, Integer needsPassPercent, Integer customProgramId,
+            boolean needsSubject, boolean needsChapters, boolean needsPassPercent, Integer customProgramId,
             String customProgramName) {
 
         this.program = program;
 
-        set("title", title);
-        set("shortTitle", shortTitle);
-        set("descr", descr);
-        set("needsSubject", needsSubject);
-        set("needsChapters", needsChapters);
-        set("needsPassPercent", needsPassPercent);
-        set("customProgramName", customProgramName);
-        set("customProgramId", customProgramId);
-        set("customQuizId", program.getCustomQuizId());
-        set("customQuizName", program.getCustomQuizName());
-        set("sectionCount", program.getSectionCount());
-        set("programType", program.getProgramType());
+        this.title = title;
+        this.shortTitle = shortTitle;
+        this.descr = descr;
+        this.needsSubject = needsSubject;
+        this.needsChapters = needsChapters;
+        this.needsPassPercent = needsPassPercent;
+        this.customProgramName = customProgramName;
+        this.customProgramId = customProgramId;
+        this.customQuizId = program.getCustomQuizId();
+        this.customQuizName = program.getCustomQuizName();
+        this.sectionCount = program.getSectionCount();
+        this.programType = program.getProgramType();
 
         /**
          * set css style to identify as custom program
@@ -36,60 +53,259 @@ public class StudyProgramExt extends BaseModelData {
          */
         String pre = "";
         if (program.isCustomProgram()) {
-            set("styleIsCustomProgram", "isCustom");
+            this.styleIsCustomProgram = "isCustom";
             pre = "CP:";
         } else if (program.isCustomQuiz()) {
-            set("styleIsCustomProgram", "isCustom");
+            styleIsCustomProgram = "isCustom";
             pre = "CQ:";
         }
 
         if (program.isTemplate()) {
-            set("styleIsTemplate", "custom-template");
+            styleIsTemplate = "custom-template";
         }
 
-        set("label", pre + title);
+        label = pre + title;
 
         /**
          * set css style and append archive date to identify archived programs
          */
         if (program.isArchived()) {
-            set("styleIsArchived", "custom-archived");
-            set("label", get("label") + " (" + program.getArchiveDate() + ")");
+            this.styleIsArchived = "custom-archived";
+            this.label = label + " (" + program.getArchiveDate() + ")";
         }
     }
+    
+    
 
-    public Integer getCustomProgramId() {
-        return get("customProgramId");
+    public StudyProgramModel getProgram() {
+        return program;
     }
 
-    public Integer getCustomQuizId() {
-        return get("customQuizId");
+
+
+    public void setProgram(StudyProgramModel program) {
+        this.program = program;
     }
+
+
+
+    public String getTitle() {
+        return title;
+    }
+
+
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
+
+    public String getShortTitle() {
+        return shortTitle;
+    }
+
+
+
+    public void setShortTitle(String shortTitle) {
+        this.shortTitle = shortTitle;
+    }
+
+
+
+    public String getDescr() {
+        return descr;
+    }
+
+
+
+    public void setDescr(String descr) {
+        this.descr = descr;
+    }
+
+
+
+    public boolean isNeedsSubject() {
+        return needsSubject;
+    }
+
+
+
+    public void setNeedsSubject(boolean needsSubject) {
+        this.needsSubject = needsSubject;
+    }
+
+
+
+    public boolean isNeedsChapters() {
+        return needsChapters;
+    }
+
+
+
+    public void setNeedsChapters(boolean needsChapters) {
+        this.needsChapters = needsChapters;
+    }
+
+
+
+    public boolean isNeedsPassPercent() {
+        return needsPassPercent;
+    }
+
+
+
+    public void setNeedsPassPercent(boolean needsPassPercent) {
+        this.needsPassPercent = needsPassPercent;
+    }
+
+
 
     public String getCustomProgramName() {
-        return get("customProgramName");
+        return customProgramName;
     }
+
+
+
+    public void setCustomProgramName(String customProgramName) {
+        this.customProgramName = customProgramName;
+    }
+
+
+
+    public int getCustomProgramId() {
+        return customProgramId;
+    }
+
+
+
+    public void setCustomProgramId(int customProgramId) {
+        this.customProgramId = customProgramId;
+    }
+
+
+
+    public int getCustomQuizId() {
+        return customQuizId;
+    }
+
+
+
+    public void setCustomQuizId(int customQuizId) {
+        this.customQuizId = customQuizId;
+    }
+
+
 
     public String getCustomQuizName() {
-        return get("customQuizName");
+        return customQuizName;
     }
 
-    public Integer getSectionCount() {
-        return get("sectionCount");
+
+
+    public void setCustomQuizName(String customQuizName) {
+        this.customQuizName = customQuizName;
     }
+
+
+
+    public int getSectionCount() {
+        return sectionCount;
+    }
+
+
+
+    public void setSectionCount(int sectionCount) {
+        this.sectionCount = sectionCount;
+    }
+
+
+
+    public CmProgramType getProgramType() {
+        return programType;
+    }
+
+
+
+    public void setProgramType(CmProgramType programType) {
+        this.programType = programType;
+    }
+
+
+
+    public String getStyleIsCustomProgram() {
+        return styleIsCustomProgram;
+    }
+
+
+
+    public void setStyleIsCustomProgram(String styleIsCustomProgram) {
+        this.styleIsCustomProgram = styleIsCustomProgram;
+    }
+
+
+
+    public String getStyleIsTemplate() {
+        return styleIsTemplate;
+    }
+
+
+
+    public void setStyleIsTemplate(String styleIsTemplate) {
+        this.styleIsTemplate = styleIsTemplate;
+    }
+
+
+
+    public String getStyleIsArchived() {
+        return styleIsArchived;
+    }
+
+
+
+    public void setStyleIsArchived(String styleIsArchived) {
+        this.styleIsArchived = styleIsArchived;
+    }
+
+
+
+    public String getLabel() {
+        return label;
+    }
+
+
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    
+
+
+    public String getStyleIsFree() {
+        return styleIsFree;
+    }
+
+
+
+    public void setStyleIsFree(String styleIsFree) {
+        this.styleIsFree = styleIsFree;
+    }
+
+
 
     public boolean isProficiency() {
-        return (CmProgramType.PROF == (CmProgramType) get("programType"));
+        return (CmProgramType.PROF == (CmProgramType) this.programType);
     }
 
     public boolean isCustom() {
-        int customProgId = ((Integer) get("cutomProgramId") != null) ? (Integer) get("customProgramId") : 0;
-        int customQuizId = ((Integer) get("cutomQuizId") != null) ? (Integer) get("customQuizId") : 0;
+        int customProgId = ((Integer) this.customProgramId != null) ? (Integer) this.customProgramId : 0;
+        int customQuizId = ((Integer) this.customQuizId != null) ? (Integer) this.customQuizId : 0;
         return (customProgId != 0 || customQuizId != 0);
     }
 
     public boolean isGradPrep() {
-        CmProgramType progType = (CmProgramType) get("programType");
+        CmProgramType progType = (CmProgramType) programType;
 
         return (CmProgramType.GRADPREP == progType || CmProgramType.GRADPREPTX == progType || CmProgramType.GRADPREPNATIONAL == progType);
     }

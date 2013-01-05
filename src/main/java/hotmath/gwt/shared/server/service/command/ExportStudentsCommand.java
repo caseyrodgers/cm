@@ -15,16 +15,12 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import sb.mail.SbMailManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -37,6 +33,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import sb.mail.SbMailManager;
 
 /**
  * Export student data Command
@@ -58,7 +59,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     @Override
     public StringHolder execute(Connection conn, ExportStudentsAction action) throws Exception {
 
-    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
+    	List<StudentModelI> studentList = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
 
 		StringHolder sh = new StringHolder();
 	    StringBuilder sb = new StringBuilder();
@@ -112,13 +113,13 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 	class ExportStudentDataRunnable implements Runnable {
 
     	private Integer adminUid;
-    	private List<StudentModelExt> studentList;
+    	private List<StudentModelI> studentList;
     	private String emailAddr;
     	private String filterDescr;
     	private Date fromDate;
     	private Date toDate;
 
-    	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelExt> studentList,
+    	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelI> studentList,
     			final String emailAddr, final String filterDescr, Date fromDate, Date toDate) {
     		this.adminUid = adminUid;
     		this.studentList = studentList;
@@ -138,7 +139,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			CmReportCardDao rcDao = CmReportCardDao.getInstance();
     			List<String> uidList = new ArrayList<String> ();
 
-    			for (StudentModelExt sm : studentList) {
+    			for (StudentModelI sm : studentList) {
     				StudentReportCardModelI rc = rcDao.getStudentReportCard(sm.getUid(), fromDate, toDate);
     				rc.setStudentUid(sm.getUid());
     				rcList.add(rc);
@@ -146,7 +147,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			}
 
     			StudentActivityDao saDao = StudentActivityDao.getInstance();
-    			for (StudentModelExt sm : studentList) {
+    			for (StudentModelI sm : studentList) {
     				List<StudentActivitySummaryModel> list = saDao.getStudentActivitySummary(sm.getUid(), fromDate, toDate);
     				if (list != null && list.size() > 0) sasMap.put(sm.getUid(), list);
     			}

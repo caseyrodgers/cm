@@ -1,10 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 // import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -18,26 +17,28 @@ import hotmath.gwt.shared.client.rpc.result.AutoRegistrationSetup;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Registry;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
 
 /**
  * Display Admin Auto Registration of Student window
@@ -50,25 +51,31 @@ import com.google.gwt.user.client.ui.Widget;
  * @author casey
  * 
  */
-public class AutoRegistrationWindow extends CmWindow {
+public class AutoRegistrationWindow extends GWindow {
 
     Integer adminId;
     Integer numToCreate;
-    StudentModel student;
+    StudentModelI student;
     AutoRegistrationSetup _preview;
     String uploadFileKey;
+    
+    static AutoRegistrationEntryModelProperties __propsAutoReg = GWT.create(AutoRegistrationEntryModelProperties.class);
 
-    public AutoRegistrationWindow(StudentModel student, String uploadFileKey) {
+    public AutoRegistrationWindow(StudentModelI student, String uploadFileKey) {
+        super(false);
         this.student = student;
         this.uploadFileKey = uploadFileKey;
+        setPixelSize(580, 410);
         
-        setHeading("Bulk Student Registration");
-
-        setLayout(new CenterLayout());
+        CenterLayoutContainer centerLayout = new CenterLayoutContainer();
+        setWidget(centerLayout);
+        
+        setHeadingText("Bulk Student Registration");
+        
         Label l = new Label("Creating Preview .. please wait");
         l.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        add(l);
-        setSize(580, 410);
+        centerLayout.setWidget(l);
+        
         setResizable(false);
         drawGui();
         setModal(true);
@@ -77,46 +84,45 @@ public class AutoRegistrationWindow extends CmWindow {
         setVisible(false);
     }
 
-    Button _buttonCreateXXX;
-    Button _buttonClose;
+    TextButton _buttonCreateXXX;
+    TextButton _buttonClose;
 
     private void drawGui() {
-        _buttonClose = new Button("Close");
-        _buttonClose.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
+        _buttonClose = new TextButton("Close", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 close();
             }
         });
         addButton(_buttonClose);
     }
 
-    Grid<AutoRegistrationEntryGxt> _previewGrid;
+    Grid<AutoRegistrationEntryModel> _previewGrid;
 
-    private void createForm(int total, int errors, List<AutoRegistrationEntryGxt> gridModel) {
+    private void createForm(int total, int errors, List<AutoRegistrationEntryModel> gridModel) {
         try {
-            removeAll();
+            clear();
     
-            setLayout(new BorderLayout());
+            BorderLayoutContainer borderLayout = new BorderLayoutContainer();
+            setWidget(borderLayout);
     
-            add(createInfoPanel(total,errors), new BorderLayoutData(LayoutRegion.NORTH, 85));
+            borderLayout.setNorthWidget(createInfoPanel(total,errors), new BorderLayoutData(85));
     
-            ListStore<AutoRegistrationEntryGxt> store = new ListStore<AutoRegistrationEntryGxt>();
-            store.add(gridModel);
-            _previewGrid = new Grid<AutoRegistrationEntryGxt>(store, defineColumns());
+            ListStore<AutoRegistrationEntryModel> store = new ListStore<AutoRegistrationEntryModel>(__propsAutoReg.id());
+            store.addAll(gridModel);
+            _previewGrid = new Grid<AutoRegistrationEntryModel>(store, defineColumns());
     
             _previewGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-            _previewGrid.getSelectionModel().setFiresEvents(true);
-            _previewGrid.setStripeRows(true);
+           //_previewGrid.getSelectionModel().setFiresEvents(true);
+            _previewGrid.getView().setStripeRows(true);
             _previewGrid.setWidth(565);
             _previewGrid.setHeight(210);
     
-            add(_previewGrid, new BorderLayoutData(LayoutRegion.CENTER));
-            layout();
+            borderLayout.setCenterWidget(_previewGrid);
+            forceLayout();
         }
         catch(Exception e) {
-            e.printStackTrace();
+            Log.error("Error creating Auto Registration window", e);
         }
     }
 
@@ -145,7 +151,7 @@ public class AutoRegistrationWindow extends CmWindow {
                 + "<h1 style='text-align: center;color:red;'>" +
                 "Bulk Upload Problems: Please fix the file and try again." + 
                 "</h1>";
-        return new Html(html);
+        return new HTML(html);
     }
 
     /** Create the preview first.  If there are any errors
@@ -198,11 +204,11 @@ public class AutoRegistrationWindow extends CmWindow {
      * Convert from generic model, to specific GXT model
      * 
      */
-    private List<AutoRegistrationEntryGxt> createGxtModelFromEntries(List<AutoRegistrationEntry> entries) {
-        List<AutoRegistrationEntryGxt> gridModel = new ArrayList<AutoRegistrationEntryGxt>();
+    private List<AutoRegistrationEntryModel> createGxtModelFromEntries(List<AutoRegistrationEntry> entries) {
+        List<AutoRegistrationEntryModel> gridModel = new ArrayList<AutoRegistrationEntryModel>();
         for (AutoRegistrationEntry e : entries) {
         	if(e.getIsError())
-                gridModel.add(new AutoRegistrationEntryGxt(e));
+                gridModel.add(new AutoRegistrationEntryModel(e));
         }
         return gridModel;
     }
@@ -227,8 +233,8 @@ public class AutoRegistrationWindow extends CmWindow {
                             _buttonClose.setText("Close");
                             //_buttonCreate.setEnabled(false);
 
-                            _previewGrid.getStore().removeAll();
-                            _previewGrid.getStore().add(createGxtModelFromEntries(result.getEntries()));
+                            _previewGrid.getStore().clear();
+                            _previewGrid.getStore().addAll(createGxtModelFromEntries(result.getEntries()));
                         	
                             int ok = result.getEntries().size() - result.getErrorCount();
                             
@@ -255,7 +261,7 @@ public class AutoRegistrationWindow extends CmWindow {
                                         }
                                     });
                         }
-                        layout();
+                        forceLayout();
                     }
 
                     @Override
@@ -268,55 +274,74 @@ public class AutoRegistrationWindow extends CmWindow {
                 });
     }
 
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    private ColumnModel<AutoRegistrationEntryModel> defineColumns() {
+        
+        List<ColumnConfig<AutoRegistrationEntryModel, ?>> cols = new ArrayList<ColumnConfig<AutoRegistrationEntryModel,?>>();
 
-        ColumnConfig date = new ColumnConfig();
-        date.setId(AutoRegistrationEntryGxt.NAME_KEY);
-        date.setHeader("Student Name");
-        date.setWidth(125);
-        date.setSortable(true);
-        date.setMenuDisabled(true);
-        configs.add(date);
+        cols.add(new ColumnConfig<AutoRegistrationEntryModel, String>(__propsAutoReg.name(),125, "Student Name"));
+        //date.setSortable(true);
+        //date.setMenuDisabled(true);
 
-        ColumnConfig program = new ColumnConfig();
-        program.setId(AutoRegistrationEntryGxt.PASSWORD_KEY);
-        program.setHeader("Password");
-        program.setWidth(125);
-        program.setSortable(true);
-        program.setMenuDisabled(true);
-        configs.add(program);
+        
+        cols.add(new ColumnConfig<AutoRegistrationEntryModel, String>(__propsAutoReg.password(),125, "Password"));
+        //program.setSortable(true);
+        //program.setMenuDisabled(true);
 
-        ColumnConfig message = new ColumnConfig();
-        message.setId(AutoRegistrationEntryGxt.MESSAGE_KEY);
-        message.setHeader("Message");
-        message.setWidth(275);
-        message.setSortable(true);
-        message.setMenuDisabled(true);
-        configs.add(message);
+        cols.add(new ColumnConfig<AutoRegistrationEntryModel, String>(__propsAutoReg.message(),275, "Message"));
+        //message.setSortable(true);
+        //message.setMenuDisabled(true);
 
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        return new ColumnModel<AutoRegistrationEntryModel>(cols);
     }
 }
 
-class AutoRegistrationEntryGxt extends BaseModelData {
+class AutoRegistrationEntryModel {
 
-    final static String NAME_KEY = "name";
-    final static String PASSWORD_KEY = "password";
-    final static String MESSAGE_KEY = "message";
-
-    public AutoRegistrationEntryGxt(AutoRegistrationEntry entry) {
-        set(NAME_KEY, entry.getName());
-        set(PASSWORD_KEY, entry.getPassword());
-
+    String name, password, message;
+    
+    public AutoRegistrationEntryModel(AutoRegistrationEntry entry) {
+        this.name = entry.getName();
+        this.password = entry.getPassword();
         if (entry.getIsError() == null)
-            set(MESSAGE_KEY, "Pending");
+            this.message = "Pending";
         else
-            set(MESSAGE_KEY, entry.getMessage());
+            this.message = entry.getMessage();
     }
 
-    public void setMessage(String msg) {
-        set(MESSAGE_KEY, msg);
+    public String getName() {
+        return name;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+}
+
+
+interface AutoRegistrationEntryModelProperties extends PropertyAccess<String> {
+    @Path("name")
+    ModelKeyProvider<AutoRegistrationEntryModel> id();
+
+    ValueProvider<AutoRegistrationEntryModel, String> message();
+
+    ValueProvider<AutoRegistrationEntryModel, String> password();
+
+    ValueProvider<AutoRegistrationEntryModel, String> name();
+    
 }

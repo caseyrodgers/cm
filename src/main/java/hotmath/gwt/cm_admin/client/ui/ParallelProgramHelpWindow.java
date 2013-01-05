@@ -1,24 +1,24 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Frame;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 
-public class ParallelProgramHelpWindow extends CmWindow {
+public class ParallelProgramHelpWindow extends GWindow {
 
     public  ParallelProgramHelpWindow() {
-        setAutoHeight(true);
-        setSize(640,480);
+        super(true);
+        setPixelSize(550,380);
 
         setModal(true);
         setResizable(false);
         setStyleName("help-window");
-        setHeading("Parallel Program Help");
+        setHeadingText("Parallel Program Help");
+        
+        FramedPanel fp = new FramedPanel();
+        fp.setHeaderVisible(false);
 
         Frame frame = new Frame("/gwt-resources/parallel-program-help.html");
         DOM.setElementProperty(frame.getElement(), "frameBorder", "no"); // disable
@@ -26,21 +26,11 @@ public class ParallelProgramHelpWindow extends CmWindow {
         DOM.setElementPropertyInt(frame.getElement(), "frameSpacing", 0); // disable
         frame.setSize("100%", "300px");
         
-        
-        Button closeBtn = new Button("Close");
-        closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                ParallelProgramHelpWindow.this.close();
-            }
-        });
-        addButton(closeBtn);
+        fp.setWidget(frame);
 
-        add(frame);
+        setWidget(fp);
 
         setVisible(true);
-    }
-
-    public void onClick(ClickEvent event) {
     }
 }
 

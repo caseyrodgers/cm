@@ -6,11 +6,13 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
+import hotmath.gwt.cm_tools.client.model.ParallelProgramModelProperties;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.ParallelProgramSetup;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -23,41 +25,43 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentForParallelProgramAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.MessageBoxEvent;
-import com.extjs.gxt.ui.client.event.SelectionEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnData;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
 
-public class ManageParallelProgramsWindow extends CmWindow {
+
+
+public class ManageParallelProgramsWindow extends GWindow {
     
     boolean cancelled;
     Grid<ParallelProgramModel> grid;
-    ListStore<ParallelProgramModel> store = new ListStore<ParallelProgramModel>();
+    ListStore<ParallelProgramModel> store;
     CmAdminModel adminModel;
     StudentModelI stuMdl;
     int width = 535;
     
+    ParallelProgramModelProperties __props = GWT.create(ParallelProgramModelProperties.class);
     public ManageParallelProgramsWindow(CmAdminModel adminModel) {
-        this.adminModel = adminModel;
-        setSize(width,300);
-        setHeading("Manage Parallel Programs");    
+        super(false);
         
-        readRpcData(adminModel.getId(), true);
+        store = new ListStore<ParallelProgramModel>(__props.id());
+        this.adminModel = adminModel;
+        setPixelSize(width,300);
+        setHeadingText("Manage Parallel Programs");    
+        
+        readRpcData(adminModel.getUid(), true);
         
         if (! cancelled) {
             drawGui();
@@ -75,42 +79,47 @@ public class ManageParallelProgramsWindow extends CmWindow {
     private ParallelProgramModel getGridItem() {
         ParallelProgramModel mdl = grid.getSelectionModel().getSelectedItem();
         if (mdl == null) {
-            CmMessageBoxGxt2.showAlert("Please make a selection first");
+            CmMessageBox.showAlert("Please make a selection first");
         }
         return mdl;
     }
 
     private void drawGui() {
 
-        setLayout(new BorderLayout());
-
+        BorderLayoutContainer mainBor = new BorderLayoutContainer();
+        setWidget(mainBor);
+        
         grid = defineGrid(store, defineColumns());
-        BorderLayoutData bld = new BorderLayoutData(LayoutRegion.WEST,325);
-        add(grid, bld);
+        BorderLayoutData bld = new BorderLayoutData(325);
+        mainBor.setWestWidget(grid, bld);
 
-        LayoutContainer lc = new LayoutContainer();
-        lc.addStyleName("manage-groups-window-buttons");
+        VerticalLayoutContainer mainVer = new VerticalLayoutContainer();
+        mainVer.addStyleName("manage-groups-window-buttons");
 
-        lc.add(new StdButton("Help", "Parallel Program Help.", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        mainVer.add(new StdButton("Help", "Parallel Program Help.", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 new ParallelProgramHelpWindow().setVisible(true);
             }
         }));
 
-        lc.add(new StdButton("New Parallel Program", "Create a new Parallel Program.", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        mainVer.add(new StdButton("New Parallel Program", "Create a new Parallel Program.", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
                 CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
                     public void requestComplete(String requestData) {
-                        readRpcData(adminModel.getId(), false);
+                        readRpcData(adminModel.getUid(), false);
                     }
                 };
                 new ParallelProgramSetup(callback, adminModel).setVisible(true);
             }
         }));
 
-        StdButton modifyBtn = new StdButton("Modify", "Modify selected Parallel Program.",new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                
+        StdButton modifyBtn = new StdButton("Modify", "Modify selected Parallel Program.",new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
                 final ParallelProgramModel mdl = getGridItem();
                 
                 if (mdl != null) {
@@ -120,36 +129,45 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
 
         });
-        if (CmShared.getQueryParameter("debug_pp") != null)
-            lc.add(modifyBtn);
+        
+        
+        if (CmShared.getQueryParameter("debug_pp") != null) {
+            mainVer.add(modifyBtn);
+        }
 
-        lc.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        mainVer.add(new StdButton("Remove", "Remove selected Parallel Program.",new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
                 final ParallelProgramModel ppm = getGridItem();
                 
                 if (ppm != null) {
                     if (ppm.getStudentCount() > 0) {
-                        CmMessageBoxGxt2.showAlert("Selection is in use and cannot be removed.");
+                        CmMessageBox.showAlert("Selection is in use and cannot be removed.");
                         return;
                     }
-                    MessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new Listener<MessageBoxEvent>() {
-                        public void handleEvent(MessageBoxEvent be) {
-                            if (be.getButtonClicked().getText().equalsIgnoreCase("yes"))
-                                deleteParallelProgram(adminModel.getId(), ppm.getId());
+                    CmMessageBox.confirm("Remove Parallel Program", "Are you sure you want to remove '" + ppm.getName() + "'?", new ConfirmCallback() {
+                        @Override
+                        public void confirmed(boolean yesNo) {
+                            if (yesNo) {
+                                deleteParallelProgram(adminModel.getUid(), ppm.getId());
+                            }
                         }
                     });
                 }
             }
         }));
 
-        lc.add(new StdButton("Usage", "Display usage of selected Parallel Program.",new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        mainVer.add(new StdButton("Usage", "Display usage of selected Parallel Program.",new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
                 final ParallelProgramModel ppm = getGridItem();
                 
                 if (ppm != null) {
 
                     if (ppm.getStudentCount() < 1) {
-                        CmMessageBoxGxt2.showAlert("Selection has no usage, nothing to display.");
+                        CmMessageBox.showAlert("Selection has no usage, nothing to display.");
                         return;
                     }
 
@@ -159,7 +177,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             }
         }));
 
-        add(lc, new BorderLayoutData(LayoutRegion.EAST, 200));
+        mainBor.setEastWidget(mainVer, new BorderLayoutData(200));
     }
 
 	private void modifyParallelProgram(final ParallelProgramModel mdl) {
@@ -185,7 +203,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
 			@Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
-                CmMessageBoxGxt2.showAlert("Problem getting Parallel Program", caught.getMessage());
+                CmMessageBox.showAlert("Problem getting Parallel Program", caught.getMessage());
                 RetryActionManager.getInstance().requestComplete(this);
             }
 
@@ -197,30 +215,25 @@ public class ManageParallelProgramsWindow extends CmWindow {
 
         CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
             public void requestComplete(String requestData) {
-                readRpcData(adminModel.getId(), false);
+                readRpcData(adminModel.getUid(), false);
             }
         };
         
 		new ParallelProgramSetup(callback, adminModel, mdl, sm).setVisible(true);
     }
     
-    private Grid<ParallelProgramModel> defineGrid(final ListStore<ParallelProgramModel> store, ColumnModel cm) {
+    private Grid<ParallelProgramModel> defineGrid(final ListStore<ParallelProgramModel> store, ColumnModel<ParallelProgramModel> cm) {
         final Grid<ParallelProgramModel> grid = new Grid<ParallelProgramModel>(store, cm);
         grid.setBorders(true);
-        grid.setStripeRows(true);
+        grid.getView().setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getSelectionModel().setFiresEvents(true);
-        grid.getSelectionModel().addListener(Events.RowDoubleClick, new Listener<SelectionEvent<StudentModelExt>>() {
-            public void handleEvent(SelectionEvent<StudentModelExt> se) {
-
+        grid.addHandler(new DoubleClickHandler() {
+            public void onDoubleClick(DoubleClickEvent event) {
                 if (grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CmMessageBoxGxt2.showAlert("On click");
+                    //CmMessageBox.showAlert("On click");
                 }
             }
-        });
-
-        grid.setWidth("335px");
-        grid.setHeight("250px");
+        }, DoubleClickEvent.getType());
         return grid;
     }
 
@@ -231,41 +244,15 @@ public class ManageParallelProgramsWindow extends CmWindow {
         return ppm.getStudentCount() + " " + (ppm.getStudentCount() == 1?"student":"students");
     }
 
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    private ColumnModel<ParallelProgramModel> defineColumns() {
+        List<ColumnConfig<ParallelProgramModel, ?>> configs = new ArrayList<ColumnConfig<ParallelProgramModel, ?>>();
 
-        ColumnConfig name = new ColumnConfig();
-        name.setId(ParallelProgramModel.NAME);
-        name.setHeader("Name");
-        name.setWidth(135);
-        name.setSortable(true);
-        name.setRenderer(new GridCellRenderer<ParallelProgramModel>() {
-			@Override
-			public Object render(ParallelProgramModel ppm, String property,
-					ColumnData config, int rowIndex, int colIndex,
-					ListStore<ParallelProgramModel> store, Grid<ParallelProgramModel> grid) {
-
-				return ppm.getName();
-			}
-        });
-        configs.add(name);
-
-        ColumnConfig program = new ColumnConfig();
-        program.setId(ParallelProgramModel.PROGRAM_NAME);
-        program.setHeader("Program");
-        program.setWidth(135);
-        program.setSortable(true);
-        configs.add(program);
-
-        ColumnConfig count = new ColumnConfig();
-        count.setId(ParallelProgramModel.STUDENT_COUNT);
-        count.setHeader("Count");
-        count.setToolTip("Students in Parallel Program");
-        count.setWidth(50);
-        count.setSortable(true);
-        configs.add(count);
-
-        ColumnModel cm = new ColumnModel(configs);
+        configs.add(new ColumnConfig<ParallelProgramModel, String>(__props.name(),135, "Name"));
+        configs.add(new ColumnConfig<ParallelProgramModel, String>(__props.programName(),135, "Program"));
+        configs.add(new ColumnConfig<ParallelProgramModel, Integer>(__props.studentCount(),50, "Count"));
+        configs.get(configs.size()-1).setToolTip(SafeHtmlUtils.fromString("Students in Parallel Program"));
+        
+        ColumnModel<ParallelProgramModel> cm = new ColumnModel<ParallelProgramModel>(configs);
         return cm;
     }
 
@@ -290,7 +277,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
             @Override
             public void onFailure(Throwable caught) {
                 CmBusyManager.setBusy(false);
-                CmMessageBoxGxt2.showAlert("Problem removing Parallel Program", caught.getMessage());
+                CmMessageBox.showAlert("Problem removing Parallel Program", caught.getMessage());
                 RetryActionManager.getInstance().requestComplete(this);
             }
 
@@ -300,7 +287,7 @@ public class ManageParallelProgramsWindow extends CmWindow {
     
     private void readRpcData(final Integer adminId, final boolean closeOnCancel) {
     	
-    	final CmWindow cmw = this;
+    	final GWindow cmw = this;
     	
         new RetryAction<CmList<ParallelProgramModel>>() {
             @Override
@@ -313,8 +300,8 @@ public class ManageParallelProgramsWindow extends CmWindow {
 
             @Override
             public void oncapture(CmList<ParallelProgramModel> result) {
-                store.removeAll();
-                store.add(result);
+                store.clear();
+                store.addAll(result);
                 CmBusyManager.setBusy(false);
             }
 
@@ -333,13 +320,13 @@ public class ManageParallelProgramsWindow extends CmWindow {
  * @author casey
  *
  */
-class StdButton extends Button {
-    public StdButton(String name, String tooltip,SelectionListener<ButtonEvent> listener) {
+class StdButton extends TextButton {
+    public StdButton(String name, String tooltip,SelectHandler handler) {
         super(name);
         addStyleName("manage-groups-window-buttons-button");
         setToolTip(tooltip);
-        if (listener != null)
-            addSelectionListener(listener);
+        if (handler != null)
+            addSelectHandler(handler);
         setWidth("150px");
     }
 }

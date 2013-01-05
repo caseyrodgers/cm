@@ -1,21 +1,23 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
 
-public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelExt>> {
+
+
+public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResult<StudentModelI>> {
 
 	private static final long serialVersionUID = -3117922126418717986L;
 
 	Integer adminId;
 	PagingLoadConfig loadConfig;
-	String groupFilter;
+	int groupFilter;
 	boolean forceRefresh;
 	String quickSearch;
 	String dateRange;
@@ -53,11 +55,11 @@ public class GetStudentGridPageAction implements Action<CmStudentPagingLoadResul
         this.forceRefresh = forceRefresh;
     }
 
-    public String getGroupFilter() {
+    public int getGroupFilter() {
         return groupFilter;
     }
 
-    public void setGroupFilter(String groupFilter) {
+    public void setGroupFilter(int groupFilter) {
         this.groupFilter = groupFilter;
     }
 

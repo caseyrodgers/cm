@@ -4,9 +4,6 @@ package hotmath.gwt.cm_tools.client.model;
 import java.io.Serializable;
 
 public class StudentModelExt extends BaseModel implements Serializable, StudentModelI {
-
-    private static final long serialVersionUID = 2950521146425989628L;
-
     
     public static final String GROUP_KEY = "group";
     public static final String GROUP_ID_KEY = "groupId";
@@ -44,9 +41,11 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String TUTORING_AVAIL_KEY = "tutoring-avail";
     public static final String LIMIT_GAMES_KEY = "limit-games";
     public static final String STOP_AT_PROGRAM_END_KEY = "stop-at-program-end";
-	public static final String SECTION_IS_SETTABLE = "section-is-settable";
+    public static final String SECTION_IS_SETTABLE = "section-is-settable";
     
-    private Boolean hasExtendedData = false;
+    
+    private boolean hasExtendedData = false;
+    
 
     public StudentModelExt() {
     }
@@ -54,6 +53,8 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public StudentModelExt(StudentModelI student) {
         setStudent(student);
     }
+    
+    
 
     public void setStudent(StudentModelI student) {
         set(GROUP_KEY, student.getGroup());
@@ -139,12 +140,12 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(GROUP_KEY, group);
     }
 
-    public String getGroupId() {
+    public int getGroupId() {
         return get(GROUP_ID_KEY);
     }
 
     @Override
-    public void setGroupId(String groupId) {
+    public void setGroupId(int groupId) {
         set(GROUP_ID_KEY, groupId);
     }
 
@@ -378,11 +379,11 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
 		set(HAS_PASSING_COUNT_KEY, val);
 	}
 
-	public Boolean getHasExtendedData() {
+	public boolean getHasExtendedData() {
 		return hasExtendedData;
 	}
 
-	public void setHasExtendedData(Boolean val) {
+	public void setHasExtendedData(boolean val) {
 		this.hasExtendedData = val;
 	}
 

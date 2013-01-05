@@ -532,21 +532,12 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             ps.setInt(3, sm.getSectionNum());
 
             //TODO: getGroupId() returns null sometimes - need to determine why/how
-            if (sm.getGroupId() == null) {
+            if (sm.getGroupId() == 0) {
                 __logger.warn(String.format("+++ addStudent(): with null group; Admin ID: %d, isDemoUser: %d",
                                 sm.getAdminUid(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
             }
 
-            int groupId;
-            try {
-                groupId = (sm.getGroupId() == null) ? GROUP_NONE_ID : Integer.parseInt(sm.getGroupId());
-            }
-            catch (NumberFormatException e) {
-                //TODO: getGroupId() returns non-numeric sometimes - need to determine why/how
-                groupId = GROUP_NONE_ID;
-                __logger.warn(String.format("+++ addStudent(): with invalid group; Admin ID: %d, groupId: %s, isDemoUser: %d",
-                                sm.getAdminUid(), sm.getGroupId(), (sm.getIsDemoUser() != null && sm.getIsDemoUser()) ? 1 : 0));
-            }
+            int groupId = (sm.getGroupId() == 0)? GROUP_NONE_ID : sm.getGroupId();
 
             ps.setInt(4, groupId);
             ps.setString(5, sm.getProgram().getProgramType().getType());
@@ -932,7 +923,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             // ps.setString(3, sm.getEmail());
 
             // if group Id has not been set default to GROUP_NONE_ID
-            ps.setInt(3, (sm.getGroupId() != null) ? Integer.parseInt(sm.getGroupId()):GROUP_NONE_ID);
+            ps.setInt(3, (sm.getGroupId() == 0) ? GROUP_NONE_ID : sm.getGroupId());
 
             ps.setString(4, spm.getProgramType().getType());
             ps.setString(5, spm.getSubjectId());
@@ -1755,7 +1746,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                             sm.setTutoringUse(rs.getInt("tutoring_use"));
 
                             int groupId = rs.getInt("group_id");
-                            sm.setGroupId(String.valueOf(groupId));
+                            sm.setGroupId(groupId);
                             sm.setGroup(rs.getString("group_name"));
 
                             StudentProgramModel sprm = sm.getProgram();
@@ -1991,7 +1982,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             sm.setTutoringUse(rs.getInt("tutoring_use"));
 
             int groupId = rs.getInt("group_id");
-            sm.setGroupId(String.valueOf(groupId));
+            sm.setGroupId(groupId);
             sm.setGroup(rs.getString("group_name"));
 
             StudentProgramModel sprm = sm.getProgram();
@@ -2094,7 +2085,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
 
             sm.setBackgroundStyle(rs.getString("gui_background_style"));
 
-            sm.setGroupId(String.valueOf(rs.getInt("group_id")));
+            sm.setGroupId(rs.getInt("group_id"));
             sm.setGroup(rs.getString("group_name"));
 
             sm.setChapter(getChapter(rs.getString("test_config_json")));

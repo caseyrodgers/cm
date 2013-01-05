@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.AssignStudentsToAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -134,9 +135,9 @@ public class AssignStudentsToAssignmentDialog extends GWindow {
         _assignment = assignment;
         show();
         
-        List<StudentModelExt> studentsInGrid = StudentGridPanel.instance.getStudentsInGrid();
+        List<StudentModelI> studentsInGrid = StudentGridPanel.instance.getStudentsInGrid();
         _listView.getStore().clear();
-        for(StudentModelExt se: studentsInGrid) {
+        for(StudentModelI se: studentsInGrid) {
             StudentDto student = new StudentDto(se.getUid(), se.getName());
             _listView.getStore().add(student);
         }

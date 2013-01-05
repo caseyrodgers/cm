@@ -1,35 +1,30 @@
 package hotmath.gwt.cm_tools.client.model;
 
-public class CmAdminModel extends BaseModel {
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-	private static final long serialVersionUID = -9047690530665830053L;
+public class CmAdminModel implements Response {
 	
-	private static final String UID_KEY = "uid";
-    private static final String SUBSCRIBER_ID_KEY = "subscriberId";
-    private static final String PASSCODE_KEY = "paddcode";
-
-	public Integer getId() {
-		return get(UID_KEY);
-	}
-
-	public void setId(Integer uid) {
-		set(UID_KEY, uid);
-	}
-
-	public String getSubscriberId() {
-		return get(SUBSCRIBER_ID_KEY);
-	}
-
-	public void setSubscriberId(String subscriberId) {
-		set(SUBSCRIBER_ID_KEY, subscriberId);
-	}
-
-	public String getPassCode() {
-		return get(PASSCODE_KEY);
-	}
-
-	public void setPassCode(String passCode) {
-		set(PASSCODE_KEY, passCode);
-	}
-
+    public CmAdminModel() {}
+    
+    int uid;
+    int subscriberId;
+    int passCode;
+    public int getUid() {
+        return uid;
+    }
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+    public int getSubscriberId() {
+        return subscriberId;
+    }
+    public void setSubscriberId(int subscriberId) {
+        this.subscriberId = subscriberId;
+    }
+    public int getPassCode() {
+        return passCode;
+    }
+    public void setPassCode(int passCode) {
+        this.passCode = passCode;
+    }
 }

@@ -217,7 +217,7 @@ public class CmPilotCreate {
         student.setName(name);
         student.setPasscode(password);
         student.setAdminUid(aid);
-        student.setGroupId("1");
+        student.setGroupId(1);
         
         student.getProgram().setProgramType("Prof");
         student.getProgram().setSubjectId("Pre-Alg");

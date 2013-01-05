@@ -2,9 +2,9 @@ package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
-public class GetAdminTrendingDataDetailAction implements Action<CmList<StudentModelExt>>{
+public class GetAdminTrendingDataDetailAction implements Action<CmList<StudentModelI>>{
 
     Integer adminId;
     Integer testDefId;

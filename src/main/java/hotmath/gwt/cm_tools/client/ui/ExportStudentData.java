@@ -1,29 +1,28 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import java.util.Date;
-
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import java.util.Date;
 
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.form.FormPanel;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * Export Student Data UI
@@ -34,23 +33,28 @@ import com.google.gwt.user.client.Cookies;
  * @author bob
  *
  */
-public class ExportStudentData extends LayoutContainer {
+public class ExportStudentData extends SimpleContainer {
 	
-	private CmWindow exportWindow;
+	private GWindow exportWindow;
 
-	private FieldSet exportFlds;
+	private MyFieldSet exportFlds;
 	private Integer adminUid;
 	private int formHeight = 190;
-	private int formWidth  = 340;
+	private int formWidth  = 400;
 
-	private TextField<String> emailAddr;
+	private TextField emailAddr;
 	
 	public ExportStudentData(Integer adminUid) {
 
 		this.adminUid = adminUid;
 
-		exportWindow = new CmWindow();
-		exportWindow.add(exportForm());
+		exportWindow = new GWindow(false);
+		
+		FramedPanel fp = new FramedPanel();
+		fp.setHeaderVisible(false);
+		fp.setWidget(exportForm());
+		exportWindow.setWidget(fp);
+		
 		
 		setForm();
 
@@ -58,58 +62,51 @@ public class ExportStudentData extends LayoutContainer {
 	
 	private FormPanel exportForm() {
 		FormPanel fp = new FormPanel();
-		fp.setLabelWidth(80);
-		fp.setHeight(formHeight);
-		fp.setFooter(true);
-		fp.setFrame(false);
-		fp.setHeaderVisible(false);
-		fp.setBodyBorder(false);
-		fp.setIconStyle("icon-form");
-		fp.setButtonAlign(HorizontalAlignment.CENTER);
-		fp.setLayout(new FormLayout());
-
-        exportFlds = new FieldSet();
-        
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(fp.getLabelWidth());
-		fl.setDefaultWidth(200);
 		
-		exportFlds.setLayout(fl);
+		VerticalLayoutContainer vMain = new VerticalLayoutContainer();
+		fp.setWidget(vMain);
+		//fp.setFooter(true);
+		//fp.setFrame(false);
+		//fp.setHeaderVisible(false);
+		//fp.setBodyBorder(false);
+		//fp.setIconStyle("icon-form");
+		//fp.setButtonAlign(HorizontalAlignment.CENTER);
+		//fp.setLayout(new FormLayout());
 
-        emailAddr = new TextField<String>();  
-        emailAddr.setFieldLabel("Email");
+        exportFlds = new MyFieldSet("Export To?");
+
+        emailAddr = new TextField();  
+        //emailAddr.setFieldLabel("Email");
         emailAddr.setAllowBlank(false);
         emailAddr.setId("email");
         emailAddr.setEmptyText("-- email address --");
 		if (haveEmailAddrCookie()) {
 		    emailAddr.setValue(readEmailAddrCookie());
 		}
-		emailAddr.setValidator(new ValidTypeValidator(ValidType.EMAIL));
+		emailAddr.addValidator(new MyValidatorDef(MyValidators.EMAIL));
 		emailAddr.setToolTip("spreadsheet will be emailed to this address");
-		emailAddr.setMaxLength(300);
-		exportFlds.add(emailAddr);
+		// emailAddr.setMaxLength(300);
+		exportFlds.addThing(new MyFieldLabel(emailAddr, "Email", 100,250));
 
-		exportWindow.setHeading("Export Student Data");
+		exportWindow.setHeadingText("Export Student Data");
 		exportWindow.setWidth(formWidth+10);
-		exportWindow.setHeight(formHeight+20);
-		exportWindow.setLayout(new FitLayout());
+		exportWindow.setHeight(formHeight+40);
 		exportWindow.setResizable(false);
 		exportWindow.setDraggable(true);
 		exportWindow.setModal(true);
 
-		fp.add(exportFlds);
+		vMain.add(exportFlds);
 		
-		fp.add(getDescription());
+		vMain.add(getDescription());
 
-		Button cancelBtn = cancelButton();
+		TextButton cancelBtn = cancelButton();
         cancelBtn.addStyleName("cancel-button");
         
-		Button saveBtn = exportButton(exportFlds, fp);
+		TextButton saveBtn = exportButton(exportFlds, fp);
 		saveBtn.addStyleName("save-button");
 		
-		fp.setButtonAlign(HorizontalAlignment.RIGHT);
-        fp.addButton(saveBtn);
-        fp.addButton(cancelBtn);
+        exportWindow.addButton(saveBtn);
+        exportWindow.addButton(cancelBtn);
         return fp;
 	}
 
@@ -117,19 +114,21 @@ public class ExportStudentData extends LayoutContainer {
 		exportWindow.show();
 	}
 
-	private Button cancelButton() {
-		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
+	private TextButton cancelButton() {
+	    TextButton cancelBtn = new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 exportWindow.close();
 	        }  
 	    });
 		return cancelBtn;
 	}
 
-	private Button exportButton(final FieldSet fs, final FormPanel fp) {
-		Button exportBtn = new Button("Export", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
-
+	private TextButton exportButton(final FieldSet fs, final FormPanel fp) {
+	    TextButton exportBtn = new TextButton("Export", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
 	    		String emailAddress = emailAddr.getValue();
 	    		
 	    		if (emailAddr.isValid() == false) {
@@ -145,10 +144,8 @@ public class ExportStudentData extends LayoutContainer {
 		return exportBtn;
 	}
 	
-	private LayoutContainer getDescription() {
-		LayoutContainer lc = new LayoutContainer();
-        lc.add(new Html("An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide."));
-        return lc;
+	private Widget getDescription() {
+        return new HTML("An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide.");
 	}
 
 	private void exportStudentDataRPC(final Integer adminUid, final String emailAddr) {

@@ -1,15 +1,11 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
-import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.FileUtil;
 import hotmath.cm.util.export.ExportGradebookInExcelFormat;
-import hotmath.cm.util.export.ExportStudentsInExcelFormat;
 import hotmath.cm.util.report.ReportUtils;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
-import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -20,16 +16,12 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
 import hotmath.gwt.shared.client.rpc.action.ExportGradebookAction;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import sb.mail.SbMailManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,6 +36,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import sb.mail.SbMailManager;
 
 /**
  * Export Grade book Command
@@ -65,7 +62,7 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
     @Override
     public StringHolder execute(Connection conn, ExportGradebookAction action) throws Exception {
 
-    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
+    	List<StudentModelI> studentList = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
 
 		StringHolder sh = new StringHolder();
 	    StringBuilder sb = new StringBuilder();
@@ -120,14 +117,14 @@ public class ExportGradebookCommand implements ActionHandler<ExportGradebookActi
 
     	private Integer adminUid;
     	private Integer groupId;
-    	private List<StudentModelExt> studentList;
+    	private List<StudentModelI> studentList;
     	private String emailAddr;
     	private String filterDescr;
     	private Date fromDate;
     	private Date toDate;
 
     	public ExportGradebookRunnable(final Integer adminUid, Integer groupId,
-    			final List<StudentModelExt> studentList, final String emailAddr, final String filterDescr, Date fromDate, Date toDate) {
+    			final List<StudentModelI> studentList, final String emailAddr, final String filterDescr, Date fromDate, Date toDate) {
     		this.adminUid = adminUid;
     		this.groupId  = groupId;
     		this.studentList = studentList;

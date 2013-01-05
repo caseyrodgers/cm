@@ -337,7 +337,7 @@ public class HaUserFactory {
 			student.setName("Student: " + System.currentTimeMillis());
 			student.setPasscode(demoPwd);
 			student.setAdminUid(adminId);
-			student.setGroupId("1");
+			student.setGroupId(1);
 			student.getProgram().setProgramType(
 					CmProgram.PREALG_PROF.getProgramType());
 			student.getProgram().setSubjectId(
@@ -386,7 +386,7 @@ public class HaUserFactory {
 				throw new CmException("Group '" + groupName
 						+ "' could not be found");
 
-			student.setGroupId(Integer.toString(group.getId()));
+			student.setGroupId(group.getId());
 			student.getProgram().setProgramType(
 					CmProgram.PREALG_PROF.getProgramType());
 			student.getProgram().setSubjectId(

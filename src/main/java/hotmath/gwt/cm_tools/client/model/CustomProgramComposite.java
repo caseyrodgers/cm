@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.model;
 
+import hotmath.gwt.cm_rpc.client.rpc.Response;
+
 import java.io.Serializable;
 
 /** Represents a CM Custom Program Object
@@ -16,7 +18,7 @@ import java.io.Serializable;
  * @author casey
  *
  */
-public class CustomProgramComposite implements Serializable {
+public class CustomProgramComposite implements Response {
     int customProgramId;
     String customProgramName;
     int customQuizId;

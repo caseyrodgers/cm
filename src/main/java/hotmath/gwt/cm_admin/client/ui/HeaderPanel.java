@@ -8,45 +8,36 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
-import com.extjs.gxt.ui.client.event.IconButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.IconButton;
-import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-public class HeaderPanel extends LayoutContainer {
+public class HeaderPanel extends FlowLayoutContainer {
 
 	static public HeaderPanel instance;
-	
-	public HeaderPanel() {
-		instance = this;
-	}
 
 	Label headerText;
 	//Label schoolLabel;
-	Html  schoolLabel;
+	HTML  schoolLabel;
 	
-	protected void onRender(Element parent, int index) {
-		super.onRender(parent, index);
+	public HeaderPanel() {
+		instance = this;
 
 		setStyleName("header-panel");
 		IconButton btn = new IconButton("header-panel-help-btn");
-		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-			public void componentSelected(IconButtonEvent ce) {
-            	if(ce.getEvent().getCtrlKey()) {
-					String url = CmShared.getServerForCmStudent() + "/loginService?type=ADMIN&debug=true&uid=" + StudentGridPanel.instance._cmAdminMdl.getId();
-					CmMessageBoxGxt2.showAlert("Catchup Math Connection URL", url);
-				}            	
-            	else 
+		btn.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
             		new HelpWindow();
 			};
 		});		
 		add(btn);
 		
-		schoolLabel = new Html();
+		schoolLabel = new HTML();
 		//schoolLabel.setStyleName("header-panel-school-label");
 		//setSchoolInfo();
 		add(schoolLabel);
@@ -57,8 +48,10 @@ public class HeaderPanel extends LayoutContainer {
 		
         IconButton guide = new IconButton("header-panel-guide-btn");
         guide.setToolTip("Find out how to get started with Catchup Math");
-        guide.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent ce) {
+        guide.addSelectHandler(new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 new GettingStartedGuideWindow();
             }
         });
@@ -66,8 +59,10 @@ public class HeaderPanel extends LayoutContainer {
         
         IconButton training = new IconButton("header-panel-training-btn");
         training.setToolTip("Watch our Training Videos");
-        training.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent ce) {
+        training.addSelectHandler(new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
             	showTrainingVideosPage();
             }
         });
@@ -76,8 +71,10 @@ public class HeaderPanel extends LayoutContainer {
         // TODO: add button change via CSS when updates page is changed
         IconButton updates = new IconButton("header-panel-updates-btn");
         updates.setToolTip("Learn about recent Catchup Math updates");
-        updates.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-            public void componentSelected(IconButtonEvent ce) {
+        updates.addSelectHandler(new SelectHandler() {
+			
+			@Override
+			public void onSelect(SelectEvent event) {
                 new RecentUpdatesWindow();
             }
         });
@@ -109,8 +106,9 @@ public class HeaderPanel extends LayoutContainer {
 		}
 			
 		IconButton btn = new IconButton(logoClass);
-		btn.addSelectionListener(new SelectionListener<IconButtonEvent>() {
-			public void componentSelected(IconButtonEvent ce) {
+		btn.addSelectHandler(new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
 				
 				if(partner != null) {
 					try {
@@ -126,7 +124,6 @@ public class HeaderPanel extends LayoutContainer {
 			};
 		});		
 		add(btn);
-		layout();
 	}
 
     private native void showTrainingVideosPage() /*-{

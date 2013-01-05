@@ -260,7 +260,7 @@ public class CustomProgramDialog extends CmWindow {
         }
 
         CustomLessonModel quiz = _listViewCq.getSelectionModel().getSelectedItem();
-        CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(),
+        CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getUid(),
         		quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
         new CustomProgramAddQuizDialog(new Callback() {
             @Override
@@ -357,7 +357,7 @@ public class CustomProgramDialog extends CmWindow {
             CmMessageBoxGxt2.showAlert("Custom Quiz is archived and cannot be deleted.");
             return;
         }
-        final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(), 
+        final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getUid(), 
         	    quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
         deleteCustomQuiz(def);
     }
@@ -396,7 +396,7 @@ public class CustomProgramDialog extends CmWindow {
                         @Override
                         public void attempt() {
                             CmBusyManager.setBusy(true);
-                            DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizId());
+                            DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getUid(), def.getQuizId());
                             setAction(action);
                             CmShared.getCmService().execute(action, this);
                         }
@@ -426,7 +426,7 @@ public class CustomProgramDialog extends CmWindow {
                         @Override
                         public void attempt() {
                             CmBusyManager.setBusy(true);
-                            ArchiveCustomQuizAction action = new ArchiveCustomQuizAction(adminModel.getId(), def.getQuizId());
+                            ArchiveCustomQuizAction action = new ArchiveCustomQuizAction(adminModel.getUid(), def.getQuizId());
                             setAction(action);
                             CmShared.getCmService().execute(action, this);
                         }
@@ -511,7 +511,7 @@ public class CustomProgramDialog extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 CustomProgramDefinitionAction action = new CustomProgramDefinitionAction(ActionType.DELETE,
-                        adminModel.getId());
+                        adminModel.getUid());
                 action.setProgramId(program.getProgramId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -545,7 +545,7 @@ public class CustomProgramDialog extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 CustomProgramDefinitionAction action = new CustomProgramDefinitionAction(ActionType.ARCHIVE,
-                        adminModel.getId());
+                        adminModel.getUid());
                 action.setProgramId(program.getProgramId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -568,7 +568,7 @@ public class CustomProgramDialog extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getId());
+                GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getUid());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -597,7 +597,7 @@ public class CustomProgramDialog extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 CustomProgramDefinitionAction action = new CustomProgramDefinitionAction(ActionType.GET,
-                        adminModel.getId());
+                        adminModel.getUid());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

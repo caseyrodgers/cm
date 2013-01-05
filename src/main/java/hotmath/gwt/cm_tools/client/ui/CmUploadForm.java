@@ -1,17 +1,17 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.FormEvent;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.widget.form.FileUploadField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent;
+import com.sencha.gxt.widget.core.client.event.SubmitCompleteEvent.SubmitCompleteHandler;
+import com.sencha.gxt.widget.core.client.form.FileUploadField;
+import com.sencha.gxt.widget.core.client.form.FormPanel;
 
 public class CmUploadForm extends FormPanel {
 
@@ -30,36 +30,37 @@ public class CmUploadForm extends FormPanel {
     public CmUploadForm(Integer aid, CmAsyncRequest callback) {
 
         this.callback = callback;
-        setFrame(false);
+        // setFrame(false);
         setStyleName("register-student-upload-form");
-        setStyleAttribute("padding-left", "0px");
-        setStyleAttribute("padding-top", "0px");
-        setStyleAttribute("padding-right", "0px");
-        setStyleAttribute("padding-bottom", "0px");
-        setStyleAttribute("padding", "0px");
+//        setStyleAttribute("padding-left", "0px");
+//        setStyleAttribute("padding-top", "0px");
+//        setStyleAttribute("padding-right", "0px");
+//        setStyleAttribute("padding-bottom", "0px");
+//        setStyleAttribute("padding", "0px");
+        
         StringBuffer sb = new StringBuffer("/cm_admin/bulkRegister");
         sb.append("?aid=").append(aid);
         setAction(sb.toString());
         setEncoding(Encoding.MULTIPART);
 
         setMethod(Method.POST);
-        setButtonAlign(HorizontalAlignment.CENTER);
+        //setButtonAlign(HorizontalAlignment.CENTER);
         setWidth(500);
-        setBodyBorder(false);
+        //setBodyBorder(false);
         setLabelWidth(110);
         setBorders(false);
-        setFieldWidth(295);
-        setHeaderVisible(false);
-        setShim(true);
-
-        addListener(Events.Submit, new Listener<FormEvent>() {
-
-            public void handleEvent(FormEvent be) {
-
+        //setFieldWidth(295);
+        //setHeaderVisible(false);
+        //setShim(true);
+        
+        addSubmitCompleteHandler(new SubmitCompleteHandler() {
+            
+            @Override
+            public void onSubmitComplete(SubmitCompleteEvent event) {
                 
-                String response = be.getResultHtml();
+                String response = event.getResults();
 
-                CmLogger.info("CmUploadForm: response=" + response);
+                CmLogger.debug("CmUploadForm: response=" + response);
 
                 if (response.toLowerCase().indexOf("<pre") != -1) {
                     response = extractJson(response);
@@ -70,7 +71,7 @@ public class CmUploadForm extends FormPanel {
                 String status = "";
                 String msg = "";
                 try {
-                    CmLogger.info("CmUploadForm: parsing JSON");
+                    CmLogger.debug("CmUploadForm: parsing JSON");
                     JSONValue rspValue = JSONParser.parse(response);
                     JSONObject rspObj = rspValue.isObject();
                     msg = rspObj.get("msg").isString().stringValue();
@@ -102,20 +103,16 @@ public class CmUploadForm extends FormPanel {
 
         fileUpload = new FileUploadField();
         fileUpload.setAllowBlank(false);
-        fileUpload.setFieldLabel("File");
-        fileUpload.setAllowBlank(false);
-        fileUpload.setFieldLabel("File");
+        //fileUpload.setFieldLabel("File");
         fileUpload.setAllowBlank(false);
         fileUpload.setBorders(false);
         fileUpload.setName("bulk.reg.field");
 
-        String allowedContentTypes = "text/plain,text/tab-separated-values," +
-            "application/excel,application/vnd.ms-excel,application/x-excel,application/x-msexcel";
-        fileUpload.setAccept(allowedContentTypes);
+//        String allowedContentTypes = "text/plain,text/tab-separated-values," +
+//            "application/excel,application/vnd.ms-excel,application/x-excel,application/x-msexcel";
+//        fileUpload.setAccept(allowedContentTypes);
 
         add(fileUpload);
-
-        getButtonBar().setAlignment(HorizontalAlignment.RIGHT);
     }
     
     

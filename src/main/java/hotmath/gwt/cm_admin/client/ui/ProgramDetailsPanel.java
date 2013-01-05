@@ -128,8 +128,8 @@ public class ProgramDetailsPanel extends CmWindow {
 			    }
 			    else {
 			    	// display printable report
-	                new PdfWindow(cmAdminMdl.getId(), "Catchup Math Program Details",
-	                        new GeneratePdfProgramDetailsReportAction(cmAdminMdl.getId(), _programListing));
+	                new PdfWindow(cmAdminMdl.getUid(), "Catchup Math Program Details",
+	                        new GeneratePdfProgramDetailsReportAction(cmAdminMdl.getUid(), _programListing));
 			    	
 			    }
 		    }
@@ -360,7 +360,7 @@ public class ProgramDetailsPanel extends CmWindow {
         new RetryAction<ProgramListing>() {
             @Override
             public void attempt() {
-                GetProgramListingAction action = new GetProgramListingAction(cmAdminMdl.getId());
+                GetProgramListingAction action = new GetProgramListingAction(cmAdminMdl.getUid());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

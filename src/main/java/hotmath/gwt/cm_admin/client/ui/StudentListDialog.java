@@ -35,15 +35,20 @@ public class TrendingDataStudentListDialog extends CmWindow {
 
     Grid<StudentModelExt> _grid;
     
-    public TrendingDataStudentListDialog(String title, List<StudentModelExt> students) {
+    public TrendingDataStudentListDialog(String title, List<StudentModelI> students) {
 
         setSize(300, 400);
         setHeading(title);
         addStyleName("trending-data-student-list");
         setLayout(new FillLayout());
     
+        List<StudentModelExt> studentsX = new ArrayList<StudentModelExt>();
+        for(StudentModelI sm: students) {
+            studentsX.add(new StudentModelExt(sm));
+        }
+        
         ListStore<StudentModelExt> store = new ListStore<StudentModelExt>();
-        store.add(students);
+        store.add(studentsX);
         
         _grid = defineGrid(store, defineColumns());
         add(_grid);
@@ -82,7 +87,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
                     public void onSuccess() {
                         List<Integer> uids = new ArrayList<Integer>();
                         List<StudentModelExt> students = _grid.getStore().getModels();
-                        int adminId = StudentGridPanel.instance._cmAdminMdl.getId();
+                        int adminId = StudentGridPanel.instance._cmAdminMdl.getUid();
                         for(int i=0,t=students.size();i<t;i++) {
                             uids.add(students.get(i).getUid());
                         }

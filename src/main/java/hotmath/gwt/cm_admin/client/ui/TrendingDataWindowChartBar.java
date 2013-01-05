@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.TrendingData;
@@ -41,8 +41,8 @@ public class TrendingDataWindowChartBar extends TrendingDataWindowChart {
         CmServiceAsync service = CmShared.getCmService();
         GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName);
         service.execute(action,
-                new CmAsyncCallback<CmList<StudentModelExt>>() {
-                    public void onSuccess(CmList<StudentModelExt> students) {
+                new CmAsyncCallback<CmList<StudentModelI>>() {
+                    public void onSuccess(CmList<StudentModelI> students) {
                         new TrendingDataStudentListDialog("Students assigned lesson '" +lessonName + "'",students);
                         CmBusyManager.setBusy(false);
                     }

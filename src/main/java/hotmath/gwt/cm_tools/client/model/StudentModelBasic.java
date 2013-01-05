@@ -9,7 +9,7 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     String backgroundStyle;
     String email;
     String group;
-    String groupId;
+    int groupId;
     Integer uid;
     String name;
     String passcode;
@@ -30,6 +30,20 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
 
     StudentSettingsModel settings = new StudentSettingsModel();
     
+    boolean hasExtendedData;
+    
+    private String showWorkState;
+
+    @Override
+    public void setShowWorkState(String swState) {
+        this.showWorkState = swState;
+    }
+
+    @Override
+    public String getShowWorkState() {
+        return this.showWorkState;
+    }
+    
     public Integer getTutoringUse() {
         return tutoringUse;
     }
@@ -39,7 +53,16 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
         this.tutoringUse = tutoringUse;
     }
 
+    @Override
+    public boolean getHasExtendedData() {
+        return this.hasExtendedData;
+    }
 
+    @Override
+    public void setHasExtendedData(boolean extended) {
+        this.hasExtendedData = extended;
+    }
+    
     @Override
     public Integer getUid() {
         // TODO Auto-generated method stub
@@ -74,7 +97,7 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public String getGroupId() {
+    public int getGroupId() {
         return this.groupId;
     }
 
@@ -170,7 +193,7 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public void setGroupId(String groupId) {
+    public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
 

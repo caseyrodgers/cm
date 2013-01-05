@@ -7,7 +7,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GroupManagerAction;
@@ -16,10 +16,10 @@ import hotmath.gwt.shared.client.util.CmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class GroupManagerRegisterStudent extends RegisterStudent {
 	
@@ -30,38 +30,40 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
 	
 	    this.gim = gim;
 	    
-	    _window.setHeading("Program Reassignment");
-	    _fsProfile.removeAll();
+	    createWindow();
+	    _window.setHeadingText("Program Reassignment");
+	    _fsProfile.clear();
 
 	    _window.setHeight(400);
         
-	    _fsProfile.setHeading("Group Information");
-        _fsProfile.add(new Label("Group: " + gim.getName()));
-        _fsProfile.add(new Label("Number of Students: " + gim.getCount()));
+	    _fsProfile.setHeadingText("Group Information");
+        _fsProfile.addThing(new Label("Group: " + gim.getGroupName()));
+        _fsProfile.addThing(new Label("Number of Students: " + gim.getStudentCount()));
 
-        _formPanel.layout();
+        _formPanel.forceLayout();
 	    setVisible(true);
 	    _window.setVisible(true);
 	}
 	
 
-	public List<Button> getActionButtons() {
-	    List<Button> list = new ArrayList<Button>();
+	public List<TextButton> getActionButtons() {
+	    List<TextButton> list = new ArrayList<TextButton>();
         
-        Button autoCreate = new Button("Reassign Program");
-        autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        TextButton autoCreate = new TextButton("Reassign Program");
+        autoCreate.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 try {
                     doSubmitAction(new AfterValidation() {
                         
                         @Override
                         public void afterValidation(StudentModel student) {
-                            assignProgram(cmAdminMdl.getId(), gim.getId(), student);
+                            assignProgram(cmAdminMdl.getUid(), gim.getId(), student);
                         }
                     });
                 }
                 catch(CmException cm) {
-                    CmMessageBoxGxt2.showAlert("First, make sure all values on form are valid");
+                    CmMessageBox.showAlert("First, make sure all values on form are valid");
                 }
             }
         });
@@ -69,11 +71,10 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
         list.add(autoCreate);
         
         
-        Button close = new Button("Close");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        TextButton close = new TextButton("Close", new SelectHandler() {
             
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 _window.close();
             }
         });
@@ -99,7 +100,7 @@ public class GroupManagerRegisterStudent extends RegisterStudent {
                 GroupManagerAction action = new GroupManagerAction(GroupManagerAction.ActionType.GROUP_PROGRAM_ASSIGNMENT,adminId);                
                 action.setStudentModel(studentTemplate);
                 action.setGroupId(groupId);
-                action.setIsSelfReg(gim.getIsSelfReg()?1:0);
+                action.setIsSelfReg(gim.isSelfReg()?1:0);
                 CmShared.getCmService().execute(action, this);
             }
             

@@ -12,10 +12,10 @@ public class StudyProgramModel implements IsSerializable {
     private String descr;
     private String subjectId;
 
-    private Integer needsSubject;
-    private Integer needsChapters;
-    private Integer needsPassPercent;
-    private Integer needsState;
+    private boolean needsSubject;
+    private boolean needsChapters;
+    private boolean needsPassPercent;
+    private boolean needsState;
     
     private Integer sectionCount;
     
@@ -31,13 +31,14 @@ public class StudyProgramModel implements IsSerializable {
     private String archiveDate;
     
     private CmProgramType programType;
+    
 
     public StudyProgramModel() {
     }
 
     public StudyProgramModel(Integer programId, String title, String shortTitle, String descr, Integer customProgramId,
-            String customProgramName, Integer customQuizId, String customQuizName, Integer needsSubject, Integer needsChapters, Integer needsPassPercent,
-            Integer needsState, Integer sectionCount) {
+            String customProgramName, Integer customQuizId, String customQuizName, boolean needsSubject, boolean needsChapters, boolean needsPassPercent,
+            boolean needsState, Integer sectionCount) {
         this.programId = programId;
         this.customProgramId = customProgramId;
         this.customProgramName = customProgramName;
@@ -169,35 +170,36 @@ public class StudyProgramModel implements IsSerializable {
         this.descr = descr;
     }
 
-    public Integer getNeedsSubject() {
+
+    public boolean isNeedsSubject() {
         return needsSubject;
     }
 
-    public void setNeedsSubject(Integer needsSubject) {
+    public void setNeedsSubject(boolean needsSubject) {
         this.needsSubject = needsSubject;
     }
 
-    public Integer getNeedsChapters() {
+    public boolean isNeedsChapters() {
         return needsChapters;
     }
 
-    public void setNeedsChapters(Integer needsChapters) {
+    public void setNeedsChapters(boolean needsChapters) {
         this.needsChapters = needsChapters;
     }
 
-    public Integer getNeedsPassPercent() {
+    public boolean isNeedsPassPercent() {
         return needsPassPercent;
     }
 
-    public void setNeedsPassPercent(Integer needsPassPercent) {
+    public void setNeedsPassPercent(boolean needsPassPercent) {
         this.needsPassPercent = needsPassPercent;
     }
 
-    public Integer getNeedsState() {
+    public boolean isNeedsState() {
         return needsState;
     }
 
-    public void setNeedsState(Integer needsState) {
+    public void setNeedsState(boolean needsState) {
         this.needsState = needsState;
     }
 

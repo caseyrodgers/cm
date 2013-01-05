@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -7,20 +8,23 @@ import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
+import hotmath.gwt.cm_tools.client.model.ChapterModelProperties;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoProperties;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramExt;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
+import hotmath.gwt.cm_tools.client.model.StudyProgramProperties;
 import hotmath.gwt.cm_tools.client.model.SubjectModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.model.SubjectModelProperties;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -40,28 +44,33 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.CardPanel;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Timer;
+import com.sencha.gxt.cell.core.client.LabelProviderSafeHtmlRenderer;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
+import com.sencha.gxt.widget.core.client.container.CardLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.HideEvent;
+import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.Field;
+import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.form.FormPanel;
+import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 /**
  * Provides UI for registering new students and modifying the registration of
@@ -71,1504 +80,1478 @@ import com.google.gwt.user.client.Timer;
  * 
  */
 
-public class RegisterStudent extends FormPanel implements ProcessTracker {
-	private boolean isNew;
-	private boolean skipComboSet;
-	private boolean loading;
-	private boolean passPercentReqd;
-	private Boolean sectionSelectAvail = false;
-	private Integer sectionCount = 0;
-	private Integer activeSection = 0;
-
-	private StudentModelI stuMdl;
-	private StudentSettingsModel stuSettingsMdl;
-	protected CmAdminModel cmAdminMdl;
-	private AccountInfoModel acctInfoMdl;
-	private int inProcessCount;
-	private String subjectId;
-
-	private CardPanel cardPanel;
-
-	private ListStore<StudyProgramExt> progStore;
-	private ListStore<StudyProgramExt> customProgStore;
-	private ComboBox<StudyProgramExt> progCombo;
-	private ComboBox<StudyProgramExt> cstmCombo;
-
-	private ListStore<SubjectModel> subjStore;
-	private ComboBox<SubjectModel> subjCombo;
-
-	private ListStore<ChapterModel> chapStore;
-	private ComboBox<ChapterModel> chapCombo;
-
-	static private ListStore<GroupInfoModel> __groupStore;
-	private ComboBox<GroupInfoModel> groupCombo;
-
-	private TextField<String> userName;
-
-	// private Map<String, Object> advOptionsMap;
-
-	static final int LAYOUT_WIDTH = 295;
-	static final int CUSTOM_ID = 9999;
-
-	private int formHeight = 485;
-	protected int formWidth = 475;
-
-	protected FormPanel _formPanel;
-	protected Button stdAdvOptionsBtn;
-	protected Button customAdvOptionsBtn;
-
-	public static final String ENTRY_REQUIRED_MSG = "This field is required";
-
-	boolean excludeAutoEnroll;
-
-	public RegisterStudent(StudentModelI sm, CmAdminModel cm) {
-		this(sm, cm, false);
-	}
-
-	public RegisterStudent(StudentModelI sm, CmAdminModel cm, boolean excludeAutoEnroll) {
-		this(sm, cm, excludeAutoEnroll, false);
-	}
-	
-	public RegisterStudent(StudentModelI sm, CmAdminModel cm,boolean excludeAutoEnroll, boolean addSaveButton) {
-
-		this.excludeAutoEnroll = excludeAutoEnroll;
-
-		EventBus.getInstance().fireEvent(
-				new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
-
-		inProcessCount = 0;
-		isNew = (sm == null);
-		stuMdl = sm;
-		if (stuMdl != null) {
-			subjectId = stuMdl.getProgram().getSubjectId();
-			passPercent = stuMdl.getPassPercent();
-			stuSettingsMdl = stuMdl.getSettings();
-			activeSection = stuMdl.getSectionNum();
-			sectionCount = stuMdl.getSectionCount();
-			sectionSelectAvail = isSectionSelectAvail(stuMdl.getProgram()
-					.getProgramType());
-		}
-
-		cmAdminMdl = cm;
-		skipComboSet = isNew;
-
-		createForm();
-		setComboBoxSelections();
-		
-		
-		if(addSaveButton) {
-			_formPanel.addButton(saveButton(_fsProgram, _formPanel));
-		}
-		
-	}
-
-	protected void createWindow() {
-		_window = new CmWindow();
-		_window.addListener(Events.Hide, new Listener<BaseEvent>() {
-			public void handleEvent(BaseEvent be) {
-				EventBus.getInstance().fireEvent(
-						new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
-				_groupSelector.release();
-			}
-		});
-		_window.add(this, new BorderLayoutData(LayoutRegion.CENTER));
-
-		_window.setHeading((isNew) ? "Register a New Student" : "Edit Student");
-		_window.setWidth(formWidth + 40);
-		_window.setHeight(formHeight + 20);
-		_window.setResizable(false);
-		_window.setDraggable(true);
-		_window.setModal(true);
-
-		/**
-		 * Assign buttons to the button bar on the Window
-		 */
-		
-		for (Button btn : getActionButtons()) {
-			btn.addStyleName("register-student-btn");
-			_window.addButton(btn);
-		}
-	}
-
-	CmWindow _window;
-
-	public void showWindow() {
-		if(_window == null) {
-			createWindow();
-		}
-
-		_window.show();
-		if (isNew) {
-			userName.focus();
-		}
-	}
-
-	/**
-	 * Return list of Buttons to add to the Button bar
-	 * 
-	 * @return
-	 */
-	public List<Button> getActionButtons() {
-		List<Button> list = new ArrayList<Button>();
-		Button cancelBtn = cancelButton();
-		cancelBtn.addStyleName("register-student-cancel");
-		list.add(saveButton(_fsProgram, _formPanel));
-		list.add(cancelButton());
-		for (int i = 0; i < list.size(); i++) {
-			list.get(i).setWidth(75);
-		}
-		return list;
-	}
-
-	protected void hideAdvancedOptionsButton() {
-		stdAdvOptionsBtn.hide();
-	}
-
-	public FieldSet _fsProfile, _fsProgram, _fsStdProg, _fsCustomProg;
-
-	GroupSelectorWidget _groupSelector;
-
-	protected FormPanel createForm() {
-		_formPanel = this; // new FormPanel();
-		
-		_formPanel.setButtonAlign(HorizontalAlignment.RIGHT);
-		
-		_formPanel.addStyleName("register-student-form-panel");
-		_formPanel.setLabelWidth(120);
-		_formPanel.setHeight(formHeight);
-		_formPanel.setFooter(true);
-		_formPanel.setFrame(false);
-		_formPanel.setHeaderVisible(false);
-		_formPanel.setBodyBorder(false);
-		_formPanel.setIconStyle("icon-form");
-		_formPanel.setButtonAlign(HorizontalAlignment.CENTER);
-		_formPanel.setLayout(new FormLayout());
-		// fp.getLayout();
-
-		_fsProfile = new FieldSet();
-		FormLayout fL = new FormLayout();
-		fL.setLabelWidth(_formPanel.getLabelWidth());
-		fL.setDefaultWidth(LAYOUT_WIDTH);
-		_fsProfile.setLayout(fL);
-
-		_fsProfile.setHeading("Define Profile");
-		userName = new TextField<String>();
-		userName.setFieldLabel("Name");
-		userName.setAllowBlank(false);
-		userName.setId("name");
-		userName.setEmptyText("-- enter name --");
-		if (!isNew) {
-			userName.setValue((String) stuMdl.getName());
-		}
-		_fsProfile.add(userName);
-
-		TextField<String> passCode = new TextField<String>();
-		passCode.setFieldLabel("Passcode");
-		passCode.setEmptyText("-- enter passcode --");
-		passCode.setAllowBlank(false);
-		passCode.setId("passcode");
-		if (!isNew) {
-			passCode.setValue((String) stuMdl.getPasscode());
-		}
-		_fsProfile.add(passCode);
-
-		if (__groupStore == null) {
-			__groupStore = new ListStore<GroupInfoModel>();
-		}
-
-		_groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore,
-				true, this, "group-combo", true);
-		groupCombo = _groupSelector.groupCombo();
-		if (UserInfo.getInstance() == null
-				|| !UserInfo.getInstance().isSingleUser()) {
-			_fsProfile.add(groupCombo);
-		}
-
-		_formPanel.add(_fsProfile);
-
-		progStore = new ListStore<StudyProgramExt>();
-		customProgStore = new ListStore<StudyProgramExt>();
-		getStudyProgramListRPC();
-
-		stdAdvOptionsBtn = stdAdvancedOptionsBtn();
-		stdAdvOptionsBtn.disable();
-		customAdvOptionsBtn = customAdvancedOptionsBtn();
-		customAdvOptionsBtn.disable();
-
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(_formPanel.getLabelWidth());
-		fl.setDefaultWidth(fL.getDefaultWidth());
-
-		_fsProgram = new FieldSet();
-		_fsProgram.setHeading("Assign Program");
-		_fsProgram.addStyleName("register-student-outer-fieldset");
-		_fsProgram.setLayout(fl);
-		progCombo = programCombo(progStore);
-		_fsProgram.add(progCombo);
-
-		setupStdProgramUI();
-		setupCustomProgramUI();
-
-		getAccountInfoRPC(cmAdminMdl.getId());
-
-		cardPanel = new CardPanel();
-
-		cardPanel.add(_fsStdProg);
-		cardPanel.add(_fsCustomProg);
-
-		_fsProgram.add(cardPanel);
-		_formPanel.add(_fsProgram);
-
-		/**
-		 * Seems like a bug with setting focus, so the only way to it to work is
-		 * to set a timer and hope ...
-		 * 
-		 * It seems the form is validating before it needs to and showing error
-		 * messages before any input has been added .. which removes the focus
-		 * 
-		 * @TODO: get name.focus() to just work without the need for timing
-		 *        tricks.
-		 */
-		if (isNew) {
-			new Timer() {
-				public void run() {
-					userName.focus();
-				}
-			}.schedule(2000);
-		}
-		return _formPanel;
-	}
-
-	private String passPercent;
-
-	private void setupStdProgramUI() {
-		_fsStdProg = new FieldSet();
-		_fsStdProg.setHeading("");
-		_fsStdProg.addStyleName("register-student-inner-fieldset");
-		_fsStdProg.setId("std-prog-fs");
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(_formPanel.getLabelWidth());
-		fl.setDefaultWidth(LAYOUT_WIDTH);
-		_fsStdProg.setLayout(fl);
-
-		subjStore = new ListStore<SubjectModel>();
-		getSubjectList((stuMdl != null) ? stuMdl.getProgram().getProgramType()
-				.getType() : null, subjStore);
-		subjCombo = subjectCombo(subjStore);
-		_fsStdProg.add(subjCombo);
-
-		chapStore = new ListStore<ChapterModel>();
-		getChapterListRPC((stuMdl != null) ? stuMdl.getProgram()
-				.getProgramType().getType() : null, subjectId, false, chapStore);
-		chapCombo = chapterCombo(chapStore);
-		_fsStdProg.add(chapCombo);
-
-		_fsStdProg.add(stdAdvOptionsBtn);
-	}
-
-	private void setupCustomProgramUI() {
-		_fsCustomProg = new FieldSet();
-		_fsCustomProg.setHeading("");
-		_fsCustomProg.addStyleName("register-student-inner-fieldset");
-		_fsCustomProg.setId("custom-prog-fs");
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(_formPanel.getLabelWidth());
-		fl.setDefaultWidth(LAYOUT_WIDTH);
-		_fsCustomProg.setLayout(fl);
-
-		cstmCombo = customCombo(customProgStore, _fsCustomProg,
-				"Program or Quiz", "Select a Custom Program|Quiz");
-		_fsCustomProg.add(cstmCombo);
-
-		_fsCustomProg.add(customAdvOptionsBtn);
-	}
-
-	private SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {
-		public void componentSelected(ButtonEvent ce) {
-			AdvOptCallback callback = new AdvOptCallback() {
-				@Override
-				void setAdvancedOptions(Map<String, Object> optionMap) {
-					stuSettingsMdl = (StudentSettingsModel) optionMap
-							.get(StudentModelExt.SETTINGS_KEY);
-					passPercent = (String) optionMap
-							.get(StudentModelExt.PASS_PERCENT_KEY);
-					activeSection = (Integer) optionMap
-							.get(StudentModelExt.SECTION_NUM_KEY);
-				}
-			};
-
-			final Map<String, Object> advOptionsMap = new HashMap<String, Object>();
-			final StudentSettingsModel ssm = new StudentSettingsModel();
-
-			/** only set options if not null */
-			if (stuSettingsMdl != null) {
-				ssm.setLimitGames(stuSettingsMdl.getLimitGames());
-				ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
-				ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
-				ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
-				ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
-				ssm.setDisableCalcQuizzes(stuSettingsMdl
-						.getDisableCalcQuizzes());
-			} else {
-				/** use account data to set tutoring available */
-				if (acctInfoMdl != null) {
-					ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
-				}
-			}
-
-			advOptionsMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
-			advOptionsMap.put(StudentModelExt.SETTINGS_KEY, ssm);
-
-			advOptionsMap.put(StudentModelExt.SECTION_COUNT_KEY, sectionCount);
-			if (activeSection == null)
-				activeSection = 0;
-			advOptionsMap.put(StudentModelExt.SECTION_NUM_KEY, activeSection);
-			advOptionsMap.put(StudentModelExt.SECTION_IS_SETTABLE, sectionSelectAvail);
-
-			if ("custom-adv-opt-btn".equals(ce.getButton().getId())) {
-				ssm.setStopAtProgramEnd(true);
-				advOptionsMap.put("prog-stop-is-settable", new Boolean(false));
-			} else {
-				advOptionsMap.put("prog-stop-is-settable", new Boolean(true));
-			}
-
-			new RegisterStudentAdvancedOptions(callback, cmAdminMdl,
-					advOptionsMap, isNew, passPercentReqd).setVisible(true);
-		}
-	};
-
-	private Button stdAdvancedOptionsBtn() {
-		Button btn = new Button("Advanced Options");
-		btn.setToolTip("Disallow games, Change pass percentage, etc.");
-		btn.setWidth("110px");
-		btn.addSelectionListener(selectionListener);
-		// btn.addStyleName("register-student-advanced-options-btn");
-		btn.setId("std-adv-opt-btn");
-		return btn;
-	}
-
-	private Button customAdvancedOptionsBtn() {
-		Button btn = new Button("Advanced Options");
-		btn.setToolTip("Disallow games, Change pass percentage, etc.");
-		btn.setWidth("110px");
-		btn.addSelectionListener(selectionListener);
-		btn.addStyleName("register-student-advanced-options-btn");
-		btn.setId("custom-adv-opt-btn");
-		return btn;
-	}
-
-	private boolean isSectionSelectAvail(CmProgramType type) {
-		return (type == CmProgramType.PROF || type == CmProgramType.GRADPREP
-				|| type == CmProgramType.GRADPREPNATIONAL || type == CmProgramType.GRADPREPTX);
-	}
-
-	private ComboBox<StudyProgramExt> programCombo(
-			ListStore<StudyProgramExt> store) {
-		ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>();
-		combo.setFieldLabel("Program type");
-		combo.setForceSelection(true);
-		combo.setDisplayField("title");
-		combo.setEditable(false);
-		combo.setMaxLength(45);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
-		combo.setTemplate(getProgramTemplate());
-		combo.setTitle("Select a program type");
-		combo.setId("prog-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a program type --");
-		combo.setWidth(280);
-
-		combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgramExt>() {
-			@SuppressWarnings("unchecked")
-			public void selectionChanged(
-					SelectionChangedEvent<StudyProgramExt> se) {
-
-				if (loading)
-					return;
-
-				StudyProgramExt sp = se.getSelectedItem();
-				int needsSubject = ((Integer) sp.get("needsSubject"))
-						.intValue();
-				int needsChapters = ((Integer) sp.get("needsChapters"))
-						.intValue();
-				passPercentReqd = ((Integer) sp.get("needsPassPercent"))
-						.intValue() > 0;
-				CmProgramType progType = (CmProgramType) sp.get("programType");
-
-				if (CmProgramType.CUSTOM != progType) {
-
-					if (!cardPanel.getActiveItem().equals(_fsStdProg)) {
-						cardPanel.setActiveItem(_fsStdProg);
-					}
-
-					sectionSelectAvail = isSectionSelectAvail(progType); // sp.isGradPrep()
-																			// ||
-																			// sp.isProficiency();
-
-					sectionCount = sp.getSectionCount();
-					activeSection = 0;
-
-					if (progType == CmProgramType.AUTOENROLL) {
-						stdAdvOptionsBtn.disable();
-					} else {
-						stdAdvOptionsBtn.enable();
-					}
-
-					ComboBox<SubjectModel> cb = (ComboBox<SubjectModel>) _fsStdProg
-							.getItemByItemId("subj-combo");
-
-					skipComboSet = true;
-					subjectId = null;
-
-					if (needsSubject > 0) {
-						cb.clearSelections();
-						cb.enable();
-						cb.setForceSelection(true);
-						getSubjectList((String) sp.get("shortTitle"), subjStore);
-					} else {
-						cb.clearInvalid();
-						cb.clearSelections();
-						cb.disable();
-						cb.setForceSelection(false);
-						subjectId = null;
-					}
-
-					ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) _fsStdProg
-							.getItemByItemId("chap-combo");
-
-					if (needsChapters > 0) {
-						cc.clearSelections();
-						cc.enable();
-						cc.setForceSelection(true);
-					} else {
-						cc.clearInvalid();
-						cc.clearSelections();
-						cc.disable();
-						cc.setForceSelection(false);
-					}
-				} else {
-					cardPanel.setActiveItem(_fsCustomProg);
-					skipComboSet = true;
-					subjectId = null;
-					sectionSelectAvail = false;
-					activeSection = 0;
-				}
-
-			}
-		});
-
-		return combo;
-	}
-
-	private ComboBox<StudyProgramExt> customCombo(
-			ListStore<StudyProgramExt> store, final FieldSet fs, String label,
-			String title) {
-		ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>();
-		combo.setFieldLabel(label);
-		combo.setForceSelection(true);
-		combo.setDisplayField("title");
-		combo.setEditable(false);
-		combo.setMaxLength(45);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
-		combo.setTemplate(getProgramTemplate());
-		combo.setTitle(title);
-		combo.setId("custom-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- make a selection --");
-		combo.setWidth(280);
-
-		combo.addSelectionChangedListener(new SelectionChangedListener<StudyProgramExt>() {
-			public void selectionChanged(
-					SelectionChangedEvent<StudyProgramExt> se) {
-
-				if (loading)
-					return;
-
-				StudyProgramExt sp = se.getSelectedItem();
-
-				passPercentReqd = ((Integer) sp.get("needsPassPercent"))
-						.intValue() > 0;
-
-				sectionSelectAvail = false;
-
-				customAdvOptionsBtn.enable();
-
-			}
-		});
-
-		return combo;
-	}
-
-	private native String getProgramTemplate() /*-{ 
-												return  [ 
-												'<tpl for=".">', 
-												'<div class="x-combo-list-item {styleIsTemplate} {styleIsArchived} {styleIsFree}" qtip="{descr}">{label}</div>', 
-												'</tpl>' 
-												].join(""); 
-												}-*/;
-
-	private native String getSubjectTemplate() /*-{ 
-												return  [ 
-												'<tpl for=".">', 
-												'<div class="x-combo-list-item {styleIsFree}">{subject}</div>', 
-												'</tpl>' 
-												].join(""); 
-												}-*/;
-
-	private native String getChapterTemplate() /*-{ 
-												return  [ 
-												'<tpl for=".">', 
-												'<div class="x-combo-list-item {styleIsFree}">{chapter}</div>', 
-												'</tpl>' 
-												].join(""); 
-												}-*/;
-
-	private ComboBox<SubjectModel> subjectCombo(ListStore<SubjectModel> store) {
-		ComboBox<SubjectModel> combo = new ComboBox<SubjectModel>();
-		combo.setFieldLabel("Subject");
-		combo.setForceSelection(false);
-		combo.setDisplayField("subject");
-		combo.setEditable(false);
-		combo.setMaxLength(30);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-
-		combo.setTitle("Select a subject");
-		combo.setId("subj-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a subject --");
-
-		combo.setTemplate(getSubjectTemplate());
-
-		combo.disable();
-		combo.setWidth(280);
-
-		combo.setStore(store);
-
-		combo.addSelectionChangedListener(new SelectionChangedListener<SubjectModel>() {
-			@SuppressWarnings("unchecked")
-			public void selectionChanged(SelectionChangedEvent<SubjectModel> se) {
-
-				if (loading)
-					return;
-
-				SubjectModel sm = se.getSelectedItem();
-				if (subjectId == null || !subjectId.equals(sm.getAbbrev())) {
-					try {
-						skipComboSet = true;
-						subjectId = sm.getAbbrev();
-						ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsProgram
-								.getItemByItemId("prog-combo");
-						StudyProgramExt sp = cb.getValue();
-						String progId = sp.get("shortTitle");
-						chapStore.removeAll();
-						getChapterListRPC(progId, subjectId, true, chapStore);
-					} catch (Exception e) {
-						e.printStackTrace();
-						CmMessageBoxGxt2.showAlert(e.getMessage());
-					}
-				}
-			}
-		});
-		return combo;
-	}
-
-	private ComboBox<ChapterModel> chapterCombo(ListStore<ChapterModel> store) {
-		ComboBox<ChapterModel> combo = new ComboBox<ChapterModel>();
-		combo.setFieldLabel("Chapter");
-		combo.setForceSelection(false);
-		combo.setDisplayField("chapter");
-		combo.setEditable(false);
-		combo.setMaxLength(160);
-		combo.setAllowBlank(false);
-		combo.setTriggerAction(TriggerAction.ALL);
-		combo.setStore(store);
-		combo.setTitle("Select a Chapter");
-		combo.setId("chap-combo");
-		combo.setTypeAhead(true);
-		combo.setSelectOnFocus(true);
-		combo.setEmptyText("-- select a chapter --");
-		combo.disable();
-		combo.setTemplate(getChapterTemplate());
-		combo.setWidth(280);
-		return combo;
-	}
-
-	private Button cancelButton() {
-		Button cancelBtn = new Button("Cancel",
-				new SelectionListener<ButtonEvent>() {
-					public void componentSelected(ButtonEvent ce) {
-						_window.close();
-					}
-				});
-		return cancelBtn;
-	}
-
-	private Button saveButton(final FieldSet fs, final FormPanel fp) {
-		Button saveBtn = new Button("Save",
-				new SelectionListener<ButtonEvent>() {
-					@Override
-					public void componentSelected(ButtonEvent cx) {
-						try {
-							doSubmitAction(null);
-						} catch (CmException cm) {
-							cm.printStackTrace();
-						}
-					}
-				});
-		return saveBtn;
-	}
-
-	private void getStudyProgramListRPC() {
-
-		inProcessCount++;
-
-		new RetryAction<CmList<StudyProgramModel>>() {
-			@Override
-			public void attempt() {
-				GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(
-						cmAdminMdl.getId());
-				setAction(action);
-				CmShared.getCmService().execute(action, this);
-			}
-
-			public void oncapture(CmList<StudyProgramModel> spmList) {
-				List<StudyProgramExt> progList = new ArrayList<StudyProgramExt>();
-				List<StudyProgramExt> customProgList = new ArrayList<StudyProgramExt>();
-
-				int stuCustomProgramId = (isNew == false && stuMdl.getProgram()
-						.getCustom().getCustomProgramId() != 0) ? stuMdl
-						.getProgram().getCustom().getCustomProgramId() : -1;
-				int stuCustomQuizId = (isNew == false && stuMdl.getProgram()
-						.getCustom().getCustomQuizId() != 0) ? stuMdl
-						.getProgram().getCustom().getCustomQuizId() : -1;
-
-				for (StudyProgramModel spm : spmList) {
-					if (excludeAutoEnroll
-							&& spm.getShortTitle().equalsIgnoreCase(
-									"AUTO-ENROLL"))
-						continue;
-
-					if ((isNew == true && spm.getIsArchived() == true))
-						continue;
-
-					if (isNew == false && spm.getIsArchived() == true
-							&& spm.getCustomProgramId() != stuCustomProgramId
-							&& spm.getCustomQuizId() != stuCustomQuizId)
-						continue;
-
-					if (spm.getCustomProgramId() == 0
-							&& spm.getCustomQuizId() == 0) {
-						progList.add(new StudyProgramExt(spm, spm.getTitle(),
-								spm.getShortTitle(), spm.getDescr(), spm
-										.getNeedsSubject(), spm
-										.getNeedsChapters(), spm
-										.getNeedsPassPercent(), spm
-										.getCustomProgramId(), spm
-										.getCustomProgramName()));
-					} else {
-						customProgList.add(new StudyProgramExt(spm, spm
-								.getTitle(), spm.getShortTitle(), spm
-								.getDescr(), spm.getNeedsSubject(), spm
-								.getNeedsChapters(), spm.getNeedsPassPercent(),
-								spm.getCustomProgramId(), spm
-										.getCustomProgramName()));
-					}
-
-				}
-				StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID,
-						"Custom", "Custom", "Custom Programs and Quizzes", 0,
-						" ", 0, " ", 0, 0, 0, 0, 0);
-				spm.setProgramType(CmProgramType.CUSTOM);
-				spm.setIsArchived(false);
-				progList.add(new StudyProgramExt(spm, "Custom", "Custom",
-						"Custom Programs and Quizzes", 0, 0, 0, 0, null));
-
-				/** If is free, then shown only Prof and Custom as available */
-				for (BaseModelData md : progList) {
-					if (acctInfoMdl.getIsFreeAccount()) {
-						String pn = md.get("title");
-						if (!pn.contains("Proficiency")
-								&& !pn.contains("Custom")) {
-							md.set("styleIsFree", "is-free-account-label");
-						}
-					}
-				}
-
-				/** If is free, then show only Essentials as available. */
-				for (BaseModelData md : customProgList) {
-					if (acctInfoMdl.getIsFreeAccount()) {
-						String pn = md.get("title");
-						if (!pn.contains("Essentials")) {
-							md.set("styleIsFree", "is-free-account-label");
-						}
-					}
-				}
-
-				progStore.add(progList);
-				customProgStore.add(customProgList);
-
-				inProcessCount--;
-				setComboBoxSelections();
-			}
-		}.register();
-	}
-
-	private Map<String, List<SubjectModel>> programSubjectMap = new HashMap<String, List<SubjectModel>>();
-
-	private void getSubjectList(final String progId,
-			final ListStore<SubjectModel> subjStore) {
-
-		if (progId == null)
-			return;
-
-		List<SubjectModel> subjList = programSubjectMap.get(progId);
-		if (subjList != null) {
-			subjStore.removeAll();
-			subjStore.add(subjList);
-			setComboBoxSelections();
-		} else {
-			getSubjectListRPC(progId, subjStore);
-		}
-	}
-
-	private void getSubjectListRPC(final String progId,
-			final ListStore<SubjectModel> subjStore) {
-
-		inProcessCount++;
-
-		new RetryAction<CmList<SubjectModel>>() {
-
-			@Override
-			public void attempt() {
-				GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(
-						progId);
-				setAction(action);
-				CmShared.getCmService().execute(action, this);
-			}
-
-			public void oncapture(CmList<SubjectModel> result) {
-
-				for (SubjectModel sm : result) {
-					if (acctInfoMdl.getIsFreeAccount()) {
-						if (!sm.get("subject").equals("Essentials")) {
-							sm.set("styleIsFree", "is-free-account-label");
-						}
-					}
-				}
-				subjStore.removeAll();
-				subjStore.add(result);
-				inProcessCount--;
-				programSubjectMap.put(progId, result);
-				setComboBoxSelections();
-			}
-		}.register();
-
-	}
-
-	protected void addUserRPC(final StudentModel sm) {
-
-		/**
-		 * execute outside the RetryManager to allow processing exceptions.
-		 */
-		new RetryAction<StudentModelI>() {
-			@Override
-			public void attempt() {
-				CmBusyManager.setBusy(true);
-				AddStudentAction action = new AddStudentAction(sm);
-				setAction(action);
-				CmShared.getCmService().execute(action, this);
-			}
-
-			public void oncapture(StudentModelI ai) {
-				CmBusyManager.setBusy(false);
-				EventBus.getInstance().fireEvent(
-						new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,
-								ai.getProgramChanged()));
-				_window.close();
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				CmBusyManager.setBusy(false);
-				if (caught.getMessage().indexOf("already in use") > -1) {
-					CmMessageBoxGxt2.showAlert("Password In Use",
-							"This password is currently in use");
-					return;
-				}
-				super.onFailure(caught);
-			}
-		}.attempt();
-	}
-
-	/**
-	 * Will show a message if not allowed to save.
-	 * 
-	 * Return true only if OK to save changes.
-	 * 
-	 * @param sm
-	 * @return
-	 */
-	protected boolean verifyOkToSave(StudentModel sm) {
-		/**
-		 * Free accounts can only change to Essentials/Essentials Topics
-		 * 
-		 */
-		if (acctInfoMdl.getIsFreeAccount()) {
-			String progName = sm.getProgram().getProgramDescription();
-			String pn = sm.getProgram().getCustom().getCustomProgramName();
-			if (!progName.equals("Ess Prof")
-					&& !(pn != null && pn.equals("Essentials Topics"))) {
-				CatchupMathTools
-						.showAlert("Change not allowed",
-								"Sorry, this program is not currently available under your school license.");
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	protected void updateUserRPC(final StudentModel sm,
-			final Boolean stuChanged, final Boolean progChanged,
-			final Boolean progIsNew, final Boolean passcodeChanged,
-			final Boolean passPercentChanged, final Boolean sectionNumChanged) {
-
-		if (!verifyOkToSave(sm)) {
-			return;
-		}
-
-		new RetryAction<StudentModelI>() {
-			@Override
-			public void attempt() {
-				CmBusyManager.setBusy(true);
-				UpdateStudentAction action = new UpdateStudentAction(sm,
-						stuChanged, progChanged, progIsNew, passcodeChanged,
-						passPercentChanged, sectionNumChanged);
-				setAction(action);
-				CmShared.getCmService().execute(action, this);
-			}
-
-			public void oncapture(StudentModelI ai) {
-				CmBusyManager.setBusy(false);
-				if(_window != null) {
-					_window.close();
-				}
-				else {
-					CmMessageBoxGxt2.showAlert("Save Complete");
-				}
-				
-				EventBus.getInstance().fireEvent(
-						new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED,
-								ai.getProgramChanged()));
-			}
-		}.register();
-	}
-
-	private void setComboBoxSelections() {
-		if (this.stuMdl != null && !skipComboSet && inProcessCount < 1) {
-
-			loading = true;
-
-			setGroupSelection();
-
-			StudyProgramExt sp = setProgramSelection();
-
-			if (sp == null) {
-				CmMessageBoxGxt2.showAlert("Program not found!");
-				loading = false;
-				return;
-			}
-
-			CmProgramType progType = (CmProgramType) sp.get("programType");
-			if (CmProgramType.CUSTOM != progType) {
-				cardPanel.setActiveItem(_fsStdProg);
-
-				int needsSubject = ((Integer) sp.get("needsSubject"))
-						.intValue();
-				if (needsSubject != 0)
-					setSubjectSelection();
-
-				int needsChapters = ((Integer) sp.get("needsChapters"))
-						.intValue();
-				if (needsChapters != 0)
-					setChapterSelection();
-			} else {
-				cardPanel.setActiveItem(_fsCustomProg);
-				setCustomProgramSelection();
-			}
-			passPercentReqd = ((Integer) sp.get("needsPassPercent")).intValue() > 0;
-
-			if (stdAdvOptionsBtn.isVisible()) {
-				stdAdvOptionsBtn.enable();
-			}
-
-			if (customAdvOptionsBtn.isVisible()) {
-				customAdvOptionsBtn.enable();
-			}
-
-			loading = false;
-		}
-	}
-
-	private void setGroupSelection() {
-		if (stuMdl == null) {
-			new Exception().printStackTrace();
-			return;
-		}
-
-		if (_fsProfile.getItemByItemId("group-combo") == null) {
-			return;
-		}
-
-		Integer groupId = Integer.parseInt(stuMdl.getGroupId());
-		if (groupId != null) {
-			List<GroupInfoModel> l = __groupStore.getModels();
-			for (GroupInfoModel g : l) {
-				Integer gi = g.getId();
-				if (groupId.equals(gi)) {
-					groupCombo.setOriginalValue(g);
-					groupCombo.setValue(g);
-				}
-			}
-		}
-	}
-
-	private StudyProgramExt setProgramSelection() {
-		StudentProgramModel program = stuMdl.getProgram();
-		String shortName = program.getProgramType().getType();
-
-		if (program.isCustom()) {
-			List<StudyProgramExt> list = progStore.getModels();
-
-			for (StudyProgramExt sp : list) {
-				if (sp.get("shortTitle").equals("Custom")) {
-					progCombo.setOriginalValue(sp);
-					progCombo.setValue(sp);
-					return sp;
-				}
-			}
-			return null;
-		}
-
-		if (shortName != null) {
-			List<StudyProgramExt> list = progStore.getModels();
-			for (StudyProgramExt sp : list) {
-
-				if (progNameCheckHack(shortName, sp)) {
-					progCombo.setOriginalValue(sp);
-					progCombo.setValue(sp);
-					return sp;
-				}
-			}
-		}
-		return null;
-	}
-
-	private StudyProgramExt setCustomProgramSelection() {
-		StudentProgramModel program = stuMdl.getProgram();
-
-		List<StudyProgramExt> list = customProgStore.getModels();
-
-		for (StudyProgramExt sp : list) {
-
-			if ((program.getCustom().getCustomProgramId() != 0 && program
-					.getCustom().getCustomProgramId() == sp
-					.getCustomProgramId())
-					|| (program.getCustom().getCustomQuizId() != 0 && program
-							.getCustom().getCustomQuizId() == sp
-							.getCustomQuizId())) {
-				cstmCombo.setOriginalValue(sp);
-				cstmCombo.setValue(sp);
-				return sp;
-			}
-		}
-		return null;
-
-	}
-
-	/**
-	 * perform hack to determine correct program.
-	 * 
-	 * @NOTE: add a way to identify programs correctly.
-	 * 
-	 * @param shortName
-	 * @param sp
-	 * @return
-	 */
-	private boolean progNameCheckHack(String shortName, StudyProgramExt sp) {
-		String st = ((String) sp.get("shortTitle")).toLowerCase();
-
-		if (sp.get("customProgramName") != null
-				&& sp.get("customProgramName").equals(shortName)) {
-			return true;
-		}
-
-		if (sp.get("customQuizName") != null
-				&& sp.get("customQuizName").equals(shortName)) {
-			return true;
-		}
-
-		if (st.equals("chap") && shortName.toLowerCase().indexOf(" chap") > -1) {
-			return true;
-		} else if (st.equals("prof")
-				&& shortName.toLowerCase().indexOf(" prof") > -1)
-			return true;
-		else {
-			return shortName.equalsIgnoreCase(st);
-		}
-	}
-
-	private void setSubjectSelection() {
-		String shortName = stuMdl.getProgram().getProgramDescription();
-
-		if (shortName != null) {
-			List<SubjectModel> list = subjStore.getModels();
-			for (SubjectModel s : list) {
-				if (shortName.indexOf((String) s.get("abbrev")) > -1) {
-					subjCombo.setOriginalValue(s);
-					subjCombo.setValue(s);
-					subjCombo.enable();
-					break;
-				}
-			}
-		}
-
-	}
-
-	private void setChapterSelection() {
-		String chap = stuMdl.getChapter();
-
-		if (chap != null) {
-			List<ChapterModel> list = chapStore.getModels();
-			for (ChapterModel c : list) {
-				if (chap.equals(c.getTitle())) {
-					chapCombo.setOriginalValue(c);
-					chapCombo.setValue(c);
-					chapCombo.enable();
-					break;
-				}
-			}
-		}
-	}
-
-	private void getChapterListRPC(final String progId, final String subjId,
-			final Boolean chapOnly, final ListStore<ChapterModel> chapStore) {
-
-		if (progId == null || !progId.equalsIgnoreCase("chap"))
-			return;
-
-		inProcessCount++;
-		new RetryAction<CmList<ChapterModel>>() {
-
-			@Override
-			public void attempt() {
-				CmServiceAsync s = CmShared.getCmService();
-				GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(
-						progId, subjId);
-				setAction(action);
-				s.execute(action, this);
-			}
-
-			public void oncapture(CmList<ChapterModel> result) {
-
-				for (ChapterModel cm : result) {
-					if (acctInfoMdl.getIsFreeAccount()) {
-						cm.set("styleIsFree", "is-free-account-label");
-					}
-				}
-
-				chapStore.add(result);
-				inProcessCount--;
-				if (!chapOnly)
-					setComboBoxSelections();
-				else {
-					chapCombo.setOriginalValue(null);
-					chapCombo.setValue(null);
-					chapCombo.clearSelections();
-				}
-			}
-		}.register();
-	}
-
-	protected void getAccountInfoRPC(final Integer uid) {
-		new RetryAction<AccountInfoModel>() {
-			@Override
-			public void attempt() {
-				CmServiceAsync s = CmShared.getCmService();
-				GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(
-						uid);
-				setAction(action);
-				CmLogger.info("AccountInfoPanel: reading admin info RPC");
-				s.execute(action, this);
-			}
-
-			public void oncapture(AccountInfoModel ai) {
-				acctInfoMdl = ai;
-			}
-		}.register();
-	}
-
-	/**
-	 * Perform the form save operation and display any required validation.
-	 * 
-	 * Throws CmExeptionValidationFailed on failed validation attempt.
-	 * 
-	 * if callback == null, then default operation, saving data, is performed.
-	 * If callback is provided, then after validation of form callback is
-	 * called.
-	 * 
-	 * 
-	 * @TODO: separate into validation/action. Perhaps strategy pattern.
-	 * 
-	 * @param fs
-	 * @param fp
-	 */
-	@SuppressWarnings("unchecked")
-	protected void doSubmitAction(AfterValidation callback) throws CmException {
-
-		TextField<String> tf = (TextField<String>) _fsProfile
-				.getItemByItemId("name");
-		String name = "";
-		if (tf != null) {
-			tf.clearInvalid();
-			name = tf.getValue();
-			if (name == null) {
-				tf.focus();
-				tf.forceInvalid(ENTRY_REQUIRED_MSG);
-				throw new CmExceptionValidationFailed();
-			}
-		}
-
-		String passcode = null;
-		tf = (TextField<String>) _fsProfile.getItemByItemId("passcode");
-		if (tf != null) {
-			tf.clearInvalid();
-			passcode = tf.getValue();
-			if (passcode == null) {
-				tf.focus();
-				tf.forceInvalid(ENTRY_REQUIRED_MSG);
-				throw new CmExceptionValidationFailed();
-			} else {
-				if (passcode.contains(" ")) {
-					tf.focus();
-					tf.forceInvalid("Password cannot contain spaces");
-					throw new CmExceptionValidationFailed();
-				}
-
-			}
-		}
-
-		String groupId = null;
-		String group = null;
-		ComboBox<GroupInfoModel> cg = (ComboBox<GroupInfoModel>) _fsProfile
-				.getItemByItemId("group-combo");
-		if (cg != null) {
-			cg.clearInvalid();
-			GroupInfoModel g = cg.getValue();
-			if (g == null) {
-				cg.focus();
-				cg.forceInvalid(ENTRY_REQUIRED_MSG);
-				cg.expand();
-				throw new CmExceptionValidationFailed();
-			}
-			groupId = g.getId().toString();
-			group = g.getName();
-		}
-
-		String fsId = null;
-		List<Component> list = cardPanel.getItems();
-		for (Component c : list) {
-			if (c.isVisible()) {
-				fsId = c.getId();
-			}
-		}
-
-		StudyProgramExt studyProgExt = null;
-		SubjectModel sub = null;
-		ChapterModel chap = null;
-		String prog = null;
-
-		if (fsId.equals("std-prog-fs")) {
-			ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsProgram
-					.getItemByItemId("prog-combo");
-			studyProgExt = cb.getValue();
-			cb.clearInvalid();
-			if (studyProgExt == null) {
-				cb.focus();
-				cb.forceInvalid(ENTRY_REQUIRED_MSG);
-				cb.expand();
-				throw new CmExceptionValidationFailed();
-			}
-			prog = studyProgExt.get("shortTitle");
-
-			ComboBox<SubjectModel> cs = (ComboBox<SubjectModel>) _fsStdProg
-					.getItemByItemId("subj-combo");
-			sub = cs.getValue();
-			cs.clearInvalid();
-			if (sub != null) {
-				prog = sub.get("abbrev") + " " + prog;
-			}
-			if (((Integer) studyProgExt.get("needsSubject")).intValue() > 0
-					&& sub == null) {
-				cs.focus();
-				cs.forceInvalid(ENTRY_REQUIRED_MSG);
-				cs.expand();
-				throw new CmExceptionValidationFailed();
-			}
-
-			ComboBox<ChapterModel> cc = (ComboBox<ChapterModel>) _fsStdProg
-					.getItemByItemId("chap-combo");
-			chap = cc.getValue();
-			cc.clearInvalid();
-			if (chap != null) {
-				prog = prog + " " + chap.get("number");
-			}
-			if (((Integer) studyProgExt.get("needsChapters")).intValue() > 0
-					&& chap == null) {
-				cc.focus();
-				cc.forceInvalid(ENTRY_REQUIRED_MSG);
-				cc.expand();
-				throw new CmExceptionValidationFailed();
-			}
-		} else {
-			ComboBox<StudyProgramExt> cb = (ComboBox<StudyProgramExt>) _fsCustomProg
-					.getItemByItemId("custom-combo");
-			studyProgExt = cb.getValue();
-			cb.clearInvalid();
-			if (studyProgExt == null) {
-				cb.focus();
-				cb.forceInvalid(ENTRY_REQUIRED_MSG);
-				cb.expand();
-				throw new CmExceptionValidationFailed();
-			}
-			prog = studyProgExt.get("shortTitle");
-		}
-
-		if (passPercentReqd
-				&& (passPercent == null || Integer.parseInt(passPercent
-						.substring(0, passPercent.length() - 1)) == 0)) {
-			// set pass percent to default value
-			// TODO: (?) allow Admin to specify default pass percent (account,
-			// group, program)
-			ComboBox<PassPercent> passCombo = new PassPercentCombo(
-					passPercentReqd);
-			passPercent = passCombo.getStore()
-					.getAt(PassPercentCombo.DEFAULT_PERCENT_IDX)
-					.getPassPercent();
-		}
-
-		/**
-		 * Collect all the values and create a new StudentModel to hold
-		 * validated values.
-		 * 
-		 */
-		StudentModel sm = new StudentModel();
-		sm.setName(name);
-		sm.setPasscode(passcode);
-		// sm.setEmail(email);
-		sm.getProgram().setProgramDescription(prog);
-		sm.setGroupId(groupId);
-		if (stuSettingsMdl != null)
-			sm.setSettings(stuSettingsMdl);
-		sm.setGroup(group);
-		sm.setAdminUid(cmAdminMdl.getId());
-		sm.setPassPercent(passPercent);
-		sm.setSectionNum(activeSection);
-
-		String chapTitle = (chap != null) ? chap.getTitle() : null;
-		sm.setChapter(chapTitle);
-
-		String progId = (studyProgExt != null) ? (String) studyProgExt
-				.get("shortTitle") : null;
-		String subjId = (sub != null) ? sub.getAbbrev() : "";
-
-		/**
-		 * Why is this constructed here? Why not pass in the StudyProgramModel
-		 * (Ext)
-		 * 
-		 * Perhaps, have a .convert on StudyProgramModelExt.
-		 * 
-		 */
-		StudentProgramModel program = sm.getProgram();
-		program.setProgramId((isNew == false) ? stuMdl.getProgram()
-				.getProgramId() : null);
-		program.setProgramType(progId);
-		program.setSubjectId(subjId);
-
-		program.setCustom(new CustomProgramComposite(studyProgExt
-				.getCustomProgramId(), studyProgExt.getCustomProgramName(),
-				studyProgExt.getCustomQuizId(), studyProgExt
-						.getCustomQuizName()));
-
-		/**
-		 * Validation complete
-		 * 
-		 * if callback has been provided, then jump to call back
-		 * 
-		 */
-		if (callback != null) {
-			callback.afterValidation(sm);
-			return;
-		}
-
-		/**
-		 * If callback not provided, then perform default operation
-		 * 
-		 * @TODO: all this logic about what is updated should be on the server
-		 *        the client should only have to update the POJO and say go.
-		 * 
-		 */
-		if (isNew) {
-			sm.setSectionNum((activeSection != null) ? activeSection : 0);
-			sm.setStatus("Not started");
-			sm.setTotalUsage(0);
-			addUserRPC(sm);
-		} else {
-			Boolean stuChanged = false;
-			Boolean passcodeChanged = false;
-			Boolean passPercentChanged = false;
-			Boolean progChanged = false;
-			Boolean progIsNew = false;
-
-			sm.setUid(stuMdl.getUid());
-			sm.getProgram().setProgramId(stuMdl.getProgram().getProgramId());
-			sm.setJson(stuMdl.getJson());
-			sm.setStatus(stuMdl.getStatus());
-			sm.setProgramChanged(false);
-			if (!name.equals(stuMdl.getName())
-					|| !(groupId != null && groupId.equals(stuMdl.getGroupId()))) {
-				stuChanged = true;
-			}
-			if (!passcode.equals(stuMdl.getPasscode())) {
-				passcodeChanged = true;
-				stuChanged = true;
-			}
-
-			Integer prevSectionNum = stuMdl.getSectionNum();
-			boolean sectionNumChanged = false;
-			if ((prevSectionNum == null && activeSection != null)
-					|| (prevSectionNum != null && activeSection == null)
-					|| (prevSectionNum != null && !prevSectionNum
-							.equals(activeSection))) {
-				sm.setSectionNum(activeSection);
-				stuChanged = true;
-				sectionNumChanged = true;
-			} else {
-				sm.setSectionNum(prevSectionNum);
-			}
-
-			if (stuMdl.getProgram().getProgramDescription() == null
-					|| isDifferentProgram(stuMdl, prog)) {
-				sm.setStatus("Not started");
-				if (sectionNumChanged == false)
-					sm.setSectionNum(0);
-				sm.setProgramChanged(true);
-				// don't know what the program Id will be so set to null
-				sm.getProgram().setProgramId(null);
-
-				progIsNew = true;
-				progChanged = false;
-				sectionNumChanged = false;
-				stuChanged = true;
-			}
-
-			if (!stuChanged
-					&& settingsChanged(stuMdl.getSettings(), stuSettingsMdl)) {
-				stuChanged = true;
-			}
-
-			if (valueChanged(stuMdl.getPassPercent(), passPercent))
-				passPercentChanged = !sm.getProgramChanged();
-
-			if (stuChanged || progChanged || progIsNew || passPercentChanged) {
-				updateUserRPC(sm, stuChanged, progChanged, progIsNew,
-						passcodeChanged, passPercentChanged, sectionNumChanged);
-			} else {
-				if(_window != null) {
-					_window.close();
-				}
-				else {
-					CmMessageBoxGxt2.showAlert("Save complete");
-				}
-			}
-		}
-	}
-
-	private boolean isDifferentProgram(StudentModelI stuMdl, String prog) {
-		if (prog.equals("Custom")) {
-
-			/**
-			 * compare the name, maybe ... for now always update
-			 * 
-			 */
-			return true;
-		} else {
-			return !stuMdl.getProgram().getProgramDescription().equals(prog);
-		}
-	}
-
-	private boolean settingsChanged(StudentSettingsModel origValue,
-			StudentSettingsModel newValue) {
-		if (origValue == null && newValue != null)
-			return true;
-
-		if (origValue != null && newValue == null)
-			return true;
-
-		if (origValue == null && newValue == null)
-			return false;
-
-		return (!origValue.getLimitGames() == newValue.getLimitGames()
-				|| !origValue.getShowWorkRequired() == newValue
-						.getShowWorkRequired()
-				|| !origValue.getStopAtProgramEnd() == newValue
-						.getStopAtProgramEnd()
-				|| !origValue.getTutoringAvailable() == newValue
-						.getTutoringAvailable()
-				|| !origValue.getDisableCalcAlways() == newValue
-						.getDisableCalcAlways() || !origValue
-					.getDisableCalcQuizzes() == newValue
-				.getDisableCalcQuizzes());
-	}
-
-	private boolean valueChanged(String origValue, String newValue) {
-		if (origValue == null && newValue != null)
-			return true;
-
-		if (origValue != null && !origValue.equals(newValue))
-			return true;
-
-		if (origValue != null && origValue.equals(newValue))
-			return false;
-
-		return false;
-	}
-
-	@Override
-	public void beginStep() {
-		inProcessCount++;
-	}
-
-	@Override
-	public void completeStep() {
-		inProcessCount--;
-	}
-
-	@Override
-	public void finish() {
-		setComboBoxSelections();
-	}
+public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
+    GWindow _window;
+
+    static GroupInfoProperties __propsGroupInfo = GWT.create(GroupInfoProperties.class);
+    static StudyProgramProperties __propsStudyProgram = GWT.create(StudyProgramProperties.class);
+    static SubjectModelProperties __propsSubject = GWT.create(SubjectModelProperties.class);
+    static ChapterModelProperties __propsChap = GWT.create(ChapterModelProperties.class);
+
+    private boolean isNew;
+    private boolean skipComboSet;
+    private boolean loading;
+    private boolean passPercentReqd;
+    private Boolean sectionSelectAvail = false;
+    private Integer sectionCount = 0;
+    private Integer activeSection = 0;
+
+    private StudentModelI stuMdl;
+    private StudentSettingsModel stuSettingsMdl;
+    protected CmAdminModel cmAdminMdl;
+    private AccountInfoModel acctInfoMdl;
+    private int inProcessCount;
+    private String subjectId;
+
+    private CardLayoutContainer cardPanel;
+
+    private ListStore<StudyProgramExt> progStore;
+    private ListStore<StudyProgramExt> customProgStore;
+    protected ComboBox<StudyProgramExt> progCombo;
+    protected ComboBox<StudyProgramExt> cstmCombo;
+
+    protected ListStore<SubjectModel> subjStore;
+    protected ComboBox<SubjectModel> subjCombo;
+
+    protected ListStore<ChapterModel> chapStore;
+    protected ComboBox<ChapterModel> chapCombo;
+
+    static private ListStore<GroupInfoModel> __groupStore;
+    protected ComboBox<GroupInfoModel> groupCombo;
+
+    protected TextField userName, passCode;
+    
+
+    // private Map<String, Object> advOptionsMap;
+
+    static final int FIELD_WIDTH = 295;
+    static final int LABEL_WIDTH = 100;
+    static final int CUSTOM_ID = 9999;
+
+    private int formHeight = 485;
+    protected int formWidth = 475;
+
+    protected FormPanel _formPanel;
+    protected TextButton stdAdvOptionsBtn;
+    protected TextButton customAdvOptionsBtn;
+
+    public static final String ENTRY_REQUIRED_MSG = "This field is required";
+
+    boolean excludeAutoEnroll;
+    
+    MyFieldLabel _stdAdvOptionsLabel;
+
+    public RegisterStudent(StudentModelI sm, CmAdminModel cm) {
+        this(sm, cm, false);
+    }
+
+    public RegisterStudent(StudentModelI sm, CmAdminModel cm, boolean excludeAutoEnroll) {
+        this(sm, cm, excludeAutoEnroll, false);
+    }
+
+    public RegisterStudent(StudentModelI sm, CmAdminModel cm, boolean excludeAutoEnroll, boolean addSaveButton) {
+
+        this.excludeAutoEnroll = excludeAutoEnroll;
+
+        inProcessCount = 0;
+        isNew = (sm == null);
+        stuMdl = sm;
+        if (stuMdl != null) {
+            subjectId = stuMdl.getProgram().getSubjectId();
+            passPercent = stuMdl.getPassPercent();
+            stuSettingsMdl = stuMdl.getSettings();
+            activeSection = stuMdl.getSectionNum();
+            sectionCount = stuMdl.getSectionCount();
+            sectionSelectAvail = isSectionSelectAvail(stuMdl.getProgram().getProgramType());
+        }
+
+        cmAdminMdl = cm;
+        skipComboSet = isNew;
+
+        setWidget(createForm());
+        setComboBoxSelections();
+
+        if (addSaveButton) {
+            addButton(saveButton(_fsProgram));
+        }
+
+    }
+
+    protected void createWindow() {
+        _window = new GWindow(false);
+        _window.addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                _groupSelector.release();
+            }
+        });
+
+        _window.setWidget(this);
+
+        _window.setHeadingText((isNew) ? "Register a New Student" : "Edit Student");
+        _window.setWidth(formWidth + 40);
+        _window.setHeight(formHeight + 20);
+        _window.setResizable(false);
+        _window.setDraggable(true);
+        _window.setModal(true);
+
+        /**
+         * Assign buttons to the button bar on the Window
+         */
+
+        for (TextButton btn : getActionButtons()) {
+            btn.addStyleName("register-student-btn");
+            _window.addButton(btn);
+        }
+    }
+
+    public void showWindow() {
+        if (_window == null) {
+            createWindow();
+        }
+
+        _window.show();
+        if (isNew) {
+            userName.focus();
+        }
+    }
+
+    /**
+     * Return list of Buttons to add to the Button bar
+     * 
+     * @return
+     */
+    public List<TextButton> getActionButtons() {
+        List<TextButton> list = new ArrayList<TextButton>();
+        TextButton cancelBtn = cancelButton();
+        cancelBtn.addStyleName("register-student-cancel");
+        list.add(saveButton(_fsProgram));
+        list.add(cancelButton());
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setWidth(75);
+        }
+        return list;
+    }
+
+    protected void hideAdvancedOptionsButton() {
+        _stdAdvOptionsLabel.hide();
+    }
+
+    public MyFieldSet _fsProfile, _fsProgram, _fsStdProg, _fsCustomProg;
+
+    GroupSelectorWidget _groupSelector;
+
+    final int FIELDSET_WIDTH=470;
+    protected FormPanel createForm() {
+        _formPanel = new FormPanel();
+
+        _formPanel.addStyleName("register-student-form-panel");
+        // _formPanel.setLabelWidth(120);
+        _formPanel.setHeight(formHeight);
+
+        setHeaderVisible(false);
+        setBodyBorder(false);
+        // _formPanel.setIconStyle("icon-form");
+        setButtonAlign(BoxLayoutPack.CENTER);
+
+        VerticalLayoutContainer vertMainPanel = new VerticalLayoutContainer();
+        _formPanel.setWidget(vertMainPanel);
+
+        _fsProfile = new MyFieldSet("Define Profile", FIELDSET_WIDTH);
+        
+        vertMainPanel.add(_fsProfile);
+        
+        // fL.setLabelWidth(_formPanel.getLabelWidth());
+        // fL.setDefaultWidth(LAYOUT_WIDTH);
+        
+        userName = new TextField();
+        userName.setAllowBlank(false);
+        userName.setId("name");
+        userName.setEmptyText("-- enter name --");
+        if (!isNew) {
+            userName.setValue((String) stuMdl.getName());
+        }
+        _fsProfile.addThing(new MyFieldLabel(userName, "Name", LABEL_WIDTH,FIELD_WIDTH));
+
+        passCode = new TextField();
+        // passCode.setFieldLabel("Passcode");
+        passCode.setEmptyText("-- enter passcode --");
+        passCode.setAllowBlank(false);
+        passCode.setId("passcode");
+        if (!isNew) {
+            passCode.setValue((String) stuMdl.getPasscode());
+        }
+        _fsProfile.addThing(new MyFieldLabel(passCode, "Passcode",LABEL_WIDTH, FIELD_WIDTH));
+
+        if (__groupStore == null) {
+            __groupStore = new ListStore<GroupInfoModel>(__propsGroupInfo.id());
+        }
+
+        _groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore, true, this, "group-combo", true, __propsGroupInfo.groupName());
+        groupCombo = _groupSelector.groupCombo();
+        if (UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
+            _fsProfile.addThing(new MyFieldLabel(groupCombo, "Group", LABEL_WIDTH, FIELD_WIDTH));
+        }
+
+        progStore = new ListStore<StudyProgramExt>(__propsStudyProgram.id());
+        customProgStore = new ListStore<StudyProgramExt>(__propsStudyProgram.id());
+        getStudyProgramListRPC();
+
+        stdAdvOptionsBtn = stdAdvancedOptionsBtn();
+        stdAdvOptionsBtn.disable();
+        customAdvOptionsBtn = customAdvancedOptionsBtn();
+        customAdvOptionsBtn.disable();
+
+        // fl.setLabelWidth(_formPanel.getLabelWidth());
+        // fl.setDefaultWidth(fL.getDefaultWidth());
+
+        _fsProgram = new MyFieldSet("Assign Program", FIELDSET_WIDTH);
+        _fsProgram.addStyleName("register-student-outer-fieldset");
+
+        progCombo = createProgramCombo(progStore);
+        _fsProgram.addThing(new MyFieldLabel(progCombo, "Program type", LABEL_WIDTH, FIELD_WIDTH));
+
+
+        setupStdProgramUI();
+        setupCustomProgramUI();
+
+        getAccountInfoRPC(cmAdminMdl.getUid());
+
+        cardPanel = new CardLayoutContainer();
+        cardPanel.add(_fsStdProg);
+        cardPanel.add(_fsCustomProg);
+        cardPanel.setActiveWidget(_fsStdProg);
+        
+        _fsProgram.addThing(cardPanel);
+
+        
+        vertMainPanel.add(_fsProgram);
+
+        /**
+         * Seems like a bug with setting focus, so the only way to it to work is
+         * to set a timer and hope ...
+         * 
+         * It seems the form is validating before it needs to and showing error
+         * messages before any input has been added .. which removes the focus
+         * 
+         * @TODO: get name.focus() to just work without the need for timing
+         *        tricks.
+         */
+        if (isNew) {
+            new Timer() {
+                public void run() {
+                    userName.focus();
+                }
+            }.schedule(2000);
+        }
+        return _formPanel;
+    }
+
+    private String passPercent;
+
+    private void setupStdProgramUI() {
+        _fsStdProg = new MyFieldSet("", FIELDSET_WIDTH);
+        _fsStdProg.addStyleName("register-student-inner-fieldset");
+        _fsStdProg.setId("std-prog-fs");
+
+        // fl.setLabelWidth(_formPanel.getLabelWidth());
+        // fl.setDefaultWidth(LAYOUT_WIDTH);
+
+        subjStore = new ListStore<SubjectModel>(__propsSubject.id());
+        getSubjectList((stuMdl != null) ? stuMdl.getProgram().getProgramType().getType() : null, subjStore);
+        subjCombo = createSubjectCombo(subjStore);
+        _fsStdProg.addThing(new MyFieldLabel(subjCombo, "Subject", LABEL_WIDTH, FIELD_WIDTH));
+
+        chapStore = new ListStore<ChapterModel>(__propsChap.id());
+        getChapterListRPC((stuMdl != null) ? stuMdl.getProgram().getProgramType().getType() : null, subjectId, false, chapStore);
+        chapCombo = chapterCombo(chapStore);
+        _fsStdProg.addThing(new MyFieldLabel(chapCombo, "Chapter", LABEL_WIDTH, FIELD_WIDTH));
+
+        _stdAdvOptionsLabel = new MyFieldLabel(stdAdvOptionsBtn, "Advanced Options", LABEL_WIDTH, FIELD_WIDTH);
+        _fsStdProg.addThing(_stdAdvOptionsLabel);
+    }
+
+    private void setupCustomProgramUI() {
+        _fsCustomProg = new MyFieldSet("",FIELDSET_WIDTH);
+        _fsCustomProg.setHeadingText("");
+        _fsCustomProg.addStyleName("register-student-inner-fieldset");
+        _fsCustomProg.setId("custom-prog-fs");
+
+        // fl.setLabelWidth(_formPanel.getLabelWidth());
+        // fl.setDefaultWidth(LAYOUT_WIDTH);
+
+        cstmCombo = createCustomCombo(customProgStore, "Select a Custom Program|Quiz");
+        _fsCustomProg.addThing(new MyFieldLabel(cstmCombo, "Program or Quiz", 100, FIELD_WIDTH));
+        _fsCustomProg.addThing(new MyFieldLabel(customAdvOptionsBtn, "Custom Options",100, FIELD_WIDTH));
+    }
+
+    private SelectHandler selectionHandler = new SelectHandler() {
+        @Override
+        public void onSelect(SelectEvent event) {
+            AdvOptCallback callback = new AdvOptCallback() {
+                @Override
+                void setAdvancedOptions(AdvancedOptionsModel options) {
+                    stuSettingsMdl = options.getSettings();
+                    passPercent = options.getPassPercent();
+                    activeSection = options.getSectionNum();
+                }
+            };
+
+            AdvancedOptionsModel options = new AdvancedOptionsModel();
+            
+            final StudentSettingsModel ssm = new StudentSettingsModel();
+
+            /** only set options if not null */
+            if (stuSettingsMdl != null) {
+                ssm.setLimitGames(stuSettingsMdl.getLimitGames());
+                ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
+                ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
+                ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+                ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
+                ssm.setDisableCalcQuizzes(stuSettingsMdl.getDisableCalcQuizzes());
+            } else {
+                /** use account data to set tutoring available */
+                if (acctInfoMdl != null) {
+                    ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
+                }
+            }
+
+            options.setPassPercent(passPercent);
+            options.setSettings(ssm);
+
+            options.setSectionCount(sectionCount);
+            if (activeSection == null)
+                activeSection = 0;
+            options.setActiveSection(activeSection);
+            options.setSectionNum(activeSection);
+            options.setSectionIsSettable(sectionSelectAvail);
+
+            if ("custom-adv-opt-btn".equals(((TextButton)event.getSource()).getId())) {
+                ssm.setStopAtProgramEnd(true);
+                options.setProgStopIsSettable(false);
+            } else {
+                options.setProgStopIsSettable(true);
+            }
+
+            new RegisterStudentAdvancedOptions(callback, cmAdminMdl, options, isNew, passPercentReqd).setVisible(true);
+        }
+    };
+
+    private TextButton stdAdvancedOptionsBtn() {
+        TextButton btn = new TextButton("Advanced Options");
+        btn.setToolTip("Disallow games, Change pass percentage, etc.");
+        btn.setWidth("110px");
+        btn.addSelectHandler(selectionHandler);
+        // btn.addStyleName("register-student-advanced-options-btn");
+        btn.setId("std-adv-opt-btn");
+        return btn;
+    }
+
+    private TextButton customAdvancedOptionsBtn() {
+        TextButton btn = new TextButton("Advanced Options");
+        btn.setToolTip("Disallow games, Change pass percentage, etc.");
+        btn.setWidth("110px");
+        btn.addSelectHandler(selectionHandler);
+        btn.addStyleName("register-student-advanced-options-btn");
+        btn.setId("custom-adv-opt-btn");
+        return btn;
+    }
+
+    private boolean isSectionSelectAvail(CmProgramType type) {
+        return (type == CmProgramType.PROF || type == CmProgramType.GRADPREP || type == CmProgramType.GRADPREPNATIONAL || type == CmProgramType.GRADPREPTX);
+    }
+
+    private ComboBox<StudyProgramExt> createProgramCombo(ListStore<StudyProgramExt> store) {
+
+        
+        LabelProviderSafeHtmlRenderer<StudyProgramExt> renderer=new LabelProviderSafeHtmlRenderer<StudyProgramExt>(__propsStudyProgram.title()) {
+            public SafeHtml render(StudyProgramExt value) {
+                SafeHtmlBuilder sb = new SafeHtmlBuilder();
+                return sb.appendEscaped(_addSubjectValueTags(value, value.getTitle())).toSafeHtml();
+            }
+        };
+        //getProgramTemplate()
+        ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>(new ComboBoxCell<StudyProgramExt>(store, __propsStudyProgram.title(), renderer));
+
+        // combo.setFieldLabel("Program type");
+        combo.setForceSelection(true);
+
+        combo.setEditable(false);
+        // combo.setMaxLength(45);
+        combo.setAllowBlank(false);
+        combo.setTriggerAction(TriggerAction.ALL);
+        combo.setStore(store);
+
+        // combo.setTemplate(getProgramTemplate());
+        combo.setTitle("Select a program type");
+        combo.setId("prog-combo");
+        combo.setTypeAhead(true);
+        combo.setSelectOnFocus(true);
+        combo.setEmptyText("-- select a program type --");
+        combo.setWidth(280);
+
+        combo.addSelectionHandler(new SelectionHandler<StudyProgramExt>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<StudyProgramExt> se) {
+
+                if (loading)
+                    return;
+
+                StudyProgramExt sp = se.getSelectedItem();
+                boolean needsSubject = sp.isNeedsSubject();
+                boolean needsChapters = sp.isNeedsChapters();
+                passPercentReqd = sp.isNeedsPassPercent();
+                CmProgramType progType = sp.getProgramType();
+
+                if (CmProgramType.CUSTOM != progType) {
+
+                    if (!cardPanel.getActiveWidget().equals(_fsStdProg)) {
+                        cardPanel.setActiveWidget(_fsStdProg);
+                    }
+                    sectionSelectAvail = isSectionSelectAvail(progType); // sp.isGradPrep()
+                                                                         // ||
+                                                                         // sp.isProficiency();
+                    sectionCount = sp.getSectionCount();
+                    activeSection = 0;
+
+                    if (progType == CmProgramType.AUTOENROLL) {
+                        stdAdvOptionsBtn.disable();
+                    } else {
+                        stdAdvOptionsBtn.enable();
+                    }
+
+                    skipComboSet = true;
+                    subjectId = null;
+
+                    if (needsSubject) {
+                        subjCombo.clear();
+                        subjCombo.enable();
+                        subjCombo.setForceSelection(true);
+                        getSubjectList((String) sp.getShortTitle(), subjStore);
+                    } else {
+                        subjCombo.clearInvalid();
+                        subjCombo.clear();
+                        subjCombo.disable();
+                        subjCombo.setForceSelection(false);
+                        subjectId = null;
+                    }
+
+
+                    if (needsChapters) {
+                        chapCombo.clear();
+                        chapCombo.enable();
+                        chapCombo.setForceSelection(true);
+                    } else {
+                        chapCombo.clearInvalid();
+                        chapCombo.clear();
+                        chapCombo.disable();
+                        chapCombo.setForceSelection(false);
+                    }
+                } else {
+                    cardPanel.setActiveWidget(_fsCustomProg);
+                    skipComboSet = true;
+                    subjectId = null;
+                    sectionSelectAvail = false;
+                    activeSection = 0;
+                }
+
+            }
+        });
+
+        return combo;
+    }
+
+    private String _addSubjectValueTags(StudyProgramExt value, String textIn) {
+        String text = textIn;
+        if(value.getStyleIsTemplate() != null) {
+            text += " [build-in]";
+          }
+          
+          if(value.getStyleIsArchived() != null) {
+              text += " [archived]";
+          }
+          
+          text = _addIfFree(text, value.getStyleIsFree());
+          
+          return text;
+    }
+    
+    private String _addIfFree(String text, String styleIfFree) {
+        if(acctInfoMdl.getIsFreeAccount() && styleIfFree == null) {
+            text += " [free]";
+        }
+        return text;
+    }
+    
+    private ComboBox<StudyProgramExt> createCustomCombo(ListStore<StudyProgramExt> store, String title) {
+        LabelProviderSafeHtmlRenderer<StudyProgramExt> renderer=new LabelProviderSafeHtmlRenderer<StudyProgramExt>(__propsStudyProgram.label()) {
+            public SafeHtml render(StudyProgramExt value) {
+                SafeHtmlBuilder sb = new SafeHtmlBuilder();
+                return sb.appendEscaped(_addSubjectValueTags(value, value.getLabel())).toSafeHtml();
+            }
+        };
+        ComboBox<StudyProgramExt> combo = new ComboBox<StudyProgramExt>(new ComboBoxCell<StudyProgramExt>(store, __propsStudyProgram.label(), renderer));
+        combo.setForceSelection(true);
+        combo.setEditable(false);
+        // combo.setMaxLength(45);
+        combo.setAllowBlank(false);
+        combo.setTriggerAction(TriggerAction.ALL);
+        combo.setStore(store);
+
+        combo.setTitle(title);
+        combo.setId("custom-combo");
+        combo.setTypeAhead(true);
+        combo.setSelectOnFocus(true);
+        combo.setEmptyText("-- make a selection --");
+        combo.addSelectionHandler(new SelectionHandler<StudyProgramExt>() {
+
+            @Override
+            public void onSelection(SelectionEvent<StudyProgramExt> event) {
+
+                if (loading)
+                    return;
+
+                StudyProgramExt sp = event.getSelectedItem();
+                passPercentReqd = sp.isNeedsPassPercent();
+                sectionSelectAvail = false;
+                customAdvOptionsBtn.enable();
+            }
+        });
+        return combo;
+    }
+
+    private native String getProgramTemplate() /*-{ 
+                                               return  [ 
+                                               '<tpl for=".">', 
+                                               '<div class="x-combo-list-item {styleIsTemplate} {styleIsArchived} {styleIsFree}" qtip="{descr}">{label}</div>', 
+                                               '</tpl>' 
+                                               ].join(""); 
+                                               }-*/;
+
+    private native String getSubjectTemplate() /*-{ 
+                                               return  [ 
+                                               '<tpl for=".">', 
+                                               '<div class="x-combo-list-item {styleIsFree}">{subject}</div>', 
+                                               '</tpl>' 
+                                               ].join(""); 
+                                               }-*/;
+
+    private native String getChapterTemplate() /*-{ 
+                                               return  [ 
+                                               '<tpl for=".">', 
+                                               '<div class="x-combo-list-item {styleIsFree}">{chapter}</div>', 
+                                               '</tpl>' 
+                                               ].join(""); 
+                                               }-*/;
+
+    private ComboBox<SubjectModel> createSubjectCombo(ListStore<SubjectModel> store) {
+
+        
+        LabelProviderSafeHtmlRenderer<SubjectModel> renderer=new LabelProviderSafeHtmlRenderer<SubjectModel>(__propsSubject.subject()) {
+            public SafeHtml render(SubjectModel value) {
+                SafeHtmlBuilder sb = new SafeHtmlBuilder();
+                return sb.appendEscaped(_addIfFree(value.getSubject(), value.getStyleIsFree())).toSafeHtml();
+            }
+        };
+        ComboBox<SubjectModel> combo = new ComboBox<SubjectModel>(new ComboBoxCell<SubjectModel>(store, __propsSubject.subject(), renderer));
+        // combo.setFieldLabel("Subject");
+        combo.setForceSelection(false);
+        // combo.setDisplayField("subject");
+        combo.setEditable(false);
+        // combo.setMaxLength(30);
+        combo.setAllowBlank(false);
+        combo.setTriggerAction(TriggerAction.ALL);
+
+        combo.setTitle("Select a subject");
+        combo.setId("subj-combo");
+        combo.setTypeAhead(true);
+        combo.setSelectOnFocus(true);
+        combo.setEmptyText("-- select a subject --");
+
+        // combo.setTemplate();
+
+        combo.disable();
+        combo.setWidth(280);
+
+        combo.setStore(store);
+
+        combo.addSelectionHandler(new SelectionHandler<SubjectModel>() {
+
+            @Override
+            public void onSelection(SelectionEvent<SubjectModel> event) {
+
+                if (loading)
+                    return;
+
+                SubjectModel sm = event.getSelectedItem();
+                if (subjectId == null || !subjectId.equals(sm.getAbbrev())) {
+                    try {
+                        skipComboSet = true;
+                        subjectId = sm.getAbbrev();
+                        ComboBox<StudyProgramExt> cb = progCombo;
+                        StudyProgramExt sp = cb.getValue();
+                        String progId = sp.getShortTitle();
+                        chapStore.clear();
+                        getChapterListRPC(progId, subjectId, true, chapStore);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CmMessageBox.showAlert(e.getMessage());
+                    }
+                }
+            }
+        });
+        return combo;
+    }
+
+    private ComboBox<ChapterModel> chapterCombo(ListStore<ChapterModel> store) {
+        
+        LabelProviderSafeHtmlRenderer<ChapterModel> renderer=new LabelProviderSafeHtmlRenderer<ChapterModel>(__propsChap.chapter()) {
+            public SafeHtml render(ChapterModel value) {
+                return super.render(value);
+            }
+        };
+        //getChapterTemplate
+        ComboBox<ChapterModel> combo = new ComboBox<ChapterModel>(new ComboBoxCell<ChapterModel>(store, __propsChap.chapter(), renderer));
+        combo.setForceSelection(false);
+        combo.setEditable(false);
+        // combo.setMaxLength(160);
+        combo.setAllowBlank(false);
+        combo.setTriggerAction(TriggerAction.ALL);
+        combo.setStore(store);
+        combo.setTitle("Select a Chapter");
+        combo.setId("chap-combo");
+        combo.setTypeAhead(true);
+        combo.setSelectOnFocus(true);
+        combo.setEmptyText("-- select a chapter --");
+        combo.disable();
+        combo.setWidth(280);
+        return combo;
+    }
+
+    private TextButton cancelButton() {
+        TextButton cancelBtn = new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                _window.close();
+            }
+        });
+        return cancelBtn;
+    }
+
+    private TextButton saveButton(final FieldSet fs) {
+
+        TextButton saveBtn = new TextButton("Save", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                try {
+                    doSubmitAction(null);
+                } catch (CmException cm) {
+                    cm.printStackTrace();
+                }
+            }
+        });
+        return saveBtn;
+    }
+
+    private void getStudyProgramListRPC() {
+
+        inProcessCount++;
+
+        new RetryAction<CmList<StudyProgramModel>>() {
+            @Override
+            public void attempt() {
+                GetProgramDefinitionsAction action = new GetProgramDefinitionsAction(cmAdminMdl.getUid());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(CmList<StudyProgramModel> spmList) {
+                List<StudyProgramExt> progList = new ArrayList<StudyProgramExt>();
+                List<StudyProgramExt> customProgList = new ArrayList<StudyProgramExt>();
+
+                int stuCustomProgramId = (isNew == false && stuMdl.getProgram().getCustom().getCustomProgramId() != 0) ? stuMdl.getProgram().getCustom()
+                        .getCustomProgramId() : -1;
+                int stuCustomQuizId = (isNew == false && stuMdl.getProgram().getCustom().getCustomQuizId() != 0) ? stuMdl.getProgram().getCustom()
+                        .getCustomQuizId() : -1;
+
+                for (StudyProgramModel spm : spmList) {
+                    if (excludeAutoEnroll && spm.getShortTitle().equalsIgnoreCase("AUTO-ENROLL"))
+                        continue;
+
+                    if ((isNew == true && spm.getIsArchived() == true))
+                        continue;
+
+                    if (isNew == false && spm.getIsArchived() == true && spm.getCustomProgramId() != stuCustomProgramId
+                            && spm.getCustomQuizId() != stuCustomQuizId)
+                        continue;
+
+                    if (spm.getCustomProgramId() == 0 && spm.getCustomQuizId() == 0) {
+                        progList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), spm.isNeedsSubject(), spm.isNeedsChapters(), spm.isNeedsPassPercent(), spm.getCustomProgramId(), spm.getCustomProgramName()));
+                    } else {
+                        customProgList.add(new StudyProgramExt(spm, spm.getTitle(), spm.getShortTitle(), spm.getDescr(), spm.isNeedsSubject(), spm.isNeedsChapters(), spm.isNeedsPassPercent(), spm.getCustomProgramId(), spm.getCustomProgramName()));
+                    }
+
+                }
+                StudyProgramModel spm = new StudyProgramModel(CUSTOM_ID, "Custom", "Custom", "Custom Programs and Quizzes", 0, " ", 0, " ",false, false, false,false, 0);
+                spm.setProgramType(CmProgramType.CUSTOM);
+                spm.setIsArchived(false);
+                progList.add(new StudyProgramExt(spm, "Custom", "Custom", "Custom Programs and Quizzes", false, false, false, 0, null));
+
+                /** If is free, then shown only Prof and Custom as available */
+                for (StudyProgramExt md : progList) {
+                    if (acctInfoMdl.getIsFreeAccount()) {
+                        String pn = md.getTitle();
+                        if (!pn.contains("Proficiency") && !pn.contains("Custom")) {
+                            md.setStyleIsFree("is-free-account-label");
+                        }
+                    }
+                }
+
+                /** If is free, then show only Essentials as available. */
+                for (StudyProgramExt md : customProgList) {
+                    if (acctInfoMdl.getIsFreeAccount()) {
+                        String pn = md.getTitle();
+                        if (!pn.contains("Essentials")) {
+                            md.setStyleIsFree("is-free-account-label");
+                        }
+                    }
+                }
+
+                progStore.addAll(progList);
+                customProgStore.addAll(customProgList);
+
+                inProcessCount--;
+                setComboBoxSelections();
+            }
+        }.register();
+    }
+
+    private Map<String, List<SubjectModel>> programSubjectMap = new HashMap<String, List<SubjectModel>>();
+
+    private void getSubjectList(final String progId, final ListStore<SubjectModel> subjStore) {
+
+        if (progId == null)
+            return;
+
+        List<SubjectModel> subjList = programSubjectMap.get(progId);
+        if (subjList != null) {
+            subjStore.clear();
+            subjStore.addAll(subjList);
+            setComboBoxSelections();
+        } else {
+            getSubjectListRPC(progId, subjStore);
+        }
+    }
+
+    private void getSubjectListRPC(final String progId, final ListStore<SubjectModel> subjStore) {
+
+        inProcessCount++;
+
+        new RetryAction<CmList<SubjectModel>>() {
+
+            @Override
+            public void attempt() {
+                GetSubjectDefinitionsAction action = new GetSubjectDefinitionsAction(progId);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(CmList<SubjectModel> result) {
+
+                for (SubjectModel sm : result) {
+                    if (acctInfoMdl.getIsFreeAccount()) {
+                        if (!sm.getSubject().equals("Essentials")) {
+                            sm.setStyleIsFree("is-free-account-label");
+                        }
+                    }
+                }
+                subjStore.clear();
+                subjStore.addAll(result);
+                inProcessCount--;
+                programSubjectMap.put(progId, result);
+                setComboBoxSelections();
+            }
+        }.register();
+
+    }
+
+    protected void addUserRPC(final StudentModel sm) {
+
+        /**
+         * execute outside the RetryManager to allow processing exceptions.
+         */
+        new RetryAction<StudentModelI>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                AddStudentAction action = new AddStudentAction(sm);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(StudentModelI ai) {
+                CmBusyManager.setBusy(false);
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED, ai.getProgramChanged()));
+                _window.close();
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
+                if (caught.getMessage().indexOf("already in use") > -1) {
+                    CmMessageBox.showAlert("Password In Use", "This password is currently in use");
+                    return;
+                }
+                super.onFailure(caught);
+            }
+        }.attempt();
+    }
+
+    /**
+     * Will show a message if not allowed to save.
+     * 
+     * Return true only if OK to save changes.
+     * 
+     * @param sm
+     * @return
+     */
+    protected boolean verifyOkToSave(StudentModel sm) {
+        /**
+         * Free accounts can only change to Essentials/Essentials Topics
+         * 
+         */
+        if (acctInfoMdl.getIsFreeAccount()) {
+            String progName = sm.getProgram().getProgramDescription();
+            String pn = sm.getProgram().getCustom().getCustomProgramName();
+            if (!progName.equals("Ess Prof") && !(pn != null && pn.equals("Essentials Topics"))) {
+                CatchupMathTools.showAlert("Change not allowed", "Sorry, this program is not currently available under your school license.");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    protected void updateUserRPC(final StudentModel sm, final Boolean stuChanged, final Boolean progChanged, final Boolean progIsNew,
+            final Boolean passcodeChanged, final Boolean passPercentChanged, final Boolean sectionNumChanged) {
+
+        if (!verifyOkToSave(sm)) {
+            return;
+        }
+
+        new RetryAction<StudentModelI>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                UpdateStudentAction action = new UpdateStudentAction(sm, stuChanged, progChanged, progIsNew, passcodeChanged, passPercentChanged,
+                        sectionNumChanged);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(StudentModelI ai) {
+                CmBusyManager.setBusy(false);
+                if (_window != null) {
+                    _window.close();
+                }
+                
+                Info.display("Information", "Save Complete");
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_PROGRAM_CHANGED, ai.getProgramChanged()));
+            }
+        }.register();
+    }
+
+    private void setComboBoxSelections() {
+        if (this.stuMdl != null && !skipComboSet && inProcessCount < 1) {
+
+            loading = true;
+
+            setGroupSelection();
+
+            StudyProgramExt sp = setProgramSelection();
+
+            if (sp == null) {
+                CmMessageBox.showAlert("Program not found!");
+                loading = false;
+                return;
+            }
+
+            CmProgramType progType = (CmProgramType) sp.getProgramType();
+            if (CmProgramType.CUSTOM != progType) {
+                cardPanel.setActiveWidget(_fsStdProg);
+
+                boolean needsSubject = sp.isNeedsSubject();
+                if (needsSubject)
+                    setSubjectSelection();
+
+                boolean needsChapters = sp.isNeedsChapters();
+                if (needsChapters)
+                    setChapterSelection();
+            } else {
+                cardPanel.setActiveWidget(_fsCustomProg);
+                setCustomProgramSelection();
+            }
+            passPercentReqd = sp.isNeedsPassPercent();
+
+            if (stdAdvOptionsBtn.isVisible()) {
+                stdAdvOptionsBtn.enable();
+            }
+
+            if (customAdvOptionsBtn.isVisible()) {
+                customAdvOptionsBtn.enable();
+            }
+
+            loading = false;
+        }
+    }
+
+    private void setGroupSelection() {
+        if (stuMdl == null) {
+            new Exception().printStackTrace();
+            return;
+        }
+
+        if (!groupCombo.isVisible()) {
+            return;
+        }
+
+        int groupId = stuMdl.getGroupId();
+        if (groupId > 0) {
+            List<GroupInfoModel> l = __groupStore.getAll();
+            for (GroupInfoModel g : l) {
+                Integer gi = g.getId();
+                if (groupId == gi) {
+                    groupCombo.setOriginalValue(g);
+                    groupCombo.setValue(g);
+                }
+            }
+        }
+    }
+
+    private StudyProgramExt setProgramSelection() {
+        StudentProgramModel program = stuMdl.getProgram();
+        String shortName = program.getProgramType().getType();
+
+        if (program.isCustom()) {
+            List<StudyProgramExt> list = progStore.getAll();
+
+            for (StudyProgramExt sp : list) {
+                if (sp.getShortTitle().equals("Custom")) {
+                    progCombo.setOriginalValue(sp);
+                    progCombo.setValue(sp);
+                    return sp;
+                }
+            }
+            return null;
+        }
+
+        if (shortName != null) {
+            List<StudyProgramExt> list = progStore.getAll();
+            for (StudyProgramExt sp : list) {
+
+                if (progNameCheckHack(shortName, sp)) {
+                    progCombo.setOriginalValue(sp);
+                    progCombo.setValue(sp);
+                    return sp;
+                }
+            }
+        }
+        return null;
+    }
+
+    private StudyProgramExt setCustomProgramSelection() {
+        StudentProgramModel program = stuMdl.getProgram();
+
+        List<StudyProgramExt> list = customProgStore.getAll();
+
+        for (StudyProgramExt sp : list) {
+
+            if ((program.getCustom().getCustomProgramId() != 0 && program.getCustom().getCustomProgramId() == sp.getCustomProgramId())
+                    || (program.getCustom().getCustomQuizId() != 0 && program.getCustom().getCustomQuizId() == sp.getCustomQuizId())) {
+                cstmCombo.setOriginalValue(sp);
+                cstmCombo.setValue(sp);
+                return sp;
+            }
+        }
+        return null;
+
+    }
+
+    /**
+     * perform hack to determine correct program.
+     * 
+     * @NOTE: add a way to identify programs correctly.
+     * 
+     * @param shortName
+     * @param sp
+     * @return
+     */
+    private boolean progNameCheckHack(String shortName, StudyProgramExt sp) {
+        String st = ((String) sp.getShortTitle()).toLowerCase();
+
+        if (sp.getCustomProgramName() != null && sp.getCustomProgramName().equals(shortName)) {
+            return true;
+        }
+
+        if (sp.getCustomQuizName() != null && sp.getCustomQuizName().equals(shortName)) {
+            return true;
+        }
+
+        if (st.equals("chap") && shortName.toLowerCase().indexOf(" chap") > -1) {
+            return true;
+        } else if (st.equals("prof") && shortName.toLowerCase().indexOf(" prof") > -1)
+            return true;
+        else {
+            return shortName.equalsIgnoreCase(st);
+        }
+    }
+
+    private void setSubjectSelection() {
+        String shortName = stuMdl.getProgram().getProgramDescription();
+
+        if (shortName != null) {
+            List<SubjectModel> list = subjStore.getAll();
+            for (SubjectModel s : list) {
+                if (shortName.indexOf((String) s.getAbbrev()) > -1) {
+                    subjCombo.setOriginalValue(s);
+                    subjCombo.setValue(s);
+                    subjCombo.enable();
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private void setChapterSelection() {
+        String chap = stuMdl.getChapter();
+
+        if (chap != null) {
+            List<ChapterModel> list = chapStore.getAll();
+            for (ChapterModel c : list) {
+                if (chap.equals(c.getTitle())) {
+                    chapCombo.setOriginalValue(c);
+                    chapCombo.setValue(c);
+                    chapCombo.enable();
+                    break;
+                }
+            }
+        }
+    }
+
+    private void getChapterListRPC(final String progId, final String subjId, final Boolean chapOnly, final ListStore<ChapterModel> chapStore) {
+
+        if (progId == null || !progId.equalsIgnoreCase("chap"))
+            return;
+
+        inProcessCount++;
+        new RetryAction<CmList<ChapterModel>>() {
+
+            @Override
+            public void attempt() {
+                CmServiceAsync s = CmShared.getCmService();
+                GetChaptersForProgramSubjectAction action = new GetChaptersForProgramSubjectAction(progId, subjId);
+                setAction(action);
+                s.execute(action, this);
+            }
+
+            public void oncapture(CmList<ChapterModel> result) {
+
+                for (ChapterModel cm : result) {
+                    if (acctInfoMdl.getIsFreeAccount()) {
+                        cm.setStyleIsFree("is-free-account-label");
+                    }
+                }
+
+                chapStore.addAll(result);
+                inProcessCount--;
+                if (!chapOnly)
+                    setComboBoxSelections();
+                else {
+                    chapCombo.setOriginalValue(null);
+                    chapCombo.setValue(null);
+                    chapCombo.clear();
+                }
+            }
+        }.register();
+    }
+
+    protected void getAccountInfoRPC(final Integer uid) {
+        new RetryAction<AccountInfoModel>() {
+            @Override
+            public void attempt() {
+                CmServiceAsync s = CmShared.getCmService();
+                GetAccountInfoForAdminUidAction action = new GetAccountInfoForAdminUidAction(uid);
+                setAction(action);
+                CmLogger.info("AccountInfoPanel: reading admin info RPC");
+                s.execute(action, this);
+            }
+
+            public void oncapture(AccountInfoModel ai) {
+                acctInfoMdl = ai;
+            }
+        }.register();
+    }
+
+    /**
+     * Perform the form save operation and display any required validation.
+     * 
+     * Throws CmExeptionValidationFailed on failed validation attempt.
+     * 
+     * if callback == null, then default operation, saving data, is performed.
+     * If callback is provided, then after validation of form callback is
+     * called.
+     * 
+     * 
+     * @TODO: separate into validation/action. Perhaps strategy pattern.
+     * 
+     * @param fs
+     * @param fp
+     */
+    @SuppressWarnings("unchecked")
+    protected void doSubmitAction(AfterValidation callback) throws CmException {
+
+        try {
+            if(userName.isVisible()) {
+                checkValid(userName);
+            }
+            if(passCode.isVisible()) {
+                checkValid(passCode);
+            }
+            if(groupCombo.isVisible()) {
+                checkValid(groupCombo);
+            }
+            if(progCombo.isVisible()) {
+                checkValid(progCombo);
+            }
+        }
+        catch(Exception e) {
+            CmMessageBox.showAlert("Save Error", "Please provide values for all required fields.");
+            return;
+        }
+        
+        String name = "";
+        if(userName.isVisible()) {
+            TextField tf = userName;
+            if (tf != null) {
+                
+                tf.clearInvalid();
+                name = tf.getValue();
+                if (name == null) {
+                    tf.focus();
+                    tf.forceInvalid(ENTRY_REQUIRED_MSG);
+                    throw new CmExceptionValidationFailed();
+                }
+            }
+        }
+
+        String passcode = null;
+        if(passCode.isVisible()) {
+            TextField tf = passCode;
+            if (tf != null) {
+                tf.clearInvalid();
+                passcode = tf.getValue();
+                if (passcode == null) {
+                    tf.focus();
+                    tf.forceInvalid(ENTRY_REQUIRED_MSG);
+                    throw new CmExceptionValidationFailed();
+                } else {
+                    if (passcode.contains(" ")) {
+                        tf.focus();
+                        tf.forceInvalid("Password cannot contain spaces");
+                        throw new CmExceptionValidationFailed();
+                    }
+    
+                }
+            }
+        }
+
+        int  groupId = 0;
+        String group = null;
+        if(groupCombo.isVisible()) {
+            ComboBox<GroupInfoModel> cg = groupCombo;
+            if (cg != null) {
+                cg.clearInvalid();
+                GroupInfoModel g = cg.getValue();
+                if (g == null) {
+                    cg.focus();
+                    cg.forceInvalid(ENTRY_REQUIRED_MSG);
+                    cg.expand();
+                    throw new CmExceptionValidationFailed();
+                }
+                groupId = g.getId();
+                group = g.getGroupName();
+            }
+        }
+
+        String fsId = null;
+        if(cardPanel.isVisible()) {
+            for (int i=0;i<cardPanel.getWidgetCount();i++) {
+                Component c = (Component)cardPanel.getWidget(i);
+                if (c.isVisible()) {
+                    fsId = c.getId();
+                }
+            }
+        }
+
+        StudyProgramExt studyProgExt = null;
+        SubjectModel sub = null;
+        ChapterModel chap = null;
+        String prog = null;
+
+        if (fsId.equals("std-prog-fs")) {
+            ComboBox<StudyProgramExt> cb = progCombo;
+            studyProgExt = cb.getValue();
+            cb.clearInvalid();
+            if (studyProgExt == null) {
+                cb.focus();
+                cb.forceInvalid(ENTRY_REQUIRED_MSG);
+                cb.expand();
+                throw new CmExceptionValidationFailed();
+            }
+            prog = studyProgExt.getShortTitle();
+
+            ComboBox<SubjectModel> cs = subjCombo;
+            sub = cs.getValue();
+            cs.clearInvalid();
+            if (sub != null) {
+                prog = sub.getAbbrev() + " " + prog;
+            }
+            if (studyProgExt.isNeedsSubject() && sub == null) {
+                cs.focus();
+                cs.forceInvalid(ENTRY_REQUIRED_MSG);
+                cs.expand();
+                throw new CmExceptionValidationFailed();
+            }
+
+            ComboBox<ChapterModel> cc = chapCombo;
+            chap = cc.getValue();
+            cc.clearInvalid();
+            if (chap != null) {
+                prog = prog + " " + chap.getNumber();
+            }
+            if (studyProgExt.isNeedsChapters() && chap == null) {
+                cc.focus();
+                cc.forceInvalid(ENTRY_REQUIRED_MSG);
+                cc.expand();
+                throw new CmExceptionValidationFailed();
+            }
+        } else {
+            ComboBox<StudyProgramExt> cb = cstmCombo;
+            studyProgExt = cb.getValue();
+            cb.clearInvalid();
+            if (studyProgExt == null) {
+                cb.focus();
+                cb.forceInvalid(ENTRY_REQUIRED_MSG);
+                cb.expand();
+                throw new CmExceptionValidationFailed();
+            }
+            prog = studyProgExt.getShortTitle();
+        }
+
+        if (passPercentReqd && (passPercent == null || Integer.parseInt(passPercent.substring(0, passPercent.length() - 1)) == 0)) {
+            // set pass percent to default value
+            // TODO: (?) allow Admin to specify default pass percent (account,
+            // group, program)
+            ComboBox<PassPercent> passCombo = new PassPercentCombo(passPercentReqd);
+            passPercent = passCombo.getStore().get(PassPercentCombo.DEFAULT_PERCENT_IDX).getPercent();
+        }
+
+        /**
+         * Collect all the values and create a new StudentModel to hold
+         * validated values.
+         * 
+         */
+        StudentModel sm = new StudentModel();
+        sm.setName(name);
+        sm.setPasscode(passcode);
+        // sm.setEmail(email);
+        sm.getProgram().setProgramDescription(prog);
+        sm.setGroupId(groupId);
+        if (stuSettingsMdl != null)
+            sm.setSettings(stuSettingsMdl);
+        sm.setGroup(group);
+        sm.setAdminUid(cmAdminMdl.getUid());
+        sm.setPassPercent(passPercent);
+        sm.setSectionNum(activeSection);
+
+        String chapTitle = (chap != null) ? chap.getTitle() : null;
+        sm.setChapter(chapTitle);
+
+        String progId = (studyProgExt != null) ? (String) studyProgExt.getShortTitle() : null;
+        String subjId = (sub != null) ? sub.getAbbrev() : "";
+
+        /**
+         * Why is this constructed here? Why not pass in the StudyProgramModel
+         * (Ext)
+         * 
+         * Perhaps, have a .convert on StudyProgramModelExt.
+         * 
+         */
+        StudentProgramModel program = sm.getProgram();
+        program.setProgramId((isNew == false) ? stuMdl.getProgram().getProgramId() : null);
+        program.setProgramType(progId);
+        program.setSubjectId(subjId);
+
+        program.setCustom(new CustomProgramComposite(studyProgExt.getCustomProgramId(), studyProgExt.getCustomProgramName(), studyProgExt.getCustomQuizId(),
+                studyProgExt.getCustomQuizName()));
+
+        /**
+         * Validation complete
+         * 
+         * if callback has been provided, then jump to call back
+         * 
+         */
+        if (callback != null) {
+            callback.afterValidation(sm);
+            return;
+        }
+
+        /**
+         * If callback not provided, then perform default operation
+         * 
+         * @TODO: all this logic about what is updated should be on the server
+         *        the client should only have to update the POJO and say go.
+         * 
+         */
+        if (isNew) {
+            sm.setSectionNum((activeSection != null) ? activeSection : 0);
+            sm.setStatus("Not started");
+            sm.setTotalUsage(0);
+            addUserRPC(sm);
+        } else {
+            Boolean stuChanged = false;
+            Boolean passcodeChanged = false;
+            Boolean passPercentChanged = false;
+            Boolean progChanged = false;
+            Boolean progIsNew = false;
+
+            sm.setUid(stuMdl.getUid());
+            sm.getProgram().setProgramId(stuMdl.getProgram().getProgramId());
+            sm.setJson(stuMdl.getJson());
+            sm.setStatus(stuMdl.getStatus());
+            sm.setProgramChanged(false);
+            if (!name.equals(stuMdl.getName()) || !(groupId > 0 && groupId == stuMdl.getGroupId())) {
+                stuChanged = true;
+            }
+            if (!passcode.equals(stuMdl.getPasscode())) {
+                passcodeChanged = true;
+                stuChanged = true;
+            }
+
+            Integer prevSectionNum = stuMdl.getSectionNum();
+            boolean sectionNumChanged = false;
+            if ((prevSectionNum == null && activeSection != null) || (prevSectionNum != null && activeSection == null)
+                    || (prevSectionNum != null && !prevSectionNum.equals(activeSection))) {
+                sm.setSectionNum(activeSection);
+                stuChanged = true;
+                sectionNumChanged = true;
+            } else {
+                sm.setSectionNum(prevSectionNum);
+            }
+
+            if (stuMdl.getProgram().getProgramDescription() == null || isDifferentProgram(stuMdl, prog)) {
+                sm.setStatus("Not started");
+                if (sectionNumChanged == false)
+                    sm.setSectionNum(0);
+                sm.setProgramChanged(true);
+                // don't know what the program Id will be so set to null
+                sm.getProgram().setProgramId(null);
+
+                progIsNew = true;
+                progChanged = false;
+                sectionNumChanged = false;
+                stuChanged = true;
+            }
+
+            if (!stuChanged && settingsChanged(stuMdl.getSettings(), stuSettingsMdl)) {
+                stuChanged = true;
+            }
+
+            if (valueChanged(stuMdl.getPassPercent(), passPercent))
+                passPercentChanged = !sm.getProgramChanged();
+
+            if (stuChanged || progChanged || progIsNew || passPercentChanged) {
+                updateUserRPC(sm, stuChanged, progChanged, progIsNew, passcodeChanged, passPercentChanged, sectionNumChanged);
+            } else {
+                if (_window != null) {
+                    _window.close();
+                } else {
+                    CmMessageBox.showAlert("Save complete");
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void checkValid(Field field) throws Exception {
+        if(!field.isValid()) {
+            throw new Exception("Field not valid: " + field);
+        }
+    }
+    
+    private boolean isDifferentProgram(StudentModelI stuMdl, String prog) {
+        if (prog.equals("Custom")) {
+
+            /**
+             * compare the name, maybe ... for now always update
+             * 
+             */
+            return true;
+        } else {
+            return !stuMdl.getProgram().getProgramDescription().equals(prog);
+        }
+    }
+
+    private boolean settingsChanged(StudentSettingsModel origValue, StudentSettingsModel newValue) {
+        if (origValue == null && newValue != null)
+            return true;
+
+        if (origValue != null && newValue == null)
+            return true;
+
+        if (origValue == null && newValue == null)
+            return false;
+
+        return (!origValue.getLimitGames() == newValue.getLimitGames() || !origValue.getShowWorkRequired() == newValue.getShowWorkRequired()
+                || !origValue.getStopAtProgramEnd() == newValue.getStopAtProgramEnd() || !origValue.getTutoringAvailable() == newValue.getTutoringAvailable()
+                || !origValue.getDisableCalcAlways() == newValue.getDisableCalcAlways() || !origValue.getDisableCalcQuizzes() == newValue
+                .getDisableCalcQuizzes());
+    }
+
+    private boolean valueChanged(String origValue, String newValue) {
+        if (origValue == null && newValue != null)
+            return true;
+
+        if (origValue != null && !origValue.equals(newValue))
+            return true;
+
+        if (origValue != null && origValue.equals(newValue))
+            return false;
+
+        return false;
+    }
+
+    @Override
+    public void beginStep() {
+        inProcessCount++;
+    }
+
+    @Override
+    public void completeStep() {
+        inProcessCount--;
+    }
+
+    @Override
+    public void finish() {
+        setComboBoxSelections();
+    }
+    
+    
+    
 }
 
 abstract class AdvOptCallback {
-	abstract void setAdvancedOptions(Map<String, Object> optionMap);
+    abstract void setAdvancedOptions(AdvancedOptionsModel options);
 }
+

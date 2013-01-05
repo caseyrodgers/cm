@@ -4,7 +4,7 @@ package hotmath.gwt.cm_tools.client.model;
 public class StudentModel implements StudentModelI {
 
     String group;
-    String groupId;
+    int groupId;
     Integer sectionCount;
     Integer sectionNum=0;
     String chapter;
@@ -27,13 +27,37 @@ public class StudentModel implements StudentModelI {
     String passPercent;
     Boolean programChanged;
     
+    boolean hasExtendedData;
+
+    
     StudentProgramModel program = new StudentProgramModel();
 
     StudentSettingsModel settings = new StudentSettingsModel();
+    private String showWorkState;
+
+    @Override
+    public void setShowWorkState(String swState) {
+        this.showWorkState = swState;
+    }
+
+    @Override
+    public String getShowWorkState() {
+        return this.showWorkState;
+    }
 
     public StudentModel() {
     }
 
+    @Override
+    public boolean getHasExtendedData() {
+        return this.hasExtendedData;
+    }
+    
+    @Override
+    public void setHasExtendedData(boolean extended) {
+        this.hasExtendedData = extended;
+    }
+    
     public Integer getTutoringUse() {
         return tutoringUse;
     }
@@ -51,11 +75,11 @@ public class StudentModel implements StudentModelI {
         this.group = group;
     }
 
-    public String getGroupId() {
+    public int getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
 

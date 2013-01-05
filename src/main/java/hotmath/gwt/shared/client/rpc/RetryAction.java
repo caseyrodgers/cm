@@ -17,7 +17,6 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.util.NotActiveProgramWindow;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;

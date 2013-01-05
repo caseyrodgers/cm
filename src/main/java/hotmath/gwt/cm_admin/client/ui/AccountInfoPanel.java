@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModelImplGxt2;
@@ -15,11 +14,12 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
 
-import com.extjs.gxt.ui.client.core.XTemplate;
-import com.extjs.gxt.ui.client.util.Util;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
 /**
  * <code>AccountInfoPanel</code> displays account info in a read-only panel
@@ -27,66 +27,42 @@ import com.google.gwt.user.client.ui.HTML;
  * @author bob
  *
  */
-public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefresher {
+public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminDataRefresher {
 	
-	private XTemplate template;
-	private HTML html;
 	private AccountInfoModelImplGxt2 model;
 	private CmAdminModel cmAdminModel;
 	private Boolean haveDisplayedOverLimitMsg = false;
+	
+	
+	interface InfoLoaderTemplate extends XTemplates {
+		@XTemplate(source="AccountInfoPanel_InfoLoader.html")
+		SafeHtml renderAdminInfo(AccountInfoModel adminInfo);
+	}
 
+	
+	SimpleContainer header = new SimpleContainer();
 	public AccountInfoPanel(CmAdminModel cmAdminMdl) {
+	
 		
 		cmAdminModel = cmAdminMdl;
-
-		LayoutContainer hp = new LayoutContainer();
-		hp.setAutoWidth(true);
-		//hp.setSpacing(10);
-		hp.setBorders(false);
-		hp.setStyleName("account-info-panel");
-	
-		StringBuilder sb = new StringBuilder();
-		sb.append("<div class='account-info'>");
-        sb.append("<div class='form school-name-form'>");
-        sb.append("  <div class='fld'><label>School:</label><div>{school-name}&nbsp;{is-free-account-label}</div></div>");
-        sb.append("</div>");
-		sb.append("<div class='form left'>");
-		sb.append("  <div class='fld'><label>Administrator:</label><div>{school-user-name}&nbsp;</div></div>");
-		sb.append("  <div class='fld'><label>Account Limit:</label><div> {max-students}&nbsp;</div></div>");
-		sb.append("  <div class='fld'><label>Expires:</label><div> {expiration-date}&nbsp;</div></div>");
-		sb.append("</div>");
-        sb.append("<div class='form right'>");
-        sb.append("  <div class='fld'><label>Account login name:</label><div>{admin-user-name}&nbsp;</div></div>");
-        sb.append("  <div class='fld'><label>Previous admin login:</label><div>{last-login}&nbsp;</div></div>");
-        sb.append("  <div class='{student-count-style}'><label>Student count:</label><div>{total-students}&nbsp;</div></div>");
-        sb.append("</div>");
-        sb.append("<div style='display: none;position: absolute;top: 85px;left:0;font-size: .9em;color: #666;'>"); 
-        sb.append("  <div style='font-weight: bold'>Monitor Class Progress in Real Time!</div>");
-        sb.append("  <div>Set the Date Range to Today, and then click Highlights from time to time.</div>");
-        sb.append("</div>");
-		sb.append("</div>");
 		
-		template = XTemplate.create(sb.toString());  
-		html = new HTML();
-		html.setVisible(false);
-		html.setHTML(sb.toString());
-		hp.add(html);
+		setStyleName("account-info");
+		header.setStyleName("account-info-panel");
 		
+		
+//		InfoLoaderTemplate loaderTemplate = GWT.create(InfoLoaderTemplate.class);
+//		HTML html = new HTML(loaderTemplate.renderAdminInfo(new AccountInfoModelImplPojo()));
+//		html.setVisible(false);
+//		hp.add(html);
 		
 		CmAdminDataReader.getInstance().addReader(this);
 
-		add(hp);
+		add(header);
 	}
 	
 	
 	public AccountInfoModel getModel() {
 	    return this.model;
-	}
-	
-	protected void onRender(Element parent, int index) {
-		super.onRender(parent, index);
-		
-		setStyleName("account-info");
 	}
 
 	/** Set the Account Info header fields
@@ -99,9 +75,10 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
 		if(model.getIsFreeAccount()) {
 		    this.model.set("is-free-account-label", "<span style='color: red;margin-left: 15px;'>Free Account for Essentials</span>");
 		}
-		template.overwrite(html.getElement(), Util.getJsObject(this.model));
 		
-		html.setVisible(true);
+		InfoLoaderTemplate iLoader = GWT.create(InfoLoaderTemplate.class);
+		String html = iLoader.renderAdminInfo(model).asString();
+		header.setWidget(new HTML(html));
 	}
 	
 	public AccountInfoModel getAccountInfoModel() {
@@ -155,6 +132,6 @@ public class AccountInfoPanel extends LayoutContainer implements CmAdminDataRefr
     
     //@Override
     public void refreshData() {
-        getAccountInfoRPC(cmAdminModel.getId());
+        getAccountInfoRPC(cmAdminModel.getUid());
     }	
 }

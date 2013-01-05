@@ -10,7 +10,9 @@
       <inherits name="com.google.gwt.http.HTTP"/>
       
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
-
+      
+      <inherits name="com.sencha.gxt.theme.blue.Blue" />
+      
       <!--
       
       <add-linker name="xsiframe"/>

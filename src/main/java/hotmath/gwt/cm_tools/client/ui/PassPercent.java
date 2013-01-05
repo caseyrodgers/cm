@@ -1,20 +1,22 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 
-public class PassPercent extends BaseModelData {
-
-    private static final long serialVersionUID = 6852777405039991570L;
+public class PassPercent implements Response {
+    private String percent;
 
     public PassPercent(String percent) {
-        set("pass-percent", percent);
+        this.percent = percent;
     }
 
-    public String getPassPercent() {
-        return get("pass-percent");
+    public String getPercent() {
+        return percent;
     }
-    
+
+    public void setPercent(String percent) {
+        this.percent = percent;
+    }
     
 }
 

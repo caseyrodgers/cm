@@ -1,56 +1,53 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.ListView;
 
-public class StudentLessTopicsStateStandardsWindow extends CmWindow {
-    
+
+public class StudentLessTopicsStateStandardsWindow extends GWindow {
+
     String topic;
-    public StudentLessTopicsStateStandardsWindow(LessonItemModel lessonModel,String stateLabel, String state) {
-        
-            readStateStandards(lessonModel.getFile(),state);
-         
-            setModal(true);
-            setSize(325, 250);
-            if(state.length() == 2)
-            	setHeading(stateLabel + " State Standards for: " + lessonModel.getName());
-            else {
-            	setHeading("Common Core Standards for: " + lessonModel.getName());
-            }
-            setLayout(new FitLayout());
-            addCloseButton();
-            setVisible(true);        
-        }
     
-    
-    private void loadStandards(CmList<String> standards) {
-        
-        ListView<StandardsModel> _listView = new ListView<StandardsModel>();
-        _listView.setSimpleTemplate("<div>{standard}</div>");
-        ListStore<StandardsModel> store = new ListStore<StandardsModel>();
+    static StandardModelProperties __props = GWT.create(StandardModelProperties.class);
 
+    public StudentLessTopicsStateStandardsWindow(LessonItemModel lessonModel, String stateLabel, String state) {
+        super(true);
+        readStateStandards(lessonModel.getFile(), state);
+
+        setModal(true);
+        setPixelSize(375, 250);
+        if (state.length() == 2)
+            setHeadingText(stateLabel + " State Standards for: " + lessonModel.getName());
+        else {
+            setHeadingText("Common Core Standards for: " + lessonModel.getName());
+        }
+        setVisible(true);
+    }
+
+    private void loadStandards(CmList<String> standards) {
+
+        ListStore<StandardsModel> store = new ListStore<StandardsModel>(__props.id());
+        ListView<StandardsModel, String> _listView = new ListView<StandardsModel, String>(store, __props.standard());
         for (String standard : standards) {
             StandardsModel lm = new StandardsModel(standard);
             store.add(lm);
         }
-        
-        _listView.setStore(store);        
-        
-        add(_listView);
-        
-        layout();
+        setWidget(_listView);
+        forceLayout();
     }
-    
 
     /**
      * Call RPC to get list of standards, then display in modal window over
@@ -58,15 +55,15 @@ public class StudentLessTopicsStateStandardsWindow extends CmWindow {
      * 
      * @param lim
      */
-    private void readStateStandards(final String topic,final String state) {
+    private void readStateStandards(final String topic, final String state) {
         new RetryAction<CmList<String>>() {
             @Override
             public void attempt() {
-                GetStateStandardsAction action = new GetStateStandardsAction(topic,state);
+                GetStateStandardsAction action = new GetStateStandardsAction(topic, state);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
-            
+
             @Override
             public void oncapture(CmList<String> result) {
                 loadStandards(result);
@@ -75,18 +72,25 @@ public class StudentLessTopicsStateStandardsWindow extends CmWindow {
         }.attempt();
     }
 
-    class StandardsModel extends BaseModel {
-
+    interface StandardModelProperties extends PropertyAccess<String> {
+        @Path("standard")
+        ModelKeyProvider<StandardsModel> id();
+        ValueProvider<StandardsModel, String> standard();
+    }
+    class StandardsModel implements Response {
+        String standard;
+        public StandardsModel(){}
+        
         public StandardsModel(String standard) {
-            setStandard(standard);
+            this.standard = standard;
         }
 
         public void setStandard(String standard) {
-            set("standard", standard);
+            this.standard = standard;
         }
 
         public String getStandard() {
-            return get("standard");
+            return standard;
         }
-    }        
+    }
 }

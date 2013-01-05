@@ -91,7 +91,7 @@ public class CustomProgramAddQuizDialog extends Window {
         this.callback = callback;
         this._customQuiz = quiz;
 
-        adminId = StudentGridPanel.instance._cmAdminMdl.getId();
+        adminId = StudentGridPanel.instance._cmAdminMdl.getUid();
 
         setId("custom_quiz_design");
 

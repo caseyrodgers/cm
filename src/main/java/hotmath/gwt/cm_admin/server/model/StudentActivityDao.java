@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.JsonUtil;
-import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_tools.client.model.ChapterModel;
@@ -14,9 +14,9 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -282,8 +282,8 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 progName = sam.getProgramDescr();
                 model.setProgramName(progName);
                 model.setProgramType(sam.getProgramType());
-                int sectionCount = (sam.getSectionCount() != null) ? sam.getSectionCount() : 0;
-                int sectionNum = (sam.getSectionNum() != null) ? sam.getSectionNum() : 0;
+                int sectionCount = sam.getSectionCount();
+                int sectionNum = sam.getSectionNum();
                 model.setSectionNum(sectionNum);
                 model.setUseDate(sam.getUseDate());
 
@@ -326,7 +326,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 passingQuizCount = 0;
             }
 
-            if (sam.getIsQuiz() && !sam.getIsCustomQuiz() && sam.getRunId() > 0) {
+            if (sam.isQuiz() && !sam.isCustomQuiz() && sam.getRunId() > 0) {
                 if (LOGGER.isDebugEnabled())
                 	LOGGER.debug("runId: " + sam.getRunId());
                 quizCount++;
@@ -337,7 +337,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 result = result.substring(0, offset);
                 int score = Integer.parseInt(result);
                 allQuizTotal += score;
-                if (sam.getIsPassing()) {
+                if (sam.isPassing()) {
                     passingQuizCount++;
                     passingQuizTotal += score;
                 }
@@ -432,14 +432,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	}
 
 	private boolean isQuiz(StudentActivityModel sam) {
-		return (sam.getIsCustomQuiz() || sam.getIsQuiz());
+		return (sam.isCustomQuiz() || sam.isQuiz());
 	}
 
     private StudentActivityModel loadStudentActivityRow(ResultSet rs, CmAdminDao cmaDao, Map<Integer, Integer> lessonsCompletedMap) throws SQLException, Exception {
         StudentActivityModel m = new StudentActivityModel();
 
         boolean isCustomQuiz = (rs.getInt("is_custom_quiz") > 0);
-        m.setIsCustomQuiz(rs.getBoolean("is_custom_quiz"));
+        m.setCustomQuiz(rs.getBoolean("is_custom_quiz"));
         m.setProgramDescr(rs.getString("program"));
         m.setUseDate((rs.getString("run_date") == null) ? rs.getString("use_date"):rs.getString("run_date"));
         m.setStart(rs.getString("start_time"));
@@ -452,7 +452,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         String progId = rs.getString("prog_id");
         m.setTimeOnTask(rs.getInt("time_on_task"));
         m.setProgramType(rs.getString("prog_type"));
-        m.setIsArchived(rs.getInt("is_archived"));
+        m.setArchived(rs.getBoolean("is_archived"));
 
         if (progId.equalsIgnoreCase("chap")) {
             String subjId = rs.getString("subj_id");
@@ -477,7 +477,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         sb.append(rs.getString("activity"));
 
         boolean isQuiz = (rs.getInt("is_quiz") > 0);
-        m.setIsQuiz(isQuiz);
+        m.setQuiz(isQuiz);
         if (isQuiz && !isCustomQuiz) {
             sb.append(sectionNum);
         }
@@ -492,14 +492,14 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
             int numIncorrect = rs.getInt("answered_incorrect");
             int notAnswered = rs.getInt("not_answered");
             boolean isPassing = (rs.getInt("is_passing") > 0);
-            m.setIsPassing(isPassing);
+            m.setPassing(isPassing);
             if ((numCorrect + numIncorrect + notAnswered) > 0) {
                 double percent = (double) (numCorrect * 100) / (double) (numCorrect + numIncorrect + notAnswered);
                 sb.append(Math.round(percent)).append("% correct");
             } else if (isCustomQuiz == false) {
                 sb.append("Started");
             } else {
-                m.setIsQuiz(false);
+                m.setQuiz(false);
                 sb.append(totalSessions).append(" out of ").append(sectionCount).append(" answered");
             }
         } else {
@@ -655,18 +655,18 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
 	private StudentActivityModel copyStudentActivityModel(StudentActivityModel samToCopy) {
 		StudentActivityModel sam = new StudentActivityModel();
-		sam.setIsArchived(fixInteger(samToCopy.getIsArchived()));
+		sam.setArchived(samToCopy.isArchived());
 		sam.setIsArchivedStyle(samToCopy.getIsArchivedStyle());
-		sam.setIsCustomQuiz(false);
-		sam.setIsPassing(fixBoolean(samToCopy.getIsPassing()));
-		sam.setIsQuiz(false);
-		sam.setLessonCount(fixInteger(samToCopy.getLessonCount()));
-		sam.setLessonsCompleted(fixInteger(samToCopy.getLessonsCompleted()));
-		sam.setLessonsViewed(fixInteger(samToCopy.getLessonsViewed()));
+		sam.setCustomQuiz(false);
+		sam.setPassing(fixBoolean(samToCopy.isPassing()));
+		sam.setQuiz(false);
+		sam.setLessonCount(samToCopy.getLessonCount());
+		sam.setLessonsCompleted(samToCopy.getLessonsCompleted());
+		sam.setLessonsViewed(samToCopy.getLessonsViewed());
 		sam.setProgramDescr(samToCopy.getProgramDescr());
 		sam.setProgramType(samToCopy.getProgramType());
 		
-		if (samToCopy.getIsCustomQuiz() == false && samToCopy.getIsQuiz() == false) {
+		if (samToCopy.isCustomQuiz() == false && samToCopy.isQuiz() == false) {
 			sam.setActivity(samToCopy.getActivity());
     		sam.setResult(samToCopy.getResult());
 		}
@@ -702,7 +702,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
 		for (StudentActivityModel sam : samList) {
     		if (tot.runId == sam.getRunId() && tot.date.equals(sam.getUseDate()) &&
-    			sam.getIsQuiz() == false && sam.getIsCustomQuiz() == false) {
+    			sam.isQuiz() == false && sam.isCustomQuiz() == false) {
     			if (LOGGER.isDebugEnabled())
                      LOGGER.debug("found review: tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
     			return sam;
@@ -723,7 +723,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		int index = 0;
 		for (StudentActivityModel sam : samList) {
     		if (tot.runId == sam.getRunId() && tot.date.compareTo(sam.getUseDate()) < 0 &&
-        		sam.getIsQuiz() == false && sam.getIsCustomQuiz() == false) {
+        		sam.isQuiz() == false && sam.isCustomQuiz() == false) {
     			if (LOGGER.isDebugEnabled())
         			LOGGER.debug("found later review: tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
     			return index;
@@ -746,7 +746,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
     		StudentActivityModel sam = samList.get(index);
     		if (tot.runId == sam.getRunId() && tot.date.compareTo(sam.getUseDate()) >= 0) {
     			if (LOGGER.isDebugEnabled())
-    				LOGGER.debug("found \"match\": isQuiz: " + (sam.getIsCustomQuiz()||sam.getIsQuiz()) + ", tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
+    				LOGGER.debug("found \"match\": isQuiz: " + (sam.isCustomQuiz()||sam.isQuiz()) + ", tot.runId: " + tot.runId + ", tot.date: " + tot.date + ", sam.date: " + sam.getUseDate());
     			return index;
     		}
     		if (tot.runId > sam.getRunId()) break;
@@ -757,13 +757,13 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 	private void fixReviewSectionNumbers(List<StudentActivityModel> l) {
         Map<Integer, StudentActivityModel> h = new HashMap<Integer, StudentActivityModel>();
         for (StudentActivityModel m : l) {
-            if (m.getIsQuiz()) {
+            if (m.isQuiz()) {
                 h.put(m.getRunId(), m);
             }
         }
 
         for (StudentActivityModel m : l) {
-            if (!m.getIsQuiz() && !m.getIsCustomQuiz()) {
+            if (!m.isQuiz() && !m.isCustomQuiz()) {
                 Integer runId = m.getRunId();
                 StudentActivityModel q = h.get(runId);
                 if (q != null) {

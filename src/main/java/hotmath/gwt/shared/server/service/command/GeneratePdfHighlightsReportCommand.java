@@ -6,7 +6,7 @@ import hotmath.cm.util.report.HighlightsReport;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
 
@@ -19,12 +19,12 @@ public class GeneratePdfHighlightsReportCommand implements ActionHandler<Generat
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfHighlightsReportAction action) throws Exception {
         
-        List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
+        List<StudentModelI> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getPageAction());
         if(studentPool.size() == 0)
             return null;
        
         List<Integer> studentIds = new ArrayList<Integer>();
-        for(StudentModelExt sme: studentPool) {
+        for(StudentModelI sme: studentPool) {
             studentIds.add(sme.getUid());
         }
         return new HighlightsReport(action.getAdminId(), action.getReportName(), action.getReportLayout()).getWebResource(conn);

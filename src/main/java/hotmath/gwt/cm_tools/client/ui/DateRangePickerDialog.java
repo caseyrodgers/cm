@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
+
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
@@ -133,25 +133,25 @@ public class DateRangePickerDialog extends Window {
 			public void componentSelected(ButtonEvent ce) {
 				DateRangeAdvOptCallback callback = new DateRangeAdvOptCallback() {
 					@Override
-					void setAdvancedOptions(Map<String, Boolean> optionMap) {
-						loggedIn = optionMap.get(DateRangeAdvancedOptionsDialog.LOGGED_IN);
-						startedQuiz = optionMap.get(DateRangeAdvancedOptionsDialog.STARTED_QUIZ);
-						tookQuiz = optionMap.get(DateRangeAdvancedOptionsDialog.TOOK_QUIZ);
-						viewedLessons = optionMap.get(DateRangeAdvancedOptionsDialog.VIEWED_LESSONS);
-						usedResources = optionMap.get(DateRangeAdvancedOptionsDialog.USED_RESOURCES);
-						registered = optionMap.get(DateRangeAdvancedOptionsDialog.REGISTERED);
+					void setAdvancedOptions(AdvancedOptionsModel options) {
+						loggedIn = options.getLoggedIn();
+						startedQuiz = options.isStartedQuiz();
+						tookQuiz = options.isTookQuiz();
+						viewedLessons = options.isViewedLessons();
+						usedResources = options.isUsedResources();
+						registered = options.isRegistered();
 					}
 				};
-				final Map<String,Boolean>advOptionsMap = new HashMap <String,Boolean> ();
+				AdvancedOptionsModel options = new AdvancedOptionsModel();
 
-				advOptionsMap.put(DateRangeAdvancedOptionsDialog.LOGGED_IN, loggedIn);
-				advOptionsMap.put(DateRangeAdvancedOptionsDialog.STARTED_QUIZ, startedQuiz);
-				advOptionsMap.put(DateRangeAdvancedOptionsDialog.TOOK_QUIZ, tookQuiz);
-				advOptionsMap.put(DateRangeAdvancedOptionsDialog.VIEWED_LESSONS, viewedLessons);
-				advOptionsMap.put(DateRangeAdvancedOptionsDialog.USED_RESOURCES, usedResources);
-				advOptionsMap.put(DateRangeAdvancedOptionsDialog.REGISTERED, registered);
+				options.setLoggedIn(loggedIn);
+				options.setStartedQuiz(startedQuiz);
+				options.setTookQuiz(tookQuiz);
+				options.setViewedLessons(viewedLessons);
+				options.setUsedResources(usedResources);
+				options.setRegistered(registered);
 
-				new DateRangeAdvancedOptionsDialog(callback, advOptionsMap).setVisible(true);              
+				new DateRangeAdvancedOptionsDialog(callback, options).setVisible(true);              
 			}
 		});
 		return btn;
@@ -337,5 +337,5 @@ class DatePickerWrapper extends LayoutContainer {
 }
 
 abstract class DateRangeAdvOptCallback {
-	abstract void setAdvancedOptions(Map<String,Boolean> optionMap);
+	abstract void setAdvancedOptions(AdvancedOptionsModel options);
 }

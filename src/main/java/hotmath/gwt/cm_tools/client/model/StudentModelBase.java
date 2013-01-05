@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * <code>StudentModelBase</code> represents the Base student information,
@@ -11,7 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 
-public class StudentModelBase implements IsSerializable, StudentModelI {
+public class StudentModelBase implements StudentModelI {
 
     private static final long serialVersionUID = 3692580752279795982L;
     
@@ -23,7 +22,7 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     String  email;
     String  backgroundStyle;
     Boolean isDemoUser;
-    String  groupId;
+    int  groupId;
     String  group;
     Integer sectionCount;
     Integer sectionNum;
@@ -36,17 +35,40 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     String subjId;
     String testConfigJson;
     
+    boolean hasExtendedData;
+    
     StudentProgramModel program = new StudentProgramModel();
     
     String passPercent;
 
     StudentSettingsModel settings = new StudentSettingsModel();
+    
+    private String showWorkState;
+    
+    @Override
+    public void setShowWorkState(String swState) {
+        this.showWorkState = swState;
+    }
 
-    GroupInfoModelI groupModel;
+    @Override
+    public String getShowWorkState() {
+        return this.showWorkState;
+    }
 
     public StudentModelBase() {
     }
 
+    
+    @Override
+    public void setHasExtendedData(boolean extended) {
+        this.hasExtendedData = extended;
+    }
+    
+    @Override
+    public boolean getHasExtendedData() {
+        return hasExtendedData;
+    }
+    
     @Override
     public Boolean getIsDemoUser() {
         return isDemoUser;
@@ -55,14 +77,6 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     @Override
     public void setIsDemoUser(Boolean isDemoUser) {
         this.isDemoUser = isDemoUser;
-    }
-
-    public GroupInfoModelI getGroupModel() {
-        return groupModel;
-    }
-
-    public void setGroupModel(GroupInfoModelI groupModel) {
-        this.groupModel = groupModel;
     }
 
     @Override
@@ -126,12 +140,12 @@ public class StudentModelBase implements IsSerializable, StudentModelI {
     }
 
     @Override
-    public String getGroupId() {
+    public int getGroupId() {
         return groupId;
     }
 
     @Override
-    public void setGroupId(String groupId) {
+    public void setGroupId(int groupId) {
         this.groupId = groupId;
     }
 

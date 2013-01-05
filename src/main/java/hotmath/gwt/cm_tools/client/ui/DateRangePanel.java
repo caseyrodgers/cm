@@ -1,37 +1,38 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog.FilterOptions;
+
 import java.util.Date;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.HorizontalPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-
-import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog.FilterOptions;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * 
  * @author bob
  *
  */
-public class DateRangePanel extends HorizontalPanel{
+public class DateRangePanel extends HorizontalPanel  {
 	
 	static private DateRangePanel _instance;
 
 	Date fromDate, toDate;
 	Date defaultFromDate;
 	static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
-	TextField<String> dateRangeFilter;
-	FilterOptions _filterOptions;
+	TextField dateRangeFilter;
+	
 	DateRangeCallback dateRangeCallback;
 
-	Button dateRangeButton;
-	Button clearButton;
+	TextButton dateRangeButton;
+	TextButton clearButton;
 
 	public DateRangePanel(DateRangeCallback dateRangeCallback) {
 		this.dateRangeCallback = dateRangeCallback;
@@ -48,11 +49,11 @@ public class DateRangePanel extends HorizontalPanel{
 	}
 
 	public boolean isDefault() {
-		return (_filterOptions == null);
+		return (StudentGridPanel.instance.__searchInfo.getFilterOptions() == null);
 	}
 
 	public FilterOptions getFilterOptions() {
-		return _filterOptions;
+		return StudentGridPanel.instance.__searchInfo.getFilterOptions();
 	}
 
 	public Date getFromDate() {
@@ -69,7 +70,7 @@ public class DateRangePanel extends HorizontalPanel{
 		return toDate;
 	}
 
-	public TextField<String> getDateRangeFilter() {
+	public TextField getDateRangeFilter() {
 		return dateRangeFilter;
 	}
 
@@ -84,38 +85,41 @@ public class DateRangePanel extends HorizontalPanel{
 
 	void init() {
 
-		dateRangeFilter = new TextField<String>();
+		dateRangeFilter = new TextField();
 		dateRangeFilter.setEmptyText(" Use \"set\" for Date Range");
-		dateRangeFilter.setFieldLabel("Date Range");
 		dateRangeFilter.setWidth("160px");
 		dateRangeFilter.setReadOnly(true);
 		dateRangeFilter.setToolTip("No date range filter applied");
-		dateRangeFilter.addListener(Events.OnMouseUp, new Listener<BaseEvent>() {
-			@Override
-			public void handleEvent(BaseEvent be) {
-				getFromDate();
-				showDatePicker();
-			}
-		});
-
+		dateRangeFilter.addHandler(
+				new ClickHandler() {
+			        @Override
+			        public void onClick(ClickEvent event) {
+			    		getFromDate();
+						showDatePicker();
+				    }
+				}, ClickEvent.getType());
+		
 		getToDate();
 
-		add(dateRangeFilter);
+		add(new MyFieldLabel(dateRangeFilter,"Date Range", 75));
+		
 
-		dateRangeButton = new Button("set", new SelectionListener<ButtonEvent>() {
+		dateRangeButton = new TextButton("set", new SelectHandler() {
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void onSelect(SelectEvent event) {
 				if (fromDate == null)
 					fromDate = defaultFromDate;
 				showDatePicker();
 			}
 		});
+		
+		
 		dateRangeButton.setToolTip("Set Date range filter");
 		add(dateRangeButton);
 
-		clearButton = new Button("clear", new SelectionListener<ButtonEvent>() {
+		clearButton = new TextButton("clear", new SelectHandler() {
 			@Override
-			public void componentSelected(ButtonEvent ce) {
+			public void onSelect(SelectEvent event) {
 				clearDateRange();
 			}
 		});
@@ -133,7 +137,7 @@ public class DateRangePanel extends HorizontalPanel{
 
 				dateRangeFilter.setValue(formatDateRange(from, to));
 				dateRangeFilter.setToolTip("Date range filter applied to Student activity");
-				_filterOptions = filterOptions;
+				StudentGridPanel.instance.__searchInfo.setFilterOptions(filterOptions);
 
 				applyDateRange();
 			}
@@ -149,7 +153,7 @@ public class DateRangePanel extends HorizontalPanel{
 		toDate = new Date();
 		addDaysToDate(toDate, 1);
 
-		_filterOptions = null;
+		StudentGridPanel.instance.__searchInfo.setFilterOptions(null);
 
 		applyDateRange();
 	}

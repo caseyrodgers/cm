@@ -8,59 +8,64 @@ import hotmath.gwt.shared.client.util.CmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
+import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.data.shared.LabelProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.TextField;
+
 
 public class AutoRegisterStudent extends RegisterStudent {
 	
-    TextField<String> _groupTag;
-    TextField<String> _passwordTag;
+    TextField _groupTag;
+    TextField _passwordTag;
     ComboBox<NumberModel> _numToCreate;
+    
+    static NumberModelProperties __propsNumberModel = GWT.create(NumberModelProperties.class);
 	public AutoRegisterStudent(StudentModel sm, CmAdminModel cm) {
 	    super(sm, cm);
 	    
-	    _window.setHeading("Self Registration Setup");
-	    _fsProfile.removeAll();
+	    _window.setHeadingText("Self Registration Setup");
+	    _fsProfile.clear();
 	    
 
 	    _window.setHeight(500);
         
-        _groupTag = new TextField<String>();  
-        _groupTag.setFieldLabel("Unique Group Name");
+        _groupTag = new TextField();  
+        //_groupTag.setFieldLabel("Unique Group Name");
         _groupTag.setAllowBlank(false);
         _groupTag.setId("groupTag");
         _groupTag.setEmptyText("-- enter unique group --");
-        _fsProfile.add(_groupTag);
+        _fsProfile.addThing(_groupTag);
 
-        _passwordTag = new TextField<String>();  
-        _passwordTag.setFieldLabel("Passcode Tag");
+        _passwordTag = new TextField();  
+        //_passwordTag.setFieldLabel("Passcode Tag");
         _passwordTag.setAllowBlank(false);
         _passwordTag.setId("passtag");
         _passwordTag.setEmptyText("-- enter passcode tag --");
-        _fsProfile.add(_passwordTag);
+        _fsProfile.addThing(_passwordTag);
         
-        FieldSet fsConfig = new FieldSet();
-        fsConfig.setHeading("Configuration");
+        MyFieldSet fsConfig = new MyFieldSet("Configuration",FIELDSET_WIDTH);
         
-        ListStore<NumberModel>numStore = new ListStore <NumberModel> ();
+        ListStore<NumberModel>numStore = new ListStore <NumberModel> (__propsNumberModel.id());
         numStore.add(new NumberModel(10, "Create 10 Student Accounts"));
         numStore.add(new NumberModel(15, "Create 15 Student Accounts"));
         numStore.add(new NumberModel(25, "Create 25 Student Accounts"));
         numStore.add(new NumberModel(50, "Create 50 Student Accounts"));
         numStore.add(new NumberModel(100, "Create 100 Student Accounts"));
-        _numToCreate = new ComboBox<NumberModel>();  
-        _numToCreate.setFieldLabel("How Many");
+        _numToCreate = new ComboBox<NumberModel>(numStore,__propsNumberModel.description());  
+        // _numToCreate.setFieldLabel("How Many");
+        //_numToCreate.setMaxLength(60);
+        
         _numToCreate.setForceSelection(false);
-        _numToCreate.setDisplayField("description");
         _numToCreate.setEditable(false);
-        _numToCreate.setMaxLength(60);
         _numToCreate.setAllowBlank(false);
         _numToCreate.setTriggerAction(TriggerAction.ALL);
         _numToCreate.setStore(numStore);
@@ -73,25 +78,22 @@ public class AutoRegisterStudent extends RegisterStudent {
         _numToCreate.setStore(numStore);  
         fsConfig.add(_numToCreate);
 
-        _numToCreate.setValue(numStore.getAt(0));
+        _numToCreate.setValue(numStore.get(0));
         _formPanel.add(fsConfig);
         
         
 	    // _formPanel.getButtonBar().removeAll();
-	    
-	    _formPanel.layout();
+	    _formPanel.forceLayout();
 	    setVisible(true);
 	}
 	
 
-	public List<Button> getActionButtons() {
-		List<Button> list = new ArrayList<Button>();
+	public List<TextButton> getActionButtons() {
+		List<TextButton> list = new ArrayList<TextButton>();
 
-		Button autoCreate = new Button("Auto Create");
-		autoCreate  .addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+		TextButton autoCreate = new TextButton("Auto Create", new SelectHandler() {
+		    @Override
+		    public void onSelect(SelectEvent event) {
 				try {
 					doSubmitAction(new AfterValidation() {
 
@@ -120,10 +122,10 @@ public class AutoRegisterStudent extends RegisterStudent {
 		list.add(autoCreate);
 
 
-		Button close = new Button("Close");
-		close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+		TextButton close = new TextButton("Close");
+		close.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 				_window.close();
 			}
 		});
@@ -136,13 +138,39 @@ public class AutoRegisterStudent extends RegisterStudent {
 
 
 
-class NumberModel extends BaseModelData {
+class NumberModel  {
+    private int numToCreate;
+    private String description;
+
     public NumberModel(int cnt, String description) {
-        set("numToCreate", cnt);
-        set("description", description);
+        this.numToCreate = cnt;
+        this.description = description;
     }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getNumToCreate() {
+        return numToCreate;
+    }
+
+    public void setNumToCreate(int numToCreate) {
+        this.numToCreate = numToCreate;
+    }
+}
+
+
+interface NumberModelProperties extends PropertyAccess<Integer> {
+    @Path("numToCreate")
+    ModelKeyProvider<NumberModel> id();
+
+    LabelProvider<NumberModel> description();
+
+    LabelProvider<NumberModel> numToCreate();
     
-    public Integer getNumToCreate() {
-        return get("numToCreate");
-    }
 }

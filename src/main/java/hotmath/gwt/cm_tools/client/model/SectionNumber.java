@@ -1,20 +1,24 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-
-
-public class SectionNumber extends BaseModelData {
-
-	private static final long serialVersionUID = 5784605077473777063L;
-
-	public SectionNumber(String number) {
-        set("section-number", number);
+import hotmath.gwt.cm_rpc.client.rpc.Response;
+    
+public class SectionNumber implements Response  {
+    int sectionNumber;
+    
+	public SectionNumber(int number) {
+        sectionNumber = number;
     }
 
-    public String getSectionNumber() {
-        return get("section-number");
+    public int getSectionNumber() {
+        return sectionNumber;
     }
     
-    
+    public String getSectionLabel() {
+        return Integer.toString(sectionNumber);
+    }
+
+    public void setSectionNumber(int sectionNumber) {
+        this.sectionNumber = sectionNumber;
+    }
 }
 

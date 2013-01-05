@@ -136,7 +136,7 @@ public class HighlightsIndividualPanel extends ContentPanel {
             
             HighlightReportLayout reportLayout = _listReports.getStore().getAt(__lastSelectedReport).getReport().getReportLayout();
                 
-            GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance._cmAdminMdl.getId(),reportName,reportLayout,StudentGridPanel.instance._pageAction);
+            GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance._cmAdminMdl.getUid(),reportName,reportLayout,StudentGridPanel.instance._pageAction);
             action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
             action.setModels(HighlightImplDetailsPanelBase.__lastReportData);
             new PdfWindow(0, "Catchup Math Highlight Report", action);

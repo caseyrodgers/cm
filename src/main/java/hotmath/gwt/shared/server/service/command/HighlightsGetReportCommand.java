@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -36,13 +37,13 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
             }
             
             
-            List<StudentModelExt> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridPageAction());
+            List<StudentModelI> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridPageAction());
             if(studentPool.size() == 0)
                 return list;
             
             
             List<String> uids = new ArrayList<String>();
-            for(StudentModelExt student: studentPool) {
+            for(StudentModelI student: studentPool) {
                 uids.add(Integer.toString(student.getUid()));
             }
             CmHighlightsDao dao = CmHighlightsDao.getInstance();

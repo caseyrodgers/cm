@@ -127,7 +127,7 @@ public class CatchupSignupServlet extends HttpServlet {
                  student.setPasscode(uniquePassword);
                  student.setPassPercent("80%");
                  student.setAdminUid(haAdmin.getAdminId());
-                 student.setGroupId("1");
+                 student.setGroupId(1);
                  
                  StudentProgramModel stdProgram = new StudentProgramModel();
                  stdProgram.setProgramType("Auto-Enroll");

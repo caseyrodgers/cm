@@ -67,7 +67,7 @@ public class CustomQuizInfoSubDialog extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 CustomQuizInfoAction action = new CustomQuizInfoAction(StudentGridPanel.instance._cmAdminMdl
-                        .getId(), quiz);
+                        .getUid(), quiz);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

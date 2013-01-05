@@ -110,7 +110,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
                 CmBusyManager.setBusy(true);
                 
                 HighlightsGetReportAction action = new HighlightsGetReportAction(StudentGridPanel.instance._pageAction, getReportType(),
-                        StudentGridPanel.instance._cmAdminMdl.getId(),
+                        StudentGridPanel.instance._cmAdminMdl.getUid(),
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate());
                 setAction(action);

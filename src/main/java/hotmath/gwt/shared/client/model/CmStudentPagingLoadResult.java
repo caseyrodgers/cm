@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.sencha.gxt.data.shared.loader.PagingLoadResult;
+
 
 /** Paged student records
  * 
@@ -14,22 +15,22 @@ import com.extjs.gxt.ui.client.data.PagingLoadResult;
  *
  * @param <StudentModelExt>
  */
-public class CmStudentPagingLoadResult<StudentModelExt> implements PagingLoadResult<StudentModelExt>, Serializable, Response {
+public class CmStudentPagingLoadResult<StudentModelI> implements PagingLoadResult<StudentModelI>, Serializable, Response {
 
     protected int offset = 0;
     protected int totalLength = 0;
-    List<StudentModelExt> studentList = new ArrayList<StudentModelExt>();
+    List<StudentModelI> studentList = new ArrayList<StudentModelI>();
 
     /** needed for serialization
      * 
      */
     public CmStudentPagingLoadResult() {}
     
-    public CmStudentPagingLoadResult(List<StudentModelExt> students) {
+    public CmStudentPagingLoadResult(List<StudentModelI> students) {
         this.studentList = students;
     }
 
-    public CmStudentPagingLoadResult(List<StudentModelExt> data, int offset, int totalLength) {
+    public CmStudentPagingLoadResult(List<StudentModelI> data, int offset, int totalLength) {
       this(data);
       this.offset = offset;
       this.totalLength = totalLength;
@@ -53,7 +54,7 @@ public class CmStudentPagingLoadResult<StudentModelExt> implements PagingLoadRes
     }
 
     @Override
-    public List<StudentModelExt> getData() {
+    public List<StudentModelI> getData() {
         return studentList;
     }
 }

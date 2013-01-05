@@ -4,31 +4,31 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
+import hotmath.gwt.cm_tools.client.model.LessonItemModelProperties;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForCustomProgramTestAction;
+import hotmath.gwt.shared.client.rpc.action.GetLessonItemsForTestRunAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.MenuEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /**
  * Display Student's Lesson Topic (Prescribed Standards) Status
@@ -36,7 +36,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * @author Bob
  * 
  */
-public class StudentLessonTopicsStatusWindow extends CmWindow {
+public class StudentLessonTopicsStatusWindow extends GWindow {
 
     private Integer runId;
     private Integer testId;
@@ -46,87 +46,91 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
     private int height = 300;
     private boolean isCustomProgram;
 
-    public StudentLessonTopicsStatusWindow(StudentModelExt student, final StudentActivityModel activityModel) {
+    static LessonItemModelProperties __propsLessonItem = GWT.create(LessonItemModelProperties.class);
+    public StudentLessonTopicsStatusWindow(StudentModelI student, final StudentActivityModel activityModel) {
 
+        super(false);
+        
         setStyleName("student-lesson-topic-status-window");
         runId = activityModel.getRunId();
         testId = activityModel.getTestId();
 
-        setSize(width, height);
+        setPixelSize(width, height);
         setResizable(false);
-        super.setModal(true);
+        setModal(true);
 
         programName = activityModel.getProgramDescr();
         isCustomProgram = programName.trim().startsWith("CP:");
 
-        setLayout(new BorderLayout());
         StringBuffer sb = new StringBuffer();
         sb.append("For ").append(student.getName());
         if (programName != null)
             sb.append(" in program ").append(programName);
-        setHeading(sb.toString());
+        setHeadingText(sb.toString());
 
-        final ListStore<LessonItemModel> store = new ListStore<LessonItemModel>();
-        ColumnModel cm = defineColumns();
+        final ListStore<LessonItemModel> store = new ListStore<LessonItemModel>(__propsLessonItem.id());
+        ColumnModel<LessonItemModel> cm = defineColumns();
 
         limGrid = new Grid<LessonItemModel>(store, cm);
         limGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        limGrid.getSelectionModel().setFiresEvents(false);
-        limGrid.setStripeRows(true);
+        //limGrid.getSelectionModel().setFiresEvents(false);
+        limGrid.getView().setStripeRows(true);
         limGrid.setWidth(width - 20);
         limGrid.setHeight(height - 70);
 
-        LayoutContainer cp = new LayoutContainer();
-        cp.setLayout(new FitLayout());
-        cp.add(limGrid);
-        add(cp);
+        SimpleContainer sp = new SimpleContainer();
+        sp.setWidget(limGrid);
+        add(sp);
 
-        Button stateStandardsBtn = createStandardsButton();
+        TextButton stateStandardsBtn = createStandardsButton();
         addButton(stateStandardsBtn);
 
-        Button closeBtn = new Button("Close");
-        closeBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
+        TextButton closeBtn = new TextButton("Close");
+        closeBtn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 close();
             }
         });
-        closeBtn.setIconStyle("icon-delete");
+        //closeBtn.setIconStyle("icon-delete");
 
         addButton(closeBtn);
         setVisible(false);
 
-        this.getStudentLessonTopicsRPC(store);
+        getStudentLessonTopicsRPC(store);
 
     }
     
-    private Button createStandardsButton() {
-        Button btn = new Button("Standard Correlations");
+    private TextButton createStandardsButton() {
+        TextButton btn = new TextButton("Standard Correlations");
         btn.setToolTip("Show standards for selected topic");
 
         Menu menu = new Menu();
 
-        menu.add(new MenuItem("California",new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
+        menu.add(new MenuItem("California", new SelectionHandler<MenuItem>() {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 showStandardsFor("California", "CA");
                 }
         }));
-        menu.add(new MenuItem("Texas",new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
+        
+        menu.add(new MenuItem("Texas",new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 showStandardsFor("Texas", "TX");
                 }
         }));
 
-        menu.add(new MenuItem("Utah",new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
+        menu.add(new MenuItem("Utah",new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 showStandardsFor("Utah", "UT");
                 }
         }));
-        menu.add(new MenuItem("Common Core",new SelectionListener<MenuEvent>() {
-            public void componentSelected(MenuEvent ce) {
+        menu.add(new MenuItem("Common Core",new SelectionHandler<MenuItem>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<MenuItem> event) {
                 showStandardsFor("Common Core", "common");
                 }
         }));
-        
         
         btn.setMenu(menu);
 
@@ -142,26 +146,17 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
         }
     }
     
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    private ColumnModel<LessonItemModel> defineColumns() {
+        List<ColumnConfig<LessonItemModel, ?>> configs = new ArrayList<ColumnConfig<LessonItemModel, ?>>();
 
-        ColumnConfig topicName = new ColumnConfig();
-        topicName.setId(LessonItemModel.NAME_KEY);
-        topicName.setHeader("Topics Covered This Section");
-        topicName.setWidth(240);
-        topicName.setSortable(true);
-        topicName.setMenuDisabled(true);
-        configs.add(topicName);
+        configs.add(new ColumnConfig<LessonItemModel, String>(__propsLessonItem.name(),240,"Topics Covered This Section"));
+        configs.get(configs.size()-1).setMenuDisabled(true);
 
-        ColumnConfig prescribed = new ColumnConfig();
-        prescribed.setId(LessonItemModel.PRESCRIBED_KEY);
-        prescribed.setHeader("Prescribed for Review");
-        prescribed.setWidth(130);
-        prescribed.setSortable(false);
-        prescribed.setMenuDisabled(true);
-        configs.add(prescribed);
+        configs.add(new ColumnConfig<LessonItemModel, String>(__propsLessonItem.prescribed(),130,"Prescribed for Review"));
+        configs.get(configs.size()-1).setSortable(false);
+        configs.get(configs.size()-1).setMenuDisabled(true);
 
-        ColumnModel cm = new ColumnModel(configs);
+        ColumnModel<LessonItemModel> cm = new ColumnModel<LessonItemModel>(configs);
         return cm;
     }
 
@@ -176,7 +171,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
 
         		@Override
         		public void onSuccess(CmList<LessonItemModel> list) {
-        			store.add(list);
+        			store.addAll(list);
         			setVisible(true);
         			CatchupMathTools.setBusy(false);
         		}
@@ -195,7 +190,7 @@ public class StudentLessonTopicsStatusWindow extends CmWindow {
 
         		@Override
         		public void onSuccess(CmList<LessonItemModel> list) {
-        			store.add(list);
+        			store.addAll(list);
         			setVisible(true);
         			CatchupMathTools.setBusy(false);
         		}

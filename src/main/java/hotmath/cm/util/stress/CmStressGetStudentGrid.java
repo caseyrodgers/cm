@@ -3,12 +3,12 @@ package hotmath.cm.util.stress;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
-import com.extjs.gxt.ui.client.data.SortInfo;
+import com.sencha.gxt.data.shared.SortInfo;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+
+
 
 public class CmStressGetStudentGrid implements StressTest {
     public CmStressGetStudentGrid() {
@@ -24,96 +24,41 @@ public class CmStressGetStudentGrid implements StressTest {
     
     class MyPagingLoadConfig implements PagingLoadConfig {
 
-            @Override
-            public SortDir getSortDir() {
-                // TODO Auto-generated method stub
-                return null;
-            }
+        @Override
+        public List<? extends SortInfo> getSortInfo() {
+            // TODO Auto-generated method stub
+            return null;
+        }
 
-            @Override
-            public String getSortField() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public SortInfo getSortInfo() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public void setSortDir(SortDir sortDir) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void setSortField(String sortField) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void setSortInfo(SortInfo info) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public <X> X get(String property) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public Map<String, Object> getProperties() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public Collection<String> getPropertyNames() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public <X> X remove(String property) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public <X> X set(String property, X value) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            @Override
-            public void setLimit(int limit) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public void setOffset(int offset) {
-                // TODO Auto-generated method stub
-                
-            }
-
-            @Override
-            public int getLimit() {
-                // TODO Auto-generated method stub
-                return 0;
-            }
-
-            @Override
-            public int getOffset() {
-                // TODO Auto-generated method stub
-                return 0;
-            }
+        @Override
+        public void setSortInfo(List<? extends SortInfo> info) {
+            // TODO Auto-generated method stub
             
+        }
+
+        @Override
+        public void setLimit(int limit) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public void setOffset(int offset) {
+            // TODO Auto-generated method stub
+            
+        }
+
+        @Override
+        public int getLimit() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public int getOffset() {
+            // TODO Auto-generated method stub
+            return 0;
+        }
     }
 
 }

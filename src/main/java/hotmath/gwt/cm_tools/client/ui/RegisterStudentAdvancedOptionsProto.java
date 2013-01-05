@@ -1,27 +1,24 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.SectionNumber;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.form.CheckBoxGroup;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BoxLayoutContainer.BoxLayoutPack;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.FieldSet;
+
 
 /**
  * Register Student Advanced Options UI
@@ -33,17 +30,17 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
  * @author bob
  *
  */
-public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
+public class RegisterStudentAdvancedOptionsProto extends SimpleContainer {
 	
-	private CmWindow advOptWindow;
+	private GWindow advOptWindow;
 
 	private FieldSet advOptions;
 	private CheckBox isShowWorkRequired;
 	private CheckBox isGamesLimited;
 	private CheckBox isStopAtProgramEnd;
-	private CheckBoxGroup requireShowWork;
-	private CheckBoxGroup limitGames;
-	private CheckBoxGroup stopAtProgramEnd;
+	private MyCheckBoxGroup requireShowWork;
+	private MyCheckBoxGroup limitGames;
+	private MyCheckBoxGroup stopAtProgramEnd;
 
 	private ComboBox <PassPercent> passCombo;
 	private ComboBox <SectionNumber> sectionCombo;
@@ -54,52 +51,51 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 	private int formWidth  = 340;
 	private AdvOptCallback2 callback;
 	private boolean passPercentReqd;
-	private Map<String,Object> advOptionsMap;
+	AdvancedOptionsModel options;
 
 	private int sectionCount;
-	private String currentSection;
+	private int currentSection;
 	private boolean sectionIsSettable;
 	private boolean progStopIsSettable;
 	
-	public RegisterStudentAdvancedOptionsProto(AdvOptCallback2 callback, CmAdminModel cm, Map <String,Object> optionMap, boolean isNew,
+	public RegisterStudentAdvancedOptionsProto(AdvOptCallback2 callback, CmAdminModel cm, AdvancedOptionsModel options, boolean isNew,
 		boolean passPercentReqd) {
 
 		this.callback = callback;
 		this.cmAdminMdl = cm;
-		this.advOptionsMap = optionMap;
+		this.options = options;
 		this.passPercentReqd = passPercentReqd;
-		this.currentSection = String.valueOf((Integer) advOptionsMap.get(StudentModelExt.SECTION_NUM_KEY));
-		this.sectionCount = (Integer) advOptionsMap.get(StudentModelExt.SECTION_COUNT_KEY);
-		this.sectionIsSettable = (Boolean) advOptionsMap.get("section-is-settable");
-		this.progStopIsSettable = (Boolean) advOptionsMap.get("prog-stop-is-settable");
+		this.currentSection = options.getSectionNum();
+		this.sectionCount = options.getSectionCount();
+		this.sectionIsSettable = options.isSectionIsSettable();
+		this.progStopIsSettable = options.isProgStopIsSettable();
 
-		advOptWindow = new CmWindow();
-		advOptWindow.add(optionsForm(isNew, passPercentReqd));
+		advOptWindow = new GWindow(true);
+		advOptWindow.setWidget(optionsForm(isNew, passPercentReqd));
 		
 		setForm();
 
 	}
 	
-	private FormPanel optionsForm(boolean isNew, boolean passPercentReqd) {
-		FormPanel fp = new FormPanel();
-		fp.setLabelWidth(180);
+	private ContentPanel optionsForm(boolean isNew, boolean passPercentReqd) {
+	    
+		ContentPanel  fp = new ContentPanel();
+		
+		//fp.setLabelWidth(180);
 		fp.setHeight(formHeight);
-		fp.setFooter(true);
-		fp.setFrame(false);
+		
+		//fp.setFrame(false);
 		fp.setHeaderVisible(false);
 		fp.setBodyBorder(false);
-		fp.setIconStyle("icon-form");
-		fp.setButtonAlign(HorizontalAlignment.CENTER);
-		fp.setLayout(new FormLayout());
-
-        advOptions = new FieldSet();
-        
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(fp.getLabelWidth());
-		fl.setDefaultWidth(100);
+		//fp.setIconStyle("icon-form");
+		fp.setButtonAlign(BoxLayoutPack.CENTER);
 		
-		advOptions.setLayout(fl);
-        advOptions.addStyleName("register-student-fieldset");
+		VerticalLayoutContainer vertAdvOptions = new VerticalLayoutContainer();
+        advOptions = new FieldSet();
+        advOptions.setWidget(vertAdvOptions);
+        advOptions.addStyleName("register-student-fieldset");        
+		//fl.setLabelWidth(fp.getLabelWidth());
+		//fl.setDefaultWidth(100);
 
         passCombo = new PassPercentCombo(passPercentReqd);
         setPassPercentSelection();
@@ -107,34 +103,34 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 
 		isShowWorkRequired = new CheckBox();
         isShowWorkRequired.setId("show_work");
-        isShowWorkRequired.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getShowWorkRequired());
-        requireShowWork = new CheckBoxGroup(); 
-        requireShowWork.setFieldLabel("Require Show Work");
+        isShowWorkRequired.setValue(options.getSettings().getShowWorkRequired());
+        requireShowWork = new MyCheckBoxGroup(); 
         requireShowWork.setId("show_work");
         requireShowWork.add(isShowWorkRequired);
-        advOptions.add(requireShowWork);
+        vertAdvOptions.add(new FieldLabel(requireShowWork, "Require Show Work"));
 
         isGamesLimited = new CheckBox();
         isGamesLimited.setId("limit_games");
-        isGamesLimited.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getLimitGames());
+        isGamesLimited.setValue(options.getSettings().getLimitGames());
         isGamesLimited.setToolTip("If checked, then no Games can be played.");
         
-        limitGames = new CheckBoxGroup();
-        limitGames.setFieldLabel("Disallow Games");
+        limitGames = new MyCheckBoxGroup();
+        //limitGames.setFieldLabel("Disallow Games");
         limitGames.setId("limit_games");
 		limitGames.add(isGamesLimited);
 		
-		advOptions.add(limitGames); 
+		vertAdvOptions.add(new FieldLabel(limitGames, "Disallow Games")); 
 
         isStopAtProgramEnd = new CheckBox();
         isStopAtProgramEnd.setId("stop_at_program_end");
-        isStopAtProgramEnd.setValue(((StudentSettingsModel) advOptionsMap.get(StudentModelExt.SETTINGS_KEY)).getStopAtProgramEnd());
-        stopAtProgramEnd = new CheckBoxGroup();
-        stopAtProgramEnd.setFieldLabel("Stop at End of Program");
+        isStopAtProgramEnd.setValue(options.getSettings().getStopAtProgramEnd());
+        
+        stopAtProgramEnd = new MyCheckBoxGroup();
+        //stopAtProgramEnd.setFieldLabel("Stop at End of Program");
         stopAtProgramEnd.setId("stop_at_program_end");
 		stopAtProgramEnd.add(isStopAtProgramEnd);
 		if (! progStopIsSettable) stopAtProgramEnd.disable();
-		advOptions.add(stopAtProgramEnd);
+		vertAdvOptions.add(new FieldLabel(stopAtProgramEnd, "Stop at End of Program"));
 
 		if (sectionIsSettable) {
     		sectionCombo = new SectionNumberCombo(sectionCount);
@@ -142,26 +138,24 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 		    advOptions.add(sectionCombo);
         }
 
-		advOptWindow.setHeading((isNew)?"Set Options":"Edit Options");
+		advOptWindow.setHeadingText((isNew)?"Set Options":"Edit Options");
 		advOptWindow.setWidth(formWidth+10);
 		advOptWindow.setHeight(formHeight+20);
-		advOptWindow.setLayout(new FitLayout());
 		advOptWindow.setResizable(false);
 		advOptWindow.setDraggable(true);
 		advOptWindow.setModal(true);
 
 		fp.add(advOptions);
 		
-		Button resetBtn = resetButton(fp);
+		TextButton resetBtn = resetButton();
 		//resetBtn.addStyleName("reset-button");
 
-		Button cancelBtn = cancelButton();
+		TextButton cancelBtn = cancelButton();
         cancelBtn.addStyleName("cancel-button");
         
-		Button saveBtn = saveButton(fs, fp);
+		TextButton saveBtn = saveButton();
 		saveBtn.addStyleName("save-button");
 		
-		fp.setButtonAlign(HorizontalAlignment.RIGHT);
 		fp.addButton(resetBtn);
         fp.addButton(saveBtn);
         fp.addButton(cancelBtn);
@@ -176,7 +170,7 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
  		else
  			passCombo.disable();
 
-		boolean sectionSelectAvail = (Boolean)advOptionsMap.get("SECTION_SELECT_AVAIL");
+		boolean sectionSelectAvail = options.isSectionIsSettable();
 		if (! sectionSelectAvail)
 			sectionCombo.disable();
 		else
@@ -185,10 +179,10 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 	}
 
 	private void setPassPercentSelection() {
-		String passPercent = (String) advOptionsMap.get(StudentModelExt.PASS_PERCENT_KEY);
+		String passPercent = options.getPassPercent();
 		
 		if (passPercent == null && passPercentReqd) {
-			PassPercent p = passCombo.getStore().getAt(PassPercentCombo.DEFAULT_PERCENT_IDX);
+			PassPercent p = passCombo.getStore().get(PassPercentCombo.DEFAULT_PERCENT_IDX);
 			passCombo.setOriginalValue(p);
 			passCombo.setValue(p);
 			passCombo.enable();
@@ -196,9 +190,9 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 		}
 		
 		if (passPercent != null) {
-			List<PassPercent> list = passCombo.getStore().getModels();
+			List<PassPercent> list = passCombo.getStore().getAll();
 			for (PassPercent p : list) {
-				if (passPercent.equals(p.getPassPercent())) {
+				if (passPercent.equals(p.getPercent())) {
 					passCombo.setOriginalValue(p);
 					passCombo.setValue(p);
 					passCombo.enable();
@@ -210,16 +204,16 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 
 	private void setSectionNumberSelection() {
 
-		List<SectionNumber> list = sectionCombo.getStore().getModels();
+		List<SectionNumber> list = sectionCombo.getStore().getAll();
 
         /*
          * don't want to place "0" in the section number list...
          * If incoming section number was "0", then select "1"
          */
-		String selectSection = ("0".equals(currentSection)) ? "1" : currentSection;
+		int selectSection = (currentSection == 0) ? 1 : currentSection;
 
 		for (SectionNumber n : list) {
-			if (selectSection.equals(n.getSectionNumber())) {
+			if (selectSection == n.getSectionNumber()) {
 				sectionCombo.setOriginalValue(n);
 				sectionCombo.setValue(n);
 				sectionCombo.enable();
@@ -228,15 +222,17 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 		}
 	}
 
-	private Button resetButton(final FormPanel fp) {
-		Button cancelBtn = new Button("Reset", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
-	    		
-				PassPercent p = passCombo.getStore().getAt(PassPercentCombo.DEFAULT_PERCENT_IDX);
+	private TextButton resetButton() {
+		TextButton cancelBtn = new TextButton("Reset", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                
+				PassPercent p = passCombo.getStore().get(PassPercentCombo.DEFAULT_PERCENT_IDX);
 				passCombo.setOriginalValue(p);
 				passCombo.setValue(p);
 				
-				SectionNumber n = sectionCombo.getStore().getAt(0);
+				SectionNumber n = sectionCombo.getStore().get(0);
 				sectionCombo.setOriginalValue(n);
 				sectionCombo.setValue(n);
 	    		
@@ -249,21 +245,24 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
 		return cancelBtn;
 	}
 	
-	private Button cancelButton() {
-		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
+	private TextButton cancelButton() {
+		TextButton cancelBtn = new TextButton("Cancel",new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 advOptWindow.close();
 	        }  
 	    });
 		return cancelBtn;
 	}
 
-	private Button saveButton(final FieldSet fs, final FormPanel fp) {
-		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
+	private TextButton saveButton() {
+		TextButton saveBtn = new TextButton("Save", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
 
 	    		PassPercent pp = passCombo.getValue();
-	        	String passPercent = (pp != null) ? pp.getPassPercent() : null;
+	        	String passPercent = (pp != null) ? pp.getPercent() : null;
 
                 StudentSettingsModel ssm = new StudentSettingsModel();
                 
@@ -280,19 +279,20 @@ public class RegisterStudentAdvancedOptionsProto extends LayoutContainer {
                 Integer sectionNum = 0;
                 if(sectionIsSettable) {
 	                SectionNumber sn = sectionCombo.getValue();
-	                sectionNum = (sn != null) ? Integer.parseInt(sn.getSectionNumber()) : 0;
-	                if (sectionNum == 1 && currentSection.equals("0")) {
+	                sectionNum = sn.getSectionNumber();
+	                if (sectionNum == 1 && currentSection == 0) {
 	                	sectionNum = 0;
 	                }
                 }
                 
-                Map<String, Object> optionMap = new HashMap<String, Object>();
+                AdvancedOptionsModel options = new AdvancedOptionsModel();
                 
-                optionMap.put(StudentModelExt.PASS_PERCENT_KEY, passPercent);
-                optionMap.put(StudentModelExt.SETTINGS_KEY, ssm);
-                optionMap.put(StudentModelExt.SECTION_NUM_KEY, sectionNum);
                 
-                callback.setAdvancedOptions(optionMap);
+                options.setPassPercent(passPercent);
+                options.setSettings(ssm);
+                options.setSectionNum(sectionNum);
+                
+                callback.setAdvancedOptions(options);
 
                 advOptWindow.close();
 	        }

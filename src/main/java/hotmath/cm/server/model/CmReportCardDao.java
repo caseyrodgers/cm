@@ -508,7 +508,7 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		 int tot = 0;
 		 
 		 for (StudentActivityModel sam : samList) {
-			 tot += (sam.getTimeOnTask() != null) ? sam.getTimeOnTask() : 0;
+			 tot += sam.getTimeOnTask();
 		 }
 
 		 rc.getResourceUsage().put("timeontask", tot);

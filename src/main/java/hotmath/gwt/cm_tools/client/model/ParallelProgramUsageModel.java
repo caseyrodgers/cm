@@ -2,14 +2,14 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-public class ParallelProgramUsageModel extends BaseModel implements Response {
+public class ParallelProgramUsageModel implements Response {
 	
-	public static final String ACTIVITY     = "activity";
-	public static final String IS_QUIZ      = "isQuiz";
-	public static final String RESULT       = "result";
-	public static final String STUDENT_NAME = "studentName";
-	public static final String USER_ID      = "userId";
-	public static final String USE_DATE     = "useDate";
+    String activity;
+    boolean isQuiz;
+    String result;
+    String studentName;
+    int userId;
+    String useDate;
 
 	public ParallelProgramUsageModel(){
         /** empty */
@@ -23,61 +23,61 @@ public class ParallelProgramUsageModel extends BaseModel implements Response {
 	 * @param useDate
 	 */
 
-    public ParallelProgramUsageModel(String studentName, Integer userId, String activity,
-    	String result, String useDate) {
-        setStudentName(studentName);
-        setUserId(userId);
-        setActivity(activity);
-        setResult(result);
-        setUseDate(useDate);
-    }
-
-    public void setStudentName(String name) {
-        set(STUDENT_NAME, name);
-    }
-
-    public String getStudentName() {
-        return get(STUDENT_NAME);
-    }
-
-    public void setUserId(Integer userId) {
-        set(USER_ID, userId);
-    }
-
-    public Integer getUserId() {
-        return get(USER_ID);
-    }
-
-    public void setActivity(String activity) {
-        set(ACTIVITY, activity);
+    public ParallelProgramUsageModel(String studentName, Integer userId, String activity,String result, String useDate) {
+        this.studentName = studentName;
+        this.userId = userId;
+        this.activity = activity;
+        this.result = result;
+        this.useDate = useDate;
     }
 
     public String getActivity() {
-        return get(ACTIVITY);
+        return activity;
     }
 
-    public void setResult(String result) {
-        set(RESULT, result);
+    public void setActivity(String activity) {
+        this.activity = activity;
+    }
+
+    public boolean isQuiz() {
+        return isQuiz;
+    }
+
+    public void setQuiz(boolean isQuiz) {
+        this.isQuiz = isQuiz;
     }
 
     public String getResult() {
-        return get(RESULT);
+        return result;
     }
 
-    public void setUseDate(String useDate) {
-        set(USE_DATE, useDate);
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public String getUseDate() {
-        return get(USE_DATE);
+        return useDate;
     }
 
-    public void setIsQuiz(Boolean isQuiz) {
-    	set(IS_QUIZ, isQuiz);
+    public void setUseDate(String useDate) {
+        this.useDate = useDate;
     }
 
-    public Boolean getIsQuiz() {
-        return get(IS_QUIZ);
-    }
 
 }

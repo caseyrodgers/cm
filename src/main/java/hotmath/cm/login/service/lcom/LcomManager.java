@@ -62,7 +62,7 @@ public class LcomManager {
 					if(group == null) {
 						group = new GroupInfoModel();
 						group.setGroupName(student.getStudentCourseId());
-						group.setIsActive(true);
+						group.setActive(true);
 						CmAdminDao.getInstance().addGroup(conn, teacher.getAdminId(), group);
 					}
 				}

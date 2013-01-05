@@ -14,7 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
@@ -36,8 +36,6 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.TabItemConfig;
-import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -60,17 +58,17 @@ import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.Selecti
  */
 public class StudentShowWorkWindow extends GWindow {
 
-    StudentModelExt student;
+    StudentModelI student;
     Integer runId;
     String programName;
     StudentActivityModel activityModel;
     BorderLayoutContainer _mainBorderPanel = new BorderLayoutContainer();
 
-    public StudentShowWorkWindow(StudentModelExt student) {
+    public StudentShowWorkWindow(StudentModelI student) {
         this(student, null);
     }
     
-    public StudentShowWorkWindow(StudentModelExt student, StudentActivityModel activityModel) {
+    public StudentShowWorkWindow(StudentModelI student, StudentActivityModel activityModel) {
         super(false);
         
         setStyleName("student-show-work-window");

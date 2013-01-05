@@ -52,7 +52,7 @@ public class HighlightImplComparePanel extends LayoutContainer {
                 HighlightsGetReportAction action = new HighlightsGetReportAction(
                 		StudentGridPanel.instance._pageAction,
                 		reportType, 
-                        StudentGridPanel.instance._cmAdminMdl.getId(), 
+                        StudentGridPanel.instance._cmAdminMdl.getUid(), 
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate()
                         );

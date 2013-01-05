@@ -19,6 +19,7 @@ public class GroupManagerAssignCommand implements ActionHandler<GroupManagerAssi
 		case GET_STUDENTS:
 			response.setInGroup(CmAdminDao.getInstance().getGroupStudents(conn,action.getGroup()));
 			response.setNotInGroup(CmAdminDao.getInstance().getGroupStudentsNotIn(conn,action.getGroup()));
+	
 			break;
 			
 		case SAVE_STUDENTS:

@@ -1,8 +1,9 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class GroupManagerAssignAction implements Action<GroupManagerAssignResponse>{
     
     GroupInfoModel group;
-    List<StudentModelExt> groupStudents;
+    CmList<StudentModelI> groupStudents;
     ActionType type;
 
 	public GroupManagerAssignAction(){}
@@ -33,11 +34,11 @@ public class GroupManagerAssignAction implements Action<GroupManagerAssignRespon
 		this.group = group;
 	}
 
-	public List<StudentModelExt> getGroupStudents() {
+	public List<StudentModelI> getGroupStudents() {
 		return groupStudents;
 	}
 
-	public void setGroupStudents(List<StudentModelExt> groupStudents) {
+	public void setGroupStudents(CmList<StudentModelI> groupStudents) {
 		this.groupStudents = groupStudents;
 	}
 	public ActionType getType() {

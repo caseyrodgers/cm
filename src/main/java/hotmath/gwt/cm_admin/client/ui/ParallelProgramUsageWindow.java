@@ -5,10 +5,11 @@ import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModel;
+import hotmath.gwt.cm_tools.client.model.ParallelProgramUsageModelProperties;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfParallelProgramUsageReportAction;
@@ -17,29 +18,33 @@ import hotmath.gwt.shared.client.rpc.action.GetParallelProgramUsageAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.core.XTemplate;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.MenuEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.util.Util;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.menu.Menu;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
+import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 /*
  * Displays Student status in selected Parallel Program
@@ -48,13 +53,17 @@ import com.google.gwt.user.client.ui.Widget;
  * 
  */
 
-public class ParallelProgramUsageWindow extends CmWindow {
+public class ParallelProgramUsageWindow extends GWindow {
 
     private ParallelProgramModel ppModel;
     private Grid<ParallelProgramUsageModel> ppumGrid;
-    private HTML html;
-    private XTemplate template;
-   
+    private HTML templateHolder = new HTML();
+
+    
+    ParallelProgLoaderTemplate _template = GWT.create(ParallelProgLoaderTemplate.class) ;
+    ParallelProgramUsageModelProperties _props = GWT.create(ParallelProgramUsageModelProperties.class);
+    
+    
     /**
      * Create Usage Window for Parallel Programs.
      * Displays student name, current Activity and most recent Result
@@ -63,46 +72,41 @@ public class ParallelProgramUsageWindow extends CmWindow {
      * @param ppModel
      */
     public ParallelProgramUsageWindow(final ParallelProgramModel ppModel) {
-        addStyleName("parallel-program-usage-window");
+        super(true);
+        
         this.ppModel = ppModel;
-        setSize(540, 330);
+        setPixelSize(540, 330);
         setModal(true);
         setResizable(false);
-        setHeading("Usage for: " + ppModel.getName());
+        setHeadingText("Parallel Program Usage for: " + ppModel.getName());
 
-        ListStore<ParallelProgramUsageModel> store = new ListStore<ParallelProgramUsageModel>();
-        ColumnModel cm = defineColumns();
+        ListStore<ParallelProgramUsageModel> store = new ListStore<ParallelProgramUsageModel>(_props.id());
+        ColumnModel<ParallelProgramUsageModel> cm = defineColumns();
 
         ppumGrid = new Grid<ParallelProgramUsageModel>(store, cm);
         ppumGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        ppumGrid.getSelectionModel().setFiresEvents(true);
-        ppumGrid.setStripeRows(true);
-        ppumGrid.setWidth(460);
-        ppumGrid.setHeight(225);
+        ppumGrid.getView().setStripeRows(true);
 
-        setLayout(new BorderLayout());
         addStyleName("parallel-program-usage-window-container");
 
-        LayoutContainer lc = new LayoutContainer();
-        lc.add(infoPanel());
-        lc.add(toolbar());
+        VerticalLayoutContainer tbVert = new VerticalLayoutContainer();
+        tbVert.add(templateHolder);
+        tbVert.add(toolbar());
 
-        add(lc, new BorderLayoutData(LayoutRegion.NORTH, 65));
+        BorderLayoutContainer borLay = new BorderLayoutContainer();
+        setWidget(borLay);
+        
+        borLay.setNorthWidget(tbVert, new BorderLayoutData(65));
 
-        LayoutContainer gridContainer = new LayoutContainer();
-        gridContainer.setLayout(new FitLayout());
-        gridContainer.setStyleName("parallel-program-usage-panel-grid");
-        gridContainer.add(ppumGrid);
+        SimpleContainer gridContainer = new SimpleContainer();
+        //gridContainer.setStyleName("parallel-program-usage-panel-grid");
+        gridContainer.setWidget(ppumGrid);
         gridContainer.setHeight(250);
 
-        add(gridContainer, new BorderLayoutData(LayoutRegion.CENTER));
-
-        Button btnClose = closeButton();
-        setButtonAlign(HorizontalAlignment.RIGHT);
-        addButton(btnClose);
+        borLay.setCenterWidget(gridContainer);
         
-        template.overwrite(html.getElement(), Util.getJsObject(ppModel));
-
+        templateHolder.setHTML(_template.render(ppModel).asString());
+        
         getParallelProgramUsageRPC(store, ppModel);
 
         if (CmShared.getQueryParameter("debug") != null) {
@@ -115,10 +119,11 @@ public class ParallelProgramUsageWindow extends CmWindow {
 
 	private Menu buildDebugMenu() {
 		MenuItem detailDebug = new MenuItem("Debug Info");
-		detailDebug.addSelectionListener(new SelectionListener<MenuEvent>() {
-		    public void componentSelected(MenuEvent ce) {
+		detailDebug.addSelectionHandler(new SelectionHandler<Item>() {
+            @Override
+            public void onSelection(SelectionEvent<Item> event) {
 		        ParallelProgramUsageModel m = ppumGrid.getSelectionModel().getSelectedItem();
-		        CmMessageBoxGxt2.showAlert("UserID: " + m.getUserId());
+		        CmMessageBox.showAlert("UserID: " + m.getUserId());
 		    }
 		});
 		Menu menu = new Menu();
@@ -135,16 +140,15 @@ public class ParallelProgramUsageWindow extends CmWindow {
         return toolBar;
     }
 
-    private Button displayPrintableReportButton(final ParallelProgramModel pp) {
-        Button ti = new Button();
-        ti.setIconStyle("printer-icon");
+    private TextButton displayPrintableReportButton(final ParallelProgramModel pp) {
+        TextButton ti = new TextButton("Print");
+        //ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable usage report");
         ti.addStyleName("student-details-panel-pr-btn");
         
-        ti.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        ti.addSelectHandler(new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-
+            public void onSelect(SelectEvent event) {
                 new PdfWindow(pp.getAdminId(), "Catchup Math Usage Report for: " + pp.getName(),
                         new GeneratePdfParallelProgramUsageReportAction(pp.getAdminId(), pp.getId()));
             }
@@ -163,54 +167,23 @@ public class ParallelProgramUsageWindow extends CmWindow {
             }});
 	}
 
-    private Button closeButton() {
-        Button btn = new Button("Close", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                close();
-            }
-        });
-        btn.setIconStyle("icon-delete");
-        return btn;
-    }
+    private ColumnModel<ParallelProgramUsageModel> defineColumns() {
+        List<ColumnConfig<ParallelProgramUsageModel, ?>> configs = new ArrayList<ColumnConfig<ParallelProgramUsageModel, ?>>();
 
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+        configs.add(new ColumnConfig<ParallelProgramUsageModel, String>(_props.studentName(),125, "Name"));
+        configs.get(configs.size()-1).setMenuDisabled(true);
 
-        ColumnConfig program = new ColumnConfig();
-        program.setId(ParallelProgramUsageModel.STUDENT_NAME);
-        program.setHeader("Name");
-        program.setWidth(125);
-        program.setSortable(true);
-        program.setMenuDisabled(true);
-        configs.add(program);
+        configs.add(new ColumnConfig<ParallelProgramUsageModel, String>(_props.activity(),100, "Activity"));
+        configs.get(configs.size()-1).setMenuDisabled(true);
 
-        ColumnConfig activity = new ColumnConfig();
-        activity.setId(ParallelProgramUsageModel.ACTIVITY);
-        activity.setHeader("Activity");
-        activity.setWidth(100);
-        activity.setSortable(false);
-        activity.setMenuDisabled(true);
-        configs.add(activity);
+        configs.add(new ColumnConfig<ParallelProgramUsageModel, String>(_props.result(),220, "Result"));
+        configs.get(configs.size()-1).setMenuDisabled(true);
 
-        ColumnConfig result = new ColumnConfig();
-        result.setId(ParallelProgramUsageModel.RESULT);
-        result.setHeader("Result");
-        result.setWidth(220);
-        result.setSortable(false);
-        result.setMenuDisabled(true);
-        configs.add(result);
-        
-        ColumnConfig date = new ColumnConfig();
-        date.setId(ParallelProgramUsageModel.USE_DATE);
-        date.setHeader("Date");
-        date.setWidth(77);
-        date.setSortable(false);
-        date.setMenuDisabled(true);
-        configs.add(date);
+        configs.add(new ColumnConfig<ParallelProgramUsageModel, String>(_props.useDate(),77, "Date"));
+        configs.get(configs.size()-1).setMenuDisabled(true);
+        configs.get(configs.size()-1).setSortable(false);
 
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        return new ColumnModel<ParallelProgramUsageModel>(configs);
     }
 
     protected void getParallelProgramUsageRPC(final ListStore<ParallelProgramUsageModel> store, final ParallelProgramModel ppm) {
@@ -220,8 +193,8 @@ public class ParallelProgramUsageWindow extends CmWindow {
         new RetryAction<CmList<ParallelProgramUsageModel>>() {
             public void oncapture(CmList<ParallelProgramUsageModel> list) {
                 try {
-                    store.removeAll();
-                    store.add(list);
+                    store.clear();
+                    store.addAll(list);
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
@@ -239,37 +212,27 @@ public class ParallelProgramUsageWindow extends CmWindow {
     }
 
     private Widget infoPanel() {
-        defineInfoTemplate();
-        return html;
+        return templateHolder;
     }
 
-    /**
-     * Define the template for the header (does not add to container)
-     * 
-     * Defines the global 'html' object, filled in via RPC call.
-     * 
-     */
-    private void defineInfoTemplate() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("<div class='detail-info'>");
-        sb.append("<div class='form left'>");
-        sb.append("  <div class='fld'><label>Program:</label><div>{");
-        sb.append(ParallelProgramModel.PROGRAM_NAME).append("}&nbsp;</div></div>");
-        sb.append("</div>");
-        sb.append("</div>");
-
-        template = XTemplate.create(sb.toString());
-        html = new HTML();
-
-        html.setHeight("35px"); // to eliminate the jump when setting values in
-        // template
-    }
     
     private ParallelProgramUsageModel getGridItem() {
         ParallelProgramUsageModel mdl = ppumGrid.getSelectionModel().getSelectedItem();
         if (mdl == null) {
-            CmMessageBoxGxt2.showAlert("Please make a selection first");
+            CmMessageBox.showAlert("Please make a selection first");
         }
         return mdl;
     }
+}
+
+
+
+interface ParallelProgLoaderTemplate extends XTemplates {
+    @XTemplate(
+    		"<div class='detail-info'>" +
+            "    <div class='form left'> " +
+            "        <div class='fld'><label>Program:</label><div>{programName}&nbsp;</div></div>" +
+            "    </div> " +
+            "</div>") 
+    SafeHtml render(ParallelProgramModel adminInfo);
 }

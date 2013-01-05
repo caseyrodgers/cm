@@ -74,7 +74,7 @@ public class CustomProgramInfoSubDialog extends CmWindow {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 CustomProgramInfoAction action = new CustomProgramInfoAction(StudentGridPanel.instance._cmAdminMdl
-                        .getId(), program);
+                        .getUid(), program);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

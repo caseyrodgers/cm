@@ -1,24 +1,25 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.util.CmException;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
+
 
 /**
  * Provides form dialog for registering students in bulk
@@ -29,10 +30,10 @@ import com.extjs.gxt.ui.client.widget.layout.FormLayout;
  */
 public class BulkStudentRegistrationWindow extends RegisterStudent {
 
-	TextField<String> groupFld;
+	TextField groupFld;
 	String _uploadKey; // = "upload_1250558647547";
 	CmUploadForm _uploadForm;
-	StudentModel _student;
+	StudentModelI _student;
 
 	/**
 	 * Create a Bulk Registration Window
@@ -55,10 +56,10 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		 * Reset the profile area
 		 * 
 		 */
-		_fsProfile.remove(_fsProfile.getItemByItemId("name"));
-		_fsProfile.remove(_fsProfile.getItemByItemId("passcode"));
-		_fsProfile.setHeading("Assign Group");
-		_fsProgram.setHeading("Assign Program");
+		_fsProfile.remove(super.userName);
+		_fsProfile.remove(super.passCode);
+		_fsProfile.setHeadingText("Assign Group");
+		_fsProgram.setHeadingText("Assign Program");
 		stdAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
 		stdAdvOptionsBtn.addStyleName("register-student-advanced-options-bulk-reg-btn");
 		customAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
@@ -68,7 +69,7 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		 * Create the upload form, which will contain the upload field
 		 * 
 		 */
-		_uploadForm = new CmUploadForm(cm.getId(),
+		_uploadForm = new CmUploadForm(cm.getUid(),
 				new CmAsyncRequestImplDefault() {
 					public void requestComplete(String uploadKey) {
 						new AutoRegistrationWindow(_student, uploadKey);
@@ -79,60 +80,62 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		 * Create a new fieldset to hold the upload form
 		 * 
 		 */
-		FieldSet fs = new FieldSet();
-		FormLayout fL = new FormLayout();
-		
-		fL.setLabelWidth(_formPanel.getLabelWidth());
-        fL.setDefaultWidth(LAYOUT_WIDTH);
-		fs.setLayout(fL);
-		fs.setHeading("Upload Students");
+		MyFieldSet fs = new MyFieldSet("Upload Students",FIELDSET_WIDTH);
+		//fL.setLabelWidth(_formPanel.getLabelWidth());
+        //fL.setDefaultWidth(LAYOUT_WIDTH);
 		//fs.setWidth(_fsProfile.getWidth());
-		fs.add(_uploadForm);
-		fs
-				.add(new Html(
+		fs.addThing(new MyFieldLabel(_uploadForm, "Upload File", LABEL_WIDTH, FIELD_WIDTH));
+        fs.addThing(new HTML(
 						"<p style='padding: 10px;'>Upload a TAB DELIMITED TEXT file with two columns, with the first column as the student name (e.g., Smith, John), " +
 						"and the second column as password (e.g., 23242342). Use Excel's \"Save As...\" drop down menu to save as a " +
 						"Text (Tab delimited) file. </p>"));
 
-		_window.removeAll();
-		_window.setLayout(new BorderLayout());
-		_window.setHeight(500);
-		_window.setWidth(550);
-		_window.setHeading("Bulk Registration");
+		createWindow();
+		//_window.clear();
+		
+		_window.setHeight(550);
+		_window.setHeadingText("Bulk Registration");
+        VerticalLayoutContainer verMain = new VerticalLayoutContainer();
+        _formPanel.setWidget(verMain);
+        
+        verMain.add(_fsProfile);
+        verMain.add(_fsProgram);
+        
+		//_formPanel.setHeight(305);
+        //verPane.add(_formPanel);
+		verMain.add(fs);
+		
+		
+		FlowLayoutContainer flc = new FlowLayoutContainer();
+		flc.setScrollMode(ScrollMode.AUTO);
+		flc.add(verMain);
+		setWidget(flc);
 
-		_formPanel.setHeight(305);
-		_window.add(_formPanel, new BorderLayoutData(LayoutRegion.CENTER, 300));
-		_window.add(fs, new BorderLayoutData(LayoutRegion.SOUTH, 150));
 
-		FormLayout fl = new FormLayout();
-		fl.setLabelWidth(_formPanel.getLabelWidth());
-		FormLayout fpL = (FormLayout) _fsProfile.getLayout();
-		fl.setDefaultWidth(fpL.getDefaultWidth());
+		
+		//fl.setLabelWidth(_formPanel.getLabelWidth());
+		//FormLayout fpL = (FormLayout) _fsProfile.getLayout();
+		//fl.setDefaultWidth(fpL.getDefaultWidth());
 
 		_window.show();
 	}
 
-	public List<Button> getActionButtons() {
-		List<Button> list = new ArrayList<Button>();
+	public List<TextButton> getActionButtons() {
+		List<TextButton> list = new ArrayList<TextButton>();
 
-		Button autoCreate = new Button("Upload");
-		autoCreate.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+		TextButton autoCreate = new TextButton("Upload");
+		autoCreate.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
 				CatchupMathTools.setBusy(true);
 				try {
 					doSubmitAction(new AfterValidation() {
 						@Override
 						public void afterValidation(StudentModel student) {
 							_student = student;
-
-							
 							if(!verifyOkToSave(student)) {
 							    return;
 							}
-							
-							
 							if (!_uploadForm.isValid()) {
 								CatchupMathTools
 								.showAlert("Select a tab delimited file containing a list of names and passwords.");
@@ -151,11 +154,11 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 
 		list.add(autoCreate);
 
-		Button close = new Button("Close");
-		close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-			@Override
-			public void componentSelected(ButtonEvent ce) {
+		TextButton close = new TextButton("Close");
+		close.addSelectHandler(new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
 				_window.close();
 			}
 		});

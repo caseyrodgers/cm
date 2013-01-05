@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /**
  * <code>StudentSettingsModel</code> represents the settings for a single student
@@ -19,7 +19,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 
-public class StudentSettingsModel implements IsSerializable {
+public class StudentSettingsModel implements Response {
 
 	boolean tutoringAvailable;
 	boolean showWorkRequired;
@@ -28,6 +28,8 @@ public class StudentSettingsModel implements IsSerializable {
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
 
+	public StudentSettingsModel() {}
+	
 	public boolean getTutoringAvailable() {
 		return tutoringAvailable;
 	}

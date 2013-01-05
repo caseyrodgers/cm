@@ -4,12 +4,10 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_admin.server.model.StudentActivityDao;
-import hotmath.gwt.cm_admin.server.model.StudentQuickSearcher;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.model.CmStudentPagingLoadResult;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
@@ -25,7 +23,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.sencha.gxt.data.shared.SortInfo;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfig;
+
+
 
 /**
  * Provide GXT paged access to a given admin's list of students
@@ -40,7 +41,7 @@ import com.extjs.gxt.ui.client.data.PagingLoadConfig;
  * 
  */
 public class GetStudentGridPageCommand implements
-        ActionHandler<GetStudentGridPageAction, CmStudentPagingLoadResult<StudentModelExt>> {
+        ActionHandler<GetStudentGridPageAction, CmStudentPagingLoadResult<StudentModelI>> {
 
 	private static Logger logger = Logger.getLogger(GetStudentGridPageCommand.class);
 
@@ -51,17 +52,17 @@ public class GetStudentGridPageCommand implements
 	}
 	
     @Override
-    public CmStudentPagingLoadResult<StudentModelExt> execute(Connection conn, GetStudentGridPageAction action)
+    public CmStudentPagingLoadResult<StudentModelI> execute(Connection conn, GetStudentGridPageAction action)
             throws Exception {
 
-        List<StudentModelExt> studentPool = getStudentPool(action);
+        List<StudentModelI> studentPool = getStudentPool(action);
 
         
         /**
          * Prepare a holder for the page of data to return
          * 
          */
-        List<StudentModelExt> sublist = new ArrayList<StudentModelExt>();
+        List<StudentModelI> sublist = new ArrayList<StudentModelI>();
         /** Extract the page from the entire pool
          * 
          */
@@ -76,11 +77,11 @@ public class GetStudentGridPageCommand implements
         
         // pageHelper.getAnyMissingData(conn, action, sublist);
         
-        return new CmStudentPagingLoadResult<StudentModelExt>(sublist, action.getLoadConfig().getOffset(), studentPool.size());
+        return new CmStudentPagingLoadResult<StudentModelI>(sublist, action.getLoadConfig().getOffset(), studentPool.size());
     }
     
     @SuppressWarnings("unchecked")
-    public List<StudentModelExt> getStudentPool(GetStudentGridPageAction action) throws Exception {
+    public List<StudentModelI> getStudentPool(GetStudentGridPageAction action) throws Exception {
 
 
         PagingLoadConfig config = action!=null?action.getLoadConfig():null;
@@ -94,12 +95,12 @@ public class GetStudentGridPageCommand implements
          * Get all student data for this one admin from cache
          * 
          */
-        List<StudentModelExt> _allStudents = (List<StudentModelExt>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
+        List<StudentModelI> _allStudents = (List<StudentModelI>) CmCacheManager.getInstance().retrieveFromCache(CacheName.STUDENT_PAGED_DATA, cacheKey);
         if (action.isForceRefresh() || _allStudents == null) {
             if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " creating _allStudents");
-            _allStudents = new ArrayList<StudentModelExt>();
+            _allStudents = new ArrayList<StudentModelI>();
             for (StudentModelI smi : CmStudentDao.getInstance().getStudentSummaries(action.getAdminId(), true)) {
-                _allStudents.add(new StudentModelExt(smi));
+                _allStudents.add(smi);
             }
             CmCacheManager.getInstance().addToCache(CacheName.STUDENT_PAGED_DATA, cacheKey, _allStudents);
         }
@@ -108,7 +109,7 @@ public class GetStudentGridPageCommand implements
         }
         if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " _allStudents: " + _allStudents.size());        
 
-        List<StudentModelExt> studentPool = null;
+        List<StudentModelI> studentPool = null;
 
         /** if group not null and matches either group NONE or is set to NO_FILTERING
          * 
@@ -116,16 +117,17 @@ public class GetStudentGridPageCommand implements
          * 
          *  && !action.getGroupFilter().equals(GroupInfoModel.NONE_GROUP.toString())
          */
-        if (action.getGroupFilter() != null && 
-                !action.getGroupFilter().equals(GroupInfoModel.NO_FILTERING.toString())) {
+        if (action.getGroupFilter() > 0 && 
+                action.getGroupFilter() != GroupInfoModel.NO_FILTERING) {
             /**
              * filtered values only matching filtered group
              * 
              */
             if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + "filtering student pool");
-            studentPool = new ArrayList<StudentModelExt>();
-            for (StudentModelExt sme : _allStudents) {
-                if (sme.getGroupId().equals(action.getGroupFilter()))
+            studentPool = new ArrayList<StudentModelI>();
+            for (StudentModelI sme : _allStudents) {
+                int groupFilterId = action.getGroupFilter();
+                if (sme.getGroupId() == groupFilterId)
                     studentPool.add(sme);
             }
         } else {
@@ -142,8 +144,8 @@ public class GetStudentGridPageCommand implements
          */
         if(action.getQuickSearch() != null) {
             String search = action.getQuickSearch();
-            List<StudentModelExt> qsStudentPool = new ArrayList<StudentModelExt>();
-            for (StudentModelExt sme : studentPool) {
+            List<StudentModelI> qsStudentPool = new ArrayList<StudentModelI>();
+            for (StudentModelI sme : studentPool) {
                 if (quickSearchMatch(sme,search)) {
                     qsStudentPool.add(sme);
                 }
@@ -166,7 +168,7 @@ public class GetStudentGridPageCommand implements
         				(options != null) ? options : "NULL"));
 
         	List<Integer> uidList = new ArrayList<Integer>();
-        	for (StudentModelExt m : studentPool) {
+        	for (StudentModelI m : studentPool) {
         	    uidList.add(m.getUid());
         	}
         	StudentActivityDao dao = StudentActivityDao.getInstance();
@@ -175,8 +177,8 @@ public class GetStudentGridPageCommand implements
 
             if (userIds.size() != uidList.size()) {
             	
-            	List<StudentModelExt> drStudentPool = new ArrayList<StudentModelExt>();
-            	for (StudentModelExt m : studentPool) {
+            	List<StudentModelI> drStudentPool = new ArrayList<StudentModelI>();
+            	for (StudentModelI m : studentPool) {
             		if (userIds.contains(m.getUid())) {
             			drStudentPool.add(m);
             		}
@@ -189,9 +191,17 @@ public class GetStudentGridPageCommand implements
          * Should the student pool be sorted?
          * 
          */
-        if (config != null && config.getSortInfo() != null && config.getSortInfo().getSortField() != null) {
-            final String sortField = config.getSortInfo().getSortField();
-            if (sortField != null) {
+        if (config != null && config.getSortInfo() != null && config.getSortInfo().size() > 0) {
+            
+            /** 
+             *  just one?
+             *  
+             *  TODO: add multi sort support
+             */
+            final SortInfo sortInfo = config.getSortInfo().get(0);
+            
+            //final String sortField = config.getSortInfo().getSortField();
+            if (sortInfo != null) {
             	
             	if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " sorting student pool");
 
@@ -201,12 +211,12 @@ public class GetStudentGridPageCommand implements
             	 */
             	//pageHelper.fillSortField(conn, sortField, studentPool, _allStudents, action.getAdminId());
 
-                StudentGridComparator cmp = new StudentGridComparator(sortField);
+                StudentGridComparator cmp = new StudentGridComparator(sortInfo.getSortField());
 
-                Collections.sort(studentPool, config.getSortInfo().getSortDir().comparator(cmp));
+                Collections.sort(studentPool, sortInfo.getSortDir().comparator(cmp));
             }
         }   
-        if (logger.isDebugEnabled()) logger.debug("aid=" + action.getAdminId() + " sorted student pool: " + studentPool.size());
+        logger.debug("aid=" + action.getAdminId() + " sorted student pool: " + studentPool.size());
         
         return studentPool;
     }
@@ -293,15 +303,15 @@ public class GetStudentGridPageCommand implements
         }
     }
 
-    /** Create a map of UIDS to StudentModelExt 
+    /** Create a map of UIDS to StudentModelI 
      *  instances that DO NOT have their extended data read.
      *  
      * @param list
      * @return
      */
-    private Map <Integer, StudentModelExt> collectNotFullyPopulated(List<StudentModelExt> list) {
-    	Map<Integer, StudentModelExt> rMap = new HashMap<Integer, StudentModelExt> ();
-    	for (StudentModelExt sme : list) {
+    private Map <Integer, StudentModelI> collectNotFullyPopulated(List<StudentModelI> list) {
+    	Map<Integer, StudentModelI> rMap = new HashMap<Integer, StudentModelI> ();
+    	for (StudentModelI sme : list) {
     		if (sme.getHasExtendedData() == false) {
     			rMap.put(sme.getUid(), sme);
     		}
@@ -314,8 +324,8 @@ public class GetStudentGridPageCommand implements
      * @param smMap
      * @param smList
      */
-    private void removeOverlap(Map<Integer, StudentModelExt> smMap, List<StudentModelExt> smList) {
-    	for (StudentModelExt sme : smList) {
+    private void removeOverlap(Map<Integer, StudentModelI> smMap, List<StudentModelI> smList) {
+    	for (StudentModelI sme : smList) {
     		if (smMap.containsKey(sme.getUid())) {
     			smMap.remove(sme.getUid());
     		}
@@ -330,7 +340,7 @@ public class GetStudentGridPageCommand implements
  * @author casey
  * 
  */
-class StudentGridComparator implements Comparator<StudentModelExt> {
+class StudentGridComparator implements Comparator<StudentModelI> {
 
     String sortField;
     
@@ -338,67 +348,71 @@ class StudentGridComparator implements Comparator<StudentModelExt> {
         this.sortField = sortField;
     }
 
-    public int compare(StudentModelExt p1, StudentModelExt p2) {
+    public int compare(StudentModelI p1, StudentModelI p2) {
         
         
         boolean p1IsCustom = p1.getProgram().getCustom().isCustom();
         boolean p2IsCustom = p2.getProgram().getCustom().isCustom();
         
-    	if (sortField.equals(StudentModelExt.NAME_KEY)) {
-            return p1.getName().compareToIgnoreCase(p2.getName());
-        } else if (sortField.equals(StudentModelExt.PASSCODE_KEY)) {
-            return p1.getPasscode().compareToIgnoreCase(p2.getPasscode());
-        } else if (sortField.equals(StudentModelExt.GROUP_KEY)) {
-            return p1.getGroup().compareToIgnoreCase(p2.getGroup());
-        } else if (sortField.equals(StudentModelExt.PROGRAM_DESCR_KEY)) {
-            return p1.getProgram().getProgramDescription().compareToIgnoreCase(p2.getProgram().getProgramDescription());
-        } else if (sortField.equals(StudentModelExt.STATUS_KEY)) {
-            return p1.getStatus().compareToIgnoreCase(p2.getStatus());
-        } else if (sortField.equals(StudentModelExt.LAST_LOGIN_KEY)) {
-            return nz(p1.getLastLogin()).compareToIgnoreCase(nz(p2.getLastLogin()));
-        } else if (sortField.equals(StudentModelExt.TOTAL_USAGE_KEY)) {
-            return p1.getTotalUsage() - p2.getTotalUsage();
-        } else if (sortField.equals(StudentModelExt.TUTORING_USE_KEY)) {
-            return p1.getTutoringUse() - p2.getTutoringUse();
-        } else if (sortField.equals(StudentModelExt.LAST_QUIZ_KEY)) { 
-        	
-            String lq1 = (p1IsCustom) ? "" : p1.getLastQuiz();
-            String lq2 = (p2IsCustom) ? "" : p2.getLastQuiz();
-            
-            if ((lq1 == null || lq1.trim().length() == 0) && (lq2 == null | lq2.trim().length() == 0)) return 0;
-            
-            return nz(lq1).compareToIgnoreCase(nz(lq2));
-
-        } else if(sortField.equals(StudentModelExt.PASSING_COUNT_KEY)) {
-        	
-        	int t1 = (p1IsCustom) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
-        	int t2 = (p2IsCustom) ? 0 : p2.getNotPassingCount() + p2.getPassingCount();
-
-            // check total # quizzes
-        	if (t1 != t2) return t1 - t2;
-        	
-        	// total same, sort by number passed
-        	int pass1 = (p1IsCustom) ? 0 : p1.getPassingCount();
-        	int pass2 = (p2IsCustom) ? 0 : p2.getPassingCount();
-        	int pDiff = pass1 - pass2;
-        	if (pDiff != 0) return pDiff;
+        
+        System.out.println("SORTING NOT ENABLED YET");
+        
+        
+//    	if (sortField.equals(StudentModelExt.NAME_KEY)) {
+//            return p1.getName().compareToIgnoreCase(p2.getName());
+//        } else if (sortField.equals(StudentModelI.PASSCODE_KEY)) {
+//            return p1.getPasscode().compareToIgnoreCase(p2.getPasscode());
+//        } else if (sortField.equals(StudentModelI.GROUP_KEY)) {
+//            return p1.getGroup().compareToIgnoreCase(p2.getGroup());
+//        } else if (sortField.equals(StudentModelI.PROGRAM_DESCR_KEY)) {
+//            return p1.getProgram().getProgramDescription().compareToIgnoreCase(p2.getProgram().getProgramDescription());
+//        } else if (sortField.equals(StudentModelI.STATUS_KEY)) {
+//            return p1.getStatus().compareToIgnoreCase(p2.getStatus());
+//        } else if (sortField.equals(StudentModelI.LAST_LOGIN_KEY)) {
+//            return nz(p1.getLastLogin()).compareToIgnoreCase(nz(p2.getLastLogin()));
+//        } else if (sortField.equals(StudentModelI.TOTAL_USAGE_KEY)) {
+//            return p1.getTotalUsage() - p2.getTotalUsage();
+//        } else if (sortField.equals(StudentModelI.TUTORING_USE_KEY)) {
+//            return p1.getTutoringUse() - p2.getTutoringUse();
+//        } else if (sortField.equals(StudentModelI.LAST_QUIZ_KEY)) { 
 //        	
-//            // following test disabled for now
-//        	if (false && t1 > 0 && t2 > 0) {
-//            	// sort on ratio of passed quizzes
-//            	float f1 = (float) p1.getPassingCount() / (float) t1;
-//            	float f2 = (float) p2.getPassingCount() / (float) t2;
-//            	if (f1 != f2) {
-//        	    	return (f1 < f2) ? -1 : 1;
-//        	    }
-//        	}
-
-            /** 
-             *  passed ratios the same or not available, 
-             *  so sort on total number of tests taken
-             */
-            return t1 - t2;
-        }
+//            String lq1 = (p1IsCustom) ? "" : p1.getLastQuiz();
+//            String lq2 = (p2IsCustom) ? "" : p2.getLastQuiz();
+//            
+//            if ((lq1 == null || lq1.trim().length() == 0) && (lq2 == null | lq2.trim().length() == 0)) return 0;
+//            
+//            return nz(lq1).compareToIgnoreCase(nz(lq2));
+//
+//        } else if(sortField.equals(StudentModelI.PASSING_COUNT_KEY)) {
+//        	
+//        	int t1 = (p1IsCustom) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
+//        	int t2 = (p2IsCustom) ? 0 : p2.getNotPassingCount() + p2.getPassingCount();
+//
+//            // check total # quizzes
+//        	if (t1 != t2) return t1 - t2;
+//        	
+//        	// total same, sort by number passed
+//        	int pass1 = (p1IsCustom) ? 0 : p1.getPassingCount();
+//        	int pass2 = (p2IsCustom) ? 0 : p2.getPassingCount();
+//        	int pDiff = pass1 - pass2;
+//        	if (pDiff != 0) return pDiff;
+////        	
+////            // following test disabled for now
+////        	if (false && t1 > 0 && t2 > 0) {
+////            	// sort on ratio of passed quizzes
+////            	float f1 = (float) p1.getPassingCount() / (float) t1;
+////            	float f2 = (float) p2.getPassingCount() / (float) t2;
+////            	if (f1 != f2) {
+////        	    	return (f1 < f2) ? -1 : 1;
+////        	    }
+////        	}
+//
+//            /** 
+//             *  passed ratios the same or not available, 
+//             *  so sort on total number of tests taken
+//             */
+//            return t1 - t2;
+//        }
 
         return 0;
     }

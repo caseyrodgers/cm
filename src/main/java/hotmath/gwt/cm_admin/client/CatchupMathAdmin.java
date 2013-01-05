@@ -5,57 +5,35 @@ import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
-import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog;
-import hotmath.gwt.cm_admin.client.ui.assignment.AddProblemDialog.AddProblemsCallback;
-import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookDialog;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
-import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
-import hotmath.gwt.cm_tools.client.ui.StudentDetailsPanel;
-import hotmath.gwt.cm_tools.client.ui.StudentShowWorkWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
+import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignAction;
+import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignAction.ActionType;
+import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignResponse;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.Viewport;
 
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
@@ -63,7 +41,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> {
 
     Viewport mainPort;
-    LayoutContainer mainContainer;
+    BorderLayoutContainer mainContainer;
     HeaderPanel headerPanel;
     FooterPanel footerPanel;
     CmAdminModel cmAdminMdl;
@@ -73,7 +51,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     static CatchupMathAdmin instance;
 
     public void onModuleLoad() {
-
         CmLogger.info("CatchupMathAdmin is starting");
 
         instance = this;
@@ -84,42 +61,46 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
                 CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         };
-        // CmBusyManager.setViewPort(mainPort);
+        CmBusyManager.setViewPort(mainPort);
+
         
+//        String launchSub = CmShared.getQueryParameter("load");
+//        if(launchSub != null) {
+//            if(launchSub.startsWith("student_details")) {
+//                
+//                Log.info("Launching tool Student Details");
+//                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
+//                launchOnlyStudentDetails(studentUid);
+//                return;
+//            }
+//            else if(launchSub.startsWith("student_registration")) {
+//                Log.info("Launching tool Student Registration");
+//                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
+//                launchOnlyStudentRegistration(studentUid);
+//                return;
+//            }
+//        }
+
         
-        String launchSub = CmShared.getQueryParameter("load");
-        if(launchSub != null) {
-            if(launchSub.startsWith("student_details")) {
-                
-                Log.info("Launching tool Student Details");
-                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
-                launchOnlyStudentDetails(studentUid);
-                return;
-            }
-            else if(launchSub.startsWith("student_registration")) {
-                Log.info("Launching tool Student Registration");
-                int studentUid = Integer.parseInt(launchSub.split(":")[1]);
-                launchOnlyStudentRegistration(studentUid);
-                return;
-            }
-        }
-
-
-        mainPort.setLayout(new BorderLayout());
-
-        BorderLayoutData bdata = new BorderLayoutData(LayoutRegion.NORTH, 40);
+        BorderLayoutContainer borderMain = new BorderLayoutContainer();
+        
+        BorderLayoutData bdata = new BorderLayoutData(40);
         headerPanel = new HeaderPanel();
-        mainPort.add(headerPanel, bdata);
+        borderMain.setNorthWidget(headerPanel, bdata);
 
-        mainContainer = new LayoutContainer();
-        mainContainer.setStyleName("main-container");
-        mainContainer.setLayout(new FitLayout());
+        mainContainer = new BorderLayoutContainer();
+        mainContainer.addStyleName("main-container");
 
-        mainPort.add(mainContainer, new BorderLayoutData(LayoutRegion.CENTER));
+        
+        //borderMain.getElement().setAttribute("style",  "background-color: red");
+        
+        borderMain.setCenterWidget(mainContainer);
+        mainPort.setWidget(borderMain);
 
         RootPanel.get("main-content").add(mainPort);
-        
 
+        
+        
         GWT.runAsync(new CmRunAsyncCallback() {
             @Override
             public void onSuccess() {
@@ -136,6 +117,25 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     private void completeLoginProcess(final int uid) {
         
+        
+//        if(true) {
+//            GroupInfoModel gim = new GroupInfoModel(2,  1, "test", 1033333, true,  false);
+//            CmShared.getCmService().execute(new GroupManagerAssignAction(ActionType.GET_STUDENTS, gim), new AsyncCallback<GroupManagerAssignResponse>() {
+//                public void onSuccess(GroupManagerAssignResponse result) {
+//                    Window.alert("COMPLETE");
+//                }
+//                @Override
+//                public void onFailure(Throwable caught) {
+//                    caught.printStackTrace();
+//                    Window.alert("ERROR");
+//                }
+//            });
+//            
+//            
+//        }
+        
+        
+        
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {
@@ -143,10 +143,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             }
         });
         
-        
 
         cmAdminMdl = new CmAdminModel();
-        cmAdminMdl.setId(uid);
+        cmAdminMdl.setUid(uid);
 
         infoPanel = new AccountInfoPanel(cmAdminMdl);
         studentGrid = new StudentGridPanel(cmAdminMdl);
@@ -170,27 +169,20 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     private void loadMainPage() {
         CmLogger.info("Loading CMAdmin main page");
-        mainContainer.removeAll();
+        mainContainer.clear();
 
-        mainContainer.setLayout(new BorderLayout());
+        mainContainer.setNorthWidget(infoPanel, new BorderLayoutData(120));
+        mainContainer.setCenterWidget(studentGrid);
 
-        mainContainer.add(infoPanel, new BorderLayoutData(LayoutRegion.NORTH, 120));
-        mainContainer.add(studentGrid, new BorderLayoutData(LayoutRegion.CENTER));
-
-        mainContainer.layout();
+        mainContainer.forceLayout();
     }
 
     private void loadShowWorkPage() {
         CmLogger.info("Loading CMAdmin show work page");
-        mainContainer.removeAll();
-        mainContainer.setLayout(new FitLayout());
+        mainContainer.clear();
 
-        mainContainer.add(new StudentShowWorkPanel());
-        mainContainer.layout();
-    }
-
-    public void showMe() {
-        ;
+        mainContainer.setCenterWidget(new StudentShowWorkPanel());
+        mainContainer.forceLayout();
     }
 
     public static CatchupMathAdmin getInstance() {
@@ -215,163 +207,164 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         return infoPanel;
     }
 
-    private void setupAnyTests() {
-
-        // GWindow gw = new GWindow(true);
-        // AssignmentQuestionViewerPanel pan = new
-        // AssignmentQuestionViewerPanel();
-        // gw.setWidget(pan);
-        // gw.setVisible(true);
-        //
-        //
-        // final int uid = UserInfoBase.getInstance().getUid();
-        // String pid="alg2ptests3_coursetest_1_algebra2practicetest_20_1";
-        // int groupId=10;
-        // String name="Test";
-        // String comments = "Test";
-        // Date dueDate = new Date();
-        // CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-        // List<Integer> uids = new ArrayList<Integer>();
-        // final String status="";
-        // Assignment ass = new
-        // Assignment(UserInfoBase.getInstance().getUid(),groupId, name,
-        // comments, dueDate,pids,uids,status);
-        //
-        // final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
-        //
-        // CmList<StudentProblemDto> statuses = new
-        // CmArrayList<StudentProblemDto>() {{
-        // add(new StudentProblemDto(uid,problem,status));
-        // }};
-        // StudentAssignment studentAssignment = new StudentAssignment(uid,ass,
-        // statuses);
-        //
-        // pan.viewQuestion(studentAssignment, problem);
-
-        if (false) {
-            final int uid = 2;
-            String pid = "test_dynamic_graphs_1_2_3$4";
-            int groupId = 10;
-            String name = "Test";
-            String comments = "Test";
-            Date dueDate = new Date();
-            CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-            List<Integer> uids = new ArrayList<Integer>();
-            final String status = "";
-            Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(), groupId, name, comments, dueDate,
-                    pids, uids, status);
-
-            final ProblemDto problem = new ProblemDto(0, "lesson", "label", pid, null, 0);
-
-            CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {
-                {
-                    add(new StudentProblemDto(uid, problem, status, true, true));
-                }
-            };
-            StudentAssignment stuAssignment = new StudentAssignment(uid, ass, statuses);
-            GradeBookDialog gb = new GradeBookDialog(stuAssignment, new CallbackOnComplete() {
-
-                @Override
-                public void isComplete() {
-                }
-            });
-            // AssignmentGradingPanel agp = new
-            // AssignmentGradingPanel(stuAssignment);
-
-            return;
-        }
-
-        if (false) {
-            StudentModelExt sme = new StudentModelExt();
-            StudentActivityModel activityModel = new StudentActivityModel();
-            activityModel.setRunId(1196000);
-            activityModel.setTestId(0);
-            sme.setUid(27554);
-            new StudentShowWorkWindow(sme, activityModel);
-
-            return;
-        }
-
-        if (true) {
-            // new AssignmentManagerDialog2(2);
-            // return;
-            AddProblemDialog.showDialog(new AddProblemsCallback() {
-                @Override
-                public void problemsAdded(List<ProblemDto> problemsAdded) {
-                }
-            });
-            return;
-        }
-    }
-    
 
     private void launchOnlyStudentRegistration(final int studentUid) {
-        GWT.runAsync(new CmRunAsyncCallback() {
-            @Override
-            public void onSuccess() {
-                new RetryAction<StudentModelI>() {
-
-                    @Override
-                    public void attempt() {
-                        CmBusyManager.setBusy(true);
-                        GetStudentModelAction action = new GetStudentModelAction(studentUid);
-                        setAction(action);
-                        CmShared.getCmService().execute(action, this);
-                    }
-
-                    public void oncapture(StudentModelI student) {
-                        try {
-                            CmBusyManager.setBusy(false);
-                            CmAdminModel adminModel = new CmAdminModel();
-                            adminModel.setId(student.getAdminUid());
-                            
-                            mainPort.setLayout(new FitLayout());
-                            
-                            RegisterStudent rs = new RegisterStudent(student, adminModel, true, true);
-                    		/**
-                    		 * Assign buttons to the button bar on the Window
-                    		 */
-                            ButtonBar bb = new ButtonBar();
-                    		for (Button btn : rs.getActionButtons()) {
-                    			btn.addStyleName("register-student-btn");
-                    			String txt = btn.getText();
-                    			if(txt.equals("Save")) {
-                    				bb.add(btn);
-                    			}
-                    		}
-                    		mainPort.add(rs);
-                            RootPanel.get().add(mainPort);
-                        } finally {
-                            CmBusyManager.setBusy(false);
-                        }
-                    }
-                }.register();
-            }
-        });
+//        GWT.runAsync(new CmRunAsyncCallback() {
+//            @Override
+//            public void onSuccess() {
+//                new RetryAction<StudentModelI>() {
+//
+//                    @Override
+//                    public void attempt() {
+//                        CmBusyManager.setBusy(true);
+//                        GetStudentModelAction action = new GetStudentModelAction(studentUid);
+//                        setAction(action);
+//                        CmShared.getCmService().execute(action, this);
+//                    }
+//
+//                    public void oncapture(StudentModelI student) {
+//                        try {
+//                            CmBusyManager.setBusy(false);
+//                            CmAdminModel adminModel = new CmAdminModel();
+//                            adminModel.setUid(2);
+//                            
+//                            RegisterStudent rs = new RegisterStudent(student, adminModel, true, true);
+//                    		/**
+//                    		 * Assign buttons to the button bar on the Window
+//                    		 */
+//                            ButtonBar bb = new ButtonBar();
+//                    		for (TextButton btn : rs.getActionButtons()) {
+//                    			btn.addStyleName("register-student-btn");
+//                    			String txt = btn.getText();
+//                    			if(txt.equals("Save")) {
+//                    				bb.add(btn);
+//                    			}
+//                    		}
+//                    		mainPort.add(rs);
+//                            RootPanel.get().add(mainPort);
+//                        } finally {
+//                            CmBusyManager.setBusy(false);
+//                        }
+//                    }
+//                }.register();
+//            }
+//        });
     }    
     
     private void launchOnlyStudentDetails(final int studentUid) {
-      GWT.runAsync(new CmRunAsyncCallback() {
-
-          @Override
-          public void onSuccess() {
-              new RetryAction<StudentModelI>() {
-                  @Override
-                  public void attempt() {
-                      CmBusyManager.setBusy(true);
-                      GetStudentModelAction action = new GetStudentModelAction(studentUid);
-                      setAction(action);
-                      CmShared.getCmService().execute(action, this);
-                  }
-
-                  public void oncapture(StudentModelI student) {
-                      CmBusyManager.setBusy(false);
-                      mainPort.setLayout(new FitLayout());
-                      mainPort.add(new StudentDetailsPanel(new StudentModelExt(student)));
-                      RootPanel.get().add(mainPort);
-                  }
-              }.register();
-          }
-      });
+//      GWT.runAsync(new CmRunAsyncCallback() {
+//
+//          @Override
+//          public void onSuccess() {
+//              new RetryAction<StudentModelI>() {
+//                  @Override
+//                  public void attempt() {
+//                      CmBusyManager.setBusy(true);
+//                      GetStudentModelAction action = new GetStudentModelAction(studentUid);
+//                      setAction(action);
+//                      CmShared.getCmService().execute(action, this);
+//                  }
+//
+//                  public void oncapture(StudentModelI student) {
+//                      CmBusyManager.setBusy(false);
+//                      mainPort.setLayout(new FitLayout());
+//                      mainPort.add(new StudentDetailsPanel(new StudentModelExt(student)));
+//                      RootPanel.get().add(mainPort);
+//                  }
+//              }.register();
+//          }
+//      });
     }
+    
+    
+
+    private void setupAnyTests() {
+
+//        // GWindow gw = new GWindow(true);
+//        // AssignmentQuestionViewerPanel pan = new
+//        // AssignmentQuestionViewerPanel();
+//        // gw.setWidget(pan);
+//        // gw.setVisible(true);
+//        //
+//        //
+//        // final int uid = UserInfoBase.getInstance().getUid();
+//        // String pid="alg2ptests3_coursetest_1_algebra2practicetest_20_1";
+//        // int groupId=10;
+//        // String name="Test";
+//        // String comments = "Test";
+//        // Date dueDate = new Date();
+//        // CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
+//        // List<Integer> uids = new ArrayList<Integer>();
+//        // final String status="";
+//        // Assignment ass = new
+//        // Assignment(UserInfoBase.getInstance().getUid(),groupId, name,
+//        // comments, dueDate,pids,uids,status);
+//        //
+//        // final ProblemDto problem = new ProblemDto(0,"lesson","label", pid);
+//        //
+//        // CmList<StudentProblemDto> statuses = new
+//        // CmArrayList<StudentProblemDto>() {{
+//        // add(new StudentProblemDto(uid,problem,status));
+//        // }};
+//        // StudentAssignment studentAssignment = new StudentAssignment(uid,ass,
+//        // statuses);
+//        //
+//        // pan.viewQuestion(studentAssignment, problem);
+//
+//        if (false) {
+//            final int uid = 2;
+//            String pid = "test_dynamic_graphs_1_2_3$4";
+//            int groupId = 10;
+//            String name = "Test";
+//            String comments = "Test";
+//            Date dueDate = new Date();
+//            CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
+//            List<Integer> uids = new ArrayList<Integer>();
+//            final String status = "";
+//            Assignment ass = new Assignment(UserInfoBase.getInstance().getUid(), groupId, name, comments, dueDate,
+//                    pids, uids, status);
+//
+//            final ProblemDto problem = new ProblemDto(0, "lesson", "label", pid, null, 0);
+//
+//            CmList<StudentProblemDto> statuses = new CmArrayList<StudentProblemDto>() {
+//                {
+//                    add(new StudentProblemDto(uid, problem, status, true, true));
+//                }
+//            };
+//            StudentAssignment stuAssignment = new StudentAssignment(uid, ass, statuses);
+//            GradeBookDialog gb = new GradeBookDialog(stuAssignment, new CallbackOnComplete() {
+//
+//                @Override
+//                public void isComplete() {
+//                }
+//            });
+//            // AssignmentGradingPanel agp = new
+//            // AssignmentGradingPanel(stuAssignment);
+//
+//            return;
+//        }
+//
+//        if (false) {
+//            StudentModelExt sme = new StudentModelExt();
+//            StudentActivityModel activityModel = new StudentActivityModel();
+//            activityModel.setRunId(1196000);
+//            activityModel.setTestId(0);
+//            sme.setUid(27554);
+//            new StudentShowWorkWindow(sme, activityModel);
+//
+//            return;
+//        }
+//
+//        if (true) {
+//            // new AssignmentManagerDialog2(2);
+//            // return;
+//            AddProblemDialog.showDialog(new AddProblemsCallback() {
+//                @Override
+//                public void problemsAdded(List<ProblemDto> problemsAdded) {
+//                }
+//            });
+//            return;
+//        }
+    }
+    
 }

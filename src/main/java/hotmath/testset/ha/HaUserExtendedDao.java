@@ -295,7 +295,7 @@ public class HaUserExtendedDao extends SimpleJdbcDaoSupport {
     			stmt2.executeUpdate();
     		}
         	else {
-    	    	LOGGER.warn("*** updateUserExtendedLessonStatus(): Inserting User extended lesson status data, userId: " + userId);
+    	    	LOGGER.debug("*** updateUserExtendedLessonStatus(): Inserting User extended lesson status data, userId: " + userId);
         		// perform insert (shouldn't happen)
         	    insertUserExtendedLessonStatus(conn, userId, lessonCount);
     		}

@@ -16,7 +16,6 @@ import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudyProgramModel;
@@ -106,7 +105,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     public GroupInfoModel getGroup(final Connection conn, int adminId, String groupName) throws Exception {
     	List<GroupInfoModel> groups = getActiveGroups(adminId);
     	for(GroupInfoModel g: groups) {
-    		if(g.getName().equals(groupName))
+    		if(g.getGroupName().equals(groupName))
     			return g;
     	}
     	return null;
@@ -122,8 +121,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                         GroupInfoModel m = new GroupInfoModel();
                         m.setId(rs.getInt("id"));
                         m.setGroupName(rs.getString("name"));
-                        m.setIsActive(rs.getInt("is_active") != 0);
-                        m.setIsSelfReg(rs.getInt("is_auto_create_template") != 0);
+                        m.setActive(rs.getInt("is_active") != 0);
+                        m.setSelfReg(rs.getInt("is_auto_create_template") != 0);
                         return m;
                     }
                 }
@@ -138,20 +137,20 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<StudentModelExt> getGroupStudents(final Connection conn, GroupInfoModel gim) throws Exception {
+    public CmList<StudentModelI> getGroupStudents(final Connection conn, GroupInfoModel gim) throws Exception {
     	
-    	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+    	CmList<StudentModelI> students = new CmArrayList<StudentModelI>();
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	try {
     		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_IN_GROUP");
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
-    		ps.setString(2, gim.getName());
+    		ps.setString(2, gim.getGroupName());
     		
     		rs = ps.executeQuery();
     		while(rs.next()) {
-    			StudentModelExt sm = new StudentModelExt();
+    		    StudentModelI sm = new StudentModel();
     			sm.setUid(rs.getInt("uid"));
     			sm.setName(rs.getString("user_name"));
     			students.add(sm);
@@ -171,19 +170,19 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<StudentModelExt> getGroupStudentsNotIn(final Connection conn,GroupInfoModel gim) throws Exception {
-    	CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+    public CmList<StudentModelI> getGroupStudentsNotIn(final Connection conn,GroupInfoModel gim) throws Exception {
+    	CmList<StudentModelI> students = new CmArrayList<StudentModelI>();
     	PreparedStatement ps = null;
     	ResultSet rs = null;
     	try {
     		String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_NOT_IN_GROUP");
     		ps = conn.prepareStatement(sql);
     		ps.setInt(1, gim.getAdminId());
-    		ps.setString(2, gim.getName());
+    		ps.setString(2, gim.getGroupName());
     		
     		rs = ps.executeQuery();
     		while(rs.next()) {
-    			StudentModelExt sm = new StudentModelExt();
+    		    StudentModelI sm = new StudentModel();
     			sm.setUid(rs.getInt("uid"));
     			sm.setName(rs.getString("user_name"));
     			sm.setGroup(rs.getString("group_name"));
@@ -206,11 +205,11 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @param students
      * @throws Exception
      */
-    public void setGroupStudents(final Connection conn, GroupInfoModel gim, List<StudentModelExt> students) throws Exception {
+    public void setGroupStudents(final Connection conn, GroupInfoModel gim, List<StudentModelI> students) throws Exception {
     	PreparedStatement ps=null;
     	try {
     		String inList="";
-    		for(StudentModelExt se: students) {
+    		for(StudentModelI se: students) {
     			if(inList.length() > 0)
     				inList += ",";
     			inList += se.getUid();
@@ -233,11 +232,11 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
     public GroupInfoModel addGroup(final Connection conn, Integer adminUid, GroupInfoModel gm) throws Exception {
         PreparedStatement ps = null;
 
-        performGroupNameChecks(conn, adminUid, gm.getName(), "addGroup()");
+        performGroupNameChecks(conn, adminUid, gm.getGroupName(), "addGroup()");
 
         try {
             ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("ADD_GROUP_SQL"));
-            ps.setString(1, gm.getName());
+            ps.setString(1, gm.getGroupName());
             ps.setString(2, null);
             ps.setInt(3, 1);
             ps.setInt(4, adminUid);
@@ -248,8 +247,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                 gm.setId(grpId);
             }
         } catch (Exception e) {
-            logger.error(String.format("*** Error adding Group: %s, for adminUid: %d", gm.getName(), adminUid), e);
-            throw new Exception(String.format("*** Error adding Group: %s ***", gm.getName()));
+            logger.error(String.format("*** Error adding Group: %s, for adminUid: %d", gm.getGroupName(), adminUid), e);
+            throw new Exception(String.format("*** Error adding Group: %s ***", gm.getGroupName()));
         } finally {
             SqlUtilities.releaseResources(null, ps, null);
         }
@@ -673,10 +672,10 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             m.setShortTitle(rs.getString("id"));
             m.setTitle(rs.getString("title"));
             m.setDescr(rs.getString("description"));
-            m.setNeedsChapters(rs.getInt("needs_chapter"));
-            m.setNeedsSubject(rs.getInt("needs_subject"));
-            m.setNeedsPassPercent(rs.getInt("needs_pass_percent"));
-            m.setNeedsState(rs.getInt("needs_state"));
+            m.setNeedsChapters(rs.getBoolean("needs_chapter"));
+            m.setNeedsSubject(rs.getBoolean("needs_subject"));
+            m.setNeedsPassPercent(rs.getBoolean("needs_pass_percent"));
+            m.setNeedsState(rs.getBoolean("needs_state"));
             m.setIsTemplate(rs.getInt("is_template") != 0);
             m.setIsArchived(rs.getInt("is_archived") != 0);
             m.setArchiveDate(rs.getString("archive_date"));
@@ -699,8 +698,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             GroupInfoModel m = new GroupInfoModel();
             m.setId(rs.getInt("id"));
             m.setGroupName(rs.getString("name"));
-            m.setIsActive(rs.getInt("is_active") != 0);
-            m.setIsSelfReg(rs.getInt("is_auto_create_template") != 0);
+            m.setActive(rs.getInt("is_active") != 0);
+            m.setSelfReg(rs.getInt("is_auto_create_template") != 0);
             l.add(m);
         }
         return l;
@@ -823,7 +822,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             sm.setName(groupName);
             sm.setGroup(groupName);
             sm.setAdminUid(aid);
-            sm.setGroupId("1");
+            sm.setGroupId(1);
 
             StudentProgramModel studentProgram = new StudentProgramModel();
             studentProgram.setProgramType(program.getProgramType());
@@ -847,7 +846,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @param students
      * @return
      */
-    private List<Integer> createInListReplacements(List<StudentModelExt> students) {
+    private List<Integer> createInListReplacements(List<StudentModelI> students) {
         List<Integer> studentIds = new ArrayList<Integer>();
         for (int i = 0, t = students.size(); i < t; i++) {
             studentIds.add(students.get(i).getUid());
@@ -867,7 +866,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelExt> studentPool,
+    public CmList<TrendingData> getTrendingData(final Connection conn, Integer aid, List<StudentModelI> studentPool,
             boolean useActiveOnly) throws Exception {
         CmList<TrendingData> tdata = new CmArrayList<TrendingData>();
 
@@ -881,8 +880,8 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty(sqlToken);
 
             List<Integer> uidList = new ArrayList<Integer>();
-            for (StudentModelExt sme : studentPool) {
-                if (useActiveOnly) { /* TODO StudentModelExt isActive */
+            for (StudentModelI sme : studentPool) {
+                if (useActiveOnly) { /* TODO StudentModelI isActive */
                 }
                 uidList.add(sme.getUid());
             }
@@ -916,7 +915,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public CmList<ProgramData> getTrendingData_ForProgram(final Connection conn, Integer aid,
-            List<StudentModelExt> studentPool, boolean useActiveOnly) throws Exception {
+            List<StudentModelI> studentPool, boolean useActiveOnly) throws Exception {
 
         logger.debug("aid=" + aid + " getting trending data for program");
         CmList<ProgramData> tdata = new CmArrayList<ProgramData>();
@@ -953,10 +952,10 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,
-            List<StudentModelExt> studentPool, Integer testDefId, Integer quizSegment, Boolean useActiveOnly)
+    public CmList<StudentModelI> getStudentsWhoHaveBeenAssignedProgramSegment(final Connection conn,
+            List<StudentModelI> studentPool, Integer testDefId, Integer quizSegment, Boolean useActiveOnly)
             throws Exception {
-        CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+        CmList<StudentModelI> students = new CmArrayList<StudentModelI>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -968,7 +967,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             ps.setInt(2, quizSegment);
             rs = ps.executeQuery();
             while (rs.next()) {
-                StudentModelExt parialStudent = new StudentModelExt();
+                StudentModelI parialStudent = new StudentModelBase();
                 parialStudent.setName(rs.getString("user_name"));
                 parialStudent.setUid(rs.getInt("uid"));
                 students.add(parialStudent);
@@ -988,9 +987,9 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public CmList<StudentModelExt> getStudentsWhoHaveBeenAssignedLesson(final Connection conn,
-            List<StudentModelExt> studentPool, String lessonName, boolean useActiveOnly) throws Exception {
-        CmList<StudentModelExt> students = new CmArrayList<StudentModelExt>();
+    public CmList<StudentModelI> getStudentsWhoHaveBeenAssignedLesson(final Connection conn,
+            List<StudentModelI> studentPool, String lessonName, boolean useActiveOnly) throws Exception {
+        CmList<StudentModelI> students = new CmArrayList<StudentModelI>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -1002,7 +1001,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
             ps.setString(1, lessonName);
             rs = ps.executeQuery();
             while (rs.next()) {
-                StudentModelExt parialStudent = new StudentModelExt();
+                StudentModelI parialStudent = new StudentModelBase();
                 String name = rs.getString("user_name");
                 int timesAssigned = rs.getInt("times_assigned");
                 if (timesAssigned > 1)

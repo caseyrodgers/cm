@@ -73,7 +73,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         setHeadingHtml("Problems in Assignment");
         addTool(createNextProblemButton());
-        
+
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
 
         List<ColumnConfig<StudentProblemDto, ?>> l = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
@@ -88,9 +88,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
         }));
         l.add(labelCol);
 
-        if(callback.showStatus()) {
-            ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(
-                props.statusForStudent(), 100, "Status");
+        if (callback.showStatus()) {
+            ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.statusForStudent(), 100, "Status");
             l.add(labelStatus);
         }
 
@@ -121,7 +120,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
                         }
                     }
                 });
-        
 
         _studentProblemGrid.getView().setViewConfig(new GridViewConfig<StudentProblemDto>() {
 
@@ -141,7 +139,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
                 return null;
             }
         });
-        
+
         setWidget(_studentProblemGrid);
 
         __lastInstance = this;
@@ -158,16 +156,16 @@ public class AssignmentProblemListPanel extends ContentPanel {
         });
         return b;
     }
-    
+
     private void moveToNextIncompleteProblem() {
         StudentProblemDto selected = _studentProblemGrid.getSelectionModel().getSelectedItem();
-        for(StudentProblemDto s: _studentProblemGrid.getStore().getAll()) {
-            if(!s.isComplete() && selected != s) {
+        for (StudentProblemDto s : _studentProblemGrid.getStore().getAll()) {
+            if (!s.isComplete() && selected != s) {
                 _studentProblemGrid.getSelectionModel().select(s, false);
                 return;
             }
         }
-        
+
         Info.display("Assignment Complete", "There are no unanswered problems.");
     }
 

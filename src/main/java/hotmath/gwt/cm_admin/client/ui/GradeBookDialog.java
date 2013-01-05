@@ -26,6 +26,7 @@ import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -61,21 +62,18 @@ public class GradeBookDialog extends CmWindow {
     }
 
     private void addDetailsButton() {
-        StdButton detailsBtn = new StdButton("Homework Details", "Display homework details.", new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                
-                final GradeBookModel mdl = getGridItem();
-                if (mdl != null) {
-                    displayHomeworkDetails(mdl);
-                }
-                
-            }
-
-        });
-        detailsBtn.setStyleAttribute("padding-right", "50px");
-        detailsBtn.setStyleAttribute("padding-top", "4px");
-
-        getButtonBar().add(detailsBtn);    	
+//        Button detailsBtn = new Button("Homework Details", "Display homework details.", new SelectionListener<ButtonEvent>() {
+//            public void componentSelected(ButtonEvent ce) {
+//                final GradeBookModel mdl = getGridItem();
+//                if (mdl != null) {
+//                    displayHomeworkDetails(mdl);
+//                }
+//            }
+//        });
+//        //detailsBtn.setStyleAttribute("padding-right", "50px");
+//        //detailsBtn.setStyleAttribute("padding-top", "4px");
+//
+//        getButtonBar().add(detailsBtn);    	
     }
 
     private void addHomeworkSelector() {

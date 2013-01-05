@@ -1,27 +1,53 @@
 package hotmath.gwt.cm_tools.client.model;
 
-public class ChapterModel extends BaseModel {
-	
-	private static final long serialVersionUID = 8712800389384865595L;
+import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-	public ChapterModel (String number, String title) {
-		set("number", number);
-		set("title", title);
-		set("chapter", number + " " + title);
-	}
-		
-	public String getNumber() {
-		return get("number");
-	}
-	
-	public String getTitle() {
-		return get("title");
-	}
-	
-	public String getChapter() {
-		return get("chapter");
+public class ChapterModel implements Response {
+
+    String number;
+    String title;
+    String chapter;
+    String styleIsFree;
+
+    public ChapterModel() {
     }
-	
-	public ChapterModel() {
-	}
+
+    public ChapterModel(String number, String title) {
+        this.number = number;
+        this.title = title;
+        this.chapter = number + " " + title;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getChapter() {
+        return chapter;
+    }
+
+    public void setChapter(String chapter) {
+        this.chapter = chapter;
+    }
+
+    public String getStyleIsFree() {
+        return styleIsFree;
+    }
+
+    public void setStyleIsFree(String styleIsFree) {
+        this.styleIsFree = styleIsFree;
+    }
+
 }

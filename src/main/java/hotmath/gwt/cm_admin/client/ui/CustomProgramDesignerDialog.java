@@ -423,7 +423,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                     action.setAction(ActionType.CREATE);
                 else 
                     action.setAction(ActionType.SAVE);
-                action.setAdminId(adminModel.getId());
+                action.setAdminId(adminModel.getUid());
                 action.setProgramId(program.getProgramId());
                 action.setProgramName(_programName.getValue());
                 action.setLessons(_listSelected.getStore().getModels());
@@ -459,7 +459,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
                 @Override
                 public void attempt() {
                     CmBusyManager.setBusy(true);
-                    GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getId());
+                    GetCustProgQuizDefsAction action = new GetCustProgQuizDefsAction(adminModel.getUid());
                     setAction(action);
                     CmShared.getCmService().execute(action, this);
                 }
@@ -486,7 +486,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getId(), def.getQuizId());
+                DeleteCustomQuizAction action = new DeleteCustomQuizAction(adminModel.getUid(), def.getQuizId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -519,7 +519,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 CustomLessonModel quiz = _listCustomPrograms.getSelectionModel().getSelectedItem();
-                CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(),
+                CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getUid(),
                 		quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
                 new CustomProgramAddQuizDialog(new Callback() {
                     @Override
@@ -535,7 +535,7 @@ public class CustomProgramDesignerDialog extends CmWindow {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 CustomLessonModel quiz = _listCustomPrograms.getSelectionModel().getSelectedItem();
-                final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getId(),
+                final CustomQuizDef def = new CustomQuizDef(quiz.getQuizId(), quiz.getQuiz(), adminModel.getUid(),
                 		quiz.getIsAnswersViewable(), quiz.getIsInUse(), quiz.getIsArchived(), quiz.getArchiveDate());
                 MessageBox.confirm("Delete Custom Quiz?", "Are you sure you want to delete custom quiz '" + def.getQuizName() + "'?", new Listener<MessageBoxEvent>() {
                     public void handleEvent(MessageBoxEvent be) {

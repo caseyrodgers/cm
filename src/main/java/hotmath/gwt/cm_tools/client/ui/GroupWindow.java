@@ -1,29 +1,27 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.Style.SortDir;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.ComboBox;
-import com.extjs.gxt.ui.client.widget.form.FieldSet;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.FieldSet;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * Create Group UI
@@ -33,12 +31,12 @@ import com.google.gwt.user.client.Timer;
  * @author bob
  *
  */
-public class GroupWindow extends LayoutContainer {
+public class GroupWindow extends FlowLayoutContainer {
 	
-	private CmWindow gw;
+	private GWindow gw;
 	private GroupInfoModel gm;
 	private ComboBox <GroupInfoModel> grpCombo;
-	private TextField<String> name; 
+	private TextField name; 
 	
 	private FieldSet fs;
 	private CmAdminModel cmAdminMdl;
@@ -51,39 +49,49 @@ public class GroupWindow extends LayoutContainer {
 	    this.requestCallback = callback;
 		cmAdminMdl = cm;
 		grpCombo = gc;
-		gw = new CmWindow();
+		gw = new GWindow(false);
+		
+		gw.setHeadingText((isNew)?"Define a New Group":"Edit Group");
+        gw.setWidth(formWidth+10);
+        gw.setHeight(formHeight+20);
+        gw.setResizable(false);
+        gw.setDraggable(true);
+        gw.setModal(true);
+
+		
 		this.editGroup = editGroup;
-		gw.add(createForm(isNew));
- 		gw.show();
+		gw.setWidget(createForm(isNew));
+ 		gw.setVisible(true);
+ 		
         name.focus();
 	}
 	
-	private FormPanel createForm(boolean isNew) {
-		FormPanel fp = new FormPanel();
+	private Widget createForm(boolean isNew) {
+	    
+	    
+	    FramedPanel framedPanel = new FramedPanel();
+		
 		//fp.setStyleName("group-form-panel");
-		fp.setLabelWidth(75);
-		fp.setHeight(formHeight);
-		fp.setFooter(true);
-		fp.setFrame(false);
-		fp.setHeaderVisible(false);
-		fp.setBodyBorder(false);
-		fp.setIconStyle("icon-form");
-		fp.setButtonAlign(HorizontalAlignment.CENTER);
-		fp.setLayout(new FormLayout());
+		//fp.setLabelWidth(75);
+		framedPanel.setHeight(formHeight);
+		//framedPanel.setFooter(true);
+		//framedPanel.setFrame(false);
+		framedPanel.setHeaderVisible(false);
+		framedPanel.setBodyBorder(false);
+		//framedPanel.setIconStyle("icon-form");
+
+		VerticalLayoutContainer verticalPanel = new VerticalLayoutContainer();
 		
-		name = new TextField<String>();  
-		name.setFieldLabel("Group name");
-		name.setMaxLength(30);  // matches length in Register student form and DB
+		name = new TextField();  
+		//name.setFieldLabel("Group name");
+		//name.setMaxLength(30);  // matches length in Register student form and DB
+
 		name.setAllowBlank(false);
-		name.setId(GroupInfoModel.GROUP_NAME);
 		name.setEmptyText("-- enter name --");
-		
-		
-		
 		if(!isNew && editGroup != null)
-		    name.setValue(editGroup.getName());
+		    name.setValue(editGroup.getGroupName());
 		
-		fp.add(name);
+		verticalPanel.add(new MyFieldLabel(name,  "Group name", 100, 220));
 
         /** Seems like a bug with setting focus, so the only way to get it 
          *  to work is to set a timer and hope ... 
@@ -96,50 +104,40 @@ public class GroupWindow extends LayoutContainer {
             }
         }.schedule(1000);
 		
-		gw.setHeading((isNew)?"Define a New Group":"Edit Group");
-		gw.setWidth(formWidth+10);
-		gw.setHeight(formHeight+20);
-		gw.setLayout(new FitLayout());
-		gw.setResizable(false);
-		gw.setDraggable(true);
-		gw.setModal(true);
-
-		Button cancelBtn = cancelButton();
-        cancelBtn.addStyleName("cancel-button");
         
-		Button saveBtn = saveButton(fs, isNew, fp);
-		saveBtn.addStyleName("save-button");
-		
-		fp.setButtonAlign(HorizontalAlignment.RIGHT);  
-        fp.addButton(saveBtn);
-        fp.addButton(cancelBtn);
-        return fp;
+        framedPanel.setWidget(verticalPanel);
+
+        gw.addButton(saveButton(fs, isNew, name));
+        gw.addButton(cancelButton());
+
+        return framedPanel;
 	}
 
-	private Button cancelButton() {
-		Button cancelBtn = new Button("Cancel", new SelectionListener<ButtonEvent>() {  
-	    	public void componentSelected(ButtonEvent ce) {
+	private TextButton cancelButton() {
+		TextButton cancelBtn = new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
                 gw.close();
                 if(grpCombo != null)
 	    		   grpCombo.reset();
 	        }  
 	    });
+        cancelBtn.addStyleName("cancel-button");
 		return cancelBtn;
 	}
 
-	private Button saveButton(final FieldSet fs, final boolean isNew, final FormPanel fp) {
-		Button saveBtn = new Button("Save", new SelectionListener<ButtonEvent>() {  
-	        @SuppressWarnings("unchecked")
-	    	public void componentSelected(ButtonEvent ce) {
-	        	TextField<String> tf = (TextField<String>)fp.getItemByItemId(GroupInfoModel.GROUP_NAME);
-	        	String name = tf.getValue();
+	private TextButton saveButton(final FieldSet fs, final boolean isNew, final TextField textField) {
+		TextButton saveBtn = new TextButton("Save", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+	        	String name = textField.getValue();
 	        	if (name == null || name.trim().length() == 0) {
-	        		tf.focus();
+	        	    textField.focus();
 	        		return;
 	        	}
 	        	
 	        	if (name.trim().equals(GroupInfoModel.NEW_GROUP)) {
-	        	    tf.focus();
+	        	    textField.focus();
 	        	    String msg = "Invalid Group name, please re-enter";
 	        	    CatchupMathTools.showAlert(msg);
 	        	    return;
@@ -148,7 +146,7 @@ public class GroupWindow extends LayoutContainer {
 		        if (isNew) {
 		        	gm = new GroupInfoModel();
 		        	gm.setGroupName(name);
-	        	    addGroupRPC(cmAdminMdl.getId(), gm);
+	        	    addGroupRPC(cmAdminMdl.getUid(), gm);
 	        	}
 	        	else {
 	        	    if(requestCallback != null)
@@ -157,6 +155,7 @@ public class GroupWindow extends LayoutContainer {
 	        	}
 	        }
 	    });
+		saveBtn.addStyleName("save-button");
 		return saveBtn;
 	}
 	
@@ -173,10 +172,7 @@ public class GroupWindow extends LayoutContainer {
 
             @Override
             public void oncapture(GroupInfoModel g) {
-
             	if(grpCombo != null) {
-            		grpCombo.getStore().add(g);
-            		grpCombo.getStore().sort(GroupInfoModel.GROUP_NAME, SortDir.ASC);
             		grpCombo.setValue(g);
             	}
             	/**
@@ -187,7 +183,7 @@ public class GroupWindow extends LayoutContainer {
             	gw.close();
 
             	if(requestCallback != null)
-            		requestCallback.requestComplete(g.getName());
+            		requestCallback.requestComplete(g.getGroupName());
 
             	//CmAdminDataReader.getInstance().fireRefreshData();
             	CmBusyManager.setBusy(false);

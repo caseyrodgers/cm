@@ -6,17 +6,17 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
 
 import java.sql.Connection;
 import java.util.List;
 
-public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdminTrendingDataDetailAction, CmList<StudentModelExt>>{
+public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdminTrendingDataDetailAction, CmList<StudentModelI>>{
 
-    List<StudentModelExt> studentPool;
+    List<StudentModelI> studentPool;
     @Override
-    public CmList<StudentModelExt> execute(Connection conn, GetAdminTrendingDataDetailAction action) throws Exception {
+    public CmList<StudentModelI> execute(Connection conn, GetAdminTrendingDataDetailAction action) throws Exception {
         
         studentPool = new GetStudentGridPageCommand().getStudentPool(action.getDataAction());
         if(studentPool.size() == 0)
@@ -33,11 +33,11 @@ public class GetAdminTrendingDataDetailCommand implements ActionHandler<GetAdmin
         }
     }
 
-    public List<StudentModelExt> getStudentPool() {
+    public List<StudentModelI> getStudentPool() {
         return studentPool;
     }
 
-    public void setStudentPool(List<StudentModelExt> studentPool) {
+    public void setStudentPool(List<StudentModelI> studentPool) {
         this.studentPool = studentPool;
     }
 

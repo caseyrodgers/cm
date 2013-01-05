@@ -3,16 +3,14 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /*
  * Displays wrapper around StudentDetails Panel
@@ -24,7 +22,7 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
  * 
  */
 
-public class StudentDetailsWindow extends CmWindow {
+public class StudentDetailsWindow extends GWindow {
     
     StudentDetailsPanel studentDetailsPanel;
 
@@ -36,46 +34,41 @@ public class StudentDetailsWindow extends CmWindow {
      * 
      * @param studentModel
      */
-    public StudentDetailsWindow(final StudentModelExt studentModel) {
+    public StudentDetailsWindow(final StudentModelI studentModel) {
+        super(false);
+        
         addStyleName("student-details-window");
-        setSize(645, 410);
+        setPixelSize(645, 410);
         setModal(true);
-        setResizable(false);
-        setHeading("Student Details For: " + studentModel.getName());
+        setResizable(true);
+        setMaximizable(true);
+        setHeadingText("Student Details For: " + studentModel.getName());
         addStyleName("student-details-window-container");
-
-        Button btnClose = closeButton();
-        setButtonAlign(HorizontalAlignment.RIGHT);
-        addButton(btnClose);
 
         studentDetailsPanel = new StudentDetailsPanel(studentModel);
         
-        setLayout(new FitLayout());
-        add(studentDetailsPanel);
+        setWidget(studentDetailsPanel);
         
-        getButtonBar().setStyleAttribute("position", "relative");
+        //getButtonBar().addStyleName("student-details-window-button-bar");
         getButtonBar().add(studentDetailsPanel.getDateRange());
+        addButton(closeButton());
 
         setVisible(true);
-        
-        
-        setZIndex(10);
     }
 
-    private Button closeButton() {
-        Button btn = new Button("Close", new SelectionListener<ButtonEvent>() {
+    private TextButton closeButton() {
+        TextButton btn = new TextButton("Close", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 close();
             }
         });
-        btn.setIconStyle("icon-delete");
+        // btn.setIconStyle("icon-delete");
         return btn;
     }
 
 
     static public void showStudentDetails(final int userId) {
-        
         new RetryAction<StudentModelI>() {
             @Override
             public void attempt() {
@@ -88,8 +81,7 @@ public class StudentDetailsWindow extends CmWindow {
             @Override
             public void oncapture(StudentModelI result) {
                 CmBusyManager.setBusy(false);
-                StudentModelExt sm = new StudentModelExt(result);
-                new StudentDetailsWindow(sm);
+                new StudentDetailsWindow(result);
             }
         }.register();
     }

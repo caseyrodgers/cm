@@ -62,7 +62,7 @@ public class HelpWindow extends CmWindow {
                             GWT.runAsync(new CmRunAsyncCallback() {
                                 @Override
                                 public void onSuccess() {
-                                    new NetTestWindow(TestApplication.CM_ADMIN,StudentGridPanel.instance._cmAdminMdl.getId()).runTests();
+                                    new NetTestWindow(TestApplication.CM_ADMIN,StudentGridPanel.instance._cmAdminMdl.getUid()).runTests();
                                 }
                             });
                         }

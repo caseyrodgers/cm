@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -41,9 +42,9 @@ public class GetGradeBookDataCommand implements ActionHandler<GetGradeBookDataAc
         }
         logger.debug("dates: " + dates[0] + ", " + dates[1]);
         
-    	List<StudentModelExt> studentList = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridAction());
+    	List<StudentModelI> studentList = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridAction());
         List<Integer> uidList = new ArrayList<Integer>();
-        for (StudentModelExt m : studentList) {
+        for (StudentModelI m : studentList) {
         	uidList.add(m.getUid());
         }
         logger.debug("uidList size(): " + uidList.size());

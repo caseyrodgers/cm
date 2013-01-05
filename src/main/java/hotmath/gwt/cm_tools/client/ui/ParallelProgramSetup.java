@@ -1,12 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.ParallelProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.rpc.action.SaveParallelProgramAction;
@@ -15,12 +16,12 @@ import hotmath.gwt.shared.client.util.CmException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 /**
  * 
@@ -29,8 +30,8 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  */
 public class ParallelProgramSetup extends RegisterStudent {
 	
-    TextField<String> nameFld;
-    TextField<String> passwordFld;
+    TextField nameFld;
+    TextField passwordFld;
     
     Integer parellelProgId;
     ParallelProgramModel parallelProg;
@@ -57,15 +58,15 @@ public class ParallelProgramSetup extends RegisterStudent {
 
 	private void doIt(CmAsyncRequest callback) {
 		requestCallback = callback;
-		
-	    _window.setHeading("Parallel Program Setup");
+		createWindow();
+	    _window.setHeadingText("Parallel Program Setup");
 	    
-	    _fsProfile.removeAll();
+	    _fsProfile.clear();
 
-	    _window.setHeight(350);
+	    _window.setHeight(440);
         
-        nameFld = new TextField<String>();  
-        nameFld.setFieldLabel("Name");
+        nameFld = new TextField();  
+        //nameFld.setFieldLabel("Name");
         nameFld.setAllowBlank(false);
         nameFld.setId("name");
         nameFld.setEmptyText("-- Enter Parallel Program name --");
@@ -74,12 +75,12 @@ public class ParallelProgramSetup extends RegisterStudent {
             nameFld.setValue((String)parallelProg.getName());
         }
 
-	    _fsProfile.setHeading("");
-        _fsProfile.add(nameFld);
-        _fsProfile.add(new Html("<p>Student will Log In with your school Login Name, and use this name as a password.</p>"));
+	    _fsProfile.setHeadingText("Enter Name");
+        _fsProfile.addThing(new MyFieldLabel(nameFld, "Name", LABEL_WIDTH, FIELD_WIDTH));
+        _fsProfile.addThing(new HTML("<p>Student will Log In with your school Login Name, and use this name as a password.</p>"));
 
-        _fsProgram.setHeading("Assign Program");
-	    _formPanel.layout();
+        _fsProgram.setHeadingText("Assign Program");
+	    _formPanel.forceLayout();
 
 	    // Don't allow Advanced Options (for now?)
 	    hideAdvancedOptionsButton();
@@ -88,15 +89,18 @@ public class ParallelProgramSetup extends RegisterStudent {
 	    showWindow();
 	}
 
-	public List<Button> getActionButtons() {
-	    List<Button> list = new ArrayList<Button>();
+	public List<TextButton> getActionButtons() {
+	    List<TextButton> list = new ArrayList<TextButton>();
         
 	    if (parallelProg == null || parallelProg.getStudentCount() < 1) {
-	    	Button save = new Button("Save");
-	    	save.addSelectionListener(new SelectionListener<ButtonEvent>() {
-
-	    		@Override
-	    		public void componentSelected(ButtonEvent ce) {
+	    	TextButton save = new TextButton("Save", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    
+                    if(!nameFld.isValid()) {
+                        CmMessageBox.showAlert("Save Error", "Please provide all required fields.");
+                        return;
+                    }
 	    			try {
 	    				doSubmitAction(new AfterValidation() {
 
@@ -114,20 +118,17 @@ public class ParallelProgramSetup extends RegisterStudent {
 	    				});
 	    			}
 	    			catch(CmException cm) {
-	    				// CmMessageBoxGxt2.showAlert("First, make sure all values on form are valid");
+	    				// CmMessageBox.showAlert("First, make sure all values on form are valid");
 	    			}
 	    		}
 	    	});
-
 	    	list.add(save);
 	    }
         
         
-        Button close = new Button("Close");
-        close.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            
+        TextButton close = new TextButton("Close", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 _window.close();
             }
         });
@@ -154,7 +155,7 @@ public class ParallelProgramSetup extends RegisterStudent {
             @Override
             public void onFailure(Throwable caught) {
                 CmLogger.error("Error saving", caught);
-                CmMessageBoxGxt2.showAlert("Problem occurred while saving: " + caught.getMessage());
+                CmMessageBox.showAlert("Problem occurred while saving: " + caught.getMessage());
             }
         });	    
 	}

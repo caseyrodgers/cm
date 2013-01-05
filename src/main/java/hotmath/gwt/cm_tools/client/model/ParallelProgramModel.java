@@ -2,13 +2,16 @@ package hotmath.gwt.cm_tools.client.model;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-public class ParallelProgramModel extends BaseModel implements Response {
+public class ParallelProgramModel implements Response {
 	
-	public static final String ADMIN_ID      = "adminId";
-	public static final String IS_ACTIVE     = "isActive";
-	public static final String NAME          = "name";
-	public static final String STUDENT_COUNT = "studentCount";
-	public static final String PROGRAM_NAME  = "programName";
+    int id;
+    int adminId;
+    boolean isActive;
+    String name;
+    int studentCount;
+    String programName;
+    String password;
+    Integer progId;
 
 	public ParallelProgramModel(){
         /** empty */
@@ -26,78 +29,78 @@ public class ParallelProgramModel extends BaseModel implements Response {
 
     public ParallelProgramModel(String name, Integer id, Integer adminId, String password, Integer cmProgId,
     		Integer studentCount, Boolean isActive, String programName) {
-        setName(name);
-        setId(id);
-        setAdminId(adminId);
-        setPassword(password);
-        setCmProgId(cmProgId);
-        setStudentCount(studentCount);
-        setIsActive(isActive);
-        setProgramName(programName);
+        this.name = name;
+        this.id = id;
+        this.adminId = adminId;
+        this.password = password;
+        this.progId = cmProgId;
+        this.studentCount = studentCount;
+        this.isActive = isActive;
+        this.programName = programName;
     }
 
-    public void setName(String name) {
-        set(NAME, name);
+    public int getId() {
+        return id;
     }
 
-    public String getName() {
-        return get(NAME);
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setProgramName(String name) {
-        set(PROGRAM_NAME, name);
-    }
-
-    public String getProgramName() {
-        return get(PROGRAM_NAME);
-    }
-
-    public void setId(Integer id) {
-        set("id", id);
-    }
-
-    public Integer getId() {
-        return get("id");
+    public int getAdminId() {
+        return adminId;
     }
 
     public void setAdminId(int adminId) {
-        set(ADMIN_ID, adminId);
+        this.adminId = adminId;
     }
 
-    public Integer getAdminId() {
-        return get(ADMIN_ID);
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setCmProgId(Integer id) {
-        set("cmProgId", id);
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
     }
 
-    public Integer getCmProgId() {
-        return get("cmProgId");
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getStudentCount() {
+        return studentCount;
+    }
+
+    public void setStudentCount(int studentCount) {
+        this.studentCount = studentCount;
+    }
+
+    public String getProgramName() {
+        return programName;
+    }
+
+    public void setProgramName(String programName) {
+        this.programName = programName;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public void setPassword(String password) {
-        set("password", password);
+        this.password = password;
     }
 
-    public Integer getPassword() {
-        return get("password");
+    public int getProgId() {
+        return progId;
     }
 
-    public void setStudentCount(Integer count) {
-        set(STUDENT_COUNT, count);
-    }
-
-    public Integer getStudentCount() {
-        return get(STUDENT_COUNT);
-    }
-
-    public void setIsActive(Boolean isActive) {
-        set(IS_ACTIVE, isActive);
-    }
-
-    public Boolean getIsActive() {
-        return get(IS_ACTIVE);
+    public void setProgId(int progId) {
+        this.progId = progId;
     }
 
 }

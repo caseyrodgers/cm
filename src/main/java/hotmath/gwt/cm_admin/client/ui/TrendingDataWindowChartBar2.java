@@ -2,7 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.model.ProgramData;
@@ -37,16 +37,16 @@ public class TrendingDataWindowChartBar2 extends TrendingDataWindowChart {
     }
 
     private void showUsersWhoHaveGoneThroughProgramSegment(final int segment) {
-        new RetryAction<CmList<StudentModelExt>>() {
+        new RetryAction<CmList<StudentModelI>>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getId(),
+                GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._cmAdminMdl.getUid(),
                         StudentGridPanel.instance._pageAction, programData.getTestDefId(), segment);
                 setAction(action);
                 CmShared.getCmService().execute(action,this);
             }
-            public void oncapture(CmList<StudentModelExt> students) {
+            public void oncapture(CmList<StudentModelI> students) {
                 CmBusyManager.setBusy(false);                
                 new TrendingDataStudentListDialog("Students in " + programData.getProgramName() + " Segment " + segment,students);
             }

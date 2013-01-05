@@ -53,7 +53,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
         // remove any existing auto_create_template account based on this group.
         List<GroupInfoModel> groups = CmAdminDao.getInstance().getActiveGroups(student.getAdminUid());
         for(GroupInfoModel gm: groups) {
-            String gname = gm.getName();  // contains null for default (NONE) user 
+            String gname = gm.getGroupName();  // contains null for default (NONE) user 
             if(gname != null && gname.equals(groupName)) {
                 groupModel = gm;
 
@@ -68,7 +68,7 @@ public class SaveAutoRegistrationCommand implements ActionHandler<SaveAutoRegist
             groupModel = CmAdminDao.getInstance().addGroup(conn, action.getAdminId(),groupModel);
         }
         
-        student.setGroupId(groupModel.getId().toString());
+        student.setGroupId(groupModel.getId());
         
         student.setPasscode(student.getGroup() + "_" + System.currentTimeMillis());  // make unique
         

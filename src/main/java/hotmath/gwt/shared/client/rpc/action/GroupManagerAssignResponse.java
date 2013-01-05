@@ -1,34 +1,32 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 
 import java.util.List;
 
 public class GroupManagerAssignResponse implements Response {
 
-	List<StudentModelExt> inGroup;
-	List<StudentModelExt> notInGroup;
+	List<StudentModelI> inGroup;
+	List<StudentModelI> notInGroup;
 	
 	public GroupManagerAssignResponse() {
 	}
-	
-	public List<StudentModelExt> getInGroup() {
-		return inGroup;
-	}
 
-	public void setInGroup(List<StudentModelExt> inGroup) {
-		this.inGroup = inGroup;
-	}
+    public List<StudentModelI> getInGroup() {
+        return inGroup;
+    }
 
-	public List<StudentModelExt> getNotInGroup() {
-		return notInGroup;
-	}
+    public void setInGroup(List<StudentModelI> inGroup) {
+        this.inGroup = inGroup;
+    }
 
-	public void setNotInGroup(List<StudentModelExt> notInGroup) {
-		this.notInGroup = notInGroup;
-	}
+    public List<StudentModelI> getNotInGroup() {
+        return notInGroup;
+    }
 
-	
+    public void setNotInGroup(List<StudentModelI> notInGroup) {
+        this.notInGroup = notInGroup;
+    }
 
 }

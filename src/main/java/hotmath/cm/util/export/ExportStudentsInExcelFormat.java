@@ -44,7 +44,7 @@ public class ExportStudentsInExcelFormat {
 	
 	private static final String PCNT_FMT = "%3.0f%s";
 	
-	private List<StudentModelExt> studentList;
+	private List<StudentModelI> studentList;
 	
 	private List<StudentReportCardModelI> rcList;
 	
@@ -61,15 +61,15 @@ public class ExportStudentsInExcelFormat {
 	public ExportStudentsInExcelFormat() {
 	}
 	
-	public ExportStudentsInExcelFormat(List<StudentModelExt> studentList) {
+	public ExportStudentsInExcelFormat(List<StudentModelI> studentList) {
 		this.studentList = studentList;
 	}
 
-	public List<StudentModelExt> getStudentList() {
+	public List<StudentModelI> getStudentList() {
 		return studentList;
 	}
 
-	public void setStudentList(List<StudentModelExt> studentList) {
+	public void setStudentList(List<StudentModelI> studentList) {
 		this.studentList = studentList;
 	}
 

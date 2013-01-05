@@ -6,7 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataI;
 import hotmath.gwt.shared.client.model.CmAdminTrendingDataImplDefault;
 import hotmath.gwt.shared.client.model.ProgramData;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class GetAdminTrendingDataCommand implements ActionHandler<GetAdminTrendingDataAction, CmAdminTrendingDataI>{
 
-    List<StudentModelExt> studentPool;
+    List<StudentModelI> studentPool;
     @Override
     public CmAdminTrendingDataI execute(Connection conn, GetAdminTrendingDataAction action) throws Exception {
         studentPool = new GetStudentGridPageCommand().getStudentPool(action.getDataAction());
@@ -32,11 +32,11 @@ public class GetAdminTrendingDataCommand implements ActionHandler<GetAdminTrendi
         return new CmAdminTrendingDataImplDefault(td, pd);
     }
 
-    public List<StudentModelExt> getStudentPool() {
+    public List<StudentModelI> getStudentPool() {
         return studentPool;
     }
 
-    public void setStudentPool(List<StudentModelExt> studentPool) {
+    public void setStudentPool(List<StudentModelI> studentPool) {
         this.studentPool = studentPool;
     }
 

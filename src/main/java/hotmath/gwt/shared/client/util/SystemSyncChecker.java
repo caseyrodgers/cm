@@ -14,10 +14,10 @@ import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
-import com.extjs.gxt.ui.client.widget.Html;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -44,7 +44,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
 
         if(CmShared.getQueryParameter("debug") != null) {
             if(version != null) {
-                add(new Html("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion()));
+                add(new HTML("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion()));
             }
         }
             

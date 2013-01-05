@@ -148,8 +148,8 @@ public class ReportUtils {
            		Integer groupId = Integer.valueOf(filterMap.get(FilterType.GROUP));
     			List<GroupInfoModel> groups = dao.getActiveGroups(adminId);
     			for(GroupInfoModel group : groups) {
-    				if (group.getId().equals(groupId)) {
-    					sb.append("Group: ").append(group.getName());
+    				if (group.getId() == groupId) {
+    					sb.append("Group: ").append(group.getGroupName());
     					break;
     				}
     			}

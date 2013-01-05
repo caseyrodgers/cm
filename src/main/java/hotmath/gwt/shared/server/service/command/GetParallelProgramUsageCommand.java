@@ -36,7 +36,7 @@ public class GetParallelProgramUsageCommand implements ActionHandler<GetParallel
         	model.setActivity(pp.getActivity());
         	model.setResult(pp.getResult());
         	model.setUseDate(pp.getUseDate());
-        	model.setIsQuiz(pp.getIsQuiz());
+        	model.setQuiz(pp.isQuiz());
 
         	modelList.add(model);
         }
