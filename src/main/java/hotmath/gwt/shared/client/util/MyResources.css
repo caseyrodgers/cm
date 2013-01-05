@@ -1,0 +1,3 @@
+@def small 1px;
+@def black #000;
+border: small solid black;

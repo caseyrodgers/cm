@@ -368,7 +368,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         chapCombo = chapterCombo(chapStore);
         _fsStdProg.addThing(new MyFieldLabel(chapCombo, "Chapter", LABEL_WIDTH, FIELD_WIDTH));
 
-        _stdAdvOptionsLabel = new MyFieldLabel(stdAdvOptionsBtn, "Advanced Options", LABEL_WIDTH, FIELD_WIDTH);
+        _stdAdvOptionsLabel = new MyFieldLabel(stdAdvOptionsBtn, "Options", LABEL_WIDTH, FIELD_WIDTH);
         _fsStdProg.addThing(_stdAdvOptionsLabel);
     }
 
@@ -382,8 +382,8 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         // fl.setDefaultWidth(LAYOUT_WIDTH);
 
         cstmCombo = createCustomCombo(customProgStore, "Select a Custom Program|Quiz");
-        _fsCustomProg.addThing(new MyFieldLabel(cstmCombo, "Program or Quiz", 100, FIELD_WIDTH));
-        _fsCustomProg.addThing(new MyFieldLabel(customAdvOptionsBtn, "Custom Options",100, FIELD_WIDTH));
+        _fsCustomProg.addThing(new MyFieldLabel(cstmCombo, "Program or Quiz", LABEL_WIDTH, FIELD_WIDTH));
+        _fsCustomProg.addThing(new MyFieldLabel(customAdvOptionsBtn, "Options",LABEL_WIDTH, FIELD_WIDTH));
     }
 
     private SelectHandler selectionHandler = new SelectHandler() {

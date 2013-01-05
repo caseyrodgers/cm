@@ -83,7 +83,6 @@ import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDataRefresher, ProcessTracker {
     static public StudentGridPanel instance;
-
     private ToolBar toolBar;
 
     Grid<StudentModelI> _grid;
@@ -101,7 +100,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
-
         ColumnModel<StudentModelI> cm = defineColumns();
 
         dateRangePanel = new DateRangePanel(new DateRangeCallback() {

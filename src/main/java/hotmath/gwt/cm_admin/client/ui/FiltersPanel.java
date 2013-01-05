@@ -15,15 +15,14 @@ import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 
 public class FiltersPanel implements IsWidget, ProcessTracker {
 
     ListStore<GroupInfoModel> groupStore;
-    
 
     GroupProperties groupProps = GWT.create(GroupProperties.class);
 
@@ -56,13 +55,12 @@ public class FiltersPanel implements IsWidget, ProcessTracker {
 
         _mainHorCont = new HorizontalLayoutContainer();
 
-        class MyFormPanel extends FramedPanel {
+        class MyFormPanel extends SimpleContainer {
             VerticalLayoutContainer vPane = new VerticalLayoutContainer();
             MyFormPanel() {
+                addStyleName("filters-my-form-panel");
                 setWidth(310);
                 setWidget(vPane);
-                setHeaderVisible(false);
-                setBodyBorder(false);
             }
 
             @Override

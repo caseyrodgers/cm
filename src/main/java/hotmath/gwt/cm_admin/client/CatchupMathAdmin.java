@@ -10,17 +10,14 @@ import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignAction;
-import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignAction.ActionType;
-import hotmath.gwt.shared.client.rpc.action.GroupManagerAssignResponse;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.MyResources;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -28,8 +25,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -51,6 +46,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     static CatchupMathAdmin instance;
 
     public void onModuleLoad() {
+        // Display the manual file in an iframe
+        //new Frame(MyResources.INSTANCE.ownersManual().getURL())
+        
         CmLogger.info("CatchupMathAdmin is starting");
 
         instance = this;

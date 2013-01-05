@@ -24,7 +24,7 @@ class QuickSearchPanel extends HorizontalPanel {
         String qfTip = "Apply text filter to first four columns.";
         quickFilter = new TextField();
         quickFilter.setEmptyText("--- Text Search ---");
-        quickFilter.setWidth("200px");
+        quickFilter.setWidth("220px");
         quickFilter.setToolTip(qfTip);
         //quickFilter.setFieldLabel("Text Search");
         
