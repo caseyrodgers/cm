@@ -17,9 +17,8 @@ public interface StudentModelI extends Response {
 
 	public void setGroup(String group);
 	
-	public int getGroupId();
-	
-	public void setGroupId(int groupId);
+	public Integer getGroupId();
+	public void setGroupId(Integer groupId);
 
 	public void setSectionCount(Integer sectionCount);
 	

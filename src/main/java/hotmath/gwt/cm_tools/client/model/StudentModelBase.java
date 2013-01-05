@@ -140,12 +140,12 @@ public class StudentModelBase implements StudentModelI {
     }
 
     @Override
-    public int getGroupId() {
+    public Integer getGroupId() {
         return groupId;
     }
 
     @Override
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 

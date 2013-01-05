@@ -97,7 +97,7 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public int getGroupId() {
+    public Integer getGroupId() {
         return this.groupId;
     }
 
@@ -193,7 +193,7 @@ class StudentModelBasic implements StudentModelI, IsSerializable{
     }
 
     @Override
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         this.groupId = groupId;
     }
 
