@@ -4,7 +4,7 @@ package hotmath.gwt.cm_tools.client.model;
 import java.io.Serializable;
 
 public class StudentModelExt extends BaseModel implements Serializable, StudentModelI {
-    
+
     public static final String GROUP_KEY = "group";
     public static final String GROUP_ID_KEY = "groupId";
     public static final String SECTION_COUNT_KEY = "sectionCount";
@@ -42,10 +42,10 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public static final String LIMIT_GAMES_KEY = "limit-games";
     public static final String STOP_AT_PROGRAM_END_KEY = "stop-at-program-end";
     public static final String SECTION_IS_SETTABLE = "section-is-settable";
-    
-    
+
+
     private boolean hasExtendedData = false;
-    
+
 
     public StudentModelExt() {
     }
@@ -53,8 +53,8 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     public StudentModelExt(StudentModelI student) {
         setStudent(student);
     }
-    
-    
+
+
 
     public void setStudent(StudentModelI student) {
         set(GROUP_KEY, student.getGroup());
@@ -63,13 +63,14 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(SECTION_NUM_KEY, student.getSectionNum());
         set(USER_PROGRAM_KEY, student.getProgram().getProgramId());
         set(CHAPTER_KEY, student.getChapter());
+b
 
         setLastQuiz(student.getLastQuiz());
         setLastLogin(student.getLastLogin());
         setStatus(student.getStatus());
         setTutoringUse(student.getTutoringUse());
         setPassingCount(student.getPassingCount());
-        setNotPassingCount(student.getNotPassingCount());        
+        setNotPassingCount(student.getNotPassingCount());
         setShowWorkState((student.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL");
         setTutoringState((student.getSettings().getTutoringAvailable()) ? "ON" : "OFF");
 
@@ -88,18 +89,18 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(BACKGROUND_STYLE, student.getBackgroundStyle());
         set(DEMO_USER_KEY, student.getIsDemoUser());
         set(PROGRAM_DESCR_KEY, student.getProgram().getProgramDescription());
-        
+
         set(PROGRAM_KEY, student.getProgram());
         set(SETTINGS_KEY, student.getSettings());
     }
 
     public void assignExtendedData(StudentModelI sm) {
-    	setHasExtendedData(true);
-    	setLastQuiz(sm.getLastQuiz());
-    	setLastLogin(sm.getLastLogin());
-    	setTutoringUse(sm.getTutoringUse());
-    	setPassingCount(sm.getPassingCount());
-    	setNotPassingCount(sm.getNotPassingCount());
+        setHasExtendedData(true);
+        setLastQuiz(sm.getLastQuiz());
+        setLastLogin(sm.getLastLogin());
+        setTutoringUse(sm.getTutoringUse());
+        setPassingCount(sm.getPassingCount());
+        setNotPassingCount(sm.getNotPassingCount());
     }
 
     public Integer getTutoringUse() {
@@ -140,12 +141,12 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         set(GROUP_KEY, group);
     }
 
-    public int getGroupId() {
+    public Integer getGroupId() {
         return get(GROUP_ID_KEY);
     }
 
     @Override
-    public void setGroupId(int groupId) {
+    public void setGroupId(Integer groupId) {
         set(GROUP_ID_KEY, groupId);
     }
 
@@ -263,9 +264,9 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     /**
      * return true if program has been changed, or false if program was not
      * changed.
-     * 
+     *
      * If value is null, return false
-     * 
+     *
      * @return
      */
     @Override
@@ -327,73 +328,73 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
         return get(DEMO_USER_KEY);
     }
 
-	@Override
-	public Integer getNotPassingCount() {
-		return get(NOT_PASSING_COUNT_KEY);
-	}
+        @Override
+        public Integer getNotPassingCount() {
+                return get(NOT_PASSING_COUNT_KEY);
+        }
 
-	@Override
-	public void setNotPassingCount(Integer count) {
+        @Override
+        public void setNotPassingCount(Integer count) {
         set(NOT_PASSING_COUNT_KEY, (count != null) ? count : 0);
-	}
+        }
 
-	@Override
-	public Integer getPassingCount() {
-		return get(PASSING_COUNT_KEY);
-	}
+        @Override
+        public Integer getPassingCount() {
+                return get(PASSING_COUNT_KEY);
+        }
 
-	@Override
-	public void setPassingCount(Integer count) {
+        @Override
+        public void setPassingCount(Integer count) {
         set(PASSING_COUNT_KEY, (count != null) ? count : 0);
-	}
+        }
 
-	public Boolean getHasLastQuiz() {
-		return get(HAS_LAST_QUIZ_KEY);
-	}
+        public Boolean getHasLastQuiz() {
+                return get(HAS_LAST_QUIZ_KEY);
+        }
 
-	public void setHasLastQuiz(Boolean val) {
-		set(HAS_LAST_QUIZ_KEY, val);
-	}
+        public void setHasLastQuiz(Boolean val) {
+                set(HAS_LAST_QUIZ_KEY, val);
+        }
 
-	public Boolean getHasLastLogin() {
-		return get(HAS_LAST_LOGIN_KEY);
-	}
+        public Boolean getHasLastLogin() {
+                return get(HAS_LAST_LOGIN_KEY);
+        }
 
-	public void setHasLastLogin(Boolean val) {
-		set(HAS_LAST_LOGIN_KEY, val);
-	}
+        public void setHasLastLogin(Boolean val) {
+                set(HAS_LAST_LOGIN_KEY, val);
+        }
 
-	public Boolean getHasTutoringUse() {
-		return get(HAS_TUTORING_USE_KEY);
-	}
+        public Boolean getHasTutoringUse() {
+                return get(HAS_TUTORING_USE_KEY);
+        }
 
-	public void setHasTutoringUse(Boolean val) {
-		set(HAS_TUTORING_USE_KEY, val);
-	}
+        public void setHasTutoringUse(Boolean val) {
+                set(HAS_TUTORING_USE_KEY, val);
+        }
 
-	public Boolean getHasPassingCount() {
-		return get(HAS_PASSING_COUNT_KEY);
-	}
+        public Boolean getHasPassingCount() {
+                return get(HAS_PASSING_COUNT_KEY);
+        }
 
-	public void setHasPassingCount(Boolean val) {
-		set(HAS_PASSING_COUNT_KEY, val);
-	}
+        public void setHasPassingCount(Boolean val) {
+                set(HAS_PASSING_COUNT_KEY, val);
+        }
 
-	public boolean getHasExtendedData() {
-		return hasExtendedData;
-	}
+        public boolean getHasExtendedData() {
+                return hasExtendedData;
+        }
 
-	public void setHasExtendedData(boolean val) {
-		this.hasExtendedData = val;
-	}
+        public void setHasExtendedData(boolean val) {
+                this.hasExtendedData = val;
+        }
 
-	public StudentProgramModel getProgram() {
-	    return get(PROGRAM_KEY);
-	}
+        public StudentProgramModel getProgram() {
+            return get(PROGRAM_KEY);
+        }
 
-	public void setProgram(StudentProgramModel studyProgram) {
-	    set(PROGRAM_KEY, studyProgram);
-	}
+        public void setProgram(StudentProgramModel studyProgram) {
+            set(PROGRAM_KEY, studyProgram);
+        }
 
     @Override
     public StudentSettingsModel getSettings() {
@@ -405,8 +406,8 @@ public class StudentModelExt extends BaseModel implements Serializable, StudentM
     }
 
 
-	@Override
-	public void setSettings(StudentSettingsModel optionSettings) {
-		set(SETTINGS_KEY, optionSettings);
-	}
+        @Override
+        public void setSettings(StudentSettingsModel optionSettings) {
+                set(SETTINGS_KEY, optionSettings);
+        }
 }
