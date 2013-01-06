@@ -1,9 +1,6 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.shared.client.eventbus.CmEvent;
-import hotmath.gwt.shared.client.eventbus.EventBus;
-import hotmath.gwt.shared.client.eventbus.EventType;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -15,7 +12,6 @@ public class HaveYouCheckedYourWorkWindow extends GWindow {
     public HaveYouCheckedYourWorkWindow(final Callback callback) {
         super(false);
         
-        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_OPEN));
         setPixelSize(330, 120);
         addStyleName("quiz-context-msg-window");
         setClosable(false);
@@ -35,7 +31,6 @@ public class HaveYouCheckedYourWorkWindow extends GWindow {
         addButton(new TextButton("No", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MODAL_WINDOW_CLOSED));
                 close();
                 callback.quizWasCanceled();
             }
