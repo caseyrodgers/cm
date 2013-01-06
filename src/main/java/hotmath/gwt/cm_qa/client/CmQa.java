@@ -144,7 +144,7 @@ public class CmQa implements EntryPoint {
         if (!point.endsWith("/"))
             point += "/";
 
-        point = "/cm/";
+        point = "/";
         _cmService = (CmServiceAsync) GWT.create(CmService.class);
         ((ServiceDefTarget) _cmService).setServiceEntryPoint(point + "services/cmService");
     }    
