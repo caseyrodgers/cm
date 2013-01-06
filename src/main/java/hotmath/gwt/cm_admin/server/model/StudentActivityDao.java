@@ -77,7 +77,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-		LOGGER.info(String.format("getStudentActivity(Connection, int, Date, Date): uid: %d", uid));
+		LOGGER.debug(String.format("getStudentActivity(Connection, int, Date, Date): uid: %d", uid));
 
 		Connection conn=null;
         try {
@@ -649,7 +649,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 		samToAdd.setTimeOnTask(tot.timeOnTask);
 		samToAdd.setUseDate(tot.date);
 		samList.add(++foundIndex, samToAdd);
-		LOGGER.info(String.format("added StudentActivityModel runId: %d, date: %s, result: %s",
+		LOGGER.debug(String.format("added StudentActivityModel runId: %d, date: %s, result: %s",
 				tot.runId, tot.date, samToAdd.getResult()));
 	}
 
