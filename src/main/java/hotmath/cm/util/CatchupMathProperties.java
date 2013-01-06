@@ -41,7 +41,10 @@ public class CatchupMathProperties extends Properties {
     private CatchupMathProperties() throws PropertyLoadFileException {
         
         try {
-            String propsToUse = System.getenv("CM.PROPERTIES");
+            /** allow override of system properties
+             * 
+             */
+            String propsToUse = System.getenv("CM_PROPERTIES");
             File pfile=null;
             if(propsToUse != null && propsToUse.length() > 0) {
                 pfile = new File(propsToUse);

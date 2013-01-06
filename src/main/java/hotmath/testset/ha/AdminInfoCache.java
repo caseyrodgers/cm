@@ -6,6 +6,11 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 
 import java.util.Date;
 
+/** Hold general information about admin in a temporary cache
+ * 
+ * @author casey
+ *
+ */
 public class AdminInfoCache {
 
     public static Date getExpireDate(int adminId) throws Exception  {
@@ -25,7 +30,11 @@ public class AdminInfoCache {
 
 }
 
-
+/** The cached information
+ * 
+ * @author casey
+ *
+ */
 class AdminCachedInfo {
     Date expireDate;
     public AdminCachedInfo(Date expireDate) {
