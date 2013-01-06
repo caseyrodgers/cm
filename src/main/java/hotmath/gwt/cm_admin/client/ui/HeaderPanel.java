@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_tools.client.ui.MyIconButton;
+import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -8,6 +11,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -28,14 +32,24 @@ public class HeaderPanel extends FlowLayoutContainer {
 		instance = this;
 
 		setStyleName("header-panel");
-		IconButton btn = new IconButton("header-panel-help-btn");
-		btn.addSelectHandler(new SelectHandler() {
+		final MyIconButton helpButton = new MyIconButton("header-panel-help-btn");
+		helpButton.addSelectHandler(new SelectHandler() {
 			@Override
 			public void onSelect(SelectEvent event) {
-            		new HelpWindow();
+	             Event currentEvent = helpButton.getCurrentEvent();
+	                if (currentEvent != null && currentEvent.getCtrlKey()) {
+	                    new ShowDebugUrlWindow() {
+	                        protected String getDebugUrl() {
+	                            return CmShared.getServerForCmStudent() + "/loginService?debug=true&type=ADMIN&uid="  + StudentGridPanel.instance._cmAdminMdl.getUid();
+	                        }
+	                    };
+	                }
+	                else {
+	                    new HelpWindow();
+	                }
 			};
 		});		
-		add(btn);
+		add(helpButton);
 		
 		schoolLabel = new HTML();
 		//schoolLabel.setStyleName("header-panel-school-label");

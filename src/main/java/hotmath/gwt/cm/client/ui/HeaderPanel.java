@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.shared.client.CmShared;
@@ -229,24 +230,4 @@ public class HeaderPanel extends FlowLayoutContainer {
         CatchupMathTools.showAlert("Set Header info");
     }
 
-}
-
-
-class MyIconButton extends IconButton {
-	Event currentEvent;
-	
-	public MyIconButton(String style) {
-		super(style);
-	}
-    
-    @Override
-    public void onBrowserEvent(Event event) {
-        currentEvent = event;
-        super.onBrowserEvent(event);
-        currentEvent = null;
-    }
-    
-    public Event getCurrentEvent() {
-    	return currentEvent;
-    }
 }
