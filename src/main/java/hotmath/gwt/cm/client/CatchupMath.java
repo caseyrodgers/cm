@@ -17,6 +17,8 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.event.TutorContainerActivatedEvent;
+import hotmath.gwt.cm_rpc.client.event.TutorContainerActivatedEventHandler;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
@@ -313,6 +315,16 @@ public class CatchupMath implements EntryPoint {
             }
         });
 
+        
+        /** List for event when a new TutorWContainer is displayed.  We need to hide the main
+         *  tutor window because of hard-coding issues with the tutor-content id.
+         */
+        CmRpc.EVENT_BUS.addHandler(TutorContainerActivatedEvent.TYPE, new TutorContainerActivatedEventHandler() {
+            @Override
+            public void tutorContainerActivated(TutorContainerActivatedEvent event) {
+                CmMainPanel.__lastInstance.removeResource();
+            }
+        });
 
 
         String ac = CmShared.getQueryParameterValue("type");

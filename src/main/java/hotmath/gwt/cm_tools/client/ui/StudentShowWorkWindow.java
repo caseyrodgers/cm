@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.event.TutorContainerActivatedEvent;
 import hotmath.gwt.cm_rpc.client.model.StudentShowWorkModelPojo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -37,14 +39,11 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.ListView;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -71,6 +70,9 @@ public class StudentShowWorkWindow extends GWindow {
     
     public StudentShowWorkWindow(StudentModelI student, StudentActivityModel activityModel) {
         super(true);
+        
+        
+        CmRpc.EVENT_BUS.fireEvent(new TutorContainerActivatedEvent());
         
         setStyleName("student-show-work-window");
         this.student = student;
