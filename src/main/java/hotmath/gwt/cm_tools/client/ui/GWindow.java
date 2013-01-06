@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
@@ -47,6 +48,12 @@ public class GWindow extends Window {
             }
         });
         addButton(b);        
+    }
+    
+    
+    
+    public interface DateRangeAdvOptCallback {
+        void setAdvancedOptions(AdvancedOptionsModel options);
     }
 
 }

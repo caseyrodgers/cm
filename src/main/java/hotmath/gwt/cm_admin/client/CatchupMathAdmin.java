@@ -8,16 +8,18 @@ import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.DateRangeAdvancedOptionsDialog;
+import hotmath.gwt.cm_tools.client.ui.GWindow.DateRangeAdvOptCallback;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-import hotmath.gwt.shared.client.util.MyResources;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
@@ -46,8 +48,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     static CatchupMathAdmin instance;
 
     public void onModuleLoad() {
-        // Display the manual file in an iframe
-        //new Frame(MyResources.INSTANCE.ownersManual().getURL())
         
         CmLogger.info("CatchupMathAdmin is starting");
 

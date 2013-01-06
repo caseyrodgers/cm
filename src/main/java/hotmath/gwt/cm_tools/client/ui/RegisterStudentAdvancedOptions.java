@@ -107,14 +107,14 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
         isShowWorkRequired.setValue(options.getSettings().getShowWorkRequired());
         //requireShowWork.setFieldLabel("Require Show Work");
         
-        advOptions.addThing(new MyFieldLabel(isShowWorkRequired, "Require Show Work", LABEL_LEN));
+        advOptions.addThing(new MyFieldLabel(isShowWorkRequired, "Require Show Work", LABEL_LEN, 10));
         
         isGamesLimited = new CheckBox();
         isGamesLimited.setId("limit_games");
         isGamesLimited.setValue(options.getSettings().getLimitGames());
         isGamesLimited.setToolTip("If checked, then no Games can be played.");
         
-		advOptions.addThing(new MyFieldLabel(isGamesLimited, "Disallow Games", LABEL_LEN)); 
+		advOptions.addThing(new MyFieldLabel(isGamesLimited, "Disallow Games", LABEL_LEN, 10)); 
 
         isStopAtProgramEnd = new CheckBox();
         isStopAtProgramEnd.setId("stop_at_program_end");
@@ -124,17 +124,17 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 		    isStopAtProgramEnd.disable();
 		}
 		
-		advOptions.addThing(new MyFieldLabel(isStopAtProgramEnd, "Stop at End of Program", LABEL_LEN));
+		advOptions.addThing(new MyFieldLabel(isStopAtProgramEnd, "Stop at End of Program", LABEL_LEN, 10));
 
 		isDisableCalcAlways = new CheckBox();
 		isDisableCalcAlways.setId("disable_calc_always");
 		isDisableCalcAlways.setValue(options.getSettings().getDisableCalcAlways());
-        advOptions.addThing(new MyFieldLabel(isDisableCalcAlways, "Disable whiteboard calculator always", LABEL_LEN));
+        advOptions.addThing(new MyFieldLabel(isDisableCalcAlways, "Disable whiteboard calculator always", LABEL_LEN, 10));
 
 		isDisableCalcQuizzes = new CheckBox();
 		isDisableCalcQuizzes.setId("disable_calc_quizzeass");
 		isDisableCalcQuizzes.setValue(options.getSettings().getDisableCalcQuizzes());
-        advOptions.addThing(new MyFieldLabel(isDisableCalcQuizzes, "Disable whiteboard calculator for quizzes", LABEL_LEN));
+        advOptions.addThing(new MyFieldLabel(isDisableCalcQuizzes, "Disable whiteboard calculator for quizzes", LABEL_LEN, 10));
 
 		sectionCombo = new SectionNumberCombo(sectionCount);
         if (sectionIsSettable) {

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
+import hotmath.gwt.cm_tools.client.ui.GWindow.DateRangeAdvOptCallback;
 
 import java.util.Date;
 
@@ -131,9 +132,10 @@ public class DateRangePickerDialog extends Window {
 		btn.setWidth("110px");
 		btn.addSelectionListener(new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent ce) {
+			    
 				DateRangeAdvOptCallback callback = new DateRangeAdvOptCallback() {
 					@Override
-					void setAdvancedOptions(AdvancedOptionsModel options) {
+					public void setAdvancedOptions(AdvancedOptionsModel options) {
 						loggedIn = options.getLoggedIn();
 						startedQuiz = options.isStartedQuiz();
 						tookQuiz = options.isTookQuiz();
@@ -292,6 +294,7 @@ public class DateRangePickerDialog extends Window {
 		void datePicked(Date from, Date to, FilterOptions options);
 	}
 
+
 }
 
 class DatePickerWrapper extends LayoutContainer {
@@ -334,8 +337,6 @@ class DatePickerWrapper extends LayoutContainer {
 	private String asDateString(Date d) {
 		return DateTimeFormat.getShortDateFormat().format(d);
 	}
+
 }
 
-abstract class DateRangeAdvOptCallback {
-	abstract void setAdvancedOptions(AdvancedOptionsModel options);
-}

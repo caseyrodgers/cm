@@ -8,7 +8,6 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.ui.CmTemplateFormaters.StudentDetailsTemplate;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
@@ -27,13 +26,16 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.core.client.XTemplates.XTemplate;
+import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.core.client.XTemplates.FormatterFactories;
+import com.sencha.gxt.core.client.XTemplates.FormatterFactory;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -64,10 +66,15 @@ import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
  * 
  */
 
+@FormatterFactories(@FormatterFactory(factory = CmTemplateFormaters.class, name = "nullChecker"))
+interface StudentDetailsTemplate extends XTemplates {
+    @XTemplate(source = "StudentDetailsPanel_DetailInfo.html")
+    SafeHtml render(StudentModelI adminInfo);
+}
+
 public class StudentDetailsPanel extends BorderLayoutContainer {
 
     StudentModelI studentModel;
-    private XTemplate template;
     private Grid<StudentActivityModel> samGrid;
     private Label _studentCount;
     private Label dateRange = new Label();
@@ -86,6 +93,14 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     public StudentDetailsPanel(final StudentModelI studentModel) {
         this.studentModel = studentModel;
 
+        
+        if(studentModel.getSettings().getShowWorkRequired()) {
+            studentModel.setShowWorkState("REQUIRED");
+        }
+        else {
+            studentModel.setShowWorkState("OPTIONAL");
+        }
+        
         ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>(detailsProps.id());
 
         ColumnModel<StudentActivityModel> cm = defineColumns();
@@ -123,14 +138,14 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         studentInfoPanel = new HTML(renderDetailsTemplate(studentModel));
         studentInfoPanel.setHeight("45px");
         flowLay.add(studentInfoPanel);
-        
+
         flowLay.add(toolBar);
         setNorthWidget(flowLay, new BorderLayoutData(85));
 
         SimpleContainer simpContainer = new SimpleContainer();
-        //simpContainer.setStyleName("student-details-panel-grid");
+        // simpContainer.setStyleName("student-details-panel-grid");
         simpContainer.setWidget(samGrid);
-        //simpContainer.setHeight(250);
+        // simpContainer.setHeight(250);
 
         setCenterWidget(simpContainer);
 
@@ -151,7 +166,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     private Menu buildDebugMenu() {
         MenuItem detailDebug = new MenuItem("Debug Info");
         detailDebug.addSelectionHandler(new SelectionHandler<Item>() {
-            
+
             @Override
             public void onSelection(SelectionEvent<Item> event) {
                 StudentActivityModel m = samGrid.getSelectionModel().getSelectedItem();
@@ -174,14 +189,15 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     }
 
     private void resetHistory(final StudentActivityModel studentModel) {
-        CmMessageBox.confirm("Reset History","Are you sure you want to reset this student's history to this point, erasing all later entries?" , new ConfirmCallback() {
-            @Override
-            public void confirmed(boolean yesNo) {
-                if (yesNo) {
-                    resetHistoryAux(studentModel);
-                }
-            }
-        });
+        CmMessageBox.confirm("Reset History", "Are you sure you want to reset this student's history to this point, erasing all later entries?",
+                new ConfirmCallback() {
+                    @Override
+                    public void confirmed(boolean yesNo) {
+                        if (yesNo) {
+                            resetHistoryAux(studentModel);
+                        }
+                    }
+                });
     }
 
     private void resetHistoryAux(final StudentActivityModel studentActivity) {
@@ -189,14 +205,13 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         new RetryAction<RpcData>() {
             public void oncapture(RpcData list) {
                 getStudentActivityRPC(samGrid.getStore(), studentModel);
-                hotmath.gwt.shared.client.eventbus.EventBus.getInstance().fireEvent(
-                        new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
+                hotmath.gwt.shared.client.eventbus.EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REFRESH_STUDENT_DATA));
             }
 
             @Override
             public void attempt() {
-                ResetStudentActivityAction action = new ResetStudentActivityAction(studentModel.getUid(),
-                        studentActivity.getTestId(), studentActivity.getRunId());
+                ResetStudentActivityAction action = new ResetStudentActivityAction(studentModel.getUid(), studentActivity.getTestId(),
+                        studentActivity.getRunId());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -241,7 +256,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         }
     }
 
-   TextButton _showTopicsBtn, _showWorkButton, _showQuizResults;
+    TextButton _showTopicsBtn, _showWorkButton, _showQuizResults;
 
     private TextButton showQuizResultsBtn() {
         _showQuizResults = new TextButton("Quiz Results", new SelectHandler() {
@@ -262,7 +277,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         _showTopicsBtn = new TextButton("Show Topics");
         _showTopicsBtn.disable();
         _showTopicsBtn.addSelectHandler(new SelectHandler() {
-            
+
             @Override
             public void onSelect(SelectEvent event) {
                 showTopicsForSelected();
@@ -336,12 +351,11 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                         toDate = dateRange.getToDate();
                     }
                 }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(),
-                        new GeneratePdfAction(PdfType.STUDENT_DETAIL, sm.getAdminUid(), Arrays.asList(sm.getUid()),
-                                fromDate, toDate));
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Details Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_DETAIL,
+                        sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
             }
         });
-        //ti.setIconStyle("printer-icon");
+        // ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable student detail report");
         ti.addStyleName("student-details-panel-pr-btn");
         return ti;
@@ -360,8 +374,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                     fromDate = dateRange.getFromDate();
                     toDate = dateRange.getToDate();
                 }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(
-                        PdfType.REPORT_CARD, sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(PdfType.REPORT_CARD, sm.getAdminUid(),
+                        Arrays.asList(sm.getUid()), fromDate, toDate));
             }
         });
         // ti.setIconStyle("printer-icon");
@@ -384,9 +398,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                     fromDate = dateRange.getFromDate();
                     toDate = dateRange.getToDate();
                 }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(),
-                        new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT, sm.getAdminUid(), Arrays.asList(sm.getUid()),
-                                fromDate, toDate));
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
+                        sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
             }
         });
         // ti.setIconStyle("printer-icon");
@@ -401,8 +414,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.useDate(), 75, "Date"));
-        configs.get(configs.size()-1).setSortable(false);
-        configs.get(configs.size()-1).setMenuDisabled(true);
+        configs.get(configs.size() - 1).setSortable(false);
+        configs.get(configs.size() - 1).setMenuDisabled(true);
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.program(), 120, "Program"));
         configs.get(configs.size() - 1).setCell(new AbstractCell() {
@@ -420,27 +433,24 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         });
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.programType(), 115, "Prog-Type"));
-        configs.get(configs.size()-1).setSortable(false);
-        configs.get(configs.size()-1).setMenuDisabled(true);
-        
+        configs.get(configs.size() - 1).setSortable(false);
+        configs.get(configs.size() - 1).setMenuDisabled(true);
+
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.activity(), 90, "Activity"));
-        configs.get(configs.size()-1).setSortable(false);
-        configs.get(configs.size()-1).setMenuDisabled(true);
-        
-        
+        configs.get(configs.size() - 1).setSortable(false);
+        configs.get(configs.size() - 1).setMenuDisabled(true);
+
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.result(), 165, "Result"));
-        configs.get(configs.size()-1).setSortable(false);
-        configs.get(configs.size()-1).setMenuDisabled(true);
-        
-        
+        configs.get(configs.size() - 1).setSortable(false);
+        configs.get(configs.size() - 1).setMenuDisabled(true);
+
         configs.add(new ColumnConfig<StudentActivityModel, Integer>(detailsProps.timeOnTask(), 63, "Time"));
-        configs.get(configs.size()-1).setSortable(true);
-        configs.get(configs.size()-1).setMenuDisabled(true);
-        
+        configs.get(configs.size() - 1).setSortable(true);
+        configs.get(configs.size() - 1).setMenuDisabled(true);
+
         ColumnModel<StudentActivityModel> cm = new ColumnModel<StudentActivityModel>(configs);
         return cm;
     }
-
 
     /**
      * Define the template for the header (does not add to container)
@@ -451,11 +461,10 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     private String renderDetailsTemplate(StudentModelI studentActivity) {
         try {
             return detailTemplate.render(studentActivity).asString();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         return "";
     }
 
@@ -504,15 +513,20 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     }
 }
 
-
 interface DetailsProperties extends PropertyAccess<String> {
     ModelKeyProvider<StudentActivityModel> id();
+
     ValueProvider<StudentActivityModel, String> message();
+
     ValueProvider<StudentActivityModel, String> useDate();
+
     ValueProvider<StudentActivityModel, String> program();
+
     ValueProvider<StudentActivityModel, String> programType();
+
     ValueProvider<StudentActivityModel, String> activity();
+
     ValueProvider<StudentActivityModel, String> result();
+
     ValueProvider<StudentActivityModel, Integer> timeOnTask();
 }
-
