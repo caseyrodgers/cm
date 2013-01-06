@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.ui.StudentSearchInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -74,16 +75,16 @@ public class StudentGridRpcProxy extends RpcProxy<PagingLoadConfigBean, CmStuden
                  * use module vars to hold request options
                  */
                 pageAction.setForceRefresh(StudentGridPanel.instance._forceServerRefresh);
-                if (StudentGridPanel.instance.__searchInfo.getGroupIdFilter() > 0) {
-                    pageAction.setGroupFilter(StudentGridPanel.instance.__searchInfo.getGroupIdFilter());
-                    pageAction.addFilter(GetStudentGridPageAction.FilterType.GROUP,Integer.toString(StudentGridPanel.instance.__searchInfo.getGroupIdFilter()));
+                if (StudentSearchInfo.__instance.getGroupIdFilter() > 0) {
+                    pageAction.setGroupFilter(StudentSearchInfo.__instance.getGroupIdFilter());
+                    pageAction.addFilter(GetStudentGridPageAction.FilterType.GROUP,Integer.toString(StudentSearchInfo.__instance.getGroupIdFilter()));
                 } else {
                     pageAction.setGroupFilter(0);
                 }
 
-                pageAction.setQuickSearch(StudentGridPanel.instance.__searchInfo.getQuickSearch());
-                if (StudentGridPanel.instance.__searchInfo.getQuickSearch() != null && StudentGridPanel.instance.__searchInfo.getQuickSearch().trim().length() > 0) {
-                    pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, StudentGridPanel.instance.__searchInfo.getQuickSearch().trim());
+                pageAction.setQuickSearch(StudentSearchInfo.__instance.getQuickSearch());
+                if (StudentSearchInfo.__instance.getQuickSearch() != null && StudentSearchInfo.__instance.getQuickSearch().trim().length() > 0) {
+                    pageAction.addFilter(GetStudentGridPageAction.FilterType.QUICKTEXT, StudentSearchInfo.__instance.getQuickSearch().trim());
                 }
 
                 String dateRange = null;

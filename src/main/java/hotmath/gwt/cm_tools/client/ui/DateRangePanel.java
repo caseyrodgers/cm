@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+
 import hotmath.gwt.cm_tools.client.ui.DateRangePickerDialog.FilterOptions;
 
 import java.util.Date;
@@ -49,11 +48,11 @@ public class DateRangePanel extends HorizontalPanel  {
 	}
 
 	public boolean isDefault() {
-		return (StudentGridPanel.instance.__searchInfo.getFilterOptions() == null);
+		return (StudentSearchInfo.__instance.getFilterOptions() == null);
 	}
 
 	public FilterOptions getFilterOptions() {
-		return StudentGridPanel.instance.__searchInfo.getFilterOptions();
+		return StudentSearchInfo.__instance.getFilterOptions();
 	}
 
 	public Date getFromDate() {
@@ -137,7 +136,7 @@ public class DateRangePanel extends HorizontalPanel  {
 
 				dateRangeFilter.setValue(formatDateRange(from, to));
 				dateRangeFilter.setToolTip("Date range filter applied to Student activity");
-				StudentGridPanel.instance.__searchInfo.setFilterOptions(filterOptions);
+				StudentSearchInfo.__instance.setFilterOptions(filterOptions);
 
 				applyDateRange();
 			}
@@ -153,7 +152,7 @@ public class DateRangePanel extends HorizontalPanel  {
 		toDate = new Date();
 		addDaysToDate(toDate, 1);
 
-		StudentGridPanel.instance.__searchInfo.setFilterOptions(null);
+		StudentSearchInfo.__instance.setFilterOptions(null);
 
 		applyDateRange();
 	}

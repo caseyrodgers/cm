@@ -366,13 +366,16 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void onSelect(SelectEvent event) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate, toDate;
-                if (dateRange.isDefault()) {
-                    fromDate = null;
-                    toDate = null;
-                } else {
-                    fromDate = dateRange.getFromDate();
-                    toDate = dateRange.getToDate();
+                Date fromDate=null;
+                Date toDate=null;
+                if(dateRange != null) {
+                    if (dateRange.isDefault()) {
+                        fromDate = null;
+                        toDate = null;
+                    } else {
+                        fromDate = dateRange.getFromDate();
+                        toDate = dateRange.getToDate();
+                    }
                 }
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Report Card for: " + sm.getName(), new GeneratePdfAction(PdfType.REPORT_CARD, sm.getAdminUid(),
                         Arrays.asList(sm.getUid()), fromDate, toDate));

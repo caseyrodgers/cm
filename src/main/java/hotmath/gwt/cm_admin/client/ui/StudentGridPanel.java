@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
+import hotmath.gwt.cm_tools.client.ui.StudentSearchInfo;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
@@ -94,8 +95,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     final int MAX_ROWS_PER_PAGE = 50;
 
-    public StudentSearchInfo __searchInfo = new StudentSearchInfo();
-    
     static StudentGridProperties __gridProps = GWT.create(StudentGridProperties.class);
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {

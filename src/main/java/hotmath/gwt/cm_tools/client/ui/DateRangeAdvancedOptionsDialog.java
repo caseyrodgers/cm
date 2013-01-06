@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -71,7 +71,11 @@ public class DateRangeAdvancedOptionsDialog extends GWindow {
 	
 	private Widget createOptionsForm() {
 	    
+	    FramedPanel mainFrame = new FramedPanel();
+	    
 		VerticalLayoutContainer verMain = new VerticalLayoutContainer();
+		mainFrame.setWidget(verMain);
+		mainFrame.setHeaderVisible(false);
 		
 		//fp.setLabelWidth(170);
 		//fp.setHeight(formHeight);
@@ -83,7 +87,7 @@ public class DateRangeAdvancedOptionsDialog extends GWindow {
 		Label text = new Label("Students will be filtered based on the activity options selected below.");
 		verMain.add(text);
 
-        advOptions = new MyFieldSet("Options", 233);
+        advOptions = new MyFieldSet("Options", 244);
         
         advOptions.addStyleName("date-range-adv-options-fieldset");
 
@@ -122,7 +126,7 @@ public class DateRangeAdvancedOptionsDialog extends GWindow {
         
 		verMain.add(advOptions);
         
-        return verMain;
+        return mainFrame;
 	}
 
 	private void setForm() {

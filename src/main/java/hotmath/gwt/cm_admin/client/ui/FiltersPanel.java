@@ -4,6 +4,8 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GroupSelectorWidget;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.StudentSearchInfo;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 
 import com.google.gwt.core.shared.GWT;
@@ -47,7 +49,7 @@ public class FiltersPanel implements IsWidget, ProcessTracker {
             public void onSelection(SelectionEvent<GroupInfoModel> event) {
                 // filter grid based on current selection
                 GroupInfoModel gm = event.getSelectedItem();
-                StudentGridPanel.instance.__searchInfo.setGroupIdFilter(gm.getId());
+                StudentSearchInfo.__instance.setGroupIdFilter(gm.getId());
 
                 StudentGridPanel.instance.loadAndResetStudentLoader();
             }

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -564,7 +563,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     private String _addSubjectValueTags(StudyProgramExt value, String textIn) {
         String text = textIn;
         if(value.getStyleIsTemplate() != null) {
-            text += " [build-in]";
+            text += " [built-in]";
           }
           
           if(value.getStyleIsArchived() != null) {

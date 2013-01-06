@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.StudentSearchInfo;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -50,8 +51,8 @@ class QuickSearchPanel extends HorizontalPanel {
             @Override
             public void onSelect(SelectEvent event) {
                 quickFilter.setValue("");
-                boolean shouldRefresh = (StudentGridPanel.instance.__searchInfo.getQuickSearch() != null && StudentGridPanel.instance.__searchInfo.getQuickSearch().length() > 0);
-                StudentGridPanel.instance.__searchInfo.setQuickSearch(null);
+                boolean shouldRefresh = (StudentSearchInfo.__instance.getQuickSearch() != null && StudentSearchInfo.__instance.getQuickSearch().length() > 0);
+                StudentSearchInfo.__instance.setQuickSearch(null);
                 if (shouldRefresh)
                     StudentGridPanel.instance.loadAndResetStudentLoader();
             }
@@ -63,11 +64,11 @@ class QuickSearchPanel extends HorizontalPanel {
     private void applyQuickSearch() {
         CmLogger.debug("GroupFilter: setting quick search: " + quickFilter.getValue());
         boolean shouldRefresh = true;
-        if (StudentGridPanel.instance.__searchInfo.getQuickSearch() != null && StudentGridPanel.instance.__searchInfo.getQuickSearch().equals(quickFilter.getValue()))
+        if (StudentSearchInfo.__instance.getQuickSearch() != null && StudentSearchInfo.__instance.getQuickSearch().equals(quickFilter.getValue()))
             shouldRefresh = false;
 
         if (shouldRefresh) {
-            StudentGridPanel.instance.__searchInfo.setQuickSearch(quickFilter.getValue());
+            StudentSearchInfo.__instance.setQuickSearch(quickFilter.getValue());
             StudentGridPanel.instance.loadAndResetStudentLoader();
         }
     }
