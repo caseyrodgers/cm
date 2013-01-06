@@ -3,9 +3,7 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.QuizResultsPdfPanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplResults;
 import hotmath.gwt.shared.client.CmShared;
@@ -14,27 +12,34 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.FramedPanel;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
-public class ShowQuizResultsDialog extends CmWindow {
+public class ShowQuizResultsDialog extends GWindow {
 
     int runId;
+    FramedPanel mainPan;
 
     public ShowQuizResultsDialog(int runId) {
+        super(true);
         this.runId = runId;
-        setSize(550, 480);
-        setScrollMode(Scroll.AUTO);
-        setHeading("Quiz Results");
+        setPixelSize(550, 480);
+        setMaximizable(true);
+        setModal(true);
+        setHeadingText("Quiz Results");
 
+        mainPan = new FramedPanel();
+        mainPan.setHeaderVisible(false);
+        CenterLayoutContainer center = new CenterLayoutContainer();
+        center.add(new Label("Loading ..."));
+        mainPan.setWidget(center);
+        setWidget(mainPan);
         addStyleName("resource-viewer-impl-results");
-        setLayout(new FitLayout());
         getResultHtml();
-
-        addCloseButton();
 
         setVisible(true);
     }
@@ -60,11 +65,9 @@ public class ShowQuizResultsDialog extends CmWindow {
 
     private void showResultsAsPdf(String pdfUrl) {
 
-        removeAll();
-        setLayout(new FitLayout());
-        add(new QuizResultsPdfPanel(pdfUrl));
-
-        layout(true);
+        clear();
+        setWidget(new QuizResultsPdfPanel(pdfUrl));
+        forceLayout();
         setVisible(true);
     }
 
@@ -72,21 +75,23 @@ public class ShowQuizResultsDialog extends CmWindow {
 
         String html = rdata.getDataAsString("quiz_html");
         String resultJson = rdata.getDataAsString("quiz_result_json");
-        int total = rdata.getDataAsInt("quiz_question_count");
-        int correct = rdata.getDataAsInt("quiz_correct_count");
         String title = rdata.getDataAsString("title");
 
-        setHeading("Quiz Results: " + title);
+        setHeadingText("Quiz Results: " + title);
 
-        Html htmlEl = new Html(html);
-        htmlEl.getElement().setAttribute("style", "padding-left: 20px;");
-        add(htmlEl, new BorderLayoutData(LayoutRegion.CENTER));
-        layout(true);
+        HTML htmlEl = new HTML(html);
+        //htmlEl.getElement().setAttribute("style", "padding-left: 20px;");
+        
+        FlowLayoutContainer scroller = new FlowLayoutContainer();
+        scroller.setScrollMode(ScrollMode.AUTO);
+        scroller.add(htmlEl);
+        mainPan.setWidget(scroller);
+        
+        forceLayout();
 
         EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_MATHJAX_RENDER));
         hideAnswerResults();
         ResourceViewerImplResults.markAnswers(resultJson);
-
     }
 
     /**

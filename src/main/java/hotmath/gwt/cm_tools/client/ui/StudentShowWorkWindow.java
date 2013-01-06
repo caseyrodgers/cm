@@ -35,6 +35,7 @@ import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
@@ -69,7 +70,7 @@ public class StudentShowWorkWindow extends GWindow {
     }
     
     public StudentShowWorkWindow(StudentModelI student, StudentActivityModel activityModel) {
-        super(false);
+        super(true);
         
         setStyleName("student-show-work-window");
         this.student = student;
@@ -89,18 +90,10 @@ public class StudentShowWorkWindow extends GWindow {
         centerContainer = createCenterPanel();
         _mainBorderPanel.setCenterWidget(centerContainer);
 
-        TextButton closeBtn = new TextButton("Close");
-        closeBtn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                close();            }
-        });
-
-        addButton(closeBtn);
-        
-        setWidget(_mainBorderPanel);
-
-        setVisible(true);
+        FramedPanel fp = new FramedPanel();
+        fp.setHeaderVisible(false);
+        fp.setWidget(_mainBorderPanel);
+        setWidget(fp);
     }
 
     BorderLayoutContainer westContainer;
@@ -390,6 +383,7 @@ public class StudentShowWorkWindow extends GWindow {
                     close();
                 }
                 else {
+                    setVisible(true);
                     createDataList(list);
                 }
                 Log.debug("StudentShowWorkWindow: student show work read successfully");
