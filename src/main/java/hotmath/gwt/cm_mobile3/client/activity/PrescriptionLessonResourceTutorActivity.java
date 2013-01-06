@@ -80,17 +80,17 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
             return;
         }
         
-        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),resourceItem.getFile(),PrescriptionLessonResourceTutorViewImpl.__probNum, variablesJson);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
-            @Override
-            public void onSuccess(RpcData result) {
-                Log.info("Context saved");
-            }
-            @Override
-            public void onFailure(Throwable caught) {
-                Log.error("Error saving solution context", caught);
-            }
-        });
+//        SaveSolutionContextAction action = new SaveSolutionContextAction(SharedData.getUserInfo().getUid(),SharedData.getUserInfo().getRunId(),resourceItem.getFile(),PrescriptionLessonResourceTutorViewImpl.__probNum, variablesJson);
+//        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
+//            @Override
+//            public void onSuccess(RpcData result) {
+//                Log.info("Context saved");
+//            }
+//            @Override
+//            public void onFailure(Throwable caught) {
+//                Log.error("Error saving solution context", caught);
+//            }
+//        });
     }
     
     
