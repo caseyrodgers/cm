@@ -56,8 +56,8 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		 * Reset the profile area
 		 * 
 		 */
-		_fsProfile.remove(super.userName);
-		_fsProfile.remove(super.passCode);
+		_fsProfile.clear();
+		_fsProfile.addThing(new MyFieldLabel(groupCombo, "Group", LABEL_WIDTH, FIELD_WIDTH));
 		_fsProfile.setHeadingText("Assign Group");
 		_fsProgram.setHeadingText("Assign Program");
 		stdAdvOptionsBtn.removeStyleName("register-student-advanced-options-btn");
