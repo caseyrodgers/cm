@@ -17,9 +17,9 @@ public class ShowDebugUrlWindow extends GWindow {
     public ShowDebugUrlWindow() {
         super(true);
         setHeadingText("Debug URL");
-        setPixelSize(450, 90);
+        //setPixelSize(450, 100);
         setResizable(false);
-
+        setPixelSize(450, 150);
         String url = getDebugUrl();
         Anchor anchor = new Anchor(url);
         anchor.setHref(url);
