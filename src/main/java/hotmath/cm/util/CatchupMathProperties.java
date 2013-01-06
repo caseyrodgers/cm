@@ -41,7 +41,14 @@ public class CatchupMathProperties extends Properties {
     private CatchupMathProperties() throws PropertyLoadFileException {
         
         try {
-            File pfile = new File(System.getProperty("user.home"), "cm.properties");
+            String propsToUse = System.getenv("CM.PROPERTIES");
+            File pfile=null;
+            if(propsToUse != null && propsToUse.length() > 0) {
+                pfile = new File(propsToUse);
+            }
+            else {
+                pfile = new File(System.getProperty("user.home"), "cm.properties");
+            }
             __log.info("Reading properties file: " + pfile);
             if (!pfile.exists()) {
                 throw new Exception("Property file '" + pfile + "' does not exist");
