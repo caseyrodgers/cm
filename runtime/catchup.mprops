@@ -1628,7 +1628,8 @@ where l.run_id = ? order by lesson_number
 ##
 .key=TEST_RUN_LESSON_STATUS
 
-SELECT x.run_id, x.id, x.lesson_name, x.date_completed, x.item_count, y.use_count
+SELECT x.run_id, x.id, x.lesson_name, x.date_completed, x.item_count,
+if(x.date_completed is null,y.use_count, x.item_count) use_count
 FROM
   (SELECT l.run_id, l.id, l.lesson_name, l.date_completed, count(p.id) as item_count
    FROM HA_TEST_RUN_LESSON l
