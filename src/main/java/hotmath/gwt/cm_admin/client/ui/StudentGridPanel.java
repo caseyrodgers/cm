@@ -993,7 +993,9 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             public void render(Context context, String value, SafeHtmlBuilder sb) {
                 StudentModelI sm = _grid.getStore().findModelWithKey(context.getKey().toString());
                 if (!sm.getProgram().isCustom() && (sm.getPassingCount() > 0 || sm.getNotPassingCount() > 0)) {
-                    sb.appendEscaped(sm.getPassingCount() + " passed out of " + sm.getPassingCount() + sm.getNotPassingCount());
+                    sb.append(sm.getPassingCount());
+                    sb.appendEscaped(" passed out of ");
+                    sb.append(sm.getPassingCount() + sm.getNotPassingCount());
                 } else {
                     sb.appendEscaped("");
                 }
