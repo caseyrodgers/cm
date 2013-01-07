@@ -39,7 +39,7 @@ public class PdfWindow extends GWindow {
                  * 
                  */
                 String features = "resizable=yes,scrollbars=yes,status=yes";
-                Window.open(webResource.getUrl(), "Catchupmath PDF Viewer", features);
+                Window.open(webResource.getUrl(), "CmPDFViewer", features);
                 return;
             }
         }.register();

@@ -50,7 +50,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
     TextField lastName;
     TextField birthDate;
 
-    int LABEL_LEN = 100, FIELD_LEN = 250;
+    int LABEL_LEN = 100, FIELD_LEN = 200;
     
     public AutoStudentRegistrationPanel() {
 
@@ -62,7 +62,7 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
         _framedPanel.setHeadingText("Self Registration");
 
         VerticalLayoutContainer verMain = new VerticalLayoutContainer();
-        verMain.addStyleName("register-student-form-panel");
+        //verMain.addStyleName("register-student-form-panel");
 
         _framedPanel.setWidget(verMain);
 
