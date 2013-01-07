@@ -7,6 +7,8 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.shared.client.CmShared;
@@ -22,19 +24,17 @@ import com.google.gwt.editor.client.Editor;
 import com.google.gwt.editor.client.EditorError;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.FieldLabel;
-import com.sencha.gxt.widget.core.client.form.FieldSet;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 /**
  * Provides Self Registration login screen and validation
@@ -44,40 +44,41 @@ import com.sencha.gxt.widget.core.client.form.validator.AbstractValidator;
  */
 public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
 
-    VerticalLayoutContainer _formPanel;
     FramedPanel _framedPanel;
 
     TextField firstName;
     TextField lastName;
     TextField birthDate;
 
+    int LABEL_LEN = 100, FIELD_LEN = 250;
+    
     public AutoStudentRegistrationPanel() {
 
         super(WrapperType.OPTIMIZED);
 
         _framedPanel = new FramedPanel();
-        _framedPanel.setHeight(330);
+        _framedPanel.setHeight(300);
         _framedPanel.setWidth(395);
         _framedPanel.setHeadingText("Self Registration");
 
-        _formPanel = new VerticalLayoutContainer();
-        _formPanel.addStyleName("register-student-form-panel");
+        VerticalLayoutContainer verMain = new VerticalLayoutContainer();
+        verMain.addStyleName("register-student-form-panel");
 
-        _framedPanel.add(_formPanel);
+        _framedPanel.setWidget(verMain);
 
-        FieldSet fsAlready = new FieldSet();
-        HorizontalLayoutContainer hp = new HorizontalLayoutContainer();
-        fsAlready.setHeadingText("Have you already registered?");
+        MyFieldSet fsAlready = new MyFieldSet("Have you already registered?");
+        verMain.add(fsAlready);
+        HorizontalPanel buttonBar = new HorizontalPanel();
+        
         TextButton returnToHome = new TextButton("Return to Home Page");
-        returnToHome
-                .setToolTip("If you should have logged in with your personal password, click to retry from the Home page.");
+        returnToHome.setToolTip("If you should have logged in with your personal password, click to retry from the Home page.");
         returnToHome.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 Window.Location.replace(CmShared.CM_HOME_URL);
             }
         });
-        hp.add(returnToHome);
+        buttonBar.add(returnToHome);
 
         TextButton alreadyRegistered = new TextButton("Forgot Password?");
         alreadyRegistered.setToolTip("Click here for information about your existing password");
@@ -87,31 +88,26 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
                 showForgotPassword();
             }
         });
-        hp.add(new Label(" "));
-        hp.add(alreadyRegistered);
-        fsAlready.add(hp);
-        fsAlready.setHeight(70);
-        _formPanel.add(fsAlready);
+        buttonBar.add(alreadyRegistered);
+        
+        fsAlready.addThing(buttonBar);
 
-        FieldSet fsProfile = new FieldSet();
-        fsProfile.setHeadingText("Register");
-        fsProfile.setHeight(120);
+        MyFieldSet fsProfile = new MyFieldSet("Register");
+        //fsProfile.setHeight(120);
         firstName = new TextField();
         
-        VerticalLayoutContainer  fields = new VerticalLayoutContainer();
-
         firstName.setAllowBlank(false);
         firstName.addValidator(new MyFieldValidator());
         firstName.setId("firstName");
         firstName.setEmptyText("-- enter first name --");
-        fields.add(new FieldLabel(firstName, "First Name"), new VerticalLayoutData(1, -1));
+        fsProfile.addThing(new MyFieldLabel(firstName, "First Name", LABEL_LEN, FIELD_LEN));
 
         lastName = new TextField();
         lastName.setAllowBlank(false);
         lastName.addValidator(new MyFieldValidator());
         lastName.setId("lastName");
         lastName.setEmptyText("-- enter last name --");
-        fields.add(new FieldLabel(lastName, "Last name"), new VerticalLayoutData(1, -1));
+        fsProfile.addThing(new MyFieldLabel(lastName, "Last name", LABEL_LEN, FIELD_LEN));
 
         birthDate = new TextField();
         birthDate.setAllowBlank(false);
@@ -119,12 +115,10 @@ public class AutoStudentRegistrationPanel extends CmMainResourceWrapper {
         birthDate.setId("birthDate");
         birthDate.setEmptyText("-- birth month and day (mmdd) --");
         birthDate.addValidator(new MyDateFieldValidator());
-        fields.add(new FieldLabel(birthDate, "Birth date (mmdd)"), new VerticalLayoutData(1, -1));
+        fsProfile.addThing(new MyFieldLabel(birthDate, "Birth date (mmdd)", LABEL_LEN, FIELD_LEN));
+
+        verMain.add(fsProfile);
         
-        fsProfile.setWidget(fields);
-
-        _formPanel.add(fsProfile);
-
         TextButton saveButton = new TextButton("Register");
 
         saveButton.addSelectHandler(new SelectHandler() {

@@ -168,6 +168,12 @@ public class CatchupMath implements EntryPoint {
     private void processLoginComplete(final Integer uid) {
         //Window.alert("LOGIN COMPLETE");
 
+        if(true) {
+            CmBusyManager.resetBusy();
+            showAutoRegistration_gwt();
+            return;
+            
+        }
         try {
             String jsonUserInfo = getUserInfoFromExtenalJs();
             String startType = UserInfoBase.getInstance().getCmStartType();
