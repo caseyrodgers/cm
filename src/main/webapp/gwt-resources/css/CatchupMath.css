@@ -735,16 +735,18 @@ img.resource-item-complete {
 
 .debug-hide {
         color: white;
-        display: none;
+        display: block;
 }
 .debug-show {
         display: block;
 }
+.debug-hide {
+	display: none;
+}
 .debug-mode .debug-hide {
         color: red;
-        display: none;
-        font-size: .8em;
-        margin-left: 10px;
+        display: block;
+        text-align: center;
 }
 .help-window .version {
         font-size: .8em;

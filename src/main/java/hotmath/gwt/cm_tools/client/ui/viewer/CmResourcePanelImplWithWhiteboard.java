@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
@@ -110,7 +111,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      */
     @Override
     public ResourceViewerState getInitialMode() {
-            return ResourceViewerState.MAXIMIZED;
+            return ResourceViewerState.OPTIMIZED;
     }
     
     private void test() {
@@ -300,6 +301,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         }
         else {
+
+            CmMainPanel.__lastInstance.maximizeResource();
             
             if(_showWorkBtn != null)
                 _showWorkBtn.setText("Hide Whiteboard");

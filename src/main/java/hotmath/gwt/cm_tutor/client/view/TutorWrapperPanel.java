@@ -23,10 +23,13 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -45,7 +48,7 @@ public class TutorWrapperPanel extends Composite {
     DivElement readonlyMask;
     
     @UiField
-    Element debugInfo;
+    Button debugInfo;
 
     boolean saveVariableContext;
 
@@ -127,9 +130,8 @@ public class TutorWrapperPanel extends Composite {
                 callback.solutionLoaded(null);
             }
         });
-
     }
-    
+
 
     /**
      * When the input widget has been updated.
@@ -190,12 +192,18 @@ public class TutorWrapperPanel extends Composite {
     
     
     
-    private void initializeTutor(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
+    private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
         
         Log.debug("Solution loading: " + pid);
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
+
+        debugInfo.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                Window.open("/solution_editor/SolutionEditor.html?pid=" + pid.split("\\$")[0], "SolutionEditor", "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
+            }
+        });
         
-        debugInfo.setInnerHTML(pid);
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     

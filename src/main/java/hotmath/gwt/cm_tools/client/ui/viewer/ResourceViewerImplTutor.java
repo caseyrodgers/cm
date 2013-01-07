@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -229,6 +230,11 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
         se.focus();
     }-*/;
 
+    @Override
+    public ResourceViewerState getInitialMode() {
+        return ResourceViewerState.OPTIMIZED;
+    }
+    
     @Override
     public Widget getTutorDisplay() {
         return tutorPanel;

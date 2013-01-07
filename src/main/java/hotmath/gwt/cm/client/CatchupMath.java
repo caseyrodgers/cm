@@ -140,7 +140,7 @@ public class CatchupMath implements EntryPoint {
 
         /** Turn on debugging CSS */
         if (CmShared.getQueryParameter("debug") != null) {
-            _mainPort.addStyleName("debug-on");
+            _mainPort.addStyleName("debug-mode");
         }
 
 

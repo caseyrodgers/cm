@@ -54,6 +54,10 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     }
 
     
+    @Override
+    public Boolean allowMaximize() {
+        return false;
+    }
     
     
     /** Store the last loaded __lastItemData 
