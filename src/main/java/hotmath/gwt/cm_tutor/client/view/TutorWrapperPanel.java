@@ -150,8 +150,9 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
         else {
-        	
-        	jsni_moveToFirstStep();
+        	if(!correct) {
+        	    jsni_moveToFirstStep();
+        	}
         	
             if (this.tutorCallback != null) {
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
