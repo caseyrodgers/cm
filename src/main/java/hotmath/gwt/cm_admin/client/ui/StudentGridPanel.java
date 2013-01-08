@@ -1022,6 +1022,10 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         }
     }
 
+    public int getCurrentStudentCount() {
+    	return  _studentLoader.getTotalCount();
+    }
+
     /**
      * Unregister named students
      * 

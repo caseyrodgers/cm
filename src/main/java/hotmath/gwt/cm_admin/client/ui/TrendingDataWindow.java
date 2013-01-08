@@ -2,8 +2,8 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -16,64 +16,64 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
+
+//import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+
+import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
+
 
 /**
  * Provide a window to display trending data
  * 
- * @author casey
+ * @author bob
  * 
  */
-public class TrendingDataWindow extends CmWindow {
+public class TrendingDataWindow extends GWindow {
     
-    static TrendingDataWindow __instance;
+    static TrendingDataWindow2 __instance;
     
     Integer adminId;
-    TrendingDataWindowChartBar2 _chartBar2;
+    TrendingDataWindowBarChart _barChart;
+    FlowLayoutContainer container;
 
     TabPanel _tabPanel;
     CheckBox _onlyActiveCheckBox;
 
     public TrendingDataWindow(Integer adminId) {
+        super(true);
+
         __instance = this;
         
         this.adminId = adminId;
 
-        setHeading("Overview of Student Progress");
+        setHeadingText("Overview of Student Progress");
         setWidth(600);
-        setHeight(500);
+        setHeight(600);
 
-        setLayout(new FillLayout());
+        container = new FlowLayoutContainer();
 
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                close();
-            }
-        }));
-
-        getHeader().addTool(new Button("Refresh", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 loadTrendDataAsync();
             }
         }));
 
-        getHeader().addTool(new Button("Print Report", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 assessmentReportButton();
             }
         }));
@@ -84,37 +84,38 @@ public class TrendingDataWindow extends CmWindow {
         /** Position button at left margin on button bar
          * 
          */
-        getButtonBar().setStyleAttribute("position", "relative");
+        //getButtonBar().setStyleAttribute("position", "relative");
         _onlyActiveCheckBox = new CheckBox();
-        _onlyActiveCheckBox.setStyleAttribute("position", "absolute");
-        _onlyActiveCheckBox.setStyleAttribute("left", "0");
-        _onlyActiveCheckBox.setStyleAttribute("top", "0");
+        //_onlyActiveCheckBox.setStyleName("trending-data-checkbox");
+        //_onlyActiveCheckBox.setStyleAttribute("position", "absolute");
+        //_onlyActiveCheckBox.setStyleAttribute("left", "0");
+        //_onlyActiveCheckBox.setStyleAttribute("top", "0");
         _onlyActiveCheckBox.setBoxLabel("Restrict data to current programs.");
-        _onlyActiveCheckBox.addListener(Events.OnClick, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
+        _onlyActiveCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			@Override
+            public void onValueChange(ValueChangeEvent<Boolean> event) {
                 loadTrendDataAsync();
             }
+
         });
-        
-        
+
         getButtonBar().add(_onlyActiveCheckBox);
-        
-        
+
         /**
          * turn on after data retrieved
          * 
          */
+        setWidget(container);
         setVisible(true);
     }
-    
+
     private void drawGui() {
-        removeAll();
-        setLayout(new FillLayout());
+    	container.clear();
         _tabPanel = new TabPanel();
         _tabPanel.setAnimScroll(true);
         _tabPanel.setTabScroll(true);
 
-        add(_tabPanel);
+        container.add(_tabPanel);
     }
 
     private void assessmentReportButton() {
@@ -133,8 +134,8 @@ public class TrendingDataWindow extends CmWindow {
     CmAdminTrendingDataI _trendingData;
 
     private void loadTrendDataAsync() {
-        
-        if(StudentGridPanel.instance.currentStudentCount == 0) {
+
+        if(StudentGridPanel.instance.getCurrentStudentCount() == 0) {
             showNoStudents();
             return;
         }
@@ -150,40 +151,46 @@ public class TrendingDataWindow extends CmWindow {
             
             public void oncapture(CmAdminTrendingDataI trendingData) {
                 _trendingData = trendingData;
-
                 CmBusyManager.setBusy(false);
                 
                 drawGui();
                 addTrendingChart(trendingData);
-                addProgramCharts(trendingData.getProgramData());
+                //addProgramCharts(trendingData.getProgramData());
                 setVisible(true);
-                layout(true);
             }
         }.register();
     }
     
     private void showNoStudents() {
-        removeAll();
-        setLayout(new CenterLayout());
-        add(new Html("<h2>No students found</h2>"));
+    	container.clear();
+        //removeAll();
+    	CenterLayoutContainer clContainer = new CenterLayoutContainer();
+        clContainer.add(new HTML("<h2>No students found</h2>"));
+    	container.add(clContainer);
     }
 
     private GetAdminTrendingDataAction.DataType onlyActiveOrFullHistory() {
-        if(_onlyActiveCheckBox != null && _onlyActiveCheckBox.getValue())
-          return GetAdminTrendingDataAction.DataType.ONLY_ACTIVE;
+        if (_onlyActiveCheckBox != null && _onlyActiveCheckBox.getValue())
+            return GetAdminTrendingDataAction.DataType.ONLY_ACTIVE;
         else 
             return GetAdminTrendingDataAction.DataType.FULL_HISTORY;
     }
 
-    
+    Widget _barChartWidget;
+
     private void addTrendingChart(CmAdminTrendingDataI trendingData) {
-        TabItem ti = new TabItem("Most Prescribed Lessons");
-        TrendingDataWindowChartBar chart = new TrendingDataWindowChartBar();
-        ti.add(chart);
-        chart.setModelData("Most Prescribed Lessons", trendingData.getTrendingData());
-        _tabPanel.add(ti);
+    	if (_barChartWidget != null) {
+    		_barChartWidget.setVisible(false);
+    		_barChartWidget.removeFromParent();
+    		boolean removed = _tabPanel.remove(_barChartWidget);
+    		Window.alert("removed barChartWidget: " + removed);
+    	}
+        TrendingDataWindowBarChart _barChart = new TrendingDataWindowBarChart("Most Prescribed Lessons", trendingData.getTrendingData());
+        _barChartWidget = _barChart.asWidget();
+        _tabPanel.add(_barChartWidget, "Most Prescribed Lessons");
     }
 
+/*
     private void addProgramCharts(CmList<ProgramData> programData) {
         for (int i = 0, t = programData.size(); i < t; i++) {
             ProgramData pd = programData.get(i);
@@ -195,9 +202,8 @@ public class TrendingDataWindow extends CmWindow {
 
             _tabPanel.add(ti);
         }
-        layout();
     }
-
+*/
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override

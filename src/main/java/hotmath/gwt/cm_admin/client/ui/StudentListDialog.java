@@ -1,13 +1,18 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_admin.client.ui.TrendingDataWindowBarChart.DataPropertyAccess;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.TrendingData;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
@@ -17,88 +22,123 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
+import com.sencha.gxt.data.shared.ListStore;
+
+//====
+
+import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.data.shared.loader.LoadEvent;
+import com.sencha.gxt.data.shared.loader.LoadHandler;
+import com.sencha.gxt.data.shared.loader.LoadResultListStoreBinding;
+import com.sencha.gxt.data.shared.loader.PagingLoadConfigBean;
+import com.sencha.gxt.data.shared.loader.PagingLoader;
+import com.sencha.gxt.widget.core.client.Component;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
+import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
+import com.sencha.gxt.widget.core.client.toolbar.PagingToolBar;
+import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
+//====
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 
 /* Provide standard display of student lists
  * 
  */
-public class TrendingDataStudentListDialog extends CmWindow {
+public class TrendingDataStudentListDialog extends GWindow {
 
-    Grid<StudentModelExt> _grid;
+    Grid<StudentModelI> _grid;
+    FlowLayoutContainer _container;
     
     public TrendingDataStudentListDialog(String title, List<StudentModelI> students) {
+    	super(true);
 
-        setSize(300, 400);
-        setHeading(title);
-        addStyleName("trending-data-student-list");
-        setLayout(new FillLayout());
-    
-        List<StudentModelExt> studentsX = new ArrayList<StudentModelExt>();
-        for(StudentModelI sm: students) {
-            studentsX.add(new StudentModelExt(sm));
-        }
+        setWidth(300);
+        setHeight(400);
+
+        setHeadingText(title);
+        //addStyleName("trending-data-student-list");
         
-        ListStore<StudentModelExt> store = new ListStore<StudentModelExt>();
-        store.add(studentsX);
+        _container = new FlowLayoutContainer();
+
+        ListStore<StudentModelI> store = new ListStore<StudentModelI>(_dataAccess.nameKey());
+        store.addAll(students);
         
         _grid = defineGrid(store, defineColumns());
         add(_grid);
-        
-        
-        addButton(new MyButton("Edit", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
-                StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
-                showStudentInfo(StudentEventType.REGISTER, sm);
-            }
-        },"Edit selected student's registration."));
 
-        
-        addButton(new MyButton("Details", new SelectionListener<ButtonEvent>() {
+        TextButton edit = new StudentPanelButton("Edit");
+        edit.setToolTip("Edit selected student's registration.");
+        edit.addSelectHandler(new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                StudentModelExt sm = _grid.getSelectionModel().getSelectedItem();
-                showStudentInfo(StudentEventType.DETAILS, sm);
+            public void onSelect(SelectEvent event) {
+                GridSelectionModel<StudentModelI> sel = _grid.getSelectionModel();
+                List<StudentModelI> l = sel.getSelection();
+                if (l.size() == 0) {
+                    CmMessageBox.showAlert("Please select a student.");
+                } else {
+                    StudentModelI sm = l.get(0);
+                    showStudentInfo(StudentEventType.REGISTER, sm);
+                }
             }
-        },"Show selected student's history detail."));
-
+        });
+        getButtonBar().add(edit);
         
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        TextButton details = new StudentPanelButton("Details");
+        details.setToolTip("Show selected student's history detail.");
+        details.addSelectHandler(new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                close();
+            public void onSelect(SelectEvent event) {
+                GridSelectionModel<StudentModelI> sel = _grid.getSelectionModel();
+                List<StudentModelI> l = sel.getSelection();
+                if (l.size() == 0) {
+                    CmMessageBox.showAlert("Please select a student.");
+                } else {
+                    StudentModelI sm = l.get(0);
+                    showStudentInfo(StudentEventType.DETAILS, sm);
+                }
             }
-        }));
+        });
+        getButtonBar().add(details);
         
-        
-        getHeader().addTool(new Button("Print List",new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent ce) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        List<Integer> uids = new ArrayList<Integer>();
-                        List<StudentModelExt> students = _grid.getStore().getModels();
-                        int adminId = StudentGridPanel.instance._cmAdminMdl.getUid();
-                        for(int i=0,t=students.size();i<t;i++) {
-                            uids.add(students.get(i).getUid());
-                        }
-                        GeneratePdfAction action = new GeneratePdfAction(PdfType.STUDENT_LIST,adminId,uids);
-                        action.setTitle(getHeading());
-                        action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
-                        new PdfWindow(0, "Catchup Math Student List", action);
-                    }
-                });                
+        TextButton print = new StudentPanelButton("Print List");
+        print.setToolTip("Show selected student's history detail.");
+        print.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                List<Integer> uids = new ArrayList<Integer>();
+                List<StudentModelI> students = _grid.getStore().getAll();
+                int adminId = StudentGridPanel.instance._cmAdminMdl.getUid();
+                for(int i=0,t=students.size();i<t;i++) {
+                    uids.add(students.get(i).getUid());
+                }
+                GeneratePdfAction action = new GeneratePdfAction(PdfType.STUDENT_LIST,adminId,uids);
+                action.setTitle(header.getText());
+                action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
+                new PdfWindow(0, "Catchup Math Student List", action);
             }
-        }));
+        });
+        getHeader().addTool(print);
 
         setModal(true);
         setVisible(true);
@@ -111,7 +151,7 @@ public class TrendingDataStudentListDialog extends CmWindow {
      * @param type
      * @param sm
      */
-    private void showStudentInfo(final StudentEventType type, final StudentModelExt sm) {
+    private void showStudentInfo(final StudentEventType type, final StudentModelI sm) {
         if(sm == null)
             return;
         
@@ -139,12 +179,12 @@ public class TrendingDataStudentListDialog extends CmWindow {
     }
 
     
-    private Grid<StudentModelExt> defineGrid(final ListStore<StudentModelExt> store, ColumnModel cm) {
-        final Grid<StudentModelExt> grid = new Grid<StudentModelExt>(store, cm);
+    private Grid<StudentModelI> defineGrid(final ListStore<StudentModelI> store, ColumnModel<StudentModelI> cm) {
+        final Grid<StudentModelI> grid = new Grid<StudentModelI>(store, cm);
         grid.setBorders(true);
-        grid.setStripeRows(true);
+        //grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getSelectionModel().setFiresEvents(true);
+        //grid.getSelectionModel().setFiresEvents(true);
         grid.setWidth("410px");
         grid.setHeight("300px");
         grid.setStateful(true);
@@ -152,24 +192,22 @@ public class TrendingDataStudentListDialog extends CmWindow {
         return grid;
     }
 
-    private ColumnModel defineColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    private ColumnModel<StudentModelI> defineColumns() {
+        List<ColumnConfig<StudentModelI, ?>> cols = new ArrayList<ColumnConfig<StudentModelI, ?>>();
 
-        ColumnConfig column = new ColumnConfig();
-        column.setId(StudentModelExt.NAME_KEY);
-        column.setHeader("Student Name");
-        column.setWidth(235);
-        column.setSortable(true);
-        configs.add(column);
+        cols.add(new ColumnConfig<StudentModelI, String>(_dataAccess.name(), 235, "Student Name"));
+        // column.setSortable(true);
 
-        ColumnModel cm = new ColumnModel(configs);
-        return cm;
+        return new ColumnModel<StudentModelI>(cols);
     }
- 
-    class MyButton extends Button {
-        public MyButton(String name, SelectionListener<ButtonEvent> listener, String tip) {
-            super(name, listener);
-            setToolTip(tip);
-        }
-    }    
+
+	public interface DataPropertyAccess extends PropertyAccess<StudentModelI> {
+		ValueProvider<StudentModelI, String> name();
+
+		@Path("name")
+		ModelKeyProvider<StudentModelI> nameKey();
+	}
+
+	private static final DataPropertyAccess _dataAccess = GWT.create(DataPropertyAccess.class);
+
 }
