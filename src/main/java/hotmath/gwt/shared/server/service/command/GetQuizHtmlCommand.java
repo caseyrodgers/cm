@@ -94,7 +94,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
                 map.put("testTitle", testTitle);
                 map.put("testSet", testSet);
                 map.put("subTitle", "");
-    
+                
                 String quizHtml = VelocityTemplateFromStringManager.getInstance().processTemplate(quizHtmlTemplate, map);
                 //  quizHtml = processHtmlForSprites(quizHtml);
                 

@@ -46,11 +46,6 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
         // TODO Auto-generated method stub
         return 520;
     }
-    
-    @Override
-    public ResourceViewerState getInitialMode() {
-        return ResourceViewerState.MAXIMIZED;
-    }
 
     @Override
     public boolean isQuiz() {
