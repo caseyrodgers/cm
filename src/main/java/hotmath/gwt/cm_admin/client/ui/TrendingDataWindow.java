@@ -42,7 +42,7 @@ import com.sencha.gxt.widget.core.client.form.CheckBox;
  */
 public class TrendingDataWindow extends GWindow {
     
-    static TrendingDataWindow2 __instance;
+    static TrendingDataWindow __instance;
     
     Integer adminId;
     TrendingDataWindowBarChart _barChart;
