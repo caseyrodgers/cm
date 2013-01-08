@@ -273,7 +273,7 @@ public class CmResourceContentPanel extends ContentPanel {
       if(_panel instanceof CmResourcePanelImplWithWhiteboard) {
           if( ((CmResourcePanelImplWithWhiteboard)_panel).isWhiteboardActive() ) {
               /** Cannot shrink Whiteboard */
-              _maximize.setEnabled(false);
+              //_maximize.setEnabled(false);
           }
       }
       

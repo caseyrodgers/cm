@@ -161,8 +161,6 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
                     }
                     
                     //setDisplayMode(DisplayMode.TUTOR);
-                    
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WHITEBOARD_CLOSED));
                 }
             }
         });
@@ -281,14 +279,14 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      * @param displayMode
      */
     static int x = 1;
-
     public void setDisplayMode(DisplayMode displayMode) {
         
         _displayMode = displayMode;
         __lastDisplayMode = _displayMode;
         
         clear();
-        
+
+
         if(displayMode == DisplayMode.TUTOR) {
         	if(_showWorkBtn != null)
                 _showWorkBtn.setText("Show Whiteboard");
@@ -302,8 +300,13 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             
         	add(flowContainer);
             //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
+        	
+        	CmMainPanel.__lastInstance.ensureOptimizedResource();
         }
         else {
+            
+            CmMainPanel.__lastInstance.ensureMaximizeResource();
+
             if(_showWorkBtn != null)
                 _showWorkBtn.setText("Hide Whiteboard");
 
