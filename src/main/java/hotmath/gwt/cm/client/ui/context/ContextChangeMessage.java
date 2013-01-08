@@ -12,8 +12,6 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
-
-
 public class ContextChangeMessage extends GWindow {
 
     public ContextChangeMessage(String lesson) {
@@ -23,7 +21,7 @@ public class ContextChangeMessage extends GWindow {
         
         addStyleName("context-change-message");
         setHeadingText("Current Topic");
-        setModal(true);
+        setModal(false);
         setPixelSize(330, 150);
 
         SimpleContainer sc1 = new SimpleContainer();
