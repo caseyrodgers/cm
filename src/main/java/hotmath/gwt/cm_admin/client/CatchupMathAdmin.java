@@ -10,9 +10,12 @@ import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
+import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -128,7 +131,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //            
 //            
 //        }
-        
         
         
         new MessageOfTheDayDialog(new CallbackGeneric() {

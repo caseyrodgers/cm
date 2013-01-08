@@ -4,8 +4,9 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class StudentActivityModel  implements Response {
 	
-	static int id;
+	static int __idKey;
 	
+	int id;
 	String activity;
 	boolean isCustomQuiz;
 	boolean isPassing;
@@ -30,7 +31,7 @@ public class StudentActivityModel  implements Response {
 
 	
 	public StudentActivityModel(){
-		this.id++;
+		this.id = __idKey++;
 	}
 
 	public int getId() {
@@ -202,8 +203,8 @@ public class StudentActivityModel  implements Response {
         this.isArchivedStyle = isArchivedStyle;
     }
 
-    public static void setId(int id) {
-        StudentActivityModel.id = id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setLessonsCompleted(int lessonsCompleted) {

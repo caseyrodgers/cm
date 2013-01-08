@@ -49,7 +49,7 @@ public class StudentDetailsWindow extends GWindow {
         
         setWidget(studentDetailsPanel);
         
-        //getButtonBar().addStyleName("student-details-window-button-bar");
+        getButtonBar().addStyleName("student-details-window-button-bar");
         getButtonBar().add(studentDetailsPanel.getDateRange());
         addButton(closeButton());
 

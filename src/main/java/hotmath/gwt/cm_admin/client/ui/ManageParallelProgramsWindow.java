@@ -29,6 +29,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -82,6 +83,10 @@ public class ManageParallelProgramsWindow extends GWindow {
             CmMessageBox.showAlert("Please make a selection first");
         }
         return mdl;
+    }
+    
+    public Widget getGrid() {
+        return grid;
     }
 
     private void drawGui() {
@@ -237,12 +242,6 @@ public class ManageParallelProgramsWindow extends GWindow {
         return grid;
     }
 
-    /** Return string that deals with singular/plural of student count
-     * 
-     */
-    private String getCountString(ParallelProgramModel ppm) {
-        return ppm.getStudentCount() + " " + (ppm.getStudentCount() == 1?"student":"students");
-    }
 
     private ColumnModel<ParallelProgramModel> defineColumns() {
         List<ColumnConfig<ParallelProgramModel, ?>> configs = new ArrayList<ColumnConfig<ParallelProgramModel, ?>>();

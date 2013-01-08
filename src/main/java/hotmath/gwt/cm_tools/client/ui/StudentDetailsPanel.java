@@ -24,6 +24,7 @@ import java.util.Date;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -101,7 +102,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             studentModel.setShowWorkState("OPTIONAL");
         }
         
-        ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>(detailsProps.id());
+        ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>(detailsProps.key());
 
         ColumnModel<StudentActivityModel> cm = defineColumns();
 
@@ -109,8 +110,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         samGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         // samGrid.getSelectionModel().setFiresEvents(true);
         samGrid.getView().setStripeRows(true);
-        samGrid.setWidth(565);
-        samGrid.setHeight(225);
+
 
         samGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentActivityModel>() {
             @Override
@@ -118,6 +118,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 enableDisableButtons();
             }
         });
+        
 
         ToolBar toolBar = new ToolBar();
         toolBar.add(showWorkBtn());
@@ -162,7 +163,43 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         refreshDateRangeLabel();
         dateRange.addStyleName("date-range-label");
     }
+    
+    class TestData {
+        String name, value;
 
+        public TestData(String name, String value) {
+            this.name = name;
+            this.value = value;
+        }
+        
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+    }
+    interface DataProperties extends PropertyAccess<String> {
+
+        ValueProvider<TestData, String> name();
+
+        ValueProvider<TestData, String> value();
+
+        @Path("name")
+        ModelKeyProvider<TestData> key();
+        
+    }
+
+    
     private Menu buildDebugMenu() {
         MenuItem detailDebug = new MenuItem("Debug Info");
         detailDebug.addSelectionHandler(new SelectionHandler<Item>() {
@@ -427,7 +464,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 StudentActivityModel sam = samGrid.getStore().get(context.getIndex());
                 String html = "";
                 if (sam.isArchived()) {
-                    html = "<span class='" + sam.getIsArchivedStyle() + "'>" + sam.getProgramDescr() + "</span>";
+                    html = sam.getProgramDescr() + " [archived]";
                 } else {
                     html = sam.getProgramDescr();
                 }
@@ -517,7 +554,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 }
 
 interface DetailsProperties extends PropertyAccess<String> {
-    ModelKeyProvider<StudentActivityModel> id();
+    @Path("id")
+    ModelKeyProvider<StudentActivityModel> key();
 
     ValueProvider<StudentActivityModel, String> message();
 

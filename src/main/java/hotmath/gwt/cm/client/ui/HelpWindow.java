@@ -17,6 +17,7 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
@@ -117,7 +118,7 @@ public class HelpWindow extends GWindow {
         TextButton supportBtn = new MyOptionButton("Support", "Get support help", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CatchupMathTools.showAlert("Please email support@hotmath.com for support.");
+                CmMessageBox.showAlert("Please email support@hotmath.com for support.");
             }
         });
         toolBar.add(supportBtn);
@@ -276,7 +277,7 @@ public class HelpWindow extends GWindow {
                  */
                 if (!UserInfo.getInstance().isActiveUser()) {
                     // creating new account, do not allow changing wallpaper
-                    CatchupMathTools
+                    CmMessageBox
                             .showAlert("You will be able to change your wallpaper once you create your own account");
                     return;
                 }
