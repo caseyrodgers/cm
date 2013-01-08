@@ -20,6 +20,8 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -279,6 +281,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      * @param displayMode
      */
     static int x = 1;
+
     public void setDisplayMode(DisplayMode displayMode) {
         
         _displayMode = displayMode;
@@ -301,9 +304,6 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             //CmMainPanel.__lastInstance._mainContent.currentContainer.getMaximizeButton().setEnabled(true);
         }
         else {
-
-            CmMainPanel.__lastInstance.maximizeResource();
-            
             if(_showWorkBtn != null)
                 _showWorkBtn.setText("Hide Whiteboard");
 

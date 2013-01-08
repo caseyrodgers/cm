@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerAc
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedHandler;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper.WrapperType;
+import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
@@ -468,4 +469,23 @@ public class CmMainPanel extends BorderLayoutContainer {
         setCenterWidget(_mainContentWrapper.getResourceWrapper());
         forceLayout();
     }
+
+    /** make sure current display is in maximized mode
+     * 
+     */
+    public void ensureMaximizeResource() {
+       if(_lastResourceContentPanel.getCurrentViewerState() != ResourceViewerState.MAXIMIZED) {
+           CmLogger.debug("Changing to MAXIMIZED mode");
+           maximizeResource();           
+       }
+    }
+    
+    public void ensureOptimizedResource() {
+        if(_lastResourceContentPanel.getCurrentViewerState() != ResourceViewerState.OPTIMIZED) {
+            CmLogger.debug("Changing to OPTIMIZED mode");
+            optimizeResource();           
+        }
+     }
+    
+    
 }

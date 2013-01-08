@@ -13,6 +13,7 @@ import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -218,7 +219,7 @@ class ResourceMenuButton extends TextButton {
     			
     		}
     		else {
-    			item = new MenuItem(id.getTitle());
+    			item = new MyMenuItem(id.getTitle());
     		}            
 
     		item.setHideOnClick(true);
@@ -272,7 +273,7 @@ class ResourceMenuButton extends TextButton {
             	/** single item, no submenu */
             	final InmhItemData id = sid.getItemData().get(0);
             	resouresToRegister.add(id);
-            	final MenuItem citem = new MenuItem(sid.getItemData().get(0).getTitle());
+            	final MenuItem citem = new MyMenuItem(sid.getItemData().get(0).getTitle());
             	citem.addSelectionHandler(new SelectionHandler<Item>() {
             	    @Override
             	    public void onSelection(SelectionEvent<Item> event) {
@@ -282,7 +283,7 @@ class ResourceMenuButton extends TextButton {
             	menu.add(citem);
             }
             else {
-                MenuItem subMi = new MenuItem(sid.getTitle());
+                MenuItem subMi = new MyMenuItem(sid.getTitle());
                 menu.add(subMi);
 
             	if(sid.getChildren().size() > 0) {
@@ -304,7 +305,7 @@ class ResourceMenuButton extends TextButton {
             	/** single item, no submenu */
             	final InmhItemData id = smi.getItemData().get(0);
             	resouresToRegister.add(id);
-            	final MenuItem citem = new MenuItem(smi.getItemData().get(0).getTitle());
+            	final MenuItem citem = new MyMenuItem(smi.getItemData().get(0).getTitle());
             	citem.addSelectionHandler(new SelectionHandler<Item>() {
             	    @Override
             	    public void onSelection(SelectionEvent<Item> event) {
@@ -314,7 +315,7 @@ class ResourceMenuButton extends TextButton {
             	menu.add(citem);
     		}
     		else {
-	        	MenuItem item = new MenuItem(smi.getTitle());
+	        	MenuItem item = new MyMenuItem(smi.getTitle());
 
 	        	item.setSubMenu(buildMenu(smi.getItemData()));
 	        	
@@ -330,7 +331,7 @@ class ResourceMenuButton extends TextButton {
         Menu subMenu = new Menu();
         for(final InmhItemData id: list) {
         	resouresToRegister.add(id);
-        	final MenuItem citem = new MenuItem(id.getTitle());
+        	final MenuItem citem = new MyMenuItem(id.getTitle());
         	citem.addSelectionHandler(new SelectionHandler<Item>() {
         	    @Override
         	    public void onSelection(SelectionEvent<Item> event) {
@@ -391,3 +392,11 @@ class ResourceMenuButton extends TextButton {
     }
 }
 
+
+
+class MyMenuItem extends MenuItem {
+    public MyMenuItem(String text) {
+        super();
+        setHTML(SafeHtmlUtils.htmlEscapeAllowEntities(text));
+    }
+}
