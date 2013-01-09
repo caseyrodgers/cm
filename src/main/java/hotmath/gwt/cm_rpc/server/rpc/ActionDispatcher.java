@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.server.rpc;
 
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 import hotmath.gwt.cm_rpc.client.ClientInfo;
@@ -393,7 +394,14 @@ public class ActionDispatcher {
 
 				String serverName = ContextListener.getServerName();
 
-				String subject = "CM ActionDispatcher (" + serverName + ") ["
+				String cmInstallationId="unknown";
+				try {
+				    CatchupMathProperties.getInstance().getCmInstallationId();
+				}
+				catch(Exception e) {
+				    logger.error("Error getting cm installation id", e);
+				}
+				String subject = "CM (installation=" + cmInstallationId + ") ActionDispatcher (" + serverName + ") ["
 						+ clientInfo.getUserId() + "] error: "
 						+ ex.getLocalizedMessage();
 				StringWriter sw = new StringWriter();

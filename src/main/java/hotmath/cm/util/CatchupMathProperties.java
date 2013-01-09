@@ -119,4 +119,12 @@ public class CatchupMathProperties extends Properties {
         }
         return base;
     }
+
+    /** Return the unique identifier for this cm installation
+     * 
+     * @return
+     */
+    public String getCmInstallationId() {
+        return getProperty("cm.installation","default");
+    }
 }
