@@ -3,19 +3,19 @@ package hotmath.gwt.cm_mobile3.client.view;
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.LoginPage;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -28,6 +28,21 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     
     public LoginViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+        
+        loginButton.addClickHandler(new ClickHandler() {
+            
+            @Override
+            public void onClick(ClickEvent event) {
+                doLogin();
+            }
+        });
+        
+        demoButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.createDemo();
+            }
+        });
     }
 
     interface MyUiBinder extends UiBinder<Widget, LoginViewImpl> {
@@ -77,31 +92,25 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
         }   
     }
     
+//
+//    @UiHandler("loginButton")
+//    void handleLogin(PressHandler ce) {
+//        doLogin();
+//    }
+//    
 
-    @UiHandler("loginButton")
-    void handleLogin(ClickEvent ce) {
-        doLogin();
-    }
-    
-    
-    @UiHandler("demoButton")
-    void handleDemo(ClickEvent ce) {
-        presenter.createDemo();
-    }
-    
     
     @UiHandler("passwordBox")
     protected void doChangeValue(ValueChangeEvent<String> event) {
       Log.info(event.toDebugString());
     }
-    
-    
-    @UiField
-    Button loginButton;
-    LoginPage loginPage;
+
     
     @UiField
-    Button demoButton;
+    TouchButton loginButton;
+    
+    @UiField
+    TouchButton demoButton;
 
     @UiField
     DialogBox loginBox;

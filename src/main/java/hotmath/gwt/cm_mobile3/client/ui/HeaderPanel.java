@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
@@ -67,7 +68,7 @@ public class HeaderPanel extends Composite {
         basePanel.add(mInactiveTitle);
 
         
-        _logout = new Anchor("Logout");
+        _logout = new TouchAnchor("Logout");
         _logout.addStyleName("logout-button");
         _logout.addStyleName("about-dialog");
         _logout.addClickHandler(new ClickHandler() {

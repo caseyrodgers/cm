@@ -4,6 +4,7 @@ import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 
 import java.util.List;
 
@@ -13,7 +14,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 
 public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
@@ -74,5 +74,5 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     DivElement firstThing,programStatus;
     
     @UiField
-    Button begin;
+    TouchButton begin;
 }

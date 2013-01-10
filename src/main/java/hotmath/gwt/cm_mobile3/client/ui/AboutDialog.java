@@ -2,6 +2,8 @@ package hotmath.gwt.cm_mobile3.client.ui;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
@@ -61,8 +63,7 @@ public class AboutDialog extends DialogBox  {
 		}
 		
 		FlowPanel hp = new FlowPanel();
-		Button close = new Button("Close");
-		close.addClickHandler(new ClickHandler() {
+		Button close = new TouchButton("Close",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
@@ -73,7 +74,7 @@ public class AboutDialog extends DialogBox  {
 		hp.getElement().setAttribute("style", "margin: 5px 0 5px 5px");
 		
         DisclosurePanel feedback = new DisclosurePanel();
-        Anchor feedbackButton = new Anchor("Feedback");
+        Anchor feedbackButton = new TouchAnchor("Feedback");
         feedbackButton.getElement().setAttribute("style", "float: right;margin-right: 10px;margin-bottom:5px;font-size: .9em;");
         feedback.setHeader(feedbackButton);
         feedback.setContent(new FeedbackPanel());
