@@ -10,6 +10,7 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Timestamp;
 
 import org.apache.log4j.Logger;
@@ -30,18 +31,46 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
         
         PreparedStatement pstat = null;
         try {
-            String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, action.getRunId());
-            pstat.setString(2, action.getType());
-            pstat.setString(3, action.getFile());
-            pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
-            pstat.setInt(5, action.getSessionNumber());
-
-            int cnt = pstat.executeUpdate();
-            if (cnt != 1)
-                throw new Exception("Error adding test run item view");
+            
+            /** only allow RPPs to be added once, others can be repeated
+             * 
+             */
+            boolean shouldAdd=true;
+            if(action.getType().equals("practice")) {
+                PreparedStatement stCheck=null;
+                try {
+                    String sql = "select count(*) from HA_TEST_RUN_INMH_USE where run_id = ? and item_file = ? and item_type = 'practice'";
+                    stCheck = conn.prepareStatement(sql);
+                    stCheck.setInt(1,  action.getRunId());
+                    stCheck.setString(2,  action.getFile());
+                    
+                    ResultSet rsCheck = stCheck.executeQuery();
+                    rsCheck.first();
+                    if(rsCheck.getInt(1) > 0) {
+                        logger.warn("RPP already completed: " + action);
+                        shouldAdd = false;
+                    }
+                }
+                finally {
+                    SqlUtilities.releaseResources(null,  stCheck, null);
+                }
+            }
+            
+            if(shouldAdd) {
+                
+                String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
+                pstat = conn.prepareStatement(sql);
+    
+                pstat.setInt(1, action.getRunId());
+                pstat.setString(2, action.getType());
+                pstat.setString(3, action.getFile());
+                pstat.setTimestamp(4, new Timestamp(System.currentTimeMillis()));
+                pstat.setInt(5, action.getSessionNumber());
+    
+                int cnt = pstat.executeUpdate();
+                if (cnt != 1)
+                    throw new Exception("Error adding test run item view");
+            }
 
             RpcData rpcData = new RpcData();
             rpcData.putData("success", "true");

@@ -8,10 +8,6 @@ function initStartCmMobile() {}
  * gwt_solutionHasBeenViewed is defined GWT source: PrescriptionResourceLessonTutorActivity
  * 
  */
-HmEvents.eventTutorLastStep.subscribe(function(x) {
-	gwt_solutionHasBeenViewed();
-});
-
 
 HmEvents.eventTutorInitialized.subscribe(function(x) {
 	gwt_solutionHasBeenInitialized();

@@ -16,6 +16,8 @@ import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -81,7 +83,7 @@ public class HeaderPanel extends Composite {
         basePanel.add(_logout);
 
 
-        Anchor about = new Anchor();
+        TouchAnchor about = new TouchAnchor();
         about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
         about.addStyleName("about-dialog");
         about.addClickHandler(new ClickHandler() {
@@ -332,7 +334,7 @@ public class HeaderPanel extends Composite {
             
             newButton.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/back_button.png'/><span>" + backButtonText + "</span>");
 
-            DeferredCommand.addCommand(new Command() {
+            Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                 @Override
                 public void execute() {
                     setCssClass(oldButton, CssPos.Left);

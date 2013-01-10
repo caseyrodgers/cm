@@ -110,6 +110,10 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
 
     @Override
     public void markSolutionAsComplete() {
+        if(resourceItem.isViewed()) {
+            return; // already viewed
+        }
+        
         UserInfo ui = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
         String pid=resourceItem.getFile();
         int runId = ui.getRunId();
