@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cm="urn:import:hotmath.gwt.cm_mobile_shared.client.ui">
 
 	<g:HTMLPanel styleName="quizViewImpl" ui:field="quizView">
 		<p>
@@ -9,20 +10,20 @@
 			or bottom of the quiz.
 		</p>
 		<div class='buttonBar'>
-			<g:Button ui:field="checkQuizTop" styleName="sexybutton sexy_cm_silver">
+			<cm:TouchButton ui:field="checkQuizTop" styleName="sexybutton sexy_cm_silver">
 				<span>
 					<span>Check Quiz</span>
 				</span>
-			</g:Button>
+			</cm:TouchButton>
 		</div>
 		<div ui:field="quizHtml"></div>
 		<div class='buttonBar'>
-           <g:Button ui:field="checkQuizBottom"  styleName="sexybutton sexy_cm_silver">
+           <cm:TouchButton ui:field="checkQuizBottom"  styleName="sexybutton sexy_cm_silver">
 				<span>
 					<span>Check Quiz</span>
 				</span>
-			</g:Button>
-		</div>
+			</cm:TouchButton>
+		</div>	
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
