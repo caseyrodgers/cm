@@ -414,7 +414,7 @@ public class CmPilotCreate {
     	if (additionalEmails != null && additionalEmails.trim().length() > 0) {
 
     		// split on new line
-    		String[] emails = additionalEmails.split(System.getProperty("line.separator"));
+    		String[] emails = additionalEmails.split(NEW_LINE);
 
     		StringBuilder sb = new StringBuilder();
     		boolean first = true;
