@@ -44,7 +44,7 @@ class ResourceMenuButton extends TextButton {
         super(resource.getLabel());
         this.initialValue = getText();
         this.resource = resource;            
-        addStyleName("resource-button");
+        //addStyleName("resource-button");
         setWidth(175);
         
         
