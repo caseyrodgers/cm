@@ -916,6 +916,13 @@ span.group-item-dot {
 }
             
             
-            
+#testset_div li {
+  line-height:3em;
+  margin-bottom: 20px;
+  
+  list-style-image:none;
+  list-style-position:outside;
+  list-style-type:none;
+}            
             
             
