@@ -2,7 +2,6 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.viewer.CalculatorWindow;
 import hotmath.gwt.shared.client.CmShared;
 
 import com.google.gwt.core.client.GWT;
@@ -25,6 +24,7 @@ public class WelcomePanel extends CenterLayoutContainer {
         __instance = this;
         
         addStyleName("cm-welcome-panel");
+        addStyleName("resource-container");
         addStyleName(UserInfo.getInstance().getBackgroundStyle());
 
         ContentPanel main = new ContentPanel();

@@ -1,0 +1,44 @@
+/** Styles controlling the resouce container background image for IE
+
+   This is very much complicated by IE due to the need for external filters
+   
+   For each new background, add a matching  filter and -ms-filter
+*/   
+
+.resource-container-default {
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/default.png',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/default.png', sizingMethod='scale');
+}
+
+.resource-container-bike1 {
+    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/bike1-1600x1067.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/bike1-1600x1067.jpg', sizingMethod='scale');
+}
+
+.resource-container-tulips {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/roses-1600x1067.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/roses-1600x1067.jpg', sizingMethod='scale');
+}
+.resource-container-sunrise {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/sunrise-1600x1558.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/sunrise-1600x1558.jpg', sizingMethod='scale');
+}
+
+.resource-container-sunfield {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/sunfield-1600x1131.png',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/sunfield-1600x1131.png', sizingMethod='scale');
+}
+.resource-container-clouds {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/clouds-1600x1067.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/clouds-1600x1067.jpg', sizingMethod='scale');
+}
+
+.resource-container-snowman {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/snowman-1600x1050.jpg',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/snowman-1600x1050.jpg', sizingMethod='scale');
+}
+
+.resource-container-sunfield {
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/sunfield-1600x1131.png',     sizingMethod='scale');
+    -ms-filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/gwt-resources/images/bg/sunfield-1600x1131.png', sizingMethod='scale');
+}

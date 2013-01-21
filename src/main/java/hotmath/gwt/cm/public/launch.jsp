@@ -20,6 +20,11 @@
              src="http://catchupmath.com/assets/mathjax/2.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
         </script>
 
+        
+        <!--[if gt IE 5.5000]>
+            <link rel="stylesheet" href="gwt-resources/css/CatchupMath-resource_container-IE.css">
+        <![endif]-->
+
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
 
         <!-- 

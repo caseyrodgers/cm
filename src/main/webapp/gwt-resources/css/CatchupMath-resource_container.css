@@ -1,0 +1,58 @@
+/** Styles controlling the resouce container background image
+
+   This is very much complicated by IE due to the need for external filters
+*/   
+
+.resource-container {
+    background: url(/gwt-resources/images/bg/default.png) no-repeat center center fixed;
+    webkit-background-size: cover;
+    moz-background-size: cover;
+    o-background-size: cover;
+    background-size: cover;
+}
+
+.resource-container-default {
+    background-image: url(/gwt-resources/images/bg/default.png);
+}
+
+.resource-container-forest {
+    background: url(/gwt-resources/images/bg/forest-1600x1065.jpg);
+}
+.resource-container-bike1 {
+        background-image: url(/gwt-resources/images/bg/bike1-1600x1067.jpg);
+}
+.resource-container-tulips {
+        background-image: url(/gwt-resources/images/bg/roses-1600x1067.jpg);
+}
+.resource-container-sunrise {
+        background-image: url(/gwt-resources/images/bg/sunrise-1600x1558.jpg);
+}
+.resource-container-sunfield {
+        background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
+}
+
+.resource-container-clouds {
+        background-image: url(/gwt-resources/images/bg/clouds-1600x1067.jpg);
+}
+
+.resource-container-snowman {
+        background-image: url(/gwt-resources/images/bg/snowman-1600x1050.jpg);
+}
+
+.resource-container-sunfield {
+        background-image: url(/gwt-resources/images/bg/sunfield-1600x1131.png);
+}
+
+.resource-container-neutral {
+        background-color: #43464B;
+        background-image: none;
+}
+
+.resource-container-redish {
+        background-color: #933280;
+        background-image: none;
+}
+
+.resource-container-none {
+        background-image: none;
+}

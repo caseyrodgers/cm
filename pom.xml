@@ -77,31 +77,27 @@
 			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
 		</repository>
 
-<!--
-		<repository>
-			<id>bramosystems-releases</id>
-			<name>Bramosystems Release Repository</name>
-			<url>http://downloads.bramosystems.com/maven2/releases</url>
-		</repository>
--->
+		<!-- <repository> <id>bramosystems-releases</id> <name>Bramosystems Release 
+			Repository</name> <url>http://downloads.bramosystems.com/maven2/releases</url> 
+			</repository> -->
 
 
 	</repositories>
 
 	<dependencies>
 
-<dependency>
-  <!-- jsoup HTML parser library @ http://jsoup.org/ -->
-  <groupId>org.jsoup</groupId>
-  <artifactId>jsoup</artifactId>
-  <version>1.7.1</version>
-</dependency>
+		<dependency>
+			<!-- jsoup HTML parser library @ http://jsoup.org/ -->
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.7.1</version>
+		</dependency>
 
-  <dependency>
-   <groupId>org.codehaus.jackson</groupId>
-   <artifactId>jackson-mapper-asl</artifactId>
-   <version>1.9.11</version>
-  </dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.11</version>
+		</dependency>
 
 
 		<dependency>
@@ -116,7 +112,7 @@
 			<artifactId>gxt-chart</artifactId>
 			<version>${gxt.version}</version>
 		</dependency>
-    
+
 		<dependency>
 			<groupId>com.bramosystems.oss.player</groupId>
 			<artifactId>bst-player-api</artifactId>
@@ -664,6 +660,7 @@
 
 						<param>tutor_layout_tablet.css</param>
 						<param>CatchupMath.css</param>
+                        <param>CatchupMath-resource_container.css</param>						
 						<param>loading_image.css</param>
 					</cssSourceFiles>
 					<jsSourceFiles>
@@ -688,7 +685,8 @@
 				<version>2.5.0</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=ERROR</extraJvmArgs>
+					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms512m -Xmx512m
+						-Dgwt.logLevel=ERROR</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -704,12 +702,9 @@
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
 						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
-						<!--
-						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
-						<module>hotmath.gwt.cm_tutor.CmTutor</module>
-						<module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
-						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
-						-->
+						<!-- <module>hotmath.gwt.cm_search.CatchupMathSearch</module> <module>hotmath.gwt.cm_tutor.CmTutor</module> 
+							<module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
+							<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
