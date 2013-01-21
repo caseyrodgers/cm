@@ -539,3 +539,7 @@ program-details-panel .x-ftree2-node-over {
    padding: 10px 0 0 15px !important;
    background: #DFE8F6;	
 }
+
+.trending-data-checkbox {
+	margin: 0px; top: 8px; left: 10px !important;
+}
