@@ -26,6 +26,9 @@ body {
   */
   -webkit-text-size-adjust: none;
   
+  
+  /** disable the mobile safari hold-to-copy behavior */
+  -webkit-user-select: none;
 
   /* default font size */
   font-size: .9em;
