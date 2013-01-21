@@ -48,6 +48,13 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        }
 	        
 	        @Override
+	        public void tutorWidgetComplete(String inputValue, boolean correct) {
+	            if(correct) {
+	                presenter.markSolutionAsComplete();
+	            }
+	        }
+	        
+	        @Override
 	        public void showWhiteboard() {
 	            presenter.showWhiteboard(getTitle());
 	        }

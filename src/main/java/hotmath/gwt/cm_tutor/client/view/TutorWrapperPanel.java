@@ -155,7 +155,6 @@ public class TutorWrapperPanel extends Composite {
         	if(!correct) {
         	    jsni_moveToFirstStep();
         	}
-        	
             if (this.tutorCallback != null) {
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
             } else {
@@ -427,6 +426,7 @@ public class TutorWrapperPanel extends Composite {
     }
 
     protected void tutorWidgetCompleteAux(boolean yesNo) {
+        Log.debug("Tutor widget correct: " + yesNo);
     }
 
     protected void gwt_tutorNewProblem(int problemNumber) {
