@@ -13,6 +13,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class GWindow extends Window {
 
+	TextButton closeBtn;
+	
     public GWindow(boolean addCloseButton) {
         setPixelSize(500, 300);
         setModal(true);
@@ -39,15 +41,15 @@ public class GWindow extends Window {
     }
     
     public void addCloseButton() {
-        TextButton b = new TextButton("Close");
-        b.addSelectHandler(new SelectHandler() {
+        closeBtn = new TextButton("Close");
+        closeBtn.addSelectHandler(new SelectHandler() {
 
             @Override
             public void onSelect(SelectEvent event) {
                 hide();
             }
         });
-        addButton(b);        
+        addButton(closeBtn);        
     }
     
     
