@@ -28,13 +28,13 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     static ShowWorkActivity __lastInstance;
     public ShowWorkActivity(EventBus eventBus, String pid, String title, int runId) {
         this.eventBus = eventBus;
+        this.title = title;
         __lastInstance = this;
         if(pid == null || pid.length() == 0) {
             pid = "quiz:quiz";
         }
         this.pid = pid;
         this.runId = runId;
-        this.title = title;
     }
 
     @Override
