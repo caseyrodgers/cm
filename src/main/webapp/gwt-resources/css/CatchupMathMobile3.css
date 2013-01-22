@@ -872,7 +872,9 @@ table {
     -webkit-box-shadow: 3px 3px 3px #666;
     box-shadow: 3px 3px 3px #666;
     background: black;
-    width: 550px;
+    width: 700px;
+    height: 600px;
+    margin: auto;
 }
 
 
