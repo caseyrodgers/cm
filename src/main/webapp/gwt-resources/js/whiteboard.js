@@ -1675,6 +1675,10 @@ var Whiteboard = (function () {
         graphMode = '';
         // origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width
         // = width;
+		origcontext.clearRect(0, 0, canvas.width, canvas.height);
+        graphcontext.clearRect(0, 0, canvas.width, canvas.height);
+        topcontext.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, canvas.width, canvas.height);
                 var _width=canvas.width;
         origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width=_width
         /*origcontext.clearRect(0, 0, canvas.width, canvas.height);
