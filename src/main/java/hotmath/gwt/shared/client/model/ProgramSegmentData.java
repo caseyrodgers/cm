@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class ProgramSegmentData implements Response {
     Integer segment;
     Integer countCompleted;
+    String  label;
     
     public ProgramSegmentData() {}
     
@@ -31,4 +32,12 @@ public class ProgramSegmentData implements Response {
     public void setCountCompleted(Integer countCompleted) {
         this.countCompleted = countCompleted;
     }
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
 }
