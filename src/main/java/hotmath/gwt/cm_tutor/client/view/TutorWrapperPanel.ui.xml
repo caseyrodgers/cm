@@ -68,7 +68,10 @@
                     </span>
                 </button>
 
-                
+                <div ui:field="widgetCorrectInfo" style="display: none">
+                    <h1>You answered this question correctly!</h1>
+                    <p>You may now <a onclick='TutorManager.newProblem()' href='#'>Return</a> to the lesson.</p>
+                </div>
                 <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
                     <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand
                     </a>

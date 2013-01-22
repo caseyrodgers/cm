@@ -49,6 +49,10 @@ public class TutorWrapperPanel extends Composite {
     
     @UiField
     Button debugInfo;
+    
+    
+    @UiField
+    DivElement widgetCorrectInfo;
 
     boolean saveVariableContext;
 
@@ -422,7 +426,6 @@ public class TutorWrapperPanel extends Composite {
 
     protected void gwt_setSolutionTitle(int probNum, int total) {
         Window.alert("Set Solution Title via GWT");
-
     }
 
     protected void tutorWidgetCompleteAux(boolean yesNo) {

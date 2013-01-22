@@ -51,6 +51,13 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        public void tutorWidgetComplete(String inputValue, boolean correct) {
 	            if(correct) {
 	                presenter.markSolutionAsComplete();
+	                
+	                TutorWidgetCorrectDialog.showDialog( new TutorWidgetCorrectDialog.Callback() {
+	                    @Override 
+	                    public void returnToLesson() {
+	                        tutorNewProblem();	                        	                        
+	                    }
+	                });
 	            }
 	        }
 	        
