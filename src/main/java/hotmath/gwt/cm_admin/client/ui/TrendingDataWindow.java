@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -16,15 +17,15 @@ import hotmath.gwt.shared.client.rpc.action.GeneratePdfAssessmentReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-
-//import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-
+import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
@@ -37,6 +38,7 @@ import com.sencha.gxt.widget.core.client.form.CheckBox;
 /**
  * Provide a window to display trending data
  * 
+ * @author casey
  * @author bob
  * 
  */
@@ -60,7 +62,7 @@ public class TrendingDataWindow extends GWindow {
 
         setHeadingText("Overview of Student Progress");
         setWidth(600);
-        setHeight(600);
+        setHeight(700);
 
         container = new FlowLayoutContainer();
 
@@ -86,6 +88,7 @@ public class TrendingDataWindow extends GWindow {
          */
         //getButtonBar().setStyleAttribute("position", "relative");
         _onlyActiveCheckBox = new CheckBox();
+        _onlyActiveCheckBox.addStyleName("trending-data-checkbox");
         //_onlyActiveCheckBox.setStyleName("trending-data-checkbox");
         //_onlyActiveCheckBox.setStyleAttribute("position", "absolute");
         //_onlyActiveCheckBox.setStyleAttribute("left", "0");
@@ -154,8 +157,8 @@ public class TrendingDataWindow extends GWindow {
                 CmBusyManager.setBusy(false);
                 
                 drawGui();
-                addTrendingChart(trendingData);
-                //addProgramCharts(trendingData.getProgramData());
+                addLessonsChart(trendingData);
+                addProgramCharts(trendingData.getProgramData());
                 setVisible(true);
             }
         }.register();
@@ -165,7 +168,10 @@ public class TrendingDataWindow extends GWindow {
     	container.clear();
         //removeAll();
     	CenterLayoutContainer clContainer = new CenterLayoutContainer();
-        clContainer.add(new HTML("<h2>No students found</h2>"));
+    	FramedPanel fp = new FramedPanel();
+    	fp.setHeaderVisible(false);
+    	fp.add(new HTML("<h2 style='color:red'>No students found</h2>"));
+        clContainer.add(fp);
     	container.add(clContainer);
     }
 
@@ -176,34 +182,43 @@ public class TrendingDataWindow extends GWindow {
             return GetAdminTrendingDataAction.DataType.FULL_HISTORY;
     }
 
-    Widget _barChartWidget;
+    Widget _lessonsChartWidget;
 
-    private void addTrendingChart(CmAdminTrendingDataI trendingData) {
-    	if (_barChartWidget != null) {
-    		_barChartWidget.setVisible(false);
-    		_barChartWidget.removeFromParent();
-    		boolean removed = _tabPanel.remove(_barChartWidget);
-    		Window.alert("removed barChartWidget: " + removed);
+    private void addLessonsChart(CmAdminTrendingDataI trendingData) {
+    	if (_lessonsChartWidget != null) {
+    		_lessonsChartWidget.setVisible(false);
+    		_lessonsChartWidget.removeFromParent();
+    		_tabPanel.remove(_lessonsChartWidget);
     	}
-        TrendingDataWindowBarChart _barChart = new TrendingDataWindowBarChart("Most Prescribed Lessons", trendingData.getTrendingData());
-        _barChartWidget = _barChart.asWidget();
-        _tabPanel.add(_barChartWidget, "Most Prescribed Lessons");
+        TrendingDataWindowBarChart _trendingChart = new TrendingDataWindowBarChart("Most Prescribed Lessons", trendingData.getTrendingData());
+        _lessonsChartWidget = _trendingChart.asWidget();
+        _tabPanel.add(_lessonsChartWidget, "Most Prescribed Lessons");
     }
 
-/*
+    List<Widget> _programChartWidgetList = new ArrayList<Widget>();
+    
     private void addProgramCharts(CmList<ProgramData> programData) {
-        for (int i = 0, t = programData.size(); i < t; i++) {
+    	if (_programChartWidgetList.size() > 0) {
+    		for (Widget w : _programChartWidgetList) {
+        		w.setVisible(false);
+        		w.removeFromParent();
+        		_tabPanel.remove(w);
+    		}
+    	}
+    	_programChartWidgetList.clear();
+
+        CmLogger.debug("TrendingDataWindow.addProgramCharts(): count: " + programData.size());
+    	for (int i = 0, t = programData.size(); i < t; i++) {
             ProgramData pd = programData.get(i);
-            TabItem ti = new TabItem(pd.getProgramName());
 
-            final TrendingDataWindowChartBar2 bar = new TrendingDataWindowChartBar2();
-            bar.setBarModelData(pd.getProgramName(), pd);
-            ti.add(bar);
-
-            _tabPanel.add(ti);
+            CmLogger.debug("TrendingDataWindow.addProgramCharts(): name[" + i + "]: " + pd.getProgramName());
+            ProgramBarChart _programChart = new ProgramBarChart(pd, pd.getSegments());
+            Widget w = _programChart.asWidget();
+            _programChartWidgetList.add(w);
+            _tabPanel.add(w, pd.getProgramName());
         }
     }
-*/
+
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
