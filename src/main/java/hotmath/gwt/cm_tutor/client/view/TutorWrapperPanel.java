@@ -168,7 +168,7 @@ public class TutorWrapperPanel extends Composite {
                 
                 
                 if(correct && tutorCallback.showTutorWidgetInfoOnCorrect()) {
-                    widgetCorrectInfo.setClassName("widget_correct_info_show");
+                    // widgetCorrectInfo.setClassName("widget_correct_info_show");
                 }
             } else {
                 Window.alert("tutorWidgetComplete not defined");
