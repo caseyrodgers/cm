@@ -2,6 +2,8 @@ package hotmath.gwt.cm_tutor.client.view;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
+import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoHandler;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
@@ -55,6 +57,7 @@ public class TutorWrapperPanel extends Composite {
     DivElement widgetCorrectInfo;
 
     boolean saveVariableContext;
+    boolean _showCorrectInfo;
 
     private TutorCallback tutorCallback;
 
@@ -160,7 +163,12 @@ public class TutorWrapperPanel extends Composite {
         	    jsni_moveToFirstStep();
         	}
             if (this.tutorCallback != null) {
+                
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
+                
+                if(tutorCallback.showTutorWidgetInfoOnCorrect()) {
+                    widgetCorrectInfo.setClassName("widget_correct_info_show");
+                }
             } else {
                 Window.alert("tutorWidgetComplete not defined");
             }
@@ -198,6 +206,10 @@ public class TutorWrapperPanel extends Composite {
     private void initializeTutor(Widget instance, final String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) {
         
         Log.debug("Solution loading: " + pid);
+        
+        widgetCorrectInfo.setClassName("widget_correct_info_hide");
+        
+        
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
 
         debugInfo.addClickHandler(new ClickHandler() {
@@ -464,6 +476,14 @@ public class TutorWrapperPanel extends Composite {
                 });
             }
         });
+        
+        
+        CmRpc.EVENT_BUS.addHandler(ShowTutorWidgetCompleteInfoEvent.TYPE, new ShowTutorWidgetCompleteInfoHandler() {
+            @Override
+            public void showTutorWidgetCompleteInfo() {
+                __lastInstance.showTutorWidgetCompleteInfo();   
+            }
+        });
     }
 
     
@@ -506,5 +526,20 @@ public class TutorWrapperPanel extends Composite {
          * 
          */
         void showWhiteboard(); 
-    }    
+        
+        
+        /** Show the standard tutor widget info mesaage on the tutor be
+         *  shown when the correct answer was entered?
+         *  
+         * @return
+         */
+        boolean showTutorWidgetInfoOnCorrect();
+    }
+
+
+    protected void showTutorWidgetCompleteInfo() {
+        Log.debug("showTutorWidgetCompleteInfo called");
+        widgetCorrectInfo.addClassName(".show");    
+    }
+
 }

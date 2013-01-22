@@ -7,7 +7,10 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImp
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
+import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoHandler;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
@@ -141,5 +144,6 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     public InmhItemData getItemData() {
         return resourceItem;
     }
+
 
 }

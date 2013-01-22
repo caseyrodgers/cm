@@ -40,4 +40,9 @@ public class TutorCallbackDefault implements TutorCallback {
         Log.debug("TutorCallbackDefault: showWhiteboard");
     }
 
+    @Override
+    public boolean showTutorWidgetInfoOnCorrect() {
+        return false;
+    }
+
 }

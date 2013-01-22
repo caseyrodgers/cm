@@ -51,19 +51,17 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        public void tutorWidgetComplete(String inputValue, boolean correct) {
 	            if(correct) {
 	                presenter.markSolutionAsComplete();
-	                
-	                TutorWidgetCorrectDialog.showDialog( new TutorWidgetCorrectDialog.Callback() {
-	                    @Override 
-	                    public void returnToLesson() {
-	                        tutorNewProblem();	                        	                        
-	                    }
-	                });
 	            }
 	        }
 	        
 	        @Override
 	        public void showWhiteboard() {
 	            presenter.showWhiteboard(getTitle());
+	        }
+	        
+	        @Override
+	        public boolean showTutorWidgetInfoOnCorrect() {
+	            return true;
 	        }
 	        
 	    });
@@ -254,5 +252,6 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     public void setTitle(String title) {
         _title = title;
     }
+
 }
  

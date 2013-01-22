@@ -19,6 +19,20 @@
             margin: auto;
         }
 
+
+       .hide {
+          display: none;
+        }
+        
+        .correctWrapper  {
+            margin-top: 15px;
+        }
+        
+        .correctWrapper h1 {
+            font-size: 1.em;
+            color: green;
+        }
+
     </ui:style>
     
 
@@ -68,9 +82,16 @@
                     </span>
                 </button>
 
-                <div ui:field="widgetCorrectInfo" style="display: none">
-                    <h1>You answered this question correctly!</h1>
-                    <p>You may now <a onclick='TutorManager.newProblem()' href='#'>Return</a> to the lesson.</p>
+                <div ui:field="widgetCorrectInfo" class="{style.hide}">
+                    <div className='{style.correctWrapper}'>
+                        <h1>You answered this question correctly!</h1>
+                        <p>You may now
+                             <button class='sexybutton sexy_cm_silver'  onclick="TutorManager.newProblem();return false;" accesskey="c">
+                                 <span><span>Continue</span></span>
+                             </button>
+                             with the lesson.
+                         </p>
+                    </div>                    
                 </div>
                 <div class='cm-tutor-button-bar-bottom' style='display: none;float: right;'>
                     <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand
