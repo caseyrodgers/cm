@@ -166,7 +166,8 @@ public class TutorWrapperPanel extends Composite {
                 
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
                 
-                if(tutorCallback.showTutorWidgetInfoOnCorrect()) {
+                
+                if(correct && tutorCallback.showTutorWidgetInfoOnCorrect()) {
                     widgetCorrectInfo.setClassName("widget_correct_info_show");
                 }
             } else {
