@@ -843,9 +843,10 @@ img.resource-item-complete {
         padding: 0 0 0 10px;
 }
 
-.welcome-wrapper {
+.welcome-wrapper-internal {
 	color: black;
-	margin: 5px 15px 20px;
+	font-size: 1.2em;
+	margin: 25px 15px 0px;
 }
 
 .cm-welcome-panel ul {

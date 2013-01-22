@@ -131,6 +131,7 @@ public class WelcomePanel extends CenterLayoutContainer {
                     "<a style='display: block;margin-left: 10px;text-decoration: underline;color: #00A8FF;' " +
                     " href='#' onclick='showMotivationalVideo_Gwt();return false;'>Video: How to use Catchup Math</a>";
             
+            html = "<div class='welcome-wrapper-internal'>" + html + "</div>";
             setHTML(html);
         }
     }
