@@ -1329,7 +1329,7 @@ var Whiteboard = (function () {
                     // alert("A");
                     updateCanvas();
                     context.beginPath();
-                    alert(rendering);
+                   // alert(rendering);
                 } else {
 
                     if (currentTool != 'text') {
@@ -1899,7 +1899,7 @@ var Whiteboard = (function () {
                     y: header.y
                 }
 
-                alert('test 6');
+               // alert('test 6');
                 var nname = header.name
                 // ExternalInterface.call("console.log","B")
                 var segC = 0;
