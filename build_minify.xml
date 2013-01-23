@@ -59,6 +59,8 @@
                 gwt-resources/css/tutor_layout_tablet.css
             	gwt-resources/css/testset.css
                 gwt-resources/css/whiteboard.css
+                gwt-resources/css/mathquill/mathquill.css
+
             	gwt-resources/css/menubar_layout.css
             	gwt-resources/css/mobile_question_box.css
                 gwt-resources/css/page_layout.css
