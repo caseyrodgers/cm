@@ -6,10 +6,15 @@ import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
@@ -62,6 +67,14 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        @Override
 	        public boolean showTutorWidgetInfoOnCorrect() {
 	            return true;
+	        }
+	        
+	        
+	        @Override
+	        public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
+	            int uid=SharedData.getUserInfo().getUid();
+	            int rid=SharedData.getUserInfo().getRunId();
+	            return new SaveSolutionContextAction(uid, rid, problem.getPid(), problemNumber, variablesJson);
 	        }
 	        
 	    });

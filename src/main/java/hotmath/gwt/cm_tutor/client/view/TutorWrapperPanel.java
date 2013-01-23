@@ -410,7 +410,7 @@ public class TutorWrapperPanel extends Composite {
 
         } else {
             Log.debug("Saving solution context: " + pid);
-            Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, pid, problemNumber);
+            Action<RpcData> action = tutorCallback.getSaveSolutionContextAction(variablesJson, _solutionInfo.getPid(), problemNumber);
             if(action != null) {    
                 CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
                     @Override

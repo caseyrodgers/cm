@@ -114,7 +114,7 @@ public class HeaderPanel extends Composite {
             }
         });
 
-        basePanel.add(stressTest);
+        //basePanel.add(stressTest);
         initWidget(basePanel);
 
         /** Show showing the Welcome panel turn on the Logout button */

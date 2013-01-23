@@ -46,7 +46,7 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
             public void onSuccess(SolutionInfo solutionInfo) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 
-                ProblemNumber probNum = new ProblemNumber("THE_PROBLEM_NUMBER");
+                ProblemNumber probNum = new ProblemNumber(solutionInfo.getPid());
                 String tutorHtml = solutionInfo.getHtml();
                 String solutionData = solutionInfo.getJs();
                 String solutionVariableContext = solutionInfo.getContext()!=null?solutionInfo.getContext().getContextJson():null;
