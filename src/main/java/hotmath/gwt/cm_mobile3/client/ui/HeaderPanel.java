@@ -1,19 +1,28 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
+
+
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
+import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
+import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -25,6 +34,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -47,8 +57,9 @@ public class HeaderPanel extends Composite {
     private boolean mInitialized = false;
 
     Anchor _logout;
+
     public HeaderPanel(EventBus eventBus) {
-        
+
         FlowPanel basePanel = new FlowPanel();
         basePanel.getElement().setId("header");
 
@@ -69,7 +80,6 @@ public class HeaderPanel extends Composite {
         mInactiveTitle.setStyleName("title");
         basePanel.add(mInactiveTitle);
 
-        
         _logout = new TouchAnchor("Logout");
         _logout.addStyleName("logout-button");
         _logout.addStyleName("about-dialog");
@@ -82,32 +92,39 @@ public class HeaderPanel extends Composite {
         _logout.setVisible(false);
         basePanel.add(_logout);
 
-
         TouchAnchor about = new TouchAnchor();
         about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
         about.addStyleName("about-dialog");
         about.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				new AboutDialog().showCentered();
-			}
-		});
+            @Override
+            public void onClick(ClickEvent event) {
+                new AboutDialog().showCentered();
+            }
+        });
         basePanel.add(about);
-        
+
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
 
+        TouchButton stressTest = new TouchButton("Test", new ClickHandler() {
+
+            @Override
+            public void onClick(ClickEvent event) {
+                runStressTest();
+            }
+        });
+
+        basePanel.add(stressTest);
         initWidget(basePanel);
-        
-        
-        /** Show showing the Welcome panel turn on the Logout button*/
+
+        /** Show showing the Welcome panel turn on the Logout button */
         eventBus.addHandler(ShowWelcomeViewEvent.TYPE, new ShowWelcomeViewHandler() {
             @Override
             public void showWelcomeView() {
                 showLogoutButton(true);
             }
         });
-        
+
         eventBus.addHandler(ShowLoginViewEvent.TYPE, new ShowLoginViewHandler() {
             @Override
             public void showLoginView() {
@@ -115,13 +132,11 @@ public class HeaderPanel extends Composite {
             }
         });
 
-        
     }
-    
+
     public void showLogoutButton(boolean yesNo) {
         _logout.setVisible(yesNo);
     }
-    
 
     private native void registerDomTransitionEndedEvent(Element element) /*-{
                                                                          try
@@ -155,11 +170,11 @@ public class HeaderPanel extends Composite {
         mActiveButtonHandlerRegistration = mActiveButton.addHandler(new TouchClickEvent.TouchClickHandler<String>() {
             @Override
             public void touchClick(TouchClickEvent<String> tag) {
-            	Log.debug("TouchClick event fired: " + ViewSettings.AnimationRunning);
-            	mActiveButton.addStyleName("backClicked");
-            	
+                Log.debug("TouchClick event fired: " + ViewSettings.AnimationRunning);
+                mActiveButton.addStyleName("backClicked");
+
                 if (!ViewSettings.AnimationRunning) {
-                	Controller.navigateBack();
+                    Controller.navigateBack();
                 }
             }
         });
@@ -297,8 +312,7 @@ public class HeaderPanel extends Composite {
 
             setCssClass(mActiveTitle, getLandscapeOverflow(width, mHasLeftButton));
             setCssClass(mActiveTitle, getPortraitOverflow(width, mHasLeftButton));
-            
-            
+
             mActiveButton.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/back_button.png'/><span>" + backButtonText + "</span>");
 
             mInitialized = true;
@@ -329,9 +343,7 @@ public class HeaderPanel extends Composite {
 
             setCssClass(newTitle, getLandscapeOverflow(width, mHasLeftButton));
             setCssClass(newTitle, getPortraitOverflow(width, mHasLeftButton));
-            
-            
-            
+
             newButton.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/back_button.png'/><span>" + backButtonText + "</span>");
 
             Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -375,16 +387,14 @@ public class HeaderPanel extends Composite {
         final int BUTTON_SPACE = 117;
         final int SCREEN_WIDTH = 480;
 
-        return isOverflow(width, withButton, BUTTON_SPACE, SCREEN_WIDTH) ? CssLandscapeOverflow.On
-                : CssLandscapeOverflow.Off;
+        return isOverflow(width, withButton, BUTTON_SPACE, SCREEN_WIDTH) ? CssLandscapeOverflow.On : CssLandscapeOverflow.Off;
     }
 
     private static CssPortraitOverflow getPortraitOverflow(int width, boolean withButton) {
         final int BUTTON_SPACE = 87;
         final int SCREEN_WIDTH = 320;
 
-        return isOverflow(width, withButton, BUTTON_SPACE, SCREEN_WIDTH) ? CssPortraitOverflow.On
-                : CssPortraitOverflow.Off;
+        return isOverflow(width, withButton, BUTTON_SPACE, SCREEN_WIDTH) ? CssPortraitOverflow.On : CssPortraitOverflow.Off;
     }
 
     private static boolean isOverflow(int width, boolean withButton, int buttonSpace, int screenWidth) {
@@ -467,5 +477,45 @@ public class HeaderPanel extends Composite {
         configureActiveButtonEvent();
 
     }
-}
 
+    int  _stressCount=0;
+    final static int  WAIT = 2000;
+    private void runStressTest() {
+        
+        if(_stressCount++ < 100) {
+
+            InmhItemData itemData = new InmhItemData("practice", "cmextras_1_6_1_16_6", "Test pid");
+            final PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(CatchupMathMobile3.__clientFactory.getEventBus(), itemData);
+
+            PrescriptionLessonResourceTutorView view = CatchupMathMobile3.__clientFactory.getPrescriptionLessonResourceTutorView();
+            view.setTitle("Required " + itemData.getTitle());
+            view.setPresenter(activity);
+            CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage) view));
+
+            new com.google.gwt.user.client.Timer() {
+                @Override
+                public void run() {
+                    showWhiteboard();
+                    new Timer() {
+                        public void run() {
+                            PrescriptionLessonActivity activity = new PrescriptionLessonActivity(CatchupMathMobile3.__clientFactory, CatchupMathMobile3.__clientFactory.getEventBus());
+                            PrescriptionLessonView view = CatchupMathMobile3.__clientFactory.getPrescriptionLessonView();
+                            view.setPresenter(activity);
+                            CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage) view));
+                            
+                            new Timer() {
+                                @Override
+                                public void run() {
+                                    runStressTest();
+                                }
+                            }.schedule(WAIT);
+                        }
+                }.schedule(WAIT);
+            }}.schedule(WAIT);
+        }
+    }
+    
+    private native void showWhiteboard() /*-{
+        $wnd.TutorManager.showWhiteboard();
+    }-*/;
+}

@@ -3,7 +3,8 @@
 <!--
     Turn debuggin on, but only show in console 
 -->
-  <inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" />
+
+  <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
   <set-property name="log_DivLogger" value="DISABLED" />
   
 	<!-- Hide the Log window, just send to stdout
