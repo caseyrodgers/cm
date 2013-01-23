@@ -111,6 +111,6 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
     
 
     private void setProblemStatement() {
-        _showWorkPanel.setProblemStatement(presenter.getProblemStatementHtml());
+       _showWorkPanel.setProblemStatement(presenter.getProblemStatementHtml());
     }
 }

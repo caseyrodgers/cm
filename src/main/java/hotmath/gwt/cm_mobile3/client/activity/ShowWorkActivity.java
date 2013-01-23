@@ -194,6 +194,11 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
 
     
     private native String getProblemStatementFromDocument(String pid) /*-{
+    
+         if($doc.getElementsByTagName("canvas").length > 0) {
+             return null;
+         }
+         
          var ps = $doc.getElementById('problem_statement');
          if(!ps) {
              var quizEle = $doc.getElementById('testset_div');

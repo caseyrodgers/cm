@@ -136,7 +136,7 @@ public class ShowWorkPanel extends Composite {
                                                             }-*/;
 
     public void setProblemStatement(String problemStatement) {
-        if (true) { // showProblem.getValue()) {
+        if (problemStatement != null) { // showProblem.getValue()) {
             canvasBackground.setInnerHTML("<div>" + problemStatement + "</div>");
             canvasBackground.setAttribute("style", "display: block");
 

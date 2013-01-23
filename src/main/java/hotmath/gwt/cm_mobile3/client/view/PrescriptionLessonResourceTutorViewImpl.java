@@ -74,7 +74,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        public Action<RpcData> getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber) {
 	            int uid=SharedData.getUserInfo().getUid();
 	            int rid=SharedData.getUserInfo().getRunId();
-	            return new SaveSolutionContextAction(uid, rid, problem.getPid(), problemNumber, variablesJson);
+	            return new SaveSolutionContextAction(uid, rid, pid, problemNumber, variablesJson);
 	        }
 	        
 	    });
