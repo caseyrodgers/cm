@@ -2341,3 +2341,22 @@ if(isIE){updateCanvas();}
 
     return wb;
 }());
+
+
+
+
+
+
+/** Math quill has to be setup after the HTML has been rendered
+ */
+function setupMathQuill() {
+    //on document ready, mathquill-ify all `<tag class="mathquill-*">latex</tag>`
+    //elements according to their CSS class.
+    $(function() {
+        $('.mathquill-editable:not(.mathquill-rendered-math)').mathquill('editable');
+        $('.mathquill-textbox:not(.mathquill-rendered-math)').mathquill('textbox');
+        $('.mathquill-embedded-latex').mathquill();
+    });
+}
+
+

@@ -2882,4 +2882,3 @@ $.fn.mathquill = function(cmd, latex) {
   }
 };
 }());
-
