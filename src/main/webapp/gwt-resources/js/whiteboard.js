@@ -450,8 +450,8 @@ function viewport_testpage() {
                 doy = 19
             }
 			if(IS_IOS){
-			dox=15
-			doy=15
+			dox=15;
+			doy=0;
 			}
             try {
                 if (typeof G_vmlCanvasManager != "undefined") {
@@ -706,7 +706,8 @@ function viewport_testpage() {
                 }
                 // dox=doy=0;
 				if(IS_IOS){
-				dox=doy=15;
+				dox=15
+				doy=0;
 				}
                 screen_width = docWidth - leftOff - dox;
                 screen_height = docHeight - topOff - doy;
