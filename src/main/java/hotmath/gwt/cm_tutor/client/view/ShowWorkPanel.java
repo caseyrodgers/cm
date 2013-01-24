@@ -268,7 +268,6 @@ public class ShowWorkPanel extends Composite {
         });
     }
     private native void jsni_initializeWhiteboard(Element ele)/*-{
-
         // load all Whiteboard external dependencies
         //
         var that = this;

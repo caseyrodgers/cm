@@ -135,7 +135,7 @@ public class HaUserFactory {
 
                                 rs = pstat.executeQuery();
 
-                                __logger.info(pstat);
+                                __logger.debug(pstat);
                                 if (rs.first()) {
                                         int userId = rs.getInt("uid");
                                         HaUser student = HaUser.lookUser(conn, userId, null);

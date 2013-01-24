@@ -12,7 +12,7 @@ require(['CatchupMathMobile3_combined'], function(x) {
 function requireJsLoad_whiteboard(funcToCall) {
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
-        require(['whiteboard','mathquill/mathquill'], function(x) {
+        require(['whiteboard-min', 'mathquill/mathquill'], function(x) {
             funcToCall(x);
         });
     }
@@ -20,6 +20,7 @@ function requireJsLoad_whiteboard(funcToCall) {
         alert(ex);
     }
 }
+
 
 function requireJsLoad_calculator(calcContainer, funcToCall) {
     console.log('REQUIREJS loading whiteboard dependencies');

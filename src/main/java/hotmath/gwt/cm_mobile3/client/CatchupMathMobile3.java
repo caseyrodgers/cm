@@ -167,7 +167,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
@@ -181,6 +180,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     }
 
     RootPanel _loadingDiv;
+    
 
     native private String getUserAgent() /*-{
         if(typeof navigator !== 'undefined') {

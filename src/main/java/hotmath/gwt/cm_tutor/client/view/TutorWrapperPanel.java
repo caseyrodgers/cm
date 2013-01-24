@@ -319,6 +319,12 @@ public class TutorWrapperPanel extends Composite {
         }
         
         $wnd.gwt_showWhiteboard = function() {
+//            var ua = navigator.userAgent;
+//            if(ua.indexOf("4_2") > -1) {
+//                alert("Whiteboard functionality does not work on older IPads.");
+//                return;
+//            }
+//        
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
         }
         
