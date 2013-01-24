@@ -16,6 +16,9 @@ if (typeof console == "undefined") {
         }
     };
 }
+var console_log=function(txt){
+//console.log(txt)
+}
 var Whiteboard = (function () {
     var wb = {};
     var canvas, context, pencil_btn, rect_btn, width, height, x, y, clickX, clickY, penDown = false;
@@ -42,6 +45,7 @@ var Whiteboard = (function () {
     var IS_IPHONE = navigator.userAgent.match(/iPhone/i) != null;
     var IS_OPERA = navigator.userAgent.match(/Opera/i) != null;
     var IS_TOUCH_ONLY = IS_IPAD || IS_ANDROID || IS_KINDLE || IS_IPHONE
+	var IS_IOS=IS_IPAD || IS_IPHONE
         //boolean whether calculator is enabled for this whiteboard
     var enable_calc = true;
         //
@@ -69,13 +73,13 @@ var Whiteboard = (function () {
           *internal methods to: disable,enable calculator and show or hide them
           */
     function showCalc() {
-        console.log("SHOW_CALC")
+        console_log("SHOW_CALC")
         if ($('#calc_hold').html() || !enable_calc) {} else {
             var calc_x = screen_width - 325
             var calc_y = $get_Element("#tools").offsetTop + $get_Element("#tools").offsetHeight;
             var ch = '<div id="calc_hold" style="width:325px;position:absolute;left:' + calc_x + 'px;top:' + calc_y + 'px"></div>'
             var calc_hold = $('#main-content').append($(ch))
-            console.log("SHOW_HIDE_CALC-s2")
+            console_log("SHOW_HIDE_CALC-s2")
             $('#calc_hold').calculator({
                 layout: $.calculator.scientificLayout
             });
@@ -85,7 +89,7 @@ var Whiteboard = (function () {
 
     function hideCalc() {
         if ($('#calc_hold').html()) {
-            console.log("HIDE_CALC")
+            console_log("HIDE_CALC")
             $('#calc_hold').remove();
             $get_Element("#button_calc").style.border = '1px solid #000000';
         }
@@ -98,15 +102,15 @@ var Whiteboard = (function () {
     function _disableCalc() {
         hideCalc()
         $('#button_calc').css('background-image', 'url(' + _imageBaseDir + 'calculator_no.png)');
-        console.log($('#button_calc').css('backgroundImage'))
+        console_log($('#button_calc').css('backgroundImage'))
     }
             function showHideCalc() {
-                console.log("SHOW_HIDE_CALC")
+                console_log("SHOW_HIDE_CALC")
                 if ($('#calc_hold').html()) {
-                    console.log("SHOW_HIDE_CALC-s0")
+                    console_log("SHOW_HIDE_CALC-s0")
                     hideCalc()
                 } else {
-                    console.log("SHOW_HIDE_CALC-s1")
+                    console_log("SHOW_HIDE_CALC-s1")
                     showCalc()
                 }
             }
@@ -124,7 +128,7 @@ var Whiteboard = (function () {
                 yp = 0 - box.top
                 wi = 325
                 hi = $('#calc_hold').height()
-                console.log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
+                console_log(xp + ":" + yp + ":" + wi + ":" + hi + ":" + mx + ":" + my + ":" + event.layerX + ":" + event.pageX)
                 if ((mx >= xp && mx <= xp + wi) && (my >= yp && my <= yp + hi)) {
                     return true;
                 }
@@ -250,17 +254,30 @@ var Whiteboard = (function () {
     var _docHeight = 0;
     var _viewPort = null;
     wb.setWhiteboardViewPort = function (width, height) {
-        console.log("EXTERNAL CALL::setWhiteboardViewPort:: "+width+":"+height)
+        console_log("EXTERNAL CALL::setWhiteboardViewPort:: "+width+":"+height)
         _viewPort = {
             width: width,
             height: height
         };
     }
     wb.resizeWhiteboard = function () {
-        console.log("EXTERNAL CALL::resizeWhiteboard::")
+        console_log("EXTERNAL CALL::resizeWhiteboard::")
         adjustToolbar()
     }
+function viewport_testpage() {
+        var e = window,
+            a = 'inner';
 
+        if (!('innerWidth' in window)) {
+            a = 'client';
+            e = document.documentElement || document.body;
+        }
+
+        return {
+            width: e[a + 'Width'],
+            height: e[a + 'Height']
+        }
+    }
     function viewport() {
         var e = window,
             a = 'inner';
@@ -273,6 +290,7 @@ var Whiteboard = (function () {
 
         if (_viewPort == null) {
             alert('Whiteboard setup: _docWidth/_docHeight must be set by calling setWhiteboardViewPort(width, height)');
+			//_viewPort = viewport_testpage()
         }
 
         return _viewPort;
@@ -309,7 +327,7 @@ var Whiteboard = (function () {
     var isIE = getInternetExplorerVersion() != -1;
 
     wb.initWhiteboard = function (mainDocIn) {
-        console.log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
+        console_log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);
                 if (context) {
                     var _width = 0;
                     origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = _width;
@@ -355,6 +373,18 @@ var Whiteboard = (function () {
             'right': '5px'
         });
                 }
+				if($get_Element('#vscroller')){
+				if(IS_IOS){
+        $('#vscroller').css({
+            'display': 'none'
+            
+        });
+		$('#hscroller').css({
+            'display': 'none'
+            
+        });
+		}
+                }
                 //
         setTimeout(function () {
 
@@ -362,7 +392,7 @@ var Whiteboard = (function () {
             var siz = viewport()
             var docWidth = siz.width;
             var docHeight = siz.height;
-            console.log("CANVAS_IN_IE: " + canvas + ":" + canvas.getContext);
+            console_log("CANVAS_IN_IE: " + canvas + ":" + canvas.getContext);
             if (docWidth > 600) {
                 // alert($('#tools button').css('width'));
                 $('#tools').css('height', '35px');
@@ -397,19 +427,21 @@ var Whiteboard = (function () {
             origcanvas = $get_Element("#ocanvas");
             graphcanvas = $get_Element("#gcanvas");
             topcanvas = $get_Element("#tcanvas");
-            canvas.width = 2000;
-            canvas.height = 2620;
-            origcanvas.width = 2000;
-            origcanvas.height = 2620;
-            graphcanvas.width = 2000;
-            graphcanvas.height = 2620;
-            topcanvas.width = 2000;
-            topcanvas.height = 2620;
+			var vWidth=IS_IOS?docWidth-leftOff:2000;
+			var vHeight=IS_IOS?docWidth-leftOff:2620;
+            canvas.width = vWidth;
+            canvas.height = vHeight;
+            origcanvas.width = vWidth;
+            origcanvas.height = vHeight;
+            graphcanvas.width = vWidth;
+            graphcanvas.height = vHeight;
+            topcanvas.width = vWidth;
+            topcanvas.height = vHeight;
             var ccnt = $get_Element("#canvas-container");
-            $("#canvas-container").css('width', '2000px');
-            $("#canvas-container").css('height', '2620px');
+            $("#canvas-container").css('width', vWidth+'px');
+            $("#canvas-container").css('height', vHeight+'px');
 
-            console.log('off_ht_1: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").offsetLeft + ":" + $get_Element("#tools").offsetTop)
+            console_log('off_ht_1: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").offsetLeft + ":" + $get_Element("#tools").offsetTop)
             if (IS_IPHONE || docWidth <= 600) {
                 dox = IS_IPHONE ? 5 : 19
                 doy = IS_IPHONE ? 5 : 19
@@ -417,11 +449,15 @@ var Whiteboard = (function () {
                 dox = 19
                 doy = 19
             }
+			if(IS_IOS){
+			dox=0
+			doy=0
+			}
             try {
                 if (typeof G_vmlCanvasManager != "undefined") {
                     var parent_cont = $get_Element("#canvas-container")
-                    console.log("DEBUG_IE parent_cont: " + parent_cont);
-                    console.log("DEBUG_IE: parent_cont.removeChild" + parent_cont.removeChild);
+                    console_log("DEBUG_IE parent_cont: " + parent_cont);
+                    console_log("DEBUG_IE: parent_cont.removeChild" + parent_cont.removeChild);
                     parent_cont.removeChild(canvas)
                     parent_cont.removeChild(origcanvas)
                     parent_cont.removeChild(graphcanvas)
@@ -436,23 +472,23 @@ var Whiteboard = (function () {
                                 topcontext = null;
                     //
                     canvas = document.createElement('canvas')
-                    canvas.width = 2000;
-                    canvas.height = 2620;
+                    canvas.width = vWidth;
+                    canvas.height = vHeight;
                     $(canvas).attr('id', 'canvas')
                     //
                     origcanvas = document.createElement('canvas')
-                    origcanvas.width = 2000;
-                    origcanvas.height = 2620;
+                    origcanvas.width = vWidth;
+                    origcanvas.height = vHeight;
                     $(origcanvas).attr('id', 'ocanvas')
                     //
                     graphcanvas = document.createElement('canvas')
-                    graphcanvas.width = 2000;
-                    graphcanvas.height = 2620;
+                    graphcanvas.width = vWidth;
+                    graphcanvas.height = vHeight;
                     $(graphcanvas).attr('id', 'gcanvas')
                     //
                     topcanvas = document.createElement('canvas')
-                    topcanvas.width = 2000;
-                    topcanvas.height = 2620;
+                    topcanvas.width = vWidth;
+                    topcanvas.height = vHeight;
                     $(topcanvas).attr('id', 'tcanvas')
                     //
                     $(parent_cont).prepend(origcanvas, graphcanvas, topcanvas, canvas);
@@ -462,7 +498,7 @@ var Whiteboard = (function () {
                     G_vmlCanvasManager.initElement(topcanvas);
                 }
             } catch (error) {
-                console.log("DEBUG_IE:" + error);
+                console_log("DEBUG_IE:" + error);
             }
             // screen_width = docWidth - leftOff - 27;
             // screen_height = docHeight - topOff - 27;
@@ -495,9 +531,10 @@ var Whiteboard = (function () {
              * ($get_Element("#tools").offsetHeight +
              * $get_Element("#tools").offsetTop + screen_height + 5) + 'px';
              */
-            console.log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $("#tools").height())
+            console_log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $("#tools").height())
             $get_Element('#drawsection').style.width = (screen_width) + 'px';
             $get_Element('#drawsection').style.height = (screen_height) + 'px';
+			if(!IS_IOS){
             $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
             $get_Element('#vscroller').style.left = (screen_width + 3 + off_left) + 'px';
             $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
@@ -516,7 +553,8 @@ var Whiteboard = (function () {
             posData += "vscroller-off-left:" + $get_Element('#vscroller').style.left + "\n";
             posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
             posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
-            console.log(posData);
+            console_log(posData);
+			}
             var cmd_keys = {};
             var nav_keys = {};
             cmd_keys["frac"] = "/";
@@ -569,6 +607,7 @@ var Whiteboard = (function () {
                     mathquill_focus()
                 }, 100)
             });
+			if(!IS_IOS){
             if (document.addEventListener) {
                 var thumb_h = $get_Element('#hscroll_thumb');
                 thumb_h.addEventListener("mousedown", initThumbDrag, false)
@@ -587,8 +626,9 @@ var Whiteboard = (function () {
                 $get_Element('#hscroll_thumb').onmousedown = initThumbDrag;
                 $get_Element('#vscroll_thumb').onmousedown = initThumbDrag;
             }
+			}
             function resize_wb() {
-                console.log("INTERNAL CALL::WINDOW_RESIZE::")
+                console_log("INTERNAL CALL::WINDOW_RESIZE::")
                 adjustToolbar()
             }
                          //window.onresize=resize_wb;
@@ -665,11 +705,15 @@ var Whiteboard = (function () {
                     doy = 19;
                 }
                 // dox=doy=0;
+				if(IS_IOS){
+				dox=doy=0;
+				}
                 screen_width = docWidth - leftOff - dox;
                 screen_height = docHeight - topOff - doy;
-                console.log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $("#tools").height())
+                console_log('off_ht_2: ' + $get_Element("#tools").offsetHeight + ":" + $get_Element("#tools").style.height + ":" + $("#tools").height())
                 $get_Element('#drawsection').style.width = (screen_width) + 'px';
                 $get_Element('#drawsection').style.height = (screen_height) + 'px';
+				if(!IS_IOS){
                 $get_Element('#vscroll_track').style.height = (screen_height) + 'px';
                 $get_Element('#vscroller').style.left = (screen_width + 3 + off_left) + 'px';
                 $get_Element('#vscroller').style.top = (off_ht + off_top) + 'px';
@@ -688,8 +732,9 @@ var Whiteboard = (function () {
                 posData += "vscroller-off-left:" + $get_Element('#vscroller').style.left + "\n";
                 posData += "hscroller-off-top:" + $get_Element('#hscroller').style.top + "\n";
                 posData += "hscroller-off-left:" + $get_Element('#hscroller').style.left + "\n";
-                console.log(posData);
+                console_log(posData);
                 positionScroller();
+				}
                 // },100);
             }
 
@@ -742,7 +787,7 @@ var Whiteboard = (function () {
                 scrollObj.my = mouse_pos;
                 scrollObj.dragged = true;
                 scrollObj.scrub = (canvas[dim] - sdim) / (sdim - 30)
-                console.log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
+                console_log("INIT_SCROLL_SCRUB:" + scrollObj.sy + ":" + scrollObj.my + ":" + scrollObj.scrub + ":" + event.target);
                 if (document.addEventListener) {
                     if (isTouchEnabled) {
                         document.addEventListener("touchend", stopThumbDrag, false);
@@ -874,7 +919,7 @@ var Whiteboard = (function () {
                     document.onmousemove = null;
                 }
                 scrollObj.dragged = false;
-                console.log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
+                console_log("END_SCROLL_SCRUB:" + newpos + ":" + currPos);
             }
             // canvas.width = origcanvas.width = graphcanvas.width = topcanvas.width
             // = docWidth - leftOff;
@@ -920,29 +965,29 @@ var Whiteboard = (function () {
              * offX=left; offY=top; return { top: top, left: left }; };
              */
             function getCanvasPos() {
-                console.log("getCanvasPos processing!");
+                console_log("getCanvasPos processing!");
                 var box = canvas.getBoundingClientRect();
-                console.log("canvas bound= top: " + box.top + " left:" + box.left);
+                console_log("canvas bound= top: " + box.top + " left:" + box.left);
                 var body = mainDoc.body;
                 var docElem = mainDoc.documentElement;
                 var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
                 var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
                 var clientTop = docElem.clientTop || body.clientTop || 0;
                 var clientLeft = docElem.clientLeft || body.clientLeft || 0;
-                console.log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
+                console_log("offset_datas: scrollTop=" + scrollTop + " scrollLeft=" + scrollLeft + " clientTop=" + clientTop + " clientLeft=" + clientLeft);
                 var top = box.top + scrollTop - clientTop;
                 var left = box.left + scrollLeft - clientLeft;
                 offX = Math.round(left);
                 offY = Math.round(top);
-                console.log("OFFSET: top=" + offY + " left=" + offX);
+                console_log("OFFSET: top=" + offY + " left=" + offX);
                 return {
                     top: offY,
                     left: offX
                 }
             }
-            console.log("getCanvasPos calling!");
+            console_log("getCanvasPos calling!");
             getCanvasPos();
-            console.log("getCanvasPos CALL END!");
+            console_log("getCanvasPos CALL END!");
             graphicData = {}
             tool_id = {};
             tool_id['eraser'] = 0;
@@ -1101,7 +1146,7 @@ var Whiteboard = (function () {
                 currPosV = currPosV < -(canvas.height - screen_height) ? -(canvas.height - screen_height) : currPosV;
                 $get_Element('#vscroll_thumb').style.top = (-currPosV / scrubV) + "px";
                 $get_Element('#canvas-container').style.top = currPosV + "px";
-                console.log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
+                console_log("SCROLLER_THUMB_POS:" + scrubH + ":" + scrubV + ":" + (-currPosH) + ":" + (-currPosV))
             }
 
             function scrollTheCanvas(event) {
@@ -1210,7 +1255,7 @@ var Whiteboard = (function () {
                 var currPos = $get_Element('#canvas-container').style.left;
                 currPos = currPos ? parseInt(currPos) : 0;
                 var click_pos = dx + currPos
-                console.log("MOUSE_DOWN " + dx + ":" + width + ":::" + click_pos + ":" + screen_width)
+                console_log("MOUSE_DOWN " + dx + ":" + width + ":::" + click_pos + ":" + screen_width)
 
                 if (mouseOverCalc(event)) {
                     penDown = false;
@@ -1221,7 +1266,9 @@ var Whiteboard = (function () {
                         if (tevent.touches.length > 1) {
                             penDown = false;
                             rendering = false;
+							if(!IS_IOS){
                             initSwipe(_event);
+							}
                             return
                         }
                     }
@@ -1237,7 +1284,7 @@ var Whiteboard = (function () {
 
                     }
                     graphicData.id = tool_id[currentTool];
-                    console.log("CURRENT_TOOL:" + currentTool);
+                    console_log("CURRENT_TOOL:" + currentTool);
                     if (currentTool == 'pencil') {
                         context.beginPath();
                         context.moveTo(clickX, clickY);
@@ -1418,12 +1465,12 @@ var Whiteboard = (function () {
                 var c = $get_Element('#canvas-container')
                 var tl = 0;
                 if (event.touches) {
-                    console.log(event.touches.length)
+                    console_log(event.touches.length)
                     tl = event.touches.length
                 } else {
-                    console.log("NOT TOUCH ENABLED!")
+                    console_log("NOT TOUCH ENABLED!")
                 }
-                console.log("TOUCHES: " + tl);
+                console_log("TOUCHES: " + tl);
                 if (tl >= 2) {
                     event.preventDefault();
                     var tarr = event.touches
@@ -1441,7 +1488,7 @@ var Whiteboard = (function () {
                     };
                     swipe_sx = touch.pageX
                     swipe_sy = touch.pageY
-                    console.log("TOUCHE_POS: " + swipe_sx + ":" + swipe_sy);
+                    console_log("TOUCHE_POS: " + swipe_sx + ":" + swipe_sy);
                     swipe_nx = 0
                     swipe_ny = 0
                     swipe_action = 'on'
@@ -1494,7 +1541,7 @@ var Whiteboard = (function () {
                 currPosX = currPosX < -(canvas.width - screen_width) ? -(canvas.width - screen_width) : currPosX;
                 $get_Element('#canvas-container').style.left = currPosX + "px"
                 $get_Element('#hscroll_thumb').style.left = gethscrolldata().t + "px";
-                console.log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
+                console_log("Touch x:" + swipe_ox + ":" + swipe_nx + ", y:" + swipe_oy + ":" + swipe_ny + ":::" + event.changedTouches.length);
             }
 
             function stopSwipe(_event) {
@@ -1573,7 +1620,9 @@ var Whiteboard = (function () {
                 // document.getElementById('scroll').innerHTML = event.wheelDelta +
                 // ":" + event.detail;
             }
+			if(!IS_IOS){
             $get_Element('#drawsection').onmousewheel = moveObject;
+			}
             __killListeners()
             if (document.addEventListener) {
                 canvas.addEventListener("mousedown", ev_onmousedown, false);
@@ -1938,7 +1987,7 @@ var Whiteboard = (function () {
                     sendDataToSERVER(segArr[z]);
                 }
 
-                console.log("Sending json string_segemented line -segments  : " + segArr.length);
+                console_log("Sending json string_segemented line -segments  : " + segArr.length);
                 render = false;
                 resetArrays();
                 textRendering = false;
@@ -1947,7 +1996,7 @@ var Whiteboard = (function () {
 
             render = false;
             // var jsonStr = convertObjToString(graphicData);
-            console.log("Sending Data string for: " + graphicData.id);
+            console_log("Sending Data string for: " + graphicData.id);
             sendDataToSERVER(graphicData);
             textRendering = false;
         }
@@ -1956,7 +2005,7 @@ var Whiteboard = (function () {
 
     function sendDataToSERVER(jsdata) {
         var jsonStr = convertObjToString(jsdata);
-        console.log("Sending json string: " + jsonStr);
+        console_log("Sending json string: " + jsonStr);
 
         wb.whiteboardOut(jsonStr, true);
 
@@ -1964,10 +2013,10 @@ var Whiteboard = (function () {
             if (supports_localStorage()) {
                 localStorage['jstr'] = jsonStr
             } else {
-                console.log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+                console_log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
             }
         } catch (e) {
-            console.log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+            console_log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
         }
     }
 
@@ -2006,7 +2055,7 @@ var Whiteboard = (function () {
             var s =stringify(obj);
             return s;
         } catch (ex) {
-            console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
+            console_log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
         }
     }
     // function that converts JSON string to flash object
@@ -2015,7 +2064,7 @@ var Whiteboard = (function () {
             var o = eval("(" + str + ")"); // eval(str);
             return o;
         } catch (ex) {
-            console.log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
+            console_log(ex.name + ":" + ex.message + ":" + ex.location + ":" + ex.text);
         }
     }
 //
@@ -2061,7 +2110,7 @@ function stringify(obj) {
         try {
             renderObjAux(obj);
         } catch (e) {
-            console.log('error rendering: ' + e);
+            console_log('error rendering: ' + e);
         }
     }
 
@@ -2084,7 +2133,7 @@ if(context.lineWidth!=2){
         context.strokeStyle = col;
                 }
         var deb = ""
-        console.log("RENDER_DATA_FOR: " + graphic_id)
+        console_log("RENDER_DATA_FOR: " + graphic_id)
         if (graphic_id === 0) {
             for (var i = 0; i < dLength; i++) {
 
@@ -2205,7 +2254,7 @@ if(isIE){updateCanvas();}
                 ["draw", [str]]
             ])
         } else {
-            console.log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
+            console_log("DATA NOT SAVED - LOCAL STORAGE NOT AVAILABLE!")
         }
     }
     //
@@ -2249,7 +2298,7 @@ if(isIE){updateCanvas();}
 
     /** will be overriden in GWT/parent */
     wb.saveWhiteboard = function () {
-        console.log('default whiteboard save');
+        console_log('default whiteboard save');
     }
 
     /**
@@ -2260,7 +2309,7 @@ if(isIE){updateCanvas();}
      */
 
     wb.whiteboardOut = function (data, boo) {
-        alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
+        //alert('WHITEBOARD: whiteboardOut is going nowhere.  Hook up to external process to save data');
     }
 
     wb.disconnectWhiteboard = function (documentObject) {
