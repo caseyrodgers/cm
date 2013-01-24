@@ -428,7 +428,7 @@ function viewport_testpage() {
             graphcanvas = $get_Element("#gcanvas");
             topcanvas = $get_Element("#tcanvas");
 			var vWidth=IS_IOS?docWidth-leftOff:2000;
-			var vHeight=IS_IOS?docWidth-leftOff:2620;
+			var vHeight=IS_IOS?docHeight-topOff:2620;
             canvas.width = vWidth;
             canvas.height = vHeight;
             origcanvas.width = vWidth;
