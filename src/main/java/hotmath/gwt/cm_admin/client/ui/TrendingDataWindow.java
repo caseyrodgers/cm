@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,6 +29,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.TabPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -48,7 +51,7 @@ public class TrendingDataWindow extends GWindow {
     
     Integer adminId;
     TrendingDataWindowBarChart _barChart;
-    FlowLayoutContainer container;
+    BorderLayoutContainer container;
 
     TabPanel _tabPanel;
     CheckBox _onlyActiveCheckBox;
@@ -62,9 +65,11 @@ public class TrendingDataWindow extends GWindow {
 
         setHeadingText("Overview of Student Progress");
         setWidth(600);
-        setHeight(700);
+        setHeight(600);
 
-        container = new FlowLayoutContainer();
+        container = new BorderLayoutContainer();
+        BorderLayoutData blData = new BorderLayoutData();
+        container.setLayoutData(blData);
 
         getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
             @Override
@@ -82,17 +87,11 @@ public class TrendingDataWindow extends GWindow {
 
         loadTrendDataAsync();
 
-        
         /** Position button at left margin on button bar
          * 
          */
-        //getButtonBar().setStyleAttribute("position", "relative");
         _onlyActiveCheckBox = new CheckBox();
-        _onlyActiveCheckBox.addStyleName("trending-data-checkbox");
-        //_onlyActiveCheckBox.setStyleName("trending-data-checkbox");
-        //_onlyActiveCheckBox.setStyleAttribute("position", "absolute");
-        //_onlyActiveCheckBox.setStyleAttribute("left", "0");
-        //_onlyActiveCheckBox.setStyleAttribute("top", "0");
+		_onlyActiveCheckBox.getElement().getStyle().setMarginLeft(10, Unit.PX);
         _onlyActiveCheckBox.setBoxLabel("Restrict data to current programs.");
         _onlyActiveCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
 			@Override
@@ -118,7 +117,7 @@ public class TrendingDataWindow extends GWindow {
         _tabPanel.setAnimScroll(true);
         _tabPanel.setTabScroll(true);
 
-        container.add(_tabPanel);
+        container.setCenterWidget(_tabPanel);
     }
 
     private void assessmentReportButton() {
@@ -157,6 +156,7 @@ public class TrendingDataWindow extends GWindow {
                 CmBusyManager.setBusy(false);
                 
                 drawGui();
+                //addAreaChart();
                 addLessonsChart(trendingData);
                 addProgramCharts(trendingData.getProgramData());
                 setVisible(true);
@@ -218,7 +218,13 @@ public class TrendingDataWindow extends GWindow {
             _tabPanel.add(w, pd.getProgramName());
         }
     }
-
+/*
+    private void addAreaChart() {
+    	AreaChartDemo demo = new AreaChartDemo();
+    	Widget w = demo.asWidget();
+    	_tabPanel.add(w, "Area Chart Demo");
+    }
+*/
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override

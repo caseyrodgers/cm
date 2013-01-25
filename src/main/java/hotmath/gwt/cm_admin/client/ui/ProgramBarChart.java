@@ -28,24 +28,18 @@ import com.sencha.gxt.chart.client.chart.event.SeriesItemOverEvent.SeriesItemOve
 import com.sencha.gxt.chart.client.chart.event.SeriesSelectionEvent;
 import com.sencha.gxt.chart.client.chart.event.SeriesSelectionEvent.SeriesSelectionHandler;
 import com.sencha.gxt.chart.client.chart.series.BarSeries;
+import com.sencha.gxt.chart.client.chart.series.SeriesRenderer;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.RGB;
+import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.fx.client.Draggable;
-import com.sencha.gxt.widget.core.client.FramedPanel;
-import com.sencha.gxt.widget.core.client.Resizable;
-import com.sencha.gxt.widget.core.client.Resizable.Dir;
+import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
-import com.sencha.gxt.widget.core.client.event.CollapseEvent;
-import com.sencha.gxt.widget.core.client.event.CollapseEvent.CollapseHandler;
-import com.sencha.gxt.widget.core.client.event.ExpandEvent;
-import com.sencha.gxt.widget.core.client.event.ExpandEvent.ExpandHandler;
 
 /**
  * 
@@ -55,6 +49,8 @@ import com.sencha.gxt.widget.core.client.event.ExpandEvent.ExpandHandler;
 
 public class ProgramBarChart implements IsWidget {
 
+    static final RGB[] rgbColors = {
+        new RGB(213, 70, 121), new RGB(44, 153, 201), new RGB(146, 6, 157), new RGB(49, 149, 0), new RGB(249, 153, 0)};
 
 	public interface DataPropertyAccess extends PropertyAccess<ProgramSegmentData> {
 		ValueProvider<ProgramSegmentData, Integer> countCompleted();
@@ -71,7 +67,6 @@ public class ProgramBarChart implements IsWidget {
 	String title;
 	int testDefId;
 
-
 	public ProgramBarChart(ProgramData program, List<ProgramSegmentData> data) {
 		this.programSegmentList = data;
 		this.title = program.getProgramName();
@@ -83,10 +78,6 @@ public class ProgramBarChart implements IsWidget {
 		if (programSegmentList == null) return;
 		for (ProgramSegmentData ps : programSegmentList) {
 			ps.setLabel("Section " + (ps.getSegment() + 1));
-			if (ps.getCountCompleted() == null) {
-				CmLogger.debug("ProgramBarChart(): fixing null count");
-				ps.setCountCompleted(0);
-			}
 		}
 	}
 
@@ -104,6 +95,9 @@ public class ProgramBarChart implements IsWidget {
 		chart.setShadowChart(true);
 		chart.setAnimated(true);
 
+	    // Allow room for rotated labels
+	    chart.setDefaultInsets(50);
+
 		NumericAxis<ProgramSegmentData> axis = new NumericAxis<ProgramSegmentData>();
 		axis.setPosition(Position.LEFT);
 		axis.addField(dataAccess.countCompleted());
@@ -112,29 +106,33 @@ public class ProgramBarChart implements IsWidget {
 		axis.setInterval(max/10);
 		axis.setMaximum(max);
 		axis.setMinimum(0);
-		axis.setWidth(50);
+		//axis.setWidth(50);
 		chart.addAxis(axis);
 
 		CategoryAxis<ProgramSegmentData, String> catAxis = new CategoryAxis<ProgramSegmentData, String>();
 		catAxis.setPosition(Position.BOTTOM);
 		catAxis.setField(dataAccess.label());
-	    TextSprite catAxisTitle = new TextSprite("Section Number");
-	    catAxisTitle.setFontSize(18);
-	    catAxis.setTitleConfig(catAxisTitle);
-	    catAxis.setHeight(30);
-	    catAxis.setLabelProvider(new LabelProvider<String>() {
-	      @Override
-	      public String getLabel(String label) {
-	        return label.substring(8);
-	      }
-	    });
+	    TextSprite sprite = new TextSprite();
+	    sprite.setRotation(315);
+	    sprite.setFontSize(10);
+	    //sprite.setTextAnchor(TextSprite.TextAnchor.START);
+	    catAxis.setLabelConfig(sprite);
+	    catAxis.setLabelPadding(-10);
+	    catAxis.setLabelTolerance(20);
 		chart.addAxis(catAxis);
 
 		final BarSeries<ProgramSegmentData> column = new BarSeries<ProgramSegmentData>();
 		column.setYAxisPosition(Position.LEFT);
 		column.addYField(dataAccess.countCompleted());
-		column.addColor(new RGB(148,174,10));
 		column.setColumn(true);
+	    column.setRenderer(new SeriesRenderer<ProgramSegmentData>() {
+		      @Override
+		      public void spriteRenderer(Sprite sprite, int index, ListStore<ProgramSegmentData> store) {
+		        sprite.setFill(rgbColors[index % 5]);
+		        sprite.redraw();
+		      }
+		    });
+
 		final SeriesToolTipConfig<ProgramSegmentData> config = new SeriesToolTipConfig<ProgramSegmentData>();
 		config.setLabelProvider(null);
 		column.setToolTipConfig(config);
@@ -142,10 +140,9 @@ public class ProgramBarChart implements IsWidget {
 			@Override
 			public void onSeriesOverItem(SeriesItemOverEvent<ProgramSegmentData> event) {
 				if (true) {
-					int index = event.getIndex();
-					String msg = "Click to see list of students [" + programSegmentList.get(index).getCountCompleted() + "]";
-					SafeHtmlUtils.htmlEscape(msg);
-					config.setBodyHtml(SafeHtmlUtils.htmlEscape(msg));
+					//int index = event.getIndex();
+					//String msg = "Click to see list of students [" + programSegmentList.get(index).getCountCompleted() + "]";
+					config.setBodyHtml(SafeHtmlUtils.htmlEscape("Click to see list of students"));
 					column.setToolTipConfig(config);
 				}
 			}
@@ -162,32 +159,13 @@ public class ProgramBarChart implements IsWidget {
 
 		chart.addSeries(column);
 
-		FramedPanel panel = new FramedPanel();
+		ContentPanel panel = new ContentPanel();
 		panel.setHeaderVisible(false);
-		panel.getElement().getStyle().setMargin(10, Unit.PX);
+		panel.getElement().getStyle().setMargin(20, Unit.PX);
 		panel.setCollapsible(true);
 		panel.setPixelSize(500, 500);
-		panel.setBodyBorder(true);
-
-		final Resizable resize = new Resizable(panel, Dir.E, Dir.SE, Dir.S);
-		resize.setMinHeight(400);
-		resize.setMinWidth(400);
-		resize.setEnabled(true);
-
-		panel.addExpandHandler(new ExpandHandler() {
-			@Override
-			public void onExpand(ExpandEvent event) {
-				resize.setEnabled(true);
-			}
-		});
-		panel.addCollapseHandler(new CollapseHandler() {
-			@Override
-			public void onCollapse(CollapseEvent event) {
-				resize.setEnabled(false);
-			}
-		});
-
-		new Draggable(panel, panel.getHeader()).setUseProxy(false);
+		panel.setBodyBorder(false);
+		panel.setBorders(false);
 
 		VerticalLayoutContainer layout = new VerticalLayoutContainer();
 		panel.add(layout);
