@@ -8,8 +8,6 @@
       
       <inherits name='com.google.gwt.http.HTTP'/>
       
-      <inherits name='com.sencha.gxt.chart.Chart' />
-      
       <entry-point class='hotmath.gwt.cm_admin.client.CatchupMathAdmin'/>
       
       <inherits name="com.sencha.gxt.theme.blue.Blue" />

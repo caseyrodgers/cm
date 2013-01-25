@@ -96,7 +96,7 @@ public class CatchupMath implements EntryPoint {
      * This is the entry point method.
      */
     public void onModuleLoad() {
-       
+        
         __thisInstance = this;
         CmLogger.info("Catchup Math Startup");
 
