@@ -168,8 +168,8 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 }
             }
             else {
-                __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
-                _rootPanel.add(new HmMobileNotAvailableDialog());
+                _rootPanel.add(createApplicationPanel());
+                History.fireCurrentHistoryState();
             }
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
