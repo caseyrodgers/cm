@@ -208,11 +208,9 @@ public class TrendingDataWindow extends GWindow {
     	}
     	_programChartWidgetList.clear();
 
-        CmLogger.debug("TrendingDataWindow.addProgramCharts(): count: " + programData.size());
     	for (int i = 0, t = programData.size(); i < t; i++) {
             ProgramData pd = programData.get(i);
 
-            CmLogger.debug("TrendingDataWindow.addProgramCharts(): name[" + i + "]: " + pd.getProgramName());
             ProgramBarChart _programChart = new ProgramBarChart(pd, pd.getSegments());
             Widget w = _programChart.asWidget();
             _programChartWidgetList.add(w);
