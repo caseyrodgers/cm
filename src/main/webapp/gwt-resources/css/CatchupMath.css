@@ -627,6 +627,7 @@ img.resource-item-complete {
         color: white;
         display: none;
 }
+
 .debug-show {
         display: block;
 }
@@ -635,7 +636,7 @@ img.resource-item-complete {
 }
 .debug-mode .debug-hide {
         color: red;
-        display: none;
+        display: block;
         text-align: center;
 }
 .help-window .version {

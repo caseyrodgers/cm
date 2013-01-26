@@ -99,9 +99,6 @@ public class QuizPage extends FlowLayoutContainer implements IsQuiz {
 	private void displayQuizHtml(String quizHtml) {
 	    
 	    HTML html = new HTML(quizHtml);
-		if(CmShared.getQueryParameter("debug") != "") {
-		    html.addStyleName("debug-mode");
-		}
 		add(html);
         /** reset each displayed quiz */
         questionProcessTracker.finish();
