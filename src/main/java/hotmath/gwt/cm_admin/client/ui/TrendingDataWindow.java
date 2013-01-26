@@ -32,7 +32,6 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
@@ -57,7 +56,7 @@ public class TrendingDataWindow extends GWindow {
     CheckBox _onlyActiveCheckBox;
 
     public TrendingDataWindow(Integer adminId) {
-        super(true);
+        super(false);
 
         __instance = this;
         
@@ -102,6 +101,8 @@ public class TrendingDataWindow extends GWindow {
         });
 
         getButtonBar().add(_onlyActiveCheckBox);
+        
+        super.addCloseButton();
 
         /**
          * turn on after data retrieved
