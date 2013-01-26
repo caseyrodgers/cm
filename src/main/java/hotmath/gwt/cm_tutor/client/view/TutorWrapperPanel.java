@@ -95,7 +95,7 @@ public class TutorWrapperPanel extends Composite {
             returnButton.addClickHandler(new ClickHandler() {
                 @Override
                 native public void onClick(ClickEvent event) /*-{
-                    TutorManager.newProblem();
+                    $wnd.TutorManager.newProblem();
                 }-*/;
             });
         }
