@@ -625,7 +625,7 @@ img.resource-item-complete {
 
 .debug-hide {
         color: white;
-        display: block;
+        display: none;
 }
 .debug-show {
         display: block;
