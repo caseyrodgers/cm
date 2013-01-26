@@ -635,7 +635,7 @@ img.resource-item-complete {
 }
 .debug-mode .debug-hide {
         color: red;
-        display: block;
+        display: none;
         text-align: center;
 }
 .help-window .version {
