@@ -685,7 +685,7 @@
 				<version>2.5.0</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms512m -Xmx512m -Dgwt.logLevel=ERROR</extraJvmArgs>
+					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms724m -Xmx724m -Dgwt.logLevel=ERROR</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -693,7 +693,7 @@
 					<compileReport>false</compileReport>
 					<outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
 					<logLevel>ERROR</logLevel>
-					<style>PRETTY</style>
+					<style>OBF</style>
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>

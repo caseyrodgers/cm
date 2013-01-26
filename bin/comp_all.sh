@@ -6,6 +6,6 @@ bin/comp_cm_admin.sh
 bin/comp_solution_editor.sh
 bin/comp_hm_mobile.sh
 bin/comp_mobile3.sh
-
+bin/comp_tutor_viewer.sh
 
 bin/build_js.sh
