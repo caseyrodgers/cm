@@ -92,6 +92,8 @@ public class TutorWrapperPanel extends Composite {
         }
         if (!showReturnButton) {
             returnButton.getElement().addClassName("display_none");
+        }
+        else {
             returnButton.addClickHandler(new ClickHandler() {
                 @Override
                 native public void onClick(ClickEvent event) /*-{
