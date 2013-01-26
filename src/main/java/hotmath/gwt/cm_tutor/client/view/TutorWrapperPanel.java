@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -38,10 +39,10 @@ import com.google.gwt.user.client.ui.Widget;
 public class TutorWrapperPanel extends Composite {
 
     @UiField
-    Element whiteboardButton;
+    TouchButton whiteboardButton;
 
     @UiField
-    Element returnButton;
+    TouchButton returnButton;
     
     @UiField
     Element buttonBar;
@@ -79,10 +80,24 @@ public class TutorWrapperPanel extends Composite {
             buttonBar.addClassName("display_none");
         }
         if (!showWhiteboardButton) {
-            whiteboardButton.addClassName("display_none");
+            whiteboardButton.getElement().addClassName("display_none");
+        }
+        else {
+            whiteboardButton.addClickHandler(new ClickHandler() {
+                @Override
+                native public void onClick(ClickEvent event) /*-{
+                   $wnd.TutorManager.showWhiteboard();
+                }-*/;
+            });
         }
         if (!showReturnButton) {
-            returnButton.addClassName("display_none");
+            returnButton.getElement().addClassName("display_none");
+            returnButton.addClickHandler(new ClickHandler() {
+                @Override
+                native public void onClick(ClickEvent event) /*-{
+                    TutorManager.newProblem();
+                }-*/;
+            });
         }
     }
 

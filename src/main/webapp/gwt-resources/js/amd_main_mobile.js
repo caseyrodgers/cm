@@ -1,6 +1,13 @@
+require.config({
+    urlArgs: "bust=" + (new Date()).getTime()
+});
+
+
+
 require(['CatchupMathMobile3_combined'], function(x) {
         console.log('CatchupMathMobile3_combined loaded');
     });
+
 
 
 /** define high level, externalized from GWT requirejs load helper methods

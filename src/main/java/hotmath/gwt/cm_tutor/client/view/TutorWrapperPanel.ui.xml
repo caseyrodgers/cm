@@ -1,5 +1,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-    xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    xmlns:g="urn:import:com.google.gwt.user.client.ui"
+    xmlns:cm="urn:import:hotmath.gwt.cm_mobile_shared.client.ui">
     
     <ui:style>
         .tutorOutput {
@@ -67,20 +68,18 @@
                     </span>
                 </button>
                 
-                <button ui:field="returnButton" class='sexybutton sexy_cm_silver'
-                    onclick="TutorManager.newProblem();return false;" accesskey="s">
+                <cm:TouchButton ui:field="returnButton" styleName='sexybutton sexy_cm_silver'>
                     <span>
                         <span>Return</span>
                     </span>
 
-                </button>
+                </cm:TouchButton>
 
-                <button ui:field="whiteboardButton" class='sexybutton sexy_cm_silver' 
-                    onclick="TutorManager.showWhiteboard();return false;" accesskey="s">
+                <cm:TouchButton ui:field="whiteboardButton" styleName='sexybutton sexy_cm_silver'>
                     <span>
                         <span>Whiteboard</span>
                     </span>
-                </button>
+                </cm:TouchButton>
 
                 <div ui:field="widgetCorrectInfo" class="{style.hide}">
                     <div className='{style.correctWrapper}'>
