@@ -15,6 +15,7 @@ import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerFactory;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -155,6 +156,18 @@ public class CmMainPanel extends BorderLayoutContainer {
 	    __lastInstance._mainContentWrapper.getResourceWrapper().clear();
 	    _lastResourceViewer = null;
 	    _lastResourceContentPanel = null;
+	}
+	
+	/** Remove the resource viewer, onloy if it is
+	 *  a tutor viewer.  This to make sure that only one
+	 *  tutor is visable at one time due to shared dom ids.
+	 */
+	public void removeResourceIfTutor() {
+	    if(_lastResourceViewer != null) {
+	        if(_lastResourceViewer instanceof ResourceViewerImplTutor2) {
+	            removeResource();
+	        }
+	    }
 	}
 
 	static private boolean _isWhiteboardVisible;

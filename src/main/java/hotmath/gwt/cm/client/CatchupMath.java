@@ -320,7 +320,7 @@ public class CatchupMath implements EntryPoint {
         CmRpc.EVENT_BUS.addHandler(TutorContainerActivatedEvent.TYPE, new TutorContainerActivatedEventHandler() {
             @Override
             public void tutorContainerActivated(TutorContainerActivatedEvent event) {
-                CmMainPanel.__lastInstance.removeResource();
+                CmMainPanel.__lastInstance.removeResourceIfTutor();
             }
         });
 
