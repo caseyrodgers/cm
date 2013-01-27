@@ -984,7 +984,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private ColumnConfig<StudentModelI, String> defineQuizzesColumn() {
-        ColumnConfig<StudentModelI, String> passingCount = new ColumnConfig<StudentModelI, String>(__gridProps.group(), 100, "Quizzes");
+        ColumnConfig<StudentModelI, String> passingCount = new ColumnConfig<StudentModelI, String>(__gridProps.quizzes(), 100, "Quizzes");
+        passingCount.setSortable(false);
         passingCount.setToolTip(SafeHtmlUtils.fromString("Passed quizzes vs the number taken."));
         // quizzes.setSortable(true);
 

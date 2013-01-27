@@ -16,8 +16,7 @@ public class GetMessageOfTheDayCommand implements ActionHandler<GetMessageOfTheD
     @Override
     public StringHolder execute(Connection conn, GetMessageOfTheDayAction action) throws Exception {
         String messageOfTheDay = new SbFile(CatchupMathProperties.getInstance().getCatchupRuntime() + "/admin_motd.html").getFileContents().toString("\n");
-        // return new StringHolder(messageOfTheDay);
-        return new StringHolder("");
+        return new StringHolder(messageOfTheDay);
     }
     
 

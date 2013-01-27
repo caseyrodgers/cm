@@ -356,8 +356,6 @@ class StudentGridComparator implements Comparator<StudentModelI> {
         boolean p2IsCustom = p2.getProgram().getCustom().isCustom();
         
         
-        System.out.println("SORTING NOT ENABLED YET");
-        
         
     	if (sortField.equals(StudentModelExt.NAME_KEY)) {
             return p1.getName().compareToIgnoreCase(p2.getName());
@@ -376,14 +374,7 @@ class StudentGridComparator implements Comparator<StudentModelI> {
         } else if (sortField.equals(StudentModelI.TUTORING_USE_KEY)) {
             return p1.getTutoringUse() - p2.getTutoringUse();
         } else if (sortField.equals(StudentModelI.LAST_QUIZ_KEY)) { 
-        	
-            String lq1 = (p1IsCustom) ? "" : p1.getLastQuiz();
-            String lq2 = (p2IsCustom) ? "" : p2.getLastQuiz();
-            
-            if ((lq1 == null || lq1.trim().length() == 0) && (lq2 == null | lq2.trim().length() == 0)) return 0;
-            
-            return nz(lq1).compareToIgnoreCase(nz(lq2));
-
+        	doCompareNull(p1.getLastQuiz(),  p2.getLastQuiz());
         } else if(sortField.equals(StudentModelI.PASSING_COUNT_KEY)) {
         	
         	int t1 = (p1IsCustom) ? 0 : p1.getNotPassingCount() + p1.getPassingCount();
@@ -414,9 +405,37 @@ class StudentGridComparator implements Comparator<StudentModelI> {
              */
             return t1 - t2;
         }
+        else if(sortField.equals("lastLogin")) {
+            return doCompareNull(p1.getLastLogin(), p2.getLastLogin());
+        }
+        else if(sortField.equals("lastQuiz")) {
+           return doCompareNull(p1.getLastQuiz(), p2.getLastQuiz());
+        }
+        else if(sortField.equals("program.programDescription")) {
+            return doCompareNull(p1.getProgram().getProgramDescription(), p2.getProgram().getProgramDescription());
+        }
+        else if(sortField.equals("quizzes")) {
+            
+        }
 
         return 0;
     }
+    
+    
+    private int doCompareNull(String l1, String l2) {
+        
+        
+        if(l1 == null) {
+            return -1;
+        }
+        else if(l2 == null) {
+            return 1;
+        }
+        else {
+            return l1.trim().compareTo(l2.trim());
+        }        
+    }
+    
 
     /**
      * Make sure string is not null, if so return empty string.
