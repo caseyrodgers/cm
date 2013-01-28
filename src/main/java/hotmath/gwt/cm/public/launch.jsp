@@ -13,7 +13,6 @@
 %>
 <html>
     <head>
-        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <title>Catchup Math</title>  
         <script type="text/javascript"

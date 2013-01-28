@@ -31,6 +31,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
@@ -167,7 +168,10 @@ public class CatchupMath implements EntryPoint {
 
 
         try {
+            
+            
             String jsonUserInfo = getUserInfoFromExtenalJs();
+            
             String startType = UserInfoBase.getInstance().getCmStartType();
             if (startType == null)
                 startType = "";

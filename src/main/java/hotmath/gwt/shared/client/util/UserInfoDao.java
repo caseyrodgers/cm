@@ -15,9 +15,11 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
 
 public class UserInfoDao {
     
@@ -80,7 +82,10 @@ public class UserInfoDao {
      */
     static public CmDestination loadUserAndReturnFirstAction(String json) throws Exception {
     	try {
-	    	 JSONValue loginInfo = JSONParser.parse(json);
+    	    Log.debug("UserInfo JSON: " + json);
+    	    
+	    	 JSONValue loginInfo = JSONParser.parseStrict(json);
+	    	 
 	         JSONObject o = loginInfo.isObject().get("userInfo").isObject();
 	         JSONObject nextAction = loginInfo.isObject().get("nextAction").isObject();
 	         

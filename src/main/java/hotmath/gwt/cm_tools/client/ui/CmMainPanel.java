@@ -487,14 +487,14 @@ public class CmMainPanel extends BorderLayoutContainer {
      * 
      */
     public void ensureMaximizeResource() {
-       if(_lastResourceContentPanel.getCurrentViewerState() != ResourceViewerState.MAXIMIZED) {
+       if(_lastResourceContentPanel != null && _lastResourceContentPanel.getCurrentViewerState() != ResourceViewerState.MAXIMIZED) {
            CmLogger.debug("Changing to MAXIMIZED mode");
            maximizeResource();           
        }
     }
     
     public void ensureOptimizedResource() {
-        if(_lastResourceContentPanel.getCurrentViewerState() != ResourceViewerState.OPTIMIZED) {
+        if(_lastResourceContentPanel != null && _lastResourceContentPanel.getCurrentViewerState() != ResourceViewerState.OPTIMIZED) {
             CmLogger.debug("Changing to OPTIMIZED mode");
             optimizeResource();           
         }

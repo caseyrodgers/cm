@@ -356,6 +356,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             
             borderLayoutContainer.setEastWidget(_showWorkPanel, bld);
             add(borderLayoutContainer);
+            
+            CmMainPanel.__lastInstance.ensureMaximizeResource();
         }
         
 
