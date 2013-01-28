@@ -217,8 +217,15 @@ public class HelpWindow extends GWindow {
             }
         });
         /** Do not allow Student History for demo user */
-        if (UserInfo.getInstance().isDemoUser())
+        if (UserInfo.getInstance().isDemoUser()) {
         	studentDetailsBtn.setEnabled(false);
+        }
+        
+        if(CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance.isResourceQuiz()) {
+            studentDetailsBtn.setEnabled(false);
+        }
+        
+        
         addtionalTb.add(studentDetailsBtn);
         
         TextButton calculator = new TextButton("Calculator", new SelectHandler() {

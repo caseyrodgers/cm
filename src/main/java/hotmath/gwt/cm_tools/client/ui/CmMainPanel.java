@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
@@ -498,6 +499,28 @@ public class CmMainPanel extends BorderLayoutContainer {
             optimizeResource();           
         }
      }
-    
+
+    /** Return true if the quiz resource is active
+     * 
+     * @return
+     */
+    public boolean isResourceQuiz() {
+        if(_lastResourceViewer != null) {
+            return hasQuizInDom(); 
+        }
+        return false;
+    }
+
+    native private boolean hasQuizInDom() /*-{
+        var td = $doc.getElementByID("testset_div");
+        if(td != null) {
+            var cn = td.getElementsByTagName("input");
+            if(cn.length > 0) {
+                return true;   // has input elements is alive
+            }
+        }
+        
+        return false;
+    }-*/;
     
 }

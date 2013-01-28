@@ -384,11 +384,14 @@ class ResourceMenuButton extends TextButton {
      * 
      */
     private void indicateCompletion() {
-        //setIconStyle("resource-menu-button-complete-icon");
-        VerticalLayoutContainer vp = (VerticalLayoutContainer)getParent();
-        if(vp != null) {
-           vp.forceLayout();
+        if(getText().indexOf("complete") == -1) {
+            setText(getText() + " (complete)");
         }
+        //setIconStyle("resource-menu-button-complete-icon");
+//        VerticalLayoutContainer vp = (VerticalLayoutContainer)getParent();
+//        if(vp != null) {
+//           vp.forceLayout();
+//        }
     }
 }
 
