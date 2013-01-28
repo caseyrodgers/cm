@@ -98,9 +98,7 @@ public class LoginForm extends AbstractPagePanel {
             String p[] = login.split(":");
             if(p.length == 2) {
                 usernameBox.setValue(p[0]);
-                
-                passwordBox.setValue("");
-                //passwordBox.setValue(p[1]);
+                passwordBox.setValue(p[1]);
             }
         }        
     }

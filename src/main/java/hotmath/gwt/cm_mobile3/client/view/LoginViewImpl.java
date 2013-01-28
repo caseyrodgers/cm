@@ -88,7 +88,8 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     public void prepareLogin(UserInfo userInfo) {
         if(userInfo != null) {
             usernameBox.setText(userInfo.getUser());
-            passwordBox.setText(userInfo.getPassWord());
+            passwordBox.setText("");
+            //passwordBox.setText(userInfo.getPassWord());
         }   
     }
     
