@@ -518,7 +518,7 @@ public class CmMainPanel extends BorderLayoutContainer {
     }
 
     native private boolean hasQuizInDom() /*-{
-        var td = $doc.getElementByID("testset_div");
+        var td = $doc.getElementById("testset_div");
         if(td != null) {
             var cn = td.getElementsByTagName("input");
             if(cn.length > 0) {
