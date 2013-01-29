@@ -92,7 +92,7 @@ public class SolutionEditor implements EntryPoint {
         });
         RootPanel.get("main-content").add(mainPort);
         if(__pidToLoad != null) {
-            _stepEditorViewer.loadSolution(__pidToLoad);
+            _stepEditorViewer.loadSolution(__pidToLoad.split("$")[0]);  // strip off any context reference
         }
     }
     

@@ -5,6 +5,7 @@ import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.CmExceptionGlobalContextNotFound;
 import hotmath.spring.SpringManager;
 
 import java.io.UnsupportedEncodingException;
@@ -239,7 +240,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
             return contexts.get(0);
         }
         else {
-            throw new CmException("Global Solution Context not found: " + pid);
+            throw new CmExceptionGlobalContextNotFound(pid);
         }
     }
 
