@@ -113,7 +113,12 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      */
     @Override
     public ResourceViewerState getInitialMode() {
+        if(UserInfo.getInstance().isShowWorkRequired()) {
+            return ResourceViewerState.MAXIMIZED;
+        }
+        else {
             return ResourceViewerState.OPTIMIZED;
+        }
     }
     
     private void test() {
