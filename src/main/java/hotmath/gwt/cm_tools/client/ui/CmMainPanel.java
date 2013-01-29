@@ -420,7 +420,7 @@ public class CmMainPanel extends BorderLayoutContainer {
                 public void onSuccess(ResourceViewerFactory instance) {
                     try {
                         CmResourcePanel viewer = instance.create(resourceItem);
-                        showResource(viewer, resourceItem.getTitle(), false);
+                        showResource(viewer, resourceItem.getTitle(), true);
                     } catch (Exception e) {
                         CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());
                     }
