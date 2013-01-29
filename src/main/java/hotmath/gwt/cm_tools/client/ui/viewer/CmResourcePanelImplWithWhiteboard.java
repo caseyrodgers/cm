@@ -113,7 +113,8 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      */
     @Override
     public ResourceViewerState getInitialMode() {
-        if(UserInfo.getInstance().isShowWorkRequired()) {
+        if(UserInfo.getInstance().isShowWorkRequired() ||
+                __lastDisplayMode != null && __lastDisplayMode == DisplayMode.WHITEBOARD) {
             return ResourceViewerState.MAXIMIZED;
         }
         else {
