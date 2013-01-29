@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.CmTemplateFormaters;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
@@ -18,6 +19,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.core.client.XTemplates.FormatterFactories;
+import com.sencha.gxt.core.client.XTemplates.FormatterFactory;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 
@@ -33,7 +36,7 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
 	private CmAdminModel cmAdminModel;
 	private Boolean haveDisplayedOverLimitMsg = false;
 	
-	
+	@FormatterFactories(@FormatterFactory(factory = CmTemplateFormaters.class, name = "nullChecker"))
 	interface InfoLoaderTemplate extends XTemplates {
 		@XTemplate(source="AccountInfoPanel_InfoLoader.html")
 		SafeHtml renderAdminInfo(AccountInfoModel adminInfo);

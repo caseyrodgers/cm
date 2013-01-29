@@ -39,7 +39,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             if(action.getType().equals("practice")) {
                 PreparedStatement stCheck=null;
                 try {
-                    String sql = "select count(*) from HA_TEST_RUN_INMH_USE where run_id = ? and item_file = ? and item_type = 'practice'";
+                    String sql = "select count(*) from   where run_id = ? and item_file = ? and item_type = 'practice'";
                     stCheck = conn.prepareStatement(sql);
                     stCheck.setInt(1,  action.getRunId());
                     stCheck.setString(2,  action.getFile());

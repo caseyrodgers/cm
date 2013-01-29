@@ -225,7 +225,7 @@ public class ManageGroupsAssignStudents extends GWindow {
 			@Override
 			public void attempt() {
 				CmBusyManager.setBusy(true);
-				GroupInfoModel myGif = new GroupInfoModel(2,gim.getId(),gim.getGroupName(),0, true, false);
+				GroupInfoModel myGif = new GroupInfoModel(cm.getUid(),gim.getId(),gim.getGroupName(),0, true, false);
 				GroupManagerAssignAction action = new GroupManagerAssignAction(ActionType.GET_STUDENTS, myGif);
                 CmList<StudentModelI> cList = new CmArrayList<StudentModelI>();
                 cList.addAll(_listInGroup.getStore().getAll());
