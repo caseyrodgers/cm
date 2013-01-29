@@ -15,18 +15,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfParallelProgramUsageReportAction;
 import hotmath.gwt.shared.client.rpc.action.GetParallelProgramUsageAction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.google.gwt.core.shared.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.data.shared.ListStore;
@@ -46,6 +34,15 @@ import com.sencha.gxt.widget.core.client.menu.MenuItem;
 import com.sencha.gxt.widget.core.client.toolbar.FillToolItem;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.HTML;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  * Displays Student status in selected Parallel Program
  *
@@ -59,7 +56,6 @@ public class ParallelProgramUsageWindow extends GWindow {
     private Grid<ParallelProgramUsageModel> ppumGrid;
     private HTML templateHolder = new HTML();
 
-    
     ParallelProgLoaderTemplate _template = GWT.create(ParallelProgLoaderTemplate.class) ;
     ParallelProgramUsageModelProperties _props = GWT.create(ParallelProgramUsageModelProperties.class);
     
@@ -156,10 +152,10 @@ public class ParallelProgramUsageWindow extends GWindow {
         return ti;
     }
 
-	private Button detailsButton() {
-		return new Button("Details", new SelectionListener<ButtonEvent>() {
+	private TextButton detailsButton() {
+		return new TextButton("Details", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 ParallelProgramUsageModel mdl = getGridItem();
                 if (mdl != null) {
                     StudentDetailsWindow.showStudentDetails(mdl.getUserId());
@@ -211,11 +207,10 @@ public class ParallelProgramUsageWindow extends GWindow {
         }.register();
     }
 
-    private Widget infoPanel() {
-        return templateHolder;
-    }
+//    private Widget infoPanel() {
+//        return templateHolder;
+//    }
 
-    
     private ParallelProgramUsageModel getGridItem() {
         ParallelProgramUsageModel mdl = ppumGrid.getSelectionModel().getSelectedItem();
         if (mdl == null) {
@@ -224,7 +219,6 @@ public class ParallelProgramUsageWindow extends GWindow {
         return mdl;
     }
 }
-
 
 
 interface ParallelProgLoaderTemplate extends XTemplates {
