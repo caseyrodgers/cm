@@ -213,8 +213,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 						switch (event.getEventType()) {
 
 						case EVENT_TYPE_RESOURCE_VIEWER_OPEN:
-							__lastInstance._lastResourceViewer = (CmResourcePanel) event
-									.getEventData();
+							__lastInstance._lastResourceViewer = (CmResourcePanel) event.getEventData();
 							break;
 
 						case EVENT_TYPE_RESOURCE_VIEWER_CLOSE:
@@ -421,7 +420,7 @@ public class CmMainPanel extends BorderLayoutContainer {
                 public void onSuccess(ResourceViewerFactory instance) {
                     try {
                         CmResourcePanel viewer = instance.create(resourceItem);
-                        showResource(viewer, resourceItem.getTitle());
+                        showResource(viewer, resourceItem.getTitle(), false);
                     } catch (Exception e) {
                         CatchupMathTools.showAlert("Could not load resource: " + e.getLocalizedMessage());
                     }
@@ -441,6 +440,9 @@ public class CmMainPanel extends BorderLayoutContainer {
     
 
     public void showResource(CmResourcePanel panel, String title) {
+        showResource(panel, title, true);
+    }
+    public void showResource(CmResourcePanel panel, String title, boolean trackView) {
         
         
         if(_lastResourceViewer != null) {
@@ -472,6 +474,10 @@ public class CmMainPanel extends BorderLayoutContainer {
         
         //setCenterWidget(new TextButton("Test"));
         setCenterWidget(_mainContentWrapper.getResourceWrapper(), centerData);
+        
+        if(trackView) {
+            EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_RESOURCE_VIEWER_OPEN, panel));
+        }
         
         forceLayout();
     }

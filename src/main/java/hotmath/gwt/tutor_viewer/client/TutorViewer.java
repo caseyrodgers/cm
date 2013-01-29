@@ -31,12 +31,12 @@ public class TutorViewer implements EntryPoint {
         UserInfo.setInstance(new UserInfo());
         
         if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
-            String book = CmGwtUtils.getQueryParameter("book");
-            if(book==null) {
-                Window.alert("'book' parameter must be specified");
+            String pid = CmGwtUtils.getQueryParameter("pid");
+            if(pid==null) {
+                Window.alert("'pid' parameter must be specified");
             }
             else {
-                RootPanel.get().add(new GenerateTutorContextsAll().createContexts(book));
+                RootPanel.get().add(new GenerateTutorContextsAll().createContexts(pid));
             }
         }
         else {

@@ -22,11 +22,11 @@ public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
 
     
     @Override
-    public Widget createContexts(String book) {
+    public Widget createContexts(String pid) {
         
-        addLogMessage("Creating contexts for books (comma separated): " + book);
+        addLogMessage("Creating contexts for pids matching: " + pid);
         
-        GetSolutionPidsAction action = new GetSolutionPidsAction(book);
+        GetSolutionPidsAction action = new GetSolutionPidsAction(pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<CmList<String>>() {
             @Override
             public void onSuccess(CmList<String> result) {
