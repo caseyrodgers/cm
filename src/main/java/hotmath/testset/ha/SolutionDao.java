@@ -222,12 +222,20 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
      */
     public SolutionContext getGlobalSolutionContext(final String pid) throws CmException {
         
-        String pidParts[] = pid.split(":");
+        String pidParts[] = pid.split("\\$");
         String pidBase = pidParts[0];
         String pidContextGuid=null;
-        if(pidParts.length > 0) {
+        if(pidParts.length > 1) {
             pidContextGuid = pidParts[1];
         }
+        else {
+            return null;
+        }
+        
+        if(pidContextGuid.length() < 10) {
+            pidContextGuid = getGlobalSolutionContextNewest(pidBase, pidContextGuid);
+        }
+        
         
         if(pidContextGuid == null) {
             throw new CmExceptionGlobalContextNotFound(pid); 
@@ -238,7 +246,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 new RowMapper<SolutionContext>() {
             @Override
             public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String pidFull = rs.getString("pid") + ":" + rs.getString("context_guid");
+                String pidFull = rs.getString("pid") + "$" + rs.getString("context_guid");
                 SolutionContext c = new SolutionContext(pidFull, rs.getInt("problem_number"), rs.getString("variables"));
                 return c;
             }
@@ -249,6 +257,25 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         }
         else {
             throw new CmExceptionGlobalContextNotFound(pid);
+        }
+    }
+
+    private String getGlobalSolutionContextNewest(String pid, String problemNumber) throws CmExceptionGlobalContextNotFound {
+        String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and problem_number = ? ORDER BY create_time desc limit 1";
+        List<String> contexts = getJdbcTemplate().query(sql,new Object[]{pid, problemNumber},
+                new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String pidFull = rs.getString("pid") + "$" + rs.getString("context_guid");
+                return pidFull;
+            }
+        });
+        
+        if(contexts.size()==0) {
+            throw new CmExceptionGlobalContextNotFound(pid + "$" + problemNumber);
+        }
+        else {
+            return contexts.get(0);
         }
     }
 
@@ -308,7 +335,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 new RowMapper<SolutionContext>() {
             @Override
             public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String fullPid = rs.getString("pid") + ":" + rs.getString("context_guid");
+                String fullPid = rs.getString("pid") + "$" + rs.getString("context_guid");
                 return new SolutionContext(fullPid,rs.getInt("problem_number"), rs.getString("variables"));
             }
         });

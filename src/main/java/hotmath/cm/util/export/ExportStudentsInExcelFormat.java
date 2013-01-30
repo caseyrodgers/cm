@@ -239,7 +239,10 @@ public class ExportStudentsInExcelFormat {
 		    cell = row.createCell(++col);
 	        cell.setCellValue(sm.getLastLogin());
 	        cell.setCellStyle(styles.get("data"));
-	        if (charCount[col] < (sm.getLastLogin().length() + 5)) charCount[col] = sm.getLastLogin().length() + 5;
+	        String lastLogin = sm.getLastLogin();
+	        if(lastLogin != null) {
+	            if (charCount[col] < (lastLogin.length() + 5)) charCount[col] = sm.getLastLogin().length() + 5;
+	        }
 
 		    Map<String, Integer> usageMap = rc.getResourceUsage();
 		    cell = row.createCell(++col);

@@ -199,13 +199,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /** Set the appropriate problem types for all problems 
-     * in assingment.  THis is dynamic because the type
+     * in assignment.  THis is dynamic because the type
      * can be changed by the author at any time.
      * 
      * 
      * @param assignment
      */
     private void updateProblemTypes(final List<ProblemDto> problems) {
+        
+        if(problems.size() == 0) {
+            return;
+        }
+        
         String list="";
         for(ProblemDto problem:  problems) {
             if(list.length()>0) {
