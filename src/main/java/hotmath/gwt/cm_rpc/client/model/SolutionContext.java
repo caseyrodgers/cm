@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class SolutionContext implements Serializable {
     
     String contextJson;
+    String contextGuid;
     int probNum;
     String pid;
 

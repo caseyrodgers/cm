@@ -1,3 +1,8 @@
+require.config({
+    urlArgs: "bust=ver_20130130"
+});
+
+
 require(['CatchupMath_combined'], function(x) {
         console.log('catchup math js loaded');
     });

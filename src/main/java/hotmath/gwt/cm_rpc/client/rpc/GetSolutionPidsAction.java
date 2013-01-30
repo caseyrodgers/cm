@@ -2,19 +2,15 @@ package hotmath.gwt.cm_rpc.client.rpc;
 
 public class GetSolutionPidsAction implements Action<CmList<String>> {
     
-    private String book;
+    private String pids;
     public GetSolutionPidsAction(){}
-    public GetSolutionPidsAction(String book) {
-        this.book = book;
+    public GetSolutionPidsAction(String pids) {
+        this.pids = pids;
     }
-    public String getBook() {
-        return book;
+    public String getPids() {
+        return pids;
     }
-    public void setBook(String book) {
-        this.book = book;
-    }
-    @Override
-    public String toString() {
-        return "GetSolutionPids [book=" + book + "]";
+    public void setPids(String pids) {
+        this.pids = pids;
     }
 }

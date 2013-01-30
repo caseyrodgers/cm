@@ -37,7 +37,7 @@ public class AddStudentCommand_Test extends CmDbTestCase {
         student.setName("Student");
         student.setPasscode("pwd_" + System.currentTimeMillis());
         student.setAdminUid(0);
-        student.setGroupId("1");
+        student.setGroupId(1);
         
         StudentProgramModel program = new StudentProgramModel();
         program.setProgramType(CmProgram.PREALG_PROF.getProgramType());

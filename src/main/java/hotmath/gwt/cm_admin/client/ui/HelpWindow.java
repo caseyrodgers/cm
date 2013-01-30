@@ -1,19 +1,17 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.Frame;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Frame;
 
 public class HelpWindow extends GWindow {
 
@@ -66,18 +64,6 @@ public class HelpWindow extends GWindow {
                             });
                         }
                     }));
-                    getHeader().addTool(new TextButton("CmLogger", new SelectHandler() {
-                        @Override
-                        public void onSelect(SelectEvent event) {
-                            GWT.runAsync(new CmRunAsyncCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    CmLogger.getInstance().enable(true);
-                                }
-                            });
-                        }
-                    }));
-                    
                 }
             });
         }        

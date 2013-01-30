@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -220,18 +221,25 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
      * @return
      */
     public SolutionContext getGlobalSolutionContext(final String pid) throws CmException {
-        ProblemID opid = new ProblemID(pid);
-        final int problemNumber = opid.getProblemSetProblemNumber();
-        if(problemNumber == 0) {
-            return null;
+        
+        String pidParts[] = pid.split(":");
+        String pidBase = pidParts[0];
+        String pidContextGuid=null;
+        if(pidParts.length > 0) {
+            pidContextGuid = pidParts[1];
         }
         
-        String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and problem_number = ?";
-        List<SolutionContext> contexts = getJdbcTemplate().query(sql,new Object[]{opid.getGUID(), problemNumber},
+        if(pidContextGuid == null) {
+            throw new CmExceptionGlobalContextNotFound(pid); 
+        }
+        
+        String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and context_guid = ?";
+        List<SolutionContext> contexts = getJdbcTemplate().query(sql,new Object[]{pidBase, pidContextGuid},
                 new RowMapper<SolutionContext>() {
             @Override
             public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
-                SolutionContext c = new SolutionContext(pid, problemNumber, rs.getString("variables"));
+                String pidFull = rs.getString("pid") + ":" + rs.getString("context_guid");
+                SolutionContext c = new SolutionContext(pidFull, rs.getInt("problem_number"), rs.getString("variables"));
                 return c;
             }
         });
@@ -253,14 +261,19 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         __logger.debug("saving global solution contexts for: " + pid);
         
         getJdbcTemplate().execute("delete from HA_SOLUTION_GLOBAL_CONTEXT where pid = '" + pid + "'");
-        String sql = "INSERT INTO HA_SOLUTION_GLOBAL_CONTEXT(create_time, pid, problem_number, variables)values(now(),?,?,?)";
+        String sql = "INSERT INTO HA_SOLUTION_GLOBAL_CONTEXT(create_time, pid, context_guid, problem_number, variables)values(now(),?,?,?,?)";
         getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 String context = contexts.get(i);
                 ps.setString(1, pid);
-                ps.setInt(2, (i+1));
-                ps.setString(3, context);
+                
+                
+               String contextGuid = UUID.randomUUID().toString();
+                
+                ps.setString(2, contextGuid);
+                ps.setInt(3, (i+1));
+                ps.setString(4, context);
             }
          
             @Override
@@ -272,18 +285,8 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         __logger.debug("contexts saved");
     }
 
-    public List<String> getSolutionPids(String book) {
-        
-        String books[] = book.split(",");
-        String bookList = "";
-        for(String b: books) {
-            if(bookList.length() > 0) {
-                bookList += ", ";
-            }
-            bookList += "'" + b + "'";
-        }
-        
-        String sql = "select problemindex from SOLUTIONS where booktitle in (" + bookList + ") order by problemindex";
+    public List<String> getSolutionPids(String pid) {
+        String sql = "select problemindex from SOLUTIONS where problemindex like '" + pid + "%' order by problemindex";
         List<String> pids = getJdbcTemplate().query(sql,new Object[]{},
                 new RowMapper<String>() {
             @Override
@@ -305,7 +308,8 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
                 new RowMapper<SolutionContext>() {
             @Override
             public SolutionContext mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new SolutionContext(rs.getString("pid"),rs.getInt("problem_number"), rs.getString("variables"));
+                String fullPid = rs.getString("pid") + ":" + rs.getString("context_guid");
+                return new SolutionContext(fullPid,rs.getInt("problem_number"), rs.getString("variables"));
             }
         });
         return pids;

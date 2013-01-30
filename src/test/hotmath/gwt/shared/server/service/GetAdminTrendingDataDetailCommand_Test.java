@@ -3,7 +3,7 @@ package hotmath.gwt.shared.server.service;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.GetAdminTrendingDataDetailAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 import hotmath.gwt.shared.server.service.command.GetAdminTrendingDataDetailCommand;
@@ -24,7 +24,7 @@ public class GetAdminTrendingDataDetailCommand_Test extends CmDbTestCase{
         
     }
     public void testCreate() throws Exception {
-        CmList<StudentModelExt> students = new GetAdminTrendingDataDetailCommand().execute(conn,new GetAdminTrendingDataDetailAction(2,pageAction,CmProgram.GEOM_PROF.getDefId(),0));
+        CmList<StudentModelI> students = new GetAdminTrendingDataDetailCommand().execute(conn,new GetAdminTrendingDataDetailAction(2,pageAction,CmProgram.GEOM_PROF.getDefId(),0));
         assertTrue(students.size() > 0);
         
         students = new GetAdminTrendingDataDetailCommand().execute(conn,new GetAdminTrendingDataDetailAction(pageAction,"Vectors"));
@@ -32,7 +32,7 @@ public class GetAdminTrendingDataDetailCommand_Test extends CmDbTestCase{
     }
     
     public void testCreateActionDispatcher() throws Exception {
-        CmList<StudentModelExt> students = ActionDispatcher.getInstance().execute(new GetAdminTrendingDataDetailAction(2,pageAction,CmProgram.GEOM_PROF.getDefId(),0));
+        CmList<StudentModelI> students = ActionDispatcher.getInstance().execute(new GetAdminTrendingDataDetailAction(2,pageAction,CmProgram.GEOM_PROF.getDefId(),0));
         assertTrue(students.size() > 0);
     }
 }

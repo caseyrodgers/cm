@@ -324,7 +324,14 @@ function viewport_testpage() {
 
     /** main HTML document object */
     var mainDoc;
-    var isIE = getInternetExplorerVersion() != -1;
+    
+    /** Determine if the internal/native canvas will be
+     *  be used or excanvas.  IE9 supports canvas native.
+     */
+    var ieVer = getInternetExplorerVersion();
+    var isIE = ieVer != -1 && ieVer < 9;
+    console.log('iIE: ' + isIE + ', version: ' + ieVer);
+    
 
     wb.initWhiteboard = function (mainDocIn) {
         console_log("WHITEBOARD_INITIATED! - document object:" + mainDocIn);

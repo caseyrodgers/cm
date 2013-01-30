@@ -3,8 +3,6 @@ package hotmath.cm.util;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
 
-import java.util.Enumeration;
-
 import org.apache.log4j.Logger;
 
 /**

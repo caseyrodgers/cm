@@ -1,8 +1,5 @@
 package hotmath.gwt.tutor_viewer.client;
 
-
-
-
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -22,7 +19,21 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 
-public class TutorViewer implements EntryPoint {
+
+
+/** Standarized Tutor viewer 
+ * 
+ *  Loads JS directly, not using compressed JS to allow debugging.
+ *  
+ *  Provides three features, controlled via a parameter:
+ *  
+ *     1. view (no param):   load a single pid
+ *     2. generate_context:   generate the solution context for a single pid
+ *     3. generate_context_all: generate solution context for ALL pids match wild.
+ *  
+ */     
+   
+  public class TutorViewer implements EntryPoint {
 
     public TutorViewer() {
     }
@@ -31,7 +42,7 @@ public class TutorViewer implements EntryPoint {
         UserInfo.setInstance(new UserInfo());
         
         if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
-            String pid = CmGwtUtils.getQueryParameter("pid");
+            String pid = CmGwtUtils.getQueryParameter("pid");  // can contain wild
             if(pid==null) {
                 Window.alert("'pid' parameter must be specified");
             }

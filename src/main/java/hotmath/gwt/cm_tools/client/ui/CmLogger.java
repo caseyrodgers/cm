@@ -16,25 +16,11 @@ public class CmLogger  {
     }
     
     boolean isEnabled=false;
-    CmLoggerWindow window;
+    
     public CmLogger() { }
     
     
-    public void enable(boolean yesNo) {
-        isEnabled = yesNo;
-    	if(!yesNo) {
-    		window.clearLog();
-    		window.close();
-    		window = null;
-    	}
-    	else {
-    		if(window == null) {
-    			window = new CmLoggerWindow();
-    			window.show();
-    		}
-    	}
-    }
-
+    
     static public void info(String msg) {
         getInstance()._info(msg);
     }
@@ -49,27 +35,17 @@ public class CmLogger  {
     }
 
     private void _info(String msg) {
-    	if(window != null) {
-    		window._info(msg);
-    	}
+        Log.info(msg);
     }
     
     private void _error(String msg, Throwable th) {
-    	if(window != null) {
-    		window._error(msg, th);
-    	}
+        Log.error(msg, th);
     }
     
     private void _debug(String msg) {
-    	if(window != null) {
-    		window._debug(msg);
+        if(CmShared.getQueryParameter("debug") != null) {
+            Info.display("Debug", msg);
     	}
-    	else {
-            if(window == null && CmShared.getQueryParameter("debug") != null) {
-                Info.display("Debug", msg);
-            }
-    	}
-    	
     	Log.debug(msg);
     }
 }

@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tools.client.ui;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.QueueMessage;
 import hotmath.gwt.shared.client.rpc.RetryActionManagerQueueWatcher;
@@ -13,7 +12,6 @@ import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
@@ -29,11 +27,22 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnData;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.event.shared.UmbrellaException;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
-public class CmLoggerWindow extends CmWindow {
+
+/** 
+ * NO LONGER USED 
+ * 
+ * DELETE?
+ * 
+ * 
+ * @author casey
+ *
+ */
+public class CmLoggerWindow extends GWindow {
     
     static private CmLogger __instance;
     static public CmLogger getInstance() {
@@ -48,13 +57,14 @@ public class CmLoggerWindow extends CmWindow {
     RetryActionManagerQueueWatcher _watcher;
     
     Grid<QueueMessage> _grid;
-    public CmLoggerWindow() {
-        setHeading("Catchup Logger");
-        setSize(500,300);
+    private CmLoggerWindow() {
+        super(true);
+        setHeadingText("Catchup Logger");
+        setPixelSize(500,300);
         setPosition(0, 350);
-        setLayout(new FitLayout());
-        setScrollMode(Scroll.AUTO);
-        setStyleAttribute("z-index", "100");
+        
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        flow.setScrollMode(ScrollMode.AUTO);
         ToolBar tb = new ToolBar();
         
         ListStore<QueueMessage> store = new ListStore<QueueMessage>();
@@ -88,7 +98,8 @@ public class CmLoggerWindow extends CmWindow {
                clearLog();
             } 
         }));
-        setTopComponent(tb);
+        add(tb);
+        
         addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
             
             @Override

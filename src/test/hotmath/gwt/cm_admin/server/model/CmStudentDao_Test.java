@@ -39,7 +39,7 @@ public class CmStudentDao_Test extends CmDbTestCase {
         sm.getProgram().setProgramType(CmProgram.PREALG_PROF.getProgramType());
         sm.getProgram().setSubjectId(CmProgram.PREALG_PROF.getSubject());
         sm.setSectionNum(0);
-        sm.setGroupId("1");
+        sm.setGroupId(1);
         sm.setPasscode("pass_" + System.currentTimeMillis());
         StudentModelI sm2 = _dao.addStudent(conn,sm);
         assertNotNull(sm2);

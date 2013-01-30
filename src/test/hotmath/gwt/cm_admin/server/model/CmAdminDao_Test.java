@@ -79,7 +79,7 @@ public class CmAdminDao_Test extends CmDbTestCase {
         
         boolean found=false;
         for(GroupInfoModel g: groups) {
-            if(g.getName().equals(testGroup)) {
+            if(g.getGroupName().equals(testGroup)) {
                 found=true;
                 List<StudentModelI> students = CmStudentDao.getInstance().getStudentModelByUserName(conn, _user.getAid(), testGroup);
                 assertTrue(students.size() > 0);
@@ -94,16 +94,16 @@ public class CmAdminDao_Test extends CmDbTestCase {
 
     public void testUpdateGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
-        String newGroupName = gm.getName() + "_updated";
+        String newGroupName = gm.getGroupName() + "_updated";
         CmAdminDao.getInstance().updateGroup(conn, _user.getAid(), gm.getId(),newGroupName);
-        assertFalse(CmAdminDao.getInstance().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
+        assertFalse(CmAdminDao.getInstance().checkForDuplicateGroup(conn, _user.getAid(), gm.getGroupName()));
     }
 
     
     public void testDeleteGroup() throws Exception {
         GroupInfoModel gm = setupDemoGroup();
         CmAdminDao.getInstance().deleteGroup(conn,_user.getUid(),gm.getId());
-        assertFalse(CmAdminDao.getInstance().checkForDuplicateGroup(conn, _user.getAid(), gm.getName()));
+        assertFalse(CmAdminDao.getInstance().checkForDuplicateGroup(conn, _user.getAid(), gm.getGroupName()));
     }
 
     

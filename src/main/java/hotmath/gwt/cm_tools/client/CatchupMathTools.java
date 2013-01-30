@@ -12,27 +12,14 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GetCmVersionInfoAction;
 import hotmath.gwt.shared.client.rpc.result.CmVersionInfo;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class CatchupMathTools implements EntryPoint {
     
     public void onModuleLoad() {
     	CmLogger.info("Catchup Math Tools library loaded successfully");
-    	
-        if(CmShared.getQueryParameter("show_log") != null) {
-            GWT.runAsync(new CmRunAsyncCallback() {
-                @Override
-                public void onSuccess() {
-                    CmLogger.getInstance().enable(true);
-                }
-            });
-        }
-        
-    	
     }
 
     /**

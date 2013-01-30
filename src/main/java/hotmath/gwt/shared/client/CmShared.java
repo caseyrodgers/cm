@@ -51,15 +51,6 @@ public class CmShared implements EntryPoint {
 
     @Override
     public void onModuleLoad() {
-        if (getQueryParameter("show_log") != null) {
-            GWT.runAsync(new CmRunAsyncCallback() {
-                @Override
-                public void onSuccess() {
-                    CmLogger.getInstance().enable(true);
-                }
-            });
-        }
-
         GWT.setUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             @Override
             public void onUncaughtException(Throwable e) {
