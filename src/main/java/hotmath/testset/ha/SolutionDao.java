@@ -260,14 +260,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    private String getGlobalSolutionContextNewest(String pid, String problemNumber) throws CmExceptionGlobalContextNotFound {
+    public String getGlobalSolutionContextNewest(String pid, String problemNumber) throws CmExceptionGlobalContextNotFound {
         String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and problem_number = ? ORDER BY create_time desc limit 1";
         List<String> contexts = getJdbcTemplate().query(sql,new Object[]{pid, problemNumber},
                 new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String pidFull = rs.getString("pid") + "$" + rs.getString("context_guid");
-                return pidFull;
+                return  rs.getString("context_guid");
             }
         });
         

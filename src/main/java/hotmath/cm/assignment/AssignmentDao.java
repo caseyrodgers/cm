@@ -26,6 +26,7 @@ import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.spring.SpringManager;
+import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -137,7 +138,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public void setValues(PreparedStatement ps, int i) throws SQLException {
                     ps.setInt(1, assKey);
                     ProblemDto p = ass.getPids().get(i);
-                    ps.setString(2, p.getPid());
+                    
+                    String pidParts[] = p.getPid().split("\\$");
+                    String fullPid = pidParts[0];
+                    if(pidParts.length > 1) {
+                        try {
+                            fullPid = fullPid + "$" + SolutionDao.getInstance().getGlobalSolutionContextNewest(pidParts[0], pidParts[1]);
+                        }
+                        catch(Exception e) {
+                            __logger.error("Error getting global context name", e);
+                        }
+                    }
+                    ps.setString(2,fullPid);
                     ps.setString(3, p.getLabel());
                     ps.setString(4, p.getLesson());
                 }
