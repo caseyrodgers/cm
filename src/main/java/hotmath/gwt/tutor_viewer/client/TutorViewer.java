@@ -85,10 +85,11 @@ import com.google.gwt.user.client.ui.RootPanel;
     }
 
     static private void setupServices() {
-        String point = GWT.getModuleBaseURL();
-        if (!point.endsWith("/"))
-            point += "/";
+//        String point = GWT.getModuleBaseURL();
+//        if (!point.endsWith("/"))
+//            point += "/";
         
+        String point = "/";
         final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
         ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
         _serviceInstance = cmService;
