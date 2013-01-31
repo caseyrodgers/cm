@@ -468,7 +468,7 @@ public class HelpWindow extends GWindow {
                         }
 
                         public void oncapture(RpcData result) {
-                            Info.display("INfo", "Feedback saved");
+                            Info.display("Info", "Feedback saved");
                             CmBusyManager.setBusy(false);
                         }
                     }.register();
@@ -530,7 +530,6 @@ class ComputerCheckWindow extends GWindow {
     public ComputerCheckWindow() {
         super(true);
         setHeadingText("Computer Check");
-        addCloseButton();
         setModal(true);
         setPixelSize(640, 650);
 

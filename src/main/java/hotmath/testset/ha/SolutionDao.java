@@ -286,7 +286,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
     public void saveGlobalSolutionContexts(final String pid, final CmList<String> contexts) {
         __logger.debug("saving global solution contexts for: " + pid);
         
-        getJdbcTemplate().execute("delete from HA_SOLUTION_GLOBAL_CONTEXT where pid = '" + pid + "'");
+        // getJdbcTemplate().execute("delete from HA_SOLUTION_GLOBAL_CONTEXT where pid = '" + pid + "'");
         String sql = "INSERT INTO HA_SOLUTION_GLOBAL_CONTEXT(create_time, pid, context_guid, problem_number, variables)values(now(),?,?,?,?)";
         getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
