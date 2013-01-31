@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -28,7 +29,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
 
     @Override
     public RpcData execute(final Connection conn, SetInmhItemAsViewedAction action) throws Exception {
-        
+
         PreparedStatement pstat = null;
         try {
             
@@ -39,7 +40,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             if(action.getType().equals("practice")) {
                 PreparedStatement stCheck=null;
                 try {
-                    String sql = "select count(*) from   where run_id = ? and item_file = ? and item_type = 'practice'";
+                	String sql = CmMultiLinePropertyReader.getInstance().getProperty("COUNT_PRACTICE_INMH_USE");
                     stCheck = conn.prepareStatement(sql);
                     stCheck.setInt(1,  action.getRunId());
                     stCheck.setString(2,  action.getFile());
@@ -58,7 +59,7 @@ public class SetInmhItemAsViewedCommand implements ActionHandler<SetInmhItemAsVi
             
             if(shouldAdd) {
                 
-                String sql = "insert into HA_TEST_RUN_INMH_USE(run_id, item_type, item_file, view_time, session_number)values(?,?,?,?,?)";
+            	String sql = CmMultiLinePropertyReader.getInstance().getProperty("INSERT_INMH_USE");
                 pstat = conn.prepareStatement(sql);
     
                 pstat.setInt(1, action.getRunId());
