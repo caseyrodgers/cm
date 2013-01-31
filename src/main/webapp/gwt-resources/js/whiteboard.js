@@ -1707,7 +1707,7 @@ function viewport_testpage() {
         // $("#editable-math").focus();
 
         // alert(isIE);
-        if (isIE || isTouchEnabled) {
+        if (isIE || isTouchEnabled||ieVer>8) {
             $("textarea").focus();
         } else {
             $('.mathquill-editable').focus();
