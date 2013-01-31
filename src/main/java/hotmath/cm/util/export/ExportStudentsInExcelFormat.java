@@ -60,7 +60,7 @@ public class ExportStudentsInExcelFormat {
 	
 	public ExportStudentsInExcelFormat() {
 	}
-	
+
 	public ExportStudentsInExcelFormat(List<StudentModelI> studentList) {
 		this.studentList = studentList;
 	}
@@ -350,7 +350,7 @@ public class ExportStudentsInExcelFormat {
 
 	    	if (sasList == null)  {
 	    		if (LOGGER.isDebugEnabled()) {
-	    			LOGGER.debug("+++ activity, skipping uid: " + sm.getUid());
+	    			LOGGER.debug("+++ no activity, skipping uid: " + sm.getUid());
 	    		}
 	    		continue;
 	    	}
