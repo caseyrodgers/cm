@@ -3750,9 +3750,6 @@ where u.uid = ?
 order by u.user_name, a.assign_key, problem_id
   
   
-  
-  
-  
 .key=GET_STUDENT_ASSIGNMENT
 
 select p.*, w.has_show_work, w2.has_show_work_admin
@@ -3775,3 +3772,19 @@ from   CM_ASSIGNMENT_PID_STATUS p
               
 where  p.assign_key = ?
        and p.uid = ?
+
+#
+# Save INMH usage
+
+.key=INSERT_INMH_USE
+
+insert into HA_TEST_RUN_INMH_USE (run_id, item_type, item_file, view_time, session_number)
+ values(?,?,?,?,?)
+ 
+.key=COUNT_PRACTICE_INMH_USE
+
+select count(*)
+from HA_TEST_RUN_INMH_USE
+where run_id = ?
+  and item_file = ?
+  and item_type = 'practice'
