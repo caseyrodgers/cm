@@ -201,7 +201,7 @@ public class TutorWrapperPanel extends Composite {
                             hasShowWork, shouldExpandSolution, variableContext);
                     
                     
-                    if(result.getWidgetResult() != null) {
+                    if(result.getWidgetResult() != null && result.getWidgetResult().getValue() != null) {
                         setTutorWidgetValue(result.getWidgetResult().getValue());
                         _wasWidgetAnswered = true;
                     }

@@ -33,6 +33,11 @@
             font-size: 1.em;
             color: green;
         }
+        
+        .tutorMessage {
+           color: red;
+           font-size: 1.2em;
+        }
 
     </ui:style>
     
@@ -94,8 +99,7 @@
                     <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand
                     </a>
                 </div>
-                <div id='tutor_message'>
-                </div>
+                <div class='{style.tutorMessage}' id='tutor_message'></div>
             </div>
             </span>
             <!-- HOTMATH BODY END -->
