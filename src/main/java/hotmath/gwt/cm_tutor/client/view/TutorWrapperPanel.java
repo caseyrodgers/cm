@@ -202,6 +202,8 @@ public class TutorWrapperPanel extends Composite {
                     
                     
                     if(result.getWidgetResult() != null && result.getWidgetResult().getValue() != null) {
+                        Log.debug("TutorWrapperPanel->Setting widget value: " + result.getWidgetResult() );
+                        
                         setTutorWidgetValue(result.getWidgetResult().getValue());
                         _wasWidgetAnswered = true;
                     }
