@@ -199,6 +199,13 @@ public class TutorWrapperPanel extends Composite {
     
                     initializeTutor(TutorWrapperPanel.this, pid, jsonConfig, result.getJs(), result.getHtml(), title,
                             hasShowWork, shouldExpandSolution, variableContext);
+                    
+                    
+                    if(result.getWidgetResult() != null) {
+                        setTutorWidgetValue(result.getWidgetResult().getValue());
+                        _wasWidgetAnswered = true;
+                    }
+                    
                     callback.solutionLoaded(result);
                 }
                 finally {

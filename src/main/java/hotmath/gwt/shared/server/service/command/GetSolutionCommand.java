@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.server.service.ActionHandlerManualConnectionManagement
 import hotmath.solution.SolutionParts;
 import hotmath.solution.writer.SolutionHTMLCreator;
 import hotmath.solution.writer.TutorProperties;
+import hotmath.testset.ha.HaTestRunDao;
 import hotmath.testset.ha.SolutionDao;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
@@ -83,6 +84,15 @@ public class GetSolutionCommand implements ActionHandler<GetSolutionAction, Solu
              *  created on client.
              */
             solutionInfo.setContext(SolutionDao.getInstance().getSolutionContext(action.getRunId(), action.getPid()));
+            
+            
+            /** If there is a runid, get the widget result for this runid/pid
+             * 
+             */
+            if(action.getRunId() > 0) {
+                solutionInfo.setWidgetResult(HaTestRunDao.getInstance().getRunTutorWidgetValue(action.getRunId(), action.getPid()));
+            }
+            
             return solutionInfo;
         } catch (Exception e) {
         	logger.error(String.format("*** Error executing Action: %s", action.toString()), e);

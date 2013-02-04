@@ -7,6 +7,8 @@ import hotmath.assessment.AssessmentPrescriptionSession;
 import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
+import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionWidgetResult;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
@@ -119,6 +121,28 @@ public class HaTestRunDao extends SimpleJdbcDaoSupport {
                 new Object[]{runId}
                 );
     }
+    
+    
+
+    public SolutionWidgetResult getRunTutorWidgetValue(int runId, String pid) {
+        
+        
+        String sql="select value, correct from  HA_TEST_RUN_WIDGET_INPUT_ANSWERS where run_id = ? and pid = ? order by answer_time limit 1";
+        List<SolutionWidgetResult> widgetValues = getJdbcTemplate().query(sql, new Object[]{runId, pid}, new RowMapper<SolutionWidgetResult>() {
+            @Override
+            public SolutionWidgetResult mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new SolutionWidgetResult(rs.getString("value"), rs.getInt("correct")!=0);
+            }
+        });
+        
+        if(widgetValues.size() >  0) {
+            return widgetValues.get(0);
+        }
+        else {
+            return null;
+        }
+    }
+
     
     /**
      * Return the list of lessons in this test run along with their statues

@@ -12,6 +12,8 @@ public class SolutionInfo implements Response,IsSerializable {
 	SolutionContext context;
 	boolean hasShowWork;
 	
+	SolutionWidgetResult widgetResult;
+	
 	
 	   
     public SolutionInfo() {}
@@ -60,9 +62,17 @@ public class SolutionInfo implements Response,IsSerializable {
     public void setPid(String pid) {
         this.pid = pid;
     }
+    
+    public SolutionWidgetResult getWidgetResult() {
+        return widgetResult;
+    }
+    
+    public void setWidgetResult(SolutionWidgetResult widgetResult) {
+        this.widgetResult = widgetResult;
+    }
     @Override
     public String toString() {
-        return "SolutionInfo [pid=" + pid + ", html=" + html.length() + ", js=" + js.length() + ", context=" + context
-                + ", hasShowWork=" + hasShowWork + "]";
+        return "SolutionInfo [pid=" + pid + ", html=" + html + ", js=" + js + ", context=" + context + ", hasShowWork=" + hasShowWork + ", widgetResult="
+                + widgetResult + "]";
     }
 }
