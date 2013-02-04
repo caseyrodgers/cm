@@ -15,7 +15,6 @@
 %>
 <html>
   <head>
-  <head>
 
     <script type="text/javascript"
       src="http://catchupmath.com/assets/mathjax/2.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
@@ -52,8 +51,6 @@
     <div id='main-content'></div>
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
-  </body>
-    
   <script> 
        if (typeof console === "undefined") {
            console = {
@@ -86,5 +83,5 @@
     <div id='login_info' style='display: none'>
         <%= jsonizedLoginInfo %>
     </div>     
-     
+  </body>
 </html>

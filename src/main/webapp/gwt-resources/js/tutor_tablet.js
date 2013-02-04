@@ -92,10 +92,6 @@ var TutorManager = {
         if(!$get('tutoroutput')) {
         	TutorManager.isVisible = false;
         }
-        else {
-            /* mark next button as active */
-            enabledNext(true);
-        }
 
         /** hookup any question steps */
         // HmEvents.eventTutorInitialized.fire();
@@ -285,17 +281,20 @@ function enabledNext(yesNo) {
 }
 
 function enabledButton(btn, yesNo) {
-    var clazz = 'sexybutton sexy_cm_silver ';
-    if (!yesNo) {
-        clazz += ' disabled';
-    }
-    var b = $get(btn);
-    if(b) {
-       b.className = clazz;
-    }
-    else {
-        alert('required button with id [' + btn + '] not found');
-    }
+	
+	gwt_enableTutorButton(btn, yesNo);
+	
+//    var clazz = 'sexybutton sexy_cm_silver ';
+//    if (!yesNo) {
+//        clazz += ' disabled';
+//    }
+//    var b = $get(btn);
+//    if(b) {
+//       b.className = clazz;
+//    }
+//    else {
+//        alert('required button with id [' + btn + '] not found');
+//    }
 }
 
 // StepUnit is a basic unit

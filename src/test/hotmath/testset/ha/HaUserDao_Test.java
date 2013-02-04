@@ -28,6 +28,7 @@ public class HaUserDao_Test extends CmDbTestCase {
     }
     
     public void testSaveUserTutorInputWidget() throws Exception {
-        HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(_testRun.getRunId(),_test.getPids().get(0),false);
+        int percent = HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(_user.getUserKey(), _testRun.getRunId(),_test.getPids().get(0),"value",false);
+        assertTrue(percent > -1);
     }
 }

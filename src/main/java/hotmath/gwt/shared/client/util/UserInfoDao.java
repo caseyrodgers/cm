@@ -1,13 +1,16 @@
 package hotmath.gwt.shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -19,7 +22,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 
 public class UserInfoDao {
     
@@ -116,8 +118,7 @@ public class UserInfoDao {
 	         ui.setTestSegmentSlot(getJsonInt(o.get("testSegmentSlot")));
 	         ui.setTutoringAvail(o.get("tutoringAvail").isBoolean().booleanValue());
 	         ui.setViewCount(getJsonInt(o.get("viewCount")));
-	         
-	         
+	         ui.setTutorInputWidgetAnswerPercentCorrect((int)o.get("tutorInputWidgetAnswerPercentCorrect").isNumber().doubleValue());
 	         String accountType = getJsonString(o.get("userAccountType"));
 	         if(accountType.equals("SCHOOL_USER")) {  
 	        	 ui.setUserAccountType(AccountType.SCHOOL_TEACHER);

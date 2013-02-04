@@ -36,6 +36,17 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+/** Provides a standard tutor viewer that handles the complications
+ *  of providing a tutor viewer, such as:
+ *  
+ *  MathMl processing
+ *  Next/Prev Step
+ *  Tutor widget handling, event processing
+ *  Button bar management (which buttons are active)
+ * 
+ * @author casey
+ *
+ */
 public class TutorWrapperPanel extends Composite {
 
     @UiField
@@ -43,6 +54,9 @@ public class TutorWrapperPanel extends Composite {
 
     @UiField
     TouchButton returnButton;
+    
+    @UiField 
+    TouchButton stepNext, stepPrev;
     
     @UiField
     Element buttonBar;
@@ -68,6 +82,8 @@ public class TutorWrapperPanel extends Composite {
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     static TutorWrapperPanel __lastInstance;
+    
+    boolean _wasWidgetAnswered;
     
     public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
 
@@ -101,8 +117,52 @@ public class TutorWrapperPanel extends Composite {
                 }-*/;
             });
         }
-    }
+        
+        stepNext.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                moveTutorNextStep(); 
+            };
+        });
 
+        stepPrev.addClickHandler(new ClickHandler() {
+            @Override
+            native public void onClick(ClickEvent event) /*-{
+                $wnd.TutorManager.showPreviousStep(); 
+            }-*/;
+        });
+        
+    }
+    
+    native private void showTutorMessage(String message) /*-{
+        $wnd.TutorManager.showMessage(message);
+    }-*/;
+    
+    private void moveTutorNextStep() {
+        if(isWidgetAndNotAnswered()) {
+            showTutorMessage("Please answer the question first");
+            return;
+        }
+        else {
+            jsniMoveTutorNextStep();
+        }
+    }
+    
+    
+    private boolean isWidgetAndNotAnswered() {
+        if(isThereIsATutorWidget()) {
+            return  !_wasWidgetAnswered;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    native private void jsniMoveTutorNextStep() /*-{
+         $wnd.TutorManager.showNextStep();
+    }-*/;
+
+    
     /** Set the tutor widget's value as defined 
      *  by each individual tutor widget type.  
      *  
@@ -169,6 +229,8 @@ public class TutorWrapperPanel extends Composite {
      */
     public void tutorWidgetComplete(String inputValue, boolean correct) {
         Log.debug("tutorWidgetComplete (in GWT) called: " + inputValue);
+
+        _wasWidgetAnswered=true;
         
         if(_readOnly) {
             jsni_setTutorWidgetValue(_lastWidgetValue);
@@ -225,11 +287,13 @@ public class TutorWrapperPanel extends Composite {
         
         Log.debug("Solution loading: " + pid);
         
+        _wasWidgetAnswered = false;
         widgetCorrectInfo.setClassName("widget_correct_info_hide");
         
         
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
 
+        debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -278,6 +342,21 @@ public class TutorWrapperPanel extends Composite {
         tutorCallback.tutorWidgetCompleteDenied(null, false);
     }
     
+    private void gwt_enableTutorButton(String btnName, boolean enableYesNo) {
+        if(true)
+            return;
+       
+        
+        if(btnName.equals("steps_next")) {
+            stepNext.setEnabled(enableYesNo);
+        }
+        else if(btnName.equals("steps_prev")) {
+            stepPrev.setEnabled(enableYesNo);
+        }
+        
+       Log.debug("Showing btnName: " + btnName);
+    }
+    
     /** initialize external tutor JS/HTML and provide glue between external JS
      * methods and GWT.
      * 
@@ -286,6 +365,12 @@ public class TutorWrapperPanel extends Composite {
     
         
         var that = this;
+        
+        
+        $wnd.gwt_enableTutorButton = function(btnName, enabledYesNo) {
+            that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_enableTutorButton(Ljava/lang/String;Z)(btnName,enabledYesNo);
+        }
+        
         $wnd.solutionSetComplete = function(numCorrect, limit) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionSetComplete(II)(numCorrect,limit);
         }
@@ -317,10 +402,6 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::tutorWidgetComplete(Ljava/lang/String;Z)(inputValue, yesNo);
         }
         
-        $wnd.tutorInputWidgetComplete_gwt = function() {
-             // silent 
-        }
-        
         $wnd.gwt_scrollToBottomOfScrollPanel = function(top) {
            $wnd.scrollTo(0,top);
         }
@@ -329,8 +410,7 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorNewProblem(I)(problemNumber);
         }
         
-        // called when the solution has been fully
-        // initialized and ready to be interacted with 
+        // called when the solution has been fully viewed, to the last step
         $wnd.gwt_solutionHasBeenViewed = function(value) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_solutionHasBeenViewed(Ljava/lang/String;)(value);
         }
@@ -406,9 +486,31 @@ public class TutorWrapperPanel extends Composite {
     private String gwt_getSolutionProblemContext(int probNum) {
         return _solutionInfo.getContext().getContextJson();
     }
-
+    
+    
+    native private boolean isThereIsATutorWidget() /*-{
+        return $wnd.TutorSolutionWidgetValues.getActiveWidget() != null;
+    }-*/;
+    
+    private void setTutorBarStateEnabled(boolean enableYesNo) {
+        if(true) {
+            return;
+        }
+        
+        
+        if(!enableYesNo) {
+            stepNext.setEnabled(false);
+            stepPrev.setEnabled(false);
+        }
+    }
+        
     private void gwt_solutionHasBeenInitialized(final String variablesJson, final String pid, final int problemNumber) {
         
+        this.tutorCallback.solutionHasBeenInitialized();
+        
+        if(isThereIsATutorWidget()) {
+            setTutorBarStateEnabled(false);
+        }
         
         if(!saveVariableContext) {
             Log.debug("Not saving solution context for: " + pid);
@@ -558,6 +660,11 @@ public class TutorWrapperPanel extends Composite {
          * @return
          */
         boolean showTutorWidgetInfoOnCorrect();
+        
+        /** Called when the solution has been fully initialized
+         * 
+         */
+        void solutionHasBeenInitialized();
     }
 
 

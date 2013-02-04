@@ -154,6 +154,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setPassPercentRequired(userProgram.getConfig().getPassPercent());
             userInfo.setProgramSegmentCount(programSegmentCount);
             userInfo.setViewCount(sdao.getTotalInmHViewCount(conn,action.getUserId()));
+            userInfo.setTutorInputWidgetAnswerPercentCorrect(HaUserDao.getInstance().getUserTutorInputWidgetAnswerPercentCorrect(sm.getUid()));
             UserLoginResponse userLoginResponse = new UserLoginResponse(userInfo, HaUserDao.getInstance().determineFirstDestination(conn, userInfo,cmProgram));
             return userLoginResponse;
             

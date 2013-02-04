@@ -53,20 +53,18 @@
             <span ui:field='buttonBar'>
             <div id='steps_tail'>
                 
-                <button class='sexybutton sexy_cm_silver disabled' id='steps_prev'
-                    onclick="TutorManager.showPreviousStep();" accesskey="n">
+                <cm:TouchButton ui:field='stepPrev' styleName='sexybutton sexy_cm_silver disabled'>
                     <span>
                         <span>Prev</span>
                     </span>
-                </button>
+                </cm:TouchButton>
                 
 
-                <button class='sexybutton sexy_cm_silver' id='steps_next'
-                    onclick="TutorManager.showNextStep();" accesskey="n">
+                <cm:TouchButton ui:field='stepNext' styleName='sexybutton sexy_cm_silver'>
                     <span>
                         <span>Next</span>
                     </span>
-                </button>
+                </cm:TouchButton>
                 
                 <cm:TouchButton ui:field="returnButton" styleName='sexybutton sexy_cm_silver'>
                     <span>

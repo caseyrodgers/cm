@@ -99,7 +99,7 @@ public class ResourceViewerImplTutor extends CmResourcePanelImplWithWhiteboard {
                 MultiActionRequestAction mAction = new MultiActionRequestAction();
                 setAction(mAction);
 
-                SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getRunId(), pid, yesNo==0?false:true);
+                SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid,"", yesNo==0?false:true);
                 mAction.getActions().add(action);
 
 

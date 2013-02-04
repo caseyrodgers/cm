@@ -1,19 +1,35 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-public class SaveTutorInputWidgetAnswerAction implements Action<RpcData> {
+public class SaveTutorInputWidgetAnswerAction implements Action<UserTutorWidgetStats> {
     
     public SaveTutorInputWidgetAnswerAction() {};
     
+    int userId;
     int runId;
     String pid;
+    String value;
     boolean correct;
     
-    public SaveTutorInputWidgetAnswerAction(int runId, String pid, boolean correct) {
+    public SaveTutorInputWidgetAnswerAction(int userId, int runId, String pid, String value, boolean correct) {
+        this.userId = userId;
         this.runId = runId;
         this.pid = pid;
+        this.value = value;        
         this.correct = correct;
     }
     
+
+
+    public String getValue() {
+        return value;
+    }
+
+
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
 
 
     public boolean isCorrect() {
@@ -39,9 +55,22 @@ public class SaveTutorInputWidgetAnswerAction implements Action<RpcData> {
     public void setPid(String pid) {
         this.pid = pid;
     }
+    
+
+    public int getUserId() {
+        return userId;
+    }
+
+
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+
 
     @Override
     public String toString() {
-        return "SaveTutorInputWidgetAnswerAction [runId=" + runId + ", pid=" + pid + ", correct=" + correct + "]";
+        return "SaveTutorInputWidgetAnswerAction [userId=" + userId + ", runId=" + runId + ", pid=" + pid + ", value=" + value + ", correct=" + correct + "]";
     }
 }

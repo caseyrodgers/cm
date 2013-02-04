@@ -17,6 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -342,19 +343,76 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @param correct
      */
-    public void saveUserTutorInputWidgetAnswer(final int runId, final String pid, final boolean correct) {
+    public int saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid, final String value, final boolean correct) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "insert into HA_TEST_RUN_WIDGET_INPUT_ANSWERS(run_id, pid, correct,answer_time)values(?,?,?,now())";
+                String sql = "insert into HA_TEST_RUN_WIDGET_INPUT_ANSWERS(run_id, pid, value, correct,answer_time)values(?,?,?,?,now())";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, runId);
                 ps.setString(2, pid);
-                ps.setInt(3, correct ? 1 : 0);
+                ps.setString(3,  value);
+                ps.setInt(4, correct ? 1 : 0);
 
                 return ps;
             }
         });
+        
+        return getUserTutorInputWidgetAnswerPercentCorrect(uid);
     }
+    
+    
+    /** Return the percentage correct of all widgets entered
+     * by this user
+     * 
+     * @param uid
+     * @return
+     */
+    public int getUserTutorInputWidgetAnswerPercentCorrect(int uid) {
+        String sql = "select a.* from HA_TEST_RUN_WIDGET_INPUT_ANSWERS a   " +
+        		"JOIN HA_TEST_RUN r on r.run_id = a.run_id   " +
+        		"JOIN HA_TEST t on t.test_id = r.test_id  " +
+        		"JOIN HA_USER u on u.uid = t.user_id " +
+        		"where u.uid = ? " +
+        		"order by pid, answer_time";
+        
+        final double totals[] = new double[2];
+        final List<String> pidUniq = new ArrayList<String>();
+        getJdbcTemplate().query(sql, new Object[] { uid },new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String pid = rs.getString("pid");
+                if(!pidUniq.contains(pid)) {
+                    /** new pid, only first counts
+                     * 
+                     */
+                    pidUniq.add(pid);
+                    boolean correct = rs.getInt("correct")!=0;
+                    totals[0]++;  // total count
+                    if(correct) {
+                        totals[1]++;  // count correct
+                    }
+                }
+                
+                return 0;
+            }
+        });
+
+        double percent=0;
+        try {
+            if(totals[1] == 0 || totals[0] == 0) {
+                percent = 0;
+            }
+            else {
+                percent  = (totals[1] / totals[0]) * 100;
+            }
+        }
+        catch(Exception ee) {
+            logger.error(ee);
+        }
+            
+        return (int)percent;
+    }
+
 
 }

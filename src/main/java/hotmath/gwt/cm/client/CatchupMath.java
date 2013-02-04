@@ -168,8 +168,6 @@ public class CatchupMath implements EntryPoint {
 
 
         try {
-            
-            
             String jsonUserInfo = getUserInfoFromExtenalJs();
             
             String startType = UserInfoBase.getInstance().getCmStartType();

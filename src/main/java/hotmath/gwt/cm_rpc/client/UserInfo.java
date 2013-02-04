@@ -36,6 +36,9 @@ public class UserInfo implements  Response {
 	boolean limitGames;
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
+    UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
+    private int tutorInputWidgetAnswerPercentCorrect;
+
 
     public UserInfo() {}
     
@@ -325,7 +328,7 @@ public class UserInfo implements  Response {
     }
     
 
-    
+
     public boolean isLimitGames() {
         return limitGames;
     }
@@ -349,8 +352,6 @@ public class UserInfo implements  Response {
 	public void setDisableCalcQuizzes(boolean disableCalcQuizzes) {
 		this.disableCalcQuizzes = disableCalcQuizzes;
 	}
-
-	UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
 
 
     /** Return action indicating what to do once the active
@@ -378,6 +379,14 @@ public class UserInfo implements  Response {
 
     public void setTestSegmentSlot(int testSegmentSlot) {
         this.testSegmentSlot = testSegmentSlot;
+    }
+
+    public int getTutorInputWidgetAnswerPercentCorrect() {
+        return tutorInputWidgetAnswerPercentCorrect;
+    }
+
+    public void setTutorInputWidgetAnswerPercentCorrect(int tutorInputWidgetAnswerPercentCorrect) {
+        this.tutorInputWidgetAnswerPercentCorrect = tutorInputWidgetAnswerPercentCorrect;
     }
 
     @Override
@@ -452,7 +461,5 @@ public class UserInfo implements  Response {
          */
         AUTO_ADVANCE
     }
-    
-    
     
 }

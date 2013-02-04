@@ -8,7 +8,10 @@ public class InmhItemData implements IsSerializable{
 	String title;
 	String file;
 	String widgetJsonArgs;
+    boolean viewed;
 
+    public InmhItemData() {
+    }
     
 	public InmhItemData(String type, String file, String title) {
 	    this(type,file,title,null);
@@ -28,11 +31,6 @@ public class InmhItemData implements IsSerializable{
     public void setWidgetJsonArgs(String widgetJsonArgs) {
         this.widgetJsonArgs = widgetJsonArgs;
     }
-
-    boolean viewed;
-	
-	public InmhItemData() {
-	}
 
 	public boolean isViewed() {
         return viewed;

@@ -1,17 +1,16 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
-import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -19,6 +18,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
@@ -102,6 +102,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 if(correct) {
                     solutionHasBeenViewed(inputValue);
                 }
+                saveTutorInputWidgetComplete(inputValue, correct);
             }
             
             @Override
@@ -186,40 +187,24 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
      * 
      * @param yesNo
      */
-    private void tutorInputWidgetComplete_gwt(final int yesNo) {
-        new RetryAction<CmList<Response>>() {
+    private void saveTutorInputWidgetComplete(final String value, final boolean yesNo) {
+        new RetryAction<UserTutorWidgetStats>() {
             @Override
             public void attempt() {
 
-
                 CmBusyManager.setBusy(true);
-                MultiActionRequestAction mAction = new MultiActionRequestAction();
-                setAction(mAction);
 
-                SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getRunId(), pid, yesNo==0?false:true);
-                mAction.getActions().add(action);
+                SaveTutorInputWidgetAnswerAction action = new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid, value, yesNo);
 
-
-                InmhItemData item = getResourceItem();
-                // if EPP (homework), then emarked as viewed as
-                // soon as input widget is attempted.
-                if(item.getType().equals("cmextra")) {
-                    if(item.isViewed() == false) {
-                        item.setViewed(true);
-                        SetInmhItemAsViewedAction eppViewedAction = new SetInmhItemAsViewedAction(UserInfo.getInstance().getRunId(),item.getType(), item.getFile(), UserInfo.getInstance().getSessionNumber());
-                        mAction.getActions().add(eppViewedAction);
-
-                        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_EPP_COMPLETE,item));
-                    }
-                }
-
-
-                CmShared.getCmService().execute(mAction,this);
+                setAction(action);
+                CmShared.getCmService().execute(action,this);
             }
 
             @Override
-            public void oncapture(CmList<Response> results) {
+            public void oncapture(UserTutorWidgetStats userStats) {
                 CmBusyManager.setBusy(false);
+                
+                CmRpc.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
             }
         }.register();
     }
@@ -239,7 +224,6 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
              *  on same prescription (run_id) will have the 
              *  existing context restored. 
              */
-            
         }
         else {
             final String pid=getResourceItem().getFile();
@@ -278,13 +262,10 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         catch(e) {
             alert('JSNI: error saving solution context: ' + e);}
         }
-         // override global functions defined in tutor_dynamic
-         //
-         $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::setSolutionSetComplete(II);
-         $wnd.TutorDynamic.setSolutionTitle = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::setSolutionTitle(II);
-         $wnd.tutorInputWidgetComplete_gwt = function (yesNo) {
-            x.@hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::tutorInputWidgetComplete_gwt(I)(yesNo);
-        };
+        // override global functions defined in tutor_dynamic
+        //
+        $wnd.solutionSetComplete = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::setSolutionSetComplete(II);
+        $wnd.TutorDynamic.setSolutionTitle = @hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplTutor2::setSolutionTitle(II);
 
         $wnd.gwt_getSolutionProblemContext = function(probNum) {
             try {

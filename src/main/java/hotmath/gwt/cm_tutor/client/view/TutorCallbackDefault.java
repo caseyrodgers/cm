@@ -42,7 +42,13 @@ public class TutorCallbackDefault implements TutorCallback {
 
     @Override
     public boolean showTutorWidgetInfoOnCorrect() {
+        Log.debug("TutorCallbackDefault: showTutorWidgetInfoOnCorrect");
         return false;
+    }
+
+    @Override
+    public void solutionHasBeenInitialized() {
+        Log.debug("TutorCallbackDefault: solutionHasBeenInitialized");
     }
 
 }

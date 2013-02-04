@@ -3,7 +3,9 @@ package hotmath.gwt.cm.client.ui;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
@@ -11,6 +13,8 @@ import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
+import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
+import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedHandler;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -145,6 +149,13 @@ public class HeaderPanel extends FlowLayoutContainer {
     }
 
 
+
+
+    protected void updateUserTutorStats(UserTutorWidgetStats userStats) {
+        UserInfo.getInstance().setTutorInputWidgetAnswerPercentCorrect(userStats.getPercent());
+        setLoginInfo();
+    }
+
     private void updateAssignmentMessage(boolean incompleteAssignments) {
         if (incompleteAssignments) {
             _assignmentsAnchor.setText("You have Assignments");
@@ -218,7 +229,9 @@ public class HeaderPanel extends FlowLayoutContainer {
             nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
             String s = "Hello, <b>" + nameCap + "</b>";
             if (viewCount > 1)
-                s += ". You have worked on " + viewCount + " problems.";
+                s += ". You have worked on " + viewCount + " problems";
+                s+= " with " + UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() + "% correct.";
+            
             _helloInfo.setHTML(s);
         }
     }
@@ -229,5 +242,20 @@ public class HeaderPanel extends FlowLayoutContainer {
     public void setHeaderInfo() {
         CatchupMathTools.showAlert("Set Header info");
     }
-
+    
+    
+    
+    static {
+        CmRpc.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE,  new UserTutorWidgetStatusUpdatedHandler() {
+            @Override
+            public void userStatsUpdate(UserTutorWidgetStats userStats) {
+                __instance.updateUserTutorStats(userStats);
+            }
+        });
+        
+    }
 }
+
+
+
+
