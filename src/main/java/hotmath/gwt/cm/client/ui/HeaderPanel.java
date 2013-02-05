@@ -34,8 +34,10 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.IconButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -67,7 +69,11 @@ public class HeaderPanel extends FlowLayoutContainer {
         }
 
         _helloInfo.setStyleName("hello-info");
-        add(_helloInfo);
+        
+        SimpleContainer sc = new SimpleContainer();
+        sc.setWidget(_helloInfo);
+        sc.setToolTip("The percentage shown is for the first entered answers for practice problems that require answers.");
+        add(sc);
 
         helpButton = new MyIconButton("header-panel-help-btn");
         helpButton.addSelectHandler(new SelectHandler() {
@@ -228,10 +234,10 @@ public class HeaderPanel extends FlowLayoutContainer {
 
             nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
             String s = "Hello, <b>" + nameCap + "</b>";
-            if (viewCount > 1)
+            if (viewCount > 1) {
                 s += ". You have worked on " + viewCount + " problems";
-                s+= " with " + UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() + "% correct.";
-            
+                s+= " with " + UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() + "% correct <first time>.";
+            }
             _helloInfo.setHTML(s);
         }
     }

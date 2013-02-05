@@ -140,7 +140,7 @@ public class TutorWrapperPanel extends Composite {
     
     private void moveTutorNextStep() {
         if(isWidgetAndNotAnswered()) {
-            showTutorMessage("Please answer the question first");
+            showTutorMessage("answer the question first");
             return;
         }
         else {
@@ -203,8 +203,8 @@ public class TutorWrapperPanel extends Composite {
                     
                     if(result.getWidgetResult() != null && result.getWidgetResult().getValue() != null) {
                         Log.debug("TutorWrapperPanel->Setting widget value: " + result.getWidgetResult() );
-                        
-                        setTutorWidgetValue(result.getWidgetResult().getValue());
+                        // setTutorWidgetValue(result.getWidgetResult().getValue());
+                        jsni_moveToFirstStep();
                         _wasWidgetAnswered = true;
                     }
                     

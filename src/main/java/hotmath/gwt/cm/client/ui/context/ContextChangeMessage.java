@@ -21,7 +21,7 @@ public class ContextChangeMessage extends GWindow {
         
         addStyleName("context-change-message");
         setHeadingText("Current Topic");
-        setModal(false);
+        setModal(true);
         setPixelSize(330, 150);
 
         SimpleContainer sc1 = new SimpleContainer();

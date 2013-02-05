@@ -111,14 +111,6 @@
 #new_problem {
 }
 
-#tutor_message {
-    position: absolute;
-    left: 5px;
-    top: 45px;
-    color: red;
-}
-
-
 
 .questionResponseAnswer {
 	background: #DDDDDD;

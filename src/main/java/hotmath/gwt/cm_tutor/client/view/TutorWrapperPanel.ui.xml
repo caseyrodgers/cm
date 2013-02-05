@@ -36,7 +36,7 @@
         
         .tutorMessage {
            color: red;
-           font-size: 1.2em;
+           font-weight: bold;
         }
 
     </ui:style>
@@ -83,6 +83,8 @@
                         <span>Whiteboard</span>
                     </span>
                 </cm:TouchButton>
+                
+                <span class='{style.tutorMessage}' id='tutor_message'></span>
 
                 <div ui:field="widgetCorrectInfo" class="{style.hide}">
                     <div className='{style.correctWrapper}'>
@@ -99,7 +101,6 @@
                     <a class='button debug-off' href='javascript:void(0)' onclick='expandAllSteps();return false;'>Expand
                     </a>
                 </div>
-                <div class='{style.tutorMessage}' id='tutor_message'></div>
             </div>
             </span>
             <!-- HOTMATH BODY END -->
