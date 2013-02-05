@@ -37,9 +37,7 @@ function initializeQuizQuestion(question) {
 
         /** append the input element */
         var inputElement = "<span class='question-input' style='margin-right: 10px'>"
-            + "<input value='"
-            + trueOrFalse
-            + "' type='radio' name='"
+            + "<input type='radio' name='"
             + tag
             + "' id='"
             + id
