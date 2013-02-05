@@ -67,4 +67,6 @@ public interface AccountInfoModel extends Response {
     public Date getAccountCreateDate();
 
     public void setAccountCreateDate(Date date);
+    
+    public String getIsFreeMessage(); 
 }

@@ -146,4 +146,9 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
 	public void setAccountCreateDate(Date date) {
 	    accountCreateDate = date;
 	}
+
+    @Override
+    public String getIsFreeMessage() {
+        return isFreeAccount?"Free Account for Essentials":"";
+    }
 }

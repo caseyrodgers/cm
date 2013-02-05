@@ -3,14 +3,13 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.AccountInfoModelImplGxt2;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataRefresher;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmTemplateFormaters;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
-import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetAccountInfoForAdminUidAction;
@@ -32,7 +31,7 @@ import com.sencha.gxt.widget.core.client.container.SimpleContainer;
  */
 public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminDataRefresher {
 	
-	private AccountInfoModelImplGxt2 model;
+	private AccountInfoModel model;
 	private CmAdminModel cmAdminModel;
 	private Boolean haveDisplayedOverLimitMsg = false;
 	
@@ -73,12 +72,7 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
 	 * @param model
 	 */
 	public void setAccountInfoModel(AccountInfoModel model) {
-		this.model = AccountInfoModelImplGxt2.create(model);
-		
-		if(model.getIsFreeAccount()) {
-		    this.model.set("is-free-account-label", "<span style='color: red;margin-left: 15px;'>Free Account for Essentials</span>");
-		}
-		
+		this.model = model;
 		InfoLoaderTemplate iLoader = GWT.create(InfoLoaderTemplate.class);
 		String html = iLoader.renderAdminInfo(model).asString();
 		header.setWidget(new HTML(html));
@@ -118,7 +112,7 @@ public class AccountInfoPanel extends FlowLayoutContainer implements CmAdminData
                              "We will contact you soon about upgrading your license, or you " +
                              "may wish to unregister students no longer active.  Thank you " +
                              "for using Catchup Math!";
-                CmMessageBoxGxt2.showAlert("Number of Students Exceeds License", msg);
+                CmMessageBox.showAlert("Number of Students Exceeds License", msg);
                 haveDisplayedOverLimitMsg = true;
             }
             ai.setStudentCountStyle("fld-warn");
