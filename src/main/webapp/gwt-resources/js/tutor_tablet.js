@@ -113,12 +113,12 @@ var TutorManager = {
             TutorManager.currentStepUnit++;
             showStepUnit(TutorManager.currentStepUnit);
         } else {
-            TutorManager.showMessage('no more steps');
+            TutorManager.showMessage('No more steps');
         }
     },
     showPreviousStep : function() {
         if (TutorManager.currentStepUnit < 0) {
-            TutorManager.showMessage('no previous step');
+            TutorManager.showMessage('No previous step');
             return;
         } else {
             while (TutorManager.currentStepUnit > -1) {

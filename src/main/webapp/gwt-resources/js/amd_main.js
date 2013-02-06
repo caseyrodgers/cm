@@ -1,5 +1,5 @@
 require.config({
-    urlArgs: "bust=ver_20130130"
+    urlArgs: "bust=ver_20130206"
 });
 
 

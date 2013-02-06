@@ -58,7 +58,7 @@
             <span ui:field='buttonBar'>
             <div id='steps_tail'>
                 
-                <cm:TouchButton ui:field='stepPrev' styleName='sexybutton sexy_cm_silver disabled'>
+                <cm:TouchButton ui:field='stepPrev' styleName='sexybutton sexy_cm_silver'>
                     <span>
                         <span>Prev</span>
                     </span>
