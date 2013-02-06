@@ -12,12 +12,14 @@ public class UserWidgetStats implements Response {
     
     private int uid;
     private int correctPercent;
+    private int widgetCompletedCount;
 
-    public UserWidgetStats() {}
+    private UserWidgetStats() {}
     
-    public UserWidgetStats(int uid, int correctPercent) {
+    private UserWidgetStats(int uid, int correctPercent, int widgetCompletedCount) {
         this.uid = uid;
         this.correctPercent = correctPercent;
+        this.widgetCompletedCount = widgetCompletedCount;
     }
 
     public int getUid() {
@@ -34,5 +36,9 @@ public class UserWidgetStats implements Response {
 
     public void setCorrectPercent(int correctPercent) {
         this.correctPercent = correctPercent;
+    }
+    
+    public int getWidgetCompletedCount() {
+        return this.widgetCompletedCount;
     }
 }

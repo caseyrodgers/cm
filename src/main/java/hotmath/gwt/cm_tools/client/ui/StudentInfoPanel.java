@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.model.UserWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -34,7 +34,7 @@ public class StudentInfoPanel extends Composite{
     }
     private void getTutorWidgetStatsFromServer(final int uid) {
 
-        new RetryAction<UserWidgetStats>() {
+        new RetryAction<UserTutorWidgetStats>() {
             @Override
             public void attempt() {
                 GetUserWidgetStatsAction action = new GetUserWidgetStatsAction(uid);
@@ -43,8 +43,13 @@ public class StudentInfoPanel extends Composite{
             }
 
             @Override
-            public void oncapture(UserWidgetStats stats) {
-                widgetPercent.setInnerHTML(stats.getCorrectPercent() + "%");
+            public void oncapture(UserTutorWidgetStats stats) {
+                if(stats.getCountWidgets() < 1) {
+                    widgetPercent.setInnerHTML("n/a");
+                }
+                else {
+                    widgetPercent.setInnerHTML(stats.getCorrectPercent() + "%");
+                }
             }
 
         }.register();

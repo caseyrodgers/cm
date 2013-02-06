@@ -2,6 +2,7 @@ package hotmath.testset.ha;
 
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 
 public class HaUserDao_Test extends CmDbTestCase {
     
@@ -28,7 +29,7 @@ public class HaUserDao_Test extends CmDbTestCase {
     }
     
     public void testSaveUserTutorInputWidget() throws Exception {
-        int percent = HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(_user.getUserKey(), _testRun.getRunId(),_test.getPids().get(0),"value",false);
-        assertTrue(percent > -1);
+        UserTutorWidgetStats stats = HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(_user.getUserKey(), _testRun.getRunId(),_test.getPids().get(0),"value",false);
+        assertTrue(stats.getCorrectPercent() > -1);
     }
 }

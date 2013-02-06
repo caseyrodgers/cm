@@ -8,8 +8,10 @@ import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.UserWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
@@ -343,7 +345,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @param correct
      */
-    public int saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid, final String value, final boolean correct) throws Exception {
+    public UserTutorWidgetStats saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid, final String value, final boolean correct) throws Exception {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -368,11 +370,12 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param uid
      * @return
      */
-    public int getUserTutorInputWidgetAnswerPercentCorrect(int uid) throws Exception {
+    public UserTutorWidgetStats getUserTutorInputWidgetAnswerPercentCorrect(int uid) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT");
         
         final double totals[] = new double[2];
         final List<String> pidUniq = new ArrayList<String>();
+        final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
         getJdbcTemplate().query(sql, new Object[] { uid },new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -383,9 +386,9 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                      */
                     pidUniq.add(pid);
                     boolean correct = rs.getInt("correct")!=0;
-                    totals[0]++;  // total count
+                    totals[TOTAL_WIDGETS]++;  // total count
                     if(correct) {
-                        totals[1]++;  // count correct
+                        totals[COUNT_CORRECT]++;  // count correct
                     }
                 }
                 
@@ -395,18 +398,18 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
 
         double percent=0;
         try {
-            if(totals[1] == 0 || totals[0] == 0) {
+            if(totals[COUNT_CORRECT] == 0 || totals[TOTAL_WIDGETS] == 0) {
                 percent = 0;
             }
             else {
-                percent  = (totals[1] / totals[0]) * 100;
+                percent  = (totals[COUNT_CORRECT] / totals[TOTAL_WIDGETS]) * 100;
             }
         }
         catch(Exception ee) {
             logger.error(ee);
         }
             
-        return (int)percent;
+        return new UserTutorWidgetStats(uid, (int)percent, (int)totals[TOTAL_WIDGETS]);
     }
 
 

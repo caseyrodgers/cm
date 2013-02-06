@@ -18,8 +18,7 @@ public class SaveTutorInputWidgetAnswerCommand implements ActionHandler<SaveTuto
 
     @Override
     public UserTutorWidgetStats execute(Connection conn, SaveTutorInputWidgetAnswerAction action) throws Exception {
-        int userGlobalPercent = HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(action.getUserId(), action.getRunId(), action.getPid(), action.getValue(), action.isCorrect());
-        return new UserTutorWidgetStats(action.getUserId(), userGlobalPercent);
+        return HaUserDao.getInstance().saveUserTutorInputWidgetAnswer(action.getUserId(), action.getRunId(), action.getPid(), action.getValue(), action.isCorrect());
     }
 
 }

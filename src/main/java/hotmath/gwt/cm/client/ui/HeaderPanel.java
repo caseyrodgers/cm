@@ -37,7 +37,6 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.TextField;
 
 public class HeaderPanel extends FlowLayoutContainer {
 
@@ -158,7 +157,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 
 
     protected void updateUserTutorStats(UserTutorWidgetStats userStats) {
-        UserInfo.getInstance().setTutorInputWidgetAnswerPercentCorrect(userStats.getPercent());
+        UserInfo.getInstance().setTutorInputWidgetAnswerPercentCorrect(userStats.getCorrectPercent());
         setLoginInfo();
     }
 
@@ -236,7 +235,12 @@ public class HeaderPanel extends FlowLayoutContainer {
             String s = "Hello, <b>" + nameCap + "</b>";
             if (viewCount > 1) {
                 s += ". You have worked on " + viewCount + " problems";
-                s+= " with " + UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() + "% correct <first time>.";
+                
+                if(UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() != UserTutorWidgetStats.NO_WIDGETS_COMPLETED) {
+                    s+= " with " + UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() + "% correct <first time>";
+                }
+                
+                s += ".";
             }
             _helloInfo.setHTML(s);
         }

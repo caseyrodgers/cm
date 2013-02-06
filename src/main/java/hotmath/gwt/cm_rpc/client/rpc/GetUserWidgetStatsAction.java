@@ -1,13 +1,12 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.UserWidgetStats;
 
 /** Get a single user's widget stats
  * 
  * @author casey
  *
  */
-public class GetUserWidgetStatsAction implements Action<UserWidgetStats>{
+public class GetUserWidgetStatsAction implements Action<UserTutorWidgetStats>{
     
     private int uid;
 
