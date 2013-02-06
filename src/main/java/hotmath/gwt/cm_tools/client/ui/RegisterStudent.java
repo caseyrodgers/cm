@@ -513,12 +513,14 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     sectionCount = sp.getSectionCount();
                     activeSection = 0;
 
-                    if (progType == CmProgramType.AUTOENROLL) {
-                        stdAdvOptionsBtn.disable();
-                    } else {
-                        stdAdvOptionsBtn.enable();
-                    }
 
+//                    if (progType == CmProgramType.AUTOENROLL) {
+//                        stdAdvOptionsBtn.disable();
+//                    } else {
+//                        stdAdvOptionsBtn.enable();
+//                    }
+                    stdAdvOptionsBtn.enable();
+                    
                     skipComboSet = true;
                     subjectId = null;
 

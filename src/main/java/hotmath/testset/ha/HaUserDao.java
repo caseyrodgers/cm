@@ -343,7 +343,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @param correct
      */
-    public int saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid, final String value, final boolean correct) {
+    public int saveUserTutorInputWidgetAnswer(int uid, final int runId, final String pid, final String value, final boolean correct) throws Exception {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -368,13 +368,8 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param uid
      * @return
      */
-    public int getUserTutorInputWidgetAnswerPercentCorrect(int uid) {
-        String sql = "select a.* from HA_TEST_RUN_WIDGET_INPUT_ANSWERS a   " +
-        		"JOIN HA_TEST_RUN r on r.run_id = a.run_id   " +
-        		"JOIN HA_TEST t on t.test_id = r.test_id  " +
-        		"JOIN HA_USER u on u.uid = t.user_id " +
-        		"where u.uid = ? " +
-        		"order by pid, answer_time";
+    public int getUserTutorInputWidgetAnswerPercentCorrect(int uid) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT");
         
         final double totals[] = new double[2];
         final List<String> pidUniq = new ArrayList<String>();

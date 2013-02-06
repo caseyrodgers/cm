@@ -714,34 +714,7 @@ img.resource-item-complete {
         height: 65px;
         position: relative;
 }
-.detail-info .form {
-        width: 250px;
-}
-.detail-info .fld {
-        width: 245px;
-}
-.detail-info .fld label {
-        display: block;
-        float: left;
-        font-weight: bold;
-        margin-right: 5px;
-        text-align: right;
-        width: 90px;
-}
-.detail-info .fld div {
-        float: right;
-        width: 148px;
-}
-.detail-info .left {
-        left: 20px;
-        position: absolute;
-        top: 10px;
-}
-.detail-info .right {
-        left: 265px;
-        position: absolute;
-        top: 10px;
-}
+
 #flash-alt-content {
         margin: auto;
         margin-top: 20px;

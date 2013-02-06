@@ -27,21 +27,17 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.core.client.XTemplates;
-import com.sencha.gxt.core.client.XTemplates.FormatterFactories;
-import com.sencha.gxt.core.client.XTemplates.FormatterFactory;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -67,21 +63,13 @@ import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
  * 
  */
 
-@FormatterFactories(@FormatterFactory(factory = CmTemplateFormaters.class, name = "nullChecker"))
-interface StudentDetailsTemplate extends XTemplates {
-    @XTemplate(source = "StudentDetailsPanel_DetailInfo.html")
-    SafeHtml render(StudentModelI adminInfo);
-}
-
 public class StudentDetailsPanel extends BorderLayoutContainer {
 
     StudentModelI studentModel;
     private Grid<StudentActivityModel> samGrid;
     private Label _studentCount;
     private Label dateRange = new Label();
-    StudentDetailsTemplate detailTemplate = GWT.create(StudentDetailsTemplate.class);
     DetailsProperties detailsProps = GWT.create(DetailsProperties.class);
-    HTML studentInfoPanel;
 
     /**
      * Create StudentDetailsWindow for student. Shows all student activity for
@@ -135,18 +123,16 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         addStyleName("student-details-window-container");
 
-        FlowLayoutContainer flowLay = new FlowLayoutContainer();
-        studentInfoPanel = new HTML(renderDetailsTemplate(studentModel));
-        studentInfoPanel.setHeight("45px");
-        flowLay.add(studentInfoPanel);
-
-        flowLay.add(toolBar);
-        setNorthWidget(flowLay, new BorderLayoutData(85));
+        FlowLayoutContainer northContainer = new FlowLayoutContainer();
+        StudentInfoPanel infoPanel = new StudentInfoPanel(studentModel);
+        infoPanel.setHeight(60);
+        northContainer.add(infoPanel);
+        northContainer.add(toolBar);
+        
+        setNorthWidget(northContainer, new BorderLayoutData(100));
 
         SimpleContainer simpContainer = new SimpleContainer();
-        // simpContainer.setStyleName("student-details-panel-grid");
-        simpContainer.setWidget(samGrid);
-        // simpContainer.setHeight(250);
+        simpContainer.add(samGrid);
 
         setCenterWidget(simpContainer);
 
@@ -490,22 +476,6 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         ColumnModel<StudentActivityModel> cm = new ColumnModel<StudentActivityModel>(configs);
         return cm;
-    }
-
-    /**
-     * Define the template for the header (does not add to container)
-     * 
-     * Defines the global 'html' object, filled in via RPC call.
-     * 
-     */
-    private String renderDetailsTemplate(StudentModelI studentActivity) {
-        try {
-            return detailTemplate.render(studentActivity).asString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
     }
 
     protected void getStudentActivityRPC(final ListStore<StudentActivityModel> store, final StudentModelI sm) {

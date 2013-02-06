@@ -23,10 +23,18 @@ public class MyFieldSet extends FieldSet {
             setWidth(width);
         }
     }
+    
+    /** Add a widget to the vertical panel
+     * 
+     * @param child
+     */
     public void addThing(IsWidget child) {
         vertPanel.add(child);
     }
     
+    /** Clear the main vertical panel
+     * 
+     */
     public void clearThings() {
         vertPanel.clear();
     }

@@ -114,6 +114,11 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         
+//        StudentDetailsWindow.showStudentDetails(31456);
+//        if(true) {
+//            return;
+//        }
+        
 //        if(true) {
 //            GroupInfoModel gim = new GroupInfoModel(2,  1, "test", 1033333, true,  false);
 //            CmShared.getCmService().execute(new GroupManagerAssignAction(ActionType.GET_STUDENTS, gim), new AsyncCallback<GroupManagerAssignResponse>() {

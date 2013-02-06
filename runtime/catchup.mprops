@@ -3803,3 +3803,19 @@ from HA_TEST_RUN_INMH_USE
 where run_id = ?
   and item_file = ?
   and item_type = 'practice'
+  
+  
+  
+  
+  
+  
+.key=TUTOR_WIDGET_ANSWER_PERCENT
+  
+  select a.* 
+  from HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
+     JOIN HA_TEST_RUN r on r.run_id = a.run_id
+     JOIN HA_TEST t on t.test_id = r.test_id
+     JOIN HA_USER u on u.uid = t.user_id
+     where u.uid = ?
+  order by pid, answer_time
+        		
