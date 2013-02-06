@@ -23,8 +23,8 @@
     String today = sdf.format(new java.util.Date());
 
 	String header =
-        String.format("%-15s\t%-50s\t%-15s\t%6s\t%6s\t%7s\t%6s\t%12s\n\n", 
-        		"User Name", "School Name", "Rep", "Count", "Max", "Overage", "Status", "Expires");
+        String.format("%-15s\t%-50s\t%-15s\t%6s\t%6s\t%7s\t%10s\t%6s\t%12s\n\n", 
+        		"User Name", "School Name", "Rep", "Count", "Max", "Overage", "Essentials", "Status", "Expires");
 
 	StringBuilder sb = new StringBuilder();
 
@@ -44,10 +44,10 @@
 			String expireDateStr = sdf.format(expireDate);
 
 			sb.append(
-            String.format("%-15s\t%-50s\t%-15s\t%6d\t%6d\t%7d\t%6s\t%12s\n", 
+            String.format("%-15s\t%-50s\t%-15s\t%6d\t%6d\t%7d\t%10d\t%6s\t%12s\n", 
             		rs.getString("user_name"), rs.getString("school_name"), rs.getString("rep_name"), 
-            		rs.getInt("student_count"), rs.getInt("max_students"), rs.getInt("overage"),
-            	    rs.getString("status"), expireDateStr));
+            		rs.getInt("student_count"), rs.getInt("max_students"), rs.getInt("essentials_count"), 
+            		rs.getInt("overage"), rs.getString("status"), expireDateStr));
 		 }
     }
     catch (Exception e){
@@ -64,22 +64,22 @@
       CM Account Overage Report
     </h2>
     <pre>
-    Date: <%= today %>
+ Date: <%= today %>
 
     <%
     if (errMsg != null) {
     %>
-    Error message: <%= errMsg %>
+ Error message: <%= errMsg %>
     <%
     }
     %>
     <%
     if (overageCount == 0) { %>
-    No accounts to report
+ No accounts to report
     <%
     } else { %>
-    <%= header.toString() %>
-    <%= sb.toString() %>    
+<%=header.toString() %>
+<%=sb.toString() %>    
     <%
     } %>
     
