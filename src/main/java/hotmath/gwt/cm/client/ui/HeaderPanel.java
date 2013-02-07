@@ -240,7 +240,7 @@ public class HeaderPanel extends FlowLayoutContainer {
             String s = "Welcome <b>" + nameCap + "</b>.";
             if (viewCount > 1) {
                 s += "  You have completed " + viewCount + " practice problems. ";
-                
+
                 if(UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
                     s+= " You got " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "% of " +
                             UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() + " problems correct";
