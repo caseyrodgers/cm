@@ -7,50 +7,23 @@
         margin: 20px;
     }
     
-    .wrapper h1 {
-        margin-bottom: 0;
-    }
-
-    .wrapper label {
-        font-weight: bold;
-    }
-    
-    .wrapper p {
-        font-size: 1em;
-    }
-    
-    .field {
-        
-    }
-    
-
     </ui:style>
     <g:HTMLPanel>
         <div class='{style.wrapper}'>
-            <div class='group'>
-                <h1>Required Practice Problems:</h1>
-                <p>Represents the total number of required practice problems you have completed.</p>                
-                <div class='{style.field}'>
-                    <label>Count: </label>
-                    <span ui:field="rppCount"/>
-                </div>
-            </div>
-            
-            <div class='group'>
-                <h1>Graded Practice Problems</h1>
-                <p>
-                   The graded percent is calculated from the first entry into a graded practice problem.
-                </p>
-                <div class='{style.field}'>
-                    <label>Count: </label>
-                    <span ui:field='gradedRppCount'/>
-                </div>
-                <div class='{style.field}'>
-                   <label>Correct Percent: </label>
-                   <span ui:field='gradedRppPercent'/>
-                   %
-                </div>            
-            </div>
+             <p>
+             Many of our practice problems require an answer before the Next button
+             will show the steps.
+             </p>
+         
+             <p>
+             We keep track of your score for your first try for these problems. As
+             you learn each topic, you will get the answers right on the first try.
+             </p>
+
+             <p>
+             You have completed <span ui:field='gradedRppCount'/> graded practice problems 
+             and <span ui:field='gradedRppPercent'/>% of them were correct on the first try.
+             </p>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder> 

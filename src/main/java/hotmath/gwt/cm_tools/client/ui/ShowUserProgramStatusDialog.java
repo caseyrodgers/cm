@@ -7,10 +7,10 @@ public class ShowUserProgramStatusDialog extends GWindow {
 
     public ShowUserProgramStatusDialog() {
         super(true);
-        setPixelSize(300, 250);
+        setPixelSize(375, 225);
         setResizable(false);
         setModal(true);
-        setHeadingText("User Program Statistics");
+        setHeadingText("Practice Problems Score");
 
         setWidget(new UserProgramStatusPanel(UserInfo.getInstance().getUid(), UserInfo.getInstance().getViewCount(), UserInfo.getInstance()
                 .getTutorInputWidgetStats()));
