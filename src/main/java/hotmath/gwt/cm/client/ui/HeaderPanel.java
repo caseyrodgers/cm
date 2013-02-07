@@ -167,10 +167,12 @@ public class HeaderPanel extends FlowLayoutContainer {
     }
 
     private void updateAssignmentMessage(boolean incompleteAssignments) {
-        if (incompleteAssignments) {
-            _assignmentsAnchor.setText("You have Assignments");
-        } else {
-            _assignmentsAnchor.setText("You do not have Assignments");
+        if(_assignmentsAnchor != null) {
+            if (incompleteAssignments) {
+                _assignmentsAnchor.setText("You have Assignments");
+            } else {
+                _assignmentsAnchor.setText("You do not have Assignments");
+            }
         }
     }
 
