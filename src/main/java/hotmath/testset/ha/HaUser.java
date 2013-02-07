@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 
@@ -32,7 +31,7 @@ public class HaUser extends HaBasicUserImpl {
         this.aid = aid;
     }
 
-    Integer uid;
+    int uid;
 	String userName;
 	String category;
 	Integer gradeLevel;
