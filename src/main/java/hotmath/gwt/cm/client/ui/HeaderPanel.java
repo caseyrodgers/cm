@@ -69,17 +69,7 @@ public class HeaderPanel extends FlowLayoutContainer {
         }
 
         _helloInfo.setStyleName("hello-info");
-        
-        SimpleContainer simpleCont = new SimpleContainer();
-        simpleCont.add(_helloInfo);
-        
-        
-        String tooltip = "Some problems require you to enter an answer before you can see the " +
-                         " steps. Your percentage on these problems is based on your first try. " +
-                         "As you study each topic, you should get more and more of the answers " +
-                         " right on the first try. (Click for more info) ";
-        simpleCont.setToolTip(tooltip);
-        add(simpleCont);
+        add(_helloInfo);
 
         helpButton = new MyIconButton("header-panel-help-btn");
         helpButton.addSelectHandler(new SelectHandler() {
@@ -244,7 +234,7 @@ public class HeaderPanel extends FlowLayoutContainer {
             String s = "Welcome <b>" + nameCap + "</b>.";
             if (viewCount > 1) {
                 s += "  You have completed " + viewCount + " problems. ";
-                s+= "Your score is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
+                s+= "Your <a href='#'>score</a> is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
             }
             _helloInfo.setHTML(s);
             _helloInfo.addClickHandler(new ClickHandler() {
