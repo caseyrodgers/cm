@@ -12,6 +12,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.MyIconButton;
 import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
+import hotmath.gwt.cm_tools.client.ui.ShowUserProgramStatusDialog;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedHandler;
@@ -69,15 +70,16 @@ public class HeaderPanel extends FlowLayoutContainer {
 
         _helloInfo.setStyleName("hello-info");
         
-        SimpleContainer sc = new SimpleContainer();
-        sc.setWidget(_helloInfo);
+        SimpleContainer simpleCont = new SimpleContainer();
+        simpleCont.add(_helloInfo);
+        
         
         String tooltip = "Some problems require you to enter an answer before you can see the " +
                          " steps. Your percentage on these problems is based on your first try. " +
                          "As you study each topic, you should get more and more of the answers " +
-                         " right on the first try. ";
-        sc.setToolTip(tooltip);
-        add(sc);
+                         " right on the first try. (Click for more info) ";
+        simpleCont.setToolTip(tooltip);
+        add(simpleCont);
 
         helpButton = new MyIconButton("header-panel-help-btn");
         helpButton.addSelectHandler(new SelectHandler() {
@@ -241,16 +243,16 @@ public class HeaderPanel extends FlowLayoutContainer {
             nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
             String s = "Welcome <b>" + nameCap + "</b>.";
             if (viewCount > 1) {
-                s += "  You have completed " + viewCount + " practice problems. ";
-
-                if(UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
-                    s+= " You got " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "% of " +
-                            UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() + " problems correct";
-                }
-                
-                s += ".";
+                s += "  You have completed " + viewCount + " problems. ";
+                s+= "Your score is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
             }
             _helloInfo.setHTML(s);
+            _helloInfo.addClickHandler(new ClickHandler() {
+                @Override
+                public void onClick(ClickEvent event) {
+                    new ShowUserProgramStatusDialog();
+                }
+            });
         }
     }
 

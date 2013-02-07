@@ -26,7 +26,7 @@ h1, h2, h3, h4 {
         text-align: left;
 }
 
-.header-panel a {
+.header-panel .assigments_anchor {
 	position: absolute;
 	left: 200px;
 	top:8px;
@@ -471,8 +471,8 @@ img.resource-item-complete {
         font-size: .9em;
         margin-top: 3px;
         position: absolute;
-        right: 300px;
-        width: 300px;
+        right: 200px;
+        width: 250px;
 }
 .resource-accord-panel-loading {
         color: #E2FFFF;

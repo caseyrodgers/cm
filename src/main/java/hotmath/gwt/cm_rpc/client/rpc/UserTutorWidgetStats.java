@@ -31,8 +31,6 @@ public class UserTutorWidgetStats implements Response {
         this.userId = userId;
     }
 
-    public final static int NO_WIDGETS_COMPLETED=-1;
-    
     /** If less than 2 widgets have been completed
      *  then return indicator that percent is not valid
      *  and should not be shown.
@@ -40,12 +38,7 @@ public class UserTutorWidgetStats implements Response {
      * @return
      */
     public int getCorrectPercent() {
-        if(countWidgets < 2) {
-            return NO_WIDGETS_COMPLETED;
-        }
-        else {
-            return correctPercent;
-        }
+        return correctPercent;
     }
 
     public void setCorrectPercent(int correctPercent) {

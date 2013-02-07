@@ -128,7 +128,7 @@ public class UserInfoDao {
 	             widgetStats = new UserTutorWidgetStats(ui.getUid(),percentCorrect,countWidgets);
 	         }
 	         else {
-	             widgetStats = new UserTutorWidgetStats(ui.getUid(),UserTutorWidgetStats.NO_WIDGETS_COMPLETED,0);
+	             widgetStats = new UserTutorWidgetStats(ui.getUid(),0,0);
 	         }
 	         ui.setTutorInputWidgetStats(widgetStats);
 	         
