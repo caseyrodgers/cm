@@ -71,7 +71,12 @@ public class HeaderPanel extends FlowLayoutContainer {
         
         SimpleContainer sc = new SimpleContainer();
         sc.setWidget(_helloInfo);
-        sc.setToolTip("The percentage shown is for the first entered answers for practice problems that require answers.");
+        
+        String tooltip = "Some problems require you to enter an answer before you can see the " +
+                         " steps. Your percentage on these problems is based on your first try. " +
+                         "As you study each topic, you should get more and more of the answers " +
+                         " right on the first try. ";
+        sc.setToolTip(tooltip);
         add(sc);
 
         helpButton = new MyIconButton("header-panel-help-btn");
@@ -157,7 +162,7 @@ public class HeaderPanel extends FlowLayoutContainer {
 
 
     protected void updateUserTutorStats(UserTutorWidgetStats userStats) {
-        UserInfo.getInstance().setTutorInputWidgetAnswerPercentCorrect(userStats.getCorrectPercent());
+        UserInfo.getInstance().setTutorInputWidgetStats(userStats);
         setLoginInfo();
     }
 
@@ -230,14 +235,15 @@ public class HeaderPanel extends FlowLayoutContainer {
              */
             if (nameCap.startsWith("Student: "))
                 nameCap = "Student";
-
+            
             nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
-            String s = "Hello, <b>" + nameCap + "</b>";
+            String s = "Welcome <b>" + nameCap + "</b>.";
             if (viewCount > 1) {
-                s += ". You have worked on " + viewCount + " problems";
+                s += "  You have completed " + viewCount + " practice problems. ";
                 
-                if(UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() != UserTutorWidgetStats.NO_WIDGETS_COMPLETED) {
-                    s+= " with " + UserInfo.getInstance().getTutorInputWidgetAnswerPercentCorrect() + "% correct <first time>";
+                if(UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
+                    s+= " You got " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "% of " +
+                            UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() + " problems correct";
                 }
                 
                 s += ".";

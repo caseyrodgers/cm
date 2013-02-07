@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_rpc.client;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 
 
 /** Class to encapsulate all user information
@@ -37,7 +38,9 @@ public class UserInfo implements  Response {
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
     UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
-    private int tutorInputWidgetAnswerPercentCorrect;
+    
+    
+    private UserTutorWidgetStats tutorInputWidgetStats;
 
 
     public UserInfo() {}
@@ -370,8 +373,6 @@ public class UserInfo implements  Response {
     public void setOnCompletion(UserProgramCompletionAction onCompletion) {
         this.onCompletion = onCompletion;
     }
-    
-    
 
     public int getTestSegmentSlot() {
         return testSegmentSlot;
@@ -381,27 +382,25 @@ public class UserInfo implements  Response {
         this.testSegmentSlot = testSegmentSlot;
     }
 
-    public int getTutorInputWidgetAnswerPercentCorrect() {
-        return tutorInputWidgetAnswerPercentCorrect;
+    public UserTutorWidgetStats getTutorInputWidgetStats() {
+        return tutorInputWidgetStats;
     }
 
-    public void setTutorInputWidgetAnswerPercentCorrect(int tutorInputWidgetAnswerPercentCorrect) {
-        this.tutorInputWidgetAnswerPercentCorrect = tutorInputWidgetAnswerPercentCorrect;
+    public void setTutorInputWidgetStats(UserTutorWidgetStats tutorInputWidgetStats) {
+        this.tutorInputWidgetStats = tutorInputWidgetStats;
     }
 
     @Override
     public String toString() {
-        return "UserInfo [uid=" + uid + ", testId=" + testId + ", runId=" + runId + ", sessionNumber=" + sessionNumber
-                + ", testSegment=" + testSegment + ", programSegmentCount=" + programSegmentCount
-                + ", testSegmentSlot=" + testSegmentSlot + ", testName=" + testName + ", userName=" + userName
-                + ", viewCount=" + viewCount + ", correctPercent=" + correctPercent + ", backgroundStyle="
-                + backgroundStyle + ", correctAnswers=" + correctAnswers + ", isShowWorkRequired=" + isShowWorkRequired
-                + ", isTutoringAvail=" + isTutoringAvail + ", isFirstView=" + isFirstView + ", isDemoUser="
-                + isDemoUser + ", sessionCount=" + sessionCount + ", password=" + password + ", loginName=" + loginName
-                + ", customProgram=" + customProgram + ", limitGames=" + limitGames + ", userAccountType="
-                + userAccountType + ", passPercentRequired=" + passPercentRequired + ", subTitle=" + subTitle
-                + ", autoTestMode=" + autoTestMode + ", activeUser=" + activeUser + ", DEMO_USER_NAME="
-                + DEMO_USER_NAME + ", onCompletion=" + onCompletion + "]";
+        return "UserInfo [uid=" + uid + ", testId=" + testId + ", runId=" + runId + ", sessionNumber=" + sessionNumber + ", testSegment=" + testSegment
+                + ", programSegmentCount=" + programSegmentCount + ", testSegmentSlot=" + testSegmentSlot + ", testName=" + testName + ", userName=" + userName
+                + ", viewCount=" + viewCount + ", correctPercent=" + correctPercent + ", backgroundStyle=" + backgroundStyle + ", correctAnswers="
+                + correctAnswers + ", isShowWorkRequired=" + isShowWorkRequired + ", isTutoringAvail=" + isTutoringAvail + ", isFirstView=" + isFirstView
+                + ", isDemoUser=" + isDemoUser + ", sessionCount=" + sessionCount + ", password=" + password + ", loginName=" + loginName + ", customProgram="
+                + customProgram + ", limitGames=" + limitGames + ", disableCalcAlways=" + disableCalcAlways + ", disableCalcQuizzes=" + disableCalcQuizzes
+                + ", onCompletion=" + onCompletion + ", tutorInputWidgetStats=" + tutorInputWidgetStats + ", userAccountType=" + userAccountType
+                + ", passPercentRequired=" + passPercentRequired + ", subTitle=" + subTitle + ", autoTestMode=" + autoTestMode + ", activeUser=" + activeUser
+                + ", DEMO_USER_NAME=" + DEMO_USER_NAME + "]";
     }
     
     
@@ -461,5 +460,5 @@ public class UserInfo implements  Response {
          */
         AUTO_ADVANCE
     }
-    
+
 }

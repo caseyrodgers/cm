@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -10,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -118,7 +116,22 @@ public class UserInfoDao {
 	         ui.setTestSegmentSlot(getJsonInt(o.get("testSegmentSlot")));
 	         ui.setTutoringAvail(o.get("tutoringAvail").isBoolean().booleanValue());
 	         ui.setViewCount(getJsonInt(o.get("viewCount")));
-	         ui.setTutorInputWidgetAnswerPercentCorrect((int)o.get("tutorInputWidgetAnswerPercentCorrect").isNumber().doubleValue());
+	         
+	         /** Extact the Tutor Widget Stats
+	          *  If not available, create default with no stats
+	          */
+	         JSONValue widgetStatsJson = o.get("tutorInputWidgetStats");
+	         UserTutorWidgetStats widgetStats=null;
+	         if(widgetStatsJson != null) {
+	             int countWidgets = (int)widgetStatsJson.isObject().get("countWidgets").isNumber().doubleValue();
+	             int percentCorrect = (int)widgetStatsJson.isObject().get("correctPercent").isNumber().doubleValue();
+	             widgetStats = new UserTutorWidgetStats(ui.getUid(),percentCorrect,countWidgets);
+	         }
+	         else {
+	             widgetStats = new UserTutorWidgetStats(ui.getUid(),UserTutorWidgetStats.NO_WIDGETS_COMPLETED,0);
+	         }
+	         ui.setTutorInputWidgetStats(widgetStats);
+	         
 	         String accountType = getJsonString(o.get("userAccountType"));
 	         if(accountType.equals("SCHOOL_USER")) {  
 	        	 ui.setUserAccountType(AccountType.SCHOOL_TEACHER);
