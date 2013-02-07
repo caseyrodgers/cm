@@ -69,6 +69,13 @@ public class HeaderPanel extends FlowLayoutContainer {
         }
 
         _helloInfo.setStyleName("hello-info");
+        _helloInfo.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new ShowUserProgramStatusDialog();
+            }
+        });
+
         add(_helloInfo);
 
         helpButton = new MyIconButton("header-panel-help-btn");
@@ -237,12 +244,6 @@ public class HeaderPanel extends FlowLayoutContainer {
                 s+= "Your <a href='#'>score</a> is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
             }
             _helloInfo.setHTML(s);
-            _helloInfo.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    new ShowUserProgramStatusDialog();
-                }
-            });
         }
     }
 
