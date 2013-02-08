@@ -35,7 +35,7 @@
         }
         
         .tutorMessage {
-           color: red;
+           color: #CBFF07;
            font-weight: bold;
         }
 
