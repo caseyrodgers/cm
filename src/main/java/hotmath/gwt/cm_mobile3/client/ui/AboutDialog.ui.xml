@@ -23,7 +23,7 @@
 	        <ul>
 	            <li><b>Program: </b> <span ui:field="programName">Unknown</span></li>
                 <li style='display: none' ui:field="segmentInfo"><b>Segment: </b> <span ui:field="segment">Segment</span></li>	            
-                <li><b>Score: </b> <span ui:field="score"/></li>
+                <li><b>Graded Problem Score: </b> <span ui:field="score"/></li>
 	        </ul>
 	   </div>
 		<p>
