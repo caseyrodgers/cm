@@ -30,14 +30,13 @@
         }
         
         .correctWrapper h1 {
-            font-size: 1.em;
+            font-size: 1em;
             color: green;
         }
         
         .tutorMessage {
            font-family: tahoma, arial, verdana, sans-serif;
            color: #CBFF07;
-           font-weight: bold;
         }
 
     </ui:style>
