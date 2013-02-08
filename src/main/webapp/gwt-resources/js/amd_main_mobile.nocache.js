@@ -1,7 +1,6 @@
 require.config({
-    urlArgs: "bust=" + (new Date()).getTime()
+    urlArgs: "bust=20130208"
 });
-
 
 
 require(['CatchupMathMobile3_combined'], function(x) {
