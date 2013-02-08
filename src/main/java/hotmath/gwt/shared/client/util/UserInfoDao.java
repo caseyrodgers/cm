@@ -125,10 +125,11 @@ public class UserInfoDao {
 	         if(widgetStatsJson != null) {
 	             int countWidgets = (int)widgetStatsJson.isObject().get("countWidgets").isNumber().doubleValue();
 	             int percentCorrect = (int)widgetStatsJson.isObject().get("correctPercent").isNumber().doubleValue();
-	             widgetStats = new UserTutorWidgetStats(ui.getUid(),percentCorrect,countWidgets);
+	             int countCorrect = (int)widgetStatsJson.isObject().get("countCorrect").isNumber().doubleValue();
+	             widgetStats = new UserTutorWidgetStats(ui.getUid(),percentCorrect,countWidgets, countCorrect);
 	         }
 	         else {
-	             widgetStats = new UserTutorWidgetStats(ui.getUid(),0,0);
+	             widgetStats = new UserTutorWidgetStats(ui.getUid(),0,0,0);
 	         }
 	         ui.setTutorInputWidgetStats(widgetStats);
 	         

@@ -6,13 +6,15 @@ public class UserTutorWidgetStats implements Response {
     int userId;
     int correctPercent;
     int countWidgets;
+    int countCorrect;
     
     public UserTutorWidgetStats() {}
     
-    public UserTutorWidgetStats(int userId, int correctPercent, int countWidgets) {
+    public UserTutorWidgetStats(int userId, int correctPercent, int countWidgets, int countCorrect) {
         this.userId = userId;
         this.correctPercent = correctPercent;
         this.countWidgets = countWidgets;
+        this.countCorrect = countCorrect;
     }
 
     public int getCountWidgets() {
@@ -43,5 +45,13 @@ public class UserTutorWidgetStats implements Response {
 
     public void setCorrectPercent(int correctPercent) {
         this.correctPercent = correctPercent;
+    }
+
+    public int getCountCorrect() {
+        return countCorrect;
+    }
+
+    public void setCountCorrect(int countCorrect) {
+        this.countCorrect = countCorrect;
     }
 }

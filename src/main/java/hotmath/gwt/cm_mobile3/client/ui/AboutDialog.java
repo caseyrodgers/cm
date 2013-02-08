@@ -5,9 +5,12 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -56,6 +59,9 @@ public class AboutDialog extends DialogBox  {
 	        }
 		}
 		loggedInAs.setInnerHTML(loggedIn);
+		
+		score.setInnerHTML("--");
+		getScoreFromServer();
 
 		if(name != null) {
 		    programName.setInnerHTML(name);
@@ -89,13 +95,28 @@ public class AboutDialog extends DialogBox  {
         setVisible(true);
 	}
 	
-	public void showCentered() {
+	private void getScoreFromServer() {
+	    CatchupMathMobileShared.getCmService().execute(new GetUserWidgetStatsAction(SharedData.getUserInfo().getUid()), new AsyncCallback<UserTutorWidgetStats>() {
+	        
+	        @Override
+	        public void onSuccess(UserTutorWidgetStats result) {
+	            score.setInnerHTML(result.getCorrectPercent() + "% (" + result.getCountCorrect() / result.getCountWidgets() + ")");
+	        }
+	        
+	        @Override
+	        public void onFailure(Throwable caught) {
+	            Log.error("Error getting user program stats from server");
+	        }
+        });
+    }
+
+    public void showCentered() {
 		center();
 	}
 	
 	
 	@UiField
-	Element loggedInAs,programInfo,programName, segment, segmentInfo;
+	Element loggedInAs,programInfo,programName, segment, segmentInfo, score;
 }
 
 

@@ -37,6 +37,7 @@
         .tutorMessage {
            font-family: tahoma, arial, verdana, sans-serif;
            color: #CBFF07;
+           font-size: .9em;
         }
 
     </ui:style>

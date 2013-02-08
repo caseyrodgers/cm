@@ -402,7 +402,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
     static public void solutionHasBeenViewed_Gwt(String eventName) {
         InmhItemData item = _instance.getResourceItem();
         if(CmShared.getQueryParameter("debug") != null || !item.isViewed()) {
-            item.setViewed(true);
+            //item.setViewed(true);
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, item));
         }
     }

@@ -248,10 +248,10 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                 // update the total count in the Header
                 // only if a practice or cmextra type
                 int vc = UserInfo.getInstance().getViewCount();
-                if (isSolutionResource)
+                if (isSolutionResource && !resourceItem.isViewed()) {
                     vc++;
-
-                UserInfo.getInstance().setViewCount(vc);
+                    UserInfo.getInstance().setViewCount(vc);
+                }
                 HeaderPanel.__instance.setLoginInfo();
 
                 // only mark practice problems

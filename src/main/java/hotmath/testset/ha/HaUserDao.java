@@ -8,7 +8,6 @@ import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.model.UserWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -409,7 +408,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
             logger.error(ee);
         }
             
-        return new UserTutorWidgetStats(uid, (int)percent, (int)totals[TOTAL_WIDGETS]);
+        return new UserTutorWidgetStats(uid, (int)percent, (int)totals[TOTAL_WIDGETS], (int)totals[COUNT_CORRECT]);
     }
 
 
