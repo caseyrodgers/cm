@@ -96,11 +96,15 @@ public class AboutDialog extends DialogBox  {
 	}
 	
 	private void getScoreFromServer() {
+	    if(SharedData.getUserInfo() == null || SharedData.getUserInfo().getUid() == 0) {
+	        return;
+	    }
+	    
 	    CatchupMathMobileShared.getCmService().execute(new GetUserWidgetStatsAction(SharedData.getUserInfo().getUid()), new AsyncCallback<UserTutorWidgetStats>() {
 	        
 	        @Override
 	        public void onSuccess(UserTutorWidgetStats result) {
-	            score.setInnerHTML(result.getCorrectPercent() + "% (" + result.getCountCorrect() / result.getCountWidgets() + ")");
+	            score.setInnerHTML(result.getCorrectPercent() + "% (" + result.getCountCorrect()  + "/" + result.getCountWidgets() + ")");
 	        }
 	        
 	        @Override

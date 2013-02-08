@@ -12,6 +12,7 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
@@ -86,6 +87,7 @@ public class HeaderPanel extends Composite {
         _logout.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
+                SharedData.setUserInfo(null);
                 CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
             }
         });
