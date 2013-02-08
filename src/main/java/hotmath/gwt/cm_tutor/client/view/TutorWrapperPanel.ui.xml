@@ -35,6 +35,7 @@
         }
         
         .tutorMessage {
+           font-family: tahoma, arial, verdana, sans-serif;
            color: #CBFF07;
            font-weight: bold;
         }
