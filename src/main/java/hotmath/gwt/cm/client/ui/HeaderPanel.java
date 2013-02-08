@@ -241,7 +241,9 @@ public class HeaderPanel extends FlowLayoutContainer {
             String s = "Welcome <b>" + nameCap + "</b>.";
             if (viewCount > 1) {
                 s += "  You have completed " + viewCount + " problems. ";
-                s+= "Your <a href='#'>score</a> is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
+                if(UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
+                    s+= "Your <a href='#'>score</a> is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
+                }
             }
             _helloInfo.setHTML(s);
         }
