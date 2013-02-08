@@ -9,14 +9,13 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
-import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
@@ -37,7 +36,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	ProblemNumber problem;
 	
     TutorWrapperPanel tutorPanel;
-    SolutionResponse lastResponse;
+    SolutionInfo lastResponse;
     String _title;
     
 	public PrescriptionLessonResourceTutorViewImpl() {
@@ -77,6 +76,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	            return new SaveSolutionContextAction(uid, rid, pid, problemNumber, variablesJson);
 	        }
 	        
+	        @Override
+            public Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo) {
+                return new SaveTutorInputWidgetAnswerAction(SharedData.getUserInfo().getUid(), SharedData.getUserInfo().getRunId(),problem.getPid(), value, yesNo);
+            }
+	        
 	    });
 	    initWidget(tutorPanel);
 	    setStyleName("prescriptionLessonResourceTutorViewImpl");
@@ -91,19 +95,18 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     }
 
 	@Override
-    public void loadSolution(final SolutionResponse solution) {
+    public void loadSolution(final SolutionInfo solution) {
 	    
 	    // this.tutorPanel.getElement().setAttribute("style", "display: none");
 	    this.tutorPanel.setVisible(false);
 	    
 	    this.lastResponse = solution;
-	    this.problem = solution.getProblem();
+	    this.problem = new ProblemNumber(solution.getPid());
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 			@Override
 			public void execute() {
-			    SolutionInfo si = new SolutionInfo(solution.getProblem().getPid(),solution.getTutorHtml(),solution.getSolutionData(),false);
-			    si.setContext(new SolutionContext(solution.getProblem().getPid(), 0, solution.getSolutionVariableContext()));
-				tutorPanel.externallyLoadedTutor(si, getWidget(),si.getPid(), null, si.getJs(), si.getHtml(), _title, false, false, si.getContext().getContextJson());
+			    String context = solution.getContext() != null?solution.getContext().getContextJson():null;
+				tutorPanel.externallyLoadedTutor(solution, getWidget(),solution.getPid(), null, solution.getJs(), solution.getHtml(), _title, false, false, context);
 				
 				tutorPanel.setVisible(true);				
 			}

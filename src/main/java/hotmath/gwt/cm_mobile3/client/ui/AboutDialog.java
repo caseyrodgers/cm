@@ -47,6 +47,7 @@ public class AboutDialog extends DialogBox  {
 		
 		String loggedIn="nobody";
 		String name=null;
+		String segment=null;
 		if(SharedData.getUserInfo() != null) {
 		    loggedIn = SharedData.getUserInfo().getUserName();
 		    name = SharedData.getUserInfo().getTestName();
@@ -54,8 +55,7 @@ public class AboutDialog extends DialogBox  {
 	        int seg = SharedData.getUserInfo().getTestSegment();
 	        int segCnt = SharedData.getUserInfo().getProgramSegmentCount();
 	        if(segCnt > 1) {
-	            segment.setInnerHTML(seg + " of " + segCnt);
-	            segmentInfo.setAttribute("style", "display: block");
+	            segment = seg + " of " + segCnt;
 	        }
 		}
 		loggedInAs.setInnerHTML(loggedIn);
@@ -64,7 +64,11 @@ public class AboutDialog extends DialogBox  {
 		getScoreFromServer();
 
 		if(name != null) {
-		    programName.setInnerHTML(name);
+		    String value = name;
+		    if(segment != null) {
+		        value += " " + segment;
+		    }
+		    programName.setInnerHTML(value);
 		    programInfo.setAttribute("style", "display: block");
 		}
 		
@@ -120,7 +124,7 @@ public class AboutDialog extends DialogBox  {
 	
 	
 	@UiField
-	Element loggedInAs,programInfo,programName, segment, segmentInfo, score;
+	Element loggedInAs,programInfo,programName, score;
 }
 
 

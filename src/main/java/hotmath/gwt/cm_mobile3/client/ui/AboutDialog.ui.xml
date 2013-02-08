@@ -6,10 +6,15 @@
 		.main {
 		    padding: 10px;
 		}
-		.main .footer {
-		    padding-left: 10px;
-		    padding-bottom: 5px;
-		}
+
+        .main label {
+            font-weight: bold;
+        }
+
+        .main div div {
+            margin-bottom: 15px;
+        }
+         
 		.programInfo {
 		    margin: 5px;
 		    padding: 10px;
@@ -20,11 +25,10 @@
 	<g:HTMLPanel styleName="{style.main}">
 	   <p>You are logged in as: <span ui:field="loggedInAs"></span></p>
 	   <div style='display: none' class='{style.programInfo}' ui:field="programInfo">
-	        <ul>
-	            <li><b>Program: </b> <span ui:field="programName">Unknown</span></li>
-                <li style='display: none' ui:field="segmentInfo"><b>Segment: </b> <span ui:field="segment">Segment</span></li>	            
-                <li><b>Graded Problem Score: </b> <span ui:field="score"/></li>
-	        </ul>
+	       <label>Program: </label> 
+	       <div ui:field="programName">Unknown</div>
+           <label>Graded Problem Score</label>
+           <div ui:field="score">--</div>
 	   </div>
 		<p>
             For more detailed information about Catchup Math, 

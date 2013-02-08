@@ -4,10 +4,10 @@ import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 
 public interface PrescriptionLessonResourceTutorView extends IPage,HasWhiteboard {
-    void loadSolution(SolutionResponse solution);
+    void loadSolution(SolutionInfo solution);
     void setPresenter(Presenter p);
     ProblemNumber getLoadedProblem();
     void setTitle(String title);

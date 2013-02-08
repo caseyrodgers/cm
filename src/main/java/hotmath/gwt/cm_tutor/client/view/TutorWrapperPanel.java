@@ -12,8 +12,10 @@ import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
+import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -199,15 +201,7 @@ public class TutorWrapperPanel extends Composite {
     
                     initializeTutor(TutorWrapperPanel.this, pid, jsonConfig, result.getJs(), result.getHtml(), title,
                             hasShowWork, shouldExpandSolution, variableContext);
-                    
-                    
-                    if(result.getWidgetResult() != null && result.getWidgetResult().getValue() != null) {
-                        Log.debug("TutorWrapperPanel->Setting widget value: " + result.getWidgetResult() );
-                        // setTutorWidgetValue(result.getWidgetResult().getValue());
-                        jsni_moveToFirstStep();
-                        _wasWidgetAnswered = true;
-                    }
-                    
+
                     callback.solutionLoaded(result);
                 }
                 finally {
@@ -252,15 +246,31 @@ public class TutorWrapperPanel extends Composite {
         	}
             if (this.tutorCallback != null) {
                 
+                saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
+                
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
-                
-                
                 if(correct && tutorCallback.showTutorWidgetInfoOnCorrect()) {
                     // widgetCorrectInfo.setClassName("widget_correct_info_show");
                 }
             } else {
                 Window.alert("tutorWidgetComplete not defined");
             }
+        }
+    }
+    
+    
+    private void saveTutorWidgetAsComplete(Action<UserTutorWidgetStats> action) {
+        if(action != null) {
+            CmTutor.getCmService().execute(action,new AsyncCallback<UserTutorWidgetStats>() {
+                @Override
+                public void onSuccess(UserTutorWidgetStats userStats) {
+                    CmRpc.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
+                }
+                @Override
+                public void onFailure(Throwable caught) {
+                    Log.error("Error saving tutor widget value", caught);
+                }
+            });
         }
     }
 
@@ -300,6 +310,7 @@ public class TutorWrapperPanel extends Composite {
         widgetCorrectInfo.setClassName("widget_correct_info_hide");
         
         
+        
         initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
 
         debugInfo.setText(pid);
@@ -309,6 +320,16 @@ public class TutorWrapperPanel extends Composite {
                 Window.open("/solution_editor/SolutionEditor.html?pid=" + pid.split("\\$")[0], "SolutionEditor", "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
             }
         });
+        
+        
+        
+        
+        if(_solutionInfo.getWidgetResult() != null && _solutionInfo.getWidgetResult().getValue() != null) {
+            Log.debug("TutorWrapperPanel->Setting widget value: " + _solutionInfo.getWidgetResult() );
+            // setTutorWidgetValue(result.getWidgetResult().getValue());
+            jsni_moveToFirstStep();
+            _wasWidgetAnswered = true;
+        }
         
         CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
@@ -628,6 +649,15 @@ public class TutorWrapperPanel extends Composite {
          * @param problemNumber
          */
         void onNewProblem(int problemNumber);
+
+        /** Return action that will define the tutor widget action save
+         * 
+         * @param value
+         * @param yesNo
+         * @return
+         */
+        Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo);
+        
 
         /** Return the action used to save this context, null if
          *  no context save should happen.

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
+import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -116,6 +117,10 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 return new SaveSolutionContextAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid, problemNumber, variablesJson);
             }
             
+            @Override
+            public Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo) {
+                return new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(),pid, value, yesNo);
+            }
      
         });
         tutorPanel.addStyleName("tutor_solution_wrapper");

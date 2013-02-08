@@ -7,11 +7,7 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImp
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
-import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoHandler;
-import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -19,7 +15,6 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_rpc.client.rpc.SolutionResponse;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
@@ -45,15 +40,7 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<SolutionInfo>() {
             public void onSuccess(SolutionInfo solutionInfo) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-                
-                ProblemNumber probNum = new ProblemNumber(solutionInfo.getPid());
-                String tutorHtml = solutionInfo.getHtml();
-                String solutionData = solutionInfo.getJs();
-                String solutionVariableContext = solutionInfo.getContext()!=null?solutionInfo.getContext().getContextJson():null;
-                boolean hasShowWork = false;
-                
-                SolutionResponse solutionResponse = new SolutionResponse(probNum,tutorHtml,solutionData,hasShowWork,solutionVariableContext);
-                view.loadSolution(solutionResponse);
+                view.loadSolution(solutionInfo);
             }
             
             @Override
