@@ -282,7 +282,7 @@ function enabledNext(yesNo) {
 
 function enabledButton(btn, yesNo) {
 	
-	gwt_enableTutorButton(btn, yesNo);
+	// gwt_enableTutorButton(btn, yesNo);
 	
 //    var clazz = 'sexybutton sexy_cm_silver ';
 //    if (!yesNo) {
