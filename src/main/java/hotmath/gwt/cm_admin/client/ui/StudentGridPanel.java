@@ -797,7 +797,10 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         Menu menu = new Menu();
         menu.add(defineSummaryItem(grid));
         menu.add(defineReportCardItem(grid));
-        menu.add(defineAssignmentReportItem(grid));
+        
+        if(CmShared.getQueryParameter("debug") != null) {
+            menu.add(defineAssignmentReportItem(grid));
+        }
 
         btn.setMenu(menu);
         return btn;
