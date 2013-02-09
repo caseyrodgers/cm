@@ -142,7 +142,7 @@ public class TutorWrapperPanel extends Composite {
     
     private void moveTutorNextStep() {
         if(isWidgetAndNotAnswered()) {
-            showTutorMessage("Answer the question first");
+            showTutorMessage("Check your answer first");
             return;
         }
         else {
