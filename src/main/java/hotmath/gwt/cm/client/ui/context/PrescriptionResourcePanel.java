@@ -174,6 +174,7 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
             	switch(event.getEventType()) {
             	case EVENT_TYPE_REQUIRED_COMPLETE:
                     InmhItemData id = (InmhItemData)event.getEventData();
+                    id.setViewed(true);
                     boolean isComplete = __instance.resourceButtons.get("practice").checkCompletion();
                     if (isComplete) {
                     	setLessonCompleted(id.getTitle());
