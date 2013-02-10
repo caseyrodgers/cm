@@ -222,7 +222,8 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
              return null;
          }
          else {
-             if(ps.getElementsByTagName("canvas").length > 0) {
+             // cannot be a canvas element, anywhere
+             if($doc.getElementsByTagName("canvas").length > 0) {
                  return null;
              }
              else {
