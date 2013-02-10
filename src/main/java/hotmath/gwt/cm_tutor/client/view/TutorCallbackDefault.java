@@ -56,5 +56,4 @@ public class TutorCallbackDefault implements TutorCallback {
     public Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo) {
         return null;
     }
-
 }

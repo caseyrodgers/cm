@@ -121,6 +121,13 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             public Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo) {
                 return new SaveTutorInputWidgetAnswerAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(),pid, value, yesNo);
             }
+            
+             @Override
+            public void solutionHasBeenInitialized() {
+                 if(getResourceItem().isViewed()) {
+                     tutorPanel.unlockSolution();
+                 }
+            }
      
         });
         tutorPanel.addStyleName("tutor_solution_wrapper");

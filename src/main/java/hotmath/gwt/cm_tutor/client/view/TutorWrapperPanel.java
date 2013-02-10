@@ -140,6 +140,16 @@ public class TutorWrapperPanel extends Composite {
         $wnd.TutorManager.showMessage(message);
     }-*/;
     
+    
+    /** Unlock the solution so user can move through without
+     *  having to enter a value.
+     *  
+     */
+    public void unlockSolution() {
+        _wasWidgetAnswered = true;
+        jsni_moveToFirstStep();
+    }
+    
     private void moveTutorNextStep() {
         if(isWidgetAndNotAnswered()) {
             showTutorMessage("Check your answer first");
@@ -178,7 +188,7 @@ public class TutorWrapperPanel extends Composite {
         jsni_setTutorWidgetValue(value);
     }
 
-    public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig,
+    public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig, 
             final CallbackAfterSolutionLoaded callback) {
         
         
@@ -323,7 +333,9 @@ public class TutorWrapperPanel extends Composite {
         
         
         
-        
+        /** If there was an answer entered
+         * 
+         */
         if(_solutionInfo.getWidgetResult() != null && _solutionInfo.getWidgetResult().getValue() != null) {
             Log.debug("TutorWrapperPanel->Setting widget value: " + _solutionInfo.getWidgetResult() );
             // setTutorWidgetValue(result.getWidgetResult().getValue());
@@ -649,6 +661,7 @@ public class TutorWrapperPanel extends Composite {
          * @param problemNumber
          */
         void onNewProblem(int problemNumber);
+
 
         /** Return action that will define the tutor widget action save
          * 
