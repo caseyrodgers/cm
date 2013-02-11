@@ -255,6 +255,9 @@ public class TutorWrapperPanel extends Composite {
         	
             if (this.tutorCallback != null) {
                 
+                /** Only save first widget value
+                 * 
+                 */
                 if(!_wasWidgetAnswered) {
                     saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
                     _wasWidgetAnswered=true;
