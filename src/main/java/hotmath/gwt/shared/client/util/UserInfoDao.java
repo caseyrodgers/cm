@@ -20,6 +20,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Window;
 
 public class UserInfoDao {
     
@@ -122,7 +123,7 @@ public class UserInfoDao {
 	          */
 	         JSONValue widgetStatsJson = o.get("tutorInputWidgetStats");
 	         UserTutorWidgetStats widgetStats=null;
-	         if(widgetStatsJson != null) {
+	         if(widgetStatsJson != null && widgetStatsJson.isObject() != null) {
 	             int countWidgets = (int)widgetStatsJson.isObject().get("countWidgets").isNumber().doubleValue();
 	             int percentCorrect = (int)widgetStatsJson.isObject().get("correctPercent").isNumber().doubleValue();
 	             int countCorrect = (int)widgetStatsJson.isObject().get("countCorrect").isNumber().doubleValue();
