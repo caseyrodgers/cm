@@ -243,8 +243,6 @@ public class TutorWrapperPanel extends Composite {
     public void tutorWidgetComplete(String inputValue, boolean correct) {
         Log.debug("tutorWidgetComplete (in GWT) called: " + inputValue);
 
-        _wasWidgetAnswered=true;
-        
         if(_readOnly) {
             jsni_setTutorWidgetValue(_lastWidgetValue);
             this.tutorCallback.tutorWidgetCompleteDenied(inputValue, correct);
@@ -254,9 +252,13 @@ public class TutorWrapperPanel extends Composite {
         	if(!correct) {
         	    jsni_moveToFirstStep();
         	}
+        	
             if (this.tutorCallback != null) {
                 
-                saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
+                if(!_wasWidgetAnswered) {
+                    saveTutorWidgetAsComplete(tutorCallback.getSaveTutorWidgetCompleteAction(inputValue, correct));
+                    _wasWidgetAnswered=true;
+                }
                 
                 this.tutorCallback.tutorWidgetComplete(inputValue, correct);
                 if(correct && tutorCallback.showTutorWidgetInfoOnCorrect()) {
