@@ -103,7 +103,6 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
                 if(correct) {
                     solutionHasBeenViewed(inputValue);
                 }
-                saveTutorInputWidgetComplete(inputValue, correct);
             }
             
             @Override
