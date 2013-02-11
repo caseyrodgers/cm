@@ -194,9 +194,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
 
     
     private native String getProblemStatementFromDocument(String pid) /*-{
+         var quizEle = $doc.getElementById('testset_div');
          var ps = $doc.getElementById('problem_statement');
          if(!ps) {
-             var quizEle = $doc.getElementById('testset_div');
              if(quizEle) {
                  var divs = quizEle.getElementsByTagName('div');
                  // alert('found ' + divs.length);
@@ -217,18 +217,11 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
              }
          }
          
-         
          if(!ps) {
              return null;
          }
          else {
-             // cannot be a canvas element, anywhere
-             if($doc.getElementsByTagName("canvas").length > 0) {
-                 return null;
-             }
-             else {
-                 return ps.innerHTML;
-              }
+             return ps.innerHTML;
          }
          
     }-*/;    

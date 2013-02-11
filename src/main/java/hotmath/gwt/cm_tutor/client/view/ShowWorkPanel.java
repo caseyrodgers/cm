@@ -140,7 +140,7 @@ public class ShowWorkPanel extends Composite {
             canvasBackground.setInnerHTML("<div>" + problemStatement + "</div>");
             canvasBackground.setAttribute("style", "display: block");
 
-            initializeWidgets();
+            //initializeWidgets();
         } else {
             canvasBackground.setAttribute("style", "display: none");
             canvasBackground.setInnerHTML("");
