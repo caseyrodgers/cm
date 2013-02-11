@@ -81,6 +81,13 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
                 return new SaveTutorInputWidgetAnswerAction(SharedData.getUserInfo().getUid(), SharedData.getUserInfo().getRunId(),problem.getPid(), value, yesNo);
             }
 	        
+	        @Override
+	        public void solutionHasBeenInitialized() {
+	            if(presenter.getItemData().isViewed()) {
+	                tutorPanel.unlockSolution();
+	            }
+	        }
+	        
 	    });
 	    initWidget(tutorPanel);
 	    setStyleName("prescriptionLessonResourceTutorViewImpl");
