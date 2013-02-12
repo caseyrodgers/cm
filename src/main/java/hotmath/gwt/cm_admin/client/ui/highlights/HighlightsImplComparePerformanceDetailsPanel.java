@@ -1,16 +1,14 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsImplBase;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.GridCellRenderer;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /**
  * 
@@ -27,8 +25,8 @@ Flashcards used      3.2     5.2       4.5            3.6
  * @author casey
  *
  */
-public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDetailsPanelBase {
-    public HighlightImplComparePerformanceDetailsPanel(HighlightImplBase base) {
+public class HighlightsImplComparePerformanceDetailsPanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplComparePerformanceDetailsPanel(HighlightsImplBase base) {
         super(base);
     }
     
@@ -36,16 +34,14 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
     public HighlightsGetReportAction.ReportType getReportType() {
         return HighlightsGetReportAction.ReportType.COMPARE_PERFORMANCE;
     }
-    
-    @Override
-    protected List<ColumnConfig> getColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
 
-        ColumnConfig column = new ColumnConfig();
-        column.setId("name");
-        column.setHeader("");
-        column.setWidth(100);
+    @Override
+    protected ColumnModel<HighlightReportData> getColumns() {
+        List<ColumnConfig<HighlightReportData, ?>> configs = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
+
+        ColumnConfig<HighlightReportData, String> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 100, "");
         column.setSortable(false);
+/*        
         column.setRenderer(new GridCellRenderer<ModelData>() {
             public Object render(ModelData model, String property, com.extjs.gxt.ui.client.widget.grid.ColumnData config, int rowIndex, int colIndex, com.extjs.gxt.ui.client.store.ListStore<ModelData> store, com.extjs.gxt.ui.client.widget.grid.Grid<ModelData> grid) {
                 String msg = (String)model.get("name");
@@ -54,35 +50,27 @@ public class HighlightImplComparePerformanceDetailsPanel extends HighlightImplDe
                 return html;
             }
         });
+*/
         configs.add(column);
 
-        column = new ColumnConfig();
-        column.setId("group");
-        column.setHeader("Group");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);
-        configs.add(column);
+        ColumnConfig<HighlightReportData, Integer> col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.group(), 75, "Group");
+        col.setSortable(false);
+        //col.setAlignment(HorizontalAlignment.RIGHT);
+        configs.add(col);
 
-        column = new ColumnConfig();
-        column.setId("school");
-        column.setHeader("School");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);
-        configs.add(column);
+        col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.school(), 75, "School");
+        col.setSortable(false);
+        //col.setAlignment(HorizontalAlignment.RIGHT);
+        configs.add(col);
         
-        column = new ColumnConfig();
-        column.setId("national");
-        column.setHeader("Nation Wide");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);        
-        configs.add(column);
-
-        return configs;
+        col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.national(), 75, "Nation wide");
+        col.setSortable(false);
+        //column.setAlignment(HorizontalAlignment.RIGHT);        
+        configs.add(col);
+        
+        return new ColumnModel<HighlightReportData>(configs);
     }
-    
+
     @Override
     protected void showSelectStudentDetail() {
     }

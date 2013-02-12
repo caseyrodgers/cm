@@ -1,5 +1,7 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_admin.client.ui.StudentGridProperties;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -10,82 +12,127 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.SelectionMode;
-import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.Events;
-import com.extjs.gxt.ui.client.event.Listener;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
-import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Element;
+import com.sencha.gxt.core.client.ValueProvider;
+import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 
-abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.HTML;
+
+abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     
-    HighlightImplBase base;
-    Grid<HighlightReportModel> _grid;
-    HighlightImplDetailsPanelBase __instance;
-    public HighlightImplDetailsPanelBase(HighlightImplBase base) {
+    HighlightsImplBase base;
+    Grid<HighlightReportData> _grid;
+    HighlightsImplDetailsPanelBase __instance;
+
+    interface GridProperties extends PropertyAccess<HighlightReportData> {
+    	@Path("uid")
+        ModelKeyProvider<HighlightReportData> id();
+
+        ValueProvider<HighlightReportData, Integer> activities();
+
+        ValueProvider<HighlightReportData, Integer> active();
+
+        ValueProvider<HighlightReportData, Integer> games();
+
+        @Path("groupCount")
+        ValueProvider<HighlightReportData, Integer> group();
+
+        @Path("lessonsViewed")
+        ValueProvider<HighlightReportData, Integer> lessons();
+
+        @Path("loginCount")
+        ValueProvider<HighlightReportData, Integer> logins();
+
+        ValueProvider<HighlightReportData, String> name();
+
+        @Path("dbCount")
+        ValueProvider<HighlightReportData, Integer> national();
+
+        ValueProvider<HighlightReportData, Integer> quizzesPassed();
+
+        ValueProvider<HighlightReportData, Integer> quizzesTaken();
+
+        @Path("schoolCount")
+        ValueProvider<HighlightReportData, Integer> school();
+
+        ValueProvider<HighlightReportData, Integer> videos();
+
+    }
+/*
+ *     int groupCount;
+    int schoolCount;
+    int dbCount;
+ */
+    GridProperties _gridProps = GWT.create(GridProperties.class);
+    
+    public HighlightsImplDetailsPanelBase(HighlightsImplBase base) {
         __instance = this;
         this.base = base;
-    }
-
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
         getDataFromServer();
     }
 
+//    @Override
+//    protected void onRender(Element parent, int index) {
+//        super.onRender(parent, index);
+//        getDataFromServer();
+//    }
+
     abstract public HighlightsGetReportAction.ReportType getReportType();
     
-    protected List<ColumnConfig> getColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    protected ColumnModel<HighlightReportData> getColumns() {
+        List<ColumnConfig<HighlightReportData, ?>> cols = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
 
-        ColumnConfig column = new ColumnConfig();
-        column.setId("name");
-        column.setHeader("Students with one or more logins");
+        ColumnConfig<HighlightReportData, String> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Students with one or more logins");
         column.setWidth(300);
         column.setSortable(false);
-        configs.add(column);
+        cols.add(column);
 
-        column = new ColumnConfig();
-        column.setId("data1");
-        column.setHeader("Lessons Viewed");
+        column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Lessons Viewed");
         column.setWidth(130);
         column.setSortable(false);
-        configs.add(column);
+        cols.add(column);
         
-        return configs;
+        return new ColumnModel<HighlightReportData>(cols);
     }
     
     
     public String[][] getReportValues() {
         
         try {
-            ListStore<HighlightReportModel> reportStore = _grid.getStore();
+            ListStore<HighlightReportData> reportStore = _grid.getStore();
             
             List<String[]> rows = new ArrayList<String[]>();
-            for(int r=0, t=reportStore.getCount();r<t;r++) {
-                HighlightReportModel rowM = reportStore.getAt(r);
+            for(int r=0, t=reportStore.getAll().size();r<t;r++) {
+                HighlightReportData rowM = reportStore.get(r);
                 
                 List<String> row = new ArrayList<String>();
                 for(int c=0, ct=_grid.getColumnModel().getColumnCount();c<ct;c++) {
-                    ColumnConfig config = _grid.getColumnModel().getColumn(c);
+                    ColumnConfig<HighlightReportData, String> col = _grid.getColumnModel().getColumn(c);
                     try {
-                        Object data = rowM.get(config.getDataIndex());
+                    	// TODO: get actual value
+                        Object data = null; //rowM.get(col.getDataIndex());
                         if(data == null) {
                             data = 0;
                         }
-                        row.add( data.toString());
+                        row.add(data.toString());
                     }
                     catch(Exception ee) {
                         ee.printStackTrace();
@@ -109,8 +156,8 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 
-                HighlightsGetReportAction action = new HighlightsGetReportAction(StudentGridPanel.instance._pageAction, getReportType(),
-                        StudentGridPanel.instance._cmAdminMdl.getUid(),
+                HighlightsGetReportAction action = new HighlightsGetReportAction(StudentGridPanel.instance.getPageAction(), getReportType(),
+                        StudentGridPanel.instance.getCmAdminMdl().getUid(),
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate());
                 setAction(action);
@@ -136,56 +183,59 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     private void drawTable(CmList<HighlightReportData> data) {
         __lastReportData = data;
         
-        removeAll();
+        //removeAll();
         
-        setLayout(new FitLayout());
-        ListStore<HighlightReportModel> store = new ListStore<HighlightReportModel>();
-        _grid = defineGrid(store, new ColumnModel(getColumns()));
+        //setLayout(new FitLayout());
+        ListStore<HighlightReportData> store = new ListStore<HighlightReportData>(_gridProps.id());
+        _grid = defineGrid(store, getColumns());
         if(data == null || data.size() == 0) {
             add(new NoRowsFoundPanel());
         }
         else {
             
-            List<HighlightReportModel> reportList = new ArrayList<HighlightReportModel>();
             for (int i = 0, t = data.size(); i < t; i++) {
-                reportList.add(createTableModel(data.get(i)));
+                //reportList.add(createTableModel(data.get(i)));
+                store.add(data.get(i));
             }
             
-            store.add(reportList);
             add(_grid);
             
             String tip = getGridToolTip();
             if(tip != null)
                 _grid.setToolTip(tip);
-            _grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
-                public void handleEvent(BaseEvent be) {
-                    showSelectStudentDetail();
-                }
-            });
+            //_grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
+            //    public void handleEvent(BaseEvent be) {
+            //        showSelectStudentDetail();
+            //    }
+            //});
         }
         
-        layout();
+        //layout();
     }
     
     protected String getGridToolTip() {
         return "Double click for detailed history";
     }
-    
-    protected HighlightReportModel createTableModel(HighlightReportData data) {
+/*    
+    protected HighlightsReportData createTableModel(HighlightReportData data) {
         if(data.getData() != null)
-            return new HighlightReportModel(data.getUid(), data.getName(), data.getData(),data.getQuizzesTaken());
+            return new HighlightsReportModel(data.getUid(), data.getName(), data.getData(),data.getQuizzesTaken());
         else 
-            return new HighlightReportModel(data.getName(), data.getGroupCount(), data.getSchoolCount(), data.getDbCount());
+            return new HighlightsReportModel(data.getName(), data.getGroupCount(), data.getSchoolCount(), data.getDbCount());
         
     }
-
-    private Grid<HighlightReportModel> defineGrid(final ListStore<HighlightReportModel> store, ColumnModel cm) {
-        final Grid<HighlightReportModel> grid = new Grid<HighlightReportModel>(store, cm);
-        grid.setAutoExpandColumn("name");
+*/
+    private Grid<HighlightReportData> defineGrid(final ListStore<HighlightReportData> store, ColumnModel<HighlightReportData> cm) {
+        final Grid<HighlightReportData> grid = new Grid<HighlightReportData>(store, cm);
+        //grid.setAutoExpandColumn("name");
         grid.setBorders(true);
-        grid.setStripeRows(true);
+        //grid.setStripeRows(true);
+
+        grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getSelectionModel().setFiresEvents(true);
+
+        //grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        //grid.getSelectionModel().setFiresEvents(true);
         
         /** set to default to allow IE to render table correctly
          * 
@@ -198,7 +248,7 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
     
     protected void showSelectStudentDetail() {
 
-        final HighlightReportModel model = _grid.getSelectionModel().getSelectedItem();
+        final HighlightReportData model = _grid.getSelectionModel().getSelectedItem();
         if(model.getUid() == 0)
             return;
         
@@ -229,9 +279,9 @@ abstract public class HighlightImplDetailsPanelBase extends LayoutContainer {
  * @author casey
  *
  */
-class NoRowsFoundPanel extends LayoutContainer {
+class NoRowsFoundPanel extends SimpleContainer {
     public NoRowsFoundPanel() {
-        setLayout(new CenterLayout());
-        add(new Html("<h1 style='font-size: 1.2em;margin: 10px;padding: 10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>"));
+        //setLayout(new CenterLayout());
+        add(new HTML("<h1 style='font-size: 1.2em;margin: 10px;padding: 10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>"));
     }
 }
