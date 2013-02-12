@@ -1,15 +1,15 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
-import java.util.ArrayList;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
+
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-
-public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPanelBase {
-    public HighlightImplZeroLoginsDetailsPanel(HighlightImplBase base) {
+public class HighlightsImplZeroLoginsDetailsPanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplZeroLoginsDetailsPanel(HighlightsImplBase base) {
         super(base);
     }
     
@@ -18,24 +18,21 @@ public class HighlightImplZeroLoginsDetailsPanel extends HighlightImplDetailsPan
         return HighlightsGetReportAction.ReportType.ZERO_LOGINS;
     }
     
-    
     @Override
-    protected List<ColumnConfig> getColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
-        ColumnConfig column = new ColumnConfig();
-        column.setId("name");
-        column.setHeader("Students with zero logins");
-        column.setWidth(500);
-        column.setSortable(false);
-        configs.add(column);
+    protected ColumnModel<HighlightReportData> getColumns() {
+    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
+    	
+    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
+    	columns.get(0).setHeader("Students with zero logins");
+    	columns.get(0).setWidth(500);
         
-        return configs;
+        return new ColumnModel<HighlightReportData>(columns);
     }
-   
-    
+
+/*    
     @Override
-    protected HighlightReportModel createTableModel(HighlightReportData data) {
-        return new HighlightReportModel(data.getUid(), data.getName(), null);
+    protected HighlightsReportModel createTableModel(HighlightReportData data) {
+        return new HighlightsReportModel(data.getUid(), data.getName(), null);
     }
-   
+*/   
 }

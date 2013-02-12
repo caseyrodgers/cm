@@ -1,4 +1,4 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
@@ -6,9 +6,8 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /**
  * 
@@ -23,8 +22,8 @@ Report #2
     SCHOOLWIDE <n> <n> <n> <n> <n>
  *
  */
-public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPanelBase {
-    public HighlightImplGroupUsageDetailsPanel(HighlightImplBase base) {
+public class HighlightsImplGroupUsageDetailsPanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplGroupUsageDetailsPanel(HighlightsImplBase base) {
         super(base);
     }
     
@@ -34,55 +33,40 @@ public class HighlightImplGroupUsageDetailsPanel extends HighlightImplDetailsPan
     }
     
     @Override
-    protected List<ColumnConfig> getColumns() {
-        List<ColumnConfig> configs = new ArrayList<ColumnConfig>();
+    protected ColumnModel<HighlightReportData> getColumns() {
+        List<ColumnConfig<HighlightReportData, ?>> configs = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
 
-        ColumnConfig column = new ColumnConfig();
-        column.setId("name");
-        column.setHeader("Group");
-        column.setWidth(100);
+        ColumnConfig<HighlightReportData, String> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 100, "Group");
         column.setSortable(false);
         configs.add(column);
 
-        column = new ColumnConfig();
-        column.setId("activeCount");
-        column.setHeader("Active");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);
-        configs.add(column);
+        ColumnConfig<HighlightReportData, Integer> col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.active(), 75, "Active");
+        col.setSortable(false);
+        //column.setAlignment(HorizontalAlignment.RIGHT);
+        configs.add(col);
 
-        column = new ColumnConfig();
-        column.setId("videosViewed");
-        column.setHeader("Videos");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);
-        configs.add(column);
+        col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.videos(), 75, "Videos");
+        col.setSortable(false);
+        //col.setAlignment(HorizontalAlignment.RIGHT);
+        configs.add(col);
         
-        column = new ColumnConfig();
-        column.setId("gamesViewed");
-        column.setHeader("Games");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);        
-        configs.add(column);
+        col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.games(), 75, "Games");
+        col.setSortable(false);
+        //col.setAlignment(HorizontalAlignment.RIGHT);        
+        configs.add(col);
         
-        column = new ColumnConfig();
-        column.setId("activitiesViewed");
-        column.setHeader("Activities");
-        column.setWidth(75);
-        column.setSortable(false);
-        column.setAlignment(HorizontalAlignment.RIGHT);        
-        configs.add(column);
+        col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.activities(), 75, "Activities");
+        col.setSortable(false);
+        //col.setAlignment(HorizontalAlignment.RIGHT);        
+        configs.add(col);
         
-        return configs;
+        return new ColumnModel<HighlightReportData>(configs);
     }
-    
-    protected HighlightReportModel createTableModel(HighlightReportData data) {
-        return new HighlightReportModel(data.getName(),data.getActiveCount(), data.getVideosViewed(), data.getGamesViewed(), data.getActivitiesViewed(), data.getFlashCardsViewed());
+/*    
+    protected HighlightsReportModel createTableModel(HighlightReportData data) {
+        return new HighlightsReportModel(data.getName(),data.getActiveCount(), data.getVideosViewed(), data.getGamesViewed(), data.getActivitiesViewed(), data.getFlashCardsViewed());
     }
-    
+*/    
     @Override
     protected void showSelectStudentDetail() {
     }

@@ -1,13 +1,15 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
-public class HighlightImplLoginsWeekDetailsPanel extends HighlightImplDetailsPanelBase {
-    public HighlightImplLoginsWeekDetailsPanel(HighlightImplBase base) {
+public class HighlightsImplLoginsWeekDetailsPanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplLoginsWeekDetailsPanel(HighlightsImplBase base) {
         super(base);
     }
     
@@ -17,11 +19,13 @@ public class HighlightImplLoginsWeekDetailsPanel extends HighlightImplDetailsPan
     }
     
     @Override
-    protected List<ColumnConfig> getColumns() {
-        // TODO Auto-generated method stub
-        List<ColumnConfig> configs = super.getColumns();
-        configs.get(1).setHeader("Logins Per Week");
-        return configs;
+    protected ColumnModel<HighlightReportData> getColumns() {
+    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
+    	
+    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
+    	columns.get(1).setHeader("Logins Per Week");
+        
+        return new ColumnModel<HighlightReportData>(columns);
     }
-   
+
 }

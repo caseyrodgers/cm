@@ -1,13 +1,15 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
-public class HighlightImplMostFailuresLatestQuizDetailsPanel extends HighlightImplDetailsPanelBase {
-    public HighlightImplMostFailuresLatestQuizDetailsPanel(HighlightImplBase base) {
+public class HighlightsImplMostFailuresLatestQuizDetailsPanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplMostFailuresLatestQuizDetailsPanel(HighlightsImplBase base) {
         super(base);
     }
     
@@ -15,13 +17,14 @@ public class HighlightImplMostFailuresLatestQuizDetailsPanel extends HighlightIm
     public HighlightsGetReportAction.ReportType getReportType() {
         return HighlightsGetReportAction.ReportType.FAILED_CURRENT_QUIZZES;
     }
-    
+
     @Override
-    protected List<ColumnConfig> getColumns() {
-        // TODO Auto-generated method stub
-        List<ColumnConfig> configs = super.getColumns();
-        configs.get(1).setHeader("Failures");
-        return configs;
+    protected ColumnModel<HighlightReportData> getColumns() {
+    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
+    	
+    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
+    	columns.get(1).setHeader("Failures");
+        
+        return new ColumnModel<HighlightReportData>(columns);
     }
-   
 }

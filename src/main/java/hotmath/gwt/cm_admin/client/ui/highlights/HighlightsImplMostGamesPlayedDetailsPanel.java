@@ -1,10 +1,12 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.List;
 
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 /** 
 - Least Effort: 
@@ -12,8 +14,8 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
     Ordered listing showing number of lesson topics completed
     Jones, John         0
 */
-public class HighlightImplMostGamesPlayedDetailsPanel extends HighlightImplDetailsPanelBase {
-    public HighlightImplMostGamesPlayedDetailsPanel(HighlightImplBase base) {
+public class HighlightsImplMostGamesPlayedDetailsPanel extends HighlightsImplDetailsPanelBase {
+    public HighlightsImplMostGamesPlayedDetailsPanel(HighlightsImplBase base) {
         super(base);
     }
     
@@ -22,19 +24,20 @@ public class HighlightImplMostGamesPlayedDetailsPanel extends HighlightImplDetai
         return HighlightsGetReportAction.ReportType.MOST_GAMES;
     }
     
-    
     @Override
-    protected List<ColumnConfig> getColumns() {
-        List<ColumnConfig> cm = super.getColumns();
-        cm.get(1).setHeader("Games Played");
+    protected ColumnModel<HighlightReportData> getColumns() {
+    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
+    	
+    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
+    	columns.get(1).setHeader("Games Played");
 
-        ColumnConfig column = new ColumnConfig();
-        column.setId("quizzesTaken");
+        ColumnConfig<HighlightReportData, Integer> column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.quizzesTaken());
         column.setHeader("Quizzes Taken");
         column.setWidth(100);
         column.setSortable(false);
-        cm.add(column);
-            
-        return cm;
+        columns.add(column);
+
+        return new ColumnModel<HighlightReportData>(columns);
     }
+    
 }
