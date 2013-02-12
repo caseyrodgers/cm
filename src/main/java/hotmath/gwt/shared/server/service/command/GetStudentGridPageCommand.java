@@ -350,12 +350,9 @@ class StudentGridComparator implements Comparator<StudentModelI> {
     }
 
     public int compare(StudentModelI p1, StudentModelI p2) {
-        
-        
+
         boolean p1IsCustom = p1.getProgram().getCustom().isCustom();
         boolean p2IsCustom = p2.getProgram().getCustom().isCustom();
-        
-        
         
     	if (sortField.equals(StudentModelExt.NAME_KEY)) {
             return p1.getName().compareToIgnoreCase(p2.getName());
@@ -423,17 +420,9 @@ class StudentGridComparator implements Comparator<StudentModelI> {
     
     
     private int doCompareNull(String l1, String l2) {
-        
-        
-        if(l1 == null) {
-            return -1;
-        }
-        else if(l2 == null) {
-            return 1;
-        }
-        else {
-            return l1.trim().compareTo(l2.trim());
-        }        
+        String v1 = nz(l1);
+        String v2 = nz(l2);
+        return v1.trim().compareTo(v2.trim());
     }
     
 
