@@ -396,7 +396,7 @@ public class ActionDispatcher {
 
 				String cmInstallationId="unknown";
 				try {
-				    CatchupMathProperties.getInstance().getCmInstallationId();
+				    cmInstallationId = CatchupMathProperties.getInstance().getCmInstallationId();
 				}
 				catch(Exception e) {
 				    logger.error("Error getting cm installation id", e);

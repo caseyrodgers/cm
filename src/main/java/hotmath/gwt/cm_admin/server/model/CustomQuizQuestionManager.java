@@ -63,6 +63,8 @@ public class CustomQuizQuestionManager {
     private void readInFile() throws Exception{
         SbFile file = new SbFile(new File(CatchupMathProperties.getInstance().getCatchupRuntime(), "all.custom_quiz"));
         
+        __logger.debug("Reading in all.custom_quiz file: " + file.getName());
+        
         String contents = file.getFileContents().toString("\n");
         String lines[] = contents.split("\n");
         
