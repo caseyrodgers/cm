@@ -1,7 +1,7 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import java.util.Date;
-
+import hotmath.gwt.cm_admin.client.ui.highlights.AbstractHighlightsImpl;
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
@@ -10,27 +10,30 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
-import com.extjs.gxt.ui.client.widget.Html;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.event.EnableEvent;
+import com.sencha.gxt.widget.core.client.event.EnableEvent.EnableHandler;
 
-public class HighlightImplComparePanel extends LayoutContainer {
+public class HighlightsImplComparePanel extends ContentPanel {
 	
-    AbstractHighlightImpl base;
+    AbstractHighlightsImpl base;
     
     HighlightsGetReportAction.ReportType reportType;
     
-    public HighlightImplComparePanel(AbstractHighlightImpl base) {
+    public HighlightsImplComparePanel(AbstractHighlightsImpl base) {
         this.base = base;
-    }
-    
-    @Override
-    protected void onRender(Element parent, int index) {
-        super.onRender(parent, index);
         
-        add(new Label("Loading data from server ..."));
-        getDataFromServer();
+        super.addEnableHandler(new EnableHandler() {
+
+			@Override
+			public void onEnable(EnableEvent event) {
+		        add(new Label("Loading data from server ..."));
+		        getDataFromServer();
+			}
+        	
+        });
     }
     
     protected void getDataFromServer() {
@@ -50,9 +53,9 @@ public class HighlightImplComparePanel extends LayoutContainer {
                 	reportType = null;
                 }
                 HighlightsGetReportAction action = new HighlightsGetReportAction(
-                		StudentGridPanel.instance._pageAction,
+                		StudentGridPanel.instance.getPageAction(),
                 		reportType, 
-                        StudentGridPanel.instance._cmAdminMdl.getUid(), 
+                        StudentGridPanel.instance.getCmAdminMdl().getUid(), 
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate()
                         );
@@ -69,12 +72,12 @@ public class HighlightImplComparePanel extends LayoutContainer {
     }
     
     private void drawTable(CmList<HighlightReportData> data) {
-         removeAll();
-         add(new Html("<h1>data read from server!</h1>"));
+    	super.clear();
+         add(new HTML("<h1>data read from server!</h1>"));
          
          for(int i=0,t=data.size();i<t;i++) {
              add(new Label(data.get(i).getData()));
          }
-         layout();
+         super.doLayout();
     }
 }

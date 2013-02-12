@@ -1,26 +1,33 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+
+import hotmath.gwt.cm_admin.client.ui.HighlightsIndividualPanel;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Label;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.ui.Label;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 /**
  * 
  * @author casey
+ * @author bob
  * 
  */
-public class HighlightsDataWindow extends CmWindow {
+public class HighlightsDataWindow extends GWindow {
 
     private static HighlightsDataWindow __instance;
+
+    BorderLayoutContainer _container;
 
     public static HighlightsDataWindow getSharedInstance(Integer aid) {
         if(__instance == null) {
@@ -36,55 +43,58 @@ public class HighlightsDataWindow extends CmWindow {
 
     Integer adminId;
 
-    final String TITLE="Student Usage Highlights";
+    final String TITLE="Student Usage HighlightS";
 
     Label _dateRange = new Label();
 
     private HighlightsDataWindow() {
+    	super(false);
         __instance = this;
-        addStyleName("highlights-data-window");
-        setHeading(TITLE);
+        //addStyleName("highlights-data-window");
+        setHeadingText(TITLE);
         setWidth(650);
         setHeight(500);
 
-        setLayout(new FitLayout());
-        add(new HighlightsIndividualPanel());
+        _container = new BorderLayoutContainer();
+        _container.setBorders(true);
 
+        BorderLayoutData westData = new BorderLayoutData();
+        westData.setSize(210);
+        westData.setCollapsible(true);
+        westData.setFloatable(true);
+        _container.setWestWidget(new HighlightsListPanel(), westData);
+
+        BorderLayoutData eastData = new BorderLayoutData();
+        eastData.setSize(400);
+
+        _container.setCenterWidget(new SimpleContainer(), eastData);
+        
         refreshDateRangeLabel();
 
-        getHeader().addTool(new Button("Refresh", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+        getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
+			@Override
+			public void onSelect(SelectEvent event) {
                 reloadAllReports();
-            }
+			}
         }));
 
-        addButton(new Button("Close", new SelectionListener<ButtonEvent>() {
+        getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
             @Override
-            public void componentSelected(ButtonEvent ce) {
-                close();
-            }
-        }));
-
-        getHeader().addTool(new Button("Print Report", new SelectionListener<ButtonEvent>() {
-            @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent ce) {
                 reportButton();
             }
         }));
 
-        /** Position button at left margin on button bar
-         * 
-         */
-        getButtonBar().setStyleAttribute("position", "relative");
-
-        _dateRange.addStyleName("date-range-label");
-        getButtonBar().add(_dateRange);                  
+        //_dateRange.addStyleName("date-range-label");
+        getButtonBar().add(_dateRange);
+        super.addCloseButton();
 
         /**
          * turn on after data retrieved
          * 
          */
+        this.setWidget(_container);
+
         setVisible(true);
     }
 
@@ -94,9 +104,9 @@ public class HighlightsDataWindow extends CmWindow {
 
     int _currentSelection;
     private void reloadAllReports() {
-        removeAll();
-        add(new HighlightsIndividualPanel());
-        layout();
+        super.clear();
+        _container.setCenterWidget(new HighlightsIndividualPanel());
+        super.forceLayout();
     }
 
     private void setAdminId(Integer aid) {
