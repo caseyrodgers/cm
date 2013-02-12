@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+//import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -1126,7 +1127,11 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         _pageAction = action;
     }
 
-    static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+    public CmAdminModel getCmAdminMdl() {
+		return _cmAdminMdl;
+	}
+
+	static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
 
     class MyLoadHandler implements LoadHandler<PagingLoadConfigBean, CmStudentPagingLoadResult<StudentModelI>> {
         @Override
