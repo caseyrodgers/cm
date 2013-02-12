@@ -1,8 +1,8 @@
-package hotmath.gwt.cm_admin.client.ui;
+package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import com.google.gwt.user.client.ui.Widget;
 
-abstract class AbstractHighlightImpl  {
+abstract class AbstractHighlightsImpl  {
     String name;
     Widget _widget;
     protected HIGHLIGHT_TYPE type;
@@ -11,7 +11,7 @@ abstract class AbstractHighlightImpl  {
     	GREATEST_EFFORT, LEAST_EFFORT, MOST_QUIZZES_PASSED, MOST_QUIZZES_FAILED, MOST_GAMES, HIGHEST_QUIZ_AVERAGE,
     	SCHOOL_COMPARE, NATIONWIDE_COMPARE
     }
-    AbstractHighlightImpl(String name) {
+    AbstractHighlightsImpl(String name) {
         this.name = name;
     }
     
