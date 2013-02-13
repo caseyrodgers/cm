@@ -3728,6 +3728,7 @@ left join (
     ) w2 on w2.pid = p.pid and w2.user_id = u.uid
     
 where a.assign_key=?
+and   u.is_active = 1
 order by u.user_name, problem_id
 
   
