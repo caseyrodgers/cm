@@ -3652,6 +3652,7 @@ from CM_GROUP g
   join (
         select u.group_id, count(*) as student_count
         from HA_USER u 
+        where (is_active = 1 and is_demo = 0 and is_auto_create_template = 0)
         group by u.group_id
         ) sc on sc.group_id = g.id
   left join (
