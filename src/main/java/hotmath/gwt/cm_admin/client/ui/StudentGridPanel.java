@@ -18,7 +18,6 @@ import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
-import hotmath.gwt.cm_tools.client.ui.StudentSearchInfo;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
@@ -56,6 +55,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.loader.LoadEvent;
@@ -766,28 +766,43 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private TextButton assignmentToolItem(final Grid<StudentModelI> grid) {
-        TextButton ti = new StudentPanelButton("Assignments");
-        ti.setToolTip("Manage and view student's homework.");
+        
+        TextButton assignmentsButton = new TextButton("Assignments");
+        assignmentsButton.setToolTip("Manage and view student's homework.");
+        
+        Menu menu = new Menu();
+        
 
-        ti.addSelectHandler(new SelectHandler() {
+        menu.add(new MyMenuItem("Reports","View assignment reports",new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
+            }
+        }));
+        
+        menu.add(createEditAssignmentButton());
+        assignmentsButton.setMenu(menu);
+        return assignmentsButton;
+    }
+
+    private Widget createEditAssignmentButton() {
+        MyMenuItem createEdit = new MyMenuItem("Create/Edit", "Create new assignments or edit existing assignments", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
 
                         // new GradeBookDialog(_cmAdminMdl.getId());
                         int groupIdToLoad = 0;
-                        StudentModelI selected = grid.getSelectionModel().getSelectedItem();
+                        StudentModelI selected = _grid.getSelectionModel().getSelectedItem();
                         if (selected != null) {
                             groupIdToLoad = selected.getGroupId();
                         }
                         new AssignmentManagerDialog2(groupIdToLoad, _cmAdminMdl.getUid());
                     }
-                });
-            }
-        });
-        return ti;
+                });                
+            }});
+        return createEdit;
     }
 
     private TextButton displayPrintableReportToolItem(final Grid<StudentModelI> grid) {
