@@ -13,6 +13,7 @@ public class HighlightsImplZeroLogins extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
+    /*
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:100"};
@@ -20,4 +21,5 @@ public class HighlightsImplZeroLogins extends HighlightsImplBase {
         rl.setTitle(title);
         return rl;
     }
+    */
 }

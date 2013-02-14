@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -23,7 +24,9 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -77,7 +80,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
 
     }
 /*
- *     int groupCount;
+    int groupCount;
     int schoolCount;
     int dbCount;
  */
@@ -105,15 +108,15 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         column.setSortable(false);
         cols.add(column);
 
-        column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Lessons Viewed");
-        column.setWidth(130);
-        column.setSortable(false);
-        cols.add(column);
+        ColumnConfig<HighlightReportData, Integer> col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.lessons(), 140, "Lessons Viewed");
+        col.setWidth(130);
+        col.setSortable(false);
+        cols.add(col);
         
         return new ColumnModel<HighlightReportData>(cols);
     }
     
-    
+/*    
     public String[][] getReportValues() {
         
         try {
@@ -148,7 +151,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         }
         return null;
     }
-    
+*/    
     
     protected void getDataFromServer() {
         new RetryAction<CmList<HighlightReportData>>() {
@@ -165,9 +168,9 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
             }
 
             @Override
-            public void oncapture(CmList<HighlightReportData> allLessons) {
+            public void oncapture(CmList<HighlightReportData> allData) {
                 CmBusyManager.setBusy(false);
-                drawTable(allLessons);
+                drawTable(allData);
             }
             
             @Override
@@ -194,7 +197,6 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         else {
             
             for (int i = 0, t = data.size(); i < t; i++) {
-                //reportList.add(createTableModel(data.get(i)));
                 store.add(data.get(i));
             }
             
@@ -203,11 +205,17 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
             String tip = getGridToolTip();
             if(tip != null)
                 _grid.setToolTip(tip);
-            //_grid.addListener(Events.CellDoubleClick, new Listener<BaseEvent>(){
-            //    public void handleEvent(BaseEvent be) {
-            //        showSelectStudentDetail();
-            //    }
-            //});
+
+            _grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
+                @Override
+                public void onCellClick(CellDoubleClickEvent event) {
+                    if (_grid.getSelectionModel().getSelectedItems().size() > 0) {
+                        CmLogger.debug("click handler: Showing StudentDetails");
+                        showSelectedStudentDetail();
+                    }
+                }
+            });
+
         }
         
         //layout();
@@ -216,15 +224,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     protected String getGridToolTip() {
         return "Double click for detailed history";
     }
-/*    
-    protected HighlightsReportData createTableModel(HighlightReportData data) {
-        if(data.getData() != null)
-            return new HighlightsReportModel(data.getUid(), data.getName(), data.getData(),data.getQuizzesTaken());
-        else 
-            return new HighlightsReportModel(data.getName(), data.getGroupCount(), data.getSchoolCount(), data.getDbCount());
-        
-    }
-*/
+
     private Grid<HighlightReportData> defineGrid(final ListStore<HighlightReportData> store, ColumnModel<HighlightReportData> cm) {
         final Grid<HighlightReportData> grid = new Grid<HighlightReportData>(store, cm);
         //grid.setAutoExpandColumn("name");
@@ -233,8 +233,6 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
 
         grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
-        //grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         //grid.getSelectionModel().setFiresEvents(true);
         
         /** set to default to allow IE to render table correctly
@@ -246,7 +244,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         return grid;
     }
     
-    protected void showSelectStudentDetail() {
+    protected void showSelectedStudentDetail() {
 
         final HighlightReportData model = _grid.getSelectionModel().getSelectedItem();
         if(model.getUid() == 0)
@@ -271,8 +269,6 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     }
 
 }
-
-
 
 /** Shown when no students meet criteria
  * 

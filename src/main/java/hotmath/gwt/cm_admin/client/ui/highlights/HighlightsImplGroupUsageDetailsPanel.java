@@ -68,7 +68,7 @@ public class HighlightsImplGroupUsageDetailsPanel extends HighlightsImplDetailsP
     }
 */    
     @Override
-    protected void showSelectStudentDetail() {
+    protected void showSelectedStudentDetail() {
     }
     
     @Override

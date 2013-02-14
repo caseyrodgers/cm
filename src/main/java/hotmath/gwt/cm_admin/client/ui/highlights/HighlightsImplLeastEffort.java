@@ -14,10 +14,12 @@ public class HighlightsImplLeastEffort extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
+/*    
     @Override
     protected String[][] getReportValues() {
         return panel.getReportValues();
     }
+*/
     @Override
     protected HighlightReportLayout getReportLayout() {
     	HighlightReportLayout rl = super.getReportLayout();

@@ -13,6 +13,7 @@ public class HighlightsImplMostFailuresLatestQuiz extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel; 
     }
+    /*
     @Override
     protected String[][] getReportValues() {
         return panel.getReportValues();
@@ -23,4 +24,5 @@ public class HighlightsImplMostFailuresLatestQuiz extends HighlightsImplBase {
         HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
         return rl;
     }
+    */
 }

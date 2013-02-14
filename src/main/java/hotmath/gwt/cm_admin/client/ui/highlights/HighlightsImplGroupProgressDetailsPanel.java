@@ -71,14 +71,9 @@ public class HighlightsImplGroupProgressDetailsPanel extends HighlightsImplDetai
         
         return new ColumnModel<HighlightReportData>(configs);
     }
-    
-//    @Override
-//    protected HighlightsReportModel createTableModel(HighlightReportData data) {
-//        return new HighlightsReportModelGroupReport(data.getName(),data.getActiveCount(),data.getLoginCount(),data.getLessonsViewed(),data.getQuizzesPassed());                
-//    }
 
     @Override
-    protected void showSelectStudentDetail() {
+    protected void showSelectedStudentDetail() {
     }
     
     @Override

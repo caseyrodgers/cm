@@ -13,11 +13,12 @@ class HighlightsImplMostGamesPlayed extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
-    
+ /*   
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:50", "Games Played:25", "Quizzes Taken:25"};
         HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols,panel.getReportValues());
         return rl;
-    }    
+    }
+    */    
 }

@@ -27,8 +27,8 @@ public class HighlightsImplGreatestEffort extends HighlightsImplBase {
     	return rl;
     }
 
-    @Override
-    protected String[][] getReportValues() {
-        return data.panel.getReportValues();
-    }
+//    @Override
+//    protected String[][] getReportValues() {
+//        return data.panel.getReportValues();
+//    }
 }

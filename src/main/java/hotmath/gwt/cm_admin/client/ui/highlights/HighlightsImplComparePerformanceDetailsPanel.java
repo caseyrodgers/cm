@@ -72,7 +72,7 @@ public class HighlightsImplComparePerformanceDetailsPanel extends HighlightsImpl
     }
 
     @Override
-    protected void showSelectStudentDetail() {
+    protected void showSelectedStudentDetail() {
     }
   
 }

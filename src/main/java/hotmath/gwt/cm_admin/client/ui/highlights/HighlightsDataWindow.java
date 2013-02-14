@@ -9,10 +9,12 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -30,14 +32,16 @@ public class HighlightsDataWindow extends GWindow {
     BorderLayoutContainer _container;
 
     public static HighlightsDataWindow getSharedInstance(Integer aid) {
-        if(__instance == null) {
+        //TODO: reuse __instance
+        //if(__instance == null) {
             __instance = new HighlightsDataWindow();
-        }
-        else {
-            __instance.reloadAllReports();
-        }
+        //}
+        //else {
+        //    __instance.reloadAllReports();
+        //}
         __instance.setAdminId(aid);
         __instance.setVisible(true);
+        
         return __instance;
     }
 
@@ -62,13 +66,11 @@ public class HighlightsDataWindow extends GWindow {
         westData.setSize(210);
         westData.setCollapsible(true);
         westData.setFloatable(true);
-        _container.setWestWidget(new HighlightsListPanel(), westData);
 
-        BorderLayoutData eastData = new BorderLayoutData();
-        eastData.setSize(400);
+        BorderLayoutData centerData = new BorderLayoutData();
+        centerData.setSize(400);
+        _container.setWestWidget(new HighlightsListPanel(_container, centerData), westData);
 
-        _container.setCenterWidget(new SimpleContainer(), eastData);
-        
         refreshDateRangeLabel();
 
         getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
@@ -89,14 +91,24 @@ public class HighlightsDataWindow extends GWindow {
         getButtonBar().add(_dateRange);
         super.addCloseButton();
 
+        showDefaultMsg();
+
         /**
          * turn on after data retrieved
          * 
          */
-        this.setWidget(_container);
+        setWidget(_container);
 
         setVisible(true);
     }
+
+	private void showDefaultMsg() {
+		CenterLayoutContainer clc = new CenterLayoutContainer();
+        HTML defaultMsg = new HTML("Select a report");
+        clc.add(defaultMsg);
+        _container.setCenterWidget(clc);
+        _container.forceLayout();
+	}
 
 	private void refreshDateRangeLabel() {
 		_dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());

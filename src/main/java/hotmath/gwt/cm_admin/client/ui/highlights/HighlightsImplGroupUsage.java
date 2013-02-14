@@ -13,11 +13,13 @@ public class HighlightsImplGroupUsage extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
+    /*
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Group:50", "Active:12", "Videos:12", "Games:12", "Activities:12"};
         HighlightReportLayout rl = new HighlightReportLayout(title, "Group Count: ", cols, panel.getReportValues());
         return rl;
     }
+    */
 
 }

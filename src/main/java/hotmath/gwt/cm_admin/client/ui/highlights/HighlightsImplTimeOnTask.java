@@ -13,6 +13,7 @@ public class HighlightsImplTimeOnTask extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
+/*
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:75", "Time-on-Task:25"};
@@ -20,5 +21,5 @@ public class HighlightsImplTimeOnTask extends HighlightsImplBase {
         rl.setTitle(title);
         return rl;
     }
-
+*/
 }

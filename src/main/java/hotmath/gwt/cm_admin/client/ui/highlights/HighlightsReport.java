@@ -15,10 +15,6 @@ public class HighlightsReport {
 	     * @return
 	     */
 	    public String getText() {
-	    	if (report == null) return "n/a";
-	    	if (isGroupReport == true) {
-	    		return "<span style='color:red;'>" + report.getText() + "</span>";
-	    	}
 	        return report.getText();
 	    }
 	    

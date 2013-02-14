@@ -13,10 +13,12 @@ public class HighlightsImplMostQuizzesFailed extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
+/*
     @Override
     protected HighlightReportLayout getReportLayout() {
         String cols[] = {"Name:75", "Failures:25"};
         HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
         return rl;
     }
+    */
 }
