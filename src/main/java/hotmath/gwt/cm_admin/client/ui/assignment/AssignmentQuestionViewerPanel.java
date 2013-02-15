@@ -68,7 +68,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         _tutorPanel.setReadOnly(true);
         
         
-        setHeadingHtml("Question Display");
+        setHeadingHtml("Problem Statement");
         _tutorPanel.setVisible(false);
         
         _tabPanel = new TabPanel();

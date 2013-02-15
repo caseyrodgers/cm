@@ -85,6 +85,7 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         ColumnConfig<Assignment, Date> nameCol = new ColumnConfig<Assignment, Date>(props.dueDate(), 75, "Due Date");
         ColumnConfig<Assignment, String> statusCol = new ColumnConfig<Assignment, String>(props.status(), 75, "Status");
+        ColumnConfig<Assignment, Boolean> draftModeCol = new ColumnConfig<Assignment, Boolean>(props.draftMode(), 75, "Draft Mode");
         ColumnConfig<Assignment, Integer> lessonCountCol = new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems");
         ColumnConfig<Assignment, String> commentsCol = new ColumnConfig<Assignment, String>(props.comments(),50, "Comments");
         List<ColumnConfig<Assignment, ?>> l = new ArrayList<ColumnConfig<Assignment, ?>>();
@@ -92,6 +93,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         l.add(statusCol);
         l.add(lessonCountCol);
         l.add(commentsCol);
+        l.add(draftModeCol);
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
 
         // Create the store that the contains the data to display in the grid
@@ -187,6 +189,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         Assignment newAss = new Assignment();
         newAss.setDraftMode(true);
         newAss.setAssignmentName("My New Assignment: " + new Date());
+        newAss.setComments("Assignment: " + new Date());
         newAss.setGroupId(_currentGroup.getGroupId());
         
         Date defaultDate = new Date();

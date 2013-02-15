@@ -30,6 +30,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.user.client.Window;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -111,7 +112,7 @@ public class EditAssignmentDialog {
         _comments.setWidth(MAX_FIELD_LEN);
         _comments.setHeight(50);
         _comments.setValue(_assignment.getComments());
-        FieldLabel commentsLabel = new FieldLabel(_comments, "Comments");
+        FieldLabel commentsLabel = new FieldLabel(_comments, "Comment");
         commentsLabel.setLabelWidth(FIELD_LABEL_LEN);
         header.add(commentsLabel);
 
@@ -151,6 +152,12 @@ public class EditAssignmentDialog {
         
         _assignmentStatus = createAssignmentStatusCombo();
         _assignmentStatus.setValue(determineAssignmentStatus(assignment));
+        _assignmentStatus.addSelectionHandler(new SelectionHandler<AssignmentStatusDto>() {
+            public void onSelection(com.google.gwt.event.logical.shared.SelectionEvent<AssignmentStatusDto> event) {
+                checkStatusIsValidChange(event.getSelectedItem());
+            }
+        });
+        
         hCon.add(_assignmentStatus);
 
         FieldLabel _statusLabel = new FieldLabel(_assignmentStatus, "Status");
@@ -198,6 +205,28 @@ public class EditAssignmentDialog {
     }
     
     
+    protected void checkStatusIsValidChange(AssignmentStatusDto assignmentStatusDto) {
+        String statusTo = assignmentStatusDto.getStatus();
+        
+        if(statusTo.equals("Open")) {
+            if(_draftMode.getValue()) {
+                // allow any change
+            }
+            else {
+                // only allow change if
+                //  unless date is today or later.
+                DateTimeFormat dtf = DateTimeFormat.getFormat("h:mm a");
+                Date today = dtf.parse("12:00 AM");
+                
+                if(_dueDate.getValue().getTime() < today.getTime()) {
+                    CmMessageBox.showAlert("The due date needs to be changed before you can Open this assignment.");
+                    _assignmentStatus.setValue(_assignmentStatus.getValue());
+                }
+            }
+        }
+    }
+
+
     protected void checkChangeDraftMode() {
         if(_draftMode.getValue()) {
             // Allow change to draft mode
@@ -218,7 +247,7 @@ public class EditAssignmentDialog {
                     CmBusyManager.setBusy(false);
                     if(assStats.isInUse()) {
                         _draftMode.setValue(false);
-                        CmMessageBox.showAlert("You can only change back to Draft Mode if the Assignement has never been used.");
+                        CmMessageBox.showAlert("This assignment is in use cannot return to draft mode.");
                     }
                 }
 
