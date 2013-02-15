@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -55,7 +56,7 @@ public class GradeBookPanel extends ContentPanel {
     ListStore<StudentAssignment> _store;
     
     public GradeBookPanel(){
-        super.setHeadingText("Gradebook for selected Assignment");
+        super.setHeadingText("Status");
 
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
         initColumns();
@@ -69,22 +70,10 @@ public class GradeBookPanel extends ContentPanel {
             addLoadCmStudentButton();
         }
         
-        showDefaultMessage();
+        //showDefaultMessage();
         //addAcceptAllButton();
     }
-    
 
-    /** Show default empty GradeBookPanel message
-     * 
-     */
-    public void showDefaultMessage() {
-        HTML defaultMsg = new HTML("Choose an Assignment");
-        CenterLayoutContainer clc = new CenterLayoutContainer();
-        clc.add(defaultMsg);
-        setWidget(clc);
-        
-        forceLayout();
-    }
 
     Assignment _lastUsedAssignment;
     public void showGradeBookFor(Assignment assignment) {
@@ -133,17 +122,21 @@ public class GradeBookPanel extends ContentPanel {
     }
 
     private void showAssignmentGrading() {
-        final StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
-        if(studentAssignment != null) {
-            new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
-                @Override
-                public void isComplete() {
-                	// reload all data
-                	readData(_lastUsedAssignment);
-                }
-            });        
+        if(_gradebookGrid == null) {
+            CmMessageBox.showAlert("Select an assignment first");
         }
-
+        else {
+            final StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
+            if(studentAssignment != null) {
+                new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                    	// reload all data
+                    	readData(_lastUsedAssignment);
+                    }
+                });        
+            }
+        }
     }
 
 
@@ -175,9 +168,11 @@ public class GradeBookPanel extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                StudentAssignment st = _gradebookGrid.getSelectionModel().getSelectedItem();
-                if(st != null) {
-                    Window.open("/loginService?uid="+st.getUid() + "&debug=true", "_blank","menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
+                if(_gradebookGrid != null) {
+                    StudentAssignment st = _gradebookGrid.getSelectionModel().getSelectedItem();
+                    if(st != null) {
+                        Window.open("/loginService?uid="+st.getUid() + "&debug=true", "_blank","menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes");
+                    }
                 }
             }
         });

@@ -1,21 +1,21 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
+import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
-import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -112,6 +112,11 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
 
     private void completeLoginProcess(final int uid) {
+        
+        if(true) {
+            new AssignmentManagerDialog2(0,2);
+            return;
+        }
         
         
 //        StudentDetailsWindow.showStudentDetails(31456);
@@ -280,11 +285,15 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     private void setupAnyTests() {
 
-//        // GWindow gw = new GWindow(true);
-//        // AssignmentQuestionViewerPanel pan = new
-//        // AssignmentQuestionViewerPanel();
-//        // gw.setWidget(pan);
-//        // gw.setVisible(true);
+         GWindow gw = new GWindow(true);
+         AssignmentQuestionViewerPanel pan = new
+         AssignmentQuestionViewerPanel();
+         gw.setWidget(pan);
+         gw.setVisible(true);
+         
+         if(true)
+             return;
+         
 //        //
 //        //
 //        // final int uid = UserInfoBase.getInstance().getUid();

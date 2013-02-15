@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -51,8 +52,15 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 public class AssignmentDesigner extends SimpleContainer {
     
     Assignment _assignment;
-    public AssignmentDesigner(Assignment assignment) {
+    
+    public interface AssignmentDesignerCallback {
+        boolean isDraftMode();
+    }
+    AssignmentDesignerCallback _callBack;
+    
+    public AssignmentDesigner(Assignment assignment, AssignmentDesignerCallback callBack) {
         this._assignment = assignment;
+        this._callBack = callBack;
         setWidget(createUi());
         
         
@@ -98,6 +106,11 @@ public class AssignmentDesigner extends SimpleContainer {
             public void problemHasBeenSelected(ProblemDto problem) {
                 QuestionViewerPanel.getInstance().viewQuestion(problem, false);   
             }
+            
+            @Override
+            public boolean isDraftMode() {
+                return _callBack.isDraftMode();
+            }
         });
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(300.0);
@@ -108,6 +121,7 @@ public class AssignmentDesigner extends SimpleContainer {
     
     static interface Callback {
         void problemHasBeenSelected(ProblemDto problem);
+        boolean isDraftMode();
     }
     
     public List<ProblemDto> getAssignmentPids() {
@@ -163,9 +177,11 @@ class AssignmentProblemListView extends ContentPanel {
     
     final Grid<ProblemDto> problemListGrid;
     Assignment assignment;
-    public AssignmentProblemListView(Assignment assignment, final Callback callbackOnComplete) {
+    Callback callback;
+    public AssignmentProblemListView(Assignment assignment, final Callback callback) {
         
         this.assignment = assignment;
+        this.callback = callback;
 
         ValueProvider<ProblemDto, String> v = new ValueProvider<ProblemDto, String>() {
 
@@ -231,7 +247,7 @@ class AssignmentProblemListView extends ContentPanel {
         problemListGrid.getSelectionModel().addSelectionHandler(new SelectionHandler<ProblemDto>() {
             @Override
             public void onSelection(SelectionEvent<ProblemDto> event) {
-                showSelectedProblemHtml(callbackOnComplete);                
+                showSelectedProblemHtml(callback);                
             }
         });
      
@@ -255,11 +271,16 @@ class AssignmentProblemListView extends ContentPanel {
 
     private Widget createDelButton() {
         
-        TextButton btn = new TextButton("Del");
+        TextButton btn = new TextButton("Delete");
         btn.setToolTip("Remove selected problem(s) from Assignment");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                if(!callback.isDraftMode()) {
+                    CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
+                    return;
+                }
+                
                 List<ProblemDto> newList = new ArrayList<ProblemDto>();
                 
                 
@@ -284,7 +305,7 @@ class AssignmentProblemListView extends ContentPanel {
                             }
                             else if(j==1){
                                 nextSelect = (ProblemDto)getGrid().getStore().get(0);
-                            }
+                            } 
                             break;
                         }
                     }
@@ -316,6 +337,12 @@ class AssignmentProblemListView extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                
+                if(!callback.isDraftMode()) {
+                    CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
+                    return;
+                }
+                
                 AddProblemDialog.showDialog(new AddProblemDialog.AddProblemsCallback() {
                     @Override
                     public void problemsAdded(List<ProblemDto> problemsAdded) {

@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.CopyAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
@@ -23,17 +23,16 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -52,24 +51,34 @@ public class AssignmentsContentPanel extends ContentPanel {
     
     Grid<Assignment> _grid;
     
-    GradeBookPanel _gradeBookPanel;
     GroupDto _currentGroup;
+
+    int _adminId;
+
+    public interface Callback {
+        void showAssignmentStatus(Assignment assignment);
+    }
+    
+    Callback _callBack;
     
     /** Contains grid of assignments
      * 
      * @param gradeBookPanel
      */
-    public AssignmentsContentPanel(GradeBookPanel gradeBookPanel) {
-        
-        this._gradeBookPanel = gradeBookPanel;
-
+    public AssignmentsContentPanel(Callback callback) {
         super.setHeadingText("Assignments");
+        
+        _callBack = callback;
 
-        getHeader().addTool(createExportButton());
+        _adminId = UserInfoBase.getInstance().getUid();
+        
         getHeader().addTool(createNewButton());
         getHeader().addTool(createEditButton());
         // getHeader().addTool(createCloseButton());
         getHeader().addTool(createDelButton());
+        getHeader().addTool(createCopyButton());
+        getHeader().addTool(new HTML("&nbsp;&nbsp;"));
+        getHeader().addTool(createScoreButton());
         setCollapsible(false);
 
         AssignmentProperties props = GWT.create(AssignmentProperties.class);
@@ -101,32 +110,17 @@ public class AssignmentsContentPanel extends ContentPanel {
             }
         },DoubleClickEvent.getType());
         
-        _grid.addHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent arg0) {
-				showGradeBookForSelectedAssignment();
-			}
-        }, ClickEvent.getType());
-        
-        add(_grid);
+        CenterLayoutContainer defaultMessageContainer = new CenterLayoutContainer();
+        defaultMessageContainer.setWidget(new HTML("Select a group to see its assignments"));
+        setWidget(defaultMessageContainer);
     }
     
 
     public void loadAssignentsFor(GroupDto group) {
+        
+        setWidget(_grid);
         _currentGroup = group;
         readAssignmentData(group);
-    }
-
-    private void showGradeBookForSelectedAssignment() {
-        if(_gradeBookPanel == null) {
-            return;
-        }
-        
-        Assignment asgn = _grid.getSelectionModel().getSelectedItem();
-        if(asgn == null) {
-            return;
-        }
-        _gradeBookPanel.showGradeBookFor(asgn);
     }
     
     private void readAssignmentData(final GroupDto group) {
@@ -178,7 +172,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             return;
         }
         
-        new ExportGradebooksDialog(StudentGridPanel.instance.getPageAction().getAdminId(), _currentGroup.getGroupId(),
+        new ExportGradebooksDialog(_adminId, _currentGroup.getGroupId(),
         		grpName);
     }
     
@@ -191,6 +185,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
         
         Assignment newAss = new Assignment();
+        newAss.setDraftMode(true);
         newAss.setAssignmentName("My New Assignment: " + new Date());
         newAss.setGroupId(_currentGroup.getGroupId());
         
@@ -285,6 +280,49 @@ public class AssignmentsContentPanel extends ContentPanel {
         
     }
     
+    private void copySelectedAssignment() {
+        if(_currentGroup == null) {
+            CmMessageBox.showAlert("You need to select a group first.");
+            return;
+        }        
+        final Assignment data = _grid.getSelectionModel().getSelectedItem();
+        if(data != null) {
+            final ConfirmMessageBox cm = new ConfirmMessageBox("Copy Assignment", "Are you sure you want to copy this assignment?");
+            cm.addHideHandler(new HideHandler() {
+                @Override
+                public void onHide(HideEvent event) {
+                    if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                        copyAssignemnt(data);
+                    }
+                }
+            });
+            cm.setVisible(true);
+        }
+    }
+    
+    
+    private void copyAssignemnt(final Assignment ass) {
+        
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CopyAssignmentAction action = new CopyAssignmentAction(_adminId, ass.getAssignKey());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(RpcData data) {
+                CmBusyManager.setBusy(false);
+
+                String newAssignemntName = data.getDataAsString("new_name");
+                Log.debug("Assignment copied successfully: " + newAssignemntName);
+                readAssignmentData(_currentGroup);
+            }
+        }.register();        
+    }
+
+
     private void closeSelectedAssignment() {
         if(_currentGroup == null) {
             CmMessageBox.showAlert("You need to select a group first.");
@@ -322,16 +360,14 @@ public class AssignmentsContentPanel extends ContentPanel {
 
             public void oncapture(RpcData data) {
                 Log.debug("Assignment closed successfully: " + data);
-                
                 ass.setStatus("Closed");
-                
                 _grid.getStore().update(ass);
             }
         }.register();        
     }
     
     private Widget createDelButton() {
-        TextButton btn = new TextButton("Del");
+        TextButton btn = new TextButton("Delete");
         btn.setToolTip("Delete selected assignment");
         btn.addSelectHandler(new SelectHandler() {
             @Override
@@ -356,21 +392,30 @@ public class AssignmentsContentPanel extends ContentPanel {
         return btn;
     }
         
-    private Widget createExportButton() {
-        TextButton btn = new TextButton("Export");
-        btn.setToolTip("Export Group's Assignment Grade Books");
+    private Widget createScoreButton() {
+        TextButton btn = new TextButton("Status");
+        btn.setToolTip("Show assignment status");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                exportAssignmentGradebooks();
+                selectedAssignmentStatus();
             }
 
         });
         return btn;
     }
     
+    protected void selectedAssignmentStatus() {
+        Assignment asgn = _grid.getSelectionModel().getSelectedItem();
+        if(asgn == null) {
+            return;
+        }
+        _callBack.showAssignmentStatus(asgn);        
+    }
+
+
     private Widget createNewButton() {
-        TextButton btn = new TextButton("New");
+        TextButton btn = new TextButton("Create");
         btn.setToolTip("Create new assignment");
         btn.addSelectHandler(new SelectHandler() {
             @Override
@@ -382,13 +427,13 @@ public class AssignmentsContentPanel extends ContentPanel {
         return btn;
     }
     
-    private Widget createCloseButton() {
-        TextButton btn = new TextButton("Close");
-        btn.setToolTip("Close selected assignment");
+    private Widget createCopyButton() {
+        TextButton btn = new TextButton("Copy");
+        btn.setToolTip("Copy selected assignment");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                closeSelectedAssignment();    
+                copySelectedAssignment();    
             }
 
         });

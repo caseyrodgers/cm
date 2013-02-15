@@ -13,7 +13,7 @@ public class SaveAssignmentCommand implements ActionHandler<SaveAssignmentAction
     
     @Override
     public RpcData execute(Connection conn, SaveAssignmentAction action) throws Exception {
-        int assKey = AssignmentDao.getInstance().saveAssignement(action.getAid(), action.getAssignment());
+        int assKey = AssignmentDao.getInstance().saveAssignment(action.getAid(), action.getAssignment());
         return new RpcData("key=" + assKey);
     }
     

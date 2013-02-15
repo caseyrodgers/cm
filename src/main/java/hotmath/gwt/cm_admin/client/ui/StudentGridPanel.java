@@ -770,22 +770,40 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         TextButton assignmentsButton = new TextButton("Assignments");
         assignmentsButton.setToolTip("Manage and view student's homework.");
         
-        Menu menu = new Menu();
         
-
-        menu.add(new MyMenuItem("Reports","View assignment reports",new SelectionHandler<MenuItem>() {
+        
+        Menu menu = new Menu();
+        menu.add(new MyMenuItem("Guide","Assignments help guide.",new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
+                CmMessageBox.showAlert("The Assignment Guide View");
             }
         }));
         
+        menu.add(createGradeBookButton());
         menu.add(createEditAssignmentButton());
+        
+        
         assignmentsButton.setMenu(menu);
         return assignmentsButton;
     }
 
+    private Widget createGradeBookButton() {
+        MyMenuItem createEdit = new MyMenuItem("Gradebook", "View the assignment gradebook.", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        CmMessageBox.showAlert("The Assignment Gradebook View");
+                    }
+                });                
+            }});
+        return createEdit;
+    }
+
     private Widget createEditAssignmentButton() {
-        MyMenuItem createEdit = new MyMenuItem("Create/Edit", "Create new assignments or edit existing assignments", new SelectionHandler<MenuItem>() {
+        MyMenuItem createEdit = new MyMenuItem("Create/View", "Create new assignments or view existing assignments", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 GWT.runAsync(new CmRunAsyncCallback() {

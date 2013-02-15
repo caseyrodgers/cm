@@ -3674,6 +3674,7 @@ select a.assign_key,
        a.status,
        Ifnull(problem_count, 0) as problem_count,
        a.comments,
+       a.is_draft_mode,
        a.due_date
 from   CM_ASSIGNMENT a
        left join (select assign_key,

@@ -1,9 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -37,10 +39,10 @@ public class AssignmentManagerDialog2  {
 
     int aid;
     AssignmentsContentPanel _assignmentsPanel;
-    GradeBookPanel _gbPanel;
     ComboBox<GroupDto> _groupCombo;
     BorderLayoutContainer _mainContainer;
     private int _groupIdToLoad;
+    
     public AssignmentManagerDialog2(int groupIdToLoad, int aid) {
         _groupIdToLoad = groupIdToLoad;
         this.aid = aid;
@@ -66,29 +68,24 @@ public class AssignmentManagerDialog2  {
         
         _mainContainer.setNorthWidget(header, northData);
         
-        _gbPanel = new GradeBookPanel();
-        _assignmentsPanel = new AssignmentsContentPanel(_gbPanel);
+        _assignmentsPanel = new AssignmentsContentPanel(new Callback() {
+            @Override
+            public void showAssignmentStatus(Assignment assignment) {
+                new AssignmentStatusDialog(assignment);
+            }
+        });
         
-        BorderLayoutData westData = new BorderLayoutData();
-        westData.setSize(360);
-        westData.setCollapsible(true);
-        westData.setFloatable(true);
-        _mainContainer.setWestWidget(_assignmentsPanel,  westData);
-        
-        BorderLayoutData eastData = new BorderLayoutData();
-        eastData.setSize(400);
-
-        _mainContainer.setCenterWidget(_gbPanel, eastData);
+        /** 
+         * intially have the assignments window full
+         */
+        _mainContainer.setCenterWidget(_assignmentsPanel);
         
         window.setWidget(_mainContainer);
-
-        
         window.show();
     }
     
     private void loadGroupInfo(GroupDto group) {
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
-        _gbPanel.showDefaultMessage();
         _assignmentsPanel.loadAssignentsFor(group);
     }
     

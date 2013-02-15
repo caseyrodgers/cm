@@ -1,15 +1,20 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -17,6 +22,8 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -37,6 +44,7 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.Hor
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -52,6 +60,8 @@ public class EditAssignmentDialog {
     Assignment _assignment;
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
+    
+    CheckBox _draftMode = new CheckBox();
     
     AssignmentDesigner _assignmentDesigner;
     public EditAssignmentDialog(Assignment assignment, final CallbackOnComplete callbackOnComplete) {
@@ -93,7 +103,6 @@ public class EditAssignmentDialog {
         
         BorderLayoutData headerData = new BorderLayoutData();
         headerData.setMargins(new Margins(20));
-        headerData.setSize(70);
         header.setLayoutData(headerData);
         
         
@@ -120,6 +129,21 @@ public class EditAssignmentDialog {
         
         
         HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
+
+        HorizontalLayoutData hData1 = new HorizontalLayoutData();
+        hData1.setMargins(new Margins(0, 20,0, 20));
+        
+        _draftMode.setValue(assignment.isDraftMode());
+        _draftMode.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent event) {
+                checkChangeDraftMode();
+            }
+        });
+        
+        hCon.add(new MyFieldLabel(_draftMode, "Draft Mode", 70), hData1);
+        
+
         
         FieldLabel dueDateField = new FieldLabel(_dueDate, "Due Date");
         dueDateField.setLabelWidth(FIELD_LABEL_LEN);
@@ -140,7 +164,13 @@ public class EditAssignmentDialog {
         
         mainBorderPanel.setNorthWidget(header);
         
-        _assignmentDesigner = new AssignmentDesigner(_assignment);
+        _assignmentDesigner = new AssignmentDesigner(_assignment, new AssignmentDesignerCallback() {
+            
+            @Override
+            public boolean isDraftMode() {
+                return _draftMode.getValue();
+            }
+        });
         BorderLayoutData data = new BorderLayoutData();
         _assignmentDesigner.setBorders(true);
         _assignmentDesigner.setLayoutData(data);
@@ -168,6 +198,35 @@ public class EditAssignmentDialog {
     }
     
     
+    protected void checkChangeDraftMode() {
+        if(_draftMode.getValue()) {
+            // Allow change to draft mode
+        }
+        else {
+            new RetryAction<AssignmentStatus>() {
+                @Override
+                public void attempt() {
+                    CmBusyManager.setBusy(true);
+                    int aid = UserInfoBase.getInstance().getUid();
+                    GetAssignmentStatusAction action = new GetAssignmentStatusAction(aid, _assignment.getAssignKey());
+                    setAction(action);
+                    CmShared.getCmService().execute(action, this);
+                }
+
+                @Override
+                public void oncapture(AssignmentStatus assStats) {
+                    CmBusyManager.setBusy(false);
+                    if(assStats.isInUse()) {
+                        _draftMode.setValue(false);
+                        CmMessageBox.showAlert("You can only change back to Draft Mode if the Assignement has never been used.");
+                    }
+                }
+
+            }.register();
+        }
+    }
+
+
     private AssignmentStatusDto determineAssignmentStatus(Assignment assignment) {
         for(AssignmentStatusDto d: _assignmentStatus.getStore().getAll()) {
             if(d.getStatus().equals(assignment.getStatus())) {
@@ -220,6 +279,7 @@ public class EditAssignmentDialog {
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
         _assignment.setStatus(_assignmentStatus.getValue().getStatus());
+        _assignment.setDraftMode(_draftMode.getValue());
         
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
         cmPids.addAll(_assignmentDesigner.getAssignmentPids());
