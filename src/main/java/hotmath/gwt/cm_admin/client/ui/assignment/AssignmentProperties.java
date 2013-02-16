@@ -20,5 +20,4 @@ public interface AssignmentProperties extends PropertyAccess<Assignment> {
     ValueProvider<Assignment, String> comments();
     ValueProvider<Assignment, String> status();
     ValueProvider<Assignment, Boolean> expired();
-    ValueProvider<Assignment, Boolean> draftMode();
   }

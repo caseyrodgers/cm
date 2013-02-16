@@ -87,7 +87,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,is_draft_mode)values(?,?,?,?,?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status)values(?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, aid);
                     ps.setInt(2, ass.getGroupId());
@@ -96,7 +96,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(5, ass.getComments());
                     ps.setDate(6, new Date(System.currentTimeMillis()));
                     ps.setString(7, ass.getStatus());
-                    ps.setInt(8, ass.isDraftMode() ? 1 : 0);
                     return ps;
                 }
             }, keyHolder);
@@ -109,15 +108,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, is_draft_mode = ? where assign_key = ?";
+                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ? where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, aid);
                     ps.setString(2, ass.getAssignmentName());
                     ps.setDate(3, new java.sql.Date(ass.getDueDate().getTime()));
                     ps.setString(4, ass.getComments());
                     ps.setString(5, ass.getStatus());
-                    ps.setInt(6, ass.isDraftMode() ? 1 : 0);
-                    ps.setInt(7, ass.getAssignKey());
+                    ps.setInt(6, ass.getAssignKey());
 
                     return ps;
                 }
@@ -182,7 +180,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
                     Date dueDate = rs.getDate("due_date");
-                    return new Assignment(rs.getInt("is_draft_mode") == 1, rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs
+                    return new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs
                             .getString("comments"), dueDate, null, null, rs.getString("status"));
                 }
             });
@@ -366,7 +364,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 String assignmentName = _createAssignmentName(dueDate, comments);
 
-                Assignment ass = new Assignment(rs.getInt("is_draft_mode") == 1, rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
+                Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
                         .getString("comments"), dueDate, null, null, rs.getString("status"));
 
                 ass.setProblemCount(rs.getInt("problem_count"));
@@ -922,7 +920,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
                 Date dueDate = rs.getDate("due_date");
 
-                Assignment ass = new Assignment(rs.getInt("is_draft_mode") == 1, rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
+                Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
                         .getString("comments"), dueDate, null, null, rs.getString("status"));
                 return ass;
             }
@@ -1377,7 +1375,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String copyTag = " - copy:  " + new java.util.Date();
         assignmentCopy.setAssignmentName(assignmentCopy.getAssignmentName() + copyTag);
         assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
-        assignmentCopy.setDraftMode(true);
+        assignmentCopy.setStatus("Draft");
 
         saveAssignment(aid, assignmentCopy);
 

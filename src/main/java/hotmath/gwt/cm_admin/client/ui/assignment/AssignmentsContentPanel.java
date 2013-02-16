@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.assignment.ExportGradebooksDialog;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -85,7 +86,6 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         ColumnConfig<Assignment, Date> nameCol = new ColumnConfig<Assignment, Date>(props.dueDate(), 75, "Due Date");
         ColumnConfig<Assignment, String> statusCol = new ColumnConfig<Assignment, String>(props.status(), 75, "Status");
-        ColumnConfig<Assignment, Boolean> draftModeCol = new ColumnConfig<Assignment, Boolean>(props.draftMode(), 75, "Draft Mode");
         ColumnConfig<Assignment, Integer> lessonCountCol = new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems");
         ColumnConfig<Assignment, String> commentsCol = new ColumnConfig<Assignment, String>(props.comments(),50, "Comments");
         List<ColumnConfig<Assignment, ?>> l = new ArrayList<ColumnConfig<Assignment, ?>>();
@@ -93,7 +93,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         l.add(statusCol);
         l.add(lessonCountCol);
         l.add(commentsCol);
-        l.add(draftModeCol);
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
 
         // Create the store that the contains the data to display in the grid
@@ -139,16 +138,31 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void oncapture(CmList<Assignment> assignments) {
                 CatchupMathTools.setBusy(false);
                 
-                _grid.getStore().clear();
-                _grid.getStore().addAll(assignments);
-//                if(assignments.size() > 0) {
-//                    List<Assignment> selectedList = new ArrayList<Assignment>();
-//                    selectedList.add(assignments.get(0));
-//                    _grid.getSelectionModel().setSelection(selectedList);
-//                    showGradeBookForSelectedAssignment();
-//                }
+                if(assignments.size() == 0) {
+                    showNoAssignedProblemsMessage();
+                }
+                else {
+                    setWidget(_grid);
+                    _grid.getStore().clear();
+                    _grid.getStore().addAll(assignments);
+    //                if(assignments.size() > 0) {
+    //                    List<Assignment> selectedList = new ArrayList<Assignment>();
+    //                    selectedList.add(assignments.get(0));
+    //                    _grid.getSelectionModel().setSelection(selectedList);
+    //                    showGradeBookForSelectedAssignment();
+    //                }
+                }
             }
+
         }.register();        
+    }
+
+    private void showNoAssignedProblemsMessage() {
+        CenterLayoutContainer cc = new CenterLayoutContainer();
+        cc.add(new HTML("<h1>No assignments have been defined for this group.</h1>"));
+        setWidget(cc);
+        
+        forceLayout();
     }
 
     private void exportAssignmentGradebooks() {
@@ -187,7 +201,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
         
         Assignment newAss = new Assignment();
-        newAss.setDraftMode(true);
+        newAss.setStatus("Draft");
         newAss.setAssignmentName("My New Assignment: " + new Date());
         newAss.setComments("Assignment: " + new Date());
         newAss.setGroupId(_currentGroup.getGroupId());

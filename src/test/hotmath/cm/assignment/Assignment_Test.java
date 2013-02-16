@@ -25,7 +25,7 @@ public class Assignment_Test extends TestCase {
         List<Integer> uids = new ArrayList<Integer>();
         uids.add(new Integer(1));
         
-        Assignment as = new Assignment(false, 0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,uids,"New");
+        Assignment as = new Assignment(0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,uids,"New");
         
         int assKey = AssignmentDao.getInstance().saveAssignment(2,as);
         assertTrue(assKey > 0);

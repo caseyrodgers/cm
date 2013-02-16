@@ -31,15 +31,13 @@ public class Assignment implements Response{
     CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
     List<Integer> uids = new ArrayList<Integer>();
     String status;
-    boolean draftMode;
     
     // might be null indicate not set
     Integer problemCount;
     
     public Assignment() {}
     
-    public Assignment(boolean draftMode, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status) {
-        this.draftMode = draftMode;
+    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status) {
         this.assignKey = assignKey;
         this.groupId = groupId;
         this.assignmentName = name;
@@ -48,14 +46,6 @@ public class Assignment implements Response{
         this.pids = pids;
         this.uids = uids;
         this.status = status;
-    }
-    
-    public boolean isDraftMode() {
-        return draftMode;
-    }
-
-    public void setDraftMode(boolean draftMode) {
-        this.draftMode = draftMode;
     }
 
     public String getStatusLabel() {

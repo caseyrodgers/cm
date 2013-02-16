@@ -81,7 +81,7 @@ public class AddProblemDialog extends GWindow {
     public AddProblemDialog() {
         super(false);
 
-        setHeadingHtml("Add problems to Assignment");
+        setHeadingHtml("Add Problems to Assignment");
         setPixelSize(700, 480);
         setMaximizable(true);
         addButton(createAddSelectionButton());
@@ -160,7 +160,7 @@ public class AddProblemDialog extends GWindow {
                 else {
                     activeTree = _treeFlatPanel._tree;
                 }
-                makeSureLessonProblemsReadMaybeAsync(activeTree, _callbackOnComplete);
+                makeSureLessonProblemsReadMaybeAsync(true,activeTree, _callbackOnComplete);
                 
                 hide();
             }
@@ -174,7 +174,7 @@ public class AddProblemDialog extends GWindow {
      * 
      * @param callback
      */
-    static public void makeSureLessonProblemsReadMaybeAsync( Tree<BaseDto, String> tree, final AddProblemsCallback callback) {
+    static public void makeSureLessonProblemsReadMaybeAsync(boolean unselectSelections,  Tree<BaseDto, String> tree, final AddProblemsCallback callback) {
         final List<ProblemDto> problems = new ArrayList<ProblemDto>();
         List<BaseDto> checked = tree.getCheckedSelection();
         
@@ -191,17 +191,18 @@ public class AddProblemDialog extends GWindow {
         }
         
         if(lessonsNeeded.size() > 0) {
-           readProblemsForLessonsAndCallBack(tree, lessonsNeeded,callback,problems);
+           readProblemsForLessonsAndCallBack(unselectSelections, tree, lessonsNeeded,callback,problems);
         }
         else {
+            
             // no need for async
-            callBackToServer(tree, callback,problems);
+            callBackToServer(unselectSelections, tree, callback,problems);
         }
     }    
     
     
 
-    static private void readProblemsForLessonsAndCallBack(final Tree<BaseDto, String> tree, final List<LessonDto> lessonsNeeded, final AddProblemsCallback callback, final List<ProblemDto> problems) {
+    static private void readProblemsForLessonsAndCallBack(final boolean uncheckSelections, final Tree<BaseDto, String> tree, final List<LessonDto> lessonsNeeded, final AddProblemsCallback callback, final List<ProblemDto> problems) {
         new RetryAction<CmList<Response>>() {
             @Override
             public void attempt() {
@@ -238,18 +239,21 @@ public class AddProblemDialog extends GWindow {
                     }
                 }
                 problems.addAll(data);
-                callBackToServer(tree, callback,problems);
+                callBackToServer(uncheckSelections, tree, callback,problems);
             }
 
         }.register();        
     }
 
-    static private void callBackToServer( Tree<BaseDto, String> tree, AddProblemsCallback callback, List<ProblemDto> problems) {
+    static private void callBackToServer(boolean uncheckSelections, Tree<BaseDto, String> tree, AddProblemsCallback callback, List<ProblemDto> problems) {
         
         Log.debug("Problems added: " + problems.size());
         callback.problemsAdded(problems);
-        for (BaseDto d : tree.getCheckedSelection()) {
-            tree.setChecked(d, CheckState.UNCHECKED);
+        
+        if(uncheckSelections) {
+            for (BaseDto d : tree.getCheckedSelection()) {
+                tree.setChecked(d, CheckState.UNCHECKED);
+            }
         }
     }
 
@@ -377,9 +381,9 @@ public class AddProblemDialog extends GWindow {
 
             @Override
             public void onExecute() {
-                Info.display("Selection Info", _tree.getCheckedSelection().size() + " item(s) selected");
-
-                _treePanel.setHeadingHtml(_tree.getCheckedSelection().size() + " problem(s) selected");
+                Log.debug("Selection Info", _tree.getCheckedSelection().size() + " item(s) selected");
+                
+                setWindowTitleCountSelectedProblems();
             }
         };
 
@@ -411,6 +415,17 @@ public class AddProblemDialog extends GWindow {
         _tree.setCell(cell);
    
         return _tree;
+    }
+    
+    private void setWindowTitleCountSelectedProblems() {
+        makeSureLessonProblemsReadMaybeAsync(false, _tree,new AddProblemsCallback() {
+            @Override
+            public void problemsAdded(List<ProblemDto> problemsAdded) {
+                String title = problemsAdded.size() + " problem(s) selected";
+                _treePanel.setHeadingHtml(title);
+            }
+        });
+                
     }
     
 

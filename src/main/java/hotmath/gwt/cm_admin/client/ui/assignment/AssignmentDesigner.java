@@ -23,16 +23,16 @@ import java.util.List;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
-import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
@@ -149,8 +149,15 @@ public class AssignmentDesigner extends SimpleContainer {
             public void oncapture(Assignment assignment) {
                 CmBusyManager.setBusy(false);
                 
-                _listView.getGrid().getStore().clear();
-                _listView.getGrid().getStore().addAll(assignment.getPids());
+                
+                if(assignment.getPids().size() == 0) {
+                    _listView.setNoProblemsMessge();    
+                }
+                else {
+                    _listView.setProblemListing();
+                    _listView.getGrid().getStore().clear();
+                    _listView.getGrid().getStore().addAll(assignment.getPids());
+                }
                 
                 
                 /** select first problem, if any */
@@ -178,6 +185,9 @@ class AssignmentProblemListView extends ContentPanel {
     final Grid<ProblemDto> problemListGrid;
     Assignment assignment;
     Callback callback;
+    
+    VerticalLayoutContainer problemListContainer;
+    
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
         
         this.assignment = assignment;
@@ -201,7 +211,7 @@ class AssignmentProblemListView extends ContentPanel {
             }
             
         };        
-        ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(v, 50, "Problem Number");
+        ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(v, 50, "Problems Assigned");
         nameCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
             @Override
             public ProblemDto getProblem(int which) {
@@ -232,7 +242,7 @@ class AssignmentProblemListView extends ContentPanel {
         }
         
         ContentPanel root = this;
-        root.setHeadingText("Assignment Problems");
+        root.setHeadingText("Assigned Problems");
         // root.getHeader().setIcon(ExampleImages.INSTANCE.table());
         root.addStyleName("margin-10");
          
@@ -251,10 +261,16 @@ class AssignmentProblemListView extends ContentPanel {
             }
         });
      
-        VerticalLayoutContainer problemListContainer = new VerticalLayoutContainer();
-        root.setWidget(problemListContainer);
-     
+        problemListContainer = new VerticalLayoutContainer();
+        
         problemListContainer.add(problemListGrid, new VerticalLayoutData(1, 1));
+        
+        if(store.size() == 0) {
+            root.setWidget(createDefaultNoProblemsMessge());
+        }
+        else {
+            root.setWidget(problemListContainer);
+        }
      
         // needed to enable quicktips (qtitle for the heading and qtip for the
         // content) that are setup in the change GridCellRenderer
@@ -265,6 +281,23 @@ class AssignmentProblemListView extends ContentPanel {
         addTool(createDelButton());
     }
     
+    public void setProblemListing() {
+        setWidget(problemListContainer);
+        forceLayout();
+    }
+
+    private Widget createDefaultNoProblemsMessge() {
+        CenterLayoutContainer cc = new CenterLayoutContainer();
+        cc.add(new HTML("<h1>No problems assigned.</h1>"));
+        
+        return cc;
+    }
+    
+    public void setNoProblemsMessge() {
+        setWidget(createDefaultNoProblemsMessge());
+        forceLayout();
+    }
+
     public Grid getGrid() {
         return problemListGrid;
     }
@@ -358,6 +391,13 @@ class AssignmentProblemListView extends ContentPanel {
     
 
     private void addProblemsToAssignment(final List<ProblemDto> problemsAdded) {
+        if(problemsAdded.size() == 0) {
+            setWidget(createDefaultNoProblemsMessge());
+        }
+        else {
+            setWidget(problemListContainer);
+        }
+        forceLayout();
         problemListGrid.getStore().addAll(problemsAdded);
         if(true) {
             return;
