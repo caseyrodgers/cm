@@ -10,7 +10,7 @@ import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 
 public class CmMessageBox {
     public static void showAlert(String message) {
-        showAlert("Alert", message);
+        showAlert("Important Message", message);
 
     }
 

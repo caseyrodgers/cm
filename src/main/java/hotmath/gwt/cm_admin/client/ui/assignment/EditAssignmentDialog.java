@@ -20,6 +20,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.Date;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
@@ -161,7 +162,7 @@ public class EditAssignmentDialog {
         _assignmentDesigner = new AssignmentDesigner(_assignment, new AssignmentDesignerCallback() {
             @Override
             public boolean isDraftMode() {
-                return _assignmentStatus.getValue().getStatus().equals("Draft");
+                return _assignment.getStatus().equals("Draft");
             }
         });
         BorderLayoutData data = new BorderLayoutData();
@@ -177,23 +178,27 @@ public class EditAssignmentDialog {
                 callbackOnComplete.isComplete();
             }
         });
-        
+        saveDraftMode.setToolTip("Save in draft mode allowing for future modifcations");
         saveAssign = new TextButton("Save/Assign", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                saveAssignment(false);
-                window.hide();
-                callbackOnComplete.isComplete();
+                if(_assignmentDesigner.getAssignmentPids().size() == 0) {
+                    CmMessageBox.showAlert("You need to add problems to the assignment before saving");
+                }
+                else {
+                    saveAssignment(false);
+                    window.hide();
+                    callbackOnComplete.isComplete();
+                }
             }
         });
+        saveAssign.setToolTip("Save and assign. Problems cannot be edited afterwards.");
 
         window.addButton(saveDraftMode);
         window.addButton(saveAssign);
 
         if(!_isDraftMode) {
             saveDraftMode.setEnabled(false);
-            _dueDate.setEnabled(false);
-            _comments.setEnabled(false);
         }
         
         window.addCloseButton();
@@ -206,14 +211,24 @@ public class EditAssignmentDialog {
     protected boolean  checkStatusIsValidChange(AssignmentStatusDto assignmentStatusDto) {
         String statusTo = assignmentStatusDto.getStatus();
 
-        if (statusTo.equals("Open")) {
+        if(_isDraftMode) {
+            CmMessageBox.showAlert("To activate this assignment, click the Save/Assign button");
+            return false;
+        }
+        
+        if(statusTo.equals("Draft")) {
+            CmMessageBox.showAlert("You cannot change back to draft mode.");
+            return false;
+        }
+        
+        if (statusTo.equals("Active")) {
             // only allow change if
             // unless date is today or later.
             DateTimeFormat dtf = DateTimeFormat.getFormat("h:mm a");
             Date today = dtf.parse("12:00 AM");
 
             if (_dueDate.getValue().getTime() < today.getTime()) {
-                CmMessageBox.showAlert("The due date needs to be changed before you can Open this assignment.");
+                CmMessageBox.showAlert("The due date needs to be changed before you can Activate this assignment.");
                 return false;
             }
         }
@@ -267,8 +282,9 @@ public class EditAssignmentDialog {
         EditAssignDialogProperties props = GWT.create(EditAssignDialogProperties.class);
 
         ListStore<AssignmentStatusDto> assStore = new ListStore<AssignmentStatusDto>(props.status());
-        assStore.add(new AssignmentStatusDto("Open"));
+        assStore.add(new AssignmentStatusDto("Active"));
         assStore.add(new AssignmentStatusDto("Closed"));
+        assStore.add(new AssignmentStatusDto("Draft"));
 
         ComboBox<AssignmentStatusDto> combo = new ComboBox<AssignmentStatusDto>(assStore, props.statusLabel());
 
@@ -285,6 +301,7 @@ public class EditAssignmentDialog {
     }
 
     private void saveAssignment(boolean asDraft) {
+        
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
@@ -318,14 +335,8 @@ public class EditAssignmentDialog {
                 int assignKey = results.getDataAsInt("key");
                 _assignment.setAssignKey(assignKey);
 
-                Info.display("Assignment Saved", "Assignment (" + _assignment.getAssignKey() + ") saved successfully");
+                Log.debug("Assignment Saved", "Assignment (" + _assignment.getAssignKey() + ") saved successfully");
             }
-
-            public void onFailure(Throwable error) {
-                CmBusyManager.setBusy(false);
-                super.onFailure(error);
-            }
-
         }.register();
 
     }

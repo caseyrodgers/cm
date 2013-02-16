@@ -111,6 +111,11 @@ public class AssignmentDesigner extends SimpleContainer {
             public boolean isDraftMode() {
                 return _callBack.isDraftMode();
             }
+            
+            @Override
+            public void clearTutorView() {
+                QuestionViewerPanel.getInstance().removeQuestion();
+            }
         });
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(300.0);
@@ -122,6 +127,7 @@ public class AssignmentDesigner extends SimpleContainer {
     static interface Callback {
         void problemHasBeenSelected(ProblemDto problem);
         boolean isDraftMode();
+        void clearTutorView();
     }
     
     public List<ProblemDto> getAssignmentPids() {
@@ -288,7 +294,7 @@ class AssignmentProblemListView extends ContentPanel {
 
     private Widget createDefaultNoProblemsMessge() {
         CenterLayoutContainer cc = new CenterLayoutContainer();
-        cc.add(new HTML("<h1>No problems assigned.</h1>"));
+        cc.add(new HTML("<h1>No problems assigned</h1>"));
         
         return cc;
     }
@@ -313,6 +319,8 @@ class AssignmentProblemListView extends ContentPanel {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
+                
+                callback.clearTutorView();
                 
                 List<ProblemDto> newList = new ArrayList<ProblemDto>();
                 

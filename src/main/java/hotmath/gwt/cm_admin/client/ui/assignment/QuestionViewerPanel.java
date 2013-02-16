@@ -10,8 +10,11 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.info.Info;
 
@@ -43,13 +46,9 @@ public class QuestionViewerPanel extends ContentPanel {
                 Info.display("Tutor Readonly", "This solution is read only.  You can add comments and corrections to the whiteboard.");
             }
         });
-        setHeadingHtml("Question Display");
-        tutorPanel.setVisible(false);
-        
-        FlowLayoutContainer flowWrapper = new FlowLayoutContainer();
-        flowWrapper.setScrollMode(ScrollMode.AUTOY);
-        flowWrapper.add(tutorPanel);
-        setWidget(flowWrapper);
+        setHeadingHtml("Problem Statement");
+        tutorPanel.setVisible(true);
+        setWidget(createDefaultContainer());
     }
 
     TutorWrapperPanel tutorPanel;
@@ -58,8 +57,17 @@ public class QuestionViewerPanel extends ContentPanel {
         viewQuestion(problem, false);
     }
 
+    FlowLayoutContainer flowWrapper;
     public void viewQuestion(final ProblemDto problem, final boolean isReadOnly) {
-
+        
+        if(flowWrapper == null) {
+            flowWrapper = new FlowLayoutContainer();
+            flowWrapper.setScrollMode(ScrollMode.AUTOY);
+            flowWrapper.add(tutorPanel);
+            setWidget(flowWrapper);
+            forceLayout();
+        }
+        
         new RetryAction<SolutionInfo>() {
             @Override
             public void attempt() {
@@ -81,6 +89,8 @@ public class QuestionViewerPanel extends ContentPanel {
                     }
                     tutorPanel.externallyLoadedTutor(result, getWidget(), problem.getPid(), null, result.getJs(), result.getHtml(), problem.getLabel(), false, false, variableContext);
                     tutorPanel.setVisible(true);
+                    
+                    forceLayout();
                 }
                 catch(Exception e) {
                     e.printStackTrace();
@@ -92,5 +102,18 @@ public class QuestionViewerPanel extends ContentPanel {
 
             }
         }.register();
+    }
+    
+    private Widget createDefaultContainer() {
+        CenterLayoutContainer cc = new CenterLayoutContainer();
+        cc.add(new HTML("<h1>No problem selected</h1>"));
+        return cc;
+    }
+
+
+    public void removeQuestion() {
+        flowWrapper = null;
+        setWidget(createDefaultContainer());
+        forceLayout();
     }
 }

@@ -207,7 +207,6 @@ public class AssignmentsContentPanel extends ContentPanel {
         newAss.setGroupId(_currentGroup.getGroupId());
         
         Date defaultDate = new Date();
-        defaultDate.setHours(defaultDate.getHours() + 24);        
         newAss.setDueDate(defaultDate);
         
         new EditAssignmentDialog(newAss, new CallbackOnComplete() {
@@ -425,6 +424,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     protected void selectedAssignmentStatus() {
         Assignment asgn = _grid.getSelectionModel().getSelectedItem();
         if(asgn == null) {
+            CmMessageBox.showAlert("Select an Assignment first");
             return;
         }
         _callBack.showAssignmentStatus(asgn);        

@@ -116,6 +116,6 @@ public class ProblemDto extends BaseDto implements Response {
     }
 
     public String getLabelWithType() {
-        return getProblemTypeName() + " " + getLabel();
+        return  getLabel() + " " + getProblemTypeName();
     }
 }

@@ -27,6 +27,8 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -61,7 +63,6 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckState;
@@ -85,7 +86,14 @@ public class AddProblemDialog extends GWindow {
         setPixelSize(700, 480);
         setMaximizable(true);
         addButton(createAddSelectionButton());
-        addCloseButton();
+        
+        TextButton btnClose = new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                hide();
+            }
+        });
+        addButton(btnClose);
 
         _treePanel = new ContentPanel();
         _mainContainer = new BorderLayoutContainer();
@@ -150,7 +158,7 @@ public class AddProblemDialog extends GWindow {
     }
     
     private Widget createAddSelectionButton() {
-        TextButton btn = new TextButton("Add selected problems", new SelectHandler() {
+        TextButton btn = new TextButton("View Assignment", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 Tree<BaseDto, String> activeTree=null;
@@ -160,12 +168,13 @@ public class AddProblemDialog extends GWindow {
                 else {
                     activeTree = _treeFlatPanel._tree;
                 }
-                makeSureLessonProblemsReadMaybeAsync(true,activeTree, _callbackOnComplete);
+                
+                makeSureLessonProblemsReadMaybeAsync(true, true,activeTree, _callbackOnComplete);
                 
                 hide();
             }
         });
-        btn.setToolTip("Add all selected problems to current assignment");
+        btn.setToolTip("Add all selected problems to current assignment.");
         return btn;
     }
     
@@ -174,10 +183,9 @@ public class AddProblemDialog extends GWindow {
      * 
      * @param callback
      */
-    static public void makeSureLessonProblemsReadMaybeAsync(boolean unselectSelections,  Tree<BaseDto, String> tree, final AddProblemsCallback callback) {
+    static public void makeSureLessonProblemsReadMaybeAsync(boolean sort, boolean unselectSelections,  Tree<BaseDto, String> tree, final AddProblemsCallback callback) {
         final List<ProblemDto> problems = new ArrayList<ProblemDto>();
         List<BaseDto> checked = tree.getCheckedSelection();
-        
         List<LessonDto> lessonsNeeded = new ArrayList<LessonDto>();
         for (BaseDto d : checked) {
             if(d instanceof LessonDto) {
@@ -188,6 +196,16 @@ public class AddProblemDialog extends GWindow {
             else if(d instanceof ProblemDto) {
                 problems.add((ProblemDto)d);
             }
+        }
+        
+        if(sort) {
+            Collections.sort(problems, new Comparator<BaseDto>() {
+
+                @Override
+                public int compare(BaseDto o1, BaseDto o2) {
+                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                }
+            });
         }
         
         if(lessonsNeeded.size() > 0) {
@@ -407,6 +425,9 @@ public class AddProblemDialog extends GWindow {
                         
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
+                    else {
+                        QuestionViewerPanel.getInstance().removeQuestion();
+                    }
                 }
             }
 
@@ -418,7 +439,7 @@ public class AddProblemDialog extends GWindow {
     }
     
     private void setWindowTitleCountSelectedProblems() {
-        makeSureLessonProblemsReadMaybeAsync(false, _tree,new AddProblemsCallback() {
+        makeSureLessonProblemsReadMaybeAsync(false, false, _tree,new AddProblemsCallback() {
             @Override
             public void problemsAdded(List<ProblemDto> problemsAdded) {
                 String title = problemsAdded.size() + " problem(s) selected";
