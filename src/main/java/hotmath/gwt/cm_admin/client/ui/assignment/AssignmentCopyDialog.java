@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.ImportAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -102,6 +103,9 @@ public class AssignmentCopyDialog extends GWindow{
             return;
         }
         
+        
+        CmBusyManager.setBusy(true);
+        
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
@@ -111,6 +115,7 @@ public class AssignmentCopyDialog extends GWindow{
             }
             
             public void oncapture(RpcData result) {
+                CmBusyManager.setBusy(false);
                 Info.display("Information", "Assignent was imported");
                 hide();
                 CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
