@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
@@ -405,8 +404,8 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
         
     private Widget createScoreButton() {
-        TextButton btn = new TextButton("Status");
-        btn.setToolTip("Show assignment status");
+        TextButton btn = new TextButton("Details");
+        btn.setToolTip("Show assignment details");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {

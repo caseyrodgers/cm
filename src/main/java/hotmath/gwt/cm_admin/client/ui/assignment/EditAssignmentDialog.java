@@ -186,7 +186,7 @@ public class EditAssignmentDialog {
             }
         });
         saveDraftMode.setToolTip("Save in draft mode allowing for future modifcations");
-        saveAssign = new TextButton("Save/Assign", new SelectHandler() {
+        saveAssign = new TextButton("Save/Activate", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 if(_assignmentDesigner.getAssignmentPids().size() == 0) {
@@ -220,7 +220,7 @@ public class EditAssignmentDialog {
         String statusTo = assignmentStatusDto.getStatus();
 
         if(_isDraftMode) {
-            CmMessageBox.showAlert("To activate this assignment, click the Save/Assign button");
+            CmMessageBox.showAlert("To activate this assignment, click the Save/Activate button");
             return false;
         }
         
