@@ -113,6 +113,7 @@ public class QuestionViewerPanel extends ContentPanel {
 
     public void removeQuestion() {
         flowWrapper = null;
+        setHeadingHtml("Problem Statement");
         setWidget(createDefaultContainer());
         forceLayout();
     }

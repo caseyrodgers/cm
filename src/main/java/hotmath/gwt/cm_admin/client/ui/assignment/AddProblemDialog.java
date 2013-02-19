@@ -139,6 +139,8 @@ public class AddProblemDialog extends GWindow {
         
         //setupViewerGui();
         
+        QuestionViewerPanel.getInstance().removeQuestion();
+        
         setWidget(_mainContainer);
 
         readDataAndBuildTree();

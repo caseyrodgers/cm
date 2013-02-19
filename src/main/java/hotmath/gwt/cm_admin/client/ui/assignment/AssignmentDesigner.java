@@ -141,6 +141,9 @@ public class AssignmentDesigner extends SimpleContainer {
             return;
         }
         
+        
+        QuestionViewerPanel.getInstance().removeQuestion();
+        
         new RetryAction<Assignment>() {
             @Override
             public void attempt() {
