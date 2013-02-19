@@ -3,6 +3,9 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -24,6 +27,8 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.info.Info;
@@ -37,6 +42,7 @@ import com.sencha.gxt.widget.core.client.info.Info;
  */
 public class AssignmentManagerDialog2  {
 
+    static AssignmentManagerDialog2 __lastInstance;
     int aid;
     AssignmentsContentPanel _assignmentsPanel;
     ComboBox<GroupDto> _groupCombo;
@@ -44,6 +50,7 @@ public class AssignmentManagerDialog2  {
     private int _groupIdToLoad;
     
     public AssignmentManagerDialog2(int groupIdToLoad, int aid) {
+        __lastInstance = this;
         _groupIdToLoad = groupIdToLoad;
         this.aid = aid;
         
@@ -65,7 +72,12 @@ public class AssignmentManagerDialog2  {
         header.add(new FieldLabel(_groupCombo, "Group"));
         HorizontalLayoutData hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,0,0,20));
-        header.add(new TextButton("Assignment Guide"),hd);
+        header.add(new TextButton("Assignment Guide", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                AssignmentGuideWindow.showWindow();
+            }
+        }),hd);
         
         _mainContainer.setNorthWidget(header, northData);
         
@@ -134,6 +146,7 @@ public class AssignmentManagerDialog2  {
                 
                 CatchupMathTools.setBusy(false);
                 
+                _groupCombo.getStore().clear();
                 _groupCombo.getStore().addAll(groupInfos);
                 
                 boolean groupSelected=false;
@@ -156,5 +169,22 @@ public class AssignmentManagerDialog2  {
             }
         }.register();                
     }
+    
+    
+
+    protected void refreshData() {
+        _assignmentsPanel.refreshData();
+    }
+    
+    static {
+        CmRpc.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE, new DataBaseHasBeenUpdatedHandler() {
+            @Override
+            public void databaseUpdated() {
+                __lastInstance.refreshData();
+            }
+        });
+    }
+
+    
 }
 

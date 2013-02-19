@@ -776,7 +776,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         menu.add(new MyMenuItem("Guide","Assignments help guide.",new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                CmMessageBox.showAlert("The Assignment Guide View");
+                AssignmentGuideWindow.showWindow();
             }
         }));
         

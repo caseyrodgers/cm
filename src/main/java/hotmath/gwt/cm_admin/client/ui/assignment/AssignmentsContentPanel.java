@@ -11,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.ui.ShowDebugUrlWindow;
 import hotmath.gwt.cm_tools.client.ui.assignment.ExportGradebooksDialog;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -26,6 +25,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -41,6 +42,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 
 /** Provide GUI to list assignments and any related meta data
@@ -115,10 +118,12 @@ public class AssignmentsContentPanel extends ContentPanel {
         defaultMessageContainer.setWidget(new HTML("Select a group to see its assignments"));
         setWidget(defaultMessageContainer);
     }
-    
+
+    public void refreshData() {
+        loadAssignentsFor(_currentGroup);
+    }
 
     public void loadAssignentsFor(GroupDto group) {
-        
         setWidget(_grid);
         _currentGroup = group;
         readAssignmentData(group);
@@ -203,18 +208,12 @@ public class AssignmentsContentPanel extends ContentPanel {
         Assignment newAss = new Assignment();
         newAss.setStatus("Draft");
         newAss.setAssignmentName("My New Assignment: " + new Date());
-        newAss.setComments("Assignment: " + new Date());
         newAss.setGroupId(_currentGroup.getGroupId());
         
         Date defaultDate = new Date();
         newAss.setDueDate(defaultDate);
         
-        new EditAssignmentDialog(newAss, new CallbackOnComplete() {
-            @Override
-            public void isComplete() {
-                loadAssignentsFor(_currentGroup);
-            }
-        });        
+        new EditAssignmentDialog(newAss);        
     }
     
     private void deleteSelectedAssignment() {
@@ -275,6 +274,8 @@ public class AssignmentsContentPanel extends ContentPanel {
                 
                 CmBusyManager.setBusy(false);
                 _grid.getStore().remove(ass);
+                
+                forceLayout();
             }
         }.register();        
     }
@@ -286,12 +287,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         }        
         Assignment data = _grid.getSelectionModel().getSelectedItem();
         if(data != null) {
-            new EditAssignmentDialog(data, new CallbackOnComplete() {
-                @Override
-                public void isComplete() {
-                    readAssignmentData(_currentGroup);
-                }
-            });        
+            new EditAssignmentDialog(data);        
         }
         
     }
@@ -446,14 +442,26 @@ public class AssignmentsContentPanel extends ContentPanel {
     
     private Widget createCopyButton() {
         TextButton btn = new TextButton("Copy");
-        btn.setToolTip("Copy selected assignment");
-        btn.addSelectHandler(new SelectHandler() {
+        
+        Menu menu = new Menu();
+        menu.add(new MenuItem("Copy selected assignment",new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 copySelectedAssignment();    
             }
-
-        });
+        }));
+        menu.add(new MenuItem("Import assignments from other groups",new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                if(_currentGroup == null) {
+                    CmMessageBox.showAlert("Select a group first");
+                    return;
+                }
+                AssignmentCopyDialog.getInstance().showAndSetCurrentGroup(_currentGroup);    
+            }
+        }));
+        btn.setMenu(menu);
+        
         return btn;
     }
 

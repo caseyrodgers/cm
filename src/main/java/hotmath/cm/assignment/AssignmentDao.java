@@ -6,6 +6,7 @@ import hotmath.assessment.RppWidget;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
+import hotmath.gwt.cm_admin.client.model.GroupCopyModel;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
@@ -900,7 +901,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
 
-        __logger.warn("Assignments for '" + uid + "': " + cnt.get(0));
+        __logger.debug("Assignments for '" + uid + "': " + cnt.get(0));
         return cnt.get(0);
 
     }
@@ -1402,5 +1403,30 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
         
         return new AssignmentStatus(cnt.get(0) > 0);
+    }
+
+    public List<GroupCopyModel> getGroupAssignments(int adminId) throws Exception{
+        return getJdbcTemplate().query(CmMultiLinePropertyReader.getInstance().getProperty("GET_GROUP_ASSIGNMENTS_ALL"),
+                new Object[]{adminId}, new RowMapper<GroupCopyModel>() {
+            @Override
+            public GroupCopyModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new GroupCopyModel(rs.getString("group_name"), rs.getString("assignment_name"), rs.getInt("assignment_key"));
+            }
+        });
+    }
+
+    public Assignment importAssignment(int aid, int groupToImportInto, int assignmentToImport) throws Exception {
+        Assignment assignmentCopy = getAssignment(assignmentToImport);
+        
+        assignmentCopy.setAssignKey(0);
+        String copyTag = " - imported:  " + new java.util.Date();
+        assignmentCopy.setAssignmentName(assignmentCopy.getAssignmentName() + copyTag);
+        assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
+        assignmentCopy.setStatus("Draft");
+        assignmentCopy.setGroupId(groupToImportInto);
+
+        saveAssignment(aid, assignmentCopy);
+
+        return assignmentCopy;
     }
 }

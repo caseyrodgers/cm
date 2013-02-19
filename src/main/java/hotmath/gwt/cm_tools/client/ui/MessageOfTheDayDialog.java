@@ -7,7 +7,6 @@ import hotmath.gwt.shared.client.CmShared;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -16,7 +15,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class MessageOfTheDayDialog extends Window {
+public class MessageOfTheDayDialog extends GWindow {
 
     interface MyUiBinder extends UiBinder<Widget, MessageOfTheDayDialog> { }
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -25,13 +24,15 @@ public class MessageOfTheDayDialog extends Window {
     
     CallbackGeneric callback;
     public MessageOfTheDayDialog(CallbackGeneric callbackIn) {
+        super(false);
+        
         this.callback = callbackIn;
 
-        setHeading("Catchup Math Teacher Alert");
-        setSize(450,270);
+        setHeadingText("Catchup Math Teacher Alert");
+        setPixelSize(450,270);
         setModal(true);
 
-        add(uiBinder.createAndBindUi(this));
+        setWidget(uiBinder.createAndBindUi(this));
 
         Button okBtn = new Button("OK");
         okBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {

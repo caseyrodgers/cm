@@ -3668,6 +3668,17 @@ and   (is_self_reg is null or is_self_reg = 0)
 group by group_id
 
 
+.key=GET_GROUP_ASSIGNMENTS_ALL
+
+select g.id as group_id, g.name as group_name, a.assign_key as assignment_key,a.name as assignment_name
+from CM_GROUP g
+    JOIN CM_ASSIGNMENT a on a.group_id = g.id
+where admin_id = ?
+order by group_name, assignment_name
+
+
+
+
 .key=GET_ASSIGNMENTS_FOR_GROUP
 
 select a.assign_key,

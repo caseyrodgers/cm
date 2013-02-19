@@ -1,7 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
-import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
@@ -62,7 +63,7 @@ public class EditAssignmentDialog {
 
     AssignmentDesigner _assignmentDesigner;
 
-    public EditAssignmentDialog(Assignment assignment, final CallbackOnComplete callbackOnComplete) {
+    public EditAssignmentDialog(Assignment assignment) {
         this._assignment = assignment;
         _isDraftMode = _assignment.getStatus().equals("Draft");
         
@@ -110,6 +111,8 @@ public class EditAssignmentDialog {
         _comments.setWidth(MAX_FIELD_LEN);
         _comments.setHeight(50);
         _comments.setValue(_assignment.getComments());
+        _comments.setEmptyText("Enter a comment here for students");
+        _comments.setAllowBlank(false);
         FieldLabel commentsLabel = new FieldLabel(_comments, "Comment");
         commentsLabel.setLabelWidth(FIELD_LABEL_LEN);
         header.add(commentsLabel);
@@ -147,13 +150,16 @@ public class EditAssignmentDialog {
             }   
         });
         
-        hCon.add(_assignmentStatus);
-
-        FieldLabel _statusLabel = new FieldLabel(_assignmentStatus, "Status");
-        _statusLabel.setLabelWidth(FIELD_LABEL_LEN - 20);
-        HorizontalLayoutData hData = new HorizontalLayoutData();
-        hData.setMargins(new Margins(0, 20, 0, 20));
-        hCon.add(_statusLabel, hData);
+        /** only allow change when Active
+         * 
+         */
+        if(!_isDraftMode) {
+            FieldLabel statusLabel = new FieldLabel(_assignmentStatus, "Status");
+            statusLabel.setLabelWidth(FIELD_LABEL_LEN - 20);
+            HorizontalLayoutData hData = new HorizontalLayoutData();
+            hData.setMargins(new Margins(0, 20, 0, 20));
+            hCon.add(statusLabel, hData);
+        }
 
         header.add(hCon);
 
@@ -173,9 +179,10 @@ public class EditAssignmentDialog {
         saveDraftMode = new TextButton("Save Draft", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                saveAssignment(true);
-                window.hide();
-                callbackOnComplete.isComplete();
+                if(saveAssignment(true)) {
+                    window.hide();
+                }
+
             }
         });
         saveDraftMode.setToolTip("Save in draft mode allowing for future modifcations");
@@ -184,11 +191,12 @@ public class EditAssignmentDialog {
             public void onSelect(SelectEvent event) {
                 if(_assignmentDesigner.getAssignmentPids().size() == 0) {
                     CmMessageBox.showAlert("You need to add problems to the assignment before saving");
+                    _comments.focus();
                 }
                 else {
-                    saveAssignment(false);
-                    window.hide();
-                    callbackOnComplete.isComplete();
+                    if(saveAssignment(false)) {
+                        window.hide();
+                    }
                 }
             }
         });
@@ -300,7 +308,18 @@ public class EditAssignmentDialog {
         return combo;
     }
 
-    private void saveAssignment(boolean asDraft) {
+    /** Save the assignment and return if
+     *  the save is actually happening.
+     *  
+     * @param asDraft
+     * @return
+     */
+    private boolean saveAssignment(boolean asDraft) {
+        
+        if(_comments.getValue() == null) {
+            CmMessageBox.showAlert("Not Saved", "You must enter a comment before saving.");
+            return false;
+        }
         
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
@@ -336,8 +355,13 @@ public class EditAssignmentDialog {
                 _assignment.setAssignKey(assignKey);
 
                 Log.debug("Assignment Saved", "Assignment (" + _assignment.getAssignKey() + ") saved successfully");
+                
+                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
             }
         }.register();
+        
+        
+        return true;
 
     }
 
