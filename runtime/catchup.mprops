@@ -2396,7 +2396,8 @@ ORDER BY lesson
 
 .key=GET_HIGHLIGHT_REPORT_GROUP_PROGRESS
 
-select g.name as group_name,
+select g.id as group_id,
+       g.name as group_name,
        la.active_count,
        lc.login_count,
        lv.lessons_viewed,
@@ -2486,7 +2487,8 @@ order by active_count desc
 .key=GET_HIGHLIGHT_REPORT_GROUP_USAGE
 
 
-select g.name as group_name,
+select g.id as group_id,
+       g.name as group_name,
        la.active_count,
        vv.videos_viewed,
        gv.games_viewed,
