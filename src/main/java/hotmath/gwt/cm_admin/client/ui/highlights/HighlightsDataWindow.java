@@ -47,7 +47,7 @@ public class HighlightsDataWindow extends GWindow {
 
     Integer adminId;
 
-    final String TITLE="Student Usage HighlightS";
+    final String TITLE="Student Usage Highlights";
 
     Label _dateRange = new Label();
 
@@ -87,7 +87,7 @@ public class HighlightsDataWindow extends GWindow {
             }
         }));
 
-        //_dateRange.addStyleName("date-range-label");
+        _dateRange.addStyleName("date-range-label");
         getButtonBar().add(_dateRange);
         super.addCloseButton();
 

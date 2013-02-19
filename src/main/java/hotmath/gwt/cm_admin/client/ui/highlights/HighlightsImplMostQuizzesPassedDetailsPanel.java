@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -18,15 +19,22 @@ public class HighlightsImplMostQuizzesPassedDetailsPanel extends HighlightsImplD
         return HighlightsGetReportAction.ReportType.MOST_QUIZZES_PASSED;
     }
     
-    
     @Override
     protected ColumnModel<HighlightReportData> getColumns() {
-    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
-    	
-    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
-    	columns.get(1).setHeader("Quizzes Passed");
-        
-        return new ColumnModel<HighlightReportData>(columns);
+    	List<ColumnConfig<HighlightReportData, ?>> cols = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
+
+    	ColumnConfig<HighlightReportData, ?> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Students with one or more logins");
+    	column.setWidth(300);
+    	column.setSortable(false);
+    	cols.add(column);
+
+    	column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.quizzesPassed(), 140, "Quizzes Passed");
+    	column.setWidth(130);
+    	column.setSortable(false);
+    	cols.add(column);
+
+    	return new ColumnModel<HighlightReportData>(cols);
+
     }
    
 }

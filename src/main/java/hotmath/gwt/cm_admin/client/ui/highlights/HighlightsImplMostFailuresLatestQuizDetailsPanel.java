@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -20,11 +21,19 @@ public class HighlightsImplMostFailuresLatestQuizDetailsPanel extends Highlights
 
     @Override
     protected ColumnModel<HighlightReportData> getColumns() {
-    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
-    	
-    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
-    	columns.get(1).setHeader("Failures");
-        
-        return new ColumnModel<HighlightReportData>(columns);
+    	List<ColumnConfig<HighlightReportData, ?>> cols = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
+
+    	ColumnConfig<HighlightReportData, ?> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Students with one or more logins");
+    	column.setWidth(300);
+    	column.setSortable(false);
+    	cols.add(column);
+
+        column = new ColumnConfig<HighlightReportData, Integer>(_gridProps.quizzesTaken(), 140, "Failures");
+    	column.setWidth(130);
+    	column.setSortable(false);
+    	cols.add(column);
+
+    	return new ColumnModel<HighlightReportData>(cols);
+
     }
 }

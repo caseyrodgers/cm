@@ -33,6 +33,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -45,6 +46,7 @@ import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
 
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.Container;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
@@ -80,17 +82,24 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         SimpleContainer northContainer = new SimpleContainer();
         northContainer.setBorders(true);
         northContainer.setHeight("35px");
+        northContainer.add(getHeading());
 
         SimpleContainer southContainer = new SimpleContainer();
         southContainer.setBorders(true);
         southContainer.setHeight("45px");
+        southContainer.add(getLegend());
+        
+        SimpleContainer centerContainer = new SimpleContainer();
+        centerContainer.setHeight("350px");
+        centerContainer.setWidget(createListOfAvailableReports());
 
         this.setNorthWidget(northContainer);
-        this.setCenterWidget(createListOfAvailableReports());
+        this.setCenterWidget(centerContainer);
         this.setSouthWidget(southContainer);
 
         CmLogger.debug("setup report list");
-
+        
+        this.forceLayout();
     }
     
     static int __lastSelectedReport=0;
@@ -143,7 +152,6 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 	private ListStore<HighlightsReport> createListStore() {
         ListStore<HighlightsReport> s = new ListStore<HighlightsReport>(dataAccess.key());
         s.add(new HighlightsReport(new HighlightsImplGreatestEffort()));
-        /*
         s.add(new HighlightsReport(new HighlightsImplLeastEffort()));
         s.add(new HighlightsReport(new HighlightsImplMostGamesPlayed()));
         s.add(new HighlightsReport(new HighlightsImplMostQuizzesPassed()));
@@ -151,11 +159,9 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         s.add(new HighlightsReport(new HighlightsImplMostFailuresLatestQuiz()));
         s.add(new HighlightsReport(new HighlightsImplZeroLogins()));
         s.add(new HighlightsReport(new HighlightsImplTimeOnTask()));
-        */
-        // // s.add(new HighlightsReport(new HighlightImplComparePerformance()));
+        // s.add(new HighlightsReport(new HighlightImplComparePerformance()));
         
         /** mark these two reports as not using the summary page selection */
-        /*
         HighlightsReport rm = new HighlightsReport(new HighlightsImplGroupProgress());
         //rm.setDecorationClass("highlight-report-uses-summary");
         rm.setGroupReport(true);
@@ -165,10 +171,28 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         //rm.setDecorationClass("highlight-report-uses-summary");
         rm.setGroupReport(true);
         s.add(rm);
-        */
+
         return s;
     }    
 
+	private Container getHeading() {
+		Container c = new CenterLayoutContainer();
+		c.setHeight(35);
+		c.add(new HTML("<h1 style='color:#1C97D1; font-size:100%;'>Available Reports</h1>"));
+		return c;
+	}
+	
+	private Container getLegend() {
+		Container c = new SimpleContainer();
+		c.setHeight(45);
+		StringBuilder sb = new StringBuilder();
+		sb.append("<div class='report-legend' style='margin:5px'>");
+		sb.append("<div><div>&nbsp;</div>Uses Summary Page Selection</div>");
+		sb.append("<div class='no-selection'><div>&nbsp;</div>Applies to all Groups</div>");
+		sb.append("</div>");
+		c.add(new HTML(sb.toString()));
+		return c;
+	}
 /*
     private void showReportOutput(ReportModel report) {
         

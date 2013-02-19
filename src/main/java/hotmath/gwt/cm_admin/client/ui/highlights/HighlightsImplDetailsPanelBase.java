@@ -23,6 +23,7 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -49,10 +50,13 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     	@Path("uid")
         ModelKeyProvider<HighlightReportData> id();
 
+        @Path("activitiesViewed")
         ValueProvider<HighlightReportData, Integer> activities();
 
+        @Path("activeCount")
         ValueProvider<HighlightReportData, Integer> active();
 
+        @Path("gamesViewed")
         ValueProvider<HighlightReportData, Integer> games();
 
         @Path("groupCount")
@@ -69,13 +73,18 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         @Path("dbCount")
         ValueProvider<HighlightReportData, Integer> national();
 
+        ValueProvider<HighlightReportData, Integer> quizAverage();
+
         ValueProvider<HighlightReportData, Integer> quizzesPassed();
 
         ValueProvider<HighlightReportData, Integer> quizzesTaken();
 
+        ValueProvider<HighlightReportData, Integer> timeOnTask();
+
         @Path("schoolCount")
         ValueProvider<HighlightReportData, Integer> school();
 
+        @Path("videosViewed")
         ValueProvider<HighlightReportData, Integer> videos();
 
     }
@@ -100,21 +109,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
 
     abstract public HighlightsGetReportAction.ReportType getReportType();
     
-    protected ColumnModel<HighlightReportData> getColumns() {
-        List<ColumnConfig<HighlightReportData, ?>> cols = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
-
-        ColumnConfig<HighlightReportData, String> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Students with one or more logins");
-        column.setWidth(300);
-        column.setSortable(false);
-        cols.add(column);
-
-        ColumnConfig<HighlightReportData, Integer> col = new ColumnConfig<HighlightReportData, Integer>(_gridProps.lessons(), 140, "Lessons Viewed");
-        col.setWidth(130);
-        col.setSortable(false);
-        cols.add(col);
-        
-        return new ColumnModel<HighlightReportData>(cols);
-    }
+    abstract protected ColumnModel<HighlightReportData> getColumns();
     
 /*    
     public String[][] getReportValues() {
@@ -275,9 +270,8 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
  * @author casey
  *
  */
-class NoRowsFoundPanel extends SimpleContainer {
+class NoRowsFoundPanel extends CenterLayoutContainer {
     public NoRowsFoundPanel() {
-        //setLayout(new CenterLayout());
-        add(new HTML("<h1 style='font-size: 1.2em;margin: 10px;padding: 10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>"));
+        add(new HTML("<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>"));
     }
 }

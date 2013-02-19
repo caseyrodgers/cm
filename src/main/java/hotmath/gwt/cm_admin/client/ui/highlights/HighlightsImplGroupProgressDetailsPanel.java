@@ -68,7 +68,7 @@ public class HighlightsImplGroupProgressDetailsPanel extends HighlightsImplDetai
         //col.setToolTip("Quizzes passed");
         //col.setAlignment(HorizontalAlignment.RIGHT);        
         configs.add(col);
-        
+
         return new ColumnModel<HighlightReportData>(configs);
     }
 

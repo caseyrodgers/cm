@@ -6,6 +6,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HighlightsImplZeroLoginsDetailsPanel extends HighlightsImplDetailsPanelBase {
@@ -17,16 +18,18 @@ public class HighlightsImplZeroLoginsDetailsPanel extends HighlightsImplDetailsP
     public HighlightsGetReportAction.ReportType getReportType() {
         return HighlightsGetReportAction.ReportType.ZERO_LOGINS;
     }
-    
+
     @Override
     protected ColumnModel<HighlightReportData> getColumns() {
-    	ColumnModel<HighlightReportData> columnModel = super.getColumns();
-    	
-    	List<ColumnConfig<HighlightReportData, ?>> columns = columnModel.getColumns();
-    	columns.get(0).setHeader("Students with zero logins");
-    	columns.get(0).setWidth(500);
-        
-        return new ColumnModel<HighlightReportData>(columns);
+    	List<ColumnConfig<HighlightReportData, ?>> cols = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
+
+    	ColumnConfig<HighlightReportData, ?> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 140, "Students with zero logins");
+    	column.setWidth(300);
+    	column.setSortable(false);
+    	cols.add(column);
+
+    	return new ColumnModel<HighlightReportData>(cols);
+
     }
 
 /*    
