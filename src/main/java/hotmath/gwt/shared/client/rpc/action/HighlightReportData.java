@@ -3,6 +3,7 @@ package hotmath.gwt.shared.client.rpc.action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction.ReportType;
 
 public class HighlightReportData implements Response {
     
@@ -21,6 +22,8 @@ public class HighlightReportData implements Response {
     int loginCount;
     int lessonsViewed;
     int quizzesPassed;
+    int quizAverage;
+    int timeOnTask;
     
     int videosViewed;
     int gamesViewed;
@@ -28,9 +31,61 @@ public class HighlightReportData implements Response {
     int flashCardsViewed;
     
     CmList<String> columnLabels = new CmArrayList<String>();
-    
 
     public HighlightReportData(){}
+    
+    public HighlightReportData(Integer uid, String name, ReportType reportType, int... value) {
+        this.uid = uid;
+        this.name = name;
+        switch(reportType) {
+            case GREATEST_EFFORT:
+            case LEAST_EFFORT:
+            	lessonsViewed = value[0];
+        	    break;
+            case MOST_GAMES:
+            	gamesViewed = value[0];
+            	quizzesTaken = value[1];
+            	break;
+            case MOST_QUIZZES_PASSED:
+            	quizzesPassed = value[0];
+            	quizzesTaken = value[1];
+            	break;
+            case AVERAGE_QUIZ_SCORES:
+            	quizAverage = value[0];
+            	quizzesTaken = value[1];
+            	break;
+            case FAILED_CURRENT_QUIZZES:
+            	quizzesTaken = value[0];
+        	    break;
+            case ZERO_LOGINS:
+            	// nothing to set
+            	break;
+            case TIME_ON_TASK:
+            	this.timeOnTask = value[0];
+            	break;
+            case GROUP_PERFORMANCE:
+            	activeCount = value[0];
+            	loginCount = value[1];
+            	lessonsViewed = value[2];
+            	quizzesPassed = value[3];
+            	break;
+            case GROUP_USAGE:
+            	activeCount = value[0];
+            	videosViewed = value[1];
+            	gamesViewed = value[2];
+            	activitiesViewed = value[3];
+            	flashCardsViewed = value[4];
+            	break;
+
+            case SCHOOL_COMPARE:
+            case NATIONWIDE_COMPARE:
+            case COMPARE_PERFORMANCE:
+            case FAILED_QUIZZES:
+            case LOGINS_PER_WEEK:
+            	// not implemented
+            	break;
+        }
+    }    
     
     /** For group report */
     public HighlightReportData(Integer uid, String name, String data) {
@@ -140,6 +195,7 @@ public class HighlightReportData implements Response {
     }
 
     public int getLessonsViewed() {
+    	//return 99;
         return lessonsViewed;
     }
 
@@ -155,7 +211,23 @@ public class HighlightReportData implements Response {
         this.quizzesPassed = quizzesPassed;
     }
 
-    public String getLabel() {
+    public int getQuizAverage() {
+		return quizAverage;
+	}
+
+	public void setQuizAverage(int quizAverage) {
+		this.quizAverage = quizAverage;
+	}
+
+	public int getTimeOnTask() {
+		return timeOnTask;
+	}
+
+	public void setTimeOnTask(int timeOnTask) {
+		this.timeOnTask = timeOnTask;
+	}
+
+	public String getLabel() {
         return label;
     }
 
