@@ -329,7 +329,12 @@ public class EditAssignmentDialog {
             _assignment.setStatus("Draft");
         }
         else {
-            _assignment.setStatus(_assignmentStatus.getValue().getStatus());
+            if(_isDraftMode) {
+                _assignment.setStatus("Active");
+            }
+            else {
+                _assignment.setStatus(_assignmentStatus.getValue().getStatus());
+            }
         }
 
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
