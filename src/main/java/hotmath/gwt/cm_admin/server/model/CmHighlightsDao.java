@@ -13,6 +13,8 @@ import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction.ReportType;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -68,7 +70,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
                 new RowMapper<HighlightReportData>() {
                     @Override
                     public HighlightReportData mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed"));
+                        return new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.GREATEST_EFFORT, rs.getInt("lessons_viewed"));
                     }
                 });
         
@@ -103,7 +105,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("lessons_viewed")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.LEAST_EFFORT, rs.getInt("lessons_viewed")));
             }
         }
         finally {
@@ -131,7 +133,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("games_viewed"), rs.getInt("quizzes_taken")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.MOST_GAMES, rs.getInt("games_viewed"), rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -155,12 +157,11 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(3, vals[0]);
             ps.setString(4, vals[1]);
             
-            __logger.debug("report sql: " + ps);
-            
+            if (__logger.isDebugEnabled()) __logger.debug("report sql: " + ps);            
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("quizzes_passed"),rs.getInt("quizzes_taken")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.MOST_QUIZZES_PASSED, rs.getInt("quizzes_passed"), rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -192,11 +193,11 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             ps.setString(3, vals[0]);
             ps.setString(4, vals[1]);
             
-            __logger.debug("report sql: " + ps);
+            if (__logger.isDebugEnabled()) __logger.debug("report sql: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("avg_quiz_score"),rs.getInt("quizzes_taken")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.AVERAGE_QUIZ_SCORES, rs.getInt("avg_quiz_score"), rs.getInt("quizzes_taken")));
             }
         }
         finally {
@@ -238,7 +239,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes")));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.FAILED_QUIZZES, rs.getInt("failed_quizzes")));
             }
         }
         finally {
@@ -276,7 +277,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
                 new RowMapper<HighlightReportData>() {
                     @Override
                     public HighlightReportData mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), rs.getString("failed_quizzes"));                       
+                        return new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.FAILED_CURRENT_QUIZZES, rs.getInt("failed_quizzes"));                       
                     }
                 });
     }
@@ -337,7 +338,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), null));
+                list.add(new HighlightReportData(rs.getInt("uid"), rs.getString("user_name"), ReportType.ZERO_LOGINS));
             }
         }
         finally {
@@ -383,7 +384,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
                             	
             	if (userId != rs.getInt("user_id") && userId > 0) {
             		// new student, add previous and reset total time
-                    list.add(new HighlightReportData(userId, userName, String.valueOf(totalTime)));
+                    list.add(new HighlightReportData(userId, userName, ReportType.TIME_ON_TASK, totalTime));
                     totalTime = 0;
             	}
             	userId = rs.getInt("user_id");
@@ -392,7 +393,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             }
             // add last student
             if (userId != -1)
-                list.add(new HighlightReportData(userId, userName, String.valueOf(totalTime)));
+                list.add(new HighlightReportData(userId, userName, ReportType.TIME_ON_TASK, totalTime));
 
         }
         finally {
@@ -425,7 +426,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed")));
+                list.add(new HighlightReportData(rs.getInt("group_id"), rs.getString("group_name"),ReportType.GROUP_PERFORMANCE, rs.getInt("active_count"),rs.getInt("login_count"),rs.getInt("lessons_viewed"),rs.getInt("quizzes_passed")));
             }
             list.add(createTotalRow(list));            
         }
@@ -469,7 +470,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             
             ResultSet rs = ps.executeQuery(sql);
             while(rs.next()) {
-                list.add(new HighlightReportData(rs.getString("group_name"),rs.getInt("active_count"),rs.getInt("videos_viewed"),rs.getInt("games_viewed"),rs.getInt("activities_viewed"),rs.getInt("flash_cards_viewed")));
+                list.add(new HighlightReportData(rs.getInt("group_id"), rs.getString("group_name"), ReportType.GROUP_USAGE, rs.getInt("active_count"), rs.getInt("videos_viewed"),rs.getInt("games_viewed"),rs.getInt("activities_viewed"),rs.getInt("flash_cards_viewed")));
             }
             list.add(createTotalRow(list));
         }
@@ -482,6 +483,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     
     private HighlightReportData createTotalRow(CmList<HighlightReportData> list) {
         HighlightReportData row = new HighlightReportData();
+        row.setUid(0);
         row.setName("SCHOOLWIDE");
 
         for(HighlightReportData d: list) {
@@ -493,6 +495,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             row.setLessonsViewed(row.getLessonsViewed() + d.getLessonsViewed());
             row.setQuizzesPassed(row.getQuizzesPassed() + d.getQuizzesPassed());            
         }
+        this.logger.debug("createTotalRow(): list.size(): " + list.size() + ", active: " + row.getActiveCount());
         return row;
     }
     
