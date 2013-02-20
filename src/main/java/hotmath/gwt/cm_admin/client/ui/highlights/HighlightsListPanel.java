@@ -27,6 +27,7 @@ import java.util.List;
 //import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 //import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
+import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -35,6 +36,8 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
+
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -50,6 +53,8 @@ import com.sencha.gxt.widget.core.client.container.Container;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
+import com.sencha.gxt.core.client.IdentityValueProvider;
 
 /**
  * 
@@ -79,25 +84,17 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         _parent = parent;
         _layoutData = layoutData;
 
-        SimpleContainer northContainer = new SimpleContainer();
+        CenterLayoutContainer northContainer = new CenterLayoutContainer();
         northContainer.setBorders(true);
-        northContainer.setHeight("35px");
         northContainer.add(getHeading());
 
         SimpleContainer southContainer = new SimpleContainer();
         southContainer.setBorders(true);
-        southContainer.setHeight("45px");
         southContainer.add(getLegend());
-        
-        SimpleContainer centerContainer = new SimpleContainer();
-        centerContainer.setHeight("350px");
-        centerContainer.setWidget(createListOfAvailableReports());
 
-        this.setNorthWidget(northContainer);
-        this.setCenterWidget(centerContainer);
-        this.setSouthWidget(southContainer);
-
-        CmLogger.debug("setup report list");
+        this.setNorthWidget(northContainer, new BorderLayoutData(30));
+        this.setCenterWidget(createListOfAvailableReports());
+        this.setSouthWidget(southContainer, new BorderLayoutData(50));
         
         this.forceLayout();
     }
@@ -124,13 +121,15 @@ public class HighlightsListPanel extends BorderLayoutContainer {
    
       };
 
-    // ListView<HighlightsReport, String> _listReports = new ListView<HighlightsReport, String>(createListStore(), dataAccess.name(), appearance);
-    ListView<HighlightsReport, String> _listReports = new ListView<HighlightsReport, String>(createListStore(), dataAccess.name());
+    ListView<HighlightsReport, HighlightsReport> _listReports =
+    	new ListView<HighlightsReport, HighlightsReport>(createListStore(), new IdentityValueProvider<HighlightsReport>() {
+            @Override
+            public void setValue(HighlightsReport object, HighlightsReport value) { 
+            }
+        });
 
-    private ListView<HighlightsReport, String> createListOfAvailableReports() {
-        //_listReports.setStore(createListStore());
-        //_listReports.setTemplate(getTemplate());
-        
+    private ListView<HighlightsReport, HighlightsReport> createListOfAvailableReports() {
+
         _listReports.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 		_listReports.getSelectionModel().addSelectionHandler(new SelectionHandler<HighlightsReport>() {
 			@Override
@@ -145,6 +144,26 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 
 			}
 		});
+
+        _listReports.setCell(new SimpleSafeHtmlCell<HighlightsReport>(new AbstractSafeHtmlRenderer<HighlightsReport>() {
+            @Override
+            public SafeHtml render(HighlightsReport report) {
+            	SafeHtmlBuilder sb = new SafeHtmlBuilder();
+        		// Add tooltip and set text color red for Group reports.
+            	sb.appendHtmlConstant("<div qtip='").appendEscaped(report.getToolTip()).appendEscaped("' ");
+        		if (report.isGroupReport()) { 
+        			sb.appendHtmlConstant(" style='color:red'>");
+        		}
+        		else {
+        			sb.appendHtmlConstant(">");
+        		}
+        		sb.appendEscaped(report.getText());
+        		sb.appendHtmlConstant("</div>");
+        		return sb.toSafeHtml();
+            }
+          }));
+
+        _listReports.getSelectionModel().select(0, false);
 
         return _listReports;
     }
@@ -175,23 +194,17 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         return s;
     }    
 
-	private Container getHeading() {
-		Container c = new CenterLayoutContainer();
-		c.setHeight(35);
-		c.add(new HTML("<h1 style='color:#1C97D1; font-size:100%;'>Available Reports</h1>"));
-		return c;
+	private HTML getHeading() {
+		return new HTML("<h1 style='color:#1C97D1; font-size:100%;'>Available Reports</h1>");
 	}
 	
-	private Container getLegend() {
-		Container c = new SimpleContainer();
-		c.setHeight(45);
+	private HTML getLegend() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<div class='report-legend' style='margin:5px'>");
 		sb.append("<div><div>&nbsp;</div>Uses Summary Page Selection</div>");
 		sb.append("<div class='no-selection'><div>&nbsp;</div>Applies to all Groups</div>");
 		sb.append("</div>");
-		c.add(new HTML(sb.toString()));
-		return c;
+		return new HTML(sb.toString());
 	}
 /*
     private void showReportOutput(ReportModel report) {
