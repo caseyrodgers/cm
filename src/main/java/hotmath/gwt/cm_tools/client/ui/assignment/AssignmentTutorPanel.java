@@ -59,6 +59,10 @@ public class AssignmentTutorPanel extends Composite {
                 CmMessageBox.showAlert("Changes are not allowed.");
             }
             
+            @Override
+            public boolean moveFirstHintOnWidgetIncorrect() {
+                return false;
+            }
         });
         if(!isEditable) {
             _tutorPanel.setReadOnly(true);

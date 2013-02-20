@@ -88,7 +88,6 @@ public class TutorWrapperPanel extends Composite {
     boolean _wasWidgetAnswered;
     
     public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
-
         __lastInstance = this;
         this.tutorCallback = tutorCallback;
         this.saveVariableContext = saveVariableContext;
@@ -249,7 +248,7 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
         else {
-        	if(!correct) {
+        	if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
         	    jsni_moveToFirstStep();
         	}
         	
@@ -722,6 +721,13 @@ public class TutorWrapperPanel extends Composite {
          * 
          */
         void solutionHasBeenInitialized();
+        
+        
+        /** Should the first hint be shown on incorrect widget value
+         * 
+         * @return
+         */
+        boolean moveFirstHintOnWidgetIncorrect();
     }
 
 
