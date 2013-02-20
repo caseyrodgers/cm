@@ -260,6 +260,15 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         }
     }
 
+    /** Return the newest global context for this solution.
+     * 
+     *  This is the last one the authors created.
+     *  
+     * @param pid
+     * @param problemNumber
+     * @return
+     * @throws CmExceptionGlobalContextNotFound
+     */
     public String getGlobalSolutionContextNewest(String pid, String problemNumber) throws CmExceptionGlobalContextNotFound {
         String sql = "select * from HA_SOLUTION_GLOBAL_CONTEXT where pid = ? and problem_number = ? ORDER BY create_time desc limit 1";
         List<String> contexts = getJdbcTemplate().query(sql,new Object[]{pid, problemNumber},

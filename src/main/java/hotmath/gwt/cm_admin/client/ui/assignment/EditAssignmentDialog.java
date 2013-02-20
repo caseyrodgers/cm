@@ -86,22 +86,6 @@ public class EditAssignmentDialog {
         assignmentNameLabel.setLabelWidth(FIELD_LABEL_LEN);
         _assignmentName.setValue(assignment.getAssignmentName());
 
-        LevelProperties props = GWT.create(LevelProperties.class);
-
-        ModelKeyProvider<NameValueData> kp = new ModelKeyProvider<NameValueData>() {
-            @Override
-            public String getKey(NameValueData item) {
-                return item.getName();
-            }
-        };
-
-        LabelProvider<NameValueData> labProv = new LabelProvider<NameValueData>() {
-            @Override
-            public String getLabel(NameValueData item) {
-                return item.getName();
-            }
-        };
-
         BorderLayoutData headerData = new BorderLayoutData();
         headerData.setMargins(new Margins(20));
         header.setLayoutData(headerData);
@@ -154,6 +138,7 @@ public class EditAssignmentDialog {
          * 
          */
         if(!_isDraftMode) {
+            _assignmentStatus.getStore().remove(_assignmentStatus.getStore().size()-1);   // remove draft
             FieldLabel statusLabel = new FieldLabel(_assignmentStatus, "Status");
             statusLabel.setLabelWidth(FIELD_LABEL_LEN - 20);
             HorizontalLayoutData hData = new HorizontalLayoutData();

@@ -144,7 +144,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     String fullPid = pidParts[0];
                     if (pidParts.length > 1) {
                         try {
-                            fullPid = fullPid + "$" + SolutionDao.getInstance().getGlobalSolutionContextNewest(pidParts[0], pidParts[1]);
+                            fullPid = SolutionDao.getInstance().getGlobalSolutionContext(pidParts[0] + "$" + pidParts[1]).getPid();
+                            
                         } catch (Exception e) {
                             __logger.error("Error getting global context name", e);
                         }
