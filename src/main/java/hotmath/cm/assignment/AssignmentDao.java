@@ -915,6 +915,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          */
         String sql = "select  due_date < now() as is_expired, a.* " + "from   HA_USER u " + " join CM_GROUP g " + " on g.id = u.group_id "
                 + " join CM_ASSIGNMENT a " + " on a.group_id = u.group_id " + " where  u.uid = ? " + "  "
+                + " and a.status <> 'Draft'"
                 + " order by is_expired, a.due_date desc ";
 
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Assignment>() {

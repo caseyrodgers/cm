@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import javax.units.AddConverter;
+
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel.MyMenuItem;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
@@ -12,12 +15,15 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
@@ -32,6 +38,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /**
  * Provide dialog to allow Admins ability to define and manage Assignments.
@@ -54,7 +61,7 @@ public class AssignmentManagerDialog2  {
         _groupIdToLoad = groupIdToLoad;
         this.aid = aid;
         
-        Window window = new GWindow(true);
+        GWindow window = new GWindow(false);
         window.setPixelSize(700, 480);
         window.setHeadingHtml("Assignments Manager");
         window.setMaximizable(true);
@@ -72,7 +79,7 @@ public class AssignmentManagerDialog2  {
         header.add(new FieldLabel(_groupCombo, "Group"));
         HorizontalLayoutData hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,0,0,20));
-        header.add(new TextButton("Assignment Guide", new SelectHandler() {
+        header.add(new TextButton("Assignments Guide", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 AssignmentGuideWindow.showWindow();
@@ -92,6 +99,9 @@ public class AssignmentManagerDialog2  {
          * intially have the assignments window full
          */
         _mainContainer.setCenterWidget(_assignmentsPanel);
+        
+        window.addButton(createGradeBookButton());
+        window.addCloseButton();
         
         window.setWidget(_mainContainer);
         window.show();
@@ -170,7 +180,20 @@ public class AssignmentManagerDialog2  {
         }.register();                
     }
     
-    
+
+    private Widget createGradeBookButton() {
+        TextButton gradeBook = new TextButton("Gradebook", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        CmMessageBox.showAlert("The Assignment Gradebook View");
+                    }
+                });                
+            }});
+        return gradeBook;
+    }
 
     protected void refreshData() {
         _assignmentsPanel.refreshData();

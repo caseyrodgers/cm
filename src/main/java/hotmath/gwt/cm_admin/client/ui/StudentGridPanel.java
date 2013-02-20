@@ -779,27 +779,11 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 AssignmentGuideWindow.showWindow();
             }
         }));
-        
-        menu.add(createGradeBookButton());
         menu.add(createEditAssignmentButton());
         
         
         assignmentsButton.setMenu(menu);
         return assignmentsButton;
-    }
-
-    private Widget createGradeBookButton() {
-        MyMenuItem createEdit = new MyMenuItem("Gradebook", "View the assignment gradebook.", new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        CmMessageBox.showAlert("The Assignment Gradebook View");
-                    }
-                });                
-            }});
-        return createEdit;
     }
 
     private Widget createEditAssignmentButton() {

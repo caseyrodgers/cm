@@ -10,7 +10,7 @@ public class AssignmentStatusDialog extends GWindow {
     public AssignmentStatusDialog(Assignment asgn) {
         
         super(true);
-        setPixelSize(700,  480);
+        setPixelSize(500,  400);
         setHeadingText("Assignment Status: " + asgn.getComments());
         
         _gradingPanel = new GradeBookPanel();

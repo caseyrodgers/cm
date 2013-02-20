@@ -318,7 +318,7 @@ class AssignmentProblemListView extends ContentPanel {
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                if(!callback.isDraftMode()) {
+                if(!callback.isDraftMode() && CmShared.getQueryParameter("debug") == null) {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }

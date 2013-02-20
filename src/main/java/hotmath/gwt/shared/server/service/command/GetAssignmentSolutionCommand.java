@@ -41,10 +41,6 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         
         info.setHtml(convertQuestionDefToInput(info.getHtml()));
         
-        SolutionContext context = new SolutionContext();
-        context.setContextJson(AssignmentDao.getInstance().getSolutionContext(action.getUid(),action.getAssignKey(),action.getPid()));
-        info.setContext(context);
-        
         String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
         
         AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue);

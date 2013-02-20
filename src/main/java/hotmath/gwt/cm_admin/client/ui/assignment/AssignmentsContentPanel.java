@@ -227,7 +227,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         }
 
         
-        final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Are you sure you want to delete this assignment?");
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Deleting active assignments will prevent students from working on the assignment or reviewing it.");
         cm.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {

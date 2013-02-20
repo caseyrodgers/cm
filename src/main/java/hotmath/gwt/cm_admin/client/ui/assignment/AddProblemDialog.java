@@ -160,7 +160,7 @@ public class AddProblemDialog extends GWindow {
     }
     
     private Widget createAddSelectionButton() {
-        TextButton btn = new TextButton("View Assignment", new SelectHandler() {
+        TextButton btn = new TextButton("Add Checked Problems", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 Tree<BaseDto, String> activeTree=null;
@@ -176,7 +176,7 @@ public class AddProblemDialog extends GWindow {
                 hide();
             }
         });
-        btn.setToolTip("Add all selected problems to current assignment.");
+        btn.setToolTip("Add all checked problems to current assignment.");
         return btn;
     }
     
@@ -401,7 +401,7 @@ public class AddProblemDialog extends GWindow {
 
             @Override
             public void onExecute() {
-                Log.debug("Selection Info", _tree.getCheckedSelection().size() + " item(s) selected");
+                Log.debug("Selection Info", _tree.getCheckedSelection().size() + " item(s) checked");
                 
                 setWindowTitleCountSelectedProblems();
             }
@@ -444,7 +444,7 @@ public class AddProblemDialog extends GWindow {
         makeSureLessonProblemsReadMaybeAsync(false, false, _tree,new AddProblemsCallback() {
             @Override
             public void problemsAdded(List<ProblemDto> problemsAdded) {
-                String title = problemsAdded.size() + " problem(s) selected";
+                String title = problemsAdded.size() + " problem(s) checked";
                 _treePanel.setHeadingHtml(title);
             }
         });
