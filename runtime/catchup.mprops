@@ -2832,7 +2832,20 @@ group by t.user_id, tr.run_id
 
 order by user_name, activity_type
 
-          
+
+.key=HIGHLIGHT_REPORT_WIDGET_ANSWERS_PERCENT
+
+SELECT u.uid, u.user_name, a.*
+FROM   HA_USER u
+JOIN   HA_TEST t on t.user_id = u.uid
+JOIN   HA_TEST_RUN r on r.test_id = t.test_id
+JOIN   HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
+  ON   a.run_id = r.run_id
+ AND   a.answer_time between ? and ?
+WHERE  u.uid in ( $$UID_LIST$$ )
+ORDER  by u.uid, a.pid, a.answer_time
+
+
 #########################
 ### CmQuizzesDao 
 #########################
