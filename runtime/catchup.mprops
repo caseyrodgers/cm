@@ -2833,17 +2833,20 @@ group by t.user_id, tr.run_id
 order by user_name, activity_type
 
 
-.key=HIGHLIGHT_REPORT_WIDGET_ANSWERS_PERCENT
+.key=HIGHLIGHT_REPORT_WIDGET_ANSWERS
 
-SELECT u.uid, u.user_name, a.*
-FROM   HA_USER u
-JOIN   HA_TEST t on t.user_id = u.uid
-JOIN   HA_TEST_RUN r on r.test_id = t.test_id
-JOIN   HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
-  ON   a.run_id = r.run_id
- AND   a.answer_time between ? and ?
-WHERE  u.uid in ( $$UID_LIST$$ )
-ORDER  by u.uid, a.pid, a.answer_time
+SELECT u.uid, u.user_name, m.pid, m.correct, m.first_answer_time
+FROM
+ (SELECT t.user_id, a.pid, a.correct, min(a.answer_time) as first_answer_time
+  FROM   HA_TEST t
+  JOIN   HA_TEST_RUN r ON r.test_id = t.test_id
+  JOIN   HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
+    ON   a.run_id = r.run_id
+  WHERE  t.user_id IN ( $$UID_LIST$$ )
+  GROUP  BY t.user_id, a.pid
+  ORDER  BY t.user_id, a.pid) m
+JOIN  HA_USER u ON u.uid = m.user_id
+WHERE m.first_answer_time BETWEEN ? and ?
 
 
 #########################
