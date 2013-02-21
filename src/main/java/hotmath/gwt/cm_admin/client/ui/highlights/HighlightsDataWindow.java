@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.eventbus.EventType;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -48,6 +49,10 @@ public class HighlightsDataWindow extends GWindow {
     Integer adminId;
 
     final String TITLE="Student Usage Highlights";
+    
+    BorderLayoutData _westData;
+    BorderLayoutData _centerData;
+    HighlightsListPanel _highlightsListPanel;
 
     Label _dateRange = new Label();
 
@@ -62,14 +67,16 @@ public class HighlightsDataWindow extends GWindow {
         _container = new BorderLayoutContainer();
         _container.setBorders(true);
 
-        BorderLayoutData westData = new BorderLayoutData();
-        westData.setSize(210);
-        westData.setCollapsible(true);
-        westData.setFloatable(true);
+        _westData = new BorderLayoutData();
+        _westData.setSize(210);
+        _westData.setCollapsible(true);
+        _westData.setFloatable(true);
 
-        BorderLayoutData centerData = new BorderLayoutData();
-        centerData.setSize(400);
-        _container.setWestWidget(new HighlightsListPanel(_container, centerData), westData);
+        _centerData = new BorderLayoutData();
+        _centerData.setSize(400);
+
+        _highlightsListPanel = new HighlightsListPanel(_container, _centerData);
+        _container.setWestWidget(_highlightsListPanel, _westData);
 
         refreshDateRangeLabel();
 
@@ -116,9 +123,12 @@ public class HighlightsDataWindow extends GWindow {
 
     int _currentSelection;
     private void reloadAllReports() {
-        super.clear();
-        _container.setCenterWidget(new HighlightsIndividualPanel());
-        super.forceLayout();
+        _container.getCenterWidget().removeFromParent();
+        _container.getWestWidget().removeFromParent();
+    	_highlightsListPanel = new HighlightsListPanel(_container, _centerData);
+        _container.setWestWidget(_highlightsListPanel, _westData);
+        refreshDateRangeLabel();
+        _container.forceLayout();
     }
 
     private void setAdminId(Integer aid) {

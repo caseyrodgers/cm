@@ -53,6 +53,8 @@ import com.sencha.gxt.widget.core.client.container.Container;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
+import com.sencha.gxt.widget.core.client.tips.QuickTip;
+import com.sencha.gxt.widget.core.client.tips.ToolTip;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.IdentityValueProvider;
 
@@ -145,14 +147,14 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 			}
 		});
 
-        _listReports.setCell(new SimpleSafeHtmlCell<HighlightsReport>(new AbstractSafeHtmlRenderer<HighlightsReport>() {
+		SimpleSafeHtmlCell<HighlightsReport> reportCell = new SimpleSafeHtmlCell<HighlightsReport>(new AbstractSafeHtmlRenderer<HighlightsReport>() {
             @Override
             public SafeHtml render(HighlightsReport report) {
             	SafeHtmlBuilder sb = new SafeHtmlBuilder();
         		// Add tooltip and set text color red for Group reports.
-            	sb.appendHtmlConstant("<div qtip='").appendEscaped(report.getToolTip()).appendEscaped("' ");
+            	sb.appendHtmlConstant("<div qtip=\"").appendEscaped(report.getToolTip()).appendHtmlConstant("\" ");
         		if (report.isGroupReport()) { 
-        			sb.appendHtmlConstant(" style='color:red'>");
+        			sb.appendHtmlConstant(" style=\"color:red\">");
         		}
         		else {
         			sb.appendHtmlConstant(">");
@@ -161,9 +163,10 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         		sb.appendHtmlConstant("</div>");
         		return sb.toSafeHtml();
             }
-          }));
+          });
+        _listReports.setCell(reportCell);
 
-        _listReports.getSelectionModel().select(0, false);
+        new QuickTip(_listReports);
 
         return _listReports;
     }
@@ -228,28 +231,6 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 		ModelKeyProvider<HighlightImplBase> textKey();
     }
 
-	private ListView<ReportModel, String> createListStore() {
-        ListView<ReportModel, String> s = new ListView<ReportModel, String>();
-        s.add(new ReportModel(new HighlightImplGreatestEffort()));
-        s.add(new ReportModel(new HighlightImplLeastEffort()));
-        s.add(new ReportModel(new HighlightImplMostGamesPlayed()));
-        s.add(new ReportModel(new HighlightImplMostQuizzesPassed()));
-        s.add(new ReportModel(new HighlightImplHighestAverageQuizScores()));
-        s.add(new ReportModel(new HighlightImplMostFailuresLatestQuiz()));
-        s.add(new ReportModel(new HighlightImplZeroLogins()));
-        s.add(new ReportModel(new HighlightImplTimeOnTask()));
-        // s.add(new ReportModel(new HighlightImplComparePerformance()));
-        
-        /** mark these two reports as not using the summary page selection */ /*
-        ReportModel rm = new ReportModel(new HighlightImplGroupProgress());
-        rm.set("decorationClass", "highlight-report-uses-summary");
-        s.add(rm);
-        
-        rm = new ReportModel(new HighlightImplGroupUsage());
-        rm.set("decorationClass", "highlight-report-uses-summary");
-        s.add(rm);
-        return s;
-    }    
     private void printCurrentReport() {
         if(HighlightImplDetailsPanelBase.__lastReportData == null) {
             InfoPopupBox.display("Highlight Report", "Nothing to print");
