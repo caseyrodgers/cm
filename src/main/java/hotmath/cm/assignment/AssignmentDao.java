@@ -876,8 +876,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             groups.addAll(getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<GroupDto>() {
                 @Override
                 public GroupDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    //String label = rs.getString("name") + " [" + rs.getInt("student_count") + ", " + rs.getInt("assignment_count") + "]";
-                    return new GroupDto(rs.getInt("group_id"), rs.getString("name"));
+                    String info = "students: " + rs.getInt("student_count") + ", assignments: " + rs.getInt("assignment_count");
+                    return new GroupDto(rs.getInt("group_id"), rs.getString("name"), info);
                 }
             }));
 

@@ -1,8 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import javax.units.AddConverter;
-
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel.MyMenuItem;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
@@ -23,11 +20,16 @@ import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.safehtml.shared.SafeUri;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
+import com.sencha.gxt.core.client.XTemplates;
+import com.sencha.gxt.core.client.XTemplates.XTemplate;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.ListStore;
-import com.sencha.gxt.widget.core.client.Window;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -38,7 +40,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.info.Info;
-import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /**
  * Provide dialog to allow Admins ability to define and manage Assignments.
@@ -55,7 +56,6 @@ public class AssignmentManagerDialog2  {
     ComboBox<GroupDto> _groupCombo;
     BorderLayoutContainer _mainContainer;
     private int _groupIdToLoad;
-    
     public AssignmentManagerDialog2(int groupIdToLoad, int aid) {
         __lastInstance = this;
         _groupIdToLoad = groupIdToLoad;
@@ -112,12 +112,29 @@ public class AssignmentManagerDialog2  {
         _assignmentsPanel.loadAssignentsFor(group);
     }
     
+    
+    
+    interface ComboBoxTemplates extends XTemplates {
+        @XTemplate("<div qtip=\"{info}\" qtitle=\"Group Info\">{name}</div>")
+        SafeHtml group(String info, String name);
+      }
+    
+
     private ComboBox<GroupDto> createGroupNameCombo() {
+        
         
         GroupNameProperties props = GWT.create(GroupNameProperties.class);
         ListStore<GroupDto> groupStore = new ListStore<GroupDto>(props.groupId());
    
-        ComboBox<GroupDto> combo = new ComboBox<GroupDto>(groupStore, props.name());
+        ComboBox<GroupDto> combo = new ComboBox<GroupDto>(groupStore, props.name(), new AbstractSafeHtmlRenderer<GroupDto>() {
+            @Override
+            public SafeHtml render(GroupDto object) {
+                final ComboBoxTemplates comboBoxTemplates = GWT.create(ComboBoxTemplates.class);
+                return comboBoxTemplates.group(object.getInfo(), object.getName());
+            }
+        });
+    
+        
         loadGroupNames();
 
         //combo.setToolTip("Select a group with [N students, M assignments]");

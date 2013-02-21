@@ -6,12 +6,14 @@ public class GroupDto implements Response {
     
     private int groupId;
     private String name;
+    private String info;
 
     public GroupDto() {}
     
-    public GroupDto(int groupId, String name) {
+    public GroupDto(int groupId, String name, String info) {
         this.groupId = groupId;
         this.name = name;
+        this.info = info;
     }
 
     public int getGroupId() {
@@ -30,9 +32,17 @@ public class GroupDto implements Response {
         this.name = name;
     }
     
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
     @Override
     public String toString() {
-        return "GroupDto [groupId=" + groupId + ", name=" + name + "]";
+        return "GroupDto [groupId=" + groupId + ", name=" + name + ", info=" + info + "]";
     }
 
 }
