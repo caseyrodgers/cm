@@ -13,13 +13,14 @@ public class HighlightsImplFirstAnswersPercent extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
-/*
+    
     @Override
-    protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Name:75", "Time-on-Task:25"};
-        HighlightReportLayout rl = new HighlightReportLayout(cols, panel.getReportValues());
-        rl.setTitle(title);
-        return rl;
+    String[] getReportCols() {
+        return panel.getReportColumns();
     }
-*/
+    
+    @Override
+    String[][] getReportValues() {
+        return panel.getReportValues();
+    }
 }

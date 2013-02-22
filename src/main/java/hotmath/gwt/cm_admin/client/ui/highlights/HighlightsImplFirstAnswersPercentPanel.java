@@ -37,4 +37,26 @@ public class HighlightsImplFirstAnswersPercentPanel extends HighlightsImplDetail
 
     }
     
+    
+    @Override
+    public String[] getReportColumns() {
+        return new String[]{"Name", "% Correct"};
+    }
+    
+
+    @Override
+    public String[][] getReportValues() {
+        List<HighlightReportData> reportData = getHighLightData();
+        
+        /** in reverse order */
+        String vars[][] = new String[reportData.size()][2];
+        for(int i=0;i<reportData.size(); i++) {
+            vars[i][0] = reportData.get(i).getName();
+            vars[i][1] = reportData.get(i).getFirstTimeCorrectPercent() + "";
+        }
+        return vars;
+        
+    }
+    
+    
 }
