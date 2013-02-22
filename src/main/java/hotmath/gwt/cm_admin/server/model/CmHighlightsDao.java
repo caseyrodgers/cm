@@ -8,6 +8,7 @@ import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.spring.SpringManager;
@@ -22,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -450,6 +453,19 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             HighlightReportData report = createReportItem(lastUid, name, totals);
             list.add(report);
         }
+
+        // sort in order of descending percent correct
+        Collections.sort(list, new Comparator<HighlightReportData>() {
+            @Override
+            public int compare(HighlightReportData o1, HighlightReportData o2) {
+            	int p1 = o1.getFirstTimeCorrectPercent();
+            	int p2 = o2.getFirstTimeCorrectPercent();
+            	if (p1 == p2) {
+            		return o1.getName().compareToIgnoreCase(o2.getName());
+            	}
+                return (p1 > p2) ? -1 : 1;
+            }
+        });
 
         return list;
     }
