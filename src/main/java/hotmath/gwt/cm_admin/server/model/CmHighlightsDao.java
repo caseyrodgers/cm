@@ -454,15 +454,17 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             list.add(report);
         }
 
-        // sort in order of descending percent correct
+        // sort in order of ascending name and descending percent correct
         Collections.sort(list, new Comparator<HighlightReportData>() {
             @Override
             public int compare(HighlightReportData o1, HighlightReportData o2) {
+            	String n1 = o1.getName();
+            	String n2 = o2.getName();
+            	if (n1.compareTo(n2) != 0) return n1.compareTo(n2);
+
             	int p1 = o1.getFirstTimeCorrectPercent();
             	int p2 = o2.getFirstTimeCorrectPercent();
-            	if (p1 == p2) {
-            		return o1.getName().compareToIgnoreCase(o2.getName());
-            	}
+            	if (p1 == p2) return 0;
                 return (p1 > p2) ? -1 : 1;
             }
         });
