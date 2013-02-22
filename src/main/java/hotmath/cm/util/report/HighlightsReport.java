@@ -3,7 +3,6 @@ package hotmath.cm.util.report;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
@@ -78,8 +77,8 @@ public class HighlightsReport {
         //TODO: the following defensive code should not be needed, perhaps an out-of-date client?
         if (reportLayout != null) {
         	countLabel = reportLayout.getCountLabel();
-        	if (reportLayout.getColumnValues() != null) {
-        		rowCount = reportLayout.getColumnValues().length;
+        	if (reportLayout.getModels() != null) {
+        		rowCount = reportLayout.getModels().size();
         	}
         	else {
         		__logger.warn(String.format("*** no columnValues in reportLayout, adminId: %d, title: %s",
@@ -109,7 +108,7 @@ public class HighlightsReport {
         for(String labelToken: reportLayout.getColumnLabels()) {
             String p[] = labelToken.split(":");
             String label = p[0];
-            int width = Integer.parseInt(p[1]);
+            int width = p.length>1?Integer.parseInt(p[1]):75;  // default width
             addHeader(label, width + "%", tbl);
         }
 

@@ -1,62 +1,37 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
 import hotmath.gwt.shared.client.eventbus.EventType;
-import hotmath.gwt.shared.client.model.TrendingData;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 
-import java.util.ArrayList;
-import java.util.List;
-
-//import com.extjs.gxt.ui.client.Style.LayoutRegion;
-//import com.extjs.gxt.ui.client.data.BaseModelData;
-//import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
-//import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-//import com.extjs.gxt.ui.client.store.ListStore;
-//import com.extjs.gxt.ui.client.widget.ContentPanel;
-//import com.extjs.gxt.ui.client.widget.Html;
-//import com.extjs.gxt.ui.client.widget.Label;
-//import com.extjs.gxt.ui.client.widget.LayoutContainer;
-//import com.extjs.gxt.ui.client.widget.ListView;
-//import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
-//import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-//import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
-
+import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
+import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.ListView;
 import com.sencha.gxt.widget.core.client.ListViewCustomAppearance;
-
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.Container;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
-import com.sencha.gxt.widget.core.client.tips.ToolTip;
-import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
-import com.sencha.gxt.core.client.IdentityValueProvider;
 
 /**
  * 
@@ -100,6 +75,21 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         
         this.forceLayout();
     }
+    
+    private void printCurrentReport() {
+        HighlightsReport report = _listReports.getSelectionModel().getSelectedItem();
+        if(report == null) {
+            CmMessageBox.showAlert("Nothing to print");
+            return;
+        }
+        
+        String reportName = report.getText();
+        HighlightReportLayout reportLayout = report.getReport().getReportLayout();
+        GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance.getCmAdminMdl().getUid(),reportName,reportLayout,StudentGridPanel.instance.getPageAction());
+        action.setFilterMap(StudentGridPanel.instance.getPageAction().getFilterMap());
+        new PdfWindow(0, "Catchup Math Highlight Report", action);
+    }
+        
     
     static int __lastSelectedReport=0;
     
@@ -150,18 +140,18 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 		SimpleSafeHtmlCell<HighlightsReport> reportCell = new SimpleSafeHtmlCell<HighlightsReport>(new AbstractSafeHtmlRenderer<HighlightsReport>() {
             @Override
             public SafeHtml render(HighlightsReport report) {
-            	SafeHtmlBuilder sb = new SafeHtmlBuilder();
-        		// Add tooltip and set text color red for Group reports.
-            	sb.appendHtmlConstant("<div qtip=\"").appendEscaped(report.getToolTip()).appendHtmlConstant("\" ");
-        		if (report.isGroupReport()) { 
-        			sb.appendHtmlConstant(" style=\"color:red\">");
-        		}
-        		else {
-        			sb.appendHtmlConstant(">");
-        		}
-        		sb.appendEscaped(report.getText());
-        		sb.appendHtmlConstant("</div>");
-        		return sb.toSafeHtml();
+                String tip = report.getToolTip();
+                String html = "<div qtip='" + tip + "'";
+                if (report.isGroupReport()) { 
+                    html += " style='color:red'>";
+                }
+                else {
+                    html += ">";
+                }
+                
+                html += report.getText();
+                html += "</div>";
+                return SafeHtmlUtils.fromTrustedString(html);
             }
           });
         _listReports.setCell(reportCell);
@@ -210,45 +200,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 		sb.append("</div>");
 		return new HTML(sb.toString());
 	}
-/*
-    private void showReportOutput(ReportModel report) {
-        
-        _reportOutput.removeAll();
-        _reportOutput.add(report.getReport().getWidget());
-        
-        layout(true);
-    }
-
-    private LayoutContainer createReportOutputPanel() {
-        return new MyLayoutContainer("Report Output", new Label("Report Output"));
-    }
-
-	public interface DataPropertyAccess extends PropertyAccess<HighlightImplBase> {
-		ValueProvider<HighlightImplBase, String> getText();
-
-		ValueProvider<HighlightImplBase, String> getToolTip();
-
-		@Path("text")
-		ModelKeyProvider<HighlightImplBase> textKey();
-    }
-
-    private void printCurrentReport() {
-        if(HighlightImplDetailsPanelBase.__lastReportData == null) {
-            InfoPopupBox.display("Highlight Report", "Nothing to print");
-        }
-        else {
-            String reportName = _listReports.getStore().getAt(__lastSelectedReport).getText();
-            
-            HighlightReportLayout reportLayout = _listReports.getStore().getAt(__lastSelectedReport).getReport().getReportLayout();
-                
-            GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance._cmAdminMdl.getUid(),reportName,reportLayout,StudentGridPanel.instance._pageAction);
-            action.setFilterMap(StudentGridPanel.instance._pageAction.getFilterMap());
-            action.setModels(HighlightImplDetailsPanelBase.__lastReportData);
-            new PdfWindow(0, "Catchup Math Highlight Report", action);
-        }
-    }
-    
-    
+	
     static {
         hotmath.gwt.shared.client.eventbus.EventBus.getInstance().addEventListener(new CmEventListener() {
             @Override
@@ -259,7 +211,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
             }
         });
     }
-*/
+    
 }
 
 

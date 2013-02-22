@@ -41,14 +41,13 @@ abstract class HighlightsImplBase  {
      * @return
      */
     protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Name:75", "Lessons Viewed:25"};
+        String cols[] = getReportCols();
         HighlightReportLayout rl = new HighlightReportLayout(cols, getReportValues());
         rl.setCountLabel("Student Count: ");
         return rl;
     }
     
-    protected String[][] getReportValues() {
-        return new String[0][0];
-    }
+    abstract String[] getReportCols();
+    abstract String[][] getReportValues(); 
 }
 

@@ -20,6 +20,8 @@ import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -90,7 +92,18 @@ public class AddProblemDialog extends GWindow {
         TextButton btnClose = new TextButton("Cancel", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                hide();
+                if(getActiveTree().getCheckedSelection().size() > 0) {
+                    CmMessageBox.confirm("Really Close?", "There are items checked.  Are you sure you want to cancel?",new ConfirmCallback() {
+                        public void confirmed(boolean yesNo) {
+                            if(yesNo) {
+                                hide();
+                            }
+                        }
+                    });
+                }
+                else {
+                    hide();
+                }
             }
         });
         addButton(btnClose);
@@ -163,16 +176,7 @@ public class AddProblemDialog extends GWindow {
         TextButton btn = new TextButton("Add Checked Problems", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                Tree<BaseDto, String> activeTree=null;
-                if(_tabPanel.getActiveWidget() == _treePanel) {
-                    activeTree = _tree;
-                }
-                else {
-                    activeTree = _treeFlatPanel._tree;
-                }
-                
-                makeSureLessonProblemsReadMaybeAsync(true, true,activeTree, _callbackOnComplete);
-                
+                makeSureLessonProblemsReadMaybeAsync(true, true,getActiveTree(), _callbackOnComplete);
                 hide();
             }
         });
@@ -180,6 +184,18 @@ public class AddProblemDialog extends GWindow {
         return btn;
     }
     
+    protected Tree<BaseDto, String> getActiveTree() {
+        Tree<BaseDto, String> activeTree=null;
+        if(_tabPanel.getActiveWidget() == _treePanel) {
+            activeTree = _tree;
+        }
+        else {
+            activeTree = _treeFlatPanel._tree;
+        }
+        
+        return activeTree;
+    }
+
     /** Some lessons might not have had their problems read from the server.
      * We do not want to make the user manually expand the problems to see them.
      * 

@@ -1,14 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsImplGreatestEffortData;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
-
 import com.google.gwt.user.client.ui.Widget;
 
 public class HighlightsImplGreatestEffort extends HighlightsImplBase {
 
-    HighlightsImplGreatestEffortData data = new HighlightsImplGreatestEffortData(
-			new HighlightsImplGreatestEffortDetailsPanel(this));
+    HighlightsImplGreatestEffortDetailsPanel panel = new HighlightsImplGreatestEffortDetailsPanel(this);
 
 	static String title = "Greatest Effort";
 
@@ -17,18 +13,16 @@ public class HighlightsImplGreatestEffort extends HighlightsImplBase {
     }
     
     public Widget prepareWidget() {
-        return data.panel;
+        return panel;
+    }
+
+    @Override
+    protected String[][] getReportValues() {
+        return panel.getReportValues();
     }
     
     @Override
-    protected HighlightReportLayout getReportLayout() {
-    	HighlightReportLayout rl = super.getReportLayout();
-    	rl.setTitle(title);
-    	return rl;
+    String[] getReportCols() {
+        return panel.getReportColumns();
     }
-
-//    @Override
-//    protected String[][] getReportValues() {
-//        return data.panel.getReportValues();
-//    }
 }

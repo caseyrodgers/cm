@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsImplBase;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -70,6 +69,27 @@ public class HighlightsImplGroupProgressDetailsPanel extends HighlightsImplDetai
         configs.add(col);
 
         return new ColumnModel<HighlightReportData>(configs);
+    }
+    
+    @Override
+    public String[] getReportColumns() {
+        return new String[]{"Group", "Active","Logins", "Lessons", "Passed"};
+    }
+    
+    
+    @Override
+    public String[][] getReportValues() {
+        List<HighlightReportData> reportData = getHighLightData();
+        
+        String vars[][] = new String[reportData.size()][5];
+        for(int i=0;i<reportData.size();i++) {
+            vars[i][0] = reportData.get(i).getName();
+            vars[i][1] = reportData.get(i).getActiveCount() + "";
+            vars[i][2] = reportData.get(i).getLoginCount() + "";
+            vars[i][3] = reportData.get(i).getLessonsViewed() + "";
+            vars[i][4] = reportData.get(i).getQuizzesPassed() + "";
+        }
+        return vars;
     }
 
     @Override

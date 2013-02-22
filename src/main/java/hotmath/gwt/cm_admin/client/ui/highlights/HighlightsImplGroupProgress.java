@@ -2,8 +2,6 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import com.google.gwt.user.client.ui.Widget;
 
-import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
-
 public class HighlightsImplGroupProgress extends HighlightsImplBase {
     HighlightsImplGroupProgressDetailsPanel panel = new HighlightsImplGroupProgressDetailsPanel(this);
     static String title = "Group Progress";
@@ -13,12 +11,14 @@ public class HighlightsImplGroupProgress extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
-/*
+    
     @Override
-    protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Group:50", "Active:12", "Logins:12", "Lessons:12", "Passed:12"};
-        HighlightReportLayout rl = new HighlightReportLayout(title, "Group Count: ", cols, panel.getReportValues());
-        return rl;
+    public String[][] getReportValues() {
+        return panel.getReportValues();
     }
-*/
+    
+    @Override
+    String[] getReportCols() {
+        return panel.getReportColumns();
+    }
 }

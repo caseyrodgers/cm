@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
-import hotmath.gwt.cm_admin.client.ui.StudentGridProperties;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -13,12 +12,12 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.ui.HTML;
+import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -26,19 +25,9 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
-import com.sencha.gxt.core.client.Style.SelectionMode;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.HTML;
 
 abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     
@@ -114,6 +103,14 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     
     abstract protected ColumnModel<HighlightReportData> getColumns();
     
+    public String[][] getReportValues() {
+        return new String[0][0];    
+    }
+    
+    public String[] getReportColumns() {
+        return new String[0];
+    }
+
 /*    
     public String[][] getReportValues() {
         
@@ -180,9 +177,12 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         }.register();
     }
 
-    static public CmList<HighlightReportData> __lastReportData;
+    CmList<HighlightReportData> highLightData;
+    public CmList<HighlightReportData> getHighLightData() {
+        return highLightData;
+    }
     private void drawTable(CmList<HighlightReportData> data) {
-        __lastReportData = data;
+        highLightData = data;
         
         //removeAll();
         

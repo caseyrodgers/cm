@@ -19,6 +19,7 @@ import hotmath.testset.ha.HaUser;
 
 public class CmDbTestCase extends DbTestCase {
     
+    
     public CmDbTestCase(String name) {
         super(name);
     }

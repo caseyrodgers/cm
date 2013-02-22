@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 
-import hotmath.gwt.cm_admin.client.ui.HighlightsIndividualPanel;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -16,7 +15,6 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -111,7 +109,7 @@ public class HighlightsDataWindow extends GWindow {
 
 	private void showDefaultMsg() {
 		CenterLayoutContainer clc = new CenterLayoutContainer();
-        HTML defaultMsg = new HTML("Select a report");
+        HTML defaultMsg = new HTML("<h1>Select a report</h1>");
         clc.add(defaultMsg);
         _container.setCenterWidget(clc);
         _container.forceLayout();
@@ -128,6 +126,8 @@ public class HighlightsDataWindow extends GWindow {
     	_highlightsListPanel = new HighlightsListPanel(_container, _centerData);
         _container.setWestWidget(_highlightsListPanel, _westData);
         refreshDateRangeLabel();
+        
+        showDefaultMsg();
         _container.forceLayout();
     }
 

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -42,11 +43,22 @@ public class HighlightsImplHighestAverageQuizScoresDetailsPanel extends Highligh
     	return new ColumnModel<HighlightReportData>(cols);
 
     }
-
-/*    
-    protected HighlightsReportModel createTableModel(HighlightReportData data) {
-        return new HighlightsReportModel(data.getUid(), data.getName(), data.getData(),data.getQuizzesTaken());
+    
+    @Override
+    public String[] getReportColumns() {
+        return new String[] {"Name", "Average", "Quizzes Taken"};
     }
-*/    
+    
+    @Override
+    public String[][] getReportValues() {
+        CmList<HighlightReportData> hd = getHighLightData();
+        String[][] vals = new String[hd.size()][3];
+        for(int i=0;i<hd.size();i++) {
+            vals[i][0] = hd.get(i).getName();
+            vals[i][1] = hd.get(i).getQuizAverage() + "";
+            vals[i][2] = hd.get(i).getQuizzesTaken() + "";
+        }
+        return vals;
+    }
    
 }

@@ -2,8 +2,6 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import com.google.gwt.user.client.ui.Widget;
 
-import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
-
 class HighlightsImplMostGamesPlayed extends HighlightsImplBase {
     HighlightsImplMostGamesPlayedDetailsPanel panel = new HighlightsImplMostGamesPlayedDetailsPanel(this);
     static String title = "Most Games Played";
@@ -13,12 +11,14 @@ class HighlightsImplMostGamesPlayed extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
- /*   
+    
     @Override
-    protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Name:50", "Games Played:25", "Quizzes Taken:25"};
-        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols,panel.getReportValues());
-        return rl;
+    String[] getReportCols() {
+        return panel.getReportColumns();
     }
-    */    
+    
+    @Override
+    String[][] getReportValues() {
+        return panel.getReportValues();
+    }  
 }

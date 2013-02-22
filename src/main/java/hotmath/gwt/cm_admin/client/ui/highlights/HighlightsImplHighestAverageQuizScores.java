@@ -14,12 +14,14 @@ public class HighlightsImplHighestAverageQuizScores extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
-/*    
+    
     @Override
-    protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Name:50", "Average:20", "Quizzes Taken:20"};
-        HighlightReportLayout rl = new HighlightReportLayout(title, "Student Count: ", cols, panel.getReportValues());
-        return rl;
+    String[] getReportCols() {
+        return panel.getReportColumns();
     }
-*/
+    
+    @Override
+    String[][] getReportValues() {
+        return panel.getReportValues();
+    }
 }

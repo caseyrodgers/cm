@@ -2,8 +2,6 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import com.google.gwt.user.client.ui.Widget;
 
-import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
-
 public class HighlightsImplGroupUsage extends HighlightsImplBase {
     HighlightsImplGroupUsageDetailsPanel panel = new HighlightsImplGroupUsageDetailsPanel(this);
     static String title = "Group Usage";
@@ -13,13 +11,14 @@ public class HighlightsImplGroupUsage extends HighlightsImplBase {
     public Widget prepareWidget() {
         return panel;
     }
-    /*
+    
     @Override
-    protected HighlightReportLayout getReportLayout() {
-        String cols[] = {"Group:50", "Active:12", "Videos:12", "Games:12", "Activities:12"};
-        HighlightReportLayout rl = new HighlightReportLayout(title, "Group Count: ", cols, panel.getReportValues());
-        return rl;
+    String[] getReportCols() {
+        return panel.getReportColumns();
     }
-    */
-
+    
+    @Override
+    String[][] getReportValues() {
+        return panel.getReportValues();
+    }
 }

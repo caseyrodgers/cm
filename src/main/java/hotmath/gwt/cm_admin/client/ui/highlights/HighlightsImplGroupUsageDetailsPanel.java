@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -62,11 +63,27 @@ public class HighlightsImplGroupUsageDetailsPanel extends HighlightsImplDetailsP
         
         return new ColumnModel<HighlightReportData>(configs);
     }
-/*    
-    protected HighlightsReportModel createTableModel(HighlightReportData data) {
-        return new HighlightsReportModel(data.getName(),data.getActiveCount(), data.getVideosViewed(), data.getGamesViewed(), data.getActivitiesViewed(), data.getFlashCardsViewed());
+    
+    
+    @Override
+    public String[] getReportColumns() {
+        return new String[]{"Group", "Active", "Videos", "Games", "Activities"};
     }
-*/    
+    
+    @Override
+    public String[][] getReportValues() {
+        CmList<HighlightReportData> hd = getHighLightData();
+        String[][] vals = new String[hd.size()][5];
+        for(int i=0;i<hd.size();i++) {
+            vals[i][0] = hd.get(i).getName();
+            vals[i][1] = hd.get(i).getName();
+            vals[i][2] = hd.get(i).getName();
+            vals[i][3] = hd.get(i).getName();
+            vals[i][4] = hd.get(i).getName();
+        }
+        return vals;
+    }
+ 
     @Override
     protected void showSelectedStudentDetail() {
     }

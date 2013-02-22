@@ -46,7 +46,22 @@ public class HighlightsImplMostGamesPlayedDetailsPanel extends HighlightsImplDet
     	cols.add(column);
 
     	return new ColumnModel<HighlightReportData>(cols);
-
     }
     
+    @Override
+    public String[] getReportColumns() {
+        return new String[] {"Name", "Games Played", "Quizzes Taken"};
+    }
+    
+    @Override
+    public String[][] getReportValues() {
+        List<HighlightReportData> reportData = getHighLightData();
+        String vars[][] = new String[reportData.size()][3];
+        for(int i=0; i < reportData.size();i++) {
+            vars[i][0] = reportData.get(i).getName();
+            vars[i][1] = reportData.get(i).getGamesViewed() + "";
+            vars[i][2] = reportData.get(i).getQuizzesTaken() + "";
+        }
+        return vars;
+    }
 }

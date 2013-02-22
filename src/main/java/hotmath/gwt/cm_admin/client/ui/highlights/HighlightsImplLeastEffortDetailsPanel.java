@@ -34,10 +34,27 @@ public class HighlightsImplLeastEffortDetailsPanel extends HighlightsImplDetails
         
         return new ColumnModel<HighlightReportData>(cols);
     }
+    
+    @Override
+    public String[] getReportColumns() {
+        return new String[]{"Name", "Lessons"};
+    }
 
     @Override
     public HighlightsGetReportAction.ReportType getReportType() {
         return HighlightsGetReportAction.ReportType.LEAST_EFFORT;
+    }
+
+    @Override
+    public String[][] getReportValues() {
+        List<HighlightReportData> reportData = getHighLightData();
+        
+        String vars[][] = new String[reportData.size()][2];
+        for(int i=0; i < reportData.size();i++) {
+            vars[i][0] = reportData.get(i).getName();
+            vars[i][1] = reportData.get(i).getLessonsViewed() + "";
+        }
+        return vars;
     }
 
 }

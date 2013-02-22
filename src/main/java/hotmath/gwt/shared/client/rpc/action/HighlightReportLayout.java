@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class HighlightReportLayout implements Response {
@@ -12,6 +13,7 @@ public class HighlightReportLayout implements Response {
     String countLabel;
     String columnLabels[];
     String[][] columnValues = null;
+    private CmList<HighlightReportData> models;
 
     public HighlightReportLayout(String columnLabels[]) {
         this.columnLabels = columnLabels;
@@ -60,4 +62,12 @@ public class HighlightReportLayout implements Response {
 	public void setCountLabel(String countLabel) {
 		this.countLabel = countLabel;
 	}
+
+    public void setModels(CmList<HighlightReportData> models) {
+        this.models = models;
+    }
+
+    public CmList<HighlightReportData> getModels() {
+        return models;
+    }
 }

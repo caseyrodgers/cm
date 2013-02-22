@@ -1,13 +1,14 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
-import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
-import com.sencha.gxt.widget.core.client.grid.ColumnModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
+import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 public class HighlightsImplZeroLoginsDetailsPanel extends HighlightsImplDetailsPanelBase {
     public HighlightsImplZeroLoginsDetailsPanel(HighlightsImplBase base) {
@@ -31,11 +32,19 @@ public class HighlightsImplZeroLoginsDetailsPanel extends HighlightsImplDetailsP
     	return new ColumnModel<HighlightReportData>(cols);
 
     }
-
-/*    
+    
     @Override
-    protected HighlightsReportModel createTableModel(HighlightReportData data) {
-        return new HighlightsReportModel(data.getUid(), data.getName(), null);
+    public String[] getReportColumns() {
+        return new String[] {"Name"};
     }
-*/   
+    
+    @Override
+    public String[][] getReportValues() {
+        CmList<HighlightReportData> hd = getHighLightData();
+        String[][] vals = new String[hd.size()][1];
+        for(int i=0;i<hd.size();i++) {
+            vals[i][0] = hd.get(i).getName();
+        }
+        return vals;
+    }
 }
