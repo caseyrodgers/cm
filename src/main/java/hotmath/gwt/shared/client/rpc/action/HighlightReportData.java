@@ -90,52 +90,18 @@ public class HighlightReportData implements Response {
             	break;
         }
     }    
-    
+
     /** For group report */
     public HighlightReportData(Integer uid, String name, String data) {
         this.uid = uid;
         this.name = name;
         this.data = data;
     }
-    
-    /** For standard report with quizzes viewed */
-    public HighlightReportData(Integer uid, String name, String data, int quizzesTaken) {
-        this(uid,name,data);
-        this.quizzesTaken = quizzesTaken;
-    }
-    
-    /** for group performance */
-    public HighlightReportData(String name, int activeCount, int loginCount,int lessonsViewed,int quizzesPassed) {
-        this.name = name;
-        this.activeCount = activeCount;
-        this.loginCount = loginCount;
-        this.lessonsViewed = lessonsViewed;
-        this.quizzesPassed = quizzesPassed;
-    }
-    
-    
-    /** for group compare 
-     *       vv.videos_viewed,
-       gv.games_viewed,
-       av.activities_viewed,
-       fc.flash_cards_viewed
-       
-     * */
-    public HighlightReportData(String name, int activeCount, int videosViewed, int gamesViewed, int activitiesViewed, int flashCardsViewed ) {
-        this.name = name;
-        this.activeCount = activeCount;
-        this.videosViewed = videosViewed;
-        this.gamesViewed = gamesViewed;
-        this.activitiesViewed = activitiesViewed;
-        this.flashCardsViewed = flashCardsViewed;
-    }    
-    
-    
+
     public HighlightReportData(String name) {
         this.name = name;
     }
-    
-    
+
     public CmList<String> getColumnLabels() {
         return columnLabels;
     }
@@ -143,41 +109,51 @@ public class HighlightReportData implements Response {
     public void setColumnLabels(CmList<String> columnLabels) {
         this.columnLabels = columnLabels;
     }
-    
-    
+
     public String getData() {
         return data;
     }
+
     public void setData(String data) {
         this.data = data;
     }
+
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
+
     public int getUid() {
         return uid;
     }
+
     public void setUid(int uid) {
         this.uid = uid;
     }
+
     public int getGroupCount() {
         return groupCount;
     }
+
     public void setGroupCount(int groupCount) {
         this.groupCount = groupCount;
     }
+
     public int getSchoolCount() {
         return schoolCount;
     }
+
     public void setSchoolCount(int schoolCount) {
         this.schoolCount = schoolCount;
     }
+
     public int getDbCount() {
         return dbCount;
     }
+
     public void setDbCount(int dbCount) {
         this.dbCount = dbCount;
     }
