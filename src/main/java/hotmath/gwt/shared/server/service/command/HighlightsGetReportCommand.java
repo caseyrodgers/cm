@@ -100,6 +100,9 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     list = dao.getReportTimeOnTask(conn, uids, fromDate, toDate);
                     break;             
                     
+                case FIRST_TIME_CORRECT:
+                    list = dao.getReportWidgetAnswersPercent(uids, fromDate, toDate);
+                    break;             
                     
                     default:
                         throw new Exception("Unknown report type: " + action);

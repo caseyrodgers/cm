@@ -24,8 +24,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
@@ -402,6 +404,73 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         return list;
     }
 
+    final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
+
+    public CmList<HighlightReportData> getReportWidgetAnswersPercent(List<String> uids, Date from, Date to) throws Exception {
+
+        String[] vals = QueryHelper.getDateTimeRange(from, to);
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_WIDGET_ANSWERS", createInListMap(createInList(uids)));
+
+        final CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+
+        final double totals[] = new double[2];
+        
+        List<WidgetAnswer> waList = getJdbcTemplate().query(sql, new Object[] {vals[0], vals[1]}, new RowMapper<WidgetAnswer>() {
+            @Override
+            public WidgetAnswer mapRow(ResultSet rs, int rowNum) throws SQLException {
+            	WidgetAnswer wa = new WidgetAnswer();
+            	wa.uid = rs.getInt("uid");
+            	wa.name = rs.getString("user_name");
+            	wa.pid = rs.getString("pid");
+            	wa.correct = rs.getInt("correct");
+            	return wa;
+            }
+        });
+
+        int lastUid = 0;
+        String name = null;
+        for (WidgetAnswer wa : waList) {
+        	if (lastUid != 0 && lastUid != wa.uid) {
+        		//add to list and reset
+                HighlightReportData report = createReportItem(lastUid, name, totals);
+                list.add(report);
+                totals[TOTAL_WIDGETS] = 0;
+                totals[COUNT_CORRECT] = 0;
+        	}
+
+        	lastUid = wa.uid;
+        	name = wa.name;
+        	
+            totals[TOTAL_WIDGETS]++;  // total count
+            totals[COUNT_CORRECT] += wa.correct;  // correct count
+        }
+
+        if (lastUid != 0) {
+            HighlightReportData report = createReportItem(lastUid, name, totals);
+            list.add(report);
+        }
+
+        return list;
+    }
+
+    private HighlightReportData createReportItem(int uid, String name, double[] totals) {
+        double percent = 0.0;
+        if (totals[TOTAL_WIDGETS] != 0) {
+            percent  = (totals[COUNT_CORRECT] / totals[TOTAL_WIDGETS]) * 100;
+        }
+        int percentCorrect = (int) Math.round(percent);
+        HighlightReportData report = new HighlightReportData(uid, name, ReportType.FIRST_TIME_CORRECT, percentCorrect);
+    	return report;
+    }
+
+    private class WidgetAnswer {
+    	int    uid;
+    	String name;
+    	String pid;
+    	int    correct;
+    }
+    
     public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
 
         Map<String,String> tokenMap = new HashMap<String,String>()

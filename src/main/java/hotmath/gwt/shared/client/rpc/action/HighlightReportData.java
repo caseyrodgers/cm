@@ -24,6 +24,7 @@ public class HighlightReportData implements Response {
     int quizzesPassed;
     int quizAverage;
     int timeOnTask;
+    int firstTimeCorrectPercent;
     
     int videosViewed;
     int gamesViewed;
@@ -62,6 +63,9 @@ public class HighlightReportData implements Response {
             	break;
             case TIME_ON_TASK:
             	this.timeOnTask = value[0];
+            	break;
+            case FIRST_TIME_CORRECT:
+            	this.firstTimeCorrectPercent = value[0];
             	break;
             case GROUP_PERFORMANCE:
             	activeCount = value[0];
@@ -225,6 +229,14 @@ public class HighlightReportData implements Response {
 
 	public void setTimeOnTask(int timeOnTask) {
 		this.timeOnTask = timeOnTask;
+	}
+
+	public int getFirstTimeCorrectPercent() {
+		return firstTimeCorrectPercent;
+	}
+
+	public void setFirstTimeCorrectPercent(int firstTimeCorrectPercent) {
+		this.firstTimeCorrectPercent = firstTimeCorrectPercent;
 	}
 
 	public String getLabel() {

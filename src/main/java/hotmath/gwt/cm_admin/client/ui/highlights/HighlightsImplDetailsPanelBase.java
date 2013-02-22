@@ -62,6 +62,9 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         @Path("groupCount")
         ValueProvider<HighlightReportData, Integer> group();
 
+        @Path("firstTimeCorrectPercent")
+        ValueProvider<HighlightReportData, Integer> firstTimeCorrect();
+
         @Path("lessonsViewed")
         ValueProvider<HighlightReportData, Integer> lessons();
 
@@ -79,10 +82,10 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
 
         ValueProvider<HighlightReportData, Integer> quizzesTaken();
 
-        ValueProvider<HighlightReportData, Integer> timeOnTask();
-
         @Path("schoolCount")
         ValueProvider<HighlightReportData, Integer> school();
+
+        ValueProvider<HighlightReportData, Integer> timeOnTask();
 
         @Path("videosViewed")
         ValueProvider<HighlightReportData, Integer> videos();

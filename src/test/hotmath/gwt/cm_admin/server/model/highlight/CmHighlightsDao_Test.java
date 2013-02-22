@@ -52,7 +52,7 @@ public class CmHighlightsDao_Test extends CmDbTestCase {
     }
 
 
-    public void testLeastEffor() throws Exception {
+    public void testLeastEffort() throws Exception {
         Date from = new GregorianCalendar(2010,1,1).getTime();
         Date to = new Date();
         CmList<HighlightReportData> data = CmHighlightsDao.getInstance().getReportLeastEffort(conn, uids, from, to);
@@ -68,12 +68,21 @@ public class CmHighlightsDao_Test extends CmDbTestCase {
         assertTrue(data.size() > 0);
     }
 
+    public void testWidgetAnswersPercent() throws Exception {
+        
+        Date from = new GregorianCalendar(2010,1,1).getTime();
+        Date to = new Date();
+        List<HighlightReportData> data = CmHighlightsDao.getInstance().getReportWidgetAnswersPercent(uids, from, to);
+        assertTrue(data.size() > 0);
+    }
     
     List<String> uids = new ArrayList<String>()
     {
         {
             add("24412");
             add("26645");
+            add("23472");
+            add("28001");
         }
     };
     Date from = new GregorianCalendar(2010,1,1).getTime();
