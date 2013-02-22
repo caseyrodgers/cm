@@ -3837,16 +3837,13 @@ where run_id = ?
   
   
   
-  
-  
-  
 .key=TUTOR_WIDGET_ANSWER_PERCENT
-  
-  select a.* 
-  from HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
-     JOIN HA_TEST_RUN r on r.run_id = a.run_id
-     JOIN HA_TEST t on t.test_id = r.test_id
-     JOIN HA_USER u on u.uid = t.user_id
-     where u.uid = ?
-  order by pid, answer_time
-        		
+
+SELECT a.pid, a.correct, min(a.answer_time) as answer_time
+  FROM   HA_TEST t
+  JOIN   HA_TEST_RUN r ON r.test_id = t.test_id
+  JOIN   HA_TEST_RUN_WIDGET_INPUT_ANSWERS a
+    ON   a.run_id = r.run_id
+  WHERE  t.user_id = ?
+  GROUP  BY a.pid
+  ORDER  BY a.pid

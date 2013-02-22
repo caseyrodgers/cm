@@ -370,45 +370,29 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @return
      */
     public UserTutorWidgetStats getUserTutorInputWidgetAnswerPercentCorrect(int uid) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT");
-        
-        final double totals[] = new double[2];
-        final List<String> pidUniq = new ArrayList<String>();
-        final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
-        getJdbcTemplate().query(sql, new Object[] { uid },new RowMapper<Integer>() {
-            @Override
-            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                String pid = rs.getString("pid");
-                if(!pidUniq.contains(pid)) {
-                    /** new pid, only first counts
-                     * 
-                     */
-                    pidUniq.add(pid);
-                    boolean correct = rs.getInt("correct")!=0;
-                    totals[TOTAL_WIDGETS]++;  // total count
-                    if(correct) {
-                        totals[COUNT_CORRECT]++;  // count correct
-                    }
-                }
-                
-                return 0;
-            }
-        });
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT");
 
-        double percent=0;
-        try {
-            if(totals[COUNT_CORRECT] == 0 || totals[TOTAL_WIDGETS] == 0) {
-                percent = 0;
-            }
-            else {
-                percent  = (totals[COUNT_CORRECT] / totals[TOTAL_WIDGETS]) * 100;
-            }
-        }
-        catch(Exception ee) {
-            logger.error(ee);
-        }
-            
-        return new UserTutorWidgetStats(uid, (int)percent, (int)totals[TOTAL_WIDGETS], (int)totals[COUNT_CORRECT]);
+    	final double totals[] = new double[2];
+    	final int TOTAL_WIDGETS=0, COUNT_CORRECT=1;
+    	getJdbcTemplate().query(sql, new Object[] { uid },new RowMapper<Integer>() {
+    		@Override
+    		public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+    			boolean correct = rs.getInt("correct")!=0;
+    			totals[TOTAL_WIDGETS]++;  // total count
+    			if(correct) {
+    				totals[COUNT_CORRECT]++;  // count correct
+    			}
+    			return 0;
+    		}
+    	});
+
+    	double percent = 0;
+    	if (totals[TOTAL_WIDGETS] != 0) {
+    		percent  = (totals[COUNT_CORRECT] / totals[TOTAL_WIDGETS]) * 100;
+    	}
+    	int percentage = (int)Math.round(percent);    
+
+    	return new UserTutorWidgetStats(uid, percentage, (int)totals[TOTAL_WIDGETS], (int)totals[COUNT_CORRECT]);
     }
 
 
