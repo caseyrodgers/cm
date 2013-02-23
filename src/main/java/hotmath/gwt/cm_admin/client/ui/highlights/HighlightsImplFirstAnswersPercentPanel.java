@@ -37,12 +37,15 @@ public class HighlightsImplFirstAnswersPercentPanel extends HighlightsImplDetail
 
     }
     
-    
+    @Override
+    public String getReportTitle() {
+        return "First Answer Correct Percentage";
+    }
+
     @Override
     public String[] getReportColumns() {
         return new String[]{"Name", "% Correct"};
     }
-    
 
     @Override
     public String[][] getReportValues() {

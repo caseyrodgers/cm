@@ -102,7 +102,11 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     abstract public HighlightsGetReportAction.ReportType getReportType();
     
     abstract protected ColumnModel<HighlightReportData> getColumns();
-    
+
+    protected String getReportTitle() {
+    	return "Highlights Report";
+    }
+
     public String[][] getReportValues() {
         return new String[0][0];    
     }
@@ -110,43 +114,6 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     public String[] getReportColumns() {
         return new String[0];
     }
-
-/*    
-    public String[][] getReportValues() {
-        
-        try {
-            ListStore<HighlightReportData> reportStore = _grid.getStore();
-            
-            List<String[]> rows = new ArrayList<String[]>();
-            for(int r=0, t=reportStore.getAll().size();r<t;r++) {
-                HighlightReportData rowM = reportStore.get(r);
-                
-                List<String> row = new ArrayList<String>();
-                for(int c=0, ct=_grid.getColumnModel().getColumnCount();c<ct;c++) {
-                    ColumnConfig<HighlightReportData, String> col = _grid.getColumnModel().getColumn(c);
-                    try {
-                    	// TODO: get actual value
-                        Object data = null; //rowM.get(col.getDataIndex());
-                        if(data == null) {
-                            data = 0;
-                        }
-                        row.add(data.toString());
-                    }
-                    catch(Exception ee) {
-                        ee.printStackTrace();
-                    }
-                }
-                
-                rows.add(row.toArray(new String[row.size()]));
-            }
-            return rows.toArray(new String[rows.size()][]);
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-*/    
     
     protected void getDataFromServer() {
         new RetryAction<CmList<HighlightReportData>>() {

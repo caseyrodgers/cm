@@ -48,6 +48,6 @@ abstract class HighlightsImplBase  {
     }
     
     abstract String[] getReportCols();
-    abstract String[][] getReportValues(); 
+    abstract String[][] getReportValues();
 }
 

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
+
 import com.google.gwt.user.client.ui.Widget;
 
 public class HighlightsImplGroupProgress extends HighlightsImplBase {
@@ -20,5 +22,12 @@ public class HighlightsImplGroupProgress extends HighlightsImplBase {
     @Override
     String[] getReportCols() {
         return panel.getReportColumns();
+    }
+
+    @Override
+    public HighlightReportLayout getReportLayout() {
+        HighlightReportLayout rl = super.getReportLayout();
+        rl.setCountLabel("Group count: ");
+        return rl;
     }
 }
