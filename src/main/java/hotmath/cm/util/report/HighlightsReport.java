@@ -77,6 +77,7 @@ public class HighlightsReport {
         //TODO: the following defensive code should not be needed, perhaps an out-of-date client?
         if (reportLayout != null) {
         	countLabel = reportLayout.getCountLabel();
+    		rowCount = reportLayout.getColumnValues().length;
         	if (reportLayout.getModels() != null) {
         		rowCount = reportLayout.getModels().size();
         	}
