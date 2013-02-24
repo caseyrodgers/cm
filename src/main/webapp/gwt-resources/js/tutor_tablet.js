@@ -76,7 +76,7 @@ var TutorManager = {
     solutionTitle: null,
     context: null,
     solutionVariableContext:null,
-    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext) {
+    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext, submitButtonText) {
         TutorManager.pid = pid;
         TutorManager.jsonConfig = jsonConfig;
         TutorManager.currentRealStep = -1;
@@ -93,6 +93,15 @@ var TutorManager = {
         	TutorManager.isVisible = false;
         }
 
+        
+        if(submitButtonText) {
+        	// call global tutor configuration
+        	// defined in tutor_widget.js
+        	var config = {'submitButtonText': submitButtonText};
+        	setTutorConfiguration(config);
+        }
+        
+        
         /** hookup any question steps */
         // HmEvents.eventTutorInitialized.fire();
         TutorManager.context = createNewSolutionMessageContext(pid, jsonConfig);

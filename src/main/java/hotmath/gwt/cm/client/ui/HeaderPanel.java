@@ -52,7 +52,7 @@ public class HeaderPanel extends FlowLayoutContainer {
         __instance = this;
         setStyleName("header-panel");
 
-        if (CmShared.getQueryParameter("debug") != null) {
+        if (true || CmShared.getQueryParameter("debug") != null) {
             _assignmentsAnchor = new Anchor("Assignments");
             _assignmentsAnchor.addStyleName("assigments_anchor");
             _assignmentsAnchor.addClickHandler(new ClickHandler() {

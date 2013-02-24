@@ -324,8 +324,10 @@ public class TutorWrapperPanel extends Composite {
         widgetCorrectInfo.setClassName("widget_correct_info_hide");
         
         
+        String submitButtonText = tutorCallback.getSubmitButtonText();
+        boolean indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
         
-        initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext);
+        initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus);
 
         debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
@@ -407,7 +409,7 @@ public class TutorWrapperPanel extends Composite {
      * methods and GWT.
      * 
      */
-    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext) /*-{
+    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext, String submitButtonText, boolean indicateWidgetStatus) /*-{
     
         
         var that = this;
@@ -506,7 +508,7 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
        }
        
-       $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext);
+       $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus);
    }-*/;    
 
     private void gwt_showWhiteBoard() {
@@ -667,6 +669,13 @@ public class TutorWrapperPanel extends Composite {
         void onNewProblem(int problemNumber);
 
 
+        /** Return the text that is shown in the check widget save button
+         * 
+         * @return
+         */
+        String getSubmitButtonText();
+
+
         /** Return action that will define the tutor widget action save
          * 
          * @param value
@@ -728,6 +737,13 @@ public class TutorWrapperPanel extends Composite {
          * @return
          */
         boolean moveFirstHintOnWidgetIncorrect();
+        
+        /** Should widget status of correct/incorrect be 
+         *  shown to user?
+         *  
+         * @return
+         */
+        boolean indicateWidgetStatus();
     }
 
 

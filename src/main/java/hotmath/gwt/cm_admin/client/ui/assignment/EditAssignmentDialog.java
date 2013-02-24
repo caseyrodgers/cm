@@ -14,6 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -43,6 +44,7 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.Hor
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -59,6 +61,9 @@ public class EditAssignmentDialog {
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
     TextButton saveDraftMode, saveAssign;
+    
+    CheckBox _closeOnExpire;
+    
     boolean _isDraftMode;
 
     AssignmentDesigner _assignmentDesigner;
@@ -72,9 +77,9 @@ public class EditAssignmentDialog {
         window.setMaximizable(true);
 
         if (assignment.getAssignKey() == 0) {
-            window.setHeadingHtml("Edit Assignment: " + assignment.getAssignmentName());
+            window.setHeadingHtml("Create Assignment");
         } else {
-            window.setHeadingHtml("Create Assignment: " + assignment.getAssignmentName());
+            window.setHeadingHtml("Edit Assignment");
         }
 
         final BorderLayoutContainer mainBorderPanel = new BorderLayoutContainer();
@@ -145,6 +150,13 @@ public class EditAssignmentDialog {
             hData.setMargins(new Margins(0, 20, 0, 20));
             hCon.add(statusLabel, hData);
         }
+        
+        _closeOnExpire = new CheckBox();
+        _closeOnExpire.setValue(assignment.isClosePastDue());
+        _closeOnExpire.setToolTip("Close automatically when past due date");
+        HorizontalLayoutData hData = new HorizontalLayoutData();
+        hData.setMargins(new Margins(0, 20, 0, 20));
+        hCon.add(new MyFieldLabel(_closeOnExpire, "Close Past Due", 85), hData);
 
         header.add(hCon);
 
@@ -309,6 +321,7 @@ public class EditAssignmentDialog {
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
+        _assignment.setClosePastDue(_closeOnExpire.getValue());
         
         if(asDraft) {
             _assignment.setStatus("Draft");

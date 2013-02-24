@@ -63,6 +63,17 @@ public class AssignmentTutorPanel extends Composite {
             public boolean moveFirstHintOnWidgetIncorrect() {
                 return false;
             }
+            
+            @Override
+            public String getSubmitButtonText() {
+                return "Save Answer";
+            }
+            
+            @Override
+            public boolean indicateWidgetStatus() {
+                return false;
+            }
+            
         });
         if(!isEditable) {
             _tutorPanel.setReadOnly(true);
@@ -130,6 +141,7 @@ public class AssignmentTutorPanel extends Composite {
             
             if(problem.getLastUserWidgetValue() != null) {
                 _tutorPanel.setTutorWidgetValue(problem.getLastUserWidgetValue());
+                _tutorPanel.setReadOnly(true);
             }
             
             
@@ -148,10 +160,12 @@ public class AssignmentTutorPanel extends Composite {
      * @param inputValue
      * @param yesNo
      */
-    private void processTutorWidgetComplete(String inputValue, boolean yesNo) {
+    private void processTutorWidgetComplete(final String inputValue, boolean yesNo) {
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
+                _assProblem.setLastUserWidgetValue(inputValue);
+                loadSolutionIntoGui(_uid, _assignKey, _assProblem);
                 Log.debug("Tutor Widget Answer saved to server.");
             }
             @Override

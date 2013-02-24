@@ -112,9 +112,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(showTopicsBtn());
         toolBar.add(displayReportCardToolItem(studentModel));
 
-        if (CmShared.getQueryParameter("debug") != null) {
-            toolBar.add(displayAssignmentReportToolItem(studentModel));
-        }
+        toolBar.add(displayAssignmentReportToolItem(studentModel));
 
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());

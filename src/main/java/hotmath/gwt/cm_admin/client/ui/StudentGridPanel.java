@@ -443,9 +443,8 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
         if (CmShared.getQueryParameter("debug") != null) {
             toolbar.add(createRefreshButton());
-            toolbar.add(assignmentToolItem(_grid));
         }
-
+        toolbar.add(assignmentToolItem(_grid));
         toolbar.add(new FillToolItem());
 
         toolbar.add(displayPrintableReportToolItem(_grid));

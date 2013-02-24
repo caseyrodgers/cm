@@ -13,6 +13,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
@@ -40,7 +41,6 @@ import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.grid.GridViewConfig;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent;
 import com.sencha.gxt.widget.core.client.selection.SelectionChangedEvent.SelectionChangedHandler;
 
@@ -78,8 +78,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         List<ColumnConfig<StudentProblemDto, ?>> l = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
 
-        ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(
-                props.pidLabel(), 50, "Problem");
+        ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(), 50, "Problem");
         labelCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
             @Override
             public ProblemDto getProblem(int which) {
@@ -166,7 +165,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
             }
         }
 
-        Info.display("Assignment Complete", "There are no unanswered problems.");
+        CmMessageBox.showAlert("Assignment Complete", "There are no unanswered problems.");
     }
 
     private void loadProblemStatement(StudentProblemDto studentProb) {

@@ -3703,7 +3703,8 @@ select a.assign_key,
        a.status,
        Ifnull(problem_count, 0) as problem_count,
        a.comments,
-       a.due_date
+       a.due_date,
+       a.close_past_due
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count

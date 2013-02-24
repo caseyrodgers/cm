@@ -7,7 +7,6 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.rpc.AssignStudentsToAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;

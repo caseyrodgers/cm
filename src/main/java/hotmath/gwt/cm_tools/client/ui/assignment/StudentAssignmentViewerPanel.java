@@ -204,7 +204,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _grade.setReadOnly(true);
          
         header.setLayoutData(new MarginData(10));
-        header.add(new MyFieldLabel(_assignmentCombo,"Name"));
+        header.add(new MyFieldLabel(_assignmentCombo,"Select Assignment"));
         header.add(new MyFieldLabel(_assignmentStatus,"Status"));
         header.add(new MyFieldLabel(_grade,"Score"));
         

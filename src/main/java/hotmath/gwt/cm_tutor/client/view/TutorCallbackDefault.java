@@ -61,4 +61,14 @@ public class TutorCallbackDefault implements TutorCallback {
     public boolean moveFirstHintOnWidgetIncorrect() {
         return true;
     }
+
+    @Override
+    public String getSubmitButtonText() {
+        return "Check Answer";
+    }
+    
+    @Override
+    public boolean indicateWidgetStatus() {
+        return true;
+    }
 }

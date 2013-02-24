@@ -31,13 +31,14 @@ public class Assignment implements Response{
     CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
     List<Integer> uids = new ArrayList<Integer>();
     String status;
+    boolean closePastDue;
     
     // might be null indicate not set
     Integer problemCount;
     
     public Assignment() {}
     
-    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status) {
+    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status, boolean closePastDue) {
         this.assignKey = assignKey;
         this.groupId = groupId;
         this.assignmentName = name;
@@ -46,6 +47,7 @@ public class Assignment implements Response{
         this.pids = pids;
         this.uids = uids;
         this.status = status;
+        this.closePastDue = closePastDue;
     }
 
     public String getStatusLabel() {
@@ -57,6 +59,14 @@ public class Assignment implements Response{
         }
     }
     
+    public boolean isClosePastDue() {
+        return closePastDue;
+    }
+
+    public void setClosePastDue(boolean closePastDue) {
+        this.closePastDue = closePastDue;
+    }
+
     public String getAssignmentLabel() {
         String label = getAssignmentName();
         if(isExpired()) {
@@ -166,8 +176,8 @@ public class Assignment implements Response{
     
     @Override
     public String toString() {
-        return "Assignment [assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId
-                + ", comments=" + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids + ", status="
-                + status + ", problemCount=" + problemCount + "]";
+        return "Assignment [assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments=" + comments + ", dueDate="
+                + dueDate + ", pids=" + pids + ", uids=" + uids + ", status=" + status + ", closePastDue=" + closePastDue + ", problemCount=" + problemCount
+                + "]";
     }
 }

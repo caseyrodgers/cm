@@ -221,23 +221,23 @@ public class AssignmentsContentPanel extends ContentPanel {
             return;
         }
         
-        final Assignment ass = _grid.getSelectionModel().getSelectedItem();
-        if(ass == null) {
-            return;
-        }
-
-        
-        final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Deleting active assignments will prevent students from working on the assignment or reviewing it.");
-        cm.addHideHandler(new HideHandler() {
-            @Override
-            public void onHide(HideEvent event) {
-                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
-                    deleteAssignment(ass);
+        final Assignment ass = getSelectedAssigmment();
+        if(ass != null) {
+            final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Deleting active assignments will prevent students from working on the assignment or reviewing it.");
+            cm.addHideHandler(new HideHandler() {
+                @Override
+                public void onHide(HideEvent event) {
+                    if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                        deleteAssignment(ass);
+                    }
                 }
-            }
-        });
-        cm.setWidth(300);
-        cm.show();
+            });
+            cm.setWidth(300);
+            cm.show();
+        }
+        else {
+            CmMessageBox.showAlert("No assignment selected.");
+        }
     }
 
     private void deleteAssignment(final Assignment ass) {
@@ -283,12 +283,19 @@ public class AssignmentsContentPanel extends ContentPanel {
         if(_currentGroup == null) {
             CmMessageBox.showAlert("You need to select a group first.");
             return;
-        }        
-        Assignment data = _grid.getSelectionModel().getSelectedItem();
+        }       
+        Assignment data = getSelectedAssigmment();
         if(data != null) {
             new EditAssignmentDialog(data);        
         }
+        else {
+            CmMessageBox.showAlert("No assignment selected.");
+        }
         
+    }
+    
+    private Assignment getSelectedAssigmment() {
+        return _grid.getSelectionModel().getSelectedItem();
     }
     
     private void copySelectedAssignment() {
@@ -296,7 +303,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             CmMessageBox.showAlert("You need to select a group first.");
             return;
         }        
-        final Assignment data = _grid.getSelectionModel().getSelectedItem();
+        final Assignment data = getSelectedAssigmment();
         if(data != null) {
             final ConfirmMessageBox cm = new ConfirmMessageBox("Copy Assignment", "Are you sure you want to copy this assignment?");
             cm.addHideHandler(new HideHandler() {
@@ -308,6 +315,9 @@ public class AssignmentsContentPanel extends ContentPanel {
                 }
             });
             cm.setVisible(true);
+        }
+        else {
+            CmMessageBox.showAlert("No assignment selected.");
         }
     }
     
