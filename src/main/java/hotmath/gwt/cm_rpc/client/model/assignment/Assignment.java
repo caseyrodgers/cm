@@ -69,11 +69,14 @@ public class Assignment implements Response{
 
     public String getAssignmentLabel() {
         String label = getAssignmentName();
-        if(isExpired()) {
+        if (!isEditable()) {
+            label += " (Closed)";
+        }
+        else if(isExpired()) {
             label += " (Expired)";
         }
-        else if (!isEditable()) {
-            label += " (Closed)";
+        else {
+            label += getStatus();
         }
         
         return label;
@@ -81,10 +84,11 @@ public class Assignment implements Response{
     
     /** Is this assignment editable at all
      * 
+    * 
      * @return
      */
     public boolean isEditable() {
-        return !status.equalsIgnoreCase("closed");
+        return !getStatus().equalsIgnoreCase("closed");
     }
     
     /** Determine, based on data
@@ -166,8 +170,19 @@ public class Assignment implements Response{
     }
 
 
+    /** If closedPastDue and isExpired then force 
+     *  status to be closed.
+     *  Otherwise, return 'real' status.
+     *  
+     * @return
+     */
     public String getStatus() {
-        return status;
+        if(closePastDue && isExpired()) {
+            return "Closed";
+        }
+        else {
+            return status;
+        }
     }
 
     public void setStatus(String status) {
