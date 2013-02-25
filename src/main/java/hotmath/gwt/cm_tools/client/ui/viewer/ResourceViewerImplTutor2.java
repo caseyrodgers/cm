@@ -414,6 +414,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
         InmhItemData item = _instance.getResourceItem();
         if(CmShared.getQueryParameter("debug") != null || !item.isViewed()) {
             //item.setViewed(true);
+            UserInfo.getInstance().setViewCount(UserInfo.getInstance().getViewCount()+1);
             EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_REQUIRED_COMPLETE, item));
         }
     }
