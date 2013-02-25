@@ -37,6 +37,7 @@ import org.apache.log4j.Logger;
 
 public class StudentAssignmentReport {
 	
+	private Map<FilterType, String> filterMap;
 	private String reportName;
     private String title;
     
@@ -47,102 +48,119 @@ public class StudentAssignmentReport {
 	public StudentAssignmentReport(String title) {
 		this.title = title;
 	}
-	
+
 	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, int adminId,
 			List<Integer> studentUids) {
+		return makePdf(conn, reportId, adminId, studentUids, null, null);
+	}
+
+	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, int adminId,
+			List<Integer> studentUids, Date fromDate, Date toDate) {
 		ByteArrayOutputStream baos = null;
 
 		Integer stuUid = -1;
+
 		try {
-			stuUid = studentUids.get(0);
-			
-	        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
-            if (info == null) return null;
+			AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
+			if (info == null) return null;
 
-            AssignmentDao asgDao = AssignmentDao.getInstance();
-            List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid);
-            // if (saList == null || saList.isEmpty()) return null;
-
-        	CmStudentDao studentDao = CmStudentDao.getInstance();
-        	StudentModelI sm = studentDao.getStudentModel(stuUid); 
-						
-			Document document = new Document();
-			baos = new ByteArrayOutputStream();
-			PdfWriter writer = PdfWriter.getInstance(document, baos);
-
-			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
-			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
-			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
-			Phrase date     = buildLabelContent("Date: ", printDate);
-		    
-			//Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
-			Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
-
-			String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
-			Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
+            String filterDescription = ReportUtils.getFilterDescription(conn, adminId, CmAdminDao.getInstance(), filterMap);
 
 			StringBuilder sb = new StringBuilder();
-			sb.append("CM-AssignmentReport");
-			if (sm.getName() != null)
-				sb.append("-").append(sm.getName().replaceAll(" ", ""));
+			sb.append("CM-AssignmentReport-");
+			if (info.getSchoolName() != null)
+				sb.append("-").append(info.getSchoolName().replaceAll(" ", ""));
 			reportName = sb.toString();
 
-			PdfPTable pdfTbl = new PdfPTable(3);
-			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+			AssignmentDao asgDao = AssignmentDao.getInstance();
+			CmStudentDao studentDao = CmStudentDao.getInstance();
 
-			pdfTbl.addCell(school);
-			pdfTbl.addCell(admin);
-			pdfTbl.addCell(date);
-			
-			pdfTbl.addCell(student);
-			pdfTbl.addCell(showWork);
-			pdfTbl.addCell(new Phrase(" "));
-
-			pdfTbl.setTotalWidth(600.0f);
-
-			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
+			Document document = new Document();
 
 			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
 			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
 			document.setFooter(footer);
 
+			baos = new ByteArrayOutputStream();
+
+			PdfWriter writer = PdfWriter.getInstance(document, baos);
+
+			int idx = 0;
+
+			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
+			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
+			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
+			Phrase date     = buildLabelContent("Date: ", printDate);
+
+			List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
+
 			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 			document.open();
 			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);			
 
-			Table tbl = new Table(5);
-			tbl.setWidth(100.0f);
-			tbl.setBorder(Table.BOTTOM);
-			tbl.setBorder(Table.TOP);
-			
-			addHeader("Assignment", "30%", tbl);
-			addHeader("Due Date", "15%", tbl);
-			addHeader("Status", "23%", tbl);
-			addHeader("Grade", "7%", tbl);
-			addHeader("Problem Status", "25%", tbl);
+			for (StudentModelI sm : smList) {
+				stuUid = sm.getUid();
 
-			tbl.endHeaders();
+				List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid);
 
-			int i = 0;
-			for (StudentAssignment sa : saList) {
-				addCell(sa.getAssignment().getComments(), tbl, ++i);
-				addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, i);
-				addCell(sa.getHomeworkStatus(), tbl, i);
-				addCell(sa.getHomeworkGrade(), tbl, i);
-				addCell(getStatus(sa), tbl, i);
+				Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
+
+				String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
+				Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
+
+				PdfPTable pdfTbl = new PdfPTable(3);
+				pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+				writer.setPageEvent(new HeaderTable(writer, pdfTbl));
+
+				pdfTbl.addCell(school);
+				pdfTbl.addCell(admin);
+				pdfTbl.addCell(date);
+				pdfTbl.addCell(student);
+				pdfTbl.addCell(showWork);
+				pdfTbl.addCell(new Phrase(" "));
+
+				pdfTbl.setTotalWidth(600.0f);
+
+				document.add(Chunk.NEWLINE);			
+
+				Table tbl = new Table(5);
+				tbl.setWidth(100.0f);
+				tbl.setBorder(Table.BOTTOM);
+				tbl.setBorder(Table.TOP);
+
+				addHeader("Assignment", "30%", tbl);
+				addHeader("Due Date", "15%", tbl);
+				addHeader("Status", "23%", tbl);
+				addHeader("Grade", "7%", tbl);
+				addHeader("Problem Status", "25%", tbl);
+
+				tbl.endHeaders();
+
+				int i = 0;
+				for (StudentAssignment sa : saList) {
+					addCell(sa.getAssignment().getComments(), tbl, ++i);
+					addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, i);
+					addCell(sa.getHomeworkStatus(), tbl, i);
+					addCell(sa.getHomeworkGrade(), tbl, i);
+					addCell(getStatus(sa), tbl, i);
+				}
+
+				document.add(tbl);
+
+				document.add(Chunk.NEWLINE);
+				document.add(Chunk.NEWLINE);
+
+				if (idx++ < smList.size()) {
+					document.newPage();
+				}
+
 			}
-
-			document.add(tbl);
-
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
 
 			document.close();
 
 		} catch (Exception e) {
 			logger.error(String.format("*** Error generating assignment report for aid: %d, uid: %d",
-				adminId, stuUid), e);
+					adminId, stuUid), e);
 		}
 		return baos;
 	}
@@ -243,7 +261,6 @@ public class StudentAssignmentReport {
     }
 
 	public void setFilterMap(Map<FilterType, String> filterMap) {
-		// TODO Auto-generated method stub
-		
+    	this.filterMap = filterMap;
 	}
 }
