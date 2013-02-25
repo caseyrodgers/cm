@@ -182,7 +182,7 @@ public class GradeBookPanel extends ContentPanel {
     
     private void addGradeButton() {
 
-    	TextButton btn = new TextButton("Score");
+    	TextButton btn = new TextButton("Grade");
     	btn.setToolTip("View and Grade the selected student's Assignment");
     	btn.addSelectHandler(new SelectHandler() {
     		@Override
