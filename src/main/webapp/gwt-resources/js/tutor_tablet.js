@@ -76,7 +76,7 @@ var TutorManager = {
     solutionTitle: null,
     context: null,
     solutionVariableContext:null,
-    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext, submitButtonText) {
+    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext, submitButtonText, indicateWidgetStatus) {
         TutorManager.pid = pid;
         TutorManager.jsonConfig = jsonConfig;
         TutorManager.currentRealStep = -1;
@@ -97,7 +97,7 @@ var TutorManager = {
         if(submitButtonText) {
         	// call global tutor configuration
         	// defined in tutor_widget.js
-        	var config = {'submitButtonText': submitButtonText};
+        	var config = {'submitButtonText': submitButtonText, 'indicateWidgetStatus': indicateWidgetStatus};
         	setTutorConfiguration(config);
         }
         
