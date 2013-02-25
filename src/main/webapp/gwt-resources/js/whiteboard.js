@@ -164,7 +164,9 @@ var Whiteboard = (function () {
                     _mq_holder = null;
                     delete _mq_holder;
                 }
-                _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+               // _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+			   var txtCol=String(wb.globalStrokeColor).substring(1)
+                _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco="+txtCol+"&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
                 lastTxt = txt
             }
             // alert(mq_holder.src)
