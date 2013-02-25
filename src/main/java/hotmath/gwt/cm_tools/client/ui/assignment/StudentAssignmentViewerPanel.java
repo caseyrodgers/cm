@@ -103,6 +103,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                     return false;
                 }
             }
+            
+            @Override
+            public void setTutorWidgetMessage(String message) {
+                _assignmentTutorAndShowWorkPanel._tutorPanel._tutorPanel.indicateWidgetSubmitted();               
+            }
+            
         });
         
         BorderLayoutData bData = new BorderLayoutData(100);
@@ -124,8 +130,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         c.add(new HTML(html));
         return c;
     }
-    
-    
+
     private void loadTutorProblemStatement(String title, ProblemDto problem) {
         Log.debug("Load", "loadTutorProblemStatement: " + problem);
         

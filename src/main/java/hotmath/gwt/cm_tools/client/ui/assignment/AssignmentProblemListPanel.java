@@ -65,11 +65,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
         ValueProvider<StudentProblemDto, String> statusForStudent();
     }
 
-    AssignmentProblemListCallback _callBack;
+    AssignmentProblemListCallback _problemListCallback;
     Grid<StudentProblemDto> _studentProblemGrid;
 
     public AssignmentProblemListPanel(AssignmentProblemListCallback callback) {
-        this._callBack = callback;
+        this._problemListCallback = callback;
 
         setHeadingHtml("Problems in Assignment");
         addTool(createNextProblemButton());
@@ -170,7 +170,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     private void loadProblemStatement(StudentProblemDto studentProb) {
 
-        _callBack.problemSelected(studentProb.getPidLabel(), studentProb.getProblem());
+        _problemListCallback.problemSelected(studentProb.getPidLabel(), studentProb.getProblem());
 
         if (studentProb.getStatus().equals("Not Viewed")) {
             studentProb.setStatus("Viewed");
@@ -190,11 +190,13 @@ public class AssignmentProblemListPanel extends ContentPanel {
         StudentProblemDto prob = _studentProblemGrid.getSelectionModel().getSelectedItem();
         if (prob != null) {
 
-            switch (_assignmentProblem.getProblemType()) {
+            switch (prob.getProblem().getProblemType()) {
             case WHITEBOARD:
-            case INPUT_WIDGET:
-            case MULTI_CHOICE:
                 if (prob.getStatus().equalsIgnoreCase("Viewed")) {
+                    
+                    
+                    _problemListCallback.setTutorWidgetMessage("Submitted");
+
                     // update the problem type to current type
                     prob.getProblem().setProblemType(_assignmentProblem.getProblemType());
                     prob.setStatus("Pending");
@@ -202,10 +204,15 @@ public class AssignmentProblemListPanel extends ContentPanel {
                     _studentProblemGrid.getStore().update(prob);
 
                     saveAssignmentProblemStatusToServer(prob);
+                    
                     break;
                 }
 
                 // whiteboard entry does not change status
+                break;
+                
+            case INPUT_WIDGET:
+            case MULTI_CHOICE:
                 break;
 
             default:
@@ -293,8 +300,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     public interface AssignmentProblemListCallback {
         void problemSelected(String title, ProblemDto problem);
-
         boolean showStatus();
+        void setTutorWidgetMessage(String message);
     }
 
     static {

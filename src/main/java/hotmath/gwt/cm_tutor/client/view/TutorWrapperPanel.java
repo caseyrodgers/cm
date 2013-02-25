@@ -136,7 +136,7 @@ public class TutorWrapperPanel extends Composite {
         
     }
     
-    native private void showTutorMessage(String message) /*-{
+    native public void showTutorMessage(String message) /*-{
         $wnd.TutorManager.showMessage(message);
     }-*/;
     
@@ -664,5 +664,14 @@ public class TutorWrapperPanel extends Composite {
         Log.debug("showTutorWidgetCompleteInfo called");
         widgetCorrectInfo.addClassName(".show");    
     }
+
+    native public void indicateWidgetSubmitted() /*-{
+        var el = $doc.getElementById("hm_flash_widget_indicator");
+        if(el) {
+            el.style.display = 'block';
+            el.style.top = 0;
+            el.innerHTML = "Submitted";
+        }
+    }-*/;
 
 }
