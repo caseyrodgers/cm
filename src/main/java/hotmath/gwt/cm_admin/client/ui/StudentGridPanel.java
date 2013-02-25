@@ -899,27 +899,20 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     private MyMenuItem defineAssignmentReportItem(final Grid<StudentModelI> grid) {
 
-        return new MyMenuItem("Student Assignment Report", "Display printable assignment report", new SelectionHandler<MenuItem>() {
+        return new MyMenuItem("Student Assignment Report", "Display printable assignment reports for up to 50 students", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                StudentModelI student = getSelectedStudent();
-                if (student == null) {
-                    CmMessageBox.showAlert("Please select a student.");
-                    return;
-                }
 
                 final List<Integer> studentUids = new ArrayList<Integer>();
-                studentUids.add(student.getUid());
+                ListStore<StudentModelI> store = grid.getStore();
 
-                // TODO: multiple students
-                // for (StudentModelExt sm : store.getModels()) {
-                // studentUids.add(sm.getUid());
-                // }
-
+                //studentUids.add(student.getUid());
+                for (int i = 0; i < store.size(); i++) {
+                    studentUids.add(store.get(i).getUid());
+                }
                 int studentCount = studentUids.size();
-                // if (studentCount > 0 && currentStudentCount <=
-                // MAX_REPORT_CARD) {
-                if (studentCount > 0) {
+                if (studentCount > 0 && currentStudentCount <= MAX_REPORT_CARD) {
+
                     GWT.runAsync(new CmRunAsyncCallback() {
 
                         @Override
@@ -947,8 +940,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
             }
         });
     }
-
-
 
     private ColumnModel<StudentModelI> defineColumns() {
         List<ColumnConfig<StudentModelI, ?>> cols = new ArrayList<ColumnConfig<StudentModelI, ?>>();
