@@ -143,7 +143,7 @@ var Whiteboard = (function () {
             // var str = txt.split("\n")
             var x0 = xp ? xp : clickX
             var y0 = yp ? yp : clickY
-            var colr = col ? col : '#000000'
+            var colr = col ? col : wb.globalStrokeColor
             var ht = 15;
             var holder_x = x0
             var holder_y = y0
@@ -165,7 +165,7 @@ var Whiteboard = (function () {
                     delete _mq_holder;
                 }
                // _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
-			   var txtCol=String(wb.globalStrokeColor).substring(1)
+			   var txtCol=String(colr).substring(1)
                 _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco="+txtCol+"&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
                 lastTxt = txt
             }
@@ -203,7 +203,7 @@ var Whiteboard = (function () {
              */
 
             if (!xt) {
-                updateText(txt, x0, y0, colr);
+                updateText(txt, x0, y0, colorToNumber(colr));
                 sendData();
                 // $get_Element("#editable-math").value = "";
 
@@ -2139,7 +2139,8 @@ if(context.lineWidth!=2){
         context.lineWidth = 2.0;
                 }
                 if(graphic_data[0].color!==undefined){
-        var col = "#" + graphic_data[0].color.toString(16);
+        var cstr=graphic_data[0].color.toString(16)
+        var col = "#" +(cstr=='0'?'000000':cstr) ;
         context.strokeStyle = col;
                 }
         var deb = ""
