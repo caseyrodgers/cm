@@ -31,7 +31,7 @@ HmEvents.eventTutorInitialized.subscribe(function() {
  *
  */
 HmEvents.eventTutorLastStep.subscribe(function (x) {
-	gwt_solutionHasBeenViewed(String(x));
+    gwt_solutionHasBeenViewed(String(x));
 });
 
 
@@ -64,7 +64,7 @@ function getNextMoveTo() {
 
 
 var TutorManager = {
-	isVisible: false,
+    isVisible: false,
     currentRealStep : -1,
     currentStepUnit : -1,
     stepUnitsMo : [],
@@ -90,15 +90,15 @@ var TutorManager = {
         TutorManager.analyzeLoadedData();
 
         if(!$get('tutoroutput')) {
-        	TutorManager.isVisible = false;
+            TutorManager.isVisible = false;
         }
 
         
         if(submitButtonText) {
-        	// call global tutor configuration
-        	// defined in tutor_widget.js
-        	var config = {'submitButtonText': submitButtonText, 'indicateWidgetStatus': indicateWidgetStatus};
-        	setTutorConfiguration(config);
+            // call global tutor configuration
+            // defined in tutor_widget.js
+            var config = {'submitButtonText': submitButtonText, 'indicateWidgetStatus': indicateWidgetStatus};
+            setTutorConfiguration(config);
         }
         
         
@@ -264,12 +264,12 @@ var TutorManager = {
     
     
     generateContext: function(pid, solutionData, jsonConfig) {
-    	if(pid != null) {
-	    	TutorManager.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
-    	}
-    	else {
-    		TutorDynamic.refreshProblem();
-    	}
+        if(pid != null) {
+            TutorManager.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
+        }
+        else {
+            TutorDynamic.refreshProblem();
+        }
         var myContext = getTutorVariableContextJson(TutorManager.tutorData._variables);
         return myContext;
     }
@@ -290,9 +290,9 @@ function enabledNext(yesNo) {
 }
 
 function enabledButton(btn, yesNo) {
-	
-	// gwt_enableTutorButton(btn, yesNo);
-	
+    
+    // gwt_enableTutorButton(btn, yesNo);
+    
 //    var clazz = 'sexybutton sexy_cm_silver ';
 //    if (!yesNo) {
 //        clazz += ' disabled';
@@ -740,36 +740,36 @@ function _getElementTop(eElement)
 {
     if (!eElement && this)                    // if argument is invalid
     {                                         // (not specified, is null or is
-												// 0)
+                                                // 0)
         eElement = this;                       // and function is a method
     }                                         // identify the element as the
-												// method owner
+                                                // method owner
 
     var DL_bIE = document.all ? true : false; // initialize var to identify IE
 
     var nTopPos = eElement.offsetTop;       // initialize var to store
-											// calculations
+                                            // calculations
     var eParElement = eElement.offsetParent;  // identify first offset parent
-												// element
+                                                // element
 
     while (eParElement != null)
     {                                         // move up through element
-												// hierarchy
+                                                // hierarchy
         if(DL_bIE)
         {
             if(eParElement.tagName == "TD")     // if parent a table cell,
-												// then...
+                                                // then...
             {
                 nTopPos += eParElement.clientTop; // append cell border width
-													// to calcs
+                                                    // to calcs
             }
         }
 
         nTopPos += eParElement.offsetTop;    // append top offset of parent
         eParElement = eParElement.offsetParent; // and move up the element
-												// hierarchy
+                                                // hierarchy
     }                                         // until no more offset parents
-												// exist
+                                                // exist
     return nTopPos;                          // return the number calculated
 }
 

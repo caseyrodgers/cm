@@ -76,7 +76,7 @@ public class Assignment implements Response{
             label += " (Expired)";
         }
         else {
-            label += getStatus();
+            label += " (" + getStatus() + ")";
         }
         
         return label;

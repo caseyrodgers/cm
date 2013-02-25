@@ -3,7 +3,6 @@ package hotmath.gwt.cm_tutor.client.view;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.TutorCallback;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -68,7 +67,7 @@ public class TutorCallbackDefault implements TutorCallback {
     }
     
     @Override
-    public boolean indicateWidgetStatus() {
-        return true;
+    public WidgetStatusIndication indicateWidgetStatus() {
+        return WidgetStatusIndication.DEFAULT;
     }
 }

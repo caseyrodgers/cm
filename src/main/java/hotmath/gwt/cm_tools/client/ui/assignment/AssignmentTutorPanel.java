@@ -35,7 +35,7 @@ public class AssignmentTutorPanel extends Composite {
     TutorWrapperPanel _tutorPanel;
 
     AssignmentTutorPanelCallback _callBack;
-    
+
     interface AssignmentTutorPanelCallback {
         void tutorWidgetValueUpdated(String value, boolean correct);
     }
@@ -66,12 +66,12 @@ public class AssignmentTutorPanel extends Composite {
             
             @Override
             public String getSubmitButtonText() {
-                return "Save Answer";
+                return "Submit Answer";
             }
             
             @Override
-            public boolean indicateWidgetStatus() {
-                return false;
+            public WidgetStatusIndication indicateWidgetStatus() {
+                return WidgetStatusIndication.INDICATE_SUBMIT_ONLY;
             }
             
         });

@@ -16,6 +16,7 @@ import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
+import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -325,9 +326,9 @@ public class TutorWrapperPanel extends Composite {
         
         
         String submitButtonText = tutorCallback.getSubmitButtonText();
-        boolean indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
+        WidgetStatusIndication indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
         
-        initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus);
+        initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name());
 
         debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
@@ -409,11 +410,9 @@ public class TutorWrapperPanel extends Composite {
      * methods and GWT.
      * 
      */
-    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext, String submitButtonText, boolean indicateWidgetStatus) /*-{
-    
+    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus) /*-{
         
         var that = this;
-        
         
         $wnd.gwt_enableTutorButton = function(btnName, enabledYesNo) {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_enableTutorButton(Ljava/lang/String;Z)(btnName,enabledYesNo);
@@ -658,92 +657,6 @@ public class TutorWrapperPanel extends Composite {
                 __lastInstance.showTutorWidgetCompleteInfo();   
             }
         });
-    }
-
-    
-    public static interface TutorCallback {
-        /** When the NewProblem button is pressed 
-         * 
-         * @param problemNumber
-         */
-        void onNewProblem(int problemNumber);
-
-
-        /** Return the text that is shown in the check widget save button
-         * 
-         * @return
-         */
-        String getSubmitButtonText();
-
-
-        /** Return action that will define the tutor widget action save
-         * 
-         * @param value
-         * @param yesNo
-         * @return
-         */
-        Action<UserTutorWidgetStats> getSaveTutorWidgetCompleteAction(String value, boolean yesNo);
-        
-
-        /** Return the action used to save this context, null if
-         *  no context save should happen.
-         *  
-         * @param variablesJson
-         * @param pid
-         * @param problemNumber
-         * @return
-         */
-        Action<RpcData>  getSaveSolutionContextAction(String variablesJson, String pid, int problemNumber);
-
-        /** Called when the tutor widget input is complete
-         * 
-         * @param inputValue
-         * @param correct
-         */
-        void tutorWidgetComplete(String inputValue, boolean correct);
-        
-        /** Called if a widget value change was detected when 
-         * such change is not allowed.
-         */
-        void tutorWidgetCompleteDenied(String inputValue, boolean correct);
-
-        /** Call after the last step has been viewed in a solution
-         * 
-         * @param value
-         */
-        void solutionHasBeenViewed(String value);
-        
-        /** Show the associated whiteboard for this tutor
-         * 
-         */
-        void showWhiteboard(); 
-        
-        
-        /** Show the standard tutor widget info mesaage on the tutor be
-         *  shown when the correct answer was entered?
-         *  
-         * @return
-         */
-        boolean showTutorWidgetInfoOnCorrect();
-        
-        /** Called when the solution has been fully initialized
-         * 
-         */
-        void solutionHasBeenInitialized();
-        
-        
-        /** Should the first hint be shown on incorrect widget value
-         * 
-         * @return
-         */
-        boolean moveFirstHintOnWidgetIncorrect();
-        
-        /** Should widget status of correct/incorrect be 
-         *  shown to user?
-         *  
-         * @return
-         */
-        boolean indicateWidgetStatus();
     }
 
 
