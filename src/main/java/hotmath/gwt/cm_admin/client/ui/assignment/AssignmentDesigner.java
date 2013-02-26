@@ -227,6 +227,7 @@ class AssignmentProblemListView extends ContentPanel {
                 return problemListGrid.getStore().get(which);
             }
         }));
+        nameCol.setSortable(false);
      
         List<ColumnConfig<ProblemDto, ?>> l = new ArrayList<ColumnConfig<ProblemDto, ?>>();
         l.add(nameCol);
@@ -260,6 +261,7 @@ class AssignmentProblemListView extends ContentPanel {
         problemListGrid.getView().setStripeRows(true);
         problemListGrid.getView().setColumnLines(true);
         problemListGrid.setBorders(false);
+        problemListGrid.setHideHeaders(true);
         
         problemListGrid.setColumnReordering(true);
         

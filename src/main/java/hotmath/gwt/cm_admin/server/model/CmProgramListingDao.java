@@ -280,9 +280,7 @@ public class CmProgramListingDao {
     }
 
     private List<ProgramSection> buildSectionListForTestDef(HaTestDef testDef) {
-
     	return buildSectionListForTestConfig(testDef.getTestDefId(), testDef.getTestConfig());
-
     }
     
     private List<ProgramSection> buildSectionListForTestConfig(int testDefId, HaTestConfig testConfig) {

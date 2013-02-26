@@ -281,7 +281,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     /**
      * Return list of problems associated with named lesson.
      * 
-     * At most MAX_PROBLEMS (12) are returned
      * 
      * Makes sure that solutions with widgets are returned first
      * 
@@ -293,11 +292,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      */
     public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lessonName, String lessonFile, String subject) {
 
-        int MAX_PROBLEMS = 12;
-
         final int count[] = new int[1];
-
-        String sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
 
         InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", lessonFile, lessonName));
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
@@ -313,6 +308,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             e.printStackTrace();
         }
 
+        String sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
         List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject }, new RowMapper<ProblemDto>() {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
