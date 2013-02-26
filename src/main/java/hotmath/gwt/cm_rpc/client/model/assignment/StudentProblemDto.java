@@ -53,7 +53,6 @@ public class StudentProblemDto implements Response {
     public void setProblem(ProblemDto problem) {
         this.problem = problem;
     }
-
     
     public String getStatus() {
         return status;
@@ -71,13 +70,16 @@ public class StudentProblemDto implements Response {
      * @return
      */
     public String getStatusForStudent() {
-        String s = getStatus();
-       if(s.toLowerCase().contains("viewed")) {
+        String sl = getStatus().toLowerCase();
+       if(sl.toLowerCase().contains("viewed")) {
            // viewed, not viewed
            return "Not Answered";
        }
+       else if(sl.equals("correct") || sl.equals("incorrect")) {
+           return "Submitted";
+       }
        else {
-           return s;
+           return status;
        }
     }
 

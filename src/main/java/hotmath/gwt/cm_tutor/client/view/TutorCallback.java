@@ -7,10 +7,10 @@ import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 public interface TutorCallback {
 
     static public enum WidgetStatusIndication {
-        NONE, /** do nothing */
-        DEFAULT, /** do normal thing */
-        INDICATE_SUBMIT_ONLY,
+        /** do normal thing */
+        DEFAULT,
         /** just indicate value was saved, not correct/false */
+        INDICATE_SUBMIT_ONLY
     }
 
     /**

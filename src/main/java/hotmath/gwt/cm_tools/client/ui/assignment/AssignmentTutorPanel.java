@@ -141,7 +141,6 @@ public class AssignmentTutorPanel extends Composite {
             
             if(problem.getLastUserWidgetValue() != null) {
                 _tutorPanel.setTutorWidgetValue(problem.getLastUserWidgetValue());
-                _tutorPanel.setReadOnly(true);
             }
             
             

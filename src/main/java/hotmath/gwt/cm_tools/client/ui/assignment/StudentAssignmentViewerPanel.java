@@ -103,12 +103,6 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                     return false;
                 }
             }
-            
-            @Override
-            public void setTutorWidgetMessage(String message) {
-                _assignmentTutorAndShowWorkPanel._tutorPanel._tutorPanel.indicateWidgetSubmitted();               
-            }
-            
         });
         
         BorderLayoutData bData = new BorderLayoutData(100);

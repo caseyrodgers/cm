@@ -87,10 +87,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
         }));
         l.add(labelCol);
 
-        if (callback.showStatus()) {
-            ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.statusForStudent(), 100, "Status");
-            l.add(labelStatus);
-        }
+        ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.statusForStudent(), 100, "Status");
+        l.add(labelStatus);
 
         ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);
 
@@ -193,13 +191,10 @@ public class AssignmentProblemListPanel extends ContentPanel {
             switch (prob.getProblem().getProblemType()) {
             case WHITEBOARD:
                 if (prob.getStatus().equalsIgnoreCase("Viewed")) {
-                    
-                    
-                    _problemListCallback.setTutorWidgetMessage("Submitted");
 
                     // update the problem type to current type
                     prob.getProblem().setProblemType(_assignmentProblem.getProblemType());
-                    prob.setStatus("Pending");
+                    prob.setStatus("Submitted");
 
                     _studentProblemGrid.getStore().update(prob);
 
@@ -301,7 +296,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
     public interface AssignmentProblemListCallback {
         void problemSelected(String title, ProblemDto problem);
         boolean showStatus();
-        void setTutorWidgetMessage(String message);
     }
 
     static {
