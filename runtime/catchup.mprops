@@ -3697,7 +3697,7 @@ order by group_name, assignment_name
 
 .key=GET_ASSIGNMENTS_FOR_GROUP
 
-select a.assign_key,
+select a.aid, a.assign_key,
        a.group_id,
        a.name,
        a.status,
@@ -3819,6 +3819,25 @@ from   CM_ASSIGNMENT_PID_STATUS p
               
 where  p.assign_key = ?
        and p.uid = ?
+       
+       
+.key=GET_STUDENT_ASSIGNMENTS
+
+select  due_date < now() as is_expired, a.* 
+from   HA_USER u join CM_GROUP g on g.id = u.group_id 
+    join CM_ASSIGNMENT a on a.group_id = u.group_id 
+where  u.uid = ?
+and a.status <> 'Draft'
+order by is_expired, a.due_date desc
+
+       
+       
+.key=GET_ASSIGNMENT
+
+select * from CM_ASSIGNMENT where assign_key = ?
+
+       
+       
 
 #
 # Save INMH usage
@@ -3835,6 +3854,10 @@ from HA_TEST_RUN_INMH_USE
 where run_id = ?
   and item_file = ?
   and item_type = 'practice'
+  
+  
+  
+  
   
   
   

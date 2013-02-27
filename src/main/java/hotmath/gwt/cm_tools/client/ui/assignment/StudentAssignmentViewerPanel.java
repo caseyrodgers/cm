@@ -194,18 +194,21 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     ComboBox<Assignment> _assignmentCombo;
     
     TextField _grade = new TextField();
+    FieldLabel _gradeField;
     
     private IsWidget createHeaderPanel() {
         FlowLayoutContainer header = new FlowLayoutContainer();
         header.setStyleName("header");
         _assignmentCombo = createAssignmentCombo();
-        _assignmentStatus.setReadOnly(true);
         _grade.setReadOnly(true);
          
+        _assignmentStatus.setReadOnly(true);
+
         header.setLayoutData(new MarginData(10));
         header.add(new MyFieldLabel(_assignmentCombo,"Select Assignment"));
         header.add(new MyFieldLabel(_assignmentStatus,"Status"));
-        header.add(new MyFieldLabel(_grade,"Score"));
+        _gradeField = new MyFieldLabel(_grade,"Score");
+        header.add(_gradeField);
         
         return header;
     }
@@ -254,6 +257,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 
         _studentAssignment = assignment;
         _problemListPanel.loadAssignment(assignment);
+        if(CmShared.getQueryParameter("debug") == null && !assignment.getStatus().equals("Closed")) {
+            _gradeField.setVisible(false);
+        }
+        else {
+            _gradeField.setVisible(true);
+        }
         
         _assignmentStatus.setValue(assignment.getStatus());
         _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));

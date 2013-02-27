@@ -67,7 +67,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /** empty */
     }
 
-    public int saveAssignment(final int aid, final Assignment ass) {
+    public int saveAssignment(final Assignment ass) {
         /**
          * insert or update the new Assignment record and save the key
          * 
@@ -90,7 +90,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due)values(?,?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-                    ps.setInt(1, aid);
+                    ps.setInt(1, ass.getAdminId());
                     ps.setInt(2, ass.getGroupId());
                     ps.setString(3, ass.getAssignmentName());
                     ps.setDate(4, new java.sql.Date(ass.getDueDate().getTime()));
@@ -112,7 +112,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
                     String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ? where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
-                    ps.setInt(1, aid);
+                    ps.setInt(1, ass.getAdminId());
                     ps.setString(2, ass.getAssignmentName());
                     ps.setDate(3, new java.sql.Date(ass.getDueDate().getTime()));
                     ps.setString(4, ass.getComments());
@@ -174,9 +174,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param assKey
      * @return
      */
-    public Assignment getAssignment(int assKey) throws AssignmentNotFoundException {
+    public Assignment getAssignment(int assKey) throws Exception {
 
-        String sql = "select * from CM_ASSIGNMENT where assign_key = ?";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT");
         Assignment assignment = null;
         try {
             assignment = getJdbcTemplate().queryForObject(sql, new Object[] { assKey }, new RowMapper<Assignment>() {
@@ -184,7 +184,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
                     Date dueDate = rs.getDate("due_date");
-                    return new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs
+                    return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs
                             .getString("comments"), dueDate, null, null, rs.getString("status"), rs.getInt("close_past_due")!=0);
                 }
             });
@@ -368,7 +368,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 String assignmentName = _createAssignmentName(dueDate, comments);
 
-                Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
+                Assignment ass = new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
                         .getString("comments"), dueDate, null, null, rs.getString("status"), rs.getInt("close_past_due")!=0);
 
                 ass.setProblemCount(rs.getInt("problem_count"));
@@ -415,7 +415,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public CmList<StudentAssignment> getAssignmentGradeBook(final int assignKey) throws Exception {
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
-        Assignment assignment = getAssignment(assignKey);
+        final Assignment assignment = getAssignment(assignKey);
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
 
@@ -437,7 +437,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
-                        StudentProblemDto prob = new StudentProblemDto(uid, probDto, rs.getString("status"), hasShowWork, hasShowWorkAdmin);
+                        boolean isClosed = assignment.getStatus().equals("Closed");
+                        StudentProblemDto prob = new StudentProblemDto(uid, probDto, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed);
 
                         prob.setIsGraded((rs.getInt("is_graded") > 0) ? "Yes" : "No");
 
@@ -905,17 +906,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     }
 
-    public List<Assignment> getAssignmentsForUser(int uid) {
+    public List<Assignment> getAssignmentsForUser(int uid) throws Exception {
 
         /**
          * Sort so active/not-expired assignments are on top
          * 
          */
-        String sql = "select  due_date < now() as is_expired, a.* " + "from   HA_USER u " + " join CM_GROUP g " + " on g.id = u.group_id "
-                + " join CM_ASSIGNMENT a " + " on a.group_id = u.group_id " + " where  u.uid = ? " + "  "
-                + " and a.status <> 'Draft'"
-                + " order by is_expired, a.due_date desc ";
-
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENTS");
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Assignment>() {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -925,7 +922,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
                 Date dueDate = rs.getDate("due_date");
 
-                Assignment ass = new Assignment(rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
+                Assignment ass = new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
                         .getString("comments"), dueDate, null, null, rs.getString("status"),rs.getInt("close_past_due")!=0);
                 return ass;
             }
@@ -949,7 +946,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         StudentAssignment studentAssignment = new StudentAssignment();
 
-        Assignment assignment = getAssignment(assignKey);
+        final Assignment assignment = getAssignment(assignKey);
         studentAssignment.setAssignment(assignment);
 
         /**
@@ -966,7 +963,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         ProblemDto dummy = new ProblemDto(0, null, null, rs.getString("pid"), null, 0);
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
-                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin);
+                        boolean isClosed = assignment.getStatus().equals("Closed");
+                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed);
                         return prob;
                     }
                 });
@@ -1040,7 +1038,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     public CmList<StudentAssignment> getAssignmentForStudents(int assignKey, List<Integer> userIds) throws Exception {
 
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
-        Assignment assignment = getAssignment(assignKey);
+        final Assignment assignment = getAssignment(assignKey);
 
         String sqlTemplate = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_2");
 
@@ -1065,7 +1063,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
-                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin);
+                        
+                        boolean isClosed = assignment.getStatus().equals("Closed");
+                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed);
 
                         return prob;
                     }
@@ -1374,7 +1374,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * 
      * @param assKey
      */
-    public String copyAssignment(int aid, int assKey) throws Exception {
+    public String copyAssignment(int assKey) throws Exception {
         Assignment assignmentCopy = getAssignment(assKey);
         assignmentCopy.setAssignKey(0);
         String copyTag = " - copy:  " + new java.util.Date();
@@ -1382,7 +1382,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
         assignmentCopy.setStatus("Draft");
 
-        saveAssignment(aid, assignmentCopy);
+        saveAssignment(assignmentCopy);
 
         return assignmentCopy.getAssignmentName();
     }
@@ -1425,8 +1425,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentCopy.setStatus("Draft");
         assignmentCopy.setGroupId(groupToImportInto);
 
-        saveAssignment(aid, assignmentCopy);
+        saveAssignment(assignmentCopy);
 
         return assignmentCopy;
+    }
+
+    public void activateAssignment(int assignmentKey) throws Exception {
+       Assignment assignment = getAssignment(assignmentKey);
+       assignment.setStatus("Active");
+       saveAssignment(assignment);        
     }
 }

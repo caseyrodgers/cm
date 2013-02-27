@@ -115,7 +115,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         if(false) {
-            new AssignmentManagerDialog2(590,2);
+            new AssignmentManagerDialog2(566,2);
             return;
         }
         

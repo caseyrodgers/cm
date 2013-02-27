@@ -64,6 +64,7 @@ public class GradeBookPanel extends ContentPanel {
         
         _store = new ListStore<StudentAssignment>(saProps.uid());
         
+        addRefreshButton();
         addGradeButton();
         
         if(CmShared.getQueryParameter("debug") != null) {
@@ -74,6 +75,14 @@ public class GradeBookPanel extends ContentPanel {
         //addAcceptAllButton();
     }
 
+    private void addRefreshButton() {
+        addTool(new TextButton("Refresh", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showGradeBookFor(_lastUsedAssignment);
+            }
+        }));
+    }
 
     Assignment _lastUsedAssignment;
     public void showGradeBookFor(Assignment assignment) {

@@ -18,7 +18,7 @@ public class CopyAssignmentCommand implements ActionHandler<CopyAssignmentAction
 
     @Override
     public RpcData execute(Connection conn, CopyAssignmentAction action) throws Exception {
-        String newName = AssignmentDao.getInstance().copyAssignment(action.getAid(), action.getAssKey());
+        String newName = AssignmentDao.getInstance().copyAssignment(action.getAssKey());
         return new RpcData("new_name=" + newName);
     }
 

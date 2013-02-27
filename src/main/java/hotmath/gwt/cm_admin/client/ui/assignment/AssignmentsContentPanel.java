@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.rpc.ActivateAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CopyAssignmentAction;
@@ -81,6 +82,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         getHeader().addTool(createDelButton());
         getHeader().addTool(createCopyButton());
         getHeader().addTool(new HTML("&nbsp;&nbsp;"));
+        getHeader().addTool(createActivateButton());
         getHeader().addTool(createScoreButton());
         setCollapsible(false);
 
@@ -118,6 +120,59 @@ public class AssignmentsContentPanel extends ContentPanel {
         setWidget(defaultMessageContainer);
     }
 
+    private Widget createActivateButton() {
+        TextButton btn = new TextButton("Activate", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                Assignment a = _grid.getSelectionModel().getSelectedItem();
+                if(a == null) {
+                    CmMessageBox.showAlert("An assignment needs to be selected first.");
+                    return;
+                }
+                activateAssignment(a);
+            }
+        });
+        return btn;
+    }
+    
+    
+    
+    protected void activateAssignment(final Assignment assignment) {
+        if(assignment.getStatus().equals("Active")) {
+            CmMessageBox.showAlert("This assignment is already active.");
+            return;
+        }
+        
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Activate Assignment", "Once activated an assignment's problems cannot be changed.  Are you sure you want to activate this assignment?.");
+        cm.addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                    activateAssignmentRPC(assignment);
+                }
+            }
+        });
+        cm.setWidth(300);
+        cm.show();
+    }
+
+    private void activateAssignmentRPC(final Assignment assignment) {
+        CatchupMathTools.setBusy(true);
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                ActivateAssignmentAction action = new ActivateAssignmentAction(assignment.getAssignKey());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(RpcData data) {
+                CatchupMathTools.setBusy(false);
+                refreshData();
+            }
+
+        }.register();        
+    }
     public void refreshData() {
         loadAssignentsFor(_currentGroup);
     }
@@ -328,7 +383,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CopyAssignmentAction action = new CopyAssignmentAction(_adminId, ass.getAssignKey());
+                CopyAssignmentAction action = new CopyAssignmentAction(ass.getAssignKey());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

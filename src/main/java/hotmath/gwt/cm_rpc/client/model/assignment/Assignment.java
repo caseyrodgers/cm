@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class Assignment implements Response{
 
+    int adminId;
     String assignmentName;
     int assignKey;
     int groupId;
@@ -38,7 +39,8 @@ public class Assignment implements Response{
     
     public Assignment() {}
     
-    public Assignment(int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status, boolean closePastDue) {
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status, boolean closePastDue) {
+        this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
         this.assignmentName = name;
@@ -48,6 +50,18 @@ public class Assignment implements Response{
         this.uids = uids;
         this.status = status;
         this.closePastDue = closePastDue;
+    }
+
+    public int getAdminId() {
+        return adminId;
+    }
+    
+    public boolean isClosed() {
+        return status.equals("Closed");
+    }
+
+    public void setAdminId(int adminId) {
+        this.adminId = adminId;
     }
 
     public String getStatusLabel() {
@@ -88,7 +102,7 @@ public class Assignment implements Response{
      * @return
      */
     public boolean isEditable() {
-        return !getStatus().equalsIgnoreCase("closed");
+        return !getStatus().equals("Closed");
     }
     
     /** Determine, based on data
@@ -191,8 +205,8 @@ public class Assignment implements Response{
     
     @Override
     public String toString() {
-        return "Assignment [assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments=" + comments + ", dueDate="
-                + dueDate + ", pids=" + pids + ", uids=" + uids + ", status=" + status + ", closePastDue=" + closePastDue + ", problemCount=" + problemCount
-                + "]";
+        return "Assignment [adminId=" + adminId + ", assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments="
+                + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids + ", status=" + status + ", closePastDue=" + closePastDue
+                + ", problemCount=" + problemCount + "]";
     }
 }

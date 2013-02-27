@@ -3,12 +3,10 @@ package hotmath.gwt.cm_rpc.client.rpc;
 public class CopyAssignmentAction implements Action<RpcData>{
     
     int assKey;
-    int aid;
 
     public CopyAssignmentAction() {}
     
-    public CopyAssignmentAction(int aid,int assKey ) {
-        this.aid = aid;
+    public CopyAssignmentAction(int assKey ) {
         this.assKey = assKey;
     }
 
@@ -18,9 +16,5 @@ public class CopyAssignmentAction implements Action<RpcData>{
 
     public void setAssKey(int assKey) {
         this.assKey = assKey;
-    }
-
-    public int getAid() {
-        return aid;
     }
 }
