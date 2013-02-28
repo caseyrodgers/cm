@@ -10,12 +10,14 @@ import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
+import hotmath.gwt.cm_rpc.client.rpc.PrintGradebookAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -104,7 +106,9 @@ public class AssignmentManagerDialog2  {
         window.show();
     }
     
+    GroupDto _lastGroup;
     private void loadGroupInfo(GroupDto group) {
+        _lastGroup = group;
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
         _assignmentsPanel.loadAssignentsFor(group);
     }
@@ -199,12 +203,12 @@ public class AssignmentManagerDialog2  {
         TextButton gradeBook = new TextButton("Gradebook", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                GWT.runAsync(new CmRunAsyncCallback() {
-                    @Override
-                    public void onSuccess() {
-                        CmMessageBox.showAlert("The Assignment Gradebook View");
-                    }
-                });                
+                if(_lastGroup == null) {
+                    CmMessageBox.showAlert("Select a group first.");
+                    return;
+                }
+                PrintGradebookAction action = new  PrintGradebookAction(UserInfoBase.getInstance().getUid(),_lastGroup.getGroupId());
+                new PdfWindow(action.getAid(), "Grade Book Report", action);
             }});
         return gradeBook;
     }

@@ -55,10 +55,8 @@ public class GroupGradebookReport {
 		this.title = title;
 	}
 	
-	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, int adminId,
-			int groupId) {
+	public ByteArrayOutputStream makePdf(final Connection conn, int adminId,int groupId) {
 		ByteArrayOutputStream baos = null;
-
 		try {
 			
 	        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
