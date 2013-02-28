@@ -9,17 +9,14 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.google.gwt.user.client.Window;
 
-public class PdfWindow extends GWindow {
+public class PdfWindow {
 
     Action<CmWebResource> action;
     Integer aid;
     public PdfWindow(Integer aid,  String title, Action<CmWebResource> action) {
-        super(true);
         this.action = action;
         this.aid = aid;
         createPdfRpc();
-        setPixelSize(800, 600);
-        setHeadingText(title);
     }
 
 
@@ -38,9 +35,8 @@ public class PdfWindow extends GWindow {
                 /** Was blanking out screen in IE 
                  * 
                  */
-                String features = "resizable=yes,scrollbars=yes,status=yes";
+                String features = "resizable=yes,scrollbars=yes,status=yes, height=640, width=480";
                 Window.open(webResource.getUrl(), "CmPDFViewer", features);
-                return;
             }
         }.register();
     }

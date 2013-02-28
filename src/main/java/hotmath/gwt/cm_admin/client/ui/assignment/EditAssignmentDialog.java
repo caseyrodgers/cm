@@ -183,7 +183,9 @@ public class EditAssignmentDialog {
             }
         });
         saveDraftMode.setToolTip("Save in draft mode allowing for future modifcations");
-        saveAssign = new TextButton("Save/Activate", new SelectHandler() {
+        String saveBtnName = _isDraftMode?"Save/Activate":"Save";
+        
+        saveAssign = new TextButton(saveBtnName, new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 if(_assignmentDesigner.getAssignmentPids().size() == 0) {
@@ -197,9 +199,11 @@ public class EditAssignmentDialog {
                 }
             }
         });
-        saveAssign.setToolTip("Save and assign. Problems cannot be edited afterwards.");
+        saveAssign.setToolTip("Save any changes. Once activated or closed problems cannot be edited.");
 
-        window.addButton(saveDraftMode);
+        if(_isDraftMode) {
+            window.addButton(saveDraftMode);
+        }
         window.addButton(saveAssign);
 
         if(!_isDraftMode) {
