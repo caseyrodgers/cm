@@ -28,9 +28,11 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -145,6 +147,14 @@ public class AssignmentCopyDialog extends GWindow{
         grid.getView().setStripeRows(true);
         grid.getView().setColumnLines(true);        
         grid.setLoadMask(true);
+        
+        _grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
+            @Override
+            public void onCellClick(CellDoubleClickEvent event) {
+                importSelectedAssignment();
+            }
+        });
+        
         return grid;
     }
 
