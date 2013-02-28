@@ -591,7 +591,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private void setStudentDetailStatus(StudentAssignment sa) {
-        int correct = 0, inCorrect = 0, complete = 0, pending = 0, accepted = 0, viewed = 0;
+        int correct = 0, inCorrect = 0, complete = 0, submitted = 0, accepted = 0, viewed = 0;
         for (StudentProblemDto spd : sa.getAssigmentStatuses()) {
 
             if (spd.isCorrect()) {
@@ -609,26 +609,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 viewed++;
             }
 
-            if (s.equals("pending")) {
-                pending++;
+            if (s.equals("submitted")) {
+                submitted++;
             }
 
         }
         sa.setHomeworkGrade(getHomeworkGrade(sa.getAssigmentStatuses().size(), correct, inCorrect));
-        sa.setStudentDetailStatus(getLessonStatus(sa.getAssigmentStatuses().size(), complete, pending, viewed));
+        sa.setStudentDetailStatus(getLessonStatus(sa.getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
-    private String getLessonStatus(int count, int completed, int pending, int viewed) {
-
+    private String getLessonStatus(int count, int completed, int submitted, int viewed) {
         String ret;
-        viewed = (completed + pending + viewed); // all viewed
-
-        if (pending != 0 && viewed != 0) {
-            ret = String.format("%d of %d completed, %d pending, %d viewed", completed, count, pending, viewed);
-        } else if (pending != 0) {
-            ret = String.format("%d of %d completed, %d pending", completed, count, pending);
-        } else if (viewed != 0) {
-            ret = String.format("%d of %d completed, %d viewed", completed, count, viewed);
+        if (submitted != 0) {
+            ret = String.format("%d of %d completed, %d pending", completed, count, submitted);
         } else {
             ret = String.format("%d of %d completed", completed, count);
         }

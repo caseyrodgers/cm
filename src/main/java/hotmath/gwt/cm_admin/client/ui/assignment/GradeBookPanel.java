@@ -150,7 +150,7 @@ public class GradeBookPanel extends ContentPanel {
 
 
 	private void initColumns() {
-		nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 120, "Student");
+		nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 200, "Student");
         nameCol.setRowHeader(true);
 
         statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 85, "Status");
@@ -164,7 +164,7 @@ public class GradeBookPanel extends ContentPanel {
         
 
         colConfList.add(nameCol);
-        colConfList.add(statusCol);
+        //colConfList.add(statusCol);
         colConfList.add(gradeCol);
         colConfList.add(detailStatus);
 	}

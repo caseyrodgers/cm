@@ -61,7 +61,7 @@ public class HeaderPanel extends FlowLayoutContainer {
                     if (!UserInfo.getInstance().isDemoUser()) {
                         CatchupMath.getThisInstance().showAssignments_gwt();
                     } else {
-                        CatchupMathTools.showAlert("Assignments are not available for demo accounts");
+                        CatchupMathTools.showAlert("Assignments are not available for demo accounts.");
                     }
                 }
             });
