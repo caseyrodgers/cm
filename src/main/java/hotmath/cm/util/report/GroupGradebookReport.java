@@ -48,7 +48,7 @@ public class GroupGradebookReport {
 	private static final Logger LOGGER = Logger.getLogger(GroupGradebookReport.class);
 
 	private static final Color BLACK = new Color(0, 0, 0);
-	private static final Color GREEN = new Color(0, 150, 0);
+	private static final Color BLUE = new Color(0, 0, 150);
 	private static final Color RED   = new Color(150, 0, 0);
 	
 	public GroupGradebookReport(String title) {
@@ -140,7 +140,7 @@ public class GroupGradebookReport {
 			document.add(Chunk.NEWLINE);
 			document.add(Chunk.NEWLINE);			
 
-			Table tbl = new Table(5);
+			Table tbl = new Table(assignmentList.size() + 1);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
@@ -150,7 +150,6 @@ public class GroupGradebookReport {
 			// use due date for assignment column headers
 			// TODO: limit to ?
 			for (Assignment a : assignmentList) {
-				Date due = a.getDueDate();
 				addHeader(asgnDateFmt.format(a.getDueDate()),"10%",tbl);
 			}
 
@@ -166,10 +165,10 @@ public class GroupGradebookReport {
 						addCell("N/A", tbl, i);
 					}
 					else if (sa.getHomeworkStatus().equalsIgnoreCase("in progress")) {
-						addCell("<"+sa.getHomeworkGrade()+">", tbl, i, RED);
+						addCell(sa.getHomeworkGrade(), tbl, i, RED);
 					}
 					else if (sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
-						addCell("{"+sa.getHomeworkGrade()+"}", tbl, i, GREEN);						
+						addCell(sa.getHomeworkGrade(), tbl, i, BLUE);						
 					}
 					else {
 						addCell(sa.getHomeworkGrade(), tbl, i, BLACK);						
