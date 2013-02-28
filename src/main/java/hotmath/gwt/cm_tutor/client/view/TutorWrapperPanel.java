@@ -538,7 +538,7 @@ public class TutorWrapperPanel extends Composite {
     
     
     native private boolean isThereIsATutorWidget() /*-{
-        return $wnd.TutorSolutionWidgetValues.getActiveWidget() != null;
+        return $wnd.TutorSolutionWidgetValues.isWidgetOnSolution();
     }-*/;
     
     private void setTutorBarStateEnabled(boolean enableYesNo) {
