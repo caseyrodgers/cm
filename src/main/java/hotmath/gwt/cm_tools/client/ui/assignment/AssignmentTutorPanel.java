@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 
 /** Provide Generic access to a single solution in an Assignment
@@ -35,14 +37,16 @@ public class AssignmentTutorPanel extends Composite {
     TutorWrapperPanel _tutorPanel;
 
     AssignmentTutorPanelCallback _callBack;
+    boolean _isEditable;
 
     interface AssignmentTutorPanelCallback {
         void tutorWidgetValueUpdated(String value, boolean correct);
     }
-    public AssignmentTutorPanel(boolean isEditable, AssignmentTutorPanelCallback callBack) {
+    public AssignmentTutorPanel(final boolean isEditable, AssignmentTutorPanelCallback callBack) {
         _callBack = callBack;
         __lastInstance = this;
-        _tutorPanel = new TutorWrapperPanel(false, false,false, true, new TutorCallbackDefault() {
+        _isEditable = isEditable;
+        _tutorPanel = new TutorWrapperPanel(!isEditable, false,false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);
@@ -61,7 +65,7 @@ public class AssignmentTutorPanel extends Composite {
             
             @Override
             public boolean moveFirstHintOnWidgetIncorrect() {
-                return false;
+                return !isEditable;
             }
             
             @Override
@@ -71,13 +75,14 @@ public class AssignmentTutorPanel extends Composite {
             
             @Override
             public WidgetStatusIndication indicateWidgetStatus() {
-                return WidgetStatusIndication.INDICATE_SUBMIT_ONLY;
+                return isEditable?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
             }
             
         });
-        if(!isEditable) {
-            _tutorPanel.setReadOnly(true);
-        }
+        
+//        if(!isEditable) {
+//            _tutorPanel.setReadOnly(true);
+//        }
         
         _tutorPanel.addStyleName("tutor_solution_wrapper");
         isEpp = true;
@@ -160,11 +165,17 @@ public class AssignmentTutorPanel extends Composite {
      * @param yesNo
      */
     private void processTutorWidgetComplete(final String inputValue, boolean yesNo) {
+        
+        if(!_isEditable) {
+            Info.display("Assignment Closed", "Input value is not saved.");
+            return;
+        }
+        
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 _assProblem.setLastUserWidgetValue(inputValue);
-                loadSolutionIntoGui(_uid, _assignKey, _assProblem);
+                //loadSolutionIntoGui(_uid, _assignKey, _assProblem);  // to show readonly state
                 Log.debug("Tutor Widget Answer saved to server.");
             }
             @Override

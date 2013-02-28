@@ -186,6 +186,8 @@ public class TutorWrapperPanel extends Composite {
     public void setTutorWidgetValue(String value) {
         _lastWidgetValue = value;
         jsni_setTutorWidgetValue(value);
+        
+        _wasWidgetAnswered=true;
     }
 
     public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig, 

@@ -1249,11 +1249,6 @@ SolutionSetCompleteDialog .results{
 }
 
 
- /* turn off hints/steps for all EPPs */
-.is_epp #steps_tail {
-	display: none;
-}
-
 
 /* hide second part of RPP default message
 */
