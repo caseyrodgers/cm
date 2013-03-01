@@ -9,7 +9,6 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
-import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -55,7 +54,7 @@ public class GroupGradebookReport {
 		this.title = title;
 	}
 	
-	public ByteArrayOutputStream makePdf(final Connection conn, int adminId,int groupId) {
+	public ByteArrayOutputStream makePdf(int adminId,int groupId) {
 		ByteArrayOutputStream baos = null;
 		try {
 			
@@ -95,15 +94,6 @@ public class GroupGradebookReport {
             	}
             }
 
-            for (Integer stuId : stuNameMap.keySet()) {
-            	Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
-
-            	for (Integer asgnKey : asgnMap.keySet()) {
-            		StudentAssignment sa = asgnMap.get(asgnKey);
-            	}
-            	
-            }
-						
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
 			PdfWriter writer = PdfWriter.getInstance(document, baos);
@@ -189,16 +179,6 @@ public class GroupGradebookReport {
 				adminId, groupId), e);
 		}
 		return baos;
-	}
-
-	private String getStatus(StudentAssignment sa) {
-		if (sa.getProblemPendingCount() < 1) {
-			return String.format("%d of %d completed", sa.getProblemCompletedCount(), sa.getProblemCount());
-		}
-		else {
-			return String.format("%d of %d completed, %d pending", sa.getProblemCompletedCount(),
-					sa.getProblemCount(), sa.getProblemPendingCount());
-		}
 	}
 
 	private Phrase buildLabelContent(String label, String value) {
