@@ -15,6 +15,8 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -22,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
@@ -43,13 +46,18 @@ public class AssignmentProblemListView extends ContentPanel {
     
     VerticalLayoutContainer problemListContainer;
     private TextButton _deleteButton;
-    
+
+    MyOrdinalProvider ordinalNumberValudProvider;
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
         
         this.assignment = assignment;
         this.callback = callback;
 
-        ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(v, 50, "Problems Assigned");
+        AssignmentProblemListPanelProperties props = GWT.create(AssignmentProblemListPanelProperties.class);
+        
+        ordinalNumberValudProvider = new MyOrdinalProvider();
+        ColumnConfig<ProblemDto, Integer> problemNumber = new ColumnConfig<ProblemDto, Integer>(ordinalNumberValudProvider, 25, "");
+        ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(props.label(), 50, "Problems Assigned");
         nameCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
             @Override
             public ProblemDto getProblem(int which) {
@@ -58,10 +66,10 @@ public class AssignmentProblemListView extends ContentPanel {
         }));
         nameCol.setSortable(false);
      
-        List<ColumnConfig<ProblemDto, ?>> l = new ArrayList<ColumnConfig<ProblemDto, ?>>();
-        l.add(nameCol);
-        ColumnModel<ProblemDto> cm = new ColumnModel<ProblemDto>(l);
-     
+        List<ColumnConfig<ProblemDto, ?>> cols = new ArrayList<ColumnConfig<ProblemDto, ?>>();
+        cols.add(problemNumber);
+        cols.add(nameCol);
+        ColumnModel<ProblemDto> cm = new ColumnModel<ProblemDto>(cols);
         
         ModelKeyProvider<ProblemDto> kp = new ModelKeyProvider<ProblemDto>() {
             @Override
@@ -127,6 +135,7 @@ public class AssignmentProblemListView extends ContentPanel {
     
     public void setProblemListing(CmList<ProblemDto> cmList) {
         setWidget(problemListContainer);
+        ordinalNumberValudProvider.resetOrdinalNumber();
         problemListGrid.getStore().clear();
         problemListGrid.getStore().addAll(cmList);
         
@@ -137,7 +146,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
     private Widget createDefaultNoProblemsMessge() {
         CenterLayoutContainer cc = new CenterLayoutContainer();
-        cc.add(new HTML("<h1>No problems assigned</h1>"));
+        cc.add(new HTML("<h1>Press Add to begin selecting problem.</h1>"));
         
         return cc;
     }
@@ -194,7 +203,7 @@ public class AssignmentProblemListView extends ContentPanel {
                         newList.add(pd);
                     }
                 }
-                
+                ordinalNumberValudProvider.resetOrdinalNumber();
                 problemListGrid.getStore().clear();
                 problemListGrid.getStore().addAll(newList);
                 
@@ -275,7 +284,7 @@ public class AssignmentProblemListView extends ContentPanel {
         }
     }
 
-    ValueProvider<ProblemDto, String> v = new ValueProvider<ProblemDto, String>() {
+    ValueProvider<ProblemDto, String> valueProvider = new ValueProvider<ProblemDto, String>() {
 
         @Override
         public String getValue(ProblemDto object) {
@@ -296,6 +305,37 @@ public class AssignmentProblemListView extends ContentPanel {
 
     public List<ProblemDto> getAssignmentPids() {
         return problemListGrid.getStore().getAll();
-    }        
+    }
+    
+    public interface AssignmentProblemListPanelProperties extends PropertyAccess<String> {
+        @Path("pid")
+        ModelKeyProvider<ProblemDto> id();
+        ValueProvider<ProblemDto, Integer> ordinalNumber();
+        ValueProvider<ProblemDto, String> label();
+    }
+
+    
+    class MyOrdinalProvider implements ValueProvider<ProblemDto, Integer> {
+
+        int orderPosition=0;
+        public void resetOrdinalNumber() {
+            orderPosition = 0;
+        }
+        @Override
+        public Integer getValue(ProblemDto object) {
+            return ++orderPosition;
+        }
+
+        @Override
+        public void setValue(ProblemDto object, Integer value) {
+            object.setOrdinalNumber(value);
+        }
+
+        @Override
+        public String getPath() {
+            return "/";
+        }
+    };
+
     
 }

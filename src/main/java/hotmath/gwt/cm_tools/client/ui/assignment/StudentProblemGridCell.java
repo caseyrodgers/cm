@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -31,8 +32,7 @@ public class StudentProblemGridCell extends AbstractCell<String> {
         @Override
         public void render(Context context, String value, SafeHtmlBuilder sb) {
             ProblemDto studProb = callBack.getProblem(context.getIndex());
-            String colHtml = studProb.getLabelWithType();
-            sb.appendHtmlConstant(colHtml);
+            sb.appendHtmlConstant(studProb.getLabel());
         }
 
 }

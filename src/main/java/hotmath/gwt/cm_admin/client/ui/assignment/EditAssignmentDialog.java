@@ -20,16 +20,15 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import java.sql.Time;
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.i18n.shared.DateTimeFormat;
-import com.google.gwt.i18n.shared.DateTimeFormat.PredefinedFormat;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -50,7 +49,7 @@ import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.info.Info;
+import com.sencha.gxt.widget.core.client.form.TimeField;
 
 public class EditAssignmentDialog {
     private static final int MAX_FIELD_LEN = 400;
@@ -86,17 +85,15 @@ public class EditAssignmentDialog {
         mainBorderPanel.setBorders(true);
 
         VerticalLayoutContainer header = new VerticalLayoutContainer();
+        VerticalLayoutContainer.VerticalLayoutData vd = new VerticalLayoutContainer.VerticalLayoutData();
+        vd.setHeight(30);
+        header.setLayoutData(vd);
         _assignmentName.setWidth(MAX_FIELD_LEN);
         FieldLabel assignmentNameLabel = new FieldLabel(_assignmentName, "Assignment Name");
         assignmentNameLabel.setLabelWidth(FIELD_LABEL_LEN);
         _assignmentName.setValue(assignment.getAssignmentName());
 
-        BorderLayoutData headerData = new BorderLayoutData();
-        headerData.setMargins(new Margins(20));
-        header.setLayoutData(headerData);
-
         // header.add(assignmentNameLabel);
-
         _comments.setWidth(MAX_FIELD_LEN);
         _comments.setHeight(50);
         _comments.setValue(_assignment.getComments());
@@ -105,29 +102,21 @@ public class EditAssignmentDialog {
         FieldLabel commentsLabel = new FieldLabel(_comments, "Comment");
         commentsLabel.setLabelWidth(FIELD_LABEL_LEN);
         header.add(commentsLabel);
-
-        _dueDate = new DateField();
         
-        _dueDate.addValueChangeHandler(new ValueChangeHandler<Date>() {
-            @Override
-            public void onValueChange(ValueChangeEvent<Date> event) {
-                Date d = event.getValue();
-                DateTimeFormat f = DateTimeFormat.getFormat(PredefinedFormat.DATE_SHORT);
-                Info.display("Value Changed", "You selected " + f.format(d));
-            }
-        });
+        
+        _closeOnExpire = new CheckBox();
+        _closeOnExpire.setValue(assignment.isClosePastDue());
+        _closeOnExpire.setToolTip("Close automatically when past due date");
+        
+        HorizontalLayoutData hData1 = new HorizontalLayoutData();
+        HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
+        hData1.setMargins(new Margins(0, 20, 0, 20));
+        
+        _dueDate = new DateField();
         _dueDate.setWidth(100);
         _dueDate.setValue(assignment.getDueDate());
 
-        HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
-
-        HorizontalLayoutData hData1 = new HorizontalLayoutData();
-        hData1.setMargins(new Margins(0, 20, 0, 20));
-
-        FieldLabel dueDateField = new FieldLabel(_dueDate, "Due Date");
-        dueDateField.setLabelWidth(FIELD_LABEL_LEN);
-        hCon.add(dueDateField);
-
+        hCon.add(new MyFieldLabel(_dueDate, "Due Date", FIELD_LABEL_LEN));
         _assignmentStatus = createAssignmentStatusCombo();
         _assignmentStatus.setValue(determineAssignmentStatus(assignment));
         _assignmentStatus.addBeforeSelectionHandler(new BeforeSelectionHandler<AssignmentStatusDto>() {
@@ -137,30 +126,21 @@ public class EditAssignmentDialog {
                     event.cancel();
                 }
             }   
-        });
-        
-        /** only allow change when Active
-         * 
-         */
+        });        
         if(!_isDraftMode) {
             _assignmentStatus.getStore().remove(_assignmentStatus.getStore().size()-1);   // remove draft
-            FieldLabel statusLabel = new FieldLabel(_assignmentStatus, "Status");
+            FieldLabel statusLabel = new MyFieldLabel(_assignmentStatus, "Status", 85, 100);
             statusLabel.setLabelWidth(FIELD_LABEL_LEN - 20);
             HorizontalLayoutData hData = new HorizontalLayoutData();
             hData.setMargins(new Margins(0, 20, 0, 20));
-            hCon.add(statusLabel, hData);
+            hCon.add(statusLabel, hData1);
         }
-        
-        _closeOnExpire = new CheckBox();
-        _closeOnExpire.setValue(assignment.isClosePastDue());
-        _closeOnExpire.setToolTip("Close automatically when past due date");
-        HorizontalLayoutData hData = new HorizontalLayoutData();
-        hData.setMargins(new Margins(0, 20, 0, 20));
-        hCon.add(new MyFieldLabel(_closeOnExpire, "Close Past Due", 85), hData);
-
+        hCon.add(new MyFieldLabel(_closeOnExpire, "Close Past Due", 85, 20), hData1);
         header.add(hCon);
-
-        mainBorderPanel.setNorthWidget(header);
+        
+        BorderLayoutData bd = new BorderLayoutData();
+        bd.setMargins(new Margins(20));
+        mainBorderPanel.setNorthWidget(header,bd);
 
         _assignmentDesigner = new AssignmentDesigner(_assignment, new AssignmentDesignerCallback() {
             @Override

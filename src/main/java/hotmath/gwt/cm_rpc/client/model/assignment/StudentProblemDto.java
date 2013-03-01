@@ -12,6 +12,8 @@ public class StudentProblemDto implements Response {
     private boolean hasShowWorkAdmin;
     private boolean isClosed;
     
+    private int problemNumberOrdinal;
+    
     public StudentProblemDto() {
     }
 
@@ -138,5 +140,22 @@ public class StudentProblemDto implements Response {
             // all others?
             return true;
         }
+    }
+
+    public int getProblemNumberOrdinal() {
+        return problemNumberOrdinal;
+    }
+
+    public void setProblemNumberOrdinal(int problemNumberOrdinal) {
+        this.problemNumberOrdinal = problemNumberOrdinal;
+    }
+
+    public static String getStudentLabel(String fromLabel) {
+        for(int i=fromLabel.length();i>0;i--) {
+            if(fromLabel.charAt(i-1) == ':') {
+                fromLabel = fromLabel.substring(0, i-1);
+            }
+        }
+        return fromLabel;
     }
 }

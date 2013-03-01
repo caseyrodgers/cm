@@ -667,13 +667,4 @@ public class TutorWrapperPanel extends Composite {
         widgetCorrectInfo.addClassName(".show");    
     }
 
-    native public void indicateWidgetSubmitted() /*-{
-        var el = $doc.getElementById("hm_flash_widget_indicator");
-        if(el) {
-            el.style.display = 'block';
-            el.style.top = 0;
-            el.innerHTML = "Submitted";
-        }
-    }-*/;
-
 }

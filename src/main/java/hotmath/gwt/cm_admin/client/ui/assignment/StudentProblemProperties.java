@@ -19,4 +19,6 @@ public interface StudentProblemProperties extends PropertyAccess<String> {
 	
 	ValueProvider<StudentProblemDto, Boolean> hasShowWork();
 
+    ValueProvider<StudentProblemDto, Integer> problemNumberOrdinal();
+
 }

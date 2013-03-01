@@ -3615,7 +3615,7 @@ from (
  
 .key=GET_GRADE_BOOK_DATA_2
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,p.ordinal_number
        ifnull(s.status, '-') as status, q.correct, q.id, q.answer, 
        ifnull(q.create_datetime, s.modify_datetime) as update_datetime,
        w.has_show_work, w2.has_show_work_admin
@@ -3712,12 +3712,12 @@ from   CM_ASSIGNMENT a
                   group  by assign_key) p
               on p.assign_key = a.assign_key
 where  a.group_id = ?
-order  by a.due_date desc 
+order  by a.due_date desc,  last_modified desc 
 
 ##
 .key=GET_GRADE_BOOK_DATA_3
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded,
@@ -3766,7 +3766,7 @@ order by u.user_name, problem_id
 ##
 .key=GET_ASSIGNMENT_WORK_FOR_STUDENT
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded

@@ -43,6 +43,8 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     
     interface AssignmentStudentTutorAndShowWorkPanelCallback {
          void tutorWidgetValueUpdated(String value, boolean correct);
+
+        void whiteboardUpdated();
     }
     
     public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, Assignment assignment, final ProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
@@ -59,6 +61,11 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 _callBack.tutorWidgetValueUpdated(value, correct);
+            }
+
+            @Override
+            public void whiteboardSubmitted() {
+                _callBack.whiteboardUpdated();
             }
         });
         

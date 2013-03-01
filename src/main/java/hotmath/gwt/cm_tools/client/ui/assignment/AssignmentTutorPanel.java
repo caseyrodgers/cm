@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -10,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
@@ -18,6 +18,7 @@ import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -41,8 +42,13 @@ public class AssignmentTutorPanel extends Composite {
 
     interface AssignmentTutorPanelCallback {
         void tutorWidgetValueUpdated(String value, boolean correct);
+
+        void whiteboardSubmitted();
     }
     public AssignmentTutorPanel(final boolean isEditable, AssignmentTutorPanelCallback callBack) {
+        
+        setupJsni();
+        
         _callBack = callBack;
         __lastInstance = this;
         _isEditable = isEditable;
@@ -148,6 +154,10 @@ public class AssignmentTutorPanel extends Composite {
                 _tutorPanel.setTutorWidgetValue(problem.getLastUserWidgetValue());
             }
             
+            if(problem.getProblemType() == ProblemType.WHITEBOARD) {
+                addWhiteboardSubmitButton();
+            }
+            
             
             _tutorPanel.setVisible(true);
 
@@ -158,6 +168,26 @@ public class AssignmentTutorPanel extends Composite {
         }
 
     }
+    
+    private void gwt_submitWhiteboardAnswer() {
+        _callBack.whiteboardSubmitted();
+    }
+
+    native private void setupJsni() /*-{
+        var that = this;
+        $wnd.gwt_submitWhiteboardAnswer = function() {
+            that.@hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel::gwt_submitWhiteboardAnswer()();
+        }
+    }-*/;
+
+
+    private native void addWhiteboardSubmitButton() /*-{
+        var widgetHolder = $doc.getElementById("hm_flash_widget");
+        if(widgetHolder) {
+            var ih = widgetHolder.innerHTML;
+            widgetHolder.innerHTML = ih + "<p><input type='button' onclick='gwt_submitWhiteboardAnswer()' class='sexybutton sexysimple sexylarge sexyred' value='Submit Whiteboard Answer'/></p>";
+        }
+    }-*/;
 
     /** Save user's input widget value to server
      * 

@@ -20,7 +20,7 @@ public class Assignment_Test extends TestCase {
 
     public void testCreate() throws Exception {
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-        pids.add(new ProblemDto(0,"Lesson", "Label", "Pid", null, 0));
+        pids.add(new ProblemDto(0,0,"Lesson", "Label", "Pid", null, 0));
         
         List<Integer> uids = new ArrayList<Integer>();
         uids.add(new Integer(1));

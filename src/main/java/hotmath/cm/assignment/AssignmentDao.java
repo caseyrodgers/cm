@@ -134,7 +134,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          */
         if (ass.getPids() != null && ass.getPids().size() > 0) {
-            String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson)values(?,?,?,?)";
+            String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, ordinal_number)values(?,?,?,?,?)";
+            final int counter[] = new int[1];
             getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
 
                 @Override
@@ -155,6 +156,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(2, fullPid);
                     ps.setString(3, p.getLabel());
                     ps.setString(4, p.getLesson());
+                    ps.setInt(5, ++counter[0]);
                 }
 
                 @Override
@@ -202,7 +204,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String pid = rs.getString("pid");
-                return new ProblemDto(0, rs.getString("lesson"), rs.getString("label"), pid, null, 0);
+                return new ProblemDto(rs.getInt("ordinal_number"), 0, rs.getString("lesson"), rs.getString("label"), pid, null, 0);
             }
         });
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
@@ -298,10 +300,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
         try {
             List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment_pid");
+            int counter=0;
             for (RppWidget w : rpps) {
                 for (RppWidget ew : AssessmentPrescription.expandProblemSetPids(w)) {
                     String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                    problemsAll.add(new ProblemDto(0, lessonName, defaultLabel, ew.getFile(), null, 0));
+                    problemsAll.add(new ProblemDto(0, 0, lessonName, defaultLabel, ew.getFile(), null, 0));
                 }
             }
         } catch (Exception e) {
@@ -315,7 +318,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
 
-                return new ProblemDto(0, rs.getString("lesson"), defaultLabel, rs.getString("pid"), null, 0);
+                return new ProblemDto(0,0, rs.getString("lesson"), defaultLabel, rs.getString("pid"), null, 0);
             }
         });
 
@@ -356,7 +359,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public List<Assignment> getAssignments(int aid2, int groupId) throws PropertyLoadFileException {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
-
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { groupId }, new RowMapper<Assignment>() {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -432,8 +434,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                             nameMap.put(uid, rs.getString("user_name"));
                         }
 
-                        ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"), null,
-                                0);
+                        ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"), null,0);
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
@@ -484,8 +485,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
 
+        int counter=0;
         for (StudentProblemDto probDto : problemStatuses) {
 
+            probDto.setProblemNumberOrdinal(++counter);
+            
             if (probDto.getUid() != uid) {
                 if (lessonStatus != null) {
                     lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
@@ -620,10 +624,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     private String getLessonStatus(int count, int completed, int submitted, int viewed) {
         String ret;
+        
+        completed += submitted;
         if (submitted != 0) {
-            ret = String.format("%d of %d completed, %d pending", completed, count, submitted);
+            ret = String.format("%d of %d submitted, %d ungraded", completed, count, submitted);
         } else {
-            ret = String.format("%d of %d completed", completed, count);
+            ret = String.format("%d of %d submitted", completed, count);
         }
 
         return ret;
@@ -661,7 +667,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 StudentProblemDto prob = new StudentProblemDto();
                 Integer uid = rs.getInt("uid");
                 prob.setUid(uid);
-                ProblemDto probDto = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"), null, rs
+                ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"), null, rs
                         .getInt("assign_key"));
                 prob.setProblem(probDto);
                 prob.setStatus(rs.getString("status"));
@@ -899,14 +905,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     }
 
-    public List<Assignment> getAssignmentsForUser(int uid) throws Exception {
+    public List<Assignment> getAssignmentsForUser(final int uid) throws Exception {
 
         /**
          * Sort so active/not-expired assignments are on top
          * 
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENTS");
-        List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Assignment>() {
+        List<Assignment> assignments = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Assignment>() {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -914,13 +920,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 String comments = rs.getString("comments");
                 String assignmentName = _createAssignmentName(rs.getDate("due_date"), comments);
                 Date dueDate = rs.getDate("due_date");
-
-                Assignment ass = new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
-                        .getString("comments"), dueDate, null, null, rs.getString("status"),rs.getInt("close_past_due")!=0);
+                Assignment ass = new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs.getString("comments"), dueDate, null, null, rs.getString("status"),rs.getInt("close_past_due")!=0);
                 return ass;
             }
         });
-        return problems;
+        
+        for(Assignment ass: assignments) {
+            StudentAssignment stuAss = getStudentAssignment(uid,  ass.getAssignKey());
+            if(stuAss.isComplete()) {
+                ass.setStatus(ass.getStatus() + " - Submitted");
+            }
+        }
+        
+        
+        return assignments;
     }
 
     private String _createAssignmentName(Date dueDate, String comments) {
@@ -943,17 +956,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         studentAssignment.setAssignment(assignment);
 
         /**
-         * Read list of assignment problem statues for this user
+         * Read list of assignment problems that have statues for this user
          * 
          * 
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT");
 
+        final int count[] = new int[1];
+
         final List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, assignKey, uid, assignKey, uid },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        ProblemDto dummy = new ProblemDto(0, null, null, rs.getString("pid"), null, 0);
+                        ProblemDto dummy = new ProblemDto(0, 0, null, null, rs.getString("pid"), null, 0);
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
                         boolean isClosed = assignment.getStatus().equals("Closed");
@@ -1011,6 +1026,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 StudentProblemDto spd = new StudentProblemDto();
                 spd.setProblem(p);
                 spd.setUid(uid);
+                
                 spd.setStatus("Not Viewed");
                 allStatus.add(spd);
             }
@@ -1052,7 +1068,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         if (!nameMap.containsKey(uid)) {
                             nameMap.put(uid, rs.getString("user_name"));
                         }
-                        ProblemDto dummy = new ProblemDto(rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"), null, 0);
+                        ProblemDto dummy = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs.getString("pid"), null, 0);
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
@@ -1068,8 +1084,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * create student assignments for all users
          */
         int uid = 0;
+        int counter=0;
         CmList<StudentProblemDto> probList = null;
         for (StudentProblemDto probDto : problemStatuses) {
+            probDto.setProblemNumberOrdinal(++counter);
             if (probDto.getUid() != uid) {
                 probList = new CmArrayList<StudentProblemDto>();
                 uid = probDto.getUid();
@@ -1348,7 +1366,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      */
     static public ProblemType determineProblemType(String html) {
         try {
-            if (html.indexOf("hm_flash_widget") > -1 || html.indexOf("hotmath:flash") > -1) {
+            if ((html.indexOf("hm_flash_widget") > -1 || html.indexOf("hotmath:flash") > -1) && html.indexOf("not_used") == -1) {
                 return ProblemType.INPUT_WIDGET;
             } else if (html.indexOf("hm_question_def") > -1) {
                 return ProblemType.MULTI_CHOICE;

@@ -141,6 +141,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                 /** Update grade textfield with current grade */
                 _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
             }
+
+            @Override
+            public void whiteboardUpdated() {
+                _problemListPanel.whiteboardSubmitted();
+            }
         });
         _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
         _tutorArea.forceLayout();

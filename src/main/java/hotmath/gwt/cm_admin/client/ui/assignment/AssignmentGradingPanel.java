@@ -51,6 +51,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     GridEditing<StudentProblemDto> editing;
     List<ColumnConfig<StudentProblemDto, ?>> colConfList;
     ColumnModel<StudentProblemDto> colMdl;
+    ColumnConfig<StudentProblemDto, Integer> problemNumberCol;
     ColumnConfig<StudentProblemDto, String> problemCol;
     ColumnConfig<StudentProblemDto, String> statusCol;
     ListStore<StudentProblemDto> _store;
@@ -101,6 +102,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         super.setHeadingText("Problems for Student/Assignment");
         super.getHeader().setHeight("30px");
 
+        problemNumberCol = new ColumnConfig<StudentProblemDto, Integer>(spProps.problemNumberOrdinal(), 20, "");
         problemCol = new ColumnConfig<StudentProblemDto, String>(spProps.pidLabel(), 120, "Problem");
 
         problemCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
@@ -122,6 +124,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 //        gradedCol.setRowHeader(true);
 
         colConfList = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
+        colConfList.add(problemNumberCol);
         colConfList.add(problemCol);
         colConfList.add(statusCol);
         //colConfList.add(gradedCol);

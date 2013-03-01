@@ -55,6 +55,9 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     static AssignmentProblemListPanel __lastInstance;
 
+    AssignmentProblemListCallback _problemListCallback;
+    Grid<StudentProblemDto> _studentProblemGrid;
+
     public interface ProblemListPanelProperties extends PropertyAccess<String> {
         ModelKeyProvider<StudentProblemDto> pid();
 
@@ -63,10 +66,9 @@ public class AssignmentProblemListPanel extends ContentPanel {
         ValueProvider<StudentProblemDto, String> status();
 
         ValueProvider<StudentProblemDto, String> statusForStudent();
-    }
 
-    AssignmentProblemListCallback _problemListCallback;
-    Grid<StudentProblemDto> _studentProblemGrid;
+        ValueProvider<StudentProblemDto, Integer> problemNumberOrdinal();
+    }
 
     public AssignmentProblemListPanel(AssignmentProblemListCallback callback) {
         this._problemListCallback = callback;
@@ -76,8 +78,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
 
-        List<ColumnConfig<StudentProblemDto, ?>> l = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
+        List<ColumnConfig<StudentProblemDto, ?>> columns = new ArrayList<ColumnConfig<StudentProblemDto, ?>>();
 
+        ColumnConfig<StudentProblemDto, Integer> problemNumberCol = new ColumnConfig<StudentProblemDto, Integer>(props.problemNumberOrdinal(), 25, "");
+
+        columns.add(problemNumberCol);
         ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(), 50, "Problem");
         labelCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
             @Override
@@ -85,12 +90,12 @@ public class AssignmentProblemListPanel extends ContentPanel {
                 return _studentProblemGrid.getStore().get(which).getProblem();
             }
         }));
-        l.add(labelCol);
+        columns.add(labelCol);
 
         ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.statusForStudent(), 100, "Status");
-        l.add(labelStatus);
+        columns.add(labelStatus);
 
-        ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(l);
+        ColumnModel<StudentProblemDto> cm = new ColumnModel<StudentProblemDto>(columns);
 
         ListStore<StudentProblemDto> store = new ListStore<StudentProblemDto>(props.pid());
 
@@ -108,15 +113,14 @@ public class AssignmentProblemListPanel extends ContentPanel {
             }
         }, DoubleClickEvent.getType());
 
-        _studentProblemGrid.getSelectionModel().addSelectionChangedHandler(
-                new SelectionChangedHandler<StudentProblemDto>() {
-                    @Override
-                    public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
-                        if (event.getSelection().size() > 0) {
-                            loadProblemStatement(event.getSelection().get(0));
-                        }
-                    }
-                });
+        _studentProblemGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
+            @Override
+            public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
+                if (event.getSelection().size() > 0) {
+                    loadProblemStatement(event.getSelection().get(0));
+                }
+            }
+        });
 
         _studentProblemGrid.getView().setViewConfig(new GridViewConfig<StudentProblemDto>() {
 
@@ -131,8 +135,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
             }
 
             @Override
-            public String getColStyle(StudentProblemDto model,
-                    ValueProvider<? super StudentProblemDto, ?> valueProvider, int rowIndex, int colIndex) {
+            public String getColStyle(StudentProblemDto model, ValueProvider<? super StudentProblemDto, ?> valueProvider, int rowIndex, int colIndex) {
                 return null;
             }
         });
@@ -166,9 +169,12 @@ public class AssignmentProblemListPanel extends ContentPanel {
         CmMessageBox.showAlert("Assignment Complete", "There are no unanswered problems.");
     }
 
-    private void loadProblemStatement(StudentProblemDto studentProb) {
+    StudentProblemDto _currentProblem;
 
-        _problemListCallback.problemSelected(studentProb.getPidLabel(), studentProb.getProblem());
+    private void loadProblemStatement(StudentProblemDto studentProb) {
+        _currentProblem = studentProb;
+        String title = studentProb.getProblem().getOrdinalNumber() + ". " + StudentProblemDto.getStudentLabel(studentProb.getPidLabel());
+        _problemListCallback.problemSelected(title, studentProb.getProblem());
 
         if (studentProb.getStatus().equals("Not Viewed")) {
             studentProb.setStatus("Viewed");
@@ -183,38 +189,12 @@ public class AssignmentProblemListPanel extends ContentPanel {
      * 
      * This only applies if the question does not have an input widget.
      */
-    private void whiteboardUpdated() {
-
+    public void whiteboardSubmitted() {
         StudentProblemDto prob = _studentProblemGrid.getSelectionModel().getSelectedItem();
         if (prob != null) {
-
-            switch (prob.getProblem().getProblemType()) {
-            case WHITEBOARD:
-                if (prob.getStatus().equalsIgnoreCase("Viewed")) {
-
-                    // update the problem type to current type
-                    prob.getProblem().setProblemType(_assignmentProblem.getProblemType());
-                    prob.setStatus("Submitted");
-
-                    _studentProblemGrid.getStore().update(prob);
-
-                    saveAssignmentProblemStatusToServer(prob);
-                    
-                    break;
-                }
-
-                // whiteboard entry does not change status
-                break;
-                
-            case INPUT_WIDGET:
-            case MULTI_CHOICE:
-                break;
-
-            default:
-                CmLogger.debug("AssignmentProblemListPanel: unknown problem type: "
-                        + _assignmentProblem.getProblemType());
-            }
-
+            prob.setStatus("Submitted");
+            _studentProblemGrid.getStore().update(prob);
+            saveAssignmentProblemStatusToServer(prob);
         }
     }
 
@@ -239,8 +219,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
             @Override
             public void attempt() {
                 String status = prob.getStatus();
-                SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(UserInfoBase
-                        .getInstance().getUid(), _assignment.getAssignment().getAssignKey(), prob.getPid(), status);
+                SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(UserInfoBase.getInstance().getUid(), _assignment
+                        .getAssignment().getAssignKey(), prob.getPid(), status);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -295,18 +275,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     public interface AssignmentProblemListCallback {
         void problemSelected(String title, ProblemDto problem);
+
         boolean showStatus();
     }
 
     static {
-        CmRpc.EVENT_BUS.addHandler(ShowWorkModifiedEvent.TYPE, new ShowWorkModifiedHandler() {
-            @Override
-            public void whiteboardUpdated(ShowWorkPanel showWorkPanel) {
-                Log.debug("Whiteboard updated, update the associated problem");
-                __lastInstance.whiteboardUpdated();
-            }
-        });
-
         CmRpc.EVENT_BUS.addHandler(AssignmentProblemLoadedEvent.TYPE, new AssignmentProblemLoadedHandler() {
             @Override
             public void assignmentProblemLoaded(AssignmentProblem assProb) {
@@ -325,5 +298,4 @@ public class AssignmentProblemListPanel extends ContentPanel {
         // });
 
     }
-
 }

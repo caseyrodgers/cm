@@ -6,7 +6,7 @@ public class HighlightsImplGreatestEffort extends HighlightsImplBase {
 
     HighlightsImplGreatestEffortDetailsPanel panel = new HighlightsImplGreatestEffortDetailsPanel(this);
 
-	static String title = "Greatest Effort";
+    static String title = "Greatest Effort";
 
     public HighlightsImplGreatestEffort() {
         super(title, "Displays students in order of most lessons viewed (excluding those who have viewed zero lessons).");
