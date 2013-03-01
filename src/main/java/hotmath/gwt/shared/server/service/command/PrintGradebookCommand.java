@@ -18,7 +18,7 @@ public class PrintGradebookCommand implements ActionHandler<PrintGradebookAction
 
     @Override
     public CmWebResource execute(Connection conn, PrintGradebookAction action) throws Exception {
-        ByteArrayOutputStream baos = new GroupGradebookReport("Grade Book Report").makePdf(conn, action.getAid(), action.getGroupId());
+        ByteArrayOutputStream baos = new GroupGradebookReport("Grade Book Report").makePdf(action.getAid(), action.getGroupId());
         
         // write to temporary file to be cleaned up later
         String outputBase = CmWebResourceManager.getInstance().getFileBase();
