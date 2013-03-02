@@ -76,14 +76,17 @@ public class AssignmentManagerDialog2  {
         _groupCombo = createGroupNameCombo();
         
         header.add(new FieldLabel(_groupCombo, "Group"));
+
         HorizontalLayoutData hd = new HorizontalLayoutData();
-        hd.setMargins(new Margins(0,0,0,20));
+        hd.setMargins(new Margins(0,10,0,20));
+        header.add(createGradeBookButton(), hd);
+
         header.add(new TextButton("Assignments Guide", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 AssignmentGuideWindow.showWindow();
             }
-        }),hd);
+        }), hd);
         
         _mainContainer.setNorthWidget(header, northData);
         
@@ -99,7 +102,7 @@ public class AssignmentManagerDialog2  {
          */
         _mainContainer.setCenterWidget(_assignmentsPanel);
         
-        window.addButton(createGradeBookButton());
+        //window.addButton(createGradeBookButton());
         window.addCloseButton();
         
         window.setWidget(_mainContainer);
