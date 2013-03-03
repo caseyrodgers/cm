@@ -5,12 +5,16 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,6 +53,7 @@ public class GroupGradebookReport {
 	private static final Color BLACK = new Color(0, 0, 0);
 	private static final Color BLUE = new Color(0, 0, 150);
 	private static final Color RED   = new Color(150, 0, 0);
+	private static final String NEW_LINE = System.getProperty("line.separator");
 	
 	public GroupGradebookReport(String title) {
 		this.title = title;
@@ -61,9 +66,34 @@ public class GroupGradebookReport {
 	        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
             if (info == null) return null;
 
+            CmAdminDao caDao = CmAdminDao.getInstance();
+            List<GroupInfoModel> groupList = caDao.getActiveGroups(adminId);
+            String groupName = null;
+            for (GroupInfoModel group : groupList) {
+            	if (group.getId() == groupId) {
+            		groupName = group.getGroupName();
+            		break;
+            	}
+            }
+
             AssignmentDao asgDao = AssignmentDao.getInstance();
             
             List<Assignment> assignmentList = asgDao.getAssignments(adminId, groupId);
+
+            // sort Assignments by ascending due date
+			Collections.sort(assignmentList, new Comparator<Assignment>() {
+				@Override
+				public int compare(Assignment asg1, Assignment asg2) {
+					Date date1 = asg1.getDueDate();
+					Date date2 = asg2.getDueDate();
+					if (date1 == null && date2 != null) return -1;
+					if (date1 != null && date2 == null) return 1;
+					if (date1 == date2) {
+						return asg1.getAssignKey() - asg2.getAssignKey();
+					}
+					return date1.compareTo(date2);
+				}
+			});
 
             //TODO: apply assignment count limit of?
 
@@ -99,7 +129,7 @@ public class GroupGradebookReport {
 			PdfWriter writer = PdfWriter.getInstance(document, baos);
 
 			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
-			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
+			Phrase group    = (groupName != null) ? buildLabelContent("Group: ", groupName) : null;
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			Phrase date     = buildLabelContent("Date: ", printDate);
 		    
@@ -112,7 +142,7 @@ public class GroupGradebookReport {
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
 			pdfTbl.addCell(school);
-			pdfTbl.addCell(admin);
+			if (group != null) pdfTbl.addCell(group);
 			pdfTbl.addCell(date);
 			
 			pdfTbl.addCell(new Phrase(" "));
@@ -130,7 +160,11 @@ public class GroupGradebookReport {
 			document.add(Chunk.NEWLINE);
 			document.add(Chunk.NEWLINE);			
 
-			Table tbl = new Table(assignmentList.size() + 1);
+			int assignmentCount = assignmentList.size();
+			int rowsPerStudent  = assignmentCount/10 + ((assignmentCount%10 != 0) ? 1 : 0);
+			int numberOfAssignmentColumns = (assignmentCount <= 10) ? assignmentCount + 1 : 10;
+			int numberOfColumns = numberOfAssignmentColumns + 1;
+			Table tbl = new Table(numberOfColumns);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
@@ -138,31 +172,89 @@ public class GroupGradebookReport {
 			addHeader("Student", "20%", tbl);
 			
 			// use due date for assignment column headers
-			// TODO: limit to ?
+			int rowNum = 0;
+			int prevRowNum = 0;
+			int asgNum = 0;
+			String[] asgnCols = new String[numberOfColumns-1];
 			for (Assignment a : assignmentList) {
-				addHeader(asgnDateFmt.format(a.getDueDate()),"10%",tbl);
+				rowNum = asgNum / 10;
+				int colNum = asgNum % 10;
+				if (rowNum == 0) {
+					asgnCols[colNum] = asgnDateFmt.format(a.getDueDate());
+				}
+				else {
+					asgnCols[colNum] = asgnCols[colNum] + NEW_LINE + asgnDateFmt.format(a.getDueDate());
+				}
+				this.LOGGER.debug(String.format("rowNum: %d, colNum: %d, asgnCols[%d]: %s",
+						rowNum, colNum, colNum, asgnCols[colNum]));
+				asgNum++;
+			}
+			for (int i=0; i<numberOfColumns-1; i++) {
+				addHeader(asgnCols[i],"8%",tbl);
 			}
 
 			tbl.endHeaders();
 
-			int i = 0;
+			List<StudentNameUid> stuList = new ArrayList<StudentNameUid>();
 			for (Integer stuId : stuNameMap.keySet()) {
-				addCell(stuNameMap.get(stuId), tbl, ++i);
+				StudentNameUid snu = new StudentNameUid(stuId, stuNameMap.get(stuId));
+				stuList.add(snu);
+			}
+
+            // sort Assignments by ascending due date
+			Collections.sort(stuList, new Comparator<StudentNameUid>() {
+				@Override
+				public int compare(StudentNameUid stu1, StudentNameUid stu2) {
+					String name1 = stu1.name;
+					String name2 = stu2.name;
+					if (name1.equals(name2)) {
+						return stu1.uid - stu2.uid;
+					}
+					return name1.compareTo(name2);
+				}
+			});
+
+			
+			int i = 0;
+			for (StudentNameUid stu : stuList) {
+				int stuId = stu.uid;
+				LOGGER.debug("stuId: " + stuId);
+				boolean isGray = (i%2 < 1);
+				i++;
+
+				addCell(stuNameMap.get(stuId), tbl, isGray);
+				LOGGER.debug("stuName: " + stuNameMap.get(stuId));
+				
 				Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
+				asgNum = 0;
+				int colNum = 0;
 				for (Assignment a : assignmentList) {
+					rowNum = asgNum / numberOfAssignmentColumns;
+					colNum = asgNum % numberOfAssignmentColumns;
+					asgNum++;
+					this.LOGGER.debug(String.format("rowNum: %d, colNum: %d, asgnCols[%d]: %s",
+							rowNum, colNum, colNum, asgnCols[colNum]));
+					if (rowNum > 0 && colNum == 0) {
+						// add empty cell for name column
+						addCell("          ", tbl, isGray);
+					}
 					StudentAssignment sa = asgnMap.get(a.getAssignKey());
 					if (sa == null || sa.getHomeworkStatus().equalsIgnoreCase("not started")) {
-						addCell("N/A", tbl, i);
+						addCell("N/A", tbl, isGray);
 					}
 					else if (sa.getHomeworkStatus().equalsIgnoreCase("in progress")) {
-						addCell(sa.getHomeworkGrade(), tbl, i, RED);
+						addCell(sa.getHomeworkGrade(), tbl, isGray, RED);
 					}
 					else if (sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
-						addCell(sa.getHomeworkGrade(), tbl, i, BLUE);						
+						addCell(sa.getHomeworkGrade(), tbl, isGray, BLUE);						
 					}
 					else {
-						addCell(sa.getHomeworkGrade(), tbl, i, BLACK);						
+						addCell(sa.getHomeworkGrade(), tbl, isGray, BLACK);						
 					}
+				}
+				// add empty assignment grades
+				for (int idx=++colNum; idx<numberOfAssignmentColumns; idx++) {
+					addCell("    ", tbl, isGray);						
 				}
 
 			}
@@ -200,12 +292,12 @@ public class GroupGradebookReport {
 		tbl.addCell(cell);
 	}
 	
-	private void addCell(String content, Table tbl, int rowNum) throws Exception {
+	private void addCell(String content, Table tbl, boolean isGray) throws Exception {
 		if (content == null) content = "";
-		addCell(content, tbl, rowNum, BLACK);
+		addCell(content, tbl, isGray, BLACK);
 	}
 	
-	private void addCell(String content, Table tbl, int rowNum, Color color) throws Exception {
+	private void addCell(String content, Table tbl, boolean isGray, Color color) throws Exception {
 		if (content == null) content = "";
 		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, color));
 		c.setTextRise(3.0f);
@@ -213,7 +305,7 @@ public class GroupGradebookReport {
 		cell.setHeader(false);
 		cell.setColspan(1);
 		cell.setBorder(0);
-		if (rowNum%2 < 1) cell.setGrayFill(0.9f);
+		if (isGray) cell.setGrayFill(0.9f);
 		tbl.addCell(cell);
 	}
 	
@@ -274,5 +366,15 @@ public class GroupGradebookReport {
 	public void setFilterMap(Map<FilterType, String> filterMap) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	class StudentNameUid {
+	    int uid;
+	    String name;
+	    
+	    StudentNameUid(int uid, String name) {
+	    	this.uid = uid;
+	    	this.name = name;
+	    }
 	}
 }
