@@ -1378,25 +1378,41 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param defaultLabel
      * @return
      */
-    static public ProblemType determineProblemType(String xml) {
+    static public ProblemType determineProblemType(String htmlOrXml) {
         try {
-            Document doc = parseSolutionXml(xml);
-            Element docEle = doc.getDocumentElement();
-            NodeList elements = docEle.getElementsByTagName("statement");
-            if (elements.getLength() > 0) {
-                String psHtml = elements.item(0).getTextContent();
-
-                if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
-                    return ProblemType.INPUT_WIDGET;
-                } else if (psHtml.indexOf("hm_question_def") > -1) {
-                    return ProblemType.MULTI_CHOICE;
-                } else {
-                    return ProblemType.WHITEBOARD;
+            
+            /** might be XML (hmsl ) or HTML (rendered)
+             *  
+             */
+            String psHtml="";
+            if(htmlOrXml.indexOf("<hmsl") > -1) {
+                /** is XmL */
+                Document doc = parseSolutionXml(htmlOrXml);
+                Element docEle = doc.getDocumentElement();
+                NodeList elements = docEle.getElementsByTagName("statement");
+                if (elements.getLength() > 0) {
+                 psHtml = elements.item(0).getTextContent();
+                }
+            }
+            else {
+                /** is HTML */
+                /** extract just the problem statement */
+                int su = htmlOrXml.indexOf("stepunit");  // first step
+                if(su>=1) {
+                    psHtml = htmlOrXml.substring(0, su);
                 }
             }
 
+            if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
+                return ProblemType.INPUT_WIDGET;
+            } else if (psHtml.indexOf("hm_question_def") > -1) {
+                return ProblemType.MULTI_CHOICE;
+            } else {
+                return ProblemType.WHITEBOARD;
+            }
+
         } catch (Exception e) {
-            __logger.error("Error determining problem type: " + xml, e);
+            __logger.error("Error determining problem type: " + htmlOrXml, e);
         }
 
         return ProblemType.UNKNOWN;
