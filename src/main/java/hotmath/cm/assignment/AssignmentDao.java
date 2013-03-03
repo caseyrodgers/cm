@@ -975,18 +975,27 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT");
 
-        final int count[] = new int[1];
-
         final List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, assignKey, uid, assignKey, uid },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        ProblemDto dummy = new ProblemDto(0, 0, null, null, rs.getString("pid"), null, 0);
+                        ProblemDto prob=null;
+                        String pid=rs.getString("pid");
+                        for(ProblemDto p: assignment.getPids()) {
+                            if(p.getPid().equals(pid)) {
+                                prob = p;
+                                break;
+                            }
+                        }
+                        if(prob == null) {
+                            __logger.warn("Student Problem not found in assingment problems");
+                            prob = new ProblemDto(0, 0, null, null, pid, null, 0);
+                        }
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
                         boolean isClosed = assignment.getStatus().equals("Closed");
-                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed);
-                        return prob;
+                        StudentProblemDto stuProb = new StudentProblemDto(uid, prob, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed);
+                        return stuProb;
                     }
                 });
 

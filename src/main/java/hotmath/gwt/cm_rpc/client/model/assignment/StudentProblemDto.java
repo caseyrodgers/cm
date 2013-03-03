@@ -143,7 +143,7 @@ public class StudentProblemDto implements Response {
     }
 
     public int getProblemNumberOrdinal() {
-        return problemNumberOrdinal;
+        return problem.getOrdinalNumber();
     }
 
     public void setProblemNumberOrdinal(int problemNumberOrdinal) {
