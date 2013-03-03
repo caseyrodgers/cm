@@ -58,12 +58,7 @@ public class AssignmentProblemListView extends ContentPanel {
         ordinalNumberValudProvider = new MyOrdinalProvider();
         ColumnConfig<ProblemDto, Integer> problemNumber = new ColumnConfig<ProblemDto, Integer>(ordinalNumberValudProvider, 25, "");
         ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(props.labelWithType(), 50, "Problems Assigned");
-        nameCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
-            @Override
-            public ProblemDto getProblem(int which) {
-                return problemListGrid.getStore().get(which);
-            }
-        }));
+        
         nameCol.setSortable(false);
      
         List<ColumnConfig<ProblemDto, ?>> cols = new ArrayList<ColumnConfig<ProblemDto, ?>>();
@@ -312,7 +307,6 @@ public class AssignmentProblemListView extends ContentPanel {
         ModelKeyProvider<ProblemDto> id();
         ValueProvider<ProblemDto, String> labelWithType();
         ValueProvider<ProblemDto, Integer> ordinalNumber();
-        ValueProvider<ProblemDto, String> label();
     }
 
     
