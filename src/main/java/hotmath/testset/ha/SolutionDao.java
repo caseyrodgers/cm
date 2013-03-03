@@ -287,7 +287,7 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    /** Save all global solution contexts for a give pid.
+    /** Save all global solution contexts for a given pid.
      * 
      * @param pid
      * @param contexts
