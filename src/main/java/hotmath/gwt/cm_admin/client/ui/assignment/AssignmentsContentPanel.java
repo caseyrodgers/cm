@@ -459,6 +459,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             }
 
             public void oncapture(RpcData data) {
+                CmBusyManager.setBusy(false);
                 Log.debug("Assignment closed successfully: " + data);
                 ass.setStatus("Closed");
                 _grid.getStore().update(ass);
