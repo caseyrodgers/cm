@@ -560,7 +560,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 
                 continue;
             }
-            if ("pending".equalsIgnoreCase(probStatus)) {
+            if ("submitted".equalsIgnoreCase(probStatus)) {
                 pending++;
                 totPending++;
             } else if ("viewed".equalsIgnoreCase(probStatus)) {
@@ -675,7 +675,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         // add .5 for each half correct answer
         float totCorrectF = (float)totCorrect + (totHalfCredit>0?totHalfCredit / 2:0);
         String grade = "-";
-        if ((totCorrect + totIncorrect + totHalfCredit) == totCount) {
+        if ((totCorrect + totIncorrect + totHalfCredit) > 0) {
             int percent = Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
             grade = String.format("%d%s", percent, "%");
         }
