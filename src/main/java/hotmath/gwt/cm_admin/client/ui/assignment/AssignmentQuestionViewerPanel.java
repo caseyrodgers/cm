@@ -78,7 +78,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         flowPanel.add(_tutorPanel);
         flowPanel.setScrollMode(ScrollMode.AUTO);
         
-        _tabPanel.add(flowPanel,new TabItemConfig("Question"));
+        _tabPanel.add(flowPanel,new TabItemConfig("Problem"));
 
         _showWorkWrapper = new SimpleContainer();
         _showWorkWrapper.setWidget(new Label("Show Work loading ..."));

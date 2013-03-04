@@ -176,6 +176,11 @@ public class AddProblemDialog extends GWindow {
         TextButton btn = new TextButton("Add Checked Problems", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                
+                if(getActiveTree().getCheckedSelection().size() == 0) {
+                    CmMessageBox.showAlert("There are no checked problems.");
+                    return;
+                }
                 makeSureLessonProblemsReadMaybeAsync(true, true,getActiveTree(), _callbackOnComplete);
                 hide();
             }

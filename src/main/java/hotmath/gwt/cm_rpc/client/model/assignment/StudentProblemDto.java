@@ -91,7 +91,7 @@ public class StudentProblemDto implements Response {
            // viewed, not viewed
            return "Not Answered";
        }
-       else if(sl.equals("correct") || sl.equals("incorrect")) {
+       else if(sl.equals("correct") || sl.equals("incorrect") || sl.equals("half credit")) {
            return "Submitted";
        }
        else {
@@ -107,8 +107,12 @@ public class StudentProblemDto implements Response {
 		this.isGraded = isGraded;
 	}
 
+	/** return student ready label
+	 * 
+	 * @return
+	 */
 	public String getPidLabel() {
-        return getProblem().getLabel();
+        return getStudentLabel(getProblem().getLabel());
     }
     
     public String getPid() {
@@ -154,6 +158,7 @@ public class StudentProblemDto implements Response {
         for(int i=fromLabel.length();i>0;i--) {
             if(fromLabel.charAt(i-1) == ':') {
                 fromLabel = fromLabel.substring(0, i-1);
+                break;
             }
         }
         return fromLabel;

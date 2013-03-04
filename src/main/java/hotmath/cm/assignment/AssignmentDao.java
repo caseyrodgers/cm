@@ -479,7 +479,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         /**
-         * add lesson status for each user/lesson add assignment status
+         * add lesson status for each user/lesson and add assignment status
          */
         uid = 0;
         String lessonName = "";
@@ -493,6 +493,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int totCount = 0;
         int totCorrect = 0;
         int totIncorrect = 0;
+        int totHalfCredit = 0;
         int totViewed = 0;
 
         CmList<StudentLessonDto> lessonList = null;
@@ -507,7 +508,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 if (lessonStatus != null) {
                     lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
                     stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+                    stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                 }
                 lessonName = "";
                 totCount = 0;
@@ -517,6 +518,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 totPending = 0;
                 totGraded = 0;
                 totViewed = 0;
+                totHalfCredit = 0;
                 uid = probDto.getUid();
                 lessonList = new CmArrayList<StudentLessonDto>();
                 stuAssignMap.get(uid).setLessonStatuses(lessonList);
@@ -544,14 +546,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 continue;
 
             // TODO: is "answered" an actual status?
-            if ("answered".equalsIgnoreCase(probStatus) || "correct".equalsIgnoreCase(probStatus) || "incorrect".equalsIgnoreCase(probStatus)) {
+            String psl = probStatus.toLowerCase();
+            if ("answered".equals(psl) || "correct".equals(psl) || "incorrect".equals(psl) || "half credit".equals(psl)) {
                 completed++;
                 totCompleted++;
                 totGraded += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
-                if (probStatus.toLowerCase().indexOf("orrect") > 0)
+                if (psl.indexOf("correct") > -1 || psl.indexOf("credit") > -1)
                     probDto.setIsGraded("Yes");
-                totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
-                totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
+                
+                totCorrect += ("correct".equals(psl)) ? 1 : 0;
+                totIncorrect += ("incorrect".equals(psl)) ? 1 : 0;
+                totHalfCredit += ("half credit".equals(psl)) ? 1 : 0;
+                
                 continue;
             }
             if ("pending".equalsIgnoreCase(probStatus)) {
@@ -568,7 +574,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         if (stuAssignMap.size() > 0) {
             stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+            stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
         }
 
         if (__logger.isDebugEnabled())
@@ -608,17 +614,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private void setStudentDetailStatus(StudentAssignment sa) {
-        int correct = 0, inCorrect = 0, complete = 0, submitted = 0, accepted = 0, viewed = 0;
+        int correct = 0, inCorrect = 0, halfCredit = 0, complete = 0, submitted = 0, viewed = 0;
         for (StudentProblemDto spd : sa.getAssigmentStatuses()) {
 
-            if (spd.isCorrect()) {
+            String s = spd.getStatus().toLowerCase();
+            if (s.equals("correct")) {
                 correct++;
-            } else {
+            }
+            else if(s.equals("incorrect")) {
                 inCorrect++;
             }
+            else if(s.equals("half credit")) {
+                halfCredit++;
+            }
 
-            String s = spd.getStatus().toLowerCase();
-            if (s.equals("correct") || s.equals("incorrect")) {
+            if (s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
                 complete++;
             }
 
@@ -631,7 +641,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(getHomeworkGrade(sa.getAssigmentStatuses().size(), correct, inCorrect));
+        sa.setHomeworkGrade(getHomeworkGrade(sa.getAssigmentStatuses().size(), correct, inCorrect,halfCredit));
         sa.setStudentDetailStatus(getLessonStatus(sa.getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
@@ -660,10 +670,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return status;
     }
 
-    private String getHomeworkGrade(int totCount, double totCorrect, int totIncorrect) {
+    private String getHomeworkGrade(int totCount, double totCorrect, int totIncorrect, int totHalfCredit) {
+        
+        // add .5 for each half correct answer
+        float totCorrectF = (float)totCorrect + (totHalfCredit>0?totHalfCredit / 2:0);
         String grade = "-";
-        if ((totCorrect + totIncorrect) == totCount) {
-            int percent = Math.round(((float) totCorrect / (float) totCount) * 100.0f);
+        if ((totCorrect + totIncorrect + totHalfCredit) == totCount) {
+            int percent = Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
             grade = String.format("%d%s", percent, "%");
         }
         return grade;
@@ -723,6 +736,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int totPending = 0;
         int totCount = 0;
         int totCorrect = 0;
+        int totHalfCredit = 0;
         int totIncorrect = 0;
         int totViewed = 0;
         lastAssignKey = 0;
@@ -740,7 +754,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     sa.setProblemPendingCount(totPending);
                     sa.setProblemCompletedCount(totCompleted);
                     sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+                    sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                 }
                 lessonName = "";
                 totCount = 0;
@@ -750,6 +764,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 totPending = 0;
                 totGraded = 0;
                 totViewed = 0;
+                totHalfCredit = 0;
                 lastAssignKey = probDto.getProblem().getAssignKey();
                 lessonList = new CmArrayList<StudentLessonDto>();
                 stuAssignMap.get(lastAssignKey).setLessonStatuses(lessonList);
@@ -772,19 +787,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
             count++;
             totCount++;
-            String probStatus = probDto.getStatus().trim();
-            if ("not viewed".equalsIgnoreCase(probStatus))
+            String probStatus = probDto.getStatus().trim().toLowerCase();
+            if ("not viewed".equals(probStatus))
                 continue;
-            if ("answered".equalsIgnoreCase(probStatus) || "correct".equalsIgnoreCase(probStatus) || "incorrect".equalsIgnoreCase(probStatus)) {
+            if ("answered".equals(probStatus) || "correct".equals(probStatus) || "incorrect".equals(probStatus) || "half credit".equals(probStatus)) {
                 completed++;
                 totCompleted++;
                 totGraded += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
-                /*
-                 * if (probStatus.toLowerCase().indexOf("orrect") > 0)
-                 * probDto.setIsGraded("Yes");
-                 */
+                
                 totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
                 totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
+                totHalfCredit += ("half credit".equalsIgnoreCase(probStatus)) ? 1 : 0;
                 continue;
             }
             if ("pending".equalsIgnoreCase(probStatus)) {
@@ -805,7 +818,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             sa.setProblemPendingCount(totPending);
             sa.setProblemCompletedCount(totCompleted);
             sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect));
+            sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
         }
 
         if (__logger.isDebugEnabled())

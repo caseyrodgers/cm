@@ -99,7 +99,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         _updateGradeCallback = updateGradeCallback;
         _correctIncorrectMap = initCorrectIncorrectMap(studentAssignment);
         
-        super.setHeadingText("Problems for Student/Assignment");
+        super.setHeadingText("Click any problem status to adjust grade");
         super.getHeader().setHeight("30px");
 
         problemNumberCol = new ColumnConfig<StudentProblemDto, Integer>(spProps.problemNumberOrdinal(), 20, "");
@@ -203,19 +203,38 @@ public class AssignmentGradingPanel extends ContentPanel {
 
 				String pid = _lastProblem.getPid();
 				if (pStatus.equals(ProblemStatus.CORRECT) || pStatus.equals(ProblemStatus.INCORRECT) || pStatus.equals(ProblemStatus.HALF_CREDIT)) {
-					_correctIncorrectMap.put(pid, (pStatus.equals(ProblemStatus.CORRECT)?1:0));
-					_lastProblem.setIsGraded(GradedStatus.YES.toString());
+				    _lastProblem.setIsGraded(GradedStatus.YES.toString());
+				    switch(pStatus) {
+				        case CORRECT:
+				            _correctIncorrectMap.put(pid, 100);
+				            break;
+				            
+				        case HALF_CREDIT:
+				            _correctIncorrectMap.put(pid, 50);
+				            break;
+				            
+				        case INCORRECT:
+				            _correctIncorrectMap.put(pid, 0);
+				            break;
+				    }
 				}
 				else {
 					_correctIncorrectMap.put(pid, null);
 					_lastProblem.setIsGraded(GradedStatus.NO.toString());
 				}
-				int numCorrect = 0;
+				float numCorrect = 0;
 				for (StudentProblemDto sbDto : _store.getAll()) {
-					Integer value = _correctIncorrectMap.get(sbDto.getPid());
-					numCorrect += (value != null && value.intValue() > 0) ? 1 : 0;
+				    if(_correctIncorrectMap.containsKey(sbDto.getPid())) {
+    					Integer value = _correctIncorrectMap.get(sbDto.getPid());
+    					if(value == 100) {
+    					    numCorrect += 1;
+    					}
+    					else if(value == 50) {
+    					    numCorrect += .5;
+    					}
+				    }
 				}
-				int percent = Math.round((float)numCorrect*100.0f/(float)_store.getAll().size());
+				int percent = Math.round(numCorrect*100.0f/(float)_store.getAll().size());
 				_updateGradeCallback.updateGrade(percent);
 	            _gradingGrid.getStore().update(_lastProblem);
 			}
@@ -288,8 +307,11 @@ public class AssignmentGradingPanel extends ContentPanel {
     	Map<String, Integer> map = new HashMap<String,Integer>();
 
     	for (StudentProblemDto dto : studentAssignment.getAssigmentStatuses()) {
-    		if (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.toString())) {
-    			map.put(dto.getPid(), 1);
+    		if (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.name())) {
+    			map.put(dto.getPid(), 100);
+    		}
+    		else if(dto.getStatus().equalsIgnoreCase(ProblemStatus.HALF_CREDIT.name())) {
+    		    map.put(dto.getPid(), 50);
     		}
     	}
     	return map;

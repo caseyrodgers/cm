@@ -3,14 +3,9 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc.client.rpc.AddAssignmentProblemsAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +30,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class AssignmentProblemListView extends ContentPanel {
@@ -243,7 +237,9 @@ public class AssignmentProblemListView extends ContentPanel {
     
 
     private void addProblemsToAssignment(final List<ProblemDto> problemsAdded) {
-        if(problemsAdded.size() == 0) {
+        problemListGrid.getStore().addAll(problemsAdded);
+        
+        if(problemListGrid.getStore().size() == 0) {
             setWidget(createDefaultNoProblemsMessge());
             _deleteButton.setEnabled(false);
         }
@@ -251,25 +247,7 @@ public class AssignmentProblemListView extends ContentPanel {
             setWidget(problemListContainer);
             _deleteButton.setEnabled(true);
         }
-        problemListGrid.getStore().addAll(problemsAdded);
         forceLayout();
-        if(true) {
-            return;
-        }
-        
-        new RetryAction<RpcData>() {
-            @Override
-            public void attempt() {
-                int assignKey = 1;
-                AddAssignmentProblemsAction action = new AddAssignmentProblemsAction(assignKey, problemsAdded);
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            public void oncapture(RpcData data) {
-                Info.display("Problems Added", problemsAdded.size() + " problem(s) have been added.");
-            }
-        }.register();
     }
     
     private void showSelectedProblemHtml(Callback callbackOnComplete) {

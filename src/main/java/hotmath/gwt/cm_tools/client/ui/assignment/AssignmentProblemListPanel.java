@@ -84,12 +84,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         columns.add(problemNumberCol);
         ColumnConfig<StudentProblemDto, String> labelCol = new ColumnConfig<StudentProblemDto, String>(props.pidLabel(), 50, "Problem");
-        labelCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
-            @Override
-            public ProblemDto getProblem(int which) {
-                return _studentProblemGrid.getStore().get(which).getProblem();
-            }
-        }));
         columns.add(labelCol);
 
         ColumnConfig<StudentProblemDto, String> labelStatus = new ColumnConfig<StudentProblemDto, String>(props.statusForStudent(), 100, "Status");

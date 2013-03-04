@@ -124,9 +124,12 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
 
     private Widget createActivateButton() {
-        TextButton btn = new TextButton("Activate", new SelectHandler() {
+        TextButton activateButton =  new TextButton("Activate/Close");
+        Menu menu = new Menu();
+        MenuItem btnActive = new MenuItem("Activate", new SelectionHandler<MenuItem>() {
+            
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 Assignment a = _grid.getSelectionModel().getSelectedItem();
                 if(a == null) {
                     CmMessageBox.showAlert("An assignment needs to be selected first.");
@@ -135,7 +138,21 @@ public class AssignmentsContentPanel extends ContentPanel {
                 activateAssignment(a);
             }
         });
-        return btn;
+        btnActive.setToolTip("Activate the selected assignment.");
+        menu.add(btnActive);
+        MenuItem btnClose = new MenuItem("Close", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                closeSelectedAssignment();
+            }
+        });
+        btnClose.setToolTip("Close the selected assignment.");
+        menu.add(btnActive);  
+        menu.add(btnClose);
+        
+        
+        activateButton.setMenu(menu);
+        return activateButton;
     }
     
     
@@ -409,22 +426,26 @@ public class AssignmentsContentPanel extends ContentPanel {
         }        
         
         final Assignment data = _grid.getSelectionModel().getSelectedItem();
-        if(data != null) {
-            
-            if(!data.getStatus().equals("Close")) {
-                final ConfirmMessageBox cm = new ConfirmMessageBox("Close Assignment", "Are you sure you want to close this assignment?");
-                cm.addHideHandler(new HideHandler() {
-                    @Override
-                    public void onHide(HideEvent event) {
-                        if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
-                            closeAssignment(data);
-                        }
-                    }
-                });
-                cm.setVisible(true);
-                
-            }
+        if(data == null) {
+            CmMessageBox.showAlert("You need to select an assignment first.");
+            return;
         }
+        
+        if(data.isClosed()) {
+            CmMessageBox.showAlert("This assignment is already closed.");
+            return;
+        }
+            
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Close Assignment", "Are you sure you want to close this assignment?");
+        cm.addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                    closeAssignment(data);
+                }
+            }
+        });
+        cm.setVisible(true);
     }
     
     private void closeAssignment(final Assignment ass) {
