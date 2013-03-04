@@ -54,6 +54,8 @@ public class GroupGradebookReport {
 	private static final Color BLUE = new Color(0, 0, 150);
 	private static final Color RED   = new Color(150, 0, 0);
 	private static final String NEW_LINE = System.getProperty("line.separator");
+
+	private static final int MAX_ASSIGNMENT_COLS = 5;
 	
 	public GroupGradebookReport(String title) {
 		this.title = title;
@@ -104,25 +106,12 @@ public class GroupGradebookReport {
                 saMap.put(a.getAssignKey(), saList);
             }
 
-            // pivot on student
             Map<Integer, String> stuNameMap = new HashMap<Integer, String>();
             Map<Integer, Map<Integer, StudentAssignment>> stuAsgnMap = new HashMap<Integer, Map<Integer, StudentAssignment>>();
             Set<Integer> asgnSet = new HashSet<Integer>();
 
-            for (Assignment a : assignmentList) {
-            	List<StudentAssignment> saList = saMap.get(a.getAssignKey());
-            	for (StudentAssignment sa : saList) {
-            		Integer stuId = sa.getUid();
-            	    stuNameMap.put(stuId, sa.getStudentName());
-            	    Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
-            	    if (asgnMap == null) {
-            	    	asgnMap = new HashMap<Integer, StudentAssignment>();
-            	    	stuAsgnMap.put(stuId, asgnMap);
-            	    }
-            	    asgnMap.put(sa.getAssignment().getAssignKey(), sa);
-            	    asgnSet.add(sa.getAssignment().getAssignKey());
-            	}
-            }
+            // pivot on student
+            pivotOnStudent(assignmentList, saMap, stuNameMap, stuAsgnMap, asgnSet);
 
 			Document document = new Document();
 			baos = new ByteArrayOutputStream();
@@ -133,8 +122,6 @@ public class GroupGradebookReport {
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			Phrase date     = buildLabelContent("Date: ", printDate);
 		    
-			//Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
-
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-GroupGradebookReport");
 
@@ -161,103 +148,21 @@ public class GroupGradebookReport {
 			document.add(Chunk.NEWLINE);			
 
 			int assignmentCount = assignmentList.size();
-			int rowsPerStudent  = assignmentCount/10 + ((assignmentCount%10 != 0) ? 1 : 0);
-			int numberOfAssignmentColumns = (assignmentCount <= 10) ? assignmentCount + 1 : 10;
-			int numberOfColumns = numberOfAssignmentColumns + 1;
+			int rowsPerStudent  = assignmentCount/MAX_ASSIGNMENT_COLS + ((assignmentCount%MAX_ASSIGNMENT_COLS != 0) ? 1 : 0);
+			int numberOfAssignmentColumns = (assignmentCount <= MAX_ASSIGNMENT_COLS) ? assignmentCount + 1 : MAX_ASSIGNMENT_COLS;
+			int numberOfColumns = numberOfAssignmentColumns + 2;
 			Table tbl = new Table(numberOfColumns);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
 			
-			addHeader("Student", "20%", tbl);
+			String[] asgnCols = addHeaders(assignmentList, numberOfColumns, tbl);
+
+			List<StudentNameUid> stuList = sortStudentsByName(stuNameMap);
+
+			Map<Integer, String> avgMap = calcStudentsAvgScores(stuNameMap, stuAsgnMap, assignmentList);
 			
-			// use due date for assignment column headers
-			int rowNum = 0;
-			int prevRowNum = 0;
-			int asgNum = 0;
-			String[] asgnCols = new String[numberOfColumns-1];
-			for (Assignment a : assignmentList) {
-				rowNum = asgNum / 10;
-				int colNum = asgNum % 10;
-				if (rowNum == 0) {
-					asgnCols[colNum] = asgnDateFmt.format(a.getDueDate());
-				}
-				else {
-					asgnCols[colNum] = asgnCols[colNum] + NEW_LINE + asgnDateFmt.format(a.getDueDate());
-				}
-				this.LOGGER.debug(String.format("rowNum: %d, colNum: %d, asgnCols[%d]: %s",
-						rowNum, colNum, colNum, asgnCols[colNum]));
-				asgNum++;
-			}
-			for (int i=0; i<numberOfColumns-1; i++) {
-				addHeader(asgnCols[i],"8%",tbl);
-			}
-
-			tbl.endHeaders();
-
-			List<StudentNameUid> stuList = new ArrayList<StudentNameUid>();
-			for (Integer stuId : stuNameMap.keySet()) {
-				StudentNameUid snu = new StudentNameUid(stuId, stuNameMap.get(stuId));
-				stuList.add(snu);
-			}
-
-            // sort Assignments by ascending due date
-			Collections.sort(stuList, new Comparator<StudentNameUid>() {
-				@Override
-				public int compare(StudentNameUid stu1, StudentNameUid stu2) {
-					String name1 = stu1.name;
-					String name2 = stu2.name;
-					if (name1.equals(name2)) {
-						return stu1.uid - stu2.uid;
-					}
-					return name1.compareTo(name2);
-				}
-			});
-
-			
-			int i = 0;
-			for (StudentNameUid stu : stuList) {
-				int stuId = stu.uid;
-				LOGGER.debug("stuId: " + stuId);
-				boolean isGray = (i%2 < 1);
-				i++;
-
-				addCell(stuNameMap.get(stuId), tbl, isGray);
-				LOGGER.debug("stuName: " + stuNameMap.get(stuId));
-				
-				Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
-				asgNum = 0;
-				int colNum = 0;
-				for (Assignment a : assignmentList) {
-					rowNum = asgNum / numberOfAssignmentColumns;
-					colNum = asgNum % numberOfAssignmentColumns;
-					asgNum++;
-					this.LOGGER.debug(String.format("rowNum: %d, colNum: %d, asgnCols[%d]: %s",
-							rowNum, colNum, colNum, asgnCols[colNum]));
-					if (rowNum > 0 && colNum == 0) {
-						// add empty cell for name column
-						addCell("          ", tbl, isGray);
-					}
-					StudentAssignment sa = asgnMap.get(a.getAssignKey());
-					if (sa == null || sa.getHomeworkStatus().equalsIgnoreCase("not started")) {
-						addCell("N/A", tbl, isGray);
-					}
-					else if (sa.getHomeworkStatus().equalsIgnoreCase("in progress")) {
-						addCell(sa.getHomeworkGrade(), tbl, isGray, RED);
-					}
-					else if (sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
-						addCell(sa.getHomeworkGrade(), tbl, isGray, BLUE);						
-					}
-					else {
-						addCell(sa.getHomeworkGrade(), tbl, isGray, BLACK);						
-					}
-				}
-				// add empty assignment grades
-				for (int idx=++colNum; idx<numberOfAssignmentColumns; idx++) {
-					addCell("    ", tbl, isGray);						
-				}
-
-			}
+			fillTable(assignmentList, stuNameMap, stuAsgnMap, numberOfAssignmentColumns, tbl, asgnCols, stuList, avgMap);
 
 			document.add(tbl);
 
@@ -271,6 +176,112 @@ public class GroupGradebookReport {
 				adminId, groupId), e);
 		}
 		return baos;
+	}
+
+	private void fillTable(List<Assignment> assignmentList,
+			Map<Integer, String> stuNameMap,
+			Map<Integer, Map<Integer, StudentAssignment>> stuAsgnMap,
+			int numberOfAssignmentColumns, Table tbl, String[] asgnCols,
+			List<StudentNameUid> stuList, Map<Integer, String> avgMap)
+			throws Exception {
+		int i = 0;
+		for (StudentNameUid stu : stuList) {
+			int stuId = stu.uid;
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug(String.format("stuId: %d, name: %s, avg: %s", stuId, stuNameMap.get(stuId), avgMap.get(stuId)));
+			boolean isGray = (i%2 < 1);
+			i++;
+
+			addCell(stuNameMap.get(stuId), tbl, isGray);
+			addCell(avgMap.get(stuId), tbl, isGray);
+			
+			Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
+			int asgNum = 0;
+			int colNum = 0;
+			for (Assignment a : assignmentList) {
+				int rowNum = asgNum / numberOfAssignmentColumns;
+				colNum = asgNum % numberOfAssignmentColumns;
+				asgNum++;
+				if (LOGGER.isDebugEnabled())
+					LOGGER.debug(String.format("rowNum: %d, colNum: %d, asgnCols[%d]: %s",
+						rowNum, colNum, colNum, asgnCols[colNum]));
+				if (rowNum > 0 && colNum == 0) {
+					// add empty cells for name and average columns
+					addCell("          ", tbl, isGray);
+					addCell("   ", tbl, isGray);
+				}
+				StudentAssignment sa = asgnMap.get(a.getAssignKey());
+				if (sa == null || sa.getHomeworkStatus().equalsIgnoreCase("not started")) {
+					addCell("N/A", tbl, isGray);
+				}
+				else if (sa.getHomeworkStatus().equalsIgnoreCase("in progress")) {
+					addCell(sa.getHomeworkGrade(), tbl, isGray, RED);
+				}
+				else if (sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
+					addCell(sa.getHomeworkGrade(), tbl, isGray, BLUE);						
+				}
+				else {
+					addCell(sa.getHomeworkGrade(), tbl, isGray, BLACK);						
+				}
+			}
+			// add empty assignment grades
+			for (int idx=++colNum; idx<numberOfAssignmentColumns; idx++) {
+				addCell("    ", tbl, isGray);						
+			}
+
+		}
+	}
+
+	private void pivotOnStudent(List<Assignment> assignmentList,
+			Map<Integer, List<StudentAssignment>> saMap,
+			Map<Integer, String> stuNameMap,
+			Map<Integer, Map<Integer, StudentAssignment>> stuAsgnMap,
+			Set<Integer> asgnSet) {
+		for (Assignment a : assignmentList) {
+			List<StudentAssignment> saList = saMap.get(a.getAssignKey());
+			for (StudentAssignment sa : saList) {
+				Integer stuId = sa.getUid();
+			    stuNameMap.put(stuId, sa.getStudentName());
+			    Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
+			    if (asgnMap == null) {
+			    	asgnMap = new HashMap<Integer, StudentAssignment>();
+			    	stuAsgnMap.put(stuId, asgnMap);
+			    }
+			    asgnMap.put(sa.getAssignment().getAssignKey(), sa);
+			    asgnSet.add(sa.getAssignment().getAssignKey());
+			}
+		}
+	}
+
+	private String[] addHeaders(List<Assignment> assignmentList,
+			int numberOfColumns, Table tbl) throws Exception {
+		addHeader("Student", "30%", tbl);
+		addHeader("AVG", "10%", tbl);
+		
+		// use due date for assignment column headers
+		int rowNum = 0;
+		int asgNum = 0;
+		String[] asgnCols = new String[numberOfColumns-1];
+		for (Assignment a : assignmentList) {
+			rowNum = asgNum / MAX_ASSIGNMENT_COLS;
+			int colNum = asgNum % MAX_ASSIGNMENT_COLS;
+			if (rowNum == 0) {
+				asgnCols[colNum] = asgnDateFmt.format(a.getDueDate());
+			}
+			else {
+				asgnCols[colNum] = asgnCols[colNum] + NEW_LINE + asgnDateFmt.format(a.getDueDate());
+			}
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug(String.format("rowNum: %d, colNum: %d, asgnCols[%d]: %s",
+					rowNum, colNum, colNum, asgnCols[colNum]));
+			asgNum++;
+		}
+		for (int i=0; i<numberOfColumns-2; i++) {
+			addHeader(asgnCols[i],"10%",tbl);
+		}
+
+		tbl.endHeaders();
+		return asgnCols;
 	}
 
 	private Phrase buildLabelContent(String label, String value) {
@@ -363,6 +374,52 @@ public class GroupGradebookReport {
     	
     }
 
+    private List<StudentNameUid> sortStudentsByName(Map<Integer, String> stuNameMap) {
+		List<StudentNameUid> stuList = new ArrayList<StudentNameUid>();
+		for (Integer stuId : stuNameMap.keySet()) {
+			StudentNameUid snu = new StudentNameUid(stuId, stuNameMap.get(stuId));
+			stuList.add(snu);
+		}
+
+        // sort Students by ascending name
+		Collections.sort(stuList, new Comparator<StudentNameUid>() {
+			@Override
+			public int compare(StudentNameUid stu1, StudentNameUid stu2) {
+				String name1 = stu1.name;
+				String name2 = stu2.name;
+				if (name1.equals(name2)) {
+					return stu1.uid - stu2.uid;
+				}
+				return name1.compareTo(name2);
+			}
+		});
+        return stuList;
+    }
+
+	// calculate students' Average scores
+    private Map<Integer, String> calcStudentsAvgScores(Map<Integer, String> stuNameMap, Map<Integer, Map<Integer,StudentAssignment>> stuAsgnMap, List<Assignment> assignmentList) {
+		Map<Integer, String> avgMap = new HashMap<Integer,String>();
+		for (Integer stuId : stuNameMap.keySet()) {
+			int asgCount = 0;
+			int totalPercent = 0;
+			Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
+			for (Assignment a : assignmentList) {
+				StudentAssignment sa = asgnMap.get(a.getAssignKey());
+				if (sa.getHomeworkStatus().equalsIgnoreCase("in progress") ||
+                    sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
+					asgCount++;
+					totalPercent += Integer.parseInt(sa.getHomeworkGrade().substring(0, sa.getHomeworkGrade().length()-1));
+				}
+			}
+			String average;
+			if (asgCount > 0)
+				average = String.format("%d%s", Math.round((float)totalPercent / (float)asgCount), "%");
+			else
+				average = "   ";
+			avgMap.put(stuId, average);
+		}
+        return avgMap;
+    }
 	public void setFilterMap(Map<FilterType, String> filterMap) {
 		// TODO Auto-generated method stub
 		
