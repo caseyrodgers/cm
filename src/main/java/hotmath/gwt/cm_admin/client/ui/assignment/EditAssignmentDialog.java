@@ -20,7 +20,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import java.sql.Time;
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -28,7 +27,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -179,7 +177,7 @@ public class EditAssignmentDialog {
                 }
             }
         });
-        saveAssign.setToolTip("Save any changes. Once activated or closed problems cannot be edited.");
+        saveAssign.setToolTip("Save any changes. Once activated or closed, problems cannot be edited.");
 
         if(_isDraftMode) {
             window.addButton(saveDraftMode);
