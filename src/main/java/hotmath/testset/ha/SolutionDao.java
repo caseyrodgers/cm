@@ -320,8 +320,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
         __logger.debug("contexts saved");
     }
 
-    public List<String> getSolutionPids(String pid) {
-        String sql = "select problemindex from SOLUTIONS where problemindex like '" + pid + "%' order by problemindex";
+    /** Get all solution pids that are dynamic
+     * 
+     * @param pid
+     * @return
+     */
+    public List<String> getDynamicSolutionPids(String pid) {
+        String sql = "select problemindex from SOLUTIONS where tutor_define > '' and problemindex like '" + pid + "%' order by problemindex";
         List<String> pids = getJdbcTemplate().query(sql,new Object[]{},
                 new RowMapper<String>() {
             @Override
