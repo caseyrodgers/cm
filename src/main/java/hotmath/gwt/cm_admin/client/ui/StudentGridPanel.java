@@ -765,7 +765,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     }
 
     private Widget createEditAssignmentButton() {
-        TextButton createEdit = new TextButton("Create/View",new SelectHandler() {
+        TextButton createEdit = new TextButton("Assignments",new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
