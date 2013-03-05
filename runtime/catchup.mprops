@@ -3714,6 +3714,27 @@ from   CM_ASSIGNMENT a
 where  a.group_id = ?
 order  by a.due_date desc,  last_modified desc 
 
+.key=GET_ASSIGNMENTS_FOR_GROUP_AND_DATE_RANGE
+
+select a.aid, a.assign_key,
+       a.group_id,
+       a.name,
+       a.status,
+       Ifnull(problem_count, 0) as problem_count,
+       a.comments,
+       a.due_date,
+       a.close_past_due
+from   CM_ASSIGNMENT a
+       left join (select assign_key,
+                         Count(*) as problem_count
+                  from   CM_ASSIGNMENT_PIDS p
+                  group  by assign_key) p
+              on p.assign_key = a.assign_key
+where  a.group_id = ?
+  and  a.due_date between ? and ?
+order  by a.due_date desc, last_modified desc
+
+
 ##
 .key=GET_GRADE_BOOK_DATA_3
 
