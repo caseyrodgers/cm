@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.ProblemS
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.UpdateGradeCallback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -65,7 +66,7 @@ public class GradeBookDialog {
         window.setPixelSize(800,600);
         window.setMaximizable(true);
 
-        window.setHeadingHtml("Assignment: " + stuAssignment.getAssignment().getAssignmentName());
+        window.setHeadingHtml("Grade Assignment: " + stuAssignment.getAssignment().getAssignmentName());
 
         final BorderLayoutContainer mainBorderPanel = new BorderLayoutContainer();
         mainBorderPanel.setBorders(true);
@@ -257,6 +258,9 @@ public class GradeBookDialog {
                 CmBusyManager.setBusy(false);
 
                 agPanel.setChanges(false);
+                
+                
+                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
                 
                 Log.debug("Student assignment status (" + _stuAssignment.getAssignment().getAssignKey() + ") saved successfully");
             }

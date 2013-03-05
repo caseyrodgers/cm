@@ -444,7 +444,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         if (CmShared.getQueryParameter("debug") != null) {
             toolbar.add(createRefreshButton());
         }
-        toolbar.add(assignmentToolItem(_grid));
+        toolbar.add(createEditAssignmentButton());
         toolbar.add(new FillToolItem());
 
         toolbar.add(displayPrintableReportToolItem(_grid));
@@ -764,31 +764,10 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         return ti;
     }
 
-    private TextButton assignmentToolItem(final Grid<StudentModelI> grid) {
-        
-        TextButton assignmentsButton = new TextButton("Assignments");
-        assignmentsButton.setToolTip("Manage and view student's homework.");
-        
-        
-        
-        Menu menu = new Menu();
-        menu.add(new MyMenuItem("Guide","Assignments help guide.",new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-                AssignmentGuideWindow.showWindow();
-            }
-        }));
-        menu.add(createEditAssignmentButton());
-        
-        
-        assignmentsButton.setMenu(menu);
-        return assignmentsButton;
-    }
-
     private Widget createEditAssignmentButton() {
-        MyMenuItem createEdit = new MyMenuItem("Create/View", "Create new assignments or view existing assignments", new SelectionHandler<MenuItem>() {
+        TextButton createEdit = new TextButton("Create/View",new SelectHandler() {
             @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
+            public void onSelect(SelectEvent event) {
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {
