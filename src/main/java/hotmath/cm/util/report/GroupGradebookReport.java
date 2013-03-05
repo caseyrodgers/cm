@@ -137,7 +137,10 @@ public class GroupGradebookReport {
 			pdfTbl.addCell(school);
 			if (group != null) pdfTbl.addCell(group);
 			pdfTbl.addCell(date);
-			if (dateRange != null) pdfTbl.addCell(dateRange);
+			if (dateRange != null) {
+				document.add(Chunk.NEWLINE);
+				pdfTbl.addCell(dateRange);
+			}
 			
 			pdfTbl.addCell(new Phrase(" "));
 
@@ -156,7 +159,7 @@ public class GroupGradebookReport {
 
 			int assignmentCount = assignmentList.size();
 			int rowsPerStudent  = assignmentCount/MAX_ASSIGNMENT_COLS + ((assignmentCount%MAX_ASSIGNMENT_COLS != 0) ? 1 : 0);
-			int numberOfAssignmentColumns = (assignmentCount <= MAX_ASSIGNMENT_COLS) ? assignmentCount + 1 : MAX_ASSIGNMENT_COLS;
+			int numberOfAssignmentColumns = (assignmentCount <= MAX_ASSIGNMENT_COLS) ? assignmentCount : MAX_ASSIGNMENT_COLS;
 			int numberOfColumns = numberOfAssignmentColumns + 2;
 			Table tbl = new Table(numberOfColumns);
 			tbl.setWidth(100.0f);
@@ -218,17 +221,20 @@ public class GroupGradebookReport {
 					addCell("   ", tbl, isGray);
 				}
 				StudentAssignment sa = asgnMap.get(a.getAssignKey());
+				String homeworkGrade = sa.getHomeworkGrade();
 				if (sa == null || sa.getHomeworkStatus().equalsIgnoreCase("not started")) {
 					addCell("N/A", tbl, isGray);
 				}
 				else if (sa.getHomeworkStatus().equalsIgnoreCase("in progress")) {
-					addCell(sa.getHomeworkGrade(), tbl, isGray, RED);
+					homeworkGrade = ("-".equals(homeworkGrade.trim())) ? "0%" : homeworkGrade;
+					addCell(homeworkGrade, tbl, isGray, RED);
 				}
 				else if (sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
-					addCell(sa.getHomeworkGrade(), tbl, isGray, BLUE);						
+					addCell(homeworkGrade, tbl, isGray, BLUE);						
 				}
 				else {
-					addCell(sa.getHomeworkGrade(), tbl, isGray, BLACK);						
+					homeworkGrade = ("-".equals(homeworkGrade.trim())) ? "N/A" : homeworkGrade;
+					addCell(homeworkGrade, tbl, isGray, BLACK);						
 				}
 			}
 			// add empty assignment grades
@@ -283,7 +289,11 @@ public class GroupGradebookReport {
 					rowNum, colNum, colNum, asgnCols[colNum]));
 			asgNum++;
 		}
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("numberOfColumns: " + numberOfColumns);
 		for (int i=0; i<numberOfColumns-2; i++) {
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug(String.format("asgnCols[%d]: %s", i, asgnCols[i]));
 			addHeader(asgnCols[i],"10%",tbl);
 		}
 
@@ -414,20 +424,23 @@ public class GroupGradebookReport {
 				StudentAssignment sa = asgnMap.get(a.getAssignKey());
 				if (sa.getHomeworkStatus().equalsIgnoreCase("in progress") ||
                     sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
-					asgCount++;
 					String homeworkGrade = sa.getHomeworkGrade();
 					int offset = homeworkGrade.indexOf("%");
 					if (offset > 0) {
     					totalPercent += Integer.parseInt(homeworkGrade.substring(0, offset).trim());
+    					asgCount++;
 					}
 					else {
-						totalPercent += Integer.parseInt(homeworkGrade.trim());
+						if ("-".equals(homeworkGrade.trim()) == false) {
+    						totalPercent += Integer.parseInt(homeworkGrade.trim());
+    						asgCount++;
+						}
 					}
 				}
 			}
 			String average;
 			if (asgCount > 0)
-				average = String.format("%d%s", Math.round((float)totalPercent / (float)asgCount), "%");
+				average = String.format("  %d%s", Math.round((float)totalPercent / (float)asgCount), "%");
 			else
 				average = "  N/A";
 			avgMap.put(stuId, average);
