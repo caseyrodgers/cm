@@ -13,12 +13,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
+import java.util.Date;
 
 public class PrintGradebookCommand implements ActionHandler<PrintGradebookAction,CmWebResource>{
 
     @Override
     public CmWebResource execute(Connection conn, PrintGradebookAction action) throws Exception {
-        ByteArrayOutputStream baos = new GroupGradebookReport("Grade Book Report").makePdf(action.getAid(), action.getGroupId());
+    	Date fromDate = action.getFromDate();
+    	Date toDate = action.getToDate();
+        ByteArrayOutputStream baos = new GroupGradebookReport("Grade Book Report").makePdf(action.getAdminId(), action.getGroupId(), fromDate, toDate);
         
         // write to temporary file to be cleaned up later
         String outputBase = CmWebResourceManager.getInstance().getFileBase();
@@ -27,7 +30,7 @@ public class PrintGradebookCommand implements ActionHandler<PrintGradebookAction
 
         String unique = Long.toString(System.currentTimeMillis());
 
-        outputBase = outputBase + "/" + action.getAid();
+        outputBase = outputBase + "/" + action.getAdminId();
         String outputDir = FileUtil.ensureOutputDir(outputBase, unique);
         File filePath = new File(outputDir, "gradebook_" + action.getGroupId() + ".pdf");
         FileOutputStream fw = null;

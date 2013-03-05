@@ -1,24 +1,29 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import java.util.Date;
+
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 
 public class PrintGradebookAction implements Action<CmWebResource> {
-    private int aid;
+
+	private int adminId;
     private int groupId;
+    private Date fromDate;
+    private Date toDate;
 
     public PrintGradebookAction(){}
     
     public PrintGradebookAction(int aid, int groupId) {
-        this.aid = aid;
+        this.adminId = aid;
         this.groupId = groupId;
     }
 
-    public int getAid() {
-        return aid;
+    public int getAdminId() {
+        return adminId;
     }
 
-    public void setAid(int aid) {
-        this.aid = aid;
+    public void setAdminId(int aid) {
+        this.adminId = aid;
     }
 
     public int getGroupId() {
@@ -29,8 +34,24 @@ public class PrintGradebookAction implements Action<CmWebResource> {
         this.groupId = groupId;
     }
 
-    @Override
+    public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	@Override
     public String toString() {
-        return "PrintGradebookAction [aid=" + aid + ", groupId=" + groupId + "]";
+        return "PrintGradebookAction [aid=" + adminId + ", groupId=" + groupId + "]";
     }
 }

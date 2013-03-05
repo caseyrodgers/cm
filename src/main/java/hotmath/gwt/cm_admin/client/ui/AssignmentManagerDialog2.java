@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import java.util.Date;
+
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
@@ -12,6 +14,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrintGradebookAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -211,7 +214,18 @@ public class AssignmentManagerDialog2  {
                     return;
                 }
                 PrintGradebookAction action = new  PrintGradebookAction(UserInfoBase.getInstance().getUid(),_lastGroup.getGroupId());
-                new PdfWindow(action.getAid(), "Grade Book Report", action);
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate, toDate;
+                if (dateRange.isDefault()) {
+                    fromDate = null;
+                    toDate = null;
+                } else {
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
+                }
+                action.setFromDate(fromDate);
+                action.setToDate(toDate);
+                new PdfWindow(action.getAdminId(), "Grade Book Report", action);
             }});
         return gradeBook;
     }

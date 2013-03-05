@@ -369,13 +369,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return lesson + ": " + filler + i;
     }
 
-    public List<Assignment> getAssignments(int aid2, int groupId) throws PropertyLoadFileException {
+    public List<Assignment> getAssignments(int adminId, int groupId) throws PropertyLoadFileException {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
         List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { groupId }, new RowMapper<Assignment>() {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
-                // create a psudo name
+                // create a pseudo name
                 String comments = rs.getString("comments");
 
                 Date dueDate = rs.getDate("due_date");
@@ -392,6 +392,30 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return problems;
     }
 
+    public List<Assignment> getAssignments(int adminId, int groupId, java.util.Date fromDate, java.util.Date toDate) throws PropertyLoadFileException {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP_AND_DATE_RANGE");
+
+        String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
+        List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { groupId, dates[0], dates[1] }, new RowMapper<Assignment>() {
+            @Override
+            public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+                // create a pseudo name
+                String comments = rs.getString("comments");
+
+                Date dueDate = rs.getDate("due_date");
+
+                String assignmentName = _createAssignmentName(dueDate, comments);
+
+                Assignment ass = new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), assignmentName, rs
+                        .getString("comments"), dueDate, null, null, rs.getString("status"), rs.getInt("close_past_due")!=0);
+
+                ass.setProblemCount(rs.getInt("problem_count"));
+                return ass;
+            }
+        });
+        return problems;
+    }
     /**
      * delete the PIDS contained in this Assignment
      * 
@@ -611,6 +635,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         return stuAssignments;
+    }
+
+    public List<Integer> getAssignmentsForGroup(int groupId, Date fromDate, Date toDate) {
+    	List<Integer> assignmentList = new ArrayList<Integer>();
+    	
+    	return assignmentList;
     }
 
     private void setStudentDetailStatus(StudentAssignment sa) {

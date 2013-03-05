@@ -61,7 +61,7 @@ public class GroupGradebookReport {
 		this.title = title;
 	}
 	
-	public ByteArrayOutputStream makePdf(int adminId,int groupId) {
+	public ByteArrayOutputStream makePdf(int adminId,int groupId, Date fromDate, Date toDate) {
 		ByteArrayOutputStream baos = null;
 		try {
 			
@@ -80,7 +80,9 @@ public class GroupGradebookReport {
 
             AssignmentDao asgDao = AssignmentDao.getInstance();
             
-            List<Assignment> assignmentList = asgDao.getAssignments(adminId, groupId);
+            List<Assignment> assignmentList = (fromDate != null && toDate != null) ?
+            		asgDao.getAssignments(adminId, groupId, fromDate, toDate) :
+            		asgDao.getAssignments(adminId, groupId);
 
             // sort Assignments by ascending due date
 			Collections.sort(assignmentList, new Comparator<Assignment>() {
@@ -121,6 +123,10 @@ public class GroupGradebookReport {
 			Phrase group    = (groupName != null) ? buildLabelContent("Group: ", groupName) : null;
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			Phrase date     = buildLabelContent("Date: ", printDate);
+			Phrase dateRange = null;
+			if (fromDate != null && toDate != null) {
+				dateRange = buildLabelContent("Date Range: ", String.format("%1$tY-%1$tm-%1$td to %1$tY-%1$tm-%1$td", fromDate, toDate));
+			}
 		    
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-GroupGradebookReport");
@@ -131,6 +137,7 @@ public class GroupGradebookReport {
 			pdfTbl.addCell(school);
 			if (group != null) pdfTbl.addCell(group);
 			pdfTbl.addCell(date);
+			if (dateRange != null) pdfTbl.addCell(dateRange);
 			
 			pdfTbl.addCell(new Phrase(" "));
 
@@ -192,7 +199,7 @@ public class GroupGradebookReport {
 			boolean isGray = (i%2 < 1);
 			i++;
 
-			addCell(stuNameMap.get(stuId), tbl, isGray);
+			addCell(stuNameMap.get(stuId).toUpperCase(), tbl, isGray);
 			addCell(avgMap.get(stuId), tbl, isGray);
 			
 			Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
@@ -387,10 +394,10 @@ public class GroupGradebookReport {
 			public int compare(StudentNameUid stu1, StudentNameUid stu2) {
 				String name1 = stu1.name;
 				String name2 = stu2.name;
-				if (name1.equals(name2)) {
+				if (name1.equalsIgnoreCase(name2)) {
 					return stu1.uid - stu2.uid;
 				}
-				return name1.compareTo(name2);
+				return name1.compareToIgnoreCase(name2);
 			}
 		});
         return stuList;
@@ -408,14 +415,21 @@ public class GroupGradebookReport {
 				if (sa.getHomeworkStatus().equalsIgnoreCase("in progress") ||
                     sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
 					asgCount++;
-					totalPercent += Integer.parseInt(sa.getHomeworkGrade().substring(0, sa.getHomeworkGrade().length()-1));
+					String homeworkGrade = sa.getHomeworkGrade();
+					int offset = homeworkGrade.indexOf("%");
+					if (offset > 0) {
+    					totalPercent += Integer.parseInt(homeworkGrade.substring(0, offset).trim());
+					}
+					else {
+						totalPercent += Integer.parseInt(homeworkGrade.trim());
+					}
 				}
 			}
 			String average;
 			if (asgCount > 0)
 				average = String.format("%d%s", Math.round((float)totalPercent / (float)asgCount), "%");
 			else
-				average = "   ";
+				average = "  N/A";
 			avgMap.put(stuId, average);
 		}
         return avgMap;
