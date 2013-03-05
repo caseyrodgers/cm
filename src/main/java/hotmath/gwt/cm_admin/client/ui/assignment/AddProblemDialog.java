@@ -34,7 +34,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Label;
+
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -43,7 +43,9 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.util.DelayedTask;
