@@ -113,9 +113,10 @@ public class Assignment implements Response{
      * 
      * @return
      */
+    private static final int MILLS_IN_DAY = 24 * 60 * 60 * 1000;
+
     public boolean isExpired() {
-        int millsInDay = 86400000;
-        return dueDate.getTime() < (System.currentTimeMillis() - millsInDay);
+        return dueDate.getTime() < (System.currentTimeMillis() - MILLS_IN_DAY);
     }
 
     public int getGroupId() {
