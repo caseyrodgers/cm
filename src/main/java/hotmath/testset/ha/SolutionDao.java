@@ -1,6 +1,7 @@
 package hotmath.testset.ha;
 
 import hotmath.ProblemID;
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -317,6 +318,26 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
             }
           }); 
         
+        /** Update SOLUTION_DYNAMIC table to track when contexts are created
+         * 
+         */
+        int updated = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = null;
+                String sql = "update SOLUTION_DYNAMIC set global_context_created = now() where pid = ?";
+                ps = con.prepareStatement(sql);
+                ps.setString(1, pid);
+                return ps;
+            }
+        });
+        if(updated == 0) {
+            __logger.warn("No SOLUTION_DYNAMIC record found for pid: " + pid);
+        }
+        
+        
+        
+        
         __logger.debug("contexts saved");
     }
 
@@ -325,13 +346,13 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @return
      */
-    public List<String> getDynamicSolutionPids(String pid) {
-        String sql = "select problemindex from SOLUTIONS where tutor_define > '' and problemindex like '" + pid + "%' order by problemindex";
+    public List<String> getDynamicSolutionPidsNotProcessed() throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GLOBAL_CONTEXT_PIDS_TO_PROCESS");
         List<String> pids = getJdbcTemplate().query(sql,new Object[]{},
                 new RowMapper<String>() {
             @Override
             public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString("problemindex");
+                return rs.getString("pid");
             }
         });
         return pids;

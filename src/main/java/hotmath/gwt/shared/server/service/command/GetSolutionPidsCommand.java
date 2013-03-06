@@ -25,7 +25,7 @@ public class GetSolutionPidsCommand implements ActionHandler<GetSolutionPidsActi
     @Override
     public CmList<String> execute(Connection conn, GetSolutionPidsAction action) throws Exception {
         CmList<String> pids = new CmArrayList<String>();
-        pids.addAll(SolutionDao.getInstance().getDynamicSolutionPids(action.getPids()));
+        pids.addAll(SolutionDao.getInstance().getDynamicSolutionPidsNotProcessed());
         return pids;
     }
 }

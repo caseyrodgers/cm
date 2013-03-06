@@ -42,18 +42,13 @@ import com.google.gwt.user.client.ui.RootPanel;
         UserInfo.setInstance(new UserInfo());
         
         if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
-            String pid = CmGwtUtils.getQueryParameter("pid");  // can contain wild
-            String waitTimeS = CmGwtUtils.getQueryParameter("wait");  // can contain wild
-            if(waitTimeS == null) {
-                waitTimeS = "5000";
+            String hm = CmGwtUtils.getQueryParameter("how_many");
+            if(hm == null) {
+                hm = "100";
             }
-            int waitTime = Integer.parseInt(waitTimeS);
-            if(pid==null) {
-                Window.alert("'pid' parameter must be specified");
-            }
-            else {
-                RootPanel.get().add(new GenerateTutorContextsAll(waitTime).createContexts(pid));
-            }
+            int howMany = Integer.parseInt(hm);
+            
+            RootPanel.get().add(new GenerateTutorContextsAll(howMany).createContexts(null));
         }
         else {
             String pid = CmGwtUtils.getQueryParameter("pid");

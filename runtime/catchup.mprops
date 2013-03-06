@@ -3892,3 +3892,16 @@ SELECT a.pid, a.correct, min(a.answer_time) as answer_time
   WHERE  t.user_id = ?
   GROUP  BY a.pid
   ORDER  BY a.pid
+  
+  
+  
+  
+.key=GLOBAL_CONTEXT_PIDS_TO_PROCESS
+  
+select pid 
+from SOLUTION_DYNAMIC 
+where global_context_created is null
+or global_context_created < date(now())
+order by pid
+
+ 

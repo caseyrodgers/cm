@@ -7,6 +7,7 @@ import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.StaticWriter;
@@ -53,15 +54,56 @@ public class CmSolutionManagerDao {
                 createNewSolution(conn, pid);
             }
             
-            String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, tutor_define = ?, active = ?  where problemindex = ?";
+            String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, active = ?  where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, xml);
-            ps.setString(2, tutorDefine);
-            ps.setInt(3, isActive?1:0);
-            ps.setString(4, pid);
-            
+            ps.setInt(2, isActive?1:0);
+            ps.setString(3, pid);
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not save solution xml: " + pid);
+
+            
+            /** Save tutor define into SOLUTION_DYNAMIC if not null
+             * 
+             */
+            if(tutorDefine == null || tutorDefine.length() == 0) {
+                PreparedStatement psDeleteContext = null;
+                try {
+                    psDeleteContext = conn.prepareStatement("delete from SOLUTION_DYNAMIC where pid = ?");
+                    psDeleteContext.execute();
+                }
+                finally {
+                    SqlUtilities.releaseResources(null, psDeleteContext,null);
+                }
+                
+            }
+            else {
+                PreparedStatement psUpdateContext=null;
+                try {
+                    psUpdateContext = conn.prepareStatement("update SOLUTION_DYNAMIC set tutor_define = ? where pid = ?");
+                    psUpdateContext.setString(1,tutorDefine);
+                    psUpdateContext.setString(2, pid);
+                    int cntUpdated = psUpdateContext.executeUpdate();
+                    if(cntUpdated==0) {
+                        PreparedStatement psInsertContext = conn.prepareStatement("insert into SOLUTION_DYNAMIC(pid, tutor_define)values(?,?)");
+                        try {
+                            psInsertContext.setString(1, pid);
+                            psInsertContext.setString(2, tutorDefine);
+                            int cntInserted = psInsertContext.executeUpdate();
+                            if(cntInserted != 1) {
+                                throw new CmException("Could not insert into SOLUTION_DYNAMIC");
+                            }
+                        }
+                        finally {
+                            SqlUtilities.releaseResources(null,  psInsertContext,  null);
+                        }
+                    }
+                }
+                finally {
+                    SqlUtilities.releaseResources(null,  psUpdateContext, null);
+                }
+            }
+            
             
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
             
@@ -181,7 +223,10 @@ public class CmSolutionManagerDao {
     public TutorSolution getTutorSolution(final Connection conn, String pid) throws Exception {
         PreparedStatement ps=null;
         try {
-            String sql = "select active, solutionxml,tutor_define from SOLUTIONS where problemindex = ?";
+            String sql = "select s.problemindex, s.solutionxml, s.active, d.tutor_define " +
+                         " from   SOLUTIONS s " + 
+                         " left join SOLUTION_DYNAMIC d on d.pid = s.problemindex " +
+                         " where s.problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pid);
             
