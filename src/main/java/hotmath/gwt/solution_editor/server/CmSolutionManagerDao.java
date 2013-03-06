@@ -1,5 +1,6 @@
 package hotmath.gwt.solution_editor.server;
 
+import hotmath.HotMathDatabaseLoader;
 import hotmath.HotMathException;
 import hotmath.HotMathLogger;
 import hotmath.HotMathProperties;
@@ -63,47 +64,7 @@ public class CmSolutionManagerDao {
                 throw new Exception("Could not save solution xml: " + pid);
 
             
-            /** Save tutor define into SOLUTION_DYNAMIC if not null
-             * 
-             */
-            if(tutorDefine == null || tutorDefine.length() == 0) {
-                PreparedStatement psDeleteContext = null;
-                try {
-                    psDeleteContext = conn.prepareStatement("delete from SOLUTION_DYNAMIC where pid = ?");
-                    psDeleteContext.execute();
-                }
-                finally {
-                    SqlUtilities.releaseResources(null, psDeleteContext,null);
-                }
-                
-            }
-            else {
-                PreparedStatement psUpdateContext=null;
-                try {
-                    psUpdateContext = conn.prepareStatement("update SOLUTION_DYNAMIC set tutor_define = ? where pid = ?");
-                    psUpdateContext.setString(1,tutorDefine);
-                    psUpdateContext.setString(2, pid);
-                    int cntUpdated = psUpdateContext.executeUpdate();
-                    if(cntUpdated==0) {
-                        PreparedStatement psInsertContext = conn.prepareStatement("insert into SOLUTION_DYNAMIC(pid, tutor_define)values(?,?)");
-                        try {
-                            psInsertContext.setString(1, pid);
-                            psInsertContext.setString(2, tutorDefine);
-                            int cntInserted = psInsertContext.executeUpdate();
-                            if(cntInserted != 1) {
-                                throw new CmException("Could not insert into SOLUTION_DYNAMIC");
-                            }
-                        }
-                        finally {
-                            SqlUtilities.releaseResources(null,  psInsertContext,  null);
-                        }
-                    }
-                }
-                finally {
-                    SqlUtilities.releaseResources(null,  psUpdateContext, null);
-                }
-            }
-            
+            HotMathDatabaseLoader.processSolutionDefine(conn, pid, tutorDefine);
             
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
             

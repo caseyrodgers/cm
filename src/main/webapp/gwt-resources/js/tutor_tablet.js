@@ -264,13 +264,17 @@ var TutorManager = {
     
     
     generateContext: function(pid, solutionData, jsonConfig) {
+    	alert('generating context: ' + pid);
         if(pid != null) {
             TutorManager.initializeTutor(pid, jsonConfig, solutionData, '','',false, false, null);
         }
         else {
             TutorDynamic.refreshProblem();
         }
+        
+        alert('getting tutor variable context json: ' + pid);
         var myContext = getTutorVariableContextJson(TutorManager.tutorData._variables);
+        alert('done');
         return myContext;
     }
     
