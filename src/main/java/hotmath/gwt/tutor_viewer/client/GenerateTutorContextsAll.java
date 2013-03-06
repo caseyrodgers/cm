@@ -62,13 +62,13 @@ public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
             new Timer() {
                 @Override
                 public void run() {
-                    jsniCLoseWOrkWindow();
                     createContextsForNextPid();
                 }
             }.schedule(waitTime);
         }
         else {
-            addLogMessage("Finished!");   
+            addLogMessage("Finished!");
+            jsniCLoseWOrkWindow();
         }
     }
 
