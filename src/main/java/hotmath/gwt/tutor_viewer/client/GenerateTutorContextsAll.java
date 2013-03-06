@@ -1,12 +1,8 @@
 package hotmath.gwt.tutor_viewer.client;
 
-import hotmath.gwt.cm_core.client.CmCore;
-import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionPidsAction;
-import hotmath.gwt.cm_search.client.view.TutorView;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.tutor_viewer.client.ui.GenerateTutorContextPanel;
 
 import java.util.ArrayList;
@@ -31,10 +27,7 @@ public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
     
     @Override
     public Widget createContexts(String pid) {
-    
-        waitTime = wait;
-        
-        addLogMessage("Creating contexts for pids matching: " + pid + " waitTime: " + wait);
+        addLogMessage("Creating contexts for pids matching: " + pid + " waitTime: " + waitTime);
         
         GetSolutionPidsAction action = new GetSolutionPidsAction(pid);
         CmTutor.getCmService().execute(action, new AsyncCallback<CmList<String>>() {
