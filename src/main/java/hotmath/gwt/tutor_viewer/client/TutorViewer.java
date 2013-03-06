@@ -43,11 +43,16 @@ import com.google.gwt.user.client.ui.RootPanel;
         
         if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
             String pid = CmGwtUtils.getQueryParameter("pid");  // can contain wild
+            String waitTimeS = CmGwtUtils.getQueryParameter("waitTime");  // can contain wild
+            if(waitTimeS == null) {
+                waitTimeS = "5000";
+            }
+            int waitTime = Integer.parseInt(waitTimeS);
             if(pid==null) {
                 Window.alert("'pid' parameter must be specified");
             }
             else {
-                RootPanel.get().add(new GenerateTutorContextsAll().createContexts(pid));
+                RootPanel.get().add(new GenerateTutorContextsAll(waitTime).createContexts(pid));
             }
         }
         else {
