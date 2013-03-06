@@ -11,8 +11,6 @@ import java.util.List;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
@@ -58,13 +56,13 @@ public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
             _pidsToDo.remove(0);
             addLogMessage("Creating context for: " + pid);
             
-            RootPanel rp = RootPanel.get("work_area");
-            rp.clear();
-            rp.add(new HTML("<iframe width=100% height=200 src='/tutor_viewer/TutorViewer.html?generate_context=true&pid=" + pid + "'></iframe>"));
             
+            String url = "/tutor_viewer/TutorViewer.html?generate_context=true&pid=" + pid;
+            jsniOpenWorkWindow(url);
             new Timer() {
                 @Override
                 public void run() {
+                    jsniCLoseWOrkWindow();
                     createContextsForNextPid();
                 }
             }.schedule(waitTime);
@@ -74,6 +72,20 @@ public class GenerateTutorContextsAll extends GenerateTutorContextPanel {
         }
     }
 
+    native private void jsniOpenWorkWindow(String url) /*-{
+       $wnd._workWindow = $wnd.open(url,"CmContext","height=640,width=480,menubar=false,location=false");
+    }-*/;
+
+
+    native private void jsniCLoseWOrkWindow() /*-{
+        if($wnd._workWindow) {
+            $wnd._workWindow.close();
+        }
+    }-*/;
+
+    
+
+    @Override
     protected void addViewerLinks(String pid, int count) {
         /** create empty implementation */
     }

@@ -12,6 +12,14 @@
     <link type="text/css" rel="stylesheet" href="/css/tutor_widget.css">
   </head>
   <body>
+    <script>
+        /** completly disable logging */
+        console = {
+            log: function (x) {
+                // empty
+            }
+        };
+    </script>
 
     <script src='http://code.jquery.com/jquery-1.8.1.min.js'></script>
 
@@ -38,5 +46,7 @@
     <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
 
     <script type="text/javascript" language="javascript" src="tutor_viewer.nocache.js"></script>
+
+    <div id='work_area'></div>
   </body>
 </html>

@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.RootPanel;
         
         if(CmGwtUtils.getQueryParameter("generate_context_all") != null) {
             String pid = CmGwtUtils.getQueryParameter("pid");  // can contain wild
-            String waitTimeS = CmGwtUtils.getQueryParameter("waitTime");  // can contain wild
+            String waitTimeS = CmGwtUtils.getQueryParameter("wait");  // can contain wild
             if(waitTimeS == null) {
                 waitTimeS = "5000";
             }
