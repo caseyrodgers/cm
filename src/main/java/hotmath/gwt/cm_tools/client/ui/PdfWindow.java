@@ -35,7 +35,7 @@ public class PdfWindow {
                 /** Was blanking out screen in IE 
                  * 
                  */
-                String features = "resizable=yes,scrollbars=yes,status=yes, height=640, width=480";
+                String features = "resizable=yes,scrollbars=yes,status=yes,height=900,width=700";
                 Window.open(webResource.getUrl(), "CmPDFViewer", features);
             }
         }.register();
