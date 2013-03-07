@@ -36,7 +36,7 @@ public class PdfWindow {
                  * 
                  */
                 String features = "resizable=yes,scrollbars=yes,status=yes,height=900,width=700";
-                Window.open(webResource.getUrl(), "CmPDFViewer", features);
+                Window.open(webResource.getUrl(), "_blank", features);
             }
         }.register();
     }

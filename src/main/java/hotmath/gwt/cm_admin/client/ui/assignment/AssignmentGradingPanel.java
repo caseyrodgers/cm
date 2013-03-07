@@ -102,7 +102,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         super.setHeadingText("Click any problem status to adjust grade");
         super.getHeader().setHeight("30px");
 
-        problemNumberCol = new ColumnConfig<StudentProblemDto, Integer>(spProps.problemNumberOrdinal(), 20, "");
+        problemNumberCol = new ColumnConfig<StudentProblemDto, Integer>(spProps.problemNumberOrdinal(), 25, "");
         problemCol = new ColumnConfig<StudentProblemDto, String>(spProps.pidLabel(), 120, "Problem");
 
         problemCol.setCell(new StudentProblemGridCell(new ProblemGridCellCallback() {
