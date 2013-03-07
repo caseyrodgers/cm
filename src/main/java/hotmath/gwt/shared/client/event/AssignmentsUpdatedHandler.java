@@ -1,4 +1,4 @@
-package hotmath.gwt.cm.client.event;
+package hotmath.gwt.shared.client.event;
 
 import com.google.gwt.event.shared.EventHandler;
 

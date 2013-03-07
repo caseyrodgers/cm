@@ -1,7 +1,5 @@
 package hotmath.gwt.cm.client.ui;
 
-import hotmath.gwt.cm.client.event.AssignmentsUpdatedEvent;
-import hotmath.gwt.cm.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm.client.ui.StudentAssignmentButton.ButtonState;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
@@ -19,6 +17,8 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedHandler;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.shared.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
