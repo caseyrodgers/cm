@@ -3682,6 +3682,7 @@ where id in ($$UID_LIST$$)
 and   admin_id > 0
 and   (is_self_reg is null or is_self_reg = 0)
 group by group_id
+order by g.name
 
 
 .key=GET_GROUP_ASSIGNMENTS_ALL

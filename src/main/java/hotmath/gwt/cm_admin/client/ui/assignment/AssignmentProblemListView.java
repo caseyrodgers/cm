@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.CmShared;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -154,7 +155,7 @@ public class AssignmentProblemListView extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
                 if(CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
-                    CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
+                    Log.error("Assignments can only be edited in draft mode.");
                     return;
                 }
                 
@@ -218,7 +219,7 @@ public class AssignmentProblemListView extends ContentPanel {
             public void onSelect(SelectEvent event) {
                 
                 if(CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
-                    CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
+                    Log.error("Assignments can only be edited in draft mode.");
                     return;
                 }
                 

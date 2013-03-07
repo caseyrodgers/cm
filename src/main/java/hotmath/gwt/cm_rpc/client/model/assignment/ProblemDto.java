@@ -92,19 +92,18 @@ public class ProblemDto extends BaseDto implements Response {
      * @return
      */
     public String getProblemTypeName() {
-
         String typeTag = "";
         switch (getProblemType()) {
         case INPUT_WIDGET:
-            typeTag = "(iw)";
+            typeTag = "";
             break;
 
         case MULTI_CHOICE:
-            typeTag = "(mc)";
+            typeTag = "(MC)";
             break;
 
         case WHITEBOARD:
-            typeTag = "(w)";
+            typeTag = "(WB)";
             break;
 
         case UNKNOWN:

@@ -148,7 +148,7 @@ public class AssignmentCopyDialog extends GWindow{
         grid.getView().setColumnLines(true);        
         grid.setLoadMask(true);
         
-        _grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
+        grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
             @Override
             public void onCellClick(CellDoubleClickEvent event) {
                 importSelectedAssignment();

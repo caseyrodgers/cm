@@ -59,7 +59,7 @@ public class EditAssignmentDialog {
     ComboBox<AssignmentStatusDto> _assignmentStatus;
     TextButton saveDraftMode, saveAssign;
     
-    CheckBox _closeOnExpire;
+    CheckBox _allowLateSubmissions;
     
     boolean _isDraftMode;
 
@@ -102,9 +102,9 @@ public class EditAssignmentDialog {
         header.add(commentsLabel);
         
         
-        _closeOnExpire = new CheckBox();
-        _closeOnExpire.setValue(assignment.isClosePastDue());
-        _closeOnExpire.setToolTip("Close automatically when past due date");
+        _allowLateSubmissions = new CheckBox();
+        _allowLateSubmissions.setValue(!assignment.isClosePastDue());
+        _allowLateSubmissions.setToolTip("Should changes be allowed after the due date");
         
         HorizontalLayoutData hData1 = new HorizontalLayoutData();
         HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
@@ -133,7 +133,7 @@ public class EditAssignmentDialog {
             hData.setMargins(new Margins(0, 20, 0, 20));
             hCon.add(statusLabel, hData1);
         }
-        hCon.add(new MyFieldLabel(_closeOnExpire, "Close Past Due", 85, 20), hData1);
+        hCon.add(new MyFieldLabel(_allowLateSubmissions, "Allow late submissions", 85, 20), hData1);
         header.add(hCon);
         
         BorderLayoutData bd = new BorderLayoutData();
@@ -303,7 +303,7 @@ public class EditAssignmentDialog {
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
-        _assignment.setClosePastDue(_closeOnExpire.getValue());
+        _assignment.setClosePastDue(!_allowLateSubmissions.getValue());
         
         if(asDraft) {
             _assignment.setStatus("Draft");

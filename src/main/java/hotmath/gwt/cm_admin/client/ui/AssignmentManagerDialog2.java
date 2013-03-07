@@ -194,11 +194,6 @@ public class AssignmentManagerDialog2  {
                         }
                     }
                 }
-                
-                if(!groupSelected) {
-                    _groupCombo.expand();
-                }
-                
                 _mainContainer.forceLayout();
             }
         }.register();                

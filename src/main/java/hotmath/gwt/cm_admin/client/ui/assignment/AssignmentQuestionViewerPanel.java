@@ -62,7 +62,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         _tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault(){
             @Override
             public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
-                CmMessageBox.showAlert("Not Allowed", "Changes to value are not allowed.<br/>Use the whiteboard to show corrections.");
+                CmMessageBox.showAlert("Not Allowed", "To provide feedback, write on the whiteboard.");
             }
         });
         _tutorPanel.setReadOnly(true);

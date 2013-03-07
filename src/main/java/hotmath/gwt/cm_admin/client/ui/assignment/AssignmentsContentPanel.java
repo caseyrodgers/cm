@@ -22,14 +22,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -298,11 +295,12 @@ public class AssignmentsContentPanel extends ContentPanel {
         
         final Assignment ass = getSelectedAssigmment();
         if(ass != null) {
-            final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Deleting active assignments will prevent students from working on the assignment or reviewing it.");
+            final ConfirmMessageBox cm = new ConfirmMessageBox("Delete Assignment", "Deleting an assignment will prevent students from working on the assignment or reviewing it.");
+            cm.setPredefinedButtons(PredefinedButton.OK, PredefinedButton.CANCEL);
             cm.addHideHandler(new HideHandler() {
                 @Override
                 public void onHide(HideEvent event) {
-                    if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                    if (cm.getHideButton() != cm.getButtonById(PredefinedButton.CANCEL.name())) {
                         deleteAssignment(ass);
                     }
                 }
