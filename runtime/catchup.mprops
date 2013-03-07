@@ -3906,3 +3906,31 @@ or global_context_created < date(now())
 order by pid
 
  
+
+ 
+.key=ASSIGNMENT_WHITEBOARD
+ 
+ select * 
+ from CM_ASSIGNMENT_PID_WHITEBOARD 
+ where user_id = ? 
+ and assign_key = ? 
+ and pid = ? 
+ and command_data is not null 
+ order by insert_time_mills
+ 
+ 
+ 
+.key=ASSIGNMENT_UNREAD_FEEDBACK
+ ## find number of pids that have admin feedback messages
+ ## that have not been seen yet.
+select count(*)
+from (
+    select w.pid, count(*)
+    from   CM_ASSIGNMENT_PID_WHITEBOARD w
+       JOIN CM_ASSIGNMENT_PID_STATUS s on (s.uid = w.user_id and s.assign_key = w.assign_key and s.pid = w .pid)
+    where    w.user_id = ?
+    and      w.is_admin = 1
+    and      w.write_datetime > s.access_datetime
+    group by w.pid
+) c
+ 

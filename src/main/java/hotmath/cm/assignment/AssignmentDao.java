@@ -57,7 +57,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -1196,6 +1195,29 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 __logger.error("Error setting assignment pid status", e);
             }
         }
+        
+        updateAssignmentProblemAccessTime(assignKey, uid, pid);
+    }
+
+    /** Update the time the last time this assignment solution was accessed
+     * 
+     * @param assignKey
+     * @param uid
+     * @param pid
+     */
+    public void updateAssignmentProblemAccessTime(final int assignKey, final int uid, final String pid) {
+        
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update CM_ASSIGNMENT_PID_STATUS set access_datetime = now() where assign_key = ? and uid = ? and pid = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, assignKey);
+                ps.setInt(2, uid);
+                ps.setString(3, pid);
+                return ps;
+            }
+        });
     }
 
     /**
@@ -1206,8 +1228,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @return
      */
-    public List<WhiteboardCommand> getWhiteboardData(int uid, int assignId, String pid) {
-        String sql = "select * from CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ? and command_data is not null order by insert_time_mills";
+    public List<WhiteboardCommand> getWhiteboardData(int uid, int assignId, String pid) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_WHITEBOARD"); 
         return getJdbcTemplate().query(sql, new Object[] { uid, assignId, pid }, new RowMapper<WhiteboardCommand>() {
             @Override
             public WhiteboardCommand mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -1276,8 +1298,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin) "
-                            + " values(?,?,?,?,?,?, ?) ";
+                    String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin, write_datetime) "
+                            + " values(?,?,?,?,?,?, ?, now()) ";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, uid);
                     ps.setString(2, pid);
@@ -1551,5 +1573,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         Assignment assignment = getAssignment(assignmentKey);
         assignment.setStatus("Active");
         saveAssignment(assignment);
+    }
+
+    public int getNumberOfUnreadFeedback(final int uid) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_UNREAD_FEEDBACK");
+        List<Integer> cnt = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
+            }
+        });
+        return cnt.get(0);
     }
 }

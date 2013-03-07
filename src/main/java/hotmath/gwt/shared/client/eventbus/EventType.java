@@ -201,12 +201,7 @@ public enum EventType{
      * 
      */
     EVENT_TYPE_QUESTION_VIEWER_CLOSED,
-    
-    
-    /** Fired after Assignments have been checked on server
-     * 
-     */
-    EVENT_TYPE_ASSIGNMENTS_UPDATED, 
+
     
     
     /** Fired when the current resource should be maximized

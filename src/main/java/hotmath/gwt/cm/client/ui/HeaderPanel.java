@@ -1,7 +1,9 @@
 package hotmath.gwt.cm.client.ui;
 
-import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
+import hotmath.gwt.cm.client.ui.StudentAssignmentButton.ButtonState;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -24,18 +26,18 @@ import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.MyResources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.IconButton;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.SimpleContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
@@ -46,27 +48,24 @@ public class HeaderPanel extends FlowLayoutContainer {
     Label _headerText;
     HTML _helloInfo = new HTML();
     private MyIconButton helpButton;
-    Anchor _assignmentsAnchor;
+    StudentAssignmentButton _assignmentsAnchor;
+
+    MyResources myResources = GWT.create(MyResources.class);
 
     public HeaderPanel() {
         __instance = this;
         setStyleName("header-panel");
 
-        if (true || CmShared.getQueryParameter("debug") != null) {
-            _assignmentsAnchor = new Anchor("Assignments");
-            _assignmentsAnchor.addStyleName("assigments_anchor");
-            _assignmentsAnchor.addClickHandler(new ClickHandler() {
-                @Override
-                public void onClick(ClickEvent event) {
-                    if (!UserInfo.getInstance().isDemoUser()) {
-                        CatchupMath.getThisInstance().showAssignments_gwt();
-                    } else {
-                        CatchupMathTools.showAlert("Assignments are not available for demo accounts.");
-                    }
-                }
-            });
-            add(_assignmentsAnchor);
-        }
+        TextButton asBtn = new TextButton();
+        asBtn.setIcon(myResources.assignmentBlue());
+        _assignmentsAnchor = new StudentAssignmentButton();
+        _assignmentsAnchor.addStyleName("assigments_anchor");
+
+        /**
+         * Assignments not available for retail accounts
+         * 
+         */
+        add(_assignmentsAnchor);
 
         _helloInfo.setStyleName("hello-info");
         _helloInfo.addClickHandler(new ClickHandler() {
@@ -82,10 +81,10 @@ public class HeaderPanel extends FlowLayoutContainer {
         helpButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-            	
-            	Event currentEvent = helpButton.getCurrentEvent();
+
+                Event currentEvent = helpButton.getCurrentEvent();
                 if (currentEvent != null && currentEvent.getCtrlKey()) {
-                	new ShowDebugUrlWindow();
+                    new ShowDebugUrlWindow();
                 } else {
                     GWT.runAsync(new CmRunAsyncCallback() {
                         @Override
@@ -127,8 +126,7 @@ public class HeaderPanel extends FlowLayoutContainer {
                      */
                     if (CmShared.getQueryParameter("debug") != null || UserInfo.getInstance().isAutoTestMode()
                             || CmHistoryQueue.getInstance().isInitializingToNonStandard())
-                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: "
-                                + event.getEventData()));
+                        InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
                     else {
                         new ContextChangeMessage((String) event.getEventData());
                     }
@@ -142,36 +140,24 @@ public class HeaderPanel extends FlowLayoutContainer {
                 case EVENT_TYPE_LOGOUT:
                     setLogout();
                     break;
-
-                case EVENT_TYPE_ASSIGNMENTS_UPDATED:
-                    updateAssignmentMessage((Boolean) event.getEventData());
-                    break;
                 }
 
             }
         });
     }
-    
-    
+
     public void enable() {
         // no op
     }
-
-
-
 
     protected void updateUserTutorStats(UserTutorWidgetStats userStats) {
         UserInfo.getInstance().setTutorInputWidgetStats(userStats);
         setLoginInfo();
     }
 
-    private void updateAssignmentMessage(boolean incompleteAssignments) {
-        if(_assignmentsAnchor != null) {
-            if (incompleteAssignments) {
-                _assignmentsAnchor.setText("You have Assignments");
-            } else {
-                _assignmentsAnchor.setText("You do not have Assignments");
-            }
+    private void updateAssignmentMessage(int activeAssignments, int unreadFeedback) {
+        if (_assignmentsAnchor != null) {
+            _assignmentsAnchor.setState(activeAssignments, unreadFeedback);
         }
     }
 
@@ -236,13 +222,13 @@ public class HeaderPanel extends FlowLayoutContainer {
              */
             if (nameCap.startsWith("Student: "))
                 nameCap = "Student";
-            
+
             nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
             String s = "Welcome <b>" + nameCap + "</b>.";
             if (viewCount > 1) {
                 s += "  You have completed " + viewCount + " problems. ";
-                if(UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
-                    s+= "Your <a href='#'>score</a> is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
+                if (UserInfo.getInstance().getTutorInputWidgetStats().getCountWidgets() > 0) {
+                    s += "Your <a href='#'>score</a> is " + UserInfo.getInstance().getTutorInputWidgetStats().getCorrectPercent() + "%";
                 }
             }
             _helloInfo.setHTML(s);
@@ -255,20 +241,21 @@ public class HeaderPanel extends FlowLayoutContainer {
     public void setHeaderInfo() {
         CatchupMathTools.showAlert("Set Header info");
     }
-    
-    
-    
+
     static {
-        CmRpc.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE,  new UserTutorWidgetStatusUpdatedHandler() {
+        CmRpc.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE, new UserTutorWidgetStatusUpdatedHandler() {
             @Override
             public void userStatsUpdate(UserTutorWidgetStats userStats) {
                 __instance.updateUserTutorStats(userStats);
             }
         });
         
+        CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
+            @Override
+            public void assignmentsUpdated(int activeAssignments, int unreadFeedback) {
+                __instance.updateAssignmentMessage(activeAssignments, unreadFeedback);
+            }
+        });
+
     }
 }
-
-
-
-

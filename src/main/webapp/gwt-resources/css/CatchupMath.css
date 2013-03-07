@@ -29,10 +29,7 @@ h1, h2, h3, h4 {
 .header-panel .assigments_anchor {
 	position: absolute;
 	left: 200px;
-	top:8px;
-    color: red;
-    font-weight: bold;
-    width: 200px;
+	top:4px;
 }
 
 .main-port {

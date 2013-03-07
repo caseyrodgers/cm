@@ -12,16 +12,18 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class UserSyncInfo implements Response{
     CatchupMathVersion versionInfo;
     String currentUserLoginKey;
-    boolean hasNewAssignments;
+    private int activeAssignments;
+    private int unreadMessages;
     
     //CmList<Assignment> assignments;
     
     public UserSyncInfo() {}
     
-    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, boolean hasNewAssignments) {
+    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, int activeAssignments, int unreadMessages) {
         this.versionInfo = version;        
         this.currentUserLoginKey = currentUserLoginKey;
-        this.hasNewAssignments = hasNewAssignments;
+        this.setActiveAssignments(activeAssignments);
+        this.setUnreadMessages(unreadMessages);
     }
 
     public CatchupMathVersion getVersionInfo() {
@@ -40,18 +42,26 @@ public class UserSyncInfo implements Response{
         this.currentUserLoginKey = currentUserLoginKey;
     }
 
-    public boolean isHasNewAssignments() {
-        return hasNewAssignments;
+    public int getActiveAssignments() {
+        return activeAssignments;
     }
 
-    public void setHasNewAssignments(boolean hasNewAssignments) {
-        this.hasNewAssignments = hasNewAssignments;
+    public void setActiveAssignments(int activeAssignments) {
+        this.activeAssignments = activeAssignments;
+    }
+
+    public int getUnreadMessages() {
+        return unreadMessages;
+    }
+
+    public void setUnreadMessages(int unreadMessages) {
+        this.unreadMessages = unreadMessages;
     }
 
     @Override
     public String toString() {
-        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey
-                + ", hasNewAssignments=" + hasNewAssignments + "]";
+        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey + ", activeAssignments=" + activeAssignments
+                + ", unreadMessages=" + unreadMessages + "]";
     }
     
 }
