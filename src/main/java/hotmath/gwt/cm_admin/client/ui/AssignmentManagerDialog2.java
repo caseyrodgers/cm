@@ -4,6 +4,7 @@ import java.util.Date;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.GradebookButtonCallback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
@@ -22,12 +23,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
-import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
@@ -42,6 +37,12 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.info.Info;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 
 /**
  * Provide dialog to allow Admins ability to define and manage Assignments.
@@ -58,6 +59,8 @@ public class AssignmentManagerDialog2  {
     ComboBox<GroupDto> _groupCombo;
     BorderLayoutContainer _mainContainer;
     private int _groupIdToLoad;
+    private TextButton _gradeBookButton;
+
     public AssignmentManagerDialog2(int groupIdToLoad, int aid) {
         __lastInstance = this;
         _groupIdToLoad = groupIdToLoad;
@@ -82,7 +85,8 @@ public class AssignmentManagerDialog2  {
 
         HorizontalLayoutData hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,10,0,20));
-        header.add(createGradeBookButton(), hd);
+        _gradeBookButton = createGradeBookButton();
+        header.add(_gradeBookButton, hd);
 
         header.add(new TextButton("Assignments Guide", new SelectHandler() {
             @Override
@@ -94,29 +98,35 @@ public class AssignmentManagerDialog2  {
         _mainContainer.setNorthWidget(header, northData);
         
         _assignmentsPanel = new AssignmentsContentPanel(new Callback() {
-            @Override
-            public void showAssignmentStatus(Assignment assignment) {
-                new AssignmentStatusDialog(assignment);
-            }
-        });
+                @Override
+                public void showAssignmentStatus(Assignment assignment) {
+                    new AssignmentStatusDialog(assignment);
+                }
+            },
+            new GradebookButtonCallback() {
+            	@Override
+        	    public void enable(boolean enable) {
+        		    if (enable == true) _gradeBookButton.enable();
+        		    else _gradeBookButton.disable();
+        	    }
+            });
         
         /** 
-         * intially have the assignments window full
+         * initially have the assignments window full
          */
         _mainContainer.setCenterWidget(_assignmentsPanel);
         
-        //window.addButton(createGradeBookButton());
         window.addCloseButton();
         
         window.setWidget(_mainContainer);
         window.show();
     }
-    
+
     GroupDto _lastGroup;
     private void loadGroupInfo(GroupDto group) {
         _lastGroup = group;
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
-        _assignmentsPanel.loadAssignentsFor(group);
+        _assignmentsPanel.loadAssignmentsFor(group);
     }
     
     
@@ -200,8 +210,8 @@ public class AssignmentManagerDialog2  {
     }
     
 
-    private Widget createGradeBookButton() {
-        TextButton gradeBook = new TextButton("Gradebook", new SelectHandler() {
+    private TextButton createGradeBookButton() {
+        TextButton gradeBookBtn = new TextButton("Gradebook", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 if(_lastGroup == null) {
@@ -222,7 +232,8 @@ public class AssignmentManagerDialog2  {
                 action.setToDate(toDate);
                 new PdfWindow(action.getAdminId(), "Grade Book Report", action);
             }});
-        return gradeBook;
+        gradeBookBtn.disable();
+        return gradeBookBtn;
     }
 
     protected void refreshData() {

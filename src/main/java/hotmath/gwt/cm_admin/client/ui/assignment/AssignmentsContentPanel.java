@@ -62,17 +62,23 @@ public class AssignmentsContentPanel extends ContentPanel {
     public interface Callback {
         void showAssignmentStatus(Assignment assignment);
     }
-    
+
+    public interface GradebookButtonCallback {
+        void enable(boolean enable);
+    }
+
     Callback _callBack;
+    GradebookButtonCallback _gbCallback;
     
     /** Contains grid of assignments
      * 
      * @param gradeBookPanel
      */
-    public AssignmentsContentPanel(Callback callback) {
+    public AssignmentsContentPanel(Callback callback, GradebookButtonCallback gbCallback) {
         super.setHeadingText("Assignments");
         
         _callBack = callback;
+        _gbCallback = gbCallback;
 
         _adminId = UserInfoBase.getInstance().getUid();
         
@@ -191,10 +197,10 @@ public class AssignmentsContentPanel extends ContentPanel {
         }.register();        
     }
     public void refreshData() {
-        loadAssignentsFor(_currentGroup);
+        loadAssignmentsFor(_currentGroup);
     }
 
-    public void loadAssignentsFor(GroupDto group) {
+    public void loadAssignmentsFor(GroupDto group) {
         setWidget(_grid);
         _currentGroup = group;
         readAssignmentData(group);
@@ -216,11 +222,13 @@ public class AssignmentsContentPanel extends ContentPanel {
                 
                 if(assignments.size() == 0) {
                     showNoAssignedProblemsMessage();
+                    _gbCallback.enable(false);
                 }
                 else {
                     setWidget(_grid);
                     _grid.getStore().clear();
                     _grid.getStore().addAll(assignments);
+                    _gbCallback.enable(true);
     //                if(assignments.size() > 0) {
     //                    List<Assignment> selectedList = new ArrayList<Assignment>();
     //                    selectedList.add(assignments.get(0));
