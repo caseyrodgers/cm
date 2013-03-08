@@ -55,18 +55,6 @@ public class HeaderPanel extends FlowLayoutContainer {
     public HeaderPanel() {
         __instance = this;
         setStyleName("header-panel");
-
-        TextButton asBtn = new TextButton();
-        asBtn.setIcon(myResources.assignmentBlue());
-        _assignmentsAnchor = new StudentAssignmentButton();
-        _assignmentsAnchor.addStyleName("assigments_anchor");
-
-        /**
-         * Assignments not available for retail accounts
-         * 
-         */
-        add(_assignmentsAnchor);
-
         _helloInfo.setStyleName("hello-info");
         _helloInfo.addClickHandler(new ClickHandler() {
             @Override
@@ -156,8 +144,20 @@ public class HeaderPanel extends FlowLayoutContainer {
     }
 
     private void updateAssignmentMessage(AssignmentMetaInfo assInfo) {
-        if (_assignmentsAnchor != null) {
-            _assignmentsAnchor.setState(assInfo);
+        if(assInfo.isAdminUsingAssignments()) {
+            if(_assignmentsAnchor == null) {
+                _assignmentsAnchor = new StudentAssignmentButton();
+                _assignmentsAnchor.addStyleName("assigments_anchor");
+        
+                /**
+                 * Assignments not available for retail accounts
+                 * 
+                 */
+                add(_assignmentsAnchor);
+            }
+            if (_assignmentsAnchor != null) {
+                _assignmentsAnchor.setState(assInfo);
+            }
         }
     }
 

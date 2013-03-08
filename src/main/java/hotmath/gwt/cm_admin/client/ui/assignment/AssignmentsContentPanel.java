@@ -288,6 +288,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         newAss.setStatus("Draft");
         newAss.setAssignmentName("My New Assignment: " + new Date());
         newAss.setGroupId(_currentGroup.getGroupId());
+        newAss.setAdminId(UserInfoBase.getInstance().getUid());
         
         Date defaultDate = new Date();
         newAss.setDueDate(defaultDate);

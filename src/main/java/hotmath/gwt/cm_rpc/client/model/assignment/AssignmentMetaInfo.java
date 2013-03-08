@@ -13,15 +13,9 @@ public class AssignmentMetaInfo implements Response {
     private int closedAssignments;
     private int expiredAssignments;
     private int unreadMessages;
+    private boolean adminUsingAssignments;
 
     public AssignmentMetaInfo(){}
-    
-    public AssignmentMetaInfo(int activeAssignments, int closedAssignments, int expiredAssignments, int unreadMessages) {
-        this.activeAssignments = activeAssignments;
-        this.closedAssignments = closedAssignments;
-        this.expiredAssignments = expiredAssignments;
-        this.unreadMessages = unreadMessages;
-    }
 
     public int getActiveAssignments() {
         return activeAssignments;
@@ -53,5 +47,13 @@ public class AssignmentMetaInfo implements Response {
 
     public void setUnreadMessages(int unreadMessages) {
         this.unreadMessages = unreadMessages;
+    }
+
+    public boolean isAdminUsingAssignments() {
+        return adminUsingAssignments;
+    }
+
+    public void setAdminUsingAssignments(boolean adminUsingAssignments) {
+        this.adminUsingAssignments = adminUsingAssignments;
     }
 }

@@ -948,7 +948,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param metaInfo
      * @throws Exception
      */
-    public void getAssignmentStatuses(int uid, final AssignmentMetaInfo metaInfo) throws Exception {
+    private void getAssignmentStatuses(int uid, final AssignmentMetaInfo metaInfo) throws Exception {
 
         __logger.debug("Getting assignment statuses for '" + uid + "'");
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_STATUS");
@@ -1596,10 +1596,40 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return cnt.get(0);
     }
 
+    /** Return information about this student's assignment use.  
+     * 
+     * @param uid
+     * @return
+     * @throws Exception
+     */
     public AssignmentMetaInfo getStudentAssignmentMetaInfo(int uid) throws Exception {
         AssignmentMetaInfo assignmentInfo = new AssignmentMetaInfo();
-        getAssignmentStatuses(uid, assignmentInfo);
-        assignmentInfo.setUnreadMessages(getNumberOfUnreadFeedback(uid));
+        if(isAdminUsingAssignmentsAtAll(uid)) {
+            assignmentInfo.setAdminUsingAssignments(true);
+            getAssignmentStatuses(uid, assignmentInfo);
+            assignmentInfo.setUnreadMessages(getNumberOfUnreadFeedback(uid));
+        }
         return assignmentInfo;
+    }
+
+    /** Return true if this admin is using assignments at all.
+     * 
+     *  Meaning there are zero assignments created.
+     *  
+     * @param uid
+     * @return
+     */
+    private boolean isAdminUsingAssignmentsAtAll(int uid) {
+        String sql = "select count(*) " +
+                     " from    CM_ASSIGNMENT a " +
+                     " JOIN HA_USER u on u.admin_id = a.aid " +
+                     " and u.uid = ?";
+        Integer countOfAssignments = getJdbcTemplate().queryForObject(sql, new Object[] {uid}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
+            }
+        });
+        return countOfAssignments > 0;
     }
 }
