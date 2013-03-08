@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc;
 
-import hotmath.cm.exception.InformationOnlyException;
+//import hotmath.cm.exception.InformationOnlyException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
