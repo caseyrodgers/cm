@@ -121,7 +121,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                 	 }
                  }
                  
-                 CmRpc.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(info.getActiveAssignments(), info.getUnreadMessages()));
+                 CmRpc.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(info.getAssignmentInfo()));
             }
              @Override
             public void onFailure(Throwable arg0) {

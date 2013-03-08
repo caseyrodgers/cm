@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
@@ -941,23 +942,32 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     }
 
-    public int getNumberOfIncompleteAssignments(int uid) {
+    /** Fills up metaInfo with meta information about this student's assignment statuses.
+     * 
+     * @param uid
+     * @param metaInfo
+     * @throws Exception
+     */
+    public void getAssignmentStatuses(int uid, final AssignmentMetaInfo metaInfo) throws Exception {
 
-        __logger.debug("Getting number of of assignments for '" + uid + "'");
-
-        String sql = "select count(*) as cnt " + " from HA_USER u " + " JOIN CM_GROUP g on g.id = u.group_id "
-                + " JOIN CM_ASSIGNMENT a on a.group_id = u.group_id " + " where u.uid = ? and a.status = 'Active' ";
-
-        List<Integer> cnt = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
+        __logger.debug("Getting assignment statuses for '" + uid + "'");
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_STATUS");
+        getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getInt("cnt");
+                String status = rs.getString("status");
+                if(status.equalsIgnoreCase("active")) {
+                    metaInfo.setActiveAssignments(rs.getInt("cnt"));
+                }
+                else if(status.equalsIgnoreCase("closed")) {
+                    metaInfo.setClosedAssignments(rs.getInt("cnt"));
+                }
+                else if(status.equalsIgnoreCase("expired")) {
+                    metaInfo.setExpiredAssignments(rs.getInt("cnt"));
+                }
+                return 0;
             }
         });
-
-        __logger.debug("Assignments for '" + uid + "': " + cnt.get(0));
-        return cnt.get(0);
-
     }
 
     public List<Assignment> getAssignmentsForUser(final int uid) throws Exception {
@@ -1575,7 +1585,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         saveAssignment(assignment);
     }
 
-    public int getNumberOfUnreadFeedback(final int uid) throws Exception {
+    private int getNumberOfUnreadFeedback(final int uid) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_UNREAD_FEEDBACK");
         List<Integer> cnt = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<Integer>() {
             @Override
@@ -1584,5 +1594,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
         return cnt.get(0);
+    }
+
+    public AssignmentMetaInfo getStudentAssignmentMetaInfo(int uid) throws Exception {
+        AssignmentMetaInfo assignmentInfo = new AssignmentMetaInfo();
+        getAssignmentStatuses(uid, assignmentInfo);
+        assignmentInfo.setUnreadMessages(getNumberOfUnreadFeedback(uid));
+        return assignmentInfo;
     }
 }

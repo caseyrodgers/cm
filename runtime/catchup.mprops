@@ -3934,3 +3934,16 @@ from (
     group by w.pid
 ) c
  
+ 
+ 
+.key=STUDENT_ASSIGNMENT_STATUS
+## Get the status of all student's assignments
+ 
+select a.status, count(*) as cnt
+from HA_USER u
+   JOIN CM_GROUP g on g.id = u.group_id
+  JOIN CM_ASSIGNMENT a on a.group_id = u.group_id
+where u.uid = ? 
+and a.status != 'Draft'
+group by a.status
+

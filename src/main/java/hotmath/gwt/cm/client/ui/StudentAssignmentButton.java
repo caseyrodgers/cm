@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.util.MyResources;
 
@@ -33,11 +34,19 @@ public class StudentAssignmentButton extends TextButton {
     }
     
     
-    public void setState(int activeAssignments, int unreadFeedback) {
-        if(activeAssignments > 0 || unreadFeedback > 0) {
+    public void setState(AssignmentMetaInfo assInfo) {
+        if(assInfo.getActiveAssignments() > 0 || assInfo.getUnreadMessages() > 0) {
             _state = ButtonState.HAS_ASSIGNMENTS;
+            
             setIcon(resources.assignmentRed());
-            setToolTip("You have assignments: " + " active: " + activeAssignments + ", new feedback: " + unreadFeedback);
+
+            int aa = assInfo.getActiveAssignments();
+            int fa = assInfo.getUnreadMessages();
+            String tip = "You have " + aa + " active assignment" + (aa>1?"s":"") + ".  ";
+            if(fa > 0) {
+                tip += "You have " + fa + " feedback message" + (fa>1?"s":"") + ".";
+            }
+            setToolTip(tip);
         }
         else {
             _state = ButtonState.NO_ASSIGNMENTS;

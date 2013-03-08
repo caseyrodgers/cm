@@ -1,10 +1,10 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
-import hotmath.gwt.cm.client.ui.StudentAssignmentButton.ButtonState;
 import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -155,9 +155,9 @@ public class HeaderPanel extends FlowLayoutContainer {
         setLoginInfo();
     }
 
-    private void updateAssignmentMessage(int activeAssignments, int unreadFeedback) {
+    private void updateAssignmentMessage(AssignmentMetaInfo assInfo) {
         if (_assignmentsAnchor != null) {
-            _assignmentsAnchor.setState(activeAssignments, unreadFeedback);
+            _assignmentsAnchor.setState(assInfo);
         }
     }
 
@@ -252,8 +252,8 @@ public class HeaderPanel extends FlowLayoutContainer {
         
         CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
             @Override
-            public void assignmentsUpdated(int activeAssignments, int unreadFeedback) {
-                __instance.updateAssignmentMessage(activeAssignments, unreadFeedback);
+            public void assignmentsUpdated(AssignmentMetaInfo assInfo) {
+                __instance.updateAssignmentMessage(assInfo);
             }
         });
 

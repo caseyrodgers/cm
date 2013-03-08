@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc.result;
 
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Encapsulates the information about a current 
@@ -12,18 +13,17 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class UserSyncInfo implements Response{
     CatchupMathVersion versionInfo;
     String currentUserLoginKey;
-    private int activeAssignments;
-    private int unreadMessages;
+    AssignmentMetaInfo assignmentInfo;
+
     
     //CmList<Assignment> assignments;
     
     public UserSyncInfo() {}
     
-    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, int activeAssignments, int unreadMessages) {
+    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, AssignmentMetaInfo assignmentInfo) {
         this.versionInfo = version;        
         this.currentUserLoginKey = currentUserLoginKey;
-        this.setActiveAssignments(activeAssignments);
-        this.setUnreadMessages(unreadMessages);
+        this.assignmentInfo = assignmentInfo;
     }
 
     public CatchupMathVersion getVersionInfo() {
@@ -42,26 +42,16 @@ public class UserSyncInfo implements Response{
         this.currentUserLoginKey = currentUserLoginKey;
     }
 
-    public int getActiveAssignments() {
-        return activeAssignments;
+    public AssignmentMetaInfo getAssignmentInfo() {
+        return assignmentInfo;
     }
 
-    public void setActiveAssignments(int activeAssignments) {
-        this.activeAssignments = activeAssignments;
-    }
-
-    public int getUnreadMessages() {
-        return unreadMessages;
-    }
-
-    public void setUnreadMessages(int unreadMessages) {
-        this.unreadMessages = unreadMessages;
+    public void setAssignmentInfo(AssignmentMetaInfo _assignmentInfo) {
+        this.assignmentInfo = _assignmentInfo;
     }
 
     @Override
     public String toString() {
-        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey + ", activeAssignments=" + activeAssignments
-                + ", unreadMessages=" + unreadMessages + "]";
+        return "UserSyncInfo [versionInfo=" + versionInfo + ", currentUserLoginKey=" + currentUserLoginKey + ", _assignmentInfo=" + assignmentInfo + "]";
     }
-    
 }
