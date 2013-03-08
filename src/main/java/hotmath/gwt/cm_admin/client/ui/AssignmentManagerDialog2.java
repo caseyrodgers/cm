@@ -233,6 +233,7 @@ public class AssignmentManagerDialog2  {
                 new PdfWindow(action.getAdminId(), "Grade Book Report", action);
             }});
         gradeBookBtn.disable();
+        gradeBookBtn.setToolTip("View summary of scores within Date Range");
         return gradeBookBtn;
     }
 
