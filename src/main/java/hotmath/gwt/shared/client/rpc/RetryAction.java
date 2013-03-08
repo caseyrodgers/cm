@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.client.rpc;
 
+import hotmath.cm.exception.InformationOnlyException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
@@ -174,8 +175,8 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
             }
             else {
                 
-                if( isInformationalOnlyException(error)){
-                    InfoPopupBox.display("Information",error.getMessage());
+                if(isInformationalOnlyException(error)){
+                    InfoPopupBox.display("Information", error.getMessage());
                 }
                 else {
                     sendInfoAboutRetriedCommand("failed", throwable);
@@ -204,8 +205,11 @@ public abstract class RetryAction<T> implements AsyncCallback<T> {
         }
     }
 
+    //TODO: add InformationOnlyException
     private boolean isInformationalOnlyException(Throwable th) {
-        if(th.getMessage() != null && th.getMessage().indexOf("test has already been checked") > -1) {
+        if(th.getMessage() != null && (
+        		th.getMessage().indexOf("test has already been checked") > -1 ||
+        		th.getMessage().indexOf("has no assignments in Date Range.") > -1)) {
             return true;
         }
         else {
