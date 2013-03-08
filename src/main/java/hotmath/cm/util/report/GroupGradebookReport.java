@@ -1,6 +1,7 @@
 package hotmath.cm.util.report;
 
 import hotmath.cm.assignment.AssignmentDao;
+import hotmath.cm.exception.InformationOnlyException;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -55,7 +56,8 @@ public class GroupGradebookReport {
 	private static final Color RED   = new Color(150, 0, 0);
 	private static final String NEW_LINE = System.getProperty("line.separator");
 
-	private static final int MAX_ASSIGNMENT_COLS = 6;
+	private static final int MAX_ASSIGNMENT_COLS = 10;
+	private static final int NAME_COL_SPAN = 2;
 	
 	public GroupGradebookReport(String title) {
 		this.title = title;
@@ -83,6 +85,10 @@ public class GroupGradebookReport {
             List<Assignment> assignmentList = (fromDate != null && toDate != null) ?
             		asgDao.getAssignments(adminId, groupId, fromDate, toDate) :
             		asgDao.getAssignments(adminId, groupId);
+
+            if (assignmentList == null || assignmentList.size() == 0) {
+            	throw new InformationOnlyException("Group, " + groupName + ", has no assignments in Date Range.");
+            }
 
             // sort Assignments by ascending due date
 			Collections.sort(assignmentList, new Comparator<Assignment>() {
@@ -122,33 +128,35 @@ public class GroupGradebookReport {
 			PdfWriter writer = PdfWriter.getInstance(document, baos);
 			document.open();
 
-			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
+			String schoolName = info.getSchoolName();
+			//if (schoolName.length() > 12) schoolName = schoolName.substring(0, 12);
+			Phrase school   = buildLabelContent("School: ", schoolName);
 			Phrase group    = (groupName != null) ? buildLabelContent("Group: ", groupName) : null;
-			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
+			String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
 			Phrase date     = buildLabelContent("Date: ", printDate);
 			Phrase dateRange = null;
 			if (fromDate != null && toDate != null) {
-				dateRange = buildLabelContent("Date Range: ", String.format("%1$tY-%1$tm-%1$td to %1$tY-%1$tm-%1$td", fromDate, toDate));
+				dateRange = buildLabelContent("Date range: ", String.format("%1$tm-%1$td to %2$tm-%1$td", fromDate, toDate));
 			}
 		    
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-GroupGradebookReport");
 
-			PdfPTable pdfTbl = new PdfPTable(3);
+			PdfPTable pdfTbl = new PdfPTable(4);
 			pdfTbl.setTotalWidth(600.0f);
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
 			pdfTbl.addCell(school);
 			if (group != null) pdfTbl.addCell(group);
-			pdfTbl.addCell(date);
 			if (dateRange != null) {
-				document.add(Chunk.NEWLINE);
 				pdfTbl.addCell(dateRange);
 				if (LOGGER.isDebugEnabled())
 					LOGGER.debug("added date range");
-				pdfTbl.addCell(new Phrase(" "));
+			}
+			else {
 				pdfTbl.addCell(new Phrase(" "));
 			}
+			pdfTbl.addCell(date);
 			
 			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
 
@@ -163,7 +171,7 @@ public class GroupGradebookReport {
 			int rowsPerStudent  = assignmentCount/MAX_ASSIGNMENT_COLS + ((assignmentCount%MAX_ASSIGNMENT_COLS != 0) ? 1 : 0);
 			int numberOfAssignmentColumns = (assignmentCount <= MAX_ASSIGNMENT_COLS) ? assignmentCount : MAX_ASSIGNMENT_COLS;
 			//int numberOfColumns = numberOfAssignmentColumns + 2;
-			int numberOfColumns = 10;
+			int numberOfColumns = NAME_COL_SPAN + MAX_ASSIGNMENT_COLS + 1;
 
     		Table tbl = new Table(numberOfColumns);
 			tbl.setWidth(100.0f);
@@ -206,7 +214,7 @@ public class GroupGradebookReport {
 			boolean isGray = (i%2 < 1);
 			i++;
 
-			addCell(stuNameMap.get(stuId).toUpperCase(), 3, tbl, isGray);
+			addCell(stuNameMap.get(stuId).toUpperCase(), NAME_COL_SPAN, tbl, isGray);
 			addCell(avgMap.get(stuId), 1, tbl, isGray);
 			
 			Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
@@ -221,7 +229,7 @@ public class GroupGradebookReport {
 						rowNum, colNum, colNum, asgnCols[colNum]));
 				if (rowNum > 0 && colNum == 0) {
 					// add empty cells for name and average columns
-					addCell("          ", 3, tbl, isGray);
+					addCell("          ", NAME_COL_SPAN, tbl, isGray);
 					addCell("   ", 1, tbl, isGray);
 				}
 				StudentAssignment sa = asgnMap.get(a.getAssignKey());
@@ -273,7 +281,6 @@ public class GroupGradebookReport {
 	private String[] addHeaders(List<Assignment> assignmentList,
 			int numberOfColumns, int numberOfAssignmentColumns, Table tbl) throws Exception {
 		addHeader("Student", 10.0f, 1, tbl);
-		addHeader("  ", 10.0f, 1, tbl);
 		addHeader("  ", 10.0f, 1, tbl);
 		addHeader("AVG", 8.0f, 1, tbl);
 		
