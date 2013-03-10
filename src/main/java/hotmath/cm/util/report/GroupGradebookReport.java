@@ -1,13 +1,13 @@
 package hotmath.cm.util.report;
 
 import hotmath.cm.assignment.AssignmentDao;
-import hotmath.cm.exception.InformationOnlyException;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
+import hotmath.gwt.shared.client.util.InformationOnlyException;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
@@ -63,7 +63,7 @@ public class GroupGradebookReport {
 		this.title = title;
 	}
 	
-	public ByteArrayOutputStream makePdf(int adminId,int groupId, Date fromDate, Date toDate) {
+	public ByteArrayOutputStream makePdf(int adminId,int groupId, Date fromDate, Date toDate) throws Exception {
 		ByteArrayOutputStream baos = null;
 		try {
 			
@@ -196,6 +196,7 @@ public class GroupGradebookReport {
 		} catch (Exception e) {
 			LOGGER.error(String.format("*** Error generating gradebook report for adminId: %d, groupId: %d",
 				adminId, groupId), e);
+			if (e instanceof InformationOnlyException) throw e;
 		}
 		return baos;
 	}
