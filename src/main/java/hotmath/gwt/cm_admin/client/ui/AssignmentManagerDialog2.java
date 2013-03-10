@@ -47,7 +47,6 @@ import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 /**
  * Provide dialog to allow Admins ability to define and manage Assignments.
  * 
- * 
  * @author casey
  * 
  */
@@ -123,22 +122,19 @@ public class AssignmentManagerDialog2  {
     }
 
     GroupDto _lastGroup;
+
     private void loadGroupInfo(GroupDto group) {
         _lastGroup = group;
         Info.display("Group Loading", "Loading assignments for '" + group + "'");
         _assignmentsPanel.loadAssignmentsFor(group);
     }
     
-    
-    
     interface ComboBoxTemplates extends XTemplates {
         @XTemplate("<div qtip=\"{info}\" qtitle=\"Group Info\">{name}</div>")
         SafeHtml group(String info, String name);
-      }
-    
+    }
 
     private ComboBox<GroupDto> createGroupNameCombo() {
-        
         
         GroupNameProperties props = GWT.create(GroupNameProperties.class);
         ListStore<GroupDto> groupStore = new ListStore<GroupDto>(props.groupId());
@@ -150,7 +146,6 @@ public class AssignmentManagerDialog2  {
                 return comboBoxTemplates.group(object.getInfo(), object.getName());
             }
         });
-    
         
         loadGroupNames();
 
@@ -168,7 +163,7 @@ public class AssignmentManagerDialog2  {
         });
         
         combo.setAllowBlank(false);
-        combo.setEmptyText("--Select a group -");
+        combo.setEmptyText("-- Select a group --");
         combo.setForceSelection(true);
         
         return combo;
@@ -208,7 +203,6 @@ public class AssignmentManagerDialog2  {
             }
         }.register();                
     }
-    
 
     private TextButton createGradeBookButton() {
         TextButton gradeBookBtn = new TextButton("Gradebook", new SelectHandler() {
@@ -249,7 +243,6 @@ public class AssignmentManagerDialog2  {
             }
         });
     }
-
     
 }
 
