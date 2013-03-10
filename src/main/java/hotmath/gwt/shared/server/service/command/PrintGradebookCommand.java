@@ -9,18 +9,23 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 
+import org.apache.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.util.Date;
 
-public class PrintGradebookCommand implements ActionHandler<PrintGradebookAction,CmWebResource>{
+public class PrintGradebookCommand implements ActionHandler<PrintGradebookAction,CmWebResource> {
+	
+	private static final Logger LOGGER = Logger.getLogger(PrintGradebookCommand.class);
 
     @Override
     public CmWebResource execute(Connection conn, PrintGradebookAction action) throws Exception {
     	Date fromDate = action.getFromDate();
     	Date toDate = action.getToDate();
+
         ByteArrayOutputStream baos = new GroupGradebookReport("Grade Book Report").makePdf(action.getAdminId(), action.getGroupId(), fromDate, toDate);
         
         // write to temporary file to be cleaned up later
