@@ -4,7 +4,6 @@ import hotmath.gwt.cm.client.WelcomePanel;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -26,6 +25,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.rpc.action.SetBackgroundStyleAction;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.FeedbackWindow;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 
 import com.google.gwt.core.client.GWT;
@@ -42,7 +42,6 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
-import com.sencha.gxt.widget.core.client.box.PromptMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
@@ -51,7 +50,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldSet;
-import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.toolbar.ToolBar;
 
 public class HelpWindow extends GWindow {
@@ -447,45 +445,7 @@ public class HelpWindow extends GWindow {
     }
 
     static public void showFeedbackPanel_Gwt() {
-
-        final PromptMessageBox mb = new PromptMessageBox("Feedback", "Enter Catchup Math feedback.");
-        mb.addHideHandler(new HideHandler() {
-            public void onHide(HideEvent event) {
-                if (mb.getHideButton() == mb.getButtonById(PredefinedButton.OK.name())) {
-
-                    final String value = mb.getValue();
-                    if (value == null || value.length() == 0)
-                        return;
-
-                    new RetryAction<RpcData>() {
-                        @Override
-                        public void attempt() {
-                            CmBusyManager.setBusy(true);
-                            CmServiceAsync s = CmShared.getCmService();
-                            SaveFeedbackAction action = new SaveFeedbackAction(value, "", getFeedbackStateInfo());
-                            setAction(action);
-                            s.execute(action, this);
-                        }
-
-                        public void oncapture(RpcData result) {
-                            Info.display("Info", "Feedback saved");
-                            CmBusyManager.setBusy(false);
-                        }
-                    }.register();
-                }
-            }
-        });
-        mb.setWidth(300);
-        mb.show();
-    }
-
-    /**
-     * Return string that represents current state of CM
-     * 
-     */
-    static private String getFeedbackStateInfo() {
-        String msg = "user_agent=" + CmShared.getBrowserInfo() + ", " + ContextController.getInstance().toString();
-        return msg;
+        new FeedbackWindow(ContextController.getInstance().toString());
     }
 }
 

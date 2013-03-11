@@ -538,6 +538,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     
     private Widget createCopyButton() {
         TextButton btn = new TextButton("Copy");
+        btn.setToolTip("Copy or import assignments");
         
         Menu menu = new Menu();
         menu.add(new MenuItem("Copy selected assignment",new SelectionHandler<MenuItem>() {

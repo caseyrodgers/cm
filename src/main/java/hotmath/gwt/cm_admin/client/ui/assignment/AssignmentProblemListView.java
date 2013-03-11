@@ -155,7 +155,7 @@ public class AssignmentProblemListView extends ContentPanel {
             @Override
             public void onSelect(SelectEvent event) {
                 if(CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
-                    Log.error("Assignments can only be edited in draft mode.");
+                    CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
                 
@@ -219,7 +219,7 @@ public class AssignmentProblemListView extends ContentPanel {
             public void onSelect(SelectEvent event) {
                 
                 if(CmShared.getQueryParameter("debug") == null && !callback.isDraftMode()) {
-                    Log.error("Assignments can only be edited in draft mode.");
+                    CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
                 

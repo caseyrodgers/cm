@@ -2,6 +2,8 @@ package hotmath.gwt.cm_rpc.client.model.assignment;
 
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
+import java.util.List;
+
 /** Contains current state meta information about 
  *  a single user's Assignment hierarchy
  * @author casey
@@ -9,10 +11,14 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
  */
 public class AssignmentMetaInfo implements Response {
     
+    public List<ProblemAnnotation> getUnreadAnnotations() {
+        return unreadAnnotations;
+    }
+
     private int activeAssignments;
     private int closedAssignments;
     private int expiredAssignments;
-    private int unreadMessages;
+    private List<ProblemAnnotation> unreadAnnotations;
     private boolean adminUsingAssignments;
 
     public AssignmentMetaInfo(){}
@@ -41,14 +47,6 @@ public class AssignmentMetaInfo implements Response {
         this.expiredAssignments = expiredAssignments;
     }
 
-    public int getUnreadMessages() {
-        return unreadMessages;
-    }
-
-    public void setUnreadMessages(int unreadMessages) {
-        this.unreadMessages = unreadMessages;
-    }
-
     public boolean isAdminUsingAssignments() {
         return adminUsingAssignments;
     }
@@ -56,4 +54,28 @@ public class AssignmentMetaInfo implements Response {
     public void setAdminUsingAssignments(boolean adminUsingAssignments) {
         this.adminUsingAssignments = adminUsingAssignments;
     }
+
+
+    public int getUnreadMessageCount() {
+        if(unreadAnnotations == null || unreadAnnotations.size() == 0) {
+            return 0;
+        }
+        else {
+            return unreadAnnotations.size();
+        }
+    }
+
+    public void setUnreadAnnotations(List<ProblemAnnotation> unreadAnnotations) {
+        this.unreadAnnotations = unreadAnnotations;
+    }
+
+    public boolean hasUnreadAnnotation(int assignKey, String pid) {
+        for(ProblemAnnotation pa: unreadAnnotations) {
+            if(pa.getAssignKey() == assignKey && pa.getPid().equals(pid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
 }

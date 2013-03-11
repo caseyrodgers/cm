@@ -2,7 +2,9 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -15,6 +17,8 @@ import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerAc
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+
+import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -75,10 +79,16 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     TextField _assignmentStatus = new TextField();
     private CallbackOnComplete _callBack;
     
+    static StudentAssignmentViewerPanel __lastInstance;
     
     public StudentAssignmentViewerPanel(final CallbackOnComplete callback) {
+        __lastInstance = this;
         _callBack = callback;
+
         
+        addTool(new GotoNextAnnotationButton());
+
+
         TextButton btnReturn = new TextButton("Return to your program");
         btnReturn.addSelectHandler(new SelectHandler() {
             @Override
@@ -102,6 +112,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                 else {
                     return false;
                 }
+            }
+
+            @Override
+            public boolean hasUnseenAnnotation(ProblemDto problem) {
+                return UserInfo.getInstance().isUnreadAssignmentAnnotation(_studentAssignment.getAssignment().getAssignKey(), problem.getPid());
             }
         });
         
@@ -239,7 +254,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             
             @Override
             public void onSelection(SelectionEvent<Assignment> event) {
-                readAssignmentFromServer(event.getSelectedItem());
+                readAssignmentFromServer(event.getSelectedItem(),null);
             }
         });
         combo.expand();
@@ -249,11 +264,20 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         return combo;
     }
+    
+    protected void loadAssignmentProblem(int assignKey, String pid) {
+        for(Assignment a: _assignmentCombo.getStore().getAll()  ) {
+            if(a.getAssignKey() == assignKey) {
+                readAssignmentFromServer(a,pid);
+                break;
+            }
+        }
+    }
 
     
     StudentAssignment _studentAssignment;
     boolean assignmentAreaDrawn=false;
-    private void loadAssignment(StudentAssignment assignment) {
+    private void loadAssignment(StudentAssignment assignment, String pidToLoad) {
         if(!assignmentAreaDrawn) {
             _main.setCenterWidget(createAssignmentDisplayPanel());
             assignmentAreaDrawn = true;
@@ -261,7 +285,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         }
 
         _studentAssignment = assignment;
-        _problemListPanel.loadAssignment(assignment);
+        _problemListPanel.loadAssignment(assignment, pidToLoad);
         if(CmShared.getQueryParameter("debug") == null && !assignment.getStatus().equals("Closed")) {
             _gradeField.setVisible(false);
         }
@@ -273,7 +297,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
     }
 
-    private void readAssignmentFromServer(final Assignment assignment) {
+    private void readAssignmentFromServer(final Assignment assignment, final String pidToLoad) {
         Info.display("Load Assignment", "Loading: " + assignment);
         
         CatchupMathTools.setBusy(true);
@@ -288,7 +312,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 
             public void oncapture(StudentAssignment assignment) {
                 CatchupMathTools.setBusy(false);
-                loadAssignment(assignment);
+                loadAssignment(assignment,pidToLoad);
             }
         }.register();          
     }
@@ -301,6 +325,33 @@ class MyFieldLabel extends FieldLabel {
         super(widget,string);
         
         setLabelWidth(150);
+    }
+    
+}
+
+
+class GotoNextAnnotationButton extends TextButton implements SelectHandler {
+    int next;
+    public GotoNextAnnotationButton() {
+        super("Next Teacher Annotation");
+        addSelectHandler(this);
+    }
+
+    @Override
+    public void onSelect(SelectEvent event) {
+        if(UserInfo.getInstance().getAssignmentMetaInfo() != null) {
+            List<ProblemAnnotation> pids = UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations();
+            if(pids.size() > 0) {
+                next++;
+                if(next > pids.size()-1) {
+                    next = 0;
+                }
+                
+                ProblemAnnotation annotation = pids.get(next);
+                StudentAssignmentViewerPanel.__lastInstance.loadAssignmentProblem(annotation.getAssignKey(), annotation.getPid());
+            }
+        }
+        
     }
     
 }

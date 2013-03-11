@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -1148,8 +1149,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
 
-                        boolean isClosed = assignment.getStatus().equals("Closed");
-                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed);
+                        boolean isAssignmentClosed = assignment.getStatus().equals("Closed");
+                        StudentProblemDto prob = new StudentProblemDto(uid, dummy, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isAssignmentClosed);
 
                         return prob;
                     }
@@ -1564,6 +1565,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 });
     }
 
+    
+    
     public Assignment importAssignment(int aid, int groupToImportInto, int assignmentToImport) throws Exception {
         Assignment assignmentCopy = getAssignment(assignmentToImport);
 
@@ -1585,15 +1588,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         saveAssignment(assignment);
     }
 
-    private int getNumberOfUnreadFeedback(final int uid) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_UNREAD_FEEDBACK");
-        List<Integer> cnt = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<Integer>() {
+    private List<ProblemAnnotation> getUnreadAnnotatedProblems(final int uid) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_UNREAD_ANNOTATED_PROBLEMS");
+        List<ProblemAnnotation> pids = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<ProblemAnnotation>() {
             @Override
-            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getInt(1);
+            public ProblemAnnotation mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ProblemAnnotation(rs.getInt("assign_key"), rs.getString("pid"));
             }
         });
-        return cnt.get(0);
+        return pids;
     }
 
     /** Return information about this student's assignment use.  
@@ -1607,7 +1610,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         if(isAdminUsingAssignmentsAtAll(uid)) {
             assignmentInfo.setAdminUsingAssignments(true);
             getAssignmentStatuses(uid, assignmentInfo);
-            assignmentInfo.setUnreadMessages(getNumberOfUnreadFeedback(uid));
+            assignmentInfo.setUnreadAnnotations(getUnreadAnnotatedProblems(uid));
         }
         return assignmentInfo;
     }

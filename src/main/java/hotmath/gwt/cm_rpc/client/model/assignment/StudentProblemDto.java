@@ -10,29 +10,22 @@ public class StudentProblemDto implements Response {
     private String isGraded;
     private boolean hasShowWork;
     private boolean hasShowWorkAdmin;
-    private boolean isClosed;
+    private boolean isAssignmentClosed;
     
     private int problemNumberOrdinal;
     
     public StudentProblemDto() {
     }
 
-    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isClosed) {
+    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isAssignmentClosed) {
         this.uid = uid;
         this.problem = problem;
         this.status = status;
         this.hasShowWork = hasShowWork;
         this.hasShowWorkAdmin = hasShowWorkAdmin;
-        this.isClosed = isClosed;
+        this.isAssignmentClosed = isAssignmentClosed;
     }
 
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    public void setClosed(boolean isClosed) {
-        this.isClosed = isClosed;
-    }
 
     public boolean isHasShowWorkAdmin() {
         return hasShowWorkAdmin;
@@ -84,7 +77,7 @@ public class StudentProblemDto implements Response {
     public String getStatusForStudent() {
        String sl = getStatus().toLowerCase();
        
-       if(isClosed) {
+       if(isAssignmentClosed) {
            return status;
        }
        else if(sl.contains("viewed")) {

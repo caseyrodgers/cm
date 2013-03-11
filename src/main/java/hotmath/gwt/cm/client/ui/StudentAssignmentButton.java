@@ -35,23 +35,23 @@ public class StudentAssignmentButton extends TextButton {
     
     
     public void setState(AssignmentMetaInfo assInfo) {
-        if(assInfo.getActiveAssignments() > 0 || assInfo.getUnreadMessages() > 0) {
+        if(assInfo.getActiveAssignments() > 0 || assInfo.getUnreadMessageCount() > 0) {
             _state = ButtonState.HAS_ASSIGNMENTS;
             
             setIcon(resources.assignmentRed());
 
             int aa = assInfo.getActiveAssignments();
-            int fa = assInfo.getUnreadMessages();
-            String tip = "You have " + aa + " active assignment" + (aa>1?"s":"") + ".  ";
+            int fa = assInfo.getUnreadMessageCount();
+            String tip = "You have " + aa + " assignment" + (aa>1?"s":"") + ".  ";
             if(fa > 0) {
-                tip += "You have " + fa + " feedback message" + (fa>1?"s":"") + ".";
+                tip += "You have " + fa + " new annotated problem" + (fa>1?"s":"") + ".";
             }
             setToolTip(tip);
         }
         else {
             _state = ButtonState.NO_ASSIGNMENTS;
             setIcon(resources.assignmentBlue());
-            setToolTip("You do not have any assignments or feedback.");
+            setToolTip("You do not have any assignments or annotations.");
         }
     }
 }

@@ -3,8 +3,10 @@ package hotmath.gwt.cm_admin.client.ui;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
+import hotmath.gwt.shared.client.util.FeedbackWindow;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 
 import com.google.gwt.core.client.GWT;
@@ -37,6 +39,15 @@ public class HelpWindow extends GWindow {
         });
         webinar.setToolTip("Watch our training videos.");
         addButton(webinar);
+        
+        
+        addButton(new TextButton("Enter Feedback", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new FeedbackWindow("isAdmin=true");
+            }
+        }));
+
         addCloseButton();
 
         add(frame);
@@ -68,6 +79,7 @@ public class HelpWindow extends GWindow {
             });
         }        
     }
+
 
     private native void showTrainingVideosPage() /*-{
         var tv = window.open('/training-videos');

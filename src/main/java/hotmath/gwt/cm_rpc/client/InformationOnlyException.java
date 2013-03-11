@@ -1,4 +1,4 @@
-package hotmath.cm.exception;
+package hotmath.gwt.cm_rpc.client;
 
 import java.io.Serializable;
 

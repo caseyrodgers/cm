@@ -289,8 +289,6 @@ public class CmShared implements EntryPoint {
         } catch (Exception e) {
             displayLoginError(e);
         }
-
-        SystemSyncChecker.monitorVersionChanges();
     }
 
     /**

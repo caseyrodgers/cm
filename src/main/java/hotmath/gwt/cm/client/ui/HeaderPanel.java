@@ -253,6 +253,7 @@ public class HeaderPanel extends FlowLayoutContainer {
         CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
             @Override
             public void assignmentsUpdated(AssignmentMetaInfo assInfo) {
+                UserInfo.getInstance().setAssignmentMetaInfo(assInfo);
                 __instance.updateAssignmentMessage(assInfo);
             }
         });

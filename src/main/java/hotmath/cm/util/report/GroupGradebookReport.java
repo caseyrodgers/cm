@@ -2,12 +2,12 @@ package hotmath.cm.util.report;
 
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_rpc.client.InformationOnlyException;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
-import hotmath.gwt.shared.client.util.InformationOnlyException;
 
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;

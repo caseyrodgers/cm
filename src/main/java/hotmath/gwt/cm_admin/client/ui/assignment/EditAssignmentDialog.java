@@ -24,6 +24,7 @@ import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -39,6 +40,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderL
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
@@ -47,7 +49,6 @@ import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.form.TimeField;
 
 public class EditAssignmentDialog {
     private static final int MAX_FIELD_LEN = 400;
@@ -57,9 +58,10 @@ public class EditAssignmentDialog {
     Assignment _assignment;
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
+    ComboBox<SubmitOptions> _submitOptions;
+    
     TextButton saveDraftMode, saveAssign;
     
-    CheckBox _allowLateSubmissions;
     
     boolean _isDraftMode;
 
@@ -83,9 +85,6 @@ public class EditAssignmentDialog {
         mainBorderPanel.setBorders(true);
 
         VerticalLayoutContainer header = new VerticalLayoutContainer();
-        VerticalLayoutContainer.VerticalLayoutData vd = new VerticalLayoutContainer.VerticalLayoutData();
-        vd.setHeight(30);
-        header.setLayoutData(vd);
         _assignmentName.setWidth(MAX_FIELD_LEN);
         FieldLabel assignmentNameLabel = new FieldLabel(_assignmentName, "Assignment Name");
         assignmentNameLabel.setLabelWidth(FIELD_LABEL_LEN);
@@ -99,14 +98,18 @@ public class EditAssignmentDialog {
         _comments.setAllowBlank(false);
         FieldLabel commentsLabel = new FieldLabel(_comments, "Comment");
         commentsLabel.setLabelWidth(FIELD_LABEL_LEN);
-        header.add(commentsLabel);
+        header.add(commentsLabel, new VerticalLayoutData(1.0, 50));;
         
         
-        _allowLateSubmissions = new CheckBox();
-        _allowLateSubmissions.setValue(!assignment.isClosePastDue());
-        _allowLateSubmissions.setToolTip("Should changes be allowed after the due date");
+        _submitOptions = createSubmitOptionsCombo();
+        if(assignment.isClosePastDue()) {
+            _submitOptions.setValue(_submitOptions.getStore().get(0));
+        }
+        else {
+            _submitOptions.setValue(_submitOptions.getStore().get(1));
+        }
         
-        HorizontalLayoutData hData1 = new HorizontalLayoutData();
+        HorizontalLayoutData hData1 = new HorizontalLayoutData(100.0,30);
         HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
         hData1.setMargins(new Margins(0, 20, 0, 20));
         
@@ -127,14 +130,15 @@ public class EditAssignmentDialog {
         });        
         if(!_isDraftMode) {
             _assignmentStatus.getStore().remove(_assignmentStatus.getStore().size()-1);   // remove draft
-            FieldLabel statusLabel = new MyFieldLabel(_assignmentStatus, "Status", 85, 100);
+            FieldLabel statusLabel = new MyFieldLabel(_assignmentStatus, "Status", 85, 200);
             statusLabel.setLabelWidth(FIELD_LABEL_LEN - 20);
-            HorizontalLayoutData hData = new HorizontalLayoutData();
+            HorizontalLayoutData hData = new HorizontalLayoutData(1.0,30);
             hData.setMargins(new Margins(0, 20, 0, 20));
-            hCon.add(statusLabel, hData1);
+            hCon.add(statusLabel, hData);
         }
-        hCon.add(new MyFieldLabel(_allowLateSubmissions, "Allow late submissions", 85, 20), hData1);
-        header.add(hCon);
+        header.add(hCon, new VerticalLayoutData(100.0,  30));
+        
+        header.add(new MyFieldLabel(_submitOptions, "Submit", 70, 200),new VerticalLayoutData(270,  30));
         
         BorderLayoutData bd = new BorderLayoutData();
         bd.setMargins(new Margins(20));
@@ -263,6 +267,13 @@ public class EditAssignmentDialog {
 
         LabelProvider<AssignmentStatusDto> statusLabel();
     }
+    
+    public interface SubmitOptionsProperties extends PropertyAccess<String> {
+        @Path("name") 
+        ModelKeyProvider<SubmitOptions> key();
+
+        LabelProvider<SubmitOptions> option(); 
+    }
 
     private ComboBox<AssignmentStatusDto> createAssignmentStatusCombo() {
 
@@ -286,6 +297,29 @@ public class EditAssignmentDialog {
 
         return combo;
     }
+    
+    private ComboBox<SubmitOptions> createSubmitOptionsCombo() {
+
+        SubmitOptionsProperties props = GWT.create(SubmitOptionsProperties.class);
+
+        ListStore<SubmitOptions> store = new ListStore<SubmitOptions>(props.key());
+        store.add(new SubmitOptions("No submits after due date"));
+        store.add(new SubmitOptions("Allow submits after due date"));
+
+        ComboBox<SubmitOptions> combo = new ComboBox<SubmitOptions>(store, props.option());
+
+        combo.setToolTip("Should the student be allowed to submit answers after the due date?");
+        combo.setWidth(120);
+        combo.setTypeAhead(true);
+        combo.setTriggerAction(TriggerAction.ALL);
+        combo.setEditable(false);
+
+        combo.setAllowBlank(false);
+        combo.setEmptyText("--Select Submit Option--");
+        combo.setForceSelection(true);
+
+        return combo;
+    }
 
     /** Save the assignment and return if
      *  the save is actually happening.
@@ -303,7 +337,12 @@ public class EditAssignmentDialog {
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
-        _assignment.setClosePastDue(!_allowLateSubmissions.getValue());
+        if(_submitOptions.getValue().getOption().startsWith("Do not")) {
+            _assignment.setClosePastDue(true);
+        }
+        else {
+            _assignment.setClosePastDue(false);
+        }
         
         if(asDraft) {
             _assignment.setStatus("Draft");
@@ -350,4 +389,17 @@ public class EditAssignmentDialog {
 
     }
 
+}
+
+
+
+class SubmitOptions {
+    String option;
+    public SubmitOptions(String option) {
+        this.option = option;
+    }
+    
+    public String getOption() {
+        return option;
+    }
 }

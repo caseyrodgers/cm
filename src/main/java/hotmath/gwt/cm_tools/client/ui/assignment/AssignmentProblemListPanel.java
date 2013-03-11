@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
-import hotmath.gwt.cm_rpc.client.event.ShowWorkModifiedHandler;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
@@ -10,12 +9,9 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -23,10 +19,11 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -35,6 +32,9 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -75,6 +75,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         setHeadingHtml("Problems in Assignment");
         addTool(createNextProblemButton());
+        getButtonBar().add(createAnnotationLedgend());
 
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
 
@@ -122,7 +123,13 @@ public class AssignmentProblemListPanel extends ContentPanel {
             public String getRowStyle(StudentProblemDto model, int rowIndex) {
                 if (model != null) {
                     if (model.isHasShowWorkAdmin()) {
-                        return "assign-showwork-admin";
+                        
+                        if(_problemListCallback.hasUnseenAnnotation(model.getProblem())) {
+                            return "assign-showwork-admin-unseen";
+                        }
+                        else {
+                            return "assign-showwork-admin";
+                        }
                     }
                 }
                 return null;
@@ -137,6 +144,13 @@ public class AssignmentProblemListPanel extends ContentPanel {
         setWidget(_studentProblemGrid);
 
         __lastInstance = this;
+    }
+
+    private Widget createAnnotationLedgend() {
+        HorizontalPanel lc = new HorizontalPanel();
+        lc.add(new HTML("<div style='left: 0;color: blue;'>annotated</div>"));
+        lc.add(new HTML("<div style='color: red;'>&nbsp;&nbsp;unread annotation</div>"));
+        return lc;
     }
 
     private Widget createNextProblemButton() {
@@ -251,7 +265,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     StudentAssignment _assignment;
 
-    public void loadAssignment(StudentAssignment assignment) {
+    public void loadAssignment(StudentAssignment assignment, String pidToLoad) {
         _assignment = assignment;
         _studentProblemGrid.getSelectionModel().setSelection(new ArrayList<StudentProblemDto>());
         try {
@@ -261,14 +275,25 @@ public class AssignmentProblemListPanel extends ContentPanel {
         }
         _studentProblemGrid.getStore().addAll(assignment.getAssigmentStatuses());
 
-        // select first, if available
-        if (_studentProblemGrid.getStore().size() > 0) {
-            _studentProblemGrid.getSelectionModel().select(_studentProblemGrid.getStore().get(0), false);
+        if(pidToLoad != null) {
+            for(StudentProblemDto sp: _studentProblemGrid.getStore().getAll()) {
+                if(sp.getPid().equals(pidToLoad)) {
+                    _studentProblemGrid.getSelectionModel().select(sp, false);
+                }
+            }
+        }
+        else {
+            // select first, if available
+            if (_studentProblemGrid.getStore().size() > 0) {
+                _studentProblemGrid.getSelectionModel().select(_studentProblemGrid.getStore().get(0), false);
+            }
         }
     }
 
     public interface AssignmentProblemListCallback {
         void problemSelected(String title, ProblemDto problem);
+
+        boolean hasUnseenAnnotation(ProblemDto problem);
 
         boolean showStatus();
     }

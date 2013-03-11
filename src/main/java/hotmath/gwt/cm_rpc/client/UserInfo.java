@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.client;
 
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 
@@ -38,8 +39,34 @@ public class UserInfo implements  Response {
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
     UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
+    AssignmentMetaInfo assignmentMetaInfo;
     
     
+    public AssignmentMetaInfo getAssignmentMetaInfo() {
+        return assignmentMetaInfo;
+    }
+
+    public void setAssignmentMetaInfo(AssignmentMetaInfo assignmentMetaInfo) {
+        this.assignmentMetaInfo = assignmentMetaInfo;
+    }
+
+    /** Return true if this user has unread annotations for the named pid
+     * 
+     * TODO: Does this belong here .. the problem is this data is updated asynchornoulsy
+     * we do not want to many dependencies and this feels like a very core piece of info
+     * for the user.
+     * 
+     * @param pid
+     * @return
+     */
+    public boolean isUnreadAssignmentAnnotation(int assignKey, String pid) {
+        if(assignmentMetaInfo != null && assignmentMetaInfo.hasUnreadAnnotation(assignKey, pid)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     private UserTutorWidgetStats tutorInputWidgetStats;
 
 

@@ -31,7 +31,6 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentAssignmentViewerPanel;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona;
 import hotmath.gwt.cm_tools.client.util.GenericVideoPlayerForMona.MonaVideo;
 import hotmath.gwt.cm_tools.client.util.StudentHowToFlashWindow;
@@ -45,6 +44,7 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
+import hotmath.gwt.shared.client.util.SystemSyncChecker;
 import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -231,6 +231,10 @@ public class CatchupMath implements EntryPoint {
         finally {
             CmBusyManager.showLoading(false);
         }
+        
+        
+
+        SystemSyncChecker.monitorVersionChanges();
     }
 
     /**
@@ -337,14 +341,9 @@ public class CatchupMath implements EntryPoint {
         }
 
         jumpToFirstLocation();
-
     }
 
     private void jumpToFirstLocation() {
-
-
-
-
         CmProgramFlowClientManager.getActiveProgramState(new CmProgramFlowClientManager.Callback() {
             @Override
             public void programFlow(CmProgramFlowAction flowResponse) {

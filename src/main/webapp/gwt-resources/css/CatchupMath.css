@@ -1328,8 +1328,17 @@ SolutionSetCompleteDialog .results{
 
 
 
-.assign-showwork-admin {
-	color: red;
+.assign-showwork-admin,
+.assign-showwork-admin-unseen {
+	color: blue;
 	font-weight: bold;
 	font-size: 1.1em;
+}
+
+.assign-showwork-admin-unseen {
+	color: red;
+}
+
+.next-admin-annotation {
+	float: left;
 }

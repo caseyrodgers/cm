@@ -3687,7 +3687,7 @@ order by g.name
 
 .key=GET_GROUP_ASSIGNMENTS_ALL
 
-select g.id as group_id, g.name as group_name, a.assign_key as assignment_key,a.name as assignment_name
+select g.id as group_id, g.name as group_name, a.assign_key as assignment_key,a.comments as assignment_name
 from CM_GROUP g
     JOIN CM_ASSIGNMENT a on a.group_id = g.id
 where admin_id = ?
@@ -3920,20 +3920,24 @@ order by pid
  
  
  
-.key=ASSIGNMENT_UNREAD_FEEDBACK
- ## find number of pids that have admin feedback messages
+.key=ASSIGNMENT_UNREAD_ANNOTATED_PROBLEMS
+ ## find number of pids that have admin annotations
  ## that have not been seen yet.
-select count(*)
-from (
-    select w.pid, count(*)
-    from   CM_ASSIGNMENT_PID_WHITEBOARD w
-       JOIN CM_ASSIGNMENT_PID_STATUS s on (s.uid = w.user_id and s.assign_key = w.assign_key and s.pid = w .pid)
-    where    w.user_id = ?
-    and      w.is_admin = 1
-    and      w.write_datetime > s.access_datetime
-    group by w.pid
-) c
  
+select w.assign_key, w.pid,count(*)
+from  CM_ASSIGNMENT a
+    JOIN CM_ASSIGNMENT_PID_WHITEBOARD w on (w.assign_key = a.assign_key)
+    JOIN CM_ASSIGNMENT_PIDS p on (p.assign_key = a.assign_key)
+    LEFT JOIN CM_ASSIGNMENT_PID_STATUS s on (s.uid = w.user_id)
+where    w.user_id = ?
+and      w.pid = p.pid
+and      w.is_admin = 1
+and      s.assign_key = w.assign_key
+and      s.pid = w.pid
+and    w.write_datetime > s.access_datetime
+group by w.assign_key, w.pid
+
+
  
  
 .key=STUDENT_ASSIGNMENT_STATUS
