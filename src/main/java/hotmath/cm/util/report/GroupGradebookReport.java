@@ -87,7 +87,9 @@ public class GroupGradebookReport {
             		asgDao.getAssignments(adminId, groupId);
 
             if (assignmentList == null || assignmentList.size() == 0) {
-            	throw new InformationOnlyException("Group, " + groupName + ", has no assignments in Date Range.");
+            	String msg = String.format("Group, %s, has no assignments in Date Range: %2$ty-%2$tm-%2$td to %3$ty-%3$tm-%3$td",
+            		groupName, fromDate, toDate);
+            	throw new InformationOnlyException(msg);
             }
 
             // sort Assignments by ascending due date
@@ -136,13 +138,13 @@ public class GroupGradebookReport {
 			Phrase date     = buildLabelContent("Date: ", printDate);
 			Phrase dateRange = null;
 			if (fromDate != null && toDate != null) {
-				dateRange = buildLabelContent("Date range: ", String.format("%1$tm-%1$td to %2$tm-%1$td", fromDate, toDate));
+				dateRange = buildLabelContent("Date range: ", String.format("%1$tY-%1$tm-%1$td to %2$tY-%2$tm-%2$td", fromDate, toDate));
 			}
 		    
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-GroupGradebookReport");
 
-			PdfPTable pdfTbl = new PdfPTable(4);
+			PdfPTable pdfTbl = new PdfPTable(2);
 			pdfTbl.setTotalWidth(600.0f);
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
