@@ -26,12 +26,6 @@ h1, h2, h3, h4 {
         text-align: left;
 }
 
-.header-panel .assigments_anchor {
-	position: absolute;
-	left: 200px;
-	top:4px;
-}
-
 .main-port {
         border: 1px solid blue;
         text-align: center;
@@ -235,20 +229,6 @@ h1, h2, h3, h4 {
 .header-panel-help-btn-over {
         background: url(../images/help-over.png) no-repeat center left!important;
 }
-
-
-.header-panel-assignment-btn {
-        background: url(../images/new_assignments.png) no-repeat center left !important;
-        height: 34px;
-        position: absolute;
-        right: 20px;
-        top: 2px;
-        width: 76px;
-}
-.header-panel-assignments-btn-over {
-        background: url(../images/new_assignments-over.png) no-repeat center left!important;
-}
-
 .header-panel-cmu-btn {
         height: 34px;
         left: 44%;
@@ -1326,7 +1306,7 @@ SolutionSetCompleteDialog .results{
 }
 
 
-
+/** Assignments */
 
 .assign-showwork-admin,
 .assign-showwork-admin-unseen {
@@ -1341,4 +1321,32 @@ SolutionSetCompleteDialog .results{
 
 .next-admin-annotation {
 	float: left;
+}
+
+
+
+.student-assignment-button, 
+.student-assignment-button-no,
+.student-assignment-button-new {
+    height: 34px !important;
+    width: 62px !important;
+	position: absolute;
+	left: 200px;
+	top:2px;
+}
+
+.student-assignment-button {
+	background: url(/gwt-resources/images/assignments/assignment.png) no-repeat center left !important;
+}
+.student-assignment-buttonOver {
+    background: url(/gwt-resources/images/assignments/assignment-over.png) no-repeat center left!important;
+}
+.student-assignment-button-new {
+	background: url(/gwt-resources/images/assignments/new-assignment.png) no-repeat center left !important;
+}
+.student-assignment-button-newOver {
+    background: url(/gwt-resources/images/assignments/new-assignment-over.png) no-repeat center left!important;
+}
+.student-assignment-button-no {
+	background: url(/gwt-resources/images/assignments/assignment-no.png) no-repeat center left !important;
 }

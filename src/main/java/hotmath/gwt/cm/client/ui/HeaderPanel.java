@@ -147,7 +147,6 @@ public class HeaderPanel extends FlowLayoutContainer {
         if(assInfo.isAdminUsingAssignments()) {
             if(_assignmentsAnchor == null) {
                 _assignmentsAnchor = new StudentAssignmentButton();
-                _assignmentsAnchor.addStyleName("assigments_anchor");
         
                 /**
                  * Assignments not available for retail accounts
