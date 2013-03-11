@@ -431,38 +431,36 @@ public class GroupGradebookReport {
 
 	// calculate students' Average scores
     private Map<Integer, String> calcStudentsAvgScores(Map<Integer, String> stuNameMap, Map<Integer, Map<Integer,StudentAssignment>> stuAsgnMap, List<Assignment> assignmentList) {
-		Map<Integer, String> avgMap = new HashMap<Integer,String>();
-		for (Integer stuId : stuNameMap.keySet()) {
-			int asgCount = 0;
-			int totalPercent = 0;
-			Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
-			for (Assignment a : assignmentList) {
-				StudentAssignment sa = asgnMap.get(a.getAssignKey());
-				if (sa.getHomeworkStatus().equalsIgnoreCase("in progress") ||
-                    sa.getHomeworkStatus().equalsIgnoreCase("ready to grade")) {
-					String homeworkGrade = sa.getHomeworkGrade();
-					int offset = homeworkGrade.indexOf("%");
-					if (offset > 0) {
-    					totalPercent += Integer.parseInt(homeworkGrade.substring(0, offset).trim());
-    					asgCount++;
-					}
-					else {
-						if ("-".equals(homeworkGrade.trim()) == false) {
-    						totalPercent += Integer.parseInt(homeworkGrade.trim());
-						}
-						asgCount++;
-					}
-				}
-			}
-			String average;
-			if (asgCount > 0)
-				average = String.format("  %d%s", Math.round((float)totalPercent / (float)asgCount), "%");
-			else
-				average = "  0%";
-			avgMap.put(stuId, average);
-		}
-        return avgMap;
+    	Map<Integer, String> avgMap = new HashMap<Integer,String>();
+    	for (Integer stuId : stuNameMap.keySet()) {
+    		int asgCount = 0;
+    		int totalPercent = 0;
+    		Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
+    		for (Assignment a : assignmentList) {
+    			StudentAssignment sa = asgnMap.get(a.getAssignKey());
+    			String homeworkGrade = sa.getHomeworkGrade();
+    			int offset = homeworkGrade.indexOf("%");
+    			if (offset > 0) {
+    				totalPercent += Integer.parseInt(homeworkGrade.substring(0, offset).trim());
+    			}
+    			else {
+    				if ("-".equals(homeworkGrade.trim()) == false &&
+    					"N/A".equals(homeworkGrade.trim()) == false) {
+    					totalPercent += Integer.parseInt(homeworkGrade.trim());
+    				}
+    			}
+    			asgCount++;
+    		}
+    		String average;
+    		if (asgCount > 0)
+    			average = String.format("  %d%s", Math.round((float)totalPercent / (float)asgCount), "%");
+    		else
+    			average = "  0%";
+    		avgMap.put(stuId, average);
+    	}
+    	return avgMap;
     }
+
 	public void setFilterMap(Map<FilterType, String> filterMap) {
 		// TODO Auto-generated method stub
 		
