@@ -213,16 +213,10 @@ public class AssignmentManagerDialog2  {
                 }
                 PrintGradebookAction action = new  PrintGradebookAction(UserInfoBase.getInstance().getUid(),_lastGroup.getGroupId());
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate, toDate;
-                if (dateRange.isDefault()) {
-                    fromDate = null;
-                    toDate = null;
-                } else {
-                    fromDate = dateRange.getFromDate();
-                    toDate = dateRange.getToDate();
+                if (dateRange != null) {
+                    action.setFromDate(dateRange.getFromDate());
+                    action.setToDate(dateRange.getToDate());
                 }
-                action.setFromDate(fromDate);
-                action.setToDate(toDate);
                 new PdfWindow(action.getAdminId(), "Grade Book Report", action);
             }});
         gradeBookBtn.disable();
