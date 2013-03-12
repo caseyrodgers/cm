@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.ActivateAssignmentAction;
-import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
+import hotmath.gwt.cm_rpc.client.rpc.ChangeAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CopyAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
@@ -94,15 +94,12 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         AssignmentProperties props = GWT.create(AssignmentProperties.class);
 
-        ColumnConfig<Assignment, Date> dueDateCol = new ColumnConfig<Assignment, Date>(props.dueDate(), 120, "Due Date");
-        ColumnConfig<Assignment, String> statusCol = new ColumnConfig<Assignment, String>(props.status(), 75, "Status");
-        ColumnConfig<Assignment, Integer> lessonCountCol = new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems");
-        ColumnConfig<Assignment, String> commentsCol = new ColumnConfig<Assignment, String>(props.comments(),50, "Comments");
         List<ColumnConfig<Assignment, ?>> l = new ArrayList<ColumnConfig<Assignment, ?>>();
-        l.add(dueDateCol);
-        l.add(statusCol);
-        l.add(lessonCountCol);
-        l.add(commentsCol);
+        l.add(new ColumnConfig<Assignment, Date>(props.dueDate(), 120, "Due Date"));
+        l.add(new ColumnConfig<Assignment, String>(props.status(), 75, "Status"));
+        l.add(new ColumnConfig<Assignment, Boolean>(props.graded(), 75, "Graded"));
+        l.add(new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems"));
+        l.add(new ColumnConfig<Assignment, String>(props.comments(),50, "Comments"));
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
 
         // Create the store that the contains the data to display in the grid
@@ -110,7 +107,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                 
         _grid = new Grid<Assignment>(store, cm);
         
-        _grid.getView().setAutoExpandColumn(commentsCol);
+        _grid.getView().setAutoExpandColumn(l.get(l.size()-1));
         _grid.getView().setStripeRows(true);
         _grid.getView().setColumnLines(true);
 
@@ -127,7 +124,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
 
     private Widget createActivateButton() {
-        TextButton activateButton =  new TextButton("Activate/Close");
+        TextButton changeStatus =  new TextButton("Activate/Close");
         Menu menu = new Menu();
         MenuItem btnActive = new MenuItem("Activate", new SelectionHandler<MenuItem>() {
             
@@ -149,13 +146,11 @@ public class AssignmentsContentPanel extends ContentPanel {
                 closeSelectedAssignment();
             }
         });
-        btnClose.setToolTip("Close the selected assignment.");
-        menu.add(btnActive);  
+        btnClose.setToolTip("Close the selected assignment disallowing future student changes.");
         menu.add(btnClose);
-        
-        
-        activateButton.setMenu(menu);
-        return activateButton;
+
+        changeStatus.setMenu(menu);
+        return changeStatus;
     }
     
     
@@ -460,7 +455,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                CloseAssignmentAction action = new CloseAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
+                ChangeAssignmentAction action = new ChangeAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
