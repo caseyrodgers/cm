@@ -3613,51 +3613,6 @@ from (
   group by user_name, cp.id, pl.id) s
  
  
-.key=GET_GRADE_BOOK_DATA_2
-
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,p.ordinal_number
-       ifnull(s.status, '-') as status, q.correct, q.id, q.answer, 
-       ifnull(q.create_datetime, s.modify_datetime) as update_datetime,
-       w.has_show_work, w2.has_show_work_admin
-
-from HA_USER u
-join CM_ASSIGNMENT a on a.assign_key = ?
-join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
-
-left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
-
-left join (
-    select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
-    from CM_ASSIGNMENT_PID_ANSWERS pa
-    group by pa.user_id, pa.assign_key, pa.pid ) l
-  on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
-    
-left join (
-    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
-    from CM_ASSIGNMENT_PID_ANSWERS pa) q
-  on q.id=l.max_id
-  
-left join (
-    select user_id, pid,count(*),1 as has_show_work
-    from CM_ASSIGNMENT_PID_WHITEBOARD 
-    where assign_key = ?
-    group by user_id,pid
-    ) w on w.pid = p.pid and w.user_id = u.uid
-            
-
-left join (
-    select user_id, pid,count(*),1 as has_show_work_admin
-    from CM_ASSIGNMENT_PID_WHITEBOARD 
-    where assign_key = ?
-    and is_admin = 1
-    group by user_id,pid
-    ) w2 on w2.pid = p.pid and w2.user_id = u.uid
-  
-
-where u.uid in ( $$UID_LIST$$ )
-order by u.uid, problem_id
-
-  
   
 ##############################
 # AssignmentDao
@@ -3705,7 +3660,8 @@ select a.aid, a.assign_key,
        Ifnull(problem_count, 0) as problem_count,
        a.comments,
        a.due_date,
-       a.close_past_due
+       a.close_past_due,
+       a.graded
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count

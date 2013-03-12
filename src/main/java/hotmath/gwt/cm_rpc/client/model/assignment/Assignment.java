@@ -30,16 +30,16 @@ public class Assignment implements Response{
     String comments;
     Date dueDate;
     CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-    List<Integer> uids = new ArrayList<Integer>();
     String status;
     boolean closePastDue;
+    boolean graded;
     
     // might be null indicate not set
     Integer problemCount;
     
     public Assignment() {}
     
-    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, List<Integer> uids, String status, boolean closePastDue) {
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean closePastDue, boolean graded) {
         this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
@@ -47,9 +47,9 @@ public class Assignment implements Response{
         this.comments = comments;
         this.dueDate = dueDate;
         this.pids = pids;
-        this.uids = uids;
         this.status = status;
         this.closePastDue = closePastDue;
+        this.graded = graded;
     }
 
     public int getAdminId() {
@@ -66,7 +66,7 @@ public class Assignment implements Response{
 
     public String getStatusLabel() {
         if(isExpired()) {
-            return "Expired";
+            return "Past Due";
         }
         else {
             return getStatus();
@@ -87,7 +87,7 @@ public class Assignment implements Response{
             label += " (Closed)";
         }
         else if(isExpired()) {
-            label += " (Expired)";
+            label += " (Past Due)";
         }
         else {
             label += " (" + getStatus() + ")";
@@ -151,14 +151,6 @@ public class Assignment implements Response{
         this.pids = pids;
     }
 
-    public List<Integer> getUids() {
-        return uids;
-    }
-
-    public void setUids(List<Integer> uids) {
-        this.uids = uids;
-    }
-
     public String getAssignmentName() {
         return assignmentName;
     }
@@ -203,11 +195,19 @@ public class Assignment implements Response{
     public void setStatus(String status) {
         this.status = status;
     }   
+
+    public boolean isGraded() {
+        return graded;
+    }
+
+    public void setGraded(boolean graded) {
+        this.graded = graded;
+    }
     
     @Override
     public String toString() {
         return "Assignment [adminId=" + adminId + ", assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments="
-                + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", uids=" + uids + ", status=" + status + ", closePastDue=" + closePastDue
+                + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", status=" + status + ", closePastDue=" + closePastDue + ", graded=" + graded
                 + ", problemCount=" + problemCount + "]";
     }
 }

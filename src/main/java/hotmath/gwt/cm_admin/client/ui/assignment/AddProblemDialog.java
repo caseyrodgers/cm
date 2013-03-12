@@ -34,7 +34,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -45,7 +44,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
-
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.util.DelayedTask;
@@ -347,7 +345,14 @@ public class AddProblemDialog extends GWindow {
                 }
 
                 else {
-                    if (loadConfig instanceof SubjectDto) {
+                    if(loadConfig instanceof StandardNode) {
+                        List<BaseDto> base = new ArrayList<BaseDto>();
+                        for (StandardStateDto so : ((StandardNode) loadConfig).getStates()) {
+                            base.add(so);
+                        }
+                        callback.onSuccess(base);
+                    }
+                    else if (loadConfig instanceof SubjectDto) {
                         List<BaseDto> base = new ArrayList<BaseDto>();
                         for (SectionDto so : ((SubjectDto) loadConfig).getSections()) {
                             base.add(so);
@@ -591,6 +596,11 @@ public class AddProblemDialog extends GWindow {
 
             children.add(subjectDto);
         }
+        
+        
+        children.add(new StandardNode());
+        
+        
         _root.setChildren(children);
 
         _treePanel.setWidget(makeTree());
@@ -611,5 +621,43 @@ public class AddProblemDialog extends GWindow {
     
     public interface AddProblemsCallback {
         void problemsAdded(List<ProblemDto> problemsAdded);
+    }
+}
+
+
+class StandardStateDto extends FolderDto implements Response {
+    String state;
+    public StandardStateDto(String state) {
+        super(StandardNode.counter++, "State Standards");
+        this.state = state;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
+    }
+}
+
+class StandardNode extends FolderDto implements Response {
+
+    static int counter=(int)System.currentTimeMillis();
+    List<StandardStateDto> states = new ArrayList<StandardStateDto>();
+    
+    public StandardNode(){
+        super(counter++, "State Standards");
+        states.add(new StandardStateDto("Ca"));
+        states.add(new StandardStateDto("Common"));
+
+        for(StandardStateDto s: states) {
+            addChild(s);
+        }
+    }
+    public List<StandardStateDto> getStates() {
+        return states;
+    }
+
+    public void setStates(List<StandardStateDto> states) {
+        this.states = states;
     }
 }

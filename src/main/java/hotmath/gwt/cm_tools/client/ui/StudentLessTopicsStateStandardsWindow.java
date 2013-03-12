@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.StateStandard;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetStateStandardsAction;
 
@@ -37,13 +38,18 @@ public class StudentLessTopicsStateStandardsWindow extends GWindow {
         setVisible(true);
     }
 
-    private void loadStandards(CmList<String> standards) {
+    private void loadStandards(CmList<StateStandard> standards) {
 
-        ListStore<StandardsModel> store = new ListStore<StandardsModel>(__props.id());
-        ListView<StandardsModel, String> _listView = new ListView<StandardsModel, String>(store, __props.standard());
-        for (String standard : standards) {
-            StandardsModel lm = new StandardsModel(standard);
-            store.add(lm);
+        ListStore<UiStandardsModel> store = new ListStore<UiStandardsModel>(__props.id());
+        ListView<UiStandardsModel, String> _listView = new ListView<UiStandardsModel, String>(store, __props.standard());
+        for (StateStandard standard : standards) {
+            if(standard.getStandardName() != null) {
+                store.add(new UiStandardsModel(standard.getTopic(),standard.getStandardName(), Type.OLD_STANDARD));
+            }
+            
+            if(standard.getStandardNameNew() != null){
+                store.add(new UiStandardsModel(standard.getTopic(),standard.getStandardName(), Type.NEW_STANDARD));
+            }
         }
         setWidget(_listView);
         forceLayout();
@@ -56,7 +62,7 @@ public class StudentLessTopicsStateStandardsWindow extends GWindow {
      * @param lim
      */
     private void readStateStandards(final String topic, final String state) {
-        new RetryAction<CmList<String>>() {
+        new RetryAction<CmList<StateStandard>>() {
             @Override
             public void attempt() {
                 GetStateStandardsAction action = new GetStateStandardsAction(topic, state);
@@ -65,7 +71,7 @@ public class StudentLessTopicsStateStandardsWindow extends GWindow {
             }
 
             @Override
-            public void oncapture(CmList<String> result) {
+            public void oncapture(CmList<StateStandard> result) {
                 loadStandards(result);
                 CatchupMathTools.setBusy(false);
             }
@@ -74,15 +80,22 @@ public class StudentLessTopicsStateStandardsWindow extends GWindow {
 
     interface StandardModelProperties extends PropertyAccess<String> {
         @Path("standard")
-        ModelKeyProvider<StandardsModel> id();
-        ValueProvider<StandardsModel, String> standard();
+        ModelKeyProvider<UiStandardsModel> id();
+        ValueProvider<UiStandardsModel, String> standard();
     }
-    class StandardsModel implements Response {
+    
+    enum Type{OLD_STANDARD, NEW_STANDARD};
+    
+    class UiStandardsModel implements Response {
         String standard;
-        public StandardsModel(){}
+        String topic;
+        Type type;
+        public UiStandardsModel(){}
         
-        public StandardsModel(String standard) {
+        public UiStandardsModel(String topic, String standard, Type type) {
+            this.topic = topic;
             this.standard = standard;
+            this.type = type;
         }
 
         public void setStandard(String standard) {

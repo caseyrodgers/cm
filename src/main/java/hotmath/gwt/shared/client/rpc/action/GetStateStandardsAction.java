@@ -2,10 +2,13 @@ package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.shared.client.model.StateStandard;
 
-public class GetStateStandardsAction implements Action<CmList<String>> {
+public class GetStateStandardsAction implements Action<CmList<StateStandard>> {
+    
     String topic;
     String state;
+    
     public GetStateStandardsAction() {}
     
     public GetStateStandardsAction(String topic,String state) {

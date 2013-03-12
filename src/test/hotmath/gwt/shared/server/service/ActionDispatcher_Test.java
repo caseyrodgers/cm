@@ -23,13 +23,14 @@ import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SetLessonCompletedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.model.StateStandard;
 import hotmath.gwt.shared.client.rpc.action.AddGroupAction;
 import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
@@ -194,7 +195,7 @@ public class ActionDispatcher_Test extends CmDbTestCase {
 
     public void testGetStateStandards() throws Exception {
         GetStateStandardsAction action = new GetStateStandardsAction("aas-postulate.html","CA");
-        CmList<String> list = ActionDispatcher.getInstance().execute(action);
+        CmList<StateStandard> list = ActionDispatcher.getInstance().execute(action);
         assertNotNull(list);
         assertTrue(list.size() > 0);
     }

@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_admin.server.model;
 
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_LOGIN_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_LAST_QUIZ_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_PASSING_COUNT_KEY;
-import static hotmath.gwt.cm_tools.client.model.StudentModelExt.HAS_TUTORING_USE_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelI.HAS_LAST_LOGIN_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelI.HAS_LAST_QUIZ_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelI.HAS_PASSING_COUNT_KEY;
+import static hotmath.gwt.cm_tools.client.model.StudentModelI.HAS_TUTORING_USE_KEY;
 import hotmath.assessment.InmhItemData;
 import hotmath.cm.server.model.CmUserProgramDao;
 import hotmath.cm.util.CmMultiLinePropertyReader;
@@ -29,7 +29,6 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
-import hotmath.gwt.cm_tools.client.model.StudentShowWorkModel;
 import hotmath.gwt.shared.client.model.UserProgramIsNotActiveException;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
@@ -484,11 +483,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
      * @throws Exception
      */
     public List <LessonItemModel> getLessonItemsForTestRun(final Connection conn, Integer runId) throws Exception {
-            List <LessonItemModel> l = null;
-
+        
+        List <LessonItemModel> l = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         try {
                 ps = conn.prepareStatement(CmMultiLinePropertyReader.getInstance().getProperty("TEST_RESULTS"));
                 ps.setInt(1, runId);
@@ -498,10 +496,6 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                         l = loadLessonItems(conn, runId, rs);
                         sortLessonItems(l);
                 }
-        }
-        catch (Exception e) {
-                __logger.error(String.format("*** Error getting lesson items for runId:  %d", runId), e);
-                throw new Exception("*** Error getting Lesson Items ***");
         }
         finally {
                 SqlUtilities.releaseResources(rs, ps, null);

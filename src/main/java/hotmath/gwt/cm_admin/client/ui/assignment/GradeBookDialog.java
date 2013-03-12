@@ -215,7 +215,7 @@ public class GradeBookDialog {
         ListStore<AssignmentStatusDto> assStore = new ListStore<AssignmentStatusDto>(props.status());
         assStore.add(new AssignmentStatusDto("Open"));
         assStore.add(new AssignmentStatusDto("Closed"));
-        assStore.add(new AssignmentStatusDto("Expired"));
+        assStore.add(new AssignmentStatusDto("Past Due"));
    
         ComboBox<AssignmentStatusDto> combo = new ComboBox<AssignmentStatusDto>(assStore, props.statusLabel());
         

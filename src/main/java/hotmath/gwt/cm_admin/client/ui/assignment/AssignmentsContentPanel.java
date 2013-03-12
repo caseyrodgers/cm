@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.ActivateAssignmentAction;
-import hotmath.gwt.cm_rpc.client.rpc.ChangeAssignmentAction;
+import hotmath.gwt.cm_rpc.client.rpc.CloseAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CopyAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
@@ -455,7 +455,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-                ChangeAssignmentAction action = new ChangeAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
+                CloseAssignmentAction action = new CloseAssignmentAction(UserInfoBase.getInstance().getUid(), ass.getAssignKey());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

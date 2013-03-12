@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.AssignmentProblemListCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWorkPanel.AssignmentStudentTutorAndShowWorkPanelCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -349,6 +350,9 @@ class GotoNextAnnotationButton extends TextButton implements SelectHandler {
                 
                 ProblemAnnotation annotation = pids.get(next);
                 StudentAssignmentViewerPanel.__lastInstance.loadAssignmentProblem(annotation.getAssignKey(), annotation.getPid());
+            }
+            else {
+                CmMessageBox.showAlert("There are no teacher annotations available.");
             }
         }
         
