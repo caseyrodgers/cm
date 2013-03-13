@@ -32,7 +32,7 @@ function checkBrowser() {
             isOk = true;
         }
     } else if (b == 'Explorer') {
-        if (v >= 6) {
+        if (v >= 8) {
             isOk = true;
         }
     } else if (b == 'Opera') {
