@@ -46,7 +46,6 @@ public class GroupGradebookReport {
 	private String reportName;
     private String title;
     
-    private SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd");
     private SimpleDateFormat asgnDateFmt = new SimpleDateFormat("MM-dd");
 	
 	private static final Logger LOGGER = Logger.getLogger(GroupGradebookReport.class);
@@ -170,9 +169,7 @@ public class GroupGradebookReport {
 			document.add(Chunk.NEWLINE);			
 
 			int assignmentCount = assignmentList.size();
-			int rowsPerStudent  = assignmentCount/MAX_ASSIGNMENT_COLS + ((assignmentCount%MAX_ASSIGNMENT_COLS != 0) ? 1 : 0);
 			int numberOfAssignmentColumns = (assignmentCount <= MAX_ASSIGNMENT_COLS) ? assignmentCount : MAX_ASSIGNMENT_COLS;
-			//int numberOfColumns = numberOfAssignmentColumns + 2;
 			int numberOfColumns = NAME_COL_SPAN + MAX_ASSIGNMENT_COLS + 1;
 
     		Table tbl = new Table(numberOfColumns);
