@@ -3815,7 +3815,7 @@ from   HA_USER u join CM_GROUP g on g.id = u.group_id
         where status not in ('Viewed','Not Viewed')
         group by assign_key, uid
     ) ps on ps.assign_key = a.assign_key and ps.uid = u.uid
-    left join CM_ASSIGNMENT_USER au on au.assign_key = a.assign_key
+    left join CM_ASSIGNMENT_USER au (on au.assign_key = a.assign_key and au.aid = u.uid)
 where  u.uid = ?
 and a.status <> 'Draft'
 order by is_expired, a.due_date desc
