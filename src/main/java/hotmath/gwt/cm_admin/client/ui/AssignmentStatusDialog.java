@@ -23,9 +23,12 @@ import com.sencha.gxt.widget.core.client.info.Info;
 public class AssignmentStatusDialog extends GWindow {
 
     GradeBookPanel _gradingPanel;
+    private Assignment _assigment;
     public AssignmentStatusDialog(final Assignment asgn) {
         
         super(false);
+        this._assigment = asgn;
+        
         setPixelSize(500,  400);
         setHeadingText("Assignment Status: Due: " + asgn.getDueDate() + " " + asgn.getComments());
         
@@ -74,6 +77,7 @@ public class AssignmentStatusDialog extends GWindow {
             public void oncapture(RpcData saList) {
                 Info.display("Infomation", "Grades Reported");
                 CmBusyManager.setBusy(false);
+                _gradingPanel.showGradeBookFor(_assigment);
                 CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
             }
         }.register();                        
