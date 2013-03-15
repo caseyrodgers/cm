@@ -11,19 +11,19 @@ public class StudentProblemDto implements Response {
     private boolean hasShowWork;
     private boolean hasShowWorkAdmin;
     private boolean isAssignmentClosed;
-    
-    private int problemNumberOrdinal;
+    private boolean graded;
     
     public StudentProblemDto() {
     }
 
-    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isAssignmentClosed) {
+    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isAssignmentClosed, boolean graded) {
         this.uid = uid;
         this.problem = problem;
         this.status = status;
         this.hasShowWork = hasShowWork;
         this.hasShowWorkAdmin = hasShowWorkAdmin;
         this.isAssignmentClosed = isAssignmentClosed;
+        this.graded = graded;
     }
 
 
@@ -143,10 +143,6 @@ public class StudentProblemDto implements Response {
         return problem.getOrdinalNumber();
     }
 
-    public void setProblemNumberOrdinal(int problemNumberOrdinal) {
-        this.problemNumberOrdinal = problemNumberOrdinal;
-    }
-
     public static String getStudentLabel(String fromLabel) {
         for(int i=fromLabel.length();i>0;i--) {
             if(fromLabel.charAt(i-1) == ':') {
@@ -155,5 +151,9 @@ public class StudentProblemDto implements Response {
             }
         }
         return fromLabel;
+    }
+
+    public boolean isGraded() {
+        return graded;
     }
 }

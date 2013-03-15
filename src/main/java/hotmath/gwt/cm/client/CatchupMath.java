@@ -9,6 +9,7 @@ import hotmath.gwt.cm.client.ui.CmProgramFlowClientManager;
 import hotmath.gwt.cm.client.ui.EndOfProgramPanel;
 import hotmath.gwt.cm.client.ui.FooterPanel;
 import hotmath.gwt.cm.client.ui.HeaderPanel;
+import hotmath.gwt.cm.client.ui.StudentAssignmentSelectorDialog;
 import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
@@ -381,12 +382,27 @@ public class CatchupMath implements EntryPoint {
     }
 
     public void showAssignments_gwt() {
+        GWT.runAsync(new RunAsyncCallback() {
+            @Override
+            public void onSuccess() {
+                StudentAssignmentSelectorDialog.showSharedDialog();
+            }
+
+            @Override
+            public void onFailure(Throwable reason) {
+                reason.printStackTrace();
+                Log.error("Error showing Assingment Selector dialog: " + reason.getMessage());
+            }
+        });
+    }
+    
+    public void showAssignment(final int assignKey) {
 
         GWT.runAsync(new RunAsyncCallback() {
 
             @Override
             public void onSuccess() {
-                final Widget assignmentViewer = new StudentAssignmentViewerPanel(new CallbackOnComplete() {
+                final Widget assignmentViewer = new StudentAssignmentViewerPanel(assignKey, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
                         _mainPortWrapper.setCenterWidget(_mainContainer);

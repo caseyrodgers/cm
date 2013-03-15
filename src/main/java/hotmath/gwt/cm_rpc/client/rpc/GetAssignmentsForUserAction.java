@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
 
-public class GetAssignmentsForUserAction implements Action<CmList<Assignment>>{
+public class GetAssignmentsForUserAction implements Action<CmList<StudentAssignmentInfo>>{
     
     private int uid;
 

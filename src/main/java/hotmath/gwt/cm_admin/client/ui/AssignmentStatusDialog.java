@@ -27,13 +27,13 @@ public class AssignmentStatusDialog extends GWindow {
         
         super(false);
         setPixelSize(500,  400);
-        setHeadingText("Assignment Status: " + asgn.getDueDate() + " " + asgn.getComments());
+        setHeadingText("Assignment Status: Due: " + asgn.getDueDate() + " " + asgn.getComments());
         
         _gradingPanel = new GradeBookPanel();
         setWidget(_gradingPanel);
         _gradingPanel.showGradeBookFor(asgn);
         
-        addButton(new TextButton("Release Grades", new SelectHandler() {
+        addButton(new TextButton("Report Grades", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 markSelectedAssignmentAsGraded(asgn);
@@ -47,7 +47,7 @@ public class AssignmentStatusDialog extends GWindow {
     }
 
     protected void markSelectedAssignmentAsGraded(final Assignment assignment) {
-        final ConfirmMessageBox cm = new ConfirmMessageBox("Release Grades", "Are you sure you want to allow students to see this assignment's grades?");
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", "Are you sure you want to allow students to see this assignment's grades?");
         cm.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {
@@ -72,7 +72,7 @@ public class AssignmentStatusDialog extends GWindow {
 
             @Override
             public void oncapture(RpcData saList) {
-                Info.display("Infomation", "Grades released");
+                Info.display("Infomation", "Grades Reported");
                 CmBusyManager.setBusy(false);
                 CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
             }

@@ -3661,7 +3661,7 @@ select a.aid, a.assign_key,
        a.comments,
        a.due_date,
        a.close_past_due,
-       a.graded
+       a.is_graded
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count
@@ -3698,8 +3698,8 @@ order  by a.due_date desc, last_modified desc
 select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
-       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded,
-       w.has_show_work, w2.has_show_work_admin
+       w.has_show_work, w2.has_show_work_admin,
+       s.is_graded
 
 from CM_ASSIGNMENT a 
 join HA_USER u on u.group_id = a.group_id
@@ -3714,7 +3714,7 @@ left join (
     on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
     
 left join (
-    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer, pa.is_graded
+    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
     from CM_ASSIGNMENT_PID_ANSWERS pa) q
     on q.id=l.max_id
     
@@ -3775,7 +3775,7 @@ where u.uid = ?
 order by u.user_name, a.assign_key, problem_id
   
   
-.key=GET_STUDENT_ASSIGNMENT
+.key=GET_STUDENT_ASSIGNMENT_PROBLEM_STATUSES
 
 select p.*, w.has_show_work, w2.has_show_work_admin
 from   CM_ASSIGNMENT_PID_STATUS p
@@ -3801,12 +3801,28 @@ where  p.assign_key = ?
        
 .key=GET_STUDENT_ASSIGNMENTS
 
-select  due_date < now() as is_expired, a.* 
+select  due_date < now() as is_expired, a.*, ps.cnt_submitted, ap.cnt_problems, au.turn_in_date
 from   HA_USER u join CM_GROUP g on g.id = u.group_id 
-    join CM_ASSIGNMENT a on a.group_id = u.group_id 
+    join CM_ASSIGNMENT a on a.group_id = u.group_id
+    left JOIN (
+        select assign_key,  count(*) as cnt_problems
+        from    CM_ASSIGNMENT_PIDS
+        group by assign_key
+    ) ap on ap.assign_key = a.assign_key 
+    left JOIN (
+        select assign_key,  uid,  count(*) as cnt_submitted
+        from    CM_ASSIGNMENT_PID_STATUS
+        where status not in ('Viewed','Not Viewed')
+        group by assign_key, uid
+    ) ps on ps.assign_key = a.assign_key and ps.uid = u.uid
+    left join CM_ASSIGNMENT_USER au on au.assign_key = a.assign_key
 where  u.uid = ?
 and a.status <> 'Draft'
 order by is_expired, a.due_date desc
+       
+       
+       
+
 
        
        

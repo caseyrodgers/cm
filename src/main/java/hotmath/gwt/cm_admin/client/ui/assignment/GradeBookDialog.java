@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc.client.rpc.UpdateStudentAssignmentStatusAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -24,6 +25,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -35,7 +38,6 @@ import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.HideEvent;
@@ -47,6 +49,8 @@ import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 public class GradeBookDialog {
     private static final int MAX_FIELD_LEN = 400;
@@ -54,9 +58,8 @@ public class GradeBookDialog {
     TextField _studentName = new TextField();
     TextArea _comments = new TextArea();
     StudentAssignment _stuAssignment;
-    DateField _dueDate;
+    DateField _turnInDate;
     TextField _grade = new TextField();
-    TextField _assignmentStatus;
     AssignmentGradingPanel agPanel;
     AssignmentQuestionViewerPanel _questionViewer = new AssignmentQuestionViewerPanel();
 
@@ -66,7 +69,7 @@ public class GradeBookDialog {
         window.setPixelSize(800,600);
         window.setMaximizable(true);
 
-        window.setHeadingHtml("Grade Assignment: " + stuAssignment.getAssignment().getAssignmentName());
+        window.setHeadingHtml("Grade Assignment: Due: " + stuAssignment.getAssignment().getDueDate());
 
         final BorderLayoutContainer mainBorderPanel = new BorderLayoutContainer();
         mainBorderPanel.setBorders(true);
@@ -75,9 +78,8 @@ public class GradeBookDialog {
         
         BorderLayoutData headerData = new BorderLayoutData();
         headerData.setMargins(new Margins(20));
-        headerData.setSize(70);
         header.setLayoutData(headerData);
-        
+
         _studentName.setWidth(MAX_FIELD_LEN);
         _studentName.setReadOnly(true);
         _studentName.setValue(stuAssignment.getStudentName());
@@ -90,34 +92,21 @@ public class GradeBookDialog {
         _grade.setValue(GradeBookUtils.getHomeworkGrade(_stuAssignment.getAssigmentStatuses()));
         FieldLabel gradeLabel = new FieldLabel(_grade, "Grade");
         gradeLabel.setLabelWidth(FIELD_LABEL_LEN);
-        
-        HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
-        hCon.add(gradeLabel);
- 
-        _dueDate = new DateField();
-        _dueDate.setReadOnly(true);
-        _dueDate.setWidth(100);
-        _dueDate.setValue(stuAssignment.getAssignment().getDueDate());
-        FieldLabel dueDateLabel = new FieldLabel(_dueDate, "Due Date");
-        dueDateLabel.setLabelWidth(FIELD_LABEL_LEN);
-        HorizontalLayoutData hlData = new HorizontalLayoutData();
-        hlData.setMargins(new Margins(0, 20,0, 20));
-        hCon.add(dueDateLabel, hlData);
+        header.add(gradeLabel);
 
-        _assignmentStatus = new TextField();
-        _assignmentStatus.setText(stuAssignment.getHomeworkStatus());
-        _assignmentStatus.setReadOnly(true);
-        hCon.add(_assignmentStatus);
+        _turnInDate = new DateField();
+        _turnInDate.setReadOnly(true);
+        _turnInDate.setWidth(100);
+        _turnInDate.setValue(stuAssignment.getTurnInDate());
+        FieldLabel turnInDateLabel = new FieldLabel(_turnInDate, "Turned In");
+        turnInDateLabel.setLabelWidth(FIELD_LABEL_LEN);
+        HorizontalLayoutData dd = new HorizontalLayoutData();
+        dd.setMargins(new Margins(0, 20,0, 20));
+        header.add(turnInDateLabel);
 
-        FieldLabel _statusLabel = new FieldLabel(_assignmentStatus, "Status");
-        _statusLabel.setLabelWidth(FIELD_LABEL_LEN-20);
-        HorizontalLayoutData hData = new HorizontalLayoutData();
-        hData.setMargins(new Margins(0, 20,0, 20));
-        hCon.add(_statusLabel, hData);
-
-        header.add(hCon);
-
-        mainBorderPanel.setNorthWidget(header);
+        BorderLayoutData bd = new BorderLayoutData(80);
+        bd.setMargins(new Margins(20));
+        mainBorderPanel.setNorthWidget(header, bd);
 
         BorderLayoutContainer blContainer = new BorderLayoutContainer();
 
@@ -147,15 +136,33 @@ public class GradeBookDialog {
         blContainer.forceLayout();
 
         mainBorderPanel.setCenterWidget(blContainer);
-
-        window.addButton(new TextButton("Save",new SelectHandler() {
+        
+        
+        
+        TextButton saveBtn = new TextButton("Save");
+        
+        Menu menu = new Menu();
+        menu.add(new MenuItem("Save, do not report grades", new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 saveStudentGradeBook();
                 window.hide();
                 callbackOnComplete.isComplete();
             }
         }));
+        menu.add(new MenuItem("Save, and report grades", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                saveStudentGradeBook();
+                window.hide();
+                callbackOnComplete.isComplete();
+                
+                
+            }
+        }));
+        saveBtn.setMenu(menu);
+
+        window.addButton(saveBtn);
         
         TextButton closeButton = new TextButton("Close");
         closeButton.addSelectHandler(new SelectHandler() {

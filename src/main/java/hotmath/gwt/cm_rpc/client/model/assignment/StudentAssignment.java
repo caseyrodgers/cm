@@ -3,6 +3,7 @@ package hotmath.gwt.cm_rpc.client.model.assignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -35,14 +36,28 @@ public class StudentAssignment implements Response {
     private String studentDetailStatus;
     
     boolean isComplete;
+    
+    private boolean assignmentGraded;
+    private Date turnInDate;
 
 
     public StudentAssignment(){}
     
-    public StudentAssignment(int uid, Assignment assignment, CmList<StudentProblemDto> assignmentStatuses) {
+    public StudentAssignment(int uid, Assignment assignment, CmList<StudentProblemDto> assignmentStatuses, Date turnInDate, boolean assignmentGraded) {
         this.uid = uid;
         this.assignment = assignment;
         this.assigmentStatuses = assignmentStatuses;
+        this.turnInDate = turnInDate;
+        this.assignmentGraded = assignmentGraded;
+    }
+
+
+    public Date getTurnInDate() {
+        return turnInDate;
+    }
+
+    public void setTurnInDate(Date turnInDate) {
+        this.turnInDate = turnInDate;
     }
 
     /** Return true if this Assignment is 
@@ -133,13 +148,7 @@ public class StudentAssignment implements Response {
 		this.problemPendingCount = problemPendingCount;
 	}
 
-	@Override
-    public String toString() {
-        return "StudentAssignment [uid=" + uid + ", assignment=" + assignment + ", assigmentStatuses="
-                + assigmentStatuses + "]";
-    }
-
-    /** Return overall status for this
+	/** Return overall status for this
      *  user's instance of this Assignment 
      *  
      *  
@@ -165,6 +174,25 @@ public class StudentAssignment implements Response {
     public void setStudentDetailStatus(String studentDetailStatus) {
         this.studentDetailStatus = studentDetailStatus;
     }
+
+    public boolean isGraded() {
+        return assignmentGraded;
+    }
+
+    public void setGraded(boolean graded) {
+        this.assignmentGraded = graded;
+    }
 	
-	
+
+    @Override
+    public String toString() {
+        return "StudentAssignment [uid=" + uid + ", assignment=" + assignment + ", studentName=" + studentName + ", homeworkStatus=" + homeworkStatus
+                + ", homeworkGrade=" + homeworkGrade + ", assigmentStatuses=" + assigmentStatuses + ", lessonStatuses=" + lessonStatuses + ", problemCount="
+                + problemCount + ", problemCompletedCount=" + problemCompletedCount + ", problemPendingCount=" + problemPendingCount + ", studentDetailStatus="
+                + studentDetailStatus + ", isComplete=" + isComplete + ", assignmentGraded=" + assignmentGraded + ", turnInDate=" + turnInDate + "]";
+    }
+
+    public boolean isTurnedIn() {
+        return this.turnInDate != null;
+    }
 }

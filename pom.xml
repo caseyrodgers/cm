@@ -685,7 +685,7 @@
 				<version>2.5.0</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms724m -Xmx724m -Dgwt.logLevel=ERROR</extraJvmArgs>
+					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms724m -Xmx724m -Dgwt.logLevel=DEBUG</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>

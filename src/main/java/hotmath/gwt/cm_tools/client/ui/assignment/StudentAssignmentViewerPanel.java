@@ -7,14 +7,16 @@ import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentProblemListPanel.AssignmentProblemListCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWorkPanel.AssignmentStudentTutorAndShowWorkPanelCallback;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -22,15 +24,10 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.LabelProvider;
-import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
@@ -38,14 +35,14 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.MarginData;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.ComboBox;
+import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 /** 
  *
@@ -77,20 +74,17 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     BorderLayoutContainer _main = new BorderLayoutContainer();
     
-    TextField _assignmentStatus = new TextField();
-    private CallbackOnComplete _callBack;
-    
     static StudentAssignmentViewerPanel __lastInstance;
+    int assignKeyToOpen;
     
-    public StudentAssignmentViewerPanel(final CallbackOnComplete callback) {
+    public StudentAssignmentViewerPanel(int assignKeyToOpen, final CallbackOnComplete callback) {
         __lastInstance = this;
-        _callBack = callback;
+        this.assignKeyToOpen = assignKeyToOpen;
 
-        
+        getHeader().setVisible(false);
         addTool(new GotoNextAnnotationButton());
 
-
-        TextButton btnReturn = new TextButton("Return to your program");
+        TextButton btnReturn = new TextButton("Return To Your Program");
         btnReturn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
@@ -121,14 +115,15 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             }
         });
         
-        BorderLayoutData bData = new BorderLayoutData(100);
+        BorderLayoutData bData = new BorderLayoutData(170);
+        bData.setCollapsible(true);
+        bData.setSplit(true);
         _main.setNorthWidget(createHeaderPanel(),bData);
-        _main.setCenterWidget(createEmptyPanel("Choose an Assignment"));
-        
+
         addStyleName("StudentAssignmentViewerPanel");
         setWidget(_main);
-        
-        readAssignmentNamesFromServer();
+
+        readAssignmentFromServer(assignKeyToOpen, null);
         
         CmRpc.EVENT_BUS.fireEvent(new StudentAssignmentViewerActivatedAction());
     }
@@ -166,36 +161,6 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _tutorArea.setCenterWidget(_assignmentTutorAndShowWorkPanel);
         _tutorArea.forceLayout();
     }
-
-    public void readAssignmentNamesFromServer() {
-        CatchupMathTools.setBusy(true);
-        new RetryAction<CmList<Assignment>>() {
-            @Override
-            public void attempt() {
-                GetAssignmentsForUserAction action = new GetAssignmentsForUserAction(UserInfoBase.getInstance().getUid());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            public void oncapture(CmList<Assignment> assignments) {
-                CatchupMathTools.setBusy(false);
-
-                if(assignments.size() == 0) {
-                    showNoAssignmentMessage();
-                }
-                else {
-                    CatchupMathTools.setBusy(false);
-                    _assignmentCombo.getStore().addAll(assignments);
-                }
-            }
-        }.register();          
-    }
-   
-    
-    private void showNoAssignmentMessage() {
-        CatchupMathTools.showAlert("No Assignments found.");
-        _callBack.isComplete();
-    }
     
     BorderLayoutContainer _tutorArea;
     private IsWidget createAssignmentDisplayPanel() {
@@ -212,80 +177,102 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         return _tutorArea;
     }
     
-    ComboBox<Assignment> _assignmentCombo;
-    
-    TextField _grade = new TextField();
+    DateField _dueDate;
+    TextArea _comments;
+    TextField _grade;
     FieldLabel _gradeField;
+    TextButton _turnInButton, _nextAnnotation;
+    DateField _dateTurnedIn;
     
     private IsWidget createHeaderPanel() {
-        FlowLayoutContainer header = new FlowLayoutContainer();
-        header.setStyleName("header");
-        _assignmentCombo = createAssignmentCombo();
-        _grade.setReadOnly(true);
-         
-        _assignmentStatus.setReadOnly(true);
-
-        header.setLayoutData(new MarginData(10));
-        header.add(new MyFieldLabel(_assignmentCombo,"Select Assignment"));
-        header.add(new MyFieldLabel(_assignmentStatus,"Status"));
-        _gradeField = new MyFieldLabel(_grade,"Score");
-        header.add(_gradeField);
         
+        BorderLayoutContainer header = new BorderLayoutContainer();
+        VerticalLayoutContainer headerLeft = new VerticalLayoutContainer();
+        header.addStyleName("header");
+        
+        _comments = new TextArea();
+        _comments.setReadOnly(true);
+
+        _dueDate = new DateField();
+        _dueDate.setReadOnly(true);
+
+        headerLeft.add(new MyFieldLabel(_dueDate,"Due Date",75,100));
+        
+        _dateTurnedIn = new DateField();
+        _dateTurnedIn.setReadOnly(true);
+        headerLeft.add(new MyFieldLabel(_dateTurnedIn, "Turned In",75,100));
+
+        
+//        _assignmentStatus = new TextField();        
+//        _assignmentStatus.setReadOnly(true);
+//        headerLeft.add(new MyFieldLabel(_assignmentStatus,"Status",75,75));
+        
+        
+        _grade = new TextField();
+        _grade.setReadOnly(true);
+        _gradeField = new MyFieldLabel(_grade,"Score",75,75);
+        headerLeft.add(_gradeField);
+        
+
+        BorderLayoutData bd = new BorderLayoutData(200);
+        bd.setCollapsible(true);
+        header.setWestWidget(headerLeft,bd);
+        header.setCenterWidget(new FieldLabel(_comments,  "Comments"));
+        
+        HorizontalLayoutContainer buttonBar = new HorizontalLayoutContainer();
+        _turnInButton = new TextButton("Turn In This Assignment", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                turnInAssignment();
+            }
+        });
+        _nextAnnotation = new GotoNextAnnotationButton();
+        buttonBar.add(_turnInButton);
+        buttonBar.add(_nextAnnotation);
+        
+        header.setSouthWidget(buttonBar, new BorderLayoutData(30));
         return header;
     }
     
+    private void turnInAssignment() {
+        CmMessageBox.confirm("Turn In Assignment",  "Are you sure you want to turn in this assignment?",new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                new RetryAction<RpcData>() {
+                    @Override
+                    public void attempt() {
+                        TurnInAssignmentAction action = new TurnInAssignmentAction(UserInfoBase.getInstance().getUid(),_studentAssignment.getAssignment().getAssignKey());
+                        setAction(action);
+                        CmShared.getCmService().execute(action, this);
+                    }
+
+                    public void oncapture(RpcData data) {
+                        CatchupMathTools.setBusy(false);
+                        loadAssignment(_studentAssignment,null);
+                    }
+                }.register();          
+            }
+        });
+    }
     public interface StudentAssignmentViewerPanelProperties extends PropertyAccess<String> {
         ModelKeyProvider<Assignment> assignKey();
         LabelProvider<Assignment> assignmentLabel();
       }
-    
-    private ComboBox<Assignment> createAssignmentCombo() {
-        
-        StudentAssignmentViewerPanelProperties props = GWT.create(StudentAssignmentViewerPanelProperties.class);
-        ListStore<Assignment> assStore = new ListStore<Assignment>(props.assignKey());
-   
-        ComboBox<Assignment> combo = new ComboBox<Assignment>(assStore, props.assignmentLabel());
-        combo.setToolTip("Select an Assignment to work with.");
-        combo.setWidth(400);
-        combo.setTypeAhead(false);
-        combo.setTriggerAction(TriggerAction.ALL);
-        combo.setForceSelection(true);
-        
-        combo.addSelectionHandler(new SelectionHandler<Assignment>() {
-            
-            @Override
-            public void onSelection(SelectionEvent<Assignment> event) {
-                readAssignmentFromServer(event.getSelectedItem(),null);
-            }
-        });
-        combo.expand();
-        combo.setAllowBlank(false);
-        combo.setEmptyText("--Select Assignment--");
-        combo.setForceSelection(true);
-        
-        return combo;
-    }
-    
-    protected void loadAssignmentProblem(int assignKey, String pid) {
-        for(Assignment a: _assignmentCombo.getStore().getAll()  ) {
-            if(a.getAssignKey() == assignKey) {
-                readAssignmentFromServer(a,pid);
-                break;
-            }
-        }
-    }
 
     
     StudentAssignment _studentAssignment;
     boolean assignmentAreaDrawn=false;
     private void loadAssignment(StudentAssignment assignment, String pidToLoad) {
+        _dueDate.setValue(assignment.getAssignment().getDueDate());
+        _studentAssignment = assignment;
         if(!assignmentAreaDrawn) {
-            _main.setCenterWidget(createAssignmentDisplayPanel());
+            BorderLayoutData bd = new BorderLayoutData();
+            bd.setCollapsible(true);
+            bd.setSplit(true);
+            _main.setCenterWidget(createAssignmentDisplayPanel(),bd);
             assignmentAreaDrawn = true;
             _main.forceLayout();
         }
-
-        _studentAssignment = assignment;
         _problemListPanel.loadAssignment(assignment, pidToLoad);
         if(CmShared.getQueryParameter("debug") == null && !assignment.getStatus().equals("Closed")) {
             _gradeField.setVisible(false);
@@ -294,19 +281,26 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             _gradeField.setVisible(true);
         }
         
-        _assignmentStatus.setValue(assignment.getStatus());
         _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
+        _comments.setValue(assignment.getAssignment().getComments());
+        
+        
+        if(assignment.isTurnedIn()) {
+            _turnInButton.setEnabled(false);
+        }
+        
+        _dateTurnedIn.setValue(assignment.getTurnInDate());
     }
 
-    private void readAssignmentFromServer(final Assignment assignment, final String pidToLoad) {
-        Info.display("Load Assignment", "Loading: " + assignment);
+    public void readAssignmentFromServer(final int assignKey, final String pidToLoad) {
+        Log.debug("Load Assignment", "Loading: " + assignKey);
         
         CatchupMathTools.setBusy(true);
         
         new RetryAction<StudentAssignment>() {
             @Override
             public void attempt() {
-                GetStudentAssignmentAction action = new GetStudentAssignmentAction(UserInfoBase.getInstance().getUid(),assignment.getAssignKey());
+                GetStudentAssignmentAction action = new GetStudentAssignmentAction(UserInfoBase.getInstance().getUid(),assignKey);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -321,21 +315,24 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 }
 
 
-class MyFieldLabel extends FieldLabel {
-    public MyFieldLabel(Widget widget, String string) {
-        super(widget,string);
-        
-        setLabelWidth(150);
-    }
-    
-}
-
-
 class GotoNextAnnotationButton extends TextButton implements SelectHandler {
     int next;
     public GotoNextAnnotationButton() {
         super("Next Teacher Annotation");
         addSelectHandler(this);
+        setEnabled(false);
+        startChecking();
+    }
+    
+    private void startChecking() {
+        new Timer() {
+            @Override
+            public void run() {
+                if(UserInfo.getInstance().getAssignmentMetaInfo() != null && UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations().size() > 0) {
+                    setEnabled(true);
+                }
+            }
+        }.scheduleRepeating(5000);
     }
 
     @Override
@@ -349,7 +346,7 @@ class GotoNextAnnotationButton extends TextButton implements SelectHandler {
                 }
                 
                 ProblemAnnotation annotation = pids.get(next);
-                StudentAssignmentViewerPanel.__lastInstance.loadAssignmentProblem(annotation.getAssignKey(), annotation.getPid());
+                StudentAssignmentViewerPanel.__lastInstance.readAssignmentFromServer(annotation.getAssignKey(), annotation.getPid());
             }
             else {
                 CmMessageBox.showAlert("There are no teacher annotations available.");

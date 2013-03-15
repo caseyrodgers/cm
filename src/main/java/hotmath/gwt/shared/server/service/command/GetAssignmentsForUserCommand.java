@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -11,11 +11,11 @@ import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 
 import java.sql.Connection;
 
-public class GetAssignmentsForUserCommand implements ActionHandler<GetAssignmentsForUserAction, CmList<Assignment>>{
+public class GetAssignmentsForUserCommand implements ActionHandler<GetAssignmentsForUserAction, CmList<StudentAssignmentInfo>>{
 
     @Override
-    public CmList<Assignment> execute(Connection conn, GetAssignmentsForUserAction action) throws Exception {
-        CmList<Assignment> cmList = new CmArrayList<Assignment>();
+    public CmList<StudentAssignmentInfo> execute(Connection conn, GetAssignmentsForUserAction action) throws Exception {
+        CmList<StudentAssignmentInfo> cmList = new CmArrayList<StudentAssignmentInfo>();
         cmList.addAll(AssignmentDao.getInstance().getAssignmentsForUser(action.getUid()));
         return cmList;
     }

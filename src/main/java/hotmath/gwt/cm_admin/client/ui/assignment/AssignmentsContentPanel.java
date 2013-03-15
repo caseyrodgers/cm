@@ -496,8 +496,8 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
         
     private Widget createScoreButton() {
-        TextButton btn = new TextButton("Details");
-        btn.setToolTip("Show assignment details");
+        TextButton btn = new TextButton("Students");
+        btn.setToolTip("Show student assignment details");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {

@@ -1,13 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.CmRpc;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
-import hotmath.gwt.cm_rpc.client.rpc.ReleaseAssignmentGradesAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -15,17 +12,19 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Window;
+import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
+import com.sencha.gxt.data.shared.ModelKeyProvider;
+import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
 import com.sencha.gxt.widget.core.client.box.ConfirmMessageBox;
@@ -38,10 +37,6 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.widget.core.client.info.Info;
-import com.sencha.gxt.widget.core.client.menu.Item;
-import com.sencha.gxt.widget.core.client.menu.Menu;
-import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /** Shows grid of all students in assignment 
  * and the summary of the selected assignment.
@@ -56,9 +51,6 @@ public class GradeBookPanel extends ContentPanel {
     Grid<StudentAssignment> _gradebookGrid;
     List<ColumnConfig<StudentAssignment, ?>> colConfList;
     ColumnModel<StudentAssignment> colMdl;
-    ColumnConfig<StudentAssignment, String> nameCol;
-    ColumnConfig<StudentAssignment, String> statusCol;
-    ColumnConfig<StudentAssignment, String> gradeCol;
     ColumnConfig<StudentAssignment, String> detailStatus;    
     ListStore<StudentAssignment> _store;
     
@@ -157,22 +149,12 @@ public class GradeBookPanel extends ContentPanel {
 
 
 	private void initColumns() {
-		nameCol = new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 200, "Student");
-        nameCol.setRowHeader(true);
-
-        statusCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkStatus(), 85, "Status");
-        statusCol.setRowHeader(true);
-
-        gradeCol = new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Score");
-        gradeCol.setRowHeader(true);
+        colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 200, "Student"));
+        colConfList.add(new ColumnConfig<StudentAssignment, Boolean>(saProps.graded(), 50, "Graded"));
+        colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Score"));
+        colConfList.add(new ColumnConfig<StudentAssignment, Date>(saProps.turnInDate(), 75, "Turned In"));
         
         detailStatus = new ColumnConfig<StudentAssignment, String>(saProps.studentDetailStatus(), 150, "Details");
-        detailStatus.setRowHeader(true);
-        
-
-        colConfList.add(nameCol);
-        //colConfList.add(statusCol);
-        colConfList.add(gradeCol);
         colConfList.add(detailStatus);
 	}
 
@@ -202,6 +184,7 @@ public class GradeBookPanel extends ContentPanel {
     	grade.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                showAssignmentGrading();                
             }
         });
     	addTool(grade);
@@ -244,4 +227,15 @@ public class GradeBookPanel extends ContentPanel {
         }.register();        
     }
 
+}
+
+
+interface StudentAssignmentProperties extends PropertyAccess<String> {
+    ModelKeyProvider<StudentAssignment> uid();
+    ValueProvider<StudentAssignment, Date> turnInDate();
+    ValueProvider<StudentAssignment, String> studentName();
+    ValueProvider<StudentAssignment, String> homeworkStatus();
+    ValueProvider<StudentAssignment, String> homeworkGrade();
+    ValueProvider<StudentAssignment, String> studentDetailStatus();
+    ValueProvider<StudentAssignment, Boolean> graded();
 }
