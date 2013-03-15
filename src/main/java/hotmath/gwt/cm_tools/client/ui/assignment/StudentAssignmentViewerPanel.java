@@ -248,7 +248,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 
                     public void oncapture(RpcData data) {
                         CatchupMathTools.setBusy(false);
-                        loadAssignment(_studentAssignment,null);
+                        readAssignmentFromServer(_studentAssignment.getAssignment().getAssignKey(),null);
                     }
                 }.register();          
             }
@@ -318,21 +318,28 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 class GotoNextAnnotationButton extends TextButton implements SelectHandler {
     int next;
     public GotoNextAnnotationButton() {
-        super("Next Teacher Annotation");
+        super("Goto New Teacher Annotation");
         addSelectHandler(this);
         setEnabled(false);
         startChecking();
     }
     
+    private void checkIt() {
+        if(UserInfo.getInstance().getAssignmentMetaInfo() != null && UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations().size() > 0) {
+            setEnabled(true);
+        }
+        else {
+            setEnabled(false);
+        }
+    }
     private void startChecking() {
         new Timer() {
             @Override
             public void run() {
-                if(UserInfo.getInstance().getAssignmentMetaInfo() != null && UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations().size() > 0) {
-                    setEnabled(true);
-                }
+                checkIt();
             }
-        }.scheduleRepeating(5000);
+        }.scheduleRepeating(10000);
+        checkIt();
     }
 
     @Override
@@ -340,13 +347,14 @@ class GotoNextAnnotationButton extends TextButton implements SelectHandler {
         if(UserInfo.getInstance().getAssignmentMetaInfo() != null) {
             List<ProblemAnnotation> pids = UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations();
             if(pids.size() > 0) {
-                next++;
                 if(next > pids.size()-1) {
                     next = 0;
                 }
                 
                 ProblemAnnotation annotation = pids.get(next);
                 StudentAssignmentViewerPanel.__lastInstance.readAssignmentFromServer(annotation.getAssignKey(), annotation.getPid());
+                
+                next++;
             }
             else {
                 CmMessageBox.showAlert("There are no teacher annotations available.");

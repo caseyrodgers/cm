@@ -203,7 +203,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
 				String pid = _lastProblem.getPid();
 				if (pStatus.equals(ProblemStatus.CORRECT) || pStatus.equals(ProblemStatus.INCORRECT) || pStatus.equals(ProblemStatus.HALF_CREDIT)) {
-				    _lastProblem.setIsGraded(GradedStatus.YES.toString());
+				    _lastProblem.setGraded(true);
 				    switch(pStatus) {
 				        case CORRECT:
 				            _correctIncorrectMap.put(pid, 100);
@@ -220,7 +220,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 				}
 				else {
 					_correctIncorrectMap.put(pid, null);
-					_lastProblem.setIsGraded(GradedStatus.NO.toString());
+					_lastProblem.setGraded(false);
 				}
 				float numCorrect = 0;
 				for (StudentProblemDto sbDto : _store.getAll()) {
@@ -319,7 +319,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     
     private void markAllAccepted() {
         for(StudentProblemDto dto: _gradingGrid.getStore().getAll()) {
-            dto.setIsGraded("Yes");
+            dto.setGraded(true);
             _gradingGrid.getStore().update(dto);
         }
     }

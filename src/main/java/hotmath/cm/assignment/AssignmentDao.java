@@ -577,9 +577,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if ("answered".equals(psl) || "correct".equals(psl) || "incorrect".equals(psl) || "half credit".equals(psl)) {
                 completed++;
                 totCompleted++;
-                totGraded += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
+                totGraded += (probDto.isGraded()) ? 1 : 0;
                 if (psl.indexOf("correct") > -1 || psl.indexOf("credit") > -1)
-                    probDto.setIsGraded("Yes");
+                    probDto.setGraded(true);
                 
                 totCorrect += ("correct".equals(psl)) ? 1 : 0;
                 totIncorrect += ("incorrect".equals(psl)) ? 1 : 0;
@@ -730,7 +730,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         .getString("pid"), null, rs.getInt("assign_key"));
                 prob.setProblem(probDto);
                 prob.setStatus(rs.getString("status"));
-                prob.setIsGraded((rs.getInt("is_graded") > 0) ? "Yes" : "No");
+                prob.setGraded((rs.getInt("is_graded") > 0) ? true : false);
                 return prob;
             }
         });
@@ -828,7 +828,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if ("answered".equals(probStatus) || "correct".equals(probStatus) || "incorrect".equals(probStatus) || "half credit".equals(probStatus)) {
                 completed++;
                 totCompleted++;
-                totGraded += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
+                totGraded += (probDto.isGraded()) ? 1 : 0;
                 
                 totCorrect += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
                 totIncorrect += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
@@ -988,9 +988,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 
                 int cntSubmitted = rs.getInt("cnt_submitted");
                 int cntProblems = rs.getInt("cnt_problems");
+                String status = rs.getString("status");
+                Date dueDate = rs.getDate("due_date");
+                
                 StudentAssignmentInfo info = new StudentAssignmentInfo(rs.getInt("assign_key"), 
                                 uid, rs.getInt("is_graded") != 0?true:false,rs.getDate("turn_in_date"),
-                                rs.getString("status"),rs.getDate("due_date"),rs.getString("comments"),cntProblems, cntSubmitted);
+                                status,dueDate,rs.getString("comments"),cntProblems, cntSubmitted);
                 return info;
             }
         });
@@ -1302,8 +1305,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         List<Object[]> batch = new ArrayList<Object[]>();
         for (StudentProblemDto sp : studentAssignment.getAssigmentStatuses()) {
-            Object[] values = new Object[] { sp.getStatus(), sp.getIsGraded().equalsIgnoreCase("YES") ? 1 : 0,
-                    studentAssignment.getAssignment().getAssignKey(), sp.getPid(), studentAssignment.getUid() };
+            Object[] values = new Object[] { sp.getStatus(), sp.isGraded()?1:0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(), studentAssignment.getUid() };
             batch.add(values);
         }
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());

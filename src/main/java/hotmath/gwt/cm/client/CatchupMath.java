@@ -409,8 +409,6 @@ public class CatchupMath implements EntryPoint {
                         _mainPort.forceLayout();
                     }
                 });
-
-
                 _mainPortWrapper.remove(_mainContainer);
                 BorderLayoutData bdata = new BorderLayoutData();
                 _mainPortWrapper.setCenterWidget(assignmentViewer, bdata);

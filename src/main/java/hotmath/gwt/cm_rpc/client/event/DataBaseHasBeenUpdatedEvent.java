@@ -4,6 +4,9 @@ import com.google.gwt.event.shared.GwtEvent;
 
 /** Event fired when the database has been updated.
  * 
+ * Used generically to indicate any static state has been updated and 
+ * components should reconfigure themselves.
+ * 
  * 
  * @author casey
  *

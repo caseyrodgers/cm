@@ -7,12 +7,11 @@ public class StudentProblemDto implements Response {
     private int uid;
     private ProblemDto problem;
     private String status;
-    private String isGraded;
     private boolean hasShowWork;
     private boolean hasShowWorkAdmin;
     private boolean isAssignmentClosed;
     private boolean graded;
-    
+
     public StudentProblemDto() {
     }
 
@@ -91,15 +90,7 @@ public class StudentProblemDto implements Response {
            return status;
        }
     }
-
-    public String getIsGraded() {
-		return isGraded;
-	}
-
-	public void setIsGraded(String isGraded) {
-		this.isGraded = isGraded;
-	}
-
+    
 	/** return student ready label
 	 * 
 	 * @return
@@ -155,5 +146,10 @@ public class StudentProblemDto implements Response {
 
     public boolean isGraded() {
         return graded;
+    }
+    
+    
+    public void setGraded(boolean graded) {
+        this.graded = graded;
     }
 }

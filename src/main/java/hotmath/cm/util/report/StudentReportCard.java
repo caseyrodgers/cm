@@ -395,7 +395,7 @@ public class StudentReportCard {
         		if ("answered".equalsIgnoreCase(probStatus) ||
                     "correct".equalsIgnoreCase(probStatus)  ||
                     "incorrect".equalsIgnoreCase(probStatus)) {
-        			gradedCount += ("yes".equalsIgnoreCase(probDto.getIsGraded())) ? 1 : 0;
+        			gradedCount += (probDto.isGraded()) ? 1 : 0;
         			correctCount += ("correct".equalsIgnoreCase(probStatus)) ? 1 : 0;
         			incorrectCount += ("incorrect".equalsIgnoreCase(probStatus)) ? 1 : 0;
         			continue;
