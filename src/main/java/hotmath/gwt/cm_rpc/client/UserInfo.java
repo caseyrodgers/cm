@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_rpc.client;
 
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 
@@ -40,14 +40,14 @@ public class UserInfo implements  Response {
 	boolean disableCalcAlways;
 	boolean disableCalcQuizzes;
     UserProgramCompletionAction onCompletion= UserProgramCompletionAction.AUTO_ADVANCE;
-    AssignmentMetaInfo assignmentMetaInfo;
+    AssignmentUserInfo assignmentMetaInfo;
     
     
-    public AssignmentMetaInfo getAssignmentMetaInfo() {
+    public AssignmentUserInfo getAssignmentMetaInfo() {
         return assignmentMetaInfo;
     }
 
-    public void setAssignmentMetaInfo(AssignmentMetaInfo assignmentMetaInfo) {
+    public void setAssignmentMetaInfo(AssignmentUserInfo assignmentMetaInfo) {
         this.assignmentMetaInfo = assignmentMetaInfo;
         
         CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());

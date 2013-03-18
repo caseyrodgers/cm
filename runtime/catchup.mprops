@@ -3662,12 +3662,14 @@ select a.aid, a.assign_key,
        a.due_date,
        a.close_past_due,
        a.is_graded
+       
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count
                   from   CM_ASSIGNMENT_PIDS p
                   group  by assign_key) p
               on p.assign_key = a.assign_key
+     
 where  a.group_id = ?
 order  by a.due_date desc,  last_modified desc 
 
@@ -3923,3 +3925,25 @@ where u.uid = ?
 and a.status != 'Draft'
 group by a.status
 
+
+
+
+.key=GET_ASSIGNMENTS_GRADED_INFO
+
+select  ai.num_students_graded, ag.num_students_in_assignment
+FROM CM_ASSIGNMENT a
+left join (
+                select assign_key, count(*) as num_students_graded
+                from CM_ASSIGNMENT_USER u
+                where     is_graded = 1
+                group by assign_key
+          ) ai on ai.assign_key = a.assign_key
+          
+         left join(
+                select group_id, count(*) as num_students_in_assignment
+                from HA_USER u
+                group by group_id
+          ) ag on ag.group_id = a.group_id
+          
+     
+where  a.assign_key = ?

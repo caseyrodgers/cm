@@ -4,9 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 /** Define a single assignment as defined in CM.
@@ -37,6 +35,10 @@ public class Assignment implements Response{
     // might be null indicate not set
     Integer problemCount;
     
+    // piggy back along with RPC data.  
+    // TODO: does this belong here?
+    AssignmentGradeDetailInfo gradedInfo;
+
     public Assignment() {}
     
     public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean closePastDue, boolean graded) {
@@ -51,6 +53,7 @@ public class Assignment implements Response{
         this.closePastDue = closePastDue;
         this.graded = graded;
     }
+
 
     public int getAdminId() {
         return adminId;
@@ -203,7 +206,16 @@ public class Assignment implements Response{
     public void setGraded(boolean graded) {
         this.graded = graded;
     }
+
     
+    public AssignmentGradeDetailInfo getGradedInfo() {
+        return gradedInfo;
+    }
+
+    public void setGradedInfo(AssignmentGradeDetailInfo gradedInfo) {
+        this.gradedInfo = gradedInfo;
+    }
+
     @Override
     public String toString() {
         return "Assignment [adminId=" + adminId + ", assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments="

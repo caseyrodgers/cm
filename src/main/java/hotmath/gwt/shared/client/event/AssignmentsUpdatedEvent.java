@@ -1,17 +1,17 @@
 package hotmath.gwt.shared.client.event;
 
 
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 
 import com.google.gwt.event.shared.GwtEvent;
 
 public class AssignmentsUpdatedEvent extends GwtEvent<AssignmentsUpdatedHandler> {
 
     public static Type<AssignmentsUpdatedHandler> TYPE = new Type<AssignmentsUpdatedHandler>();
-    private AssignmentMetaInfo assignmentInfo;
+    private AssignmentUserInfo assignmentInfo;
     
     
-    public AssignmentsUpdatedEvent(AssignmentMetaInfo assignmentInfo) {
+    public AssignmentsUpdatedEvent(AssignmentUserInfo assignmentInfo) {
         this.assignmentInfo = assignmentInfo; 
     }
     

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.ActivateAssignmentAction;
@@ -8,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CopyAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
+import hotmath.gwt.cm_rpc.client.rpc.ReleaseAssignmentGradesAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -42,6 +45,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.info.Info;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
@@ -97,7 +101,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         List<ColumnConfig<Assignment, ?>> l = new ArrayList<ColumnConfig<Assignment, ?>>();
         l.add(new ColumnConfig<Assignment, Date>(props.dueDate(), 120, "Due Date"));
         l.add(new ColumnConfig<Assignment, String>(props.status(), 75, "Status"));
-        l.add(new ColumnConfig<Assignment, Boolean>(props.graded(), 75, "Graded"));
+        l.add(new ColumnConfig<Assignment, String>(props.gradedStatus(), 75, "Graded"));
         l.add(new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems"));
         l.add(new ColumnConfig<Assignment, String>(props.comments(),50, "Comments"));
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
@@ -124,7 +128,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
 
     private Widget createActivateButton() {
-        TextButton changeStatus =  new TextButton("Activate/Close");
+        TextButton changeStatus =  new TextButton("Action");
         Menu menu = new Menu();
         MenuItem btnActive = new MenuItem("Activate", new SelectionHandler<MenuItem>() {
             
@@ -148,11 +152,62 @@ public class AssignmentsContentPanel extends ContentPanel {
         });
         btnClose.setToolTip("Close the selected assignment disallowing future student changes.");
         menu.add(btnClose);
+        
+        MenuItem btnRelease = new MenuItem("Release Grades", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                releaseSelectedAssignmentGrades();
+            }
+        });
+        btnClose.setToolTip("Allow student's to see the selected assignment's grades.");
+        menu.add(btnRelease);
+        
+        
 
         changeStatus.setMenu(menu);
         return changeStatus;
     }
     
+    
+
+    protected void releaseSelectedAssignmentGrades() {
+        final Assignment assignment = _grid.getSelectionModel().getSelectedItem();
+        if(assignment == null) {
+            CmMessageBox.showAlert("You need to select an assignment first.");
+            return;
+        }
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", "Are you sure you want to allow students to see this assignment's grades?");
+        cm.addHideHandler(new HideHandler() {
+            @Override
+            public void onHide(HideEvent event) {
+                if (cm.getHideButton() == cm.getButtonById(PredefinedButton.YES.name())) {
+                    releaseGradesForAssignment(assignment);
+                }
+            }
+        });
+        cm.setVisible(true);
+    }
+
+    protected void releaseGradesForAssignment(final Assignment assignment) {
+        
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                ReleaseAssignmentGradesAction action = new ReleaseAssignmentGradesAction(assignment.getAssignKey());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData saList) {
+                Info.display("Infomation", "Grades Release");
+                CmBusyManager.setBusy(false);
+                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
+            }
+        }.register();                        
+    }
+
     
     
     protected void activateAssignment(final Assignment assignment) {

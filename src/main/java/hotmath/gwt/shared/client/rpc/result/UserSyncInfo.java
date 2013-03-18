@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc.result;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 /** Encapsulates the information about a current 
@@ -13,14 +13,14 @@ import hotmath.gwt.cm_rpc.client.rpc.Response;
 public class UserSyncInfo implements Response{
     CatchupMathVersion versionInfo;
     String currentUserLoginKey;
-    AssignmentMetaInfo assignmentInfo;
+    AssignmentUserInfo assignmentInfo;
 
     
     //CmList<Assignment> assignments;
     
     public UserSyncInfo() {}
     
-    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, AssignmentMetaInfo assignmentInfo) {
+    public UserSyncInfo(CatchupMathVersion version, String currentUserLoginKey, AssignmentUserInfo assignmentInfo) {
         this.versionInfo = version;        
         this.currentUserLoginKey = currentUserLoginKey;
         this.assignmentInfo = assignmentInfo;
@@ -42,11 +42,11 @@ public class UserSyncInfo implements Response{
         this.currentUserLoginKey = currentUserLoginKey;
     }
 
-    public AssignmentMetaInfo getAssignmentInfo() {
+    public AssignmentUserInfo getAssignmentInfo() {
         return assignmentInfo;
     }
 
-    public void setAssignmentInfo(AssignmentMetaInfo _assignmentInfo) {
+    public void setAssignmentInfo(AssignmentUserInfo _assignmentInfo) {
         this.assignmentInfo = _assignmentInfo;
     }
 

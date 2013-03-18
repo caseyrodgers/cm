@@ -12,8 +12,9 @@ import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentGradeDetailInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
@@ -379,18 +380,41 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 // create a pseudo name
                 String comments = rs.getString("comments");
-
                 Date dueDate = rs.getDate("due_date");
-
                 String assignmentName = _createAssignmentName(dueDate, comments);
 
                 Assignment ass = extractAssignmentFromRs(rs);
+                try {
+                    ass.setGradedInfo(getAssignmentGradedInfo(ass.getAssignKey()));
+                }
+                catch(Exception e) {
+                    __logger.error("Error getting graded info: " + ass, e);
+                }
+                
                 ass.setAssignmentName(assignmentName);
                 ass.setProblemCount(rs.getInt("problem_count"));
                 return ass;
             }
         });
         return problems;
+    }
+
+    protected AssignmentGradeDetailInfo getAssignmentGradedInfo(int assignKey) throws Exception{
+        // GET_ASSIGNMENTS_GRADED_INFO
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_GRADED_INFO");
+        List<AssignmentGradeDetailInfo> infos = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<AssignmentGradeDetailInfo>() {
+            @Override
+            public AssignmentGradeDetailInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new AssignmentGradeDetailInfo(rs.getInt("num_students_graded"), rs.getInt("num_students_in_assignment"));
+            }
+        });
+        
+        if(infos.size() > 0) {
+            return infos.get(0);
+        }
+        else {
+            return new AssignmentGradeDetailInfo();
+        }
     }
 
     public List<Assignment> getAssignments(int adminId, int groupId, java.util.Date fromDate, java.util.Date toDate) throws Exception {
@@ -415,7 +439,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
     
     protected Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
-            return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), 
+        return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), 
                 rs.getDate("due_date"), null, rs.getString("status"), rs.getInt("close_past_due")!=0, rs.getInt("is_graded") != 0);
     }
 
@@ -953,7 +977,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param metaInfo
      * @throws Exception
      */
-    private void getAssignmentStatuses(int uid, final AssignmentMetaInfo metaInfo) throws Exception {
+    private void getAssignmentStatuses(int uid, final AssignmentUserInfo metaInfo) throws Exception {
 
         __logger.debug("Getting assignment statuses for '" + uid + "'");
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_STATUS");
@@ -1567,8 +1591,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public AssignmentMetaInfo getStudentAssignmentMetaInfo(int uid) throws Exception {
-        AssignmentMetaInfo assignmentInfo = new AssignmentMetaInfo();
+    public AssignmentUserInfo getStudentAssignmentMetaInfo(int uid) throws Exception {
+        AssignmentUserInfo assignmentInfo = new AssignmentUserInfo();
         if(isAdminUsingAssignmentsAtAll(uid)) {
             assignmentInfo.setAdminUsingAssignments(true);
             getAssignmentStatuses(uid, assignmentInfo);

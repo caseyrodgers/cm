@@ -9,11 +9,7 @@ import java.util.List;
  * @author casey
  *
  */
-public class AssignmentMetaInfo implements Response {
-    
-    public List<ProblemAnnotation> getUnreadAnnotations() {
-        return unreadAnnotations;
-    }
+public class AssignmentUserInfo implements Response {
 
     private int activeAssignments;
     private int closedAssignments;
@@ -21,7 +17,12 @@ public class AssignmentMetaInfo implements Response {
     private List<ProblemAnnotation> unreadAnnotations;
     private boolean adminUsingAssignments;
 
-    public AssignmentMetaInfo(){}
+    public AssignmentUserInfo(){}
+    
+    
+    public List<ProblemAnnotation> getUnreadAnnotations() {
+        return unreadAnnotations;
+    }
 
     public int getActiveAssignments() {
         return activeAssignments;

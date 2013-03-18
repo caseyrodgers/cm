@@ -2,7 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 
 import com.sencha.gxt.widget.core.client.button.IconButton;
@@ -31,7 +31,7 @@ public class StudentAssignmentButton extends IconButton {
     }
     
     
-    public void setState(AssignmentMetaInfo assInfo) {
+    public void setState(AssignmentUserInfo assInfo) {
         if(assInfo.getActiveAssignments() > 0 || assInfo.getUnreadMessageCount() > 0) {
             _state = ButtonState.HAS_ASSIGNMENTS;
             

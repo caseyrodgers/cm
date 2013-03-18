@@ -3,7 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.util.CatchupMathProperties;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
@@ -25,7 +25,7 @@ public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, User
     @Override
     public UserSyncInfo execute(Connection conn, GetUserSyncAction action) throws Exception {
       
-      AssignmentMetaInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
+      AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
         
        return new UserSyncInfo(
                 new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()),

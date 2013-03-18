@@ -5,7 +5,7 @@ import hotmath.gwt.cm.client.ui.context.ContextChangeMessage;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentMetaInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -143,7 +143,7 @@ public class HeaderPanel extends FlowLayoutContainer {
         setLoginInfo();
     }
 
-    private void updateAssignmentMessage(AssignmentMetaInfo assInfo) {
+    private void updateAssignmentMessage(AssignmentUserInfo assInfo) {
         if(assInfo.isAdminUsingAssignments()) {
             if(_assignmentsAnchor == null) {
                 _assignmentsAnchor = new StudentAssignmentButton();
@@ -251,7 +251,7 @@ public class HeaderPanel extends FlowLayoutContainer {
         
         CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
             @Override
-            public void assignmentsUpdated(AssignmentMetaInfo assInfo) {
+            public void assignmentsUpdated(AssignmentUserInfo assInfo) {
                 UserInfo.getInstance().setAssignmentMetaInfo(assInfo);
                 __instance.updateAssignmentMessage(assInfo);
             }

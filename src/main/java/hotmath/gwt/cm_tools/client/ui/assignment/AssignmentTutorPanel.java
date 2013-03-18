@@ -197,7 +197,7 @@ public class AssignmentTutorPanel extends Composite {
     private void processTutorWidgetComplete(final String inputValue, boolean yesNo) {
         
         if(!_isEditable) {
-            Info.display("Assignment Closed", "Input value is not saved.");
+            CmMessageBox.showAlert("Assignment Closed", "This input value will not be saved because the assignment is closed.");
             return;
         }
         
