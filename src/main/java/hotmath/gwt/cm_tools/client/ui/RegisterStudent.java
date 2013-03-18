@@ -1209,7 +1209,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
      * @param fs
      * @param fp
      */
-    @SuppressWarnings("unchecked")
     protected void doSubmitAction(AfterValidation callback) throws CmException {
 
         try {
@@ -1451,7 +1450,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 sm.setSectionNum(prevSectionNum);
             }
 
-            if (stuMdl.getProgram().getProgramDescription() == null || isDifferentProgram(stuMdl, prog)) {
+            if (isDifferentProgram(stuMdl.getProgram(), sm.getProgram())) {
                 sm.setStatus("Not started");
                 if (sectionNumChanged == false)
                     sm.setSectionNum(0);
@@ -1484,25 +1483,43 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         }
     }
 
-    @SuppressWarnings("rawtypes")
+	@SuppressWarnings("rawtypes")
     private void checkValid(Field field) throws Exception {
         if(!field.isValid()) {
             throw new Exception("Field not valid: " + field);
         }
     }
     
-    private boolean isDifferentProgram(StudentModelI stuMdl, String prog) {
-        if (prog.equals("Custom")) {
+	private boolean isDifferentProgram(StudentProgramModel origProg, StudentProgramModel newProg) {
 
-            /**
-             * compare the name, maybe ... for now always update
-             * 
-             */
-            return true;
-        } else {
-            return !stuMdl.getProgram().getProgramDescription().equals(prog);
-        }
-    }
+		if (origProg.getProgramDescription() == null) return true;
+
+		boolean isDifferent = false;
+		if (origProg.isCustom() == false) {
+			isDifferent = (origProg.getProgramDescription().equals(newProg.getProgramDescription()) == false);
+		} else {
+			if (newProg.isCustom() == false) {
+				isDifferent = false;
+			}
+			CustomProgramComposite origCustom = origProg.getCustom();
+			CustomProgramComposite newCustom = newProg.getCustom();
+			if (origCustom.getType() != newCustom.getType())
+				isDifferent = true;
+			else {
+				switch (origCustom.getType()) {
+				case LESSONS:
+					isDifferent = (origCustom.getCustomProgramName().trim().equals(newCustom.getCustomProgramName().trim()) == false);
+					break;
+				case QUIZ:
+					isDifferent = (origCustom.getCustomQuizName().trim().equals(newCustom.getCustomQuizName().trim()) == false);
+					break;
+				}
+			}
+		}
+
+		return isDifferent;
+
+	}
 
     private boolean settingsChanged(StudentSettingsModel origValue, StudentSettingsModel newValue) {
         if (origValue == null && newValue != null)
@@ -1547,8 +1564,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     public void finish() {
         setComboBoxSelections();
     }
-    
-    
     
 }
 
