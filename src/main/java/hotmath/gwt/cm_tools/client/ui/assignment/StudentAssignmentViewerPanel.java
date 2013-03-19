@@ -27,6 +27,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -36,6 +37,7 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -76,22 +78,15 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     
     static StudentAssignmentViewerPanel __lastInstance;
     int assignKeyToOpen;
+    private CallbackOnComplete callback;
     
     public StudentAssignmentViewerPanel(int assignKeyToOpen, final CallbackOnComplete callback) {
         __lastInstance = this;
+        this.callback = callback;
         this.assignKeyToOpen = assignKeyToOpen;
 
         getHeader().setVisible(false);
         addTool(new GotoNextAnnotationButton());
-
-        TextButton btnReturn = new TextButton("Return To Your Program");
-        btnReturn.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                callback.isComplete();
-            }
-        });
-        addTool(btnReturn);
         
         _problemListPanel = new AssignmentProblemListPanel(new AssignmentProblemListCallback() {
             @Override
@@ -227,10 +222,29 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             }
         });
         _nextAnnotation = new GotoNextAnnotationButton();
-        buttonBar.add(_turnInButton);
-        buttonBar.add(_nextAnnotation);
+
+
+        TextButton btnReturn = new TextButton("Return To Your Program");
+        btnReturn.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                callback.isComplete();
+            }
+        });
         
-        header.setSouthWidget(buttonBar, new BorderLayoutData(30));
+
+
+        HorizontalLayoutData hData = new HorizontalLayoutData();
+        hData.setMargins(new Margins(0,10,0,0));
+        buttonBar.add(btnReturn,hData);
+        buttonBar.add(_turnInButton,hData);
+        buttonBar.add(_nextAnnotation,hData);
+        
+        
+        BorderLayoutData bData = new BorderLayoutData(30);
+        bData.setMargins(new Margins(10,0,0,0));
+        
+        header.setSouthWidget(buttonBar, bData);
         return header;
     }
     

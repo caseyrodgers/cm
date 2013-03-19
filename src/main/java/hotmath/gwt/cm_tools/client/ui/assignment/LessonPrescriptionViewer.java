@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.http.client.URL;
@@ -20,7 +21,16 @@ public class LessonPrescriptionViewer extends GWindow {
         setVisible(true);
     }
     
+    
+    
     private void showLessonPrescription(String lessonName) {
+        ResourceViewerImplReview review = new ResourceViewerImplReview();
+        setWidget(review);
+    }
+
+
+
+    private void showLessonPrescription2(String lessonName) {
         try {
             String url = "/cm_search/CatchupMathSearch.html#TopicPlace:" + URL.encode(lessonName);
             Frame frame = new Frame();

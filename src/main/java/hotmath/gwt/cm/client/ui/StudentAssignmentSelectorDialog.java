@@ -136,13 +136,13 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     }
     
     private Widget createOpenButton() {
-        TextButton btn = new TextButton("Open Assignment", new SelectHandler() {
+        TextButton btn = new TextButton("View Assignment", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 showSelectedAssignment();
             }
         });
-        btn.setToolTip("Open the selected assignment");
+        btn.setToolTip("View the selected assignment");
         return btn;
     }
     
@@ -241,7 +241,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     
     private ColumnModel<StudentAssignmentInfo> createColumnModel() {
         List<ColumnConfig<StudentAssignmentInfo, ?>> cols = new ArrayList<ColumnConfig<StudentAssignmentInfo, ?>>();
-        //cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.dueDate(), 80, "Due Date"));
+        cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.dueDate(), 80, "Due Date"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.status(), 70, "Status"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.comments(), 235, "Comments"));
         
@@ -271,7 +271,10 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     
     private static StudentAssignmentSelectorDialog __lastInstance;
     public static void showSharedDialog() {
-        __lastInstance = null;
+        
+        if(CmShared.getQueryParameter("debug") == null) {
+            __lastInstance = null;
+        }
         if(__lastInstance == null) {
             __lastInstance = new StudentAssignmentSelectorDialog();
         }

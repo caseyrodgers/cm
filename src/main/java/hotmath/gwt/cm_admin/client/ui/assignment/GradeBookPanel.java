@@ -19,6 +19,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -151,8 +152,10 @@ public class GradeBookPanel extends ContentPanel {
 	private void initColumns() {
         colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 200, "Student"));
         colConfList.add(new ColumnConfig<StudentAssignment, Boolean>(saProps.graded(), 50, "Graded"));
+        colConfList.get(colConfList.size()-1).setToolTip(SafeHtmlUtils.fromTrustedString("Has this user's grades been released"));
         colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Score"));
         colConfList.add(new ColumnConfig<StudentAssignment, Date>(saProps.turnInDate(), 75, "Turned In"));
+        colConfList.get(colConfList.size()-1).setToolTip(SafeHtmlUtils.fromTrustedString("The date this user clicked the 'Turn In Assignment' button"));
         
         detailStatus = new ColumnConfig<StudentAssignment, String>(saProps.studentDetailStatus(), 150, "Details");
         colConfList.add(detailStatus);
