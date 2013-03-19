@@ -21,10 +21,11 @@ public class StudentAssignmentInfo implements Response {
     private Date turnInDate;
     private int cntProblems;
     private int cntSubmitted;
+    private String score;
 
     public StudentAssignmentInfo() {}
     
-    public StudentAssignmentInfo(int assignKey, int uid, boolean graded, Date turnInDate, String status, Date dueDate, String comments, int cntProblems, int cntSubmitted) {
+    public StudentAssignmentInfo(int assignKey, int uid, boolean graded, Date turnInDate, String status, Date dueDate, String comments, int cntProblems, int cntSubmitted, String score) {
         this.assignKey = assignKey;
         this.uid = uid;
         this.isGraded = graded;
@@ -34,6 +35,7 @@ public class StudentAssignmentInfo implements Response {
         this.comments = comments;
         this.cntProblems = cntProblems;
         this.cntSubmitted = cntSubmitted;
+        this.score = score;        
     }
 
     
@@ -114,9 +116,17 @@ public class StudentAssignmentInfo implements Response {
         this.status = status;
     }
 
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
     @Override
     public String toString() {
         return "StudentAssignmentInfo [uid=" + uid + ", assignKey=" + assignKey + ", dueDate=" + dueDate + ", isGraded=" + isGraded + ", comments=" + comments
-                + ", status=" + status + "]";
+                + ", status=" + status + ", turnInDate=" + turnInDate + ", cntProblems=" + cntProblems + ", cntSubmitted=" + cntSubmitted + ", score=" + score
+                + "]";
     }
 }

@@ -243,6 +243,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         List<ColumnConfig<StudentAssignmentInfo, ?>> cols = new ArrayList<ColumnConfig<StudentAssignmentInfo, ?>>();
         cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.dueDate(), 80, "Due Date"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.status(), 70, "Status"));
+        cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.score(), 70, "Score"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.comments(), 235, "Comments"));
         
         //cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.complete(), 70, "Complete"));
@@ -258,6 +259,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     interface StudentAssignmentSelectorDialogProperties extends PropertyAccess<String> {
         @Path("assignKey")
         ModelKeyProvider<StudentAssignmentInfo> key();
+        ValueProvider<StudentAssignmentInfo, String> score();
         ValueProvider<StudentAssignmentInfo, Boolean> graded();
         ValueProvider<StudentAssignmentInfo, Date> turnInDate();
         ValueProvider<StudentAssignmentInfo, Integer> cntSubmitted();

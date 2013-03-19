@@ -10,17 +10,16 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.ui.CmCellRendererBoolean;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -154,22 +153,10 @@ public class GradeBookPanel extends ContentPanel {
 	private void initColumns() {
         colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 200, "Student"));
         
-        ColumnConfig<StudentAssignment, Boolean> cc = new ColumnConfig<StudentAssignment, Boolean>(saProps.graded(), 50, "Graded");
-        cc.setCell(new AbstractCell<Boolean>() {
-            @Override
-            public void render(com.google.gwt.cell.client.Cell.Context arg0, Boolean arg1, SafeHtmlBuilder arg2) {
-                String val=null;
-                if(arg1 == null || arg1 == false) {
-                    val = "No";
-                }
-                else {
-                    val = "Yes";
-                }
-                arg2.append(SafeHtmlUtils.fromString(val));
-            }
-        });
-        cc.setToolTip(SafeHtmlUtils.fromTrustedString("Has this user's grades been released"));
-        colConfList.add(cc);
+        ColumnConfig<StudentAssignment, Boolean> colGraded = new ColumnConfig<StudentAssignment, Boolean>(saProps.graded(), 50, "Graded");
+        colGraded.setCell(new CmCellRendererBoolean());
+        colGraded.setToolTip(SafeHtmlUtils.fromTrustedString("Has this user's grades been released"));
+        colConfList.add(colGraded);
         
         colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.homeworkGrade(), 50, "Score"));
         

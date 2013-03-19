@@ -727,7 +727,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return status;
     }
 
-    private String getHomeworkGrade(int totCount, double totCorrect, int totIncorrect, int totHalfCredit) {
+    private String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
         
         // add .5 for each half correct answer
         float totCorrectF = (float)totCorrect + (totHalfCredit>0?totHalfCredit / 2:0);
@@ -1015,9 +1015,26 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 String status = rs.getString("status");
                 Date dueDate = rs.getDate("due_date");
                 
-                StudentAssignmentInfo info = new StudentAssignmentInfo(rs.getInt("assign_key"), 
-                                uid, rs.getInt("is_graded") != 0?true:false,rs.getDate("turn_in_date"),
-                                status,dueDate,rs.getString("comments"),cntProblems, cntSubmitted);
+                boolean isGraded = rs.getInt("is_graded") != 0?true:false;
+                int assignKey = rs.getInt("assign_key");
+                String score="";
+                if(isGraded) {
+                    try {
+                        score = getUserScore(uid, assignKey);
+                        if(score != null && score.equals("-")) {
+                            String sl = status.toLowerCase();
+                            if(sl.equals("closed") || isGraded) {
+                                score = "0%";
+                            }
+                        }
+                    }
+                    catch(Exception e) {
+                        __logger.error("Error getting score: " + uid, e);
+                    }
+                }
+                StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, 
+                                uid, isGraded,rs.getDate("turn_in_date"),
+                                status,dueDate,rs.getString("comments"),cntProblems, cntSubmitted,score);
                 return info;
             }
         });
@@ -1030,6 +1047,31 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 //        }
 
         return assInfos;
+    }
+
+    protected String getUserScore(int uid, int assignKey) throws Exception  {
+        final double counts[] = new double[4];
+        final int TOTAL=0,CORRECT=1,HALFCREDIT=2,INCORRECT=3;
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_SCORE");
+        getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                String status = rs.getString("status").toLowerCase();
+                if(status.equals("correct")) {
+                    counts[CORRECT]+=1;
+                }
+                else if(status.equals("half credit")) {
+                    counts[HALFCREDIT]+=1;
+                }
+                else if(status.equals("incorrect")) {
+                    counts[INCORRECT]+=1;
+                }
+                counts[TOTAL]++;
+                return 0; // unused
+            }
+        });
+        
+        return getHomeworkGrade((int)counts[TOTAL], (int)counts[CORRECT], (int)counts[INCORRECT], (int)counts[HALFCREDIT]);
     }
 
     private String _createAssignmentName(Date dueDate, String comments) {
