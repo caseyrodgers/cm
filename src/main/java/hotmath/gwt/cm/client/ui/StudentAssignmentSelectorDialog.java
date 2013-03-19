@@ -115,7 +115,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         _cbPastDue.setValue(true);
         _cbClosed.setValue(false);
         
-        hlc.add(new MyFieldLabel(_cbActive, "Active", 30,50));
+        hlc.add(new MyFieldLabel(_cbActive, "Open", 30,50));
         hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
         hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,50));
         hlc.add(new MyFieldLabel(_cbClosed, "Closed", 30,50));
@@ -222,7 +222,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
             else if(s.equals("Closed") && _cbClosed.getValue()) {
                 filtered.add(sai);
             }
-            else if(s.equals("Active") && _cbActive.getValue()) {
+            else if(s.equals("Open") && _cbActive.getValue()) {
                 filtered.add(sai);
             }
             else if(sai.isGraded() && _cbGraded.getValue()) {
@@ -241,14 +241,15 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     
     private ColumnModel<StudentAssignmentInfo> createColumnModel() {
         List<ColumnConfig<StudentAssignmentInfo, ?>> cols = new ArrayList<ColumnConfig<StudentAssignmentInfo, ?>>();
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.dueDate(), 80, "Due Date"));
+        //cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.dueDate(), 80, "Due Date"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.status(), 70, "Status"));
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.complete(), 70, "Complete"));
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.turnInDate(), 70, "Turned In"));
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.graded(), 70, "Graded"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.comments(), 235, "Comments"));
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Integer>(props.cntProblems(), 70, "Problems"));
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Integer>(props.cntSubmitted(), 70, "Submitted"));
+        
+        //cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.complete(), 70, "Complete"));
+        //cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.turnInDate(), 70, "Turned In"));
+        // cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.graded(), 70, "Graded"));
+        //cols.add(new ColumnConfig<StudentAssignmentInfo, Integer>(props.cntProblems(), 70, "Problems"));
+        //cols.add(new ColumnConfig<StudentAssignmentInfo, Integer>(props.cntSubmitted(), 70, "Submitted"));
         ColumnModel<StudentAssignmentInfo> colModel = new ColumnModel<StudentAssignmentInfo>(cols);
         return  colModel;
     }

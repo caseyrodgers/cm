@@ -13,7 +13,7 @@ public class UpdateStudentAssignmentStatusCommand implements ActionHandler<Updat
     
     @Override
     public RpcData execute(Connection conn, UpdateStudentAssignmentStatusAction action) throws Exception {
-        int[] status = AssignmentDao.getInstance().updateStudentAssignmentStatus(action.getStudentAssignment());
+        int[] status = AssignmentDao.getInstance().updateStudentAssignmentStatus(action.getStudentAssignment(), action.isReleaseGrades());
         return new RpcData("status=" + status);
     }
     

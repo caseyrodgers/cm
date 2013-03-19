@@ -5,11 +5,13 @@ import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 public class UpdateStudentAssignmentStatusAction implements Action<RpcData> {
 
     private StudentAssignment stuAssignment;
+    private boolean releaseGrades;
 
     public UpdateStudentAssignmentStatusAction(){}
     
-    public UpdateStudentAssignmentStatusAction(StudentAssignment stuAssign) {
+    public UpdateStudentAssignmentStatusAction(StudentAssignment stuAssign, boolean releaseGrades) {
         this.stuAssignment = stuAssign;
+        this.releaseGrades = releaseGrades;
     }
 
     public StudentAssignment getStudentAssignment() {
@@ -18,6 +20,14 @@ public class UpdateStudentAssignmentStatusAction implements Action<RpcData> {
 
     public void setStudentAssignment(StudentAssignment stuAssign) {
         this.stuAssignment = stuAssign;
+    }
+
+    public boolean isReleaseGrades() {
+        return releaseGrades;
+    }
+
+    public void setReleaseGrades(boolean releaseGrades) {
+        this.releaseGrades = releaseGrades;
     }
 
     @Override

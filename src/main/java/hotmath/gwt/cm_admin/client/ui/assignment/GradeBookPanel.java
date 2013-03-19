@@ -123,7 +123,7 @@ public class GradeBookPanel extends ContentPanel {
                 FlowLayoutContainer scrollWrapper = new FlowLayoutContainer();
                 scrollWrapper.setScrollMode(ScrollMode.AUTO);
                 scrollWrapper.add(_gradebookGrid);
-                setWidget(scrollWrapper);
+                setWidget(_gradebookGrid);
                 forceLayout();
             }
         }.register();                

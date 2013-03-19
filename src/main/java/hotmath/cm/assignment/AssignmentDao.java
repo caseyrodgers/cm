@@ -503,7 +503,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
                         boolean isClosed = assignment.getStatus().equals("Closed");
-                        boolean isGraded = rs.getInt("is_graded") !=0 ? true: false;
+                        boolean isGraded = rs.getInt("is_graded")!=0?true:false;
                         StudentProblemDto prob = new StudentProblemDto(uid, probDto, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed, isGraded);
                         return prob;
                     }
@@ -523,7 +523,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 StudentAssignment sa = getStudentAssignment(uid, assignKey);
                 StudentAssignmentUserInfo userInfo = getStudentAssignmentUserInfo(uid, assignKey);
                 
-                StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList, userInfo.getTurnInDate(),  assignment.isGraded());
+                StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList, userInfo.getTurnInDate(), userInfo.isGraded());
                 stuAssignment.setStudentName(nameMap.get(uid));
                 stuAssignments.add(stuAssignment);
                 stuAssignMap.put(uid, stuAssignment);
@@ -754,7 +754,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         .getString("pid"), null, rs.getInt("assign_key"));
                 prob.setProblem(probDto);
                 prob.setStatus(rs.getString("status"));
-                prob.setGraded((rs.getInt("is_graded") > 0) ? true : false);
                 return prob;
             }
         });
@@ -774,7 +773,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 Assignment assignment = getAssignment(lastAssignKey);
                 StudentAssignment su = getStudentAssignment(probDto.getUid(), lastAssignKey);
                 Date dateTurnedIn=null;
-                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList,dateTurnedIn,probDto.isGraded());
+                
+                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList,dateTurnedIn,true);
                 stuAssignment.setStudentName(stuName);
                 stuAssignments.add(stuAssignment);
                 stuAssignMap.put(lastAssignKey, stuAssignment);
@@ -985,7 +985,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String status = rs.getString("status");
-                if(status.equalsIgnoreCase("active")) {
+                if(status.equalsIgnoreCase("open")) {
                     metaInfo.setActiveAssignments(rs.getInt("cnt"));
                 }
                 else if(status.equalsIgnoreCase("closed")) {
@@ -1074,14 +1074,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                             }
                         }
                         if(prob == null) {
-                            __logger.warn("Student Problem not found in assingment problems");
+                            __logger.warn("Student Problem not found in assignment problems");
                             prob = new ProblemDto(0, 0, null, null, pid, null, 0);
                         }
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
                         boolean isClosed = assignment.getStatus().equals("Closed");
-                        boolean isGraded = rs.getInt("is_graded") != 0 ? true: false;
-                        StudentProblemDto stuProb = new StudentProblemDto(uid, prob, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed, isGraded);
+                        boolean isGraded = rs.getInt("is_graded")!=0?true:false;
+                        StudentProblemDto stuProb = new StudentProblemDto(uid, prob, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed,isGraded);
                         return stuProb;
                     }
                 });
@@ -1116,7 +1116,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         /**
-         * Make sure there is a status for each
+         * Make sure there is a status for each problem in assignment
          * 
          */
         CmList<StudentProblemDto> allStatus = new CmArrayList<StudentProblemDto>();
@@ -1142,18 +1142,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         
         studentAssignment.setTurnInDate(studentInfo.getTurnInDate());
-
         studentAssignment.setAssigmentStatuses(allStatus);
+        
+        studentAssignment.setGraded(studentInfo.isGraded());
+        
+        
         return studentAssignment;
     }
-
 
     private StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) {
         String sql = "select * from CM_ASSIGNMENT_USER where uid = ? and assign_key = ?";
         List<StudentAssignmentUserInfo> assInfos = getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<StudentAssignmentUserInfo>() {
             @Override
             public StudentAssignmentUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentAssignmentUserInfo(uid, assignKey,rs.getDate("turn_in_date"));
+                return new StudentAssignmentUserInfo(uid, assignKey,rs.getDate("turn_in_date"), rs.getInt("is_graded")!=0?true:false);
             }
         });
         if(assInfos.size()>0) {
@@ -1317,9 +1319,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * Update a Student's Assignment status
      * 
      * @param studentAssignment
+     * @param releaseGrades 
      * @return
      */
-    public int[] updateStudentAssignmentStatus(StudentAssignment studentAssignment) {
+    public int[] updateStudentAssignmentStatus(StudentAssignment studentAssignment, boolean releaseGrades) throws Exception {
         List<StudentProblemDto> list = studentAssignment.getAssigmentStatuses();
         StringBuilder sb = new StringBuilder();
         for (StudentProblemDto sp : list) {
@@ -1335,8 +1338,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
         int[] updateCounts = template.batchUpdate("update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ? where assign_key = ? and pid = ? and uid = ?",
                 batch);
-
-        // TODO: also update CM_ASSIGNMENT_PID_ANSWERS
+        
+        if(releaseGrades) {
+            markAssignmentAsGraded(studentAssignment.getUid(), studentAssignment.getAssignment().getAssignKey());
+        }
 
         return updateCounts;
     }
@@ -1570,7 +1575,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public void activateAssignment(int assignmentKey) throws Exception {
         Assignment assignment = getAssignment(assignmentKey);
-        assignment.setStatus("Active");
+        assignment.setStatus("Open");
         saveAssignment(assignment);
     }
 
@@ -1721,22 +1726,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if(cntInsert != 1) {
                 throw new CmException("Could not turn in assignment: " + uid + ", " + assignKey);
             }
-        }
-    }
-    
-    public StudentAssignmentUserInfo getStudentAssignmentRecord(final int uid, final int assignKey) throws Exception {
-        String sql = "select * from CM_ASSIGNMENT_USER where uid = ? and assign_key = ?";
-        List<StudentAssignmentUserInfo> infos = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<StudentAssignmentUserInfo>() {
-            @Override
-            public StudentAssignmentUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentAssignmentUserInfo();
-            }
-        });
-        if(infos.size() > 0) {
-            return infos.get(0);
-        }
-        else {
-            return new StudentAssignmentUserInfo(uid,assignKey,null);
         }
     }
 }

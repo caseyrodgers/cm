@@ -15,13 +15,15 @@ public class StudentAssignmentUserInfo implements Response {
     private int uid;
     private int assignKey;
     private Date turnInDate;
+    private boolean graded;
 
     public StudentAssignmentUserInfo(){}
     
-    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate) {
+    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate, boolean graded) {
         this.uid = uid;
         this.assignKey = assignKey;
         this.turnInDate = turnInDate;
+        this.graded = graded;
     }
 
     public int getUid() {
@@ -46,6 +48,14 @@ public class StudentAssignmentUserInfo implements Response {
 
     public void setTurnInDate(Date turnInDate) {
         this.turnInDate = turnInDate;
+    }
+
+    public boolean isGraded() {
+        return graded;
+    }
+
+    public void setGraded(boolean graded) {
+        this.graded = graded;
     }
     
 }

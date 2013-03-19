@@ -212,7 +212,7 @@ public class EditAssignmentDialog {
             return false;
         }
         
-        if (statusTo.equals("Active")) {
+        if (statusTo.equals("Open")) {
             // only allow change if
             // unless date is today or later.
             DateTimeFormat dtf = DateTimeFormat.getFormat("h:mm a");
@@ -280,7 +280,7 @@ public class EditAssignmentDialog {
         EditAssignDialogProperties props = GWT.create(EditAssignDialogProperties.class);
 
         ListStore<AssignmentStatusDto> assStore = new ListStore<AssignmentStatusDto>(props.status());
-        assStore.add(new AssignmentStatusDto("Active"));
+        assStore.add(new AssignmentStatusDto("Open"));
         assStore.add(new AssignmentStatusDto("Closed"));
         assStore.add(new AssignmentStatusDto("Draft"));
 
@@ -349,7 +349,7 @@ public class EditAssignmentDialog {
         }
         else {
             if(_isDraftMode) {
-                _assignment.setStatus("Active");
+                _assignment.setStatus("Open");
             }
             else {
                 _assignment.setStatus(_assignmentStatus.getValue().getStatus());

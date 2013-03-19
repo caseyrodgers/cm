@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.data.shared.ListStore;
@@ -102,7 +103,9 @@ public class AssignmentsContentPanel extends ContentPanel {
         l.add(new ColumnConfig<Assignment, Date>(props.dueDate(), 120, "Due Date"));
         l.add(new ColumnConfig<Assignment, String>(props.status(), 75, "Status"));
         l.add(new ColumnConfig<Assignment, String>(props.gradedStatus(), 75, "Graded"));
+        l.get(l.size()-1).setToolTip(SafeHtmlUtils.fromTrustedString("How many students have been graded for this assignment"));
         l.add(new ColumnConfig<Assignment, Integer>(props.problemCount(), 75, "Problems"));
+        l.get(l.size()-1).setToolTip(SafeHtmlUtils.fromTrustedString("The number of problems in the assignment"));
         l.add(new ColumnConfig<Assignment, String>(props.comments(),50, "Comments"));
         ColumnModel<Assignment> cm = new ColumnModel<Assignment>(l);        
 
@@ -211,8 +214,8 @@ public class AssignmentsContentPanel extends ContentPanel {
     
     
     protected void activateAssignment(final Assignment assignment) {
-        if(assignment.getStatus().equals("Active")) {
-            CmMessageBox.showAlert("This assignment is already active.");
+        if(assignment.getStatus().equals("Open")) {
+            CmMessageBox.showAlert("This assignment is already open.");
             return;
         }
         

@@ -142,22 +142,20 @@ public class GradeBookDialog {
         TextButton saveBtn = new TextButton("Save");
         
         Menu menu = new Menu();
-        menu.add(new MenuItem("Save, do not report grades", new SelectionHandler<MenuItem>() {
+        menu.add(new MenuItem("Save, do not release grades", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                saveStudentGradeBook();
+                saveStudentGradeBook(false);
                 window.hide();
                 callbackOnComplete.isComplete();
             }
         }));
-        menu.add(new MenuItem("Save, and report grades", new SelectionHandler<MenuItem>() {
+        menu.add(new MenuItem("Save, and release grades", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                saveStudentGradeBook();
+                saveStudentGradeBook(true);
                 window.hide();
                 callbackOnComplete.isComplete();
-                
-                
             }
         }));
         saveBtn.setMenu(menu);
@@ -175,7 +173,7 @@ public class GradeBookDialog {
                         public void onHide(HideEvent event) {
                             Dialog btn = (Dialog) event.getSource();
                             if(btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
-                                saveStudentGradeBook();
+                                saveStudentGradeBook(false);
                             }
                             
                             window.hide();
@@ -235,7 +233,7 @@ public class GradeBookDialog {
         return combo;        
     }
     
-    private void saveStudentGradeBook() {
+    private void saveStudentGradeBook(final boolean releaseGrades) {
         
         Log.debug("Saving gradebook to server");
         
@@ -254,7 +252,7 @@ public class GradeBookDialog {
 
                 _stuAssignment.setAssigmentStatuses(spList);
 
-                UpdateStudentAssignmentStatusAction action = new UpdateStudentAssignmentStatusAction(_stuAssignment);
+                UpdateStudentAssignmentStatusAction action = new UpdateStudentAssignmentStatusAction(_stuAssignment, releaseGrades);
 
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
