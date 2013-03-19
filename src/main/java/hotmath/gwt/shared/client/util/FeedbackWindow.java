@@ -45,6 +45,9 @@ public class FeedbackWindow extends PromptMessageBox {
                 }
             }
         });
+        
+        center();
+        setVisible(true);
     }
     
 

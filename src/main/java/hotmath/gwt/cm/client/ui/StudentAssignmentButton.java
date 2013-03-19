@@ -50,7 +50,7 @@ public class StudentAssignmentButton extends IconButton {
             
             changeStyle("student-assignment-button-no");
             
-            setToolTip("You do not have any assignments or annotations.");
+            setToolTip("You do not have any assignments or teacher notes.");
         }
     }
 }

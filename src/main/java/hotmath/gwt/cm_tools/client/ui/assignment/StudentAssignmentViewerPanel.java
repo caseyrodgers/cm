@@ -332,7 +332,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 class GotoNextAnnotationButton extends TextButton implements SelectHandler {
     int next;
     public GotoNextAnnotationButton() {
-        super("Goto New Teacher Annotation");
+        super("Goto Teacher Note");
         addSelectHandler(this);
         setEnabled(false);
         startChecking();
@@ -371,7 +371,7 @@ class GotoNextAnnotationButton extends TextButton implements SelectHandler {
                 next++;
             }
             else {
-                CmMessageBox.showAlert("There are no teacher annotations available.");
+                CmMessageBox.showAlert("There are no teacher notes available.");
             }
         }
         
