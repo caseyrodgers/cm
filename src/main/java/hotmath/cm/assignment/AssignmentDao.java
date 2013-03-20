@@ -1014,6 +1014,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 int cntProblems = rs.getInt("cnt_problems");
                 String status = rs.getString("status");
                 Date dueDate = rs.getDate("due_date");
+                Date turnInDate = rs.getDate("turn_in_date");
+                
+                if(status.equals("Open") && turnInDate != null) {
+                    status = "Turned In";
+                }
                 
                 boolean isGraded = rs.getInt("is_graded") != 0?true:false;
                 int assignKey = rs.getInt("assign_key");
@@ -1033,7 +1038,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     }
                 }
                 StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, 
-                                uid, isGraded,rs.getDate("turn_in_date"),
+                                uid, isGraded,turnInDate,
                                 status,dueDate,rs.getString("comments"),cntProblems, cntSubmitted,score);
                 return info;
             }

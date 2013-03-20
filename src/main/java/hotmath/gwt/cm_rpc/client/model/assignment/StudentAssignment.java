@@ -109,6 +109,15 @@ public class StudentAssignment implements Response {
 	}
 
 	public String getHomeworkGrade() {
+	    
+	    /** If this assignment is graded and open, then the score should be shown
+	     * 
+	     */
+	    if(this.assignment.getStatus().equals("Open") && isGraded()) {
+	        if(homeworkGrade == null || homeworkGrade.equals("-")) {
+	            homeworkGrade = "0%";
+	        }
+	    }
 		return homeworkGrade;
 	}
 

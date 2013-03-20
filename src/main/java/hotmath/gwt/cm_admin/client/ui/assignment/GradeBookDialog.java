@@ -142,7 +142,7 @@ public class GradeBookDialog {
         TextButton saveBtn = new TextButton("Save");
         
         Menu menu = new Menu();
-        menu.add(new MenuItem("Save, do not release grades", new SelectionHandler<MenuItem>() {
+        menu.add(new MenuItem("Save, do not release grade", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 saveStudentGradeBook(false);
@@ -150,7 +150,7 @@ public class GradeBookDialog {
                 callbackOnComplete.isComplete();
             }
         }));
-        menu.add(new MenuItem("Save, and release grades", new SelectionHandler<MenuItem>() {
+        menu.add(new MenuItem("Save, and release grade", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 saveStudentGradeBook(true);

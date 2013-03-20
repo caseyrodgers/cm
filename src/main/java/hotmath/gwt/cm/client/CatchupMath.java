@@ -396,13 +396,13 @@ public class CatchupMath implements EntryPoint {
         });
     }
     
-    public void showAssignment(final int assignKey) {
+    public void showAssignment(final int assignKey, final String pid) {
 
         GWT.runAsync(new RunAsyncCallback() {
 
             @Override
             public void onSuccess() {
-                final Widget assignmentViewer = new StudentAssignmentViewerPanel(assignKey, new CallbackOnComplete() {
+                final Widget assignmentViewer = new StudentAssignmentViewerPanel(assignKey, pid, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
                         _mainPortWrapper.setCenterWidget(_mainContainer);

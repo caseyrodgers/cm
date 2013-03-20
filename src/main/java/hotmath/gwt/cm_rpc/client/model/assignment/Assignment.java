@@ -68,12 +68,7 @@ public class Assignment implements Response{
     }
 
     public String getStatusLabel() {
-        if(isExpired()) {
-            return "Past Due";
-        }
-        else {
-            return getStatus();
-        }
+        return getStatus();
     }
     
     public boolean isClosePastDue() {

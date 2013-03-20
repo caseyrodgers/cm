@@ -156,7 +156,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         btnClose.setToolTip("Close the selected assignment disallowing future student changes.");
         menu.add(btnClose);
         
-        MenuItem btnRelease = new MenuItem("Release Grades", new SelectionHandler<MenuItem>() {
+        MenuItem btnRelease = new MenuItem("Release Grade", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 releaseSelectedAssignmentGrades();

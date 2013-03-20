@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.assignment.GotoNextAnnotationButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -20,8 +21,6 @@ import java.util.List;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Label;
@@ -57,6 +56,14 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         setPixelSize(500, 400);
         
         addTool(createRefreshButton());
+        TextButton nextNoteButton = new GotoNextAnnotationButton();
+        nextNoteButton.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                hide();
+            }
+        });
+        addButton(nextNoteButton);
         addButton(createOpenButton());
         addCloseButton();
         createUi();
@@ -66,7 +73,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         setVisible(true);
     }
 
-    
+
     private void createUi() {
         BorderLayoutContainer bCont = new BorderLayoutContainer();
         
@@ -150,7 +157,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         StudentAssignmentInfo ass = getSelectedAssignment();
         if(ass != null) {
             hide();
-            CatchupMath.getThisInstance().showAssignment(ass.getAssignKey());
+            CatchupMath.getThisInstance().showAssignment(ass.getAssignKey(),null);
         }
     }
     

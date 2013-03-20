@@ -3803,7 +3803,9 @@ where  p.assign_key = ?
        
 .key=GET_STUDENT_ASSIGNMENTS
 
-select  due_date < now() as is_expired, a.*, ps.cnt_submitted, ap.cnt_problems, au.turn_in_date
+select  due_date < now() as is_expired,
+a.status, a.due_date,a.assign_key,a.comments, 
+au.is_graded, ps.cnt_submitted, ap.cnt_problems, au.turn_in_date
 from   HA_USER u join CM_GROUP g on g.id = u.group_id 
     join CM_ASSIGNMENT a on a.group_id = u.group_id
     left JOIN (

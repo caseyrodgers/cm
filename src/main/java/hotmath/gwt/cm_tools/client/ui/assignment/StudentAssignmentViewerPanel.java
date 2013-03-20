@@ -80,7 +80,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     int assignKeyToOpen;
     private CallbackOnComplete callback;
     
-    public StudentAssignmentViewerPanel(int assignKeyToOpen, final CallbackOnComplete callback) {
+    public StudentAssignmentViewerPanel(int assignKeyToOpen, String pid, final CallbackOnComplete callback) {
         __lastInstance = this;
         this.callback = callback;
         this.assignKeyToOpen = assignKeyToOpen;
@@ -118,7 +118,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         addStyleName("StudentAssignmentViewerPanel");
         setWidget(_main);
 
-        readAssignmentFromServer(assignKeyToOpen, null);
+        readAssignmentFromServer(assignKeyToOpen, pid);
         
         CmRpc.EVENT_BUS.fireEvent(new StudentAssignmentViewerActivatedAction());
     }
@@ -329,52 +329,3 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 }
 
 
-class GotoNextAnnotationButton extends TextButton implements SelectHandler {
-    int next;
-    public GotoNextAnnotationButton() {
-        super("Goto Teacher Note");
-        addSelectHandler(this);
-        setEnabled(false);
-        startChecking();
-    }
-    
-    private void checkIt() {
-        if(UserInfo.getInstance().getAssignmentMetaInfo() != null && UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations().size() > 0) {
-            setEnabled(true);
-        }
-        else {
-            setEnabled(false);
-        }
-    }
-    private void startChecking() {
-        new Timer() {
-            @Override
-            public void run() {
-                checkIt();
-            }
-        }.scheduleRepeating(10000);
-        checkIt();
-    }
-
-    @Override
-    public void onSelect(SelectEvent event) {
-        if(UserInfo.getInstance().getAssignmentMetaInfo() != null) {
-            List<ProblemAnnotation> pids = UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations();
-            if(pids.size() > 0) {
-                if(next > pids.size()-1) {
-                    next = 0;
-                }
-                
-                ProblemAnnotation annotation = pids.get(next);
-                StudentAssignmentViewerPanel.__lastInstance.readAssignmentFromServer(annotation.getAssignKey(), annotation.getPid());
-                
-                next++;
-            }
-            else {
-                CmMessageBox.showAlert("There are no teacher notes available.");
-            }
-        }
-        
-    }
-    
-}
