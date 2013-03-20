@@ -60,7 +60,7 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 				String prefix = null;
 				if (isANumber(item.getFile()))
 					prefix = "/help/flvs/tw/";
-				else if(item.getFile().startsWith("/")) {
+				else if(item.getFile().startsWith("/") || item.getFile().startsWith("http")) {
 				    /** is absolute .. leave as is
 				     * 
 				     */
