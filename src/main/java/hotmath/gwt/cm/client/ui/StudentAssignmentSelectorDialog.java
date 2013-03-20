@@ -117,15 +117,17 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         _cbGraded.addValueChangeHandler(changeHandler);
         _cbPastDue.addValueChangeHandler(changeHandler);
         _cbClosed.addValueChangeHandler(changeHandler);
+        _cbTurnedIn.addValueChangeHandler(changeHandler);
         
         _cbActive.setValue(true);
         _cbGraded.setValue(true);
+        _cbTurnedIn.setValue(true);
         _cbPastDue.setValue(true);
         _cbClosed.setValue(false);
         
         hlc.add(new MyFieldLabel(_cbActive, "Open", 30,50));
         hlc.add(new MyFieldLabel(_cbTurnedIn, "Turned In", 30,50));
-        hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
+        //hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
         hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,50));
         hlc.add(new MyFieldLabel(_cbClosed, "Closed", 30,50));
         
@@ -242,7 +244,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 filtered.add(sai);
             }
             else {
-                CmMessageBox.showAlert("Unknown assignment type: " + sai);
+                // CmMessageBox.showAlert("Unknown assignment type: " + sai);
             }
         }
         
