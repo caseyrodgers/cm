@@ -34,8 +34,8 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
@@ -46,6 +46,7 @@ import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.grid.GridViewConfig;
 
 public class StudentAssignmentSelectorDialog extends GWindow {
 
@@ -88,6 +89,26 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 showSelectedAssignment();
             }
         });
+        
+        
+        _grid.getView().setViewConfig(new GridViewConfig<StudentAssignmentInfo>() {
+            @Override
+            public String getRowStyle(StudentAssignmentInfo model, int rowIndex) {
+                if (model != null) {
+                    if (model.getNumUnreadAnnotations() > 0) {
+                        return "assign-showwork-admin-unseen";
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            public String getColStyle(StudentAssignmentInfo model, ValueProvider<? super StudentAssignmentInfo, ?> valueProvider, int rowIndex, int colIndex) {
+                return null;
+            }
+        });
+        
+        
         bCont.setCenterWidget(_grid);
         
         BorderLayoutData bld = new BorderLayoutData(40);

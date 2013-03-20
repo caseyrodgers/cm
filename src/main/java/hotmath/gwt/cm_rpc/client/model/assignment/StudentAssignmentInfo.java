@@ -22,6 +22,15 @@ public class StudentAssignmentInfo implements Response {
     private int cntProblems;
     private int cntSubmitted;
     private String score;
+    private int numUnreadAnnotations;
+
+    public int getNumUnreadAnnotations() {
+        return numUnreadAnnotations;
+    }
+
+    public void setNumUnreadAnnotations(int numUnreadAnnotations) {
+        this.numUnreadAnnotations = numUnreadAnnotations;
+    }
 
     public StudentAssignmentInfo() {}
     
@@ -127,6 +136,6 @@ public class StudentAssignmentInfo implements Response {
     public String toString() {
         return "StudentAssignmentInfo [uid=" + uid + ", assignKey=" + assignKey + ", dueDate=" + dueDate + ", isGraded=" + isGraded + ", comments=" + comments
                 + ", status=" + status + ", turnInDate=" + turnInDate + ", cntProblems=" + cntProblems + ", cntSubmitted=" + cntSubmitted + ", score=" + score
-                + "]";
+                + ", numUnreadAnnotations=" + numUnreadAnnotations + "]";
     }
 }

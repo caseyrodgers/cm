@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
 
@@ -25,7 +26,8 @@ public class LessonPrescriptionViewer extends GWindow {
     
     private void showLessonPrescription(String lessonName) {
         ResourceViewerImplReview review = new ResourceViewerImplReview();
-        setWidget(review);
+        review.setResourceItem(new InmhItemData("review",lessonName, lessonName));
+        setWidget(review.getResourcePanel());
     }
 
 

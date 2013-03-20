@@ -1044,12 +1044,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
 
-//        for (StudentAssignmentInfo ass : assInfos) {
-//            StudentAssignment stuAss = getStudentAssignment(uid, ass.getAssignKey());
-//            if (stuAss.isComplete()) {
-//                ass.setStatus(ass.getStatus() + " - Submitted");
-//            }
-//        }
+        List<ProblemAnnotation> unreadAnnotations = getUnreadAnnotatedProblems(uid);
+
+        // aggregate the number of unread annotations for each assignment
+        for (StudentAssignmentInfo ass : assInfos) {
+          for(ProblemAnnotation a: unreadAnnotations)  {
+              int cnt=0;
+              if(a.getAssignKey() == ass.getAssignKey()) {
+                  cnt++;
+              }
+              ass.setNumUnreadAnnotations(cnt);
+          }
+        }
 
         return assInfos;
     }
