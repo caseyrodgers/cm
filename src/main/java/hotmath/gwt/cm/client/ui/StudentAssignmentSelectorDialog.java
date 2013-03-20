@@ -235,6 +235,9 @@ public class StudentAssignmentSelectorDialog extends GWindow {
             else if(sai.isGraded() && _cbGraded.getValue()) {
                 filtered.add(sai);
             }
+            else {
+                CmMessageBox.showAlert("Unknown assignment type: " + sai);
+            }
         }
         
         return filtered;
