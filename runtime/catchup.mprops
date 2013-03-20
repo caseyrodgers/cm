@@ -3682,7 +3682,8 @@ select a.aid, a.assign_key,
        Ifnull(problem_count, 0) as problem_count,
        a.comments,
        a.due_date,
-       a.close_past_due
+       a.close_past_due,
+       a.is_graded
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count
