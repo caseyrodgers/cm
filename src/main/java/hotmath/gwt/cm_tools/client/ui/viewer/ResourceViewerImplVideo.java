@@ -129,11 +129,23 @@ public class ResourceViewerImplVideo extends ResourceViewerImplFlash {
 
 	@Override
 	public Integer getOptimalHeight() {
-		return 290;
+	    InmhItemData item = getResourceItem();
+	    if(item.getFile().indexOf("/hm/") > -1) {
+	        return 280;
+	    }
+	    else {
+	        return 290;
+	    }
 	}
 
 	@Override
 	public Integer getOptimalWidth() {
-		return 340;
+	    InmhItemData item = getResourceItem();
+        if(item.getFile().indexOf("/hm/") > -1) {
+            return 500;
+        }
+        else {
+            return 340;
+        }
 	}
 }
