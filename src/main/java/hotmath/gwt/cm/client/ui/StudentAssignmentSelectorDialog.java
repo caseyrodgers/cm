@@ -99,6 +99,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     CheckBox _cbGraded = new CheckBox();
     CheckBox _cbPastDue = new CheckBox();
     CheckBox _cbClosed = new CheckBox();
+    CheckBox _cbTurnedIn = new CheckBox();
     
     private Widget createHeader() {
         VerticalLayoutContainer vlc = new VerticalLayoutContainer();
@@ -123,9 +124,11 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         _cbClosed.setValue(false);
         
         hlc.add(new MyFieldLabel(_cbActive, "Open", 30,50));
+        hlc.add(new MyFieldLabel(_cbTurnedIn, "Turned In", 30,50));
         hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
         hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,50));
         hlc.add(new MyFieldLabel(_cbClosed, "Closed", 30,50));
+        
         vld.setMargins(new Margins(0, 0, 5, 0));
         vlc.add(new Label("Which assignments to show?"),vld);
         vlc.add(hlc,vld);
@@ -233,6 +236,9 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 filtered.add(sai);
             }
             else if(sai.isGraded() && _cbGraded.getValue()) {
+                filtered.add(sai);
+            }
+            else if(sai.getTurnInDate() != null && _cbTurnedIn.getValue()) {
                 filtered.add(sai);
             }
             else {
