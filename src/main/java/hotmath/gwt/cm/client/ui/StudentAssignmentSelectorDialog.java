@@ -238,7 +238,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
             else if(sai.isGraded() && _cbGraded.getValue()) {
                 filtered.add(sai);
             }
-            else if(sai.getTurnInDate() != null && _cbTurnedIn.getValue()) {
+            else if(s.equals("Turned In") && _cbTurnedIn.getValue()) {
                 filtered.add(sai);
             }
             else {
