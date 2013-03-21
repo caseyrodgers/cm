@@ -119,11 +119,11 @@ public class StudentAssignmentButton extends TextButton {
         new Timer() {
             @Override
             public void run() {
-                if(getIcon() == resources.assignmentNo()) {
-                    setIcon(resources.assignmentHas());
+                if(getIcon() == resources.assignmentHas()) {
+                    setIcon(resources.assignmentHasAnnotation());
                 }
                 else {
-                    setIcon(resources.assignmentNo());
+                    setIcon(resources.assignmentHas());
                 }
                 if(isLoudRunning) {
                     doLoadButtonLoop();

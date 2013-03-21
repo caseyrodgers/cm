@@ -12,9 +12,13 @@ public interface MyResources extends ClientBundle {
     public CssResource css();
     
     
-    @Source("assignment-blue-5-24.png")
+    @Source("assignment-no.png")
     ImageResource assignmentNo();
     
-    @Source("assignment-red-5-24.png")
+    @Source("assignment-has.png")
     ImageResource assignmentHas();
+    
+    @Source("assignment-has-annotation.png")
+    ImageResource assignmentHasAnnotation();
+
 }
