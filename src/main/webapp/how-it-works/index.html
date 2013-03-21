@@ -20,6 +20,9 @@
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
 </script>
+
+<script type="text/javascript" src="/assets/flowplayer/flowplayer-3.1.4.min.js"></script>
+
 <script type="text/javascript">
 try {
 var pageTracker = _gat._getTracker("UA-634757-3");
@@ -33,8 +36,6 @@ pageTracker._trackPageview();
         <!-- InstanceBeginEditable name="head" -->
         
         <meta name="DC.title" content="catchupmath" />
-
-        <script type="text/javascript" src="/assets/flowplayer/flowplayer-3.1.4.min.js"></script>
 
         <style type="text/css">
             #noUpdate
@@ -127,20 +128,8 @@ pageTracker._trackPageview();
                     <div class='yui3-u-1'>
                         <!-- InstanceBeginEditable name="main-content" -->
        <div id='video-wrapper' class='round-corners-1'>
-        <div id="media">
-		<a style='text-align: center;' 
-			 href="/how-it-works/catchupmath_how_it_works.mp4"  
-			 style="display:block;width:640px;height:498px"  
-			 id="player"> 
-		</a> 
-        
-    	<!-- this will install flowplayer inside previous A- tag. -->
-		<script>
-		    var params = {};
-		    params.key = '$a12fd4b15a588479e9e';
-			flowplayer("player", "/assets/flowplayer/flowplayer.commercial-3.1.5.swf",params);
-		</script>
-        </div>
+          <iframe src="video-frame.html" width=960 height=500 scrolling="no" frameborder="no"></iframe>
+       </div>
     <!-- InstanceEndEditable -->
                     </div>
                 </div>
