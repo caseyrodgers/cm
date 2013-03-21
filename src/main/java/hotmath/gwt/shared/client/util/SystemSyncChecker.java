@@ -8,6 +8,8 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
+import hotmath.gwt.shared.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
@@ -127,6 +129,15 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
             public void onFailure(Throwable arg0) {
                  /** fail silent */
                  CatchupMathTools.showAlert(arg0.getMessage());
+            }
+        });
+    }
+    
+    
+    static {
+        CmRpc.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
+            public void forceSyncCheck() {
+                checkForUpdate();
             }
         });
     }

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -11,6 +12,7 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GotoNextAnnotationButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -23,6 +25,8 @@ import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -65,6 +69,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 hide();
             }
         });
+        
         addButton(nextNoteButton);
         addButton(createOpenButton());
         addCloseButton();
@@ -114,12 +119,15 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         BorderLayoutData bld = new BorderLayoutData(40);
         bld.setMargins(new Margins(10));
         bCont.setNorthWidget(createHeader(), bld);
+        bCont.setSouthWidget(createLedgend(), new BorderLayoutData(15));
         setWidget(bCont);
     }
     
+    private IsWidget createLedgend() {
+        return new HTML("<div style='color: red;'>&nbsp;&nbsp;has unread notes</div>");
+    }
+
     CheckBox _cbActive = new CheckBox();
-    CheckBox _cbGraded = new CheckBox();
-    CheckBox _cbPastDue = new CheckBox();
     CheckBox _cbClosed = new CheckBox();
     CheckBox _cbTurnedIn = new CheckBox();
     
@@ -136,15 +144,11 @@ public class StudentAssignmentSelectorDialog extends GWindow {
             }
         };
         _cbActive.addValueChangeHandler(changeHandler);
-        _cbGraded.addValueChangeHandler(changeHandler);
-        _cbPastDue.addValueChangeHandler(changeHandler);
         _cbClosed.addValueChangeHandler(changeHandler);
         _cbTurnedIn.addValueChangeHandler(changeHandler);
         
         _cbActive.setValue(true);
-        _cbGraded.setValue(false);
         _cbTurnedIn.setValue(true);
-        _cbPastDue.setValue(true);
         _cbClosed.setValue(false);
         
         HorizontalLayoutData hld = new HorizontalLayoutData();
@@ -152,7 +156,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         hlc.add(new MyFieldLabel(_cbActive, "Open", 40,30),hld);
         hlc.add(new MyFieldLabel(_cbTurnedIn, "Turned In", 60,30),hld);
         //hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
-        hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,30),hld);
+        //hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,30),hld);
         hlc.add(new MyFieldLabel(_cbClosed, "Closed", 40,30),hld);
         
         vld.setMargins(new Margins(0, 0, 5, 0));
@@ -222,6 +226,8 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 }                else {
                     setGridFiltered(_assignments);
                 }
+                
+                CmRpc.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
             }
         }.register();          
     }    
@@ -252,16 +258,10 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         List<StudentAssignmentInfo> filtered = new ArrayList<StudentAssignmentInfo>();
         for(StudentAssignmentInfo sai: assignments) {
             String s = sai.getStatus();
-            if(s.equals("Past Due") && _cbPastDue.getValue()) {
-                filtered.add(sai);
-            }
-            else if(s.equals("Closed") && _cbClosed.getValue()) {
+            if(s.equals("Closed") && _cbClosed.getValue()) {
                 filtered.add(sai);
             }
             else if(s.equals("Open") && _cbActive.getValue()) {
-                filtered.add(sai);
-            }
-            else if(sai.isGraded() && _cbGraded.getValue()) {
                 filtered.add(sai);
             }
             else if(s.equals("Turned In") && _cbTurnedIn.getValue()) {
@@ -316,7 +316,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     private static StudentAssignmentSelectorDialog __lastInstance;
     public static void showSharedDialog() {
         
-        if(CmShared.getQueryParameter("debug") == null) {
+        if(true || CmShared.getQueryParameter("debug") == null) {
             __lastInstance = null;
         }
         if(__lastInstance == null) {

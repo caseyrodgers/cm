@@ -1324,29 +1324,10 @@ SolutionSetCompleteDialog .results{
 }
 
 
-
-.student-assignment-button, 
-.student-assignment-button-no,
-.student-assignment-button-new {
-    height: 34px !important;
-    width: 62px !important;
+.student-assignment-button {
 	position: absolute;
 	left: 200px;
-	top:2px;
+	top:4px;
 }
 
-.student-assignment-button {
-	background: url(/gwt-resources/images/assignments/assignment.png) no-repeat center left !important;
-}
-.student-assignment-buttonOver {
-    background: url(/gwt-resources/images/assignments/assignment-over.png) no-repeat center left!important;
-}
-.student-assignment-button-new {
-	background: url(/gwt-resources/images/assignments/new-assignment.png) no-repeat center left !important;
-}
-.student-assignment-button-newOver {
-    background: url(/gwt-resources/images/assignments/new-assignment-over.png) no-repeat center left!important;
-}
-.student-assignment-button-no {
-	background: url(/gwt-resources/images/assignments/assignment-no.png) no-repeat center left !important;
-}
+

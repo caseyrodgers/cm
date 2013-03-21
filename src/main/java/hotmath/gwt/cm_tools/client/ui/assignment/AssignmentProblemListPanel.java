@@ -32,9 +32,6 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -148,8 +145,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     private Widget createAnnotationLedgend() {
         HorizontalPanel lc = new HorizontalPanel();
-        lc.add(new HTML("<div style='left: 0;color: blue;'>annotated</div>"));
-        lc.add(new HTML("<div style='color: red;'>&nbsp;&nbsp;unread annotation</div>"));
+        lc.add(new HTML("<div style='left: 0;color: blue;'>has notes</div>"));
+        lc.add(new HTML("<div style='color: red;'>&nbsp;&nbsp;has unread notes</div>"));
         return lc;
     }
 

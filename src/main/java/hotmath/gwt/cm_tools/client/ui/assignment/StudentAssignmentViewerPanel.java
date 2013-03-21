@@ -235,7 +235,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 
 
         HorizontalLayoutData hData = new HorizontalLayoutData();
-        hData.setMargins(new Margins(0,10,0,0));
+        hData.setMargins(new Margins(10,10,0,0));
         buttonBar.add(btnReturn,hData);
         buttonBar.add(_turnInButton,hData);
         buttonBar.add(_nextAnnotation,hData);
@@ -243,9 +243,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         BorderLayoutData bData = new BorderLayoutData(30);
         bData.setMargins(new Margins(10,0,0,0));
-        
         header.setSouthWidget(buttonBar, bData);
-        return header;
+        
+        ContentPanel cpHeader = new ContentPanel();
+        cpHeader.setWidget(header);
+        
+        return cpHeader;
     }
     
     private void turnInAssignment() {

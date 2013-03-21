@@ -4,20 +4,37 @@ import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.assignment.GotoNextAnnotationButton;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.shared.client.util.MyResources;
 
-import com.sencha.gxt.widget.core.client.button.IconButton;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Timer;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.menu.Item;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
-public class StudentAssignmentButton extends IconButton {
+public class StudentAssignmentButton extends TextButton {
+    
+    MyResources resources = GWT.create(MyResources.class);
+    
     enum ButtonState{HAS_ASSIGNMENTS, NO_ASSIGNMENTS};
     ButtonState _state;
+    MenuItem itemAssignments, itemAnnotations;
     public StudentAssignmentButton() {
-        super("student-assignment-button-no");
+        super();
+        addStyleName("student-assignment-button");
         _state = ButtonState.NO_ASSIGNMENTS;
-        addSelectHandler(new SelectHandler() {
+        
+        setIcon(resources.assignmentNo());
+        Menu menu = new Menu();
+        itemAssignments = new MenuItem("Show Assignments");
+        itemAssignments.addSelectionHandler(new SelectionHandler<Item>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<Item> event) {
                 if (UserInfo.getInstance().isDemoUser()) {
                     CatchupMathTools.showAlert("Assignments are not available for demo accounts.");
                 } else if(UserInfo.getInstance().isSingleUser()) {
@@ -28,29 +45,80 @@ public class StudentAssignmentButton extends IconButton {
                 }
             }
         });
+        menu.add(itemAssignments);
+        
+        itemAnnotations = new MenuItem("You have no unread teacher notes");
+        itemAnnotations.addSelectionHandler(new SelectionHandler<Item>() {
+            @Override
+            public void onSelection(SelectionEvent<Item> event) {
+                GotoNextAnnotationButton.gotoNextAnnotation();
+            }
+        });
+        menu.add(itemAnnotations);
+        setMenu(menu);
     }
     
     
     public void setState(AssignmentUserInfo assInfo) {
         if(assInfo.getActiveAssignments() > 0 || assInfo.getUnreadMessageCount() > 0) {
             _state = ButtonState.HAS_ASSIGNMENTS;
-            
-            changeStyle("student-assignment-button-new");
+            setIcon(resources.assignmentHas());
+            itemAssignments.setEnabled(true);
+            //changeStyle("student-assignment-button-new");
             
             int aa = assInfo.getActiveAssignments();
             int fa = assInfo.getUnreadMessageCount();
             String tip = "You have " + aa + " assignment" + (aa>1?"s":"") + ".  ";
+            itemAssignments.setText(tip);
             if(fa > 0) {
-                tip += "You have " + fa + " new annotated problem" + (fa>1?"s":"") + ".";
+                itemAnnotations.setEnabled(true);
+                String tipa = "You have " + fa + " new annotated problem" + (fa>1?"s":"") + ".";
+                tip += tipa;
+                itemAnnotations.setText(tipa);
+                
+                startLoudButton();
             }
-            setToolTip(tip);
+            else {
+                stopLoudButton();
+                itemAnnotations.setEnabled(false);
+            }
+            //setToolTip(tip);
         }
         else {
             _state = ButtonState.NO_ASSIGNMENTS;
-            
-            changeStyle("student-assignment-button-no");
+            setIcon(resources.assignmentNo());
+            itemAssignments.setEnabled(false);            
+            //changeStyle("student-assignment-button-no");
             
             setToolTip("You do not have any assignments or teacher notes.");
         }
+    }
+    
+    private void stopLoudButton() {
+        isLoudRunning=false;
+    }
+
+    boolean isLoudRunning;
+    public void startLoudButton() {
+        if(!isLoudRunning) {
+            isLoudRunning=true;
+            doLoadButtonLoop();
+        }
+    }
+    private void doLoadButtonLoop() {
+        new Timer() {
+            @Override
+            public void run() {
+                if(getIcon() == resources.assignmentNo()) {
+                    setIcon(resources.assignmentHas());
+                }
+                else {
+                    setIcon(resources.assignmentNo());
+                }
+                if(isLoudRunning) {
+                    doLoadButtonLoop();
+                }
+            }
+        }.schedule(1000);
     }
 }

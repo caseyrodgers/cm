@@ -17,6 +17,8 @@ public class GotoNextAnnotationButton extends TextButton implements SelectHandle
     public GotoNextAnnotationButton() {
         super("Goto Teacher Note");
         addSelectHandler(this);
+        
+        setToolTip("Show the next unread teacher notation");
         setEnabled(false);
         startChecking();
     }
@@ -41,6 +43,10 @@ public class GotoNextAnnotationButton extends TextButton implements SelectHandle
 
     @Override
     public void onSelect(SelectEvent event) {
+        gotoNextAnnotation();
+    }
+    
+    public static void gotoNextAnnotation() {
         if(UserInfo.getInstance().getAssignmentMetaInfo() != null) {
             List<ProblemAnnotation> pids = UserInfo.getInstance().getAssignmentMetaInfo().getUnreadAnnotations();
             if(pids.size() > 0) {
@@ -57,7 +63,5 @@ public class GotoNextAnnotationButton extends TextButton implements SelectHandle
                 CmMessageBox.showAlert("There are no teacher notes available.");
             }
         }
-        
     }
-    
 }
