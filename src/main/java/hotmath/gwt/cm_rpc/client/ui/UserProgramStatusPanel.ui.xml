@@ -24,6 +24,10 @@
              You have completed <span ui:field='gradedRppCount'/> graded practice problems 
              and <span ui:field='gradedRppPercent'/>% of them were correct on the first try.
              </p>
+             
+             <p>
+             The practice problem total and score is separate from your work in Assignments.
+             </p>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder> 
