@@ -116,7 +116,7 @@ public class HeaderPanel extends FlowLayoutContainer {
                             || CmHistoryQueue.getInstance().isInitializingToNonStandard())
                         InfoPopupBox.display(new CmInfoConfig("Current Topic", "Current topic is: " + event.getEventData()));
                     else {
-                        new ContextChangeMessage((String) event.getEventData());
+                       // new ContextChangeMessage((String) event.getEventData());
                     }
                     break;
 

@@ -7,7 +7,7 @@ public class ShowUserProgramStatusDialog extends GWindow {
 
     public ShowUserProgramStatusDialog() {
         super(true);
-        setPixelSize(375, 225);
+        setPixelSize(375, 275);
         setResizable(false);
         setModal(true);
         setHeadingText("Practice Problems Score");
