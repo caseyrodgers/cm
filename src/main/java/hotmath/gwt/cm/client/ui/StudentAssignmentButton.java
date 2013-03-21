@@ -1,11 +1,12 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
+import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.GotoNextAnnotationButton;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.shared.client.util.MyResources;
 
 import com.google.gwt.core.shared.GWT;
@@ -13,6 +14,8 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.menu.Item;
 import com.sencha.gxt.widget.core.client.menu.Menu;
 import com.sencha.gxt.widget.core.client.menu.MenuItem;
@@ -56,6 +59,13 @@ public class StudentAssignmentButton extends TextButton {
         });
         menu.add(itemAnnotations);
         setMenu(menu);
+        
+        addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                CmRpc.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+            }
+        });
     }
     
     

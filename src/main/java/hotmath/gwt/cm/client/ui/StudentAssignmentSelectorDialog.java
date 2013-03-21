@@ -209,8 +209,6 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     public void readAssignmentsFromServer() {
         CatchupMathTools.setBusy(true);
         new RetryAction<CmList<StudentAssignmentInfo>>() {
-
-
             @Override
             public void attempt() {
                 GetAssignmentsForUserAction action = new GetAssignmentsForUserAction(UserInfoBase.getInstance().getUid());
@@ -226,8 +224,6 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 }                else {
                     setGridFiltered(_assignments);
                 }
-                
-                CmRpc.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
             }
         }.register();          
     }    
