@@ -296,7 +296,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
     
     public void refreshAnnotationMarkings() {
-        CmMessageBox.showAlert("refreshAnnotationMarkings");
         loadAssignment(_studentAssignment,  null);
     }
 
