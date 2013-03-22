@@ -114,6 +114,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
                 if (model != null) {
                     if (model.isHasShowWorkAdmin()) {
                         if(_problemListCallback.hasUnseenAnnotation(model.getProblem())) {
+                            CmMessageBox.showAlert("New Unseen: " + model);
                             return "assign-showwork-admin-unseen";
                         }
                         else {
@@ -264,7 +265,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
     public void loadAssignment(StudentAssignment assignment, String pidToLoad) {
         _studentAssignment = assignment;
         
-        CmMessageBox.showAlert("Test 1");
         StudentProblemDto selectedItem = _studentProblemGrid.getSelectionModel().getSelectedItem();
         
         // unselect
@@ -272,16 +272,10 @@ public class AssignmentProblemListPanel extends ContentPanel {
         try {
             _studentProblemGrid.getStore().clear();
         } catch (Exception e) {
-            CmMessageBox.showAlert("Test error 1");
             e.printStackTrace();
         }
         _studentProblemGrid.getStore().addAll(assignment.getAssigmentStatuses());
-        
-        CmMessageBox.showAlert("Test 2");
-
         if(pidToLoad != null) {
-            
-            CmMessageBox.showAlert("Test 3");
             for(StudentProblemDto sp: _studentProblemGrid.getStore().getAll()) {
                 if(sp.getPid().equals(pidToLoad)) {
                     _studentProblemGrid.getSelectionModel().select(sp, false);
@@ -289,8 +283,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
             }
         }
         else {
-            
-            CmMessageBox.showAlert("Test 4");
             if(selectedItem != null) {
                 _studentProblemGrid.getSelectionModel().select(selectedItem, false);   
             }
@@ -301,9 +293,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
                 }
             }
         }
-        
-        
-        CmMessageBox.showAlert("Test 5");
     }
     
     public void refreshAnnotationMarkings() {
