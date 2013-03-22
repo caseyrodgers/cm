@@ -124,7 +124,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     }
     
     private IsWidget createLedgend() {
-        return new HTML("<div style='color: red;'>&nbsp;&nbsp;has unread notes</div>");
+        return new HTML("<div style='float: left;background: red;width: 10px'>&nbsp;</div>&nbsp;&nbsp;Has unread notes");
     }
 
     CheckBox _cbActive = new CheckBox();
