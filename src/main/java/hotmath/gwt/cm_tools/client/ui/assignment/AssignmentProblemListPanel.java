@@ -111,8 +111,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
             @Override
             public String getRowStyle(StudentProblemDto model, int rowIndex) {
-                CmMessageBox.showAlert("get row style");
-
                 if (model != null) {
                     if (model.isHasShowWorkAdmin()) {
                         if(_problemListCallback.hasUnseenAnnotation(model.getProblem())) {
@@ -298,6 +296,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
     
     public void refreshAnnotationMarkings() {
         loadAssignment(_studentAssignment,  null);
+        forceLayout();
     }
 
     public interface AssignmentProblemListCallback {
