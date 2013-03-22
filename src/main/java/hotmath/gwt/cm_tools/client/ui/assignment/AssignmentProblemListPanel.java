@@ -5,7 +5,6 @@ import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -25,6 +24,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
@@ -296,6 +296,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
     
     public void refreshAnnotationMarkings() {
+        Log.debug("refreshAnnotationMarkings");
         loadAssignment(_studentAssignment,  null);
     }
 
