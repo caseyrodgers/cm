@@ -111,10 +111,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
             @Override
             public String getRowStyle(StudentProblemDto model, int rowIndex) {
+                CmMessageBox.showAlert("get row style");
+
                 if (model != null) {
                     if (model.isHasShowWorkAdmin()) {
                         if(_problemListCallback.hasUnseenAnnotation(model.getProblem())) {
-                            CmMessageBox.showAlert("New Unseen: " + model);
                             return "assign-showwork-admin-unseen";
                         }
                         else {
