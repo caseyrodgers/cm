@@ -1,8 +1,5 @@
 package hotmath.gwt.cm_rpc.client.model.assignment;
 
-import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
-import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 import java.util.List;
@@ -102,8 +99,6 @@ public class AssignmentUserInfo implements Response {
                 if(pa.getAssignKey() == thisAssignKey) {
                     if(studentProb.getPid().equals(pa.getPid())) {
                         ami.getUnreadAnnotations().remove(pa);
-                        StudentAssignmentButton.refreshButtonState();
-                        
                         return true;
                     }
                 }

@@ -172,6 +172,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         if(UserInfo.getInstance().getAssignmentMetaInfo().removeFromUnreadAnnotations(_studentAssignment, studentProb)) {
             _studentProblemGrid.getStore().update(studentProb);
+            StudentAssignmentButton.refreshButtonState();
         }
         
         _currentProblem = studentProb;
