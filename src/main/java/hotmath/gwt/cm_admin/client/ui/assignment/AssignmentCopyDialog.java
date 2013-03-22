@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_admin.client.model.GroupCopyModel;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.ImportAssignmentAction;
@@ -120,7 +121,7 @@ public class AssignmentCopyDialog extends GWindow{
                 CmBusyManager.setBusy(false);
                 Info.display("Information", "Assignent was imported");
                 hide();
-                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
+                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
             }
         }.register();
     }

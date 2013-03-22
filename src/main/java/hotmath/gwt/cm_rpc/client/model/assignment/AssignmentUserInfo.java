@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_rpc.client.model.assignment;
 
+import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 import java.util.List;
@@ -79,4 +82,81 @@ public class AssignmentUserInfo implements Response {
         return false;
     }
     
+
+    /** TODO: move to central place to handle updates the global annotation 
+     *        data ... widgets need to be updated depending on state of dynamic
+     *        data ... should use event 
+     *        
+     *        
+     *        return true if was removed, false if no change
+     *        
+     * @param studentProb
+     */
+    public boolean removeFromUnreadAnnotations(StudentAssignment studentAssignment, StudentProblemDto studentProb) {
+        AssignmentUserInfo ami = this;
+        int thisAssignKey = studentAssignment.getAssignment().getAssignKey();
+        if(ami != null) {
+            List<ProblemAnnotation> unread = ami.getUnreadAnnotations();
+            for(int which=0;which<unread.size();which++) {
+                ProblemAnnotation pa = unread.get(which);
+                if(pa.getAssignKey() == thisAssignKey) {
+                    if(studentProb.getPid().equals(pa.getPid())) {
+                        ami.getUnreadAnnotations().remove(pa);
+                        StudentAssignmentButton.refreshButtonState();
+                        
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof AssignmentUserInfo) {
+            AssignmentUserInfo o1 = (AssignmentUserInfo)obj;
+            
+            /** first check basic info
+             * 
+             */
+            if(o1.getActiveAssignments() != getActiveAssignments()) {
+                return false;
+            }
+            
+            if(o1.getClosedAssignments() != getClosedAssignments()) {
+                return false;
+            }
+            
+            if(o1.getExpiredAssignments() != getExpiredAssignments()) {
+                return false;
+            }
+
+            List<ProblemAnnotation> ura = o1.getUnreadAnnotations();
+            if(ura.size() != getUnreadAnnotations().size()) {
+                return false;
+            }
+
+            for(ProblemAnnotation pa1: ura) {
+                boolean found=false;
+                for(ProblemAnnotation pa2: getUnreadAnnotations()) {
+                    if(pa2.getPid().equals(pa1.getPid()) && pa2.getAssignKey() == pa1.getAssignKey()) {
+                        found=true;
+                        break;
+                    }
+                }
+                
+                if(!found) {
+                    return false;
+                }
+            }
+            
+            return true;  // all good!
+        }
+        else {
+            return super.equals(obj);
+        }
+    }
 }

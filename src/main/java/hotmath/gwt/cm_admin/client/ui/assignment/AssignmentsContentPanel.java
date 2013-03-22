@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.rpc.ActivateAssignmentAction;
@@ -206,7 +207,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             public void oncapture(RpcData saList) {
                 Info.display("Infomation", "Grades Release");
                 CmBusyManager.setBusy(false);
-                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
+                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
             }
         }.register();                        
     }

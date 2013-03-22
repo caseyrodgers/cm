@@ -3,6 +3,7 @@ package hotmath.gwt.shared.client.util;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
@@ -15,6 +16,7 @@ import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
 import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -123,7 +125,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                 	 }
                  }
                  
-                 CmRpc.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(info.getAssignmentInfo()));
+                 fireAppropriateEvent(info.getAssignmentInfo());
             }
              @Override
             public void onFailure(Throwable arg0) {
@@ -133,7 +135,22 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         });
     }
     
-    
+
+    /** Fire update event if things are actually different
+     * 
+     * @param assignmentInfo
+     */
+    static AssignmentUserInfo _lastCheckedData;
+    protected static void fireAppropriateEvent(AssignmentUserInfo assignmentInfo) {
+        if(_lastCheckedData == null ||! _lastCheckedData.equals(assignmentInfo)) {
+            _lastCheckedData = assignmentInfo;
+            
+            Log.debug("Firing AssignmentsUpdatedEvent: " + assignmentInfo);
+            CmRpc.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(assignmentInfo));
+        }
+    }
+
+
     static {
         CmRpc.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
             public void forceSyncCheck() {

@@ -27,8 +27,11 @@ public class StudentAssignmentButton extends TextButton {
     enum ButtonState{HAS_ASSIGNMENTS, NO_ASSIGNMENTS};
     ButtonState _state;
     MenuItem itemAssignments, itemAnnotations;
+    
+    static StudentAssignmentButton __lastInstance;
     public StudentAssignmentButton() {
         super();
+        __lastInstance = this;
         addStyleName("student-assignment-button");
         _state = ButtonState.NO_ASSIGNMENTS;
         
@@ -89,7 +92,9 @@ public class StudentAssignmentButton extends TextButton {
                 startLoudButton();
             }
             else {
-                stopLoudButton();
+                if(isLoudRunning) {
+                    stopLoudButton();
+                }
                 itemAnnotations.setEnabled(false);
             }
             //setToolTip(tip);
@@ -130,5 +135,9 @@ public class StudentAssignmentButton extends TextButton {
                 }
             }
         }.schedule(1000);
+    }
+    
+    public static void refreshButtonState() {
+        __lastInstance.setState(UserInfo.getInstance().getAssignmentMetaInfo());
     }
 }

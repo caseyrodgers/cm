@@ -1,7 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
 import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -13,6 +17,8 @@ import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEv
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.shared.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -54,19 +60,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     AssignmentProblemListCallback _problemListCallback;
     Grid<StudentProblemDto> _studentProblemGrid;
-
-    public interface ProblemListPanelProperties extends PropertyAccess<String> {
-        ModelKeyProvider<StudentProblemDto> pid();
-
-        ValueProvider<StudentProblemDto, String> pidLabel();
-
-        ValueProvider<StudentProblemDto, String> status();
-
-        ValueProvider<StudentProblemDto, String> statusForStudent();
-
-        ValueProvider<StudentProblemDto, Integer> problemNumberOrdinal();
-    }
-
     public AssignmentProblemListPanel(AssignmentProblemListCallback callback) {
         this._problemListCallback = callback;
 
@@ -120,7 +113,6 @@ public class AssignmentProblemListPanel extends ContentPanel {
             public String getRowStyle(StudentProblemDto model, int rowIndex) {
                 if (model != null) {
                     if (model.isHasShowWorkAdmin()) {
-                        
                         if(_problemListCallback.hasUnseenAnnotation(model.getProblem())) {
                             return "assign-showwork-admin-unseen";
                         }
@@ -177,6 +169,11 @@ public class AssignmentProblemListPanel extends ContentPanel {
     StudentProblemDto _currentProblem;
 
     private void loadProblemStatement(StudentProblemDto studentProb) {
+
+        if(UserInfo.getInstance().getAssignmentMetaInfo().removeFromUnreadAnnotations(_studentAssignment, studentProb)) {
+            _studentProblemGrid.getStore().update(studentProb);
+        }
+        
         _currentProblem = studentProb;
         String title = studentProb.getProblem().getOrdinalNumber() + ". " + StudentProblemDto.getStudentLabel(studentProb.getPidLabel());
         _problemListCallback.problemSelected(title, studentProb.getProblem());
@@ -186,6 +183,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
             _studentProblemGrid.getStore().update(studentProb);
         }
     }
+
 
     /**
      * The current problem's whiteboard has been updated meaning the user has
@@ -224,7 +222,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
             @Override
             public void attempt() {
                 String status = prob.getStatus();
-                SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(UserInfoBase.getInstance().getUid(), _assignment
+                SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(UserInfoBase.getInstance().getUid(), _studentAssignment
                         .getAssignment().getAssignKey(), prob.getPid(), status);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -237,7 +235,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
 
     private ProblemType extractProblemType(StudentProblemDto prob) {
-        for (StudentProblemDto p : _assignment.getAssigmentStatuses()) {
+        for (StudentProblemDto p : _studentAssignment.getAssigmentStatuses()) {
             if (p.getProblem().getPid().equals(prob.getPid())) {
                 return p.getProblem().getProblemType();
             }
@@ -260,10 +258,14 @@ public class AssignmentProblemListPanel extends ContentPanel {
         _assignmentProblem = assProb;
     }
 
-    StudentAssignment _assignment;
+    StudentAssignment _studentAssignment;
 
     public void loadAssignment(StudentAssignment assignment, String pidToLoad) {
-        _assignment = assignment;
+        _studentAssignment = assignment;
+        
+        StudentProblemDto selectedItem = _studentProblemGrid.getSelectionModel().getSelectedItem();
+        
+        // unselect
         _studentProblemGrid.getSelectionModel().setSelection(new ArrayList<StudentProblemDto>());
         try {
             _studentProblemGrid.getStore().clear();
@@ -280,11 +282,20 @@ public class AssignmentProblemListPanel extends ContentPanel {
             }
         }
         else {
-            // select first, if available
-            if (_studentProblemGrid.getStore().size() > 0) {
-                _studentProblemGrid.getSelectionModel().select(_studentProblemGrid.getStore().get(0), false);
+            if(selectedItem != null) {
+                _studentProblemGrid.getSelectionModel().select(selectedItem, false);   
+            }
+            else {
+                // select first, if available
+                if (_studentProblemGrid.getStore().size() > 0) {
+                    _studentProblemGrid.getSelectionModel().select(_studentProblemGrid.getStore().get(0), false);
+                }
             }
         }
+    }
+    
+    public void refreshAnnotationMarkings() {
+        loadAssignment(_studentAssignment,  null);
     }
 
     public interface AssignmentProblemListCallback {
@@ -302,6 +313,13 @@ public class AssignmentProblemListPanel extends ContentPanel {
                 __lastInstance.setAssignmentLoaded(assProb);
             }
         });
+        
+        CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
+            @Override
+            public void assignmentsUpdated(AssignmentUserInfo info) {
+                __lastInstance.refreshAnnotationMarkings();
+            }
+        });
 
         // CmRpc.EVENT_BUS.addHandler(TutorWidgetValueChangedEvent.TYPE, new
         // TutorWidgetValueChangedHandler() {
@@ -315,3 +333,13 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     }
 }
+
+
+interface ProblemListPanelProperties extends PropertyAccess<String> {
+    ModelKeyProvider<StudentProblemDto> pid();
+    ValueProvider<StudentProblemDto, String> pidLabel();
+    ValueProvider<StudentProblemDto, String> status();
+    ValueProvider<StudentProblemDto, String> statusForStudent();
+    ValueProvider<StudentProblemDto, Integer> problemNumberOrdinal();
+}
+

@@ -231,8 +231,10 @@ public class AssignmentManagerDialog2  {
     static {
         CmRpc.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE, new DataBaseHasBeenUpdatedHandler() {
             @Override
-            public void databaseUpdated() {
-                __lastInstance.refreshData();
+            public void databaseUpdated(TypeOfUpdate type) {
+                if(type == TypeOfUpdate.ASSIGNMENTS) {
+                    __lastInstance.refreshData();
+                }
             }
         });
 

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_rpc.client;
 
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
@@ -50,7 +51,7 @@ public class UserInfo implements  Response {
     public void setAssignmentMetaInfo(AssignmentUserInfo assignmentMetaInfo) {
         this.assignmentMetaInfo = assignmentMetaInfo;
         
-        CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent());
+        CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
     }
 
     /** Return true if this user has unread annotations for the named pid

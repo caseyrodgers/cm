@@ -11,10 +11,12 @@ import com.google.gwt.event.shared.EventHandler;
  */
 public interface DataBaseHasBeenUpdatedHandler extends EventHandler {
     
+    public enum TypeOfUpdate{ANNOTATION,FULL, ASSIGNMENTS};
+    
     /** 'some' table has been updated.
      * 
      * TODO: What is 'some' table .. an enumeration?
      * 
      */
-    void databaseUpdated();
+    void databaseUpdated(TypeOfUpdate type);
 }
