@@ -3824,13 +3824,32 @@ from   HA_USER u join CM_GROUP g on g.id = u.group_id
 where  u.uid = ?
 and a.status <> 'Draft'
 order by is_expired, a.due_date desc
-       
-       
-       
 
 
-       
-       
+.key=GET_COMPLETED_STUDENT_ASSIGNMENTS_IN_DATE_RANGE
+
+SELECT au.uid, due_date < now() as is_expired,
+       a.status, a.due_date, a.assign_key, a.comments, 
+       au.is_graded, ps.cnt_submitted, ap.cnt_problems, au.turn_in_date
+FROM   CM_ASSIGNMENT_USER au
+JOIN   CM_ASSIGNMENT a ON a.assign_key = au.assign_key
+LEFT JOIN (
+       SELECT assign_key,  count(*) as cnt_problems
+       FROM   CM_ASSIGNMENT_PIDS
+       GROUP BY assign_key
+    ) ap on ap.assign_key = a.assign_key 
+LEFT JOIN (
+       SELECT assign_key, uid, count(*) as cnt_submitted
+       FROM   CM_ASSIGNMENT_PID_STATUS
+       WHERE status NOT IN ('Viewed','Not Viewed')
+       GROUP BY assign_key, uid
+    ) ps ON ps.assign_key = a.assign_key AND ps.uid = au.uid
+WHERE a.uid = ?
+  AND a.due_date between ? AND ?
+  AND au.turn_in_date is not null
+ORDER BY is_expired, a.due_date desc
+
+
 .key=GET_ASSIGNMENT
 
 select * from CM_ASSIGNMENT where assign_key = ?
