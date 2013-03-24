@@ -74,7 +74,7 @@ public class StudentAssignmentButton extends TextButton {
     
     public void setState(AssignmentUserInfo assInfo) {
         
-        if(assInfo.isChanged()) {
+        if(assInfo.isChanged() || assInfo.getUnreadMessageCount() > 0) {
             startLoudButton();
         }
         else {

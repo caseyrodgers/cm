@@ -1756,7 +1756,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private boolean determineIfAnyAssignmentHasChanged(final int uid) {
-        String sql = "select assign_key from CM_ASSIGNMENT a JOIN HA_USER u on u.group_id = a.group_id where u.uid = ?";
+        String sql = "select assign_key from CM_ASSIGNMENT a JOIN HA_USER u on u.group_id = a.group_id where u.uid = ? and a.status <> 'Draft'";
         List<Integer> assignKeys = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
