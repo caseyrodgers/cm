@@ -28,8 +28,11 @@ import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent.CompleteEditHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.PropertyEditor;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -226,11 +229,13 @@ public class AssignmentGradingPanel extends ContentPanel {
 				for (StudentProblemDto sbDto : _store.getAll()) {
 				    if(_correctIncorrectMap.containsKey(sbDto.getPid())) {
     					Integer value = _correctIncorrectMap.get(sbDto.getPid());
-    					if(value == 100) {
-    					    numCorrect += 1;
-    					}
-    					else if(value == 50) {
-    					    numCorrect += .5;
+    					if(value != null) {
+        					if(value == 100) {
+        					    numCorrect += 1;
+        					}
+        					else if(value == 50) {
+        					    numCorrect += .5;
+        					}
     					}
 				    }
 				}
@@ -300,7 +305,6 @@ public class AssignmentGradingPanel extends ContentPanel {
         }
         
         setWidget(_gradingGrid);
-
     }
     
     private Map<String, Integer> initCorrectIncorrectMap(StudentAssignment studentAssignment) {

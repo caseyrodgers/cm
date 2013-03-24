@@ -100,7 +100,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
             @Override
             public String getRowStyle(StudentAssignmentInfo model, int rowIndex) {
                 if (model != null) {
-                    if (model.getNumUnreadAnnotations() > 0) {
+                    if (model.isChanged()) {
                         return "assign-showwork-admin-unseen";
                     }
                 }
@@ -123,8 +123,17 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         setWidget(bCont);
     }
     
+    
+    private boolean anyAssignmentHasChanged() {
+        return true; //  if any assignment has been changed...
+    }
+    
     private IsWidget createLedgend() {
-        return new HTML("<div style='float: left;background: red;width: 10px'>&nbsp;</div>&nbsp;&nbsp;Has unread notes");
+        String html="";
+        if(anyAssignmentHasChanged()) {
+             html = "<div style='margin: 5px 5px;float: left;background: red;width: 10px'>&nbsp;</div>&nbsp;&nbsp;Has changed";
+        }
+        return new HTML(html);
     }
 
     CheckBox _cbActive = new CheckBox();

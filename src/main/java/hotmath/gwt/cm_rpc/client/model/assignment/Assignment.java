@@ -31,6 +31,7 @@ public class Assignment implements Response{
     String status;
     boolean closePastDue;
     boolean graded;
+    Date modifiedTime;
     
     // might be null indicate not set
     Integer problemCount;
@@ -41,7 +42,7 @@ public class Assignment implements Response{
 
     public Assignment() {}
     
-    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean closePastDue, boolean graded) {
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean closePastDue, boolean graded, Date modifiedTime) {
         this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
@@ -52,8 +53,17 @@ public class Assignment implements Response{
         this.status = status;
         this.closePastDue = closePastDue;
         this.graded = graded;
+        this.modifiedTime = modifiedTime;
     }
 
+
+    public Date getModifiedTime() {
+        return modifiedTime;
+    }
+
+    public void setModifiedTime(Date modifiedTime) {
+        this.modifiedTime = modifiedTime;
+    }
 
     public int getAdminId() {
         return adminId;

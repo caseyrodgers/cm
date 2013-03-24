@@ -16,10 +16,21 @@ public class AssignmentUserInfo implements Response {
     private int expiredAssignments;
     private List<ProblemAnnotation> unreadAnnotations;
     private boolean adminUsingAssignments;
+    private boolean changed;
 
     public AssignmentUserInfo(){}
     
     
+    public boolean isChanged() {
+        return changed;
+    }
+
+
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
+
     public List<ProblemAnnotation> getUnreadAnnotations() {
         return unreadAnnotations;
     }
@@ -117,6 +128,10 @@ public class AssignmentUserInfo implements Response {
             /** first check basic info
              * 
              */
+            if(o1.isChanged() != isChanged()) {
+                return false;
+            }
+            
             if(o1.getActiveAssignments() != getActiveAssignments()) {
                 return false;
             }

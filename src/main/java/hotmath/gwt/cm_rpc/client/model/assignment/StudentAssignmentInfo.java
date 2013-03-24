@@ -23,6 +23,7 @@ public class StudentAssignmentInfo implements Response {
     private int cntSubmitted;
     private String score;
     private int numUnreadAnnotations;
+    boolean changedAssignment;
 
     public int getNumUnreadAnnotations() {
         return numUnreadAnnotations;
@@ -34,7 +35,7 @@ public class StudentAssignmentInfo implements Response {
 
     public StudentAssignmentInfo() {}
     
-    public StudentAssignmentInfo(int assignKey, int uid, boolean graded, Date turnInDate, String status, Date dueDate, String comments, int cntProblems, int cntSubmitted, String score) {
+    public StudentAssignmentInfo(int assignKey, int uid, boolean graded, Date turnInDate, String status, Date dueDate, String comments, int cntProblems, int cntSubmitted, String score, boolean changedAssignment) {
         this.assignKey = assignKey;
         this.uid = uid;
         this.isGraded = graded;
@@ -44,10 +45,27 @@ public class StudentAssignmentInfo implements Response {
         this.comments = comments;
         this.cntProblems = cntProblems;
         this.cntSubmitted = cntSubmitted;
-        this.score = score;        
+        this.score = score;   
+        this.changedAssignment = changedAssignment;
+    }
+    
+    /** Is there anything interestingly new about this assignment?
+     * 
+     * @return
+     */
+    public boolean isChanged() {
+        if(numUnreadAnnotations > 0) {
+            return true;
+        }
+        else {
+            return changedAssignment;
+        }
     }
 
-    
+    public void setChanged(boolean changed) {
+        this.changedAssignment = changed;
+    }
+
     public boolean isComplete() {
         return cntProblems == cntSubmitted;
     }

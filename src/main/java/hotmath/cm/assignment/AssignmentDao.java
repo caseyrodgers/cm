@@ -39,12 +39,12 @@ import hotmath.testset.ha.SolutionDao;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,7 +112,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(3, ass.getAssignmentName());
                     ps.setDate(4, new java.sql.Date(ass.getDueDate().getTime()));
                     ps.setString(5, ass.getComments());
-                    ps.setDate(6, new Date(System.currentTimeMillis()));
+                    ps.setDate(6, new java.sql.Date(System.currentTimeMillis()));
                     ps.setString(7, ass.getStatus());
                     ps.setInt(8, ass.isClosePastDue() ? 1 : 0);
                     ps.setInt(9,ass.isGraded() ? 1 : 0);
@@ -440,7 +440,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     
     protected Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"), 
-                rs.getDate("due_date"), null, rs.getString("status"), rs.getInt("close_past_due")!=0, rs.getInt("is_graded") != 0);
+                rs.getDate("due_date"), null, rs.getString("status"), rs.getInt("close_past_due")!=0, rs.getInt("is_graded") != 0, rs.getTimestamp("last_modified"));
     }
 
     /**
@@ -1037,9 +1037,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         __logger.error("Error getting score: " + uid, e);
                     }
                 }
+                
+                boolean assignmentHasChanged = determineIfAssignmentHasChanged(assignKey, uid);
+                
                 StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, 
                                 uid, isGraded,turnInDate,
-                                status,dueDate,rs.getString("comments"),cntProblems, cntSubmitted,score);
+                                status,dueDate,rs.getString("comments"),cntProblems, cntSubmitted,score, assignmentHasChanged);
                 return info;
             }
         });
@@ -1058,6 +1061,48 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         return assInfos;
+    }
+
+    /** has this assignment been 'changed' since the last time
+     *  this student 'viewed' it?
+    */
+    protected boolean determineIfAssignmentHasChanged(int assignKey, int uid) {
+        try {
+            StudentAssignmentUserInfo saui = getStudentAssignmentUserInfo(uid, assignKey);
+            Date lastStudentView = saui.getViewDateTime();
+            Date lastAssignmentModification = getLastTeacherAssignmentModification(assignKey);
+            if(lastStudentView == null || lastStudentView.getTime() < lastAssignmentModification.getTime()) {
+                return true;
+            }
+            
+            Date lastStatusModification = getLastTeacherModfiedStudentStatus(assignKey, uid);
+            if(lastStatusModification != null) {
+                if(lastStudentView.getTime() < lastStatusModification.getTime()) {
+                    return true;
+                }
+            }
+        }
+        catch(Exception e) {
+            __logger.error("Error checking of assignment changed: " + assignKey + ", " + uid);
+        }
+        
+        return false;
+    }
+
+    private Date getLastTeacherModfiedStudentStatus(final int assignKey, final int uid) {
+        String sql = "select max(last_teacher_change_date) from CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ?";
+        Date date = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, uid}, new RowMapper<Date>() {
+            @Override
+            public Date mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getTimestamp(1);
+            }
+        });
+        return date;
+    }
+
+    private Date getLastTeacherAssignmentModification(int assignKey) throws Exception {
+        Assignment ass = getAssignment(assignKey);
+        return ass.getModifiedTime();
     }
 
     protected String getUserScore(int uid, int assignKey) throws Exception  {
@@ -1199,23 +1244,73 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         studentAssignment.setGraded(studentInfo.isGraded());
         
+        updateStudentAssignmentLastView(assignKey, uid);
+        
         
         return studentAssignment;
     }
 
+    /** Return the existing user info about this assignment
+     *  or create a new object
+     * 
+     *   
+     *   
+     * @param uid
+     * @param assignKey
+     * @return
+     */
     private StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) {
+        StudentAssignmentUserInfo studentInfo=null;
+        
         String sql = "select * from CM_ASSIGNMENT_USER where uid = ? and assign_key = ?";
         List<StudentAssignmentUserInfo> assInfos = getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<StudentAssignmentUserInfo>() {
             @Override
             public StudentAssignmentUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentAssignmentUserInfo(uid, assignKey,rs.getDate("turn_in_date"), rs.getInt("is_graded")!=0?true:false);
+                return new StudentAssignmentUserInfo(uid, assignKey,rs.getDate("turn_in_date"), rs.getInt("is_graded")!=0?true:false, rs.getTimestamp("last_access"));
             }
         });
-        if(assInfos.size()>0) {
-            return assInfos.get(0);
+        
+        if(assInfos.size() > 0) {
+            studentInfo = assInfos.get(0);
         }
         else {
-            return new StudentAssignmentUserInfo();
+            /** Create a record
+             * 
+             */
+            
+            int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "insert into CM_ASSIGNMENT_USER(assign_key,uid)values(?,?)";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, assignKey);
+                    ps.setInt(2, uid);
+                    return ps;
+                }
+            });
+            if(cnt != 1) {
+                __logger.error("Did not add new CM_ASSIGNMENT_USER record");
+            }
+            studentInfo = new StudentAssignmentUserInfo(assignKey, uid);
+        }
+        return studentInfo;
+    }
+    
+    private void updateStudentAssignmentLastView(final int assignKey, final int uid) throws Exception {
+        final Date viewTime = new Date(System.currentTimeMillis());
+          int cnt = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update CM_ASSIGNMENT_USER set last_access = ? where assign_key = ? and uid = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setTimestamp(1,new java.sql.Timestamp(viewTime.getTime()));
+                ps.setInt(2, assignKey);
+                ps.setInt(3, uid);
+                return ps;
+            }
+        });
+        if(cnt != 1) {
+            __logger.error("Did not update existing CM_ASSIGNMENT_USER record");
         }
     }
 
@@ -1297,7 +1392,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "update CM_ASSIGNMENT_PID_STATUS set modify_datetime = now(), status = ? where uid = ? and assign_key = ? and pid = ?";
+                String sql = "update CM_ASSIGNMENT_PID_STATUS set modify_datetime = now(), status = ?, last_teacher_change_date = null where uid = ? and assign_key = ? and pid = ?";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, status);
                 ps.setInt(2, uid);
@@ -1389,7 +1484,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             batch.add(values);
         }
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
-        int[] updateCounts = template.batchUpdate("update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ? where assign_key = ? and pid = ? and uid = ?",
+        int[] updateCounts = template.batchUpdate("update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ?, last_teacher_change_date = now() where assign_key = ? and pid = ? and uid = ?",
                 batch);
         
         if(releaseGrades) {
@@ -1655,8 +1750,27 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             assignmentInfo.setAdminUsingAssignments(true);
             getAssignmentStatuses(uid, assignmentInfo);
             assignmentInfo.setUnreadAnnotations(getUnreadAnnotatedProblems(uid));
+            assignmentInfo.setChanged(determineIfAnyAssignmentHasChanged(uid));
         }
         return assignmentInfo;
+    }
+
+    private boolean determineIfAnyAssignmentHasChanged(final int uid) {
+        String sql = "select assign_key from CM_ASSIGNMENT a JOIN HA_USER u on u.group_id = a.group_id where u.uid = ?";
+        List<Integer> assignKeys = getJdbcTemplate().query(sql, new Object[] {uid}, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                int assignKey = rs.getInt("assign_key");
+                return assignKey;
+            }
+        });
+        for(Integer ak: assignKeys) {
+            if(determineIfAssignmentHasChanged(ak, uid)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /** Return true if this admin is using assignments at all.

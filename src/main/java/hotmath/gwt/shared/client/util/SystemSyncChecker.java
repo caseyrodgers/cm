@@ -142,7 +142,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
      */
     static AssignmentUserInfo _lastCheckedData;
     protected static void fireAppropriateEvent(AssignmentUserInfo assignmentInfo) {
-        if(_lastCheckedData == null ||! _lastCheckedData.equals(assignmentInfo)) {
+        if(_lastCheckedData == null || !_lastCheckedData.equals(assignmentInfo)) {
             _lastCheckedData = assignmentInfo;
             
             Log.debug("Firing AssignmentsUpdatedEvent: " + assignmentInfo);

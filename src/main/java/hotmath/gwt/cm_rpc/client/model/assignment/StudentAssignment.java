@@ -40,7 +40,6 @@ public class StudentAssignment implements Response {
     private boolean assignmentGraded;
     private Date turnInDate;
 
-
     public StudentAssignment(){}
     
     public StudentAssignment(int uid, Assignment assignment, CmList<StudentProblemDto> assignmentStatuses, Date turnInDate, boolean assignmentGraded) {

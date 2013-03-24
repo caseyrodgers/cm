@@ -73,6 +73,15 @@ public class StudentAssignmentButton extends TextButton {
     
     
     public void setState(AssignmentUserInfo assInfo) {
+        
+        if(assInfo.isChanged()) {
+            startLoudButton();
+        }
+        else {
+            stopLoudButton();
+        }
+        
+        
         if(assInfo.getActiveAssignments() > 0 || assInfo.getUnreadMessageCount() > 0) {
             _state = ButtonState.HAS_ASSIGNMENTS;
             setIcon(resources.assignmentHas());
@@ -81,23 +90,17 @@ public class StudentAssignmentButton extends TextButton {
             
             int aa = assInfo.getActiveAssignments();
             int fa = assInfo.getUnreadMessageCount();
-            String tip = "You have " + aa + " assignment" + (aa>1?"s":"") + ".  ";
+            String tip = "You have " + aa + " assignment" + (aa>1?"s":"") + "";
             itemAssignments.setText(tip);
             if(fa > 0) {
                 itemAnnotations.setEnabled(true);
-                String tipa = "You have " + fa + " new annotated problem" + (fa>1?"s":"") + ".";
+                String tipa = "You have " + fa + " new teacher notes" + (fa>1?"s":"") + "";
                 tip += tipa;
                 itemAnnotations.setText(tipa);
-                
-                startLoudButton();
             }
             else {
-                if(isLoudRunning) {
-                    stopLoudButton();
-                }
                 itemAnnotations.setEnabled(false);
             }
-            //setToolTip(tip);
         }
         else {
             _state = ButtonState.NO_ASSIGNMENTS;
