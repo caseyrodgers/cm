@@ -136,6 +136,9 @@ public class StudentAssignmentButton extends TextButton {
                 if(isLoudRunning) {
                     doLoadButtonLoop();
                 }
+                else {
+                    setState(UserInfo.getInstance().getAssignmentMetaInfo());
+                }
             }
         }.schedule(1000);
     }

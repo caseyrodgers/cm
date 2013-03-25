@@ -153,7 +153,7 @@ public class HeaderPanel extends FlowLayoutContainer {
                 add(_assignmentsAnchor);
             }
             if (_assignmentsAnchor != null) {
-                _assignmentsAnchor.setState(assInfo);
+                _assignmentsAnchor.setState(UserInfo.getInstance().getAssignmentMetaInfo());
             }
         }
     }

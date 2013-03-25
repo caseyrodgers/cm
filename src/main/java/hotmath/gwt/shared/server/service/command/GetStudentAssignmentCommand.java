@@ -13,7 +13,7 @@ public class GetStudentAssignmentCommand implements ActionHandler<GetStudentAssi
 
     @Override
     public StudentAssignment execute(Connection conn, GetStudentAssignmentAction action) throws Exception {
-        return AssignmentDao.getInstance().getStudentAssignment(action.getUid(), action.getAssignKey());
+        return AssignmentDao.getInstance().getStudentAssignment(action.getUid(), action.getAssignKey(), true);
     }
 
     @Override

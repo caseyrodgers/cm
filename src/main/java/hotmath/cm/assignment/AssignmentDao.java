@@ -520,7 +520,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 probList = new CmArrayList<StudentProblemDto>();
                 uid = probDto.getUid();
                 
-                StudentAssignment sa = getStudentAssignment(uid, assignKey);
+                StudentAssignment sa = getStudentAssignment(uid, assignKey, false);
                 StudentAssignmentUserInfo userInfo = getStudentAssignmentUserInfo(uid, assignKey);
                 
                 StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList, userInfo.getTurnInDate(), userInfo.isGraded());
@@ -771,7 +771,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 probList = new CmArrayList<StudentProblemDto>();
                 lastAssignKey = probDto.getProblem().getAssignKey();
                 Assignment assignment = getAssignment(lastAssignKey);
-                StudentAssignment su = getStudentAssignment(probDto.getUid(), lastAssignKey);
+                StudentAssignment su = getStudentAssignment(probDto.getUid(), lastAssignKey, false);
                 Date dateTurnedIn=null;
                 
                 StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList,dateTurnedIn,true);
@@ -1142,7 +1142,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public StudentAssignment getStudentAssignment(final int uid, int assignKey) throws Exception {
+    public StudentAssignment getStudentAssignment(final int uid, int assignKey, boolean updateViewedTime) throws Exception {
 
         StudentAssignment studentAssignment = new StudentAssignment();
 
@@ -1244,7 +1244,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         studentAssignment.setGraded(studentInfo.isGraded());
         
-        updateStudentAssignmentLastView(assignKey, uid);
+        if(updateViewedTime) {
+            updateStudentAssignmentLastView(assignKey, uid);
+        }
         
         
         return studentAssignment;

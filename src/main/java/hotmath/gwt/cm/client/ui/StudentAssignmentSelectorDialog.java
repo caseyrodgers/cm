@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.CmRpc;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -125,7 +126,12 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     
     
     private boolean anyAssignmentHasChanged() {
-        return true; //  if any assignment has been changed...
+        if(UserInfo.getInstance().getAssignmentMetaInfo() != null && UserInfo.getInstance().getAssignmentMetaInfo().isChanged()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
     private IsWidget createLedgend() {

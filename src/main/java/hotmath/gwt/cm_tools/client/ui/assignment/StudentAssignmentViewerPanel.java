@@ -4,7 +4,6 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
@@ -18,13 +17,11 @@ import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerAc
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import java.util.List;
-
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.util.Margins;
@@ -325,6 +322,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             public void oncapture(StudentAssignment assignment) {
                 CatchupMathTools.setBusy(false);
                 loadAssignment(assignment,pidToLoad);
+                
+                /** Make sure system is in sync after viewing an assingment
+                 * 
+                 */
+                CmRpc.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
             }
         }.register();          
     }
