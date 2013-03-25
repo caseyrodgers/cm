@@ -412,7 +412,9 @@ public class TutorWrapperPanel extends Composite {
      * methods and GWT.
      * 
      */
-    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus) /*-{
+    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, 
+            String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,
+            String solutionContext, String submitButtonText, String indicateWidgetStatus) /*-{
         
         var that = this;
         
