@@ -23,7 +23,12 @@ function _createQuestionStep(el) {
 function _questionExpandResult(el) {
 	try {
 		el.parentElement.parentNode.children[1].className = 'question-choice';
-		el.parentElement.parentNode.children[1].style.display = 'block';
+		
+		var questionNode = el.parentElement.parentNode.children[1];
+		var questionText = questionNode.innerHTML.replace('&nbsp;','').trim();
+		if(questionText > "") {
+		    el.parentElement.parentNode.children[1].style.display = 'block';
+		}
 	}
 	catch(e) {
 		console.log('error showing question : ' + e);

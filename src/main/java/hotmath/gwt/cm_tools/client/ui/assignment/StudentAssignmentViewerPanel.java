@@ -22,8 +22,11 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.Style.Scroll;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
@@ -33,6 +36,7 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
@@ -209,7 +213,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         BorderLayoutData bd = new BorderLayoutData(200);
         bd.setCollapsible(true);
         header.setWestWidget(headerLeft,bd);
-        header.setCenterWidget(new FieldLabel(_comments,  "Comments"));
+        
+        FlowLayoutContainer cP = new FlowLayoutContainer();
+        cP.setScrollMode(ScrollMode.AUTO);
+        cP.add(new MyFieldLabel(_comments,  "Comments",75,300));
+        header.setCenterWidget(cP);
         
         HorizontalLayoutContainer buttonBar = new HorizontalLayoutContainer();
         _turnInButton = new TextButton("Turn In This Assignment", new SelectHandler() {

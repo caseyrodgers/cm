@@ -67,8 +67,6 @@
     <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
      -->
      
-    <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMathAdmin.js"></script>
-    
     <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->
     
     <!-- 
