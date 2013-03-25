@@ -50,6 +50,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     }
     
     BorderLayoutContainer _container;
+    private ToggleButton _showWhiteboardButton;
     public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, Assignment assignment, final ProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
         _callBack = callBack;
         _uid = uid;
@@ -80,10 +81,12 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         bd.setMargins(new Margins(5, 10, 5, 5));
         _container.setCenterWidget(_tutorPanel, bd);
         
-        addTool(createShowWhiteboardButton());
+        _showWhiteboardButton = createShowWhiteboardButton();
+        addTool(_showWhiteboardButton);
         addTool(createShowLessonButton());
         
         if(_whiteboardShown || problem.getProblemType() == ProblemType.WHITEBOARD) {
+            _showWhiteboardButton.setValue(true);
             showWhiteboard();
         }
         
@@ -133,7 +136,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         return showLesson;
     }
     
-    private Widget createShowWhiteboardButton() {
+    private ToggleButton createShowWhiteboardButton() {
         final ToggleButton showLesson = new ToggleButton("Show/Hide Whiteboard");
         showLesson.addSelectHandler(new SelectHandler() {
             @Override
