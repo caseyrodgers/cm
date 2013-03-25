@@ -1710,7 +1710,7 @@ function viewport_testpage() {
 
         // alert(isIE);
         if (isIE || isTouchEnabled||ieVer>8) {
-            $("textarea").focus();
+            $("#inputBox textarea").focus();
         } else {
             $('.mathquill-editable').focus();
         }
