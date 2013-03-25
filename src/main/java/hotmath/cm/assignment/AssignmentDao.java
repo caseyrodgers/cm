@@ -1631,7 +1631,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
             if ((psHtml.indexOf("hm_flash_widget") > -1 || psHtml.indexOf("hotmath:flash") > -1) && psHtml.indexOf("not_used") == -1) {
                 return ProblemType.INPUT_WIDGET;
-            } else if (psHtml.indexOf("hm_question_def") > -1) {
+            } 
+            else if (psHtml.indexOf("<div widget='") > -1) {
+                return ProblemType.INPUT_WIDGET;
+            }
+            else if (psHtml.indexOf("hm_question_def") > -1) {            
                 return ProblemType.MULTI_CHOICE;
             } else {
                 return ProblemType.WHITEBOARD;
