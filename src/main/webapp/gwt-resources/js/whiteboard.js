@@ -1758,10 +1758,7 @@ function viewport_testpage() {
         graphcanvas.height = graphcanvas.height;
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphicData.dataArr = [];
-        graphicData.id = tool_id[currentTool];
-		if(graphicData.id!==11&&graphicData.id!==12){
-		return
-		}
+        graphicData.id = tool_id[currentTool];		
         var addGraph = false
         if (!boo && ((graphMode == 'gr2D' && flag == 'gr2D') || (graphMode == 'nL' && flag == 'nL'))) {
             graphMode = "";
