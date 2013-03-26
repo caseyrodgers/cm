@@ -154,16 +154,46 @@ public class AssignmentProblemListPanel extends ContentPanel {
         return b;
     }
 
+    // search from current position to end, then 
     private void moveToNextIncompleteProblem() {
+        StudentProblemDto gotoThisOne=null;
         StudentProblemDto selected = _studentProblemGrid.getSelectionModel().getSelectedItem();
-        for (StudentProblemDto s : _studentProblemGrid.getStore().getAll()) {
-            if (!s.isComplete() && selected != s) {
-                _studentProblemGrid.getSelectionModel().select(s, false);
-                return;
+        
+        gotoThisOne = getGotoThisOne(selected); // search from current position
+        if(gotoThisOne == null) {
+            gotoThisOne = getGotoThisOne(null); // search from head
+        }
+        if(gotoThisOne!=null) {
+            _studentProblemGrid.getSelectionModel().select(gotoThisOne, false);
+        }
+        else {
+            CmMessageBox.showAlert("Assignment Complete", "There are no unanswered problems.");
+        }
+    }
+
+    private StudentProblemDto getGotoThisOne(StudentProblemDto selected) {
+        StudentProblemDto gotoThisOne=null;
+
+        List<StudentProblemDto> a = _studentProblemGrid.getStore().getAll();
+        for (int which=0,count=a.size();which < count;which++) {
+            StudentProblemDto p = a.get(which);
+            if(selected == null || p == selected) {
+                // search from here to end
+                for(int i=which+1;i<count;i++) {
+                    StudentProblemDto p2 = a.get(i);
+                    if(!p2.isComplete()) {
+                        gotoThisOne=p2;
+                        break;
+                    }
+                }
+                
+                if(gotoThisOne!=null) {
+                    break;
+                }
             }
         }
-
-        CmMessageBox.showAlert("Assignment Complete", "There are no unanswered problems.");
+        
+        return gotoThisOne;
     }
 
     StudentProblemDto _currentProblem;
