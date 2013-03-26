@@ -1,5 +1,6 @@
 package hotmath.cm.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
@@ -19,7 +20,7 @@ public class Assignment_Test extends TestCase {
 
     public void testCreate() throws Exception {
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-        pids.add(new ProblemDto(0,0,"Lesson", "Label", "Pid", null, 0));
+        pids.add(new ProblemDto(0,0, new LessonModel("Lesson", "File"), "Label", "Pid", null, 0));
         Assignment as = new Assignment(2, 0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,"New", false, false,new Date());
         int assKey = AssignmentDao.getInstance().saveAssignment(as);
         assertTrue(assKey > 0);

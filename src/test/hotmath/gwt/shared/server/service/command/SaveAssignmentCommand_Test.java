@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -27,7 +28,7 @@ public class SaveAssignmentCommand_Test extends TestCase {
         ass.setGroupId(0);
         ass.setDueDate(new Date());
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
-        pids.add(new ProblemDto(0, 0,"Test Lesson", "Label", "pid", null, 0));
+        pids.add(new ProblemDto(0, 0,new LessonModel("Test Lesson","Test File"), "Label", "pid", null, 0));
         ass.setPids(pids);
         
         SaveAssignmentAction action = new SaveAssignmentAction(0, ass);

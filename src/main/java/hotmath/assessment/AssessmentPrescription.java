@@ -275,7 +275,7 @@ public class AssessmentPrescription {
      * @throws Exception
      */
     public AssessmentPrescriptionSession createSession(int sessNum, List<RppWidget> rppWidgets, InmhItemData itemData,
-            boolean filter, ClientEnvironment clientEnvironment) throws Exception {
+            boolean filterItems, ClientEnvironment clientEnvironment) throws Exception {
         AssessmentPrescriptionSession session = new AssessmentPrescriptionSession(this);
         List<SessionData> sessionItems = session.getSessionItems();
 
@@ -283,7 +283,7 @@ public class AssessmentPrescription {
          * show RPP widgets (filtered)
          * 
          */
-        List<SessionData> filteredData = filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData);
+        List<SessionData> filteredData = filterRppsByGradeLevel(getGradeLevel(), rppWidgets, itemData, filterItems);
 
         if (filteredData.size() == 0) {
             throw new SbExceptionNoLessonRppsFound(getGradeLevel(), itemData);
@@ -336,8 +336,7 @@ public class AssessmentPrescription {
      * 
      * 
      */
-    public List<SessionData> filterRppsByGradeLevel(int programGradLevel, List<RppWidget> rppWidgets,
-            InmhItemData itemData) throws Exception {
+    public List<SessionData> filterRppsByGradeLevel(int programGradLevel, List<RppWidget> rppWidgets,InmhItemData itemData,boolean filterItems) throws Exception {
 
         List<SessionData> session = new ArrayList<AssessmentPrescription.SessionData>();
 
@@ -345,7 +344,7 @@ public class AssessmentPrescription {
             if (rpp.isFlashRequired())
                 continue;
 
-            if (rpp.isGradeLevel(programGradLevel)) {
+            if (!filterItems || rpp.isGradeLevel(programGradLevel)) {
                 
                 for(RppWidget rppExpand: expandProblemSetPids(rpp)) {
                     session.add(new SessionData(itemData.getInmhItem(), rppExpand));

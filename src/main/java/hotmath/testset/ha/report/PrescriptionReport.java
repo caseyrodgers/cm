@@ -246,7 +246,7 @@ public class PrescriptionReport {
                         else if(poolItems.size() == 0) {
                             logMessage(testRun.getRunId(),"WARNING: No RPP pool found for '" + itemData);
                         }
-                        else if(prescription.filterRppsByGradeLevel(prescription.getGradeLevel(), poolItems, itemData).size() == 0) {
+                        else if(prescription.filterRppsByGradeLevel(prescription.getGradeLevel(), poolItems, itemData, true).size() == 0) {
                             logMessage(testRun.getRunId(),"WARNING: No RPP items (level=" + prescription.getGradeLevel() + ") found for '" + itemData.getInmhItem().getFile());    
                         }
                     }

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc.client.model.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 
 public class ProblemDto extends BaseDto implements Response {
@@ -10,12 +11,13 @@ public class ProblemDto extends BaseDto implements Response {
 
     public ProblemDto() {}
 
-    String label, pid, lesson;
+    String label, pid;
+    LessonModel lesson;
     ProblemType problemType = ProblemType.UNKNOWN;
     int assignKey;
     private int ordinalNumber;
 
-    public ProblemDto(int ordinalNumber, int id, String lesson, String label, String pid, ProblemType problemType, int assignKey) {
+    public ProblemDto(int ordinalNumber, int id, LessonModel lesson, String label, String pid, ProblemType problemType, int assignKey) {
         super(id, label);
         this.ordinalNumber = ordinalNumber;
         this.label = label;
@@ -41,13 +43,6 @@ public class ProblemDto extends BaseDto implements Response {
         this.problemType = problemType;
     }
 
-    public String getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(String lesson) {
-        this.lesson = lesson;
-    }
 
     public String getLabel() {
         return label;
@@ -80,11 +75,6 @@ public class ProblemDto extends BaseDto implements Response {
         this.pid = pid;
     }
 
-    @Override
-    public String toString() {
-        return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType
-                + ", assignKey=" + assignKey + "]";
-    }
 
     /** Return the type tag for problem type
      * 
@@ -126,4 +116,20 @@ public class ProblemDto extends BaseDto implements Response {
     public void setOrdinalNumber(int ordinalNumber) {
         this.ordinalNumber = ordinalNumber;
     }
+
+
+    public LessonModel getLesson() {
+        return lesson;
+    }
+
+    public void setLesson(LessonModel lesson) {
+        this.lesson = lesson;
+    }
+    
+    
+    @Override
+    public String toString() {
+        return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType + ", assignKey=" + assignKey
+                + ", ordinalNumber=" + ordinalNumber + "]";
+    }    
 }

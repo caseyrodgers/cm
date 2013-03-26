@@ -137,8 +137,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
     private Widget createAnnotationLedgend() {
         HorizontalPanel lc = new HorizontalPanel();
-        lc.add(new HTML("<div style='margin-right: 10px;'><div style='background-color: blue;width: 10px;float: left;'>&nbsp;</div>&nbsp;&nbsp;notes</div>"));
-        lc.add(new HTML("<div><div style='background-color: red;width: 10px;float: left;'>&nbsp;</div>&nbsp;&nbsp;unread notes</div>"));
+        lc.add(new HTML("<div style='margin-right: 10px;'><div style='background-color: blue;width: 10px;float: left;'>&nbsp;</div>&nbsp;&nbsp;Notes</div>"));
+        lc.add(new HTML("<div><div style='background-color: red;width: 10px;float: left;'>&nbsp;</div>&nbsp;&nbsp;Unread notes</div>"));
         return lc;
     }
 

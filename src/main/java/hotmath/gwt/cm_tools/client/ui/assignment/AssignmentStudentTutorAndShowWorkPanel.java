@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
@@ -18,6 +19,8 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefau
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Margins;
@@ -28,6 +31,8 @@ import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /** Manages the student's assignment view of
  *  a single tutor and its associated whiteboard
@@ -126,14 +131,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     }
     
     private Widget createShowLessonButton() {
-        TextButton showLesson = new TextButton("Show Lesson");
-        showLesson.addSelectHandler(new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                showAssociatedLesson();
-            }
-        });
-        return showLesson;
+        return new ProblemResourcesButton(_problem);
     }
     
     private ToggleButton createShowWhiteboardButton() {
@@ -155,13 +153,8 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         });
         return showLesson;
     }
-
-
-    private void showAssociatedLesson() {
-        Log.debug("Show lesson for: " + _problem.getLesson());
-        new LessonPrescriptionViewer(_problem.getLesson());
-    }
-
+    
+    
     int _uid, _assignKey;
     private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
         // always use zero for run_id

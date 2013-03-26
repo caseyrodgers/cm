@@ -11,6 +11,7 @@ import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentGradeDetailInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
@@ -154,7 +155,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          */
         if (ass.getPids() != null && ass.getPids().size() > 0) {
-            String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, ordinal_number)values(?,?,?,?,?)";
+            String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, lesson_file, ordinal_number)values(?,?,?,?,?,?)";
             final int counter[] = new int[1];
             getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
 
@@ -175,8 +176,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     }
                     ps.setString(2, fullPid);
                     ps.setString(3, p.getLabel());
-                    ps.setString(4, p.getLesson());
-                    ps.setInt(5, ++counter[0]);
+                    ps.setString(4, p.getLesson().getLessonName());
+                    ps.setString(5, p.getLesson().getLessonFile());
+                    ps.setInt(6, ++counter[0]);
                 }
 
                 @Override
@@ -219,7 +221,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String pid = rs.getString("pid");
-                return new ProblemDto(rs.getInt("ordinal_number"), 0, rs.getString("lesson"), rs.getString("label"), pid, null, 0);
+                LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+                return new ProblemDto(rs.getInt("ordinal_number"), 0, lesson, rs.getString("label"), pid, null, 0);
             }
         });
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
@@ -311,6 +314,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         final int count[] = new int[1];
 
+        final LessonModel lesson = new LessonModel(lessonName, lessonFile);
+        
         InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", lessonFile, lessonName));
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
         try {
@@ -319,7 +324,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             for (RppWidget w : rpps) {
                 for (RppWidget ew : AssessmentPrescription.expandProblemSetPids(w)) {
                     String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                    problemsAll.add(new ProblemDto(0, 0, lessonName, defaultLabel, ew.getFile(), null, 0));
+                    problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, ew.getFile(), null, 0));
                 }
             }
         } catch (Exception e) {
@@ -332,8 +337,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 
                 String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-
-                return new ProblemDto(0, 0, rs.getString("lesson"), defaultLabel, rs.getString("pid"), null, 0);
+                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), null, 0);
             }
         });
 
@@ -497,7 +501,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                             nameMap.put(uid, rs.getString("user_name"));
                         }
 
-                        ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), rs.getString("lesson"),
+                        LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+                        ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson,
                                 rs.getString("label"), rs.getString("pid"), null, 0);
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
@@ -520,7 +525,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 probList = new CmArrayList<StudentProblemDto>();
                 uid = probDto.getUid();
                 
-                StudentAssignment sa = getStudentAssignment(uid, assignKey, false);
                 StudentAssignmentUserInfo userInfo = getStudentAssignmentUserInfo(uid, assignKey);
                 
                 StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList, userInfo.getTurnInDate(), userInfo.isGraded());
@@ -552,7 +556,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         CmList<StudentLessonDto> lessonList = null;
         StudentLessonDto lessonStatus = null;
 
-        int counter = 0;
         for (StudentProblemDto probDto : problemStatuses) {
 
             if (probDto.getUid() != uid) {
@@ -585,7 +588,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 pending = 0;
                 count = 0;
                 viewed = 0;
-                lessonName = probDto.getProblem().getLesson();
+                lessonName = probDto.getProblem().getLesson().getLessonName();
                 lessonStatus = new StudentLessonDto(uid, lessonName, null);
                 lessonList.add(lessonStatus);
             }
@@ -596,7 +599,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if ("not viewed".equalsIgnoreCase(probStatus))
                 continue;
 
-            // TODO: is "answered" an actual status?
             String psl = probStatus.toLowerCase();
             if ("answered".equals(psl) || "correct".equals(psl) || "incorrect".equals(psl) || "half credit".equals(psl)) {
                 completed++;
@@ -750,7 +752,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 StudentProblemDto prob = new StudentProblemDto();
                 Integer uid = rs.getInt("uid");
                 prob.setUid(uid);
-                ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), rs.getString("lesson"), rs.getString("label"), rs
+                
+                LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
+                ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), rs
                         .getString("pid"), null, rs.getInt("assign_key"));
                 prob.setProblem(probDto);
                 prob.setStatus(rs.getString("status"));
@@ -839,7 +843,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 pending = 0;
                 count = 0;
                 viewed = 0;
-                lessonName = probDto.getProblem().getLesson();
+                lessonName = probDto.getProblem().getLesson().getLessonName();
                 lessonStatus = new StudentLessonDto(probDto.getUid(), lessonName, null);
                 lessonList.add(lessonStatus);
             }

@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction.SearchType;
 import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 
@@ -37,12 +38,27 @@ public class SearchTopicCommand implements ActionHandler<SearchTopicAction, CmLi
         CmList<Topic> topics = new CmArrayList<Topic>();
         PreparedStatement ps=null;
         try {
-            String sql = "select distinct lesson, file " +
-                         "from HA_PROGRAM_LESSONS_static " +
-                         "where lesson like ? " +  
-                         "order by lesson";
+            String sql = null;
+            
+            String searchString=null;
+            if(action.getSearchType() == SearchType.LESSON_LIKE) {
+                sql = "select distinct lesson, file " +
+                       "from HA_PROGRAM_LESSONS_static " +
+                       "where lesson like ? " +  
+                       "order by lesson";
+                
+                searchString = "%" + action.getSearch() + "%";
+            }
+            else {
+                sql = "select distinct lesson, file " +
+                        "from HA_PROGRAM_LESSONS_static " +
+                        "where file = ?";
+                
+                searchString = action.getSearch();
+             }
             ps = conn.prepareStatement(sql);
-            ps.setString(1, "%" + action.getSearch() + "%");
+            
+            ps.setString(1, searchString);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 topics.add(new Topic(rs.getString("lesson"), rs.getString("file")));        

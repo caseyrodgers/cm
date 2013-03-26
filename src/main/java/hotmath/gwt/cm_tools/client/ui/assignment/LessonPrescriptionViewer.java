@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplReview;
@@ -10,14 +11,14 @@ import com.google.gwt.user.client.ui.Frame;
 
 public class LessonPrescriptionViewer extends GWindow {
     
-    public LessonPrescriptionViewer(String lessonName) {
+    public LessonPrescriptionViewer(LessonModel lesson) {
         super(true);
         
-        setHeadingHtml("Lesson: " + lessonName);
+        setHeadingHtml("Lesson: " + lesson.getLessonName());
         setPixelSize(600, 800);
         setMinimizable(true);
         
-        showLessonPrescription(lessonName);
+        showLessonPrescription(lesson.getLessonName());
         
         setVisible(true);
     }
