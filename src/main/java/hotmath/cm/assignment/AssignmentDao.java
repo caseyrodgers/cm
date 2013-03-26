@@ -771,10 +771,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 probList = new CmArrayList<StudentProblemDto>();
                 lastAssignKey = probDto.getProblem().getAssignKey();
                 Assignment assignment = getAssignment(lastAssignKey);
-                StudentAssignment su = getStudentAssignment(probDto.getUid(), lastAssignKey, false);
-                Date dateTurnedIn=null;
+                //StudentAssignment su = getStudentAssignment(probDto.getUid(), lastAssignKey, false);
+                Date dateTurnedIn = null;
                 
-                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList,dateTurnedIn,true);
+                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList, dateTurnedIn, true);
                 stuAssignment.setStudentName(stuName);
                 stuAssignments.add(stuAssignment);
                 stuAssignMap.put(lastAssignKey, stuAssignment);
@@ -847,9 +847,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             count++;
             totCount++;
             String probStatus = probDto.getStatus().trim().toLowerCase();
-            if ("not viewed".equals(probStatus))
+            if ("not viewed".equalsIgnoreCase(probStatus))
                 continue;
-            if ("answered".equals(probStatus) || "correct".equals(probStatus) || "incorrect".equals(probStatus) || "half credit".equals(probStatus)) {
+            if ("answered".equalsIgnoreCase(probStatus) || "submitted".equalsIgnoreCase(probStatus) ||
+            	"correct".equalsIgnoreCase(probStatus) || "incorrect".equalsIgnoreCase(probStatus) ||
+            	"half credit".equalsIgnoreCase(probStatus)) {
                 completed++;
                 totCompleted++;
                 totGraded += (probDto.isGraded()) ? 1 : 0;
@@ -1089,6 +1091,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return false;
     }
 
+
     private Date getLastTeacherModfiedStudentStatus(final int assignKey, final int uid) {
         String sql = "select max(last_teacher_change_date) from CM_ASSIGNMENT_PID_STATUS where assign_key = ? and uid = ?";
         Date date = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, uid}, new RowMapper<Date>() {
@@ -1103,6 +1106,74 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     private Date getLastTeacherAssignmentModification(int assignKey) throws Exception {
         Assignment ass = getAssignment(assignKey);
         return ass.getModifiedTime();
+    }
+
+    public List<StudentAssignmentInfo> getCompletedAssignmentsForUserDateRange(final int uid, Date fromDate, Date toDate) throws Exception {
+
+        /**
+         * Sort so active/not-expired assignments are on top
+         * 
+         */
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_COMPLETED_ASSIGNMENTS_IN_DATE_RANGE");
+        String[] dates = QueryHelper.getDateTimeRange(fromDate, toDate);
+        List<StudentAssignmentInfo> saInfoList = getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] }, new RowMapper<StudentAssignmentInfo>() {
+            @Override
+            public StudentAssignmentInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
+                
+                int cntSubmitted = rs.getInt("cnt_submitted");
+                int cntProblems = rs.getInt("cnt_problems");
+                String status = rs.getString("status");
+                Date dueDate = rs.getDate("due_date");
+                Date turnInDate = rs.getDate("turn_in_date");
+                
+                if(status.equals("Open") && turnInDate != null) {
+                    status = "Turned In";
+                }
+                
+                boolean isGraded = (rs.getInt("is_graded") != 0) ? true:false;
+                int assignKey = rs.getInt("assign_key");
+                String score="";
+                if(isGraded) {
+                    try {
+                        score = getUserScore(uid, assignKey);
+                        if(score != null && score.equals("-")) {
+                            String sl = status.toLowerCase();
+                            if(sl.equals("closed") || isGraded) {
+                                score = "0%";
+                            }
+                        }
+                    }
+                    catch(Exception e) {
+                        __logger.error("Error getting score: " + uid, e);
+                    }
+                }
+
+                /*
+                 * TODO: verify that assignment is completed and cannot be changed
+                 */
+                boolean assignmentHasChanged = false;   // determineIfAssignmentHasChanged(assignKey, uid);
+
+                StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, 
+                                uid, isGraded, turnInDate, status, dueDate,
+                                rs.getString("comments"), cntProblems, cntSubmitted, score, assignmentHasChanged);
+                return info;
+            }
+        });
+
+        List<ProblemAnnotation> unreadAnnotations = getUnreadAnnotatedProblems(uid);
+
+        // aggregate the number of unread annotations for each assignment
+        for (StudentAssignmentInfo ass : saInfoList) {
+          for(ProblemAnnotation a: unreadAnnotations)  {
+              int cnt=0;
+              if(a.getAssignKey() == ass.getAssignKey()) {
+                  cnt++;
+              }
+              ass.setNumUnreadAnnotations(cnt);
+          }
+        }
+
+        return saInfoList;
     }
 
     protected String getUserScore(int uid, int assignKey) throws Exception  {
@@ -1247,8 +1318,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         if(updateViewedTime) {
             updateStudentAssignmentLastView(assignKey, uid);
         }
-        
-        
+
         return studentAssignment;
     }
 
