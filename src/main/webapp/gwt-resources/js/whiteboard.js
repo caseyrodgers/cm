@@ -1759,6 +1759,9 @@ function viewport_testpage() {
         graphcontext.clearRect(0, 0, canvas.width, canvas.height);
         graphicData.dataArr = [];
         graphicData.id = tool_id[currentTool];
+		if(graphicData.id!==11&&graphicData.id!==12){
+		return
+		}
         var addGraph = false
         if (!boo && ((graphMode == 'gr2D' && flag == 'gr2D') || (graphMode == 'nL' && flag == 'nL'))) {
             graphMode = "";
@@ -2007,7 +2010,10 @@ function viewport_testpage() {
             render = false;
             // var jsonStr = convertObjToString(graphicData);
             console_log("Sending Data string for: " + graphicData.id);
+			if (graphicData.id == 1 && graphicData.dataArr[0].name=='graphImage') {
+			}else{
             sendDataToSERVER(graphicData);
+			}
             textRendering = false;
         }
         resetArrays();
@@ -2158,6 +2164,9 @@ if(isIE){updateCanvas();}
         }
         // alert(deb)
         if (graphic_id === 3 || graphic_id === 1) {
+		if(graphic_data[0].name=='graphImage'){
+		return
+		}
             for (i = 0; i < dLength; i++) {
                 x1 = graphic_data[i].x;
                 y1 = graphic_data[i].y;
