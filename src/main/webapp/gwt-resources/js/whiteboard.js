@@ -1802,7 +1802,9 @@ function viewport_testpage() {
             addImage: addGraph
         });
         sendData();
-               // currentTool = 'pencil';
+		if(currentTool=='gr2D'||currentTool=='nL'){
+               currentTool = 'pencil';
+			   }
     }
 
     function mouseOverGraph() {
