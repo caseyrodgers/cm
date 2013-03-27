@@ -5,7 +5,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -20,7 +19,9 @@ import com.sencha.gxt.widget.core.client.menu.MenuItem;
 public class ProblemResourcesButton extends TextButton {
     
     private ProblemDto _problem;
-    EmptyMenu lessonsMenu, videoMenu, practiceMenu;
+    MyMenuItem lessonsMenu, videoMenu, practiceMenu;
+    
+    SelectionHandler<MenuItem> _menuItemlistener;
     
     public ProblemResourcesButton(ProblemDto problem) {
         super("Resources");
@@ -34,18 +35,17 @@ public class ProblemResourcesButton extends TextButton {
         });
         Menu menu = new Menu();
         
-        
-        
-        SelectionHandler<MenuItem> listener = new SelectionHandler<MenuItem>() {
+        _menuItemlistener = new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
-                CmMessageBox.showAlert("Show Resource: " + _problem.getLesson());
+                if(event.getSource() == lessonsMenu) {
+                    new ResourceViewerWindow(new LessonResourceView(lessonsMenu.getResource(),_problem));
+                }
             }
         };
-        
-        lessonsMenu = new EmptyMenu("Lessons");
-        videoMenu = new EmptyMenu("Videos");
-        practiceMenu = new EmptyMenu("Practice");
+        lessonsMenu = new MyMenuItem("Lessons",_menuItemlistener);
+        videoMenu = new MyMenuItem("Videos",_menuItemlistener );
+        practiceMenu = new MyMenuItem("Practice",_menuItemlistener);
         
         menu.add(lessonsMenu);
         menu.add(videoMenu);
@@ -58,7 +58,6 @@ public class ProblemResourcesButton extends TextButton {
         new RetryAction<PrescriptionSessionResponse>() {
             @Override
             public void attempt() {
-                
                 GetTopicPrescriptionAction action = new GetTopicPrescriptionAction(_problem.getLesson().getLessonFile());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -79,14 +78,14 @@ public class ProblemResourcesButton extends TextButton {
         for(PrescriptionSessionDataResource r: prescription.getPrescriptionData().getCurrSession().getInmhResources()) {
             String type = r.getType();
             if(type.equals("review")) {
-                lessonsMenu.setSubMenu(null);
                 lessonsMenu.setText("Lesson Text");
+                lessonsMenu.setResource(r);
                 lessonsMenu.setEnabled(true);
             }
             else if(type.equals("video")){
                 Menu subMenu = new Menu();
                 for(InmhItemData id: r.getItems()) {
-                    subMenu.add(new MenuItem(id.getTitle()));
+                    subMenu.add(new MyMenuItem(id.getTitle(), _menuItemlistener));
                 }
                 videoMenu.setSubMenu(subMenu);
                 videoMenu.setEnabled(true);
@@ -94,7 +93,7 @@ public class ProblemResourcesButton extends TextButton {
             else if(type.equals("practice")) {
                 Menu subMenu = new Menu();
                 for(InmhItemData id: r.getItems()) {
-                    subMenu.add(new MenuItem(id.getTitle()));
+                    subMenu.add(new MenuItem(id.getTitle(),_menuItemlistener));
                 }
                 practiceMenu.setSubMenu(subMenu);
                 practiceMenu.setEnabled(true);
@@ -107,13 +106,31 @@ public class ProblemResourcesButton extends TextButton {
 
 
 class EmptyMenu extends MenuItem {
-    
-    public EmptyMenu(String title) {
-        super(title);
+
+    public EmptyMenu(String title,  SelectionHandler<MenuItem> listener) {
+        super(title,listener);
         Menu subMenu = new Menu();
         subMenu.add(new MenuItem("-- Empty -- "));
         setSubMenu(subMenu);
         setEnabled(false);
     }
     
+}
+
+
+class MyMenuItem extends MenuItem {
+
+    private PrescriptionSessionDataResource resource;
+
+    public MyMenuItem(String title, SelectionHandler<MenuItem> listener) {
+        super(title, listener);
+    }
+    
+    public void setResource(PrescriptionSessionDataResource r) {
+        this.resource = r;
+    }
+    
+    public PrescriptionSessionDataResource getResource() {
+        return this.resource;
+    }
 }
