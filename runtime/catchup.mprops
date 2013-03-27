@@ -3748,10 +3748,10 @@ order by u.user_name, problem_id
 ##
 .key=GET_ASSIGNMENT_WORK_FOR_STUDENT
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid,p.ordinal_number,
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid, p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
-       ifnull( ifnull(q.is_graded,s.is_graded), 0) as is_graded
+       ifnull(s.is_graded, 0) as is_graded
 
 from HA_USER u
 
@@ -3771,7 +3771,7 @@ left join (
     on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
     
 left join (
-    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer, pa.is_graded
+    select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
     from CM_ASSIGNMENT_PID_ANSWERS pa) q
     on q.id=l.max_id
     
@@ -3827,7 +3827,7 @@ and a.status <> 'Draft'
 order by is_expired, a.due_date desc
 
 
-.key=GET_COMPLETED_STUDENT_ASSIGNMENTS_IN_DATE_RANGE
+.key=GET_COMPLETED_ASSIGNMENTS_IN_DATE_RANGE
 
 SELECT au.uid, due_date < now() as is_expired,
        a.status, a.due_date, a.assign_key, a.comments, 
