@@ -758,6 +758,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         .getString("pid"), null, rs.getInt("assign_key"));
                 prob.setProblem(probDto);
                 prob.setStatus(rs.getString("status"));
+                prob.setGraded(rs.getInt("is_graded") > 0);
                 return prob;
             }
         });
