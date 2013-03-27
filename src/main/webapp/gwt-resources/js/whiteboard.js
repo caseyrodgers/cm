@@ -1802,7 +1802,7 @@ function viewport_testpage() {
             addImage: addGraph
         });
         sendData();
-                currentTool = 'pencil';
+               // currentTool = 'pencil';
     }
 
     function mouseOverGraph() {
