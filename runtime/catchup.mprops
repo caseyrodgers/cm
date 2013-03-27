@@ -3748,7 +3748,7 @@ order by u.user_name, problem_id
 ##
 .key=GET_ASSIGNMENT_WORK_FOR_STUDENT
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.pid, p.ordinal_number,
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        ifnull(s.is_graded, 0) as is_graded
