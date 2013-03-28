@@ -207,16 +207,4 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
             }
         }.register();
     }
-
-
-    native private void markMultiChoiceProblemStatus(boolean isCorrect) /*-{
-        alert('test 1');
-        var el = $doc.getElementById("problem_statement");
-        if(!el) {
-            return;
-        }
-        
-        var uls = el.getElementsByTagName("ul");
-        alert("uls: " + uls);
-    }*/;
 }
