@@ -121,10 +121,12 @@ public class GradeBookDialog {
 
         agPanel = new AssignmentGradingPanel(stuAssignment, new ProblemSelectionCallback() {
             @Override
-            public void problemWasSelected(ProblemDto selection) {
+            public void problemWasSelected(StudentProblemDto selection) {
                 _questionViewer.viewQuestion(stuAssignment, selection);
             }
         }, updateGradeCallback);
+        
+        
         BorderLayoutData data = new BorderLayoutData();
         data.setSize(400.0);
         data.setSplit(true);

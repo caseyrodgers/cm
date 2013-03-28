@@ -45,6 +45,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -364,7 +366,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 problemsFiltered.add(pt);
             }
         }
-
+        
+        
+        /** Then make sure they are sorted
+         * 
+         */
+        Collections.sort(problemsFiltered, new Comparator<ProblemDto>() {
+            @Override
+            public int compare(ProblemDto o1, ProblemDto o2) {
+                String label1 = o1.getLabelWithType();
+                String label2 = o2.getLabelWithType();
+                return label1.compareTo(label2);
+            }
+        });
         return problemsFiltered;
     }
 

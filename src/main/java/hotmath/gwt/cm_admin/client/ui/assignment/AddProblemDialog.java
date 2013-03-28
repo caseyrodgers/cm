@@ -598,7 +598,7 @@ public class AddProblemDialog extends GWindow {
         }
         
         
-        children.add(new StandardNode());
+        //children.add(new StandardNode());
         
         
         _root.setChildren(children);

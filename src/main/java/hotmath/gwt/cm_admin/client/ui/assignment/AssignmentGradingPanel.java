@@ -28,11 +28,8 @@ import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent.CompleteEditHandler;
-import com.sencha.gxt.widget.core.client.event.SelectEvent;
-import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.PropertyEditor;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -85,7 +82,7 @@ public class AssignmentGradingPanel extends ContentPanel {
     }      
 
     static public interface ProblemSelectionCallback {
-        void problemWasSelected(ProblemDto selection);
+        void problemWasSelected(StudentProblemDto selection);
     }
 
     ProblemSelectionCallback _problemSelectionCallBack;
@@ -294,7 +291,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         _gradingGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
-                _problemSelectionCallBack.problemWasSelected(event.getSelection().get(0).getProblem());
+                _problemSelectionCallBack.problemWasSelected(event.getSelection().get(0));
                 _lastProblem = event.getSelection().get(0);
             }
         });

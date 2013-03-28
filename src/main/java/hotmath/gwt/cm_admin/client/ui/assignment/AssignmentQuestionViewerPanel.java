@@ -4,6 +4,7 @@ import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -74,7 +75,6 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
         _tabPanel = new TabPanel();
         
         final FlowLayoutContainer flowPanel = new FlowLayoutContainer();
-        
         flowPanel.add(_tutorPanel);
         flowPanel.setScrollMode(ScrollMode.AUTO);
         
@@ -165,7 +165,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
     
     
     AssignmentProblem _assignmentProblem;
-    public void viewQuestion(final StudentAssignment studentAssignment, final ProblemDto problem) {
+    public void viewQuestion(final StudentAssignment studentAssignment, final StudentProblemDto problem) {
         
         _tabPanel.setActiveWidget(_tabPanel.getWidget(0));
 
@@ -183,13 +183,13 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 _assignmentProblem = assignmentProblem;
                 SolutionInfo solInfo = assignmentProblem.getInfo();
                 try {
-                    setHeadingHtml(problem.getLabel());
+                    setHeadingHtml(problem.getProblem().getLabel());
                     
                     String variableContext = null;
                     if (solInfo.getContext() != null) {
                         variableContext = solInfo.getContext().getContextJson();
                     }
-                    _tutorPanel.externallyLoadedTutor(solInfo, getWidget(), problem.getPid(), null, solInfo.getJs(), solInfo.getHtml(), problem.getLabel(), false, false, variableContext);
+                    _tutorPanel.externallyLoadedTutor(solInfo, getWidget(), problem.getPid(), null, solInfo.getJs(), solInfo.getHtml(), problem.getProblem().getLabel(), false, false, variableContext);
                     _tutorPanel.setVisible(true);
                     
                     if(assignmentProblem.getLastUserWidgetValue() != null) {
@@ -207,4 +207,16 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
             }
         }.register();
     }
+
+
+    native private void markMultiChoiceProblemStatus(boolean isCorrect) /*-{
+        alert('test 1');
+        var el = $doc.getElementById("problem_statement");
+        if(!el) {
+            return;
+        }
+        
+        var uls = el.getElementsByTagName("ul");
+        alert("uls: " + uls);
+    }*/;
 }
