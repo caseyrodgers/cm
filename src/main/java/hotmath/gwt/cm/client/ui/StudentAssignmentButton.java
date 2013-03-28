@@ -105,7 +105,7 @@ public class StudentAssignmentButton extends TextButton {
         else {
             _state = ButtonState.NO_ASSIGNMENTS;
             setIcon(resources.assignmentNo());
-            itemAssignments.setEnabled(false);            
+            //itemAssignments.setEnabled(false);            
             //changeStyle("student-assignment-button-no");
             
             setToolTip("You do not have any assignments or teacher notes.");
