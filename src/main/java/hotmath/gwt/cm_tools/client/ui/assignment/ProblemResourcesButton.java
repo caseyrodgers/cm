@@ -41,6 +41,12 @@ public class ProblemResourcesButton extends TextButton {
                 if(event.getSource() == lessonsMenu) {
                     new ResourceViewerWindow(new LessonResourceView(lessonsMenu.getResource(),_problem));
                 }
+                else if(event.getSource() instanceof MyMenuItem) {
+                    MyMenuItem mi = (MyMenuItem)event.getSource();
+                    if(mi.getResource() != null && mi.getResource().getType().equals("video")) {
+                        new ResourceViewerWindow(new VideoResourceView(lessonsMenu.getResource(),_problem));
+                    }
+                }
             }
         };
         lessonsMenu = new MyMenuItem("Lessons",_menuItemlistener);
@@ -49,7 +55,7 @@ public class ProblemResourcesButton extends TextButton {
         
         menu.add(lessonsMenu);
         menu.add(videoMenu);
-        menu.add(practiceMenu);
+        //menu.add(practiceMenu);
         
         setMenu(menu);
     }
@@ -85,18 +91,18 @@ public class ProblemResourcesButton extends TextButton {
             else if(type.equals("video")){
                 Menu subMenu = new Menu();
                 for(InmhItemData id: r.getItems()) {
-                    subMenu.add(new MyMenuItem(id.getTitle(), _menuItemlistener));
+                    subMenu.add(new MyMenuItem(id.getTitle(), _menuItemlistener, r));
                 }
                 videoMenu.setSubMenu(subMenu);
                 videoMenu.setEnabled(true);
             }
             else if(type.equals("practice")) {
-                Menu subMenu = new Menu();
-                for(InmhItemData id: r.getItems()) {
-                    subMenu.add(new MenuItem(id.getTitle(),_menuItemlistener));
-                }
-                practiceMenu.setSubMenu(subMenu);
-                practiceMenu.setEnabled(true);
+//                Menu subMenu = new Menu();
+//                for(InmhItemData id: r.getItems()) {
+//                    subMenu.add(new MenuItem(id.getTitle(),_menuItemlistener));
+//                }
+//                practiceMenu.setSubMenu(subMenu);
+//                practiceMenu.setEnabled(true);
             }
         }
         
@@ -123,7 +129,11 @@ class MyMenuItem extends MenuItem {
     private PrescriptionSessionDataResource resource;
 
     public MyMenuItem(String title, SelectionHandler<MenuItem> listener) {
+        this(title, listener, null);
+    }
+    public MyMenuItem(String title, SelectionHandler<MenuItem> listener, PrescriptionSessionDataResource r) {
         super(title, listener);
+        this.resource = r;
     }
     
     public void setResource(PrescriptionSessionDataResource r) {
