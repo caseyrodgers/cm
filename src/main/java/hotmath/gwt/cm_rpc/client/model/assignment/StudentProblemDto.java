@@ -76,7 +76,7 @@ public class StudentProblemDto implements Response {
     public String getStatusForStudent() {
        String sl = getStatus().toLowerCase();
        
-       if(isAssignmentClosed) {
+       if(isGraded() || isAssignmentClosed) {
            return status;
        }
        else if(sl.contains("viewed")) {

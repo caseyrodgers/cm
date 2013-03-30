@@ -295,7 +295,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             _main.forceLayout();
         }
         _problemListPanel.loadAssignment(assignment, pidToLoad);
-        if(CmShared.getQueryParameter("debug") == null && !assignment.getStatus().equals("Closed")) {
+        if(CmShared.getQueryParameter("debug") == null && !assignment.isGraded()) {
             _gradeField.setVisible(false);
         }
         else {
