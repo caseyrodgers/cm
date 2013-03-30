@@ -19,7 +19,7 @@ import com.sencha.gxt.widget.core.client.menu.MenuItem;
 public class ProblemResourcesButton extends TextButton {
     
     private ProblemDto _problem;
-    MyMenuItem lessonsMenu, videoMenu, practiceMenu;
+    MyMenuItem lessonsMenu, videoMenu;
     
     SelectionHandler<MenuItem> _menuItemlistener;
     
@@ -33,8 +33,7 @@ public class ProblemResourcesButton extends TextButton {
                 readDataFromServerIfNeeded();
             }
         });
-        Menu menu = new Menu();
-        
+
         _menuItemlistener = new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
@@ -51,16 +50,19 @@ public class ProblemResourcesButton extends TextButton {
         };
         lessonsMenu = new MyMenuItem("Lessons",_menuItemlistener);
         videoMenu = new MyMenuItem("Videos",_menuItemlistener );
-        practiceMenu = new MyMenuItem("Practice",_menuItemlistener);
+        lessonsMenu.setEnabled(false);
+        videoMenu.setEnabled(false);
+
         
+        Menu menu = new Menu();
         menu.add(lessonsMenu);
         menu.add(videoMenu);
-        //menu.add(practiceMenu);
-        
         setMenu(menu);
     }
 
     protected void readDataFromServerIfNeeded() {
+        
+        
         new RetryAction<PrescriptionSessionResponse>() {
             @Override
             public void attempt() {
@@ -76,11 +78,10 @@ public class ProblemResourcesButton extends TextButton {
     }
 
     protected void setupResourceMenus(PrescriptionSessionResponse prescription) {
-        
         lessonsMenu.setEnabled(false);
         videoMenu.setEnabled(false);
-        practiceMenu.setEnabled(false);
-        
+        //practiceMenu.setEnabled(false);
+
         for(PrescriptionSessionDataResource r: prescription.getPrescriptionData().getCurrSession().getInmhResources()) {
             String type = r.getType();
             if(type.equals("review")) {
@@ -105,9 +106,9 @@ public class ProblemResourcesButton extends TextButton {
 //                practiceMenu.setEnabled(true);
             }
         }
-        
     }
-
+    
+    
 }
 
 

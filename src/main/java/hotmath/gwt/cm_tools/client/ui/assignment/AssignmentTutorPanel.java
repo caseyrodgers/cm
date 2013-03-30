@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
@@ -18,12 +19,11 @@ import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.web.bindery.autobean.gwt.client.impl.JsniCreatorMap;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.info.Info;
 
 
 /** Provide Generic access to a single solution in an Assignment
@@ -113,18 +113,18 @@ public class AssignmentTutorPanel extends Composite {
     }
 
     AssignmentProblem _assProblem;
-    public void loadSolution(final int uid, final int assignKey, final String pid) {
+    public void loadSolution(final int uid, final int assignKey, final StudentProblemDto stuProb) {
 
-        GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(uid,assignKey, pid);
+        GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(uid,assignKey, stuProb.getPid());
         CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
             @Override
             public void onSuccess(AssignmentProblem problem) {
-                loadSolutionIntoGui(uid, assignKey, problem);
+                loadSolutionIntoGui(uid, assignKey, problem, stuProb);
             }
 
             @Override
             public void onFailure(Throwable caught) {
-                Log.error("Error loading solution: " + pid, caught);
+                Log.error("Error loading solution: " + stuProb.getPid(), caught);
                 CmMessageBox.showAlert("Error loading solution", "There was a problem talking to the server");
             }
         });
@@ -132,7 +132,7 @@ public class AssignmentTutorPanel extends Composite {
 
     int _assignKey;
     int _uid;
-    private void loadSolutionIntoGui(int uid, int assignKey, AssignmentProblem problem) {
+    private void loadSolutionIntoGui(int uid, int assignKey, AssignmentProblem problem, StudentProblemDto stuProb) {
         try {
             _uid = uid;
             _assProblem = problem;
@@ -155,7 +155,14 @@ public class AssignmentTutorPanel extends Composite {
             }
             
             if(problem.getProblemType() == ProblemType.WHITEBOARD) {
-                addWhiteboardSubmitButton();
+                String status = stuProb.getStatus();
+                
+                if(!status.equals("Submitted")) {
+                    addWhiteboardSubmitButton();
+                }
+                else {
+                    jsni_showWhiteboardStatus(status);
+                }
             }
             
             
@@ -169,6 +176,12 @@ public class AssignmentTutorPanel extends Composite {
 
     }
     
+    native private void jsni_showWhiteboardStatus(String status) /*-{
+        if(status == 'Submitted' || status == 'Correct' || status == 'Incorrect' || status == 'Half Correct') {
+            $wnd.setWidgetMessage(status);
+        }
+    }-*/;
+
     private void gwt_submitWhiteboardAnswer() {
         _callBack.whiteboardSubmitted();
     }

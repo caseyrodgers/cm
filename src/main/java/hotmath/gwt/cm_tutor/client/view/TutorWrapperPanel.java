@@ -528,8 +528,15 @@ public class TutorWrapperPanel extends Composite {
     
     private void gwt_tutorQuestionGuessChanged(String id, String selection, String correct) {
         boolean isCorrect = correct != null && correct.equalsIgnoreCase("true")?true:false;
-        this.tutorCallback.tutorWidgetComplete(selection, isCorrect); 
+        //tutorWidgetComplete(selection, isCorrect);
+        this.tutorCallback.tutorWidgetComplete(selection, isCorrect);
+        
+        jsni_markMultiChoiceWidgetStatus(isCorrect);
     }
+    
+    native private void jsni_markMultiChoiceWidgetStatus(boolean correct) /*-{
+         $wnd.TutorSolutionWidgetValues.getActiveWidget().setWidgetMessage(correct);
+    }-*/; 
     
     SolutionInfo _solutionInfo;
     Map<Integer, String> _variableContexts = new HashMap<Integer, String>();

@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
@@ -46,7 +47,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     ShowWorkPanel _showWork;
     AssignmentTutorPanel _tutorPanel;
     AssignmentStudentTutorAndShowWorkPanelCallback _callBack;
-    ProblemDto _problem;
+    StudentProblemDto _problem;
     
     interface AssignmentStudentTutorAndShowWorkPanelCallback {
          void tutorWidgetValueUpdated(String value, boolean correct);
@@ -56,7 +57,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     
     BorderLayoutContainer _container;
     private ToggleButton _showWhiteboardButton;
-    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, Assignment assignment, final ProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
+    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, Assignment assignment, final StudentProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
         _callBack = callBack;
         _uid = uid;
         _assignKey = assignment.getAssignKey();
@@ -90,7 +91,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         addTool(_showWhiteboardButton);
         addTool(createShowLessonButton());
         
-        if(_whiteboardShown || problem.getProblemType() == ProblemType.WHITEBOARD) {
+        if(_whiteboardShown || problem.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
             _showWhiteboardButton.setValue(true);
             showWhiteboard();
         }
@@ -131,7 +132,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     }
     
     private Widget createShowLessonButton() {
-        return new ProblemResourcesButton(_problem);
+        return new ProblemResourcesButton(_problem.getProblem());
     }
     
     private ToggleButton createShowWhiteboardButton() {
@@ -180,9 +181,9 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         return new SaveAssignmentWhiteboardDataAction(_uid,_assignKey, _problem.getPid(),comamndType, commandData, false);        
     }
 
-    private void loadTutor(String title, int uid, int assignKey, ProblemDto problem) {
+    private void loadTutor(String title, int uid, int assignKey, StudentProblemDto problem) {
         setHeadingText(title);
-        _tutorPanel.loadSolution(uid, assignKey, problem.getPid());
+        _tutorPanel.loadSolution(uid, assignKey, problem);
 
         loadAssignmentWhiteboardData(uid,assignKey,problem.getPid());
     }

@@ -156,6 +156,11 @@ public class CatchupMath implements EntryPoint {
             }
         });
 
+        
+
+        if(CmShared.getQueryParameter("test") != null) {
+            showAssignment(1, null);
+        }
 
 //        CmNotifyManager.getInstance().notify("This is a test notification");
     }

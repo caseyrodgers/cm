@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
@@ -22,8 +23,6 @@ import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -91,7 +90,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         _problemListPanel = new AssignmentProblemListPanel(new AssignmentProblemListCallback() {
             @Override
-            public void problemSelected(String title, ProblemDto problem) {
+            public void problemSelected(String title, StudentProblemDto problem) {
                 loadTutorProblemStatement(title, problem);
             }
             
@@ -106,8 +105,8 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             }
 
             @Override
-            public boolean hasUnseenAnnotation(ProblemDto problem) {
-                return UserInfo.getInstance().isUnreadAssignmentAnnotation(_studentAssignment.getAssignment().getAssignKey(), problem.getPid());
+            public boolean hasUnseenAnnotation(StudentProblemDto problem) {
+                return UserInfo.getInstance().isUnreadAssignmentAnnotation(_studentAssignment.getAssignment().getAssignKey(), problem.getProblem().getPid());
             }
         });
         
@@ -132,7 +131,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         return c;
     }
 
-    private void loadTutorProblemStatement(String title, ProblemDto problem) {
+    private void loadTutorProblemStatement(String title, StudentProblemDto problem) {
         Log.debug("Load", "loadTutorProblemStatement: " + problem);
         
         // create new each time

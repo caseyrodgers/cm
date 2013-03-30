@@ -5,7 +5,6 @@ import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
@@ -24,7 +23,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
@@ -113,7 +111,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
             public String getRowStyle(StudentProblemDto model, int rowIndex) {
                 if (model != null) {
                     if (model.isHasShowWorkAdmin()) {
-                        if(_problemListCallback.hasUnseenAnnotation(model.getProblem())) {
+                        if(_problemListCallback.hasUnseenAnnotation(model)) {
                             return "assign-showwork-admin-unseen";
                         }
                         else {
@@ -207,7 +205,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
         
         _currentProblem = studentProb;
         String title = studentProb.getProblem().getOrdinalNumber() + ". " + StudentProblemDto.getStudentLabel(studentProb.getPidLabel());
-        _problemListCallback.problemSelected(title, studentProb.getProblem());
+        _problemListCallback.problemSelected(title, studentProb);
 
         if (studentProb.getStatus().equals("Not Viewed")) {
             studentProb.setStatus("Viewed");
@@ -229,8 +227,29 @@ public class AssignmentProblemListPanel extends ContentPanel {
             prob.setStatus("Submitted");
             _studentProblemGrid.getStore().update(prob);
             saveAssignmentProblemStatusToServer(prob);
+            
+            
+            if(prob.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
+                jsni_indicateWhiteboardStatus(prob.getStatus());
+            }
         }
     }
+    
+    native private void jsni_indicateWhiteboardStatus(String p) /*-{
+        $wnd.setWidgetMessage(p);
+
+
+        // Hide the first button, should be the 
+        // whiteboard submit button
+        //
+        var el = $doc.getElementById('hm_flash_widget');
+        if(el) {
+            var btns = el.getElementsByTagName('input');
+            if(btns.length > 0) {
+                btns[0].style.display = 'none';
+            }
+        }
+    }-*/; 
 
     public void tutorWidgetValueChanged(String value, boolean correct) {
 
@@ -330,9 +349,9 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
 
     public interface AssignmentProblemListCallback {
-        void problemSelected(String title, ProblemDto problem);
+        void problemSelected(String title, StudentProblemDto studentProb);
 
-        boolean hasUnseenAnnotation(ProblemDto problem);
+        boolean hasUnseenAnnotation(StudentProblemDto problem);
 
         boolean showStatus();
     }
