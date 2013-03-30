@@ -9,19 +9,21 @@ public class StudentProblemDto implements Response {
     private String status;
     private boolean hasShowWork;
     private boolean hasShowWorkAdmin;
-    private boolean isAssignmentClosed;
+    private boolean assignmentClosed;
     private boolean graded;
+    private Object assignmentGraded;
 
     public StudentProblemDto() {
     }
 
-    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isAssignmentClosed, boolean graded) {
+    public StudentProblemDto(int uid, ProblemDto problem, String status, boolean hasShowWork, boolean hasShowWorkAdmin, boolean isAssignmentClosed, boolean isAssignmentGraded, boolean graded) {
         this.uid = uid;
         this.problem = problem;
         this.status = status;
         this.hasShowWork = hasShowWork;
         this.hasShowWorkAdmin = hasShowWorkAdmin;
-        this.isAssignmentClosed = isAssignmentClosed;
+        this.assignmentClosed = isAssignmentClosed;
+        this.assignmentGraded = isAssignmentGraded;
         this.graded = graded;
     }
 
