@@ -144,7 +144,13 @@ public class StudentAssignmentInfo implements Response {
     }
 
     public String getScore() {
-        return score;
+        
+        if(isGraded()) {
+            return score;
+        }
+        else {
+            return "--";
+        }
     }
 
     public void setScore(String score) {
