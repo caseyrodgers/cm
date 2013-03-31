@@ -11,7 +11,7 @@ public class StudentProblemDto implements Response {
     private boolean hasShowWorkAdmin;
     private boolean assignmentClosed;
     private boolean graded;
-    private Object assignmentGraded;
+    private boolean assignmentGraded;
 
     public StudentProblemDto() {
     }
@@ -78,7 +78,7 @@ public class StudentProblemDto implements Response {
     public String getStatusForStudent() {
        String sl = getStatus().toLowerCase();
        
-       if(isGraded() || isAssignmentClosed) {
+       if(assignmentGraded || assignmentClosed) {
            return status;
        }
        else if(sl.contains("viewed")) {

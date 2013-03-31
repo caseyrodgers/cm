@@ -1294,9 +1294,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         }
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
-                        boolean isClosed = assignment.getStatus().equals("Closed");
+                        boolean isAssignmentClosed = assignment.getStatus().equals("Closed");
+                        boolean isAssignmentGraded = rs.getInt("assignment_is_graded") != 0?true:false;
                         boolean isGraded = rs.getInt("is_graded")!=0?true:false;
-                        StudentProblemDto stuProb = new StudentProblemDto(uid, prob, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isClosed,isGraded);
+                        StudentProblemDto stuProb = new StudentProblemDto(uid, prob, rs.getString("status"), hasShowWork, hasShowWorkAdmin, isAssignmentClosed,isAssignmentGraded, isGraded);
                         return stuProb;
                     }
                 });

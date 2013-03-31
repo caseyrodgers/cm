@@ -4,7 +4,6 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
@@ -295,7 +294,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             _main.forceLayout();
         }
         _problemListPanel.loadAssignment(assignment, pidToLoad);
-        if(CmShared.getQueryParameter("debug") == null && !assignment.isGraded()) {
+        if(CmShared.getQueryParameter("debug") == null && assignment.isGraded()) {
             _gradeField.setVisible(false);
         }
         else {

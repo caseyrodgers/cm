@@ -3782,7 +3782,7 @@ order by u.user_name, a.assign_key, problem_id
   
 .key=GET_STUDENT_ASSIGNMENT_PROBLEM_STATUSES
 
-select p.*, w.has_show_work, w2.has_show_work_admin
+select p.*, w.has_show_work, w2.has_show_work_admin, au.is_graded as assignment_is_graded
 from   CM_ASSIGNMENT_PID_STATUS p
        left join (select pid, 1 as has_show_work,
                          Count(*)
@@ -3799,9 +3799,11 @@ from   CM_ASSIGNMENT_PID_STATUS p
                          and is_admin = 1
                   group  by pid) w2
               on w2.pid = p.pid
+       left join CM_ASSIGNMENT_USER au on au.assign_key = p.assign_key and au.uid = p.uid    
               
 where  p.assign_key = ?
        and p.uid = ?
+
        
        
 .key=GET_STUDENT_ASSIGNMENTS

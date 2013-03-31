@@ -344,8 +344,10 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
     
     public void refreshAnnotationMarkings() {
-        loadAssignment(_studentAssignment,  null);
-        forceLayout();
+        if(_studentAssignment != null) {
+            loadAssignment(_studentAssignment,  null);
+            forceLayout();
+        }
     }
 
     public interface AssignmentProblemListCallback {
