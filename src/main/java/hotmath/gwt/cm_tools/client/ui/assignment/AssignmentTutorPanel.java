@@ -181,11 +181,14 @@ public class AssignmentTutorPanel extends Composite {
     
     native private void jsni_showWhiteboardStatus(String status) /*-{
         if(status == 'Submitted' || status == 'Correct' || status == 'Incorrect' || status == 'Half Correct') {
-            $wnd.setWidgetMessage(status);
+            var widgetHolder = $doc.getElementById("hm_flash_widget");
+            widgetHolder.innerHTML = "<div id='hm_flash_widget_head' style='display: block'>" + status + "</div>";
+            //$wnd.setWidgetMessage(status);
         }
     }-*/;
 
     private void gwt_submitWhiteboardAnswer() {
+        jsni_showWhiteboardStatus("Submitted");
         _callBack.whiteboardSubmitted();
     }
 

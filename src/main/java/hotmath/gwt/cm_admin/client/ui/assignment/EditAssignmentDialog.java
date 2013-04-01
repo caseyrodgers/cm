@@ -304,8 +304,8 @@ public class EditAssignmentDialog {
         SubmitOptionsProperties props = GWT.create(SubmitOptionsProperties.class);
 
         ListStore<SubmitOptions> store = new ListStore<SubmitOptions>(props.key());
-        store.add(new SubmitOptions("No submits after due date"));
         store.add(new SubmitOptions("Allow submits after due date"));
+        store.add(new SubmitOptions("No submits after due date"));
 
         ComboBox<SubmitOptions> combo = new ComboBox<SubmitOptions>(store, props.option());
 

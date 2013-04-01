@@ -34,6 +34,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.CalendarUtil;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.Dialog.PredefinedButton;
@@ -345,6 +346,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         newAss.setAdminId(UserInfoBase.getInstance().getUid());
         
         Date defaultDate = new Date();
+        CalendarUtil.addDaysToDate(defaultDate, 1);
         newAss.setDueDate(defaultDate);
         
         new EditAssignmentDialog(newAss);        

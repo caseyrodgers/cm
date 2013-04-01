@@ -108,7 +108,7 @@ public class StudentAssignmentButton extends TextButton {
             //itemAssignments.setEnabled(false);            
             //changeStyle("student-assignment-button-no");
             
-            setToolTip("You do not have any assignments or teacher notes.");
+            //setToolTip("You do not have any assignments or teacher notes.");
         }
     }
     

@@ -193,42 +193,43 @@ public class CatchupMath implements EntryPoint {
             if (firstLocation.getPlace() == CmPlace.END_OF_PROGRAM
                     && UserInfo.getInstance().getOnCompletion() == UserProgramCompletionAction.STOP) {
                 showEndOfProgramPanel();
-                return;
             }
-
-            if (startType.equals("AUTO_CREATE")) {
-                /**
-                 * self registration
-                 *
-                 * mark as not owner, since this is templated.
-                 */
-                UserInfo.getInstance().setActiveUser(false);
-                showAutoRegistration_gwt();
-            } else if (startType.equals("PARALLEL_PROGRAM")) {
-                /**
-                 * Parallel Program - need student's password which must be
-                 * associated with same account as Parallel Program
-                 *
-                 */
-                UserInfo.getInstance().setActiveUser(false);
-                showParallelProgramPasswordPanel();
-                return;
-            } else if (CmShared.getQueryParameterValue("type").equals("auto_test")) {
-                startNormalOperation();
-            } else if (CmShared.getQueryParameter("debug_info") != null) {
-                setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
-                startNormalOperation();
-            } else if (firstLocation.getPlace() == CmPlace.PRESCRIPTION || firstLocation.getPlace() == CmPlace.QUIZ) {
-                /**
-                 * already has active session, just move to current position.
-                 */
-                startNormalOperation();
-            } else {
-                /**
-                 * Otherwise, show the welcome screen to new visits
-                 *
-                 */
-                showWelcomePanel();
+            else {
+    
+                if (startType.equals("AUTO_CREATE")) {
+                    /**
+                     * self registration
+                     *
+                     * mark as not owner, since this is templated.
+                     */
+                    UserInfo.getInstance().setActiveUser(false);
+                    showAutoRegistration_gwt();
+                } else if (startType.equals("PARALLEL_PROGRAM")) {
+                    /**
+                     * Parallel Program - need student's password which must be
+                     * associated with same account as Parallel Program
+                     *
+                     */
+                    UserInfo.getInstance().setActiveUser(false);
+                    showParallelProgramPasswordPanel();
+                    return;
+                } else if (CmShared.getQueryParameterValue("type").equals("auto_test")) {
+                    startNormalOperation();
+                } else if (CmShared.getQueryParameter("debug_info") != null) {
+                    setDebugOverrideInformation(CmShared.getQueryParameter("debug_info"));
+                    startNormalOperation();
+                } else if (firstLocation.getPlace() == CmPlace.PRESCRIPTION || firstLocation.getPlace() == CmPlace.QUIZ) {
+                    /**
+                     * already has active session, just move to current position.
+                     */
+                    startNormalOperation();
+                } else {
+                    /**
+                     * Otherwise, show the welcome screen to new visits
+                     *
+                     */
+                    showWelcomePanel();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
