@@ -535,7 +535,7 @@ public class TutorWrapperPanel extends Composite {
     }
     
     native private void jsni_markMultiChoiceWidgetStatus(boolean correct) /*-{
-         $wnd.TutorSolutionWidgetValues.getActiveWidget().setWidgetMessage(correct);
+         $wnd.TutorSolutionWidgetValues.getActiveWidget().setWidgetMessage(correct?'true':'false');
     }-*/; 
     
     SolutionInfo _solutionInfo;

@@ -40,18 +40,21 @@ public class AssignmentTutorPanel extends Composite {
     AssignmentTutorPanelCallback _callBack;
     boolean _isEditable;
 
+    private boolean _isGraded;
+
     interface AssignmentTutorPanelCallback {
         void tutorWidgetValueUpdated(String value, boolean correct);
 
         void whiteboardSubmitted();
     }
-    public AssignmentTutorPanel(final boolean isEditable, AssignmentTutorPanelCallback callBack) {
+    public AssignmentTutorPanel(final boolean isEditable, final boolean isGraded, AssignmentTutorPanelCallback callBack) {
         
         setupJsni();
         
         _callBack = callBack;
         __lastInstance = this;
         _isEditable = isEditable;
+        _isGraded = isGraded;
         _tutorPanel = new TutorWrapperPanel(!isEditable, false,false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
@@ -81,7 +84,7 @@ public class AssignmentTutorPanel extends Composite {
             
             @Override
             public WidgetStatusIndication indicateWidgetStatus() {
-                return isEditable?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
+                return !isGraded?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
             }
             
         });
@@ -213,6 +216,12 @@ public class AssignmentTutorPanel extends Composite {
             CmMessageBox.showAlert("Assignment Closed", "This input value will not be saved because the assignment is closed.");
             return;
         }
+        
+        if(_isGraded) {
+            CmMessageBox.showAlert("Assignment Already Graded", "This input value will not be saved because the assignment has already been graded.");
+            return;
+        }
+
         
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {

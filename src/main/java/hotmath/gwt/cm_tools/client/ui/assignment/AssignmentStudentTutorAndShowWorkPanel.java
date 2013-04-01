@@ -1,8 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
@@ -12,7 +11,6 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
@@ -20,20 +18,15 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefau
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.menu.Menu;
-import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /** Manages the student's assignment view of
  *  a single tutor and its associated whiteboard
@@ -57,17 +50,17 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     
     BorderLayoutContainer _container;
     private ToggleButton _showWhiteboardButton;
-    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, Assignment assignment, final StudentProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
+    public AssignmentStudentTutorAndShowWorkPanel(String title, final int uid, StudentAssignment assignment, final StudentProblemDto problem, AssignmentStudentTutorAndShowWorkPanelCallback callBack) {
         _callBack = callBack;
         _uid = uid;
-        _assignKey = assignment.getAssignKey();
+        _assignKey = assignment.getAssignment().getAssignKey();
         _problem = problem;
 
         
         /** create callback to pass along when tutor widget value changed
          *  
          */
-        _tutorPanel = new AssignmentTutorPanel(assignment.isEditable(),new AssignmentTutorPanelCallback() {
+        _tutorPanel = new AssignmentTutorPanel(assignment.getAssignment().isEditable(),assignment.isGraded(), new AssignmentTutorPanelCallback() {
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 _callBack.tutorWidgetValueUpdated(value, correct);
