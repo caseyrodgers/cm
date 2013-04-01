@@ -17,13 +17,12 @@ public class ProblemDto extends BaseDto implements Response {
     int assignKey;
     private int ordinalNumber;
 
-    public ProblemDto(int ordinalNumber, int id, LessonModel lesson, String label, String pid, ProblemType problemType, int assignKey) {
+    public ProblemDto(int ordinalNumber, int id, LessonModel lesson, String label, String pid, int assignKey) {
         super(id, label);
         this.ordinalNumber = ordinalNumber;
         this.label = label;
         this.lesson = lesson;
         this.pid = pid;
-        this.problemType = problemType;
         this.assignKey = assignKey;
     }
 

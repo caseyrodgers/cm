@@ -224,7 +224,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String pid = rs.getString("pid");
                 LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
-                return new ProblemDto(rs.getInt("ordinal_number"), 0, lesson, rs.getString("label"), pid, null, 0);
+                return new ProblemDto(rs.getInt("ordinal_number"), 0, lesson, rs.getString("label"), pid, 0);
             }
         });
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
@@ -276,7 +276,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return "OK";
             }
         });
-
     }
 
     public AssignmentLessonData getAssignmentLessonData() {
@@ -326,7 +325,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             for (RppWidget w : rpps) {
                 for (RppWidget ew : AssessmentPrescription.expandProblemSetPids(w)) {
                     String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                    problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, ew.getFile(), null, 0));
+                    problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, ew.getFile(), 0));
                 }
             }
         } catch (Exception e) {
@@ -339,7 +338,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
 
                 String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), null, 0);
+                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"),  0);
             }
         });
 
@@ -517,7 +516,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                         LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
                         ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson,
-                                rs.getString("label"), rs.getString("pid"), null, 0);
+                                rs.getString("label"), rs.getString("pid"),  0);
 
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;
@@ -775,7 +774,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     				LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
     				ProblemDto probDto = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("problem_id"), lesson, rs.getString("label"), rs
-    						.getString("pid"), null, rs.getInt("assign_key"));
+    						.getString("pid"),  rs.getInt("assign_key"));
     				prob.setProblem(probDto);
     				prob.setStatus(rs.getString("status"));
     				prob.setGraded(rs.getInt("is_graded") > 0);
@@ -1282,7 +1281,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         }
                         if(prob == null) {
                             __logger.warn("Student Problem not found in assignment problems");
-                            prob = new ProblemDto(0, 0, null, null, pid, null, 0);
+                            prob = new ProblemDto(0, 0, null, null, pid,  0);
                         }
                         boolean hasShowWork = rs.getInt("has_show_work") != 0;
                         boolean hasShowWorkAdmin = rs.getInt("has_show_work_admin") != 0;

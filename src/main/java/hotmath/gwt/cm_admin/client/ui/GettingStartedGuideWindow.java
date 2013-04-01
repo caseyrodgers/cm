@@ -18,12 +18,10 @@ public class GettingStartedGuideWindow extends GWindow {
         setPixelSize(640,480);
 
         setModal(true);
-        setResizable(false);
-        //setStyleName("help-window");
+        setResizable(true);
+        setMaximizable(true);
+        
         setHeadingText("Catchup Math Administrator Getting Started Guide");
-
-        VerticalLayoutContainer vlc = new VerticalLayoutContainer();
-        vlc.setAdjustForScroll(true);
 
         Frame frame = new Frame("/gwt-resources/cm-admin-getting-started-guide.html");
         frame.setSize("100%", "450px");
@@ -37,11 +35,8 @@ public class GettingStartedGuideWindow extends GWindow {
         //webinar.setStyleAttribute("margin","10px;");
         webinar.setToolTip("These videos supplement our Getting Started Guide for teachers and administrators");
 
-        vlc.add(webinar);
-        vlc.add(frame);
-
-        add(vlc);
-
+        addTool(webinar);
+        setWidget(frame);
         setVisible(true);
     }
     

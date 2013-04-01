@@ -477,6 +477,7 @@ class GroupManagerGlobalSettings extends GWindow {
         
         showWorkRequired = new CheckBox();
         showWorkRequired.setBoxLabel("");
+        showWorkRequired.setToolTip("If checked, the whiteboard will be shown with each problem.");
         fs.addThing(new MyFieldLabel(showWorkRequired, "Require Show Work", 290));
 
         limitGames = new CheckBox();
@@ -486,6 +487,7 @@ class GroupManagerGlobalSettings extends GWindow {
 
         stopAtProgramEnd = new CheckBox();
         stopAtProgramEnd.setBoxLabel("");
+        stopAtProgramEnd.setToolTip("If checked, the student's program will stop when complete.");
         fs.addThing(new MyFieldLabel(stopAtProgramEnd, "Stop at End of Program", 290));
 
         disableCalcAlways = new CheckBox();

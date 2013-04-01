@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
@@ -18,8 +19,11 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -27,17 +31,14 @@ import com.sencha.gxt.core.client.util.DelayedTask;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
-import com.sencha.gxt.data.shared.Store;
 import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
-import com.sencha.gxt.widget.core.client.form.StoreFilterField;
+import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
@@ -51,16 +52,18 @@ public class AssignmentLessonListingPanel extends ContentPanel {
     CallbackOnSelectedLesson _callBack;
 
     Grid<LessonDto> _grid;
-    BorderLayoutContainer _main;
     Tree<BaseDto, String> _tree;
+
+    protected CmList<LessonDto> _allLessons;
+
+    private FilterSearchField _searchField;
 
     public AssignmentLessonListingPanel(CallbackOnSelectedLesson callBack) {
         _callBack = callBack;
         
-        setHeadingHtml("All Available Lessons");
-        
-        _main = new BorderLayoutContainer();
-        setWidget(_main);
+        _searchField = new FilterSearchField();
+        addTool(new MyFieldLabel(_searchField,  "Search",  50,100));
+        setWidget(new HTML("<h1>Loading ...</h1>"));
     }
     
     
@@ -77,7 +80,12 @@ public class AssignmentLessonListingPanel extends ContentPanel {
 
             public void oncapture(CmList<LessonDto> lessons) {
                 CatchupMathTools.setBusy(false);
-                makeTree(lessons);
+                _allLessons = lessons;
+
+                
+                forceLayout();
+
+                makeTree(_allLessons);
             }
 
         }.register();
@@ -132,20 +140,9 @@ public class AssignmentLessonListingPanel extends ContentPanel {
 
     static int autoId;
     public void makeTree(List<LessonDto> lessons) {
-        _treeStore = new TreeStore<BaseDto>(new TreeKeyProvider());
-        RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
-
-            @Override
-            public void load(BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
-                if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
-                     if (loadConfig instanceof LessonDto) {
-                         Log.debug("Loading lesson problems: " + loadConfig);
-                        LessonDto l = (LessonDto) loadConfig;
-                        AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback);
-                    }
-                }
-            }
-        };        
+        
+        _treeStore = setupTreeStore(lessons);
+        
         TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
             @Override
             public boolean hasChildren(BaseDto parent) {
@@ -154,24 +151,9 @@ public class AssignmentLessonListingPanel extends ContentPanel {
         };
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(_treeStore));
 
-        _root = makeFolder("Root");
-        List<BaseDto> children = new ArrayList<BaseDto>();
-        for(LessonDto l: lessons) {
-            children.add(makeLesson(l));  // new LessonDto(autoId++,0,"All",l.getLessonName()));
-        }
-        _root.setChildren(children);
-        
-        FolderDto root = _root;
-        for (BaseDto base : root.getChildren()) {
-          _treeStore.add(base);
-          if (base instanceof FolderDto) {
-            processFolder(_treeStore, (FolderDto) base);
-          }
-        }
-
-        FlowLayoutContainer con = new FlowLayoutContainer();
-        con.setScrollMode(ScrollMode.AUTOY);
-        con.addStyleName("margin-10");
+        FlowLayoutContainer flowContainer = new FlowLayoutContainer();
+        flowContainer.setScrollMode(ScrollMode.AUTO);
+        flowContainer.addStyleName("margin-10");
 
         _tree = new Tree<BaseDto, String>(_treeStore, new ValueProvider<BaseDto, String>() {
 
@@ -231,39 +213,65 @@ public class AssignmentLessonListingPanel extends ContentPanel {
                 task.delay(100);
             }
         });
-        
-        
-        
         // tree.getStyle().setLeafIcon(ExampleImages.INSTANCE.music());
-        con.add(_tree);
-        
-        
-        StoreFilterField<BaseDto> filter = new StoreFilterField<BaseDto>() {
-            
-            @Override
-            protected boolean doSelect(Store<BaseDto> store, BaseDto parent, BaseDto item, String filter) {
-              if (item instanceof FolderDto) {
-                  String name = item.getName();
-                  name = name.toLowerCase();
-                  if (name.startsWith(filter.toLowerCase())) {
-                    return true;
-                  }
-                  return false;
-              }
-              else {
-                  return false;
-              }
-            }
-          };
-       //   filter.bind(_treeStore);
-        
-        //_main.setCenterWidget(con);
-        setWidget(con);
-        
-        //BorderLayoutData blc = new BorderLayoutData(70);
-        //_main.setNorthWidget(filter, blc);
-        
+        flowContainer.add(_tree);
+
+        setWidget(flowContainer);
         forceLayout();
+    }
+
+    RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
+        @Override
+        public void load(BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
+            if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
+                 if (loadConfig instanceof LessonDto) {
+                     Log.debug("Loading lesson problems: " + loadConfig);
+                    LessonDto l = (LessonDto) loadConfig;
+                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback);
+                }
+            }
+        }
+    };        
+
+    
+    private TreeStore<BaseDto> setupTreeStore(List<LessonDto> lessons) {
+        
+        List<LessonDto> ll2 = new ArrayList<LessonDto>();
+        String filter = _searchField.getCurrentValue();
+        if(filter != null) {
+            filter = filter.toLowerCase();
+            for(LessonDto l: lessons) {
+                if(l.getName().toLowerCase().indexOf(filter) != -1) {
+                    ll2.add(l);
+                }
+            }
+            lessons = ll2;
+        }
+
+        TreeStore<BaseDto> treeStore = new TreeStore<BaseDto>(new TreeKeyProvider());
+        TreeLoader<BaseDto> loader = new TreeLoader<BaseDto>(proxy) {
+            @Override
+            public boolean hasChildren(BaseDto parent) {
+                return parent instanceof FolderDto;
+            }
+        };
+        loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(treeStore));
+
+        _root = makeFolder("Root");
+        List<BaseDto> children = new ArrayList<BaseDto>();
+        for(LessonDto l: lessons) {
+            children.add(makeLesson(l));  // new LessonDto(autoId++,0,"All",l.getLessonName()));
+        }
+        _root.setChildren(children);
+        
+        FolderDto root = _root;
+        for (BaseDto base : root.getChildren()) {
+          treeStore.add(base);
+          if (base instanceof FolderDto) {
+            processFolder(treeStore, (FolderDto) base);
+          }
+        }
+        return treeStore;
     }
 
     public void refreshData() {
@@ -272,5 +280,18 @@ public class AssignmentLessonListingPanel extends ContentPanel {
         }
         readDataAndBuildTree();
     }
-
+    
+    
+    class FilterSearchField extends TextField {
+        public FilterSearchField() {
+            addChangeHandler(new ChangeHandler() {
+                @Override
+                public void onChange(ChangeEvent event) {
+                    makeTree(_allLessons);
+                }
+            });
+        }
+    }
 }
+
+
