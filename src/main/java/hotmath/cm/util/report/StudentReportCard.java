@@ -7,6 +7,7 @@ import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -29,7 +30,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
-import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -42,6 +42,8 @@ import com.lowagie.text.pdf.PdfWriter;
 /**
  * 
  * StudentReportCard generates a PDF that represents a student's status
+ * 
+ * @author bob
  * 
  */
 
@@ -93,11 +95,7 @@ public class StudentReportCard {
         List<Integer> studentUids = (List<Integer>) CmCacheManager.getInstance().retrieveFromCache(REPORT_ID, reportId);
 
         CmAdminDao adminDao = CmAdminDao.getInstance();
-
-        AssignmentDao asgDao = AssignmentDao.getInstance();
-
         AccountInfoModel info = adminDao.getAccountInfo(adminId);
-        
         if (info == null) {
             LOGGER.warn("*** Account info is NULL for adminId: " + adminId);
             return null;
@@ -145,6 +143,8 @@ public class StudentReportCard {
 
         	addQuizInfo(rc, document);
 
+        	addAssignmentInfo(sm.getUid(), document, fromDate, toDate);
+
         	if (rc.getResourceUsage() != null && rc.getResourceUsage().size() > 0) {
         		addResourceUsage(rc, document);
         	}
@@ -152,8 +152,6 @@ public class StudentReportCard {
         	if (rc.getPrescribedLessonList() != null && rc.getPrescribedLessonList().size() > 0) {
         		addLessons(rc, sm.getProgram().getCustom().isCustom(), document);
         	}
-
-        	addAssignmentInfo(sm.getUid(), asgDao, document);
 
         	document.add(Chunk.NEWLINE);
         	document.add(Chunk.NEWLINE);
@@ -167,6 +165,46 @@ public class StudentReportCard {
 
         return baos;
     }
+
+	private void addAssignmentInfo(int userId, Document document, Date fromDate, Date toDate) throws Exception {
+        AssignmentDao asgDao = AssignmentDao.getInstance();
+
+        List<StudentAssignmentInfo> list = asgDao.getCompletedAssignmentsForUserDateRange(userId, fromDate, toDate);
+
+        if (list.size() < 1) return;
+
+        /*
+          * calculate number of assignments and average score
+         */
+        int totalScore = 0;
+        for (StudentAssignmentInfo sai : list) {
+        	String score = sai.getScore();
+        	int numericScore = 0;
+        	if ("-".equals(score.trim()) == false) {
+        		int offset = score.indexOf("%");
+        		numericScore = (offset > 0) ?
+        			Integer.parseInt(score.substring(0, offset)) : Integer.parseInt(score);
+        	}
+        	totalScore += numericScore;
+        }
+        int avgScore = Math.round(((float)totalScore / (float) list.size()));
+
+        PdfPTable assignmentTbl = new PdfPTable(1);
+        assignmentTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+
+        Phrase assignments = buildSectionLabel("Assignments");
+		Paragraph numberOfAssignments = buildSectionContent("Number of Assignments: ", String.valueOf(list.size()), true);
+		Paragraph averageGrade = buildSectionContent("Average grade: ", String.valueOf(avgScore), true);
+        assignmentTbl.addCell(assignments);
+		assignmentTbl.addCell(numberOfAssignments);
+		assignmentTbl.addCell(averageGrade);
+
+        assignmentTbl.setWidthPercentage(100.0f);
+        assignmentTbl.setSpacingBefore(20.0f);
+
+		document.add(assignmentTbl);
+        document.add(Chunk.NEWLINE);
+	}
 
 	private void addStudentInfo(Phrase school, StudentModelI sm,
 			StudentReportCardModelI rc, Document document) throws DocumentException {
@@ -484,11 +522,11 @@ public class StudentReportCard {
         return p;
     }
 
-    public class HeaderTable implements PdfPageEvent {
+    public class HeaderTableXXX implements PdfPageEvent {
 
         PdfPTable header;
 
-        HeaderTable(PdfWriter writer, PdfPTable header) {
+        HeaderTableXXX(PdfWriter writer, PdfPTable header) {
             // event = writer.getPageEvent();
             this.header = header;
             writer.setPageEvent(this);
