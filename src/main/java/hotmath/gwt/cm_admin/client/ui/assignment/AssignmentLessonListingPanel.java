@@ -81,10 +81,6 @@ public class AssignmentLessonListingPanel extends ContentPanel {
             public void oncapture(CmList<LessonDto> lessons) {
                 CatchupMathTools.setBusy(false);
                 _allLessons = lessons;
-
-                
-                forceLayout();
-
                 makeTree(_allLessons);
             }
 

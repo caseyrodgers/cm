@@ -95,7 +95,9 @@ public class ProblemResourcesButton extends TextButton {
                     subMenu.add(new MyMenuItem(id.getTitle(), _menuItemlistener, r));
                 }
                 videoMenu.setSubMenu(subMenu);
-                videoMenu.setEnabled(true);
+                if(r.getItems().size() > 0) {
+                    videoMenu.setEnabled(true);
+                }
             }
             else if(type.equals("practice")) {
 //                Menu subMenu = new Menu();

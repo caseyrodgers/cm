@@ -227,29 +227,8 @@ public class AssignmentProblemListPanel extends ContentPanel {
             prob.setStatus("Submitted");
             _studentProblemGrid.getStore().update(prob);
             saveAssignmentProblemStatusToServer(prob);
-            
-            
-            if(prob.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
-                jsni_indicateWhiteboardStatus(prob.getStatus());
-            }
         }
     }
-    
-    native private void jsni_indicateWhiteboardStatus(String p) /*-{
-        $wnd.setWidgetMessage(p);
-
-
-        // Hide the first button, should be the 
-        // whiteboard submit button
-        //
-        var el = $doc.getElementById('hm_flash_widget');
-        if(el) {
-            var btns = el.getElementsByTagName('input');
-            if(btns.length > 0) {
-                btns[0].style.display = 'none';
-            }
-        }
-    }-*/; 
 
     public void tutorWidgetValueChanged(String value, boolean correct) {
 
