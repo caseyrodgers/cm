@@ -3851,9 +3851,9 @@ LEFT JOIN (
        WHERE status NOT IN ('Viewed','Not Viewed')
        GROUP BY assign_key, uid
     ) ps ON ps.assign_key = a.assign_key AND ps.uid = au.uid
-WHERE a.uid = ?
+WHERE au.uid = ?
   AND a.due_date between ? AND ?
-  AND au.turn_in_date is not null
+  AND au.is_graded = 1
 ORDER BY is_expired, a.due_date desc
 
 

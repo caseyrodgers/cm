@@ -1152,8 +1152,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_COMPLETED_ASSIGNMENTS_IN_DATE_RANGE");
+        if (__logger.isDebugEnabled()) __logger.debug("getCompletedAssignmentsForUserDateRange(): sql: " + sql);
         String[] dates = QueryHelper.getDateTimeRange(fromDate, toDate);
-        List<StudentAssignmentInfo> saInfoList = getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] }, new RowMapper<StudentAssignmentInfo>() {
+        List<StudentAssignmentInfo> saInfoList = null;
+        try{
+            saInfoList = getJdbcTemplate().query(sql, new Object[] { uid, dates[0], dates[1] }, new RowMapper<StudentAssignmentInfo>() {
             @Override
             public StudentAssignmentInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
                 
@@ -1196,6 +1199,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return info;
             }
         });
+        }
+        catch (Exception e) {
+        	__logger.error("Error getting completed assignments", e);
+        	throw e;
+        }
 
         List<ProblemAnnotation> unreadAnnotations = getUnreadAnnotatedProblems(uid);
 
