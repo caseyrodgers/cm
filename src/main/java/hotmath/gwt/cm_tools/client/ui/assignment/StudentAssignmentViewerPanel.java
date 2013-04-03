@@ -205,6 +205,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _grade = new TextField();
         _grade.setReadOnly(true);
         _gradeField = new MyFieldLabel(_grade,"Score",75,75);
+        _gradeField.setVisible(false);
         headerLeft.add(_gradeField);
         
 
@@ -214,7 +215,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         FlowLayoutContainer cP = new FlowLayoutContainer();
         cP.setScrollMode(ScrollMode.AUTO);
-        cP.add(new MyFieldLabel(_comments,  "Comments",75,300));
+        cP.add(new MyFieldLabel(_comments,  "Comments",75,350));
         header.setCenterWidget(cP);
         
         HorizontalLayoutContainer buttonBar = new HorizontalLayoutContainer();

@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CopyAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.DeleteAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsCreatedAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetUngradedWhiteboardProblemsForAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.ReleaseAssignmentGradesAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
@@ -176,12 +177,39 @@ public class AssignmentsContentPanel extends ContentPanel {
     
 
     protected void releaseSelectedAssignmentGrades() {
+        
         final Assignment assignment = _grid.getSelectionModel().getSelectedItem();
         if(assignment == null) {
             CmMessageBox.showAlert("You need to select an assignment first.");
             return;
         }
-        final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", "Are you sure you want to allow students to see this assignment's grades?");
+
+        /** Ask server how many ungraded students there are */
+        new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                GetUngradedWhiteboardProblemsForAssignmentAction action = new GetUngradedWhiteboardProblemsForAssignmentAction(assignment.getAssignKey());
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(RpcData rpcData) {
+                releaseGradesDirect(assignment,  rpcData.getDataAsInt("count"));
+            }
+        }.register();                        
+    }
+    
+    private void releaseGradesDirect(final Assignment assignment, int countUngradedStuWhiteboardProbs) {
+        String msg = "Are you sure you want to allow students to see this assignment's grades?";
+        if(countUngradedStuWhiteboardProbs == 1) {
+            msg = "There is 1 student with ungraded whiteboard problems.  " + msg;
+        }
+        else if(countUngradedStuWhiteboardProbs > 1) {
+            msg = "There are " + countUngradedStuWhiteboardProbs + " students with ungraded whiteboard problems.  " + msg;
+        }
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", msg);
         cm.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {

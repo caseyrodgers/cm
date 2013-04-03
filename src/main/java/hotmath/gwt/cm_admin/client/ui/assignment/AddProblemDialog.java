@@ -111,7 +111,6 @@ public class AddProblemDialog extends GWindow {
         addButton(btnClose);
 
         _treePanelProgram = new ContentPanel();
-        _treePanelProgram.setHeadingText("Program Tree");
         _mainContainer = new BorderLayoutContainer();
         
         _treeFlatPanel = new AssignmentTreeAllLessonsListingPanel(new CallbackOnSelectedLesson() {
@@ -144,9 +143,9 @@ public class AddProblemDialog extends GWindow {
         _treePanelProgram.setWidget(centered);        
         
         _tabPanel = new TabPanel();
-        _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Available Lessons", false));
-        _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("Subject and Chapter", false));
-        _tabPanel.add(_treePanelProgram, new TabItemConfig("Program Tree", false));
+        _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Lessons", false));
+        _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Chapter", false));
+        _tabPanel.add(_treePanelProgram, new TabItemConfig("By Program", false));
         
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override

@@ -5,10 +5,10 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentGradingPanel.UpdateGr
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
+import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentStatusDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
@@ -19,6 +19,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -63,14 +64,17 @@ public class GradeBookDialog {
     TextField _grade = new TextField();
     AssignmentGradingPanel agPanel;
     AssignmentQuestionViewerPanel _questionViewer = new AssignmentQuestionViewerPanel();
+    private CallbackOnComplete callbackOnComplete;
+    private GWindow _window;
 
     public GradeBookDialog(final StudentAssignment stuAssignment, final CallbackOnComplete callbackOnComplete) {
         this._stuAssignment = stuAssignment;
-        final GWindow window = new GWindow(false);
-        window.setPixelSize(800,600);
-        window.setMaximizable(true);
+        this.callbackOnComplete =  callbackOnComplete;
+        _window = new GWindow(false);
+        _window.setPixelSize(800,600);
+        _window.setMaximizable(true);
 
-        window.setHeadingHtml("Grade Assignment: Due: " + stuAssignment.getAssignment().getDueDate());
+        _window.setHeadingHtml("Grade Assignment: Due: " + stuAssignment.getAssignment().getDueDate());
 
         final BorderLayoutContainer mainBorderPanel = new BorderLayoutContainer();
         mainBorderPanel.setBorders(true);
@@ -144,26 +148,36 @@ public class GradeBookDialog {
         
         TextButton saveBtn = new TextButton("Save");
         
-        Menu menu = new Menu();
-        menu.add(new MenuItem("Save, do not release grade", new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-                saveStudentGradeBook(false);
-                window.hide();
-                callbackOnComplete.isComplete();
-            }
-        }));
-        menu.add(new MenuItem("Save, and release grade", new SelectionHandler<MenuItem>() {
-            @Override
-            public void onSelection(SelectionEvent<MenuItem> event) {
-                saveStudentGradeBook(true);
-                window.hide();
-                callbackOnComplete.isComplete();
-            }
-        }));
-        saveBtn.setMenu(menu);
+        if(stuAssignment.isGraded()) {
+            saveBtn.addSelectHandler(new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    saveStudentGradeBookDirect(false);
+                    closeThisWindow();
+                }
+            });
+        }
+        else {
+            Menu menu = new Menu();
+            menu.add(new MenuItem("Save, do not release grade", new SelectionHandler<MenuItem>() {
+                @Override
+                public void onSelection(SelectionEvent<MenuItem> event) {
+                    saveStudentGradeBookDirect(false);
+                    closeThisWindow();
+                }
+            }));
+            menu.add(new MenuItem("Save, and release grade", new SelectionHandler<MenuItem>() {
+                @Override
+                public void onSelection(SelectionEvent<MenuItem> event) {
+                    if(saveStudentGradeBook(true)) {
+                        closeThisWindow();
+                    }
+                }
+            }));
+            saveBtn.setMenu(menu);
+        }
 
-        window.addButton(saveBtn);
+        _window.addButton(saveBtn);
         
         TextButton closeButton = new TextButton("Close");
         closeButton.addSelectHandler(new SelectHandler() {
@@ -178,34 +192,36 @@ public class GradeBookDialog {
                             if(btn.getHideButton().getText().equalsIgnoreCase("Yes")) {
                                 saveStudentGradeBook(false);
                             }
-                            
-                            window.hide();
+                            _window.hide();
                         }
                     });
                     box.setVisible(true);
                 }
                 else {
-                    window.hide();
+                    _window.hide();
                 }
             }
         });
         
-        window.addButton(closeButton);
+        _window.addButton(closeButton);
 
-        window.setWidget(mainBorderPanel);
+        _window.setWidget(mainBorderPanel);
         
         
-        window.addResizeHandler(new ResizeHandler() {
+        _window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
                 CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         });
 
-        window.show();    
-        
-        
-        
+        _window.show();    
+    }
+    
+
+    private void closeThisWindow() {
+        _window.hide();
+        callbackOnComplete.isComplete();
     }
 
 
@@ -236,8 +252,45 @@ public class GradeBookDialog {
         return combo;        
     }
     
-    private void saveStudentGradeBook(final boolean releaseGrades) {
+    private boolean saveStudentGradeBook(final boolean releaseGrades) {
         
+        
+        if(releaseGrades) {
+            int cnt=0;
+            for(StudentProblemDto sd: this._stuAssignment.getAssigmentStatuses()) {
+                if(sd.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
+                    if(sd.getStatus().equals("Submitted")) {
+                        cnt++;
+                    }
+                }
+            }
+            if(cnt > 0) {
+                String msg = "ungraded whiteboard problem";
+                if(cnt == 1) {
+                    msg = "is 1 " + msg;
+                }
+                else {
+                    msg = "are " + cnt + " " + msg + "s";
+                }
+                msg = "There " + msg + ". Are you sure you want to release this student's grade?";
+                CmMessageBox.confirm("Pending Whiteboard Problems",  msg, new ConfirmCallback() {
+                    @Override
+                    public void confirmed(boolean yesNo) {
+                        if(yesNo) {
+                            saveStudentGradeBookDirect(releaseGrades);
+                            closeThisWindow();
+                        }
+                    }
+                });
+                return false;
+            }
+        }
+        
+        saveStudentGradeBookDirect(releaseGrades);
+        return true;
+    }
+
+    private void saveStudentGradeBookDirect(final boolean releaseGrades) {
         Log.debug("Saving gradebook to server");
         
         new RetryAction<RpcData>() {
@@ -281,7 +334,6 @@ public class GradeBookDialog {
             }
 
         }.register();
-        
     }
     
  

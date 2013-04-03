@@ -177,8 +177,6 @@ public class AssignmentGradingPanel extends ContentPanel {
           }
         });
         combo.setTriggerAction(TriggerAction.ALL);
-        combo.add(ProblemStatus.NOT_VIEWED);
-        combo.add(ProblemStatus.VIEWED);
         combo.add(ProblemStatus.PENDING);
         combo.add(ProblemStatus.CORRECT);
         combo.add(ProblemStatus.INCORRECT);

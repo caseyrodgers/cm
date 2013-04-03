@@ -62,8 +62,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
     public AssignmentTreeAllLessonsListingPanel(CallbackOnSelectedLesson callBack) {
         _callBack = callBack;
         
-        setHeadingText("All Available Lessons");
-        
         _searchField = new FilterSearchField();
         addTool(new MyFieldLabel(_searchField,  "Search",  50,100));
         setWidget(new HTML("<h1>Loading ...</h1>"));

@@ -151,7 +151,7 @@ public class GradeBookPanel extends ContentPanel {
 
 
 	private void initColumns() {
-        colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 200, "Student"));
+        colConfList.add(new ColumnConfig<StudentAssignment, String>(saProps.studentName(), 150, "Student"));
         
         ColumnConfig<StudentAssignment, Boolean> colGraded = new ColumnConfig<StudentAssignment, Boolean>(saProps.graded(), 50, "Graded");
         colGraded.setCell(new CmCellRendererBoolean());

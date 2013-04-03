@@ -60,7 +60,6 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
     public AssignmentTreeSubjectChapterListingPanel(CallbackOnSelectedLesson callBack) {
         _callBack = callBack;
         
-        setHeadingText("Subject and Chapter");
         setWidget(new HTML("<h1>Loading ...</h1>"));
     }
     
