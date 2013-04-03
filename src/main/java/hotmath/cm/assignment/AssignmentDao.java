@@ -332,7 +332,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             e.printStackTrace();
         }
 
-        String sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
+        String sql = "";
+        if(subject != null) {
+            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
+        }
+        else {
+            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? OR subject = ? order by id"; // get all 
+        }
+        
+        
         List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject }, new RowMapper<ProblemDto>() {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -1614,11 +1622,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public Collection<? extends LessonDto> getAvailableLessons() {
-        String sql = "select distinct lesson, file, subject from HA_PROGRAM_LESSONS_static where subject > '' order by lesson, subject";
+        String sql = "select distinct lesson, file from HA_PROGRAM_LESSONS_static where subject > '' order by lesson, subject";
         List<LessonDto> problems = getJdbcTemplate().query(sql, new Object[] {}, new RowMapper<LessonDto>() {
             @Override
             public LessonDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new LessonDto(0, 0, rs.getString("subject"), rs.getString("lesson") + " (" + rs.getString("subject") + ")", rs.getString("file"));
+                return new LessonDto(0, 0, null, rs.getString("lesson"), rs.getString("file"));
             }
         });
         return problems;

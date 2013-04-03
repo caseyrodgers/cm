@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentLessonListingPanel.CallbackOnSelectedLesson;
+import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
@@ -42,6 +42,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
@@ -75,11 +76,12 @@ public class AddProblemDialog extends GWindow {
 
     AddProblemsCallback _callbackOnComplete;
     AssignmentLessonData _lessonData;
-    ContentPanel _treePanel;
+    ContentPanel _treePanelProgram;
+    AssignmentTreeSubjectChapterListingPanel _treePanelSubjectChapter;
     BorderLayoutContainer _mainContainer;
     
     TreeStore<BaseDto> _treeStore;
-    AssignmentLessonListingPanel _treeFlatPanel;
+    AssignmentTreeAllLessonsListingPanel _treeFlatPanel;
     TabPanel _tabPanel; 
     public AddProblemDialog() {
         super(false);
@@ -108,30 +110,61 @@ public class AddProblemDialog extends GWindow {
         });
         addButton(btnClose);
 
-        _treePanel = new ContentPanel();
+        _treePanelProgram = new ContentPanel();
+        _treePanelProgram.setHeadingText("Program Tree");
         _mainContainer = new BorderLayoutContainer();
         
-        _treeFlatPanel = new AssignmentLessonListingPanel(new CallbackOnSelectedLesson() {
+        _treeFlatPanel = new AssignmentTreeAllLessonsListingPanel(new CallbackOnSelectedLesson() {
             @Override
             public void lessonWasSelected() {
                 Window.alert("Lesson was selected");
             }
+            @Override
+            public void nodeWasChecked() {
+                setCheckMessageTask.delay(100);
+            }
         });
-
+        _treeFlatPanel.refreshData();
+        
+        
+        _treePanelSubjectChapter = new AssignmentTreeSubjectChapterListingPanel(new CallbackOnSelectedLesson() {
+            @Override
+            public void lessonWasSelected() {
+                Window.alert("Lesson was selected");
+            }
+            
+            @Override
+            public void nodeWasChecked() {
+                setCheckMessageTask.delay(100);
+            }
+        });
 
         CenterLayoutContainer centered = new CenterLayoutContainer();
         centered.setWidget(new Label("Loading data ..."));
-        _treePanel.setWidget(centered);        
+        _treePanelProgram.setWidget(centered);        
         
         _tabPanel = new TabPanel();
-        _tabPanel.add(_treePanel, new TabItemConfig("Program Tree", false));
         _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Available Lessons", false));
+        _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("Subject and Chapter", false));
+        _tabPanel.add(_treePanelProgram, new TabItemConfig("Program Tree", false));
+        
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
             public void onSelection(SelectionEvent<Widget> event) {
-                if(_tabPanel.getActiveWidget() != _treePanel) {
-                    // is flat tree
-                    updateFlattenTree();
+                if(_tabPanel.getActiveWidget() == _treeFlatPanel) {
+                    if(_treeFlatPanel._tree == null) {
+                        // is flat tree
+                        updateFlattenTree();
+                    }
+                }
+                else if(_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
+                    if(_treePanelSubjectChapter._tree == null) {
+                        _treePanelSubjectChapter.refreshData();
+                    }
+                }
+             
+                if(getActiveTree() != null) {
+                    unselectAllProblems(getActiveTree());
                 }
             }
         });
@@ -191,13 +224,15 @@ public class AddProblemDialog extends GWindow {
     
     protected Tree<BaseDto, String> getActiveTree() {
         Tree<BaseDto, String> activeTree=null;
-        if(_tabPanel.getActiveWidget() == _treePanel) {
+        if(_tabPanel.getActiveWidget() == _treePanelProgram) {
             activeTree = _tree;
+        }
+        else if(_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
+            activeTree = _treePanelSubjectChapter._tree;
         }
         else {
             activeTree = _treeFlatPanel._tree;
         }
-        
         return activeTree;
     }
 
@@ -290,11 +325,16 @@ public class AddProblemDialog extends GWindow {
         
         Log.debug("Problems added: " + problems.size());
         callback.problemsAdded(problems);
-        
+  
         if(uncheckSelections) {
-            for (BaseDto d : tree.getCheckedSelection()) {
-                tree.setChecked(d, CheckState.UNCHECKED);
-            }
+            unselectAllProblems(tree);
+        }
+  
+    }
+    
+    static private void unselectAllProblems(Tree<BaseDto, String> tree) {
+        for (BaseDto d : tree.getCheckedSelection()) {
+            tree.setChecked(d, CheckState.UNCHECKED);
         }
     }
 
@@ -322,6 +362,15 @@ public class AddProblemDialog extends GWindow {
         }
     }
 
+    
+    final DelayedTask setCheckMessageTask = new DelayedTask() {
+        @Override
+        public void onExecute() {
+            Log.debug("Selection Info", getActiveTree().getCheckedSelection().size() + " item(s) checked");
+            setWindowTitleCountSelectedProblems();
+        }
+    };
+    
     Tree<BaseDto, String> _tree;
 
     public Widget makeTree() {
@@ -425,20 +474,11 @@ public class AddProblemDialog extends GWindow {
         _tree.setCheckStyle(CheckCascade.TRI);
         //_tree.setAutoSelect(true);
         
-        final DelayedTask task = new DelayedTask() {
-
-            @Override
-            public void onExecute() {
-                Log.debug("Selection Info", _tree.getCheckedSelection().size() + " item(s) checked");
-                
-                setWindowTitleCountSelectedProblems();
-            }
-        };
 
         _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
             @Override
             public void onCheckChanged(CheckChangedEvent<BaseDto> event) {
-                task.delay(100);
+                setCheckMessageTask.delay(100);
             }
         });
 
@@ -469,11 +509,13 @@ public class AddProblemDialog extends GWindow {
     }
     
     private void setWindowTitleCountSelectedProblems() {
-        makeSureLessonProblemsReadMaybeAsync(false, false, _tree,new AddProblemsCallback() {
+        makeSureLessonProblemsReadMaybeAsync(false, false,getActiveTree(),new AddProblemsCallback() {
             @Override
             public void problemsAdded(List<ProblemDto> problemsAdded) {
                 String title = problemsAdded.size() + " problem(s) checked";
-                _treePanel.setHeadingHtml(title);
+                
+                ContentPanel cp = (ContentPanel)_tabPanel.getActiveWidget();
+                cp.setHeadingText(title);
             }
         });
                 
@@ -603,8 +645,8 @@ public class AddProblemDialog extends GWindow {
         
         _root.setChildren(children);
 
-        _treePanel.setWidget(makeTree());
-        _treePanel.forceLayout();
+        _treePanelProgram.setWidget(makeTree());
+        _treePanelProgram.forceLayout();
     }
 
     private ProgramType getProficiencyType() {

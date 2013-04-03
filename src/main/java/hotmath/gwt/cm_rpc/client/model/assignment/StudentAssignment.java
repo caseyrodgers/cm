@@ -203,4 +203,12 @@ public class StudentAssignment implements Response {
     public boolean isTurnedIn() {
         return this.turnInDate != null;
     }
+
+    /** Is this student assignment editable?
+     * 
+     * @return
+     */
+    public boolean isEditable() {
+        return !getAssignment().isEditable() || !isGraded();
+    }
 }
