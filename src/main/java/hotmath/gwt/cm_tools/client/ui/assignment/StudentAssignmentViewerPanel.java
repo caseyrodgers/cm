@@ -294,11 +294,11 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             _main.forceLayout();
         }
         _problemListPanel.loadAssignment(assignment, pidToLoad);
-        if(CmShared.getQueryParameter("debug") == null && assignment.isGraded()) {
-            _gradeField.setVisible(false);
+        if(assignment.isGraded()) {
+            _gradeField.setVisible(true);
         }
         else {
-            _gradeField.setVisible(true);
+            _gradeField.setVisible(false);
         }
         
         _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
