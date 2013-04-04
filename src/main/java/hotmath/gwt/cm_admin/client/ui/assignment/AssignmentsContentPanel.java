@@ -204,13 +204,23 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private void releaseGradesDirect(final Assignment assignment, int countUngradedStuWhiteboardProbs) {
-        String msg = "Are you sure you want to allow students to see this assignment's grades?";
+        
+        
+
+        
+        String msg = "Are you sure you want to release this assignment's grades?";
+        String wbMsg = "with submitted whiteboard answers that you have not yet graded.<br/><br/>";
         if(countUngradedStuWhiteboardProbs == 1) {
-            msg = "There is 1 student with ungraded whiteboard problems.  " + msg;
+            wbMsg = "There is 1 student " + wbMsg;
         }
         else if(countUngradedStuWhiteboardProbs > 1) {
-            msg = "There are " + countUngradedStuWhiteboardProbs + " students with ungraded whiteboard problems.  " + msg;
+            wbMsg = "There are " + countUngradedStuWhiteboardProbs + " students " + wbMsg;
         }
+        else {
+            wbMsg = "";
+        }
+        
+        msg = "<span style='color: red'>" + wbMsg + "</span>" + msg;
         final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", msg);
         cm.addHideHandler(new HideHandler() {
             @Override
