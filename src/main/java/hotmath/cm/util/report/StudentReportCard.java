@@ -192,7 +192,7 @@ public class StudentReportCard {
         PdfPTable assignmentTbl = new PdfPTable(1);
         assignmentTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-        Phrase assignments = buildSectionLabel("Assignments");
+        Phrase assignments = buildSectionLabel("Graded Assignments");
 		Paragraph numberOfAssignments = buildSectionContent("Number of Assignments: ", String.valueOf(list.size()), true);
 		Paragraph averageGrade = buildSectionContent("Average grade: ", String.valueOf(avgScore), true);
         assignmentTbl.addCell(assignments);
