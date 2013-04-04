@@ -220,7 +220,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             wbMsg = "";
         }
         
-        msg = "<span style='color: red'>" + wbMsg + "</span>" + msg;
+        msg = wbMsg + msg;
         final ConfirmMessageBox cm = new ConfirmMessageBox("Report Grades", msg);
         cm.addHideHandler(new HideHandler() {
             @Override

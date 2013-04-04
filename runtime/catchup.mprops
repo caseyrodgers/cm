@@ -3998,7 +3998,7 @@ and a.assign_key = ?
 
 .key=GET_COUNT_UNGRADED_WHITEBOARD_PROBLEMS
 
-select count(ps.pid)
+select count(distinct ps.uid)
 from CM_ASSIGNMENT a
   JOIN CM_ASSIGNMENT_PID_STATUS ps on ps.assign_key  = a.assign_key
 where a.assign_key = ?
