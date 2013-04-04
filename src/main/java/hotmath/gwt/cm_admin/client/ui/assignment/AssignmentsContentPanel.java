@@ -184,11 +184,12 @@ public class AssignmentsContentPanel extends ContentPanel {
             return;
         }
 
+        CmBusyManager.setBusy(true);
+
         /** Ask server how many ungraded students there are */
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                CmBusyManager.setBusy(true);
                 GetUngradedWhiteboardProblemsForAssignmentAction action = new GetUngradedWhiteboardProblemsForAssignmentAction(assignment.getAssignKey());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -196,6 +197,7 @@ public class AssignmentsContentPanel extends ContentPanel {
 
             @Override
             public void oncapture(RpcData rpcData) {
+                CmBusyManager.setBusy(false);
                 releaseGradesDirect(assignment,  rpcData.getDataAsInt("count"));
             }
         }.register();                        
@@ -222,11 +224,11 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
 
     protected void releaseGradesForAssignment(final Assignment assignment) {
-        
+
+        CmBusyManager.setBusy(true);
         new RetryAction<RpcData>() {
             @Override
             public void attempt() {
-                CmBusyManager.setBusy(true);
                 ReleaseAssignmentGradesAction action = new ReleaseAssignmentGradesAction(assignment.getAssignKey());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -234,8 +236,8 @@ public class AssignmentsContentPanel extends ContentPanel {
 
             @Override
             public void oncapture(RpcData saList) {
+                CmBusyManager.setBusy(false);                
                 Info.display("Infomation", "Grades Release");
-                CmBusyManager.setBusy(false);
                 CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
             }
         }.register();                        
