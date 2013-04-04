@@ -256,6 +256,8 @@ public class GradeBookDialog {
         
         
         if(releaseGrades) {
+            agPanel._store.commitChanges();
+
             int cnt=0;
             for(StudentProblemDto sd: this._stuAssignment.getAssigmentStatuses()) {
                 if(sd.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
@@ -265,14 +267,16 @@ public class GradeBookDialog {
                 }
             }
             if(cnt > 0) {
-                String msg = "ungraded whiteboard problem";
+                String msg = " that you have not yet graded.";
+                String wbMsg="";
                 if(cnt == 1) {
-                    msg = "is 1 " + msg;
+                    wbMsg = "is 1 whiteboard answer" + msg;
                 }
                 else {
-                    msg = "are " + cnt + " " + msg + "s";
+                    wbMsg = "are " + cnt + " whiteboard answers" + msg;
                 }
-                msg = "There " + msg + ". Are you sure you want to release this student's grade?";
+                
+                msg = "There " + wbMsg + "<br/><br/>Are you sure you want to release this student's grade?";
                 CmMessageBox.confirm("Pending Whiteboard Problems",  msg, new ConfirmCallback() {
                     @Override
                     public void confirmed(boolean yesNo) {
