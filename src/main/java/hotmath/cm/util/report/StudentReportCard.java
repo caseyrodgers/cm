@@ -420,7 +420,7 @@ public class StudentReportCard {
     		}
     		asgCount++;
     		
-    		List<StudentProblemDto> pList = asg.getAssigmentStatuses();
+    		List<StudentProblemDto> pList = asg.getStudentStatuses().getAssigmentStatuses();
 
     		for (StudentProblemDto probDto : pList) {
         		totalCount++;

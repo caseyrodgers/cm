@@ -264,7 +264,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
 
     private ProblemType extractProblemType(StudentProblemDto prob) {
-        for (StudentProblemDto p : _studentAssignment.getAssigmentStatuses()) {
+        for (StudentProblemDto p : _studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
             if (p.getProblem().getPid().equals(prob.getPid())) {
                 return p.getProblem().getProblemType();
             }
@@ -301,7 +301,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        _studentProblemGrid.getStore().addAll(assignment.getAssigmentStatuses());
+        _studentProblemGrid.getStore().addAll(assignment.getStudentStatuses().getAssigmentStatuses());
         if(pidToLoad != null) {
             for(StudentProblemDto sp: _studentProblemGrid.getStore().getAll()) {
                 if(sp.getPid().equals(pidToLoad)) {

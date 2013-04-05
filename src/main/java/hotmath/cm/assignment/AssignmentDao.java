@@ -22,6 +22,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentStatuses;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentUserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentLessonDto;
@@ -499,7 +500,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
     }
-
+    
+    
     public CmList<StudentAssignment> getAssignmentGradeBook(final int assignKey) throws Exception {
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
         final Assignment assignment = getAssignment(assignKey);
@@ -540,6 +542,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int uid = 0;
         CmList<StudentProblemDto> probList = null;
         Map<Integer, StudentAssignment> stuAssignMap = new HashMap<Integer, StudentAssignment>();
+        Map<String, StudentAssignmentUserInfo> userInfos = new HashMap<String,StudentAssignmentUserInfo>();
         for (StudentProblemDto probDto : problemStatuses) {
             if (probDto.getUid() != uid) {
                 probList = new CmArrayList<StudentProblemDto>();
@@ -547,7 +550,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 StudentAssignmentUserInfo userInfo = getStudentAssignmentUserInfo(uid, assignKey);
 
-                StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, probList, userInfo.getTurnInDate(), userInfo.isGraded());
+                StudentAssignment stuAssignment = new StudentAssignment(uid, assignment, userInfo.getTurnInDate(), userInfo.isGraded());
+                stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(stuAssignment,probList,null));
                 stuAssignment.setStudentName(nameMap.get(uid));
                 stuAssignments.add(stuAssignment);
                 stuAssignMap.put(uid, stuAssignment);
@@ -595,7 +599,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 totHalfCredit = 0;
                 uid = probDto.getUid();
                 lessonList = new CmArrayList<StudentLessonDto>();
-                stuAssignMap.get(uid).setLessonStatuses(lessonList);
             }
 
             if (!lessonName.equals(probDto.getProblem().getLesson())) {
@@ -661,28 +664,32 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * 
          * 
          */
+        
         for (StudentAssignment sa : stuAssignments) {
             setStudentDetailStatus(sa);
+            
+            
+            sa.setStudentStatuses(null); // don't need in gradebook, need on student/assignment at time
 
-            for (StudentProblemDto sd : sa.getAssigmentStatuses()) {
-
-                /**
-                 * Make sure the problem type is set for each student problem.
-                 * The information is shared from the assignment base list
-                 * because problem type is determined at runtime.
-                 * 
-                 */
-                ProblemDto studentProblem = sd.getProblem();
-                String pid = studentProblem.getPidOnly();
-                for (ProblemDto pd : assignment.getPids()) {
-                    if (pd.getPidOnly().equals(pid)) {
-                        studentProblem.setProblemType(pd.getProblemType());
-                    }
-                }
-            }
+//            for (StudentProblemDto sd : sa.getAssigmentStatuses()) {
+//
+//                /**
+//                 * Make sure the problem type is set for each student problem.
+//                 * The information is shared from the assignment base list
+//                 * because problem type is determined at runtime.
+//                 * 
+//                 */
+//                ProblemDto studentProblem = sd.getProblem();
+//                String pid = studentProblem.getPidOnly();
+//                for (ProblemDto pd : assignment.getPids()) {
+//                    if (pd.getPidOnly().equals(pid)) {
+//                        studentProblem.setProblemType(pd.getProblemType());
+//                    }
+//                }
+//            }
 
         }
-
+        
         return stuAssignments;
     }
 
@@ -694,7 +701,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     private void setStudentDetailStatus(StudentAssignment sa) {
         int correct = 0, inCorrect = 0, halfCredit = 0, complete = 0, submitted = 0, viewed = 0;
-        for (StudentProblemDto spd : sa.getAssigmentStatuses()) {
+        for (StudentProblemDto spd : sa.getStudentStatuses().getAssigmentStatuses()) {
 
             String s = spd.getStatus().toLowerCase();
             if (s.equals("correct")) {
@@ -718,8 +725,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(getHomeworkGrade(sa.getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
-        sa.setStudentDetailStatus(getLessonStatus(sa.getAssigmentStatuses().size(), complete, submitted, viewed));
+        sa.setHomeworkGrade(getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
+        sa.setStudentDetailStatus(getLessonStatus(sa.getStudentStatuses().getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
     private String getLessonStatus(int count, int completed, int submitted, int viewed) {
@@ -807,7 +814,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 // lastAssignKey, false);
                 Date dateTurnedIn = null;
 
-                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, probList, dateTurnedIn, true);
+                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, dateTurnedIn, true);
+                stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(stuAssignment, probList, null));
                 stuAssignment.setStudentName(stuName);
                 stuAssignments.add(stuAssignment);
                 stuAssignMap.put(lastAssignKey, stuAssignment);
@@ -863,7 +871,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 totHalfCredit = 0;
                 lastAssignKey = probDto.getProblem().getAssignKey();
                 lessonList = new CmArrayList<StudentLessonDto>();
-                stuAssignMap.get(lastAssignKey).setLessonStatuses(lessonList);
+                stuAssignMap.get(lastAssignKey).getStudentStatuses().setLessonStatuses(lessonList);
             }
 
             if (!lessonName.equals(probDto.getProblem().getLesson())) {
@@ -1356,7 +1364,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         studentAssignment.setTurnInDate(studentInfo.getTurnInDate());
-        studentAssignment.setAssigmentStatuses(allStatus);
+        studentAssignment.setStudentStatuses(new StudentAssignmentStatuses(studentAssignment,allStatus,null));
 
         studentAssignment.setGraded(studentInfo.isGraded());
 
@@ -1591,7 +1599,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @return
      */
     public int[] updateStudentAssignmentStatus(StudentAssignment studentAssignment, boolean releaseGrades) throws Exception {
-        List<StudentProblemDto> list = studentAssignment.getAssigmentStatuses();
+        List<StudentProblemDto> list = studentAssignment.getStudentStatuses().getAssigmentStatuses();
         StringBuilder sb = new StringBuilder();
         for (StudentProblemDto sp : list) {
             sb.append(String.format("label: %s, status: %s\n", sp.getPidLabel(), sp.getStatus()));
@@ -1600,7 +1608,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             __logger.debug("problem-status: " + sb.toString());
 
         List<Object[]> batch = new ArrayList<Object[]>();
-        for (StudentProblemDto sp : studentAssignment.getAssigmentStatuses()) {
+        for (StudentProblemDto sp : studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
             Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(),
                     studentAssignment.getUid() };
             batch.add(values);

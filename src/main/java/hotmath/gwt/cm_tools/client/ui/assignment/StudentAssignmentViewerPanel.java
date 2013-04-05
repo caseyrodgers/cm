@@ -16,13 +16,13 @@ import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentStudentTutorAndShowWo
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.util.Margins;
@@ -33,7 +33,6 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
-import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
@@ -121,14 +120,6 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         
         CmRpc.EVENT_BUS.fireEvent(new StudentAssignmentViewerActivatedAction());
     }
-    
-    private CenterLayoutContainer createEmptyPanel(String msg) {
-        CenterLayoutContainer c = new CenterLayoutContainer();
-        c.getElement().setAttribute("style", "background-color: gray");
-        String html = "<h1 style='font-size: 25px;color: #666'>" + msg + "</h1>";
-        c.add(new HTML(html));
-        return c;
-    }
 
     private void loadTutorProblemStatement(String title, StudentProblemDto problem) {
         Log.debug("Load", "loadTutorProblemStatement: " + problem);
@@ -144,7 +135,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                 _problemListPanel.tutorWidgetValueChanged(value, correct);
                 
                 /** Update grade textfield with current grade */
-                _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
+                _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getStudentStatuses().getAssigmentStatuses()));
             }
 
             @Override
@@ -160,7 +151,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     private IsWidget createAssignmentDisplayPanel() {
         _tutorArea = new BorderLayoutContainer();
 
-        _tutorArea.setCenterWidget(createEmptyPanel("Choose a problem"));
+        _tutorArea.setCenterWidget(new DefaultGxtLoadingPanel("Choose a problem"));
         
 
         BorderLayoutData bData = new BorderLayoutData(300);
@@ -302,7 +293,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             _gradeField.setVisible(false);
         }
         
-        _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getAssigmentStatuses()));
+        _grade.setValue(GradeBookUtils.getHomeworkGrade(_studentAssignment.getStudentStatuses().getAssigmentStatuses()));
         _comments.setValue(assignment.getAssignment().getComments());
         
         

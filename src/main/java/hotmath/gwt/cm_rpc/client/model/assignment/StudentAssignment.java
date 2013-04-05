@@ -26,8 +26,6 @@ public class StudentAssignment implements Response {
     private String studentName;
     private String homeworkStatus;
     private String homeworkGrade;
-    private CmList<StudentProblemDto> assigmentStatuses;
-    private CmList<StudentLessonDto> lessonStatuses;
 
     private int problemCount;
     private int problemCompletedCount;
@@ -39,17 +37,18 @@ public class StudentAssignment implements Response {
     
     private boolean assignmentGraded;
     private Date turnInDate;
+    
+    
+   StudentAssignmentStatuses studentStatuses;
 
     public StudentAssignment(){}
     
-    public StudentAssignment(int uid, Assignment assignment, CmList<StudentProblemDto> assignmentStatuses, Date turnInDate, boolean assignmentGraded) {
+    public StudentAssignment(int uid, Assignment assignment, Date turnInDate, boolean assignmentGraded) {
         this.uid = uid;
         this.assignment = assignment;
-        this.assigmentStatuses = assignmentStatuses;
         this.turnInDate = turnInDate;
         this.assignmentGraded = assignmentGraded;
     }
-
 
     public Date getTurnInDate() {
         return turnInDate;
@@ -59,21 +58,6 @@ public class StudentAssignment implements Response {
         this.turnInDate = turnInDate;
     }
 
-    /** Return true if this Assignment is 
-     *  considered complete from the student's
-     *  point of view.
-     *  
-     *  
-     * @return
-     */
-    public boolean isComplete() {
-        for(StudentProblemDto spd: assigmentStatuses) {
-            if(!spd.isComplete()) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     public int getUid() {
         return uid;
@@ -124,14 +108,6 @@ public class StudentAssignment implements Response {
 		this.homeworkGrade = homeworkGrade;
 	}
 
-	public List<StudentProblemDto> getAssigmentStatuses() {
-        return assigmentStatuses;
-    }
-
-    public void setAssigmentStatuses(CmList<StudentProblemDto> assigmentStatuses) {
-        this.assigmentStatuses = assigmentStatuses;
-    }
-
     public int getProblemCount() {
 		return problemCount;
 	}
@@ -167,13 +143,6 @@ public class StudentAssignment implements Response {
         return assignment.getStatus();
     }
 
-	public List<StudentLessonDto> getLessonStatuses() {
-		return lessonStatuses;
-	}
-
-	public void setLessonStatuses(CmList<StudentLessonDto> lessonList) {
-		lessonStatuses = lessonList;
-	}
 
     public String getStudentDetailStatus() {
         return studentDetailStatus;
@@ -191,15 +160,6 @@ public class StudentAssignment implements Response {
         this.assignmentGraded = graded;
     }
 	
-
-    @Override
-    public String toString() {
-        return "StudentAssignment [uid=" + uid + ", assignment=" + assignment + ", studentName=" + studentName + ", homeworkStatus=" + homeworkStatus
-                + ", homeworkGrade=" + homeworkGrade + ", assigmentStatuses=" + assigmentStatuses + ", lessonStatuses=" + lessonStatuses + ", problemCount="
-                + problemCount + ", problemCompletedCount=" + problemCompletedCount + ", problemPendingCount=" + problemPendingCount + ", studentDetailStatus="
-                + studentDetailStatus + ", isComplete=" + isComplete + ", assignmentGraded=" + assignmentGraded + ", turnInDate=" + turnInDate + "]";
-    }
-
     public boolean isTurnedIn() {
         return this.turnInDate != null;
     }
@@ -210,5 +170,14 @@ public class StudentAssignment implements Response {
      */
     public boolean isEditable() {
         return !getAssignment().isEditable() || !isGraded();
+    }
+    
+
+    public StudentAssignmentStatuses getStudentStatuses() {
+        return studentStatuses;
+    }
+
+    public void setStudentStatuses(StudentAssignmentStatuses studentStatuses) {
+        this.studentStatuses = studentStatuses;
     }
 }

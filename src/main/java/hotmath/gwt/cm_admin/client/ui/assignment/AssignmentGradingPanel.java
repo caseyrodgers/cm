@@ -3,12 +3,16 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.cm_tools.client.ui.assignment.ProblemStatus;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell;
 import hotmath.gwt.cm_tools.client.ui.assignment.StudentProblemGridCell.ProblemGridCellCallback;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -28,8 +32,11 @@ import com.sencha.gxt.data.shared.Converter;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.StringLabelProvider;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent;
 import com.sencha.gxt.widget.core.client.event.CompleteEditEvent.CompleteEditHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.PropertyEditor;
 import com.sencha.gxt.widget.core.client.form.SimpleComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -89,6 +96,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
     static public interface UpdateGradeCallback {
     	void updateGrade(int percent);
+    	void updateGrade(String percent);
     }
 
     UpdateGradeCallback _updateGradeCallback;
@@ -97,10 +105,19 @@ public class AssignmentGradingPanel extends ContentPanel {
     public AssignmentGradingPanel(StudentAssignment studentAssignment, ProblemSelectionCallback callBack, UpdateGradeCallback updateGradeCallback){
         _problemSelectionCallBack = callBack;
         _updateGradeCallback = updateGradeCallback;
-        _correctIncorrectMap = initCorrectIncorrectMap(studentAssignment);
         
         super.setHeadingText("Click any problem status to adjust grade");
         super.getHeader().setHeight("30px");
+        
+        
+        setWidget(new DefaultGxtLoadingPanel());
+        
+        addTool(new TextButton("Refresh", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                getDataFromServer();
+            }
+        }));
 
         problemNumberCol = new ColumnConfig<StudentProblemDto, Integer>(spProps.problemNumberOrdinal(), 25, "");
         problemCol = new ColumnConfig<StudentProblemDto, String>(spProps.pidLabel(), 120, "Problem");
@@ -131,10 +148,10 @@ public class AssignmentGradingPanel extends ContentPanel {
         colMdl = new ColumnModel<StudentProblemDto>(colConfList);
 
         _studentAssignment = studentAssignment;
-        List<StudentProblemDto> problems = _studentAssignment.getAssigmentStatuses();
+        //List<StudentProblemDto> problems = _studentAssignment.getStudentStatuses().getAssigmentStatuses();
         _store = new ListStore<StudentProblemDto>(spProps.pid());
         //_store.setAutoCommit(true);
-        _store.addAll(problems);
+        //_store.addAll(problems);
 
         _gradingGrid = new Grid<StudentProblemDto>(_store, colMdl);
         _gradingGrid.setWidth(380);
@@ -239,23 +256,6 @@ public class AssignmentGradingPanel extends ContentPanel {
 	            _gradingGrid.getStore().update(_lastProblem);
 			}
         });
-/*        
-        SimpleComboBox<GradedStatus> gradedCombo = new SimpleComboBox<GradedStatus>(new StringLabelProvider<GradedStatus>());
-        gradedCombo.setTriggerAction(TriggerAction.ALL);
-        gradedCombo.add(GradedStatus.NO);
-        gradedCombo.add(GradedStatus.YES);
-        gradedCombo.setPropertyEditor(new PropertyEditor<GradedStatus>() {
-            @Override
-            public GradedStatus parse(CharSequence text) throws ParseException {
-              return GradedStatus.parseString(text.toString());
-            }
-       
-            @Override
-            public String render(GradedStatus object) {
-              return object == null ? GradedStatus.NO.toString() : object.toString();
-            }
-        });
-*/
         editing = createGridEditing(_gradingGrid);
         editing.addEditor(statusCol, new Converter<String, ProblemStatus>() {
      
@@ -270,42 +270,28 @@ public class AssignmentGradingPanel extends ContentPanel {
           }
      
         }, combo);
-/*
-        editing.addEditor(gradedCol, new Converter<String, GradedStatus>() {
-            
-            @Override
-            public String convertFieldValue(GradedStatus object) {
-              return object == null ? GradedStatus.NO.toString() : object.toString();
-            }
-       
-            @Override
-            public GradedStatus convertModelValue(String object) {
-              return GradedStatus.parseString(object);
-            }
-       
-          }, gradedCombo);
-*/        
         
         _gradingGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentProblemDto>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentProblemDto> event) {
-                _problemSelectionCallBack.problemWasSelected(event.getSelection().get(0));
-                _lastProblem = event.getSelection().get(0);
+                if(event.getSelection().size() > 0) {
+                    _problemSelectionCallBack.problemWasSelected(event.getSelection().get(0));
+                    _lastProblem = event.getSelection().get(0);
+                }
+                else {
+                    _lastProblem=null;
+                }
             }
         });
         
-        /** select first one */
-        if(_gradingGrid.getStore().size() > 0) {
-            _gradingGrid.getSelectionModel().select(false,  _gradingGrid.getStore().get(0));
-        }
         
-        setWidget(_gradingGrid);
+        getDataFromServer();
     }
     
     private Map<String, Integer> initCorrectIncorrectMap(StudentAssignment studentAssignment) {
     	Map<String, Integer> map = new HashMap<String,Integer>();
 
-    	for (StudentProblemDto dto : studentAssignment.getAssigmentStatuses()) {
+    	for (StudentProblemDto dto : studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
     		if (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.name())) {
     			map.put(dto.getPid(), 100);
     		}
@@ -395,5 +381,64 @@ public class AssignmentGradingPanel extends ContentPanel {
 		}
 
     }
-*/    
+*/
+    
+    
+    
+    
+
+private void getDataFromServer() {
+    
+    CmBusyManager.setBusy(true);
+
+    new RetryAction<StudentAssignment>() {
+        @Override
+        public void attempt() {
+            GetStudentAssignmentAction action = new GetStudentAssignmentAction(_studentAssignment.getUid(), _studentAssignment.getAssignment().getAssignKey());
+            setAction(action);
+            CmShared.getCmService().execute(action, this);
+        }
+
+        @Override
+        public void oncapture(StudentAssignment results) {
+            CmBusyManager.setBusy(false);
+            /** transfer latest status info onto current StudentAssignment
+             * 
+             */
+            _studentAssignment.setStudentStatuses(results.getStudentStatuses());
+            _correctIncorrectMap = initCorrectIncorrectMap(_studentAssignment);
+            _updateGradeCallback.updateGrade(GradeBookUtils.getHomeworkGrade(_studentAssignment.getStudentStatuses().getAssigmentStatuses()));
+            /** select first one */
+            
+            StudentProblemDto selected = _gradingGrid.getSelectionModel().getSelectedItem();
+            if(_gradingGrid.getStore().size() > 0) {
+                _gradingGrid.getStore().clear();
+            }
+            _gradingGrid.getStore().addAll(results.getStudentStatuses().getAssigmentStatuses());
+            if(selected != null) {
+                for(StudentProblemDto p: _gradingGrid.getStore().getAll()) {
+                    if(p.getPid().equals(selected.getPid())) {
+                        _gradingGrid.getSelectionModel().select(false,  p);
+                        break;
+                    }
+                }
+            }
+            else if(_gradingGrid.getStore().size() > 0) {
+                    _gradingGrid.getSelectionModel().select(false,  _gradingGrid.getStore().get(0));
+            }
+            setWidget(_gradingGrid);
+            forceLayout();
+        }
+
+        public void onFailure(Throwable error) {
+            CmBusyManager.setBusy(false);
+
+            Log.debug("Error saving statdent assignment status", error);
+            super.onFailure(error);
+        }
+
+    }.register();
+
+    
+}
 }

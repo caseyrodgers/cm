@@ -90,14 +90,14 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         _adminId = UserInfoBase.getInstance().getUid();
         
-        getHeader().addTool(createNewButton());
-        getHeader().addTool(createEditButton());
+        addTool(createNewButton());
+        addTool(createEditButton());
         // getHeader().addTool(createCloseButton());
-        getHeader().addTool(createDelButton());
-        getHeader().addTool(createCopyButton());
-        getHeader().addTool(new HTML("&nbsp;&nbsp;"));
-        getHeader().addTool(createActivateButton());
-        getHeader().addTool(createScoreButton());
+        addTool(createDelButton());
+        addTool(createCopyButton());
+        addTool(new HTML("&nbsp;&nbsp;"));
+        addTool(createActivateButton());
+        addTool(createScoreButton());
         setCollapsible(false);
 
         AssignmentProperties props = GWT.create(AssignmentProperties.class);
