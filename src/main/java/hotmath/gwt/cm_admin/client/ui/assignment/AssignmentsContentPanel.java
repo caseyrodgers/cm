@@ -18,6 +18,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.assignment.ExportGradebooksDialog;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -127,10 +128,7 @@ public class AssignmentsContentPanel extends ContentPanel {
                 editCurrentAssignment();
             }
         },DoubleClickEvent.getType());
-        
-        CenterLayoutContainer defaultMessageContainer = new CenterLayoutContainer();
-        defaultMessageContainer.setWidget(new HTML("Select a group to see its assignments"));
-        setWidget(defaultMessageContainer);
+        setWidget(new DefaultGxtLoadingPanel("Select a group to see its assignments"));
     }
 
     private Widget createActivateButton() {
@@ -324,6 +322,8 @@ public class AssignmentsContentPanel extends ContentPanel {
                     _grid.getStore().clear();
                     _grid.getStore().addAll(assignments);
                     _gbCallback.enable(true);
+                    
+                    forceLayout();
     //                if(assignments.size() > 0) {
     //                    List<Assignment> selectedList = new ArrayList<Assignment>();
     //                    selectedList.add(assignments.get(0));
