@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_admin.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
@@ -9,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -23,11 +23,9 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
-import com.sencha.gxt.core.client.util.DelayedTask;
 import com.sencha.gxt.data.client.loader.RpcProxy;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
@@ -35,9 +33,12 @@ import com.sencha.gxt.data.shared.TreeStore;
 import com.sencha.gxt.data.shared.loader.ChildTreeStoreBinding;
 import com.sencha.gxt.data.shared.loader.TreeLoader;
 import com.sencha.gxt.widget.core.client.ContentPanel;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.TextField;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 import com.sencha.gxt.widget.core.client.tree.Tree;
@@ -61,13 +62,25 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
     public AssignmentTreeAllLessonsListingPanel(CallbackOnSelectedLesson callBack) {
         _callBack = callBack;
-        
-        _searchField = new FilterSearchField();
-        addTool(new MyFieldLabel(_searchField,  "Search",  50,100));
-        setWidget(new HTML("<h1>Loading ...</h1>"));
+
+        createAddSearchTool();
+        setWidget(new DefaultGxtLoadingPanel());
     }
     
     
+    private void createAddSearchTool() {
+        _searchField = new FilterSearchField();
+        addTool(_searchField);
+        addTool(new TextButton("Search", new SelectHandler() {
+            
+            @Override
+            public void onSelect(SelectEvent event) {
+                makeTree(_allLessons);                
+            }
+        }));        
+    }
+
+
     private void readDataAndBuildTree() {
 
         CatchupMathTools.setBusy(true);
@@ -281,6 +294,8 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
                     makeTree(_allLessons);
                 }
             });
+            
+            setToolTip("Enter a search string");
         }
     }
 }
