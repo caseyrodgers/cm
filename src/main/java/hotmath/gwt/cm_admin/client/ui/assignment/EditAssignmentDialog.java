@@ -182,7 +182,7 @@ public class EditAssignmentDialog {
                 }
             }
         });
-        saveAssign.setToolTip("Save any changes. Once activated or closed, problems cannot be edited.");
+        //saveAssign.setToolTip("Save any changes. Once activated or closed, problems cannot be edited.");
 
         if(_isDraftMode) {
             window.addButton(saveDraftMode);
