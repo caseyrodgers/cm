@@ -45,6 +45,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1798,6 +1799,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentCopy.setAssignmentName(assignmentCopy.getAssignmentName() + copyTag);
         assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
         assignmentCopy.setStatus("Draft");
+        
+        Date now = new Date();
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(now);  
+        cal.add(Calendar.DAY_OF_YEAR, 1);  
+        Date tomorrow = cal.getTime();  
+        assignmentCopy.setDueDate(tomorrow);
 
         saveAssignment(assignmentCopy);
 
