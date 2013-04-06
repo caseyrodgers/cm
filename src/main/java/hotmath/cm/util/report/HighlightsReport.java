@@ -45,7 +45,7 @@ public class HighlightsReport {
 	}
 	
 	private CmWebResource makeWebResource(ByteArrayOutputStream baos) throws Exception {
-	    String outputBase = CmWebResourceManager.getInstance().getFileBase();
+	    String outputBase = CmWebResourceManager.getInstance().getFileBase().replaceAll(" ", "");
         File filePath = new File(outputBase, System.currentTimeMillis() + "-" + reportName + ".pdf");
         __logger.info("Writing PDF output: " + filePath);
         FileOutputStream fw = null;

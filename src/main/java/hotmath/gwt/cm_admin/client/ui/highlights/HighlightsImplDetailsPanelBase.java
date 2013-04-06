@@ -45,6 +45,10 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         @Path("activeCount")
         ValueProvider<HighlightReportData, Integer> active();
 
+        ValueProvider<HighlightReportData, Integer> assignmentCount();
+
+        ValueProvider<HighlightReportData, Integer> assignmentAverage();
+
         @Path("gamesViewed")
         ValueProvider<HighlightReportData, Integer> games();
 

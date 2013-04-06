@@ -77,9 +77,9 @@ public class StudentAssignmentReport {
 
 			Document document = new Document();
 
-			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
-			document.setFooter(footer);
+			//HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
+			//footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+			//document.setFooter(footer);
 
 			baos = new ByteArrayOutputStream();
 
@@ -91,6 +91,8 @@ public class StudentAssignmentReport {
 			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			Phrase date     = buildLabelContent("Date: ", printDate);
+			Phrase student;
+			Phrase showWork;
 
 			List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
 
@@ -101,16 +103,14 @@ public class StudentAssignmentReport {
 			for (StudentModelI sm : smList) {
 				stuUid = sm.getUid();
 
-				List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid);
-
-				Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
+				student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
 
 				String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
-				Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
+				showWork = buildLabelContent("Show Work: ", showWorkState);
 
 				PdfPTable pdfTbl = new PdfPTable(3);
 				pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-				writer.setPageEvent(new HeaderTable(writer, pdfTbl));
+				//writer.setPageEvent(new HeaderTable(writer, pdfTbl));
 
 				pdfTbl.addCell(school);
 				pdfTbl.addCell(admin);
@@ -137,6 +137,8 @@ public class StudentAssignmentReport {
 				tbl.endHeaders();
 
 				int i = 0;
+				List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid);
+
 				for (StudentAssignment sa : saList) {
 					addCell(sa.getAssignment().getComments(), tbl, ++i);
 					addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, i);

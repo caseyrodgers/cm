@@ -2595,8 +2595,6 @@ group  by u.group_id
 
 order by active_count desc 
 
-
-
 .key=HIGHLIGHT_REPORT_GREATEST_EFFORT
 
 
@@ -3837,11 +3835,12 @@ order by is_expired, a.due_date desc
 
 .key=GET_COMPLETED_ASSIGNMENTS_IN_DATE_RANGE
 
-SELECT au.uid, due_date < now() as is_expired,
+SELECT au.uid, u.user_name, due_date < now() as is_expired,
        a.status, a.due_date, a.assign_key, a.comments, 
        au.is_graded, ps.cnt_submitted, ap.cnt_problems, au.turn_in_date
 FROM   CM_ASSIGNMENT_USER au
 JOIN   CM_ASSIGNMENT a ON a.assign_key = au.assign_key
+JOIN   HA_USER u on u.uid = au.uid
 LEFT JOIN (
        SELECT assign_key,  count(*) as cnt_problems
        FROM   CM_ASSIGNMENT_PIDS
@@ -3857,6 +3856,30 @@ WHERE au.uid = ?
   AND a.due_date between ? AND ?
   AND au.is_graded = 1
 ORDER BY is_expired, a.due_date desc
+
+
+.key=COMPLETED_ASSIGNMENT_GRADES_IN_DATE_RANGE
+
+SELECT u.uid, u.user_name, au.assign_key, ap.num_problems, ps.assign_key, ps.uid, ps.num_correct, ps.num_halfcredit, (ap.num_problems - ps.num_correct - ps.num_halfcredit) as num_incorrect
+FROM  CM_ASSIGNMENT_USER au
+JOIN CM_ASSIGNMENT a  on au.assign_key = a.assign_key
+JOIN (
+       SELECT assign_key,  count(*) as num_problems
+       FROM   CM_ASSIGNMENT_PIDS
+       GROUP BY assign_key
+    ) ap ON ap.assign_key = au.assign_key
+JOIN (
+       SELECT assign_key,  uid, sum(if((status='correct'),1,0)) as num_correct, sum(if((status='half credit'),1,0)) as num_halfcredit
+       FROM   CM_ASSIGNMENT_PID_STATUS
+       GROUP BY assign_key, uid
+    ) ps ON ps.assign_key = au.assign_key AND ps.uid = au.uid
+JOIN HA_USER u on u.uid = au.uid
+WHERE au.is_graded = 1
+  AND au.uid in ( $$UID_LIST$$ )
+  AND a.due_date BETWEEN ? AND ?
+ORDER BY upper(u.user_name), au.assign_key
+
+
 
 
 .key=GET_ASSIGNMENT

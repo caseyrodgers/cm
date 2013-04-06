@@ -104,6 +104,10 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     list = dao.getReportWidgetAnswersPercent(uids, fromDate, toDate);
                     break;             
                     
+                case ASSIGNMENTS:
+                    list = toCmList(dao.getReportAssignments(uids, fromDate, toDate));
+                    break;             
+                    
                     default:
                         throw new Exception("Unknown report type: " + action);
             }

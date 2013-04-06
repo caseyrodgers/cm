@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
+import hotmath.cm.assignment.AssignmentDao;
+import hotmath.cm.server.model.StudentAssignmentStatus;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.server.model.StudentActivityDao.ActivityTime;
@@ -8,7 +10,6 @@ import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager;
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
 import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.model.CustomLessonModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.spring.SpringManager;
@@ -145,6 +146,41 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             SqlUtilities.releaseResources(null,ps,null);
         }
         return list;
+    }
+    
+    public List<HighlightReportData> getReportAssignments(List<String> uids, Date fromDate, Date toDate) throws Exception {
+    	
+    	AssignmentDao asgDao = AssignmentDao.getInstance();        
+    	List<StudentAssignmentStatus> list = asgDao.getCompletedAssignmentsForUsersDateRange(uids, fromDate, toDate);
+
+    	List<HighlightReportData> rList = new ArrayList<HighlightReportData> ();
+
+    	int asgCount = 0;
+    	int scoreTotal = 0;
+    	int userId = 0;
+    	String userName = "";
+
+    	for (StudentAssignmentStatus status : list) {
+    		if (status.getUserId() != userId && userId > 0) {
+    			// finish
+    			int avgScore = Math.round((float)scoreTotal / (float)asgCount);
+    			HighlightReportData data = new HighlightReportData(userId, userName, ReportType.ASSIGNMENTS, asgCount, avgScore);
+    			rList.add(data);
+    			asgCount = 0;
+    			scoreTotal = 0;
+    		}
+    		userId = status.getUserId();
+    		userName = status.getStudentName();
+    		asgCount++;
+    		scoreTotal += status.getScore();
+    	}
+    	if (asgCount > 0) {
+		    int avgScore = Math.round((float)scoreTotal / (float)asgCount);
+		    HighlightReportData data = new HighlightReportData(userId, userName, ReportType.ASSIGNMENTS, asgCount, avgScore);
+		    rList.add(data);
+    	}
+        return rList;
+
     }
     
     public CmList<HighlightReportData> getReportQuizzesPassed(final Connection conn, List<String> uids, Date from, Date to) throws Exception {

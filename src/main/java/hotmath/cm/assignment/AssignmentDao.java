@@ -3,6 +3,7 @@ package hotmath.cm.assignment;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.InmhItemData;
 import hotmath.assessment.RppWidget;
+import hotmath.cm.server.model.StudentAssignmentStatus;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
@@ -33,6 +34,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.spring.SpringManager;
@@ -1231,6 +1233,44 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return saInfoList;
     }
 
+    public List<StudentAssignmentStatus> getCompletedAssignmentsForUsersDateRange(List<String> uids, Date fromDate, Date toDate) throws Exception {
+
+    	String[] vals = QueryHelper.getDateTimeRange(fromDate, toDate);
+
+    	List<StudentAssignmentStatus> list = null;
+    	try {
+    		list = getJdbcTemplate().query(
+    				CmMultiLinePropertyReader.getInstance().getProperty("COMPLETED_ASSIGNMENT_GRADES_IN_DATE_RANGE",
+    						QueryHelper.createInListMap(QueryHelper.createInList(uids)) ),
+    						new Object[]{vals[0], vals[1]},
+    						new RowMapper<StudentAssignmentStatus>() {
+
+    					@Override
+    					public StudentAssignmentStatus mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+    						int userId = rs.getInt("uid");
+    						String userName = rs.getString("user_name");
+    						int assignKey = rs.getInt("assign_key");
+    						int numProblems = rs.getInt("num_problems");
+    						int numCorrect = rs.getInt("num_correct");
+    						int numHalfCredit = rs.getInt("num_halfcredit");
+    						int numIncorrect = rs.getInt("num_incorrect");
+
+    						int score = getHomeworkGradeValue(numProblems, numCorrect, numIncorrect, numHalfCredit);
+    						StudentAssignmentStatus status =
+    								new StudentAssignmentStatus(userName, userId, score, assignKey, numCorrect, numHalfCredit,
+    										numCorrect + numHalfCredit + numIncorrect);
+    						return status;
+    					}
+    				});
+    	}
+    	catch (Exception e) {
+    		__logger.error("Error getting completed assignments", e);
+    		throw e;
+    	}
+    	return list;
+    }
+
     protected String getUserScore(int uid, int assignKey) throws Exception {
         final double counts[] = new double[4];
         final int TOTAL = 0, CORRECT = 1, HALFCREDIT = 2, INCORRECT = 3;
@@ -1252,6 +1292,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
 
         return getHomeworkGrade((int) counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
+    }
+
+    private int getHomeworkGradeValue(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
+        
+        // add .5 for each half correct answer
+        float totCorrectF = (float)totCorrect + (totHalfCredit>0?totHalfCredit / 2:0);
+        if ((totCorrect + totIncorrect + totHalfCredit) > 0) {
+            return Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
+        }
+        return 0;
     }
 
     private String _createAssignmentName(Date dueDate, String comments) {

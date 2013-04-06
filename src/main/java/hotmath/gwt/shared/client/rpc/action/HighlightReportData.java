@@ -19,6 +19,8 @@ public class HighlightReportData implements Response {
     int dbCount;
     
     int activeCount;
+    int assignmentAverage;
+    int assignmentCount;
     int loginCount;
     int lessonsViewed;
     int quizzesPassed;
@@ -66,6 +68,10 @@ public class HighlightReportData implements Response {
             	break;
             case FIRST_TIME_CORRECT:
             	this.firstTimeCorrectPercent = value[0];
+            	break;
+            case ASSIGNMENTS:
+            	assignmentCount = value[0];
+            	assignmentAverage = value[1];
             	break;
             case GROUP_PERFORMANCE:
             	activeCount = value[0];
@@ -166,7 +172,23 @@ public class HighlightReportData implements Response {
         this.activeCount = activeCount;
     }
 
-    public int getLoginCount() {
+    public int getAssignmentAverage() {
+		return assignmentAverage;
+	}
+
+	public void setAssignmentAverage(int assignmentAverage) {
+		this.assignmentAverage = assignmentAverage;
+	}
+
+	public int getAssignmentCount() {
+		return assignmentCount;
+	}
+
+	public void setAssignmentCount(int assignmentCount) {
+		this.assignmentCount = assignmentCount;
+	}
+
+	public int getLoginCount() {
         return loginCount;
     }
 

@@ -3,7 +3,9 @@ package hotmath.cm.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
  * @author bob
@@ -215,4 +217,23 @@ public class QueryHelper {
 
         return dates;
     }
+
+    static public String createInList(List<String> uids) {
+        String inList = "";
+        for(String uid: uids) {
+            if(inList.length() > 0)
+                inList += ",";
+            inList += uid;
+        }
+        return inList;
+    }
+
+    public static Map<String,String> createInListMap(String list) {
+        Map<String,String> map = new HashMap<String, String>();
+        map.put("UID_LIST", list);
+        return map;
+    }
+    
+
+
 }
