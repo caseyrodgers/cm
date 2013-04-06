@@ -234,25 +234,6 @@ public class GradeBookDialog {
         LabelProvider<AssignmentStatusDto> statusLabel();
     }
 
-    private ComboBox<AssignmentStatusDto> createAssignmentStatusCombo() {
-
-        EditAssignDialogProperties props = GWT.create(EditAssignDialogProperties.class);
-
-        ListStore<AssignmentStatusDto> assStore = new ListStore<AssignmentStatusDto>(props.status());
-        assStore.add(new AssignmentStatusDto("Open"));
-        assStore.add(new AssignmentStatusDto("Closed"));
-        assStore.add(new AssignmentStatusDto("Past Due"));
-
-        ComboBox<AssignmentStatusDto> combo = new ComboBox<AssignmentStatusDto>(assStore, props.statusLabel());
-
-        combo.setToolTip("Overall status for this Assignment");
-        combo.setWidth(120);
-        combo.setTypeAhead(false);
-        combo.setTriggerAction(TriggerAction.ALL);
-        combo.setAllowBlank(false);
-
-        return combo;
-    }
 
     private boolean saveStudentGradeBook(final boolean releaseGrades) {
 

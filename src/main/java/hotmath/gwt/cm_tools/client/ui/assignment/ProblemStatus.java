@@ -2,7 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 public enum ProblemStatus {
 
-	NOT_VIEWED("Not viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect"), HALF_CREDIT("Half Credit");
+	NOT_VIEWED("Not Viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect"), HALF_CREDIT("Half Credit");
 	static public ProblemStatus parseString(String object) {
 		if (ProblemStatus.VIEWED.toString().equals(object)) {
 			return ProblemStatus.VIEWED;
