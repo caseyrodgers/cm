@@ -169,7 +169,15 @@ public class StudentAssignment implements Response {
      * @return
      */
     public boolean isEditable() {
-        return !getAssignment().isEditable() || !isGraded();
+        if(!getAssignment().isEditable()) {
+           return false;   
+        }
+        else if(!isGraded()) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
     
 

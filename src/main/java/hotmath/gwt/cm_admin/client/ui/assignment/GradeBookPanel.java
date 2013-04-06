@@ -137,7 +137,10 @@ public class GradeBookPanel extends ContentPanel {
         }
         else {
             final StudentAssignment studentAssignment = _gradebookGrid.getSelectionModel().getSelectedItem();
-            if(studentAssignment != null) {
+            if(studentAssignment == null) {
+                CmMessageBox.showAlert("You need to select a student first");
+            }
+            else {
                 new GradeBookDialog(studentAssignment, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

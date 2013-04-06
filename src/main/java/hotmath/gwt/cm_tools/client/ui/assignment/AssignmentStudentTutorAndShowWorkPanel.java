@@ -60,7 +60,8 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         /** create callback to pass along when tutor widget value changed
          *  
          */
-        _tutorPanel = new AssignmentTutorPanel(assignment.isEditable(),assignment.isGraded(), new AssignmentTutorPanelCallback() {
+        boolean iEditable = assignment.isEditable();
+        _tutorPanel = new AssignmentTutorPanel(iEditable,assignment.isGraded(), new AssignmentTutorPanelCallback() {
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 _callBack.tutorWidgetValueUpdated(value, correct);

@@ -338,7 +338,7 @@ public class EditAssignmentDialog {
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
-        if(_submitOptions.getValue().getOption().startsWith("Do not")) {
+        if(_submitOptions.getValue().getOption().startsWith("Allow")) {
             _assignment.setClosePastDue(true);
         }
         else {
