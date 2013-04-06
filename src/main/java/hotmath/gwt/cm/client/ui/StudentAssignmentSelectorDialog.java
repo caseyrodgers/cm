@@ -1,7 +1,6 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.CatchupMath;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
@@ -13,7 +12,6 @@ import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GotoNextAnnotationButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -137,7 +135,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     private IsWidget createLedgend() {
         String html="";
         if(anyAssignmentHasChanged()) {
-             html = "<div style='margin: 5px 5px;float: left;background: red;width: 10px'>&nbsp;</div>&nbsp;&nbsp;Has changed";
+             html = "<div style='margin: 5px 5px;float: left;background: red;width: 10px'>&nbsp;</div><div style='float: left;margin-top: 2px;'>Has changed</div>";
         }
         return new HTML(html);
     }
@@ -168,14 +166,13 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         
         HorizontalLayoutData hld = new HorizontalLayoutData();
         hld.setMargins(new Margins(0,15,0,0));
-        hlc.add(new MyFieldLabel(_cbActive, "Open", 40,30),hld);
-        hlc.add(new MyFieldLabel(_cbTurnedIn, "Turned In", 60,30),hld);
+//        hlc.add(new MyFieldLabel(_cbActive, "Open", 40,30),hld);
+//        hlc.add(new MyFieldLabel(_cbTurnedIn, "Turned In", 60,30),hld);
         //hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
         //hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,30),hld);
-        hlc.add(new MyFieldLabel(_cbClosed, "Closed", 40,30),hld);
+        hlc.add(new MyFieldLabel(_cbClosed, "Show Closed", 80,30),hld);
         
         vld.setMargins(new Margins(0, 0, 5, 0));
-        vlc.add(new Label("Which assignments to show?"),vld);
         vlc.add(hlc,vld);
         return vlc  ;
     }
