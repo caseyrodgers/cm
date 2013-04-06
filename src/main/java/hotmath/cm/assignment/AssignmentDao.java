@@ -1850,6 +1850,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentCopy.setComments(assignmentCopy.getComments() + copyTag);
         assignmentCopy.setStatus("Draft");
         assignmentCopy.setGroupId(groupToImportInto);
+        
+        Date now = new Date();
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(now);  
+        cal.add(Calendar.DAY_OF_YEAR, 1);  
+        Date tomorrow = cal.getTime();  
+        assignmentCopy.setDueDate(tomorrow);
 
         saveAssignment(assignmentCopy);
 

@@ -16,7 +16,7 @@ public class DefaultGxtLoadingPanel extends CenterLayoutContainer {
     
     public DefaultGxtLoadingPanel(String msg) {
         //getElement().setAttribute("style", "background-color: gray");
-        String html = "<h1 style='font-size: 25px;color: #1C97D1;'>" + msg + "</h1>";
+        String html = "<h1 style='color: #1C97D1;'>" + msg + "</h1>";
         add(new HTML(html));
     }
 }
