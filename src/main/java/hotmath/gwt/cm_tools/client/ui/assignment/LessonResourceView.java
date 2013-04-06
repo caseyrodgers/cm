@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.button.ToggleButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
@@ -23,7 +25,7 @@ public class LessonResourceView extends ContentPanel implements ResourceView  {
 
     private PrescriptionSessionDataResource resource;
     private ProblemDto problem;
-    TextButton _spanishButton;
+    ToggleButton _spanishButton;
     
     public LessonResourceView(PrescriptionSessionDataResource resource, ProblemDto problem) {
         
@@ -32,7 +34,8 @@ public class LessonResourceView extends ContentPanel implements ResourceView  {
         
         addStyleName("lesson-resource-view");
         
-        _spanishButton = new TextButton("Spanish", new SelectHandler() {
+        _spanishButton = new ToggleButton("Spanish/English");
+        _spanishButton.addSelectHandler( new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 if(__isSpanish) {
@@ -45,7 +48,7 @@ public class LessonResourceView extends ContentPanel implements ResourceView  {
             }
         });
         addTool(_spanishButton);
-        setWidget(new Label("Loading ..."));
+        setWidget(new DefaultGxtLoadingPanel());
         
         getData();
     }

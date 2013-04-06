@@ -1067,7 +1067,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 String status = rs.getString("status");
                 Date dueDate = rs.getDate("due_date");
                 Date turnInDate = rs.getDate("turn_in_date");
-
+                
+                if(status.equals("Open") && turnInDate != null) {
+                    status = "Turned In";
+                }
+                
                 boolean isGraded = rs.getInt("is_graded") != 0 ? true : false;
                 int assignKey = rs.getInt("assign_key");
                 String score = "";

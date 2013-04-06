@@ -119,7 +119,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         BorderLayoutData bld = new BorderLayoutData(20);
         bld.setMargins(new Margins(10));
         bCont.setNorthWidget(createHeader(), bld);
-        bCont.setSouthWidget(createLedgend(), new BorderLayoutData(15));
+        bCont.setSouthWidget(createLedgend(), new BorderLayoutData(20));
         setWidget(bCont);
     }
     
