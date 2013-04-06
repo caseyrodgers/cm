@@ -23,6 +23,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.Date;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -124,7 +125,7 @@ public class AssignmentManagerDialog2  {
 
     private void loadGroupInfo(GroupDto group) {
         _lastGroup = group;
-        Info.display("Group Loading", "Loading assignments for '" + group + "'");
+        Log.debug("Group Loading", "Loading assignments for '" + group + "'");
         _assignmentsPanel.loadAssignmentsFor(group);
     }
     
