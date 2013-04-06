@@ -5,15 +5,15 @@ import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.shared.client.CmShared;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.sencha.gxt.widget.core.client.button.TextButton;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 
 public class MessageOfTheDayDialog extends GWindow {
 
@@ -34,10 +34,11 @@ public class MessageOfTheDayDialog extends GWindow {
 
         setWidget(uiBinder.createAndBindUi(this));
 
-        Button okBtn = new Button("OK");
-        okBtn.addSelectionListener(new SelectionListener<ButtonEvent>() {
+        TextButton okBtn = new TextButton("OK");
+        okBtn.addSelectHandler(new SelectHandler() {
+            
             @Override
-            public void componentSelected(ButtonEvent ce) {
+            public void onSelect(SelectEvent event) {
                 hide();
                 callback.callbackReady();
             }

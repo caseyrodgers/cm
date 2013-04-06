@@ -36,6 +36,7 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
@@ -115,7 +116,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         
         bCont.setCenterWidget(_grid);
         
-        BorderLayoutData bld = new BorderLayoutData(40);
+        BorderLayoutData bld = new BorderLayoutData(20);
         bld.setMargins(new Margins(10));
         bCont.setNorthWidget(createHeader(), bld);
         bCont.setSouthWidget(createLedgend(), new BorderLayoutData(15));
@@ -145,11 +146,6 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     CheckBox _cbTurnedIn = new CheckBox();
     
     private Widget createHeader() {
-        VerticalLayoutContainer vlc = new VerticalLayoutContainer();
-        VerticalLayoutData vld = new VerticalLayoutData(1,-1);
-        HorizontalLayoutContainer hlc = new HorizontalLayoutContainer();
-
-
         ValueChangeHandler<Boolean> changeHandler = new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> arg0) {
@@ -164,17 +160,10 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         _cbTurnedIn.setValue(true);
         _cbClosed.setValue(false);
         
-        HorizontalLayoutData hld = new HorizontalLayoutData();
-        hld.setMargins(new Margins(0,15,0,0));
-//        hlc.add(new MyFieldLabel(_cbActive, "Open", 40,30),hld);
-//        hlc.add(new MyFieldLabel(_cbTurnedIn, "Turned In", 60,30),hld);
-        //hlc.add(new MyFieldLabel(_cbGraded, "Graded", 30,50));
-        //hlc.add(new MyFieldLabel(_cbPastDue, "Past Due", 55,30),hld);
-        hlc.add(new MyFieldLabel(_cbClosed, "Show Closed", 80,30),hld);
-        
-        vld.setMargins(new Margins(0, 0, 5, 0));
-        vlc.add(hlc,vld);
-        return vlc  ;
+        MyFieldLabel closeLabel = new MyFieldLabel(_cbClosed, "Show Closed Assignments", 150,30);
+        FlowLayoutContainer flc = new FlowLayoutContainer();
+        flc.add(closeLabel);
+        return flc;
     }
     
     
