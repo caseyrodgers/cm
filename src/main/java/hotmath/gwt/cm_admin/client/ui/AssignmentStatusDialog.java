@@ -7,12 +7,9 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 public class AssignmentStatusDialog extends GWindow {
 
     GradeBookPanel _gradingPanel;
-    private Assignment _assigment;
     public AssignmentStatusDialog(final Assignment asgn) {
         
         super(false);
-        this._assigment = asgn;
-        
         setPixelSize(500,  400);
         setHeadingText("Assignment Status: Due: " + asgn.getDueDate() + " " + asgn.getComments());
         

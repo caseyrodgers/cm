@@ -34,7 +34,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
+import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.spring.SpringManager;
@@ -589,7 +589,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 if (lessonStatus != null) {
                     lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
                     stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    stuAssignMap.get(uid).setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                 }
                 lessonName = "";
                 totCount = 0;
@@ -653,7 +653,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         if (stuAssignMap.size() > 0) {
             stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            stuAssignMap.get(uid).setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            stuAssignMap.get(uid).setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
         }
 
         if (__logger.isDebugEnabled())
@@ -728,7 +728,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
+        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
         sa.setStudentDetailStatus(getLessonStatus(sa.getStudentStatuses().getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
@@ -757,17 +757,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return status;
     }
 
-    private String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
-
-        // add .5 for each half correct answer
-        float totCorrectF = (float) totCorrect + (totHalfCredit > 0 ? totHalfCredit / 2 : 0);
-        String grade = "-";
-        if ((totCorrect + totIncorrect + totHalfCredit) > 0) {
-            int percent = Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
-            grade = String.format("%d%s", percent, "%");
-        }
-        return grade;
-    }
 
     public List<StudentAssignment> getAssignmentWorkForStudent(int userId) throws Exception {
 
@@ -857,7 +846,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     sa.setProblemPendingCount(totPending);
                     sa.setProblemCompletedCount(totCompleted);
                     sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                     if (__logger.isDebugEnabled())
                         __logger.debug(String.format(
                                 "getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d", totCount,
@@ -926,7 +915,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             sa.setProblemPendingCount(totPending);
             sa.setProblemCompletedCount(totCompleted);
             sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            sa.setHomeworkGrade(getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
             if (__logger.isDebugEnabled())
                 __logger.debug(String.format("getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d",
                         totCount, totCompleted, totPending, totGraded, totViewed));
@@ -1291,7 +1280,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
 
-        return getHomeworkGrade((int) counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
+        return GradeBookUtils.getHomeworkGrade((int) counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
     }
 
     private int getHomeworkGradeValue(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {

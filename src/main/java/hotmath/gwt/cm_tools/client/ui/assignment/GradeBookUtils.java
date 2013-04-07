@@ -12,16 +12,34 @@ public class GradeBookUtils {
      * @return
      */
     static public String getHomeworkGrade(List<StudentProblemDto> problems) {
-        int percent = 0;
-        int numCorrect = 0;
-
+        int totCount=0, totCorrect=0, totIncorrect=0, totHalfCredit=0;
         for (StudentProblemDto dto : problems) {
-            numCorrect += (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.toString())) ? 1 : 0;
+            totCount++;
+            String status = dto.getStatus();
+            if(status.equals(ProblemStatus.CORRECT.toString())) {
+                totCorrect++;
+            }
+            else if(status.equals(ProblemStatus.HALF_CREDIT.toString())) {
+                totHalfCredit++;
+            }
+            else if(status.equals(ProblemStatus.INCORRECT.toString())) {
+                totIncorrect++;
+            }
         }
-        if (problems.size() > 0)
-            percent = Math.round((float)numCorrect * 100.0f / (float)problems.size());
+        return getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit);
+    }
+    
+    
 
-        return percent + "%";
+    static public String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
+        // add .5 for each half correct answer
+        float totCorrectF = (float) totCorrect + (totHalfCredit > 0 ? (float)totHalfCredit / 2 : 0);
+        String grade = "-";
+        if ((totCorrect + totIncorrect + totHalfCredit) > 0) {
+            int percent = Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
+            grade = percent+"%";
+        }
+        return grade;
     }
 
 }

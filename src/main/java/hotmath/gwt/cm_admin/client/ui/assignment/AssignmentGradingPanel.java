@@ -214,22 +214,8 @@ public class AssignmentGradingPanel extends ContentPanel {
                     _correctIncorrectMap.put(pid, null);
                     _lastProblem.setGraded(false);
                 }
-                float numCorrect = 0;
-                for (StudentProblemDto sbDto : _store.getAll()) {
-                    if (_correctIncorrectMap.containsKey(sbDto.getPid())) {
-                        Integer value = _correctIncorrectMap.get(sbDto.getPid());
-                        if (value != null) {
-                            if (value == 100) {
-                                numCorrect += 1;
-                            } else if (value == 50) {
-                                numCorrect += .5;
-                            }
-                        }
-                    }
-                }
-                int percent = Math.round(numCorrect * 100.0f / (float) _store.getAll().size());
-                _updateGradeCallback.updateGrade(percent);
-                _gradingGrid.getStore().update(_lastProblem);
+
+                updateGrade();
             }
         });
         editing = createGridEditing(_gradingGrid);
@@ -282,6 +268,26 @@ public class AssignmentGradingPanel extends ContentPanel {
         }
     }
 
+    private void updateGrade() {
+        float numCorrect = 0;
+        for (StudentProblemDto sbDto : _store.getAll()) {
+            if (_correctIncorrectMap.containsKey(sbDto.getPid())) {
+                Integer value = _correctIncorrectMap.get(sbDto.getPid());
+                if (value != null) {
+                    if (value == 100) {
+                        numCorrect += 1;
+                    } else if (value == 50) {
+                        numCorrect += .5;
+                    }
+                }
+            }
+        }
+        int percent = Math.round(numCorrect * 100.0f / (float) _store.getAll().size());
+        _updateGradeCallback.updateGrade(percent);
+        _gradingGrid.getStore().update(_lastProblem);
+    }
+    
+    
     boolean areChanges = false;
 
     protected GridEditing<StudentProblemDto> createGridEditing(Grid<StudentProblemDto> editableGrid) {
