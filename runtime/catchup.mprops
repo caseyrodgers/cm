@@ -3742,7 +3742,7 @@ left join (
 left join CM_ASSIGNMENT_USER ua on ua.assign_key = a.assign_key and ua.uid = u.uid
 
 where a.assign_key = ?
-and   u.is_active = 1
+and   (u.is_active = 1 and u.is_auto_create_template = 0)
 
 order by u.user_name, problem_id
 
