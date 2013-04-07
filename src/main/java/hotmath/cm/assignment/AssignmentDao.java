@@ -335,24 +335,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             e.printStackTrace();
         }
 
-        String sql = "";
-        if (subject != null) {
-            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
-        } else {
-            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? OR subject = ? order by id"; // get
-                                                                                                         // all
-        }
-
-        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject }, new RowMapper<ProblemDto>() {
-            @Override
-            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), 0);
-            }
-        });
-
-        problemsAll.addAll(problems);
+//        String sql = "";
+//        if (subject != null) {
+//            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
+//        } else {
+//            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? OR subject = ? order by id"; // get
+//                                                                                                         // all
+//        }
+//
+//        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject }, new RowMapper<ProblemDto>() {
+//            @Override
+//            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+//
+//                String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
+//                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), 0);
+//            }
+//        });
+//
+//        problemsAll.addAll(problems);
 
         updateProblemTypes(problemsAll);
 
@@ -369,10 +369,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /**
          * Then add any whiteboard only questions to bottom
          * 
+         * Skp MULTI_CHOICE ..
+         * 
          */
         for (ProblemDto pt : problemsAll) {
             if (!problemsFiltered.contains(pt)) {
-                problemsFiltered.add(pt);
+                    problemsFiltered.add(pt);
             }
         }
 
