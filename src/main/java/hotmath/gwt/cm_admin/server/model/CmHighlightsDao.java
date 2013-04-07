@@ -162,7 +162,6 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 
     	for (StudentAssignmentStatus status : list) {
     		if (status.getUserId() != userId && userId > 0) {
-    			// finish
     			int avgScore = Math.round((float)scoreTotal / (float)asgCount);
     			HighlightReportData data = new HighlightReportData(userId, userName, ReportType.ASSIGNMENTS, asgCount, avgScore);
     			rList.add(data);
@@ -179,6 +178,29 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 		    HighlightReportData data = new HighlightReportData(userId, userName, ReportType.ASSIGNMENTS, asgCount, avgScore);
 		    rList.add(data);
     	}
+    	
+    	// TODO: sort in order of descending average score
+        Collections.sort(rList, new Comparator<HighlightReportData>() {
+            @Override
+            public int compare(HighlightReportData o1, HighlightReportData o2) {
+            	int a1 = o1.getAssignmentAverage();
+            	int a2 = o2.getFirstTimeCorrectPercent();
+            	if (a1 != a2) return (a1 > a2) ? -1 : 1;
+            	if (a1 == a2) return 0;
+
+                String n1 = o1.getName();
+            	String n2 = o2.getName();
+            	if (n1.compareTo(n2) != 0) return n1.compareTo(n2);
+            	
+            	int c1 = o1.getAssignmentCount();
+            	int c2 = o2.getAssignmentCount();
+            	
+            	if (c1 != c2) return (c1 > c2) ? -1 : 1;
+              	if (a1 == a2) return 0;
+              	return 0;
+
+            }
+        });
         return rList;
 
     }
