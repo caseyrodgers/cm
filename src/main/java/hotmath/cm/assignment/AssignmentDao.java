@@ -351,9 +351,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 //                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), 0);
 //            }
 //        });
-//
 //        problemsAll.addAll(problems);
-
+        
         updateProblemTypes(problemsAll);
 
         /**
@@ -374,7 +373,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          */
         for (ProblemDto pt : problemsAll) {
             if (!problemsFiltered.contains(pt)) {
+                if(pt.getProblemType() != ProblemType.MULTI_CHOICE) {
                     problemsFiltered.add(pt);
+                }
             }
         }
 
