@@ -124,8 +124,9 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
 	                             }));
                 	 }
                  }
-                 
-                 fireAppropriateEvent(info.getAssignmentInfo());
+                 if(info.getAssignmentInfo().isAdminUsingAssignments()) {
+                     fireAppropriateEvent(info.getAssignmentInfo());
+                 }
             }
              @Override
             public void onFailure(Throwable arg0) {
