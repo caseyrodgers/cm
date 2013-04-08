@@ -3975,7 +3975,7 @@ select a.status, count(*) as cnt
 from HA_USER u
    JOIN CM_GROUP g on g.id = u.group_id
   JOIN CM_ASSIGNMENT a on a.group_id = u.group_id
-  JOIN CM_ASSIGNMENT_USER au on au.uid = u.uid and au.assign_key = a.assign_key
+  LEFT JOIN CM_ASSIGNMENT_USER au on au.uid = u.uid and au.assign_key = a.assign_key
 where u.uid = ?
 and a.status != 'Draft'
 and  au.turn_in_date is null
