@@ -379,11 +379,23 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         }
 
+        
+        /** Now put them back and disreguard any dummy problems
+         *  used for custom programs.   Dummy problems are used
+         *  to link up custom programs and should not be included.
+         */
+        problemsAll.clear();
+        for (ProblemDto pt : problemsFiltered) {
+            if(!pt.getPid().startsWith("dummy")) {
+                problemsAll.add(pt);
+            }
+        }
+        
         /**
          * Then make sure they are sorted
          * 
          */
-        Collections.sort(problemsFiltered, new Comparator<ProblemDto>() {
+        Collections.sort(problemsAll, new Comparator<ProblemDto>() {
             @Override
             public int compare(ProblemDto o1, ProblemDto o2) {
                 String label1 = o1.getLabelWithType();
@@ -391,7 +403,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return label1.compareTo(label2);
             }
         });
-        return problemsFiltered;
+        return problemsAll;
     }
 
     private String getDefaultLabel(String lesson, int i) {
