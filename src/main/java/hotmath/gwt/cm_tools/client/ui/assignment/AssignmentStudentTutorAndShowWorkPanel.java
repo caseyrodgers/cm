@@ -61,7 +61,11 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
          *  
          */
         boolean iEditable = assignment.isEditable();
-        _tutorPanel = new AssignmentTutorPanel(iEditable,assignment.isGraded(), new AssignmentTutorPanelCallback() {
+        /** Multi Choice problems do not have steps so
+         *  we cannot show the buttonbar.
+         * 
+         */
+        _tutorPanel = new AssignmentTutorPanel(iEditable,problem.getProblem(),assignment.isGraded(), new AssignmentTutorPanelCallback() {
             @Override
             public void tutorWidgetValueUpdated(String value, boolean correct) {
                 _callBack.tutorWidgetValueUpdated(value, correct);

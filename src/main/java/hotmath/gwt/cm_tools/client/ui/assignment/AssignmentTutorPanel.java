@@ -3,8 +3,9 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -21,7 +22,6 @@ import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.web.bindery.autobean.gwt.client.impl.JsniCreatorMap;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 
@@ -47,7 +47,7 @@ public class AssignmentTutorPanel extends Composite {
 
         void whiteboardSubmitted();
     }
-    public AssignmentTutorPanel(final boolean isEditable, final boolean isGraded, AssignmentTutorPanelCallback callBack) {
+    public AssignmentTutorPanel(final boolean isEditable, ProblemDto problemDto, final boolean isGraded, AssignmentTutorPanelCallback callBack) {
         
         setupJsni();
         
@@ -55,7 +55,11 @@ public class AssignmentTutorPanel extends Composite {
         __lastInstance = this;
         _isEditable = isEditable;
         _isGraded = isGraded;
-        _tutorPanel = new TutorWrapperPanel(!isEditable, false,false, true, new TutorCallbackDefault() {
+        boolean showButtonBar = !isEditable;
+        if(problemDto.getProblemType() == ProblemType.MULTI_CHOICE) {
+            showButtonBar = false;
+        }
+        _tutorPanel = new TutorWrapperPanel(showButtonBar, false,false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);
