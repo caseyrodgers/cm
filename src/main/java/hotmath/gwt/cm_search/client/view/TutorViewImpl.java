@@ -31,7 +31,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView {
     
     
     public TutorViewImpl() {
-        tutor = new TutorWrapperPanel(true,true,false,false,new TutorCallbackDefault(){
+        tutor = new TutorWrapperPanel(true, true,false,false,new TutorCallbackDefault(){
             @Override
             public void onNewProblem(int problemNumber) {
                 tutorNewProblem();

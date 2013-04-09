@@ -97,7 +97,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             return;
 
         
-        tutorPanel = new TutorWrapperPanel(true, false, false, true, new TutorCallbackDefault() {
+        tutorPanel = new TutorWrapperPanel(true,  false, false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 if(correct) {

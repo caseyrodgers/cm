@@ -698,14 +698,13 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     }
 
     public Map<Integer, Integer> getTimeOnTaskMapForUids(final Connection conn, List<String> uidList, Date from, Date to) throws Exception {
-    	
-    	CmList<HighlightReportData> totList = getReportTimeOnTask(conn, uidList, from, to);
 
+    	CmList<HighlightReportData> totList = getReportTimeOnTask(conn, uidList, from, to);
     	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
     	for (HighlightReportData tot : totList) {
-    		totMap.put(tot.getUid(), Integer.valueOf(tot.getData()));
+    		totMap.put(tot.getUid(), tot.getTimeOnTask());
     		if (logger.isDebugEnabled())
-    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getData());
+    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
     	}
 
     	return totMap;

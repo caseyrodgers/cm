@@ -56,10 +56,7 @@ public class AssignmentTutorPanel extends Composite {
         _isEditable = isEditable;
         _isGraded = isGraded;
         boolean showButtonBar = !isEditable;
-        if(problemDto.getProblemType() == ProblemType.MULTI_CHOICE) {
-            showButtonBar = false;
-        }
-        _tutorPanel = new TutorWrapperPanel(showButtonBar, false,false, true, new TutorCallbackDefault() {
+        _tutorPanel = new TutorWrapperPanel(showButtonBar,false,false, true, new TutorCallbackDefault() {
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 processTutorWidgetComplete(inputValue, correct);

@@ -195,7 +195,7 @@ public class StudentShowWorkWindow extends GWindow {
             solItem.setType("practice");
             solItem.setFile(pid);
             
-            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallbackDefault());
+            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true,false, false, true,new TutorCallbackDefault());
             
             
             FlowLayoutContainer tutorFlow = new FlowLayoutContainer();
@@ -294,7 +294,7 @@ public class StudentShowWorkWindow extends GWindow {
             solItem.setType("practice");
             solItem.setFile(pid);
             
-            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true, false, false, true,new TutorCallbackDefault());
+            TutorWrapperPanel tutorPanel = new TutorWrapperPanel(true,  false, false, true,new TutorCallbackDefault());
             
             
             final BorderLayoutContainer borderLayout = new BorderLayoutContainer();

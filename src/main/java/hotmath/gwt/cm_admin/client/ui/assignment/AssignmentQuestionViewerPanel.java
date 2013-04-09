@@ -3,8 +3,6 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
@@ -60,7 +58,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
     SimpleContainer _showWorkWrapper;
 
     public AssignmentQuestionViewerPanel() {
-        _tutorPanel = new TutorWrapperPanel(false,false,false,false,new TutorCallbackDefault(){
+        _tutorPanel = new TutorWrapperPanel(false, false,false,false,new TutorCallbackDefault(){
             @Override
             public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
                 CmMessageBox.showAlert("Not Allowed", "To provide annotations, write on the whiteboard.");

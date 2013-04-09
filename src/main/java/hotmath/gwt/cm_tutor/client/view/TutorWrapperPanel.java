@@ -87,7 +87,7 @@ public class TutorWrapperPanel extends Composite {
     static TutorWrapperPanel __lastInstance;
     
     boolean _wasWidgetAnswered;
-    
+
     public TutorWrapperPanel(boolean showButtonBar, boolean showReturnButton, boolean showWhiteboardButton, boolean saveVariableContext, TutorCallback tutorCallback) {
         __lastInstance = this;
         this.tutorCallback = tutorCallback;
@@ -330,7 +330,7 @@ public class TutorWrapperPanel extends Composite {
         String submitButtonText = tutorCallback.getSubmitButtonText();
         WidgetStatusIndication indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
         
-        initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name());
+        jsni_initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name());
 
         debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
@@ -412,9 +412,9 @@ public class TutorWrapperPanel extends Composite {
      * methods and GWT.
      * 
      */
-    private native void initializeTutorNative(Widget instance, String pid, String jsonConfig, 
-            String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,boolean shouldExpandSolution,
-            String solutionContext, String submitButtonText, String indicateWidgetStatus) /*-{
+    private native void jsni_initializeTutorNative(Widget instance, String pid, String jsonConfig, 
+            String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,
+            boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus) /*-{
         
         var that = this;
         
@@ -467,12 +467,6 @@ public class TutorWrapperPanel extends Composite {
         }
         
         $wnd.gwt_showWhiteboard = function() {
-//            var ua = navigator.userAgent;
-//            if(ua.indexOf("4_2") > -1) {
-//                alert("Whiteboard functionality does not work on older IPads.");
-//                return;
-//            }
-//        
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_showWhiteBoard()();
         }
         
