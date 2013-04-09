@@ -220,14 +220,15 @@ public class AssignmentTutorPanel extends Composite {
      * @param yesNo
      */
     private void processTutorWidgetComplete(final String inputValue, boolean yesNo) {
-        
-        if(!_isEditable) {
-            CmMessageBox.showAlert("Assignment Closed", "This input value will not be saved because the assignment is closed.");
-            return;
-        }
+
         
         if(_isGraded) {
             CmMessageBox.showAlert("Assignment Already Graded", "This input value will not be saved because the assignment has already been graded.");
+            return;
+        }
+
+        if(!_isEditable) {
+            CmMessageBox.showAlert("Assignment Closed", "This input value will not be saved because the assignment is closed.");
             return;
         }
 
