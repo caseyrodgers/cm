@@ -606,6 +606,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     if (sa.isGraded() == false) {
                         sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
                     }
+                    else {
+                    	sa.setHomeworkStatus("Graded");
+                    }
                     sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                 }
                 lessonName = "";
@@ -672,6 +675,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             StudentAssignment sa = stuAssignMap.get(uid);
             if (sa.isGraded() == false) {
                 sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
+            }
+            else {
+            	sa.setHomeworkStatus("Graded");
             }
             sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
         }
