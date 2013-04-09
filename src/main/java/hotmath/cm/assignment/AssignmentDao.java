@@ -324,7 +324,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
         try {
             List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment_pid");
-            int counter = 0;
             for (RppWidget w : rpps) {
                 for (RppWidget ew : AssessmentPrescription.expandProblemSetPids(w)) {
                     String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
@@ -368,7 +367,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /**
          * Then add any whiteboard only questions to bottom
          * 
-         * Skp MULTI_CHOICE ..
+         * Skip MULTI_CHOICE ..
          * 
          */
         for (ProblemDto pt : problemsAll) {
@@ -380,7 +379,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
 
         
-        /** Now put them back and disreguard any dummy problems
+        /** Now put them back and disregard any dummy problems
          *  used for custom programs.   Dummy problems are used
          *  to link up custom programs and should not be included.
          */
@@ -461,7 +460,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP_AND_DATE_RANGE");
 
         String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
-        List<Assignment> problems = getJdbcTemplate().query(sql, new Object[] { groupId, dates[0], dates[1] }, new RowMapper<Assignment>() {
+        List<Assignment> assignments = getJdbcTemplate().query(sql, new Object[] { groupId, dates[0], dates[1] }, new RowMapper<Assignment>() {
             @Override
             public Assignment mapRow(ResultSet rs, int rowNum) throws SQLException {
 
@@ -475,7 +474,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ass;
             }
         });
-        return problems;
+        return assignments;
     }
 
     protected Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
@@ -603,8 +602,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if (probDto.getUid() != uid) {
                 if (lessonStatus != null) {
                     lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
-                    stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    stuAssignMap.get(uid).setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    StudentAssignment sa = stuAssignMap.get(uid);
+                    if (sa.isGraded() == false) {
+                        sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
+                    }
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                 }
                 lessonName = "";
                 totCount = 0;
@@ -667,8 +669,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
         }
         if (stuAssignMap.size() > 0) {
-            stuAssignMap.get(uid).setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            stuAssignMap.get(uid).setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            StudentAssignment sa = stuAssignMap.get(uid);
+            if (sa.isGraded() == false) {
+                sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
+            }
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
         }
 
         if (__logger.isDebugEnabled())
