@@ -103,4 +103,13 @@ public interface TutorCallback {
      * @return
      */
     WidgetStatusIndication indicateWidgetStatus();
+
+    
+    /** Should custom, dynamicall generate steps be used for solution
+     * 
+     * NOTE: for now there is only the MC type problems showing the correct answer
+     * 
+     * @return
+     */
+    boolean installCustomSteps();
 }

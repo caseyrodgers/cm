@@ -70,4 +70,9 @@ public class TutorCallbackDefault implements TutorCallback {
     public WidgetStatusIndication indicateWidgetStatus() {
         return WidgetStatusIndication.DEFAULT;
     }
+    
+    @Override
+    public boolean installCustomSteps() {
+        return false;
+    }
 }

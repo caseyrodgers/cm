@@ -47,7 +47,7 @@ public class AssignmentTutorPanel extends Composite {
 
         void whiteboardSubmitted();
     }
-    public AssignmentTutorPanel(final boolean isEditable, ProblemDto problemDto, final boolean isGraded, AssignmentTutorPanelCallback callBack) {
+    public AssignmentTutorPanel(final boolean isEditable, final ProblemDto problemDto, final boolean isGraded, AssignmentTutorPanelCallback callBack) {
         
         setupJsni();
         
@@ -86,6 +86,11 @@ public class AssignmentTutorPanel extends Composite {
             @Override
             public WidgetStatusIndication indicateWidgetStatus() {
                 return !isGraded?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
+            }
+            
+            @Override
+            public boolean installCustomSteps() {
+                return problemDto.getProblemType() == ProblemType.MULTI_CHOICE;
             }
             
         });

@@ -330,7 +330,9 @@ public class TutorWrapperPanel extends Composite {
         String submitButtonText = tutorCallback.getSubmitButtonText();
         WidgetStatusIndication indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
         
-        jsni_initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name());
+        boolean installCustomSteps = tutorCallback.installCustomSteps();
+        
+        jsni_initializeTutorNative(instance, pid, jsonConfig, solutionDataJs, solutionHtml, title, hasShowWork, shouldExpandSolution, solutionContext, submitButtonText, indicateWidgetStatus.name(), installCustomSteps);
 
         debugInfo.setText(pid);
         debugInfo.addClickHandler(new ClickHandler() {
@@ -414,7 +416,7 @@ public class TutorWrapperPanel extends Composite {
      */
     private native void jsni_initializeTutorNative(Widget instance, String pid, String jsonConfig, 
             String solutionDataJs, String solutionHtml, String title, boolean hasShowWork,
-            boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus) /*-{
+            boolean shouldExpandSolution,String solutionContext, String submitButtonText, String indicateWidgetStatus, boolean installCustomSteps) /*-{
         
         var that = this;
         
@@ -505,7 +507,7 @@ public class TutorWrapperPanel extends Composite {
             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_tutorQuestionGuessChanged(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(id,selection,value);
        }
        
-       $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus);
+       $wnd.TutorManager.initializeTutor(pid, jsonConfig, solutionDataJs,solutionHtml,title,hasShowWork,shouldExpandSolution,solutionContext,submitButtonText, indicateWidgetStatus, installCustomSteps);
    }-*/;    
 
     private void gwt_showWhiteBoard() {

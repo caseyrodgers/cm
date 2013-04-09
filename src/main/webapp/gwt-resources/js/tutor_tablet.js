@@ -48,8 +48,6 @@ HmEvents.eventTutorInitialized.subscribe(function (x) {
 
 
 
-
-
 function $get(name) {
     return document.getElementById(name);
 }
@@ -76,7 +74,7 @@ var TutorManager = {
     solutionTitle: null,
     context: null,
     solutionVariableContext:null,
-    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext, submitButtonText, indicateWidgetStatus) {
+    initializeTutor : function(pid, jsonConfig, solutionData, stepText,solutionTitle,showWork, expand, solutionVariableContext, submitButtonText, indicateWidgetStatus, installCustomSteps) {
         TutorManager.pid = pid;
         TutorManager.jsonConfig = jsonConfig;
         TutorManager.currentRealStep = -1;
@@ -87,8 +85,15 @@ var TutorManager = {
         TutorManager.solutionVariableContext = solutionVariableContext;
 
         TutorManager.loadTutorData(solutionData, stepText, solutionVariableContext);
-        TutorManager.analyzeLoadedData();
+        
+        if(installCustomSteps) { 
+        	TutorManager.installCustomSteps();
+        }
 
+        
+        TutorManager.analyzeLoadedData();
+        
+        
         if(!$get('tutoroutput')) {
             TutorManager.isVisible = false;
         }
@@ -107,6 +112,69 @@ var TutorManager = {
         TutorManager.context = createNewSolutionMessageContext(pid, jsonConfig);
         TutorDynamic.initializeTutor(TutorManager.context);
     },
+    
+    
+    
+    installCustomSteps: function() {
+    	try {
+	        /** install new step unit showing answer to multi choice
+	         * 
+	         */
+	        var root = document.getElementById("raw_tutor_steps");
+	        
+	        var root = document.getElementById("raw_tutor_steps");
+	        var ps = document.getElementById("problem_statement");
+	        var options = ps.getElementsByTagName("input");
+	        if(options.length == 0) {
+	        	return;
+	        }
+	        
+	        var answer=-1;
+	        for(var i=0;i<options.length;i++) {
+	        	if(options[i].getAttribute("value") == 'true') {
+	        		answer = i;
+	        		break;
+	        	}
+	        }
+	        if(answer == -1) {
+	        	return;
+	        }
+	        
+	        
+	    	/**
+	         * remove all existing step units
+	         *
+	         */
+	        var maxStepUnits = 100;
+	        for ( var s = 0; s < maxStepUnits; s++) {
+	            var stepUnit = _getStepUnit(s);
+	            if (stepUnit == null)
+	                break; // done
+	            
+	            // remove it
+	            stepUnit.parentNode.removeChild(stepUnit);
+	        }
+	        
+	        var letters = ['A','B','C','D', 'E', 'F'];
+	        var answer = letters[answer];
+	        var html = '<div style="display:none;" realstep="0" steprole="hint" class="hint" steptype="hint" id="stepunit-0"><div class="step_content"><p>Click the Lesson button for review.</p></div></div>';
+	        var el = document.createElement('div');
+	        el.innerHTML = html;
+	        root.appendChild(el);
+	        
+	        var html2 = '<div style="display:none;" realstep="0" steprole="step" class="step" steptype="step" id="stepunit-1"> <div id="step_title-1"></div> <div class="step_content"><p>The correct choice is ' + answer + '.</p> </div></div>'
+	        var el = document.createElement('div');
+	        el.innerHTML = html2;
+	        root.appendChild(el);
+    	}
+    	catch(e) {
+    		console.log('error installing custom steps: ' + e);
+    	}
+    },
+    
+    
+    
+    
     showMessage : function(msg) {
         var tm = $get('tutor_message');
         tm.innerHTML = msg;
@@ -225,8 +293,7 @@ var TutorManager = {
             var type = stepUnit.getAttribute("steptype");
             var realNum = parseInt(stepUnit.getAttribute("realstep"));
 
-            var su = new StepUnit(id, stepUnitNum, type, role, realNum,
-                    stepUnit);
+            var su = new StepUnit(id, stepUnitNum, type, role, realNum,stepUnit);
             TutorManager.stepUnits[TutorManager.stepUnits.length] = su;
 
             // is this realStep already created?

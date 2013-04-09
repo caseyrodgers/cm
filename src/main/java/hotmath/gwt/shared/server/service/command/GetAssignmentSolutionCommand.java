@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
@@ -42,7 +43,7 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
         
         AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue);
-    
+
         AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
         
         return assProb;
