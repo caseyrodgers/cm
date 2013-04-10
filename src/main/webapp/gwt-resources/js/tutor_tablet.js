@@ -157,7 +157,7 @@ var TutorManager = {
 	        
 	        var letters = ['A','B','C','D', 'E', 'F'];
 	        var answer = letters[answer];
-	        var html = '<div style="display:none;" realstep="0" steprole="hint" class="hint" steptype="hint" id="stepunit-0"><div class="step_content"><p>Click the Review button for review.</p></div></div>';
+	        var html = '<div style="display:none;" realstep="0" steprole="hint" class="hint" steptype="hint" id="stepunit-0"><div class="step_content"><p>Click the Lesson button for review.</p></div></div>';
 	        var el = document.createElement('div');
 	        el.innerHTML = html;
 	        root.appendChild(el);
