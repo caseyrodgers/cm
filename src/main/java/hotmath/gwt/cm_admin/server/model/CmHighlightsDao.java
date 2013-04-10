@@ -689,9 +689,9 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
 
     	Map<Integer, Integer> totMap = new HashMap<Integer, Integer>();
     	for (HighlightReportData tot : totList) {
-    		totMap.put(tot.getUid(), Integer.valueOf(tot.getData()));
+    		totMap.put(tot.getUid(), tot.getTimeOnTask());
     		if (logger.isDebugEnabled())
-    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getData());
+    			logger.debug("+++ getTimeOnTaskMap(): uid: " + tot.getUid() + ", timeOnTask: " + tot.getTimeOnTask());
     	}
 
     	return totMap;
