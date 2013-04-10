@@ -48,7 +48,7 @@ public class ProblemResourcesButton extends TextButton {
                 }
             }
         };
-        lessonsMenu = new MyMenuItem("Lessons",_menuItemlistener);
+        lessonsMenu = new MyMenuItem("Review",_menuItemlistener);
         videoMenu = new MyMenuItem("Videos",_menuItemlistener );
         lessonsMenu.setEnabled(false);
         videoMenu.setEnabled(false);
