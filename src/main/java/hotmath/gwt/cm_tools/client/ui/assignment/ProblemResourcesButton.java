@@ -24,7 +24,7 @@ public class ProblemResourcesButton extends TextButton {
     SelectionHandler<MenuItem> _menuItemlistener;
     
     public ProblemResourcesButton(ProblemDto problem) {
-        super("Resources");
+        super("Review");
         this._problem = problem;
         
         addSelectHandler(new SelectHandler() {
@@ -48,7 +48,7 @@ public class ProblemResourcesButton extends TextButton {
                 }
             }
         };
-        lessonsMenu = new MyMenuItem("Review",_menuItemlistener);
+        lessonsMenu = new MyMenuItem("Lesson",_menuItemlistener);
         videoMenu = new MyMenuItem("Videos",_menuItemlistener );
         lessonsMenu.setEnabled(false);
         videoMenu.setEnabled(false);
