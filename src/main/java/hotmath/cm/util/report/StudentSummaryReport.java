@@ -85,7 +85,7 @@ public class StudentSummaryReport {
 
         document.open();
 
-        Table tbl = new Table(7);
+        Table tbl = new Table(8);
         tbl.setWidth(100.0f);
         tbl.setBorder(Table.BOTTOM);
 
@@ -93,26 +93,26 @@ public class StudentSummaryReport {
         document.add(Chunk.NEWLINE);
 
         addHeader("Student", "15%", tbl);
+        addHeader("Password", "15%", tbl);
         addHeader("Group", "15%", tbl);
-        addHeader("Program", "15%", tbl);
+        addHeader("Program", "10%", tbl);
         addHeader("Status", "15%", tbl);
         addHeader("Quizzes", "15%", tbl);
-        addHeader("Last Quiz", "10%", tbl);
-        addHeader("Last Login", "15%", tbl);
-        //addHeader("Tutoring", "6%", tbl);
+        addHeader("Last Quiz", "6%", tbl);
+        addHeader("Last Login", "9%", tbl);
 
         tbl.endHeaders();
 
         int i = 0;
         for (StudentModelI sm : list) {
             addCell(sm.getName(), tbl, ++i);
+            addCell(sm.getPasscode(), tbl, i);
             addCell(sm.getGroup(), tbl, i);
             addCell(sm.getProgram().getProgramDescription(), tbl, i);
             addCell(sm.getStatus(), tbl, i);
             addCell(getQuizzesResult(sm), tbl, i);
             addCell(sm.getLastQuiz(), tbl, i);
             addCell(sm.getLastLogin(), tbl, i);
-            //addCell(String.valueOf(sm.getTutoringUse()), tbl, i);
         }
 
         document.add(tbl);
