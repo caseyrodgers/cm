@@ -94,7 +94,7 @@ public class StudentAssignmentButton extends TextButton {
             itemAssignments.setText(tip);
             if(fa > 0) {
                 itemAnnotations.setEnabled(true);
-                String tipa = "You have " + fa + " new teacher notes" + (fa>1?"s":"") + "";
+                String tipa = "You have " + fa + " new teacher note" + (fa>1?"s":"") + "";
                 tip += tipa;
                 itemAnnotations.setText(tipa);
             }
