@@ -60,7 +60,7 @@ public class GotoNextAnnotationButton extends TextButton implements SelectHandle
                 next++;
             }
             else {
-                CmMessageBox.showAlert("There are no teacher notes available.");
+                CmMessageBox.showAlert("There are no additional teacher notes available.");
             }
         }
     }

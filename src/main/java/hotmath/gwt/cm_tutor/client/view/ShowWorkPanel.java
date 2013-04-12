@@ -307,15 +307,19 @@ public class ShowWorkPanel extends Composite {
 
     private native void jnsi_resizeWhiteboard(Element ele)/*-{
         if (typeof $wnd.Whiteboard == 'undefined') {
-            console.log('jnsi_resizeWhiteboard: Whiteboard not defined');
+            $wnd.console.log('jnsi_resizeWhiteboard: Whiteboard not defined');
             return;
         }
+        
+        window.alert('resizing whiteboard');
     
         // tell the Whiteboard object the size of the parent container
         var height = Number($wnd.grabComputedHeight(ele)) + 15;
         var width = Number($wnd.grabComputedWidth(ele)) + 15;
         $wnd.Whiteboard.setWhiteboardViewPort(width, height);
         $wnd.Whiteboard.resizeWhiteboard();
+        
+        window.alert('resizing whiteboard done');
      }-*/;
 
     static private native void jsni_disconnectWhiteboard()/*-{

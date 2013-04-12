@@ -86,6 +86,14 @@
 
 	<dependencies>
 
+
+            <dependency>
+                <groupId>com.googlecode.mgwt</groupId>
+                <artifactId>mgwt</artifactId>
+                <version>1.1.2</version>
+            </dependency>
+
+
 		<dependency>
 			<!-- jsoup HTML parser library @ http://jsoup.org/ -->
 			<groupId>org.jsoup</groupId>
