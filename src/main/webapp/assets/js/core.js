@@ -122,6 +122,13 @@ function closeWebinar() {
     _overlay.hide();
 }
 
+var _assignmentsOverlay=null;
+
+function closeAssignmentsWebinar() {
+    _assignmentsOverlay.set("bodyContent", "");  // make sure video stops
+    _assignmentsOverlay.hide();
+}
+
 function showWebinar() {
     var closeFoot = '';
     var html = '<iframe src="/teacher-training-video/embedded.html" width="800" height="498px" scrolling="no" frameborder="no"></iframe>' +
@@ -144,6 +151,31 @@ function showWebinar() {
                                 });
 
                        _overlay.render();
+    });
+}
+
+function showAssignmentsWebinar() {
+    var closeFoot = '';
+    var html = '<iframe src="/assets/util/assignments-video-frame.html" width="970" height="530px" scrolling="no" frameborder="no"></iframe>' +
+              closeFoot;
+
+    var head = '<a href="#" onclick="closeAssignmentsWebinar();return false" class="close"><span>close</span> X</a>' + "Catchup Math Assignments Webinar";
+
+    YUI().use('anim','overlay',
+                    function(Y) {
+                        _assignmentsOverlay = new Y.Overlay(
+                                {
+                                    id:"assignments-webinar-video",
+                                    width : "982px",
+                                    height: "570px",
+                                    centered : true,
+                                    headerContent : head,
+                                    bodyContent : html,
+                                    zIndex : 2,
+                                    visible:true
+                                });
+
+                       _assignmentsOverlay.render();
     });
 }
 
