@@ -314,16 +314,18 @@ public class AssessmentPrescription {
         int lowestLevel = 99999;
         for (RppWidget w : rpps) {
             int level = 0;
-
+            
             // get the lowest level for this wpp
             level = w.getGradeLevels().size() > 0 ? w.getGradeLevels().get(0) : 0;
+            
+            logger.debug("checking: " + w.getFile() + ", level=" + level);
 
             if (level < lowestLevel) {
                 lowestLevel = level;
             }
         }
-        if (logger.isDebugEnabled())
-            logger.debug("lowest grade level for " + rpps.size() + " == " + lowestLevel);
+        logger.debug("lowest grade level for " + rpps.size() + " == " + lowestLevel);
+        
         return lowestLevel;
     }
 

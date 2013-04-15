@@ -123,7 +123,9 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
     private int determineGradeLevel(CmList<CustomLessonModel> progLessons, String cacheKey) throws Exception {
         int heighestLowestGradeLevel = 0;
         for (CustomLessonModel cpProgItem : progLessons) {
+            logger.debug("checking lesson: " + cpProgItem.getFile());
             if (cpProgItem.getCustomProgramType() == Type.LESSON) {
+                logger.debug("checking type: " + cpProgItem.getFile());
                 INeedMoreHelpItem item = new INeedMoreHelpItem("review", cpProgItem.getFile(), cpProgItem.getLesson());
                 InmhItemData itemData = new InmhItemData(item);
                 List<RppWidget> workBookPids = itemData.getWidgetPool(conn, cacheKey);
@@ -131,6 +133,7 @@ public class AssessmentPrescriptionCustom extends AssessmentPrescription {
                     __logger.info("No widgets from pool: " + cpProgItem);
                 }
                 else {
+                    logger.debug("checking pids: " + workBookPids.size());
                     int lowest = getLowestGradeLevel(workBookPids);
                     if (lowest > heighestLowestGradeLevel && lowest < MAX_GRADE_LEVEL) {
                         heighestLowestGradeLevel = lowest;
