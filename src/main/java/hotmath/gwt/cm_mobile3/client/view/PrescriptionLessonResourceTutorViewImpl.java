@@ -272,7 +272,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     }
     
     @Override
-    public void setTitle(String title) {
+    public void setHeaderTitle(String title) {
         _title = title;
     }
 

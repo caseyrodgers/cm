@@ -143,7 +143,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                         Controller.navigateBack();
                     } else {
                         PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
-                        view.setTitle("Required " + itemData.getTitle());
+                        view.setHeaderTitle("Required " + itemData.getTitle());
                         view.setPresenter(activity);
                         eb.fireEvent(new LoadNewPageEvent((IPage) view));
                     }
@@ -151,7 +151,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(eb,
                             itemData);
                     PrescriptionLessonResourceTutorView view = cf.getPrescriptionLessonResourceTutorView();
-                    view.setTitle("Extra Practice " + itemData.getTitle());
+                    view.setHeaderTitle("Extra Practice " + itemData.getTitle());
                     view.setPresenter(activity);
                     eb.fireEvent(new LoadNewPageEvent((IPage) view));
                 } else if (resourceType.equals("results")) {

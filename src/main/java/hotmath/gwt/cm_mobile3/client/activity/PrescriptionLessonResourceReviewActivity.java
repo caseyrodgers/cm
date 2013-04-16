@@ -63,6 +63,6 @@ public class PrescriptionLessonResourceReviewActivity implements PrescriptionLes
                 caught.printStackTrace();               
             }
         });
-        view.setTitle(resourceItem.getTitle());
+        view.setHeaderTitle(resourceItem.getTitle());
     }
 }

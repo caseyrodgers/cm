@@ -490,7 +490,7 @@ public class HeaderPanel extends Composite {
             final PrescriptionLessonResourceTutorActivity activity = new PrescriptionLessonResourceTutorActivity(CatchupMathMobile3.__clientFactory.getEventBus(), itemData);
 
             PrescriptionLessonResourceTutorView view = CatchupMathMobile3.__clientFactory.getPrescriptionLessonResourceTutorView();
-            view.setTitle("Required " + itemData.getTitle());
+            view.setHeaderTitle("Required " + itemData.getTitle());
             view.setPresenter(activity);
             CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new LoadNewPageEvent((IPage) view));
 

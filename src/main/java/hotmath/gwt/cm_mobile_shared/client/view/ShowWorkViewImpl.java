@@ -74,7 +74,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
     }
     
     @Override
-    public void setTitle(String title) {
+    public void setHeaderTitle(String title) {
         this.title = title;
     }
     

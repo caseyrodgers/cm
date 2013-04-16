@@ -159,6 +159,12 @@
     </url-pattern>
   </servlet-mapping>
   
+    <servlet-mapping>
+    <servlet-name>CmService</servlet-name>
+    <url-pattern>
+      /cm_mobile_assignments/services/cmService
+    </url-pattern>
+  </servlet-mapping>
 
 
 

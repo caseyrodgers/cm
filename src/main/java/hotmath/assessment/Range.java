@@ -19,6 +19,7 @@ public class Range {
     List<Integer> gradeLevels = new ArrayList<Integer>();
     
     public Range(String range) {
+        System.out.println("range: " + range);
         if(range == null) {
             //
         }
@@ -40,6 +41,7 @@ public class Range {
     }
     
     static public List<Integer> parseGradeLevels(String gradeLevelRange) {
+        
         List<Integer> list = new ArrayList<Integer>();
         
         gradeLevelRange = gradeLevelRange.replace(" ","");

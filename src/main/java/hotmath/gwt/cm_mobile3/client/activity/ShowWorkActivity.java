@@ -40,7 +40,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     @Override
     public void prepareShowWorkView(ShowWorkView view) {
         setExternalJsniHooks(this);
-        view.setTitle(title);
+        view.setHeaderTitle(title);
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         

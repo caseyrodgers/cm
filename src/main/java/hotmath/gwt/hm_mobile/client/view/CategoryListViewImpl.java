@@ -115,7 +115,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements CategoryL
         return new TokenParser();
     }
 
-    public void setTitle(String title) {
+    public void setHeaderTitle(String title) {
         this.title = title;
     }
 

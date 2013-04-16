@@ -10,7 +10,7 @@ public interface PrescriptionLessonResourceTutorView extends IPage,HasWhiteboard
     void loadSolution(SolutionInfo solution);
     void setPresenter(Presenter p);
     ProblemNumber getLoadedProblem();
-    void setTitle(String title);
+    void setHeaderTitle(String title);
     
     
     static public interface Presenter {

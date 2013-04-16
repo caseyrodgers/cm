@@ -3,7 +3,7 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 
 public interface ShowWorkView extends IPage {
-    void setTitle(String title);
+    void setHeaderTitle(String title);
     void setPresenter(Presenter presenter);
     static public interface Presenter {
         void prepareShowWorkView(ShowWorkView view);

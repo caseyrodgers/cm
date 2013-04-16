@@ -57,7 +57,7 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
     }
    
     @Override
-    public void setTitle(String title) {
+    public void setHeaderTitle(String title) {
         // reviewTitle.setInnerHTML(title);
     }
  
