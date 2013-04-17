@@ -61,7 +61,6 @@ public class StudentReportCard {
         labelMap.put("login",      "Login Days: ");
         labelMap.put("timeontask", "Estimated Time-on-Task: ");
         labelMap.put("activity",   "Learning Activities: ");
-        //labelMap.put("cmextra",    "Extra Practice Problems: ");
         labelMap.put("review",     "Lessons Completed: ");
         labelMap.put("practice",   "Required Practice Problems: ");
         labelMap.put("flashcard",  "Flashcard Sessions: ");
@@ -74,7 +73,6 @@ public class StudentReportCard {
         orderList.add("timeontask");
         orderList.add("review");
         orderList.add("practice");
-        //orderList.add("cmextra");
         orderList.add("flashcard");
         orderList.add("game");
         orderList.add("activity");
