@@ -42,17 +42,3 @@ public class AboutViewImpl extends BaseComposite implements AboutView {
     }
 
 }
-
-
-
-class Item {
-    private String displayString;
-
-    public Item(String displayString) {
-        this.displayString = displayString;
-    }
-
-    public String getDisplayString() {
-        return displayString;
-    }
-}

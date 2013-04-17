@@ -99,7 +99,15 @@ public class MainViewImpl extends BaseComposite implements MainView {
 
     @Override
     public void setView(BaseView view, String title, boolean needsBackButton) {
-        scrollPanel.setWidget(view);
+        main.remove(scrollPanel);
+        if(view.useScrollPanel()) {
+            main.add(scrollPanel);
+            scrollPanel.setWidget(view);
+        }
+        else {
+            main.add(view.asWidget());
+        }
+    
         setHeaderTitle(title);
         setNeedsBackButton(needsBackButton);
     }

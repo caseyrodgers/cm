@@ -16,5 +16,10 @@ abstract public class BaseComposite extends Composite implements BaseView {
     public MainView getMain() {
         return this.main;
     }
+    
+    @Override
+    public boolean useScrollPanel() {
+        return true;
+    }
 
 }
