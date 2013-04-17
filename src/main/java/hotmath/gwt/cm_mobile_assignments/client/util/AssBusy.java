@@ -6,7 +6,7 @@ import com.googlecode.mgwt.ui.client.widget.ProgressIndicator;
 
 public class AssBusy extends PopinDialog {
     public AssBusy() {
-        add(new HTML("<h1>Please wait ..</h1>"));
+        add(new HTML("<h1>Please wait .. &nbsp;</h1>"));
         add(new ProgressIndicator());
         center();
     }

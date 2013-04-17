@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile_assignments.client.view;
 
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
+import hotmath.gwt.cm_mobile_assignments.client.util.ChromeWorkaround;
 
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HTML;
@@ -22,6 +23,7 @@ import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
  */
 public class MainViewImpl extends BaseComposite implements MainView {
     protected LayoutPanel main;
+    protected LayoutPanel mainContent;
     protected ScrollPanel scrollPanel;
     protected HeaderPanel headerPanel;
     protected HeaderButton returnToProgramButton;
@@ -45,10 +47,10 @@ public class MainViewImpl extends BaseComposite implements MainView {
         //initWidget(uiBinder.createAndBindUi(this));
         
         main = new LayoutPanel();
+        mainContent = new LayoutPanel();
         scrollPanel = new ScrollPanel();
         headerPanel = new HeaderPanel();
         main.add(headerPanel);
-        main.add(scrollPanel);
         
         aboutButton = new HeaderButton();
         aboutButton.addTapHandler(new TapHandler() {
@@ -100,14 +102,18 @@ public class MainViewImpl extends BaseComposite implements MainView {
     @Override
     public void setView(BaseView view, String title, boolean needsBackButton) {
         main.remove(scrollPanel);
+        main.remove(mainContent);
+        
         if(view.useScrollPanel()) {
-            main.add(scrollPanel);
             scrollPanel.setWidget(view);
+            main.add(scrollPanel);
         }
         else {
-            main.add(view.asWidget());
+            mainContent.clear();
+            mainContent.add(view.asWidget());
+            main.add(mainContent);
         }
-    
+        ChromeWorkaround.maybeUpdateScroller(scrollPanel);
         setHeaderTitle(title);
         setNeedsBackButton(needsBackButton);
     }

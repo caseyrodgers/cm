@@ -2,10 +2,10 @@ package hotmath.gwt.cm_mobile_assignments.client.view;
 
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.Item;
+import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.ui.client.widget.CellList;
 import com.googlecode.mgwt.ui.client.widget.LayoutPanel;
@@ -15,7 +15,8 @@ import com.googlecode.mgwt.ui.client.widget.base.PullArrowHeader;
 import com.googlecode.mgwt.ui.client.widget.base.PullArrowStandardHandler;
 import com.googlecode.mgwt.ui.client.widget.base.PullArrowWidget;
 import com.googlecode.mgwt.ui.client.widget.base.PullPanel;
-import com.googlecode.mgwt.ui.client.widget.celllist.BasicCell;
+import com.googlecode.mgwt.ui.client.widget.celllist.CellSelectedEvent;
+import com.googlecode.mgwt.ui.client.widget.celllist.CellSelectedHandler;
 
 public class HomeViewImpl extends BaseComposite implements HomeView {
     protected LayoutPanel main;
@@ -27,8 +28,6 @@ public class HomeViewImpl extends BaseComposite implements HomeView {
     private PullPanel pullToRefresh;
 
     private PullArrowHeader pullArrowHeader;
-
-    private PullArrowFooter pullArrowFooter;
 
     private CellList<Item> cellList;
 
@@ -44,19 +43,18 @@ public class HomeViewImpl extends BaseComposite implements HomeView {
 
     public HomeViewImpl(ClientFactory factoryIn) {
         this.factory = factoryIn;
-        initWidget(new HTML("TEST"));// createPullToRefresh());
+        initWidget(createPullToRefresh());
     }
 
     private Widget createPullToRefresh() {
         pullToRefresh = new PullPanel();
         pullArrowHeader = new PullArrowHeader();
         pullToRefresh.setHeader(pullArrowHeader);
-        pullArrowFooter = new PullArrowFooter();
-        pullToRefresh.setFooter(pullArrowFooter);
-        cellList = new CellList<Item>(new BasicCell<Item>() {
+        cellList = new CellList<Item>(new AssignmentInfoCell<Item>());
+        cellList.addCellSelectedHandler(new CellSelectedHandler() {
             @Override
-            public String getDisplayString(Item model) {
-                return model.getDisplayString();
+            public void onCellSelected(CellSelectedEvent event) {
+                AssAlertBox.showAlert("Show assignment for: " + event.getIndex());
             }
         });
         pullToRefresh.add(cellList);
@@ -79,7 +77,7 @@ public class HomeViewImpl extends BaseComposite implements HomeView {
 
     @Override
     public PullArrowWidget getPullFooter() {
-        return pullArrowFooter;
+        return null;
     }
 
     @Override
