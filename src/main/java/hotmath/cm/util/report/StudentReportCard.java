@@ -61,7 +61,7 @@ public class StudentReportCard {
         labelMap.put("login",      "Login Days: ");
         labelMap.put("timeontask", "Estimated Time-on-Task: ");
         labelMap.put("activity",   "Learning Activities: ");
-        labelMap.put("cmextra",    "Extra Practice Problems: ");
+        //labelMap.put("cmextra",    "Extra Practice Problems: ");
         labelMap.put("review",     "Lessons Completed: ");
         labelMap.put("practice",   "Required Practice Problems: ");
         labelMap.put("flashcard",  "Flashcard Sessions: ");
@@ -74,7 +74,7 @@ public class StudentReportCard {
         orderList.add("timeontask");
         orderList.add("review");
         orderList.add("practice");
-        orderList.add("cmextra");
+        //orderList.add("cmextra");
         orderList.add("flashcard");
         orderList.add("game");
         orderList.add("activity");
@@ -500,7 +500,8 @@ public class StudentReportCard {
     	}
 		
 	}
-    private Phrase buildSectionLabel(String label) {
+
+	private Phrase buildSectionLabel(String label) {
         Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
         chunk.setUnderline(0.5f, -3f);
         Phrase phrase = new Phrase(chunk);
@@ -522,50 +523,4 @@ public class StudentReportCard {
         return p;
     }
 
-    public class HeaderTableXXX implements PdfPageEvent {
-
-        PdfPTable header;
-
-        HeaderTableXXX(PdfWriter writer, PdfPTable header) {
-            // event = writer.getPageEvent();
-            this.header = header;
-            writer.setPageEvent(this);
-        }
-
-        public void onChapter(PdfWriter arg0, Document arg1, float arg2, Paragraph arg3) {
-        }
-
-        public void onChapterEnd(PdfWriter arg0, Document arg1, float arg2) {
-        }
-
-        public void onCloseDocument(PdfWriter arg0, Document arg1) {
-        }
-
-        public void onEndPage(PdfWriter writer, Document document) {
-            PdfContentByte cb = writer.getDirectContent();
-            header.writeSelectedRows(0, -1, document.left(), document.top() + 100, cb);
-        }
-
-        public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2, String arg3) {
-        }
-
-        public void onOpenDocument(PdfWriter arg0, Document arg1) {
-        }
-
-        public void onParagraph(PdfWriter arg0, Document arg1, float arg2) {
-        }
-
-        public void onParagraphEnd(PdfWriter arg0, Document arg1, float arg2) {
-        }
-
-        public void onSection(PdfWriter arg0, Document arg1, float arg2, int arg3, Paragraph arg4) {
-        }
-
-        public void onSectionEnd(PdfWriter arg0, Document arg1, float arg2) {
-        }
-
-        public void onStartPage(PdfWriter arg0, Document arg1) {
-        }
-
-    }
 }
