@@ -265,6 +265,43 @@ body {
 	width: 420px;
 }
 
+.ddetail-info {
+	height: 55px;
+}
+
+.detail-info .form {
+	width: 500px;
+}
+
+.detail-info .fld {
+	width: 250px;
+}
+
+.detail-info .fld label {
+	display: block;
+	float: left;
+	font-weight: bold;
+	margin-right: 5px;
+	width: 75px;
+}
+
+.detail-info .fld div {
+	float: left;
+	width: 100px;
+}
+
+.detail-info .left {
+	left: 20px;
+	position: absolute;
+	top: 5px;
+}
+
+.detail-info .right {
+	left: 200px;
+	position: absolute;
+	top: 5px;
+}
+
 .advanced-options-fieldset {
 	margin-top: 20px;
 }
