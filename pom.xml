@@ -77,9 +77,13 @@
 			<url>http://gwt-mobile-webkit.googlecode.com/svn/repo</url>
 		</repository>
 
-		<!-- <repository> <id>bramosystems-releases</id> <name>Bramosystems Release 
-			Repository</name> <url>http://downloads.bramosystems.com/maven2/releases</url> 
-			</repository> -->
+<!--
+		<repository>
+			<id>bramosystems-releases</id>
+			<name>Bramosystems Release Repository</name>
+			<url>http://downloads.bramosystems.com/maven2/releases</url>
+		</repository>
+-->
 
 
 	</repositories>
@@ -386,7 +390,7 @@
 		<dependency>
 			<groupId>org.apache</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.6</version>
+			<version>3.9</version>
 		</dependency>
 
 		<dependency>
@@ -693,7 +697,7 @@
 				<version>2.5.1</version>
 
 				<configuration>
-					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms724m -Xmx724m -Dgwt.logLevel=DEBUG</extraJvmArgs>
+					<extraJvmArgs>-Xss1m -XX:MaxPermSize=512m -Xms1024m -Xmx1024m -Dgwt.logLevel=DEBUG</extraJvmArgs>
 					<gwtHome>${gwtHome}</gwtHome>
 					<inplace>true</inplace>
 					<disableCastChecking>true</disableCastChecking>
@@ -709,11 +713,12 @@
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
 						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
-						<module>hotmath.gwt.cm_search.CatchupMathSearch</module> 
-						<!--  
-						    <module>hotmath.gwt.cm_tutor.CmTutor</module>
-							<module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module> 
-							<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget> -->
+						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
+						<!--
+						<module>hotmath.gwt.cm_tutor.CmTutor</module>
+						<module>hotmath.gwt.cm_activity_word_problems.CmActivityWordProblems</module>
+						<runTarget>hotmath.gwt.cm.CatchupMath/CatchupMath.html</runTarget>
+						-->
 					</modules>
 					<hostedWebapp>
 						${project.build.directory}/${project.build.finalName}
