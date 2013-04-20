@@ -12,18 +12,18 @@ import com.googlecode.mgwt.ui.client.widget.base.PullArrowWidget;
 public interface HomeView extends BaseView {
     void loadUser();
     void setPresenter(Presenter listener);
-    public interface Presenter {}     
-    
-    
+    public interface Presenter {}
+
+
     public PullArrowWidget getPullHeader();
 
     public PullArrowWidget getPullFooter();
 
     public HasRefresh getPullPanel();
-    
-    void render(List<Item> list);
+
+    void render();
     void refresh();
-    
+
     void setFooterPullHandler(PullArrowStandardHandler footerHandler);
     void setHeaderPullHandler(PullArrowStandardHandler headerHandler);
 }

@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile_assignments.client.view;
 
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 
 import java.util.List;
 
@@ -15,7 +14,7 @@ import com.googlecode.mgwt.ui.client.widget.base.PullPanel;
 //import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 
 public class HomeViewImpl extends BaseComposite implements HomeView {
-    
+
     protected LayoutPanel main;
     ClientFactory factory;
     Presenter presenter;
@@ -82,7 +81,7 @@ public class HomeViewImpl extends BaseComposite implements HomeView {
     }
 
     @Override
-    public void render(Object o) {
+    public void render() {
 //        this.lastData = list;
 //        cellList.getCellList().render(list);
     }

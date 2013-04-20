@@ -70,7 +70,7 @@ public class HomeActivity implements Activity {
 //        footerHandler.setPulledText("release to load");
 //        footerHandler.setPullActionHandler(new MyPullAction());
 //        display.setFooterPullHandler(footerHandler);
-        display.render(list);
+        // display.render(list);
     }
 
     private void loadDataIntoList(List<Item> list2) {
@@ -79,9 +79,9 @@ public class HomeActivity implements Activity {
             list.add(new Item(assInfo.getComments()));
         }
     }
-    
+
     class MyPullAction implements PullActionHandler {
-        
+
         public MyPullAction() {
         }
 
@@ -91,7 +91,7 @@ public class HomeActivity implements Activity {
                 @Override
                 public void run() {
                     loadDataIntoList(list);
-                    factory.getHomeView().render(list);
+                    //factory.getHomeView().render(list);
                     factory.getHomeView().refresh();
                     callback.onSuccess(null);
                 }
