@@ -30,5 +30,6 @@ mvn install:install-file -DgroupId=xmlrpc -DartifactId=xmlrpc -Dversion=3.1.2 -D
 mvn install:install-file -DgroupId=paypal -DartifactId=paypal_api_combined -Dversion=1.0 -Dpackaging=jar -Dfile=paypal_api_combined.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=org.apache -DartifactId=poi -Dversion=3.9 -Dpackaging=jar -Dfile=poi-3.9.jar -DgeneratePom=true
+mvn install:install-file -DgroupId=org.apache -DartifactId=poi-ooxml -Dversion=3.9 -Dpackaging=jar -Dfile=poi-ooxml-3.9.jar -DgeneratePom=true
 
 mvn install:install-file -DgroupId=org.seleniumhq.selenium -DartifactId=selenium -Dversion=2.0rc3 -Dpackaging=jar -Dfile=selenium-java-2.0rc3.jar -DgeneratePom=true
