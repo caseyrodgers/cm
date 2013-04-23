@@ -85,9 +85,9 @@ public class BulkStudentRegistrationWindow extends RegisterStudent {
 		//fs.setWidth(_fsProfile.getWidth());
 		fs.addThing(new MyFieldLabel(_uploadForm, "Upload File", LABEL_WIDTH, FIELD_WIDTH));
         fs.addThing(new HTML(
-						"<p style='padding: 10px;'>Upload a TAB DELIMITED TEXT file with two columns, with the first column as the student name (e.g., Smith, John), " +
-						"and the second column as password (e.g., 23242342). Use Excel's \"Save As...\" drop down menu to save as a " +
-						"Text (Tab delimited) file. </p>"));
+						"<p style='padding: 10px;'>Upload a TAB DELIMITED TEXT file or Excel spreadsheet with two columns; with the first " +
+                        "column as the student name (e.g., Smith, John), and the second column as the password (e.g., 23242342). " +
+					    "Use Excel's \"Save As...\" drop down menu to save as a Text (Tab delimited) file. </p>"));
 
 		createWindow();
 		//_window.clear();
