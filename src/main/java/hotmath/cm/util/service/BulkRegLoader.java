@@ -4,11 +4,16 @@ import hotmath.gwt.shared.client.rpc.result.AutoRegistrationEntry;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -49,15 +54,18 @@ public class BulkRegLoader {
 	     * 
 	     */
 		for (FileItem fi: fileItems) {
+
+			String filename = fi.getName();
+			if (LOGGER.isDebugEnabled())
+				LOGGER.debug("filename: " + filename);
 		    
 			InputStream is = null;
 			try {
-				if (isExcel(fi)) {
+				if (isTextOnly(fi)) {
+					is = fi.getInputStream();
+			    }
+				else if (isExcel(fi)) {
 					is = getTSVInputStream();
-				}
-				else {
-					if (isTextOnly(fi))
-						is = fi.getInputStream();
 				}
 			    if (is != null) readStream(is);
 			    contentIsAcceptable = (entries.size() > 0);
@@ -70,7 +78,6 @@ public class BulkRegLoader {
     }
 
     /** Read the input stream and extract entries
-     * 
      * 
      *  IE includes the filename in the data, which does not conform to our 
      *  expectations.  We need to identify this problem and ignore the row.
@@ -239,10 +246,18 @@ public class BulkRegLoader {
 	private boolean isExcel(FileItem fi) throws IOException {
 		InputStream is = null;
     	try {
+    		Workbook wb = null;
     		is = fi.getInputStream();
-    		POIFSFileSystem fs = new POIFSFileSystem(is);
-    		HSSFWorkbook wb = new HSSFWorkbook(fs);
-    		HSSFSheet sheet = wb.getSheetAt(0);
+    		try {
+        		POIFSFileSystem fs = new POIFSFileSystem(is);
+        		wb = new HSSFWorkbook(fs);
+    		}
+    		catch (OfficeXmlFileException oxfE) {
+    			is.close();
+    			is = fi.getInputStream();
+    			wb = new XSSFWorkbook(is);
+    		}
+    		Sheet sheet = wb.getSheetAt(0);
 
     		// Iterate over each row in the sheet
     		Iterator<?> rows = sheet.rowIterator(); 
@@ -250,22 +265,22 @@ public class BulkRegLoader {
     		hasNumericContent = false;
     		
     		while( rows.hasNext() ) {           
-    			HSSFRow row = (HSSFRow) rows.next();
+    			Row row = (Row) rows.next();
 
     			// Iterate over each cell in the row
     			Iterator<?> cells = row.cellIterator();
     			int cellCount = 0;
     			while (cells.hasNext()) {
-    				HSSFCell cell = (HSSFCell) cells.next();
+    				Cell cell = (Cell) cells.next();
 
     				switch (cell.getCellType()) {
-    				case HSSFCell.CELL_TYPE_NUMERIC:
+    				case Cell.CELL_TYPE_NUMERIC:
     					long val = new Double(cell.getNumericCellValue()).longValue();
     					tsvContents.append(val);
     					hasNumericContent = true;
     					cellCount++;
     					break;
-    				case HSSFCell.CELL_TYPE_STRING: 
+    				case Cell.CELL_TYPE_STRING: 
     					tsvContents.append(cell.getStringCellValue());
     					cellCount++;
     					break;
