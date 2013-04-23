@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /** An EXT model for representing a single item 
  * in a custom program.

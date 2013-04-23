@@ -9,7 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.ShowBookViewEvent;
 import hotmath.gwt.hm_mobile.client.model.BookModel;

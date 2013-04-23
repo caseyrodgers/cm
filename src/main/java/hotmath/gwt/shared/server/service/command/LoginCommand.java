@@ -2,9 +2,9 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 import hotmath.gwt.cm_tools.client.data.HaLoginInfo;
 import hotmath.gwt.cm_tools.client.data.HaUserLoginInfo;

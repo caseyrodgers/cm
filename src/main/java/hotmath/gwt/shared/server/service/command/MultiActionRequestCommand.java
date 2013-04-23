@@ -1,12 +1,12 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 
 import java.sql.Connection;
 

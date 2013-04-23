@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.model.LessonItemModel;
 import hotmath.gwt.shared.client.CmShared;

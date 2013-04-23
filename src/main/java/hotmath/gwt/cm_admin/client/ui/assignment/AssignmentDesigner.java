@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;

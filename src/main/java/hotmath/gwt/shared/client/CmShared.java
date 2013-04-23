@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.CmService;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -20,7 +20,6 @@ import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
-import hotmath.gwt.shared.client.util.SystemSyncChecker;
 
 import java.util.Date;
 import java.util.HashMap;

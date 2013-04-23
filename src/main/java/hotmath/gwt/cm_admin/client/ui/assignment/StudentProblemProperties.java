@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ModelKeyProvider;

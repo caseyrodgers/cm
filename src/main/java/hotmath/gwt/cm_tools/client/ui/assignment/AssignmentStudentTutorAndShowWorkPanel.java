@@ -1,15 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;

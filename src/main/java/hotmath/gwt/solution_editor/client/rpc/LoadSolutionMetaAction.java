@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class LoadSolutionMetaAction implements Action<SolutionMeta>{
     String pid;

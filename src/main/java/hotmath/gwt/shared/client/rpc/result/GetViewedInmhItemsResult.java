@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.result;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 import java.util.List;
 

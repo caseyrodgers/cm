@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.client;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /** A complete 'step', consisting of both 
  * a hint and the step text.

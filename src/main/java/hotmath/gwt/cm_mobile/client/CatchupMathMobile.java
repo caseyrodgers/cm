@@ -9,8 +9,8 @@ import hotmath.gwt.cm_mobile.client.page.IPage;
 import hotmath.gwt.cm_mobile.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile.client.util.Screen;
-import hotmath.gwt.cm_rpc.client.rpc.CmService;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 
 import java.util.HashMap;
 import java.util.List;

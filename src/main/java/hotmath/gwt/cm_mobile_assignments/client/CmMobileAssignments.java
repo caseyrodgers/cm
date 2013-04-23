@@ -1,11 +1,16 @@
 package hotmath.gwt.cm_mobile_assignments.client;
+
 import hotmath.gwt.cm_mobile_assignments.client.place.HomePlace;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssBusy;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData.CallbackWhenDataReady;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.shared.GWT;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.googlecode.mgwt.mvp.client.AnimatableDisplay;
 import com.googlecode.mgwt.mvp.client.AnimatingActivityManager;
@@ -24,7 +29,7 @@ public class CmMobileAssignments implements EntryPoint {
     public void onModuleLoad() {
         ViewPort viewPort = new MGWTSettings.ViewPort();
         viewPort.setTargetDensity(DENSITY.MEDIUM);
-        viewPort.setUserScaleAble(false).setMinimumScale(1.0).setMinimumScale(1.0).setMaximumScale(1.0);
+        //viewPort.setUserScaleAble(true).setMinimumScale(1.0).setMinimumScale(1.0).setMaximumScale(1.0);
 
         MGWTSettings settings = new MGWTSettings();
         settings.setViewPort(viewPort);
@@ -41,7 +46,6 @@ public class CmMobileAssignments implements EntryPoint {
         
         AssPlaceMapper historyMapper = GWT.create(AssPlaceMapper.class);
 
-  
         createDisplay(clientFactory);
 
         AssHistoryObserver historyObserver = new AssHistoryObserver();
@@ -60,6 +64,31 @@ public class CmMobileAssignments implements EntryPoint {
         });
     }
     
+    
+
+    static CmServiceAsync _cmService;
+    
+    /** 
+     *  Get the single CmServiceAsync instance to all
+     *  for sending RPC commands.
+     *  
+     * @return
+     */
+    static CmServiceAsync _serviceInstance;
+    static public CmServiceAsync getCmService() {
+        return _serviceInstance;
+    }
+    
+
+    static {
+        String point = GWT.getModuleBaseURL();
+        if (!point.endsWith("/"))
+            point += "/";
+        
+        final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
+        ((ServiceDefTarget) cmService).setServiceEntryPoint(point + "services/cmService");
+        _serviceInstance = cmService;
+    }
     
     private void createDisplay(ClientFactory clientFactory) {
         AnimatableDisplay display = GWT.create(AnimatableDisplay.class);

@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.shared.client.CmShared;
 

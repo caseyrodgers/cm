@@ -1,5 +1,5 @@
 package hotmath.gwt.hm_mobile.client.model;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 ;
 
 public class BookModel implements Response {

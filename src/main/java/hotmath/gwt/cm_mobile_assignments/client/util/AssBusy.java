@@ -17,11 +17,13 @@ public class AssBusy extends PopinDialog {
             if(__assBusy == null) {
                 __assBusy = new AssBusy();
             }
+            __assBusy.show();
         }
         else {
             if(__assBusy != null) {
                 __assBusy.hide();
                 __assBusy.clear();
+                __assBusy = null;
             }
         }
     }

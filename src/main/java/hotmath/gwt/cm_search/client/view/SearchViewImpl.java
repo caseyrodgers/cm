@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_search.client.CatchupMathSearch;
 
 import com.google.gwt.core.client.GWT;

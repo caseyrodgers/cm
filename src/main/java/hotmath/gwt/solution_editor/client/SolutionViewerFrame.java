@@ -2,7 +2,7 @@
 package hotmath.gwt.solution_editor.client;
 
 
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.solution_editor.client.rpc.ServerFlusherAction;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;

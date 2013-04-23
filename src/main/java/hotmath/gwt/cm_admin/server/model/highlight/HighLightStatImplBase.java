@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.server.model.highlight;
 
 import hotmath.gwt.cm_admin.server.model.highlight.CmHighLightManager.HighLightStat;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.util.sql.SqlUtilities;
 

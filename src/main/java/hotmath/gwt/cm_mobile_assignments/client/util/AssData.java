@@ -1,9 +1,11 @@
 package hotmath.gwt.cm_mobile_assignments.client.util;
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_mobile_assignments.client.CmMobileAssignments;
+import hotmath.gwt.cm_mobile_assignments.client.rpc.GetAssignmentUserInfoAction;
 import hotmath.gwt.cm_mobile_assignments.client.user.CmMobileAssignmentUser;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentUserInfoAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -36,6 +38,8 @@ public class AssData {
     int _uid;
     CallbackWhenDataReady callBack;
     static protected CmMobileAssignmentUser __userData;
+    static protected StudentAssignment __currentAssignment;
+    
     private AssData(CallbackWhenDataReady callBack) {
         this.callBack = callBack;
         try {
@@ -49,6 +53,7 @@ public class AssData {
         }
         catch(Exception e) {
             Log.error("Error getting uid", e);
+            AssAlertBox.showAlert("Error connecting to user: " + _uid);
         }
     }
     
@@ -57,12 +62,12 @@ public class AssData {
     }
     
     private void readUserAssignmentData(int uid) {
+        
         Log.info("Reading user data: " + uid);
         GetAssignmentUserInfoAction action = new GetAssignmentUserInfoAction(uid);
-        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmMobileAssignmentUser>() {
+        CmMobileAssignments.getCmService().execute(action, new AsyncCallback<CmMobileAssignmentUser>() {
             @Override
             public void onSuccess(CmMobileAssignmentUser result) {
-                AssBusy.showBusy(true);
                 Log.info("Login successful: " + result);
                 __userData = result;
                 
@@ -75,6 +80,11 @@ public class AssData {
                 AssAlertBox.showAlert("Could not log you in: " + caught.getMessage());
             }
         });        
+    }
+
+    public static void refreshAssData(CallbackWhenDataReady callbackWhenDataReady) {
+        __assData = null;
+        readAssData(callbackWhenDataReady);
     }
 
 }

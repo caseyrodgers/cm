@@ -1,7 +1,11 @@
 package hotmath.gwt.cm_mobile_assignments.client;
 
 import hotmath.gwt.cm_mobile_assignments.client.activity.AboutActivity;
+import hotmath.gwt.cm_mobile_assignments.client.activity.AssProblemActivity;
+import hotmath.gwt.cm_mobile_assignments.client.activity.AssignmentActivity;
 import hotmath.gwt.cm_mobile_assignments.client.activity.HomeActivity;
+import hotmath.gwt.cm_mobile_assignments.client.place.AssProblemPlace;
+import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
 import hotmath.gwt.cm_mobile_assignments.client.place.HomePlace;
 
 import com.google.gwt.activity.shared.Activity;
@@ -24,6 +28,12 @@ public class AssActivityMapper implements ActivityMapper {
     	}
     	else if(place instanceof HomePlace) {
     	    return new HomeActivity((HomePlace)place, clientFactory);
+    	}
+    	else if(place instanceof AssignmentPlace) {
+    	    return new AssignmentActivity((AssignmentPlace)place, clientFactory);
+    	}
+    	else if(place instanceof AssProblemPlace) {
+    	    return new AssProblemActivity((AssProblemPlace)place, clientFactory);
     	}
     	return null;
     		

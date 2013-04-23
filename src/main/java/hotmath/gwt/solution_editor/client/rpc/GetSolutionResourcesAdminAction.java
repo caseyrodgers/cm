@@ -1,7 +1,7 @@
 package hotmath.gwt.solution_editor.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 public class GetSolutionResourcesAdminAction implements Action<CmList<SolutionResource>> {
     String pid;

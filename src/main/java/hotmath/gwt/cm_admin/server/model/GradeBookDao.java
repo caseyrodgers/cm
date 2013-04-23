@@ -2,8 +2,8 @@ package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
 import hotmath.spring.SpringManager;

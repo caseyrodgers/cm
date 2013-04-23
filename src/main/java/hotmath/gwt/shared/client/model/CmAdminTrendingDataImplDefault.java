@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.model;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 public class CmAdminTrendingDataImplDefault implements CmAdminTrendingDataI {
     

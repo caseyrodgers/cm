@@ -7,7 +7,7 @@ import hotmath.gwt.cm_core.client.CmEvent;
 import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.solution_editor.client.WidgetListDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.LoadSolutionMetaAction;
 import hotmath.gwt.solution_editor.client.rpc.SaveSolutionStepsAdminAction;

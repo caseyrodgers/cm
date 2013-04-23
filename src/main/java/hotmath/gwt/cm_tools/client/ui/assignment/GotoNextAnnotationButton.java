@@ -2,7 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemAnnotation;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
 import java.util.List;

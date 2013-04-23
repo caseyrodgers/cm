@@ -3,15 +3,15 @@ package hotmath.gwt.shared.server.service.command;
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.cm.util.report.ParallelProgramUsageReport;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfParallelProgramUsageReportAction;
 
-import org.apache.log4j.Logger;
-
 import java.sql.Connection;
+
+import org.apache.log4j.Logger;
 
 public class GeneratePdfParallelProgramUsageReportCommand implements ActionHandler<GeneratePdfParallelProgramUsageReportAction,CmWebResource>{
 

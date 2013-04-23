@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class HighlightReportLayout implements Response {
 

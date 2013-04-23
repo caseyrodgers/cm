@@ -2,12 +2,12 @@ package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;

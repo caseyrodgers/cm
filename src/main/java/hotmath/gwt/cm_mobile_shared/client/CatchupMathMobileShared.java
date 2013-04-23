@@ -6,8 +6,8 @@ import hotmath.gwt.cm_mobile_shared.client.event.EventType;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
-import hotmath.gwt.cm_rpc.client.rpc.CmService;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 
 import java.util.HashMap;
 import java.util.List;

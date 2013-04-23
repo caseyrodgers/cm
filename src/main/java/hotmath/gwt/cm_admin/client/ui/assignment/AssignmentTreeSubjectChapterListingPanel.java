@@ -1,19 +1,19 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
-import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;

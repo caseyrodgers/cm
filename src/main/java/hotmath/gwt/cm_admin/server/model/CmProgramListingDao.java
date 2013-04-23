@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapterAll;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
@@ -9,8 +8,8 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;

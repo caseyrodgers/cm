@@ -2,14 +2,14 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;

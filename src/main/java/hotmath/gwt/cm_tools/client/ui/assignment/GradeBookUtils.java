@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 
 import java.util.List;
 

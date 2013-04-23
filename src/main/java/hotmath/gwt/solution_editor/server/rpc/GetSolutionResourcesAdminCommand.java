@@ -2,11 +2,11 @@ package hotmath.gwt.solution_editor.server.rpc;
 
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionResourcesAdminAction.ResourceType;
 import hotmath.gwt.solution_editor.client.rpc.SolutionResource;

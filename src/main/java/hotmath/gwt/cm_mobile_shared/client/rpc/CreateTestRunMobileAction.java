@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 
 public class CreateTestRunMobileAction implements Action<PrescriptionSessionResponse>{

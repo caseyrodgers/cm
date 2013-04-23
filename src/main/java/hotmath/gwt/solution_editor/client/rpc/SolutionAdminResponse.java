@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class SolutionAdminResponse implements Response {
     String xml;

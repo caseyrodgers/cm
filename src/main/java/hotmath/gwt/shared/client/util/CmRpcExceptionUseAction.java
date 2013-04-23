@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 
 /** Throws as placeholder for GWT RPC classes being replaced
  * by command objects.

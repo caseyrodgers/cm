@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
 
 import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.ValueProvider;

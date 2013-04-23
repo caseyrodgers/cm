@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tools.client.model;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /**
  * <code>StudentSettingsModel</code> represents the settings for a single student

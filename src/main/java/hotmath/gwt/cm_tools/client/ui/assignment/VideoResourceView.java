@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.ui.viewer.ResourceViewerImplVideo;
 
 import com.google.gwt.user.client.ui.Widget;

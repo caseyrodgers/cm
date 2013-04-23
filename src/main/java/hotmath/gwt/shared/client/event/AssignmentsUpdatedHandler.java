@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.event;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 
 import com.google.gwt.event.shared.EventHandler;
 

@@ -4,8 +4,8 @@ import hotmath.ProblemID;
 import hotmath.cm.util.CatchupMathProperties;
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.util.sql.SqlUtilities;
 

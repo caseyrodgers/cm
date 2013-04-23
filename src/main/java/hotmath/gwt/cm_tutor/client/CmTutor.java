@@ -7,8 +7,8 @@ import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
-import hotmath.gwt.cm_rpc.client.rpc.CmService;
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tutor.client.view.TutorWithWhiteboardViewer;
 
 import com.allen_sauer.gwt.log.client.Log;

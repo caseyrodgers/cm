@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;

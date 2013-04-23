@@ -1,8 +1,8 @@
 package hotmath.gwt.solution_editor.server.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionAdminAction;
 import hotmath.gwt.solution_editor.client.rpc.SolutionAdminResponse;

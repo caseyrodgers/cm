@@ -1,9 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
-
-import java.util.ArrayList;
-import java.util.List;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 
 @SuppressWarnings("serial")
 public class LessonProblemDto extends FolderDto {

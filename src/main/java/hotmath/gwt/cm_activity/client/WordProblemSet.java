@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_activity.client;
 
 import hotmath.gwt.cm_activity.client.model.WordProblem;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class CmMobileUser implements Response {
     

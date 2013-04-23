@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class ProcessLoginRequestAction implements Action<UserInfo> {
 

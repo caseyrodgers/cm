@@ -8,7 +8,7 @@ public class AboutPlace extends Place {
     String token;
     
     public AboutPlace() {
-        this.token = "about";
+        token = "about";
     }
     
 

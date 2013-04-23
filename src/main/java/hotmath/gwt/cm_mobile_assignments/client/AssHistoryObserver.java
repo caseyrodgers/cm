@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_assignments.client;
 
+import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
 import hotmath.gwt.cm_mobile_assignments.client.place.HomePlace;
 
 import com.google.gwt.place.shared.Place;
@@ -33,10 +34,13 @@ public class AssHistoryObserver implements HistoryObserver {
 
     private void onDeviceNav(Place place, HistoryHandler historyHandler) {
         if (place instanceof AboutPlace) {
-            historyHandler.pushPlace(new AboutPlace());
+            historyHandler.pushPlace((AboutPlace)place);
         }
         else if(place instanceof HomePlace) {
-            historyHandler.pushPlace(new HomePlace());
+            historyHandler.pushPlace((HomePlace)place);
+        }
+        else if(place instanceof AssignmentPlace) {
+            historyHandler.pushPlace((AssignmentPlace)place);
         }
     }
 

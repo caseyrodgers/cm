@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_assignments.client.view;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface BaseView extends IsWidget {
@@ -7,4 +8,5 @@ public interface BaseView extends IsWidget {
     MainView getMain();
     
     boolean useScrollPanel();
+    Place getBackPlace();
 }

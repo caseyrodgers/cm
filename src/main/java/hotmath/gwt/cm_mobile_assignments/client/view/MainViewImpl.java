@@ -1,10 +1,10 @@
 package hotmath.gwt.cm_mobile_assignments.client.view;
 
+import hotmath.gwt.cm_mobile_assignments.client.AboutPlace;
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_assignments.client.util.ChromeWorkaround;
 
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,7 +28,9 @@ public class MainViewImpl extends BaseComposite implements MainView {
     protected HeaderPanel headerPanel;
     protected HeaderButton returnToProgramButton;
     protected HeaderButton aboutButton;
-    protected HorizontalPanel buttonBar;    
+    protected HorizontalPanel leftButtonBar;
+    protected HorizontalPanel buttonBar;
+    protected HorizontalPanel customButtonBar;
     protected HeaderButton backButton;
     protected HTML title;
     
@@ -42,6 +44,7 @@ public class MainViewImpl extends BaseComposite implements MainView {
     
 
     int _uid;
+    private BaseView currentView;
     public MainViewImpl(ClientFactory factoryIn) {
         this.factory = factoryIn;
         //initWidget(uiBinder.createAndBindUi(this));
@@ -50,13 +53,14 @@ public class MainViewImpl extends BaseComposite implements MainView {
         mainContent = new LayoutPanel();
         scrollPanel = new ScrollPanel();
         headerPanel = new HeaderPanel();
+        
         main.add(headerPanel);
         
         aboutButton = new HeaderButton();
         aboutButton.addTapHandler(new TapHandler() {
             @Override
             public void onTap(TapEvent event) {
-                factory.getMain(factory.getAboutView(), "About", true);
+                factory.getPlaceController().goTo(new AboutPlace());
             }
         });
         aboutButton.setText("About");
@@ -79,14 +83,25 @@ public class MainViewImpl extends BaseComposite implements MainView {
         backButton.addTapHandler(new TapHandler() {
             @Override
             public void onTap(TapEvent event) {
-                History.back();
+                factory.getPlaceController().goTo(currentView.getBackPlace());
             }
         });
+
+        
+        headerPanel.setLeftWidget(leftButtonBar);
+        
+        customButtonBar = new HorizontalPanel();
+
+        leftButtonBar = new HorizontalPanel();
+        leftButtonBar.add(backButton);
+        leftButtonBar.add(customButtonBar);
         
         headerPanel.setLeftWidget(backButton);
-
+        
         buttonBar = new HorizontalPanel();
         buttonBar.add(aboutButton);
+     
+        
         headerPanel.setRightWidget(buttonBar);
 
         initWidget(main);
@@ -101,6 +116,11 @@ public class MainViewImpl extends BaseComposite implements MainView {
 
     @Override
     public void setView(BaseView view, String title, boolean needsBackButton) {
+        this.currentView = view;
+        view.setMain(this);
+        
+        customButtonBar.clear();
+        
         main.remove(scrollPanel);
         main.remove(mainContent);
         
@@ -133,6 +153,13 @@ public class MainViewImpl extends BaseComposite implements MainView {
         else {
             backButton.setVisible(false);
         }
+    }
+    
+    @Override
+    public void addCustomHeaderButton(HeaderButton btn) {
+        
+        // not working?
+        customButtonBar.add(btn);
     }
     
 }

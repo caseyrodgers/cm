@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 
 public class NetTestModel implements Response {

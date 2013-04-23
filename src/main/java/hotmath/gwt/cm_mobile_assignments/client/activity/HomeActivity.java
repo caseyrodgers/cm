@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_mobile_assignments.client.activity;
 
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
-import hotmath.gwt.cm_mobile_assignments.client.Item;
 import hotmath.gwt.cm_mobile_assignments.client.place.HomePlace;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
+import hotmath.gwt.cm_mobile_assignments.client.util.AssData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_assignments.client.view.HomeView;
 import hotmath.gwt.cm_mobile_assignments.client.view.MainView;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class HomeActivity implements Activity {
 
     private int counter;
 
-    private List<Item> list = new LinkedList<Item>();
+    private List<StudentAssignmentInfo> list = new LinkedList<StudentAssignmentInfo>();
 
     @Override
     public void start(AcceptsOneWidget panel, EventBus eventBus) {
@@ -52,36 +52,27 @@ public class HomeActivity implements Activity {
         loadDataIntoList(list);
 
         final HomeView display = factory.getHomeView();
-        MainView mainView = factory.getMain(display, "Catchup Math Assignments (Pull to Refresh)", false);
-        panel.setWidget(mainView.asWidget());
 
         PullArrowStandardHandler headerHandler = new PullArrowStandardHandler(display.getPullHeader(), display.getPullPanel());
         headerHandler.setErrorText("Error");
-        headerHandler.setLoadingText("Getting assignments ..");
-        headerHandler.setNormalText("pull down");
+        headerHandler.setLoadingText("Refreshing assignments ..");
+        headerHandler.setNormalText("pull down to refresh");
         headerHandler.setPulledText("release to load");
         headerHandler.setPullActionHandler(new MyPullAction());
         display.setHeaderPullHandler(headerHandler);
+        display.render(list);
 
-//        PullArrowStandardHandler footerHandler = new PullArrowStandardHandler(display.getPullFooter(), display.getPullPanel());
-//        footerHandler.setErrorText("Error");
-//        footerHandler.setLoadingText("Loading");
-//        footerHandler.setNormalText("pull up");
-//        footerHandler.setPulledText("release to load");
-//        footerHandler.setPullActionHandler(new MyPullAction());
-//        display.setFooterPullHandler(footerHandler);
-        // display.render(list);
+        MainView mainView = factory.getMain(display, "Catchup Math Assignments", false);
+        panel.setWidget(mainView.asWidget());
     }
 
-    private void loadDataIntoList(List<Item> list2) {
-        list.clear();
-        for (StudentAssignmentInfo assInfo : AssData.getUserData().getAssignments()) {
-            list.add(new Item(assInfo.getComments()));
-        }
+    private void loadDataIntoList(List<StudentAssignmentInfo> listIn) {
+        listIn.clear();
+        listIn.addAll(AssData.getUserData().getAssignments());
     }
-
+    
     class MyPullAction implements PullActionHandler {
-
+        
         public MyPullAction() {
         }
 
@@ -90,10 +81,16 @@ public class HomeActivity implements Activity {
             new Timer() {
                 @Override
                 public void run() {
-                    loadDataIntoList(list);
-                    //factory.getHomeView().render(list);
-                    factory.getHomeView().refresh();
-                    callback.onSuccess(null);
+                    
+                    AssData.refreshAssData(new CallbackWhenDataReady() {
+                        @Override
+                        public void isReady() {
+                            loadDataIntoList(list);
+                            factory.getHomeView().render(list);
+                            factory.getHomeView().refresh();
+                            callback.onSuccess(null);
+                        }
+                    });
                 }
             }.schedule(1000);
         }

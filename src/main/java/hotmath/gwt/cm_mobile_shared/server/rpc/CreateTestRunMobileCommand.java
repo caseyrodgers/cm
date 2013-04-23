@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_mobile_shared.server.rpc;
 
 import hotmath.gwt.cm_mobile.client.rpc.CreateTestRunMobileAction;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.MultiActionRequestCommand;

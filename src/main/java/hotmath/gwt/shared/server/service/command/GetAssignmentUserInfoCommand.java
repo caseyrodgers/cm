@@ -1,17 +1,17 @@
 package hotmath.gwt.shared.server.service.command;
 
-import java.sql.Connection;
-import java.util.List;
-
 import hotmath.cm.assignment.AssignmentDao;
+import hotmath.gwt.cm_mobile_assignments.client.rpc.GetAssignmentUserInfoAction;
 import hotmath.gwt.cm_mobile_assignments.client.user.CmMobileAssignmentUser;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentUserInfoAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.testset.ha.HaUser;
 import hotmath.testset.ha.HaUserDao;
+
+import java.sql.Connection;
+import java.util.List;
 
 public class GetAssignmentUserInfoCommand implements ActionHandler<GetAssignmentUserInfoAction, CmMobileAssignmentUser> {
 

@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.BaseDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.FolderDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.LessonDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.LessonDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;

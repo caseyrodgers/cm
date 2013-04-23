@@ -2,17 +2,17 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 
 
 import hotmath.gwt.cm_rpc.client.CmRpc;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto.ProblemType;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentProblemDto;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;

@@ -11,7 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.testset.ha.CmProgram;
 import hotmath.util.HMConnectionPool;

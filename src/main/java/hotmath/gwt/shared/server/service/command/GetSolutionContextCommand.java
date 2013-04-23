@@ -1,14 +1,14 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.ActionBase;
-import hotmath.gwt.cm_rpc.client.rpc.ActionType;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionContextAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.ActionBase;
+import hotmath.gwt.cm_rpc_core.client.rpc.ActionType;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.testset.ha.SolutionDao;
 
 import java.sql.Connection;

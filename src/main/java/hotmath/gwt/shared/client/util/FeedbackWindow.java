@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.shared.client.CmShared;

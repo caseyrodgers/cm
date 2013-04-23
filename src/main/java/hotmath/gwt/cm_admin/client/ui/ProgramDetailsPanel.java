@@ -7,7 +7,7 @@ import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSection;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramSubject;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramType;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramLessonsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetProgramListingAction;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;

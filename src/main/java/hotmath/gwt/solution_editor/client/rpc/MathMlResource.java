@@ -1,6 +1,6 @@
 package hotmath.gwt.solution_editor.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 /** Encapsulates a MathML Resource
  * Gives it a name and holds the 

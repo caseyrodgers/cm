@@ -3,7 +3,7 @@ package hotmath.gwt.cm_search.client.activity;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_search.client.ClientFactory;
 import hotmath.gwt.cm_search.client.places.SearchPlace;

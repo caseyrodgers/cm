@@ -3,7 +3,7 @@ package hotmath.gwt.cm.client.ui;
 import hotmath.gwt.cm.client.CatchupMath;
 import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.GotoNextAnnotationButton;
 import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;

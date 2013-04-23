@@ -2,11 +2,11 @@ package hotmath.gwt.cm_mobile_shared.server.rpc;
 
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetMobileTopicListAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
-import hotmath.gwt.cm_rpc.server.rpc.ActionHandler;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;

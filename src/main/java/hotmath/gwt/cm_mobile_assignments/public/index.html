@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale = 1" />
+    <title>Catchup Math Mobile Assignments</title>
+
+    <script type="text/javascript" src="http://catchupmath.com/assets/mathjax/2.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!--
+    <link type="text/css" rel="stylesheet" href="/gwt-resources/css/CmMobileAssignments_combined.css">
+    -->
+  </head>
+  <body>
+   <div id='loading'><span>Loading ...</span></div>    
+   <div id='spinner'><span>&nbsp;</span></div>
+   <script>
+        /** completly disable logging */
+        console = {
+            log: function (x) {
+                // empty
+            }
+        };
+
+       window.debug = function(s) {
+          console.log('debug: ' + s);
+       }
+    </script>
+    <script src="/gwt-resources/js/spin-min.js"></script>
+    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main_mobile_assignments.nocache"></script>
+    <script src="cm_mobile_assignments.nocache.js"></script>
+  </body>
+</html>

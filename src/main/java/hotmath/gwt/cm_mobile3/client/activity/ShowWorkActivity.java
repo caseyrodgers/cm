@@ -4,13 +4,13 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
@@ -48,7 +48,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         GetWhiteboardDataAction action = new GetWhiteboardDataAction(CatchupMathMobileShared.getUser().getUserId(), pid, runId);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
             final String flashId="";
-            public void onSuccess(hotmath.gwt.cm_rpc.client.rpc.CmList<WhiteboardCommand> commands) {
+            public void onSuccess(CmList<WhiteboardCommand> commands) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 
                 updateWhiteboard(flashId,"clear","");
@@ -119,7 +119,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         CatchupMathMobileShared.getCmService().execute(whiteboardActions,new AsyncCallback<CmList<Response>>() {
-            public void onSuccess(hotmath.gwt.cm_rpc.client.rpc.CmList<Response> result) {
+            public void onSuccess(CmList<Response> result) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 whiteboardActions.getActions().clear();
             }

@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;

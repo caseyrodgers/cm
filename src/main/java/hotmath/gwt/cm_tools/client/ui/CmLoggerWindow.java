@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.QueueMessage;

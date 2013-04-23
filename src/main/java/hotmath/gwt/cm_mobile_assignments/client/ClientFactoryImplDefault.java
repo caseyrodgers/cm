@@ -1,6 +1,10 @@
 package hotmath.gwt.cm_mobile_assignments.client;
 
 import hotmath.gwt.cm_mobile_assignments.client.view.AboutView;
+import hotmath.gwt.cm_mobile_assignments.client.view.AssProblemView;
+import hotmath.gwt.cm_mobile_assignments.client.view.AssProblemViewImpl;
+import hotmath.gwt.cm_mobile_assignments.client.view.AssignmentView;
+import hotmath.gwt.cm_mobile_assignments.client.view.AssignmentViewImpl;
 import hotmath.gwt.cm_mobile_assignments.client.view.BaseView;
 import hotmath.gwt.cm_mobile_assignments.client.view.HomeView;
 import hotmath.gwt.cm_mobile_assignments.client.view.HomeViewImpl;
@@ -21,6 +25,8 @@ public class ClientFactoryImplDefault implements ClientFactory {
     private HomeView homeView;
     private AboutView aboutView;
     private MainView mainView ;
+    private AssignmentView assignmentView;
+    private AssProblemView assProblemView;
     
     @Override
     public EventBus getEventBus() {
@@ -51,6 +57,16 @@ public class ClientFactoryImplDefault implements ClientFactory {
         return aboutView;
     }
     
+
+    @Override
+    public AssignmentView getAssignmentView() {
+        if(assignmentView == null) {
+            assignmentView = new AssignmentViewImpl(this);
+        }
+        return assignmentView;
+    }
+
+    
     @Override
     public MainView getMain(BaseView view, String title, boolean needsBackButton) {
         if(mainView == null) {
@@ -58,5 +74,13 @@ public class ClientFactoryImplDefault implements ClientFactory {
         }
         mainView.setView(view, title, needsBackButton);
         return mainView;
+    }
+
+    @Override
+    public AssProblemView getAssProblemView() {
+        if(assProblemView == null) {
+            assProblemView = new AssProblemViewImpl();
+        }
+        return assProblemView;
     }
 }

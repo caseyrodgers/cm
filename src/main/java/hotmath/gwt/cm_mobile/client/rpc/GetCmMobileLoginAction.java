@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_mobile.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetCmMobileLoginAction implements Action<CmMobileUser>{
     

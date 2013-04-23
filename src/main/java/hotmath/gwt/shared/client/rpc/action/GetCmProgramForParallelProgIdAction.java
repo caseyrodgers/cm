@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc.client.model.CmProgram;
-import hotmath.gwt.cm_rpc.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 /** Return CmProgram for specified Parallel Program ID
  * 

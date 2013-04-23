@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_rpc.client.rpc.Action;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 
 public class GetCustProgQuizDefsAction implements Action<CmList<CustomQuizDef>>{

@@ -3,7 +3,7 @@ package hotmath.gwt.shared.server.service.command.stress;
 import hotmath.HotMathProperties;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.stress.CmStressLoginAndGetActiveFlow;
-import hotmath.gwt.cm_rpc.server.rpc.ContextListener;
+import hotmath.gwt.cm_rpc_core.server.rpc.ContextListener;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
