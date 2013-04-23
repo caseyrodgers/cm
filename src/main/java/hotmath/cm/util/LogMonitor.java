@@ -2,7 +2,7 @@ package hotmath.cm.util;
 
 import hotmath.flusher.Flushable;
 import hotmath.flusher.HotmathFlusher;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 
 import java.io.File;
 import java.util.HashMap;

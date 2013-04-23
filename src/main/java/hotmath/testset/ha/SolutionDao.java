@@ -4,7 +4,7 @@ import hotmath.ProblemID;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionGlobalContextNotFound;
 import hotmath.spring.SpringManager;

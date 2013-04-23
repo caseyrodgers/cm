@@ -4,7 +4,7 @@ import hotmath.cm.signup.HotmathSubscriberServiceTutoringSchoolStudent;
 import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;

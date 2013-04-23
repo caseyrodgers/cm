@@ -19,7 +19,6 @@ public class Range {
     List<Integer> gradeLevels = new ArrayList<Integer>();
     
     public Range(String range) {
-        System.out.println("range: " + range);
         if(range == null) {
             //
         }

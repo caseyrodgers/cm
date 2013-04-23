@@ -1,6 +1,6 @@
 package hotmath.cm.login.service;
 
-import hotmath.gwt.cm_rpc.client.CmUserException;
+import hotmath.gwt.cm_rpc_core.client.CmUserException;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
 
 import java.text.Format;

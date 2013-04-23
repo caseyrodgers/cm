@@ -1,6 +1,6 @@
 package hotmath.cm.util.stress;
 
-import hotmath.gwt.cm_rpc.server.rpc.ContextListener;
+import hotmath.gwt.cm_rpc_core.server.rpc.ContextListener;
 
 import java.util.ArrayList;
 import java.util.List;

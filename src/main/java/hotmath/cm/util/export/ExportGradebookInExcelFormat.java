@@ -1,7 +1,7 @@
 package hotmath.cm.util.export;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package hotmath.testset.ha.report;
 
 import hotmath.cm.assignment.AssignmentDao;
-import hotmath.gwt.cm_rpc.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.util.HMConnectionPool;
 import hotmath.util.sql.SqlUtilities;
 

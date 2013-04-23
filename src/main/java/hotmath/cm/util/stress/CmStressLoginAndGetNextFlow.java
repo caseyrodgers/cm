@@ -4,7 +4,7 @@ import hotmath.gwt.cm_rpc.client.rpc.AutoAdvanceUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 
 /**
  * 

@@ -1,6 +1,6 @@
 package hotmath.cm.util.stress;
 
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction;
 
 import java.util.List;

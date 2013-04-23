@@ -3,7 +3,7 @@ package hotmath.cm.util.report;
 import static hotmath.cm.util.CmCacheManager.CacheName.REPORT_ID;
 import hotmath.cm.util.CmCacheManager;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;

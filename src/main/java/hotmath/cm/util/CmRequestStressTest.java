@@ -1,9 +1,6 @@
 package hotmath.cm.util;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignmentInfo;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentsForUserAction;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
 import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 import hotmath.util.HMConnectionPool;
