@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
 /** Provides an abstraction over a single CM Program Item.
  * 
  * Represents the current location within a CM program

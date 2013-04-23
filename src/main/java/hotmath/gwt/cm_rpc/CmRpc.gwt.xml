@@ -1,18 +1,5 @@
 <module rename-to='cm_rpc'>
-
-<!--
-    Turn debuggin on, but only show in console 
--->
-
-  <inherits name="com.allen_sauer.gwt.log.gwt-log-OFF" />
-  
-	<!-- Hide the Log window, just send to stdout
-  <set-property name="log_DivLogger" value="DISABLED" />
-
-	    <extend-property name="log_level" values="INFO"/>
-	 -->
-
 	<entry-point class='hotmath.gwt.cm_rpc.client.CmRpc' />
-
-
+	<inherits name='hotmath.gwt.cm_rpc_core.CmRpcCore'/>
+	<inherits name='hotmath.gwt.cm_rpc_assignments.CmRpcAssignments'/>
 </module>

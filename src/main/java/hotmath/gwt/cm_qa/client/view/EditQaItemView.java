@@ -4,7 +4,7 @@ import hotmath.gwt.cm_qa.client.CmQa;
 import hotmath.gwt.cm_qa.client.model.QaEntryModelGxt;
 import hotmath.gwt.cm_qa.client.rpc.UpdateQaItemAction;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;

@@ -2,8 +2,8 @@ package hotmath.gwt.cm_qa.server;
 
 import hotmath.gwt.cm_rpc.client.model.CategoryModel;
 import hotmath.gwt.cm_rpc.client.model.QaEntryModel;
-import hotmath.gwt.cm_rpc.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;

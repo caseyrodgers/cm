@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
 
 /** Represents a single whiteboard action (draw,line,etc..)
  * and the related JSON data describing the action.

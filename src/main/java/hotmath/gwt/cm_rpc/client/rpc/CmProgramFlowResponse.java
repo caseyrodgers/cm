@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
 /** 
  *  A composite object that represents the 'current' 
  *  CM program flow.

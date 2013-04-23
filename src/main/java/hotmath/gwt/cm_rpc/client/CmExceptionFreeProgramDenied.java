@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_rpc.client;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 
 public class CmExceptionFreeProgramDenied extends CmRpcException{
     int uid;

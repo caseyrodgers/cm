@@ -1,7 +1,9 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentInfo;
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 public class AssignStudentsToAssignmentAction implements Action<AssignmentInfo>{
     

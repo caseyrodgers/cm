@@ -1,6 +1,10 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
 
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+
 import java.util.List;
 
 public class QuizHtmlResult implements Response {

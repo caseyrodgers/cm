@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 /** Provide ability to get list of lessons for a given test/quiz
  * 

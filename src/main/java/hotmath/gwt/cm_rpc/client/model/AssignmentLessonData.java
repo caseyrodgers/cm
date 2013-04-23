@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_rpc.client.model;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.SubjectDto;
-import hotmath.gwt.cm_rpc.client.rpc.Response;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import java.util.ArrayList;
 import java.util.List;

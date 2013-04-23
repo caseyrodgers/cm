@@ -1,0 +1,4 @@
+<module rename-to='cm_rpc_assignments'>
+	<entry-point class='hotmath.gwt.cm_rpc_assignments.client.CmRpcAssignments' />
+	<inherits name="hotmath.gwt.cm_rpc_core.CmRpcCore"/>
+</module>

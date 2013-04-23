@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetUserInfoAction implements Action<UserLoginResponse>{
     

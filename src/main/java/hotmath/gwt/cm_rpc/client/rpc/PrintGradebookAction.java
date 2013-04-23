@@ -1,8 +1,9 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import java.util.Date;
-
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.shared.client.rpc.CmWebResource;
+
+import java.util.Date;
 
 public class PrintGradebookAction implements Action<CmWebResource> {
 

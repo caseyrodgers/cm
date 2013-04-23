@@ -1,6 +1,10 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 public class UnassignStudentsFromAssignmentAction implements Action<RpcData> {
     

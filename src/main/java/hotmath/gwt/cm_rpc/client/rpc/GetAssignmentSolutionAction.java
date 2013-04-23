@@ -1,6 +1,10 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.ActionBase;
+import hotmath.gwt.cm_rpc_core.client.rpc.ActionInfo;
+import hotmath.gwt.cm_rpc_core.client.rpc.ActionType;
 
 
 /** Return solution information for a given user and pid
