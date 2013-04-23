@@ -24,7 +24,7 @@
   </filter-mapping>
 
   <listener>
-    <listener-class>hotmath.gwt.cm_rpc.server.rpc.ContextListener</listener-class>
+    <listener-class>hotmath.gwt.cm_rpc_core.server.rpc.ContextListener</listener-class>
   </listener>
  
   <servlet>
@@ -98,7 +98,7 @@
   <servlet>
     <servlet-name>CmService</servlet-name>
     <servlet-class>
-      hotmath.gwt.cm_rpc.server.service.CmServiceImpl
+      hotmath.gwt.cm_rpc_core.server.service.CmServiceImpl
     </servlet-class>
   </servlet>
   <servlet-mapping>

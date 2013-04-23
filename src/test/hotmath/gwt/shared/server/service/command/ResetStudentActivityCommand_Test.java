@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 public class ResetStudentActivityCommand_Test extends CmDbTestCase {
     

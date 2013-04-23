@@ -12,8 +12,22 @@
     </path>
 
         
-    <target name='doCombines' depends='combine-js_CatchupMathMobile3,combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
+    <target name='doCombines' depends='combine-js_CatchupMathMobile3,combine-js_CmMobileAssignments, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
         
+    <target name="combine-js_CmMobileAssignments" depends="javascript-minify">
+        <delete file="${web.dir}/gwt-resources/js/CmMobileAssignments_combined.js" />
+        <concat destfile="${web.dir}/gwt-resources/js/CmMobileAssignments_combined.js" append="true">
+            <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
+
+            	   hm_events-min.js
+            	   tutor_tablet.js
+                   ../../../../../../hotmath2/web/js/tutor_widget_combined.js
+                   CmMobileAssignments-min.js
+
+              " />
+        </concat>        
+    </target>
+
     <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
         <!-- Combine CM JS into a single download
         -->
@@ -23,7 +37,6 @@
 
 
             	   browser_info_tools-min.js            	
-            	   hm_events-min.js
             	   tutor_tablet.js
                	   dom_utils-min.js            	
             	   quiz-min.js

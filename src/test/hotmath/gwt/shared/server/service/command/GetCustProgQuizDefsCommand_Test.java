@@ -2,7 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.client.ui.GetCustProgQuizDefsAction;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CustomQuizDef;
 
 public class GetCustProgQuizDefsCommand_Test extends CmDbTestCase{

@@ -1,7 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestAction;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;

@@ -1,10 +1,10 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 import hotmath.gwt.shared.client.rpc.action.SimulateCommunicationsExceptionTestAction;
 
-import hotmath.gwt.cm_rpc.client.rpc.CmRpcException;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 
 public class SimulateCommunicationsExceptionCommand_Test extends CmDbTestCase {
 	

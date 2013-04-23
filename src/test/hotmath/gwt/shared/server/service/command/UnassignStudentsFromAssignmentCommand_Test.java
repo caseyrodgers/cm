@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.gwt.cm_rpc.client.model.assignment.StudentAssignment;
-import hotmath.gwt.cm_rpc.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.UnassignStudentsFromAssignmentAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.util.HMConnectionPool;
 import junit.framework.TestCase;
 

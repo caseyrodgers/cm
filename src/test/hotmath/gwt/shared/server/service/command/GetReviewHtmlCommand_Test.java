@@ -3,7 +3,7 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_rpc.client.rpc.GetReviewHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
-import hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher;
+import hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher;
 
 public class GetReviewHtmlCommand_Test extends CmDbTestCase {
 

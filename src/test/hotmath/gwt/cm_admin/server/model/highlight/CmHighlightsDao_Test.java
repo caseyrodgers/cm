@@ -2,7 +2,7 @@ package hotmath.gwt.cm_admin.server.model.highlight;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.cm_admin.server.model.CmHighlightsDao;
-import hotmath.gwt.cm_rpc.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 
 import java.util.ArrayList;
