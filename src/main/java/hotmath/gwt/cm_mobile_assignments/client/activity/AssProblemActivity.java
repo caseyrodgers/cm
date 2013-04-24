@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_assignments.client.util.AssBusy;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
 import hotmath.gwt.cm_mobile_assignments.client.view.AssProblemView;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -16,7 +17,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-public class AssProblemActivity implements Activity {
+public class AssProblemActivity implements Activity, AssProblemView.Presenter {
 
     private ClientFactory factory;
     private AssProblemPlace place;
@@ -45,6 +46,7 @@ public class AssProblemActivity implements Activity {
         __lastProblem = problem;
         AssBusy.showBusy(false);
         AssProblemView view = factory.getAssProblemView();
+        view.setPresenter(this);
         view.showProblem(problem);
         panel.setWidget(factory.getMain(view, "Assignment Problem", true));
     }    
@@ -56,8 +58,7 @@ public class AssProblemActivity implements Activity {
             loadProblem(panel, __lastProblem);
             return;
         }
-        
-        
+
         AssBusy.showBusy(true);
         GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(AssData.getUserData().getUid(),place.getAssignKey(), place.getPid());
         CmMobileAssignments.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
@@ -74,6 +75,23 @@ public class AssProblemActivity implements Activity {
             }
         });
         
+    }
+
+    @Override
+    public void setupView(AssProblemView view) {
+    }
+
+    @Override
+    public void showWhiteboard(String title) {
+    }
+
+    @Override
+    public void markSolutionAsComplete() {
+    }
+
+    @Override
+    public InmhItemData getItemData() {
+        return new InmhItemData("practice", __lastProblem.getInfo().getPid(), __lastProblem.getInfo().getPid());
     }
 
 }
