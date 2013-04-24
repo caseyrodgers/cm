@@ -29,8 +29,7 @@ public class GeneratePdfHighlightsReportCommand implements ActionHandler<Generat
         }
         return new HighlightsReport(action.getAdminId(), action.getReportName(), action.getReportLayout()).getWebResource(conn);
     }
-    
-    
+
     public String getPrintableStudentReportId(List<Integer> studentUids) {
         String reportId = String.format("%d%d%d", studentUids.get(0), System.currentTimeMillis(), studentUids.size());
         CmCacheManager.getInstance().addToCache(REPORT_ID, reportId, studentUids);

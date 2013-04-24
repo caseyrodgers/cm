@@ -19,7 +19,6 @@ public class PdfWindow {
         createPdfRpc();
     }
 
-
     private void createPdfRpc() {
         new RetryAction<CmWebResource>() {
             @Override
@@ -29,6 +28,7 @@ public class PdfWindow {
                 setAction(action);
                 s.execute(action,this);                
             }
+            @Override
             public void oncapture(CmWebResource webResource) {
                 CatchupMathTools.setBusy(false);
                 
