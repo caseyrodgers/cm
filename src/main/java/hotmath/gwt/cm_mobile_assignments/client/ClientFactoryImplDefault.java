@@ -10,6 +10,8 @@ import hotmath.gwt.cm_mobile_assignments.client.view.HomeView;
 import hotmath.gwt.cm_mobile_assignments.client.view.HomeViewImpl;
 import hotmath.gwt.cm_mobile_assignments.client.view.MainView;
 import hotmath.gwt.cm_mobile_assignments.client.view.MainViewImpl;
+import hotmath.gwt.cm_mobile_assignments.client.view.ShowWorkView;
+import hotmath.gwt.cm_mobile_assignments.client.view.ShowWorkViewImpl;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -27,6 +29,7 @@ public class ClientFactoryImplDefault implements ClientFactory {
     private MainView mainView ;
     private AssignmentView assignmentView;
     private AssProblemView assProblemView;
+    private ShowWorkView showWorkView;
     
     @Override
     public EventBus getEventBus() {
@@ -82,5 +85,13 @@ public class ClientFactoryImplDefault implements ClientFactory {
             assProblemView = new AssProblemViewImpl();
         }
         return assProblemView;
+    }
+
+    @Override
+    public ShowWorkView getShowWorkView() {
+        if(showWorkView == null) {
+            showWorkView = new ShowWorkViewImpl();
+        }
+        return showWorkView;
     }
 }

@@ -75,8 +75,6 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
                 }
             }
             
-            
-            
         });
         //flow.add(tutor);
         scroll.setWidget(tutor);

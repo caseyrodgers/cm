@@ -4,6 +4,7 @@ import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.CmMobileAssignments;
 import hotmath.gwt.cm_mobile_assignments.client.place.AssProblemPlace;
 import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
+import hotmath.gwt.cm_mobile_assignments.client.place.ShowWorkPlace;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssBusy;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
@@ -84,6 +85,7 @@ public class AssProblemActivity implements Activity, AssProblemView.Presenter {
 
     @Override
     public void showWhiteboard(String title) {
+        factory.getPlaceController().goTo(new ShowWorkPlace(place.getAssignKey(), place.getPid()));
     }
 
     @Override

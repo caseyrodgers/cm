@@ -4,6 +4,7 @@ import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
 import hotmath.gwt.cm_mobile_assignments.client.view.AboutView;
 import hotmath.gwt.cm_mobile_assignments.client.view.BaseComposite;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.HTML;
 import com.googlecode.mgwt.ui.client.widget.CellList;
 import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
@@ -22,6 +23,12 @@ public class AboutViewImpl extends BaseComposite implements AboutView {
         initWidget(new HTML("User: " + AssData.getUserData()));
     }
 
+    
+    @Override
+    public Place getBackPlace() {
+        return null;
+    }
+    
     private void showAssignments() {
         cellListWithHeader = new CellList<Item>(new BasicCell<Item>() {
             @Override

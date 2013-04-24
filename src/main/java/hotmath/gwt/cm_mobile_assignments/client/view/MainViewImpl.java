@@ -5,6 +5,8 @@ import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_assignments.client.util.ChromeWorkaround;
 
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -83,7 +85,13 @@ public class MainViewImpl extends BaseComposite implements MainView {
         backButton.addTapHandler(new TapHandler() {
             @Override
             public void onTap(TapEvent event) {
-                factory.getPlaceController().goTo(currentView.getBackPlace());
+                Place place = currentView.getBackPlace();
+                if(place != null) {
+                    factory.getPlaceController().goTo(place);
+                }
+                else {
+                    History.back();
+                }
             }
         });
 
