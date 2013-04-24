@@ -8,7 +8,6 @@ import hotmath.cm.util.CatchupMathProperties;
 import hotmath.cm.util.service.SolutionDef;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.solution_editor.client.SolutionSearchModel;
 import hotmath.gwt.solution_editor.server.solution.TutorSolution;
 import hotmath.solution.StaticWriter;
@@ -21,8 +20,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import sb.util.MD5;
-
-
 
 public class CmSolutionManagerDao {
     public String getSolutionXml(final Connection conn, String pid) throws Exception {
@@ -45,16 +42,15 @@ public class CmSolutionManagerDao {
         String xml = getSolutionXml(conn, pid);
         return MD5.getMD5(xml);
     }
-    
 
     public void saveSolutionXml(final Connection conn, String pid, String xml, String tutorDefine, boolean isActive) throws Exception {
         PreparedStatement ps=null;
         try {
-            
+
             if(!solutionExists(conn, pid)) {
                 createNewSolution(conn, pid);
             }
-            
+
             String sql = "update SOLUTIONS set local_edit = 1, solutionxml = ?, active = ?  where problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, xml);
@@ -63,11 +59,10 @@ public class CmSolutionManagerDao {
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not save solution xml: " + pid);
 
-            
             HotMathDatabaseLoader.processSolutionDefine(conn, pid, tutorDefine);
-            
+
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
-            
+
             StaticWriter.writeSolutionFile(conn,__creator, pid, __tutorProps, outputBase, false, null);            
         }
         catch(Exception e) {
@@ -77,7 +72,6 @@ public class CmSolutionManagerDao {
             SqlUtilities.releaseResources(null,ps,null);
         }
     }
-    
 
     /** return true if the named solution already exists
      * 
@@ -108,15 +102,16 @@ public class CmSolutionManagerDao {
     public String createNewSolution(final Connection conn) throws Exception {
         return createNewSolution(conn,"test_chap0_s-new_ps-new_" + "pb-" + System.currentTimeMillis() + "_1");
     }
+
     public String createNewSolution(final Connection conn, String newSolutionPid) throws Exception {
         PreparedStatement ps=null;
         try {
             String createdBy="auto";
-            
+
             /** TODO: get meta data from command line
              * 
              */
-            
+
             /** create new problem
              * 
              */
@@ -139,25 +134,23 @@ public class CmSolutionManagerDao {
             ps.setString(8,solution.getCreateNewXml(createdBy));
             ps.setString(9,createdBy);
             ps.setString(10,createdBy);
-            
+
             if(ps.executeUpdate() != 1)
                 throw new Exception("Could not create solution xml: " + newSolutionPid);
 
             String outputBase = CatchupMathProperties.getInstance().getSolutionBase() + HotMathProperties.getInstance().getStaticSolutionsDir();
             StaticWriter.writeSolutionFile(conn,__creator, newSolutionPid, __tutorProps, outputBase, false, null);
-            
-            
+
             return newSolutionPid;
         }
         finally {
             SqlUtilities.releaseResources(null,ps,null);
         }
-    }    
-    
-    
+    }
+
     public CmList<SolutionSearchModel> searchForSolutions(final Connection conn, String searchFor, String searchFullText, boolean includeInactive) throws Exception {
         CmList<SolutionSearchModel> list = new CmArrayList<SolutionSearchModel>();
-        
+
         if(searchFullText == null)
             searchFullText="";
         PreparedStatement ps=null;
@@ -179,8 +172,7 @@ public class CmSolutionManagerDao {
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
-    
-    
+
     public TutorSolution getTutorSolution(final Connection conn, String pid) throws Exception {
         PreparedStatement ps=null;
         try {
@@ -190,7 +182,7 @@ public class CmSolutionManagerDao {
                          " where s.problemindex = ?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, pid);
-            
+
             ResultSet rs = ps.executeQuery();
             if(!rs.first()) {
                 throw new Exception("No such solution: " + pid);
@@ -205,14 +197,11 @@ public class CmSolutionManagerDao {
             SqlUtilities.releaseResources(null, ps, null);
         }
     }
-    
-    
-    
+
     public String formatXml(String xml) throws Exception {
         return new XmlFormatter().format(xml);
     }
-    
-    
+
     static SolutionHTMLCreatorIimplVelocity __creator;
     static TutorProperties __tutorProps = new TutorProperties();
     static {
@@ -223,4 +212,3 @@ public class CmSolutionManagerDao {
         }
     }
 }
-
