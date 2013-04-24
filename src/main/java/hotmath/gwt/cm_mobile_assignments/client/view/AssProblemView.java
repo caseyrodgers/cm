@@ -11,6 +11,7 @@ public interface AssProblemView extends BaseView {
         void showWhiteboard(String title);
         void markSolutionAsComplete();
         InmhItemData getItemData();
+        void newProblem();
     }
 
     

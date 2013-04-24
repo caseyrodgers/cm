@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile_assignments.client.activity;
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.CmMobileAssignments;
 import hotmath.gwt.cm_mobile_assignments.client.place.AssProblemPlace;
+import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssBusy;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
@@ -92,6 +93,11 @@ public class AssProblemActivity implements Activity, AssProblemView.Presenter {
     @Override
     public InmhItemData getItemData() {
         return new InmhItemData("practice", __lastProblem.getInfo().getPid(), __lastProblem.getInfo().getPid());
+    }
+    
+    @Override
+    public void newProblem() {
+        factory.getPlaceController().goTo(new AssignmentPlace(__lastProblem.getAssignKey()));
     }
 
 }

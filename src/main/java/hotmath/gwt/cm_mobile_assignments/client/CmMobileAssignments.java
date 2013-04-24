@@ -29,14 +29,14 @@ public class CmMobileAssignments implements EntryPoint {
     public void onModuleLoad() {
         ViewPort viewPort = new MGWTSettings.ViewPort();
         viewPort.setTargetDensity(DENSITY.MEDIUM);
-        //viewPort.setUserScaleAble(true).setMinimumScale(1.0).setMinimumScale(1.0).setMaximumScale(1.0);
+        viewPort.setUserScaleAble(true).setMinimumScale(1.0).setMaximumScale(5.0);
 
         MGWTSettings settings = new MGWTSettings();
         settings.setViewPort(viewPort);
         settings.setIconUrl("logo.png");
         settings.setAddGlosToIcon(true);
         settings.setFullscreen(true);
-        settings.setPreventScrolling(true);
+        //settings.setPreventScrolling(true);
 
         MGWT.applySettings(settings);
 
@@ -62,6 +62,9 @@ public class CmMobileAssignments implements EntryPoint {
                 historyHandler.handleCurrentHistory();        
             }
         });
+        
+        
+        RootPanel.get("loading").setVisible(false);
     }
     
     

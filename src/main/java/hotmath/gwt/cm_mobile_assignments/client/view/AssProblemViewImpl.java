@@ -14,12 +14,14 @@ import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
 
 public class AssProblemViewImpl extends BaseComposite implements AssProblemView {
     
     ScrollPanel scroll = new ScrollPanel();
+    FlowPanel flow = new FlowPanel();
     TutorWrapperPanel tutor;
     private AssignmentProblem problem;
     Presenter presenter;
@@ -73,7 +75,10 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
                 }
             }
             
+            
+            
         });
+        //flow.add(tutor);
         scroll.setWidget(tutor);
         initWidget(scroll);
     }
@@ -84,8 +89,7 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
     }
 
     protected void tutorNewProblem() {
-        // TODO Auto-generated method stub
-        
+        presenter.newProblem();
     }
 
     @Override
