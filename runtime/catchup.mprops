@@ -3713,12 +3713,14 @@ left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pi
 left join (
     select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
     from CM_ASSIGNMENT_PID_ANSWERS pa
+    where assign_key = ?
     group by pa.user_id, pa.assign_key, pa.pid ) l
     on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
     
 left join (
     select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
-    from CM_ASSIGNMENT_PID_ANSWERS pa) q
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    where assign_key = ?) q
     on q.id=l.max_id
     
     

@@ -2023,7 +2023,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         saveAssignment(ass);
 
         // for each student in assignment
-        String sql = "select uid from HA_USER where group_id = ? ";
+        String sql = "select uid from HA_USER where group_id = ? and is_active = 1 ";
         List<Integer> uids = getJdbcTemplate().query(sql, new Object[] { ass.getGroupId() }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
