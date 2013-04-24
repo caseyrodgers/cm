@@ -279,13 +279,10 @@ public class CmTutoringDao {
             pstat.setInt(1, uid);
             pstat.setString(2, pid);
             pstat.setString(3, "draw");
-            pstat.setString(4, commandData);
             pstat.setLong(5, System.currentTimeMillis());
-
             pstat.setInt(6, rid);
-			byte[] inBytes = null;
-			inBytes = commandData.getBytes("UTF-8");
 
+            byte[] inBytes = commandData.getBytes("UTF-8");
 			byte[] outBytes = CompressHelper.compress(inBytes);
 			pstat.setBytes(4, outBytes);
 
