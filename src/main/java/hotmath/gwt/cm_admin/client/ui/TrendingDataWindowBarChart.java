@@ -40,7 +40,6 @@ import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
-//import com.sencha.gxt.chart.client.chart.Legend;
 
 public class TrendingDataWindowBarChart implements IsWidget {
 
@@ -58,7 +57,7 @@ public class TrendingDataWindowBarChart implements IsWidget {
 
 		@Path("lessonName")
 		ModelKeyProvider<TrendingData> lessonNameKey();
-}
+    }
 
 	private static final DataPropertyAccess dataAccess = GWT.create(DataPropertyAccess.class);
 
