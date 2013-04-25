@@ -560,8 +560,12 @@ public class TutorWrapperPanel extends Composite {
         
     private void gwt_solutionHasBeenInitialized(final String variablesJson, final String pid, final int problemNumber) {
         
-        this.tutorCallback.solutionHasBeenInitialized();
+        Log.debug("Calling solutionHasBeenInitialized: " + tutorCallback.getClass().getName());
         
+        this.tutorCallback.solutionHasBeenInitialized();
+
+        Log.debug("solutionHasBeenInitialized complete");
+
         if(isThereIsATutorWidget()) {
             setTutorBarStateEnabled(false);
         }
