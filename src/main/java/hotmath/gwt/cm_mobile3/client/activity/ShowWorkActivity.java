@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.EventBus;
@@ -191,39 +192,39 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         return html.replaceAll("id","ID_NOT");
     }
     
-
     
-    private native String getProblemStatementFromDocument(String pid) /*-{
-         var quizEle = $doc.getElementById('testset_div');
-         var ps = $doc.getElementById('problem_statement');
-         if(!ps) {
-             if(quizEle) {
-                 var divs = quizEle.getElementsByTagName('div');
-                 // alert('found ' + divs.length);
-                 for(var i=0,t=divs.length;i<t;i++) {
-                     var d = divs[i];
-                     if(d.className == 'question_wrapper' && d.getAttribute('pid') == pid) {
-                         // alert('found it!');
-                         var dds= d.getElementsByTagName('div');
-                         for(var di=0,dt=dds.length;di<dt;di++) {
-                             if(dds[di].className == 'question_div') {
-                                   ps = dds[di];
-                                   break;
-                             }
-                         }
-                         break;
-                     }
-                 }
-             }
-         }
-         
-         if(!ps) {
-             return null;
-         }
-         else {
-             return ps.innerHTML;
-         }
-         
-    }-*/;    
+    static private native String getProblemStatementFromDocument(String pid) /*-{
+        var quizEle = $doc.getElementById('testset_div');
+        var ps = $doc.getElementById('problem_statement');
+        if(!ps) {
+            if(quizEle) {
+                var divs = quizEle.getElementsByTagName('div');
+                // alert('found ' + divs.length);
+                for(var i=0,t=divs.length;i<t;i++) {
+                    var d = divs[i];
+                    if(d.className == 'question_wrapper' && d.getAttribute('pid') == pid) {
+                        // alert('found it!');
+                        var dds= d.getElementsByTagName('div');
+                        for(var di=0,dt=dds.length;di<dt;di++) {
+                            if(dds[di].className == 'question_div') {
+                                  ps = dds[di];
+                                  break;
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if(!ps) {
+            return null;
+        }
+        else {
+            return ps.innerHTML;
+        }
+    }-*/;  
+    
+  
     
 }

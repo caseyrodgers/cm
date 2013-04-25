@@ -675,5 +675,5 @@ public class TutorWrapperPanel extends Composite {
         Log.debug("showTutorWidgetCompleteInfo called");
         widgetCorrectInfo.addClassName(".show");    
     }
-
+      
 }
