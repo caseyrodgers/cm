@@ -136,6 +136,16 @@ public class TutorWrapperPanel extends Composite {
         
     }
     
+    
+    public void showButtonBar(boolean yesNo) {
+        if(yesNo) {
+            whiteboardButton.getElement().removeClassName("display_none");
+        }
+        else {
+            whiteboardButton.getElement().addClassName("display_none");
+        }
+    }
+    
     native public void showTutorMessage(String message) /*-{
         $wnd.TutorManager.showMessage(message);
     }-*/;

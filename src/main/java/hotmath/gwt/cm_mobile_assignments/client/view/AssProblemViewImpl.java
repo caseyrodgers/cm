@@ -1,25 +1,17 @@
 package hotmath.gwt.cm_mobile_assignments.client.view;
 
 import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
-import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
-import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.aria.client.PressedValue;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
@@ -33,7 +25,7 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
     Presenter presenter;
     public AssProblemViewImpl() {
         
-        tutor = new TutorWrapperPanel(true,true,true,true,new TutorCallbackDefault(){
+        tutor = new TutorWrapperPanel(false,true,true,true,new TutorCallbackDefault(){
             
             @Override
             public void solutionHasBeenViewed(String value) {
@@ -61,8 +53,13 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
             }
             
             @Override
+            public boolean moveFirstHintOnWidgetIncorrect() {
+                return false;
+            }
+            
+            @Override
             public WidgetStatusIndication indicateWidgetStatus() {
-                return presenter.isAssignmentGraded()?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
+                return !presenter.isAssignmentGraded()?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
             }
             
             @Override
@@ -104,6 +101,7 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
                 String context = solution.getInfo().getContext() != null?solution.getInfo().getContext().getContextJson():null;
                 tutor.externallyLoadedTutor(problem.getInfo(), (Widget)AssProblemViewImpl.this, problem.getInfo().getPid(),null, problem.getInfo().getJs(), problem.getInfo().getHtml(), problem.getInfo().getPid(), false, false, context);
                 
+                tutor.showButtonBar(presenter.isAssignmentGraded());
                 
                 if(problem.getLastUserWidgetValue() != null) {
                     tutor.setTutorWidgetValue(problem.getLastUserWidgetValue());
