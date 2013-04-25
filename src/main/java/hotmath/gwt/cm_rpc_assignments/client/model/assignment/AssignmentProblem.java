@@ -17,15 +17,35 @@ public class AssignmentProblem implements Response{
     private int userId;
     private int assignKey;
     private String lastUserWidgetValue;
+    private String label;
+    private boolean isGraded;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, SolutionInfo info, ProblemType problemType, String lastUserWidgetValue) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,SolutionInfo info, String label, ProblemType problemType, String lastUserWidgetValue) {
         this.userId = userId;
         this.assignKey = assignKey;
+        this.isGraded = isAssignmentGraded;
         this.info = info;
+        this.label = label;
         this.problemType = problemType;
         this.lastUserWidgetValue = lastUserWidgetValue;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public boolean isGraded() {
+        return isGraded;
+    }
+
+    public void setGraded(boolean isGraded) {
+        this.isGraded = isGraded;
     }
 
     public SolutionInfo getInfo() {
@@ -72,6 +92,10 @@ public class AssignmentProblem implements Response{
     public String toString() {
         return "AssignmentProblem [info=" + info + ", problemType=" + problemType + ", userId=" + userId
                 + ", assignKey=" + assignKey + ", lastUserWidgetValue=" + lastUserWidgetValue + "]";
+    }
+
+    public String getProblemLabel() {
+        return label;
     }
 
 }

@@ -41,7 +41,9 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         
         String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
         
-        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),info,AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue);
+        String problemLabel = AssignmentDao.getInstance().getProblemLabelInAssignment(action.getAssignKey(), action.getPid());
+        boolean isAssignmentGraded = AssignmentDao.getInstance().isAssignmentGraded(action.getUid(), action.getAssignKey());
+        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),isAssignmentGraded,info, problemLabel, AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue);
 
         AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
         

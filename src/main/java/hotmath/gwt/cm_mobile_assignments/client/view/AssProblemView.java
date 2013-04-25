@@ -12,6 +12,8 @@ public interface AssProblemView extends BaseView {
         void markSolutionAsComplete();
         InmhItemData getItemData();
         void newProblem();
+        void processTutorWidgetComplete(String inputValue, boolean correct);
+        boolean isAssignmentGraded();
     }
 
     

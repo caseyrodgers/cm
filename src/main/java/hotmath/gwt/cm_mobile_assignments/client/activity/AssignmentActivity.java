@@ -97,6 +97,7 @@ public class AssignmentActivity implements Activity {
         display.setHeaderPullHandler(headerHandler);
         display.render(stuAss.getStudentStatuses().getAssigmentStatuses());
 
+        String label = stuAss.getAssignment().getAssignmentLabel();
         MainView mainView = factory.getMain(display, "Assignment View", true);
         
         if(panel != null) {

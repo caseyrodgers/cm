@@ -1,2 +1,4 @@
-/* empty */
-.nothing {}
+/** hide the widget when showing problem statement in whitboard on mobile */
+#wb-container #hm_flash_widget {
+   display: none;
+}

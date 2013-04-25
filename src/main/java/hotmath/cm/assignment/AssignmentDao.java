@@ -2118,4 +2118,19 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
         return count;
     }
+
+    public String getProblemLabelInAssignment(int assignKey, String pid) {
+        String sql = "select label from CM_ASSIGNMENT_PIDS where assign_key = ? and pid = ?";
+        String problemLabel = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, pid }, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        });
+        return problemLabel;
+    }
+
+    public boolean isAssignmentGraded(int uid, int assignKey) {
+        return getStudentAssignmentUserInfo(uid, assignKey).isGraded();
+    }
 }

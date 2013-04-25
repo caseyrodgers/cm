@@ -1,12 +1,10 @@
 package hotmath.gwt.cm_mobile_assignments.client.util;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.googlecode.mgwt.ui.client.dialog.PopinDialog;
 import com.googlecode.mgwt.ui.client.widget.ProgressIndicator;
 
 public class AssBusy extends PopinDialog {
     public AssBusy() {
-        add(new HTML("<h1>Please wait .. &nbsp;</h1>"));
         add(new ProgressIndicator());
         center();
     }

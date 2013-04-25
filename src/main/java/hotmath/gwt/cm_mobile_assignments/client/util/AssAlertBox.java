@@ -5,11 +5,11 @@ import com.googlecode.mgwt.ui.client.dialog.AlertDialog;
 
 public class AssAlertBox extends AlertDialog {
     public AssAlertBox(String msg) {
-        this(msg, null);
+        this("Error", msg, null);
         
     }
-    public AssAlertBox(String msg, TapHandler handler) {
-        super("Error", msg);
+    public AssAlertBox(String title, String msg, TapHandler handler) {
+        super(title, msg);
         if(handler != null) {
             addTapHandler(handler);
         }
@@ -18,5 +18,9 @@ public class AssAlertBox extends AlertDialog {
     }
     public static void showAlert(String msg) {
         new AssAlertBox(msg);
-    }    
+    }
+    
+    public static void showAlert(String title, String msg) {
+        new AssAlertBox(title, msg, null);
+    }  
 }
