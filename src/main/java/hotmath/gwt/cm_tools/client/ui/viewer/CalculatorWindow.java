@@ -17,12 +17,11 @@ public class CalculatorWindow extends GWindow {
 
     public CalculatorWindow() {
         super(true);
-        setPixelSize(370,275);
+        setWidth(370);
         setHeadingHtml("Calculator Window 3");
         setModal(false);
         setClosable(true);
         setResizable(false);
-        
         
         setWidget(new CalculatorPanel());
     }

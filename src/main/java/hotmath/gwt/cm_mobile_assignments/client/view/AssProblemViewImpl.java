@@ -15,11 +15,10 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.googlecode.mgwt.ui.client.widget.ScrollPanel;
 
 public class AssProblemViewImpl extends BaseComposite implements AssProblemView {
     
-    ScrollPanel scroll = new ScrollPanel();
+    //ScrollPanel scroll = new ScrollPanel();
     FlowPanel flow = new FlowPanel();
     TutorWrapperPanel tutor;
     private AssignmentProblem problem;
@@ -78,9 +77,9 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
             }
             
         });
-        //flow.add(tutor);
-        scroll.setWidget(tutor);
-        initWidget(scroll);
+        flow.add(tutor);
+        //scroll.setWidget(tutor);
+        initWidget(flow);
     }
     
     

@@ -55,7 +55,7 @@ public class AssProblemActivity implements Activity, AssProblemView.Presenter {
         view.setPresenter(this);
         
         view.showProblem(problem);
-        panel.setWidget(factory.getMain(view, problem.getProblemLabel(), true));
+        panel.setWidget(factory.getMain(view, problem.getProblemLabel(), false));
     }    
 
     @Override
