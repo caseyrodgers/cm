@@ -136,16 +136,26 @@ public class TutorWrapperPanel extends Composite {
         
     }
     
-    
-    public void showButtonBar(boolean yesNo) {
-        if(yesNo) {
-            whiteboardButton.getElement().removeClassName("display_none");
-        }
-        else {
-            whiteboardButton.getElement().addClassName("display_none");
-        }
+    /** Provide button bar customization
+     * 
+     * @param setup
+     */
+    public void setupButtonBar(ButtonBarSetup setup) {
+        showElement(stepNext.getElement(), setup.showNextPrev);
+        showElement(stepPrev.getElement(), setup.showNextPrev);
+        showElement(whiteboardButton.getElement(), setup.showWhiteboard);
+        showElement(returnButton.getElement(), setup.showReturn);
     }
     
+    private void showElement(Element element, boolean b) {
+        if(b) {
+            element.removeClassName("display_none");
+        }
+        else {
+            element.addClassName("display_none");
+        }
+    }
+
     native public void showTutorMessage(String message) /*-{
         $wnd.TutorManager.showMessage(message);
     }-*/;
@@ -685,5 +695,21 @@ public class TutorWrapperPanel extends Composite {
         Log.debug("showTutorWidgetCompleteInfo called");
         widgetCorrectInfo.addClassName(".show");    
     }
-      
+
+    /** Provide granular customization of button bar
+     * 
+     * @author casey
+     *
+     */
+    static public class ButtonBarSetup {
+        boolean showNextPrev;
+        boolean showWhiteboard;
+        boolean showReturn;
+        
+        public ButtonBarSetup(boolean showNextPrev, boolean showWhiteboard, boolean showReturn) {
+            this.showNextPrev = showNextPrev;
+            this.showWhiteboard = showWhiteboard;
+            this.showReturn = showReturn;
+        }
+    }
 }

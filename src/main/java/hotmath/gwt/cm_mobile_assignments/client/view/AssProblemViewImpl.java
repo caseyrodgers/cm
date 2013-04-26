@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
+import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.ButtonBarSetup;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -25,7 +26,7 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
     Presenter presenter;
     public AssProblemViewImpl() {
         
-        tutor = new TutorWrapperPanel(false,true,true,true,new TutorCallbackDefault(){
+        tutor = new TutorWrapperPanel(true,true,true,false,new TutorCallbackDefault(){
             
             @Override
             public void solutionHasBeenViewed(String value) {
@@ -101,7 +102,7 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
                 String context = solution.getInfo().getContext() != null?solution.getInfo().getContext().getContextJson():null;
                 tutor.externallyLoadedTutor(problem.getInfo(), (Widget)AssProblemViewImpl.this, problem.getInfo().getPid(),null, problem.getInfo().getJs(), problem.getInfo().getHtml(), problem.getInfo().getPid(), false, false, context);
                 
-                tutor.showButtonBar(presenter.isAssignmentGraded());
+                tutor.setupButtonBar(new ButtonBarSetup(presenter.isAssignmentGraded(), true, true));
                 
                 if(problem.getLastUserWidgetValue() != null) {
                     tutor.setTutorWidgetValue(problem.getLastUserWidgetValue());

@@ -60,6 +60,12 @@ public class AssProblemActivity implements Activity, AssProblemView.Presenter {
 
     @Override
     public void start(final AcceptsOneWidget panel, EventBus eventBus) {
+        
+        if(__lastProblem != null && __lastProblem.getInfo().getPid().equals(place.getPid())) {
+            loadProblem(panel, __lastProblem);
+            return;
+        }
+
         AssBusy.showBusy(true);
         GetAssignmentSolutionAction action = new GetAssignmentSolutionAction(AssData.getUserData().getUid(),place.getAssignKey(), place.getPid());
         CmMobileAssignments.getCmService().execute(action, new AsyncCallback<AssignmentProblem>() {
