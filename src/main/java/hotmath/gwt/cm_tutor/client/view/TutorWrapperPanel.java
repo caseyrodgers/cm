@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoHandler;
@@ -11,10 +10,12 @@ import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
 import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
@@ -263,14 +264,19 @@ public class TutorWrapperPanel extends Composite {
      * @param correct
      */
     public void tutorWidgetComplete(String inputValue, boolean correct) {
+        
         Log.debug("tutorWidgetComplete (in GWT) called: " + inputValue);
-
+        
         if(_readOnly) {
             jsni_setTutorWidgetValue(_lastWidgetValue);
             this.tutorCallback.tutorWidgetCompleteDenied(inputValue, correct);
             return;
         }
         else {
+            
+            CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(_solutionInfo, inputValue, correct));
+
+
         	if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
         	    jsni_moveToFirstStep();
         	}
@@ -301,7 +307,7 @@ public class TutorWrapperPanel extends Composite {
             CmTutor.getCmService().execute(action,new AsyncCallback<UserTutorWidgetStats>() {
                 @Override
                 public void onSuccess(UserTutorWidgetStats userStats) {
-                    CmRpc.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
+                    CmRpcCore.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
                 }
                 @Override
                 public void onFailure(Throwable caught) {
@@ -374,7 +380,7 @@ public class TutorWrapperPanel extends Composite {
             _wasWidgetAnswered = true;
         }
         
-        CmRpc.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
+        CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     
     @Override
@@ -667,7 +673,7 @@ public class TutorWrapperPanel extends Composite {
     }
     
     static {
-        CmRpc.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
             @Override
             public void onWindowResized(WindowHasBeenResizedEvent windowHasBeenResizedEvent) {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -682,7 +688,7 @@ public class TutorWrapperPanel extends Composite {
         });
         
         
-        CmRpc.EVENT_BUS.addHandler(ShowTutorWidgetCompleteInfoEvent.TYPE, new ShowTutorWidgetCompleteInfoHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(ShowTutorWidgetCompleteInfoEvent.TYPE, new ShowTutorWidgetCompleteInfoHandler() {
             @Override
             public void showTutorWidgetCompleteInfo() {
                 __lastInstance.showTutorWidgetCompleteInfo();   

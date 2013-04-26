@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
@@ -10,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -380,7 +380,7 @@ public class EditAssignmentDialog {
 
                 Log.debug("Assignment Saved", "Assignment (" + _assignment.getAssignKey() + ") saved successfully");
                 
-                CmRpc.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
+                CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
             }
         }.register();
         

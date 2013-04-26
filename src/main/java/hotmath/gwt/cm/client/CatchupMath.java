@@ -15,7 +15,6 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.event.TutorContainerActivatedEvent;
@@ -26,6 +25,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -110,8 +110,8 @@ public class CatchupMath implements EntryPoint {
                 if (CmMainPanel.__lastInstance != null && CmMainPanel.__lastInstance._mainContentWrapper != null) {
                     EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_WINDOW_RESIZED));
                 }
-                if(CmRpc.EVENT_BUS != null) {
-                    CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+                if(CmRpcCore.EVENT_BUS != null) {
+                    CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
                 }
               }
         };
@@ -330,7 +330,7 @@ public class CatchupMath implements EntryPoint {
         /** List for event when a new TutorWContainer is displayed.  We need to hide the main
          *  tutor window because of hard-coding issues with the tutor-content id.
          */
-        CmRpc.EVENT_BUS.addHandler(TutorContainerActivatedEvent.TYPE, new TutorContainerActivatedEventHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(TutorContainerActivatedEvent.TYPE, new TutorContainerActivatedEventHandler() {
             @Override
             public void tutorContainerActivated(TutorContainerActivatedEvent event) {
                 CmMainPanel.__lastInstance.removeResourceIfTutor();

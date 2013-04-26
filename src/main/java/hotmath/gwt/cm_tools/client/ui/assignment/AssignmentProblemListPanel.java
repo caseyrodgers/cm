@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
@@ -9,6 +8,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
@@ -338,21 +338,21 @@ public class AssignmentProblemListPanel extends ContentPanel {
     }
 
     static {
-        CmRpc.EVENT_BUS.addHandler(AssignmentProblemLoadedEvent.TYPE, new AssignmentProblemLoadedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(AssignmentProblemLoadedEvent.TYPE, new AssignmentProblemLoadedHandler() {
             @Override
             public void assignmentProblemLoaded(AssignmentProblem assProb) {
                 __lastInstance.setAssignmentLoaded(assProb);
             }
         });
         
-        CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
             @Override
             public void assignmentsUpdated(AssignmentUserInfo info) {
                 __lastInstance.refreshAnnotationMarkings();
             }
         });
 
-        // CmRpc.EVENT_BUS.addHandler(TutorWidgetValueChangedEvent.TYPE, new
+        // CmRpcCore.EVENT_BUS.addHandler(TutorWidgetValueChangedEvent.TYPE, new
         // TutorWidgetValueChangedHandler() {
         // @Override
         // public void widgetValueChanged(String value, boolean correct) {

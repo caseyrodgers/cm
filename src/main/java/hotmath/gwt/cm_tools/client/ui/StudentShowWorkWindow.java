@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.TutorContainerActivatedEvent;
 import hotmath.gwt.cm_rpc.client.model.StudentShowWorkModelPojo;
@@ -10,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -72,7 +72,7 @@ public class StudentShowWorkWindow extends GWindow {
         super(true);
         
         
-        CmRpc.EVENT_BUS.fireEvent(new TutorContainerActivatedEvent());
+        CmRpcCore.EVENT_BUS.fireEvent(new TutorContainerActivatedEvent());
         
         setStyleName("student-show-work-window");
         this.student = student;

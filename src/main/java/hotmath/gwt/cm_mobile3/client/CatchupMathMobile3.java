@@ -10,8 +10,6 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewI
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.QuizViewImpl;
-import hotmath.gwt.cm_mobile3.client.view.TutorWidgetCorrectDialog;
-import hotmath.gwt.cm_mobile3.client.view.TutorWidgetCorrectDialog.Callback;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -32,8 +30,8 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -205,7 +203,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         }
         
         
-        CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+        CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
     }    
     /**
      * TODO: Move to a central Controller

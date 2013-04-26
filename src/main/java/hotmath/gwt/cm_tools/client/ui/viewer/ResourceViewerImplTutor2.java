@@ -1,18 +1,18 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -215,7 +215,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
             public void oncapture(UserTutorWidgetStats userStats) {
                 CmBusyManager.setBusy(false);
                 
-                CmRpc.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
+                CmRpcCore.EVENT_BUS.fireEvent(new UserTutorWidgetStatusUpdatedEvent(userStats));
             }
         }.register();
     }

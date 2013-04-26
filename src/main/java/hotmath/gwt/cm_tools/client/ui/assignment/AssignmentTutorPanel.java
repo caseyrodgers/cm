@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentSolutionContextAction;
@@ -11,6 +10,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
@@ -177,7 +177,7 @@ public class AssignmentTutorPanel extends Composite {
             
             _tutorPanel.setVisible(true);
 
-            CmRpc.EVENT_BUS.fireEvent(new AssignmentProblemLoadedEvent(problem));
+            CmRpcCore.EVENT_BUS.fireEvent(new AssignmentProblemLoadedEvent(problem));
             
         } catch (Exception e) {
             Log.error("Error loading solution into GUI", e);

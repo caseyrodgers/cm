@@ -1,13 +1,13 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
@@ -118,7 +118,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
 
         readAssignmentFromServer(assignKeyToOpen, pid);
         
-        CmRpc.EVENT_BUS.fireEvent(new StudentAssignmentViewerActivatedAction());
+        CmRpcCore.EVENT_BUS.fireEvent(new StudentAssignmentViewerActivatedAction());
     }
 
     private void loadTutorProblemStatement(String title, StudentProblemDto problem) {
@@ -324,7 +324,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
                 /** Make sure system is in sync after viewing an assingment
                  * 
                  */
-                CmRpc.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
             }
         }.register();          
     }

@@ -4,9 +4,9 @@ package hotmath.gwt.cm_tutor.client;
 
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tutor.client.view.TutorWithWhiteboardViewer;
@@ -39,7 +39,7 @@ public class CmTutor implements EntryPoint {
                 @Override
                 public void onResize(ResizeEvent event) {
                     Log.debug("Window has been resized");
-                    CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+                    CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
                 }
               });
         }

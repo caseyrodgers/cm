@@ -86,7 +86,6 @@ public class AssProblemActivity implements Activity, AssProblemView.Presenter {
     
     @Override
     public void processTutorWidgetComplete(final String inputValue, final boolean correct) {
-    
         final AssignmentProblem assProblem = new AssignmentProblem();
         
         if(false) { // _isGraded) {

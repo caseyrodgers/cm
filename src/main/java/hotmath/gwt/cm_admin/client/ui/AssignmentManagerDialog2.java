@@ -4,13 +4,13 @@ import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.Callback;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentsContentPanel.GradebookButtonCallback;
 import hotmath.gwt.cm_admin.client.ui.assignment.GroupNameProperties;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGroupsAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrintGradebookAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
@@ -227,7 +227,7 @@ public class AssignmentManagerDialog2  {
     }
     
     static {
-        CmRpc.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE, new DataBaseHasBeenUpdatedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE, new DataBaseHasBeenUpdatedHandler() {
             @Override
             public void databaseUpdated(TypeOfUpdate type) {
                 if(type == TypeOfUpdate.ASSIGNMENTS) {

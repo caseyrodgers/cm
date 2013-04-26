@@ -1,10 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.QuizContext;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedAction;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.StudentAssignmentViewerActivatedHandler;
@@ -183,7 +182,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 		/** Configure normal CM system when Assignments are activated
 		 * 
 		 */
-		CmRpc.EVENT_BUS.addHandler(StudentAssignmentViewerActivatedAction.TYPE, new StudentAssignmentViewerActivatedHandler() {
+		CmRpcCore.EVENT_BUS.addHandler(StudentAssignmentViewerActivatedAction.TYPE, new StudentAssignmentViewerActivatedHandler() {
             @Override
             public void assignmentGuiActivated() {
                 Log.debug("Student Assignments are activated");
@@ -340,7 +339,7 @@ public class CmMainPanel extends BorderLayoutContainer {
 	    forceLayout();
 	    
 	    
-	    CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+	    CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
     }
 	
 	protected void optimizeResource() {
@@ -350,7 +349,7 @@ public class CmMainPanel extends BorderLayoutContainer {
         
         forceLayout();
         
-        CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+        CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
 	}
 
     static private String __lastQuestionPid;

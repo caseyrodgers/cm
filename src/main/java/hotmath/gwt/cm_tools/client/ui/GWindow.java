@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 
 import com.google.gwt.event.logical.shared.ResizeEvent;
@@ -27,7 +27,7 @@ public class GWindow extends Window {
         addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
-                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         });
     }

@@ -8,8 +8,8 @@ import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
@@ -57,7 +57,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         mainPort = new Viewport() {
             protected void onWindowResize(int width, int height) {
                 super.onWindowResize(width, height);
-                CmRpc.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         };
         CmBusyManager.setViewPort(mainPort);

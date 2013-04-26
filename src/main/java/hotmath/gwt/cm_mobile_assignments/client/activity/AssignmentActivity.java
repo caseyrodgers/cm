@@ -4,14 +4,17 @@ package hotmath.gwt.cm_mobile_assignments.client.activity;
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.CmMobileAssignments;
 import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
-import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssBusy;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
 import hotmath.gwt.cm_mobile_assignments.client.view.AssignmentView;
 import hotmath.gwt.cm_mobile_assignments.client.view.MainView;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteHandler;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -119,6 +122,30 @@ public class AssignmentActivity implements Activity {
                 }
             }.schedule(1000);
         }
+    }
+    
+    
+    static {
+        
+        CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
+            @Override
+            public void tutorWidgetComplete(SolutionInfo solutionInfo, String inputValue, boolean correct) {
+                for(StudentProblemDto prob: __lastStudentAssignment.getStudentStatuses().getAssigmentStatuses()) {
+                    
+                    if(prob.getPid().equals(solutionInfo.getPid())) {
+                        updateProblemStatus(prob);
+                    }
+                    
+                    
+                }
+            }
+        });        
+        
+    }
+
+
+    protected static void updateProblemStatus(StudentProblemDto prob) {
+        prob.setStatus("Submitted");
     }
 
 }

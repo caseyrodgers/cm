@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.client.util;
 
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
@@ -147,13 +147,13 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
             _lastCheckedData = assignmentInfo;
             
             Log.debug("Firing AssignmentsUpdatedEvent: " + assignmentInfo);
-            CmRpc.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(assignmentInfo));
+            CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(assignmentInfo));
         }
     }
 
 
     static {
-        CmRpc.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
             public void forceSyncCheck() {
                 checkForUpdate();
             }

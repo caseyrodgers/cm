@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -217,7 +217,7 @@ public class ShowWorkPanel extends Composite {
         // do every time...
         saveWhiteboardToServer();
 
-        CmRpc.EVENT_BUS.fireEvent(new ShowWorkModifiedEvent(this));
+        CmRpcCore.EVENT_BUS.fireEvent(new ShowWorkModifiedEvent(this));
     }
 
     /**
@@ -323,7 +323,7 @@ public class ShowWorkPanel extends Composite {
                                                           }-*/;
 
     static {
-        CmRpc.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
             @Override
             public void onWindowResized(WindowHasBeenResizedEvent windowHasBeenResizedEvent) {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {

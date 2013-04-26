@@ -1,10 +1,10 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
@@ -240,14 +240,14 @@ public class HeaderPanel extends FlowLayoutContainer {
     }
 
     static {
-        CmRpc.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE, new UserTutorWidgetStatusUpdatedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(UserTutorWidgetStatusUpdatedEvent.TYPE, new UserTutorWidgetStatusUpdatedHandler() {
             @Override
             public void userStatsUpdate(UserTutorWidgetStats userStats) {
                 __instance.updateUserTutorStats(userStats);
             }
         });
         
-        CmRpc.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE, new AssignmentsUpdatedHandler() {
             @Override
             public void assignmentsUpdated(AssignmentUserInfo assInfo) {
                 UserInfo.getInstance().setAssignmentMetaInfo(assInfo);

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
-import hotmath.gwt.cm_rpc.client.CmRpc;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
@@ -12,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -91,7 +91,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                 
                 
                 /** Make sure the tutor/whiteboard are sized correctly */
-                CmRpc.EVENT_BUS.fireEvent(new  WindowHasBeenResizedEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new  WindowHasBeenResizedEvent());
             }
         });
         
