@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_assignments.client.view;
 
 import hotmath.gwt.cm_mobile_assignments.client.place.AssignmentPlace;
+import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
@@ -10,11 +11,15 @@ import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.ButtonBarSetup;
 
+import com.extjs.gxt.ui.client.widget.table.TableHeader;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.googlecode.mgwt.dom.client.event.tap.TapEvent;
+import com.googlecode.mgwt.dom.client.event.tap.TapHandler;
+import com.googlecode.mgwt.ui.client.widget.Button;
 
 public class AssProblemViewImpl extends BaseComposite implements AssProblemView {
     
@@ -77,8 +82,20 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
             }
             
         });
-        flow.add(tutor);
+        
         //scroll.setWidget(tutor);
+        
+        
+        Button turnInAssignment = new Button("Turn In Assignment");
+        turnInAssignment.addTapHandler(new TapHandler() {
+            @Override
+            public void onTap(TapEvent event) {
+                AssAlertBox.showAlert("Not Implemented Yet");
+            }
+        });
+
+        flow.add(turnInAssignment);
+        flow.add(tutor);
         initWidget(flow);
     }
     
