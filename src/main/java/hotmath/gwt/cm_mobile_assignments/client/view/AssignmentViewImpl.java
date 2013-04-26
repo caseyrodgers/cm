@@ -3,12 +3,21 @@ package hotmath.gwt.cm_mobile_assignments.client.view;
 import hotmath.gwt.cm_mobile_assignments.client.ClientFactory;
 import hotmath.gwt.cm_mobile_assignments.client.place.AssProblemPlace;
 import hotmath.gwt.cm_mobile_assignments.client.place.HomePlace;
+import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.googlecode.mgwt.ui.client.widget.base.HasRefresh;
 import com.googlecode.mgwt.ui.client.widget.base.PullArrowHeader;
@@ -42,7 +51,25 @@ public class AssignmentViewImpl extends BaseComposite implements AssignmentView 
 
     public AssignmentViewImpl(ClientFactory factoryIn) {
         this.factory = factoryIn;
-        initWidget(createPullToRefreshPanel());
+        
+        
+        Button turnInAssignment = new Button("Turn In Assignment", new ClickHandler() {
+            
+            @Override
+            public void onClick(ClickEvent event) {
+                AssAlertBox.showAlert("Not Implemented Yet");
+            }
+        });
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
+        hp.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+        hp.setHeight("35px");
+        hp.add(turnInAssignment);
+
+        FlowPanel flow = new FlowPanel();
+        flow.add(hp);
+        flow.add(createPullToRefreshPanel());
+        initWidget(flow);
     }
     
 

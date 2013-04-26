@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile_assignments.client.util.AssAlertBox;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssBusy;
 import hotmath.gwt.cm_mobile_assignments.client.util.AssData;
 import hotmath.gwt.cm_mobile_assignments.client.view.AssProblemView;
+import hotmath.gwt.cm_mobile_assignments.client.view.MainView;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
@@ -55,7 +56,7 @@ public class AssProblemActivity implements Activity, AssProblemView.Presenter {
         view.setPresenter(this);
         
         view.showProblem(problem);
-        panel.setWidget(factory.getMain(view, problem.getProblemLabel(), false));
+        panel.setWidget(factory.getMain(view, problem.getProblemLabel(), true));
     }    
 
     @Override
