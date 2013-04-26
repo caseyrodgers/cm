@@ -601,6 +601,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
             if (probDto.getUid() != uid) {
                 if (lessonStatus != null) {
+                    
                     lessonStatus.setStatus(getLessonStatus(count, completed, pending, viewed));
                     StudentAssignment sa = stuAssignMap.get(uid);
                     if (sa.isGraded() == false) {
@@ -609,7 +610,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     else {
                     	sa.setHomeworkStatus("Graded");
                     }
-                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
+                    
                 }
                 lessonName = "";
                 totCount = 0;
@@ -679,7 +681,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             else {
             	sa.setHomeworkStatus("Graded");
             }
-            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
         }
 
         if (__logger.isDebugEnabled())
@@ -754,7 +756,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
+        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(correct, inCorrect, halfCredit));
         sa.setStudentDetailStatus(getLessonStatus(sa.getStudentStatuses().getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
@@ -872,7 +874,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     sa.setProblemPendingCount(totPending);
                     sa.setProblemCompletedCount(totCompleted);
                     sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
                     if (__logger.isDebugEnabled())
                         __logger.debug(String.format(
                                 "getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d", totCount,
@@ -941,7 +943,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             sa.setProblemPendingCount(totPending);
             sa.setProblemCompletedCount(totCompleted);
             sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
             if (__logger.isDebugEnabled())
                 __logger.debug(String.format("getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d",
                         totCount, totCompleted, totPending, totGraded, totViewed));
@@ -1288,7 +1290,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     protected String getUserScore(int uid, int assignKey) throws Exception {
         final double counts[] = new double[4];
-        final int TOTAL = 0, CORRECT = 1, HALFCREDIT = 2, INCORRECT = 3;
+        final int CORRECT = 1, HALFCREDIT = 2, INCORRECT = 3;
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_SCORE");
         getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<Integer>() {
             @Override
@@ -1301,12 +1303,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 } else if (status.equals("incorrect")) {
                     counts[INCORRECT] += 1;
                 }
-                counts[TOTAL]++;
                 return 0; // unused
             }
         });
 
-        return GradeBookUtils.getHomeworkGrade((int) counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
+        return GradeBookUtils.getHomeworkGrade((int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
     }
 
     private int getHomeworkGradeValue(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
@@ -1376,28 +1377,33 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         boolean isComplete = true;
         for (StudentProblemDto prob : problemStatuses) {
+            
 
-            /**
-             * get last input value for this problem
-             * 
-             */
-            sql = "Select * from CM_ASSIGNMENT_PID_ANSWERS where assign_key = ? and user_id = ? and pid = ? order by id desc limit 1";
-            List<Boolean> pidAnswers = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, prob.getPid() }, new RowMapper<Boolean>() {
-                @Override
-                public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
-                    return rs.getInt("correct") == 0 ? false : true;
+            if(!prob.isGraded()) {
+    
+                /**
+                 * get last input value for this problem
+                 * 
+                 */
+                sql = "Select * from CM_ASSIGNMENT_PID_ANSWERS where assign_key = ? and user_id = ? and pid = ? order by id desc limit 1";
+                List<Boolean> pidAnswers = getJdbcTemplate().query(sql, new Object[] { assignKey, uid, prob.getPid() }, new RowMapper<Boolean>() {
+                    @Override
+                    public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return rs.getInt("correct") == 0 ? false : true;
+                    }
+                });
+    
+                /**
+                 * If there is an answer, then update the status accordingly.
+                 * 
+                 * TODO: remove status from PID_STATUS? is it needed?
+                 */
+                if (pidAnswers.size() > 0) {
+                    // only over
+                    prob.setStatus(pidAnswers.get(0) ? "Correct" : "Incorrect");
                 }
-            });
-
-            /**
-             * If there is an answer, then update the status accordingly.
-             * 
-             * TODO: remove status from PID_STATUS? is it needed?
-             */
-            if (pidAnswers.size() > 0) {
-                prob.setStatus(pidAnswers.get(0) ? "Correct" : "Incorrect");
             }
-
+                
             if (!prob.isComplete() && isComplete) {
                 isComplete = false;
             }
@@ -1675,14 +1681,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         List<Object[]> batch = new ArrayList<Object[]>();
         for (StudentProblemDto sp : studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
-            Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(),
-                    studentAssignment.getUid() };
+            Object[] values = new Object[] { sp.getStatus(), sp.isGraded() ? 1 : 0, studentAssignment.getAssignment().getAssignKey(), sp.getPid(), studentAssignment.getUid() };
             batch.add(values);
         }
         SimpleJdbcTemplate template = new SimpleJdbcTemplate(this.getDataSource());
-        int[] updateCounts = template.batchUpdate(
-                "update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ?, last_teacher_change_date = now() where assign_key = ? and pid = ? and uid = ?",
-                batch);
+        
+        String sql = "update CM_ASSIGNMENT_PID_STATUS set status = ?, is_graded = ?, last_teacher_change_date = now() where assign_key = ? and pid = ? and uid = ?";
+        int[] updateCounts = template.batchUpdate(sql,batch);
 
         if (releaseGrades) {
             markAssignmentAsGraded(studentAssignment.getUid(), studentAssignment.getAssignment().getAssignKey());

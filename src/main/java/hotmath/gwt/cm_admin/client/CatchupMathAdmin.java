@@ -9,6 +9,7 @@ import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
@@ -118,6 +119,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
             new AssignmentManagerDialog2(566,2);
             return;
         }
+
         
         if(false) {
             HighlightsDataWindow.getSharedInstance(2).setVisible(true);

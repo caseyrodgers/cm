@@ -12,9 +12,8 @@ public class GradeBookUtils {
      * @return
      */
     static public String getHomeworkGrade(List<StudentProblemDto> problems) {
-        int totCount=0, totCorrect=0, totIncorrect=0, totHalfCredit=0;
+        int totCorrect=0, totIncorrect=0, totHalfCredit=0;
         for (StudentProblemDto dto : problems) {
-            totCount++;
             String status = dto.getStatus();
             if(status.equals(ProblemStatus.CORRECT.toString())) {
                 totCorrect++;
@@ -26,17 +25,20 @@ public class GradeBookUtils {
                 totIncorrect++;
             }
         }
-        return getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit);
+        return getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit);
     }
     
     
 
-    static public String getHomeworkGrade(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
+    static public String getHomeworkGrade(int totCorrect, int totIncorrect, int totHalfCredit) {
+        
+        float total = totCorrect + totIncorrect + totHalfCredit;
+        
         // add .5 for each half correct answer
         float totCorrectF = (float) totCorrect + (totHalfCredit > 0 ? (float)totHalfCredit / 2 : 0);
         String grade = "-";
         if ((totCorrect + totIncorrect + totHalfCredit) > 0) {
-            int percent = Math.round(((float) totCorrectF / (float) totCount) * 100.0f);
+            int percent = Math.round(((float) totCorrectF / (float) total) * 100.0f);
             grade = percent+"%";
         }
         return grade;
