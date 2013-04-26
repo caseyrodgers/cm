@@ -175,6 +175,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         combo.add(ProblemStatus.CORRECT);
         combo.add(ProblemStatus.INCORRECT);
         combo.add(ProblemStatus.HALF_CREDIT);
+        combo.add(ProblemStatus.SUBMITTED);
         combo.setForceSelection(true);
         combo.setPropertyEditor(new PropertyEditor<ProblemStatus>() {
             @Override
