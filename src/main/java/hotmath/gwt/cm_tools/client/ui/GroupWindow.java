@@ -172,7 +172,7 @@ public class GroupWindow extends FlowLayoutContainer {
             @Override
             public void oncapture(GroupInfoModel g) {
             	if(grpCombo != null) {
-            		grpCombo.setValue(g);
+            		grpCombo.setValue(g, true);
             	}
             	/**
             	 * no message

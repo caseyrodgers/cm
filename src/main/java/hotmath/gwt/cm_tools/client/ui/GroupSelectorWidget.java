@@ -9,6 +9,8 @@ import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GetActiveGroupsAction;
 
@@ -41,12 +43,14 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 	private ProcessTracker pTracker;
 	private String id;
 	LabelProvider<GroupInfoModel> groupLabel;
+	private CmAsyncRequest groupCallback;
 
     public static final String NO_FILTERING = "--- No Filtering ---";
 
 
 	public GroupSelectorWidget(final CmAdminModel cmAdminMdl, final ListStore<GroupInfoModel> groupStore,
-		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc, LabelProvider<GroupInfoModel> groupLabel) {
+		boolean inRegistrationMode, ProcessTracker pTracker, String id, Boolean loadRpc,
+		LabelProvider<GroupInfoModel> groupLabel, CmAsyncRequest callback) {
 
 		this.cmAdminMdl= cmAdminMdl;
         this.groupStore = groupStore;
@@ -54,6 +58,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
         this.pTracker = pTracker;
         this.id = id;
         this.groupLabel = groupLabel;
+        this.groupCallback = callback;
 
         /** Only refresh on startup if requested.  This is to prevent loading twice on 
          *  startup of StudentGridPanel ... once in constructor and once when
@@ -93,16 +98,27 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
             
             @Override
             public void onSelection(SelectionEvent<GroupInfoModel> event) {
-			    GroupInfoModel gm = event.getSelectedItem();
+			    final GroupInfoModel gm = event.getSelectedItem();
+
 	        	if (gm != null && inRegistrationMode && gm.getGroupName().equals(GroupInfoModel.NEW_GROUP)) {
-	        		new GroupWindow(null, cmAdminMdl, combo, true, null);
+			        CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
+			            public void requestComplete(String groupName) {
+			                updateGroupRPC(combo, groupName);
+			            }
+			        };
+	        		new GroupWindow(callback, cmAdminMdl, combo, true, null);
 	        	}
 	        }
 	    });
 		return combo;
 	}
 
-	private void getGroupListRPC(final Integer uid, final ListStore <GroupInfoModel> store) {
+    protected void updateGroupRPC(ComboBox<GroupInfoModel> combo, String groupName) {
+    	getGroupListRPC(cmAdminMdl.getUid(), combo.getStore(), groupName);
+    }
+
+	private void getGroupListRPC(final Integer uid, final ListStore <GroupInfoModel> store,
+			final String groupName) {
 
 		pTracker.beginStep();
 		
@@ -135,6 +151,14 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
                 }
 
                 groupStore.addAll(result);
+
+                /*
+                 * select Group by name in parent dialog
+                 */
+                if (groupName != null && groupCallback != null) {
+                	groupStore.commitChanges();
+                    groupCallback.requestComplete(groupName);
+                }
                 
                 pTracker.completeStep();
                 pTracker.finish();
@@ -146,7 +170,7 @@ public class GroupSelectorWidget implements CmAdminDataRefresher {
 
 	@Override
 	public void refreshData() {
-	     getGroupListRPC(cmAdminMdl.getUid(), groupStore);
+	     getGroupListRPC(cmAdminMdl.getUid(), groupStore, null);
 	}
 
 	/** Must remove the reader from the main data refresher once no longer needed.

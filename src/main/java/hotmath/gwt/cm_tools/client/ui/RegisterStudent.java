@@ -26,6 +26,8 @@ import hotmath.gwt.cm_tools.client.model.SubjectModelProperties;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.data.CmAsyncRequest;
+import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
@@ -48,7 +50,6 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Timer;
 import com.sencha.gxt.cell.core.client.LabelProviderSafeHtmlRenderer;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell;
@@ -287,7 +288,14 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             __groupStore = new ListStore<GroupInfoModel>(__propsGroupInfo.id());
         }
 
-        _groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore, true, this, "group-combo", true, __propsGroupInfo.groupName());
+        CmAsyncRequest callback = new CmAsyncRequestImplDefault() {
+            public void requestComplete(String groupName) {
+                setGroupSelection(groupName);
+            }
+        };
+
+        _groupSelector = new GroupSelectorWidget(cmAdminMdl, __groupStore, true, this, "group-combo", true,
+        		__propsGroupInfo.groupName(), callback);
         groupCombo = _groupSelector.groupCombo();
         if (UserInfo.getInstance() == null || !UserInfo.getInstance().isSingleUser()) {
             _fsProfile.addThing(new MyFieldLabel(groupCombo, "Group", LABEL_WIDTH, FIELD_WIDTH));
@@ -1004,6 +1012,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
             loading = false;
         }
+        skipComboSet = isNew;
     }
 
     private void setGroupSelection() {
@@ -1029,6 +1038,20 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         }
     }
 
+    protected void setGroupSelection(String groupName) {
+    	skipComboSet = true;
+        List<GroupInfoModel> l = __groupStore.getAll();
+        for (GroupInfoModel g : l) {
+            if (groupName.equals(g.getGroupName())) {
+                groupCombo.finishEditing();
+                groupCombo.setValue(g, true, true);
+                break;
+            }
+        }
+    	
+    }
+
+    
     private StudyProgramExt setProgramSelection() {
         StudentProgramModel program = stuMdl.getProgram();
         String shortName = program.getProgramType().getType();

@@ -39,7 +39,7 @@ public class FiltersPanel implements IsWidget, ProcessTracker {
         groupStore = new ListStore<GroupInfoModel>(groupProps.id());
         
         
-        GroupSelectorWidget gsw = new GroupSelectorWidget(cmAdminModel, groupStore, false, this, "group-filter", false, groupProps.groupName());
+        GroupSelectorWidget gsw = new GroupSelectorWidget(cmAdminModel, groupStore, false, this, "group-filter", false, groupProps.groupName(), null);
         ComboBox<GroupInfoModel> groupCombo = gsw.groupCombo();
         groupCombo.setAllowBlank(true);
 
