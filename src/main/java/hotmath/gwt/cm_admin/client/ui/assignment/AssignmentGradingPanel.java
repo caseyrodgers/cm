@@ -269,7 +269,10 @@ public class AssignmentGradingPanel extends ContentPanel {
     }
 
     private void updateGrade() {
-        float numCorrect = 0;
+        int numCorrect = 0;
+        int numIncorrect=0;
+        int numHalfCorrect=0;
+        
         for (StudentProblemDto sbDto : _store.getAll()) {
             if (_correctIncorrectMap.containsKey(sbDto.getPid())) {
                 Integer value = _correctIncorrectMap.get(sbDto.getPid());
@@ -277,13 +280,16 @@ public class AssignmentGradingPanel extends ContentPanel {
                     if (value == 100) {
                         numCorrect += 1;
                     } else if (value == 50) {
-                        numCorrect += .5;
+                        numHalfCorrect += 1;
+                    }
+                    else if(value == 0) {
+                        numIncorrect += 1;
                     }
                 }
             }
         }
-        int percent = Math.round(numCorrect * 100.0f / (float) _store.getAll().size());
-        _updateGradeCallback.updateGrade(percent);
+        String grade = GradeBookUtils.getHomeworkGrade(_store.size(),numCorrect,  numIncorrect, numHalfCorrect);
+        _updateGradeCallback.updateGrade(grade);
         _gradingGrid.getStore().update(_lastProblem);
     }
     

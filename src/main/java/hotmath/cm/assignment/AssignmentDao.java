@@ -610,7 +610,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     else {
                     	sa.setHomeworkStatus("Graded");
                     }
-                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                     
                 }
                 lessonName = "";
@@ -681,7 +681,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             else {
             	sa.setHomeworkStatus("Graded");
             }
-            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
         }
 
         if (__logger.isDebugEnabled())
@@ -756,7 +756,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(correct, inCorrect, halfCredit));
+        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
         sa.setStudentDetailStatus(getLessonStatus(sa.getStudentStatuses().getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
@@ -874,7 +874,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     sa.setProblemPendingCount(totPending);
                     sa.setProblemCompletedCount(totCompleted);
                     sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
                     if (__logger.isDebugEnabled())
                         __logger.debug(String.format(
                                 "getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d", totCount,
@@ -943,7 +943,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             sa.setProblemPendingCount(totPending);
             sa.setProblemCompletedCount(totCompleted);
             sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
             if (__logger.isDebugEnabled())
                 __logger.debug(String.format("getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d",
                         totCount, totCompleted, totPending, totGraded, totViewed));
@@ -1290,7 +1290,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     protected String getUserScore(int uid, int assignKey) throws Exception {
         final double counts[] = new double[4];
-        final int CORRECT = 1, HALFCREDIT = 2, INCORRECT = 3;
+        final int TOTAL = 0, CORRECT = 1, HALFCREDIT = 2, INCORRECT = 3;
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_SCORE");
         getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<Integer>() {
             @Override
@@ -1303,11 +1303,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 } else if (status.equals("incorrect")) {
                     counts[INCORRECT] += 1;
                 }
+                
+                counts[TOTAL]++;
                 return 0; // unused
             }
         });
 
-        return GradeBookUtils.getHomeworkGrade((int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
+        return GradeBookUtils.getHomeworkGrade((int)counts[TOTAL], (int) counts[CORRECT], (int) counts[INCORRECT], (int) counts[HALFCREDIT]);
     }
 
     private int getHomeworkGradeValue(int totCount, int totCorrect, int totIncorrect, int totHalfCredit) {
