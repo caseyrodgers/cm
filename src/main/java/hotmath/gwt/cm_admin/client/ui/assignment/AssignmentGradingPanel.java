@@ -252,9 +252,10 @@ public class AssignmentGradingPanel extends ContentPanel {
         Map<String, Integer> map = new HashMap<String, Integer>();
 
         for (StudentProblemDto dto : studentAssignment.getStudentStatuses().getAssigmentStatuses()) {
-            if (dto.getStatus().equalsIgnoreCase(ProblemStatus.CORRECT.name())) {
+            String status=dto.getStatus();
+            if (status.equalsIgnoreCase(ProblemStatus.CORRECT.toString())) {
                 map.put(dto.getPid(), 100);
-            } else if (dto.getStatus().equalsIgnoreCase(ProblemStatus.HALF_CREDIT.name())) {
+            } else if (status.equalsIgnoreCase(ProblemStatus.HALF_CREDIT.toString())) {
                 map.put(dto.getPid(), 50);
             }
         }
