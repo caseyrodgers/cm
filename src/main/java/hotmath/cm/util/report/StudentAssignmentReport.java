@@ -39,6 +39,8 @@ public class StudentAssignmentReport {
 	private Map<FilterType, String> filterMap;
 	private String reportName;
     private String title;
+    private static final String NO_ASSIGNMENTS = "No Assignments";    
+    private static final String NO_ASSIGNMENTS_IN_DATE_RANGE = "No Assignments in Date Range";
     
     private SimpleDateFormat sdFmt = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -65,11 +67,7 @@ public class StudentAssignmentReport {
 
             String filterDescription = ReportUtils.getFilterDescription(conn, adminId, CmAdminDao.getInstance(), filterMap);
 
-			StringBuilder sb = new StringBuilder();
-			sb.append("CM-AssignmentReport-");
-			if (info.getSchoolName() != null)
-				sb.append("-").append(info.getSchoolName().replaceAll(" ", ""));
-			reportName = sb.toString();
+			reportName = ReportUtils.getReportName("CM-AssignmentReport", (info.getSchoolName()!=null)?info.getSchoolName():"");
 
 			AssignmentDao asgDao = AssignmentDao.getInstance();
 			CmStudentDao studentDao = CmStudentDao.getInstance();
@@ -89,65 +87,94 @@ public class StudentAssignmentReport {
 			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
 			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
-			Phrase date     = buildLabelContent("Date: ", printDate);
+			
+			Phrase dateRange = null;
+			if (fromDate != null && toDate != null) {
+    	        String dateRangeStr = String.format("%1$tY-%1$tm-%1$td and %2$tY-%2$tm-%2$td", fromDate, toDate);
+			    dateRange = buildLabelContent("Assignments due between: ", dateRangeStr);
+			}
+
 			Phrase student;
-			Phrase showWork;
+			Phrase date     = buildLabelContent("Date: ", printDate);
 
 			List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
 
 			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 			document.open();
-			document.add(Chunk.NEWLINE);
 
 			for (StudentModelI sm : smList) {
 				stuUid = sm.getUid();
 
-				student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
+				student  = buildTitleContent("Assignments Grades for ", sm.getName());
 
-				String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
-				showWork = buildLabelContent("Show Work: ", showWorkState);
-
-				PdfPTable pdfTbl = new PdfPTable(3);
+				PdfPTable pdfTbl = new PdfPTable(1);
+				pdfTbl.setWidthPercentage(100.0f);
 				pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 				//writer.setPageEvent(new HeaderTable(writer, pdfTbl));
 
+				pdfTbl.addCell(student);
+				pdfTbl.addCell(new Phrase(" "));
 				pdfTbl.addCell(school);
 				pdfTbl.addCell(admin);
+				if (dateRange != null) pdfTbl.addCell(dateRange);
+				pdfTbl.addCell(new Phrase(" "));
 				pdfTbl.addCell(date);
-				pdfTbl.addCell(student);
-				pdfTbl.addCell(showWork);
 				pdfTbl.addCell(new Phrase(" "));
 
-				pdfTbl.setTotalWidth(600.0f);
+				document.add(pdfTbl);
 
 				document.add(Chunk.NEWLINE);			
+				document.add(Chunk.NEWLINE);
 
-				Table tbl = new Table(5);
+				Table tbl = new Table(3);
 				tbl.setWidth(100.0f);
 				tbl.setBorder(Table.BOTTOM);
 				tbl.setBorder(Table.TOP);
 
-				addHeader("Assignment", "30%", tbl);
-				addHeader("Due Date", "15%", tbl);
-				addHeader("Status", "23%", tbl);
-				addHeader("Grade", "7%", tbl);
-				addHeader("Problem Status", "25%", tbl);
+				addHeader("Due Date", "30%", tbl);
+				addHeader("Grade", "25%", tbl);
+				addHeader("Submitted", "45%", tbl);
 
 				tbl.endHeaders();
 
 				int i = 0;
-				List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid);
+				List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid, fromDate, toDate);
 
 				for (StudentAssignment sa : saList) {
-					addCell(sa.getAssignment().getComments(), tbl, ++i);
-					addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, i);
-					addCell(sa.getHomeworkStatus(), tbl, i);
+					addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, ++i);
 					addCell(sa.getHomeworkGrade(), tbl, i);
 					addCell(getStatus(sa), tbl, i);
 				}
 
 				document.add(tbl);
 
+				if (saList.size() == 0) {
+					tbl = new Table(3);
+					tbl.setWidth(100.0f);
+					tbl.setBorder(0);
+
+					addCell(" ", tbl, 1);
+					addCell(" ", tbl, 1);
+					addCell(" ", tbl, 1);
+
+					addCell(" ", tbl, 1);
+					String msg = (dateRange != null) ? NO_ASSIGNMENTS_IN_DATE_RANGE : NO_ASSIGNMENTS;
+					Chunk c = new Chunk(msg, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
+					c.setTextRise(3.0f);
+			    	Cell cell = new Cell(c);
+					cell.setHeader(false);
+					cell.setColspan(1);
+					cell.setBorder(0);
+					cell.setRowspan(5);
+					tbl.addCell(cell);
+					addCell(" ", tbl, 1);
+
+					addCell(" ", tbl, 1);
+					addCell(" ", tbl, 1);
+					addCell(" ", tbl, 1);
+
+					document.add(tbl);
+				}
 				document.add(Chunk.NEWLINE);
 				document.add(Chunk.NEWLINE);
 
@@ -168,10 +195,10 @@ public class StudentAssignmentReport {
 
 	private String getStatus(StudentAssignment sa) {
 		if (sa.getProblemPendingCount() < 1) {
-			return String.format("%d of %d completed", sa.getProblemCompletedCount(), sa.getProblemCount());
+			return String.format("%d of %d submitted", sa.getProblemCompletedCount(), sa.getProblemCount());
 		}
 		else {
-			return String.format("%d of %d completed, %d pending", sa.getProblemCompletedCount(),
+			return String.format("%d of %d submitted, %d pending", sa.getProblemCompletedCount(),
 					sa.getProblemCount(), sa.getProblemPendingCount());
 		}
 	}
@@ -180,6 +207,14 @@ public class StudentAssignmentReport {
 		if (value == null || value.trim().length() == 0) value = "NONE";
 		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.BOLD, new Color(0, 0, 0))));
 		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 9, Font.NORMAL, new Color(0, 0, 0))));
+		phrase.add(content);
+		return phrase;
+	}
+
+	private Phrase buildTitleContent(String label, String value) {
+		if (value == null || value.trim().length() == 0) value = "";
+		Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0))));
+		Phrase content = new Phrase(new Chunk(value, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0))));
 		phrase.add(content);
 		return phrase;
 	}

@@ -3698,11 +3698,11 @@ order  by a.due_date desc, last_modified desc
 ##
 .key=GET_GRADE_BOOK_DATA_3
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file,p.pid,p.ordinal_number,
+select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
        w.has_show_work, w2.has_show_work_admin,
-       s.is_graded as is_problem_graded,ua.is_graded as is_student_graded
+       s.is_graded as is_problem_graded, ua.is_graded as is_student_graded
 
 from CM_ASSIGNMENT a 
 join HA_USER u on u.group_id = a.group_id
@@ -3761,10 +3761,9 @@ select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.
 
 from HA_USER u
 
-join CM_ASSIGNMENT a on a.assign_key in (
-    select distinct assign_key from CM_ASSIGNMENT_PID_STATUS ps where uid=?
-    union
-    select distinct assign_key from CM_ASSIGNMENT_PID_ANSWERS pa where user_id=? )
+join CM_ASSIGNMENT_USER au on au.uid = u.uid
+
+join CM_ASSIGNMENT a on a.assign_key = au.assign_key and a.due_date between ? and ?
 
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 
