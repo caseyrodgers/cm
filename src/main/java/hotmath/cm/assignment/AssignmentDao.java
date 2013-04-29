@@ -529,7 +529,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          * get assignment problem status list for all users
          */
         final Map<Integer, String> nameMap = new HashMap<Integer, String>();
-        List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey },
+       List<StudentProblemDto> problemStatuses = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey },
                 new RowMapper<StudentProblemDto>() {
                     @Override
                     public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -785,8 +785,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return status;
     }
 
-
     public List<StudentAssignment> getAssignmentWorkForStudent(int userId) throws Exception {
+    	return getAssignmentWorkForStudent(userId, null, null);
+    }
+
+    public List<StudentAssignment> getAssignmentWorkForStudent(int userId, Date fromDate, Date toDate) throws Exception {
 
         if (__logger.isDebugEnabled())
             __logger.debug("in getAssignmentWorkForStudent(" + userId + ")");
@@ -794,9 +797,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_WORK_FOR_STUDENT");
         String stuName = null;
 
+        String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
+
         List<StudentProblemDto> problemStatuses = new ArrayList<StudentProblemDto>();
         try {
-            problemStatuses = getJdbcTemplate().query(sql, new Object[] { userId, userId, userId }, new RowMapper<StudentProblemDto>() {
+            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId },
+            		new RowMapper<StudentProblemDto>() {
                 @Override
                 public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                     StudentProblemDto prob = new StudentProblemDto();
