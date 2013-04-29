@@ -171,4 +171,11 @@ public class ReportUtils {
     	}
     	return "";
     }
+
+    public static String getReportName(String baseName, String schoolName) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(baseName).append("-");
+		sb.append(schoolName.replaceAll(" ", "").replaceAll("/", "-").replaceAll("#", "-"));
+		return sb.toString();
+    }
 }
