@@ -141,17 +141,50 @@ public class StudentAssignmentReport {
 				tbl.endHeaders();
 
 				int i = 0;
+				int gradedAssignmentCount = 0;
+				int gradedAssignmentScore = 0;
 				List<StudentAssignment> saList = asgDao.getAssignmentWorkForStudent(stuUid, fromDate, toDate);
 
 				for (StudentAssignment sa : saList) {
 					addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, ++i);
 					addCell(sa.getHomeworkGrade(), tbl, i);
 					addCell(getStatus(sa), tbl, i);
+					if (sa.isGraded()) {
+						gradedAssignmentCount++;
+						String gradeStr = sa.getHomeworkGrade();
+						int grade = Integer.parseInt(gradeStr.replaceAll("%", "").trim());
+						gradedAssignmentScore += grade;
+					}
 				}
 
 				document.add(tbl);
 
-				if (saList.size() == 0) {
+				if (gradedAssignmentCount > 0) {
+					tbl = new Table(1);
+					tbl.setWidth(100.0f);
+					tbl.setBorder(0);
+
+					addCell(" ", tbl, 1);
+					addCell(" ", tbl, 1);
+					
+					int gradedAssignmentAvg = Math.round((float)gradedAssignmentScore / (float)gradedAssignmentCount);
+					String text = String.format("Average for Graded Assignments: %d%s",  gradedAssignmentAvg, "%");
+					Chunk c = new Chunk(text, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
+					c.setTextRise(3.0f);
+			    	Cell cell = new Cell(c);
+					cell.setHeader(false);
+					cell.setColspan(1);
+					cell.setBorder(0);
+					cell.setRowspan(5);
+					tbl.addCell(cell);
+
+					addCell(" ", tbl, 1);
+					addCell(" ", tbl, 1);
+
+					document.add(tbl);
+				}
+				
+				else if (saList.size() == 0) {
 					tbl = new Table(3);
 					tbl.setWidth(100.0f);
 					tbl.setBorder(0);
