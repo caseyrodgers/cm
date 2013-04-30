@@ -85,7 +85,7 @@ public class StudentAssignmentReport {
 			int idx = 0;
 
 			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
-			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
+			Phrase admin    = buildLabelContent("Account login name: ", info.getAdminUserName());
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			
 			Phrase dateRange = null;
@@ -105,7 +105,7 @@ public class StudentAssignmentReport {
 			for (StudentModelI sm : smList) {
 				stuUid = sm.getUid();
 
-				student  = buildTitleContent("Assignments Grades for ", sm.getName());
+				student  = buildTitleContent("Assignments Report for ", sm.getName());
 
 				PdfPTable pdfTbl = new PdfPTable(1);
 				pdfTbl.setWidthPercentage(100.0f);
@@ -114,6 +114,9 @@ public class StudentAssignmentReport {
 
 				pdfTbl.addCell(student);
 				pdfTbl.addCell(new Phrase(" "));
+
+				Phrase group = buildLabelContent("Group: ", sm.getGroup());
+				pdfTbl.addCell(group);
 				pdfTbl.addCell(school);
 				pdfTbl.addCell(admin);
 				if (dateRange != null) pdfTbl.addCell(dateRange);
