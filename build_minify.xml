@@ -69,7 +69,7 @@
         <concat destfile="${web.dir}/gwt-resources/js/CatchupMathMobile3_combined.js" append="true">
             <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
 
-
+            	   hm_events-min.js
             	   browser_info_tools-min.js            	
             	   tutor_tablet.js
                	   dom_utils-min.js            	
@@ -113,6 +113,8 @@
                 gwt-resources/css/page_layout.css
 
                 gwt-resources/css/CatchupMathMobile3.css
+                gwt-resources/css/CmMobileAssignments.css
+
              " />
         </concat>
     </target>
