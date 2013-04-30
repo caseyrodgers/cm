@@ -17,8 +17,7 @@ import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jfree.util.Log;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
