@@ -17,6 +17,8 @@ import hotmath.gwt.solution_editor.client.rpc.SolutionMetaStep;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jfree.util.Log;
+
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
@@ -197,6 +199,9 @@ public class SolutionStepEditor extends ContentPanel {
     }
     
     private void buildSolutionEditor(SolutionMeta meta) {
+        
+        Log.debug("Loading SolutionMeta: steps: " + meta.getNumSteps() + ", define len: " + (meta.getTutorDefine() != null?meta.getTutorDefine().length():-1));
+        
         this._meta = meta;
         removeAll();
 
