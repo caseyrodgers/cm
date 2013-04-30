@@ -28,6 +28,7 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -415,14 +416,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
                 Date fromDate=null, toDate=null;
                 if (dateRange != null) {
-                    
-                    if(dateRange.isDefault()) {
-                        fromDate = null;
-                        toDate = null;
-                    } else {
-                        fromDate = dateRange.getFromDate();
-                        toDate = dateRange.getToDate();
-                    }
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
                 }
                 new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
                         sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
