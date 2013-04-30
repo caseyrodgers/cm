@@ -152,7 +152,10 @@ public class StudentAssignmentReport {
 					if (sa.isGraded()) {
 						gradedAssignmentCount++;
 						String gradeStr = sa.getHomeworkGrade();
-						int grade = Integer.parseInt(gradeStr.replaceAll("%", "").trim());
+						int grade = 0;
+						if (gradeStr.indexOf("%") > 0) {
+   						    grade = Integer.parseInt(gradeStr.replaceAll("%", "").trim());
+						}
 						gradedAssignmentScore += grade;
 					}
 				}
