@@ -610,7 +610,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     else {
                     	sa.setHomeworkStatus("Graded");
                     }
-                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
                     
                 }
                 lessonName = "";
@@ -681,7 +681,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             else {
             	sa.setHomeworkStatus("Graded");
             }
-            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
         }
 
         if (__logger.isDebugEnabled())
@@ -756,7 +756,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
 
         }
-        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit));
+        sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(sa.getStudentStatuses().getAssigmentStatuses().size(), correct, inCorrect, halfCredit, sa.isGraded()));
         sa.setStudentDetailStatus(getLessonStatus(sa.getStudentStatuses().getAssigmentStatuses().size(), complete, submitted, viewed));
     }
 
@@ -800,6 +800,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String dates[] = QueryHelper.getDateTimeRange(fromDate, toDate);
 
         List<StudentProblemDto> problemStatuses = new ArrayList<StudentProblemDto>();
+        final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer,Boolean>();
         try {
             problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId },
             		new RowMapper<StudentProblemDto>() {
@@ -815,6 +816,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     prob.setProblem(probDto);
                     prob.setStatus(rs.getString("status"));
                     prob.setGraded(rs.getInt("is_graded") > 0);
+                    asgGradedMap.put(rs.getInt("assign_key"), rs.getInt("assignment_graded")>0);
                     return prob;
                 }
             });
@@ -840,7 +842,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 // lastAssignKey, false);
                 Date dateTurnedIn = null;
 
-                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, dateTurnedIn, true);
+                boolean isGraded = asgGradedMap.get(lastAssignKey);
+                StudentAssignment stuAssignment = new StudentAssignment(probDto.getUid(), assignment, dateTurnedIn, isGraded);
                 stuAssignment.setStudentStatuses(new StudentAssignmentStatuses(stuAssignment, probList, null));
                 stuAssignment.setStudentName(stuName);
                 stuAssignments.add(stuAssignment);
@@ -880,7 +883,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     sa.setProblemPendingCount(totPending);
                     sa.setProblemCompletedCount(totCompleted);
                     sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+                    sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
                     if (__logger.isDebugEnabled())
                         __logger.debug(String.format(
                                 "getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d", totCount,
@@ -949,7 +952,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             sa.setProblemPendingCount(totPending);
             sa.setProblemCompletedCount(totCompleted);
             sa.setHomeworkStatus(getHomeworkStatus(totCount, totCompleted, totPending, totGraded, totViewed));
-            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit));
+            sa.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(totCount, totCorrect, totIncorrect, totHalfCredit, sa.isGraded()));
             if (__logger.isDebugEnabled())
                 __logger.debug(String.format("getAssignmentWorkForStudent(): totCount: %d, totCompleted: %d, totPending: %d, totGraded: %d, totViewed: %d",
                         totCount, totCompleted, totPending, totGraded, totViewed));
@@ -1110,7 +1113,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                             }
                         }
                     } catch (Exception e) {
-                        __logger.error("Error getting score: " + uid, e);
+                        __logger.error(String.format("Error getting score: uid: %d, assignKey: %d", uid, assignKey), e);
                     }
                 }
 
@@ -1219,7 +1222,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                                 }
                             }
                         } catch (Exception e) {
-                            __logger.error("Error getting score: " + uid, e);
+                            __logger.error(String.format("Error getting score: uid: %d, assignKey: %d", uid, assignKey), e);
                         }
                     }
 
