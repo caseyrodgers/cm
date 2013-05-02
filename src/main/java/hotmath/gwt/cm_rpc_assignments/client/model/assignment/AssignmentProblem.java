@@ -19,10 +19,11 @@ public class AssignmentProblem implements Response{
     private String lastUserWidgetValue;
     private String label;
     private boolean isGraded;
+    private String status;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,SolutionInfo info, String label, ProblemType problemType, String lastUserWidgetValue) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,SolutionInfo info, String label, ProblemType problemType, String lastUserWidgetValue, String status) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
@@ -30,6 +31,15 @@ public class AssignmentProblem implements Response{
         this.label = label;
         this.problemType = problemType;
         this.lastUserWidgetValue = lastUserWidgetValue;
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getLabel() {

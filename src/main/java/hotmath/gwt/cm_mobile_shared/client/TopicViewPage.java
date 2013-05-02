@@ -17,7 +17,7 @@ public class TopicViewPage implements IPage {
         return file;
     }
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Lesson";
 	}
 

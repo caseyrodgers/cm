@@ -21,10 +21,18 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentActivity;
+import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentListActivity;
+import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentProblemActivity;
+import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentShowworkActivity;
 import hotmath.gwt.cm_mobile_shared.client.activity.PrescriptionLessonResourceVideoActivity;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.view.AssignmentListView;
+import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
+import hotmath.gwt.cm_mobile_shared.client.view.AssignmentShowWorkView;
+import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
@@ -46,7 +54,6 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
         final TokenParser token = new TokenParser(historyToken);
         EventBus eb = CatchupMathMobile3.__clientFactory.getEventBus();
         ClientFactory cf = CatchupMathMobile3.__clientFactory;
-
         try {
             // always perform any actions here
             ShowWorkActivity.saveWhiteboard();
@@ -60,7 +67,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 activity.prepareLogin(view);
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
             } else if (type.equals("welcome")) {
-                WelcomeActivity activity = new WelcomeActivity(eb);
+                WelcomeActivity activity = new WelcomeActivity(cf,eb);
                 WelcomeView view = cf.getWelcomeView();
                 view.setPresenter(activity);
                 activity.prepareView(view);
@@ -77,7 +84,6 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 ShowWorkView view = cf.getShowWorkView();
                 eb.fireEvent(new LoadNewPageEvent((IPage) view));
                 view.setPresenter(activity);
-
             } else if (type.equals("lesson")) {
                 PrescriptionLessonActivity activity = new PrescriptionLessonActivity(cf, eb);
                 PrescriptionLessonView view = cf.getPrescriptionLessonView();
@@ -94,7 +100,43 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 SearchActivity search = new SearchActivity(cf,eb);
                 cf.getSearchView().setPresenter(search);
                 eb.fireEvent(new LoadNewPageEvent((IPage)cf.getSearchView() ));
-            } else if (type.equals("resource")) {
+            } 
+            else if(type.equals("assignment_list")) {
+                AssignmentListActivity activity = new AssignmentListActivity();
+                AssignmentListView view = cf.getAssignmentListView();
+                view.setPresenter(activity);
+                eb.fireEvent(new LoadNewPageEvent(view));
+            }
+            else if(type.equals("assignment")) {
+                int assignKey = Integer.parseInt(token.getTokenPart(1));
+                AssignmentView view = cf.getAssignmentView();
+                AssignmentActivity activity = new AssignmentActivity();
+                activity.loadAssignment(view, assignKey);
+                view.setPresenter(activity);
+                eb.fireEvent(new LoadNewPageEvent(view));
+            }
+            else if(type.equals("assignment_problem")) {
+                int assignKey = Integer.parseInt(token.getTokenPart(1));
+                String pid = token.getTokenPart(2);
+
+                AssignmentProblemActivity activity = new AssignmentProblemActivity(assignKey, pid);
+                AssignmentProblemView view = cf.getAssignmentProblemView();
+                view.setPresenter(activity);
+                eb.fireEvent(new LoadNewPageEvent(view));
+            }
+            else if(type.equals("assignment_showwork")) {
+                int assignKey = Integer.parseInt(token.getTokenPart(1));
+                String pid = token.getTokenPart(2);
+                AssignmentShowworkActivity activity = new AssignmentShowworkActivity(assignKey, pid);
+                AssignmentShowWorkView view = cf.getAssignmentShowworkView();
+                view.setPresenter(activity);
+                eb.fireEvent(new LoadNewPageEvent(view));
+            }
+            
+            
+            
+            
+            else if (type.equals("resource")) {
 
                 InmhItemData itemData = null;
 
@@ -183,28 +225,33 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
         String resourceConfig;
         int resourceOrdinal;
         String resourceTitle;
+        String _parts[];
 
         public TokenParser(String name) {
             if (name != null) {
-                String p[] = name.split(":");
-                type = p[0];
+                _parts = name.split(":");
+                type = _parts[0];
 
-                if (p.length > 1)
-                    resourceType = p[1];
-                if (p.length > 2)
-                    resourceFile = p[2];
-                if (p.length > 3)
-                    resourceConfig = URL.decode(p[3]);
-                if (p.length > 4)
+                if (_parts.length > 1)
+                    resourceType = _parts[1];
+                if (_parts.length > 2)
+                    resourceFile = _parts[2];
+                if (_parts.length > 3)
+                    resourceConfig = URL.decode(_parts[3]);
+                if (_parts.length > 4)
                     try {
-                        resourceOrdinal = Integer.parseInt(p[4]);
+                        resourceOrdinal = Integer.parseInt(_parts[4]);
                     } catch (NumberFormatException e) {
                         Log.debug("error token parsing", e);
                     }
-                if (p.length > 5)
-                    resourceTitle = p[5];
+                if (_parts.length > 5)
+                    resourceTitle = _parts[5];
 
             }
+        }
+        
+        public String getTokenPart(int part) {
+            return _parts[part];
         }
 
         public int getResourceOrdinal() {

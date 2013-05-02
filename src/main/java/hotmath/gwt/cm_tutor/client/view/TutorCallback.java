@@ -112,4 +112,10 @@ public interface TutorCallback {
      * @return
      */
     boolean installCustomSteps();
+    
+    
+    /** called when the Submit Whiteboard button has been pressed
+     * 
+     */
+    void showWorkHasBeenSubmitted();
 }

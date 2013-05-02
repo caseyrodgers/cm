@@ -164,7 +164,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
 
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         String programName = SharedData.getUserInfo().getTestName();
         return " Current Topic for " + programName;
     }

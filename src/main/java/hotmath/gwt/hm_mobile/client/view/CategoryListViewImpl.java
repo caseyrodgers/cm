@@ -120,7 +120,7 @@ public class CategoryListViewImpl extends AbstractPagePanel implements CategoryL
     }
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return this.title;
     }
 

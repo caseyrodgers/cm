@@ -10,7 +10,7 @@ public class LoginPage implements IPage {
     }
 
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Login into Catchup Math";
 	}
 

@@ -287,7 +287,7 @@ public class BookViewImpl extends AbstractPagePanel implements BookView, IPage {
     }
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Page & Problem";
     }
     

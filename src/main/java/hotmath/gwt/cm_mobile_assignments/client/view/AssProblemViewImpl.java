@@ -34,7 +34,7 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
             
             @Override
             public void onNewProblem(int problemNumber) {
-                tutorNewProblem();
+                presenter.newProblem();
             }
             
             @Override
@@ -88,10 +88,6 @@ public class AssProblemViewImpl extends BaseComposite implements AssProblemView 
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
-    }
-
-    protected void tutorNewProblem() {
-        presenter.newProblem();
     }
 
     @Override

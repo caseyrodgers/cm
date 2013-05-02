@@ -43,7 +43,7 @@ public class MainPage implements IPage {
 	}
 
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Catchup Math Mobile";
 	}
     

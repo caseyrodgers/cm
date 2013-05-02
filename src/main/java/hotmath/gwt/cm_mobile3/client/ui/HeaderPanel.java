@@ -93,7 +93,6 @@ public class HeaderPanel extends Composite {
         });
         _logout.setVisible(false);
         basePanel.add(_logout);
-
         TouchAnchor about = new TouchAnchor();
         about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
         about.addStyleName("about-dialog");
@@ -189,14 +188,14 @@ public class HeaderPanel extends Composite {
             @Override
             public void itemPoped(ObservableStackPopEvent<IPage> e) {
                 IPage topPage = mPageStack.peek();
-                changeHeaderBackwards(topPage.getTitle(), topPage.getBackButtonText());
+                changeHeaderBackwards(topPage.getViewTitle(), topPage.getBackButtonText());
             }
         });
 
         mPageStack.addHandler(new ObservableStackPushEvent.ObservableStackPushHandler<IPage>() {
             @Override
             public void itemPushed(ObservableStackPushEvent<IPage> e) {
-                changeHeaderForwards(e.getItemPushed().getTitle(), e.getItemPushed().getBackButtonText());
+                changeHeaderForwards(e.getItemPushed().getViewTitle(), e.getItemPushed().getBackButtonText());
             }
         });
 

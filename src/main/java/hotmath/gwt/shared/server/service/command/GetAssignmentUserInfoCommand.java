@@ -1,9 +1,9 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
-import hotmath.gwt.cm_mobile_assignments.client.rpc.GetAssignmentUserInfoAction;
-import hotmath.gwt.cm_mobile_assignments.client.user.CmMobileAssignmentUser;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;

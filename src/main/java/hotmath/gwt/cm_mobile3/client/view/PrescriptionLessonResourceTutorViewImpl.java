@@ -60,7 +60,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        
 	        @Override
 	        public void showWhiteboard() {
-	            presenter.showWhiteboard(getTitle());
+	            presenter.showWhiteboard(getViewTitle());
 	        }
 	        
 	        @Override
@@ -267,7 +267,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     }
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return _title;
     }
     

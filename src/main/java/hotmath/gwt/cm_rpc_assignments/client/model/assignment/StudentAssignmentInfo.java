@@ -162,4 +162,17 @@ public class StudentAssignmentInfo implements Response {
                 + ", status=" + status + ", turnInDate=" + turnInDate + ", cntProblems=" + cntProblems + ", cntSubmitted=" + cntSubmitted + ", score=" + score
                 + ", numUnreadAnnotations=" + numUnreadAnnotations + "]";
     }
+
+    public String getLabelForStudent() {
+        return truncate(25,getComments()) + ", " + getStatus();
+    }
+    
+    private String truncate(int len, String s) {
+        if(s.length() < len) {
+            return s;
+        }
+        else {
+            return s.substring(0,22) + " ...";
+        }
+    }
 }

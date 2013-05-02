@@ -17,7 +17,7 @@ public class PrescriptionPage implements IPage {
 	}
 	
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Prescription";
 	}
 

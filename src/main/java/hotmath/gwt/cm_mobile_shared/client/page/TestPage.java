@@ -11,7 +11,7 @@ import java.util.List;
 public class TestPage implements IPage {
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Test Title";
     }
 

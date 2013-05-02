@@ -51,7 +51,7 @@ public class EndOfProgramViewImpl extends AbstractPagePanel implements EndOfProg
     }
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "End Of Program";
     }
 

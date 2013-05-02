@@ -10,7 +10,7 @@ import java.util.List;
 public class WelcomePage implements IPage {
 
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Welcome Page";
 	}
 

@@ -1,8 +1,7 @@
-package hotmath.gwt.cm_mobile3.client;
+package hotmath.gwt.cm_mobile_shared.client;
 
 
-import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
-import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile3.client.PagePanelFactory;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
@@ -23,6 +22,7 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PagesContainerPanelImplIPhone extends Composite implements PagesContainerPanel {
@@ -84,7 +84,7 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
             var instance = this;
 
             var callBack = function(e){
-                instance.@hotmath.gwt.cm_mobile3.client.PagesContainerPanelImplIPhone::onDomTransitionEnded()();
+                instance.@hotmath.gwt.cm_mobile_shared.client.PagesContainerPanelImplIPhone::onDomTransitionEnded()();
             };
 
             element.addEventListener('webkitTransitionEnd', callBack, false);   
@@ -141,15 +141,10 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
         final GenericContainerTag newContainer = mInactiveContainerPanel;
 
         newContainer.clear();
-        
-        AbstractPagePanel pagePanel = PagePanelFactory.createPagePanel(p);
-
-        
 
         boolean startedAnimation = false;
 
         if (oldContainer.getWidgetCount() > 0) {
-
             newContainer.removeStyleName("animate");
             newContainer.removeStyleName("left");
             newContainer.addStyleName("right");
@@ -179,7 +174,8 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
 
         }
 
-        newContainer.add(pagePanel);
+        IsWidget view = PagePanelFactory.createPagePanel(p);
+        newContainer.add(view);
 
         mActiveContainerPanel = newContainer;
         mInactiveContainerPanel = oldContainer;
@@ -196,7 +192,7 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
         final GenericContainerTag oldContainer = mActiveContainerPanel;
         final GenericContainerTag newContainer = mInactiveContainerPanel;
 
-        AbstractPagePanel pagePanel = PagePanelFactory.createPagePanel(mPageModel.peek());
+        IsWidget pagePanel = PagePanelFactory.createPagePanel(mPageModel.peek());
 
         newContainer.clear();
 

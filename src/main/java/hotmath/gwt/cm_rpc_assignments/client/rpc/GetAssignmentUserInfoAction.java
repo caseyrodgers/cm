@@ -1,6 +1,6 @@
-package hotmath.gwt.cm_mobile_assignments.client.rpc;
+package hotmath.gwt.cm_rpc_assignments.client.rpc;
 
-import hotmath.gwt.cm_mobile_assignments.client.user.CmMobileAssignmentUser;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetAssignmentUserInfoAction implements Action<CmMobileAssignmentUser>{

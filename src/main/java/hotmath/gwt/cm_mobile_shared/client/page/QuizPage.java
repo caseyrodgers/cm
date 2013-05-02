@@ -20,7 +20,7 @@ public class QuizPage implements IPage {
     }
     
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Quiz Page";
 	}
 

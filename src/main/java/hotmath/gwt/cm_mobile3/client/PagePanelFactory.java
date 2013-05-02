@@ -1,12 +1,12 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public class PagePanelFactory {
 
@@ -14,11 +14,11 @@ public class PagePanelFactory {
 
 	}
 
-	public static AbstractPagePanel createPagePanel(IPage page) {
+	public static IsWidget createPagePanel(IPage page) {
 	    try {
 	        
-	        if(page instanceof AbstractPagePanel) {
-	            return (AbstractPagePanel)page;
+	        if(page instanceof IsWidget) {
+	            return (IsWidget)page;
 	        }
 //    		if (page instanceof MainPage) {
 //    			return new MainPagePanel((MainPage) page);
@@ -47,7 +47,7 @@ public class PagePanelFactory {
 //                return new TestPagePanel((TestPage)page);
 //            }
     		
-	        Window.alert("Requested page '" + page.getClass().getName() + " either does not exist or does not extend AbstractPagePanel.");
+	        Window.alert("Requested page '" + page.getClass().getName() + " either does not exist or does not extend IsWidget.");
     		throw new IllegalArgumentException("The page is unknown:" + page.getClass().getName());
     		
 	    }

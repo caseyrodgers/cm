@@ -64,7 +64,7 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
     }
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         if(title != null) {
             return "Show Work for " + title;
         }

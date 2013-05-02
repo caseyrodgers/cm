@@ -166,7 +166,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 new InitialMessage().showCentered();
             }
             
-            
             History.fireCurrentHistoryState();
         } catch (Exception e) {
             e.printStackTrace();
@@ -220,7 +219,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             @Override
             public void loadPage(IPage page) {
                 try {
-                    Log.info("LoadNewPageEvent fire: " + page.getTitle());
+                    Log.info("LoadNewPageEvent fire: " + page.getViewTitle());
                     int currentScrollPos = CatchupMathMobileShared.resetViewPort();
                     IPage currentPage = _pageStack.getCount() > 0 ? _pageStack.peek() : null;
                     if (currentPage != null) {
@@ -228,6 +227,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     }
                     _pageStack.push(page);
                 } catch (Exception e) {
+                    Log.error("Error loading page", e);
                     e.printStackTrace();
                     Window.alert(e.getMessage());
                 }

@@ -87,7 +87,7 @@ public class BookSearchViewImpl extends AbstractPagePanel implements BookSearchV
 	}
 	
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Book Search";
 	}
 }

@@ -54,7 +54,7 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     }
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Welcome To Catchup Math, " + SharedData.getUserInfo().getUserName();
     }
 
@@ -69,10 +69,15 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
         presenter.beginCatchupMath();
     }
     
+    @UiHandler("beginAssignments")
+    protected void handleBegineAssignments(ClickEvent e) {
+        presenter.beingCatchupMathAssignments();
+    }
+    
     
     @UiField
     DivElement firstThing,programStatus;
     
     @UiField
-    TouchButton begin;
+    TouchButton begin, beginAssignments;
 }

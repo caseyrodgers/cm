@@ -39,7 +39,7 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 	Presenter presenter;
 
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 	   return "Quiz Results";
 	}
 	

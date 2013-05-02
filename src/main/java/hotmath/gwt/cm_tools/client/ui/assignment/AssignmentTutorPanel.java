@@ -49,8 +49,6 @@ public class AssignmentTutorPanel extends Composite {
     }
     public AssignmentTutorPanel(final boolean isEditable, final ProblemDto problemDto, final boolean isGraded, AssignmentTutorPanelCallback callBack) {
         
-        setupJsni();
-        
         _callBack = callBack;
         __lastInstance = this;
         _isEditable = isEditable;
@@ -93,11 +91,12 @@ public class AssignmentTutorPanel extends Composite {
                 return problemDto.getProblemType() == ProblemType.MULTI_CHOICE;
             }
             
+            @Override
+            public void showWorkHasBeenSubmitted() {
+                _callBack.whiteboardSubmitted();
+            }
+            
         });
-        
-//        if(!isEditable) {
-//            _tutorPanel.setReadOnly(true);
-//        }
         
         _tutorPanel.addStyleName("tutor_solution_wrapper");
         isEpp = true;
@@ -167,10 +166,10 @@ public class AssignmentTutorPanel extends Composite {
                 String status = stuProb.getStatus();
                 
                 if(!status.equals("Submitted")) {
-                    addWhiteboardSubmitButton();
+                    _tutorPanel.jsni_addWhiteboardSubmitButton();
                 }
                 else {
-                    jsni_showWhiteboardStatus(status);
+                    TutorWrapperPanel.jsni_showWhiteboardStatus(status);
                 }
             }
             
@@ -185,34 +184,6 @@ public class AssignmentTutorPanel extends Composite {
 
     }
     
-    native private void jsni_showWhiteboardStatus(String status) /*-{
-        if(status == 'Submitted' || status == 'Correct' || status == 'Incorrect' || status == 'Half Correct') {
-            var widgetHolder = $doc.getElementById("hm_flash_widget");
-            widgetHolder.innerHTML = "<div id='hm_flash_widget_head' style='display: block'>" + status + "</div>";
-            //$wnd.setWidgetMessage(status);
-        }
-    }-*/;
-
-    private void gwt_submitWhiteboardAnswer() {
-        jsni_showWhiteboardStatus("Submitted");
-        _callBack.whiteboardSubmitted();
-    }
-
-    native private void setupJsni() /*-{
-        var that = this;
-        $wnd.gwt_submitWhiteboardAnswer = function() {
-            that.@hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel::gwt_submitWhiteboardAnswer()();
-        }
-    }-*/;
-
-
-    private native void addWhiteboardSubmitButton() /*-{
-        var widgetHolder = $doc.getElementById("hm_flash_widget");
-        if(widgetHolder) {
-            var ih = widgetHolder.innerHTML;
-            widgetHolder.innerHTML = ih + "<p><input type='button' onclick='gwt_submitWhiteboardAnswer()' class='sexybutton sexysimple sexylarge sexyred' value='Submit Whiteboard Answer'/></p>";
-        }
-    }-*/;
 
     /** Save user's input widget value to server
      * 
@@ -248,6 +219,5 @@ public class AssignmentTutorPanel extends Composite {
         
         _callBack.tutorWidgetValueUpdated(inputValue,  yesNo);
     }
-
 }
 

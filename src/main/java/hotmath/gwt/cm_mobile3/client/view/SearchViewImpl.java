@@ -67,7 +67,7 @@ public class SearchViewImpl extends AbstractPagePanel implements SearchView {
     }
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Search Catchup Math";
     }
 

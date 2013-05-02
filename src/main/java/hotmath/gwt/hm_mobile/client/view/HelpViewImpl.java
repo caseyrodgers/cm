@@ -53,7 +53,7 @@ public class HelpViewImpl extends AbstractPagePanel implements HelpView, IPage {
     
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Help!";
     }
 

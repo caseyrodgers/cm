@@ -49,4 +49,27 @@ public class CmGwtUtils {
         Window.Location.getHostName();
         return m;
     }
+    
+
+    static native public String getUserAgent() /*-{
+        if(typeof navigator !== 'undefined') {
+            return navigator.userAgent;
+        }
+        else {
+            return 'unknown';
+        }
+    }-*/;
+
+
+    static native public void scrollWindowTo(int position) /*-{
+        try {
+            setTimeout(function() {
+                $wnd.scrollTo(0,position);
+            },0);
+        }
+        catch(e) {
+            alert(e);
+        }
+    }-*/;
+    
 }

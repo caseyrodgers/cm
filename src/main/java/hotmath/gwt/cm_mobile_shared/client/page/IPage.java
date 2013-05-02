@@ -15,7 +15,8 @@ public interface IPage {
 	     */
 	    boolean goBack(); 
 	}
-	String getTitle();
+	
+	String getViewTitle();
 
 	String getBackButtonText();
 	

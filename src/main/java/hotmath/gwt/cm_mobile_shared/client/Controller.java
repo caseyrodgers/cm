@@ -50,7 +50,7 @@ public class Controller {
     	IPage pageCurrent = peekPage();
     	boolean normalProcess = true;
     	if(pageCurrent != null && pageCurrent.getBackAction() != null) {
-    		Log.info("Back override for '" + pageCurrent.getTitle() + "'");
+    		Log.info("Back override for '" + pageCurrent.getViewTitle() + "'");
     		normalProcess = pageCurrent.getBackAction().goBack();
     	}
     	

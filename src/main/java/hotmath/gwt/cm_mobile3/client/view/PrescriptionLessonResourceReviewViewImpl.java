@@ -29,7 +29,7 @@ public class PrescriptionLessonResourceReviewViewImpl extends AbstractPagePanel 
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Written Lesson";
     }
 

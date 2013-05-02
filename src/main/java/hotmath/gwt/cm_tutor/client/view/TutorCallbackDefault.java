@@ -75,4 +75,8 @@ public class TutorCallbackDefault implements TutorCallback {
     public boolean installCustomSteps() {
         return false;
     }
+
+    @Override
+    public void showWorkHasBeenSubmitted() {
+    }
 }

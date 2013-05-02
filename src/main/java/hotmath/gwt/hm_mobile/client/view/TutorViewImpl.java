@@ -108,7 +108,7 @@ public class TutorViewImpl extends AbstractPagePanel implements TutorView, IPage
     }
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return problem.getLabel();
     }
 }

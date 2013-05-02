@@ -26,7 +26,7 @@ public class PrescriptionLessonResourceViewImpl extends AbstractPagePanel implem
     }
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Resource Viewer";
     }
     

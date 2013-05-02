@@ -1,14 +1,15 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -17,12 +18,15 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -72,16 +76,21 @@ public class AboutDialog extends DialogBox  {
 		    programInfo.setAttribute("style", "display: block");
 		}
 		
-		FlowPanel hp = new FlowPanel();
-		Button close = new TouchButton("Close",new ClickHandler() {
+		HorizontalPanel hp = new HorizontalPanel();
+		SexyButton close = new SexyButton("Close",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
             }
         });
-		close.getElement().setInnerHTML("<span><span>Close</span></span>");
 		hp.add(close);
-		hp.getElement().setAttribute("style", "margin: 5px 0 5px 5px");
+		hp.getElement().setAttribute("style",  "margin: 10px");
+		
+		
+		if(CatchupMathMobileShared.getUser() == null) {
+		    assignmentsDiv.setAttribute("style",  "display:none");
+		}
+		
 		
         DisclosurePanel feedback = new DisclosurePanel();
         Anchor feedbackButton = new TouchAnchor("Feedback");
@@ -121,10 +130,19 @@ public class AboutDialog extends DialogBox  {
     public void showCentered() {
 		center();
 	}
+    
+    
+    @UiHandler("assignmentsButton")
+    protected void handleAssignments(ClickEvent ce) {
+        History.newItem("assignment_list:" + System.currentTimeMillis());
+    }
 	
 	
 	@UiField
-	Element loggedInAs,programInfo,programName, score;
+	Element loggedInAs,programInfo,programName, score, assignmentsDiv;
+	
+	@UiField
+	TouchButton assignmentsButton;
 }
 
 

@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentGradeDetailInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentInfo;
@@ -2148,5 +2149,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public boolean isAssignmentGraded(int uid, int assignKey) {
         return getStudentAssignmentUserInfo(uid, assignKey).isGraded();
+    }
+
+    public String getProblemStatusForStudent(int uid, int assignKey, String pid) {
+        String sql = "select status from CM_ASSIGNMENT_PID_STATUS where uid = ? and assign_key = ? and pid = ?";
+        List<String> statuses = getJdbcTemplate().query(sql, new Object[] { uid, assignKey, pid }, new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getString(1);
+            }
+        });
+        if(statuses.size() > 0) {
+            return statuses.get(0);
+        }
+        else {
+            return ProblemStatus.UNANSWERED.toString();
+        }
     }
 }

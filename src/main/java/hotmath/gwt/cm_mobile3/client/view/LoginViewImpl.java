@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity.UserInfo;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
@@ -66,7 +67,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     }
 
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Catchup Math Mobile";
     }
     @Override
@@ -88,8 +89,13 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     public void prepareLogin(UserInfo userInfo) {
         if(userInfo != null) {
             usernameBox.setText(userInfo.getUser());
-            passwordBox.setText("");
-            //passwordBox.setText(userInfo.getPassWord());
+            
+            if(CmGwtUtils.getQueryParameter("debug") == null) {
+                passwordBox.setText("");
+            }
+            else {
+                passwordBox.setText(userInfo.getPassWord());
+            }
         }   
     }
     

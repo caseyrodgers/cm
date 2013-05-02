@@ -83,7 +83,7 @@ public class HomeViewImpl extends AbstractPagePanel implements HomeView,IPage {
 
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Hotmath Mobile!";
     }
 }

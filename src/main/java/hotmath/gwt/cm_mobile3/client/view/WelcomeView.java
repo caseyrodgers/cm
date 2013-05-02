@@ -10,5 +10,7 @@ public interface WelcomeView extends IPage{
     
     public interface Presenter {
         void beginCatchupMath();
+
+        void beingCatchupMathAssignments();
     }
 }

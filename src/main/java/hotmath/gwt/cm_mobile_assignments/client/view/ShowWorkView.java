@@ -15,5 +15,12 @@ public interface ShowWorkView extends BaseView{
         String getProblemStatementHtml();
         Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String commandData);
     }
+    
+    /** Load the whiteboard commands 
+     * 
+     *  Called by activity once data has been read from server
+     * 
+     * @param commands
+     */
     void loadWhiteboard(CmList<WhiteboardCommand> commands);
 }

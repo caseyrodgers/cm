@@ -11,7 +11,7 @@ public class TopicListPage implements IPage {
     }
 
 	@Override
-	public String getTitle() {
+	public String getViewTitle() {
 		return "Lesson Search";
 	}
 

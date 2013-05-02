@@ -1,8 +1,8 @@
-package hotmath.gwt.cm_tools.client.ui.assignment;
+package hotmath.gwt.cm_rpc_assignments.client.model;
 
 public enum ProblemStatus {
 
-	NOT_VIEWED("Not Viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect"), HALF_CREDIT("Half Credit"), SUBMITTED("Submitted");
+	NOT_VIEWED("Not Viewed"), VIEWED("Viewed"), PENDING("Pending"), CORRECT("Correct"), INCORRECT("Incorrect"), HALF_CREDIT("Half Credit"), SUBMITTED("Submitted"), UNANSWERED("Unanswered");
 	static public ProblemStatus parseString(String object) {
 		if (ProblemStatus.VIEWED.toString().equals(object)) {
 			return ProblemStatus.VIEWED;
@@ -17,6 +17,9 @@ public enum ProblemStatus {
 		}
 		else if(ProblemStatus.SUBMITTED.toString().equals(object)) {
 		    return ProblemStatus.SUBMITTED;
+		}
+		else if(ProblemStatus.UNANSWERED.toString().equals(object)) {
+		    return ProblemStatus.UNANSWERED;
 		}
 		else {
 			return ProblemStatus.INCORRECT;

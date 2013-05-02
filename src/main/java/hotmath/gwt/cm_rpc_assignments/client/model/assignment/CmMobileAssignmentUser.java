@@ -1,7 +1,6 @@
-package hotmath.gwt.cm_mobile_assignments.client.user;
+package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
 
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import java.util.List;

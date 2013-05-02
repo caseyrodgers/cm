@@ -58,7 +58,7 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
     Presenter presenter;
     
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Available Lesson Topics";
     }
     

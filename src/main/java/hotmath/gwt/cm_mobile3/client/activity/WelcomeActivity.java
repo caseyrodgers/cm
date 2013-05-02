@@ -1,18 +1,24 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.ClientFactory;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.WelcomeView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.History;
 
 public class WelcomeActivity implements WelcomeView.Presenter{
     
     private EventBus eventBus;
+    private ClientFactory factory;
 
-    public WelcomeActivity(EventBus eventBus) {
+    public WelcomeActivity(ClientFactory factory, EventBus eventBus) {
+        this.factory = factory;
         this.eventBus = eventBus;
     }
 
@@ -68,5 +74,19 @@ public class WelcomeActivity implements WelcomeView.Presenter{
     @Override
     public void beginCatchupMath() {
         eventBus.fireEvent(new HandleNextFlowEvent(CatchupMathMobileShared.getUser().getFlowAction()));
+    }
+    
+    
+    @Override
+    public void beingCatchupMathAssignments() {
+        AssignmentData.clear();
+        AssignmentData.readAssData(new CallbackWhenDataReady() {
+            
+            @Override
+            public void isReady() {
+                History.newItem("assignment_list:" + CatchupMathMobileShared.getUser().getUserId() + ":" + System.currentTimeMillis());
+            }
+        });
+
     }
 }

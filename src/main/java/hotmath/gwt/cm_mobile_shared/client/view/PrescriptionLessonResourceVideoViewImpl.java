@@ -37,7 +37,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
 
     String _videoTitle="";
     @Override
-    public String getTitle() {
+    public String getViewTitle() {
         return "Video Lesson";
     }
 

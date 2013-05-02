@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_mobile_shared.client.event.ShowWorkSubmittedEvent;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -718,4 +719,36 @@ public class TutorWrapperPanel extends Composite {
             this.showReturn = showReturn;
         }
     }
+    
+    
+    
+    public native void jsni_addWhiteboardSubmitButton() /*-{
+        var widgetHolder = $doc.getElementById("hm_flash_widget");
+        if(widgetHolder) {
+            var ih = widgetHolder.innerHTML;
+            widgetHolder.innerHTML = ih + "<p><input type='button' onclick='gwt_submitWhiteboardAnswer()' class='sexybutton sexysimple sexylarge sexyred' value='Submit Whiteboard Answer'/></p>";
+        }
+        var that = this;
+        $wnd.gwt_submitWhiteboardAnswer = function() {
+             that.@hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel::gwt_submitWhiteboardAnswer()();
+        }
+
+    }-*/;
+
+    
+    static native public void jsni_showWhiteboardStatus(String status) /*-{
+        if(status == 'Submitted' || status == 'Correct' || status == 'Incorrect' || status == 'Half Correct') {
+            var widgetHolder = $doc.getElementById("hm_flash_widget");
+            widgetHolder.innerHTML = "<div id='hm_flash_widget_head' style='display: block'>" + status + "</div>";
+            //$wnd.setWidgetMessage(status);
+        }
+    }-*/;
+    
+
+
+    private void gwt_submitWhiteboardAnswer() {
+        TutorWrapperPanel.jsni_showWhiteboardStatus("Submitted");
+        tutorCallback.showWorkHasBeenSubmitted();
+   }
+    
 }
