@@ -36,7 +36,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     public PrescriptionLessonActivity(ClientFactory clientFactory, com.google.gwt.event.shared.EventBus eventBus) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
-        this.userInfo = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
+        this.userInfo = SharedData.getMobileUser().getBaseLoginResponse().getUserInfo();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
         }
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        int runId = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId();
+        int runId = SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().getRunId();
         GetPrescriptionAction action = new GetPrescriptionAction(runId, sessionNumber, true);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<PrescriptionSessionResponse>() {
             public void onSuccess(PrescriptionSessionResponse result) {
@@ -138,7 +138,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     @Override
     public void markLessonAsComplete(final SessionTopic topic) {
         eventBus.fireEvent(new SystemIsBusyEvent(true));
-        UserInfo ui = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
+        UserInfo ui = SharedData.getMobileUser().getBaseLoginResponse().getUserInfo();
         String lesson = SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getTopic();
         int runId = ui.getRunId();
         int sessionNum = ui.getSessionNumber();

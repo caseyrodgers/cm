@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile_shared.client.activity;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
@@ -65,19 +66,34 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         }
         
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
-        GetStudentAssignmentAction action = new GetStudentAssignmentAction(AssignmentData.getUserData().getUid(),assignKey);
-        CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<StudentAssignment>() {
-            @Override            
-            public void onSuccess(StudentAssignment result) {
-                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-                setAssignment(view ,result);
-            }
+        
+        AssignmentData.readAssData(new CallbackWhenDataReady() {
+            
             @Override
-            public void onFailure(Throwable caught) {
-                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-                Log.debug("Error getting assignment", caught);
-            }            
-        });        
+            public void isReady() {
+                
+                
+                GetStudentAssignmentAction action = new GetStudentAssignmentAction(AssignmentData.getUserData().getUid(),assignKey);
+                CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<StudentAssignment>() {
+                    @Override            
+                    public void onSuccess(StudentAssignment result) {
+                        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+                        setAssignment(view ,result);
+                    }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+                        Log.debug("Error getting assignment", caught);
+                    }            
+                });        
+                
+                
+                
+            }
+        });
+        
+        
+        
     }
     
     

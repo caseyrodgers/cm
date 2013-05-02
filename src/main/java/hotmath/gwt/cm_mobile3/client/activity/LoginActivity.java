@@ -63,10 +63,8 @@ public class LoginActivity implements LoginView.Presenter {
                     eventBus.fireEvent(new ShowFlashRequiredEvent());
                 }
                 else {
-                    CatchupMathMobileShared.__instance.user = result;
-                    
-                    SharedData.setUserInfo(result.getBaseLoginResponse().getUserInfo());
-                    SharedData.setFlowAction(result.getFlowAction());
+                  
+                    SharedData.setData(result);
                     
                     eventBus.fireEvent(new ShowWelcomeViewEvent());
                 }

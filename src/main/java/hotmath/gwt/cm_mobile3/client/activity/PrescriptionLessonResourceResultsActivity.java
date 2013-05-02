@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -22,7 +23,7 @@ public class PrescriptionLessonResourceResultsActivity  implements PrescriptionL
 
     @Override
     public void setupView(final PrescriptionLessonResourceResultsView view) {
-        GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().getRunId());
+        GetQuizResultsHtmlAction action = new GetQuizResultsHtmlAction(SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().getRunId());
         
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         CatchupMathMobileShared.getCmService().execute(action,  new AsyncCallback<QuizResultsMetaInfo>() {

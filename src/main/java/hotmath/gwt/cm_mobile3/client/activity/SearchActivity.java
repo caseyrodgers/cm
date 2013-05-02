@@ -12,12 +12,12 @@ import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
@@ -98,12 +98,12 @@ public class SearchActivity implements SearchView.Presenter {
             SharedData.getFlowAction().getPrescriptionResponse().setPrescriptionData(response.getPrescriptionData());
         }
 
-        if(CatchupMathMobileShared.__instance.user == null) {
+        if(SharedData.getMobileUser() == null) {
             CmMobileUser user = new CmMobileUser(0,0,1,0,response.getRunId());
             user.setBaseLoginResponse(new UserLoginResponse(new UserInfo(0, 0),new CmDestination(CmPlace.PRESCRIPTION)));
-            CatchupMathMobileShared.__instance.user = user;
+            SharedData.setData(user);
         }
-        CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo().setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
+        SharedData.getMobileUser().getBaseLoginResponse().getUserInfo().setSessionNumber(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession().getSessionNumber());
         clientFactory.getPrescriptionLessonView().setLesson(SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getCurrSession());
         
         new PrescriptionLessonActivity(clientFactory,eventBus).moveToLesson(clientFactory.getPrescriptionLessonView(), 0);

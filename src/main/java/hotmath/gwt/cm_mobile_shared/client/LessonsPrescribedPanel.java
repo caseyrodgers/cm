@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
@@ -75,7 +76,7 @@ public class LessonsPrescribedPanel extends FlowPanel {
             @Override
             public void handleEvent(CmEvent event) {
                 if(event.getEventType().equals(EventTypes.EVENT_USER_LOGIN)) {
-                    __prescribedLessons = CatchupMathMobileShared.getUser().getPrescribedLessons();
+                    __prescribedLessons = SharedData.getMobileUser().getPrescribedLessons();
                     __instance.createUi(__prescribedLessons);
                 }
             }

@@ -22,6 +22,8 @@ import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
@@ -161,7 +163,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
-            __clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
+            //__clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
@@ -284,6 +286,15 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     }
                     //eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
                 }
+            }
+        });
+        
+        
+        
+        eb.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
+            @Override
+            public void userLogout() {
+                CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
             }
         });
     }

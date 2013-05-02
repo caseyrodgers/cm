@@ -163,4 +163,11 @@ public class StudentProblemDto implements Response {
     public void setGraded(boolean graded) {
         this.graded = graded;
     }
+
+    public String getStudentLabelWithStatus() {
+        String label = getStudentLabel();
+        String status = getStatusForStudent();
+        
+        return label + " (" + status + ")";
+    }
 }

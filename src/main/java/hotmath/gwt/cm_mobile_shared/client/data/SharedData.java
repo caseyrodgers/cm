@@ -1,10 +1,24 @@
 package hotmath.gwt.cm_mobile_shared.client.data;
 
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLoginEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.code.gwt.storage.client.Storage;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** centralized wrapper for shared global data structures
  * 
@@ -22,6 +36,7 @@ public class SharedData {
     
     private static UserInfo userInfo;
     private static CmProgramFlowAction flowAction;
+    private static CmMobileUser __mobileUser;
     
     static public CmProgramFlowAction getFlowAction() {
         if(flowAction == null) {
@@ -126,5 +141,104 @@ public class SharedData {
         }
         return -1;
     }
+
     
+    static public CmMobileUser getMobileUser() {
+        if(__mobileUser == null) {
+            Window.alert("CmMobileUser is not set");
+        }
+        return __mobileUser;
+    }
+    
+    public static void setData(CmMobileUser result) {
+        if(result == null) {
+            SharedData.setMobileUser(null);
+            SharedData.setUserInfo(null);
+            SharedData.setFlowAction(null);
+        }
+        else {
+            SharedData.setMobileUser(result);
+            SharedData.setUserInfo(result.getBaseLoginResponse().getUserInfo());
+            SharedData.setFlowAction(result.getFlowAction());
+            
+            saveUidToLocalStorage(result.getUserId());
+            
+            
+            CmRpcCore.EVENT_BUS.fireEvent(new UserLoginEvent(result));
+        }
+    }
+
+    private static void setMobileUser(CmMobileUser result) {
+        __mobileUser = result;
+    }
+    
+    static public void makeSureUserHasBeenRead(final CallbackOnComplete callback) {
+        if(__mobileUser == null) {
+            final int uid = getUidFromLocalStorage();
+            if(uid != 0) {
+                GetCmMobileLoginAction action = new GetCmMobileLoginAction(uid);
+                CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<CmMobileUser>() {
+                    @Override
+                    public void onSuccess(CmMobileUser result) {
+                        SharedData.setData(result);
+                        callback.isComplete();
+                    }
+                    @Override
+                    public void onFailure(Throwable caught) {
+                        Log.error("Error logging in with saved uid: " + uid, caught);
+                        MessageBox.showError("Could not login with saved uid: " + caught.getMessage());
+                    }
+                });
+            }
+            else {
+                Window.alert("no user id saved");
+            }
+        }
+        else {
+            callback.isComplete();
+        }
+    }
+
+    public static void saveUidToLocalStorage(int uid) {
+        Storage store = Storage.getLocalStorage();
+        if(store == null) {
+            MessageBox.showError("Local Storage not supported");
+        }
+        
+        try {
+            store.setItem("uid", Integer.toString(uid));
+        }
+        catch(Exception e) {
+            Log.error("Could not save uid to local storage", e);
+        }
+    }
+    
+    public static int getUidFromLocalStorage() {
+        Storage store = Storage.getLocalStorage();
+        if(store == null) {
+            MessageBox.showError("Local Storage not supported");
+            return 0;
+        }
+        
+        int uid=0;
+        try {
+            String sUid=store.getItem("uid");
+            if(sUid != null) {
+                uid = Integer.parseInt(sUid);
+            }
+        }
+        catch(Exception e) {
+            Log.error("Could not get uid from local storage", e);
+        }
+        return uid;
+    }
+    
+    static {
+        CmRpcCore.EVENT_BUS.addHandler(UserLogoutEvent.TYPE,  new UserLogoutHandler() {
+            @Override
+            public void userLogout() {
+                SharedData.setData(null);                
+            }
+        });
+    }
 }

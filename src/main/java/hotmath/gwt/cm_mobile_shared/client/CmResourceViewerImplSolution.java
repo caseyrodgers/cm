@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
@@ -32,7 +33,7 @@ public class CmResourceViewerImplSolution extends Composite implements CmMobileR
     
     @Override
     public Widget getViewer(final InmhItemData item) {
-        CmMobileUser user = CatchupMathMobileShared.getUser();
+        CmMobileUser user = SharedData.getMobileUser();
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         GetMobileSolutionAction action = new GetMobileSolutionAction(user.getUserId(),item.getFile());
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<SolutionResponse>() {

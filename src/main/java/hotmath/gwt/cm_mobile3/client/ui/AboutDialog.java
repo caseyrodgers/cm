@@ -87,7 +87,7 @@ public class AboutDialog extends DialogBox  {
 		hp.getElement().setAttribute("style",  "margin: 10px");
 		
 		
-		if(CatchupMathMobileShared.getUser() == null) {
+		if(SharedData.getMobileUser() == null) {
 		    assignmentsDiv.setAttribute("style",  "display:none");
 		}
 		

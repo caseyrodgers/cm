@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile_assignments.client.util;
 
 import hotmath.gwt.cm_mobile_assignments.client.CmMobileAssignments;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
@@ -42,7 +42,7 @@ public class AssData {
     private AssData(CallbackWhenDataReady callBack) {
         this.callBack = callBack;
         try {
-            _uid = CatchupMathMobileShared.getUser().getUserId();   // Integer.parseInt(CmGwtUtils.getQueryParameter("uid"));
+            _uid = SharedData.getMobileUser().getUserId();   // Integer.parseInt(CmGwtUtils.getQueryParameter("uid"));
             if(_uid == 0) {
                 AssAlertBox.showAlert("Uid must be specfied");
             }

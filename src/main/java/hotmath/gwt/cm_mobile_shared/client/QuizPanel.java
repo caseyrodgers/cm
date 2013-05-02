@@ -1,21 +1,19 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.page.QuizPage;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CreateTestRunMobileAction;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
-import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResponse;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
-
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 import java.util.List;
 
@@ -88,13 +86,13 @@ public class QuizPanel extends AbstractPagePanel {
 
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
 
-        CmMobileUser user = CatchupMathMobileShared.__instance.user;
+        CmMobileUser user = SharedData.getMobileUser();
         CreateTestRunMobileAction checkTestAction = new CreateTestRunMobileAction(user,answerAction);
         CatchupMathMobileShared.getCmService().execute(checkTestAction, new AsyncCallback<PrescriptionSessionResponse>() {
             @Override
             public void onSuccess(PrescriptionSessionResponse result) {
-                CatchupMathMobileShared.getUser().setRunId(result.getRunId());
-                CatchupMathMobileShared.getUser().setPrescripion(result.getPrescriptionData());
+                SharedData.getMobileUser().setRunId(result.getRunId());
+                SharedData.getMobileUser().setPrescripion(result.getPrescriptionData());
                 
                 History.newItem("lesson:" + result.getPrescriptionData().getCurrSession().getSessionNumber());
                 
@@ -132,7 +130,7 @@ public class QuizPanel extends AbstractPagePanel {
         
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
         
-        CmMobileUser user = CatchupMathMobileShared.__instance.user;
+        CmMobileUser user = SharedData.getMobileUser();
         GetQuizHtmlAction action = new GetQuizHtmlAction(user.getTestId());
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<QuizHtmlResult>() {
             @Override
@@ -141,7 +139,7 @@ public class QuizPanel extends AbstractPagePanel {
                 mainPanel.add(new HTML(result.getQuizHtml()));
                 testQuestionAnswers = result.getAnswers();
                 
-                CatchupMathMobileShared.__instance.user.setTestId(result.getTestId());
+                SharedData.getMobileUser().setTestId(result.getTestId());
                 
                 /** mark the correct selections */
                 CmList<RpcData> al = result.getCurrentSelections(); 
@@ -171,7 +169,7 @@ public class QuizPanel extends AbstractPagePanel {
      */
     public String questionGuessChanged_Gwt(String sQuestionIndex, String answerIndex, String pid) {
         EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_START));
-        CmMobileUser user = CatchupMathMobileShared.__instance.user;
+        CmMobileUser user = SharedData.getMobileUser();
         final int correctIndex = testQuestionAnswers.get(Integer.parseInt(sQuestionIndex));
         Boolean isCorrect = correctIndex == Integer.parseInt(answerIndex);        
         SaveQuizCurrentResultAction action = new SaveQuizCurrentResultAction(user.getTestId(), isCorrect, Integer.parseInt(answerIndex), pid);

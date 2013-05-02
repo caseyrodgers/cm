@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
@@ -75,7 +76,7 @@ public class LoginForm extends AbstractPagePanel {
             @Override
             public void onSuccess(CmMobileUser result) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
-                CatchupMathMobileShared.__instance.user = result;
+                SharedData.setData(result);
                 EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_USER_LOGIN));
             }
 

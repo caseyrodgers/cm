@@ -1,8 +1,5 @@
 package hotmath.gwt.cm_mobile2.client;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.Callback;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.CmMobileResourceViewer;
@@ -11,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlPanel;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
@@ -25,6 +23,9 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -86,7 +87,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
         
         //initializeExternalJs();
 
-        CatchupMathMobileShared.__instance.user = new CmMobileUser();
+        SharedData.setData(new CmMobileUser());
         
         History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
         
@@ -225,7 +226,7 @@ public class CatchupMathMobile2 implements EntryPoint, OrientationChangedHandler
             public void onSuccess(MobileLessonInfo lessonInfo) {
                 EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_SERVER_END));
                 pData = lessonInfo.getPresData();
-                CatchupMathMobileShared.getUser().setPrescripion(lessonInfo.getPresData());
+                SharedData.getMobileUser().setPrescripion(lessonInfo.getPresData());
                 callback.isComplete(pData);
             }
             

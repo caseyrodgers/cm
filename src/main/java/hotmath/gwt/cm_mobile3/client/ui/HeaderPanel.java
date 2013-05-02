@@ -5,18 +5,18 @@ package hotmath.gwt.cm_mobile3.client.ui;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
-import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewHandler;
-import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewHandler;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
-import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLoginEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLoginHandler;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
@@ -26,6 +26,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -89,11 +90,10 @@ public class HeaderPanel extends Composite {
         _logout.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                SharedData.setUserInfo(null);
-                CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
+                CmRpcCore.EVENT_BUS.fireEvent(new UserLogoutEvent());
             }
         });
-        _logout.setVisible(false);
+        _logout.setVisible(true);
         basePanel.add(_logout);
         TouchAnchor about = new TouchAnchor();
         about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
@@ -121,16 +121,16 @@ public class HeaderPanel extends Composite {
         initWidget(basePanel);
 
         /** Show showing the Welcome panel turn on the Logout button */
-        eventBus.addHandler(ShowWelcomeViewEvent.TYPE, new ShowWelcomeViewHandler() {
+        eventBus.addHandler(UserLoginEvent.TYPE, new UserLoginHandler() {
             @Override
-            public void showWelcomeView() {
+            public void userLogin(CmMobileUser user) {
                 showLogoutButton(true);
             }
         });
 
-        eventBus.addHandler(ShowLoginViewEvent.TYPE, new ShowLoginViewHandler() {
+        eventBus.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
             @Override
-            public void showLoginView() {
+            public void userLogout() {
                 showLogoutButton(false);
             }
         });

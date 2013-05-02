@@ -104,7 +104,7 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
             return; // already viewed
         }
         
-        UserInfo ui = CatchupMathMobileShared.getUser().getBaseLoginResponse().getUserInfo();
+        UserInfo ui = SharedData.getMobileUser().getBaseLoginResponse().getUserInfo();
         String pid=resourceItem.getFile();
         int runId = ui.getRunId();
         int sessionNum = ui.getSessionNumber();

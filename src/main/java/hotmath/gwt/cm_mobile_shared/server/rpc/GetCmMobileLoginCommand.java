@@ -4,13 +4,12 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
@@ -30,7 +29,14 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
     @Override
     public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
         
-        HaBasicUser basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
+        HaBasicUser basicUser=null;
+        if(action.getUid() != 0) {
+             basicUser = HaUserFactory.getLoginUserInfo(action.getUid(),"STUDENT");
+        }
+        else {
+            basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
+        }
+        
         if(basicUser.getUserType() != UserType.STUDENT)
             throw new CmException("Invalid user type: " + basicUser.getUserType());
         

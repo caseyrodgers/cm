@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ListItem;
 import hotmath.gwt.cm_mobile_shared.client.Thermometer;
 import hotmath.gwt.cm_mobile_shared.client.UnOrderedList;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -58,7 +59,7 @@ public class PrescriptionPanel extends AbstractPagePanel {
     	/** to get started... probably, should pass data in
     	 * 
     	 */
-        this.prescription = CatchupMathMobileShared.getUser().getPrescripion();
+        this.prescription = SharedData.getMobileUser().getPrescripion();
         
         
         /** do the binding */
@@ -115,7 +116,7 @@ public class PrescriptionPanel extends AbstractPagePanel {
 
     @UiHandler("nextButton")
     void handleNextButtonClick(ClickEvent e) {
-        CmMobileUser user = CatchupMathMobileShared.getUser();
+        CmMobileUser user = SharedData.getMobileUser();
         int sessionNumber = this.prescription.getCurrSession().getSessionNumber();
         if((sessionNumber+1) >= this.prescription.getSessionTopics().size()) {
             Window.alert("No more lessons");
@@ -133,7 +134,7 @@ public class PrescriptionPanel extends AbstractPagePanel {
         
 
         
-		GetPrescriptionAction action = new GetPrescriptionAction(CatchupMathMobileShared.getUser().getRunId(), sessionNumber, true);
+		GetPrescriptionAction action = new GetPrescriptionAction(SharedData.getMobileUser().getRunId(), sessionNumber, true);
 		CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<PrescriptionSessionResponse>() {
 			public void onSuccess(PrescriptionSessionResponse prescriptionSession) {
 				PrescriptionPanel.this.prescription = prescriptionSession.getPrescriptionData();
@@ -150,7 +151,7 @@ public class PrescriptionPanel extends AbstractPagePanel {
     
     @UiHandler("prevButton")
     void handlePrevButtonClick(ClickEvent e) {
-        CmMobileUser user = CatchupMathMobileShared.getUser();
+        CmMobileUser user = SharedData.getMobileUser();
         int sessionNumber = this.prescription.getCurrSession().getSessionNumber();
         if(sessionNumber < 1) {
             Window.alert("No previous lessons");

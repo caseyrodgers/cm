@@ -24,7 +24,7 @@ public class WelcomeActivity implements WelcomeView.Presenter{
 
     public void prepareView(WelcomeView view) {
         
-        UserInfo user = SharedData.getUserInfo();
+        UserInfo user = SharedData.getMobileUser().getBaseLoginResponse().getUserInfo();
         String firstThing=null;
 
         if(user.getRunId() > 0){
@@ -73,7 +73,7 @@ public class WelcomeActivity implements WelcomeView.Presenter{
     }
     @Override
     public void beginCatchupMath() {
-        eventBus.fireEvent(new HandleNextFlowEvent(CatchupMathMobileShared.getUser().getFlowAction()));
+        eventBus.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
     }
     
     
@@ -84,7 +84,7 @@ public class WelcomeActivity implements WelcomeView.Presenter{
             
             @Override
             public void isReady() {
-                History.newItem("assignment_list:" + CatchupMathMobileShared.getUser().getUserId() + ":" + System.currentTimeMillis());
+                History.newItem("assignment_list:" + SharedData.getMobileUser().getUserId() + ":" + System.currentTimeMillis());
             }
         });
 

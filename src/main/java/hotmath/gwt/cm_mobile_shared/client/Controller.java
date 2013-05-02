@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
@@ -96,7 +97,7 @@ public class Controller {
             item = itemIn;
         }
         else {
-            for (PrescriptionSessionDataResource r : CatchupMathMobileShared.getUser().getPrescripion().getCurrSession()
+            for (PrescriptionSessionDataResource r : SharedData.getMobileUser().getPrescripion().getCurrSession()
                     .getInmhResources()) {
                 if (r.getType().equals(itemIn.getType())) {
                     item = r.getItems().get(ordinal);
@@ -104,7 +105,7 @@ public class Controller {
                 }
             }
         }
-        String lesson = CatchupMathMobileShared.getUser().getPrescripion().getCurrSession().getInmhResources().get(1).getItems().get(0).getFile();
+        String lesson = SharedData.getMobileUser().getPrescripion().getCurrSession().getInmhResources().get(1).getItems().get(0).getFile();
 
 
         PrescriptionResourcePage page = new PrescriptionResourcePage(lesson, item);

@@ -1,9 +1,10 @@
 package hotmath.gwt.cm_mobile_shared.client.rpc;
 
+
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class CmMobileUser implements Response {

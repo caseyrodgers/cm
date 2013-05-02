@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -34,6 +35,9 @@ public class AssignmentData {
         if(__assData == null) {
             __assData = new AssignmentData(callBack);
         }
+        else {
+            callBack.isReady();
+        }
         return __assData;
     }
     
@@ -50,7 +54,7 @@ public class AssignmentData {
     private AssignmentData(CallbackWhenDataReady callBack) {
         this.callBack = callBack;
         try {
-            _uid = CatchupMathMobileShared.getUser().getUserId();   // Integer.parseInt(CmGwtUtils.getQueryParameter("uid"));
+            _uid = SharedData.getMobileUser().getUserId();   // Integer.parseInt(CmGwtUtils.getQueryParameter("uid"));
             Log.info("uid: " + _uid);
             readUserAssignmentData(_uid);
         }

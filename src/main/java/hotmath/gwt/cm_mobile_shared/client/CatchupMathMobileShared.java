@@ -1,9 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
-import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
-import hotmath.gwt.cm_mobile_shared.client.event.CmEventListener;
-import hotmath.gwt.cm_mobile_shared.client.event.EventType;
-import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
@@ -34,7 +30,7 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
 
     RootPanel _rootPanel;
 
-    public CmMobileUser user;
+    private CmMobileUser user;
     SimplePanel mainPanel;
 
     public CatchupMathMobileShared() {
@@ -42,14 +38,18 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
     }
 
     public void onModuleLoad() {
-    
+        /** empty */
     }
     
     
-    static public CmMobileUser getUser() {
-        return __instance.user;
-    }
-
+    
+    
+    
+    
+    
+    
+    
+    
     
     public void hideBusyPanel() {
         /** hide the startup spinner */
@@ -169,19 +169,4 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
         window.scrollTo(0, 1);
     }-*/;
 
-    
-    static {
-        hotmath.gwt.cm_mobile_shared.client.event.EventBus.getInstance().addEventListener(new CmEventListener() {
-            @Override
-            public void handleEvent(CmEvent event) {
-                EventType type = event.getEventType();
-                if(type == EventTypes.EVENT_PAGE_LOADED) {
-                }
-                else if(type == EventTypes.EVENT_PAGE_REMOVED) {
-                }
-                else if(type == EventTypes.EVENT_PAGE_ACTIVATED) {
-                }
-            }
-        });
-    }
 }

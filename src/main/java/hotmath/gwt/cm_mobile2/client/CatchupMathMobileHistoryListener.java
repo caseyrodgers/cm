@@ -1,9 +1,9 @@
 package hotmath.gwt.cm_mobile2.client;
 
 import hotmath.gwt.cm_mobile2.client.TopicViewPagePanel.Callback;
-import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 
@@ -41,7 +41,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 @Override
                 public void isComplete(Object data) {
                     InmhItemData item = null;
-                    for (PrescriptionSessionDataResource r : CatchupMathMobileShared.getUser().getPrescripion()
+                    for (PrescriptionSessionDataResource r : SharedData.getMobileUser().getPrescripion()
                             .getCurrSession().getInmhResources()) {
                         if (r.getType().equals(type)) {
                             item = r.getItems().get(token.getOrdinal());

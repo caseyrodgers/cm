@@ -3,6 +3,7 @@ package hotmath.gwt.cm_activity_word_problems.client;
 import hotmath.gwt.cm_activity.client.WordProblemsPanel;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
@@ -33,7 +34,7 @@ public class CmActivityWordProblems implements EntryPoint, OrientationChangedHan
         
         CatchupMathMobileShared.__instance.hideBusyPanel();
 
-        CatchupMathMobileShared.__instance.user = new CmMobileUser();
+        SharedData.setData(new CmMobileUser());
     }
     
     /** call global JS function to initialize any external resources
