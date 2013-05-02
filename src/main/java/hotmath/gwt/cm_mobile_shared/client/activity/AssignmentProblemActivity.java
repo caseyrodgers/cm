@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
@@ -42,7 +43,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public String getProblemTitle() {
-        return (__lastProblem!=null?__lastProblem.getLabel():"Problem View");
+        return (__lastProblem!=null?__lastProblem.getStudentProblem().getStudentLabel():"Problem View");
     }
     
     @Override
@@ -64,6 +65,9 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 __lastProblem = problem;
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 view.loadProblem(problem);
+                
+                CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(problem.getStudentProblem().getStudentLabel()));
+                
             }
 
             @Override
@@ -126,7 +130,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public InmhItemData getItemData() {
-        return new InmhItemData("practice",__lastPid,__lastProblem.getProblemLabel());
+        return new InmhItemData("practice",__lastPid,__lastProblem.getStudentProblem().getStudentLabel());
     }
 
     @Override

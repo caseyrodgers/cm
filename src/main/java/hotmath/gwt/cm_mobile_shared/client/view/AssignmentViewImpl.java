@@ -27,18 +27,19 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     SimplePanel _main;
 
     GenericContainerTag listItems = new GenericContainerTag("ul");
+    SexyButton _turnInAssignment;
 
     public AssignmentViewImpl() {
 
         FlowPanel flow = new FlowPanel();
         SubToolBar subBar = new SubToolBar();
-        SexyButton turnInAssignment = new SexyButton("Turn In Assignment", new ClickHandler() {
+        _turnInAssignment = new SexyButton("Turn In Assignment", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.turnInAssignment(AssignmentViewImpl.this);
             }
         });
-        subBar.add(turnInAssignment);
+        subBar.add(_turnInAssignment);
         flow.add(subBar);
 
         _main = new SimplePanel();
@@ -104,6 +105,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             });
             listItems.add(tt);
         }
+        
+        _turnInAssignment.setEnabled(!assignment.isTurnedIn());
         _main.setWidget(listItems);
     }
 
@@ -111,7 +114,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         private StudentProblemDto _problem;
 
         public MyGenericTextTag(StudentProblemDto problem) {
-            super("li", problem.getProblem().getOrdinalNumber() + ". " + StudentProblemDto.getStudentLabel(problem.getPidLabel()) + ", " + problem.getStatusForStudent());
+            super("li", problem.getStudentLabel());
             this._problem = problem;
         }
     }

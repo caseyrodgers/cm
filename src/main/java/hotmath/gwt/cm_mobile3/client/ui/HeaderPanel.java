@@ -13,6 +13,8 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
@@ -130,6 +132,14 @@ public class HeaderPanel extends Composite {
             @Override
             public void showLoginView() {
                 showLogoutButton(false);
+            }
+        });
+        
+        
+        eventBus.addHandler(HeaderTitleChangedEvent.TYPE, new HeaderTitleChangedHandler() {
+            @Override
+            public void headerTitleChanged(String title) {
+                mActiveTitle.setText(title);
             }
         });
 

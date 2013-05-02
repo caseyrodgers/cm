@@ -204,7 +204,7 @@ public class AssignmentProblemListPanel extends ContentPanel {
         }
         
         _currentProblem = studentProb;
-        String title = studentProb.getProblem().getOrdinalNumber() + ". " + StudentProblemDto.getStudentLabel(studentProb.getPidLabel());
+        String title = studentProb.getProblem().getOrdinalNumber() + ". " + StudentProblemDto.removeProblemType(studentProb.getPidLabel());
         _problemListCallback.problemSelected(title, studentProb);
 
         if (studentProb.getStatus().equals("Not Viewed")) {

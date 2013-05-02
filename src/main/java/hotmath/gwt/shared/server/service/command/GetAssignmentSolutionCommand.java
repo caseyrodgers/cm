@@ -5,6 +5,8 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
@@ -41,13 +43,14 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         
         String lastUserWidgetValue = AssignmentDao.getInstance().getAssignmentLastWidgetInputValue(action.getUid(), action.getAssignKey(),action.getPid());
         
-        String problemLabel = AssignmentDao.getInstance().getProblemLabelInAssignment(action.getAssignKey(), action.getPid());
+        StudentProblemDto stuProblem = AssignmentDao.getInstance().getStudentProblem(action.getUid(), action.getAssignKey(),action.getPid());
         
         String problemStatus = AssignmentDao.getInstance().getProblemStatusForStudent(action.getUid(), action.getAssignKey(), action.getPid());
         
         boolean isAssignmentGraded = AssignmentDao.getInstance().isAssignmentGraded(action.getUid(), action.getAssignKey());
+
         
-        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),isAssignmentGraded,info, problemLabel, AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue, problemStatus);
+        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),isAssignmentGraded,info, stuProblem, AssignmentDao.determineProblemType(info.getHtml()),lastUserWidgetValue, problemStatus);
 
         AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
         

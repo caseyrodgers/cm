@@ -98,7 +98,7 @@ public class StudentProblemDto implements Response {
 	 * @return
 	 */
 	public String getPidLabel() {
-        return getStudentLabel(getProblem().getLabel());
+        return removeProblemType(getProblem().getLabel());
     }
     
     public String getPid() {
@@ -135,8 +135,17 @@ public class StudentProblemDto implements Response {
     public int getProblemNumberOrdinal() {
         return problem.getOrdinalNumber();
     }
+    
+    public String getStudentLabel() {
+        return getProblem().getOrdinalNumber() + ". " + removeProblemType(getProblem().getLabel());
+    }
 
-    public static String getStudentLabel(String fromLabel) {
+    /** Remove the ': TYPE' label on pid problems
+     * 
+     * @param fromLabel
+     * @return
+     */
+    public static String removeProblemType(String fromLabel) {
         for(int i=fromLabel.length();i>0;i--) {
             if(fromLabel.charAt(i-1) == ':') {
                 fromLabel = fromLabel.substring(0, i-1);

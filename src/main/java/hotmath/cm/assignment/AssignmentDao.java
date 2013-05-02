@@ -2135,16 +2135,38 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
         return count;
     }
+    
+    
 
-    public String getProblemLabelInAssignment(int assignKey, String pid) {
-        String sql = "select label from CM_ASSIGNMENT_PIDS where assign_key = ? and pid = ?";
-        String problemLabel = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, pid }, new RowMapper<String>() {
+    public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) {
+        String sql = "select a.status as assignment_status, p.ordinal_number, p.id, p.lesson, p.lesson_file, p.label, s.status as problem_status,s.is_graded " +
+                     " from CM_ASSIGNMENT a " +
+                     " JOIN  CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key" +
+                     " LEFT JOIN CM_ASSIGNMENT_PID_STATUS s on s.assign_key = p.assign_key and s.uid = ? and s.pid = p.pid " +
+                     " where p.assign_key = ? " +
+                     " and     p.pid = ? ";
+        
+        StudentProblemDto problem = getJdbcTemplate().queryForObject(sql, new Object[] {uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
             @Override
-            public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return rs.getString(1);
+            public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"),rs.getString("lesson_file")), rs.getString("label"), pid, 0);
+                boolean isClosed = rs.getString("assignment_status").equals("Closed");
+                return new StudentProblemDto(uid,prob,rs.getString("problem_status"),false,false,isClosed,rs. getInt("is_graded")!=0?true:false,rs.getInt("is_graded")!=0?true:false);            
             }
         });
-        return problemLabel;
+        return problem;
+    }
+    
+
+    public ProblemDto getAssignmentProblem(int assignKey, final String pid) {
+        String sql = "select * from CM_ASSIGNMENT_PIDS where assign_key = ? and pid = ?";
+        ProblemDto problem = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, pid }, new RowMapper<ProblemDto>() {
+            @Override
+            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"),rs.getString("lesson_file")), rs.getString("label"), pid, 0);                
+            }
+        });
+        return problem;
     }
 
     public boolean isAssignmentGraded(int uid, int assignKey) {

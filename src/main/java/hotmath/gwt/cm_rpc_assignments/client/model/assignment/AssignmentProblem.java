@@ -17,18 +17,18 @@ public class AssignmentProblem implements Response{
     private int userId;
     private int assignKey;
     private String lastUserWidgetValue;
-    private String label;
+    private StudentProblemDto studentProblem;
     private boolean isGraded;
     private String status;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,SolutionInfo info, String label, ProblemType problemType, String lastUserWidgetValue, String status) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,SolutionInfo info, StudentProblemDto stuProblem, ProblemType problemType, String lastUserWidgetValue, String status) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
         this.info = info;
-        this.label = label;
+        this.studentProblem = stuProblem;
         this.problemType = problemType;
         this.lastUserWidgetValue = lastUserWidgetValue;
         this.status = status;
@@ -42,12 +42,13 @@ public class AssignmentProblem implements Response{
         this.status = status;
     }
 
-    public String getLabel() {
-        return label;
+
+    public StudentProblemDto getStudentProblem() {
+        return studentProblem;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
+    public void setStudentProblem(StudentProblemDto studentProblem) {
+        this.studentProblem = studentProblem;
     }
 
     public boolean isGraded() {
@@ -103,9 +104,4 @@ public class AssignmentProblem implements Response{
         return "AssignmentProblem [info=" + info + ", problemType=" + problemType + ", userId=" + userId
                 + ", assignKey=" + assignKey + ", lastUserWidgetValue=" + lastUserWidgetValue + "]";
     }
-
-    public String getProblemLabel() {
-        return label;
-    }
-
 }

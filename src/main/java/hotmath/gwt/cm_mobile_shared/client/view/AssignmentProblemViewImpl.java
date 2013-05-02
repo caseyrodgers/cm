@@ -42,7 +42,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     
     @Override
     public String getViewTitle() {
-        return presenter.getProblemTitle();
+        return "Assignment Problem";
     }
 
     @Override

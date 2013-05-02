@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
@@ -13,20 +12,13 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefau
 
 import java.util.List;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentShowWorkViewImpl extends Composite implements AssignmentShowWorkView {
 
     private Presenter presenter;
     ShowWorkPanel _showWorkPanel;
-    FlowPanel _main = new FlowPanel();
     
     public AssignmentShowWorkViewImpl() {
         _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
@@ -40,8 +32,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
                 return presenter.getWhiteboardSaveAction(pid, commandType, data);
             }
         },false);
-        _main.add(new HTML("Whiteboard loading ..."));
-        initWidget(_main);
+        initWidget(_showWorkPanel);
     }
     
     /** at this point we know the whiteboard is ready and waiting
@@ -55,17 +46,6 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
 
     @Override
     public void setPresenter(Presenter listener) {
-        _main.clear();
-        
-        SubToolBar sub = new SubToolBar();
-        sub.add(new SexyButton("Submit Answer", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                presenter.showWorkSubmitted();
-            }
-        }));
-        _main.add(sub);
-        _main.add(_showWorkPanel);
         this.presenter = listener;
         _showWorkPanel.setupWhiteboard();
     }
