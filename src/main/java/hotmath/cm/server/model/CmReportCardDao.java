@@ -70,11 +70,19 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 		     
 			 CmUserProgramDao upDao = CmUserProgramDao.getInstance();
 
+			 long startTime = System.currentTimeMillis();
 			 List<StudentUserProgramModel> list = upDao.loadProgramInfoAll(conn, studentUid);
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadProgramInfo(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 }
 
 			 // set first and last activity date based on quiz data (HaTest and HaTestRun)
 			 StudentActivityDao saDao = StudentActivityDao.getInstance();
+			 startTime = System.currentTimeMillis();
 			 List<StudentActivityModel> samList = saDao.getStudentActivity(studentUid, beginDate, endDate);
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("getStudentActivity(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 }
 			 setFirstLastActivityDate(rval, samList);
 
 			 List<StudentUserProgramModel> filteredList = findMatchingUserPrograms(list, samList);
@@ -132,16 +140,27 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 rval.setLastProgramDate(pm.getCreateDate());
 
 			 // load HaTest and HaTestRun
+			 startTime = System.currentTimeMillis();
 			 List<HaTest> testList = loadQuizData(conn, filteredList, beginDate, endDate);
 			 StudentActiveInfo ai = CmStudentDao.getInstance().loadActiveInfo(studentUid);
 			 setFirstLastProgramStatus(conn, rval, testList, pm, ai);
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("HaTest and HaTestRun: studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 }
 
-			 
 			 // load quiz data for initial through last programs
+			 startTime = System.currentTimeMillis();
 			 loadQuizResults(conn, filteredList, rval, beginDate, endDate);
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadQuizResults(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 }
 
 			 // load resource usage data for initial through last programs
+			 startTime = System.currentTimeMillis();
 			 loadResourceUsage(filteredList, rval, beginDate, endDate);
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadResourceUsage(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 }
 
              // set "Login Days": the number of distinct days of activity 
 			 setLoginDays(rval, samList);
@@ -153,7 +172,11 @@ public class CmReportCardDao extends SimpleJdbcDaoSupport {
 			 //loadPrescribedLessons(filteredList, rval, conn);
 			 
 			 // load prescribed lesson comnpleted data for initial through last programs
+			 startTime = System.currentTimeMillis();
 			 loadCompletedLessons(filteredList, rval, beginDate, endDate, conn);
+			 if (logger.isDebugEnabled()) {
+			     logger.debug(String.format("loadCompletedLessons(): studentUid: %d, time: %d msec", studentUid, System.currentTimeMillis() - startTime));
+			 }
 			 
 			 rval.setReportStartDate(beginDate);
 			 rval.setReportEndDate(endDate);
