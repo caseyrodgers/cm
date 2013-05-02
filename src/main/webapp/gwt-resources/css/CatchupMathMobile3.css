@@ -616,15 +616,6 @@ table {
 }
 
 
-.welcomeViewImpl {
-	padding: 15px;
-}
-
-.welcomeViewImpl div {
-	margin-bottom: 25px;
-}
-
-
 .prescriptionLessonViewImpl,
 .prescriptionLessonResourceVideoImpl,
 .prescriptionLessonResourceTutorViewImpl,
