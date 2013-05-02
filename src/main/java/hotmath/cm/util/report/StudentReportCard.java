@@ -106,7 +106,11 @@ public class StudentReportCard {
         baos = new ByteArrayOutputStream();
         PdfWriter writer = PdfWriter.getInstance(document, baos);
 
+        long startTime = System.currentTimeMillis();
         List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
+        if (LOGGER.isDebugEnabled()) {
+        	LOGGER.debug(String.format("Student Summaries time: %d msec", System.currentTimeMillis() - startTime));
+        }
 
         StringBuilder sb = new StringBuilder();
         sb.append("CM-ReportCard");
@@ -132,8 +136,12 @@ public class StudentReportCard {
     	int idx = 0;
     	
         for (StudentModelI sm : smList) {
-        	
+
+        	startTime = System.currentTimeMillis();
             StudentReportCardModelI rc = rcDao.getStudentReportCard(sm.getUid(), fromDate, toDate);
+            if (LOGGER.isDebugEnabled()) {
+            	LOGGER.debug(String.format("Report Card Dao uid: %d, time: %d msec", sm.getUid(), System.currentTimeMillis() - startTime));
+            }
 
         	addStudentInfo(school, sm, rc, document);
         	
@@ -369,8 +377,8 @@ public class StudentReportCard {
         document.add(Chunk.NEWLINE);
     }
 
-	private void addAssignmentInfo(int uid, AssignmentDao asgDao, Document document) throws Exception {
-    	List<StudentAssignment> asgList = asgDao.getAssignmentWorkForStudent(uid);
+	private void addAssignmentInfo(int uid, AssignmentDao asgDao, Date fromDate, Date toDate, Document document) throws Exception {
+    	List<StudentAssignment> asgList = asgDao.getAssignmentWorkForStudent(uid, fromDate, toDate);
 
     	int totalCount = 0;
     	int gradedCount = 0;
