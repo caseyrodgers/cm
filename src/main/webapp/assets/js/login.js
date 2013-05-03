@@ -7,7 +7,11 @@ YUI().use('event',function(Y) {
   }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
 });
 
-
+if (!String.prototype.trim) {
+	String.prototype.trim = function () {  
+	    return this.replace(/^\s+|\s+$/g,'');  
+	};  
+}
 
 /** validate login attempt.  If both user/pass are
  *  set send to server, otherwise show error and
@@ -21,8 +25,10 @@ function doLogin() {
         return false;
 
     var user = document.getElementById("fld_user").value;
+    user = user.trim();
     var pass = document.getElementById("fld_pwd").value;
-    if (!user || !pass) {
+    pass = pass.trim();
+    if (!user || user.length==0 || !pass || pass.length==0) {
         showLoginInvalid();
         return false;
     } else {
