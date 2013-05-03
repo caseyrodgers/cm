@@ -1,14 +1,17 @@
 package hotmath.gwt.cm_mobile_shared.client.activity;
 
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentShowWorkView;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -91,6 +94,26 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
 //            _studentProblemGrid.getStore().update(prob);
 //            saveAssignmentProblemStatusToServer(prob);
 //        }        
+    }
+
+    @Override
+    public void submitShowWork() {
+        submitShowWorkToServer(__lastAssignKey, __lastPid);
+    }
+    
+    public static void submitShowWorkToServer(int assignKey, String pid) {
+        SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(AssignmentData.getUserData().getUid(), assignKey, pid, "Submitted");
+        CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData result) {
+                Log.info("Showwork submitted");
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                Log.error("Error submitting showwork");
+            }
+        });
+        
     }
     
 }

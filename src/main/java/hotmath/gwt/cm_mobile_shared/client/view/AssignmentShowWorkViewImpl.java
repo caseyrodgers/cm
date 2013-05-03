@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
@@ -12,13 +13,17 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefau
 
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentShowWorkViewImpl extends Composite implements AssignmentShowWorkView {
 
     private Presenter presenter;
     ShowWorkPanel _showWorkPanel;
+    SexyButton _submitBtn;
     
     public AssignmentShowWorkViewImpl() {
         _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
@@ -32,7 +37,23 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
                 return presenter.getWhiteboardSaveAction(pid, commandType, data);
             }
         },false);
-        initWidget(_showWorkPanel);
+        
+
+        SubToolBar subBar = new SubToolBar();
+        _submitBtn = new SexyButton("Submit Whiteboard", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.submitShowWork();
+                presenter.gotoTutorView();
+            }
+        });
+        subBar.add(_submitBtn);
+        FlowPanel flow = new FlowPanel();
+        flow.add(subBar);
+
+        flow.add(_showWorkPanel);
+        
+        initWidget(flow);
     }
     
     /** at this point we know the whiteboard is ready and waiting

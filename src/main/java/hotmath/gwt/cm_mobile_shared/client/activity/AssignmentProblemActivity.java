@@ -8,7 +8,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -135,16 +134,6 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public void showWorkHasBeenSubmitted() {
-        SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(AssignmentData.getUserData().getUid(), __lastProblem.getAssignKey(), __lastProblem.getInfo().getPid(), "Submitted");
-        CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
-            @Override
-            public void onSuccess(RpcData result) {
-                Log.info("Showwork submitted");
-            }
-            @Override
-            public void onFailure(Throwable caught) {
-                Log.error("Error submitting showwork");
-            }
-        });
+        AssignmentShowworkActivity.submitShowWorkToServer(__lastProblem.getAssignKey(),  __lastProblem.getInfo().getPid());
     }
 }

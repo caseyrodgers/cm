@@ -17,7 +17,8 @@ public interface AssignmentShowWorkView extends IPage, IsWidget {
         String getProblemStatementHtml();
         Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String commandData);
         void prepareShowWorkView(AssignmentShowWorkView showWorkView);
-        void showWorkSubmitted();        
+        void showWorkSubmitted();
+        void submitShowWork();        
     }
     
     void loadWhiteboard(CmList<WhiteboardCommand> commands);

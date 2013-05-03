@@ -93,7 +93,7 @@ public class HeaderPanel extends Composite {
                 CmRpcCore.EVENT_BUS.fireEvent(new UserLogoutEvent());
             }
         });
-        _logout.setVisible(true);
+        _logout.setVisible(false);
         basePanel.add(_logout);
         TouchAnchor about = new TouchAnchor();
         about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");

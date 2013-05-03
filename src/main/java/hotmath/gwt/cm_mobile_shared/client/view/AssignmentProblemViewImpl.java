@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
@@ -17,27 +18,41 @@ import java.util.List;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentProblemViewImpl extends Composite implements AssignmentProblemView {
 
     private Presenter presenter;
-    FlowPanel flowPanel;
+    FlowPanel _main;
     private TutorWrapperPanel tutor;
     private AssignmentProblem problem;
     
     public AssignmentProblemViewImpl() {
-        flowPanel = new FlowPanel();
+        FlowPanel flowPanel = new FlowPanel();
+        
+        SubToolBar subBar = new SubToolBar();
+        subBar.add(new SexyButton("View Whiteboard", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.showWhiteboard(problem.getStudentProblem().getStudentLabel());
+            }
+        }));
+        flowPanel.add(subBar);
+        _main = new FlowPanel();
+        flowPanel.add(_main);
         setupInitialPanel();
         initWidget(flowPanel);
     }
 
     private void setupInitialPanel() {
-        flowPanel.clear();
-        flowPanel.add(new HTML("Problem loading ..."));
+        _main.clear();
+        _main.add(new HTML("Problem loading ..."));
     }
     
     @Override
@@ -87,7 +102,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     @Override
     public void loadProblem(AssignmentProblem problem) {
         this.problem = problem;
-        flowPanel.clear();
+        _main.clear();
         
         tutor = new TutorWrapperPanel(true,true,true,false,new TutorCallbackDefault(){
             
@@ -146,7 +161,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
             
         });
-        flowPanel.add(tutor);
+        _main.add(tutor);
         
         showProblem(problem);
     }
