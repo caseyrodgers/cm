@@ -39,7 +39,11 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         }));
         dockPanel.add(subToolBar, DockPanel.NORTH);
         
-        dockPanel.add(listItems, DockPanel.CENTER);
+        FlowPanel sp = new FlowPanel();
+        sp.getElement().setAttribute("style",  "margin: 10px");
+        sp.add(listItems);
+        
+        dockPanel.add(sp, DockPanel.CENTER);
         initWidget(dockPanel);
         
         addStyleName("AssignmentListViewImpl");

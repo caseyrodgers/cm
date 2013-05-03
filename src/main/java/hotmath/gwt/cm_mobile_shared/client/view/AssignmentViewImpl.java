@@ -24,7 +24,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     private Presenter presenter;
 
-    SimplePanel _main;
+    FlowPanel _main;
 
     GenericContainerTag listItems = new GenericContainerTag("ul");
     SexyButton _turnInAssignment;
@@ -42,8 +42,10 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         subBar.add(_turnInAssignment);
         flow.add(subBar);
 
-        _main = new SimplePanel();
-        _main.setWidget(new HTML("<h1>Loading Assigment ..."));
+        _main = new FlowPanel();
+        _main.getElement().setAttribute("style",  "margin: 10px;");
+
+        _main.add(new HTML("Loading Assigment ..."));
         flow.add(_main);
         initWidget(flow);
 
@@ -107,7 +109,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         }
         
         _turnInAssignment.setEnabled(!assignment.isTurnedIn());
-        _main.setWidget(listItems);
+        _main.clear();
+        _main.add(listItems);
     }
 
     class MyGenericTextTag extends GenericTextTag<String> {

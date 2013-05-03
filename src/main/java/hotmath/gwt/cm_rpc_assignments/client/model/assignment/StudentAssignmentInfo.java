@@ -164,7 +164,8 @@ public class StudentAssignmentInfo implements Response {
     }
 
     public String getLabelForStudent() {
-        return truncate(25,getComments()) + ", " + getStatus();
+        String graded = isGraded()?", Graded":"";
+        return truncate(25,getComments()) + " (" + getStatus() + graded + ")";
     }
     
     private String truncate(int len, String s) {

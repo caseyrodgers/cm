@@ -37,7 +37,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     private void setupInitialPanel() {
         flowPanel.clear();
-        flowPanel.add(new HTML("<h2>Problem loading ...</h2>"));
+        flowPanel.add(new HTML("Problem loading ..."));
     }
     
     @Override
