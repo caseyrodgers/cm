@@ -45,7 +45,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             
             @Override
             public void onClick(ClickEvent event) {
-                presenter.loadAssignment(AssignmentViewImpl.this, _lastAssignment.getAssignment().getAssignKey());
+                presenter.reloadAssignment(AssignmentViewImpl.this);
             }
         }));
         

@@ -13,6 +13,7 @@ public interface AssignmentView extends IPage, IsWidget {
         void loadAssignment(AssignmentView view, int assignKey);
         void showProblem(StudentProblemDto problem);
         void gotoAssignmentList();
+        void reloadAssignment(AssignmentView assignmentViewImpl);
     }
     void loadAssignment(StudentAssignment assignment);
 }
