@@ -165,7 +165,7 @@ public class StudentAssignmentInfo implements Response {
 
     public String getLabelForStudent() {
         String graded = isGraded()?", Graded":"";
-        return truncate(25,getComments()) + " Due: " + getDueDate() + " (" + getStatus() + graded + ")";
+        return getDueDate() + " " + getComments() + " (" + getStatus() + graded + ")";
     }
     
     private String truncate(int len, String s) {
