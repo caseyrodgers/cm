@@ -18,7 +18,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 
 public class AssignmentViewImpl extends Composite implements AssignmentView {
 
@@ -28,6 +27,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     GenericContainerTag listItems = new GenericContainerTag("ul");
     SexyButton _turnInAssignment;
+
+    private StudentAssignment _lastAssignment;
 
     public AssignmentViewImpl() {
 
@@ -40,6 +41,14 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             }
         });
         subBar.add(_turnInAssignment);
+        subBar.add(new SexyButton("Refresh", new ClickHandler() {
+            
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.loadAssignment(AssignmentViewImpl.this, _lastAssignment.getAssignment().getAssignKey());
+            }
+        }));
+        
         flow.add(subBar);
 
         _main = new FlowPanel();
@@ -94,6 +103,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     @Override
     public void loadAssignment(StudentAssignment assignment) {
+        _lastAssignment = assignment;
         listItems.clear();
         for (StudentProblemDto problem : assignment.getStudentStatuses().getAssigmentStatuses()) {
             GenericTextTag<String> tt = new MyGenericTextTag(problem);
