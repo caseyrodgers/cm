@@ -1,34 +1,15 @@
 <!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
-<%@page import="hotmath.gwt.cm_rpc.client.CmUserException"%>
-<html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
-    <head>
-        <!-- InstanceBeginEditable name="doctitle" -->
-<title>Catchup Math Login Page</title>
-<!-- InstanceEndEditable -->
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css">
-        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssgrids/grids-min.css">
-        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantarell">
+<%@page import="hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException"%>
+<html>
         <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">
         <link rel="stylesheet" type="text/css" href="/assets/css/core.css">
 <!--[if IE]>
         <link rel="stylesheet" type="text/css" href="/assets/css/core-ie.css" />
 <![endif]-->
-<script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-634757-3");
-pageTracker._trackPageview();
-} catch(err) {}</script>      
-<script>
-   /** specify which main menu item is selected
-   */
-   var _mainMenuItem=-1;
-</script>
-        <!-- InstanceBeginEditable name="head" -->
-
+        <link rel="stylesheet" type="text/css" href="/assets/css/gxt-all.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/gxt-gray.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/tutor_widget.css">
+        <link rel="stylesheet" type="text/css" href="/assets/css/CatchupMath_combined.min.css">
 <%
    String reason = (String)request.getSession().getAttribute("error-msg");
    if(reason == null) {
