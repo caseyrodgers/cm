@@ -41,7 +41,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                     @Override
                     public void onSuccess(RpcData result) {
                         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-                        reReadAssignment(__lastStudentAssignment.getAssignment().getAssignKey(),view);
+                        refreshAssignment(view);
                     }
                     @Override
                     public void onFailure(Throwable caught) {
@@ -53,8 +53,10 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         
     }
 
-    protected void reReadAssignment(int assignKey, AssignmentView view) {
-        __lastStudentAssignment = null;
+    @Override
+    public void refreshAssignment(AssignmentView view) {
+        int assignKey = __lastStudentAssignment.getAssignment().getAssignKey();
+        __lastStudentAssignment=null;
         loadAssignment(view, assignKey);
     }
 
@@ -140,13 +142,4 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         });        
     }
 
-
-
-
-
-    @Override
-    public void reloadAssignment(AssignmentView view) {
-        loadAssignment(view, __lastStudentAssignment.getAssignment().getAssignKey());
-
-    }
 }
