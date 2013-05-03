@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.History;
@@ -113,8 +114,6 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 Log.error("Error saving tutor widget input value.",caught);
             }
         });
-        
-        //_callBack.tutorWidgetValueUpdated(inputValue,  yesNo);
     }
 
     @Override

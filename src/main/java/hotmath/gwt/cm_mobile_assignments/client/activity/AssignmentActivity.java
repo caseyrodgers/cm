@@ -129,10 +129,10 @@ public class AssignmentActivity implements Activity {
         
         CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
             @Override
-            public void tutorWidgetComplete(SolutionInfo solutionInfo, String inputValue, boolean correct) {
+            public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
                 for(StudentProblemDto prob: __lastStudentAssignment.getStudentStatuses().getAssigmentStatuses()) {
                     
-                    if(prob.getPid().equals(solutionInfo.getPid())) {
+                    if(prob.getPid().equals(pid)) {
                         updateProblemStatus(prob);
                     }
                     

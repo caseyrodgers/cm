@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tutor.client.event;
 
-import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
-
 import com.google.gwt.event.shared.GwtEvent;
 
 /** Fired when a tutor widget has had its value updated
@@ -15,24 +13,15 @@ import com.google.gwt.event.shared.GwtEvent;
 public class TutorWidgetInputCompleteEvent extends GwtEvent<TutorWidgetInputCompleteHandler> {
     
     public static Type<TutorWidgetInputCompleteHandler> TYPE = new Type<TutorWidgetInputCompleteHandler>();
-    private SolutionInfo solutionInfo;
+    String pid;
     private String inputValue;
     private boolean correct;
 
-    public TutorWidgetInputCompleteEvent(SolutionInfo solutionInfo, String inputValue, boolean correct) {
-        this.solutionInfo = solutionInfo;
+    public TutorWidgetInputCompleteEvent(String pid, String inputValue, boolean correct) {
+        this.pid = pid;
         this.inputValue = inputValue;
         this.correct = correct;
     }
-
-    public SolutionInfo getSolutionInfo() {
-        return solutionInfo;
-    }
-
-    public void setSolutionInfo(SolutionInfo solutionInfo) {
-        this.solutionInfo = solutionInfo;
-    }
-
     public String getInputValue() {
         return inputValue;
     }
@@ -56,7 +45,7 @@ public class TutorWidgetInputCompleteEvent extends GwtEvent<TutorWidgetInputComp
 
     @Override
     protected void dispatch(TutorWidgetInputCompleteHandler handler) {
-        handler.tutorWidgetComplete(solutionInfo, inputValue, correct);
+        handler.tutorWidgetComplete(pid, inputValue, correct);
     }
 
 }

@@ -118,7 +118,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             listItems.add(tt);
         }
         
-        _turnInAssignment.setEnabled(!assignment.isTurnedIn());
+        _turnInAssignment.setEnabled(!assignment.isGraded() && !assignment.isTurnedIn());
         _main.clear();
         _main.add(listItems);
     }

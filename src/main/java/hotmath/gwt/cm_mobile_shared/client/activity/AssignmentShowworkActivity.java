@@ -8,11 +8,13 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -30,6 +32,8 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
     private String pid;
     
     public AssignmentShowworkActivity(int assignKey, String pid) {
+        __lastAssignKey = assignKey;
+        __lastPid = pid;
         this.assignKey = assignKey;
         this.pid = pid;
     }
@@ -98,7 +102,7 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
 
     @Override
     public void submitShowWork() {
-        submitShowWorkToServer(__lastAssignKey, __lastPid);
+        submitShowWorkToServer(assignKey, pid);
     }
     
     public static void submitShowWorkToServer(int assignKey, String pid) {
@@ -106,6 +110,9 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
+                
+                CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(__lastPid, null, false));
+                
                 Log.info("Showwork submitted");
             }
             @Override

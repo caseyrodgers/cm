@@ -5,7 +5,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 
 public class SaveAssignmentProblemStatusAction implements Action<RpcData>{
-    
+
     private int uid;
     private int assignKey;
     private String pid;
@@ -53,4 +53,8 @@ public class SaveAssignmentProblemStatusAction implements Action<RpcData>{
     }
 
     
+    @Override
+    public String toString() {
+        return "SaveAssignmentProblemStatusAction [uid=" + uid + ", assignKey=" + assignKey + ", pid=" + pid + ", status=" + status + "]";
+    }
 }

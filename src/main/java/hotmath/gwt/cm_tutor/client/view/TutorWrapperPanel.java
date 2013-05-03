@@ -274,10 +274,6 @@ public class TutorWrapperPanel extends Composite {
             return;
         }
         else {
-            
-            CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(_solutionInfo, inputValue, correct));
-
-
         	if(!correct  && tutorCallback.moveFirstHintOnWidgetIncorrect()) {
         	    jsni_moveToFirstStep();
         	}
@@ -299,6 +295,8 @@ public class TutorWrapperPanel extends Composite {
             } else {
                 Window.alert("tutorWidgetComplete not defined");
             }
+            
+            CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(_solutionInfo.getPid(), inputValue, correct));
         }
     }
     

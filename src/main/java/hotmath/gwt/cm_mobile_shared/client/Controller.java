@@ -73,7 +73,7 @@ public class Controller {
     }
     
     public static IPage peekPage() {
-        return mPageStack.peek();
+        return mPageStack.getCount()>0?mPageStack.peek():null;
     }
 
     public static void navigateToWelcome(IPage currentPage) {

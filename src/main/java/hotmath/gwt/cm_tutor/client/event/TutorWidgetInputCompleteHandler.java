@@ -6,7 +6,7 @@ import com.google.gwt.event.shared.EventHandler;
 
 public interface TutorWidgetInputCompleteHandler extends EventHandler {
 
-    void tutorWidgetComplete(SolutionInfo solutionInfo, String inputValue, boolean correct);
+    void tutorWidgetComplete(String pid, String inputValue, boolean correct);
     
 
 }

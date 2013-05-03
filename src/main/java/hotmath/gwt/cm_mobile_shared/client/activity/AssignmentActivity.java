@@ -7,7 +7,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataR
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
-import hotmath.gwt.cm_mobile_shared.client.view.AssignmentViewImpl;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -23,15 +22,19 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class AssignmentActivity implements AssignmentView.Presenter {
+    
+    static private AssignmentActivity __lastInstance;
+    public AssignmentActivity() {
+        __lastInstance = this;
+    }
 
     static StudentAssignment __lastStudentAssignment;
+    AssignmentView _lastView;
 
     @Override
     public void turnInAssignment(final AssignmentView view) {
         
         QuestionBox.askYesNoQuestion("Turn In Assignment",  "Are you sure you want to turn in this assignment?", new CallBack() {
-            
-            
             @Override
             public void onSelectYes() {
 
@@ -59,10 +62,14 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         __lastStudentAssignment=null;
         loadAssignment(view, assignKey);
     }
+    
+    private void redrawList() {
+        setAssignment(_lastView, __lastStudentAssignment);
+    }
 
     @Override
     public void loadAssignment(final AssignmentView view, final int assignKey) {
-        
+        _lastView = view;
         if(__lastStudentAssignment != null && __lastStudentAssignment.getAssignment().getAssignKey() == assignKey) {
             setAssignment(view, __lastStudentAssignment);
             return;
@@ -94,9 +101,6 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                 
             }
         });
-        
-        
-        
     }
     
     
@@ -132,14 +136,15 @@ public class AssignmentActivity implements AssignmentView.Presenter {
          */
         CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
             @Override
-            public void tutorWidgetComplete(SolutionInfo solutionInfo, String inputValue, boolean correct) {
+            public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
                 for(StudentProblemDto prob: __lastStudentAssignment.getStudentStatuses().getAssigmentStatuses()) {
-                    if(prob.getPid().equals(solutionInfo.getPid())) {
+                    if(prob.getPid().equals(pid)) {
                         prob.setStatus("Submitted");
                     }
                 }
+                __lastInstance.redrawList();
             }
-        });        
+        });
     }
 
 }
