@@ -2,6 +2,7 @@ package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
+import hotmath.gwt.cm_rpc_core.client.CmUserException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
@@ -33,7 +34,9 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 
 		int uid = action.getUid();
 		String username = action.getUserName();
+		if (username != null) username = username.trim();
 		String passwd = action.getPassword();
+		if (passwd != null) passwd = passwd.trim();
 		String type = action.getType();
 		boolean isRealLogin = action.isRealLogin();
 
@@ -57,19 +60,34 @@ public class LoginCommand implements ActionHandler<LoginAction, HaUserLoginInfo>
 		else if (username != null && username.equals("catchup_demo")) {
 			cmUser = HaUserFactory.createDemoUser(conn);
 		}
-		else if(cmUser == null && username != null && passwd != null) {
+		else if(cmUser == null && username != null && username.length() > 0 &&
+				passwd != null && passwd.length() > 0) {
 			cmUser = HaUserFactory.loginToCatchup(conn, username, passwd);
 		}
 
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug(String.format("execute(): cmUser is: %s", (cmUser == null)?"NULL":"not null"));
+		if (cmUser == null) {
+			CmUserException cme = new CmUserException("login failed");
+			if (uid > 0) {
+				cme = new CmUserException("Invalid login attempted.");
+			}
+			else if (username == null || passwd == null || username.length() == 0 || passwd.length() == 0 ) {
+				cme = new CmUserException("Login Name and Password are required.");
+			}
+			String browserInfo = action.getBrowserInfo();
+			String key = action.getKey();
+			LOGGER.warn(String.format("execute(): uid: %d, username: %s, passwd: %s, key: %s, cmUser: %s, isRealLogin: %s, browserInfo: %s",
+					uid, (username == null)?"NULL":username, (passwd == null)?"NULL":"not null", (key == null)?"NULL":key,
+					(cmUser == null)?"NULL":"not null", isRealLogin, (browserInfo == null)?"NULL":browserInfo), cme);
+
+			throw cme;
 		}
+		
 		assert(cmUser != null);
 
 		HaLoginInfo loginInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, cmUser, new ClientEnvironment(action.getBrowserInfo()),isRealLogin);
 
+		LOGGER.debug("+++ loginInfo: " + loginInfo.toString());
 		return new HaUserLoginInfo(cmUser, loginInfo);
-		
 	}
 
     public Class<? extends Action<? extends Response>> getActionType() {
