@@ -89,6 +89,10 @@ public class StudentAssignmentReport {
 			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
 			
 			Phrase dateRange = null;
+			if (logger.isDebugEnabled())
+   			   logger.debug(String.format("fromDate: %s, toDate: %s",
+					((fromDate!=null)?String.format("%1$tY-%1$tm-%1$td", fromDate) : "NULL"),
+					((toDate!=null)?String.format("%1$tY-%1$tm-%1$td", toDate) : "NULL")));
 			if (fromDate != null && toDate != null) {
     	        String dateRangeStr = String.format("%1$tY-%1$tm-%1$td and %2$tY-%2$tm-%2$td", fromDate, toDate);
 			    dateRange = buildLabelContent("Assignments due between: ", dateRangeStr);
@@ -156,6 +160,8 @@ public class StudentAssignmentReport {
 						if (gradeStr.indexOf("%") > 0) {
    						    grade = Integer.parseInt(gradeStr.replaceAll("%", "").trim());
 						}
+						if (logger.isDebugEnabled())
+						    logger.debug(String.format("gradeStr: %s, grade: %d", gradeStr, grade));
 						gradedAssignmentScore += grade;
 					}
 				}
