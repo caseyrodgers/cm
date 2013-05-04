@@ -7,6 +7,9 @@ YUI().use('event',function(Y) {
   }, Y, "The DOMContentLoaded event fired.  The DOM is now safe to modify via script.");
 });
 
+/**
+ * IE9 has String trim() in Standards mode only
+ */
 if (!String.prototype.trim) {
 	String.prototype.trim = function () {  
 	    return this.replace(/^\s+|\s+$/g,'');  
