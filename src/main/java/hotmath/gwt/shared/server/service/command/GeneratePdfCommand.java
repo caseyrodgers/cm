@@ -100,7 +100,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     		else if(pdfType == PdfType.ASSIGNMENT_REPORT) {
     			StudentAssignmentReport sar = new StudentAssignmentReport(action.getTitle());
     			sar.setFilterMap(action.getFilterMap());
-    			baos = sar.makePdf(conn, reportId, adminId, action.getStudentUids());
+    			baos = sar.makePdf(conn, reportId, adminId, action.getStudentUids(), fromDate, toDate);
     			reportName = sar.getReportName();
     		}
     		else {
