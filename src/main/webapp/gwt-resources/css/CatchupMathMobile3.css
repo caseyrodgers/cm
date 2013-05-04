@@ -918,3 +918,12 @@ span.group-item-dot {
   list-style-type:none;
 }            
             
+
+ 
+/** Changed in code AssignmentShowWorkActivty to allow embedding
+    as whiteboard background
+*/               
+#_hm_flash_widget {
+	  display: none;
+}	  
+}

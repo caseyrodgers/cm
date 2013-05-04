@@ -86,7 +86,14 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
 
     @Override
     public String getProblemStatementHtml() {
-        return jsni_getProblemStatementFromDocument();
+        String html = jsni_getProblemStatementFromDocument();
+        
+        // we have to remove hm_flash_widget otherwise we will
+        // have duplicate ids and cause problems when we change the submitted 
+        // message .. 
+        
+        html = html.replace("hm_flash_widget", "_hm_flash_widget");
+        return html;
     }
     
     @Override

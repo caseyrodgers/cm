@@ -16,6 +16,7 @@ import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.ButtonBarSetup;
 
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -23,7 +24,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentProblemViewImpl extends Composite implements AssignmentProblemView {
@@ -88,6 +88,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public Widget asWidget() {
+        //checkWidget();
         return this;
     }
 
@@ -169,6 +170,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     
     private void showProblem(final AssignmentProblem solution) {
         this.problem = solution;
+        Log.debug("Show Problem: " + solution);
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
@@ -180,6 +182,9 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 if(problem.getLastUserWidgetValue() != null) {
                     tutor.setTutorWidgetValue(problem.getLastUserWidgetValue());
                 }
+
+                tutor.setVisible(true);    
+                
                 
                 if(problem.getProblemType() ==  ProblemType.WHITEBOARD) {
                     String status = problem.getStatus();
@@ -190,10 +195,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                         TutorWrapperPanel.jsni_showWhiteboardStatus(status);
                     }
                 }
-                
-                tutor.setVisible(true);                
             }
         });
     }
 
+    private native void checkWidget() /*-{
+        var widgetHolder = $doc.getElementById("hm_flash_widget");
+        alert('widget: ' + widgetHolder.innerHTML);
+    }-*/;
 }

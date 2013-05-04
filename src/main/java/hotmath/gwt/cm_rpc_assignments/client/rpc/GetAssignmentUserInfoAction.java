@@ -19,4 +19,9 @@ public class GetAssignmentUserInfoAction implements Action<CmMobileAssignmentUse
     public void setUid(int uid) {
         this.uid = uid;
     }
+
+    @Override
+    public String toString() {
+        return "GetAssignmentUserInfoAction [uid=" + uid + "]";
+    }
 }
