@@ -27,6 +27,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     GenericContainerTag listItems = new GenericContainerTag("ul");
     SexyButton _turnInAssignment;
+    AssignmentHeaderPanel _headerInfo;
 
     private StudentAssignment _lastAssignment;
 
@@ -50,6 +51,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         }));
         
         flow.add(subBar);
+        _headerInfo = new AssignmentHeaderPanel();
+        flow.add(_headerInfo);
 
         _main = new FlowPanel();
         _main.getElement().setAttribute("style",  "margin: 10px;");
@@ -104,6 +107,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     @Override
     public void loadAssignment(StudentAssignment assignment) {
         _lastAssignment = assignment;
+        _main.setVisible(false);
         listItems.clear();
         for (StudentProblemDto problem : assignment.getStudentStatuses().getAssigmentStatuses()) {
             GenericTextTag<String> tt = new MyGenericTextTag(problem);
@@ -117,10 +121,12 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             });
             listItems.add(tt);
         }
-        
         _turnInAssignment.setEnabled(!assignment.isGraded() && !assignment.isTurnedIn());
         _main.clear();
         _main.add(listItems);
+        
+        _headerInfo.loadAssignment(assignment);
+        _main.setVisible(true);
     }
 
     class MyGenericTextTag extends GenericTextTag<String> {
@@ -132,3 +138,5 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         }
     }
 }
+
+
