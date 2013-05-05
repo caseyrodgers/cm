@@ -3,12 +3,11 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
 import hotmath.gwt.cm_tutor.client.CmTutor;
@@ -158,13 +157,13 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     private void loadAssignmentWhiteboardData(int uid, int assignKey, String pid) {
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(uid, pid, assignKey);
-        CmTutor.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
-            public void onSuccess(final CmList<WhiteboardCommand> commands) {
+        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+            public void onSuccess(final AssignmentWhiteboardData data) {
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
                         if(_showWork != null) {
-                            _showWork.loadWhiteboard(commands);                    }
+                            _showWork.loadWhiteboard(data.getCommands());                    }
                         }
                 });
             }

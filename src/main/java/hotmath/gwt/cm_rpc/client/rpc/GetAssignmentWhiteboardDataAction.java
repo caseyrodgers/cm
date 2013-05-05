@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_rpc.client.rpc;
 
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 
 /** Returns the whiteboard data for a given user's
@@ -10,7 +10,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
  * @author casey
  *
  */
-public class GetAssignmentWhiteboardDataAction implements Action<CmList<WhiteboardCommand>> {
+public class GetAssignmentWhiteboardDataAction implements Action<AssignmentWhiteboardData> {
 
     private Integer uid;
     private String pid;

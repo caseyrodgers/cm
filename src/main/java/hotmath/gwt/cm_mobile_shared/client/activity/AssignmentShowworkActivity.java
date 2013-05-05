@@ -8,6 +8,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -62,13 +63,13 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
     @Override
     public void prepareShowWorkView(final AssignmentShowWorkView showWorkView) {
             GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(), pid, assignKey);
-            CmTutor.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
-                public void onSuccess(final CmList<WhiteboardCommand> commands) {
+            CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+                public void onSuccess(final AssignmentWhiteboardData whiteData) {
                     Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                         @Override
                         public void execute() {
                             if(showWorkView != null) {
-                                showWorkView.loadWhiteboard(commands);                    }
+                                showWorkView.loadWhiteboard(whiteData);                    }
                             }
                     });
                 }
@@ -112,13 +113,14 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
         submitShowWorkToServer(assignKey, pid);
     }
     
-    public static void submitShowWorkToServer(int assignKey, String pid) {
+    public static void submitShowWorkToServer(int assignKey, final String pid) {
         SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(AssignmentData.getUserData().getUid(), assignKey, pid, "Submitted");
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
                 
-                CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(__lastPid, null, false));
+                TutorWidgetInputCompleteEvent event = new TutorWidgetInputCompleteEvent(pid, null, false);
+                CmRpcCore.EVENT_BUS.fireEvent(event);
                 
                 Log.info("Showwork submitted");
             }

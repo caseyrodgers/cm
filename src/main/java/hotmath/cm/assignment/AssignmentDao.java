@@ -14,6 +14,8 @@ import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -37,6 +39,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.server.service.command.GetSolutionCommand;
 import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.SolutionDao;
@@ -2151,6 +2154,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"),rs.getString("lesson_file")), rs.getString("label"), pid, 0);
                 boolean isClosed = rs.getString("assignment_status").equals("Closed");
+                
+                List<ProblemDto> problems = new ArrayList<ProblemDto>();
+                problems.add(prob);
+                updateProblemTypes(problems);
                 return new StudentProblemDto(uid,prob,rs.getString("problem_status"),false,false,isClosed,rs. getInt("is_graded")!=0?true:false,rs.getInt("is_graded")!=0?true:false);            
             }
         });

@@ -7,6 +7,8 @@ import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataR
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
@@ -44,6 +46,8 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                     public void onSuccess(RpcData result) {
                         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                         refreshAssignment(view);
+                        
+                        CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
                     }
                     @Override
                     public void onFailure(Throwable caught) {
@@ -139,6 +143,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                 for(StudentProblemDto prob: __lastStudentAssignment.getStudentStatuses().getAssigmentStatuses()) {
                     if(prob.getPid().equals(pid)) {
                         prob.setStatus("Submitted");
+                        break;
                     }
                 }
                 __lastInstance.redrawList();

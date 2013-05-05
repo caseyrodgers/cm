@@ -8,6 +8,8 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentListView;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
@@ -57,5 +59,13 @@ public class AssignmentListActivity implements AssignmentListView.Presenter {
                 AssignmentData.clear();
             }
         });
+        
+        CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE , new DataBaseHasBeenUpdatedHandler() {
+            @Override
+            public void databaseUpdated(TypeOfUpdate type) {
+                AssignmentData.clear();
+            }
+        });
+
     }
 }

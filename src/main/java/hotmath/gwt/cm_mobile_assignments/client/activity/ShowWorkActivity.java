@@ -9,12 +9,10 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.activity.shared.Activity;
@@ -79,13 +77,13 @@ public class ShowWorkActivity implements Activity, ShowWorkView.Presenter {
     @Override
     public void prepareShowWorkView(final ShowWorkView showWorkView) {
             GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssData.getUserData().getUid(), place.getPid(), place.getAssignKey());
-            CmTutor.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
-                public void onSuccess(final CmList<WhiteboardCommand> commands) {
+            CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+                public void onSuccess(final AssignmentWhiteboardData data) {
                     Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                         @Override
                         public void execute() {
                             if(showWorkView != null) {
-                                showWorkView.loadWhiteboard(commands);                    }
+                                showWorkView.loadWhiteboard(data.getCommands());                    }
                             }
                     });
                 }

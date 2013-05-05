@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -150,9 +151,9 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
 
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(_assignmentProblem.getUserId(), _assignmentProblem.getInfo().getPid(), _assignmentProblem.getAssignKey());
-        CmTutor.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
-            public void onSuccess(CmList<WhiteboardCommand> commands) {
-                _showWork.loadWhiteboard(commands);
+        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+            public void onSuccess(AssignmentWhiteboardData data) {
+                _showWork.loadWhiteboard(data.getCommands());
             }
 
             public void onFailure(Throwable caught) {
