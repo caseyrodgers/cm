@@ -29,7 +29,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -48,6 +50,9 @@ public class AboutDialog extends DialogBox  {
         setGlassEnabled(true);
         setAnimationEnabled(true);
         setAutoHideEnabled(true);
+        
+        TabPanel _tabPanel = new TabPanel();
+        
         
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.add(uiBinder.createAndBindUi(this));
@@ -106,9 +111,6 @@ public class AboutDialog extends DialogBox  {
 		}
 		
 		
-		
-		
-		
         DisclosurePanel feedback = new DisclosurePanel();
         Anchor feedbackButton = new TouchAnchor("Feedback");
         feedbackButton.getElement().setAttribute("style", "float: right;margin-right: 10px;margin-bottom:5px;font-size: .9em;");
@@ -118,9 +120,11 @@ public class AboutDialog extends DialogBox  {
         mainPanel.add(feedback);
 		mainPanel.add(hp);
 		
-		setWidget(mainPanel);
 		
-		
+		_tabPanel.add(mainPanel, "About");
+		_tabPanel.add(new HTML("ASSIGNMENTS"), "Assignments");
+		_tabPanel.selectTab(0);
+		setWidget(_tabPanel);
 		
         setVisible(true);
 	}

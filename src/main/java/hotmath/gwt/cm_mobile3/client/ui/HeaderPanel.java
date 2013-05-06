@@ -5,6 +5,7 @@ package hotmath.gwt.cm_mobile3.client.ui;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceTutorActivity;
+import hotmath.gwt.cm_mobile3.client.resource.MyResources;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
@@ -26,11 +27,15 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -39,6 +44,7 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -62,8 +68,10 @@ public class HeaderPanel extends Composite {
 
     Anchor _logout;
 
+    MyResources resources = GWT.create(MyResources.class);
+    
     public HeaderPanel(EventBus eventBus) {
-
+        
         FlowPanel basePanel = new FlowPanel();
         basePanel.getElement().setId("header");
 
@@ -95,16 +103,8 @@ public class HeaderPanel extends Composite {
         });
         _logout.setVisible(false);
         basePanel.add(_logout);
-        TouchAnchor about = new TouchAnchor();
-        about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
-        about.addStyleName("about-dialog");
-        about.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                new AboutDialog().showCentered();
-            }
-        });
-        basePanel.add(about);
+        
+        basePanel.add(new AboutButtonIndicator());
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
@@ -142,7 +142,6 @@ public class HeaderPanel extends Composite {
                 mActiveTitle.setText(title);
             }
         });
-
     }
 
     public void showLogoutButton(boolean yesNo) {

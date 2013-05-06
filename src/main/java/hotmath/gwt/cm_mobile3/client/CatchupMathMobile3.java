@@ -300,14 +300,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
             }
         });
-        
-        
-        eb.addHandler(AssignmentsUpdatedEvent.TYPE,  new AssignmentsUpdatedHandler() {
-            @Override
-            public void assignmentsUpdated(AssignmentUserInfo info) {
-                Window.alert("Your Assignmens were updated: " + info);
-            }
-        });
     }
 
     /**
