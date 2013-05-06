@@ -33,7 +33,7 @@ function checkBrowser() {
         }
     } else if (b == 'Explorer') {
     	
-        if (v >= 8 and v < 10) {
+        if (v >= 8 && v < 10) {
             isOk = true;
         }
         
