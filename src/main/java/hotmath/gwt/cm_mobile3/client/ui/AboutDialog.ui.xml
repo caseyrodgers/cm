@@ -17,8 +17,6 @@
         }
          
 		.programInfo {
-		    margin: 5px;
-		    padding: 10px;
 		    color: #666;
 		}
 		
@@ -35,11 +33,16 @@
            <label>Graded Problem Score</label>
            <div ui:field="score">--</div>
 	   </div>
-	   <div ui:field="assignmentsDiv" class="{style.assignments}">
+	   <span ui:field="assignmentsDiv" class="{style.assignments}">
             <cm:TouchButton styleName='sexybutton' ui:field="assignmentsButton">
-                <span><span>View Assignments</span></span>
+                <span><span>Assignments</span></span>
             </cm:TouchButton>	       
-	   </div>
+	   </span>
+	   <span ui:field="programDiv" class="{style.assignments}">
+            <cm:TouchButton styleName='sexybutton' ui:field="programButton">
+                <span><span>Program</span></span>
+            </cm:TouchButton>
+        </span>            
 		<p>
             For more detailed information about Catchup Math, 
             please visit on a desktop computer.

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
+import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -89,7 +91,11 @@ public class AboutDialog extends DialogBox  {
 		
 		if(SharedData.getMobileUser() == null) {
 		    assignmentsDiv.setAttribute("style",  "display:none");
+		    programDiv.setAttribute("style",  "display:none");
 		}
+		
+		
+		
 		
 		
         DisclosurePanel feedback = new DisclosurePanel();
@@ -136,13 +142,18 @@ public class AboutDialog extends DialogBox  {
     protected void handleAssignments(ClickEvent ce) {
         History.newItem("assignment_list:" + System.currentTimeMillis());
     }
+    
+    @UiHandler("programButton")
+    protected void handleProgram(ClickEvent ce) {
+        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+    }
 	
 	
 	@UiField
-	Element loggedInAs,programInfo,programName, score, assignmentsDiv;
+	Element loggedInAs,programInfo,programName, score, assignmentsDiv, programDiv;
 	
 	@UiField
-	TouchButton assignmentsButton;
+	TouchButton assignmentsButton, programButton;
 }
 
 

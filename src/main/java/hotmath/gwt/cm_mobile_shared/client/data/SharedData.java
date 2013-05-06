@@ -145,7 +145,7 @@ public class SharedData {
     
     static public CmMobileUser getMobileUser() {
         if(__mobileUser == null) {
-            Window.alert("CmMobileUser is not set");
+            Log.debug("CmMobileUser is not set");
         }
         return __mobileUser;
     }
