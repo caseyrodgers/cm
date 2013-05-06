@@ -151,7 +151,7 @@ public class StudentAssignmentReport {
 
 				for (StudentAssignment sa : saList) {
 					addCell(sdFmt.format(sa.getAssignment().getDueDate()), tbl, ++i);
-					addCell(sa.getHomeworkGrade(), tbl, i);
+					addCell(sa.getHomeworkGrade(), tbl, i, sa.isGraded());
 					addCell(getStatus(sa), tbl, i);
 					if (sa.isGraded()) {
 						gradedAssignmentCount++;
@@ -276,8 +276,12 @@ public class StudentAssignmentReport {
 	}
 	
 	private void addCell(String content, Table tbl, int rowNum) throws Exception {
+		addCell(content, tbl, rowNum, false);
+	}
+
+	private void addCell(String content, Table tbl, int rowNum, boolean isBold) throws Exception {
 		if (content == null) content = "";
-		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, Font.NORMAL, new Color(0, 0, 0)));
+		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, (isBold==true)?Font.BOLD:Font.NORMAL, new Color(0, 0, 0)));
 		c.setTextRise(3.0f);
     	Cell cell = new Cell(c);
 		cell.setHeader(false);
