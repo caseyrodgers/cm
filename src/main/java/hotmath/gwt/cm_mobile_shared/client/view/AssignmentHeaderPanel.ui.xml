@@ -38,7 +38,7 @@
         	        <span ui:field="dueDate"></span> 
         	    </div>
                 <div class="{style.status}">
-                    <span ui:field="grade">90%</span> 
+                    <span ui:field="grade"></span> 
                 </div>
      	    </div>
      	    

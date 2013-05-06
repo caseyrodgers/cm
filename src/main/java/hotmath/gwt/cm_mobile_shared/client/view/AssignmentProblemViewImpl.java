@@ -189,7 +189,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 if(problem.getProblemType() ==  ProblemType.WHITEBOARD) {
                     String status = problem.getStatus();
                     if(!status.equals(ProblemStatus.SUBMITTED.toString())) {
-                        tutor.jsni_addWhiteboardSubmitButton();
+                        TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
                     }
                     else {
                         TutorWrapperPanel.jsni_showWhiteboardStatus(status);

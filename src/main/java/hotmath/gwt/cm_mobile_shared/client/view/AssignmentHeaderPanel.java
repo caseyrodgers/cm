@@ -25,12 +25,17 @@ public class AssignmentHeaderPanel extends Composite {
     public void loadAssignment(StudentAssignment assignment) {
         comments.getElement().setInnerHTML(assignment.getAssignment().getComments());
         
-        dueDate.setInnerHTML(getDueDateAsString(assignment.getAssignment().getDueDate()));
         if(assignment.isGraded()) {
-            grade.setInnerHTML(assignment.getHomeworkGrade());
+            dueDate.setInnerHTML("Status: Graded");
+            grade.setInnerHTML("Grade: " + assignment.getHomeworkGrade());
             grade.setAttribute("style",  "display: block");
         }
+        else if(assignment.isTurnedIn()) {
+            dueDate.setInnerHTML("Turned In");
+            grade.setAttribute("style",  "display: none");
+        }
         else {
+            dueDate.setInnerHTML(getDueDateAsString(assignment.getAssignment().getDueDate()));
             grade.setAttribute("style",  "display: none");
         }
     }

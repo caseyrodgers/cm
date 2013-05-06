@@ -114,14 +114,12 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
     }
     
     public static void submitShowWorkToServer(int assignKey, final String pid) {
+        CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(pid, null, false));
+        
         SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(AssignmentData.getUserData().getUid(), assignKey, pid, "Submitted");
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
-                
-                TutorWidgetInputCompleteEvent event = new TutorWidgetInputCompleteEvent(pid, null, false);
-                CmRpcCore.EVENT_BUS.fireEvent(event);
-                
                 Log.info("Showwork submitted");
             }
             @Override

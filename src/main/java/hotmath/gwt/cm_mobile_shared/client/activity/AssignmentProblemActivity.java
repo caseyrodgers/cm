@@ -13,6 +13,8 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteHandler;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.History;
@@ -134,4 +136,14 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     public void showWorkHasBeenSubmitted() {
         AssignmentShowworkActivity.submitShowWorkToServer(__lastProblem.getAssignKey(),  __lastProblem.getInfo().getPid());
     }
+
+    static {
+        CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
+            @Override
+            public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
+                __lastProblem = null;
+            }
+        });
+    }
+    
 }

@@ -748,5 +748,11 @@ public class TutorWrapperPanel extends Composite {
         TutorWrapperPanel.jsni_showWhiteboardStatus("Submitted");
         tutorCallback.showWorkHasBeenSubmitted();
    }
-    
+
+    static native public void jsni_showWhiteboardWidgetMessage(String message) /*-{
+        var widgetHolder = $doc.getElementById("hm_flash_widget");
+        if(widgetHolder) {
+            widgetHolder.innerHTML = message;
+        }
+    }-*/;    
 }

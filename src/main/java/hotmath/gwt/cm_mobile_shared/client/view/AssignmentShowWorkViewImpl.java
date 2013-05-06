@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
@@ -112,13 +113,21 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
     @Override
     public void loadWhiteboard(AssignmentWhiteboardData data) {
         
-        if(data.getStudentProblem().getProblem().getProblemType() == ProblemType.WHITEBOARD 
-                && !data.getStudentProblem().isGraded()) {
-            _submitBtn.setEnabled(true);    
+        if(data.getStudentProblem().getProblem().getProblemType() == ProblemType.WHITEBOARD) {
+            if(data.getStudentProblem().isGraded()) {
+                _submitBtn.setEnabled(false);
+            }
+            else if(data.getStudentProblem().getStatus().equals(ProblemStatus.SUBMITTED.toString())) {
+                _submitBtn.setEnabled(false);
+            }
+            else {
+                _submitBtn.setEnabled(true);
+            }
         }
         else {
             _submitBtn.setEnabled(false);
         }
+        
         _showWorkPanel.loadWhiteboard(data.getCommands());
     }
 

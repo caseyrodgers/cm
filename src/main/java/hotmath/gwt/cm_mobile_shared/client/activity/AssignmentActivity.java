@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -61,9 +62,12 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     @Override
     public void refreshAssignment(AssignmentView view) {
+        
+        
         int assignKey = __lastStudentAssignment.getAssignment().getAssignKey();
         __lastStudentAssignment=null;
         loadAssignment(view, assignKey);
+        CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
     }
     
     private void redrawList() {
@@ -147,6 +151,16 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                     }
                 }
                 __lastInstance.redrawList();
+            }
+        });
+        
+        
+        CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE,  new DataBaseHasBeenUpdatedHandler() {
+            @Override
+            public void databaseUpdated(TypeOfUpdate type) {
+                if(type==TypeOfUpdate.ASSIGNMENTS) {
+                    __lastStudentAssignment=null;
+                }
             }
         });
     }
