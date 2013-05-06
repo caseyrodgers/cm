@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.server.rpc;
 
-import hotmath.gwt.cm_mobile.client.rpc.CreateTestRunMobileAction;
+import hotmath.gwt.cm_mobile_shared.client.rpc.CreateTestRunMobileAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetPrescriptionAction;

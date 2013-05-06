@@ -3,6 +3,8 @@ package hotmath.gwt.cm_tools.client.ui.assignment;
 import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
@@ -15,8 +17,6 @@ import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEv
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.event.AssignmentsUpdatedEvent;
-import hotmath.gwt.shared.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 

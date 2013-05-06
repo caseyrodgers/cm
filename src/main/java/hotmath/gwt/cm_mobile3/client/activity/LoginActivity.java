@@ -1,13 +1,14 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
-import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 
@@ -54,17 +55,17 @@ public class LoginActivity implements LoginView.Presenter {
         action.setUid(uid);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmMobileUser>() {
             @Override
-            public void onSuccess(CmMobileUser result) {
+            public void onSuccess(CmMobileUser mobileUser) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-                Log.info("Login successful: " + result);
+                Log.info("Login successful: " + mobileUser);
                 
                 
-                if(result.getFlowAction().getPlace() == CmPlace.ERROR_FLASH_REQUIRED) {
+                if(mobileUser.getFlowAction().getPlace() == CmPlace.ERROR_FLASH_REQUIRED) {
                     eventBus.fireEvent(new ShowFlashRequiredEvent());
                 }
                 else {
                   
-                    SharedData.setData(result);
+                    SharedData.setData(mobileUser);
                     
                     eventBus.fireEvent(new ShowWelcomeViewEvent());
                 }

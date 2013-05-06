@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
+import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
@@ -86,7 +87,17 @@ public class AboutDialog extends DialogBox  {
             }
         });
 		hp.add(close);
+		
+	    SexyButton check = new SexyButton("Check Server",new ClickHandler() {
+	            @Override
+	            public void onClick(ClickEvent event) {
+	                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+	            }
+	        });
+	    hp.add(check);
+
 		hp.getElement().setAttribute("style",  "margin: 10px");
+		
 		
 		
 		if(SharedData.getMobileUser() == null) {

@@ -2,17 +2,15 @@ package hotmath.gwt.cm_mobile_shared.client.rpc;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
-public class GetCmMobileLoginAction implements Action<CmMobileUser>{
+public class GetCmMobileLoginAction implements Action<CmMobileUser> {
     
-    String name;
-    String password;
+    String name,password;
     int uid;
-
-    public GetCmMobileLoginAction() {
-    }
     
-    public GetCmMobileLoginAction(String name, String pass) {
-        this.name = name;
+    public GetCmMobileLoginAction(){}
+    
+    public GetCmMobileLoginAction(String user, String pass) {
+        this.name = user;
         this.password = pass;
     }
     
@@ -20,20 +18,13 @@ public class GetCmMobileLoginAction implements Action<CmMobileUser>{
         this.uid = uid;
     }
 
+
     public int getUid() {
         return uid;
     }
 
     public void setUid(int uid) {
         this.uid = uid;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {
@@ -44,10 +35,16 @@ public class GetCmMobileLoginAction implements Action<CmMobileUser>{
         this.name = name;
     }
 
-    
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "GetCmMobileLoginAction [name=" + name + ", password=" + password + ", uid=" + uid + "]";
     }
-    
 }

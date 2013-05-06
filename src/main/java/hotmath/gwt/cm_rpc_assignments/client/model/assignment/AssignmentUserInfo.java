@@ -169,4 +169,14 @@ public class AssignmentUserInfo implements Response {
             return super.equals(obj);
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "AssignmentUserInfo [activeAssignments=" + activeAssignments + ", closedAssignments=" + closedAssignments + ", expiredAssignments="
+                + expiredAssignments + ", unreadAnnotations=" + unreadAnnotations + ", adminUsingAssignments=" + adminUsingAssignments + ", changed=" + changed
+                + "]";
+    }
+    
+    
 }

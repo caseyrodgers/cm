@@ -3,14 +3,14 @@ package hotmath.gwt.shared.server.service.command;
 import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.util.CatchupMathProperties;
+import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
+import hotmath.gwt.cm_core.client.model.UserSyncInfo;
+import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
-import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
-import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
-import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
 import java.sql.Connection;
 

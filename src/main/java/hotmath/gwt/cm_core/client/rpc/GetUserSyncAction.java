@@ -1,7 +1,7 @@
-package hotmath.gwt.shared.client.rpc.action;
+package hotmath.gwt.cm_core.client.rpc;
 
+import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
 public class GetUserSyncAction implements Action<UserSyncInfo> {
     int uid;

@@ -1,20 +1,20 @@
 package hotmath.gwt.shared.client.util;
 
 
+import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
+import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
+import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
+import hotmath.gwt.cm_core.client.model.UserSyncInfo;
+import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.event.AssignmentsUpdatedEvent;
-import hotmath.gwt.shared.client.event.ForceSystemSyncCheckEvent;
-import hotmath.gwt.shared.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
-import hotmath.gwt.shared.client.rpc.result.CatchupMathVersion;
-import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;

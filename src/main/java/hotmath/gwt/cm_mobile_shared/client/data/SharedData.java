@@ -1,11 +1,13 @@
 package hotmath.gwt.cm_mobile_shared.client.data;
 
-import hotmath.gwt.cm_mobile3.client.rpc.GetCmMobileLoginAction;
+
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLoginEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
+import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -155,6 +157,9 @@ public class SharedData {
             SharedData.setMobileUser(null);
             SharedData.setUserInfo(null);
             SharedData.setFlowAction(null);
+            
+            
+            BackgroundServerChecker.stopInstance();
         }
         else {
             SharedData.setMobileUser(result);
@@ -163,6 +168,7 @@ public class SharedData {
             
             saveUidToLocalStorage(result.getUserId());
             
+            BackgroundServerChecker.getInstance(result.getUserId());
             
             CmRpcCore.EVENT_BUS.fireEvent(new UserLoginEvent(result));
         }

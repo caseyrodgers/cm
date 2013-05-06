@@ -33,6 +33,9 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.HashMap;
@@ -295,6 +298,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             @Override
             public void userLogout() {
                 CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
+            }
+        });
+        
+        
+        eb.addHandler(AssignmentsUpdatedEvent.TYPE,  new AssignmentsUpdatedHandler() {
+            @Override
+            public void assignmentsUpdated(AssignmentUserInfo info) {
+                Window.alert("Your Assignmens were updated: " + info);
             }
         });
     }

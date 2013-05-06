@@ -1,15 +1,17 @@
 package hotmath.gwt.cm_mobile_shared.server.rpc;
 
+import hotmath.cm.dao.HaLoginInfoDao;
+import hotmath.cm.login.ClientEnvironment;
+import hotmath.cm.program.CmProgramFlow;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
-import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.data.HaBasicUser;
@@ -17,66 +19,115 @@ import hotmath.gwt.cm_tools.client.data.HaBasicUser.UserType;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.server.service.command.GetUserInfoCommand;
+import hotmath.gwt.shared.server.service.command.GetUserInfoCommand.CustomProgramInfo;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaUserFactory;
 import hotmath.util.sql.SqlUtilities;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAction, CmMobileUser> {
-
-    @Override
-    public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
-        
-        HaBasicUser basicUser=null;
-        if(action.getUid() != 0) {
-             basicUser = HaUserFactory.getLoginUserInfo(action.getUid(),"STUDENT");
-        }
-        else {
-            basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
-        }
-        
-        if(basicUser.getUserType() != UserType.STUDENT)
-            throw new CmException("Invalid user type: " + basicUser.getUserType());
-        
-        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
-        StudentActiveInfo active = CmStudentDao.getInstance().loadActiveInfo(sm.getUid());
-        CmMobileUser mobileUser = new CmMobileUser(sm.getUid(),active.getActiveTestId(),active.getActiveSegment(),active.getActiveSegmentSlot(),active.getActiveRunId());
-        
-        /** get list of previous prescribed lessons? 
-         * 
-         */
-        PreparedStatement ps = null;
-        try {
-            String sql = "select concat(lesson_name,concat(concat(' (times: ', count(*))),')') as lesson_name, lesson_file, count(*) " +
-                         " from HA_TEST_RUN_LESSON l " +
-                         " JOIN HA_TEST_RUN r on r.run_id = l.run_id " +
-                         " JOIN HA_TEST t on t.test_id = r.test_id " +
-                         " where t.user_id = ? " +
-                         " group by lesson_name " +
-                         " order by lesson_name;";
-           ps = conn.prepareStatement(sql);
-           ps.setInt(1, mobileUser.getUserId());
-           CmList<Topic> ptopics = new CmArrayList<Topic>();
-           ResultSet rs = ps.executeQuery();
-           while(rs.next()) {
-               ptopics.add(new Topic(rs.getString("lesson_name"), rs.getString("lesson_file")));
-           }
-           mobileUser.setPrescribedLessons(ptopics);
-           
-           UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn,new GetUserInfoAction(mobileUser.getUserId(), null));
-           mobileUser.setBaseLoginResponse(userLoginResponse);
-           
-        }
-        finally {
-            SqlUtilities.releaseResources(null,ps,null);
-        }
-        return mobileUser;
-    }
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetCmMobileLoginAction.class;
     }
+
+    @Override
+    public CmMobileUser execute(Connection conn, GetCmMobileLoginAction action) throws Exception {
+
+       int uid = action.getUid();
+       
+       HaBasicUser basicUser=null;
+       if(uid > 0) {
+           basicUser = HaUserFactory.getLoginUserInfo(conn, uid, "STUDENT");
+       }
+       else if(action.getName().equals("catchup_demo") && action.getPassword().equals("demo")) {
+           basicUser = HaUserFactory.createDemoUser(conn);
+        }
+       else {
+           basicUser = HaUserFactory.loginToCatchup(conn, action.getName(), action.getPassword());
+       }
+       
+       if (basicUser.getUserType() != UserType.STUDENT)
+            throw new CmException("Invalid user type: " + basicUser.getUserType());
+        
+        
+
+        CmProgramFlow programFlow = new CmProgramFlow(conn, basicUser.getUserKey());
+        
+        StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
+        StudentActiveInfo active = programFlow.getActiveInfo();
+        CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), active.getActiveRunId());
+
+        
+        /** create new security key for this login sesssion */
+        String securityKey="";
+        if(uid == 0) {
+            securityKey = HaLoginInfoDao.getInstance().addLoginInfo(conn, basicUser, new ClientEnvironment(false),true);
+        }
+        
+        int programSegmentCount = 0;
+        String testTitle = programFlow.getUserProgram().getTestName();
+        boolean isCustomProgram = programFlow.getUserProgram().getTestDefId() == CmProgram.CUSTOM_PROGRAM.getDefId();
+        if(isCustomProgram) {
+            CustomProgramInfo cpi = GetUserInfoCommand.processCustomProgram(conn, sm.getUid(), active, programFlow.getUserProgram());
+            programSegmentCount = cpi.getProgramSegmentCount();
+            testTitle = cpi.getTitle();
+            
+            //mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
+            
+            
+            // TODO:
+            // here the CP is now ready for use, but what about the 
+            // programSegmentCount and testTitle ...?
+        }
+        
+        
+        
+        /** look up the Custom Quiz name */
+        boolean isCustomQuiz = programFlow.getUserProgram().getCustomQuizId() > 0;
+        if(isCustomQuiz) {
+            testTitle = programFlow.getUserProgram().getCustomQuizName();
+        }
+
+        
+        
+        
+
+        /**
+         * get list of previous prescribed lessons
+         * 
+         */
+        PreparedStatement ps = null;
+        try {
+            GetUserInfoAction loginAction = new GetUserInfoAction(mobileUser.getUserId(), null);
+            UserLoginResponse userLoginResponse = new GetUserInfoCommand().execute(conn, loginAction);
+            mobileUser.setBaseLoginResponse(userLoginResponse);
+            mobileUser.setSecurityKey(securityKey);
+            
+            mobileUser.getBaseLoginResponse().getUserInfo().setProgramName(testTitle);
+            
+            CmProgramFlowAction nextAction = programFlow.getActiveFlowAction(conn);
+            
+            mobileUser.setFlowAction(nextAction);
+            
+            /** check if non flash enabled prescription, and mark next action
+             *  should be to NOT show it.  Instead client should handle the
+             *  flash required error.
+             *   
+             */
+            if(nextAction.getPrescriptionResponse() != null) {
+                if(programFlow.dependsOnFlash(conn, nextAction.getPrescriptionResponse().getRunId())) {
+                    mobileUser.setFlowAction(new CmProgramFlowAction(CmPlace.ERROR_FLASH_REQUIRED));
+                }
+            }
+        } finally {
+            SqlUtilities.releaseResources(null, ps, null);
+        }
+        
+        return mobileUser;
+    }
+
 }

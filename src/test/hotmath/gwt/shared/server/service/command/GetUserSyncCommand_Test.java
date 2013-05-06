@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.shared.client.rpc.action.GetUserSyncAction;
-import hotmath.gwt.shared.client.rpc.result.UserSyncInfo;
+import hotmath.gwt.cm_core.client.model.UserSyncInfo;
+import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 
 public class GetUserSyncCommand_Test extends CmDbTestCase {
     
