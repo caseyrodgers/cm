@@ -281,7 +281,7 @@ public class StudentAssignmentReport {
 
 	private void addCell(String content, Table tbl, int rowNum, boolean isBold) throws Exception {
 		if (content == null) content = "";
-		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, (isBold==true)?Font.BOLD:Font.NORMAL, new Color(0, 0, 0)));
+		Chunk c = new Chunk(content, FontFactory.getFont(FontFactory.HELVETICA, 8, (isBold==true)?Font.BOLD|Font.UNDERLINE:Font.NORMAL, new Color(0, 0, 0)));
 		c.setTextRise(3.0f);
     	Cell cell = new Cell(c);
 		cell.setHeader(false);
