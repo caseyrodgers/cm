@@ -3763,7 +3763,9 @@ from HA_USER u
 
 join CM_ASSIGNMENT_USER au on au.uid = u.uid
 
-join CM_ASSIGNMENT a on a.assign_key = au.assign_key and a.due_date between ? and ?
+join CM_ASSIGNMENT a on a.assign_key in
+   (select distinct x.assign_key from CM_ASSIGNMENT x 
+    where (x.assign_Key = au.assign_key or x.group_id = u.group_id) and a.due_date between ? and ?)
 	
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 
@@ -3772,12 +3774,14 @@ left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pi
 left join (
     select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
     from CM_ASSIGNMENT_PID_ANSWERS pa
+    where pa.user_id = ?
     group by pa.user_id, pa.assign_key, pa.pid ) l
     on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
     
 left join (
     select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
-    from CM_ASSIGNMENT_PID_ANSWERS pa) q
+    from CM_ASSIGNMENT_PID_ANSWERS pa
+    where pa.user_id = ?) q
     on q.id=l.max_id
     
 where u.uid = ?

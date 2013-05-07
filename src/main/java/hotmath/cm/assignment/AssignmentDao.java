@@ -806,7 +806,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<StudentProblemDto> problemStatuses = new ArrayList<StudentProblemDto>();
         final Map<Integer, Boolean> asgGradedMap = new HashMap<Integer,Boolean>();
         try {
-            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId },
+            problemStatuses = getJdbcTemplate().query(sql, new Object[] { dates[0], dates[1], userId, userId, userId },
             		new RowMapper<StudentProblemDto>() {
                 @Override
                 public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
