@@ -1454,6 +1454,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         studentAssignment.setStudentStatuses(new StudentAssignmentStatuses(studentAssignment,allStatus,null));
 
         studentAssignment.setGraded(studentInfo.isGraded());
+        if(studentInfo.isGraded()) {
+            //studentAssignment.setHomeworkGrade(GradeBookUtils.getHomeworkGrade(studentAssignment.getStudentStatuses().getAssigmentStatuses()));
+            studentAssignment.setHomeworkGrade(getUserScore(uid, assignKey));
+        }
 
         if (updateViewedTime) {
             updateStudentAssignmentLastView(assignKey, uid);

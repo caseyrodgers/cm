@@ -133,7 +133,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         private StudentProblemDto _problem;
 
         public MyGenericTextTag(StudentProblemDto problem) {
-            super("li", problem.getStudentLabelWithStatus());
+            super("li");
+            setHtml(problem.getStudentLabelWithStatus());
             this._problem = problem;
         }
     }

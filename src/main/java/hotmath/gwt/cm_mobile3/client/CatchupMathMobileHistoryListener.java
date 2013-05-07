@@ -210,15 +210,12 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             /** Assume we now need AssignmentData
              * 
              */
-
             AssignmentData.readAssData(new CallbackWhenDataReady() {
                 @Override
                 public void isReady() {
                     onValueChangeRequiresAssignmentData(cf, eb, token, event);
                 }
-
             });
-            Log.error("NOT IMPLEMENTED: " + token.getHistoryTag());
         }
         
     }

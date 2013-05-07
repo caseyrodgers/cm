@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_admin.client.ui.assignment.MyTimeField;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -8,7 +9,9 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -17,6 +20,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentListViewImpl extends Composite implements AssignmentListView {
@@ -40,6 +44,7 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         dockPanel.add(subToolBar, DockPanel.NORTH);
         
         FlowPanel sp = new FlowPanel();
+        
         sp.getElement().setAttribute("style",  "margin: 10px");
         sp.add(listItems);
         
@@ -47,6 +52,10 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         initWidget(dockPanel);
         
         addStyleName("AssignmentListViewImpl");
+    }
+
+    private Widget createLedgend() {
+        return MyGenericTextTag.getLedgend();
     }
 
     @Override
@@ -121,11 +130,48 @@ class MyGenericTextTag extends GenericTextTag<String> {
     private StudentAssignmentInfo studentAssignmentInfo;
 
     public MyGenericTextTag(StudentAssignmentInfo stuInfo) {
-        super("li",stuInfo.getLabelForStudent());
+        super("li");
         this.studentAssignmentInfo = stuInfo;
+        String html=
+                "<div style='color: gray;float: left;width: 225px;'>" + getStatusString() + "</div>" +
+               "<div style='clear: both'>"  + stuInfo.getComments() + "</div>";
+        setHtml(html);
+    }
+
+    private String getStatusString() {
+        List<String> statuses = new ArrayList<String>();
+        
+        if(studentAssignmentInfo.isGraded()) {
+            statuses.add("<span style='font-weight: bold;color: green'>score: " + studentAssignmentInfo.getScore() + "</span>");
+        }
+        else {
+            statuses.add(studentAssignmentInfo.getStatus().toLowerCase());
+            
+            if(studentAssignmentInfo.getTurnInDate() == null) {
+                statuses.add("due: " + studentAssignmentInfo.getDueDate());
+            }
+        }
+        
+        if(studentAssignmentInfo.getNumUnreadAnnotations() > 0) {
+            statuses.add("notes");
+        }
+
+        String info="";
+        for(String status: statuses) {
+            if(info.length() > 0) {
+                info += ",";
+            }
+            info += status;
+        }
+        return info;
     }
 
     public StudentAssignmentInfo getStudentAssignmentInfo() {
         return studentAssignmentInfo;
+    }
+    
+    public static Widget getLedgend() {
+        String html = "<div style='margin-bottom: 5px;font-size: .8em'>Legend: *=Open; $=Turned in; +=teacher note; G=graded</div>";
+        return new HTML(html);
     }
 }

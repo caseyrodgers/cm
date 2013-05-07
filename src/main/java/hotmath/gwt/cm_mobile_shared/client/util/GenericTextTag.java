@@ -145,6 +145,10 @@ public class GenericTextTag<E> extends Widget implements HasText {
 	public String getText() {
 		return getElement().getInnerText();
 	}
+	
+	public void setHtml(String html) {
+	    getElement().setInnerHTML(html);
+	}
 
 	public void setText(String text) {
 		getElement().setInnerText(text);

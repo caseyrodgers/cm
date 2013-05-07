@@ -137,6 +137,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 return false;
             }
             
+            
+            @Override
+            public String getSubmitButtonText() {
+                return "Submit Answer";
+            }
+            
             @Override
             public WidgetStatusIndication indicateWidgetStatus() {
                 return !presenter.isAssignmentGraded()?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
@@ -170,7 +176,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     
     private void showProblem(final AssignmentProblem solution) {
         this.problem = solution;
-        Log.debug("Show Problem: " + solution);
+        Log.debug("Show Problem: " + solution.getInfo().getPid()    );
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
