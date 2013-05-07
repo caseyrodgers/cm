@@ -3754,38 +3754,31 @@ order by u.user_name, problem_id
 ##
 .key=GET_ASSIGNMENT_WORK_FOR_STUDENT
 
-select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
+select distinct u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.lesson, p.lesson_file, p.pid, p.ordinal_number,
        ifnull(s.status, 'Not viewed') as status, q.correct, q.id, q.answer,
        ifnull(q.create_datetime,s.modify_datetime) as update_datetime,
-       ifnull(s.is_graded, 0) as is_graded, ifnull(au.is_graded, 0) assignment_graded
-
+       ifnull(s.is_graded, 0) as is_graded, ifnull(xu.is_graded, 0) assignment_graded
 from HA_USER u
-
-join CM_ASSIGNMENT_USER au on au.uid = u.uid
-
-join CM_ASSIGNMENT a on a.assign_key in
-   (select distinct x.assign_key from CM_ASSIGNMENT x 
-    where (x.assign_Key = au.assign_key or x.group_id = u.group_id) and a.due_date between ? and ?)
-	
+join  CM_ASSIGNMENT a on a.assign_key in
+   (select distinct x.assign_key from CM_ASSIGNMENT x
+    where ((au.assign_key is not null and x.assign_Key = au.assign_key) or x.group_id = u.group_id) and a.due_date between ? and ?)
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
-
+left join CM_ASSIGNMENT_USER au on au.uid = u.uid
 left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
-
 left join (
     select pa.assign_key, pa.pid, pa.user_id, max(pa.id) as max_id
     from CM_ASSIGNMENT_PID_ANSWERS pa
     where pa.user_id = ?
     group by pa.user_id, pa.assign_key, pa.pid ) l
     on l.assign_key=a.assign_key and l.pid=p.pid and l.user_id=u.uid
-    
 left join (
     select pa.assign_key, pa.pid, pa.user_id, pa.correct, pa.id, pa.create_datetime, pa.answer
     from CM_ASSIGNMENT_PID_ANSWERS pa
     where pa.user_id = ?) q
     on q.id=l.max_id
-    
+left join CM_ASSIGNMENT_USER xu on xu.uid = u.uid and xu.assign_key = a.assign_key
 where u.uid = ?
-order by u.user_name, a.assign_key, problem_id
+order by a.assign_key, problem_id
   
   
 .key=GET_STUDENT_ASSIGNMENT_PROBLEM_STATUSES
