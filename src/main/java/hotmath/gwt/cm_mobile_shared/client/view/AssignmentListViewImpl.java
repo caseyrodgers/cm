@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
-import hotmath.gwt.cm_admin.client.ui.assignment.MyTimeField;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -9,7 +8,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 
 import java.util.ArrayList;
 import java.util.List;
