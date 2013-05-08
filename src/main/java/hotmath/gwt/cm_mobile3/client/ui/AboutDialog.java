@@ -3,14 +3,16 @@ package hotmath.gwt.cm_mobile3.client.ui;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.SexyButton;
+import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
@@ -30,6 +32,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -57,9 +60,10 @@ public class AboutDialog extends DialogBox  {
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.add(uiBinder.createAndBindUi(this));
 		
-		String loggedIn="nobody";
+		String loggedIn="not logged in";
 		String name=null;
 		String segment=null;
+		
 		if(SharedData.getUserInfo() != null) {
 		    loggedIn = SharedData.getUserInfo().getUserName();
 		    name = SharedData.getUserInfo().getTestName();
@@ -69,23 +73,29 @@ public class AboutDialog extends DialogBox  {
 	        if(segCnt > 1) {
 	            segment = seg + " of " + segCnt;
 	        }
+	        
+	        if(name != null) {
+	            String value = name;
+	            if(segment != null) {
+	                value += " " + segment;
+	            }
+	            programName.setInnerHTML(value);
+	        }
+	        
+	        getScoreFromServer();
 		}
+        else {
+            discloseProgram.setVisible(false);
+            discloseGoto.setVisible(false);
+        }
+		
 		loggedInAs.setInnerHTML(loggedIn);
 		
-		score.setInnerHTML("--");
-		getScoreFromServer();
-
-		if(name != null) {
-		    String value = name;
-		    if(segment != null) {
-		        value += " " + segment;
-		    }
-		    programName.setInnerHTML(value);
-		    programInfo.setAttribute("style", "display: block");
-		}
+		
+		
 		
 		HorizontalPanel hp = new HorizontalPanel();
-		SexyButton close = new SexyButton("Close",new ClickHandler() {
+		TouchButton close = new TouchButton("Close",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
@@ -93,7 +103,7 @@ public class AboutDialog extends DialogBox  {
         });
 		hp.add(close);
 		
-	    SexyButton check = new SexyButton("Check Server",new ClickHandler() {
+		TouchButton check = new TouchButton("Check Server",new ClickHandler() {
 	            @Override
 	            public void onClick(ClickEvent event) {
 	                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
@@ -103,13 +113,21 @@ public class AboutDialog extends DialogBox  {
 
 		hp.getElement().setAttribute("style",  "margin: 10px");
 		
-		
-		
 		if(SharedData.getMobileUser() == null) {
-		    assignmentsDiv.setAttribute("style",  "display:none");
-		    programDiv.setAttribute("style",  "display:none");
+		    discloseGoto.setVisible(false);
 		}
 		
+		if(AssignmentData.getUserData() != null) {
+		    String info="Open Assignments: " + AssignmentData.getUserData().getAssignments().size() + "</br>";
+		    AssignmentUserInfo au = BackgroundServerChecker.getLastAssignmentInfo();
+		    if(au != null) {
+		        info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
+		    }
+		    assignmentInfo.add(new HTML(info));
+		}
+		else {
+		    discloseAssignment.setVisible(false);
+		}
 		
         DisclosurePanel feedback = new DisclosurePanel();
         Anchor feedbackButton = new TouchAnchor("Feedback");
@@ -124,7 +142,9 @@ public class AboutDialog extends DialogBox  {
 		_tabPanel.add(mainPanel, "About");
 		_tabPanel.add(new HTML("ASSIGNMENTS"), "Assignments");
 		_tabPanel.selectTab(0);
-		setWidget(_tabPanel);
+		
+		
+		setWidget(mainPanel);
 		
         setVisible(true);
 	}
@@ -164,11 +184,17 @@ public class AboutDialog extends DialogBox  {
     }
 	
 	
+    @UiField
+    HTMLPanel assignmentInfo;
+    
 	@UiField
 	Element loggedInAs,programInfo,programName, score, assignmentsDiv, programDiv;
 	
 	@UiField
 	TouchButton assignmentsButton, programButton;
+	
+	@UiField
+	DisclosurePanel discloseProgram,discloseGoto, discloseAssignment;
 }
 
 

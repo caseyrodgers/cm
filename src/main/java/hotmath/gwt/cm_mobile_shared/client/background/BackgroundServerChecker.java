@@ -91,6 +91,10 @@ public class BackgroundServerChecker {
         });
     }
     
+    public static AssignmentUserInfo getLastAssignmentInfo() {
+        return _lastCheckedData;
+    }
+    
 
     /** Fire update event if things are actually different
      * 

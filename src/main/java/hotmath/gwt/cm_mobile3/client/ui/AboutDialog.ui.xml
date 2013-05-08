@@ -19,34 +19,57 @@
 		.programInfo {
 		    color: #666;
 		}
-		
-		.assignments {
-	         margin: 10px 5px; 
+	    
+	    .infoPanel {
+	       margin-top: 20px;
 	    }
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
 	   <p>You are logged in as: <span ui:field="loggedInAs"></span></p>
-	   <div style='display: none' class='{style.programInfo}' ui:field="programInfo">
-	       <label>Program: </label> 
-	       <div ui:field="programName">Unknown</div>
-           <label>Graded Problem Score</label>
-           <div ui:field="score">--</div>
-	   </div>
-	   <span ui:field="assignmentsDiv" class="{style.assignments}">
-            <cm:TouchButton styleName='sexybutton' ui:field="assignmentsButton">
+	   
+	   <g:DisclosurePanel ui:field="discloseProgram">
+           <g:header>Program Info</g:header>
+               <g:HTMLPanel styleName="{style.infoPanel}">
+				   <div class='{style.programInfo}' ui:field="programInfo">
+				       <label>Program: </label> 
+				       <div ui:field="programName">Unknown</div>
+			           <label>Graded Problem Score</label>
+			           <div ui:field="score">--</div>
+				   </div>               
+              </g:HTMLPanel>
+      </g:DisclosurePanel>
+
+      <g:DisclosurePanel ui:field="discloseGoto">
+          <g:header>Goto</g:header>
+          <g:HTMLPanel styleName="{style.infoPanel}">
+	      <span ui:field="assignmentsDiv" >
+              <cm:TouchButton styleName='sexybutton' ui:field="assignmentsButton">
                 <span><span>Assignments</span></span>
-            </cm:TouchButton>	       
-	   </span>
-	   <span ui:field="programDiv" class="{style.assignments}">
-            <cm:TouchButton styleName='sexybutton' ui:field="programButton">
+              </cm:TouchButton>	       
+	      </span>
+	      <span ui:field="programDiv">
+              <cm:TouchButton styleName='sexybutton' ui:field="programButton">
                 <span><span>Program</span></span>
-            </cm:TouchButton>
-        </span>            
+              </cm:TouchButton>
+          </span>          
+	      </g:HTMLPanel>
+    </g:DisclosurePanel>
+    
+     <g:DisclosurePanel ui:field="discloseAssignment">
+          <g:header>Assignments</g:header>
+          <g:HTMLPanel styleName="{style.infoPanel}" ui:field="assignmentInfo"/>            
+    </g:DisclosurePanel>
+    <g:DisclosurePanel>
+        <g:header>More Information</g:header>
+        <g:HTMLPanel styleName="{style.infoPanel}">
 		<p>
             For more detailed information about Catchup Math, 
             please visit on a desktop computer.
         </p>
 		<p>Email feedback or questions to support@hotmath.com.</p>
+		</g:HTMLPanel>
+    </g:DisclosurePanel>
+    		
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -94,12 +94,12 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     public void processTutorWidgetComplete(final String inputValue, boolean correct) {
         final AssignmentProblem assProblem = new AssignmentProblem();
         
-        if(false) { // _isGraded) {
+        if(__lastProblem.isGraded()) {
             MessageBox.showError("This input value will not be saved because the assignment has already been graded.");
             return;
         }
 
-        if(false) { // (!_isEditable) {
+        if(!__lastProblem.getStatus().equals("Open")) { // (!_isEditable) {
             MessageBox.showError("This input value will not be saved because the assignment is closed.");
             return;
         }
