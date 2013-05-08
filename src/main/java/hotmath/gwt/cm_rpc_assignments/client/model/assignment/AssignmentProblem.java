@@ -20,13 +20,15 @@ public class AssignmentProblem implements Response{
     private StudentProblemDto studentProblem;
     private boolean isGraded;
     private String status;
+    private boolean assignmentClosed;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,SolutionInfo info, StudentProblemDto stuProblem, ProblemType problemType, String lastUserWidgetValue, String status) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem, ProblemType problemType, String lastUserWidgetValue, String status) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
+        this.assignmentClosed = isAssignmentClosed;
         this.info = info;
         this.studentProblem = stuProblem;
         this.problemType = problemType;
@@ -99,9 +101,12 @@ public class AssignmentProblem implements Response{
         this.assignKey = assignKey;
     }
 
-    @Override
-    public String toString() {
-        return "AssignmentProblem [info=" + info + ", problemType=" + problemType + ", userId=" + userId
-                + ", assignKey=" + assignKey + ", lastUserWidgetValue=" + lastUserWidgetValue + "]";
+    public boolean isAssignmentClosed() {
+        return assignmentClosed;
     }
+
+    public void setAssignmentClosed(boolean assignmentClosed) {
+        this.assignmentClosed = assignmentClosed;
+    }
+    
 }

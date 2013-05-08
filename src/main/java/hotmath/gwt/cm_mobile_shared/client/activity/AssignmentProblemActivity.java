@@ -99,7 +99,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
             return;
         }
 
-        if(!__lastProblem.getStatus().equals("Open")) { // (!_isEditable) {
+        if(!__lastProblem.isAssignmentClosed()) {
             MessageBox.showError("This input value will not be saved because the assignment is closed.");
             return;
         }

@@ -101,6 +101,10 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         listItems.clear();
         for(StudentAssignmentInfo bm: assignments) {
             
+            if(!bm.getStatus().equals("Open")) {
+                continue;
+            }
+            
             GenericTextTag<String> tt = new MyGenericTextTag(bm);
             tt.addStyleName("group");
             
@@ -166,7 +170,7 @@ class MyGenericTextTag extends GenericTextTag<String> {
             info += status;
         }
         
-        if(!studentAssignmentInfo.isGraded() && studentAssignmentInfo.isOverdue()) {
+        if(studentAssignmentInfo.isChanged()) {
             info = "<span style='color: red'>" + info + "</span>";
         }
         return info;

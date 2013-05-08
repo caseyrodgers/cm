@@ -1473,14 +1473,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param assignKey
      * @return
      */
-    private StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) {
+    public StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) {
         StudentAssignmentUserInfo studentInfo = null;
 
-        String sql = "select * from CM_ASSIGNMENT_USER where uid = ? and assign_key = ?";
+        String sql = "select a.status, u.is_graded,u.turn_in_date,u.last_access " +
+                     "from  CM_ASSIGNMENT a  JOIN CM_ASSIGNMENT_USER u ON u.assign_key = a.assign_key " +
+                     " where u.uid = ? and a.assign_key = ?";
         List<StudentAssignmentUserInfo> assInfos = getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<StudentAssignmentUserInfo>() {
             @Override
             public StudentAssignmentUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new StudentAssignmentUserInfo(uid, assignKey, rs.getDate("turn_in_date"), rs.getInt("is_graded") != 0 ? true : false, rs
+                boolean isGraded =  rs.getInt("is_graded") != 0 ? true : false;
+                boolean isEditable = rs.getString("status").equals("Open") ? true : false;
+                return new StudentAssignmentUserInfo(uid, assignKey, rs.getDate("turn_in_date"),isGraded, isEditable,rs
                         .getTimestamp("last_access"));
             }
         });
