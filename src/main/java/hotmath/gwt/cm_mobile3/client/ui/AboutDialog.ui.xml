@@ -21,7 +21,7 @@
 		}
 	    
 	    .infoPanel {
-	       margin-top: 20px;
+	       margin-top: 10px;
 	    }
 	</ui:style>
 
