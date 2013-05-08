@@ -27,6 +27,7 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.XTemplates;
 import com.sencha.gxt.core.client.util.Margins;
@@ -91,6 +92,13 @@ public class AssignmentManagerDialog2  {
             }
         }), hd);
         
+        header.add(new TextButton("Assignments Webinar", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                showAssignmentsWebinarPage();
+            }
+        }), hd);
+
         _mainContainer.setNorthWidget(header, northData);
         
         _assignmentsPanel = new AssignmentsContentPanel(new Callback() {
@@ -222,6 +230,11 @@ public class AssignmentManagerDialog2  {
         return gradeBookBtn;
     }
 
+    private native void showAssignmentsWebinarPage() /*-{
+        var aw = window.open('/webinar_assignments');
+        aw.focus();
+    }-*/;
+    
     protected void refreshData() {
         _assignmentsPanel.refreshData();
     }
