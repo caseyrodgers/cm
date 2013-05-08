@@ -25,6 +25,7 @@ public class AssignmentData {
     }
     
     /** Make sure all user data is ready for forms to use
+     * Read from server is required
      * 
      * Callback async once data is ready
      * @param callBack

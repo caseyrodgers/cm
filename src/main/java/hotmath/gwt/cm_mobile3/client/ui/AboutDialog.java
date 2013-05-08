@@ -8,11 +8,13 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
@@ -83,10 +85,27 @@ public class AboutDialog extends DialogBox  {
 	        }
 	        
 	        getScoreFromServer();
+	        
+	        AssignmentData.readAssData(new CallbackWhenDataReady() {
+	            @Override
+	            public void isReady() {
+	                String info="Open Assignments: " + AssignmentData.getUserData().getAssignments().size() + "</br>";
+	                AssignmentUserInfo au = BackgroundServerChecker.getLastAssignmentInfo();
+	                if(au != null) {
+	                    info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
+	                    if(au.getUnreadAnnotations().size() > 0) {
+	                        assignmentInfo.add(new NextUnreadTeacherNoteButton(au.getUnreadAnnotations())); 
+	                    }
+	                }
+	                assignmentInfo.add(new HTML(info));
+	                
+	            }
+	        });
 		}
         else {
             discloseProgram.setVisible(false);
             discloseGoto.setVisible(false);
+            discloseAssignment.setVisible(false);
         }
 		
 		loggedInAs.setInnerHTML(loggedIn);
@@ -117,17 +136,6 @@ public class AboutDialog extends DialogBox  {
 		    discloseGoto.setVisible(false);
 		}
 		
-		if(AssignmentData.getUserData() != null) {
-		    String info="Open Assignments: " + AssignmentData.getUserData().getAssignments().size() + "</br>";
-		    AssignmentUserInfo au = BackgroundServerChecker.getLastAssignmentInfo();
-		    if(au != null) {
-		        info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
-		    }
-		    assignmentInfo.add(new HTML(info));
-		}
-		else {
-		    discloseAssignment.setVisible(false);
-		}
 		
         DisclosurePanel feedback = new DisclosurePanel();
         Anchor feedbackButton = new TouchAnchor("Feedback");

@@ -6,8 +6,6 @@ import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -107,7 +105,6 @@ public class BackgroundServerChecker {
             
             Log.debug("Firing AssignmentsUpdatedEvent: " + assignmentInfo);
             CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(assignmentInfo));
-            CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
         }
     }
 

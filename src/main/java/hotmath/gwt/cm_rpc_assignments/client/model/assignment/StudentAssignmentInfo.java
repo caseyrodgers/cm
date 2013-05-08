@@ -49,6 +49,10 @@ public class StudentAssignmentInfo implements Response {
         this.changedAssignment = changedAssignment;
     }
     
+    public boolean isOverdue() {
+        return dueDate.getTime() < System.currentTimeMillis();
+    }
+    
     /** Is there anything interestingly new about this assignment?
      * 
      * @return

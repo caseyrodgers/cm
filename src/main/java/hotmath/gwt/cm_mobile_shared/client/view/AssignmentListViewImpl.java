@@ -138,12 +138,16 @@ class MyGenericTextTag extends GenericTextTag<String> {
 
     private String getStatusString() {
         List<String> statuses = new ArrayList<String>();
-        
         if(studentAssignmentInfo.isGraded()) {
             statuses.add("<span style='font-weight: bold;color: green'>score: " + studentAssignmentInfo.getScore() + "</span>");
         }
         else {
-            statuses.add(studentAssignmentInfo.getStatus().toLowerCase());
+            if(studentAssignmentInfo.isOverdue()) {
+                statuses.add("Overdue");
+            }
+            else {
+                statuses.add(studentAssignmentInfo.getStatus().toLowerCase());
+            }
             
             if(studentAssignmentInfo.getTurnInDate() == null) {
                 statuses.add("due: " + studentAssignmentInfo.getDueDate());
@@ -151,15 +155,19 @@ class MyGenericTextTag extends GenericTextTag<String> {
         }
         
         if(studentAssignmentInfo.getNumUnreadAnnotations() > 0) {
-            statuses.add("notes");
+            statuses.add("unread note: " + studentAssignmentInfo.getNumUnreadAnnotations());
         }
 
         String info="";
         for(String status: statuses) {
             if(info.length() > 0) {
-                info += ",";
+                info += ", ";
             }
             info += status;
+        }
+        
+        if(!studentAssignmentInfo.isGraded() && studentAssignmentInfo.isOverdue()) {
+            info = "<span style='color: red'>" + info + "</span>";
         }
         return info;
     }
