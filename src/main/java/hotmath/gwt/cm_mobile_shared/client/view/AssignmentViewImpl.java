@@ -39,6 +39,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.turnInAssignment(AssignmentViewImpl.this);
+                presenter.gotoAssignmentList();
             }
         });
         subBar.add(_turnInAssignment);

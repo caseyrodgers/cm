@@ -101,7 +101,7 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         listItems.clear();
         for(StudentAssignmentInfo bm: assignments) {
             
-            if(!bm.getStatus().equals("Open")) {
+            if(bm.getStatus().equals("Closed")) {
                 continue;
             }
             
@@ -143,23 +143,26 @@ class MyGenericTextTag extends GenericTextTag<String> {
     private String getStatusString() {
         List<String> statuses = new ArrayList<String>();
         if(studentAssignmentInfo.isGraded()) {
-            statuses.add("<span style='font-weight: bold;color: green'>score: " + studentAssignmentInfo.getScore() + "</span>");
+            statuses.add("<span style='font-weight: bold;color: green'>Score: " + studentAssignmentInfo.getScore() + "</span>");
         }
         else {
-            if(studentAssignmentInfo.isOverdue()) {
-                statuses.add("Overdue");
+            if(studentAssignmentInfo.getTurnInDate() != null) {
+                statuses.add("Turned In");
+            }
+            else if(studentAssignmentInfo.isOverdue()) {
+                statuses.add("Past Due");
             }
             else {
-                statuses.add(studentAssignmentInfo.getStatus().toLowerCase());
+                statuses.add(studentAssignmentInfo.getStatus());
             }
             
             if(studentAssignmentInfo.getTurnInDate() == null) {
-                statuses.add("due: " + studentAssignmentInfo.getDueDate());
+                statuses.add("Due: " + studentAssignmentInfo.getDueDate());
             }
         }
         
         if(studentAssignmentInfo.getNumUnreadAnnotations() > 0) {
-            statuses.add("unread note: " + studentAssignmentInfo.getNumUnreadAnnotations());
+            statuses.add("Unread Note: " + studentAssignmentInfo.getNumUnreadAnnotations());
         }
 
         String info="";

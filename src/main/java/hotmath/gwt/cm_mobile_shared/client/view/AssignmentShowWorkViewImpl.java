@@ -4,12 +4,10 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
@@ -27,6 +25,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
     private Presenter presenter;
     ShowWorkPanel _showWorkPanel;
     SexyButton _submitBtn;
+    SubToolBar _subBar;
     
     public AssignmentShowWorkViewImpl() {
         _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
@@ -42,7 +41,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
         },false);
         
 
-        SubToolBar subBar = new SubToolBar();
+        _subBar = new SubToolBar();
         _submitBtn = new SexyButton("Submit Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -50,12 +49,12 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
                 presenter.gotoTutorView();
             }
         });
-        subBar.add(_submitBtn);
+        _subBar.add(_submitBtn);
         FlowPanel flow = new FlowPanel();
-        flow.add(subBar);
+        flow.add(_subBar);
 
         flow.add(_showWorkPanel);
-        
+        _subBar.setVisible(false);
         initWidget(flow);
     }
     
@@ -114,6 +113,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
     public void loadWhiteboard(AssignmentWhiteboardData data) {
         
         if(data.getStudentProblem().getProblem().getProblemType() == ProblemType.WHITEBOARD) {
+            _subBar.setVisible(true);
             if(data.getStudentProblem().isGraded()) {
                 _submitBtn.setEnabled(false);
             }
@@ -125,7 +125,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
             }
         }
         else {
-            _submitBtn.setEnabled(false);
+            _subBar.setVisible(false);
         }
         
         _showWorkPanel.loadWhiteboard(data.getCommands());
