@@ -3,11 +3,8 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 
-import java.util.Date;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -26,17 +23,24 @@ public class AssignmentHeaderPanel extends Composite {
     public void loadAssignment(StudentAssignment assignment) {
         comments.getElement().setInnerHTML(assignment.getAssignment().getComments());
         
+        dueDate.setInnerHTML(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate()));
+        
         if(assignment.isGraded()) {
-            dueDate.setInnerHTML("Status: Graded");
-            grade.setInnerHTML("Grade: " + assignment.getHomeworkGrade());
-            grade.setAttribute("style",  "display: block");
+            status.setInnerHTML("Score: " + assignment.getHomeworkGrade());
+            grade.setInnerHTML("");
+            grade.setAttribute("style",  "display: none");
         }
         else if(assignment.isTurnedIn()) {
-            dueDate.setInnerHTML("Turned In");
+            status.setInnerHTML("Turned In");
             grade.setAttribute("style",  "display: none");
         }
         else {
-            dueDate.setInnerHTML(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate()));
+            if(assignment.getAssignment().isExpired()) {
+                status.setInnerHTML("Past Due");
+            }
+            else {
+                status.setInnerHTML(assignment.getStatus());
+            }
             grade.setAttribute("style",  "display: none");
         }
     }
@@ -44,5 +48,5 @@ public class AssignmentHeaderPanel extends Composite {
     @UiField
     HTMLPanel comments;
     @UiField
-    Element dueDate, grade;
+    Element dueDate, grade, status;
 }

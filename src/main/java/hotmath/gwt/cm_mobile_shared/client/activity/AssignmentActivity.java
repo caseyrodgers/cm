@@ -144,13 +144,23 @@ public class AssignmentActivity implements AssignmentView.Presenter {
         CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
             @Override
             public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
+                boolean changed=false;
                 for(StudentProblemDto prob: __lastStudentAssignment.getStudentStatuses().getAssigmentStatuses()) {
                     if(prob.getPid().equals(pid)) {
-                        prob.setStatus("Submitted");
+                        
+                        if(!prob.isGraded()) {
+                            changed=true;
+                            prob.setStatus("Submitted");
+                        }
+                        else {
+                            Log.debug("Not setting problem to submitted because it is already graded");
+                        }
                         break;
                     }
                 }
-                __lastInstance.redrawList();
+                if(changed) {
+                    __lastInstance.redrawList();
+                }
             }
         });
         

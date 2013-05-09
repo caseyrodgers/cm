@@ -14,7 +14,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
@@ -93,12 +92,11 @@ public class AboutDialog extends DialogBox  {
 	                AssignmentUserInfo au = BackgroundServerChecker.getLastAssignmentInfo();
 	                if(au != null) {
 	                    info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
-	                    if(au.getUnreadAnnotations().size() > 0) {
-	                        assignmentInfo.add(new NextUnreadTeacherNoteButton(au.getUnreadAnnotations())); 
-	                    }
 	                }
 	                assignmentInfo.add(new HTML(info));
-	                
+                    if(au.getUnreadAnnotations().size() > 0) {
+                        assignmentInfo.add(new NextUnreadTeacherNoteButton(au.getUnreadAnnotations())); 
+                    }
 	            }
 	        });
 		}

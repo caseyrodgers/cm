@@ -16,7 +16,11 @@ public class DateUtils4Gwt {
         long now = new Date().getTime();
 
         String formatedString;
-        if (((due - now) / oneDay) < 2) {
+        if(due < now ) {
+            // past due
+            formatedString = formatNormal.format(dueDate);
+        }
+        else if (((due - now) / oneDay) < 2) {
             formatedString = "Today";
         } else if (due < now + (oneDay * 2)) {
             formatedString = "Tomorrow";

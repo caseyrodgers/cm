@@ -16,28 +16,35 @@
 	        height: 40px;
 	    }
 	    
-	    .due-date {
+	    .status {
 	        position: absolute;
 	        left: 0px;
 	    }
 	    
-       .status {
+       .grade {
             position: absolute;
             left: 200px;
         }
 
-	    
+	    .dueDate {
+	        float: right;
+	        margin-right: 15px;
+	        margin-left: 10px;
+	        font-size: .9em;
+	        color: gray;
+	    }
 	    
 	</ui:style>
 
 		<g:HTMLPanel styleName="{style.main}">
+		    <div class='{style.dueDate}' ui:field='dueDate'></div>
 		    <g:HTMLPanel ui:field="comments"/>
 		    
 		    <div class='{style.form}'>
-        	    <div class="{style.due-date}">
-        	        <span ui:field="dueDate"></span> 
+        	    <div class="{style.status}">
+        	        <span ui:field="status"></span> 
         	    </div>
-                <div class="{style.status}">
+                <div class="{style.grade}">
                     <span ui:field="grade"></span> 
                 </div>
      	    </div>

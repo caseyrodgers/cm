@@ -188,7 +188,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 if(problem.getLastUserWidgetValue() != null) {
                     tutor.setTutorWidgetValue(problem.getLastUserWidgetValue());
                 }
-
                 tutor.setVisible(true);    
                 
                 

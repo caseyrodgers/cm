@@ -77,13 +77,13 @@ public class StudentProblemDto implements Response {
      */
     public String getStatusForStudent() {
        String sl = getStatus().toLowerCase();
-       
-       if(assignmentGraded || assignmentClosed) {
-           return status;
-       }
-       else if(sl.contains("viewed")) {
+
+       if(sl.contains("viewed")) {
            // viewed, not viewed
            return "Not Answered";
+       }
+       else if(assignmentGraded || assignmentClosed) {
+           return status;
        }
        else if(sl.equals("correct") || sl.equals("incorrect") || sl.equals("half credit")) {
            return "Submitted";
@@ -156,7 +156,7 @@ public class StudentProblemDto implements Response {
     }
 
     public boolean isGraded() {
-        return graded;
+        return graded || assignmentGraded;
     }
     
     
@@ -168,6 +168,15 @@ public class StudentProblemDto implements Response {
         String label = getStudentLabel();
         String status = getStatusForStudent();
         
-        return label + "<div style='float: right;margin-right: 15px;font-size: .8em;color: gray'>" + status + "</div>";
+        if(isComplete()) {
+            
+        }
+        
+        
+        String html=label + "<div style='float: right;margin-right: 15px;font-size: .8em;color: gray'>" + status + "</div>";
+        if(isComplete()) {
+            html = "<span style='color: gray'>" + html + "</html>";
+        }
+        return html;
     }
 }
