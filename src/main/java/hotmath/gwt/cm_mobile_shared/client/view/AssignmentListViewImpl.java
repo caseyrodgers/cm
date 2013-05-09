@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -134,8 +135,11 @@ class MyGenericTextTag extends GenericTextTag<String> {
     public MyGenericTextTag(StudentAssignmentInfo stuInfo) {
         super("li");
         this.studentAssignmentInfo = stuInfo;
+        
+        String statusLine = getStatusString();
+        statusLine += "<div style='float: right;margin-right: 25px;'>" + DateUtils4Gwt.getPrettyDateString(stuInfo.getDueDate()) + "</div>";
         String html= 
-               "<div>" + getStatusString() + "</div>" +
+               "<div>" + statusLine + "</div>" +
                "<div style='clear: both'>"  + stuInfo.getComments() + "</div>";
         
         if(stuInfo.isChanged()) {
@@ -162,10 +166,6 @@ class MyGenericTextTag extends GenericTextTag<String> {
             else {
                 statuses.add(studentAssignmentInfo.getStatus());
             }
-            
-            if(studentAssignmentInfo.getTurnInDate() == null) {
-                statuses.add("Due: " + studentAssignmentInfo.getDueDate());
-            }
         }
         
         if(studentAssignmentInfo.getNumUnreadAnnotations() > 0) {
@@ -179,6 +179,7 @@ class MyGenericTextTag extends GenericTextTag<String> {
             }
             info += status;
         }
+        
         
         return info;
     }

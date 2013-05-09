@@ -137,7 +137,7 @@ public class StudentProblemDto implements Response {
     }
     
     public String getStudentLabel() {
-        return getProblem().getOrdinalNumber() + ". " + removeProblemType(getProblem().getLabel());
+        return "Problem " + getProblem().getOrdinalNumber(); // + ". " + removeProblemType(getProblem().getLabel());
     }
 
     /** Remove the ': TYPE' label on pid problems
@@ -168,6 +168,6 @@ public class StudentProblemDto implements Response {
         String label = getStudentLabel();
         String status = getStatusForStudent();
         
-        return label + " (" + status + ")";
+        return label + "<div style='float: right;margin-right: 15px;font-size: .8em;color: gray'>" + status + "</div>";
     }
 }

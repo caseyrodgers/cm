@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 
 import java.util.Date;
@@ -35,41 +36,11 @@ public class AssignmentHeaderPanel extends Composite {
             grade.setAttribute("style",  "display: none");
         }
         else {
-            dueDate.setInnerHTML(getDueDateAsString(assignment.getAssignment().getDueDate()));
+            dueDate.setInnerHTML(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate()));
             grade.setAttribute("style",  "display: none");
         }
     }
     
-    private String getDueDateAsString(Date dueDate) {
-        
-        long due = dueDate.getTime();
-        int oneDay = (60*1000)*60*24;
-        long now = new Date().getTime();
-        
-        String dueString;
-        if(now > due) {
-            dueString = "Overdue";
-        }
-        else {
-            long today=now+oneDay;
-            if( ((due-now)/oneDay) < 2) {
-                dueString ="Today";
-            }
-            else if(due < now+(oneDay*2) ) {
-                dueString = "Tomorrow";
-            }
-            else if(due < now+(oneDay*7)) {
-                // day of week
-                DateTimeFormat fmt = DateTimeFormat.getFormat("EEEE");
-                dueString = fmt.format(dueDate);
-            }
-            else {
-                dueString = dueDate.toString(); 
-            }
-        }
-        return "Due: " + dueString;
-    }
-
     @UiField
     HTMLPanel comments;
     @UiField
