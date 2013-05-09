@@ -4031,7 +4031,7 @@ and ps.status = 'Submitted'
 
 .key=GET_CORRECT_QUIZ_CCS_NAMES_FOR_STUDENT
 
-SELECT distinct user_id, t.test_id, tr.run_id, ins.topic, ins.standard_name
+SELECT distinct user_id, ins.standard_name
 FROM HA_TEST t
 JOIN HA_TEST_RUN tr
   ON tr.test_id = t.test_id AND tr.answered_correct > 0
