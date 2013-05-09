@@ -88,9 +88,9 @@ public class AboutDialog extends DialogBox  {
 	        AssignmentData.readAssData(new CallbackWhenDataReady() {
 	            @Override
 	            public void isReady() {
-	                String info="Open Assignments: " + AssignmentData.getUserData().getAssignments().size() + "</br>";
-	                AssignmentUserInfo au = BackgroundServerChecker.getLastAssignmentInfo();
-	                if(au != null) {
+	                String info="Open Assignments: " + SharedData.getMobileUser().getAssignmentInfo().getActiveAssignments() + "</br>";
+	                AssignmentUserInfo au = SharedData.getMobileUser().getAssignmentInfo();
+	                if(au.getUnreadAnnotations().size() > 0) {
 	                    info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
 	                }
 	                assignmentInfo.add(new HTML(info));
