@@ -99,7 +99,7 @@ public class SearchActivity implements SearchView.Presenter {
         }
 
         if(SharedData.getMobileUser() == null) {
-            CmMobileUser user = new CmMobileUser(0,0,1,0,response.getRunId());
+            CmMobileUser user = new CmMobileUser(0,0,1,0,response.getRunId(),null);
             user.setBaseLoginResponse(new UserLoginResponse(new UserInfo(0, 0),new CmDestination(CmPlace.PRESCRIPTION)));
             SharedData.setData(user);
         }

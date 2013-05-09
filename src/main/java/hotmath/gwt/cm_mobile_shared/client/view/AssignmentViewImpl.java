@@ -4,6 +4,7 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
@@ -135,8 +136,15 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
         public MyGenericTextTag(StudentProblemDto problem) {
             super("li");
-            setHtml(problem.getStudentLabelWithStatus());
+            
             this._problem = problem;
+
+            String html = problem.getStudentLabelWithStatus();
+            
+            if(AssignmentData.doesPidHaveTeacherNote(_lastAssignment.getAssignment().getAssignKey(), problem.getPid())) {
+                html = "<span style='color: red'>" + html + "</span>";
+            }
+            setHtml(html);
         }
     }
 }

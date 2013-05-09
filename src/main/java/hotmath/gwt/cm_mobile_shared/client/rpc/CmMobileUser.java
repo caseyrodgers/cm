@@ -4,6 +4,7 @@ package hotmath.gwt.cm_mobile_shared.client.rpc;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionData;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
@@ -25,16 +26,28 @@ public class CmMobileUser implements Response {
      * 
      */
     CmProgramFlowAction flowAction;
-
+    
+    
+    AssignmentUserInfo assignmentInfo;
+    
     public CmMobileUser() {}
     
-    public CmMobileUser(int uid, int testId, int testSegment, int testSlot, int runId) {
+    public CmMobileUser(int uid, int testId, int testSegment, int testSlot, int runId, AssignmentUserInfo assignmentInfo) {
         this.userId = uid;
         this.testId = testId;
         this.testSegment = testSegment;
         this.testSlot = testSlot;
+        this.assignmentInfo = assignmentInfo;
     }
     
+    public AssignmentUserInfo getAssignmentInfo() {
+        return assignmentInfo;
+    }
+
+    public void setAssignmentInfo(AssignmentUserInfo assignmentInfo) {
+        this.assignmentInfo = assignmentInfo;
+    }
+
     public CmProgramFlowAction getFlowAction() {
         return flowAction;
     }

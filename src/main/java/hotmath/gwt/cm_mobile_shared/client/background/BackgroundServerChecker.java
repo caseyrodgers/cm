@@ -54,9 +54,6 @@ public class BackgroundServerChecker {
             }
         };
         _timer.scheduleRepeating(CHECK_EVERY);
-        
-        /** do it first */
-        checkForUpdate();
     }
     
     
@@ -65,6 +62,10 @@ public class BackgroundServerChecker {
      * Only call server if window is not currently being displayed.
      */
     public void checkForUpdate() {
+        if(this.uid == 0) {
+            return;
+        }
+        
         Log.debug("Checking for server changes...");
         /** handle as separate request to keep errors 
          * silent in case of temp offline

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.server.rpc;
 
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.dao.HaLoginInfoDao;
 import hotmath.cm.login.ClientEnvironment;
 import hotmath.cm.program.CmProgramFlow;
@@ -11,6 +12,8 @@ import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoAction;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentInfo;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
@@ -59,7 +62,9 @@ public class GetCmMobileLoginCommand implements ActionHandler<GetCmMobileLoginAc
         
         StudentModelI sm = CmStudentDao.getInstance().getStudentModelBase(conn, basicUser.getUserKey());
         StudentActiveInfo active = programFlow.getActiveInfo();
-        CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), active.getActiveRunId());
+        
+        AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
+        CmMobileUser mobileUser = new CmMobileUser(sm.getUid(), active.getActiveTestId(), active.getActiveSegment(), active.getActiveSegmentSlot(), active.getActiveRunId(), assignmentInfo);
 
         
         /** create new security key for this login sesssion */

@@ -134,16 +134,23 @@ class MyGenericTextTag extends GenericTextTag<String> {
     public MyGenericTextTag(StudentAssignmentInfo stuInfo) {
         super("li");
         this.studentAssignmentInfo = stuInfo;
-        String html=
-                "<div style='color: gray;float: left;width: 225px;'>" + getStatusString() + "</div>" +
+        String html= 
+               "<div>" + getStatusString() + "</div>" +
                "<div style='clear: both'>"  + stuInfo.getComments() + "</div>";
+        
+        if(stuInfo.isChanged()) {
+            html = "<span style='color: red'>" + html + "</span>";
+        }
         setHtml(html);
     }
 
+    
+    
+    
     private String getStatusString() {
         List<String> statuses = new ArrayList<String>();
         if(studentAssignmentInfo.isGraded()) {
-            statuses.add("<span style='font-weight: bold;color: green'>Score: " + studentAssignmentInfo.getScore() + "</span>");
+            statuses.add("Score: " + studentAssignmentInfo.getScore());
         }
         else {
             if(studentAssignmentInfo.getTurnInDate() != null) {
@@ -173,9 +180,6 @@ class MyGenericTextTag extends GenericTextTag<String> {
             info += status;
         }
         
-        if(studentAssignmentInfo.isChanged()) {
-            info = "<span style='color: red'>" + info + "</span>";
-        }
         return info;
     }
 

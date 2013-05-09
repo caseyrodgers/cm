@@ -2,9 +2,11 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -45,7 +47,6 @@ public class AssignmentData {
     int _uid;
     CallbackWhenDataReady callBack;
     static protected CmMobileAssignmentUser __userData;
-    static protected StudentAssignment __currentAssignment;
     
     public static void clear() {
         __assData = null;
@@ -94,5 +95,23 @@ public class AssignmentData {
     public static void refreshAssData(CallbackWhenDataReady callbackWhenDataReady) {
         __assData = null;
         readAssData(callbackWhenDataReady);
+    }
+
+    /** Return true if this problem has a currently unread teacher note
+     * 
+     * @param pid
+     * @return
+     */
+    public static boolean doesPidHaveTeacherNote(int assignKey, String pid) {
+        if(SharedData.getMobileUser().getAssignmentInfo() != null) {
+            for(ProblemAnnotation pa: SharedData.getMobileUser().getAssignmentInfo().getUnreadAnnotations()) {
+                if(pa.getAssignKey() == assignKey) {
+                    if(pa.getPid().equals(pid)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

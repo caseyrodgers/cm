@@ -1,9 +1,10 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
+import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 
-public class SexyButton extends Button {
+import com.google.gwt.event.dom.client.ClickHandler;
+
+public class SexyButton extends TouchButton {
     
     public SexyButton(String name) {
         this(name, null);
