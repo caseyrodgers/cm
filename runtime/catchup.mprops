@@ -4031,7 +4031,9 @@ and ps.status = 'Submitted'
 
 .key=GET_CORRECT_QUIZ_CCS_NAMES_FOR_STUDENT
 
-SELECT distinct user_id, ins.standard_name
+## TODO: add CQs?
+
+SELECT distinct user_id, ins.standard_name_new
 FROM HA_TEST t
 JOIN HA_TEST_RUN tr
   ON tr.test_id = t.test_id AND tr.answered_correct > 0
@@ -4043,4 +4045,36 @@ JOIN inmh_standard ins
   ON ins.standard_state='common' AND concat('topics/',ins.topic) = trl.lesson_file
 WHERE t.user_id = ?
   AND tr.run_time between ? and ?
-ORDER BY ins.standard_name
+ORDER BY ins.standard_name_new
+
+.key=GET_REVIEW_CCS_NAMES_FOR_STUDENT
+
+SELECT distinct user_id, ins.standard_name_new
+FROM HA_TEST t
+JOIN HA_TEST_RUN tr
+  ON tr.test_id = t.test_id
+JOIN HA_TEST_RUN_INMH_USE iu
+  ON iu.run_id = tr.run_id AND upper(item_type)='REVIEW'
+JOIN inmh_standard ins
+  ON ins.standard_state='common' AND concat('topics/',ins.topic) = iu.item_file
+WHERE t.user_id = ?
+  AND tr.run_time between ? and ?
+UNION
+SELECT distinct user_id, ins.standard_name_new
+FROM HA_TEST t
+JOIN HA_TEST_RUN tr
+  ON tr.test_id = t.test_id
+JOIN HA_TEST_RUN_LESSON rl
+  ON rl.run_id = tr.run_id
+JOIN HA_TEST_RUN_LESSON_PID lp
+  ON lp.run_id = tr.run_id AND lp.lip = rl.id
+JOIN HA_TEST_RUN_INMH_USE iu
+  ON iu.run_id = tr.run_id
+ AND iu.view_time is not null
+ AND iu.item_file = lp.pid
+ AND upper(item_type)='PRACTICE'
+JOIN inmh_standard ins
+  ON ins.standard_state='common' AND concat('topics/',ins.topic) = rl.lesson_file
+WHERE t.user_id = ?
+  AND tr.run_time between ? and ?
+ORDER BY ins.standard_name_new
