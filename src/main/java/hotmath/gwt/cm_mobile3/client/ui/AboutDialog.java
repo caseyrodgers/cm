@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
+import javax.print.DocPrintJob;
+
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -10,14 +12,11 @@ import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
-import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,11 +30,12 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -49,14 +49,17 @@ public class AboutDialog extends DialogBox  {
 	
 	public AboutDialog() {
 		super(true);
+		addStyleName("AboutDialog");
 		setSize("300px", "250px");
-        setText("Info");		
+        setText("About Catchup Math Mobile");		
         setGlassEnabled(true);
         setAnimationEnabled(true);
         setAutoHideEnabled(true);
+
         
-        TabPanel _tabPanel = new TabPanel();
-        
+        DockPanel dock = new DockPanel();
+        HorizontalPanel  buttonBar = new HorizontalPanel();
+        dock.add(buttonBar,DockPanel.NORTH);
         
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.add(uiBinder.createAndBindUi(this));
@@ -65,8 +68,17 @@ public class AboutDialog extends DialogBox  {
 		String name=null;
 		String segment=null;
 		
+		Anchor closeAnchor = new Anchor("x");
+		closeAnchor.addStyleName("closeAnchor");
+		closeAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                hide();
+            }
+        });
+		mainPanel.add(closeAnchor);
+		
 		if(SharedData.getUserInfo() != null) {
-		    
 		    String nameCap = SharedData.getUserInfo().getUserName();  
 	        nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
 	        String s = "Welcome <b>" + nameCap + "</b>.";
@@ -122,6 +134,8 @@ public class AboutDialog extends DialogBox  {
             discloseProgram.setVisible(false);
             discloseGoto.setVisible(false);
             discloseAssignment.setVisible(false);
+            
+            discloseMoreInfo.setOpen(true);
         }
 		
 		loggedInAs.setInnerHTML(loggedIn);
@@ -129,27 +143,28 @@ public class AboutDialog extends DialogBox  {
 		
 		
 		
-		HorizontalPanel hp = new HorizontalPanel();
+		
 		SexyButton close = new SexyButton("Close",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
             }
         });
-		hp.add(close);
+		buttonBar.add(close);
 		
-		SexyButton check = new SexyButton("Check Server",new ClickHandler() {
-	            @Override
-	            public void onClick(ClickEvent event) {
-	                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
-	            }
-	        });
-	    hp.add(check);
-
-		hp.getElement().setAttribute("style",  "margin: 10px");
+		buttonBar.getElement().setAttribute("style",  "margin: 10px");
 		
 		if(SharedData.getMobileUser() == null) {
 		    discloseGoto.setVisible(false);
+		}
+		else {
+		      SexyButton check = new SexyButton("Check Server",new ClickHandler() {
+	                @Override
+	                public void onClick(ClickEvent event) {
+	                    CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+	                }
+	            });
+	        buttonBar.add(check);
 		}
 		
 		
@@ -160,16 +175,20 @@ public class AboutDialog extends DialogBox  {
         feedback.setContent(new FeedbackPanel());
         
         mainPanel.add(feedback);
-		mainPanel.add(hp);
-		
-		
-		_tabPanel.add(mainPanel, "About");
-		_tabPanel.add(new HTML("ASSIGNMENTS"), "Assignments");
-		_tabPanel.selectTab(0);
-		
-		
+
+        mainPanel.add(buttonBar);
 		setWidget(mainPanel);
-		
+		// where are we?
+		String token = History.getToken();
+		if(token != null) {
+		    if(token.startsWith("assignment")) {
+		        // is in assignments
+		        discloseAssignment.setOpen(true);
+		    }
+		    else {
+		        discloseProgram.setOpen(true);
+		    }
+		}
         setVisible(true);
 	}
 	
@@ -218,7 +237,7 @@ public class AboutDialog extends DialogBox  {
 	TouchButton assignmentsButton, programButton;
 	
 	@UiField
-	DisclosurePanel discloseProgram,discloseGoto, discloseAssignment;
+	DisclosurePanel discloseProgram,discloseGoto, discloseAssignment, discloseMoreInfo;
 }
 
 

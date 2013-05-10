@@ -147,8 +147,17 @@ background-color: black;
     line-height: 2em;
 }
 
-.dialogTop {
-   background: #EA4505; 
+.AboutDialog .dialogTop {
+   background: #EA4505;
+   height: 40px;	 
+}
+
+
+.AboutDialog .closeAnchor {
+	position: absolute;
+	top: 0;
+	right: 2px;
+	color: white;
 }
    
 
