@@ -4053,28 +4053,12 @@ SELECT distinct user_id, ins.standard_name_new
 FROM HA_TEST t
 JOIN HA_TEST_RUN tr
   ON tr.test_id = t.test_id
-JOIN HA_TEST_RUN_INMH_USE iu
-  ON iu.run_id = tr.run_id AND upper(item_type)='REVIEW'
-JOIN inmh_standard ins
-  ON ins.standard_state='common' AND concat('topics/',ins.topic) = iu.item_file
-WHERE t.user_id = ?
-  AND tr.run_time between ? and ?
-UNION
-SELECT distinct user_id, ins.standard_name_new
-FROM HA_TEST t
-JOIN HA_TEST_RUN tr
-  ON tr.test_id = t.test_id
 JOIN HA_TEST_RUN_LESSON rl
-  ON rl.run_id = tr.run_id
-JOIN HA_TEST_RUN_LESSON_PID lp
-  ON lp.run_id = tr.run_id AND lp.lip = rl.id
-JOIN HA_TEST_RUN_INMH_USE iu
-  ON iu.run_id = tr.run_id
- AND iu.view_time is not null
- AND iu.item_file = lp.pid
- AND upper(item_type)='PRACTICE'
+  ON rl.run_id = tr.run_id AND rl.date_completed is not null
 JOIN inmh_standard ins
   ON ins.standard_state='common' AND concat('topics/',ins.topic) = rl.lesson_file
 WHERE t.user_id = ?
-  AND tr.run_time between ? and ?
+  AND rl.date_completed between ? and ?
 ORDER BY ins.standard_name_new
+
+## TODO CCS usage for Assignments
