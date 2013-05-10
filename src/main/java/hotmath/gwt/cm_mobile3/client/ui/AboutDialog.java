@@ -3,7 +3,7 @@ package hotmath.gwt.cm_mobile3.client.ui;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
@@ -61,14 +61,26 @@ public class AboutDialog extends DialogBox  {
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.add(uiBinder.createAndBindUi(this));
 		
-		String loggedIn="not logged in";
+		String loggedIn="You are not logged in";
 		String name=null;
 		String segment=null;
 		
 		if(SharedData.getUserInfo() != null) {
-		    loggedIn = SharedData.getUserInfo().getUserName();
-		    name = SharedData.getUserInfo().getTestName();
 		    
+		    String nameCap = SharedData.getUserInfo().getUserName();  
+	        nameCap = nameCap.substring(0, 1).toUpperCase() + nameCap.substring(1);
+	        String s = "Welcome <b>" + nameCap + "</b>.";
+	        int viewCount = SharedData.getUserInfo().getViewCount();
+	        if (viewCount > 1) {
+	            s += "  You have completed " + viewCount + " problems. ";
+	            if (SharedData.getUserInfo().getTutorInputWidgetStats().getCountWidgets() > 0) {
+	                s += "Your <a href='#'>score</a> is " + SharedData.getUserInfo().getTutorInputWidgetStats().getCorrectPercent() + "%";
+	            }
+	        }
+		    loggedIn = s;
+		    
+		    
+		    name = SharedData.getUserInfo().getTestName();
 	        int seg = SharedData.getUserInfo().getTestSegment();
 	        int segCnt = SharedData.getUserInfo().getProgramSegmentCount();
 	        if(segCnt > 1) {
@@ -83,20 +95,26 @@ public class AboutDialog extends DialogBox  {
 	            programName.setInnerHTML(value);
 	        }
 	        
-	        getScoreFromServer();
+	        //getScoreFromServer();
 	        
 	        AssignmentData.readAssData(new CallbackWhenDataReady() {
 	            @Override
 	            public void isReady() {
-	                String info="Open Assignments: " + SharedData.getMobileUser().getAssignmentInfo().getActiveAssignments() + "</br>";
-	                AssignmentUserInfo au = SharedData.getMobileUser().getAssignmentInfo();
-	                if(au.getUnreadAnnotations().size() > 0) {
-	                    info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
+	                if(!SharedData.getMobileUser().getAssignmentInfo().isAdminUsingAssignments()) {
+	                    discloseAssignment.setVisible(false);    
 	                }
-	                assignmentInfo.add(new HTML(info));
-                    if(au.getUnreadAnnotations().size() > 0) {
-                        assignmentInfo.add(new NextUnreadTeacherNoteButton(au.getUnreadAnnotations())); 
-                    }
+	                else {
+	                    discloseAssignment.setVisible(true);
+    	                String info="Open Assignments: " + SharedData.getMobileUser().getAssignmentInfo().getActiveAssignments() + "</br>";
+    	                AssignmentUserInfo au = SharedData.getMobileUser().getAssignmentInfo();
+    	                if(au.getUnreadMessageCount() > 0) {
+    	                    info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();
+    	                }
+    	                assignmentInfo.add(new HTML(info));
+                        if(au.getUnreadAnnotations().size() > 0) {
+                            assignmentInfo.add(new NextUnreadTeacherNoteButton(au.getUnreadAnnotations())); 
+                        }
+	                }
 	            }
 	        });
 		}
@@ -112,7 +130,7 @@ public class AboutDialog extends DialogBox  {
 		
 		
 		HorizontalPanel hp = new HorizontalPanel();
-		TouchButton close = new TouchButton("Close",new ClickHandler() {
+		SexyButton close = new SexyButton("Close",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hide();
@@ -120,7 +138,7 @@ public class AboutDialog extends DialogBox  {
         });
 		hp.add(close);
 		
-		TouchButton check = new TouchButton("Check Server",new ClickHandler() {
+		SexyButton check = new SexyButton("Check Server",new ClickHandler() {
 	            @Override
 	            public void onClick(ClickEvent event) {
 	                CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
@@ -155,24 +173,24 @@ public class AboutDialog extends DialogBox  {
         setVisible(true);
 	}
 	
-	private void getScoreFromServer() {
-	    if(SharedData.getUserInfo() == null || SharedData.getUserInfo().getUid() == 0) {
-	        return;
-	    }
-	    
-	    CatchupMathMobileShared.getCmService().execute(new GetUserWidgetStatsAction(SharedData.getUserInfo().getUid()), new AsyncCallback<UserTutorWidgetStats>() {
-	        
-	        @Override
-	        public void onSuccess(UserTutorWidgetStats result) {
-	            score.setInnerHTML(result.getCorrectPercent() + "% (" + result.getCountCorrect()  + "/" + result.getCountWidgets() + ")");
-	        }
-	        
-	        @Override
-	        public void onFailure(Throwable caught) {
-	            Log.error("Error getting user program stats from server");
-	        }
-        });
-    }
+//	private void getScoreFromServer() {
+//	    if(SharedData.getUserInfo() == null || SharedData.getUserInfo().getUid() == 0) {
+//	        return;
+//	    }
+//	    
+//	    CatchupMathMobileShared.getCmService().execute(new GetUserWidgetStatsAction(SharedData.getUserInfo().getUid()), new AsyncCallback<UserTutorWidgetStats>() {
+//	        
+//	        @Override
+//	        public void onSuccess(UserTutorWidgetStats result) {
+//	            score.setInnerHTML(result.getCorrectPercent() + "% (" + result.getCountCorrect()  + "/" + result.getCountWidgets() + ")");
+//	        }
+//	        
+//	        @Override
+//	        public void onFailure(Throwable caught) {
+//	            Log.error("Error getting user program stats from server");
+//	        }
+//        });
+//    }
 
     public void showCentered() {
 		center();
@@ -194,7 +212,7 @@ public class AboutDialog extends DialogBox  {
     HTMLPanel assignmentInfo;
     
 	@UiField
-	Element loggedInAs,programInfo,programName, score, assignmentsDiv, programDiv;
+	Element loggedInAs,programInfo,programName,  assignmentsDiv, programDiv;
 	
 	@UiField
 	TouchButton assignmentsButton, programButton;
