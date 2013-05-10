@@ -4,7 +4,6 @@ import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
@@ -20,17 +19,16 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentListViewImpl extends Composite implements AssignmentListView {
     
     private Presenter presenter;
     
-    GenericContainerTag listItems = new GenericContainerTag("ul");
-    
+    GenericList listItems = new GenericList();
+    Label countLabel;
     public AssignmentListViewImpl() {
-        listItems.addStyleName("touch");
-        listItems.addStyleName("large");
         DockPanel dockPanel = new DockPanel();
         
         SubToolBar subToolBar = new SubToolBar();
@@ -41,21 +39,13 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
             }
         }));
         dockPanel.add(subToolBar, DockPanel.NORTH);
-        
-        FlowPanel sp = new FlowPanel();
-        
-        sp.getElement().setAttribute("style",  "margin: 10px");
-        sp.add(listItems);
-        
-        dockPanel.add(sp, DockPanel.CENTER);
+       
+        dockPanel.add(listItems, DockPanel.CENTER);
         initWidget(dockPanel);
         
         addStyleName("AssignmentListViewImpl");
     }
 
-    private Widget createLedgend() {
-        return MyGenericTextTag.getLedgend();
-    }
 
     @Override
     public Widget asWidget() {
@@ -99,7 +89,7 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
 
     @Override
     public void displayAssigmments(List<StudentAssignmentInfo> assignments) {
-        listItems.clear();
+        listItems.getList().clear();
         for(StudentAssignmentInfo bm: assignments) {
             
             if(bm.getStatus().equals("Closed")) {
@@ -116,8 +106,10 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
                     presenter.showAssignment(tag.getStudentAssignmentInfo());
                 }
             });
-            listItems.add(tt);
+            listItems.getList().add(tt);
         }
+        
+        listItems.updateCount();
         
         getWidget().getElement().setAttribute("style","display:block");
     }
