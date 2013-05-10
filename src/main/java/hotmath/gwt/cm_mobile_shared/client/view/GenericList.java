@@ -20,7 +20,7 @@ public class GenericList extends FlowPanel {
         
         countLabel = new Label("Count: " );
         countLabel.getElement().setAttribute("style",  "float: right;margin-right: 15px;font-size: .8em;color: gray;");
-        listItems.getElement().setAttribute("style",  "clear: both");
+        listItems.getElement().setAttribute("style",  "clear: both;");
         
         getElement().setAttribute("style",  "margin: 10px");
         

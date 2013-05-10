@@ -5,7 +5,6 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
-import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
@@ -26,7 +25,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     FlowPanel _main;
 
-    GenericContainerTag listItems = new GenericContainerTag("ul");
+    GenericList list = new GenericList();
     SexyButton _turnInAssignment;
     AssignmentHeaderPanel _headerInfo;
 
@@ -62,9 +61,6 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         _main.add(new HTML("Loading Assigment ..."));
         flow.add(_main);
         initWidget(flow);
-
-        listItems.addStyleName("touch");
-        listItems.addStyleName("large");
 
         addStyleName("AssignmentViewImpl");
     }
@@ -110,7 +106,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     public void loadAssignment(StudentAssignment assignment) {
         _lastAssignment = assignment;
         _main.setVisible(false);
-        listItems.clear();
+        list.getList().clear();
         for (StudentProblemDto problem : assignment.getStudentStatuses().getAssigmentStatuses()) {
             GenericTextTag<String> tt = new MyGenericTextTag(problem);
             tt.addStyleName("group");
@@ -121,11 +117,12 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
                     presenter.showProblem(tag._problem);
                 }
             });
-            listItems.add(tt);
+            list.getList().add(tt);
         }
+        list.updateCount();
         _turnInAssignment.setEnabled(!assignment.isGraded() && !assignment.isTurnedIn());
         _main.clear();
-        _main.add(listItems);
+        _main.add(list);
         
         _headerInfo.loadAssignment(assignment);
         _main.setVisible(true);
@@ -140,9 +137,10 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             this._problem = problem;
 
             String html = problem.getStudentLabelWithStatus();
+            getElement().setAttribute("style", "position: relative");
             
             if(AssignmentData.doesPidHaveTeacherNote(_lastAssignment.getAssignment().getAssignKey(), problem.getPid())) {
-                html = "<span style='color: red'>" + html + "</span>";
+                html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/assignments/has_notes_unread.png'/>" + html;
             }
             setHtml(html);
         }
