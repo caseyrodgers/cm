@@ -173,7 +173,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
             @Override
             public void showWhiteboard() {
-                presenter.showWhiteboard(_showWork);
+                showWhiteboardToggle(true);
             }
 
             @Override
