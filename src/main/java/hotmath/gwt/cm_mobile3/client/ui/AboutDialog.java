@@ -117,7 +117,8 @@ public class AboutDialog extends DialogBox  {
 	                }
 	                else {
 	                    discloseAssignment.setVisible(true);
-    	                String info="Open Assignments: " + SharedData.getMobileUser().getAssignmentInfo().getActiveAssignments() + "</br>";
+	                    int ca = SharedData.getMobileUser().getAssignmentInfo().getActiveAssignments();
+    	                String info="You have " + ca + " assignment" + (ca!=1?"s":"") + " to complete.</br>";
     	                AssignmentUserInfo au = SharedData.getMobileUser().getAssignmentInfo();
     	                if(au.getUnreadMessageCount() > 0) {
     	                    info += "Unread Teacher Notes: " + au.getUnreadAnnotations().size();

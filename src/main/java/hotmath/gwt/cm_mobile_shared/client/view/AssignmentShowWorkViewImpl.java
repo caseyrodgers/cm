@@ -63,7 +63,6 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
      * @param presenter
      */
     private void setPresenterAsync(Presenter presenter) {
-        _showWorkPanel.setProblemStatement(presenter.getProblemStatementHtml());
         presenter.prepareShowWorkView(this);
     }
 
@@ -110,7 +109,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
     }
 
     @Override
-    public void loadWhiteboard(AssignmentWhiteboardData data) {
+    public void loadWhiteboard(AssignmentWhiteboardData data,String problemStatement) {
         
         if(data.getStudentProblem().getProblem().getProblemType() == ProblemType.WHITEBOARD) {
             _subBar.setVisible(true);
@@ -129,6 +128,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
         }
         
         _showWorkPanel.loadWhiteboard(data.getCommands());
+        _showWorkPanel.setProblemStatement(problemStatement);
     }
 
 }

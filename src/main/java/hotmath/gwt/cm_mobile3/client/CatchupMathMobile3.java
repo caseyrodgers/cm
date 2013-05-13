@@ -46,6 +46,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.logical.shared.ResizeEvent;
+import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
@@ -181,6 +183,16 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         __clientFactory.getEventBus().addHandler(AutoAdvanceUserEvent.TYPE, new AutoAdvanceUserEventHandlerImpl());
 
+        
+        
+        Window.addResizeHandler(new ResizeHandler() {
+            @Override
+            public void onResize(ResizeEvent event) {
+                CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
+            }
+        });
+        
+        
         Log.info("Catchup Math Mobile Initialized");
     }
 

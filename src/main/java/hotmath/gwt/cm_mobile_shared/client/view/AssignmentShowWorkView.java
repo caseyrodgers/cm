@@ -20,5 +20,5 @@ public interface AssignmentShowWorkView extends IPage, IsWidget {
         void submitShowWork();        
     }
     
-    void loadWhiteboard(AssignmentWhiteboardData whiteData);
+    void loadWhiteboard(AssignmentWhiteboardData whiteData, String string);
 }

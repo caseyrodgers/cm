@@ -32,6 +32,8 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
     private int assignKey;
     private String pid;
     
+    AssignmentWhiteboardData __lastWhiteboardData;
+    
     public AssignmentShowworkActivity(int assignKey, String pid) {
         __lastAssignKey = assignKey;
         __lastPid = pid;
@@ -65,11 +67,13 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
             GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(), pid, assignKey);
             CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
                 public void onSuccess(final AssignmentWhiteboardData whiteData) {
+                    __lastWhiteboardData = whiteData;
+                    
                     Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                         @Override
                         public void execute() {
                             if(showWorkView != null) {
-                                showWorkView.loadWhiteboard(whiteData);                    }
+                                showWorkView.loadWhiteboard(whiteData, whiteData.getProblemStatement());                    }
                             }
                     });
                 }
@@ -87,12 +91,16 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
 
     @Override
     public String getProblemStatementHtml() {
-        String html = jsni_getProblemStatementFromDocument();
+        
+        String html = __lastWhiteboardData.getProblemStatement();
+        //String html = jsni_getProblemStatementFromDocument();
         
         // we have to remove hm_flash_widget otherwise we will
         // have duplicate ids and cause problems when we change the submitted 
         // message .. 
-        
+        if(html == null) {
+            html = "NO PROBLEM STATEMENT";
+        }
         html = html.replace("hm_flash_widget", "_hm_flash_widget");
         return html;
     }

@@ -7,16 +7,25 @@ import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteHandler;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -68,7 +77,6 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 view.loadProblem(problem);
                 
                 CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(problem.getStudentProblem().getStudentLabel()));
-                
             }
 
             @Override
@@ -117,9 +125,28 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         });
     }
 
+    AssignmentWhiteboardData __lastWhiteboardData;
+    
     @Override
-    public void showWhiteboard(String title) {
-        History.newItem("assignment_showwork:" + assignKey + ":" + pid + ":" + System.currentTimeMillis());
+    public void showWhiteboard(final ShowWorkPanel2 showWorkPanel) {
+        GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(), pid, assignKey);
+        CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
+            public void onSuccess(final AssignmentWhiteboardData whiteData) {
+                __lastWhiteboardData = whiteData;
+                
+                Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                    @Override
+                    public void execute() {
+                        if(showWorkPanel != null) {
+                            showWorkPanel.loadWhiteboard(whiteData.getCommands());                    }
+                        }
+                });
+            }
+
+            public void onFailure(Throwable caught) {
+                Log.error("Error getting whiteboard data: " + caught.toString(), caught);
+            };
+        });
     }
 
     @Override
@@ -135,6 +162,11 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     @Override
     public void showWorkHasBeenSubmitted() {
         AssignmentShowworkActivity.submitShowWorkToServer(__lastProblem.getAssignKey(),  __lastProblem.getInfo().getPid());
+    }
+    
+    @Override
+    public Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+        return new SaveAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(),this.assignKey, this.pid, commandType, data, false);        
     }
 
     static {

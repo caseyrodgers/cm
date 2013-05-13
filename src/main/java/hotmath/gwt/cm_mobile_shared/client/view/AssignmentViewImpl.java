@@ -139,8 +139,13 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             String html = problem.getStudentLabelWithStatus();
             getElement().setAttribute("style", "position: relative");
             
-            if(AssignmentData.doesPidHaveTeacherNote(_lastAssignment.getAssignment().getAssignKey(), problem.getPid())) {
-                html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/assignments/has_notes_unread.png'/>" + html;
+            if(problem.isHasShowWorkAdmin()) {
+                if(AssignmentData.doesPidHaveTeacherNote(_lastAssignment.getAssignment().getAssignKey(), problem.getPid())) {
+                    html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/assignments/has_notes_unread.png'/>" + html;
+                }
+                else {
+                    html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/assignments/has_notes.png'/>" + html;
+                }
             }
             setHtml(html);
         }
