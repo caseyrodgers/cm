@@ -34,7 +34,6 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.sencha.gxt.widget.core.client.Slider;
 
 public class AssignmentProblemViewImpl extends Composite implements AssignmentProblemView {
 
@@ -55,14 +54,14 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         whiteboardControlView.add(new SexyButton("View Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                showWhiteboardToggle(true);
+                showWhiteboard();
             }
         }));
         
         whiteboardControlHide.add(new SexyButton("Remove Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                showWhiteboardToggle(false);
+                hideWhiteboard();
             }
         }));
         //whiteboardControlHide.add();
@@ -75,23 +74,21 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         initWidget(flowPanel);
     }
 
-    protected void showWhiteboardToggle(boolean show) {
+    protected void setupWhiteboardTools(boolean show) {
         
         if(show) {
             _subBar.remove(whiteboardControlView);
             _subBar.add(whiteboardControlHide);
-            
-            showWhiteboard();
         }
         else {
             _subBar.remove(whiteboardControlHide);
             _subBar.add(whiteboardControlView);
-
-            hideWhiteboard();
         }
     }
 
     private void hideWhiteboard() {
+        setupWhiteboardTools(false);
+        
         if(_showWork != null) {
             _main.remove(_showWork);
             _showWork = null;
@@ -141,17 +138,17 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     }
 
     @Override
-    public void setPresenter(Presenter listener) {
+    public void setPresenter(Presenter listener, boolean shouldShowWhiteboard) {
         this.presenter = listener;
         setupInitialPanel();
 
-        presenter.fetchProblem(this);
+        presenter.fetchProblem(this, shouldShowWhiteboard);
     }
 
     @Override
     public void loadProblem(AssignmentProblem problem) {
         this.problem = problem;
-        showWhiteboardToggle(false);
+        setupWhiteboardTools(false);
         _main.clear();
 
         tutor = new TutorWrapperPanel(true, true, true, false, new TutorCallbackDefault() {
@@ -173,7 +170,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
             @Override
             public void showWhiteboard() {
-                showWhiteboardToggle(true);
+                AssignmentProblemViewImpl.this.showWhiteboard();
             }
 
             @Override
@@ -255,6 +252,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     @Override
     public void showWhiteboard() {
 
+        setupWhiteboardTools(true);
+        
         _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
             @Override
             public void windowResized() {
@@ -277,9 +276,9 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     private void alignWhiteboard() {
         if (_showWork != null) {
             int width = tutor.getElement().getParentElement().getClientWidth();
-            int height = tutor.getElement().getParentElement().getClientHeight();
+            //int height = tutor.getElement().getParentElement().getClientHeight();
 
-            _showWork.getElement().setAttribute("style", "width: " + width + ";height: " + height);
+            _showWork.getElement().setAttribute("style", "width: " + width + ";");
         }
     }
 

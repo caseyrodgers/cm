@@ -26,7 +26,7 @@ public class NextUnreadTeacherNoteButton extends SexyButton implements ClickHand
         if(notes.size() > 0) {
             ProblemAnnotation note = notes.get(0);
             notes.remove(0);
-            History.newItem("assignment_showwork:" + note.getAssignKey() + ":" + note.getPid() + ":" + System.currentTimeMillis());
+            History.newItem("assignment_problem:" + note.getAssignKey() + ":" + note.getPid() + ":sw:" + System.currentTimeMillis());
         }
     }
 }

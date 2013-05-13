@@ -57,7 +57,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     }
     
     @Override
-    public void fetchProblem(final AssignmentProblemView view) {
+    public void fetchProblem(final AssignmentProblemView view, final boolean shouldShowWhiteboard) {
         __lastAssignKey = assignKey;
         __lastPid = pid;
         
@@ -75,6 +75,10 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 __lastProblem = problem;
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 view.loadProblem(problem);
+                
+                if(shouldShowWhiteboard) {
+                    view.showWhiteboard();
+                }
                 
                 CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(problem.getStudentProblem().getStudentLabel()));
             }

@@ -11,12 +11,13 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AssignmentProblemView extends IPage, IsWidget {
-    void setPresenter(Presenter listener);
+    void setPresenter(Presenter listener, boolean showWhiteboard);
     public interface Presenter {
         void gotoAssignment();
 
         String getProblemTitle();
-        void fetchProblem(AssignmentProblemView view);
+        void fetchProblem(AssignmentProblemView assignmentProblemView, boolean shouldShowWhiteboard);
+
 
         void markSolutionAsComplete();
 
@@ -33,6 +34,7 @@ public interface AssignmentProblemView extends IPage, IsWidget {
         void showWorkHasBeenSubmitted();
 
         Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String data);
+
     }
     
     void loadProblem(AssignmentProblem problem);

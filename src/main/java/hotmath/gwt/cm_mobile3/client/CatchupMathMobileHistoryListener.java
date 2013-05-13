@@ -248,10 +248,11 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             else if(type.equals("assignment_problem")) {
                 int assignKey = Integer.parseInt(token.getTokenPart(1));
                 String pid = token.getTokenPart(2);
+                boolean showWork = token.getTokenPart(3).equals("sw"); // show work
 
                 AssignmentProblemActivity activity = new AssignmentProblemActivity(assignKey, pid);
                 AssignmentProblemView view = cf.getAssignmentProblemView();
-                view.setPresenter(activity);
+                view.setPresenter(activity, showWork);
                 eb.fireEvent(new LoadNewPageEvent(view));
             }
             else if(type.equals("assignment_showwork")) {
