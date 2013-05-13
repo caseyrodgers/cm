@@ -4061,4 +4061,18 @@ WHERE t.user_id = ?
   AND rl.date_completed between ? and ?
 ORDER BY ins.standard_name_new
 
-## TODO CCS usage for Assignments
+.key=GET_ASSIGNMENT_CCS_NAMES_FOR_STUDENT
+
+SELECT distinct uid, ins.standard_name_new
+FROM CM_ASSIGNMENT_USER au
+JOIN CM_ASSIGNMENT a
+  ON au.assign_key = a.assign_key
+JOIN CM_ASSIGNMENT_PID_ANSWERS pa
+  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.correct=1
+JOIN inmh_map im
+  ON im.guid = pa.pid
+JOIN inmh_standard ins
+  ON ins.standard_state='common' AND im.file = concat('topics/', ins.topic)
+where au.uid = ?
+  and a.due_date between ? and ?
+order by ins.standard_name asc
