@@ -7,6 +7,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -59,12 +60,13 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     }
     
     @Override
-    public void fetchProblem(final AssignmentProblemView view, final boolean shouldShowWhiteboard) {
+    public void fetchProblem(final AssignmentProblemView view, final boolean shouldShowWhiteboard, final CallbackOnComplete callback) {
         __lastAssignKey = assignKey;
         __lastPid = pid;
         
         if(__lastProblem != null && __lastProblem.getAssignKey() == assignKey && __lastProblem.getInfo().getPid().equals(pid)) {
-            loadProblem(view,  __lastProblem);
+            view.loadProblem(__lastProblem);
+            callback.isComplete();
             return;
         }
         
@@ -81,10 +83,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 if(shouldShowWhiteboard) {
                     view.showWhiteboard();
                 }
-                
-                String title = problem.getStudentProblem().getStudentLabel();
-                title += ", " + DateUtils4Gwt.getPrettyDateString(problem.getAssignmentDueDate(), false);
-                CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(title));
+                callback.isComplete();
             }
 
             @Override
@@ -94,6 +93,12 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 MessageBox.showError("There was a problem talking to the server: " + caught);
             }
         });
+    }
+
+    protected void fireHeaderChange() {
+        String title = __lastProblem.getStudentProblem().getStudentLabel();
+        title += ", " + DateUtils4Gwt.getPrettyDateString(__lastProblem.getAssignmentDueDate(), false);
+        CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(title));        
     }
 
     @Override

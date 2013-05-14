@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentProblemActivity;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
@@ -11,13 +13,12 @@ import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface AssignmentProblemView extends IPage, IsWidget {
-    void setPresenter(Presenter listener, boolean showWhiteboard);
+    void setPresenter(Presenter presenter, boolean showWork, CallbackOnComplete callbackOnComplete);
     public interface Presenter {
         void gotoAssignment();
 
         String getProblemTitle();
-        void fetchProblem(AssignmentProblemView assignmentProblemView, boolean shouldShowWhiteboard);
-
+        void fetchProblem(AssignmentProblemView assignmentProblemView, boolean shouldShowWhiteboard, CallbackOnComplete callback);
 
         void markSolutionAsComplete();
 

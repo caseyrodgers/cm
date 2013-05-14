@@ -1,9 +1,11 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
@@ -115,7 +117,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public String getViewTitle() {
-        return "Assignment Problem";
+        return problem.getStudentProblem().getStudentLabel() + ", " + DateUtils4Gwt.getPrettyDateString(problem.getAssignmentDueDate(), false);
     }
 
     @Override
@@ -151,11 +153,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     }
 
     @Override
-    public void setPresenter(Presenter listener, boolean shouldShowWhiteboard) {
+    public void setPresenter(Presenter listener, boolean shouldShowWhiteboard, CallbackOnComplete callback) {
         this.presenter = listener;
         setupInitialPanel();
 
-        presenter.fetchProblem(this, shouldShowWhiteboard);
+        presenter.fetchProblem(this, shouldShowWhiteboard, callback);
     }
 
     @Override

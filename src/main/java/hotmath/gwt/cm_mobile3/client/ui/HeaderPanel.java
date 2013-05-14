@@ -388,9 +388,7 @@ public class HeaderPanel extends Composite {
             mInactiveTitle = oldTitle;
 
         }
-
         configureActiveButtonEvent();
-
     }
 
     private static CssLandscapeOverflow getLandscapeOverflow(int width, boolean withButton) {
@@ -528,4 +526,6 @@ public class HeaderPanel extends Composite {
     private native void showWhiteboard() /*-{
         $wnd.TutorManager.showWhiteboard();
     }-*/;
+    
+    
 }

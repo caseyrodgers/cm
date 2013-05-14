@@ -229,7 +229,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
      * @param token
      * @param event
      */
-    protected void onValueChangeRequiresAssignmentData(ClientFactory cf, EventBus eb, TokenParser token, ValueChangeEvent<String> event) {
+    protected void onValueChangeRequiresAssignmentData(ClientFactory cf, final EventBus eb, TokenParser token, ValueChangeEvent<String> event) {
             String type = token.getType();
             if(type.equals("assignment_list")) {
                 AssignmentListActivity activity = new AssignmentListActivity();
@@ -251,9 +251,13 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 boolean showWork = token.getTokenPart(3).equals("sw"); // show work
 
                 AssignmentProblemActivity activity = new AssignmentProblemActivity(assignKey, pid);
-                AssignmentProblemView view = cf.getAssignmentProblemView();
-                view.setPresenter(activity, showWork);
-                eb.fireEvent(new LoadNewPageEvent(view));
+                final AssignmentProblemView view = cf.getAssignmentProblemView();
+                view.setPresenter(activity, showWork, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        eb.fireEvent(new LoadNewPageEvent(view));
+                    }
+                });
             }
             else if(type.equals("assignment_showwork")) {
                 int assignKey = Integer.parseInt(token.getTokenPart(1));
