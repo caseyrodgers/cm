@@ -26,8 +26,10 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -44,6 +46,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     private AssignmentProblem problem;
     HorizontalPanel whiteboardControlView, whiteboardControlHide;
     SubToolBar _subBar;
+    SexyButton _submitWhiteboard;
+    
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
         FlowPanel flowPanel = new FlowPanel();
@@ -64,7 +68,16 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 hideWhiteboard();
             }
         }));
-        //whiteboardControlHide.add();
+        
+        _submitWhiteboard = new SexyButton("Submit Whiteboard", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                presenter.showWorkHasBeenSubmitted();
+                _submitWhiteboard.setVisible(false);
+                hideWhiteboard();
+            }
+        });
+        whiteboardControlHide.add(_submitWhiteboard);
 
         _subBar.add(whiteboardControlView);
         flowPanel.add(_subBar);
@@ -238,8 +251,10 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 if (problem.getProblemType() == ProblemType.WHITEBOARD) {
                     String status = problem.getStatus();
                     if (!status.equals(ProblemStatus.SUBMITTED.toString())) {
+                        _submitWhiteboard.setVisible(true);
                         TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
                     } else {
+                        _submitWhiteboard.setVisible(false);
                         TutorWrapperPanel.jsni_showWhiteboardStatus(status);
                     }
                 }
@@ -270,17 +285,42 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
         });
         _main.add(_showWork);
+        
+        // position to top of document so toolbar is visible on open.
+        Window.scrollTo(0, 0);
+
         alignWhiteboard();
     }
 
     private void alignWhiteboard() {
+        
         if (_showWork != null) {
+            // setupShowWorkInViewport(_showWork.getElement());
             int width = tutor.getElement().getParentElement().getClientWidth();
-            //int height = tutor.getElement().getParentElement().getClientHeight();
-
-            _showWork.getElement().setAttribute("style", "width: " + width + ";");
+            int height = tutor.getElement().getParentElement().getClientWidth();
+            
+            // height is predetermined in whiteboard.js
+            _showWork.getElement().setAttribute("style", "width: " + width + ";height: " + height);  
         }
     }
+
+    native private void setupShowWorkInViewport(Element ele) /*-{
+        var viewableSize = $wnd.getViewableSize();
+        var viewHeight = viewableSize[1];
+        
+        var scroll = $wnd.getScrollXY();
+        var top = scroll[1];
+        
+        var vars = [top, viewHeight];
+        
+        ele.style.left = 0;
+        ele.style.top = top;
+        
+        alert('element: ' + ele);
+        
+        // alert('vars: ' + vars);
+        //alert('viewableSize:' + viewableSize + ", scroll: " + scroll);
+    }-*/;
 
     static {
         CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {

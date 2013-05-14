@@ -78,6 +78,7 @@
                    ../../../../../../hotmath2/web/js/tutor_widget_combined.js
 
                    cm_core-min.js
+                   
                    CatchupMathMobile3-min.js
               " />
         </concat>

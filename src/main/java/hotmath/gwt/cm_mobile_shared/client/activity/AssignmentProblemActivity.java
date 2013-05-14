@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
@@ -165,7 +166,19 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public void showWorkHasBeenSubmitted() {
-        AssignmentShowworkActivity.submitShowWorkToServer(__lastProblem.getAssignKey(),  __lastProblem.getInfo().getPid());
+            CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(pid, null, false));
+            
+            SaveAssignmentProblemStatusAction action = new SaveAssignmentProblemStatusAction(AssignmentData.getUserData().getUid(), assignKey,pid, "Submitted");
+            CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
+                @Override
+                public void onSuccess(RpcData result) {
+                    Log.info("Showwork submitted");
+                }
+                @Override
+                public void onFailure(Throwable caught) {
+                    Log.error("Error submitting showwork");
+                }
+            });
     }
     
     @Override
