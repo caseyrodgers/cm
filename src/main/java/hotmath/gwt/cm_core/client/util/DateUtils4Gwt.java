@@ -10,13 +10,16 @@ public class DateUtils4Gwt {
     private static DateTimeFormat formatNormal = DateTimeFormat.getFormat("MMM d");
     
     public static String getPrettyDateString(Date dueDate) {
+        return getPrettyDateString(dueDate, true);
+    }
+    public static String getPrettyDateString(Date dueDate, boolean useRelative) {
 
         long due = dueDate.getTime();
         int oneDay = (60 * 1000) * 60 * 24;
         long now = new Date().getTime();
 
         String formatedString;
-        if(due < now ) {
+        if(!useRelative || due < now ) {
             // past due
             formatedString = formatNormal.format(dueDate);
         }

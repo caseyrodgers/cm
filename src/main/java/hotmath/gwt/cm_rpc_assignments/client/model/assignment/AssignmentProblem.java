@@ -4,6 +4,8 @@ import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
+import java.util.Date;
+
 
 /** Composite of a solutionInfo and the problem type
  * 
@@ -21,10 +23,11 @@ public class AssignmentProblem implements Response{
     private boolean isGraded;
     private String status;
     private boolean assignmentClosed;
+    private Date assignmentDueDate;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem, ProblemType problemType, String lastUserWidgetValue, String status) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem, ProblemType problemType, String lastUserWidgetValue, String status, Date assignmentDueDate) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
@@ -34,6 +37,7 @@ public class AssignmentProblem implements Response{
         this.problemType = problemType;
         this.lastUserWidgetValue = lastUserWidgetValue;
         this.status = status;
+        this.assignmentDueDate = assignmentDueDate;
     }
 
     public String getStatus() {
@@ -107,6 +111,10 @@ public class AssignmentProblem implements Response{
 
     public void setAssignmentClosed(boolean assignmentClosed) {
         this.assignmentClosed = assignmentClosed;
+    }
+
+    public Date getAssignmentDueDate() {
+        return assignmentDueDate;
     }
     
 }

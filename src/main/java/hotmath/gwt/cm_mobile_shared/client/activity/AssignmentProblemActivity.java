@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.activity;
 
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -54,7 +55,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public String getProblemTitle() {
-        return (__lastProblem!=null?__lastProblem.getStudentProblem().getStudentLabel():"Problem View");
+        return (__lastProblem!=null?__lastProblem.getStudentProblem().getStudentLabel() + ", " + DateUtils4Gwt.getPrettyDateString(__lastProblem.getAssignmentDueDate(), false) :"Problem View");
     }
     
     @Override
@@ -81,7 +82,9 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                     view.showWhiteboard();
                 }
                 
-                CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(problem.getStudentProblem().getStudentLabel()));
+                String title = problem.getStudentProblem().getStudentLabel();
+                title += ", " + DateUtils4Gwt.getPrettyDateString(problem.getAssignmentDueDate(), false);
+                CmRpcCore.EVENT_BUS.fireEvent(new HeaderTitleChangedEvent(title));
             }
 
             @Override
