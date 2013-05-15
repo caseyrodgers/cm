@@ -198,7 +198,12 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
             @Override
             public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
-                __lastProblem = null;
+                
+                if(__lastProblem != null) {
+                    __lastProblem.setLastUserWidgetValue(inputValue);
+                    __lastProblem.getStudentProblem().setStatus(correct?"Correct":"Incorrect");
+                }
+                //__lastProblem = null;
             }
         });
     }

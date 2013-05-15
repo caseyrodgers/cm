@@ -553,6 +553,9 @@ public class TutorWrapperPanel extends Composite {
         this.tutorCallback.tutorWidgetComplete(selection, isCorrect);
         
         jsni_markMultiChoiceWidgetStatus(isCorrect);
+        
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new TutorWidgetInputCompleteEvent(_solutionInfo.getPid(), selection, isCorrect));
     }
     
     native private void jsni_markMultiChoiceWidgetStatus(boolean correct) /*-{
