@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -88,6 +89,9 @@ public class AssignmentData {
             public void onFailure(Throwable caught) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Window.alert("Could not log you in: " + caught.getMessage());
+                
+                
+                History.newItem("");
             }
         });        
     }
