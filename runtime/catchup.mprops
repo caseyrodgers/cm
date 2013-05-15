@@ -4029,7 +4029,7 @@ and ps.status = 'Submitted'
 
 ## Common Core Standards
 
-.key=GET_CORRECT_QUIZ_CCS_NAMES_FOR_STUDENT
+.key=GET_CORRECT_QUIZ_CCSS_NAMES_FOR_STUDENT
 
 ## TODO: add CQs?
 
@@ -4044,10 +4044,10 @@ JOIN inmh_map im
 JOIN inmh_standard ins
   ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = im.file
 WHERE t.user_id = ?
-  AND tr.run_time between ? AND ?
+  AND tr.run_time BETWEEN ? AND ?
 ORDER BY ins.standard_name_new;
 
-.key=GET_REVIEW_CCS_NAMES_FOR_STUDENT
+.key=GET_REVIEW_CCSS_NAMES_FOR_STUDENT
 
 SELECT distinct user_id, ins.standard_name_new
 FROM HA_TEST t
@@ -4056,23 +4056,24 @@ JOIN HA_TEST_RUN tr
 JOIN HA_TEST_RUN_LESSON rl
   ON rl.run_id = tr.run_id AND rl.date_completed is not null
 JOIN inmh_standard ins
-  ON ins.standard_state='common' AND concat('topics/',ins.topic) = rl.lesson_file
+  ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = rl.lesson_file
 WHERE t.user_id = ?
-  AND rl.date_completed between ? and ?
+  AND rl.date_completed BETWEEN ? AND ?
 ORDER BY ins.standard_name_new
 
-.key=GET_ASSIGNMENT_CCS_NAMES_FOR_STUDENT
+.key=GET_ASSIGNMENT_CCSS_NAMES_FOR_STUDENT
 
 SELECT distinct uid, ins.standard_name_new
 FROM CM_ASSIGNMENT_USER au
 JOIN CM_ASSIGNMENT a
   ON au.assign_key = a.assign_key
 JOIN CM_ASSIGNMENT_PID_ANSWERS pa
-  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.correct=1
-JOIN inmh_map im
-  ON im.guid = pa.pid
+  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.answer IS NOT null
+JOIN CM_ASSIGNMENT_PIDS ap
+  ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
 JOIN inmh_standard ins
-  ON ins.standard_state='common' AND im.file = concat('topics/', ins.topic)
-where au.uid = ?
-  and a.due_date between ? and ?
-order by ins.standard_name asc
+  ON upper(standard_state) = 'COMMON' AND ap.lesson_file = concat('topics/', ins.topic)
+WHERE au.uid = ?
+  AND au.is_graded = 1
+  AND a.due_date BETWEEN ? AND ?
+ORDER BY ins.standard_name ASC
