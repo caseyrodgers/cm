@@ -27,9 +27,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
-import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -44,7 +41,6 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -104,6 +100,7 @@ public class HeaderPanel extends Composite {
         _logout.setVisible(false);
         basePanel.add(_logout);
         
+        AboutButtonIndicator aboutButton = new AboutButtonIndicator();
         basePanel.add(new AboutButtonIndicator());
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());

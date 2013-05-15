@@ -5,7 +5,9 @@ require.config({
 
 require(['CatchupMathMobile3_combined'], function(x) {
         console.log('CatchupMathMobile3_combined loaded');
-    });
+
+        setupFloaterControl();
+ });
 
 
 
@@ -41,3 +43,23 @@ function requireJsLoad_calculator(calcContainer, funcToCall) {
     }
 }
 console.log('REQUIREJS main loaded');
+
+
+
+
+function setupFloaterControl() {
+
+    try {
+        sb_windowTools.rightElementOnScreen(document.getElementById('floater_control'));
+        window.onscroll = function() {
+            // update the scroll information
+            sb_windowTools.updateScrollOffset();
+            // update the vertical position of the element
+            var element = document.getElementById('floater_control');
+            element.style.top = sb_windowTools.pageDimensions.verticalOffset() + 'px';
+        };        
+    }
+    catch(e) { 
+        alert('error setting up floater control: ' + e);
+    }	
+}

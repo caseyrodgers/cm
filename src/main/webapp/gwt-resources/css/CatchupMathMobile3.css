@@ -569,48 +569,17 @@ table {
 }
 
 
-
-
-
-
-
-#control-floater {
-    display: none;
-    width: 25px;
-    background: yellow;
+#floater_control {
+    width: 15px;
+    background: transparent;
+    color: #FA6125;
     z-index: 10;
-    display: block;
-    position: absolute;
-    top: 10px;
-    right: 10px;
 }
 
-#control-floater.hide {
-    visibility: hidden;
+#floater_control a{
+    decoration: none;
+    color: #FA6125;
 }
-
-#control-floater.control-panel-expanded {
-    background: green;
-}
-#control-panel-expanded button {
-    width: 150px;
-    margin-bottom: 3px;
-}
-
-#control-panel-expanded {
-    display: none;
-    position: absolute;
-    top: 40;
-    width: 250px;
-    z-index: 999;
-    background: yellow;
-    padding: 10px;
-}
-
-#control-panel-expanded.show {
-    display: block;
-}
-
 
 
 .buttonBar {

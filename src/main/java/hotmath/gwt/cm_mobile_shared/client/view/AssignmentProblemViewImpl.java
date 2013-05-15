@@ -268,6 +268,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void showWhiteboard() {
+        
+        if(_showWork != null) {
+            hideWhiteboard();
+            return;
+        }
 
         setupWhiteboardTools(true);
         

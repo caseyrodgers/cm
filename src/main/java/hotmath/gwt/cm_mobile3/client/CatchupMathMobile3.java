@@ -379,4 +379,5 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::debugLogOut(Ljava/lang/String;)(x);
          };      
     }-*/;
+    
 }
