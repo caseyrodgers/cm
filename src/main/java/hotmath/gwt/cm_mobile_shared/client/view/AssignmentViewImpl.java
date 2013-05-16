@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 
@@ -30,6 +31,8 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     AssignmentHeaderPanel _headerInfo;
 
     private StudentAssignment _lastAssignment;
+
+    private CallbackOnComplete callbackWhenLoaded;
 
     public AssignmentViewImpl() {
 
@@ -98,8 +101,11 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(Presenter presenter, CallbackOnComplete callback) {
         this.presenter = presenter;
+        this.callbackWhenLoaded = callback;
+        
+        presenter.loadAssignment(this);
     }
 
     @Override
@@ -126,6 +132,9 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         
         _headerInfo.loadAssignment(assignment);
         _main.setVisible(true);
+        
+        
+        callbackWhenLoaded.isComplete();
     }
 
     class MyGenericTextTag extends GenericTextTag<String> {

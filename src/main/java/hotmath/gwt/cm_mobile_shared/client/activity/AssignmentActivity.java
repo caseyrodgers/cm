@@ -26,8 +26,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class AssignmentActivity implements AssignmentView.Presenter {
     
     static private AssignmentActivity __lastInstance;
-    public AssignmentActivity() {
+    
+    int assignKey;
+    public AssignmentActivity(int assignKey) {
         __lastInstance = this;
+        this.assignKey = assignKey;
     }
 
     static StudentAssignment __lastStudentAssignment;
@@ -62,11 +65,8 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     @Override
     public void refreshAssignment(AssignmentView view) {
-        
-        
-        int assignKey = __lastStudentAssignment.getAssignment().getAssignKey();
         __lastStudentAssignment=null;
-        loadAssignment(view, assignKey);
+        loadAssignment(view);
         CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
     }
     
@@ -75,7 +75,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
     }
 
     @Override
-    public void loadAssignment(final AssignmentView view, final int assignKey) {
+    public void loadAssignment(final AssignmentView view) {
         _lastView = view;
         if(__lastStudentAssignment != null && __lastStudentAssignment.getAssignment().getAssignKey() == assignKey) {
             setAssignment(view, __lastStudentAssignment);

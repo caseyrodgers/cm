@@ -64,14 +64,14 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
         }));
         
-        whiteboardControlHide.add(new SexyButton("Remove", new ClickHandler() {
+        whiteboardControlHide.add(new SexyButton("Remove Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hideWhiteboard();
             }
         }));
         
-        _submitWhiteboard = new SexyButton("Submit", new ClickHandler() {
+        _submitWhiteboard = new SexyButton("Submit Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.showWorkHasBeenSubmitted();

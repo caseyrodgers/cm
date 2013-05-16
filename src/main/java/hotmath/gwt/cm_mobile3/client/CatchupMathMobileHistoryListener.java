@@ -239,11 +239,14 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             }
             else if(type.equals("assignment")) {
                 int assignKey = Integer.parseInt(token.getTokenPart(1));
-                AssignmentView view = cf.getAssignmentView();
-                AssignmentActivity activity = new AssignmentActivity();
-                activity.loadAssignment(view, assignKey);
-                view.setPresenter(activity);
-                eb.fireEvent(new LoadNewPageEvent(view));
+                final AssignmentView view = cf.getAssignmentView();
+                AssignmentActivity activity = new AssignmentActivity(assignKey);
+                view.setPresenter(activity, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        eb.fireEvent(new LoadNewPageEvent(view));
+                    }
+                });
             }
             else if(type.equals("assignment_problem")) {
                 int assignKey = Integer.parseInt(token.getTokenPart(1));
