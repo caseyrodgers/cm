@@ -46,7 +46,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     FlowPanel _main;
     private TutorWrapperPanel tutor;
     private AssignmentProblem problem;
-    HorizontalPanel whiteboardControlView, whiteboardControlHide;
+    FlowPanel whiteboardControlView, whiteboardControlHide;
     SubToolBar _subBar;
     SexyButton _submitWhiteboard;
     
@@ -55,8 +55,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         FlowPanel flowPanel = new FlowPanel();
 
         _subBar = new SubToolBar();
-        whiteboardControlView = new MyHorizontalPanel();
-        whiteboardControlHide = new MyHorizontalPanel();
+        whiteboardControlView = new FlowPanel();
+        whiteboardControlHide = new FlowPanel();
         whiteboardControlView.add(new SexyButton("View Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -64,14 +64,14 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
         }));
         
-        whiteboardControlHide.add(new SexyButton("Remove Whiteboard", new ClickHandler() {
+        whiteboardControlHide.add(new SexyButton("Remove", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hideWhiteboard();
             }
         }));
         
-        _submitWhiteboard = new SexyButton("Submit Whiteboard", new ClickHandler() {
+        _submitWhiteboard = new SexyButton("Submit", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.showWorkHasBeenSubmitted();
@@ -293,12 +293,27 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         });
         _main.add(_showWork);
         
+        addDoubleTapRemoveEvent(this, _showWork.getElement());
+        
         // position to top of document so toolbar is visible on open.
         Window.scrollTo(0, 0);
 
         alignWhiteboard();
     }
 
+    /** Use the external Hammer.js library to watch for doubletap
+     *  Close the whiteboard once detected.
+     * 
+     * @param instance
+     * @param element
+     */
+    native private void addDoubleTapRemoveEvent(AssignmentProblemViewImpl instance, Element element) /*-{
+        var that = this;
+        $wnd.Hammer(element).on("doubletap", function(event) {
+            that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
+        });
+
+    }-*/;
     private void alignWhiteboard() {
         
         if (_showWork != null) {

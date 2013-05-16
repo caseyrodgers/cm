@@ -92,7 +92,6 @@ public class ShowWorkPanel extends Composite {
         });        
     }
     
-    
     private void whiteboardIsReady() {
         Log.debug("whiteboardIsReady called from external JS");
         _whiteboardOutCallback.showWorkIsReady();

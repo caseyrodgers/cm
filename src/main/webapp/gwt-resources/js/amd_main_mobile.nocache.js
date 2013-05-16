@@ -7,6 +7,7 @@ require(['CatchupMathMobile3_combined'], function(x) {
         console.log('CatchupMathMobile3_combined loaded');
 
         setupFloaterControl();
+        
  });
 
 
@@ -45,8 +46,6 @@ function requireJsLoad_calculator(calcContainer, funcToCall) {
 console.log('REQUIREJS main loaded');
 
 
-
-
 function setupFloaterControl() {
 
     try {
@@ -57,7 +56,19 @@ function setupFloaterControl() {
             // update the vertical position of the element
             var element = document.getElementById('floater_control');
             element.style.top = sb_windowTools.pageDimensions.verticalOffset() + 'px';
-        };        
+        };
+        
+        var element = document.getElementById('main-content');
+        var hammertime = Hammer(element).on("pinch", function(event) {
+
+        	// ask gwt if pinch zoom should be allowed
+        	if(window.gwt_fireBrowserResizedEvent()) {
+        	    event.gesture.srcEvent.preventDefault();
+        	}
+            
+        });
+        
+        
     }
     catch(e) { 
         alert('error setting up floater control: ' + e);

@@ -12,54 +12,7 @@
     </path>
 
         
-    <target name='doCombines' depends='combine-js_CatchupMathMobile3,combine-js_CmMobileAssignments, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch,combine-css_CmMobileAssignments'/>
-
-
-
-
-
-        
-    <target name="combine-js_CmMobileAssignments" depends="javascript-minify">
-        <delete file="${web.dir}/gwt-resources/js/CmMobileAssignments_combined.js" />
-        <concat destfile="${web.dir}/gwt-resources/js/CmMobileAssignments_combined.js" append="true">
-            <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
-
-            	   hm_events-min.js
-            	   tutor_tablet.js
-                   ../../../../../../hotmath2/web/js/tutor_widget_combined.js
-            	   dom_utils-min.js            	
-                   CmMobileAssignments-min.js
-
-              " />
-        </concat>        
-    </target>
-
-
-   <target name="combine-css_CmMobileAssignments">
-        <delete file="${web.dir}/gwt-resources/css/CmMobileAssignments_combined.css" />
-        <concat destfile="${web.dir}/gwt-resources/css/CmMobileAssignments_combined.css" append="true">
-            <filelist dir="${web.dir}" files="
-                assets/css/reset.css
-
-                ../../../../hotmath2/web/css/tutor_widget.css
-                assets/css/local_sexybuttons.css
-            	gwt-resources/css/resource_review.css
-                gwt-resources/css/tutor_layout_tablet.css
-                gwt-resources/css/whiteboard.css
-                gwt-resources/css/mathquill/mathquill.css
-
-            	gwt-resources/css/menubar_layout.css
-            	gwt-resources/css/mobile_question_box.css
-
-                gwt-resources/css/CmMobileAssignments.css
-             " />
-        </concat>
-    </target>
-
-        
-
-
-
+    <target name='doCombines' depends='combine-js_CatchupMathMobile3, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
 
 
     <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
@@ -79,6 +32,7 @@
 
                    
                    viewport.js
+            	   ../../jlibs/hammer/hammer.js
 
                    cm_core-min.js
 
