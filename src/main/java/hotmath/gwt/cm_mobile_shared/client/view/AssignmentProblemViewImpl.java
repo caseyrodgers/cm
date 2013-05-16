@@ -239,6 +239,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
+
                 String context = solution.getInfo().getContext() != null ? solution.getInfo().getContext().getContextJson() : null;
                 tutor.externallyLoadedTutor(problem.getInfo(), (Widget) AssignmentProblemViewImpl.this, problem.getInfo().getPid(), null, problem.getInfo()
                         .getJs(), problem.getInfo().getHtml(), problem.getInfo().getPid(), false, false, context);

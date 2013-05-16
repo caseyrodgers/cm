@@ -158,9 +158,6 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                         break;
                     }
                 }
-                if(changed) {
-                    __lastInstance.redrawList();
-                }
             }
         });
         

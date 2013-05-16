@@ -131,12 +131,9 @@ public class AssignmentActivity implements Activity {
             @Override
             public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
                 for(StudentProblemDto prob: __lastStudentAssignment.getStudentStatuses().getAssigmentStatuses()) {
-                    
                     if(prob.getPid().equals(pid)) {
                         updateProblemStatus(prob);
                     }
-                    
-                    
                 }
             }
         });        

@@ -113,6 +113,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
 
     @Override
     public void processTutorWidgetComplete(final String inputValue, boolean correct) {
+
         final AssignmentProblem assProblem = new AssignmentProblem();
         
         if(__lastProblem.isGraded()) {
@@ -198,7 +199,6 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         CmRpcCore.EVENT_BUS.addHandler(TutorWidgetInputCompleteEvent.TYPE,  new TutorWidgetInputCompleteHandler() {
             @Override
             public void tutorWidgetComplete(String pid, String inputValue, boolean correct) {
-                
                 if(__lastProblem != null) {
                     __lastProblem.setLastUserWidgetValue(inputValue);
                     __lastProblem.getStudentProblem().setStatus(correct?"Correct":"Incorrect");
