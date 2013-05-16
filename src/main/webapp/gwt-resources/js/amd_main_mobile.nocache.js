@@ -6,8 +6,7 @@ require.config({
 require(['CatchupMathMobile3_combined'], function(x) {
         console.log('CatchupMathMobile3_combined loaded');
 
-        setupFloaterControl();
-        
+        setupFloaterHandler();
  });
 
 
@@ -46,7 +45,7 @@ function requireJsLoad_calculator(calcContainer, funcToCall) {
 console.log('REQUIREJS main loaded');
 
 
-function setupFloaterControl() {
+function setupFloaterHandler() {
 
     try {
     	var floatEl = document.getElementById('floater_control');
@@ -61,18 +60,6 @@ function setupFloaterControl() {
             element.style.top = top + 'px';
             element.style.display = (top > 30)?'block':'none';            
         };
-        
-        var element = document.getElementById('main-content');
-        var hammertime = Hammer(element).on("pinch", function(event) {
-
-        	// ask gwt if pinch zoom should be allowed
-        	if(window.gwt_fireBrowserResizedEvent()) {
-        	    event.gesture.srcEvent.preventDefault();
-        	}
-            
-        });
-        
-        
     }
     catch(e) { 
         alert('error setting up floater control: ' + e);

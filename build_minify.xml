@@ -24,15 +24,15 @@
 
             	   hm_events-min.js
             	   browser_info_tools-min.js            	
-            	   tutor_tablet.js
+            	   tutor_tablet-min.js
                	   dom_utils-min.js            	
             	   quiz-min.js
 
                    ../../../../../../hotmath2/web/js/tutor_widget_combined.js
 
                    
-                   viewport.js
-            	   ../../jlibs/hammer/hammer.js
+                   viewport-min.js
+            	   ../../jlibs/hammer/hammer.min.js
 
                    cm_core-min.js
 
