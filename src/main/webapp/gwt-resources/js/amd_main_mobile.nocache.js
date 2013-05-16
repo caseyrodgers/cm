@@ -49,13 +49,17 @@ console.log('REQUIREJS main loaded');
 function setupFloaterControl() {
 
     try {
-        sb_windowTools.rightElementOnScreen(document.getElementById('floater_control'));
+    	var floatEl = document.getElementById('floater_control');
+        sb_windowTools.rightElementOnScreen(floatEl);
         window.onscroll = function() {
             // update the scroll information
             sb_windowTools.updateScrollOffset();
             // update the vertical position of the element
             var element = document.getElementById('floater_control');
-            element.style.top = sb_windowTools.pageDimensions.verticalOffset() + 'px';
+            
+            var top = sb_windowTools.pageDimensions.verticalOffset();
+            element.style.top = top + 'px';
+            element.style.display = (top > 30)?'block':'none';            
         };
         
         var element = document.getElementById('main-content');
