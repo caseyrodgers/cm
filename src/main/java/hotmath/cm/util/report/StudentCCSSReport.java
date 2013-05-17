@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -59,12 +60,14 @@ public class StudentCCSSReport {
             if (smList == null || smList.size() == 0) return null;
             StudentModelI stuMdl = smList.get(0);
 
+			reportName = ReportUtils.getReportName("CM-CCSS-Report", (stuMdl.getName()!=null)?stuMdl.getName():"");
+
             CCSSReportDao crDao = CCSSReportDao.getInstance();
 
             List<String> quizCCSS = crDao.getStudentQuizStandardNames(userId, fromDate, toDate);
             List<String> reviewCCSS = crDao.getStudentReviewStandardNames(userId, fromDate, toDate);
             List<String> assignmentCCSS = crDao.getStudentAssignmentStandardNames(userId, fromDate, toDate);
-
+/*
             if ((quizCCSS == null || quizCCSS.size() == 0) &&
             	(reviewCCSS == null || reviewCCSS.size() == 0) &&
             	(assignmentCCSS == null || assignmentCCSS.size() == 0)) {
@@ -72,7 +75,7 @@ public class StudentCCSSReport {
             		fromDate, toDate);
             	//throw new InformationOnlyException(msg);
             }
-
+*/
 			Document document = new Document();
 			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 
@@ -125,21 +128,21 @@ public class StudentCCSSReport {
         Phrase label = buildSectionLabel(labelText);
         tbl.addCell(label);
 
-        String content;
+        Paragraph p = new Paragraph();
+        p.setFont(FontFactory.getFont(FontFactory.HELVETICA, 11, Font.NORMAL, new Color(0, 0, 0)));
 		if (standardNames != null && standardNames.size() > 0) {
-            StringBuilder sb = new StringBuilder();
+			int idx = 0;
             for (String stdName : standardNames) {
-            	//String link = convertStandardNameToLink(stdName);
-                sb.append(stdName).append(", ");
+            	Chunk chunk = new Chunk(stdName);
+            	chunk.setAnchor(convertStandardNameToLink(stdName));
+            	chunk.setFont(FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE, new Color(0, 0, 200)));
+            	p.add(chunk);
+            	if (++idx < standardNames.size()) p.add(", ");
             }
-            content = sb.toString().substring(0, sb.length() - 2);
 		}
 		else {
-			content = "None";
+			p.add("None");
 		}
-        Paragraph p = new Paragraph();
-        p.setFont(FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0)));
-        p.add(content);
         tbl.addCell(p);
         tbl.setWidthPercentage(100.0f);
         tbl.setSpacingBefore(20.0f);
@@ -147,7 +150,8 @@ public class StudentCCSSReport {
         document.add(Chunk.NEWLINE);
     }
 
-    private static final String CCSS_LINK_FMT = "<a href='http://www.corestandards.org/Math/Content/%s' target='_blank'>%s</a>";
+    //javascript:onLoad=window.open('http://www.yahoo.com','popup','').focus();void(0);
+    private static final String CCSS_LINK_FMT = "http://www.corestandards.org/Math/Content/%s";
 
 	private String convertStandardNameToLink(String stdName) {
 		String uri = stdName.replace("-", "/").replace(".", "/");
