@@ -129,8 +129,8 @@ public class StudentCCSSReport {
 		if (standardNames != null && standardNames.size() > 0) {
             StringBuilder sb = new StringBuilder();
             for (String stdName : standardNames) {
-            	String link = convertStandardNameToLink(stdName);
-                sb.append(link).append(", ");
+            	//String link = convertStandardNameToLink(stdName);
+                sb.append(stdName).append(", ");
             }
             content = sb.toString().substring(0, sb.length() - 2);
 		}
