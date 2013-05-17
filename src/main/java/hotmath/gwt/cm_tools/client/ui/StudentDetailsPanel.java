@@ -113,6 +113,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(displayReportCardToolItem(studentModel));
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
+        toolBar.add(displayCCSSReportToolItem(studentModel));
 
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
@@ -424,6 +425,27 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         });
         // ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable assignment report");
+        ti.addStyleName("student-details-panel-sw-btn");
+
+        return ti;
+    }
+
+    private TextButton displayCCSSReportToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("CCSS Report", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                DateRangePanel dateRange = DateRangePanel.getInstance();
+                Date fromDate=null, toDate=null;
+                if (dateRange != null) {
+                    fromDate = dateRange.getFromDate();
+                    toDate = dateRange.getToDate();
+                }
+                new PdfWindow(sm.getAdminUid(), "Catchup Math CCSS Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
+                        sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
+            }
+        });
+        // ti.setIconStyle("printer-icon");
+        ti.setToolTip("Display a printable CCSS report");
         ti.addStyleName("student-details-panel-sw-btn");
 
         return ti;

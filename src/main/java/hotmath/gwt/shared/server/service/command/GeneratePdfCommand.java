@@ -4,6 +4,7 @@ import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.FileUtil;
 import hotmath.cm.util.report.GroupAssessmentReport;
 import hotmath.cm.util.report.StudentAssignmentReport;
+import hotmath.cm.util.report.StudentCCSSReport;
 import hotmath.cm.util.report.StudentDetailReport;
 import hotmath.cm.util.report.StudentListReport;
 import hotmath.cm.util.report.StudentReportCard;
@@ -37,6 +38,7 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
      */
     @Override
     public CmWebResource execute(Connection conn, GeneratePdfAction action) throws Exception {
+		ByteArrayOutputStream baos = null;
     	try {
 
     		String reportName=null;
@@ -67,43 +69,49 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
 			logger.info("student UIDS.size(): " + ((studentUids != null)? studentUids.size():0));
     		String reportId = CmAdminDao.getInstance().getPrintableStudentReportId(studentUids);
 
-    		ByteArrayOutputStream baos = null;
-    		if (pdfType == PdfType.STUDENT_SUMMARY) {
+    		switch(pdfType) {
+    		case STUDENT_SUMMARY:
     			StudentSummaryReport ss = new StudentSummaryReport();
     			ss.setFilterMap(action.getFilterMap());
     			baos = ss.makePdf(reportId, adminId);
     			reportName = ss.getReportName();
-    		}
-    		else if (pdfType == PdfType.STUDENT_DETAIL) {
+    			break;
+    		case STUDENT_DETAIL:
     			StudentDetailReport sd = new StudentDetailReport();
     			baos = sd.makePdf(conn, reportId, adminId, fromDate, toDate);
     			reportName = sd.getReportName();
-    		}
-    		else if (pdfType == PdfType.REPORT_CARD) {
+    			break;
+    		case REPORT_CARD:
     			logger.info("creating Report Card");
     			StudentReportCard sr = new StudentReportCard();
     			baos = sr.makePdf(conn, reportId, adminId, fromDate, toDate);
     			reportName = sr.getReportName();
-    		}
-    		else if (pdfType == PdfType.GROUP_ASSESSMENT) {
+    			break;
+    		case GROUP_ASSESSMENT:
     			GroupAssessmentReport gr = new GroupAssessmentReport();
     			gr.setFilterMap(action.getFilterMap());
     			baos = gr.makePdf(conn, reportId, adminId);
     			reportName = gr.getReportName();
-    		}
-    		else if(pdfType == PdfType.STUDENT_LIST) {
+    			break;
+    		case STUDENT_LIST:
     			StudentListReport slr = new StudentListReport(action.getTitle());
     			slr.setFilterMap(action.getFilterMap());
     			baos = slr.makePdf(conn, reportId, adminId, action.getStudentUids());
     			reportName = slr.getReportName();
-    		}
-    		else if(pdfType == PdfType.ASSIGNMENT_REPORT) {
+    			break;
+    		case ASSIGNMENT_REPORT:
     			StudentAssignmentReport sar = new StudentAssignmentReport(action.getTitle());
     			sar.setFilterMap(action.getFilterMap());
-    			baos = sar.makePdf(conn, reportId, adminId, action.getStudentUids(), fromDate, toDate);
+    			baos = sar.makePdf(conn, adminId, action.getStudentUids(), fromDate, toDate);
     			reportName = sar.getReportName();
-    		}
-    		else {
+    			break;
+    		case STUDENT_CCSS:
+    			StudentCCSSReport scr = new StudentCCSSReport(action.getTitle());
+    			scr.setFilterMap(action.getFilterMap());
+    			baos = scr.makePdf(adminId, action.getStudentUids().get(0), fromDate, toDate);
+    			reportName = scr.getReportName();
+    			break;
+    		default:
     			throw new IllegalArgumentException("Unrecognized report type: " + pdfType);
     		}
 
@@ -140,6 +148,9 @@ public class GeneratePdfCommand implements ActionHandler<GeneratePdfAction, CmWe
     	     * return an appropriate error message.  Not just null.
     	     */
     	    throw new CmRpcException("*** Error generating pdfType: " + action.getPdfType(), th);
+    	}
+    	finally {
+    		if (baos != null) baos.close();
     	}
     }
 
