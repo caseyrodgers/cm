@@ -39,7 +39,6 @@ public class StudentCCSSReport_Test extends CmDbTestCase {
 		 }
 		 finally {
 			 if (fw != null) fw.close();
-			 if (baos != null) baos.close();
 		 }
     	
     }
