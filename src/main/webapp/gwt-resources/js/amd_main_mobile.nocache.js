@@ -48,6 +48,7 @@ console.log('REQUIREJS main loaded');
 function setupFloaterHandler() {
 
     try {
+    	var MIN_VISIBLE = 30;
     	var floatEl = document.getElementById('floater_control');
         sb_windowTools.rightElementOnScreen(floatEl);
         window.onscroll = function() {
@@ -58,10 +59,25 @@ function setupFloaterHandler() {
             
             var top = sb_windowTools.pageDimensions.verticalOffset();
             element.style.top = top + 'px';
-            element.style.display = (top > 30)?'block':'none';            
+            element.style.display = (top > MIN_VISIBLE)?'block':'none';            
         };
     }
     catch(e) { 
         alert('error setting up floater control: ' + e);
     }	
 }
+//
+//
+//function checkOrientation() {
+//  var viewport = document.querySelector("meta[name=viewport]");
+//  if (window.orientation === 90 || window.orientation === -90) {
+//    return viewport.setAttribute("content", "width:device-width, initial-scale=1.0, user-scalable=1");
+//  } else {
+//    return viewport.setAttribute("content", "width:device-width, initial-scale=0.6, user-scalable=1");
+//  }
+//};
+//
+//window.onorientationchange = function() {
+//  return checkOrientation();
+//};
+//checkOrientation();
