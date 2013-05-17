@@ -50,13 +50,12 @@ public class StudentAssignmentReport {
 		this.title = title;
 	}
 
-	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, int adminId,
-			List<Integer> studentUids) {
-		return makePdf(conn, reportId, adminId, studentUids, null, null);
+	public ByteArrayOutputStream makePdf(final Connection conn, int adminId, List<Integer> studentUids) {
+		return makePdf(conn, adminId, studentUids, null, null);
 	}
 
-	public ByteArrayOutputStream makePdf(final Connection conn, String reportId, int adminId,
-			List<Integer> studentUids, Date fromDate, Date toDate) {
+	public ByteArrayOutputStream makePdf(final Connection conn, int adminId, List<Integer> studentUids,
+			Date fromDate, Date toDate) {
 		ByteArrayOutputStream baos = null;
 
 		Integer stuUid = -1;
