@@ -13,7 +13,9 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
  */
 public class SaveAssignmentWhiteboardDataAction implements Action<RpcData> {
 
-    Integer uid;
+	private static final long serialVersionUID = 2387252227520103825L;
+	
+	Integer uid;
     String pid;
     String commandData;
     boolean isAdmin;
