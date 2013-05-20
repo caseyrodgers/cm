@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 
+import hotmath.gwt.cm_core.client.event.EnableDocumentScalingEvent;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -11,6 +12,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandle
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.List;
 
@@ -102,6 +104,9 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     @Override
     public void setPresenter(Presenter presenter, CallbackOnComplete callback) {
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new EnableDocumentScalingEvent(false));
+        
         this.presenter = presenter;
         this.callbackWhenLoaded = callback;
         

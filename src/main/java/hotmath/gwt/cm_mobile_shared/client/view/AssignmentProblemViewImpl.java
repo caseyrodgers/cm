@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_core.client.event.EnableDocumentScalingEvent;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
@@ -154,6 +155,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void setPresenter(Presenter listener, boolean shouldShowWhiteboard, CallbackOnComplete callback) {
+        
         this.presenter = listener;
         setupInitialPanel();
 
