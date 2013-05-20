@@ -3,7 +3,6 @@ package hotmath.gwt.cm_mobile3.client.activity;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
@@ -11,8 +10,6 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
-import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.Date;
 
@@ -67,8 +64,6 @@ public class LoginActivity implements LoginView.Presenter {
                 else {
                     SharedData.setData(mobileUser);
                     eventBus.fireEvent(new ShowWelcomeViewEvent());
-                    
-                    CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(mobileUser.getAssignmentInfo()));
                 }
             }
 

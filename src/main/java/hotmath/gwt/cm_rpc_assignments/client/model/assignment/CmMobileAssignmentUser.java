@@ -10,13 +10,23 @@ public class CmMobileAssignmentUser implements Response {
     private int uid;
     private String userName;
     private List<StudentAssignmentInfo> assignments;
+    private AssignmentUserInfo assignmentUserInfo;
 
     public CmMobileAssignmentUser(){}
 
-    public CmMobileAssignmentUser(int uid, String userName, List<StudentAssignmentInfo> assignments) {
+    public CmMobileAssignmentUser(int uid, String userName, AssignmentUserInfo assignmentUserInfo, List<StudentAssignmentInfo> assignments) {
         this.uid = uid;
         this.userName = userName;
+        this.assignmentUserInfo = assignmentUserInfo;
         this.assignments = assignments;
+    }
+
+    public AssignmentUserInfo getAssignmentUserInfo() {
+        return assignmentUserInfo;
+    }
+
+    public void setAssignmentUserInfo(AssignmentUserInfo assignmentUserInfo) {
+        this.assignmentUserInfo = assignmentUserInfo;
     }
 
     public int getUid() {
@@ -45,6 +55,7 @@ public class CmMobileAssignmentUser implements Response {
 
     @Override
     public String toString() {
-        return "CmMobileAssignmentUser [uid=" + uid + ", userName=" + userName + ", assignments=" + assignments + "]";
+        return "CmMobileAssignmentUser [uid=" + uid + ", userName=" + userName + ", assignments=" + assignments + ", assignmentUserInfo=" + assignmentUserInfo
+                + "]";
     }
 }

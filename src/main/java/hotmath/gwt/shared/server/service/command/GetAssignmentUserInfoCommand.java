@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.assignment.AssignmentDao;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
@@ -25,8 +26,10 @@ public class GetAssignmentUserInfoCommand implements ActionHandler<GetAssignment
         
         HaUser userInfo = HaUserDao.getInstance().lookUser(action.getUid(),  false);
         List<StudentAssignmentInfo> assignments = AssignmentDao.getInstance().getAssignmentsForUser(action.getUid());
+
+        AssignmentUserInfo assignmentUserInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
         
-        return new CmMobileAssignmentUser(action.getUid(), userInfo.getUserName(),assignments); 
+        return new CmMobileAssignmentUser(action.getUid(),userInfo.getUserName(), assignmentUserInfo, assignments); 
     }
 
 }

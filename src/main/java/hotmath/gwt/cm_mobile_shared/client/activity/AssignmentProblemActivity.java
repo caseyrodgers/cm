@@ -86,6 +86,9 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 
                 
                 
+                /** do after dom rendered finished
+                 * 
+                 */
                 if(shouldShowWhiteboard) {
                     Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                         @Override

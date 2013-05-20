@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc.client.model.SessionTopic;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -172,6 +173,9 @@ public class SharedData {
             
             CmRpcCore.EVENT_BUS.fireEvent(new UserLoginEvent(result));
         }
+        
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(result.getAssignmentInfo()));
     }
 
     private static void setMobileUser(CmMobileUser result) {

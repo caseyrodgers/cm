@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
@@ -79,10 +80,12 @@ public class AssignmentData {
             public void onSuccess(CmMobileAssignmentUser result) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
 
-                Log.info("Login successful: " + result);
+                Log.info("Assigment data read: " + result);
                 __userData = result;
                 
                 callBack.isReady();
+                
+                CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(result.getAssignmentUserInfo()));
             }
 
             @Override
