@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
-import hotmath.gwt.cm_core.client.event.EnableDocumentScalingEvent;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;

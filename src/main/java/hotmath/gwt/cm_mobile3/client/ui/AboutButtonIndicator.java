@@ -6,10 +6,8 @@ import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
 
 public class AboutButtonIndicator extends TouchAnchor {
     
@@ -30,11 +28,11 @@ public class AboutButtonIndicator extends TouchAnchor {
                     stopRotatingImage();
                 }
                 else {
-                    if(!info.isChanged()) {
-                        stopRotatingImage();
+                    if(info.isChanged() || info.getUnreadMessageCount() > 0) {
+                        startRotatingImage();
                     }
                     else {
-                        startRotatingImage();
+                        stopRotatingImage();
                     }
                 }
             }
@@ -43,31 +41,12 @@ public class AboutButtonIndicator extends TouchAnchor {
         
     }
     
-    Timer _timer;
     protected void startRotatingImage() {
-        stopRotatingImage();
-        _timer = new Timer() {
-            @Override
-            public void run() {
-                Element e = getElement();
-                if(e.getInnerHTML().indexOf("-changed") > -1) {
-                    getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
-                }
-                else {
-                    getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info-changed.png'/>");
-                }
-            }
-        };
-        _timer.scheduleRepeating(2000);
+        getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info-changed.gif'/>");
     }
 
 
     private void stopRotatingImage() {
-        if(_timer != null) {
-            _timer.cancel();
-            _timer = null;
-            getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
-        }
+        getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
     }
-    
 }

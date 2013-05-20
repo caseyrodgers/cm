@@ -11,6 +11,8 @@ import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.Date;
 
@@ -59,15 +61,14 @@ public class LoginActivity implements LoginView.Presenter {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 Log.info("Login successful: " + mobileUser);
                 
-                
                 if(mobileUser.getFlowAction().getPlace() == CmPlace.ERROR_FLASH_REQUIRED) {
                     eventBus.fireEvent(new ShowFlashRequiredEvent());
                 }
                 else {
-                  
                     SharedData.setData(mobileUser);
-                    
                     eventBus.fireEvent(new ShowWelcomeViewEvent());
+                    
+                    CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(mobileUser.getAssignmentInfo()));
                 }
             }
 

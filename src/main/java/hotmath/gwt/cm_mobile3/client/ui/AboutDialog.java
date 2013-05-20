@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
-import javax.print.DocPrintJob;
-
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -31,7 +29,6 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.DockPanel;
-import com.google.gwt.user.client.ui.DockPanel.DockLayoutConstant;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
-import hotmath.gwt.cm_mobile_shared.client.activity.AssignmentProblemActivity;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;

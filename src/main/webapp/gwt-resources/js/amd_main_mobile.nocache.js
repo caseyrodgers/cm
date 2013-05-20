@@ -5,7 +5,6 @@ require.config({
 
 require(['CatchupMathMobile3_combined'], function(x) {
         console.log('CatchupMathMobile3_combined loaded');
-
         setupFloaterHandler();
  });
 
@@ -46,7 +45,6 @@ console.log('REQUIREJS main loaded');
 
 
 function setupFloaterHandler() {
-
     try {
     	var MIN_VISIBLE = 30;
     	var floatEl = document.getElementById('floater_control');
@@ -65,6 +63,38 @@ function setupFloaterHandler() {
     catch(e) { 
         alert('error setting up floater control: ' + e);
     }	
+}
+
+function gwt_setDocumentScaling(allowScaling) {
+	
+	if(true) {
+		return;
+	}
+	
+    var viewport = document.querySelector("meta[name=viewport]");
+    if(!viewport) {
+       return null;
+    }
+    var args="";
+    if(allowScaling) {
+        // make scalable
+    	 args = "maximum-scale=10.0, user-scalable=1";    
+    }
+    else {
+        // make non-scalable
+    	args = "maximum-scale=1.0, user-scalable=0";
+    }
+    args = "width:device-width, initial-scale=1.0,  " + args;
+    
+    try {
+        viewport.setAttribute("content", args);
+    }
+    catch(e) {
+        alert("Error forcing document scale: " + e);
+    }
+
+    var viewport2 = document.querySelector("meta[name=viewport]");
+    alert('viewport: ' + viewport2.getAttribute("content"));
 }
 //
 //

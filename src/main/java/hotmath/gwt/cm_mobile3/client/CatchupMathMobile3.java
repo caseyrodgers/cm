@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_core.client.event.EnableDocumentScalingEvent;
-import hotmath.gwt.cm_core.client.event.EnableDocumentScalingHandler;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
@@ -36,7 +34,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoV
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-    
+
 import java.util.HashMap;
 import java.util.Map;
 
