@@ -273,7 +273,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         if(_showWork != null) {
             hideWhiteboard();
-            return;
         }
 
         setupWhiteboardTools(true);

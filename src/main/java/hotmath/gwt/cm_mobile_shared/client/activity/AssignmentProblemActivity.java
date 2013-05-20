@@ -81,11 +81,20 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 __lastProblem = problem;
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 view.loadProblem(problem);
+      
+                callback.isComplete();
+                
+                
                 
                 if(shouldShowWhiteboard) {
-                    view.showWhiteboard();
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                        @Override
+                        public void execute() {
+                            view.showWhiteboard();
+                        }
+                    });
                 }
-                callback.isComplete();
+                
             }
 
             @Override
