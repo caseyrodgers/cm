@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentTutorInputWidgetAnswerAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentWhiteboardDataAction;
@@ -19,6 +20,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.CmTutor;
@@ -126,9 +128,16 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
             return;
         }
         
-        SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(AssignmentData.getUserData().getUid(),assignKey,pid,inputValue,correct);
-        CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
-            public void onSuccess(RpcData result) {
+
+        /** Use MultiAction to save value and update status in one round-trip
+         * 
+         */
+        int uid = AssignmentData.getUserData().getUid();
+        MultiActionRequestAction multiRequest = new MultiActionRequestAction();
+        multiRequest.getActions().add(new SaveAssignmentTutorInputWidgetAnswerAction(uid,assignKey,this.pid,inputValue,correct));
+        multiRequest.getActions().add(new SaveAssignmentProblemStatusAction(uid,assignKey,this.pid, correct?"Correct":"Incorrect"));
+        CmTutor.getCmService().execute(multiRequest, new AsyncCallback<CmList<Response>>() {
+            public void onSuccess(CmList<Response> result) {
                 assProblem.setLastUserWidgetValue(inputValue);
                 Log.debug("Tutor Widget Answer saved to server.");
             }
