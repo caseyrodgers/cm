@@ -127,14 +127,14 @@ public class AssignmentLessonPidSelector {
          * Then make sure they are sorted
          * 
          */
-//        Collections.sort(problemsAll, new Comparator<ProblemDto>() {
-//            @Override
-//            public int compare(ProblemDto o1, ProblemDto o2) {
-//                String label1 = o1.getLabelWithType();
-//                String label2 = o2.getLabelWithType();
-//                return label1.compareTo(label2);
-//            }
-//        });
+        Collections.sort(problemsAll, new Comparator<ProblemDto>() {
+            @Override
+            public int compare(ProblemDto o1, ProblemDto o2) {
+                String label1 = o1.getLabelWithType();
+                String label2 = o2.getLabelWithType();
+                return label1.compareTo(label2);
+            }
+        });
     }
 
 
