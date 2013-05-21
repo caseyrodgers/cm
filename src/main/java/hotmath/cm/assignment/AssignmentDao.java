@@ -1,8 +1,5 @@
 package hotmath.cm.assignment;
 
-import hotmath.assessment.AssessmentPrescription;
-import hotmath.assessment.InmhItemData;
-import hotmath.assessment.RppWidget;
 import hotmath.cm.server.model.StudentAssignmentStatus;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.PropertyLoadFileException;
@@ -37,7 +34,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
-import hotmath.inmh.INeedMoreHelpItem;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.SolutionDao;
 
@@ -50,8 +46,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -247,7 +241,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * 
      * @param assignment
      */
-    private void updateProblemTypes(final List<ProblemDto> problems) {
+    public void updateProblemTypes(final List<ProblemDto> problems) {
 
         if (problems.size() == 0) {
             return;
@@ -315,104 +309,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param gradeLevel
      * @return
      */
-    public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lessonName, String lessonFile, String subject) {
-
-        final int count[] = new int[1];
-
-        final LessonModel lesson = new LessonModel(lessonName, lessonFile);
-
-        InmhItemData itemData = new InmhItemData(new INeedMoreHelpItem("practice", lessonFile, lessonName));
-        List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
-        try {
-            List<RppWidget> rpps = itemData.getWidgetPool(conn, "assignment_pid");
-            for (RppWidget w : rpps) {
-                for (RppWidget ew : AssessmentPrescription.expandProblemSetPids(w)) {
-                    String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                    problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, ew.getFile(), 0));
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        String sql = "";
-        if (subject != null) {
-            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
-        } else {
-            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? OR subject = ? order by id"; // get
-                                                                                                         // all
-        }
-
-        List<ProblemDto> problems = getJdbcTemplate().query(sql, new Object[] { lessonName, subject }, new RowMapper<ProblemDto>() {
-            @Override
-            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
-
-                String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("pid"), 0);
-            }
-        });
-        problemsAll.addAll(problems);
-        
-        updateProblemTypes(problemsAll);
-
-        /**
-         * Try to select only problems with widgets first
-         * 
-         */
-        List<ProblemDto> problemsFiltered = new ArrayList<ProblemDto>();
-        for (ProblemDto pt : problemsAll) {
-            if (pt.getProblemType() != ProblemType.WHITEBOARD) {
-                problemsFiltered.add(pt);
-            }
-        }
-        /**
-         * Then add any whiteboard only questions to bottom
-         * 
-         * Skip MULTI_CHOICE ..
-         * 
-         */
-        for (ProblemDto pt : problemsAll) {
-            if (!problemsFiltered.contains(pt)) {
-                if(pt.getProblemType() != ProblemType.MULTI_CHOICE) {
-                    problemsFiltered.add(pt);
-                }
-            }
-        }
-
-        
-        /** Now put them back and disregard any dummy problems
-         *  used for custom programs.   Dummy problems are used
-         *  to link up custom programs and should not be included.
-         */
-        problemsAll.clear();
-        for (ProblemDto pt : problemsFiltered) {
-            if(!pt.getPid().startsWith("dummy")) {
-                problemsAll.add(pt);
-            }
-        }
-        
-        /**
-         * Then make sure they are sorted
-         * 
-         */
-        Collections.sort(problemsAll, new Comparator<ProblemDto>() {
-            @Override
-            public int compare(ProblemDto o1, ProblemDto o2) {
-                String label1 = o1.getLabelWithType();
-                String label2 = o2.getLabelWithType();
-                return label1.compareTo(label2);
-            }
-        });
-        return problemsAll;
+    public List<ProblemDto> getLessonProblemsFor(Connection conn, final String lessonName, String lessonFile, String subject) throws Exception {
+        return new AssignmentLessonPidSelector(conn, lessonName, lessonFile, subject).getProblems();
     }
 
-    private String getDefaultLabel(String lesson, int i) {
-        String filler = "";
-        if (i < 10) {
-            filler = " ";
-        }
-        return lesson + ": " + filler + i;
-    }
 
     public List<Assignment> getAssignments(int adminId, int groupId) throws PropertyLoadFileException {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENTS_FOR_GROUP");
