@@ -49,6 +49,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     FlowPanel whiteboardControlView, whiteboardControlHide;
     SubToolBar _subBar;
     SexyButton _submitWhiteboard;
+    private SexyButton _viewWhiteboardButton;
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
@@ -57,12 +58,13 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         _subBar = new SubToolBar();
         whiteboardControlView = new FlowPanel();
         whiteboardControlHide = new FlowPanel();
-        whiteboardControlView.add(new SexyButton("View Whiteboard", new ClickHandler() {
+        _viewWhiteboardButton = new SexyButton("View Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 showWhiteboard();
             }
-        }));
+        });
+        whiteboardControlView.add(_viewWhiteboardButton);
         
         whiteboardControlHide.add(new SexyButton("Remove Whiteboard", new ClickHandler() {
             @Override
@@ -384,7 +386,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                jsni_removeFocusFrom();
+                _viewWhiteboardButton.setFocus(true);
+                // jsni_removeFocusFrom();
             }
         });
         jsni_removeFocusFrom();
