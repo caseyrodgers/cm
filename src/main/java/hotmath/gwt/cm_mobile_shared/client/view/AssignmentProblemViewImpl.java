@@ -31,6 +31,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -383,14 +384,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void isNowActive() {
-        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+        new Timer() {
             @Override
-            public void execute() {
-                _viewWhiteboardButton.setFocus(true);
-                // jsni_removeFocusFrom();
+            public void run() {
+                jsni_removeFocusFrom();
             }
-        });
-        jsni_removeFocusFrom();
+        }.schedule(5000);
     }
 
 }
