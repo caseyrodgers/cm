@@ -384,6 +384,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void isNowActive() {
+        
+        /** wait until tutor is initialized.  
+         * 
+         * TODO: This seems like a bug
+         */
         new Timer() {
             @Override
             public void run() {
