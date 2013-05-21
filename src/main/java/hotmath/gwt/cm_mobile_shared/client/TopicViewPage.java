@@ -9,6 +9,11 @@ public class TopicViewPage implements IPage {
     
     String file;
     
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
+    
     public TopicViewPage(String file) {
         this.file = file;
     }

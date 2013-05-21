@@ -9,6 +9,11 @@ public class TopicListPage implements IPage {
     
     public TopicListPage() {
     }
+    
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
 
 	@Override
 	public String getViewTitle() {

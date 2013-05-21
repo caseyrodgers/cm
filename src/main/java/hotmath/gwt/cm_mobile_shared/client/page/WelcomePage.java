@@ -8,7 +8,13 @@ import java.util.List;
 
 
 public class WelcomePage implements IPage {
+    
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
 
+    
 	@Override
 	public String getViewTitle() {
 		return "Welcome Page";

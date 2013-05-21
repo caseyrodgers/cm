@@ -13,6 +13,11 @@ public class MainPage implements IPage {
 
 	}
 
+	@Override
+    public void isNowActive() {
+        /** empty */
+    }
+
 	public class Tournament {
 		private String mName;
 		private String mRelativeUrl;

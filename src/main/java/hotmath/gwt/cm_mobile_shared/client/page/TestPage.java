@@ -9,6 +9,11 @@ import java.util.List;
 
 
 public class TestPage implements IPage {
+    
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
 
     @Override
     public String getViewTitle() {

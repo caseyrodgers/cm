@@ -33,4 +33,9 @@ public class LoginPage implements IPage {
     public BackAction getBackAction() {
     	return null;
     }
+    
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
 }

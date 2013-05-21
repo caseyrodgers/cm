@@ -26,4 +26,9 @@ public interface IPage {
 	
 	BackAction getBackAction();
 
+	/** Called once page is visible to user
+	 * 
+	 */
+    void isNowActive();
+
 }

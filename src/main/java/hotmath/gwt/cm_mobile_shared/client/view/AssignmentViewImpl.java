@@ -159,6 +159,12 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             setHtml(html);
         }
     }
+
+    @Override
+    public void isNowActive() {
+        // TODO Auto-generated method stub
+        
+    }
 }
 
 

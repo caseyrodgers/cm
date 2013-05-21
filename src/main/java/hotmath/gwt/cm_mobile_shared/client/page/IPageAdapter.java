@@ -38,5 +38,11 @@ public class IPageAdapter extends Composite implements IPage {
     public String getViewTitle() {
         return "View Adapter";
     }
+    
+    
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
 
 }

@@ -15,6 +15,11 @@ public class QuizPage implements IPage {
     public QuizPage() {
     }
     
+    @Override
+    public void isNowActive() {
+        /** empty */
+    }
+
     public void setQuizPanel(QuizPanel quizPanel) {
         this.quizPanel = quizPanel;
     }

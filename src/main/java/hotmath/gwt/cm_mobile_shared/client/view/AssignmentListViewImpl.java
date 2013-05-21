@@ -117,6 +117,13 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
     public String getViewTitle() {
         return "Your Assignments";
     }
+
+
+    @Override
+    public void isNowActive() {
+        // TODO Auto-generated method stub
+        
+    }
 }
 
 

@@ -131,4 +131,10 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
         _showWorkPanel.setProblemStatement(problemStatement);
     }
 
+    @Override
+    public void isNowActive() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

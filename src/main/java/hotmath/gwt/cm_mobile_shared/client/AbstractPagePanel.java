@@ -48,5 +48,12 @@ public abstract class AbstractPagePanel extends Composite {
 	public void setScrollPosition(int scrollPosition) {
 		this.scrollPosition = scrollPosition;
 	}
+	
+	
+	
+	/** defined in IPage */
+	public void isNowActive() {
+	    /** empty */
+	}
 
 }

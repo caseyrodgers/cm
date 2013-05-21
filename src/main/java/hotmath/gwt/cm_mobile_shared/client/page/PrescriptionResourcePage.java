@@ -21,6 +21,12 @@ public class PrescriptionResourcePage implements IPage {
 	}
 	
 	@Override
+    public void isNowActive() {
+        /** empty */
+    }
+
+	
+	@Override
 	public String getViewTitle() {
 		return "Learning Resource";
 	}

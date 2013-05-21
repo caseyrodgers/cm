@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile3.client.PagePanelFactory;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
+import hotmath.gwt.cm_mobile_shared.client.event.NewPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
@@ -12,6 +13,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -183,7 +185,8 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
         if (mIsIphone && startedAnimation) {
             ViewSettings.AnimationRunning = true;
         }
-        EventBus.getInstance().fireEvent(new CmEvent(EventTypes.EVENT_PAGE_LOADED, p));
+        
+        p.isNowActive();
     }
 
     public void removePage(IPage removedPage) {
