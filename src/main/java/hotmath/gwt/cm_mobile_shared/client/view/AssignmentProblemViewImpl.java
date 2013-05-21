@@ -239,6 +239,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
      * 
      */
     native protected void jsni_removeFocusFrom() /*-{
+        alert('Removing focus from tutor');
         var elements = $doc.getElementsByTagName("input");
         var cnt=elements.length;
         

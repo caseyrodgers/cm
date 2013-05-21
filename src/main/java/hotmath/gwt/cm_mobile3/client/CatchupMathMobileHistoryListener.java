@@ -259,6 +259,8 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                     @Override
                     public void isComplete() {
                         eb.fireEvent(new LoadNewPageEvent(view));
+                        
+                        view.removeFocusFromTutor();
                     }
                 });
             }

@@ -94,7 +94,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                         @Override
                         public void execute() {
                             view.showWhiteboard();
-                        }
+                        } 
                     });
                 }
                 

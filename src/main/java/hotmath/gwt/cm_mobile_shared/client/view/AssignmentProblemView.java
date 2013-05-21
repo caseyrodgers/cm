@@ -39,4 +39,5 @@ public interface AssignmentProblemView extends IPage, IsWidget {
     
     void loadProblem(AssignmentProblem problem);
     void showWhiteboard();
+    void removeFocusFromTutor();
 }
