@@ -280,14 +280,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                         TutorWrapperPanel.jsni_showWhiteboardStatus(status);
                     }
                 }
-                
-                
-                
-                
-                /** mobile version should not default to focus on anything.
-                 * 
-                 */
-                jsni_removeFocusFrom();
+    
             }
         });
     }
@@ -384,6 +377,16 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         public MyHorizontalPanel() {
             super.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
         }
+    }
+
+    @Override
+    public void removeFocusFromTutor() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                jsni_removeFocusFrom();
+            }
+        });
     }
 
 }
