@@ -247,7 +247,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         for(var i=0;i<cnt;i++) {
             var ele = elements[i];
             
-            console.log('bluring: ' + ele);
+            alert('bluring: ' + ele);
             ele.blur();
         }
     }-*/;
