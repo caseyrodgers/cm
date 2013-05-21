@@ -6,7 +6,6 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.CmEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.EventBus;
 import hotmath.gwt.cm_mobile_shared.client.event.EventTypes;
-import hotmath.gwt.cm_mobile_shared.client.event.NewPageLoadedEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
@@ -14,7 +13,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -187,7 +185,7 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
             ViewSettings.AnimationRunning = true;
         }
         
-        CmRpcCore.EVENT_BUS.fireEvent(new NewPageLoadedEvent(p));
+        p.isNowActive();
     }
 
     public void removePage(IPage removedPage) {
