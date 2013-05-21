@@ -61,7 +61,10 @@ public class AssignmentLessonPidSelector {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                return new ProblemDto(0, 0, lesson, defaultLabel, rs.getString("link_key"), 0);
+                
+                String pid = rs.getString("link_key");
+                pid = pid.split(":")[0];  // strip off any grade range
+                return new ProblemDto(0, 0, lesson, defaultLabel, pid, 0);
             }
         });
         // don't allow dups between EPP and RPP
