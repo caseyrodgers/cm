@@ -242,7 +242,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         var elements = $doc.getElementsByTagName("input");
         var cnt=elements.length;
         
-        alert('text elements found: ' + cnt);
+        console.log('text elements found: ' + cnt);
         
         for(var i=0;i<cnt;i++) {
             var ele = elements[i];
@@ -381,6 +381,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void isNowActive() {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                jsni_removeFocusFrom();
+            }
+        });
         jsni_removeFocusFrom();
     }
 
