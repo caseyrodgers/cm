@@ -221,6 +221,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 if (presenter.getItemData().isViewed()) {
                     tutor.unlockSolution();
                 }
+                
             }
 
             @Override
@@ -233,6 +234,23 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
         showProblem(problem);
     }
+
+    /** Remove focus from any text fields on form
+     * 
+     */
+    native protected void jsni_removeFocusFrom() /*-{
+        var elements = $doc.getElementsByTagName("input");
+        var cnt=elements.length;
+        
+        console.log('text elements found: ' + cnt);
+        
+        for(var i=0;i<cnt;i++) {
+            var ele = elements[i];
+            
+            console.log('bluring: ' + ele);
+            ele.blur();
+        }
+    }-*/;
 
     private void showProblem(final AssignmentProblem solution) {
         this.problem = solution;
@@ -262,6 +280,14 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                         TutorWrapperPanel.jsni_showWhiteboardStatus(status);
                     }
                 }
+                
+                
+                
+                
+                /** mobile version should not default to focus on anything.
+                 * 
+                 */
+                jsni_removeFocusFrom();
             }
         });
     }
