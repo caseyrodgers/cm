@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile_shared.client.page;
 
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 
 import java.util.ArrayList;
@@ -67,5 +68,11 @@ public class MainPage implements IPage {
     public BackAction getBackAction() {
     	return null;
     }    
+
+
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.PROGRAM;        
+    }
 
 }

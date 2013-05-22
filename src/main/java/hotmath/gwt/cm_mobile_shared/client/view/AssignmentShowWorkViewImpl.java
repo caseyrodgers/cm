@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
@@ -135,6 +136,12 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
     public void isNowActive() {
         // TODO Auto-generated method stub
         
+    }
+
+
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.ASSIGNMENT;        
     }
 
 }

@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
+import hotmath.gwt.cm_mobile3.client.ui.OptionsPanel;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
@@ -49,6 +50,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -338,6 +340,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     
     
+    OptionsPanel _optionsPanel = new OptionsPanel();
+    
     private Widget createApplicationPanel() {
         /**
          * we want this to have an absolute size and be added as the top
@@ -347,18 +351,27 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         HeaderPanel headerPanel = new HeaderPanel(__clientFactory.getEventBus());
         PagesContainerPanel pagesPanel = __clientFactory.getPagesContainer();
 
-        FlowPanel fp = new FlowPanel();
-        fp.setStyleName("app-panel");
+        
+        DockPanel dockPanel = new DockPanel();
+        
+        FlowPanel mainPanel = new FlowPanel();
+        mainPanel.setStyleName("app-panel");
 
-        fp.add(headerPanel);
-        fp.add(pagesPanel.getPanel());
+        
+        
+        dockPanel.add(_optionsPanel, DockPanel.EAST);
+        _optionsPanel.setVisible(false);
+        mainPanel.add(headerPanel);
+        
+        dockPanel.add(pagesPanel.getPanel(),  DockPanel.CENTER);
+        mainPanel.add(dockPanel);
 
         _pageStack = new ObservableStack<IPage>();
         pagesPanel.bind(_pageStack);
         headerPanel.bind(_pageStack);
         Controller.init(_pageStack);
 
-        return fp;
+        return mainPanel;
     }
     
     static private void debugLogOut(String message) {
@@ -374,6 +387,15 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::debugLogOut(Ljava/lang/String;)(x);
         };      
     }-*/;
+
+    public void showOptionsPanel() {
+        if(_optionsPanel.isVisible()) {
+            _optionsPanel.setVisible(false);
+        }
+        else {
+            _optionsPanel.setVisible(true);
+        }
+    }
 
 //    private native void registerExternalJs() /*-{
 //         $wnd.gwt_fireBrowserResizedEvent = function(){

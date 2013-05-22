@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericContainerTag;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
@@ -54,6 +55,12 @@ public abstract class AbstractPagePanel extends Composite {
 	/** defined in IPage */
 	public void isNowActive() {
 	    /** empty */
+	}
+	
+	
+	/** defined in IPage */
+	public ApplicationType getApplicationType() {
+	    return ApplicationType.PROGRAM;
 	}
 
 }

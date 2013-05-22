@@ -4,6 +4,7 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
@@ -165,6 +166,13 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         // TODO Auto-generated method stub
         
     }
+    
+
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.ASSIGNMENT;        
+    }
+    
 }
 
 

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
@@ -121,8 +122,12 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
 
     @Override
     public void isNowActive() {
-        // TODO Auto-generated method stub
-        
+    }
+
+
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.ASSIGNMENT;
     }
 }
 

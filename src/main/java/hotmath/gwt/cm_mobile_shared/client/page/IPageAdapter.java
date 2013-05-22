@@ -45,4 +45,9 @@ public class IPageAdapter extends Composite implements IPage {
         /** empty */
     }
 
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.PROGRAM;
+    }
+
 }

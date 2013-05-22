@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 
 import java.util.List;
 
@@ -37,5 +38,10 @@ public class LoginPage implements IPage {
     @Override
     public void isNowActive() {
         /** empty */
+    }
+
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
     }
 }

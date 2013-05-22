@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client;
 
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.BackAction;
 
 import java.util.List;
 
@@ -46,4 +45,10 @@ public class TopicViewPage implements IPage {
     public BackAction getBackAction() {
     	return null;
     }    
+    
+    
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.PROGRAM;
+    }
 }

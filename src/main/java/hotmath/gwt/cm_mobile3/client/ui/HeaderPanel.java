@@ -12,11 +12,14 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.NewPageLoadedEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.NewPageLoadedHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLoginEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLoginHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
@@ -66,9 +69,15 @@ public class HeaderPanel extends Composite {
 
     MyResources resources = GWT.create(MyResources.class);
     
+    FlowPanel basePanel;
+    
+    
+    AssignmentButtonIndicator _assignmentButton = new AssignmentButtonIndicator();
+    ProgramButtonIndicator _programButton = new ProgramButtonIndicator();
+    
     public HeaderPanel(EventBus eventBus) {
         
-        FlowPanel basePanel = new FlowPanel();
+        basePanel = new FlowPanel();
         basePanel.getElement().setId("header");
 
         mActiveButton = new GenericTextTag<String>("div");
@@ -100,10 +109,23 @@ public class HeaderPanel extends Composite {
         _logout.setVisible(false);
         basePanel.add(_logout);
         
-        basePanel.add(new AboutButtonIndicator());
+        TouchAnchor about = new TouchAnchor();
+        about.addStyleName("about-button");
+        about.getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
+        about.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                new AboutDialog().showCentered();                
+            }
+        });
+        basePanel.add(about);
+
+        _assignmentButton.setVisible(false);        
+        basePanel.add(_assignmentButton);
         
-//        AssignmentButtonIndicator assignmentButton = new AssignmentButtonIndicator();
-//        basePanel.add(assignmentButton);
+        _programButton.setVisible(false);
+        basePanel.add(_programButton);
+        
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
@@ -141,6 +163,33 @@ public class HeaderPanel extends Composite {
                 mActiveTitle.setText(title);
             }
         });
+        
+        eventBus.addHandler(NewPageLoadedEvent.TYPE,  new NewPageLoadedHandler() {
+            @Override
+            public void pageLoaded(IPage page) {
+                setupDomainSpecificButtons(page);
+            }
+            
+            @Override
+            public void pageLoaded() {
+            }
+        });
+    }
+
+    
+    protected void setupDomainSpecificButtons(IPage page) {
+        if(page.getApplicationType() == ApplicationType.PROGRAM) {
+            _programButton.setVisible(false);
+            _assignmentButton.setVisible(true);
+        }
+        else if(page.getApplicationType() == ApplicationType.ASSIGNMENT) {
+            _assignmentButton.setVisible(false);
+            _programButton.setVisible(true);
+        }
+        else {
+            _assignmentButton.setVisible(false);
+            _programButton.setVisible(false);
+        }
     }
 
     public void showLogoutButton(boolean yesNo) {

@@ -6,6 +6,17 @@ import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import java.util.List;
 
 public interface IPage {
+    
+    public enum ApplicationType {
+        /** is a page in a normal CM program */
+        PROGRAM,
+        
+        /** is a page in assignments */
+        ASSIGNMENT,
+        
+        /** Is not in a program/not logged in */
+        NONE
+    }
 
 	static public interface BackAction {
 	    /** provide back processing, if return true
@@ -30,5 +41,7 @@ public interface IPage {
 	 * 
 	 */
     void isNowActive();
+
+    ApplicationType getApplicationType();
 
 }

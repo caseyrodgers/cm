@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
@@ -17,7 +18,9 @@ public class AboutButtonIndicator extends TouchAnchor {
         addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                new AboutDialog().showCentered();
+                // CmRpcCore.EVENT_BUS.fireEvent(new ShowOptionsPanelEvent());
+                CatchupMathMobile3.__instance.showOptionsPanel();
+                // new AboutDialog().showCentered();
             }
         });
         
@@ -36,7 +39,6 @@ public class AboutButtonIndicator extends TouchAnchor {
                     }
                 }
             }
-
         });
         
     }

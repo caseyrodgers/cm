@@ -13,7 +13,7 @@ import com.google.gwt.user.client.History;
 public class AssignmentButtonIndicator extends TouchAnchor {
     
     public AssignmentButtonIndicator() {
-        addStyleName("AssignmentButtonIndicator");
+        addStyleName("ass-prog-button-indicator");
         getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/assignment-info.png'/>");
         addClickHandler(new ClickHandler() {
             @Override

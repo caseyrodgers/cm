@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
@@ -387,6 +388,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 jsni_removeFocusFrom();
             }
         }.schedule(500);
+    }
+
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.ASSIGNMENT;        
     }
 
 }

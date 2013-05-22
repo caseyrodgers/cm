@@ -75,6 +75,12 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     }
     
     
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
+    }
+    
+    
     @UiField
     DivElement firstThing,programStatus;
     
