@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
@@ -17,6 +18,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -163,8 +165,10 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     @Override
     public void isNowActive() {
-        // TODO Auto-generated method stub
-        
+        int lastScrollPosition = CatchupMathMobile3.__instance.getScrollPositionFor(this);
+        if(lastScrollPosition > 0) {
+            Window.scrollTo(0,  lastScrollPosition);
+        }
     }
     
 

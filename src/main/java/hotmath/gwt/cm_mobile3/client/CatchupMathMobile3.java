@@ -308,6 +308,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             }
         });
     }
+    
+    
+    public int getScrollPositionFor(IPage page) {
+        Integer position = pageScroll.get(page);
+        if(position != null) {
+            return position;
+        }
+        else  {
+            return 0;
+        }
+    }
 
     /**
      * Look at current page and try to determine the proper thing to do for the
