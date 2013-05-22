@@ -5,12 +5,9 @@ import hotmath.util.sql.SqlUtilities;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -28,11 +25,14 @@ public class RewriteSolutionContext {
     	int count = 0;
     	int lastId = 0 ;
 
-    	String sql = "select id, time_viewed, run_id, pid, problem_number, variables from HA_SOLUTION_CONTEXT where id >= ? limit ?";
+    	String sql = "select id, variables from HA_SOLUTION_CONTEXT where id >= ? limit ?";
 
-    	try {
+		String sql2 = "update HA_SOLUTION_CONTEXT set variables = ? where id = ?";
+
+		try {
     		conn = HMConnectionPool.getConnection();
     		ps = conn.prepareStatement(sql);
+    		ps2 = conn.prepareStatement(sql2);
 
     		int compressCount = 0;
     		int skipCount = 0;
@@ -45,8 +45,6 @@ public class RewriteSolutionContext {
 
     			rs = ps.executeQuery();
 
-    			String sql2 = "insert into HA_SOLUTION_CONTEXT_NEW (time_viewed, run_id, pid, problem_number, variables) values (?,?,?,?,?)";
-    			ps2 = conn.prepareStatement(sql2);
 
     			while (rs.next()) {
 
@@ -61,7 +59,7 @@ public class RewriteSolutionContext {
     				byte[] compressed = rs.getBytes("variables");
     				if (compressed[0] != "{".getBytes("UTF-8")[0]) {
     					skipCount++;
-    					ps2.setBytes(5, compressed);
+    					continue;
     				}
     				else {
     					compressCount++;
@@ -71,21 +69,18 @@ public class RewriteSolutionContext {
     						inBytes = context.getBytes("UTF-8");
 
     						byte[] outBytes = CompressHelper.compress(inBytes);
-    						ps2.setBytes(5, outBytes);
+    						ps2.setBytes(1, outBytes);
+    						ps2.setInt(2, id);
 
     						if (__logger.isDebugEnabled()) __logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
 
     					} catch (UnsupportedEncodingException e) {
-    						__logger.error(String.format("*** Error saving solution context for id: %d", id), e);
+    						__logger.error(String.format("*** Error updating solution context for id: %d", id), e);
     						throw new SQLException(e.getLocalizedMessage());
     					}
     				}
-    				ps2.setDate(1, rs.getDate("time_viewed"));
-    				ps2.setInt(2, rs.getInt("run_id"));
-    				ps2.setString(3, rs.getString("pid"));
-    				ps2.setInt(4, rs.getInt("problem_number"));
     				if (ps2.executeUpdate() != 1) {
-    					__logger.error("*** Could NOT INSERT record: id: " + id);
+    					__logger.error("*** Could NOT UPDATE record: id: " + id);
     				}
 
     			}
