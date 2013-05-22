@@ -91,8 +91,11 @@ public class AssignmentLessonPidSelector {
          */
         CmList<QuizQuestion> cqQuestions = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, 999);
         for(QuizQuestion qq: cqQuestions) {
+            if(problemsAll.size() >= MAX_PIDS) {
+                break;
+            }
             String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-            problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, lessonFile, 0));
+            problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, qq.getPid(), 0));            
         }
         
         
