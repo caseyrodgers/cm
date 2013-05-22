@@ -82,7 +82,11 @@ public class AssignmentLessonPidSelector {
         }
         
         if(problemsAll.size() < MAX_PIDS) {
-            problemsAll.addAll(getQuizProblems(MAX_PIDS - problemsAll.size(), subject, lessonName));
+            int numToGet = MAX_PIDS - problemsAll.size();
+            if(numToGet > 5) {
+                numToGet = 5; 
+            }
+            problemsAll.addAll(getQuizProblems(numToGet, subject, lessonName));
         }
         
         AssignmentDao.getInstance().updateProblemTypes(problemsAll);
@@ -152,9 +156,9 @@ public class AssignmentLessonPidSelector {
          */
         String sql = "";
         if (subject != null) {
-            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by id";
+            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? and subject = ? order by rand()";
         } else {
-            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? OR subject = ? order by id"; // get
+            sql = "select * from HA_PROGRAM_LESSONS_static where lesson = ? OR subject = ? order by rand()"; // get
                                                                                                          // all
         }        
         List<ProblemDto> problems = AssignmentDao.getInstance().getJdbcTemplate().query(sql, new Object[] { lessonName, subject }, new RowMapper<ProblemDto>() {

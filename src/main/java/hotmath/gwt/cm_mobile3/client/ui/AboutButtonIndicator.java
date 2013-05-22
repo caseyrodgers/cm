@@ -13,7 +13,7 @@ public class AboutButtonIndicator extends TouchAnchor {
     
     public AboutButtonIndicator() {
         getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info.png'/>");
-        addStyleName("about-dialog");
+        addStyleName("about-button");
         addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

@@ -90,7 +90,7 @@ public class HeaderPanel extends Composite {
 
         _logout = new TouchAnchor("Logout");
         _logout.addStyleName("logout-button");
-        _logout.addStyleName("about-dialog");
+        _logout.addStyleName("about-button");
         _logout.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -100,8 +100,10 @@ public class HeaderPanel extends Composite {
         _logout.setVisible(false);
         basePanel.add(_logout);
         
-        AboutButtonIndicator aboutButton = new AboutButtonIndicator();
         basePanel.add(new AboutButtonIndicator());
+        
+//        AssignmentButtonIndicator assignmentButton = new AssignmentButtonIndicator();
+//        basePanel.add(assignmentButton);
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());

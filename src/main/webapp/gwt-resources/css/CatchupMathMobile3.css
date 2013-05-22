@@ -374,7 +374,7 @@ li {
     font-size: .8em;
 }
 
-.about-dialog {
+.about-button {
     position: absolute;
     right: 10px;
     top: 11px;
@@ -912,3 +912,11 @@ span.group-item-dot {
 	font-size: 2em;
 	font-weight: bold;
 }
+
+
+.AssignmentButtonIndicator {
+	position: absolute;
+	left: 50px;
+	top: 11px;
+}
+
