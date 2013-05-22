@@ -23,7 +23,8 @@ public class RewriteSolutionContext {
     	ResultSet rs = null;
     	long startTime = System.currentTimeMillis();
     	int count = 0;
-    	int lastId = 0 ;
+    	int lastId = 0;
+    	int lastSkippedId = 0;
 
     	String sql = "select id, variables from HA_SOLUTION_CONTEXT where id >= ? limit ?";
 
@@ -59,6 +60,7 @@ public class RewriteSolutionContext {
     				byte[] compressed = rs.getBytes("variables");
     				if (compressed[0] != "{".getBytes("UTF-8")[0]) {
     					skipCount++;
+    					lastSkippedId = id;
     					continue;
     				}
     				else {
@@ -86,7 +88,7 @@ public class RewriteSolutionContext {
     			}
     		}
     		__logger.info(String.format("Compressed: %d, skipped: %d", compressCount, skipCount));
-    		__logger.info("lastId: " + lastId);
+    		__logger.info(String.format("lastId: %d, lastSkippedId: %d", lastId, lastSkippedId));
     	} catch (Exception e) { 
     		e.printStackTrace();
     	} finally {
