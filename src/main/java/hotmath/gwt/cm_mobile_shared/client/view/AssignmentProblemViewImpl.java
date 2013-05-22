@@ -239,7 +239,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             msg = problem.getStatus();
         }
         else {
-            msg = problem.getStudentProblem().getStatusForStudent();
+            String s = problem.getStatus().toLowerCase();
+            if(problem.getLastUserWidgetValue() != null || s.equals("submitted") || s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
+                msg = "Submitted";
+            }
+            // msg = problem.getStudentProblem().getStatusForStudent();
         }
         String html = "<div class='ass-prob-status'>" + msg + "</div>";
         _contentPanel.add(new HTML(html));
