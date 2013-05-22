@@ -6,7 +6,6 @@ import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowLoginViewEvent;
 import hotmath.gwt.cm_mobile3.client.ui.HeaderPanel;
-import hotmath.gwt.cm_mobile3.client.ui.OptionsPanel;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonViewImpl;
@@ -50,7 +49,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
-import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -340,7 +338,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     
     
-    OptionsPanel _optionsPanel = new OptionsPanel();
     
     private Widget createApplicationPanel() {
         /**
@@ -351,20 +348,13 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         HeaderPanel headerPanel = new HeaderPanel(__clientFactory.getEventBus());
         PagesContainerPanel pagesPanel = __clientFactory.getPagesContainer();
 
-        
-        DockPanel dockPanel = new DockPanel();
-        
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.setStyleName("app-panel");
 
         
         
-        dockPanel.add(_optionsPanel, DockPanel.EAST);
-        _optionsPanel.setVisible(false);
         mainPanel.add(headerPanel);
-        
-        dockPanel.add(pagesPanel.getPanel(),  DockPanel.CENTER);
-        mainPanel.add(dockPanel);
+        mainPanel.add(pagesPanel.getPanel());
 
         _pageStack = new ObservableStack<IPage>();
         pagesPanel.bind(_pageStack);
@@ -388,14 +378,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         };      
     }-*/;
 
-    public void showOptionsPanel() {
-        if(_optionsPanel.isVisible()) {
-            _optionsPanel.setVisible(false);
-        }
-        else {
-            _optionsPanel.setVisible(true);
-        }
-    }
 
 //    private native void registerExternalJs() /*-{
 //         $wnd.gwt_fireBrowserResizedEvent = function(){
