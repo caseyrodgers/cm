@@ -5,7 +5,6 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
@@ -39,6 +38,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentProblemViewImpl extends Composite implements AssignmentProblemView {
@@ -52,6 +52,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     SubToolBar _subBar;
     SexyButton _submitWhiteboard;
     private SexyButton _viewWhiteboardButton;
+    private Label _problemStatusLabel;
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
@@ -87,6 +88,10 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
         _subBar.add(whiteboardControlView);
         mainPanel.add(_subBar);
+        _problemStatusLabel = new Label();
+        _problemStatusLabel.addStyleName("ass-prob-status");
+        mainPanel.add(_problemStatusLabel);
+        
         _contentPanel = new FlowPanel();
         mainPanel.add(_contentPanel);
         setupInitialPanel();
@@ -186,6 +191,10 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 presenter.processTutorWidgetComplete(inputValue, correct);
+                
+                if(_problemStatusLabel.getText().length() == 0) {
+                    _problemStatusLabel.setText("Submitted");
+                }
             }
 
             @Override
@@ -234,20 +243,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
 
         });
-        
-        String msg = "";
-        if(problem.isGraded()) {
-            msg = problem.getStatus();
-        }
-        else {
-            String s = problem.getStatus().toLowerCase();
-            if(problem.getLastUserWidgetValue() != null || s.equals("submitted") || s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
-                msg = "Submitted";
-            }
-            // msg = problem.getStudentProblem().getStatusForStudent();
-        }
-        String html = "<div class='ass-prob-status'>" + msg + "</div>";
-        _contentPanel.add(new HTML(html));
+
         
         _contentPanel.add(tutor);
 
@@ -292,13 +288,31 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                         TutorWrapperPanel.jsni_showWhiteboardStatus(status);
                     }
                 }
-    
                 
-                String status = problem.getStudentProblem().getStatus();
                 
+                setProblemStatus();
             }
         });
     }
+    
+    
+    private void setProblemStatus() {
+        
+        String msg = "";
+        if(problem.isGraded()) {
+            msg = problem.getStatus();
+        }
+        else {
+            String s = problem.getStatus().toLowerCase();
+            if(problem.getLastUserWidgetValue() != null || s.equals("submitted") || s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
+                msg = "Submitted";
+            }
+            // msg = problem.getStudentProblem().getStatusForStudent();
+        }
+        //String html = "<div class='ass-prob-status'>" + msg + "</div>";
+        _problemStatusLabel.setText(msg);
+    }
+    
 
     ShowWorkPanel2 _showWork;
 
