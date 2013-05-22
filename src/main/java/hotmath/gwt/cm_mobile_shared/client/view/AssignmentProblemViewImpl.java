@@ -386,7 +386,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             public void run() {
                 jsni_removeFocusFrom();
             }
-        }.schedule(5000);
+        }.schedule(500);
     }
 
 }
