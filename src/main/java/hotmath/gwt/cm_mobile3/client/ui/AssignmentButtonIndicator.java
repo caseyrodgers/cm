@@ -44,7 +44,7 @@ public class AssignmentButtonIndicator extends TouchAnchor {
     }
     
     protected void startRotatingImage() {
-        getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/icon-info-changed.gif'/>");
+        getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/assignment-info-changed.gif'/>");
     }
 
 

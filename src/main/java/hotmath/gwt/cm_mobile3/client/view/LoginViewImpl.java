@@ -130,4 +130,10 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView {
     
     @UiField
     Label errorMessage;
+    
+    
+    @Override
+    public ApplicationType getApplicationType() {
+        return ApplicationType.NONE;
+    }
 }
