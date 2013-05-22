@@ -3,10 +3,14 @@ package hotmath.cm.assignment;
 import hotmath.assessment.AssessmentPrescription;
 import hotmath.assessment.InmhItemData;
 import hotmath.assessment.RppWidget;
+import hotmath.gwt.cm_admin.server.model.CustomQuizQuestionManager;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.inmh.INeedMoreHelpItem;
+import hotmath.util.HMConnectionPool;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -80,6 +84,18 @@ public class AssignmentLessonPidSelector {
                 problemsAll.add(p);
             }
         }
+        
+        
+        /** Custom Quiz problems
+         * 
+         */
+        CmList<QuizQuestion> cqQuestions = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, 999);
+        for(QuizQuestion qq: cqQuestions) {
+            String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
+            problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, lessonFile, 0));
+        }
+        
+        
         
         if(problemsAll.size() < MAX_PIDS) {
             int numToGet = MAX_PIDS - problemsAll.size();
