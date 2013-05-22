@@ -44,7 +44,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     private static AssignmentProblemViewImpl __lastInstance;
     private Presenter presenter;
-    FlowPanel _main;
+    FlowPanel _contentPanel;
     private TutorWrapperPanel tutor;
     private AssignmentProblem problem;
     FlowPanel whiteboardControlView, whiteboardControlHide;
@@ -54,7 +54,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
-        FlowPanel flowPanel = new FlowPanel();
+        FlowPanel mainPanel = new FlowPanel();
 
         _subBar = new SubToolBar();
         whiteboardControlView = new FlowPanel();
@@ -85,11 +85,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         whiteboardControlHide.add(_submitWhiteboard);
 
         _subBar.add(whiteboardControlView);
-        flowPanel.add(_subBar);
-        _main = new FlowPanel();
-        flowPanel.add(_main);
+        mainPanel.add(_subBar);
+        _contentPanel = new FlowPanel();
+        mainPanel.add(_contentPanel);
         setupInitialPanel();
-        initWidget(flowPanel);
+        initWidget(mainPanel);
     }
 
     protected void setupWhiteboardTools(boolean show) {
@@ -108,14 +108,14 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         setupWhiteboardTools(false);
         
         if(_showWork != null) {
-            _main.remove(_showWork);
+            _contentPanel.remove(_showWork);
             _showWork = null;
         }
     }
 
     private void setupInitialPanel() {
-        _main.clear();
-        _main.add(new HTML("Problem loading ..."));
+        _contentPanel.clear();
+        _contentPanel.add(new HTML("Problem loading ..."));
     }
 
     @Override
@@ -168,7 +168,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     public void loadProblem(AssignmentProblem problem) {
         this.problem = problem;
         setupWhiteboardTools(false);
-        _main.clear();
+        _contentPanel.clear();
 
         tutor = new TutorWrapperPanel(true, true, true, false, new TutorCallbackDefault() {
 
@@ -233,7 +233,18 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
 
         });
-        _main.add(tutor);
+        
+        String msg = "";
+        if(problem.isGraded()) {
+            msg = problem.getStatus();
+        }
+        else {
+            msg = problem.getStudentProblem().getStatusForStudent();
+        }
+        String html = "<div class='ass-prob-status'>" + msg + "</div>";
+        _contentPanel.add(new HTML(html));
+        
+        _contentPanel.add(tutor);
 
         showProblem(problem);
     }
@@ -243,15 +254,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
      */
     native protected void jsni_removeFocusFrom() /*-{
         var elements = $doc.getElementsByTagName("input");
-        var cnt=elements.length;
-        
-        console.log('text elements found: ' + cnt);
-        
-        for(var i=0;i<cnt;i++) {
-            var ele = elements[i];
-            
-            console.log('bluring: ' + ele);
-            ele.blur();
+        for(var i=0;i<elements.length;i++) {
+            elements[i].blur();
         }
     }-*/;
 
@@ -284,6 +288,9 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                     }
                 }
     
+                
+                String status = problem.getStudentProblem().getStatus();
+                
             }
         });
     }
@@ -314,7 +321,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 return presenter.getWhiteboardSaveAction(pid, commandType, data);
             }
         });
-        _main.add(_showWork);
+        _contentPanel.add(_showWork);
         
         addDoubleTapRemoveEvent(this, _showWork.getElement());
         
@@ -340,7 +347,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     private void alignWhiteboard() {
         
         if (_showWork != null) {
-            // setupShowWorkInViewport(_showWork.getElement());
             int width = tutor.getElement().getParentElement().getClientWidth();
             int height = tutor.getElement().getParentElement().getClientWidth();
             
@@ -348,24 +354,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             _showWork.getElement().setAttribute("style", "width: " + width + ";height: " + height);  
         }
     }
-
-    native private void setupShowWorkInViewport(Element ele) /*-{
-        var viewableSize = $wnd.getViewableSize();
-        var viewHeight = viewableSize[1];
-        
-        var scroll = $wnd.getScrollXY();
-        var top = scroll[1];
-        
-        var vars = [top, viewHeight];
-        
-        ele.style.left = 0;
-        ele.style.top = top;
-        
-        alert('element: ' + ele);
-        
-        // alert('vars: ' + vars);
-        //alert('viewableSize:' + viewableSize + ", scroll: " + scroll);
-    }-*/;
 
     static {
         CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
@@ -394,7 +382,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             public void run() {
                 jsni_removeFocusFrom();
             }
-        }.schedule(1000);
+        }.schedule(5000);
     }
 
 }

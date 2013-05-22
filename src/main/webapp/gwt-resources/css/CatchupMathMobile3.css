@@ -906,4 +906,9 @@ span.group-item-dot {
 #_hm_flash_widget {
 	  display: none;
 }	  
+
+.ass-prob-status {
+	color: #F76228;
+	font-size: 2em;
+	font-weight: bold;
 }
