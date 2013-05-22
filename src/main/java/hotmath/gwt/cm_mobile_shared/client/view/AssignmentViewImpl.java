@@ -165,12 +165,17 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     @Override
     public void isNowActive() {
+        int SIZE_OF_HEADER=500;
         int lastScrollPosition = CatchupMathMobile3.__instance.getScrollPositionFor(this);
         if(lastScrollPosition > 0) {
-            Window.scrollTo(0,  lastScrollPosition);
+            jsni_scrollToPosition(lastScrollPosition + SIZE_OF_HEADER);
         }
     }
     
+
+    native void jsni_scrollToPosition(int lastScrollPosition) /*-{
+         $wnd.scrollTo(0,  lastScrollPosition);
+    }-*/;
 
     @Override
     public ApplicationType getApplicationType() {
