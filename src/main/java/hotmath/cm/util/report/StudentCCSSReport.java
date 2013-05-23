@@ -1,6 +1,7 @@
 package hotmath.cm.util.report;
 
 import hotmath.cm.dao.CCSSReportDao;
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.InformationOnlyException;
@@ -25,10 +26,12 @@ import com.lowagie.text.DocumentException;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
+import com.lowagie.text.pdf.PdfAction;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
@@ -40,6 +43,8 @@ public class StudentCCSSReport {
 	private String reportName;
     private String title;
 
+    private PdfWriter writer;
+
 	private static final Logger LOGGER = Logger.getLogger(StudentCCSSReport.class);
 
 	public StudentCCSSReport(String title) {
@@ -50,6 +55,9 @@ public class StudentCCSSReport {
 		ByteArrayOutputStream baos = null;
 		try {
 
+			String cmLogoFile = CatchupMathProperties.getInstance().getCatchupRuntime() + "/images/catchupmath.png";
+			Image cmLogo = Image.getInstance(cmLogoFile);
+			
 	        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
             if (info == null) return null;
 
@@ -77,12 +85,17 @@ public class StudentCCSSReport {
             }
 */
 			Document document = new Document();
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
+			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()-10, document.bottomMargin());
 
 			baos = new ByteArrayOutputStream();
-			PdfWriter writer = PdfWriter.getInstance(document, baos);
+			writer = PdfWriter.getInstance(document, baos);
 			document.open();
 
+			document.add(cmLogo);
+
+			Paragraph title = ReportUtils.buildTitle("Common Core State Standards");
+			document.add(title);
+			
             PdfPTable pdfTbl = addHeaderInfo(info, stuMdl, fromDate, toDate);
             document.add(pdfTbl);
 			//writer.setPageEvent(new HeaderTable(writer, pdfTbl));
@@ -90,19 +103,15 @@ public class StudentCCSSReport {
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-Student-CCSS-Report");
 
-			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+			HeaderFooter footer = ReportUtils.getFooter();
 			document.setFooter(footer);
 
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
+//    		Table tbl = new Table(1);
+//			tbl.setWidth(100.0f);
+//			tbl.setBorder(Table.BOTTOM);
+//			tbl.setBorder(Table.TOP);
 
-    		Table tbl = new Table(1);
-			tbl.setWidth(100.0f);
-			tbl.setBorder(Table.BOTTOM);
-			tbl.setBorder(Table.TOP);
-
-			document.add(tbl);
+//			document.add(tbl);
 
 			addSection("Quizzed and passed", quizCCSS, document);
 			addSection("Reviewed", reviewCCSS, document);
@@ -112,6 +121,7 @@ public class StudentCCSSReport {
 			document.add(Chunk.NEWLINE);
 
 			document.close();
+			writer.close();
 
 		} catch (Exception e) {
 			LOGGER.error(String.format("*** Error generating CCSS report for adminId: %d, userId: %d",
@@ -135,7 +145,11 @@ public class StudentCCSSReport {
             for (String stdName : standardNames) {
             	Chunk chunk = new Chunk(stdName);
             	chunk.setAnchor(convertStandardNameToLink(stdName));
+            	
             	chunk.setFont(FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE, new Color(0, 0, 200)));
+                //chunk.setAction(PdfAction.javaScript("if(app.viewerVersion<7)"+
+                //        "{this.openURL(\"http://www.yahoo.com\",true);}" + 
+                //        "else{app.launchURL(\"http://www.ebay.com\",true);};",writer)); 
             	p.add(chunk);
             	if (++idx < standardNames.size()) p.add(", ");
             }
@@ -145,17 +159,19 @@ public class StudentCCSSReport {
 		}
         tbl.addCell(p);
         tbl.setWidthPercentage(100.0f);
-        tbl.setSpacingBefore(20.0f);
+        tbl.setSpacingBefore(15.0f);
         document.add(tbl);
-        document.add(Chunk.NEWLINE);
+        //document.add(Chunk.NEWLINE);
     }
 
+    //private static final String features = "resizable=1,scrollbars=1,status=1,toolbar=1,menubar=1,location=1,height=906,width=700";
     //javascript:onLoad=window.open('http://www.yahoo.com','popup','').focus();void(0);
+    //private static final String CCSS_LINK_FMT = "Window.open('http://www.corestandards.org/Math/Content/%s','_blank','%s');";
     private static final String CCSS_LINK_FMT = "http://www.corestandards.org/Math/Content/%s";
 
 	private String convertStandardNameToLink(String stdName) {
 		String uri = stdName.replace("-", "/").replace(".", "/");
-		return String.format(CCSS_LINK_FMT, uri, stdName);
+		return String.format(CCSS_LINK_FMT, uri);
 	}
 
 	private Phrase buildSectionLabel(String label) {
