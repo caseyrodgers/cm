@@ -24,6 +24,7 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -102,8 +103,9 @@ public class StudentAssignmentReport {
 
 			List<StudentModelI> smList = studentDao.getStudentSummaries(adminId, studentUids, true);
 
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
+			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()-10, document.bottomMargin());
 			document.open();
+			Image cmLogo = ReportUtils.getCatchupMathLogo();
 
 			for (StudentModelI sm : smList) {
 				stuUid = sm.getUid();
@@ -126,7 +128,9 @@ public class StudentAssignmentReport {
 				pdfTbl.addCell(new Phrase(" "));
 				pdfTbl.addCell(date);
 				pdfTbl.addCell(new Phrase(" "));
+				pdfTbl.setSpacingBefore(10);
 
+				document.add(cmLogo);
 				document.add(pdfTbl);
 
 				document.add(Chunk.NEWLINE);			
