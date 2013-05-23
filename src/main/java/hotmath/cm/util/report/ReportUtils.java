@@ -1,5 +1,6 @@
 package hotmath.cm.util.report;
 
+import hotmath.cm.util.CatchupMathProperties;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
@@ -17,6 +18,7 @@ import com.lowagie.text.Chunk;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.pdf.PdfPTable;
@@ -183,5 +185,11 @@ public class ReportUtils {
 		sb.append(baseName).append("-");
 		sb.append(schoolName.replaceAll(" ", "").replaceAll("/", "-").replaceAll("#", "-"));
 		return sb.toString();
+    }
+
+    public static Image getCatchupMathLogo() throws Exception {
+		String cmLogoFile = CatchupMathProperties.getInstance().getCatchupRuntime() + "/images/catchupmath.png";
+		Image cmLogo = Image.getInstance(cmLogoFile);
+		return cmLogo;
     }
 }
