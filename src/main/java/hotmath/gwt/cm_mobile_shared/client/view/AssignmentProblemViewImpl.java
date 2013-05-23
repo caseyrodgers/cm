@@ -31,7 +31,6 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -61,7 +60,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         _subBar = new SubToolBar();
         whiteboardControlView = new FlowPanel();
         whiteboardControlHide = new FlowPanel();
-        _viewWhiteboardButton = new SexyButton("View Whiteboard", new ClickHandler() {
+        _viewWhiteboardButton = new SexyButton("Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 showWhiteboard();

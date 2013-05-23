@@ -4,8 +4,6 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
-import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
-import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
@@ -38,29 +36,22 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     @Override
     public void turnInAssignment(final AssignmentView view) {
-        
-        QuestionBox.askYesNoQuestion("Turn In Assignment",  "Are you sure you want to turn in this assignment?", new CallBack() {
-            @Override
-            public void onSelectYes() {
 
-                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
-                TurnInAssignmentAction action = new TurnInAssignmentAction(AssignmentData.getUserData().getUid(),__lastStudentAssignment.getAssignment().getAssignKey());
-                CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
-                    @Override
-                    public void onSuccess(RpcData result) {
-                        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-                        refreshAssignment(view);
-                        
-                        CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
-                    }
-                    @Override
-                    public void onFailure(Throwable caught) {
-                        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-                    }
-                });
+        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
+        TurnInAssignmentAction action = new TurnInAssignmentAction(AssignmentData.getUserData().getUid(),__lastStudentAssignment.getAssignment().getAssignKey());
+        CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<RpcData>() {
+            @Override
+            public void onSuccess(RpcData result) {
+                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+                refreshAssignment(view);
+                
+                CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
             }
         });
-        
     }
 
     @Override

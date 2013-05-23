@@ -4,7 +4,6 @@ import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
@@ -32,7 +31,7 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         DockPanel dockPanel = new DockPanel();
         
         SubToolBar subToolBar = new SubToolBar();
-        subToolBar.add(new SexyButton("Refresh", new ClickHandler() {
+        subToolBar.add(new SexyButton("Check For Changes", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.readDataFromServer(AssignmentListViewImpl.this, true);
