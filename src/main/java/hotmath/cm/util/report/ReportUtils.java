@@ -30,6 +30,16 @@ public class ReportUtils {
         return footer;
 	}
 
+	public static Paragraph buildTitle(String titleText) {
+        Phrase phrase = new Phrase(new Chunk(titleText, FontFactory.getFont(FontFactory.HELVETICA, 14, Font.BOLD,
+                new Color(0, 0, 0))));
+        Paragraph p = new Paragraph();
+        p.setSpacingBefore(10);
+        p.setSpacingAfter(10);
+        p.add(phrase);
+        return p;
+	}
+
     public static Phrase buildPhraseLabel(String label, String value) {
         Phrase phrase = new Phrase(new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 10, Font.BOLD,
                 new Color(0, 0, 0))));
@@ -92,10 +102,6 @@ public class ReportUtils {
         Phrase stuCount = buildPhraseLabel((countLabel != null)?countLabel:"Student Count: ", String.valueOf(count));
         
         heading.add(school);
-        // Chunk c = new Chunk(new Jpeg(new
-        // URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f,
-        // 1.0f);
-        // heading.add(c);
         heading.add(Chunk.NEWLINE);
         heading.add(admin);
         heading.add(Chunk.NEWLINE);
