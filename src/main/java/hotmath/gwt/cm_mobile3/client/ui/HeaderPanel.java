@@ -183,7 +183,7 @@ public class HeaderPanel extends Composite {
             _assignmentButton.setVisible(true);
         }
         else if(page.getApplicationType() == ApplicationType.ASSIGNMENT) {
-            _assignmentButton.setVisible(false);
+            _assignmentButton.setVisible(true);
             _programButton.setVisible(true);
         }
         else {

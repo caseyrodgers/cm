@@ -493,9 +493,6 @@ div.landscape #header .backButton {
 #header .title {
   /* base metrics */
   height: 31px;
-  margin-top: 3px;
-  margin-left: 5px;
-  margin-right: 5px;
   /* the titles should be displayed below the button so that they don't receive touches */
   z-index: 0;
   /* set up the font appearance */
@@ -507,7 +504,12 @@ div.landscape #header .backButton {
   white-space : nowrap;
   overflow : hidden;
   text-overflow: ellipsis;
-  margin-top:  5px;
+  
+   width: 70% !important;
+   display: block;
+   
+   margin: auto;
+   margin-top:  5px;
 }
 
 div.portrait #header .title.button-off {
@@ -914,10 +916,17 @@ span.group-item-dot {
 }
 
 
-.ass-prog-button-indicator {
+.ass-button-indicator, .prog-button-indicator {
 	position: absolute;
-	left: 50px;
 	top: 11px;
+}
+
+.ass-button-indicator {
+	left: 50px;
+}
+
+.prog-button-indicator {
+	left: 75px;
 }
 
 

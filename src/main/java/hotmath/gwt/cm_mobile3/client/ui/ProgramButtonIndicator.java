@@ -11,7 +11,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 public class ProgramButtonIndicator extends TouchAnchor {
     
     public ProgramButtonIndicator() {
-        addStyleName("ass-prog-button-indicator");
+        addStyleName("prog-button-indicator");
         getElement().setInnerHTML("<img src='/gwt-resources/images/mobile/program-info.png'/>");
         addClickHandler(new ClickHandler() {
             @Override
