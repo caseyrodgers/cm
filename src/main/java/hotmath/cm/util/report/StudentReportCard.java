@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.lowagie.text.Image;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -32,8 +33,6 @@ import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEvent;
@@ -127,7 +126,11 @@ public class StudentReportCard {
         //footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
         //document.setFooter(footer);
 
+		document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()-10, document.bottomMargin());
         document.open();
+
+        Image cmLogo = ReportUtils.getCatchupMathLogo();
+        document.add(cmLogo);
         document.add(Chunk.NEWLINE);
 
         Calendar now = Calendar.getInstance();
@@ -249,6 +252,7 @@ public class StudentReportCard {
 		pdfTbl.addCell(firstActivityDate);
 		pdfTbl.addCell(lastActivityDate);
 
+		pdfTbl.setSpacingBefore(10);
     	document.add(pdfTbl);
 	}
     
