@@ -55,9 +55,6 @@ public class StudentCCSSReport {
 		ByteArrayOutputStream baos = null;
 		try {
 
-			String cmLogoFile = CatchupMathProperties.getInstance().getCatchupRuntime() + "/images/catchupmath.png";
-			Image cmLogo = Image.getInstance(cmLogoFile);
-			
 	        AccountInfoModel info = CmAdminDao.getInstance().getAccountInfo(adminId);
             if (info == null) return null;
 
@@ -91,6 +88,7 @@ public class StudentCCSSReport {
 			writer = PdfWriter.getInstance(document, baos);
 			document.open();
 
+			Image cmLogo = ReportUtils.getCatchupMathLogo();
 			document.add(cmLogo);
 
 			Paragraph title = ReportUtils.buildTitle("Common Core State Standards");
