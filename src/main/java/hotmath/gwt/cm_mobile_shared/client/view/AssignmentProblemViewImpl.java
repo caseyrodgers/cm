@@ -254,9 +254,9 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
      * 
      */
     native protected void jsni_removeFocusFrom() /*-{
-        var elements = $doc.getElementsByTagName("input");
-        for(var i=0;i<elements.length;i++) {
-            elements[i].blur();
+        var ae = document.activeElement;
+        if(ae) {
+            ae.blur();
         }
     }-*/;
 
@@ -391,17 +391,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void isNowActive() {
-        
-        /** wait until tutor is initialized.  
-         * 
-         * TODO: This seems like a bug
-         */
-        new Timer() {
-            @Override
-            public void run() {
-                jsni_removeFocusFrom();
-            }
-        }.schedule(500);
+        jsni_removeFocusFrom();
     }
 
     @Override

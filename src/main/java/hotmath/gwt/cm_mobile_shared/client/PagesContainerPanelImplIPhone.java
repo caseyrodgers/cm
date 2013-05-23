@@ -137,7 +137,7 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
         }
     }
 
-    public void addPage(IPage p) {
+    public void addPage(final IPage p) {
 
         final GenericContainerTag oldContainer = mActiveContainerPanel;
         final GenericContainerTag newContainer = mInactiveContainerPanel;
@@ -161,6 +161,14 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
                     newContainer.addStyleName("animate");
                     newContainer.removeStyleName("left");
                     newContainer.removeStyleName("right");
+                    
+                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+                        @Override
+                        public void execute() {
+                            p.isNowActive();
+                            CmRpcCore.EVENT_BUS.fireEvent(new NewPageLoadedEvent(p));
+                        }
+                    });
             	}
             });
             startedAnimation = true;
@@ -173,7 +181,6 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
             newContainer.removeStyleName("animate");
             newContainer.removeStyleName("left");
             newContainer.removeStyleName("right");
-
         }
 
         IsWidget view = PagePanelFactory.createPagePanel(p);
@@ -186,9 +193,12 @@ public class PagesContainerPanelImplIPhone extends Composite implements PagesCon
             ViewSettings.AnimationRunning = true;
         }
         
-        p.isNowActive();
-        
-        CmRpcCore.EVENT_BUS.fireEvent(new NewPageLoadedEvent(p));
+
+        if(!startedAnimation) {
+            p.isNowActive();
+            CmRpcCore.EVENT_BUS.fireEvent(new NewPageLoadedEvent(p));
+        }
+
     }
 
     public void removePage(IPage removedPage) {
