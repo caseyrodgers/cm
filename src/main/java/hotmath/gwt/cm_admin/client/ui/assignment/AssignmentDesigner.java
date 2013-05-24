@@ -63,7 +63,7 @@ public class AssignmentDesigner extends BorderLayoutContainer {
         _viewerData.setCollapsible(true);
         _viewerData.setFloatable(true);
         _viewerData.setSize(.5);
-        _viewerData.setHidden(true);
+        //_viewerData.setHidden(true);
         setEastWidget(QuestionViewerPanel.getInstance(), _viewerData);
         
         forceLayout();
