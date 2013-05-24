@@ -146,19 +146,53 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         public MyGenericTextTag(StudentProblemDto problem) {
             super("li");
             
-            this._problem = problem;
-
-            String html = problem.getStudentLabelWithStatus();
             getElement().setAttribute("style", "position: relative");
             
+            this._problem = problem;
+            
+            
+            String label = problem.getStudentLabel();
+            String status = problem.getStatusForStudent();
+            
+            if(status.equals("Incorrect")) {
+                //status = "<img style='float: right;' src='/gwt-resources/images/mobile/check-mark-3-24.png'/>";
+                status = "<img style='float: right;' src='/gwt-resources/images/mobile/x-mark-24.png'/>";
+                
+            }
+            else if(status.equals("Correct")) {
+                status = "<img style='float: right;' src='/gwt-resources/images/mobile/check-mark-3-24.png'/>";
+            }
+
+
+            String properties = "";
             if(problem.isHasShowWorkAdmin()) {
                 if(AssignmentData.doesPidHaveTeacherNote(_lastAssignment.getAssignment().getAssignKey(), problem.getPid())) {
-                    html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/assignments/has_notes_unread.png'/>" + html;
-                }
-                else {
-                    html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/assignments/has_notes.png'/>" + html;
-                }
+                      properties = "<img style='float: right;' src='/gwt-resources/images/mobile/has_notes_unread.gif'/>";
+                  }
+                  else {
+                      properties = "<img style='float: right;' src='/gwt-resources/images/mobile/has_notes.png'/>";
+                  }
+              }
+
+            
+            String html=label + "<div style='float: right;margin-right: 15px;font-size: .8em;color: gray'>" + status + "</div>";
+            if(problem.isComplete()) {
+                html = "<span style='color: gray'>" + html + "</html>";
             }
+
+            html = html + properties;
+
+//            String html = problem.getStudentLabelWithStatus();
+//            
+//            
+//            if(problem.isHasShowWorkAdmin()) {
+//                if(AssignmentData.doesPidHaveTeacherNote(_lastAssignment.getAssignment().getAssignKey(), problem.getPid())) {
+//                    html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/mobile/has_notes_unread.png'/>" + html;
+//                }
+//                else {
+//                    html = "<img style='position: absolute;top:0;left:0;' src='/gwt-resources/images/mobile/has_notes.png'/>" + html;
+//                }
+//            }
             setHtml(html);
         }
     }

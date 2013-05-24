@@ -168,11 +168,6 @@ public class StudentProblemDto implements Response {
         String label = getStudentLabel();
         String status = getStatusForStudent();
         
-        if(isComplete()) {
-            
-        }
-        
-        
         String html=label + "<div style='float: right;margin-right: 15px;font-size: .8em;color: gray'>" + status + "</div>";
         if(isComplete()) {
             html = "<span style='color: gray'>" + html + "</html>";
