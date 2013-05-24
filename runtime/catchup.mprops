@@ -4045,7 +4045,7 @@ JOIN inmh_standard ins
   ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = im.file
 WHERE t.user_id = ?
   AND tr.run_time BETWEEN ? AND ?
-ORDER BY ins.standard_name_new;
+ORDER BY ins.standard_name_new ASC
 
 .key=GET_REVIEW_CCSS_NAMES_FOR_STUDENT
 
@@ -4059,7 +4059,7 @@ JOIN inmh_standard ins
   ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = rl.lesson_file
 WHERE t.user_id = ?
   AND rl.date_completed BETWEEN ? AND ?
-ORDER BY ins.standard_name_new
+ORDER BY ins.standard_name_new ASC
 
 .key=GET_ASSIGNMENT_CCSS_NAMES_FOR_STUDENT
 
@@ -4076,4 +4076,57 @@ JOIN inmh_standard ins
 WHERE au.uid = ?
   AND au.is_graded = 1
   AND a.due_date BETWEEN ? AND ?
-ORDER BY ins.standard_name ASC
+ORDER BY ins.standard_name_new ASC
+
+.key=GET_CCSS_COUNTS_FOR_GROUP
+
+SELECT count(*), t.standard_name_new
+FROM (
+  SELECT DISTINCT s.uid, s.standard_name_new
+  FROM (
+    SELECT u.uid, ins.standard_name_new
+    FROM HA_USER u
+    JOIN HA_TEST t
+      ON t.user_id = u.uid
+    JOIN HA_TEST_RUN tr
+      ON tr.test_id = t.test_id
+    JOIN HA_TEST_RUN_RESULTS trr
+      ON trr.run_id = tr.run_id AND upper(trr.answer_status)='CORRECT'
+    JOIN inmh_map im
+      ON im.guid = trr.pid
+    JOIN inmh_standard ins
+      ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = im.file
+    WHERE u.group_id = ?
+      AND tr.run_time BETWEEN ? AND ?
+    UNION
+    SELECT u.uid, ins.standard_name_new
+    FROM HA_USER u
+    JOIN HA_TEST t
+      ON t.user_id = u.uid
+    JOIN HA_TEST_RUN tr
+      ON tr.test_id = t.test_id
+    JOIN HA_TEST_RUN_LESSON rl
+      ON rl.run_id = tr.run_id AND rl.date_completed is not null
+    JOIN inmh_standard ins
+      ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = rl.lesson_file
+    WHERE u.group_id = ?
+      AND rl.date_completed BETWEEN ? AND ?
+    UNION
+    SELECT u.uid, ins.standard_name_new
+    FROM HA_USER u
+    JOIN CM_ASSIGNMENT_USER au
+      ON au.uid = u.uid AND au.is_graded = 1
+    JOIN CM_ASSIGNMENT a
+      ON au.assign_key = a.assign_key
+    JOIN CM_ASSIGNMENT_PID_ANSWERS pa
+      ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.answer IS NOT null
+    JOIN CM_ASSIGNMENT_PIDS ap
+      ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
+    JOIN inmh_standard ins
+      ON upper(standard_state) = 'COMMON' AND ap.lesson_file = concat('topics/', ins.topic)
+    WHERE u.group_id = ?
+      AND a.due_date BETWEEN ? AND ?
+  ) s
+  ORDER BY s.standard_name_new
+) t
+GROUP BY t.standard_name_new
