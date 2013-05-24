@@ -48,6 +48,7 @@ var Whiteboard = (function () {
 	var IS_IOS=IS_IPAD || IS_IPHONE
         //boolean whether calculator is enabled for this whiteboard
     var enable_calc = true;
+	var isReadOnly=false;
         //
     mq_holder.onload = function () {
 
@@ -1228,6 +1229,9 @@ function viewport_testpage() {
             //
             var ev_onmousedown = function (_event) {
                 // alert("MDOWN")
+				if(isReadOnly){
+				return
+				}
                 var event = _event ? _event : window.event;
                 var tevent = event
                 isTouchEnabled = event.type.indexOf('touch') > -1
@@ -1341,6 +1345,9 @@ function viewport_testpage() {
             };
 
             var ev_onmouseup = function (_event) {
+			if(isReadOnly){
+				return
+				}
                 var event = _event ? _event : window.event;
                 event = event.type.indexOf('touch') > -1 ? _event.targetTouches[0] : event;
                 /*
@@ -1400,6 +1407,9 @@ function viewport_testpage() {
             };
 
             var ev_onmousemove = function (_event) {
+			if(isReadOnly){
+				return
+				}
                 var event = _event ? _event : window.event;
                 event = event.type.indexOf('touch') > -1 ? _event.changedTouches[0] : event;
                 if (penDown) {
@@ -1697,7 +1707,11 @@ function viewport_testpage() {
         $get_Element("#inputBox").style.left = clickX + "px";
         // $('#editable-math').mathquill('latex', "");
         // $("#editable-math").focus();
-
+if(wb.mode=='student'){
+$("#editable-math").css('color','#000000')
+}else{
+$("#editable-math").css('color','#ff0000')
+}
         setTimeout(__focus);
         // alert($("textarea").value)
         // alert($get_Element("#inputBox").style.top+":"+$get_Element("#inputBox").style.left)
@@ -2357,7 +2371,15 @@ if(isIE){updateCanvas();}
     wb.showCalculator = function () {
         showCalc();
     }
-
+//
+wb.isReadOnly=function(boo){
+isReadOnly=boo
+if(boo){
+$("#tools button").hide()
+}else{
+$("#tools button").show()
+}
+}
     return wb;
 }());
 
