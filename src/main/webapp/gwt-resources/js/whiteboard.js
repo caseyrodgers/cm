@@ -2009,7 +2009,8 @@ function viewport_testpage() {
             render = false;
             // var jsonStr = convertObjToString(graphicData);
             console_log("Sending Data string for: " + graphicData.id);
-			if (graphicData.id == 1 && graphicData.dataArr[0].name=='graphImage') {
+			var isAGraph=graphicData.id==11||graphicData.id==12
+			if (!isAGraph && graphicData.dataArr[0].name=='graphImage') {
 			}else{
             sendDataToSERVER(graphicData);
 			}
