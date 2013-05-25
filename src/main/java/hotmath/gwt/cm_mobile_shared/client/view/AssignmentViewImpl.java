@@ -40,7 +40,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
     public AssignmentViewImpl() {
 
         FlowPanel flow = new FlowPanel();
-        SubToolBar subBar = new SubToolBar();
+        SubToolBar subBar = new SubToolBar(true);
         _turnInAssignment = new SexyButton("Turn In Assignment", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -49,13 +49,13 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             }
         });
         subBar.add(_turnInAssignment);
-        subBar.add(new SexyButton("Check For Updates", new ClickHandler() {
-            
-            @Override
-            public void onClick(ClickEvent event) {
-                presenter.refreshAssignment(AssignmentViewImpl.this);
-            }
-        }));
+//        subBar.add(new SexyButton("Check For Updates", new ClickHandler() {
+//            
+//            @Override
+//            public void onClick(ClickEvent event) {
+//                presenter.refreshAssignment(AssignmentViewImpl.this);
+//            }
+//        }));
         
         flow.add(subBar);
         _headerInfo = new AssignmentHeaderPanel();

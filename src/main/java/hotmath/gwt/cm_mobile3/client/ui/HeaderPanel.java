@@ -73,8 +73,6 @@ public class HeaderPanel extends Composite {
     
     
     AssignmentButtonIndicator _assignmentButton = new AssignmentButtonIndicator();
-    ProgramButtonIndicator _programButton = new ProgramButtonIndicator();
-    
     public HeaderPanel(EventBus eventBus) {
         
         basePanel = new FlowPanel();
@@ -122,10 +120,6 @@ public class HeaderPanel extends Composite {
 
         _assignmentButton.setVisible(false);        
         basePanel.add(_assignmentButton);
-        
-        _programButton.setVisible(false);
-        basePanel.add(_programButton);
-        
 
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
@@ -179,16 +173,13 @@ public class HeaderPanel extends Composite {
     
     protected void setupDomainSpecificButtons(IPage page) {
         if(page.getApplicationType() == ApplicationType.PROGRAM) {
-            _programButton.setVisible(false);
             _assignmentButton.setVisible(true);
         }
         else if(page.getApplicationType() == ApplicationType.ASSIGNMENT) {
             _assignmentButton.setVisible(true);
-            _programButton.setVisible(true);
         }
         else {
             _assignmentButton.setVisible(false);
-            _programButton.setVisible(false);
         }
     }
 

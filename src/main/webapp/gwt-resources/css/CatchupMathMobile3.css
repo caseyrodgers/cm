@@ -916,17 +916,10 @@ span.group-item-dot {
 }
 
 
-.ass-button-indicator, .prog-button-indicator {
+.ass-button-indicator {
 	position: absolute;
 	top: 11px;
-}
-
-.ass-button-indicator {
 	left: 50px;
-}
-
-.prog-button-indicator {
-	left: 75px;
 }
 
 
@@ -953,4 +946,12 @@ span.group-item-dot {
   border-bottom: 0px;
   background: white;
   padding: 2px 2px 10px 5px;
+}
+
+.SubToolBar div {
+	display: inline;
+}
+
+.SubToolBar button {
+	margin: 0 5px;
 }

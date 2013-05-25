@@ -57,7 +57,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         __lastInstance = this;
         FlowPanel mainPanel = new FlowPanel();
 
-        _subBar = new SubToolBar();
+        _subBar = new SubToolBar(true);
         whiteboardControlView = new FlowPanel();
         whiteboardControlHide = new FlowPanel();
         _viewWhiteboardButton = new SexyButton("Whiteboard", new ClickHandler() {

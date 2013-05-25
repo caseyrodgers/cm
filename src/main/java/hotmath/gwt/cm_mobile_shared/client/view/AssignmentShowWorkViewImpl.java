@@ -42,7 +42,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
         },false);
         
 
-        _subBar = new SubToolBar();
+        _subBar = new SubToolBar(true);
         _submitBtn = new SexyButton("Submit Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
