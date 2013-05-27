@@ -172,7 +172,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
 
     @Override
     public String getBackButtonText() {
-        return null;
+        return "Back";
     }
 
 
@@ -184,7 +184,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
 
     @Override
     public TokenParser getBackButtonLocation() {
-        return null;
+        return new TokenParser("login:" + System.currentTimeMillis());
     }
     
     @Override

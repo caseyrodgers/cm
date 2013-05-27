@@ -10,17 +10,26 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 
 public class SubToolBar extends FlowPanel {
+    private SexyButton _yourProgram;
+
     public SubToolBar(boolean showReturnToProgram) {
         super();
         addStyleName("SubToolBar");
         
         if(showReturnToProgram) {
-            add(new SexyButton("Return To Program", new ClickHandler() {
+            _yourProgram = new SexyButton("Your Program", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));                    
                 }
-            }));
+            });
+            add(_yourProgram);
+        }
+    }
+
+    public void showReturnTo(boolean b) {
+        if(_yourProgram != null) {
+            _yourProgram.setVisible(b);
         }
     }
 }

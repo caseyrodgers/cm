@@ -107,6 +107,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             _subBar.remove(whiteboardControlHide);
             _subBar.add(whiteboardControlView);
         }
+        
+        _subBar.showReturnTo(!show);
     }
 
     private void hideWhiteboard() {
