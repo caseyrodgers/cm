@@ -246,7 +246,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
             @Override
             public WidgetStatusIndication indicateWidgetStatus() {
-                return !presenter.isAssignmentGraded() ? WidgetStatusIndication.INDICATE_SUBMIT_ONLY : WidgetStatusIndication.DEFAULT;
+                return !presenter.isAssignmentGraded() ? WidgetStatusIndication.NONE : WidgetStatusIndication.DEFAULT;
             }
 
             @Override
@@ -312,7 +312,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                         _submitWhiteboard.setVisible(true);
                         TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
                     } else {
-                        TutorWrapperPanel.jsni_showWhiteboardStatus(status);
+                        TutorWrapperPanel.jsni_hideWhiteboardStatus();
                     }
                 }
                 

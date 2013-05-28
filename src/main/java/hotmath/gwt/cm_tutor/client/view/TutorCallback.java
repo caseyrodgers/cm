@@ -9,8 +9,14 @@ public interface TutorCallback {
     static public enum WidgetStatusIndication {
         /** do normal thing */
         DEFAULT,
+        
         /** just indicate value was saved, not correct/false */
-        INDICATE_SUBMIT_ONLY
+        INDICATE_SUBMIT_ONLY, 
+        
+        /** do not indicate, it is taken care of at a higher level
+         * 
+         */
+        NONE
     }
 
 

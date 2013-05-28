@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
@@ -73,7 +74,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
 
     @Override
     public String getViewTitle() {
-        return "Assignment View";
+        return"Assignment: " + DateUtils4Gwt.getPrettyDateString(_lastAssignment.getAssignment().getDueDate(), true);
     }
 
     @Override

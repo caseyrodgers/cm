@@ -757,4 +757,13 @@ public class TutorWrapperPanel extends Composite {
             widgetHolder.innerHTML = message;
         }
     }-*/;    
+    
+    static native public void jsni_hideWhiteboardStatus() /*-{
+    var widgetHolder = $doc.getElementById("hm_flash_widget");
+    if(widgetHolder) {
+        widgetHolder.style.display = 'none';
+    }
+}-*/;
+    
+    
 }
