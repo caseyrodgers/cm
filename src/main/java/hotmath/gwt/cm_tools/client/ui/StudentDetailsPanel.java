@@ -420,7 +420,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                     fromDate = dateRange.getFromDate();
                     toDate = dateRange.getToDate();
                 }
-                new PdfWindowWithNav(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
+                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
                         sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
             }
         });
