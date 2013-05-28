@@ -33,7 +33,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
 
     int userId;
     int groupId;
-
+    
     interface GridProperties extends PropertyAccess<CCSSCoverageReport> {
 
     	@Path("uid")
@@ -89,7 +89,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 
-                CCSSCoverageDataAction action = new CCSSCoverageDataAction(StudentGridPanel.instance.getPageAction(), getReportType(),
+                CCSSCoverageDataAction action = new CCSSCoverageDataAction(null, getReportType(),
                         StudentGridPanel.instance.getCmAdminMdl().getUid(), userId, groupId, 
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate());

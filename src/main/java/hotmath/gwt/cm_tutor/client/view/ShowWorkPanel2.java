@@ -25,6 +25,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+/** TODO: replace ShowWorkPanel
+ * 
+ * @author casey
+ *
+ */
 public class ShowWorkPanel2 extends Composite {
     static public ShowWorkPanel2 __lastInstance;
 
@@ -61,6 +66,13 @@ public class ShowWorkPanel2 extends Composite {
         __lastInstance = this;
     }
 
+
+    public void setBackground(boolean showIt) {
+        removeStyleName("transparent");
+        if(showIt) {
+            addStyleName("transparent");
+        }
+    }
     public void toggleBackground() {
 
         if (getStyleName().indexOf("transparent") > -1) {
@@ -386,4 +398,5 @@ public class ShowWorkPanel2 extends Composite {
         }
 
     }
+
 }

@@ -89,6 +89,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         
         _toggleBackground = new CheckBox("Background");
+        _toggleBackground.addStyleName("toggle-wb-background");
         _toggleBackground.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -346,9 +347,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         if(_showWork != null) {
             hideWhiteboard();
-            _toggleBackground.setValue(false);
         }
-
         setupWhiteboardTools(true);
         
         _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
@@ -367,6 +366,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             }
         });
         _contentPanel.add(_showWork);
+        
+        _showWork.setBackground(_toggleBackground.getValue());
         
         addDoubleTapRemoveEvent(this, _showWork.getElement());
         
