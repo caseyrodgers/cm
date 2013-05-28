@@ -99,7 +99,6 @@ public enum EventType{
      */
     EVENT_TYPE_USERCHANGED,
 
-
     /** Fired when the Student Grid is filtered, used to keep 
      * a child window in sync with the student's current filtered set.
      */
@@ -172,6 +171,11 @@ public enum EventType{
      * 
      */
     EVENT_TYPE_PRINT_HIGHLIGHT_REPORT,
+    
+    /** Print the current CCSS Coverage report
+     * 
+     */
+    EVENT_TYPE_PRINT_CCSS_COVERAGE_REPORT,
     
     
     /** Fire the MathJax processing to make sure

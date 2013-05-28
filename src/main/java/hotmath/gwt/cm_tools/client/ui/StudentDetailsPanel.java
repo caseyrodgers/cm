@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.CmShared;
@@ -113,7 +114,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(displayReportCardToolItem(studentModel));
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
-        toolBar.add(displayCCSSReportToolItem(studentModel));
+        toolBar.add(displayCCSSCoverageToolItem(studentModel));
 
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
@@ -419,7 +420,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                     fromDate = dateRange.getFromDate();
                     toDate = dateRange.getToDate();
                 }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
+                new PdfWindowWithNav(sm.getAdminUid(), "Catchup Math Assignment Report for: " + sm.getName(), new GeneratePdfAction(PdfType.ASSIGNMENT_REPORT,
                         sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
             }
         });
@@ -430,22 +431,25 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         return ti;
     }
 
-    private TextButton displayCCSSReportToolItem(final StudentModelI sm) {
-        TextButton ti = new TextButton("CCSS Report", new SelectHandler() {
+    private TextButton displayCCSSCoverageToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("CCSS Coverage", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+/*
                 DateRangePanel dateRange = DateRangePanel.getInstance();
                 Date fromDate=null, toDate=null;
                 if (dateRange != null) {
                     fromDate = dateRange.getFromDate();
                     toDate = dateRange.getToDate();
                 }
-                new PdfWindow(sm.getAdminUid(), "Catchup Math CCSS Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
+                new PdfWindowWithNav(sm.getAdminUid(), "Catchup Math CCSS Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
                         sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
+*/
+            	new CCSSCoverageWindow(sm, 0);
             }
         });
         // ti.setIconStyle("printer-icon");
-        ti.setToolTip("Display a printable CCSS report");
+        ti.setToolTip("View CCSS coverage");
         ti.addStyleName("student-details-panel-sw-btn");
 
         return ti;
