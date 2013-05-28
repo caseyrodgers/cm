@@ -9,7 +9,6 @@ import hotmath.gwt.cm_rpc.client.rpc.LessonResult;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class LessonActivity implements LessonView.Presenter {
@@ -37,14 +36,9 @@ public class LessonActivity implements LessonView.Presenter {
             public void onFailure(Throwable ex) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 ex.printStackTrace();
-                Window.alert(ex.getMessage());
-                Log.error("Error getting tutor", ex);
+                Log.error("Error reading lesson from server", ex);
             }
         });                        
-
-        
-        
-        
     }
 
 }

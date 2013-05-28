@@ -14,17 +14,19 @@ import com.google.gwt.user.client.ui.HTML;
 public class LessonViewImpl extends Composite implements LessonView {
 
     private Presenter presenter;
-    private CallbackOnComplete callback;
     FlowPanel _main = new FlowPanel();
+    private String lessonName;
+    private String lessonHtml;
     
     public LessonViewImpl() {
         _main.add(new HTML("Loading lesson text ..."));
         initWidget(_main);
+        addStyleName("prescriptionLessonResourceReviewImpl");
     }
 
     @Override
     public String getViewTitle() {
-        return "Lesson View";
+        return lessonName;
     }
 
     @Override
@@ -49,8 +51,6 @@ public class LessonViewImpl extends Composite implements LessonView {
 
     @Override
     public void isNowActive() {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
@@ -61,14 +61,14 @@ public class LessonViewImpl extends Composite implements LessonView {
     @Override
     public void setPresenter(Presenter pres, CallbackOnComplete callback) {
         this.presenter = pres;
-        this.callback = callback;
         pres.loadLesson(this, callback);
     }
 
     @Override
     public void loadLesson(String lessonName, String lessonHtml) {
+        this.lessonName = lessonName;
+        this.lessonHtml = lessonHtml;
         _main.clear();
         _main.add(new HTML(lessonHtml));
     }
-
 }
