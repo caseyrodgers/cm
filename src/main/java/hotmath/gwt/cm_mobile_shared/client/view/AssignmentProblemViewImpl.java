@@ -106,6 +106,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             public void onClick(ClickEvent event) {
                 presenter.showWorkHasBeenSubmitted();
                 _submitWhiteboard.setVisible(false);
+                problem.setStatus("Submitted");
+                setProblemStatus();
                 hideWhiteboard();
             }
         });
@@ -306,18 +308,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 tutor.setVisible(true);
 
                 _submitWhiteboard.setVisible(false);
-                
-                if (problem.getProblemType() == ProblemType.WHITEBOARD) {
-                    String status = problem.getStatus();
-                    if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !status.equals(ProblemStatus.SUBMITTED.toString())) {
-                        _submitWhiteboard.setVisible(true);
-                        TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
-                    } else {
-                        TutorWrapperPanel.jsni_hideWhiteboardStatus();
-                    }
-                }
-                
-                
                 setProblemStatus();
             }
         });
@@ -326,8 +316,19 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     
     private void setProblemStatus() {
         
+        
+        if (problem.getProblemType() == ProblemType.WHITEBOARD) {
+            String status = problem.getStatus();
+            if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !status.equals(ProblemStatus.SUBMITTED.toString())) {
+                _submitWhiteboard.setVisible(true);
+                TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
+            } else {
+                TutorWrapperPanel.jsni_hideWhiteboardStatus();
+            }
+        }
+        
         String msg = "";
-        if(problem.isGraded()) {
+        if(problem.isAssignmentClosed() || problem.isGraded()) {
             msg = problem.getStatus();
         }
         else {
