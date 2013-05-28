@@ -306,9 +306,10 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 tutor.setVisible(true);
 
                 _submitWhiteboard.setVisible(false);
+                
                 if (problem.getProblemType() == ProblemType.WHITEBOARD) {
                     String status = problem.getStatus();
-                    if (!status.equals(ProblemStatus.SUBMITTED.toString())) {
+                    if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !status.equals(ProblemStatus.SUBMITTED.toString())) {
                         _submitWhiteboard.setVisible(true);
                         TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
                     } else {
