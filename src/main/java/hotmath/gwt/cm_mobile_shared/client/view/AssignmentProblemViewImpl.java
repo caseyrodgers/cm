@@ -33,6 +33,7 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -418,7 +419,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     @Override
     public void isNowActive() {
-        jsni_removeFocusFrom();
+        new Timer() {
+            @Override
+            public void run() {
+                jsni_removeFocusFrom();                
+            }
+        }.schedule(500);
     }
 
     @Override
