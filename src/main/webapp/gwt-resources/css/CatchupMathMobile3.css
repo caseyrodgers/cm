@@ -955,3 +955,9 @@ span.group-item-dot {
 .SubToolBar button {
 	margin: 0 5px;
 }
+
+.transparent {
+    zoom: 1;
+    filter: alpha(opacity=80);
+    opacity: 0.8;
+}

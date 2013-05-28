@@ -3,11 +3,14 @@ package hotmath.gwt.cm_mobile_shared.client.activity;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
+import hotmath.gwt.cm_mobile_shared.client.view.LessonViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -108,6 +111,21 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
             }
         });
     }
+    
+    @Override
+    public void showLesson(LessonModel lesson) {
+        /** dont' put on history stack, on refresh
+         *  go back to problem.
+         */
+        LessonActivity lessonActivity = new LessonActivity(lesson);
+        final LessonView view = new LessonViewImpl();
+        view.setPresenter(lessonActivity, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
+                    }
+                });
+    }
 
     protected void fireHeaderChange() {
         String title = __lastProblem.getStudentProblem().getStudentLabel();
@@ -164,17 +182,22 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     
     @Override
     public void showWhiteboard(final ShowWorkPanel2 showWorkPanel) {
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
+        
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(), pid, assignKey);
         CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
             public void onSuccess(final AssignmentWhiteboardData whiteData) {
                 __lastWhiteboardData = whiteData;
-                
                 Scheduler.get().scheduleDeferred(new ScheduledCommand() {
                     @Override
                     public void execute() {
                         if(showWorkPanel != null) {
-                            showWorkPanel.loadWhiteboard(whiteData.getCommands());                    }
+                            showWorkPanel.loadWhiteboard(whiteData.getCommands());                    
                         }
+                        
+                        CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
+                    }
                 });
             }
 

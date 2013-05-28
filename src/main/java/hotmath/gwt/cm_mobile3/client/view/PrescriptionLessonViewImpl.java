@@ -184,7 +184,7 @@ public class PrescriptionLessonViewImpl extends AbstractPagePanel implements Pre
 
     @Override
     public TokenParser getBackButtonLocation() {
-        return new TokenParser("login:" + System.currentTimeMillis());
+        return null;
     }
     
     @Override

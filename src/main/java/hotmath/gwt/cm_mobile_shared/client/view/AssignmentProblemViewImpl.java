@@ -8,6 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
+import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
@@ -31,7 +32,9 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -52,6 +55,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     SexyButton _submitWhiteboard;
     private SexyButton _viewWhiteboardButton;
     private Label _problemStatusLabel;
+    private CheckBox _toggleBackground;
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
@@ -68,12 +72,32 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         });
         whiteboardControlView.add(_viewWhiteboardButton);
         
-        whiteboardControlHide.add(new SexyButton("Remove Whiteboard", new ClickHandler() {
+        whiteboardControlView.add(new SexyButton("Lesson", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                LessonModel lesson = problem.getStudentProblem().getProblem().getLesson();
+                presenter.showLesson(lesson);
+            }
+        }));
+        
+        whiteboardControlHide.add(new SexyButton("Close Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 hideWhiteboard();
             }
         }));
+        
+        
+        _toggleBackground = new CheckBox("Background");
+        _toggleBackground.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                _showWork.toggleBackground();
+            }
+        });
+        whiteboardControlHide.add(_toggleBackground);
+
+
         
         _submitWhiteboard = new SexyButton("Submit Whiteboard", new ClickHandler() {
             @Override
@@ -177,7 +201,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         setupWhiteboardTools(false);
         _contentPanel.clear();
 
-        tutor = new TutorWrapperPanel(true, true, true, false, new TutorCallbackDefault() {
+        tutor = new TutorWrapperPanel(true, true, false, false, new TutorCallbackDefault() {
 
             @Override
             public void solutionHasBeenViewed(String value) {
@@ -322,6 +346,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         if(_showWork != null) {
             hideWhiteboard();
+            _toggleBackground.setValue(false);
         }
 
         setupWhiteboardTools(true);

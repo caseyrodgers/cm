@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_mobile_shared.client.event.ShowWorkSubmittedEvent;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.ShowTutorWidgetCompleteInfoEvent;
@@ -100,7 +99,7 @@ public class TutorWrapperPanel extends Composite {
             buttonBar.addClassName("display_none");
         }
         if (!showWhiteboardButton) {
-            whiteboardButton.getElement().addClassName("display_none");
+            whiteboardButton.setVisible(false);
         }
         else {
             whiteboardButton.addClickHandler(new ClickHandler() {
@@ -111,7 +110,7 @@ public class TutorWrapperPanel extends Composite {
             });
         }
         if (!showReturnButton) {
-            returnButton.getElement().addClassName("display_none");
+            returnButton.setVisible(false);
         }
         else {
             returnButton.addClickHandler(new ClickHandler() {

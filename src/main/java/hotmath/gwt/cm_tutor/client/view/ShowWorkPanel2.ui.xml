@@ -8,11 +8,6 @@
             left: 0;
         }
         
-        .transparent {
-            zoom: 1;
-            filter: alpha(opacity=80);
-            opacity: 0.8;
-        }
         
         .show_problem {
             margin-left: 25px;
@@ -24,7 +19,7 @@
         left: 10px;
         }
     </ui:style>
-    <g:HTMLPanel  styleName="{style.main} {style.transparent}">
+    <g:HTMLPanel  styleName="{style.main}">
         <div id="wb-container" class='wb-container'>
             <div id="tools">
                 <button id="button_text" title="Text"></button>
