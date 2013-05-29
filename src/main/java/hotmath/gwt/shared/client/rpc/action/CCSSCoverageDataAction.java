@@ -10,23 +10,16 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
 	private static final long serialVersionUID = 934238051392406321L;
 
 	ReportType type;
-    Integer adminId;
-    Integer userId;
-    Integer groupId;
+    Integer uid;
     Date from;
     Date to;
     
-    GetStudentGridPageAction studentGridPageAction;
-
     public CCSSCoverageDataAction() {
     }
 
-    public CCSSCoverageDataAction(GetStudentGridPageAction studentGridAction, ReportType type, Integer adminId, Integer userId, Integer groupId, Date from, Date to) {
-        this.studentGridPageAction = studentGridAction;
+    public CCSSCoverageDataAction(ReportType type, int uid, Date from, Date to) {
         this.type = type;
-        this.adminId = adminId;
-        this.userId = userId;
-        this.groupId = groupId;
+        this.uid = uid;
         this.from = from;
         this.to = to;
     }
@@ -39,28 +32,12 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
         this.type = type;
     }
 
-    public Integer getAdminId() {
-        return adminId;
-    }
-
-    public void setAdminId(Integer adminId) {
-        this.adminId = adminId;
-    }
-
-    public Integer getUserId() {
-		return userId;
+    public Integer getUID() {
+		return uid;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
-	}
-
-	public Integer getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(Integer groupId) {
-		this.groupId = groupId;
+	public void setUID(Integer uid) {
+		this.uid = uid;
 	}
 
 	public Date getFrom() {
@@ -79,18 +56,9 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
         this.to = to;
     }
 
-    public GetStudentGridPageAction getStudentGridPageAction() {
-        return studentGridPageAction;
-    }
-
-    public void setStudentGridPageAction(GetStudentGridPageAction studentGridPageAction) {
-        this.studentGridPageAction = studentGridPageAction;
-    }
-
     @Override
     public String toString() {
-        return "CCSSCoverageDataAction [type=" + type + ", adminId=" + adminId + ", from=" + from + ", to=" + to
-                + ", _studentGridPageAction=" + studentGridPageAction + "]";
+        return "CCSSCoverageDataAction [type=" + type + ", from=" + from + ", to=" + to +"]";
     }
 
 

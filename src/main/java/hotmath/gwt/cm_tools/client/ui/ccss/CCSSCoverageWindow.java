@@ -47,7 +47,7 @@ public class CCSSCoverageWindow extends GWindow {
         _stuModel = stuModel;
         _groupId = groupId;
         setHeadingText(TITLE + stuModel.getName());
-        setWidth(650);
+        setWidth(535);
         setHeight(500);
 
         _container = new BorderLayoutContainer();
@@ -111,10 +111,12 @@ public class CCSSCoverageWindow extends GWindow {
     private void reloadData() {
         _container.getCenterWidget().removeFromParent();
         _container.getWestWidget().removeFromParent();
-    	_CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _stuModel.getUid(), 0);
+
+        _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _stuModel.getUid(), 0);
         _container.setWestWidget(_CCSSCoverageListPanel, _westData);
-        refreshDateRangeLabel();
         
+        refreshDateRangeLabel();
+
         showDefaultMsg();
         _container.forceLayout();
     }

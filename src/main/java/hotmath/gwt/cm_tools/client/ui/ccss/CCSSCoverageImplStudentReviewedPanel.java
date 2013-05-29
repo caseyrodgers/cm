@@ -13,8 +13,9 @@ import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
  * CCSS Reviewed Lesson Coverage for selected student
  */
 public class CCSSCoverageImplStudentReviewedPanel extends CCSSCoverageImplPanelBase {
-    public CCSSCoverageImplStudentReviewedPanel(CCSSCoverageImplBase base) {
-        super(base);
+
+    public CCSSCoverageImplStudentReviewedPanel(CCSSCoverageImplBase base, int userId) {
+        super(base, userId);
     }
 
     @Override

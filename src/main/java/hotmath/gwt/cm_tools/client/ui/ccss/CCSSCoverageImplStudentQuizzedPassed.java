@@ -1,14 +1,16 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
 
 class CCSSCoverageImplStudentQuizzedPassed extends CCSSCoverageImplBase {
-    CCSSCoverageImplStudentQuizzedPassedPanel panel = new CCSSCoverageImplStudentQuizzedPassedPanel(this);
     static String title = "Quizzed and Passed";
+    CCSSCoverageImplStudentQuizzedPassedPanel panel;
     public CCSSCoverageImplStudentQuizzedPassed(int userId) {
         super(title, "Displays CCSS coverage for student's correct quiz answers.", userId);
-        panel.setUserId(userId);
+        panel = new CCSSCoverageImplStudentQuizzedPassedPanel(this, userId);
     }
+
     public Widget prepareWidget() {
         return panel;
     }

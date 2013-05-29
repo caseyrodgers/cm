@@ -3,11 +3,11 @@ package hotmath.gwt.cm_tools.client.ui.ccss;
 import com.google.gwt.user.client.ui.Widget;
 
 class CCSSCoverageImplStudentReviewed extends CCSSCoverageImplBase {
-    CCSSCoverageImplStudentReviewedPanel panel = new CCSSCoverageImplStudentReviewedPanel(this);
+    CCSSCoverageImplStudentReviewedPanel panel;
     static String title = "Reviewed Lessons";
     public CCSSCoverageImplStudentReviewed(int userId) {
         super(title, "Displays CCSS coverage for student's reviewed lessons.", userId);
-        panel.setUserId(userId);
+        panel = new CCSSCoverageImplStudentReviewedPanel(this, userId);
     }
     public Widget prepareWidget() {
         return panel;

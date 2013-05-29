@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -30,10 +29,8 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     CCSSCoverageImplBase base;
     Grid<CCSSCoverageData> _grid;
     CCSSCoverageImplPanelBase __instance;
+    int _uid;
 
-    int userId;
-    int groupId;
-    
     interface GridProperties extends PropertyAccess<CCSSCoverageReport> {
 
     	@Path("uid")
@@ -45,14 +42,15 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
 
     GridProperties _gridProps = GWT.create(GridProperties.class);
     
-    public CCSSCoverageImplPanelBase(CCSSCoverageImplBase base) {
+    public CCSSCoverageImplPanelBase(CCSSCoverageImplBase base, int uid) {
         __instance = this;
         this.base = base;
+        this._uid = uid;
         getDataFromServer();
     }
 
     abstract public CCSSCoverageDataAction.ReportType getReportType();
-    
+
     abstract protected ColumnModel<CCSSCoverageData> getColumns();
 
     protected String getWindowTitle() {
@@ -66,22 +64,6 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     public String[] getPanelColumns() {
         return new String[0];
     }
-    
-    public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
-
-	public int getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(int groupId) {
-		this.groupId = groupId;
-	}
 
 	protected void getDataFromServer() {
         new RetryAction<CmList<CCSSCoverageData>>() {
@@ -89,10 +71,8 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 
-                CCSSCoverageDataAction action = new CCSSCoverageDataAction(null, getReportType(),
-                        StudentGridPanel.instance.getCmAdminMdl().getUid(), userId, groupId, 
-                        DateRangePanel.getInstance().getFromDate(),
-                        DateRangePanel.getInstance().getToDate());
+                CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid,
+                        DateRangePanel.getInstance().getFromDate(), DateRangePanel.getInstance().getToDate());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -165,7 +145,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         /** set to default to allow IE to render table correctly
          * 
          */
-        grid.setWidth("500");
+        grid.setWidth("375");
         grid.setHeight("100%");
         grid.setLoadMask(true);
         return grid;
