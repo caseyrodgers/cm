@@ -10,6 +10,9 @@ import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
 import hotmath.gwt.cm_mobile_shared.client.view.LessonViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
@@ -250,6 +253,13 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 //__lastProblem = null;
             }
         });
+        
+        CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE,  new DataBaseHasBeenUpdatedHandler() {
+            @Override
+            public void databaseUpdated(TypeOfUpdate type) {
+                __lastProblem = null;
+            }
+        });;
     }
     
 }

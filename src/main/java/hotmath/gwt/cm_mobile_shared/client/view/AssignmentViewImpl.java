@@ -8,6 +8,8 @@ import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
+import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
+import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -43,8 +45,13 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         _turnInAssignment = new SexyButton("Turn In Assignment", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                presenter.turnInAssignment(AssignmentViewImpl.this);
-                _turnInAssignment.setEnabled(false);
+                QuestionBox.askYesNoQuestion("Turn In Assignment",  "Are you sure you want to turn in this assignment?", new CallBack() {
+                    @Override
+                    public void onSelectYes() {
+                        presenter.turnInAssignment(AssignmentViewImpl.this);
+                        _turnInAssignment.setEnabled(false);
+                    }
+                });
             }
         });
         subBar.add(_turnInAssignment);

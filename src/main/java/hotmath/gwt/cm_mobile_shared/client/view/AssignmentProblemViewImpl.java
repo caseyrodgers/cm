@@ -329,7 +329,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         String msg = "";
         if(problem.isAssignmentClosed() || problem.isGraded()) {
-            msg = problem.getStatus();
+            msg = problem.getStudentProblem().getStatusForStudent();
         }
         else {
             String s = problem.getStatus().toLowerCase();
