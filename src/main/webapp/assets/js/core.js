@@ -20,7 +20,11 @@ function $get(x) {
 
 
 function setupPage() {
-
+	
+	if(isIPadOrIPhone()) {
+		setupForMobile();
+	}
+    
     /** setup menu buttons
      *
      */
@@ -62,6 +66,23 @@ function setupPage() {
     el.innerHTML = '<img src="/assets/images/blank-25x25.png"/>';
     document.getElementById("header").appendChild(el);
  }
+
+function setupForMobile() {
+	document.getElementById("training_videos_link").style.display = 'none';
+	document.getElementById("student_video_link").style.display = 'none';
+	document.getElementById("webinar_link").style.display = 'none';
+}
+
+function isIPadOrIPhone() {
+	return true;
+	
+	if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPad/i))) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 function setupPageLocal() {
     /** empty */
