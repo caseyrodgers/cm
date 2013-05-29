@@ -3,6 +3,7 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
+import hotmath.gwt.cm_mobile_shared.client.SexyToggleButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -90,7 +91,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         
         _toggleBackground = new CheckBox("Background");
-        _toggleBackground.addStyleName("toggle-wb-background");
         _toggleBackground.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

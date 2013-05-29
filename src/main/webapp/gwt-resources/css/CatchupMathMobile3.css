@@ -962,8 +962,9 @@ span.group-item-dot {
     opacity: 0.8;
 }
 
-
-
-.toggle-wb-background {
+.instruction-button {
 	float: left;
+    color: #666;
+    font-weight: bold;
+    padding: 2px;	
 }
