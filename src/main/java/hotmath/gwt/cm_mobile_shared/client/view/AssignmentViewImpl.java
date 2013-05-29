@@ -167,6 +167,9 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             else if(status.equals("Half Credit")) {
                 status = "<img style='float: right;' src='/gwt-resources/images/mobile/one_half-24.png'/>";
             }
+            else if(status.equals("Submitted")) {
+                status = "<img style='float: right;' src='/gwt-resources/images/mobile/problem_submitted-24.png'/>";
+            }
 
 
             String properties = "";

@@ -26,7 +26,7 @@ public class AssignmentHeaderPanel extends Composite {
         dueDate.setInnerHTML(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate()));
         
         if(assignment.isGraded()) {
-            status.setInnerHTML("Score: " + assignment.getHomeworkGrade());
+            status.setInnerHTML("Graded, Score: " + assignment.getHomeworkGrade());
             grade.setInnerHTML("");
             grade.setAttribute("style",  "display: none");
         }

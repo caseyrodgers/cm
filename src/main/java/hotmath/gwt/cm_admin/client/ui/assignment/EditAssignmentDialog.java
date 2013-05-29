@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentStatusDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -44,6 +45,7 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -59,6 +61,7 @@ public class EditAssignmentDialog {
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
     ComboBox<SubmitOptions> _submitOptions;
+    CheckBox _autoReleaseGrades;
     
     TextButton saveDraftMode, saveAssign;
     
@@ -138,7 +141,18 @@ public class EditAssignmentDialog {
         }
         header.add(hCon, new VerticalLayoutData(100.0,  30));
         
-        header.add(new MyFieldLabel(_submitOptions, "Submit", 70, 200),new VerticalLayoutData(270,  30));
+        HorizontalLayoutContainer hCon2 = new HorizontalLayoutContainer();
+        hCon2.add(new MyFieldLabel(_submitOptions, "Submit", 70, 200));
+        
+        _autoReleaseGrades = new CheckBox();
+        _autoReleaseGrades.setToolTip("Release grades automatically when students turn in an assignment.");
+        _autoReleaseGrades.setValue(assignment.isAutoRelease());
+        HorizontalLayoutData hd = new HorizontalLayoutData();
+        hd.setMargins(new Margins(0,0,0,10));
+        hCon2.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20),hd);
+        header.add(hCon2,new VerticalLayoutData(270,  30));
+        
+
         
         BorderLayoutData bd = new BorderLayoutData();
         bd.setMargins(new Margins(20));
@@ -334,6 +348,15 @@ public class EditAssignmentDialog {
             return false;
         }
         
+        if(_autoReleaseGrades.getValue()) {
+            if(thereAreWbProbelms()) {
+                CmMessageBox.showAlert("You cannot auto release grades with assignments containing whiteboard problems.");
+                return false;
+            }
+        }
+        
+        _assignment.setAutoRelease(_autoReleaseGrades.getValue());
+        
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
@@ -387,6 +410,16 @@ public class EditAssignmentDialog {
         
         return true;
 
+    }
+    
+    
+    private boolean thereAreWbProbelms() {
+        for(ProblemDto pd: _assignmentDesigner.getAssignmentPids()) {
+            if(pd.getProblemType() == ProblemType.WHITEBOARD) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

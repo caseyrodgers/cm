@@ -3660,7 +3660,8 @@ select a.aid, a.assign_key,
        a.due_date,
        a.close_past_due,
        a.is_graded,
-       a.last_modified
+       a.last_modified,
+       a.auto_release_grades
        
 from   CM_ASSIGNMENT a
        left join (select assign_key,
@@ -3683,7 +3684,8 @@ select a.aid, a.assign_key,
        a.due_date,
        a.close_past_due,
        a.is_graded,
-       a.last_modified
+       a.last_modified,
+       a.auto_release_grades
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count

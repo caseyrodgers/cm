@@ -219,7 +219,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _nextAnnotation = new GotoNextAnnotationButton();
 
 
-        TextButton btnReturn = new TextButton("Return To Your Program");
+        TextButton btnReturn = new TextButton("Exit Assignments");
         btnReturn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {

@@ -107,7 +107,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded)values(?,?,?,?,?,?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_relase_grades)values(?,?,?,?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, ass.getAdminId());
                     ps.setInt(2, ass.getGroupId());
@@ -118,6 +118,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(7, ass.getStatus());
                     ps.setInt(8, ass.isClosePastDue() ? 1 : 0);
                     ps.setInt(9, ass.isGraded() ? 1 : 0);
+                    ps.setInt(10, ass.isAutoRelease()? 1: 0);
                     return ps;
                 }
             }, keyHolder);
@@ -130,7 +131,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ?, is_graded = ? where assign_key = ?";
+                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ?, is_graded = ?, auto_release_grades = ? where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, ass.getAdminId());
                     ps.setString(2, ass.getAssignmentName());
@@ -139,7 +140,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(5, ass.getStatus());
                     ps.setInt(6, ass.isClosePastDue() ? 1 : 0);
                     ps.setInt(7, ass.isGraded() ? 1 : 0);
-                    ps.setInt(8, ass.getAssignKey());
+                    ps.setInt(8, ass.isAutoRelease() ? 1 : 0);
+                    ps.setInt(9, ass.getAssignKey());
 
                     return ps;
                 }
@@ -378,10 +380,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return assignments;
     }
 
-    protected Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
+    private Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"),
                 rs.getDate("due_date"), null, rs.getString("status"), rs.getInt("close_past_due") != 0, rs.getInt("is_graded") != 0,
-                rs.getTimestamp("last_modified"));
+                rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0);
     }
 
     /**
@@ -1998,6 +2000,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * Turn in this assignment for student. Make an entry in the user's
      * CM_ASSIGNMENT_USER record... create if it does not exist
      * 
+     * If auto_release_grades is turn, then release grades for this student
+     * 
+     * 
      * @param uid
      * @param assignKey
      */
@@ -2030,6 +2035,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if (cntInsert != 1) {
                 throw new CmException("Could not turn in assignment: " + uid + ", " + assignKey);
             }
+        }
+
+        /** see if auto release grade is enabled for this assignment
+         *
+         *   no need to create a new full Assignment object.
+         */
+        String sql = "select auto_release_grades from CM_ASSIGNMENT where assign_key = ?";
+        Boolean isAutoGrade = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey}, new RowMapper<Boolean>() {
+            @Override
+            public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new Boolean(rs.getInt("auto_release_grades")!=0?true:false);                
+            }
+        });        
+        if(isAutoGrade) {
+            markAssignmentAsGraded(uid, assignKey);
         }
     }
 

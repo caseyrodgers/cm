@@ -964,7 +964,7 @@ span.group-item-dot {
 
 .instruction-button {
 	float: left;
+    padding: 2px;
     color: #666;
-    font-weight: bold;
-    padding: 2px;	
+    font: bold 13px "Helvetica Neue", Helvetica, Arial, clean, sans-serif !important;
 }

@@ -17,7 +17,7 @@ public class SubToolBar extends FlowPanel {
         addStyleName("SubToolBar");
         
         if(showReturnToProgram) {
-            _yourProgram = new TouchButton("Instruction", new ClickHandler() {
+            _yourProgram = new TouchButton("Exit Assignments", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));                    
