@@ -241,7 +241,7 @@ public class LoginService extends HttpServlet {
 
 	                
 	                if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
-	                    resp.sendRedirect("http://localhost:8080/cm_mobile3/CatchupMathMobile3.html?debug=true&uid=" + cmUser.getUserKey() + "#welcome");
+	                    resp.sendRedirect("/cm_mobile3/CatchupMathMobile3.html?debug=true&uid=" + cmUser.getUserKey() + "#welcome");
 	                    return;
 	                }
 	                
