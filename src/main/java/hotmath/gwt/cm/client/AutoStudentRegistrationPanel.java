@@ -1,6 +1,9 @@
 package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.CheckUserAccountStatusAction;
+import hotmath.gwt.cm_rpc.client.rpc.LogUserInAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -13,9 +16,6 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.CheckUserAccountStatusAction;
-import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
-import hotmath.gwt.shared.client.rpc.action.LogUserInAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 
 import java.util.List;

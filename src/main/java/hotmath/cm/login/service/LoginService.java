@@ -238,14 +238,6 @@ public class LoginService extends HttpServlet {
 				    /** is cm_student 
 				     * 
 				     */
-
-	                
-	                if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
-	                    resp.sendRedirect("/cm_mobile3/CatchupMathMobile3.html?debug=true&uid=" + cmUser.getUserKey() + "#welcome");
-	                    return;
-	                }
-	                
-	                
 	                /** allow override of alternate test (segment_slot) to be set on URL
 	                 * 
 	                 */
@@ -267,7 +259,15 @@ public class LoginService extends HttpServlet {
     					response.setNextAction(dest);
     					String jsonizedUserInfo = Jsonizer.toJson(response);			
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
-    					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+    					
+
+                        
+                        if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
+                            req.getRequestDispatcher("/cm_mobile3/launch.jsp").forward(req, resp);
+                        }
+                        else {
+                            req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+                        }
 				    }
     				else {
     					clientInfo.setUserType(UserType.STUDENT);
@@ -284,7 +284,19 @@ public class LoginService extends HttpServlet {
     					String jsonizedUserInfo = Jsonizer.toJson(response);
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
     
-    					req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+                        if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
+                            
+                            String props="";
+                            if(loginInfo.getType().equals("AUTO_CREATE")) {
+                                props = "&type=AUTO_CREATE";
+                            }
+                            resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
+                            
+                            //req.getRequestDispatcher("/cm_mobile3/launch.jsp").forward(req, resp);
+                        }
+                        else {
+                            req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
+                        }
     				}
 				}
 

@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
@@ -32,9 +34,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.GWT.UncaughtExceptionHandler;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -63,9 +62,8 @@ public class CmShared implements EntryPoint {
                     String nameAndTime = getClass().getName() + ": Uncaught exception: " + new Date();
                     CmShared.getCmService().execute(
 
-                            new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(),
-                                    nameAndTime, null, CmShared.getStackTraceAsString(e)),
-                            new AsyncCallback<RpcData>() {
+                            new LogRetryActionFailedAction("uncaught exception", UserInfo.getInstance().getUid(), nameAndTime, null, CmShared
+                                    .getStackTraceAsString(e)), new AsyncCallback<RpcData>() {
                                 @Override
                                 public void onSuccess(RpcData result) {
                                     CmLogger.info("Retry operation logged");
@@ -238,46 +236,36 @@ public class CmShared implements EntryPoint {
                 }
 
                 boolean needToValidate = false;
-                final String cmJson = getLoginInfoFromExtenalJs();
+                final LoginInfoEmbedded loginInfo = CmGwtUtils.getLoginInfo();
                 // Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
-                if (cmJson != null) {
-                    JSONValue jsonValue = JSONParser.parse(cmJson);
-                    JSONObject o = jsonValue.isObject();
-                    String keyVal = o.get("key").isString().stringValue();
-                    if (keyVal == null) {
+                if (loginInfo != null) {
+                    if (loginInfo.getSecurityKeyVal() == null) {
                         throw new CmException("Invalid security key found");
                     }
-                    if (key2.equals(keyVal)) {
-                        userId = (int) o.get("userId").isNumber().doubleValue();
-                        UserInfoBase.getInstance().setUid(userId);
+                    if (key2.equals(loginInfo.getSecurityKeyVal())) {
+                        UserInfoBase.getInstance().setUid(loginInfo.getUid());
                         needToValidate = false;
                     }
-                    String cmStartType = o.get("type").isString().stringValue();
-                    if (cmStartType != null) {
-                        UserInfoBase.getInstance().setCmStartType(cmStartType);
-                    }
+                    UserInfoBase.getInstance().setCmStartType(loginInfo.getStartType());
 
-                    if (o.containsKey("partner")) {
-                        String partner = o.get("partner").isString().stringValue();
-                        if (partner != null && partner.length() > 1) {
-                            if (partner.equals(CmPartner.LCOM.key)) {
-                                UserInfoBase.getInstance().setPartner(CmPartner.LCOM);
-                            } else {
-                                CmLogger.error("Invalid partner setup for user: " + partner);
-                            }
+                    if (loginInfo.getPartner() != null && loginInfo.getPartner().length() > 1) {
+                        if (loginInfo.getPartner().equals(CmPartner.LCOM.key)) {
+                            UserInfoBase.getInstance().setPartner(CmPartner.LCOM);
+                        } else {
+                            CmLogger.error("Invalid partner setup for user: " + loginInfo.getPartner());
                         }
                     }
-
-                    String email = o.get("email").isString().stringValue();
-                    UserInfoBase.getInstance().setEmail(email);
-
-                    if (CmShared.getQueryParameter("mode") != null && CmShared.getQueryParameter("mode").equals("t")) {
-                        UserInfoBase.getInstance().setMode(Mode.TEACHER_MODE);
-                    }
-
-                    EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_LOGIN));
                 }
+
+                UserInfoBase.getInstance().setEmail(loginInfo.getEmail());
+
+                if (CmShared.getQueryParameter("mode") != null && CmShared.getQueryParameter("mode").equals("t")) {
+                    UserInfoBase.getInstance().setMode(Mode.TEACHER_MODE);
+                }
+
+                EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_USER_LOGIN));
+
                 if (!needToValidate) {
                     callback.loginSuccessful(userId);
                 } else {
@@ -430,16 +418,6 @@ public class CmShared implements EntryPoint {
     static private native String getSecurityKeyFromExternalJs() /*-{
                                                                 return $wnd.__securityKey;
                                                                 }-*/;
-
-    /**
-     * return the generic loginInfo jsonized string from bootstrap html
-     * 
-     * @return
-     */
-    static private native String getLoginInfoFromExtenalJs() /*-{
-                                                             var d = $doc.getElementById('login_info');
-                                                             return d.innerHTML;
-                                                             }-*/;
 
     static public native String getHostName() /*-{
                                                var host = window.location.host;

@@ -2,6 +2,7 @@ package hotmath.gwt.cm_rpc.client;
 
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -327,6 +328,8 @@ public class UserInfo implements  Response {
 
 	String DEMO_USER_NAME="Student";
 
+    private CmDestination firstDestination;
+
     public boolean isDemoUser() {
 	    return(this.isDemoUser);
 	}
@@ -491,6 +494,15 @@ public class UserInfo implements  Response {
          * 
          */
         AUTO_ADVANCE
+    }
+
+
+    public CmDestination getFirstDestination() {
+        return firstDestination;
+    }
+    
+    public void setFirstDestination(CmDestination dest) {
+        this.firstDestination = dest;
     }
 
 }

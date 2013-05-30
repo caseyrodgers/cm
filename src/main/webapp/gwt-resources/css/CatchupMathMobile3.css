@@ -968,3 +968,16 @@ span.group-item-dot {
     color: #666;
     font: bold 13px "Helvetica Neue", Helvetica, Arial, clean, sans-serif !important;
 }
+
+.auto-create-view {
+    margin: auto;
+    color: #666;
+    width: 300px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.auto-create-view .gwt-Label {
+	margin-top: 5px;
+	font-weight: bold;
+}	

@@ -11,11 +11,12 @@ import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.model.StudentActiveInfo;
 import hotmath.gwt.cm_rpc_core.client.CmUserException;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 import hotmath.testset.ha.ChapterInfo;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
@@ -175,6 +176,12 @@ public class CreateAutoRegistrationAccountCommand implements ActionHandler<Creat
         
         RpcData rdata = new RpcData();
         rdata.putData("key", HaLoginInfoDao.getInstance().addLoginInfo(conn, huser, new ClientEnvironment(),true));
+        rdata.putData("uid", userInfo.getUid());
+        
+        AccountInfoModel admin = CmAdminDao.getInstance().getAccountInfo(studentModel.getAdminUid());
+        
+        
+        rdata.putData("userName", admin.getAdminUserName());
         return rdata;
     }
     

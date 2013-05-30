@@ -95,11 +95,12 @@ public class ReportUtils {
 
     public static HeaderFooter getGroupReportHeader(String title, AccountInfoModel info, int studentCount, String filterDescription)
         throws Exception {
-    	return getGroupReportHeader(title, info, "Student Count: ", studentCount, filterDescription);
+    	return getGroupReportHeader(info, "Student Count: ", studentCount, filterDescription);
     }
     
-    public static HeaderFooter getGroupReportHeader(String title, AccountInfoModel info, String countLabel, int count, String filterDescription)
+    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, String countLabel, int count, String filterDescription)
         throws Exception {
+        String title="THE TITLE";
         Paragraph heading = new Paragraph();
 
 		Image cmLogo = ReportUtils.getCatchupMathLogo();
@@ -204,5 +205,10 @@ public class ReportUtils {
 		Image cmLogo = Image.getInstance(cmLogoFile);
 		cmLogo.scalePercent(70.0f);
 		return cmLogo;
+    }
+
+    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int count, String filterDescription) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

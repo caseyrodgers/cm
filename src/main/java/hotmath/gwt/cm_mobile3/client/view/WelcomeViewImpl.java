@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 
 import java.util.List;
 
@@ -63,7 +64,9 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
         firstThing.setInnerHTML(firstThingDescription);
         programStatus.setInnerHTML(status);
         
-        if(!SharedData.getMobileUser().getAssignmentInfo().isAdminUsingAssignments()) {
+        AssignmentUserInfo ad = SharedData.getMobileUser().getAssignmentInfo();
+        if(!ad.isAdminUsingAssignments() || 
+                (ad.getActiveAssignments() + ad.getClosedAssignments() == 0)) {
             beginAssignments.setVisible(false);
         }
         

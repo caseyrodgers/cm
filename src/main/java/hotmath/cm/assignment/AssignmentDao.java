@@ -107,7 +107,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_relase_grades)values(?,?,?,?,?,?,?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_release_grades)values(?,?,?,?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, ass.getAdminId());
                     ps.setInt(2, ass.getGroupId());

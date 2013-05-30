@@ -31,6 +31,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
@@ -173,7 +174,9 @@ public class HeaderPanel extends Composite {
 
     
     protected void setupDomainSpecificButtons(IPage page) {
-        if(!SharedData.getMobileUser().getAssignmentInfo().isAdminUsingAssignments()) {
+        AssignmentUserInfo ad = SharedData.getMobileUser().getAssignmentInfo();
+        if(!ad.isAdminUsingAssignments() || 
+                        (ad.getActiveAssignments() + ad.getClosedAssignments() == 0)) {
             _assignmentButton.setVisible(false);
         }
         else {

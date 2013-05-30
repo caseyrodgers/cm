@@ -14,6 +14,7 @@ import hotmath.gwt.cm.client.ui.context.PrescriptionCmGuiDefinition;
 import hotmath.gwt.cm.client.ui.context.PrescriptionContext;
 import hotmath.gwt.cm.client.ui.context.QuizCheckResultsWindow;
 import hotmath.gwt.cm.client.ui.context.QuizCmGuiDefinition;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
@@ -174,7 +175,7 @@ public class CatchupMath implements EntryPoint {
 
 
         try {
-            String jsonUserInfo = getUserInfoFromExtenalJs();
+            String jsonUserInfo = CmGwtUtils.getUserInfoFromExtenalJs();
             
             String startType = UserInfoBase.getInstance().getCmStartType();
             if (startType == null)
@@ -244,15 +245,7 @@ public class CatchupMath implements EntryPoint {
         SystemSyncChecker.monitorVersionChanges();
     }
 
-    /**
-     * return the user_info data passed in the bootstrap html
-     *
-     * @return
-     */
-    static private native String getUserInfoFromExtenalJs() /*-{
-                                                            var d = $doc.getElementById('user_info');
-                                                            return d.innerHTML;
-                                                            }-*/;
+
 
     /**
      * read token containing the uid, test and run ids:

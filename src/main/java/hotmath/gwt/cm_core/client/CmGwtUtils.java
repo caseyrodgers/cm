@@ -1,9 +1,21 @@
 package hotmath.gwt.cm_core.client;
 
+import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
+import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
+import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
+import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.shared.client.util.CmException;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 
 public class CmGwtUtils {
@@ -71,5 +83,151 @@ public class CmGwtUtils {
             alert(e);
         }
     }-*/;
+
+    /**
+     * return the user_info data passed in the login bootstrap html
+     *
+     * @return
+     */
+    static public native String getUserInfoFromExtenalJs() /*-{
+                                                            var d = $doc.getElementById('user_info');
+                                                            return d.innerHTML;
+                                                            }-*/;
+
+    public static UserInfo extractUserFromJsonString(String json) {
+        Log.debug("UserInfo JSON: " + json);
+        
+        JSONValue loginInfo = JSONParser.parseStrict(json);
+        
+        JSONObject o = loginInfo.isObject().get("userInfo").isObject();
+        JSONObject nextAction = loginInfo.isObject().get("nextAction").isObject();
+        
+        UserInfo ui = new UserInfo();
+        ui.setUid(getJsonInt(o.get("uid")));
+        ui.setUserName(getJsonString(o.get("userName")));
+        ui.setAutoTestMode(o.get("autoTestMode").isBoolean().booleanValue());
+        ui.setBackgroundStyle(getJsonString(o.get("backgroundStyle")));
+        ui.setCorrectPercent(getJsonInt(o.get("correctPercent")));
+        ui.setCustomProgram(o.get("customProgram").isBoolean().booleanValue());
+        ui.setDemoUser(o.get("demoUser").isBoolean().booleanValue());
+        ui.setFirstView(o.get("firstView").isBoolean().booleanValue());
+        ui.setLimitGames(o.get("limitGames").isBoolean().booleanValue());
+        ui.setDisableCalcAlways(o.get("disableCalcAlways").isBoolean().booleanValue());
+        ui.setDisableCalcQuizzes(o.get("disableCalcQuizzes").isBoolean().booleanValue());
+        ui.setLoginName(getJsonString(o.get("loginName")));
+        ui.setPassPercentRequired(getJsonInt(o.get("passPercentRequired")));
+        ui.setPassword(getJsonString(o.get("password")));
+        ui.setRunId(getJsonInt(o.get("runId")));
+        ui.setSessionCount(getJsonInt(o.get("sessionCount")));
+        ui.setSessionNumber(getJsonInt(o.get("sessionNumber")));
+        ui.setShowWorkRequired(o.get("showWorkRequired").isBoolean().booleanValue());
+        ui.setSubTitle(getJsonString(o.get("subTitle")));
+        ui.setTestId(getJsonInt(o.get("testId")));
+        ui.setProgramName(getJsonString(o.get("testName")));
+        ui.setProgramSegment(getJsonInt(o.get("testSegment")));
+        ui.setProgramSegmentCount(getJsonInt(o.get("programSegmentCount")));
+        ui.setTestSegmentSlot(getJsonInt(o.get("testSegmentSlot")));
+        ui.setTutoringAvail(o.get("tutoringAvail").isBoolean().booleanValue());
+        ui.setViewCount(getJsonInt(o.get("viewCount")));
+
+        
+        
+        String placeVal=null;
+        if(nextAction.get("place").isString() != null) {
+           placeVal = nextAction.get("place").isString().stringValue();
+        }
+        String place = (placeVal != null && !placeVal.equals("null"))?placeVal:"PRESCRIPTION";
+        ui.setFirstDestination(new CmDestination(place));
+        
+
+        /** Extact the Tutor Widget Stats
+         *  If not available, create default with no stats
+         */
+        JSONValue widgetStatsJson = o.get("tutorInputWidgetStats");
+        UserTutorWidgetStats widgetStats=null;
+        if(widgetStatsJson != null && widgetStatsJson.isObject() != null) {
+            int countWidgets = (int)widgetStatsJson.isObject().get("countWidgets").isNumber().doubleValue();
+            int percentCorrect = (int)widgetStatsJson.isObject().get("correctPercent").isNumber().doubleValue();
+            int countCorrect = (int)widgetStatsJson.isObject().get("countCorrect").isNumber().doubleValue();
+            widgetStats = new UserTutorWidgetStats(ui.getUid(),percentCorrect,countWidgets, countCorrect);
+        }
+        else {
+            widgetStats = new UserTutorWidgetStats(ui.getUid(),0,0,0);
+        }
+        ui.setTutorInputWidgetStats(widgetStats);
+        
+        String accountType = getJsonString(o.get("userAccountType"));
+        if(accountType.equals("SCHOOL_USER")) {  
+            ui.setUserAccountType(AccountType.SCHOOL_TEACHER);
+        }
+        else {
+            ui.setUserAccountType(AccountType.PARENT_STUDENT);
+        }
+        
+        String onCompletion = getJsonString(o.get("onCompletion"));
+        if(onCompletion.equals("AUTO_ADVANCE")) {
+            ui.setOnCompletion(UserProgramCompletionAction.AUTO_ADVANCE);
+        }
+        else {
+            ui.setOnCompletion(UserProgramCompletionAction.STOP);
+        }
+        
+        
+        // if run_id passed in, then allow user to view_only
+        if(CmGwtUtils.getQueryParameter("run_id") != null) {
+            int runId = Integer.parseInt(CmGwtUtils.getQueryParameter("run_id"));
+            // setup user to masquerade as real user
+            ui.setRunId(runId);
+            ui.setActiveUser(false);
+        }
+        else {
+            ui.setActiveUser(true);
+        }
+        Log.debug("UserInfo object set to: " + ui);
+        
+        return ui;
+    }
     
+    
+    /**
+     * return the generic loginInfo jsonized string from bootstrap html
+     * 
+     * @return
+     */
+    static private native String getLoginInfoFromExtenalJs() /*-{
+                                                             var d = $doc.getElementById('login_info');
+                                                             return d.innerHTML;
+                                                             }-*/;
+
+    
+    static private String getJsonString(JSONValue o) {
+        return o.isString() != null ?o.isString().stringValue():null;
+    }
+
+    static private int getJsonInt(JSONValue o) {
+        return (int)(o.isNumber() != null?o.isNumber().doubleValue():0);
+    }
+
+    /** extract and store the externalized json login_info created by LoginService
+     * 
+     * @return
+     */
+    public static LoginInfoEmbedded getLoginInfo() {
+        String cmJson = getLoginInfoFromExtenalJs();
+        JSONValue jsonValue = JSONParser.parse(cmJson);
+        JSONObject o = jsonValue.isObject();
+        String keyVal = o.get("key").isString().stringValue();
+        int userId = (int) o.get("userId").isNumber().doubleValue();
+        String cmStartType = o.get("type").isString().stringValue();
+        String partner=null;
+        if (o.containsKey("partner")) {
+            partner = o.get("partner").isString().stringValue();
+        }
+        String email = o.get("email").isString().stringValue();
+        
+        return new LoginInfoEmbedded(keyVal, userId, cmStartType, partner, email);
+    }
+    
+    
+        
 }

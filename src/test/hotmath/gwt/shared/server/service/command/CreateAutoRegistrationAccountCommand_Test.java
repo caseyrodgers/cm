@@ -1,8 +1,8 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
+import hotmath.gwt.cm_rpc_core.client.rpc.CreateAutoRegistrationAccountAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.shared.client.rpc.action.CreateAutoRegistrationAccountAction;
 
 public class CreateAutoRegistrationAccountCommand_Test extends CmDbTestCase {
     

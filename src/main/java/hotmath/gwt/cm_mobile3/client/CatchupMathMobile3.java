@@ -1,6 +1,8 @@
 package hotmath.gwt.cm_mobile3.client;
 
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
 import hotmath.gwt.cm_mobile3.client.activity.LoginActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
@@ -17,6 +19,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
+import hotmath.gwt.cm_mobile_shared.client.activity.AutoCreateActivity;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
@@ -30,13 +33,26 @@ import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
+import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateView;
+import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
+import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.CmPartner;
+import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
+import hotmath.gwt.shared.client.util.CmException;
+import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,6 +65,9 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Window.Location;
@@ -78,14 +97,14 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
          * register the main Flow listener that handle the transitions from one
          * CM program flow to the next.
          */
-        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE,
-                new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
+        __clientFactory.getEventBus().addHandler(HandleNextFlowEvent.TYPE, new HandleNextFlowEventHandlerImpl(__clientFactory.getEventBus()));
     }
 
     /**
-     * Note, we defer all application initialization code to {@link #onModuleLoadAux()} so that the
-     * UncaughtExceptionHandler can catch any unexpected exceptions.
-     */    
+     * Note, we defer all application initialization code to
+     * {@link #onModuleLoadAux()} so that the UncaughtExceptionHandler can catch
+     * any unexpected exceptions.
+     */
     @Override
     public void onModuleLoad() {
         __instance = this;
@@ -97,10 +116,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         });
     }
 
-
     LoadingDialog loadingDialog = null;
 
     private void onModuleLoadAux() {
+
         long startTimeMillis = 0;
         /*
          * Use a <code>if (Log.isDebugEnabled()) {...}</code> guard to ensure
@@ -133,22 +152,22 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         new LoadingDialog(__clientFactory.getEventBus());
         _rootPanel = RootPanel.get("main-content");
-        
+
         try {
-            
-            if(CatchupMathMobileShared.getQueryParameter("debug")==null) {
+
+            if (false && CatchupMathMobileShared.getQueryParameter("debug") == null) {
                 /** only allow IPad access for now */
                 String userAgent = getUserAgent();
-                //Window.alert("User Agent: " + userAgent);
-                
+                // Window.alert("User Agent: " + userAgent);
+
                 String ualc = userAgent.toLowerCase();
-                if(ualc.indexOf("ipad") == -1  && ualc.indexOf("android") == -1 && ualc.indexOf("iphone") == -1 ) {
+                if (ualc.indexOf("ipad") == -1 && ualc.indexOf("android") == -1 && ualc.indexOf("iphone") == -1) {
                     Location.assign("/cm_mobile_not_supported.html");
                     // _rootPanel.add(new BrowserNotSupportedPanel());
                     return;
                 }
             }
-            
+
             Controller.installEventBus(__clientFactory.getEventBus());
             _rootPanel.add(createApplicationPanel());
 
@@ -168,16 +187,49 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
-            //__clientFactory.getEventBus().fireEvent(new ShowLoginViewEvent());
+            // __clientFactory.getEventBus().fireEvent(new
+            // ShowLoginViewEvent());
             if (!InitialMessage.hasBeenSeen()) {
                 new InitialMessage().showCentered();
             }
-            
+
             String suid = CmGwtUtils.getQueryParameter("uid");
-            if(suid != null) {
-                SharedData.saveUidToLocalStorage(Integer.parseInt(suid));
+            int uid=0;
+            if (suid != null) {
+                uid = Integer.parseInt(suid);
+                SharedData.saveUidToLocalStorage(uid);
             }
-            History.fireCurrentHistoryState();
+
+            boolean doNormal = true;
+            try {
+                String type = CmGwtUtils.getQueryParameter("type");
+                if(type != null && type.equals("AUTO_CREATE")) {
+                        /** show auto create view */
+                        doNormal = false;
+
+                        AutoCreateActivity activity = new AutoCreateActivity(uid);
+                        final AutoCreateView view = new AutoCreateViewImpl();
+                        view.setPresenter(activity, new CallbackOnComplete() {
+                            @Override
+                            public void isComplete() {
+                                CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
+                            }
+                        });
+                    }
+                    else if(uid > 0) {
+                        doNormal = false;
+                        SharedData.saveUidToLocalStorage(uid);
+                        History.newItem("welcome:" + System.currentTimeMillis());
+                    }
+
+            } catch (Exception e) {
+                MessageBox.showError("Error reading login information: " + e);
+            }
+
+            if (doNormal) {
+                History.fireCurrentHistoryState();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             Window.alert("Error during startup: " + e.getMessage());
@@ -187,31 +239,26 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         __clientFactory.getEventBus().addHandler(AutoAdvanceUserEvent.TYPE, new AutoAdvanceUserEventHandlerImpl());
 
-        
-        
         Window.addResizeHandler(new ResizeHandler() {
             @Override
             public void onResize(ResizeEvent event) {
                 CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
             }
         });
-        
-        
+
         Log.info("Catchup Math Mobile Initialized");
     }
 
-
     RootPanel _loadingDiv;
-    
 
     native private String getUserAgent() /*-{
-        if(typeof navigator !== 'undefined') {
-            return navigator.userAgent;
-        }
-        else {
-            return 'unknown';
-        }
-    }-*/;
+                                         if(typeof navigator !== 'undefined') {
+                                         return navigator.userAgent;
+                                         }
+                                         else {
+                                         return 'unknown';
+                                         }
+                                         }-*/;
 
     @Override
     public void orientationChanged(ScreenOrientation newOrientation) {
@@ -222,10 +269,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             _rootPanel.addStyleName("landscape");
             _rootPanel.removeStyleName("portrait");
         }
-        
-        
+
         CmRpcCore.EVENT_BUS.fireEvent(new WindowHasBeenResizedEvent());
-    }    
+    }
+
     /**
      * TODO: Move to a central Controller
      * 
@@ -265,9 +312,9 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 }
             }
         });
-        
-        
-        /** Look for special cases and handle custom for the given view.
+
+        /**
+         * Look for special cases and handle custom for the given view.
          * 
          * TODO: This should be in the view!
          */
@@ -289,42 +336,38 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                     if (scrollTo > 0) {
                         scrollWindowTo(scrollTo);
                     }
-                }
-                else if (page instanceof PrescriptionLessonResourceVideoView) {
+                } else if (page instanceof PrescriptionLessonResourceVideoView) {
                     eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
-                }
-                else if(page instanceof PrescriptionLessonViewImpl) {
+                } else if (page instanceof PrescriptionLessonViewImpl) {
                     final int scrollTo = pageScroll.get(page);
                     if (scrollTo > 0) {
                         scrollWindowTo(scrollTo);
                     }
-                }
-                else if (page instanceof PrescriptionLessonResourceTutorViewImpl) {
+                } else if (page instanceof PrescriptionLessonResourceTutorViewImpl) {
                     final int scrollTo = pageScroll.get(page);
                     if (scrollTo > 0) {
                         scrollWindowTo(scrollTo);
                     }
-                    //eb.fireEvent(new LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
+                    // eb.fireEvent(new
+                    // LoadNewPageEvent(__clientFactory.getPrescriptionLessonView()));
                 }
             }
         });
-        
+
         eb.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
             @Override
             public void userLogout() {
-                //CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
+                // CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
                 Window.Location.replace("/index.html");
             }
         });
     }
-    
-    
+
     public int getScrollPositionFor(IPage page) {
         Integer position = pageScroll.get(page);
-        if(position != null) {
+        if (position != null) {
             return position;
-        }
-        else  {
+        } else {
             return 0;
         }
     }
@@ -346,19 +389,16 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
     }
 
     native private void scrollWindowTo(int position) /*-{
-        try {
-            setTimeout(function() {
-                $wnd.scrollTo(0,position);
-            },0);
-        }
-        catch(e) {
-            alert(e);
-        }
-    }-*/;
+                                                     try {
+                                                     setTimeout(function() {
+                                                     $wnd.scrollTo(0,position);
+                                                     },0);
+                                                     }
+                                                     catch(e) {
+                                                     alert(e);
+                                                     }
+                                                     }-*/;
 
-    
-    
-    
     private Widget createApplicationPanel() {
         /**
          * we want this to have an absolute size and be added as the top
@@ -371,8 +411,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         FlowPanel mainPanel = new FlowPanel();
         mainPanel.setStyleName("app-panel");
 
-        
-        
         mainPanel.add(headerPanel);
         mainPanel.add(pagesPanel.getPanel());
 
@@ -383,25 +421,38 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         return mainPanel;
     }
-    
+
     static private void debugLogOut(String message) {
         Log.debug(message);
     }
-    
-    
-    /** Override the debug output to provide tunnel to the GWT Log interface
+
+    /**
+     * Override the debug output to provide tunnel to the GWT Log interface
      * 
      */
     private native void registerDebugginExternalJs() /*-{
-        $wnd.debug = function(x){
-            @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::debugLogOut(Ljava/lang/String;)(x);
-        };      
-    }-*/;
+                                                     $wnd.debug = function(x){
+                                                     @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::debugLogOut(Ljava/lang/String;)(x);
+                                                     };      
+                                                     }-*/;
 
+    private void doit(String cmJson) {
+        if (cmJson != null) {
+            JSONValue jsonValue = JSONParser.parse(cmJson);
+            JSONObject o = jsonValue.isObject();
+            String cmStartType = o.get("type").isString().stringValue();
+            if (cmStartType != null) {
+                if (cmStartType.equals("AUTO_CREATE")) {
+                    MessageBox.showError("Auto Create!");
+                }
+            }
+        }
+    }
 
-//    private native void registerExternalJs() /*-{
-//         $wnd.gwt_fireBrowserResizedEvent = function(){
-//                return @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::gwt_fireBrowserResizedEvent()();
-//         };   
-//    }-*/;
+    // private native void registerExternalJs() /*-{
+    // $wnd.gwt_fireBrowserResizedEvent = function(){
+    // return
+    // @hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::gwt_fireBrowserResizedEvent()();
+    // };
+    // }-*/;
 }

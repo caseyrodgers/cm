@@ -91,9 +91,9 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
         listItems.getList().clear();
         for(StudentAssignmentInfo bm: assignments) {
             
-            if(bm.getStatus().equals("Closed")) {
-                continue;
-            }
+//            if(bm.getStatus().equals("Closed")) {
+//                continue;
+//            }
             
             GenericTextTag<String> tt = new MyGenericTextTag(bm);
             tt.addStyleName("group");
