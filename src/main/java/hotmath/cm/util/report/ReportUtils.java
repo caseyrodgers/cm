@@ -21,6 +21,7 @@ import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
+import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfPTable;
 
 
@@ -92,18 +93,28 @@ public class ReportUtils {
         return p;
     }
 
-    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int studentCount, String filterDescription) {
-    	return getGroupReportHeader(info, "Student Count: ", studentCount, filterDescription);
+    public static HeaderFooter getGroupReportHeader(String title, AccountInfoModel info, int studentCount, String filterDescription)
+        throws Exception {
+    	return getGroupReportHeader(title, info, "Student Count: ", studentCount, filterDescription);
     }
     
-    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, String countLabel, int count, String filterDescription) {
-        Phrase heading = new Phrase();
+    public static HeaderFooter getGroupReportHeader(String title, AccountInfoModel info, String countLabel, int count, String filterDescription)
+        throws Exception {
+        Paragraph heading = new Paragraph();
+
+		Image cmLogo = ReportUtils.getCatchupMathLogo();
+		Paragraph titleP = ReportUtils.buildTitle(title);
+
+		heading.add(cmLogo);
+        heading.add(Chunk.NEWLINE);
+		heading.add(titleP);
+
         Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
         Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
         Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
         Phrase stuCount = buildPhraseLabel((countLabel != null)?countLabel:"Student Count: ", String.valueOf(count));
-        
-        heading.add(school);
+
+		heading.add(school);
         heading.add(Chunk.NEWLINE);
         heading.add(admin);
         heading.add(Chunk.NEWLINE);
@@ -117,6 +128,7 @@ public class ReportUtils {
         }
 
         HeaderFooter header = new HeaderFooter(heading, false);
+        header.setBorder(Rectangle.NO_BORDER);
 
         return header;
     }
@@ -190,6 +202,7 @@ public class ReportUtils {
     public static Image getCatchupMathLogo() throws Exception {
 		String cmLogoFile = CatchupMathProperties.getInstance().getCatchupRuntime() + "/images/catchupmath.png";
 		Image cmLogo = Image.getInstance(cmLogoFile);
+		cmLogo.scalePercent(70.0f);
 		return cmLogo;
     }
 }
