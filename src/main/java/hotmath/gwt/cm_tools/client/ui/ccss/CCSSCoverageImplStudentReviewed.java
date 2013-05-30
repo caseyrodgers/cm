@@ -6,7 +6,7 @@ class CCSSCoverageImplStudentReviewed extends CCSSCoverageImplBase {
     CCSSCoverageImplStudentReviewedPanel panel;
     static String title = "Reviewed Lessons";
     public CCSSCoverageImplStudentReviewed(int userId) {
-        super(title, "Displays CCSS coverage for student's reviewed lessons.", userId);
+        super(title, "Displays CCSS coverage for reviewed lessons.", userId);
         panel = new CCSSCoverageImplStudentReviewedPanel(this, userId);
     }
     public Widget prepareWidget() {

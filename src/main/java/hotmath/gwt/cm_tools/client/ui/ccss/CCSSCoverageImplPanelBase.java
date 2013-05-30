@@ -11,6 +11,7 @@ import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -130,7 +131,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         }
         
     }
-    
+
     protected String getGridToolTip() {
         return "Double click for CCSS details";
     }
@@ -151,12 +152,22 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         return grid;
     }
 
-    //TODO:
+    private static final String FEATURES = "resizable=yes,scrollbars=yes,status=yes,height=900,width=700";
+
     protected void showCCSSDetails() {
 
         final CCSSCoverageData model = _grid.getSelectionModel().getSelectedItem();
-        
+        String stdName = model.getName();
+        String url = convertStandardNameToURL(stdName);
+        Window.open(url, "_ccss", FEATURES);
     }
+
+    private static final String CCSS_SITE = "http://www.corestandards.org/Math/Content/";
+
+	private String convertStandardNameToURL(String stdName) {
+		String uri = stdName.replace("-", "/").replace(".", "/");
+		return CCSS_SITE + uri;
+	}
 
 }
 
@@ -165,6 +176,6 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
  */
 class NoRowsFoundPanel extends CenterLayoutContainer {
     public NoRowsFoundPanel() {
-        add(new HTML("<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>No data for the selected category.<br/>Please 'mouseover' the menu item for details.</h1>"));
+        add(new HTML("<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>No data for the selected category.<br/>Please 'mouseover' the category for details.</h1>"));
     }
 }

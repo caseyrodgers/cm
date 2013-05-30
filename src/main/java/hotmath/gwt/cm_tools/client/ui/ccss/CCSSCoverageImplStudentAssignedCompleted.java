@@ -6,7 +6,7 @@ class CCSSCoverageImplStudentAssignedCompleted extends CCSSCoverageImplBase {
     CCSSCoverageImplStudentAssignedCompletedPanel panel;
     static String title = "Completed Assignments";
     public CCSSCoverageImplStudentAssignedCompleted(int userId) {
-        super(title, "Displays CCSS coverage for student's completed assignments.", userId);
+        super(title, "Displays CCSS coverage for completed assignments.", userId);
         panel = new CCSSCoverageImplStudentAssignedCompletedPanel(this, userId);
     }
     public Widget prepareWidget() {

@@ -22,7 +22,7 @@ public class CCSSCoverageImplStudentReviewedPanel extends CCSSCoverageImplPanelB
     protected ColumnModel<CCSSCoverageData> getColumns() { 
         List<ColumnConfig<CCSSCoverageData, ?>> cols = new ArrayList<ColumnConfig<CCSSCoverageData, ?>>();
 
-        ColumnConfig<CCSSCoverageData, String> column = new ColumnConfig<CCSSCoverageData, String>(_gridProps.ccssName(), 140, "Reviewed Lesson CCSS coverage");
+        ColumnConfig<CCSSCoverageData, String> column = new ColumnConfig<CCSSCoverageData, String>(_gridProps.ccssName(), 140, "Reviewed lesson CCSS coverage");
         column.setWidth(300);
         cols.add(column);
         
