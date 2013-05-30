@@ -324,9 +324,6 @@ public class LoginService extends HttpServlet {
 	}
 
 	private boolean isIpadOrIPhone(String browserInfo) {
-	    if(true) {
-	        return true;
-	    }
 	    if( (browserInfo.indexOf("iPhone") > -1) || (browserInfo.indexOf("iPad") > -1) ) {
 	        return true;
 	    }
