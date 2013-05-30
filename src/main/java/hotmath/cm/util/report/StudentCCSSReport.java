@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -28,6 +29,7 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.InformationOnlyException;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 /**
  * Generates a Student CCSS Coverage Report PDF
@@ -205,4 +207,8 @@ public class StudentCCSSReport {
     	return pdfTbl;
 	}
 
+	public void setFilterMap(Map<FilterType, String> filterMap) {
+		// TODO Auto-generated method stub
+		
+	}
 }
