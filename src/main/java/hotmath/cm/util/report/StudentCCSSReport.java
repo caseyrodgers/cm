@@ -1,25 +1,14 @@
 package hotmath.cm.util.report;
 
-import hotmath.cm.dao.CCSSReportDao;
-import hotmath.cm.util.CatchupMathProperties;
-import hotmath.gwt.cm_admin.server.model.CmAdminDao;
-import hotmath.gwt.cm_admin.server.model.CmStudentDao;
-import hotmath.gwt.cm_rpc.client.InformationOnlyException;
-import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
-
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.lowagie.text.Anchor;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -29,14 +18,23 @@ import com.lowagie.text.HeaderFooter;
 import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.Table;
-import com.lowagie.text.pdf.PdfAction;
-import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPageEvent;
 import com.lowagie.text.pdf.PdfWriter;
+
+import hotmath.cm.dao.CCSSReportDao;
+import hotmath.gwt.cm_admin.server.model.CmAdminDao;
+import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.InformationOnlyException;
+import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
+
+/**
+ * Generates a Student CCSS Coverage Report PDF
+ * 
+ * @author bob
+ *
+ */
 
 public class StudentCCSSReport {
 
@@ -104,13 +102,6 @@ public class StudentCCSSReport {
 			HeaderFooter footer = ReportUtils.getFooter();
 			document.setFooter(footer);
 
-//    		Table tbl = new Table(1);
-//			tbl.setWidth(100.0f);
-//			tbl.setBorder(Table.BOTTOM);
-//			tbl.setBorder(Table.TOP);
-
-//			document.add(tbl);
-
 			addSection("Quizzed and passed", quizCCSS, document);
 			addSection("Reviewed", reviewCCSS, document);
 			addSection("Assigned work completed", assignmentCCSS, document);
@@ -142,12 +133,7 @@ public class StudentCCSSReport {
 			int idx = 0;
             for (String stdName : standardNames) {
             	Chunk chunk = new Chunk(stdName);
-            	chunk.setAnchor(convertStandardNameToLink(stdName));
-            	
-            	chunk.setFont(FontFactory.getFont(FontFactory.HELVETICA, 9, Font.UNDERLINE, new Color(0, 0, 200)));
-                //chunk.setAction(PdfAction.javaScript("if(app.viewerVersion<7)"+
-                //        "{this.openURL(\"http://www.yahoo.com\",true);}" + 
-                //        "else{app.launchURL(\"http://www.ebay.com\",true);};",writer)); 
+            	chunk.setFont(FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0)));
             	p.add(chunk);
             	if (++idx < standardNames.size()) p.add(", ");
             }
@@ -159,18 +145,7 @@ public class StudentCCSSReport {
         tbl.setWidthPercentage(100.0f);
         tbl.setSpacingBefore(15.0f);
         document.add(tbl);
-        //document.add(Chunk.NEWLINE);
     }
-
-    //private static final String features = "resizable=1,scrollbars=1,status=1,toolbar=1,menubar=1,location=1,height=906,width=700";
-    //javascript:onLoad=window.open('http://www.yahoo.com','popup','').focus();void(0);
-    //private static final String CCSS_LINK_FMT = "Window.open('http://www.corestandards.org/Math/Content/%s','_blank','%s');";
-    private static final String CCSS_LINK_FMT = "http://www.corestandards.org/Math/Content/%s";
-
-	private String convertStandardNameToLink(String stdName) {
-		String uri = stdName.replace("-", "/").replace(".", "/");
-		return String.format(CCSS_LINK_FMT, uri);
-	}
 
 	private Phrase buildSectionLabel(String label) {
         Chunk chunk = new Chunk(label, FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, new Color(0, 0, 0)));
@@ -211,7 +186,6 @@ public class StudentCCSSReport {
 		PdfPTable pdfTbl = new PdfPTable(numberOfColumns);
 		pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 		pdfTbl.setWidthPercentage(100.0f);
-		//pdfTbl.setTotalWidth(100.0f);
 
 		pdfTbl.addCell(student);
 		pdfTbl.addCell(date);
@@ -229,61 +203,6 @@ public class StudentCCSSReport {
 		pdfTbl.addCell(" ");
 
     	return pdfTbl;
-	}
-
-	public class HeaderTable implements PdfPageEvent {
-    	
-    	PdfPTable header;
-    	
-    	HeaderTable(PdfWriter writer, PdfPTable header) {
-    		//event = writer.getPageEvent();
-    		this.header = header;
-    		writer.setPageEvent(this);
-    	}
-
-		public void onChapter(PdfWriter arg0, Document arg1, float arg2,
-				Paragraph arg3) {
-		}
-
-		public void onChapterEnd(PdfWriter arg0, Document arg1, float arg2) {
-		}
-
-		public void onCloseDocument(PdfWriter arg0, Document arg1) {
- 		}
-
-		public void onEndPage(PdfWriter writer, Document document) {
-			PdfContentByte cb = writer.getDirectContent();
-			header.writeSelectedRows(0, -1, document.left(), document.top() + 60, cb);
-    	}
-
-		public void onGenericTag(PdfWriter arg0, Document arg1, Rectangle arg2,
-				String arg3) {
-		}
-
-		public void onOpenDocument(PdfWriter arg0, Document arg1) {
-		}
-
-		public void onParagraph(PdfWriter arg0, Document arg1, float arg2) {
-		}
-
-		public void onParagraphEnd(PdfWriter arg0, Document arg1, float arg2) {
-		}
-
-		public void onSection(PdfWriter arg0, Document arg1, float arg2,
-				int arg3, Paragraph arg4) {
-		}
-
-		public void onSectionEnd(PdfWriter arg0, Document arg1, float arg2) {
-		}
-
-		public void onStartPage(PdfWriter arg0, Document arg1) {
-		}
-    	
-    }
-
-	public void setFilterMap(Map<FilterType, String> filterMap) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
