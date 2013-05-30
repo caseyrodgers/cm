@@ -40,7 +40,7 @@ public class LoginActivity implements LoginView.Presenter {
             return;
         }
         
-        if(!userName.equals("catchup_demo")) {
+        if(userName != null && !userName.equals("catchup_demo")) {
             saveCookie(userName,passWord);
         }
         

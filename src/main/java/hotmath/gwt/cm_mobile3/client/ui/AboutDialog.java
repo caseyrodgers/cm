@@ -130,7 +130,6 @@ public class AboutDialog extends DialogBox  {
 		}
         else {
             discloseProgram.setVisible(false);
-            discloseGoto.setVisible(false);
             discloseAssignment.setVisible(false);
             
             discloseMoreInfo.setOpen(true);
@@ -152,17 +151,14 @@ public class AboutDialog extends DialogBox  {
 		
 		buttonBar.getElement().setAttribute("style",  "margin: 10px");
 		
-		if(SharedData.getMobileUser() == null) {
-		    discloseGoto.setVisible(false);
-		}
-		else {
-		      SexyButton check = new SexyButton("Check Server",new ClickHandler() {
-	                @Override
-	                public void onClick(ClickEvent event) {
-	                    CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
-	                }
-	            });
-	        buttonBar.add(check);
+		if(SharedData.getMobileUser() != null) {
+//		      SexyButton check = new SexyButton("Check Server",new ClickHandler() {
+//	                @Override
+//	                public void onClick(ClickEvent event) {
+//	                    CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+//	                }
+//	            });
+//	        buttonBar.add(check);
 		}
 		
 		
@@ -214,28 +210,15 @@ public class AboutDialog extends DialogBox  {
 	}
     
     
-    @UiHandler("assignmentsButton")
-    protected void handleAssignments(ClickEvent ce) {
-        History.newItem("assignment_list:" + System.currentTimeMillis());
-    }
-    
-    @UiHandler("programButton")
-    protected void handleProgram(ClickEvent ce) {
-        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
-    }
-	
 	
     @UiField
     HTMLPanel assignmentInfo;
     
 	@UiField
-	Element loggedInAs,programInfo,programName,  assignmentsDiv, programDiv;
+	Element loggedInAs,programInfo,programName;
 	
 	@UiField
-	TouchButton assignmentsButton, programButton;
-	
-	@UiField
-	DisclosurePanel discloseProgram,discloseGoto, discloseAssignment, discloseMoreInfo;
+	DisclosurePanel discloseProgram,discloseAssignment, discloseMoreInfo;
 }
 
 

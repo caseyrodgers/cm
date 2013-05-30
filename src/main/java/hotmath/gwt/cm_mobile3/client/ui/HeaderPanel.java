@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile3.client.resource.MyResources;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
@@ -172,14 +173,19 @@ public class HeaderPanel extends Composite {
 
     
     protected void setupDomainSpecificButtons(IPage page) {
-        if(page.getApplicationType() == ApplicationType.PROGRAM) {
-            _assignmentButton.setVisible(true);
-        }
-        else if(page.getApplicationType() == ApplicationType.ASSIGNMENT) {
-            _assignmentButton.setVisible(true);
+        if(!SharedData.getMobileUser().getAssignmentInfo().isAdminUsingAssignments()) {
+            _assignmentButton.setVisible(false);
         }
         else {
-            _assignmentButton.setVisible(false);
+            if(page.getApplicationType() == ApplicationType.PROGRAM) {
+                _assignmentButton.setVisible(true);
+            }
+            else if(page.getApplicationType() == ApplicationType.ASSIGNMENT) {
+                _assignmentButton.setVisible(true);
+            }
+            else {
+                _assignmentButton.setVisible(false);
+            }
         }
     }
 

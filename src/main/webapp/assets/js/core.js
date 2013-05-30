@@ -68,19 +68,23 @@ function setupPage() {
  }
 
 function setupForMobile() {
-	document.getElementById("training_videos_link").style.display = 'none';
-	document.getElementById("student_video_link").style.display = 'none';
-	document.getElementById("webinar_link").style.display = 'none';
+	//document.getElementById("training_videos_link").style.display = 'none';
+	//document.getElementById("student_video_link").style.display = 'none';
+	//document.getElementById("webinar_link").style.display = 'none';
 }
 
 function isIPadOrIPhone() {
-	return true;
-	
 	if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPad/i))) {
 		return true;
 	}
 	else {
 		return false;
+	}
+}
+
+function redirectIfMobile() {
+	if(isIPadOrIPhone()) {
+		document.location = '/not-available-on-mobile.html';
 	}
 }
 

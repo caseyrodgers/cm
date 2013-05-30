@@ -154,7 +154,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         
         _cbActive.setValue(true);
         _cbTurnedIn.setValue(true);
-        _cbClosed.setValue(false);
+        _cbClosed.setValue(true);
         
         MyFieldLabel closeLabel = new MyFieldLabel(_cbClosed, "Show Closed Assignments", 150,30);
         FlowLayoutContainer flc = new FlowLayoutContainer();

@@ -62,6 +62,11 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
     public void prepareView(String firstThingDescription, String status) {
         firstThing.setInnerHTML(firstThingDescription);
         programStatus.setInnerHTML(status);
+        
+        if(!SharedData.getMobileUser().getAssignmentInfo().isAdminUsingAssignments()) {
+            beginAssignments.setVisible(false);
+        }
+        
     }
     
     @UiHandler("begin")

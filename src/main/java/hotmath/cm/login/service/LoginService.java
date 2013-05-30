@@ -238,8 +238,12 @@ public class LoginService extends HttpServlet {
 				    /** is cm_student 
 				     * 
 				     */
-				    
 
+	                
+	                if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
+	                    resp.sendRedirect("http://localhost:8080/cm_mobile3/CatchupMathMobile3.html?debug=true&uid=" + cmUser.getUserKey() + "#welcome");
+	                    return;
+	                }
 	                
 	                
 	                /** allow override of alternate test (segment_slot) to be set on URL
@@ -319,7 +323,19 @@ public class LoginService extends HttpServlet {
 		}
 	}
 
-	/** return the server name to use for the CM Student app.
+	private boolean isIpadOrIPhone(String browserInfo) {
+	    if(true) {
+	        return true;
+	    }
+	    if( (browserInfo.indexOf("iPhone") > -1) || (browserInfo.indexOf("iPad") > -1) ) {
+	        return true;
+	    }
+	    else {
+	        return false;
+	    }
+	}
+
+    /** return the server name to use for the CM Student app.
 	 * This is complicated due to different deployment configurations.
 	 *
 	 * @param req

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile3.client;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_mobile3.client.activity.LoginActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
@@ -15,6 +17,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.event.BackPageLoadedEvent;
@@ -170,6 +173,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 new InitialMessage().showCentered();
             }
             
+            String suid = CmGwtUtils.getQueryParameter("uid");
+            if(suid != null) {
+                SharedData.saveUidToLocalStorage(Integer.parseInt(suid));
+            }
             History.fireCurrentHistoryState();
         } catch (Exception e) {
             e.printStackTrace();
@@ -192,6 +199,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         
         Log.info("Catchup Math Mobile Initialized");
     }
+
 
     RootPanel _loadingDiv;
     
@@ -304,7 +312,8 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         eb.addHandler(UserLogoutEvent.TYPE, new UserLogoutHandler() {
             @Override
             public void userLogout() {
-                CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
+                //CmRpcCore.EVENT_BUS.fireEvent(new ShowLoginViewEvent());
+                Window.Location.replace("/index.html");
             }
         });
     }
