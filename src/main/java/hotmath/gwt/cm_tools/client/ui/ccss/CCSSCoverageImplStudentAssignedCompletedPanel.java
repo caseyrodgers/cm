@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.ccss;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
@@ -39,4 +40,8 @@ public class CCSSCoverageImplStudentAssignedCompletedPanel extends CCSSCoverageI
         return CCSSCoverageDataAction.ReportType.STUDENT_ASSIGNED_COMPLETED;
     }
 
+	@Override
+	public HTML getNoDataMessage() {
+		return new HTML("<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>This student did not complete any assignments.</h1>");
+	}
 }

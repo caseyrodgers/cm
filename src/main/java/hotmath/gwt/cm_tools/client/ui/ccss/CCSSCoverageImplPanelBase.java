@@ -54,6 +54,8 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
 
     abstract protected ColumnModel<CCSSCoverageData> getColumns();
 
+    abstract protected HTML getNoDataMessage();
+
     protected String getWindowTitle() {
     	return "CCSS Coverage";
     }
@@ -104,7 +106,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         ListStore<CCSSCoverageData> store = new ListStore<CCSSCoverageData>(_gridProps.id());
         _grid = defineGrid(store, getColumns());
         if(data == null || data.size() == 0) {
-            add(new NoRowsFoundPanel());
+            add(new NoRowsFoundPanel(getNoDataMessage()));
         }
         else {
             
@@ -140,13 +142,13 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         final Grid<CCSSCoverageData> grid = new Grid<CCSSCoverageData>(store, cm);
         grid.setBorders(true);
 
-        grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        grid.getView().setAutoExpandColumn(cm.findColumnConfig("id"));
         
         /** set to default to allow IE to render table correctly
          * 
          */
-        grid.setWidth("375");
+        grid.setWidth("450");
         grid.setHeight("100%");
         grid.setLoadMask(true);
         return grid;
@@ -159,7 +161,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         final CCSSCoverageData model = _grid.getSelectionModel().getSelectedItem();
         String stdName = model.getName();
         String url = convertStandardNameToURL(stdName);
-        Window.open(url, "_ccss", FEATURES);
+        Window.open(url, "_blank", FEATURES);
     }
 
     private static final String CCSS_SITE = "http://www.corestandards.org/Math/Content/";
@@ -175,7 +177,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
  * 
  */
 class NoRowsFoundPanel extends CenterLayoutContainer {
-    public NoRowsFoundPanel() {
-        add(new HTML("<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>No data for the selected category.<br/>Please 'mouseover' the category for details.</h1>"));
+    public NoRowsFoundPanel(HTML message) {
+        add(message);
     }
 }
