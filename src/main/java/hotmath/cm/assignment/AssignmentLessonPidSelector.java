@@ -20,10 +20,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.RowMapper;
 
 public class AssignmentLessonPidSelector {
 
+    static Logger __logger = Logger.getLogger(AssignmentLessonPidSelector.class);
+    
     List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
 
     int MAX_PIDS=20;
@@ -51,8 +54,11 @@ public class AssignmentLessonPidSelector {
             e.printStackTrace();
         }
 
-
         
+        __logger.debug("Read RPPs: " + problemsAll.size());
+
+
+
         /** Read any EPP problems for this lesson
          * 
          */
@@ -72,6 +78,9 @@ public class AssignmentLessonPidSelector {
                 return new ProblemDto(0, 0, lesson, defaultLabel, pid, 0);
             }
         });
+        
+        __logger.debug("Read EPPs: " + eppProblems.size());
+        
         // don't allow dups between EPP and RPP
         boolean found=false;
         for(ProblemDto p: eppProblems) {
@@ -95,15 +104,19 @@ public class AssignmentLessonPidSelector {
          * 
          */
         CmList<QuizQuestion> cqQuestions = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, 999);
+        __logger.debug("Read Custom Quiz MC: " + cqQuestions.size());
+
         Collection<ProblemDto> quizQuestions=new ArrayList<ProblemDto>();
-        if(cqQuestions.size() < MAX_MULTI_CHOICE) {
+        for(QuizQuestion qq: cqQuestions) {
+            quizQuestions.add(new ProblemDto(0, 0, lesson, "", qq.getPid(), 0));            
+        }
+
+        if(quizQuestions.size() <= MAX_MULTI_CHOICE) {
             // only if needed
             quizQuestions.addAll(getQuizProblems(MAX_MULTI_CHOICE, subject, lessonName));
-            for(QuizQuestion qq: cqQuestions) {
-                String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-                quizQuestions.add(new ProblemDto(0, 0, lesson, defaultLabel, qq.getPid(), 0));            
-            }
+            __logger.debug("Read Quiz MC: " + quizQuestions.size());
         }
+        
         
         int numMcProbs=0;
         for(ProblemDto qq: quizQuestions) {
@@ -112,6 +125,7 @@ public class AssignmentLessonPidSelector {
             }
             
             if(!alreadyContains(problemsAll, qq.getPid())) {
+                qq.setLabel(getDefaultLabel(lessonName, (++count[0])));
                 problemsAll.add(qq);
                 if((++numMcProbs)+1 > MAX_MULTI_CHOICE) {
                     break;
