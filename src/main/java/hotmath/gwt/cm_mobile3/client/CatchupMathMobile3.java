@@ -194,39 +194,13 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             }
 
             String suid = CmGwtUtils.getQueryParameter("uid");
-            int uid=0;
+            int uid = 0;
             if (suid != null) {
                 uid = Integer.parseInt(suid);
                 SharedData.saveUidToLocalStorage(uid);
             }
 
-            boolean doNormal = true;
-            try {
-                String type = CmGwtUtils.getQueryParameter("type");
-                if(type != null && type.equals("AUTO_CREATE")) {
-                        /** show auto create view */
-                        doNormal = false;
-
-                        AutoCreateActivity activity = new AutoCreateActivity(uid);
-                        final AutoCreateView view = new AutoCreateViewImpl();
-                        view.setPresenter(activity, new CallbackOnComplete() {
-                            @Override
-                            public void isComplete() {
-                                CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
-                            }
-                        });
-                    }
-                    else if(uid > 0) {
-                        doNormal = false;
-                        SharedData.saveUidToLocalStorage(uid);
-                        History.newItem("welcome:" + System.currentTimeMillis());
-                    }
-
-            } catch (Exception e) {
-                MessageBox.showError("Error reading login information: " + e);
-            }
-
-            if (doNormal) {
+            if (!loadFirstPanelMaybe(uid)) {
                 History.fireCurrentHistoryState();
             }
 
@@ -247,6 +221,42 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
         });
 
         Log.info("Catchup Math Mobile Initialized");
+    }
+
+    private boolean loadFirstPanelMaybe(int uid) {
+        boolean handled=false;
+        try {
+            String type = CmGwtUtils.getQueryParameter("type");
+            if(type == null) {
+                type = "";
+            }
+            if (type.equals("AUTO_CREATE")) {
+                /** show auto create view */
+                AutoCreateActivity activity = new AutoCreateActivity(uid);
+                final AutoCreateView view = new AutoCreateViewImpl();
+                view.setPresenter(activity, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
+                    }
+                });
+                
+                handled = true;
+            } else if(type.equals("PARALLEL_PROGRAM")) {
+                Window.alert("PP PROGRAM BITCH");
+                handled = true;
+            } else if (uid > 0) {
+                SharedData.saveUidToLocalStorage(uid);
+                History.newItem("welcome:" + System.currentTimeMillis());
+                
+                handled = true;
+            }
+
+        } catch (Exception e) {
+            MessageBox.showError("Error reading login information: " + e);
+        }
+        
+        return handled;
     }
 
     RootPanel _loadingDiv;

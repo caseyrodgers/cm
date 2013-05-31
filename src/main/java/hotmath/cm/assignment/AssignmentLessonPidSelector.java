@@ -10,7 +10,6 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.Problem
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.QuizQuestion;
 import hotmath.inmh.INeedMoreHelpItem;
-import hotmath.util.HMConnectionPool;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -28,6 +27,8 @@ public class AssignmentLessonPidSelector {
     List<ProblemDto> problemsAll = new ArrayList<ProblemDto>();
 
     int MAX_PIDS=20;
+    int MAX_MULTI_CHOICE=5;
+    
     final int count[] = new int[1];
     
     final LessonModel lesson;
@@ -88,25 +89,36 @@ public class AssignmentLessonPidSelector {
         
         /** Custom Quiz problems
          * 
+         * Add at most MAX_MULTI_CHOICE MC problems.
+         * 
+         * combine both custom quiz questions and normal quiz questions
+         * 
          */
         CmList<QuizQuestion> cqQuestions = CustomQuizQuestionManager.getInstance().getQuestionsFor(conn, lessonFile, 999);
-        for(QuizQuestion qq: cqQuestions) {
+        Collection<ProblemDto> quizQuestions=new ArrayList<ProblemDto>();
+        if(cqQuestions.size() < MAX_MULTI_CHOICE) {
+            // only if needed
+            quizQuestions.addAll(getQuizProblems(MAX_MULTI_CHOICE, subject, lessonName));
+            for(QuizQuestion qq: cqQuestions) {
+                String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
+                quizQuestions.add(new ProblemDto(0, 0, lesson, defaultLabel, qq.getPid(), 0));            
+            }
+        }
+        
+        int numMcProbs=0;
+        for(ProblemDto qq: quizQuestions) {
             if(problemsAll.size() >= MAX_PIDS) {
                 break;
             }
-            String defaultLabel = getDefaultLabel(lessonName, (++count[0]));
-            problemsAll.add(new ProblemDto(0, 0, lesson, defaultLabel, qq.getPid(), 0));            
-        }
-        
-        
-        
-        if(problemsAll.size() < MAX_PIDS) {
-            int numToGet = MAX_PIDS - problemsAll.size();
-            if(numToGet > 5) {
-                numToGet = 5; 
+            
+            if(!alreadyContains(problemsAll, qq.getPid())) {
+                problemsAll.add(qq);
+                if((++numMcProbs)+1 > MAX_MULTI_CHOICE) {
+                    break;
+                }
             }
-            problemsAll.addAll(getQuizProblems(numToGet, subject, lessonName));
         }
+        
         
         AssignmentDao.getInstance().updateProblemTypes(problemsAll);
 
@@ -161,6 +173,16 @@ public class AssignmentLessonPidSelector {
     }
 
 
+    private boolean alreadyContains(List<ProblemDto> problemsAll2, String pid) {
+        for(ProblemDto d: problemsAll2) {
+            if(d.getPid().equals(pid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     /** Return at most numToGet quiz/MC problems.  May return less than requested.
      * 
      * @param numToGet
@@ -169,7 +191,7 @@ public class AssignmentLessonPidSelector {
      * @return
      * @throws Exception
      */
-    private Collection<? extends ProblemDto> getQuizProblems(int numToGet, final String subject, final String lessonName) throws Exception {
+    private Collection<ProblemDto> getQuizProblems(int numToGet, final String subject, final String lessonName) throws Exception {
         /** Add the MC, quiz questions
          * 
          */
