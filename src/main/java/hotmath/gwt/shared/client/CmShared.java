@@ -240,6 +240,8 @@ public class CmShared implements EntryPoint {
                 // Cookies.getCookie("cm_key");
                 // if no cookie, then we must validate
                 if (loginInfo != null) {
+                    userId = loginInfo.getUid();
+
                     if (loginInfo.getSecurityKeyVal() == null) {
                         throw new CmException("Invalid security key found");
                     }
