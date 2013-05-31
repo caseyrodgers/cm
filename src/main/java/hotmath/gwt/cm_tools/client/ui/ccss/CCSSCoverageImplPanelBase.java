@@ -32,12 +32,11 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     CCSSCoverageImplPanelBase __instance;
     int _uid;
 
-    interface GridProperties extends PropertyAccess<CCSSCoverageReport> {
+    interface GridProperties extends PropertyAccess<CCSSCoverageData> {
 
-    	@Path("uid")
         ModelKeyProvider<CCSSCoverageData> id();
 
-        @Path("id")
+        @Path("name")
         ValueProvider<CCSSCoverageData, String> ccssName();
     }
 
@@ -143,7 +142,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         grid.setBorders(true);
 
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getView().setAutoExpandColumn(cm.findColumnConfig("id"));
+        grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
         
         /** set to default to allow IE to render table correctly
          * 
