@@ -29,6 +29,7 @@ import hotmath.gwt.cm_admin.server.model.CmStudentDao;
 import hotmath.gwt.cm_rpc.client.InformationOnlyException;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 
 /**
@@ -69,9 +70,9 @@ public class StudentCCSSReport {
 
             CCSSReportDao crDao = CCSSReportDao.getInstance();
 
-            List<String> quizCCSS = crDao.getStudentQuizStandardNames(userId, fromDate, toDate);
-            List<String> reviewCCSS = crDao.getStudentReviewStandardNames(userId, fromDate, toDate);
-            List<String> assignmentCCSS = crDao.getStudentAssignmentStandardNames(userId, fromDate, toDate);
+            List<CCSSCoverageData> quizCCSS = crDao.getStudentQuizStandardNames(userId, fromDate, toDate);
+            List<CCSSCoverageData> reviewCCSS = crDao.getStudentReviewStandardNames(userId, fromDate, toDate);
+            List<CCSSCoverageData> assignmentCCSS = crDao.getStudentAssignmentStandardNames(userId, fromDate, toDate);
 /*
             if ((quizCCSS == null || quizCCSS.size() == 0) &&
             	(reviewCCSS == null || reviewCCSS.size() == 0) &&
@@ -122,7 +123,7 @@ public class StudentCCSSReport {
 		return baos;
 	}
 
-    private void addSection(String labelText, List<String> standardNames, Document document) throws DocumentException {
+    private void addSection(String labelText, List<CCSSCoverageData> standardNames, Document document) throws DocumentException {
         PdfPTable tbl = new PdfPTable(1);
         tbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
@@ -133,8 +134,8 @@ public class StudentCCSSReport {
         p.setFont(FontFactory.getFont(FontFactory.HELVETICA, 11, Font.NORMAL, new Color(0, 0, 0)));
 		if (standardNames != null && standardNames.size() > 0) {
 			int idx = 0;
-            for (String stdName : standardNames) {
-            	Chunk chunk = new Chunk(stdName);
+            for (CCSSCoverageData data : standardNames) {
+            	Chunk chunk = new Chunk(data.getName());
             	chunk.setFont(FontFactory.getFont(FontFactory.HELVETICA, 10, Font.NORMAL, new Color(0, 0, 0)));
             	p.add(chunk);
             	if (++idx < standardNames.size()) p.add(", ");

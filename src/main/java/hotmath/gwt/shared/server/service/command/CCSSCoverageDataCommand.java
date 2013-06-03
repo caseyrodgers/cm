@@ -40,15 +40,15 @@ public class CCSSCoverageDataCommand implements ActionHandler< CCSSCoverageDataA
             CCSSReportDao crDao = CCSSReportDao.getInstance();
             switch(action.getType()) {
                 case STUDENT_ASSIGNED_COMPLETED:
-                    list = toCmList(toCoverageData(crDao.getStudentAssignmentStandardNames(action.getUID(), fromDate, toDate)));
+                    list = toCmList(crDao.getStudentAssignmentStandardNames(action.getUID(), fromDate, toDate));
                     break;
                     
                 case STUDENT_QUIZZED_PASSED:
-                    list = toCmList(toCoverageData(crDao.getStudentQuizStandardNames(action.getUID(), fromDate, toDate)));
+                    list = toCmList(crDao.getStudentQuizStandardNames(action.getUID(), fromDate, toDate));
                     break;
                     
                 case STUDENT_REVIEWED:
-                    list = toCmList(toCoverageData(crDao.getStudentReviewStandardNames(action.getUID(), fromDate, toDate)));
+                    list = toCmList(crDao.getStudentReviewStandardNames(action.getUID(), fromDate, toDate));
                     break;
                     
                 case GROUP:
@@ -71,7 +71,7 @@ public class CCSSCoverageDataCommand implements ActionHandler< CCSSCoverageDataA
     private List<CCSSCoverageData> toCoverageData(List<String> ccssList) {
     	List <CCSSCoverageData> list = new ArrayList<CCSSCoverageData>();
     	for (String name : ccssList) {
-    		CCSSCoverageData data = new CCSSCoverageData(name);
+    		CCSSCoverageData data = new CCSSCoverageData(null, name);
     		list.add(data);
     	}
 		return list;

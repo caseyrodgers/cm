@@ -1,6 +1,7 @@
 package hotmath.cm.dao;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
 import hotmath.spring.SpringManager;
 
 import java.sql.ResultSet;
@@ -42,7 +43,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public List<String> getStudentQuizStandardNames(int userId, Date fromDate, Date toDate) throws Exception {
+    public List<CCSSCoverageData> getStudentQuizStandardNames(int userId, Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CORRECT_QUIZ_CCSS_NAMES_FOR_STUDENT");
         return getStudentStandardNames(userId, fromDate, toDate, sql);
     }
@@ -56,7 +57,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public List<String> getStudentReviewStandardNames(int userId, Date fromDate, Date toDate) throws Exception {
+    public List<CCSSCoverageData> getStudentReviewStandardNames(int userId, Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_REVIEW_CCSS_NAMES_FOR_STUDENT");
         return getStudentStandardNames(userId, fromDate, toDate, sql);
     }
@@ -70,7 +71,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    public List<String> getStudentAssignmentStandardNames(int userId, Date fromDate, Date toDate) throws Exception {
+    public List<CCSSCoverageData> getStudentAssignmentStandardNames(int userId, Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_CCSS_NAMES_FOR_STUDENT");
         return getStudentStandardNames(userId, fromDate, toDate, sql);
     }
@@ -84,13 +85,13 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
      * @return
      * @throws Exception
      */
-    private List<String> getStudentStandardNames(int userId, Date fromDate, Date toDate, String sql) {
-    	List<String> standardNames = null;
+    private List<CCSSCoverageData> getStudentStandardNames(int userId, Date fromDate, Date toDate, String sql) {
+    	List<CCSSCoverageData> standardNames = null;
     	try {
-    		standardNames = getJdbcTemplate().query(sql, new Object[] { userId, fromDate, toDate }, new RowMapper<String>() {
+    		standardNames = getJdbcTemplate().query(sql, new Object[] { userId, fromDate, toDate }, new RowMapper<CCSSCoverageData>() {
     			@Override
-    			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-    				return rs.getString("standard_name_new");
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				return new CCSSCoverageData(rs.getString("lesson_name"), rs.getString("standard_name_new"));
     			}
     		});
     	}
