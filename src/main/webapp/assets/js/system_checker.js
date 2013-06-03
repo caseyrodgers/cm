@@ -2,6 +2,9 @@ var systemIsOk = true;
 
 function setupPageLocal() {
     
+	
+	var isMobile=isIPadOrIPhone();
+	
     if(window.location.search.indexOf('hide') > -1) {
         $get('main-content').parentNode.parentNode.style.background = 'white';
         $get('header').parentNode.style.display = 'none';
@@ -12,7 +15,15 @@ function setupPageLocal() {
     $get('javascript_check').innerHTML = '<p><img src="/gwt-resources/images/check_correct.png"/>OK</p>';
     $get('browser_check').innerHTML = checkBrowser();
     $get('window_check').innerHTML = checkWindowSize();
-    $get('flash_check').innerHTML = checkFlash();
+    
+    if(!isMobile) {
+    	$get('flash_check').innerHTML = checkFlash();
+    }
+    else {
+    	$get('flash_check').style.display = 'none';
+    	$get('flash_check_label').style.display = 'none';
+    }
+    
     checkNetwork($get('network_check'));
 }
 

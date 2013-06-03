@@ -178,12 +178,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
-            // __clientFactory.getEventBus().fireEvent(new
-            // ShowLoginViewEvent());
-            if (!InitialMessage.hasBeenSeen()) {
-                new InitialMessage().showCentered();
-            }
-
             String suid = CmGwtUtils.getQueryParameter("uid");
             int uid = 0;
             if (suid != null) {
