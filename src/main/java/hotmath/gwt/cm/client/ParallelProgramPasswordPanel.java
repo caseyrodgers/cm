@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client;
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.ParallelProgramLoginAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -12,7 +13,6 @@ import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmMainResourceWrapper;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.action.ParallelProgramLoginAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 
@@ -210,7 +210,7 @@ public class ParallelProgramPasswordPanel extends CmMainResourceWrapper {
 
     private void showForgotPassword() {
 
-        String html = "<p>Perhaps your password is something like Smith-John-0304.";
+        String html = "<p>Perhaps your password is something like Smith-John-0304.</p>";
 
         CmMessageBox.showAlert(html, "Forgot Your Password", new CallbackOnComplete() {
             @Override

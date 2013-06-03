@@ -1,9 +1,6 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
-import hotmath.gwt.cm_core.client.util.LoginInfoEmbedded;
-import hotmath.gwt.cm_mobile3.client.activity.LoginActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEvent;
 import hotmath.gwt.cm_mobile3.client.event.AutoAdvanceUserEventHandlerImpl;
@@ -20,6 +17,7 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.ScreenOrientation;
 import hotmath.gwt.cm_mobile_shared.client.activity.AutoCreateActivity;
+import hotmath.gwt.cm_mobile_shared.client.activity.ParallelProgramActivity;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.BackDiscoveryEventHandler;
@@ -39,20 +37,13 @@ import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
 import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateView;
 import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateViewImpl;
+import hotmath.gwt.cm_mobile_shared.client.view.ParallelProgramView;
+import hotmath.gwt.cm_mobile_shared.client.view.ParallelProgramViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
-import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.model.CmPartner;
-import hotmath.gwt.shared.client.model.UserInfoBase;
-import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
-import hotmath.gwt.shared.client.util.CmException;
-import hotmath.gwt.shared.client.util.UserInfoDao;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -230,7 +221,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             if(type == null) {
                 type = "";
             }
+            
             if (type.equals("AUTO_CREATE")) {
+                
+                Log.info("Showing Auto Create login");
                 /** show auto create view */
                 AutoCreateActivity activity = new AutoCreateActivity(uid);
                 final AutoCreateView view = new AutoCreateViewImpl();
@@ -243,7 +237,18 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                 
                 handled = true;
             } else if(type.equals("PARALLEL_PROGRAM")) {
-                Window.alert("PP PROGRAM BITCH");
+                Log.info("Showing Parallel Program login");
+                ParallelProgramActivity activity = new ParallelProgramActivity(uid);
+                final ParallelProgramView view = new ParallelProgramViewImpl();
+                view.setPresenter(activity, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
+                    }
+                });
+                
+                handled = true;
+
                 handled = true;
             } else if (uid > 0) {
                 SharedData.saveUidToLocalStorage(uid);

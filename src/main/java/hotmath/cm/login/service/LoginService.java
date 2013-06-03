@@ -4,6 +4,7 @@ import hotmath.cm.login.service.lcom.LcomManager;
 import hotmath.cm.login.service.lcom.LcomStudentSignup;
 import hotmath.cm.login.service.lcom.LcomTeacherSignup;
 import hotmath.cm.util.CmMessagePropertyReader;
+import hotmath.cm.util.UserAgentDetect;
 import hotmath.gwt.cm_admin.server.model.ParallelProgramDao;
 import hotmath.gwt.cm_rpc.client.CmExceptionFreeProgramDenied;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -262,8 +263,11 @@ public class LoginService extends HttpServlet {
     					
 
                         
+
+                        
                         if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
-                            req.getRequestDispatcher("/cm_mobile3/launch.jsp").forward(req, resp);
+                            String props = "&type=PARALLEL_PROGRAM";
+                            resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
                         }
                         else {
                             req.getRequestDispatcher("/cm_student/launch.jsp").forward(req, resp);
@@ -336,12 +340,9 @@ public class LoginService extends HttpServlet {
 	}
 
 	private boolean isIpadOrIPhone(String browserInfo) {
-	    if( (browserInfo.indexOf("iPhone") > -1) || (browserInfo.indexOf("iPad") > -1) ) {
-	        return true;
-	    }
-	    else {
-	        return false;
-	    }
+	    UserAgentDetect userAgent = new UserAgentDetect(browserInfo, "");
+	    boolean isNotDesktop = userAgent.detectTierTablet() || userAgent.detectMobileQuick();
+	    return isNotDesktop;
 	}
 
     /** return the server name to use for the CM Student app.
