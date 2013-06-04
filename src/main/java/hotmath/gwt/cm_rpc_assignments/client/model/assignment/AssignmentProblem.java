@@ -27,14 +27,14 @@ public class AssignmentProblem implements Response{
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem, ProblemType problemType, String lastUserWidgetValue, String status, Date assignmentDueDate) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem,  String lastUserWidgetValue, String status, Date assignmentDueDate) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
         this.assignmentClosed = isAssignmentClosed;
         this.info = info;
         this.studentProblem = stuProblem;
-        this.problemType = problemType;
+        this.problemType = stuProblem.getProblem().getProblemType();
         this.lastUserWidgetValue = lastUserWidgetValue;
         this.status = status;
         this.assignmentDueDate = assignmentDueDate;

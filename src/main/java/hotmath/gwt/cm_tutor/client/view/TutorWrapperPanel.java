@@ -411,7 +411,7 @@ public class TutorWrapperPanel extends Composite {
     
     
     private native void jsni_setTutorWidgetValue(String value)/*-{
-        $wnd.TutorSolutionWidgetValues.setTutorWidgetValues(value);
+        $wnd.TutorSolutionWidgetValues.setTutorWidgetValues(value, false);
     }-*/;
     
     
