@@ -300,7 +300,13 @@ pageTracker._trackPageview();
 <script src='/assets/js/core.js'></script>
         <!-- InstanceBeginEditable name="AfterJavascriptLoad" -->
         <script>
-             redirectIfMobile();
+            if(isIPadOrIPhone()) {
+                var html = '<video style="width: 100%;height: 95%" class="video" controls="controls" autoplay="autoplay"> ' + 
+                '  <source src="/how-it-works/catchupmath_how_it_works.mp4" type="video/mp4"> ' +
+                '  <source src="/how-it-works/catchupmath_how_it_works.ogv" type="video/ogg"> ' +
+                '</video>';
+            	document.getElementById('video-wrapper').innerHTML = html;
+            }
         </script>
         <!-- AfterJavascriptLoad -->
         <!-- InstanceEndEditable -->
