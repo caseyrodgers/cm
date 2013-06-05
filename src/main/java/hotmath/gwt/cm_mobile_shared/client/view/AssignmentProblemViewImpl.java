@@ -87,17 +87,17 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         }));
         
         
-        _toggleBackground = new SexyButton("Hide Background");
+        _toggleBackground = new SexyButton("Hide Problem");
         _toggleBackground.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 if(_toggleBackground.getText().startsWith("Show")) {
                     _showWork.setBackground(true);
-                    _toggleBackground.setButtonText("Hide Background",null);
+                    _toggleBackground.setButtonText("Hide Problem",null);
                 }
                 else {
                     _showWork.setBackground(false);
-                    _toggleBackground.setButtonText("Show Background",null);
+                    _toggleBackground.setButtonText("Show Problem",null);
                 }
             }
         });
@@ -105,7 +105,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
 
         
-        _submitWhiteboard = new SexyButton("Submit Whiteboard", new ClickHandler() {
+        _submitWhiteboard = new SexyButton("Submit", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 presenter.showWorkHasBeenSubmitted();
@@ -395,6 +395,11 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         $wnd.Hammer(element).on("doubletap", function(event) {
             that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
         });
+        
+        $wnd.Hammer(element).on("pinch", function(event) {
+            that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
+        });
+
 
     }-*/;
     private void alignWhiteboard() {

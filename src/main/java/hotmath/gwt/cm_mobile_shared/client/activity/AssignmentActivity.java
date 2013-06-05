@@ -6,9 +6,11 @@ import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
@@ -152,13 +154,10 @@ public class AssignmentActivity implements AssignmentView.Presenter {
             }
         });
         
-        
-        CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE,  new DataBaseHasBeenUpdatedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE,  new AssignmentsUpdatedHandler() {
             @Override
-            public void databaseUpdated(TypeOfUpdate type) {
-                if(type==TypeOfUpdate.ASSIGNMENTS) {
-                    __lastStudentAssignment=null;
-                }
+            public void assignmentsUpdated(AssignmentUserInfo info) {
+                __lastStudentAssignment=null;
             }
         });
     }

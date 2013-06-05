@@ -2,13 +2,11 @@ package hotmath.gwt.cm_mobile_shared.client.util;
 
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
-import hotmath.gwt.cm_mobile_shared.client.background.BackgroundServerChecker;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
