@@ -3,7 +3,6 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
-import hotmath.gwt.cm_mobile_shared.client.SexyToggleButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -33,10 +32,8 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -57,7 +54,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     SexyButton _submitWhiteboard;
     private SexyButton _viewWhiteboardButton;
     private Label _problemStatusLabel;
-    private CheckBox _toggleBackground;
+    private SexyButton _toggleBackground;
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
@@ -90,11 +87,18 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         }));
         
         
-        _toggleBackground = new CheckBox("Background");
+        _toggleBackground = new SexyButton("Hide Background");
         _toggleBackground.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
-                _showWork.toggleBackground();
+                if(_toggleBackground.getText().startsWith("Show")) {
+                    _showWork.setBackground(true);
+                    _toggleBackground.setButtonText("Hide Background",null);
+                }
+                else {
+                    _showWork.setBackground(false);
+                    _toggleBackground.setButtonText("Show Background",null);
+                }
             }
         });
         whiteboardControlHide.add(_toggleBackground);
@@ -370,7 +374,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         });
         _contentPanel.add(_showWork);
         
-        _showWork.setBackground(_toggleBackground.getValue());
+        _showWork.setBackground(_toggleBackground.getText().startsWith("Hide"));
         
         addDoubleTapRemoveEvent(this, _showWork.getElement());
         

@@ -15,16 +15,20 @@ public class SexyButton extends TouchButton {
     }
     
     public SexyButton(String name, ClickHandler clickHandler,String buttonType) {
-        String type="";
-        if(buttonType != null) {
-            type = " class='" + buttonType + "'";
-        }
-        getElement().setInnerHTML("<span " + type + "><span>" + name + "</span>");
+        setButtonText(name, buttonType);
         addStyleName("sexyButton");
         
         if(clickHandler != null) {
             addClickHandler(clickHandler);
         }
+    }
+
+    public void setButtonText(String name, String buttonType) {
+        String type="";
+        if(buttonType != null) {
+            type = " class='" + buttonType + "'";
+        }
+        getElement().setInnerHTML("<span " + type + "><span>" + name + "</span>");
     }
 
 }
