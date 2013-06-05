@@ -4000,6 +4000,8 @@ left join (
          left join(
                 select group_id, count(*) as num_students_in_assignment
                 from HA_USER u
+                where is_auto_create_template = 0
+                and   is_active = 1
                 group by group_id
           ) ag on ag.group_id = a.group_id
           
