@@ -913,6 +913,7 @@ span.group-item-dot {
 	color: #F76228;
 	font-size: 2em;
 	font-weight: bold;
+	text-align: center;
 }
 
 
@@ -981,3 +982,8 @@ span.group-item-dot {
 	margin-top: 5px;
 	font-weight: bold;
 }	
+
+
+.ass-tutor-panel {
+	margin-top: 25px;
+}

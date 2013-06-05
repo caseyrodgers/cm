@@ -277,7 +277,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
         });
 
-        
+        tutor.addStyleName("ass-tutor-panel");
         _contentPanel.add(tutor);
 
         showProblem(problem);
