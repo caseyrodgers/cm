@@ -36,6 +36,8 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
 
         ModelKeyProvider<CCSSCoverageData> id();
 
+        ValueProvider<CCSSCoverageData, String> lessonName();
+
         @Path("name")
         ValueProvider<CCSSCoverageData, String> ccssName();
     }

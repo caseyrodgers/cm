@@ -18,6 +18,7 @@ public class CCSSCoverageData implements Response {
     public CCSSCoverageData(){}
 
     public CCSSCoverageData(String lessonName, String ccssName) {
+    	this.lessonName = lessonName;
         this.ccssName = ccssName;
     }
 
