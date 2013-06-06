@@ -51,6 +51,10 @@ public class CCSSCoverageDataCommand implements ActionHandler< CCSSCoverageDataA
                     list = toCmList(crDao.getStudentReviewStandardNames(action.getUID(), fromDate, toDate));
                     break;
                     
+                case STUDENT_COMBINED:
+                    list = toCmList(crDao.getStudentCombinedStandardNames(action.getUID(), fromDate, toDate));
+                    break;
+                    
                 case GROUP:
                     //list = crDao.getGroupStandardNames(conn, action.getGroupId(), fromDate, toDate);
                     break;

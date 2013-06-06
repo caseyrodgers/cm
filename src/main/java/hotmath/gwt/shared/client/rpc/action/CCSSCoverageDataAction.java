@@ -62,4 +62,6 @@ public class CCSSCoverageDataAction implements Action<CmList<CCSSCoverageData>> 
     }
 
 
-    public enum ReportType{STUDENT_ASSIGNED_COMPLETED, STUDENT_QUIZZED_PASSED, STUDENT_REVIEWED, GROUP};}
+    public enum ReportType {
+    	STUDENT_ASSIGNED_COMPLETED, STUDENT_QUIZZED_PASSED, STUDENT_REVIEWED, STUDENT_COMBINED, STUDENT_NOT_COVERED,
+    	GROUP};}
