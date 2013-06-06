@@ -986,7 +986,7 @@ span.group-item-dot {
     padding: 15px;
     width: 450px;
     margin: auto;
-    border: 1px solid #F64501;
+    border: 1px solid #74C500;
     margin-top: 25px;
     text-align: center;    
     -moz-border-radius: 10%;
@@ -994,6 +994,7 @@ span.group-item-dot {
     -moz-box-shadow: 3px 3px 3px #666;
     -webkit-box-shadow: 3px 3px 3px #666;
     box-shadow: 3px 3px 3px #666;
+    font-size: 1.5em;
 }
 
 .WelcomeViewImpl p {
@@ -1007,6 +1008,7 @@ span.group-item-dot {
 .WelcomeViewImpl button {
     margin-top: 5px;
     width: 320px;
+    color:  black;
 }	
 
 
