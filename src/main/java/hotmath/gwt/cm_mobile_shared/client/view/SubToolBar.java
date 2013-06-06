@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,7 +16,7 @@ public class SubToolBar extends FlowPanel {
         addStyleName("SubToolBar");
         
         if(showReturnToProgram) {
-            _yourProgram = new TouchButton("Exit Assignments", new ClickHandler() {
+            _yourProgram = new SexyButton("Exit Assignments", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     History.newItem("welcome");                    

@@ -9,12 +9,12 @@
 	<g:HTMLPanel>
 		<div ui:field="firstThing">&nbsp;</div>
 		<div ui:field="programStatus">&nbsp;</div>
-		<cm:TouchButton ui:field="begin" styleName="sexybutton sexy_cm_silver sexylarge">
+		<cm:TouchButton ui:field="begin" styleName="sexybutton sexy_cm_green sexylarge">
 			<span>
 				<span>Start Using Catchup Math</span>
 			</span>
 		</cm:TouchButton>
-		<cm:TouchButton ui:field="beginAssignments" styleName="sexybutton sexy_cm_silver sexylarge">
+		<cm:TouchButton ui:field="beginAssignments" styleName="sexybutton sexy_cm_green sexylarge">
 			<span>
 				<span>Start Using Catchup Math Assignments</span>
 			</span>

@@ -897,7 +897,7 @@ span.group-item-dot {
   
   list-style-image:none;
   list-style-position:outside;
-  list-style-type:none;
+  list-style-type:upper-alpha;
 }            
             
 
@@ -957,10 +957,10 @@ span.group-item-dot {
 }
 
 .instruction-button {
-	float: left;
+	position: absolute;
+	top:53px;
+	left: 2px;
     padding: 2px;
-    color: #666;
-    font: bold 13px "Helvetica Neue", Helvetica, Arial, clean, sans-serif !important;
 }
 
 .auto-create-view {
@@ -991,7 +991,7 @@ span.group-item-dot {
     text-align: center;    
     -moz-border-radius: 10%;
     border-radius: 10%;
-    -moz-box-shadow: 3px 3px 3px #666;
+    -moz-box-shadow: 6px 6px 6px #666;
     -webkit-box-shadow: 3px 3px 3px #666;
     box-shadow: 3px 3px 3px #666;
     font-size: 1.5em;
