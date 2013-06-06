@@ -39,7 +39,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentProblemViewImpl extends Composite implements AssignmentProblemView {
@@ -53,7 +52,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     SubToolBar _subBar;
     SexyButton _submitWhiteboard;
     private SexyButton _viewWhiteboardButton;
-    private Label _problemStatusLabel;
     private SexyButton _toggleBackground;
     
     public AssignmentProblemViewImpl() {
@@ -119,9 +117,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
         _subBar.add(whiteboardControlView);
         mainPanel.add(_subBar);
-        _problemStatusLabel = new Label();
-        _problemStatusLabel.addStyleName("ass-prob-status");
-        mainPanel.add(_problemStatusLabel);
         
         _contentPanel = new FlowPanel();
         mainPanel.add(_contentPanel);
@@ -224,10 +219,6 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
                 presenter.processTutorWidgetComplete(inputValue, correct);
-                
-                if(_problemStatusLabel.getText().length() == 0) {
-                    _problemStatusLabel.setText("Submitted");
-                }
             }
 
             @Override
