@@ -157,6 +157,8 @@ public class AssignmentTutorPanel extends Composite {
 
             _tutorPanel.externallyLoadedTutor(problem.getInfo(),getWidget(), item.getFile(), item.getWidgetJsonArgs(), problem.getInfo().getJs(),problem.getInfo().getHtml(), resourceTitle, true, false, variableContext);
             
+            _tutorPanel.setProblemStatus(problem);
+            
             
             if(problem.getLastUserWidgetValue() != null) {
                 _tutorPanel.setTutorWidgetValue(problem.getLastUserWidgetValue());

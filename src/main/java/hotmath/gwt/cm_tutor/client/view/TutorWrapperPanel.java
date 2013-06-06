@@ -10,6 +10,10 @@ import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -71,6 +75,8 @@ public class TutorWrapperPanel extends Composite {
     @UiField
     Button debugInfo;
     
+    @UiField 
+    Element problemStatus;
     
     @UiField
     DivElement widgetCorrectInfo;
@@ -349,7 +355,7 @@ public class TutorWrapperPanel extends Composite {
         
         _wasWidgetAnswered = false;
         widgetCorrectInfo.setClassName("widget_correct_info_hide");
-        
+        setProblemStatusControl("");
         
         String submitButtonText = tutorCallback.getSubmitButtonText();
         WidgetStatusIndication indicateWidgetStatus = tutorCallback.indicateWidgetStatus();
@@ -764,6 +770,34 @@ public class TutorWrapperPanel extends Composite {
         widgetHolder.style.display = 'none';
     }
 }-*/;
+
+    private void setProblemStatusControl(String status) {
+        problemStatus.setInnerHTML(status);
+    }
     
-    
+    public void setProblemStatus(AssignmentProblem problem) {
+            
+            if (problem.getProblemType() == ProblemType.WHITEBOARD) {
+                String status = problem.getStatus();
+                if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !status.equals(ProblemStatus.SUBMITTED.toString())) {
+                    TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
+                } else {
+                    TutorWrapperPanel.jsni_hideWhiteboardStatus();
+                }
+            }
+            
+            String msg = "";
+            if(problem.isAssignmentClosed() || problem.isGraded()) {
+                msg = problem.getStudentProblem().getStatus();
+            }
+            else {
+                String s = problem.getStatus().toLowerCase();
+                if(problem.getLastUserWidgetValue() != null || s.equals("submitted") || s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
+                    msg = "Submitted";
+                }
+                // msg = problem.getStudentProblem().getStatusForStudent();
+            }
+            //String html = "<div class='ass-prob-status'>" + msg + "</div>";
+            setProblemStatusControl(msg);
+        }
 }

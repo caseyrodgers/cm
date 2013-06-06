@@ -111,7 +111,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 presenter.showWorkHasBeenSubmitted();
                 _submitWhiteboard.setVisible(false);
                 problem.setStatus("Submitted");
-                setProblemStatus();
+                tutor.setProblemStatus(problem);
                 hideWhiteboard();
             }
         });
@@ -311,39 +311,19 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 }
                 tutor.setVisible(true);
 
-                _submitWhiteboard.setVisible(false);
                 setProblemStatus();
             }
         });
     }
     
-    
     private void setProblemStatus() {
-        
-        
         if (problem.getProblemType() == ProblemType.WHITEBOARD) {
-            String status = problem.getStatus();
-            if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !status.equals(ProblemStatus.SUBMITTED.toString())) {
+            if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !problem.getStatus().equals(ProblemStatus.SUBMITTED.toString())) {
                 _submitWhiteboard.setVisible(true);
-                TutorWrapperPanel.jsni_showWhiteboardWidgetMessage("<div><p>Use the whiteboard to enter your answer</p></div>");
-            } else {
-                TutorWrapperPanel.jsni_hideWhiteboardStatus();
             }
-        }
+        }    
         
-        String msg = "";
-        if(problem.isAssignmentClosed() || problem.isGraded()) {
-            msg = problem.getStudentProblem().getStatus();
-        }
-        else {
-            String s = problem.getStatus().toLowerCase();
-            if(problem.getLastUserWidgetValue() != null || s.equals("submitted") || s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
-                msg = "Submitted";
-            }
-            // msg = problem.getStudentProblem().getStatusForStudent();
-        }
-        //String html = "<div class='ass-prob-status'>" + msg + "</div>";
-        _problemStatusLabel.setText(msg);
+        tutor.setProblemStatus(problem);
     }
     
 

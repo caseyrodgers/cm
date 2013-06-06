@@ -49,6 +49,7 @@
             <div ui:field="readonlyMask" class='{style.readonlyMask}' onclick='gwt_tutorIsReadonlyMessage()'>
                <div class='{style.readonlyMaskText}'>Read Only</div>
             </div>
+            <div ui:field="problemStatus" class='tutor-prob-status'></div>
             <div class='problem-title' ui:field="title"></div>
             <div id='tutor_raw_steps_wrapper'>
                   <span style='font-type: italic;color: #666'>Loading ...</span>
