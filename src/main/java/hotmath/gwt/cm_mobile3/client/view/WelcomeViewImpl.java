@@ -29,6 +29,8 @@ public class WelcomeViewImpl extends AbstractPagePanel implements WelcomeView {
 
     public WelcomeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+        
+        addStyleName("WelcomeViewImpl");
     }
     
     @Override

@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.code.gwt.storage.client.Storage;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -201,7 +202,8 @@ public class SharedData {
                 });
             }
             else {
-                Window.alert("no user id saved");
+                MessageBox.showError("no user id saved");
+                History.newItem("login");
             }
         }
         else {
