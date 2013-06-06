@@ -18,14 +18,18 @@ import org.apache.log4j.Logger;
  */
 public class GetCmProgramFlowCommand implements ActionHandler<GetCmProgramFlowAction, CmProgramFlowAction> {
 
-    static final Logger logger = Logger.getLogger(GetCmProgramFlowCommand.class);
+    static final Logger LOGGER = Logger.getLogger(GetCmProgramFlowCommand.class);
 
     @Override
     public CmProgramFlowAction execute(Connection conn, GetCmProgramFlowAction action) throws Exception {
 
         // new CmStudentDao().verifyActiveProgram(conn, action.getTestId());
 
+    	long start = System.currentTimeMillis();
         CmProgramFlow cmFlow = new CmProgramFlow(conn, action.getUserId());
+        LOGGER.info(String.format("+++ CmProgramFlow(): took %d msec", System.currentTimeMillis()-start));
+        start = System.currentTimeMillis();
+        try {
         switch(action.getFlowType()) {
             case NEXT:
                 return cmFlow.moveToNextFlowItem(conn);
@@ -36,6 +40,10 @@ public class GetCmProgramFlowCommand implements ActionHandler<GetCmProgramFlowAc
             case ACTIVE:
             default:
                 return cmFlow.getActiveFlowAction(conn);
+        }
+        }
+        finally{
+            LOGGER.info(String.format("+++ FlowType: %s, took %d msec", action.getFlowType(), System.currentTimeMillis()-start));        	
         }
     }
     

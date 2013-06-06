@@ -164,6 +164,7 @@ public class CCSSCoverageListPanel extends BorderLayoutContainer {
         s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentQuizzedPassed(_userId)));
         s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentReviewed(_userId)));
         s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentAssignedCompleted(_userId)));
+        s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentCombined(_userId)));
 
         //s.add(new CCSSCoverageReport(new CCSSCoverageImplGroup()));
         
