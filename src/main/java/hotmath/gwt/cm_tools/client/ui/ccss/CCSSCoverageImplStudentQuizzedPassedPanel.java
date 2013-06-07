@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
 /**

@@ -2,6 +2,7 @@ package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 
 import java.util.Date;
 

@@ -5,8 +5,8 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
 import com.google.gwt.core.client.GWT;
