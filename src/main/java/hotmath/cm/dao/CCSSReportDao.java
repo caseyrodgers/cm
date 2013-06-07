@@ -2,6 +2,7 @@ package hotmath.cm.dao;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSData;
 import hotmath.spring.SpringManager;
 
 import java.sql.ResultSet;
@@ -95,6 +96,55 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	sb.append(CmMultiLinePropertyReader.getInstance().getProperty("GET_ASSIGNMENT_CCSS_NAMES_FOR_STUDENT"));
     	sb.append(CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_CCSS_ORDER_BY"));
         return getStudentCombinedStandardNames(userId, fromDate, toDate, sb.toString());
+    }
+
+    /**
+     * Get CCSS data
+     * 
+     * @return
+     * @throws Exception
+     */
+    public CCSSData getCCSSData() throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_DATA");
+
+    	final CCSSData data = new CCSSData("Common Core State Standards");
+    	try {
+    		getJdbcTemplate().query(sql, new RowMapper<CCSSData.Level.Domain.Standard>() {
+    	    	List<CCSSData.Level> levels = data.getLevels();
+    	    	List<CCSSData.Level.Domain> domains = null;
+    	    	List<CCSSData.Level.Domain.Standard> standards = null;
+    	    	CCSSData.Level level = null;
+    	    	CCSSData.Level.Domain domain = null;
+    	    	CCSSData.Level.Domain.Standard standard = null;
+    			@Override
+    			public CCSSData.Level.Domain.Standard mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				String levelName = rs.getString("level_name");
+    				if (level == null || level.getName().equals(levelName) == false) {
+    				    level = new CCSSData.Level();
+    				    level.setName(levelName);
+    				    levels.add(level);
+    				    domains = level.getDomains();
+    				    domain = null;
+    				}
+    				String domainName = rs.getString("domain_name");
+    				if (domain == null || domain.getName().equals(domainName) == false) {
+    					domain = new CCSSData.Level.Domain();
+    					domain.setName(domainName);
+    					domains.add(domain);
+    					standards = domain.getStandards();
+    				}
+    				standard = new CCSSData.Level.Domain.Standard(rs.getString("name"), rs.getString("original_name"),
+    						rs.getString("summary"), rs.getString("description"));
+    				standards.add(standard);
+    				return standard;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getCCSSData(): sal: %s", sql), e);
+    		throw e;
+    	}
+    	return data;
     }
 
     /**
