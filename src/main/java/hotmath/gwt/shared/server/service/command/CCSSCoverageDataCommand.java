@@ -9,7 +9,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
 import java.sql.Connection;
