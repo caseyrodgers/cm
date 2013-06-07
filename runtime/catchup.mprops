@@ -4137,3 +4137,9 @@ FROM (
   ORDER BY s.standard_name_new
 ) t
 GROUP BY t.standard_name_new
+
+.key=GET_CCSS_DATA
+
+SELECT standard_name as original_name, standard_name_new as name, level_name, domain_name, summary, description
+  FROM common_core_standards
+ORDER BY standard_name ASC
