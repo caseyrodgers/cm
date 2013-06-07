@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import hotmath.gwt.cm.server.CmDbTestCase;
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSData;
 
 public class CCSSReportDao_Test extends CmDbTestCase {
 
@@ -45,5 +46,20 @@ public class CCSSReportDao_Test extends CmDbTestCase {
         
         assertTrue(standardNames != null);
     }
+
+    public void testGetStudentCombinedStandardNames() throws Exception {
+    	Date toDate = new Date();
+    	Date fromDate = new Date(toDate.getTime() - MSEC_IN_YEAR);
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        List<CCSSCoverageData> standardNames = dao.getStudentCombinedStandardNames(9451, fromDate, toDate);
         
+        assertTrue(standardNames != null);
+    }
+
+    public void testGetCCSSData() throws Exception {
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        CCSSData data = dao.getCCSSData();
+
+        assertTrue(data.getLevels().size() > 0);
+    }
 }
