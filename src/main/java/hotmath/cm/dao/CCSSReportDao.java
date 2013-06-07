@@ -1,7 +1,7 @@
 package hotmath.cm.dao;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.shared.client.rpc.action.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.spring.SpringManager;
 
 import java.sql.ResultSet;
