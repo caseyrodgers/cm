@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
@@ -387,7 +388,7 @@ public class AddProblemDialog extends GWindow {
                         getLessonItemsRPC(s.getTestDefId(), s.getSubject(), s.getSection(), callback);
                     } else if (loadConfig instanceof LessonDto) {
                         LessonDto l = (LessonDto) loadConfig;
-                        getLessonProblemItemsRPC(l.getLessonName(), l.getLessonFile(), l.getSubject(), callback);
+                        getLessonProblemItemsRPC(l.getLessonName(), l.getLessonFile(), l.getSubject(), callback, null);
                     }
                 }
 
@@ -549,7 +550,7 @@ public class AddProblemDialog extends GWindow {
     }
 
     static public void getLessonProblemItemsRPC(final String lesson, final String file, final String subject,
-            final AsyncCallback<List<BaseDto>> callback) {
+            final AsyncCallback<List<BaseDto>> callback, final CallbackOnComplete callbackOnComplete) {
 
         new RetryAction<CmList<ProblemDto>>() {
             @Override
@@ -568,6 +569,12 @@ public class AddProblemDialog extends GWindow {
                     data.add(pt);
                 }
                 callback.onSuccess(data);
+                if(callbackOnComplete != null) {
+                    /** inform the caller when the async 
+                     *  request is complete
+                     */
+                    callbackOnComplete.isComplete();
+                }
             }
 
         }.register();

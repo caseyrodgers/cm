@@ -18,8 +18,7 @@ public class FolderDto extends BaseDto {
     public List<BaseDto> getChildren() {
         return children;
     }
-
-    public void setChildren(List<BaseDto> children) {
+   public void setChildren(List<BaseDto> children) {
         this.children.clear();
         this.children.addAll(children);
         

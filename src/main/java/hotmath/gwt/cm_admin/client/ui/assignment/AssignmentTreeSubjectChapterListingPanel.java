@@ -121,15 +121,6 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
     }
 
     
-    private static FolderDto makeLesson(LessonDto lessonDto) {
-        LessonDto theReturn = lessonDto;
-        theReturn.setId(++BaseDto.autoId);
-        theReturn.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
-        return theReturn;
-    }
-
-
-    
     private void addToStore(TreeStore<BaseDto> store, FolderDto folder) {
         for (BaseDto child : folder.getChildren()) {
           store.add(folder, child);
@@ -240,7 +231,7 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
                 if (loadConfig instanceof LessonDto) {
                     Log.debug("Loading lesson problems: " + loadConfig);
                     LessonDto l = (LessonDto) loadConfig;
-                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback);
+                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, null);
                 }
                 else if (loadConfig instanceof SubjectDto) {
                      Log.debug("Loading lesson problems: " + loadConfig);
@@ -295,7 +286,6 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
             addToStore(treeStore, (FolderDto) base);
           }
         }
-        List<BaseDto> all = treeStore.getAll();
         return treeStore;
     }
 

@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAvailableLessonsAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
@@ -191,7 +192,6 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.TRI);        
         _tree.setWidth(300);
-        
         SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(), "click") {
             @Override
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
@@ -226,12 +226,18 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
 
     RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
         @Override
-        public void load(BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
+        public void load(final BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                  if (loadConfig instanceof LessonDto) {
                      Log.debug("Loading lesson problems: " + loadConfig);
                     LessonDto l = (LessonDto) loadConfig;
-                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback);
+                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, new CallbackOnComplete() {
+                        
+                        @Override
+                        public void isComplete() {
+                            _tree.scrollIntoView(loadConfig);
+                        }
+                    });
                 }
             }
         }
@@ -260,6 +266,7 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
             }
         };
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(treeStore));
+
 
         _root = makeFolder("Root");
         List<BaseDto> children = new ArrayList<BaseDto>();
