@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -63,7 +64,7 @@ public class LoginActivity implements LoginView.Presenter {
                 }
                 else {
                     SharedData.setData(mobileUser);
-                    eventBus.fireEvent(new ShowWelcomeViewEvent());
+                    eventBus.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
                 }
             }
 

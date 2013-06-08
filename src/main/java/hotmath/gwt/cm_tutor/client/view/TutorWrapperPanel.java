@@ -152,6 +152,10 @@ public class TutorWrapperPanel extends Composite {
         showElement(stepPrev.getElement(), setup.showNextPrev);
         showElement(whiteboardButton.getElement(), setup.showWhiteboard);
         showElement(returnButton.getElement(), setup.showReturn);
+        
+        if(setup.returnButtonText != null) {
+            returnButton.setText(setup.returnButtonText);
+        }
     }
     
     private void showElement(Element element, boolean b) {
@@ -719,10 +723,13 @@ public class TutorWrapperPanel extends Composite {
         boolean showWhiteboard;
         boolean showReturn;
         
-        public ButtonBarSetup(boolean showNextPrev, boolean showWhiteboard, boolean showReturn) {
+        String returnButtonText;
+        
+        public ButtonBarSetup(boolean showNextPrev, boolean showWhiteboard, boolean showReturn, String returnButtonText) {
             this.showNextPrev = showNextPrev;
             this.showWhiteboard = showWhiteboard;
             this.showReturn = showReturn;
+            this.returnButtonText = returnButtonText;
         }
     }
     

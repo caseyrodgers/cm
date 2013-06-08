@@ -295,7 +295,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 tutor.externallyLoadedTutor(problem.getInfo(), (Widget) AssignmentProblemViewImpl.this, problem.getInfo().getPid(), null, problem.getInfo()
                         .getJs(), problem.getInfo().getHtml(), problem.getInfo().getPid(), false, false, context);
 
-                tutor.setupButtonBar(new ButtonBarSetup(presenter.isAssignmentGraded(), true, true));
+                tutor.setupButtonBar(new ButtonBarSetup(presenter.isAssignmentGraded(), true, true, "Next Problem"));
 
                 if (problem.getLastUserWidgetValue() != null) {
                     tutor.setTutorWidgetValue(problem.getLastUserWidgetValue());
