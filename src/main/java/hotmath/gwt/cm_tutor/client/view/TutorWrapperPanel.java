@@ -153,8 +153,10 @@ public class TutorWrapperPanel extends Composite {
         showElement(whiteboardButton.getElement(), setup.showWhiteboard);
         showElement(returnButton.getElement(), setup.showReturn);
         
+        /** Override the RETURN button label */
         if(setup.returnButtonText != null) {
-            returnButton.setText(setup.returnButtonText);
+            String sexyTmp = "<span><span>" + setup.returnButtonText + "</span></span>";
+            returnButton.getElement().setInnerHTML(sexyTmp);
         }
     }
     
