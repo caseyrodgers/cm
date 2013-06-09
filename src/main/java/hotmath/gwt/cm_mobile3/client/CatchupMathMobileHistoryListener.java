@@ -62,9 +62,10 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             // always perform any actions here
             ShowWorkActivity.saveWhiteboard();
 
-            final String type = token.getType();
+            String type = token.getType();
+
             
-            if (type == null || type.length() == 0 || type.equals("login")) {
+            if (type.equals("login")) {
                 LoginActivity activity = new LoginActivity(eb);
                 LoginView view = cf.getLoginView();
                 view.setPresenter(activity);
@@ -272,6 +273,8 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
             }
     }
 
+    
+    static final String DEFAULT_TYPE = "lesson";
 
 
     static public class TokenParser {
@@ -284,7 +287,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
         String _parts[];
 
         public TokenParser(String name) {
-            if (name != null) {
+            if (name != null && name.length() > 0) {
                 _parts = name.split(":");
                 type = _parts[0];
 
@@ -303,6 +306,10 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                 if (_parts.length > 5)
                     resourceTitle = _parts[5];
 
+            }
+            
+            else {
+                type = DEFAULT_TYPE;
             }
         }
         

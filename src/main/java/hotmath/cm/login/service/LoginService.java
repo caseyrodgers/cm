@@ -81,6 +81,8 @@ public class LoginService extends HttpServlet {
 		String pwd = req.getParameter("pwd");
 		String action = req.getParameter("action");
 		String key = req.getParameter("key");
+		
+		boolean isMobileOverride = SbUtilities.getBoolean(req.getParameter("mobile"));
 
 		boolean isDebug=false;
 		
@@ -265,7 +267,7 @@ public class LoginService extends HttpServlet {
                         
 
                         
-                        if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
+                        if(isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
                             String props = "&type=PARALLEL_PROGRAM";
                             resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
                         }
@@ -288,7 +290,7 @@ public class LoginService extends HttpServlet {
     					String jsonizedUserInfo = Jsonizer.toJson(response);
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
     
-                        if(isIpadOrIPhone(loginAction.getBrowserInfo())) {
+                        if(isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
                             
                             String props="";
                             if(loginInfo.getType().equals("AUTO_CREATE")) {
