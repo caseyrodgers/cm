@@ -228,7 +228,6 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                         CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
                     }
                 });
-                
                 handled = true;
             } else if(type.equals("PARALLEL_PROGRAM")) {
                 Log.info("Showing Parallel Program login");
@@ -240,12 +239,17 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
                         CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(view));
                     }
                 });
-                
-                handled = true;
-
                 handled = true;
             } else if (uid > 0) {
                 SharedData.saveUidToLocalStorage(uid);
+                
+                SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+                    }
+                });
+                handled = true;
             }
 
         } catch (Exception e) {
