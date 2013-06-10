@@ -11,6 +11,11 @@ public class AssignmentsUpdatedEvent extends GwtEvent<AssignmentsUpdatedHandler>
     private AssignmentUserInfo assignmentInfo;
     
     
+    /** Fired when the assignment data has been updated, or some change has occurred
+     *  and listeners will need to be updated.
+     *   
+     * @param assignmentInfo
+     */
     public AssignmentsUpdatedEvent(AssignmentUserInfo assignmentInfo) {
         this.assignmentInfo = assignmentInfo; 
     }

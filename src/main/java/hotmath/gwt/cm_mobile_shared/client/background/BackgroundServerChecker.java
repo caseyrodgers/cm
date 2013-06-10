@@ -1,12 +1,16 @@
 package hotmath.gwt.cm_mobile_shared.client.background;
 
+import hotmath.cm.assignment.AssignmentDao;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
@@ -35,6 +39,7 @@ public class BackgroundServerChecker {
     }
 
     private BackgroundServerChecker() {
+        _lastCheckedData = SharedData.getMobileUser().getAssignmentInfo();
         monitorServer();
     }
 
@@ -101,11 +106,13 @@ public class BackgroundServerChecker {
      */
     static AssignmentUserInfo _lastCheckedData;
     protected static void fireAppropriateEvent(AssignmentUserInfo assignmentInfo) {
-        if(_lastCheckedData == null || (assignmentInfo.isChanged() || assignmentInfo.getUnreadMessageCount() > 0)) { //  !_lastCheckedData.equals(assignmentInfo)) {
-            _lastCheckedData = assignmentInfo;
-            
+        if(_lastCheckedData != null  &&(!_lastCheckedData.equals(assignmentInfo) || assignmentInfo.getUnreadMessageCount() > 0)) { //  !_lastCheckedData.equals(assignmentInfo)) {
             Log.debug("Firing AssignmentsUpdatedEvent: " + assignmentInfo);
             CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(assignmentInfo));
+            CmRpcCore.EVENT_BUS.fireEvent(new UpdateAssignmentViewEvent());
+        }
+        else {
+            _lastCheckedData = assignmentInfo;
         }
     }
 

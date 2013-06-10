@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
@@ -201,6 +202,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     @Override
     public void loadProblem(AssignmentProblem problem) {
         this.problem = problem;
+        problem.getStudentProblem().setHasShowWorkAdmin(false); // turn off blink without server roundtrip.
         setupWhiteboardTools(false);
         _contentPanel.clear();
 
@@ -353,6 +355,9 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         Window.scrollTo(0, 0);
 
         alignWhiteboard();
+        
+        
+        AssignmentData.removePidFromUnReadTeacherNote(problem.getAssignKey(),problem.getInfo().getPid());
     }
 
     /** Use the external Hammer.js library to watch for doubletap
@@ -367,9 +372,9 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
         });
         
-        $wnd.Hammer(element).on("pinch", function(event) {
-            that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
-        });
+        //$wnd.Hammer(element).on("pinch", function(event) {
+            //that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
+        //});
 
 
     }-*/;

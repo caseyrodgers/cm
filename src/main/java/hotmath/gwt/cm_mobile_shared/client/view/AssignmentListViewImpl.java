@@ -32,6 +32,8 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
     
     GenericList listItems = new GenericList();
     Label countLabel;
+
+    private List<StudentAssignmentInfo> _lastAssignments;
     public AssignmentListViewImpl() {
         DockPanel dockPanel = new DockPanel();
         
@@ -93,6 +95,7 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
 
     @Override
     public void displayAssigmments(List<StudentAssignmentInfo> assignments) {
+        _lastAssignments = assignments;
         listItems.getList().clear();
         for(StudentAssignmentInfo bm: assignments) {
             

@@ -71,7 +71,7 @@ public class AssignmentData {
     
     private void readUserAssignmentData(int uid) {
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
-        Log.info("Reading user data: " + uid);
+        Log.info("Reading assignment data for user: " + uid);
         GetAssignmentUserInfoAction action = new GetAssignmentUserInfoAction(uid);
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmMobileAssignmentUser>() {
             @Override
@@ -90,8 +90,6 @@ public class AssignmentData {
             public void onFailure(Throwable caught) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Window.alert("Could not log you in: " + caught.getMessage());
-                
-                
                 History.newItem("");
             }
         });        
@@ -117,6 +115,34 @@ public class AssignmentData {
                 }
             }
         }
+        return false;
+    }
+    
+    /** To prevent having to re-load from db and require a round-trip
+     * 
+     * @param assignKey
+     * @param pid
+     * @return
+     */
+    public static boolean removePidFromUnReadTeacherNote(int assignKey, String pid) {
+        int toDel=-1;
+        if(SharedData.getMobileUser().getAssignmentInfo() != null) {
+            int which=0;
+            for(ProblemAnnotation pa: SharedData.getMobileUser().getAssignmentInfo().getUnreadAnnotations()) {
+                if(pa.getAssignKey() == assignKey) {
+                    if(pa.getPid().equals(pid)) {
+                        toDel=which;
+                        break;
+                    }
+                }
+                which++;
+            }
+        }
+        
+        if(toDel > -1) {
+            SharedData.getMobileUser().getAssignmentInfo().getUnreadAnnotations().remove(toDel);
+        }
+        
         return false;
     }
 }

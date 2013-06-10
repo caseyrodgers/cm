@@ -10,6 +10,8 @@ import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdat
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
@@ -34,7 +36,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
     }
 
     static StudentAssignment __lastStudentAssignment;
-    AssignmentView _lastView;
+    static AssignmentView __lastView;
 
     @Override
     public void turnInAssignment(final AssignmentView view) {
@@ -64,12 +66,12 @@ public class AssignmentActivity implements AssignmentView.Presenter {
     }
     
     private void redrawList() {
-        setAssignment(_lastView, __lastStudentAssignment);
+        setAssignment(__lastView, __lastStudentAssignment);
     }
 
     @Override
     public void loadAssignment(final AssignmentView view) {
-        _lastView = view;
+        __lastView = view;
         if(__lastStudentAssignment != null && __lastStudentAssignment.getAssignment().getAssignKey() == assignKey) {
             setAssignment(view, __lastStudentAssignment);
             return;
@@ -151,6 +153,14 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                         break;
                     }
                 }
+            }
+        });
+        
+        CmRpcCore.EVENT_BUS.addHandler(UpdateAssignmentViewEvent.TYPE, new UpdateAssignmentViewHandler() {
+            @Override
+            public void updateView() {
+                __lastStudentAssignment=null;
+                __lastInstance.loadAssignment(__lastView);
             }
         });
         

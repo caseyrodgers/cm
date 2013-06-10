@@ -1,12 +1,9 @@
 package hotmath.gwt.cm_mobile3.client.ui;
 
-import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
-import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.google.gwt.event.dom.client.ClickEvent;

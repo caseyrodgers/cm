@@ -8,10 +8,12 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentListView;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -20,10 +22,13 @@ import com.google.gwt.user.client.History;
 
 public class AssignmentListActivity implements AssignmentListView.Presenter {
 
+    static private AssignmentListActivity __lastInstance;
+    static private AssignmentListView __lastView;
     public AssignmentListActivity() { }
     
     @Override
     public void readDataFromServer(final AssignmentListView view, boolean force) {
+        __lastInstance = this;
         if(force) {
             AssignmentData.clear();
         }
@@ -44,6 +49,7 @@ public class AssignmentListActivity implements AssignmentListView.Presenter {
     }
     
     private void showAssignments(AssignmentListView view) {
+        __lastView = view;
         view.displayAssigmments(AssignmentData.getUserData().getAssignments());        
     }
     
@@ -75,7 +81,7 @@ public class AssignmentListActivity implements AssignmentListView.Presenter {
 
 
     
-    /** Remove assingment data when loging in as new user
+    /** Remove assignment data when logging in as new user
      * 
      */
     static {
@@ -86,10 +92,10 @@ public class AssignmentListActivity implements AssignmentListView.Presenter {
             }
         });
         
-        CmRpcCore.EVENT_BUS.addHandler(DataBaseHasBeenUpdatedEvent.TYPE , new DataBaseHasBeenUpdatedHandler() {
+        CmRpcCore.EVENT_BUS.addHandler(UpdateAssignmentViewEvent.TYPE , new UpdateAssignmentViewHandler() {
             @Override
-            public void databaseUpdated(TypeOfUpdate type) {
-                AssignmentData.clear();
+            public void updateView() {
+                __lastInstance.readDataFromServer(__lastView, true);                
             }
         });
     }

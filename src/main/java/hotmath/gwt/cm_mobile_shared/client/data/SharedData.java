@@ -16,12 +16,13 @@ import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /** centralized wrapper for shared global data structures
@@ -250,6 +251,13 @@ public class SharedData {
             @Override
             public void userLogout() {
                 SharedData.setData(null);                
+            }
+        });
+        
+        CmRpcCore.EVENT_BUS.addHandler(AssignmentsUpdatedEvent.TYPE,  new AssignmentsUpdatedHandler() {
+            @Override
+            public void assignmentsUpdated(AssignmentUserInfo info) {
+                SharedData.getMobileUser().setAssignmentInfo(info);
             }
         });
     }

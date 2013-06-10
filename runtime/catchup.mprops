@@ -3979,11 +3979,18 @@ from HA_USER u
 where u.uid = ?
 and a.status != 'Draft'
 and  au.turn_in_date is null
+and (au.is_graded is null or au.is_graded = 0)
 group by a.status
 
 
 
-
+.key=STUDENT_ASSIGNMENT_LAST_MODIFIED
+## The last time any assignment was updated
+select max(last_modified) as max_last_modified
+from CM_ASSIGNMENT a
+  JOIN CM_ASSIGNMENT_USER ca
+     ON ca.assign_key = a.assign_key
+where ca.uid = ?
 
 
 .key=GET_ASSIGNMENTS_GRADED_INFO

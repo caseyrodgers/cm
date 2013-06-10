@@ -1,9 +1,8 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
-import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
-import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
+import java.util.Date;
 import java.util.List;
 
 /** Contains current state meta information about 
@@ -13,6 +12,8 @@ import java.util.List;
  */
 public class AssignmentUserInfo implements Response {
 
+    private Date lastChanged;
+
     private int activeAssignments;
     private int closedAssignments;
     private int expiredAssignments;
@@ -21,7 +22,16 @@ public class AssignmentUserInfo implements Response {
     private boolean changed;
 
     public AssignmentUserInfo(){}
-    
+
+    public Date getLastChanged() {
+        return lastChanged;
+    }
+
+
+    public void setLastChanged(Date lastChanged) {
+        this.lastChanged = lastChanged;
+    }
+
     
     public boolean isChanged() {
         return changed;
@@ -130,6 +140,14 @@ public class AssignmentUserInfo implements Response {
             /** first check basic info
              * 
              */
+            if(o1.getLastChanged() != null & getLastChanged() != null) {
+                long t1 = o1.getLastChanged().getTime();
+                long t2 = getLastChanged().getTime();
+                if(t1 > t2) {
+                    return false;
+                }
+            }
+            
             if(o1.isChanged() != isChanged()) {
                 return false;
             }
@@ -175,9 +193,8 @@ public class AssignmentUserInfo implements Response {
 
     @Override
     public String toString() {
-        return "AssignmentUserInfo [activeAssignments=" + activeAssignments + ", closedAssignments=" + closedAssignments + ", expiredAssignments="
-                + expiredAssignments + ", unreadAnnotations=" + unreadAnnotations + ", adminUsingAssignments=" + adminUsingAssignments + ", changed=" + changed
-                + "]";
+        return "AssignmentUserInfo [lastChanged=" + lastChanged + ", activeAssignments=" + activeAssignments + ", closedAssignments=" + closedAssignments
+                + ", expiredAssignments=" + expiredAssignments + ", unreadAnnotations=" + unreadAnnotations + ", adminUsingAssignments="
+                + adminUsingAssignments + ", changed=" + changed + "]";
     }
-    
 }

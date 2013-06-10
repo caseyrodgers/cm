@@ -1045,13 +1045,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * has this assignment been 'changed' since the last time this student
-     * 'viewed' it?
+     * has this assignment been 'changed' since the last time this student 'viewed' it?
      */
     protected boolean determineIfAssignmentHasChanged(int assignKey, int uid) {
         try {
             StudentAssignmentUserInfo saui = getStudentAssignmentUserInfo(uid, assignKey);
             Date lastStudentView = saui.getViewDateTime();
+
             Date lastAssignmentModification = getLastTeacherAssignmentModification(assignKey);
             if (lastStudentView == null || lastStudentView.getTime() < lastAssignmentModification.getTime()) {
                 return true;
@@ -1890,8 +1890,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getAssignmentStatuses(uid, assignmentInfo);
             assignmentInfo.setUnreadAnnotations(getUnreadAnnotatedProblems(uid));
             assignmentInfo.setChanged(determineIfAnyAssignmentHasChanged(uid));
+            
+            assignmentInfo.setLastChanged(getLastTimeUserAssignmentsUpdated(uid));
         }
         return assignmentInfo;
+    }
+
+    private Date getLastTimeUserAssignmentsUpdated(int uid) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_LAST_MODIFIED");
+        Date lastModified = getJdbcTemplate().queryForObject(sql, new Object[]{uid}, new RowMapper<Date>() {
+            @Override
+            public Date mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getTimestamp(1);
+            }
+        });
+        return lastModified;
     }
 
     private boolean determineIfAnyAssignmentHasChanged(final int uid) {
@@ -1908,7 +1921,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return true;
             }
         }
-
         return false;
     }
 
