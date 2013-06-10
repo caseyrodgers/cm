@@ -152,13 +152,13 @@ public class AboutDialog extends DialogBox  {
 		buttonBar.getElement().setAttribute("style",  "margin: 10px");
 		
 		if(SharedData.getMobileUser() != null) {
-//		      SexyButton check = new SexyButton("Check Server",new ClickHandler() {
-//	                @Override
-//	                public void onClick(ClickEvent event) {
-//	                    CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
-//	                }
-//	            });
-//	        buttonBar.add(check);
+		      SexyButton check = new SexyButton("Check Server",new ClickHandler() {
+	                @Override
+	                public void onClick(ClickEvent event) {
+	                    CmRpcCore.EVENT_BUS.fireEvent(new ForceSystemSyncCheckEvent());
+	                }
+	            });
+	        buttonBar.add(check);
 		}
 		
 		

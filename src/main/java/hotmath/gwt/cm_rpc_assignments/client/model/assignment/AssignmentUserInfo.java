@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
+import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import java.util.List;
@@ -177,6 +179,5 @@ public class AssignmentUserInfo implements Response {
                 + expiredAssignments + ", unreadAnnotations=" + unreadAnnotations + ", adminUsingAssignments=" + adminUsingAssignments + ", changed=" + changed
                 + "]";
     }
-    
     
 }
