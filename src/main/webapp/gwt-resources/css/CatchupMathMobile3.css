@@ -810,7 +810,6 @@ table {
 .video-is-complete-dialog {
 	height: 100px;
 	width: 260px;
-	z-index: 1000;
 }
 
 .video-is-complete-dialog .gwt-HTML {

@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -65,8 +66,17 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
 
     @UiField
     HTMLPanel mainPanel;
+    
+    @UiField
+    Element videoCompleteWrapper, videoWrapper;
+    
+    @UiField
+    SexyButton resetButton, returnButton;
+    
 
     public void setVideoUrlWithOutExtension(String videoUrl) {
+        
+        setupViewForVideoViewing();
         
         Log.debug("Showing video: " + videoUrl);
         
@@ -87,41 +97,11 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         this.videoReadyLabel.setInnerHTML("");   
     }
 
-    
     private void gwt_videoIsComplete() {
-        final PopupPanel popup = new PopupPanel();
-        popup.addStyleName("popup-message");
-        popup.addStyleName("video-is-complete-dialog");
-        popup.setAutoHideEnabled(true);
-        popup.setModal(true);
-        FlowPanel fp = new FlowPanel();
-        fp.setHeight("300px");
-        String msg="Your video is complete.<br/>";
-        fp.add(new HTML(msg));
-        
-        Button btnAgain = new SexyButton("Reset Video",new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                popup.hide();
-                resetVideo(videoContainer);
-            }
-        });
-        btnAgain.getElement().setAttribute("style", "border-bottom: 10px");
-        Button btnReturn = new SexyButton("Return to Lesson",new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                popup.hide();
-                presenter.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
-            }
-        });
-        fp.add(btnAgain);
-        fp.add(btnReturn);
-        
-        popup.setWidget(fp);
-
-        popup.center();
-        popup.show();   
+        videoWrapper.setAttribute("style",  "display: none");
+        videoCompleteWrapper.setAttribute("style",  "display: block");
     }
+
     
     private native void setupVideoListeners(Element videoC, PrescriptionLessonResourceVideoViewImpl instance) /*-{
     
@@ -169,7 +149,17 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
          }
      }-*/;
      
-     private native void resetVideo(Element videoC) /*-{
+     private void setupViewForVideoViewing() {
+         videoCompleteWrapper.setAttribute("style",  "display: none");
+         videoWrapper.setAttribute("style",  "display: block");
+     }
+     
+     private void resetVideo(Element videoC) {
+         setupViewForVideoViewing();
+         jsni_resetVideo(videoC);
+     }
+     
+     private native void jsni_resetVideo(Element videoC) /*-{
          try {
             var con = videoC.getElementsByTagName('video');
             if(con.length > 0) {
@@ -221,6 +211,16 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         };
     }
     
+    
+    @UiHandler("returnButton")
+    protected void handleReturn(ClickEvent ce) {
+        presenter.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
+    }
+    
+    @UiHandler("resetButton")
+    protected void handleReset(ClickEvent ce) {
+        resetVideo(videoContainer);        
+    }
     
     @UiField
     Element videoContainer;

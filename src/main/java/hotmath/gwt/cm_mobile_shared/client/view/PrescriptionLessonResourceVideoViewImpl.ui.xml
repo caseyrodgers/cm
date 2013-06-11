@@ -1,12 +1,56 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cm="urn:import:hotmath.gwt.cm_mobile_shared.client">
+	
+	
+	<ui:style>
+	    .video_complete_wrapper {
+            width: 300px;
+            margin: auto;
+            margin-top: 30px;
+            padding: 10px;
+            
+            border: 1px solid #F44300;
+           -moz-border-radius:10px;
+           border-radius: 10px;
+	    }
+
+	    .video_complete_wrapper h2 {
+	        margin-bottom: 7px;
+
+	    }
+	    
+	    .video_complete_wrapper button {
+	        margin-bottom: 5px;
+
+	    }
+	
+	</ui:style>
 
 	<g:HTMLPanel ui:field="mainPanel" styleName="prescriptionLessonResourceVideoImpl">
-	    <h1 ui:field="videoTitle"></h1>
-		<div ui:field='videoContainer'>
-		    the video
-		</div>
-		<div ui:field='videoReadyLabel'></div>
+		    <h1 ui:field="videoTitle"></h1>
+	        <div ui:field="videoWrapper">
+			    <div ui:field='videoContainer'>
+			        the video
+			    </div>
+			    <div ui:field='videoReadyLabel'></div>
+			</div>
+			<div ui:field="videoCompleteWrapper" style="display: none" class="{style.video_complete_wrapper}">
+			    <h2>Your video is complete</h2>
+			    
+			    
+			    <cm:SexyButton ui:field="resetButton" styleName="sexybutton sexylarge">
+					<span>
+				        <span>Reset Video</span>
+			       </span>
+			    </cm:SexyButton>
+			    
+                <cm:SexyButton ui:field="returnButton" styleName="sexybutton sexylarge">
+					<span>
+				        <span>Return to Lesson</span>
+			       </span>
+			    </cm:SexyButton>
+			</div>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 

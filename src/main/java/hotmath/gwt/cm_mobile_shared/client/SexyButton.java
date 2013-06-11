@@ -6,6 +6,11 @@ import com.google.gwt.event.dom.client.ClickHandler;
 
 public class SexyButton extends TouchButton {
     
+    public SexyButton() {
+        addStyleName("sexyButton");
+    }
+    
+    
     public SexyButton(String name) {
         this(name, null);
     }
@@ -15,8 +20,8 @@ public class SexyButton extends TouchButton {
     }
     
     public SexyButton(String name, ClickHandler clickHandler,String buttonType) {
+        this();
         setButtonText(name, buttonType);
-        addStyleName("sexyButton");
         
         if(clickHandler != null) {
             addClickHandler(clickHandler);
