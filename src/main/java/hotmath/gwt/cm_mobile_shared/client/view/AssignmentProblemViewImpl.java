@@ -195,7 +195,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         
         this.presenter = listener;
         setupInitialPanel();
-
+        
         presenter.fetchProblem(this, shouldShowWhiteboard, callback);
     }
 

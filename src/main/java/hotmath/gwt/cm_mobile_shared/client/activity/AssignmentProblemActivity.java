@@ -12,7 +12,6 @@ import hotmath.gwt.cm_mobile_shared.client.view.LessonViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentWhiteboardDataAction;
@@ -68,9 +67,20 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
     }
     
     @Override
-    public void fetchProblem(final AssignmentProblemView view, final boolean shouldShowWhiteboard, final CallbackOnComplete callback) {
+    public void fetchProblem(final AssignmentProblemView view, final boolean showWhiteboard, final CallbackOnComplete callback) {
         __lastAssignKey = assignKey;
         __lastPid = pid;
+        
+        
+        final boolean shouldShowWhiteboard;
+        if(AssignmentData.doesPidHaveTeacherNote(assignKey, pid)) {
+            Log.debug("Has unseen teacher note, showing whiteboard first");
+            shouldShowWhiteboard = true;
+        }
+        else {
+            shouldShowWhiteboard = showWhiteboard;
+        }
+        
         
         if(__lastProblem != null && __lastProblem.getAssignKey() == assignKey && __lastProblem.getInfo().getPid().equals(pid)) {
             view.loadProblem(__lastProblem);
