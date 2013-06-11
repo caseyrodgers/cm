@@ -175,8 +175,7 @@ public class HeaderPanel extends Composite {
     
     protected void setupDomainSpecificButtons(IPage page) {
         AssignmentUserInfo ad = SharedData.getMobileUser().getAssignmentInfo();
-        if(!ad.isAdminUsingAssignments() || 
-                        (ad.getActiveAssignments() + ad.getClosedAssignments() == 0)) {
+        if(!ad.isAdminUsingAssignments()) {
             _assignmentButton.setVisible(false);
         }
         else {

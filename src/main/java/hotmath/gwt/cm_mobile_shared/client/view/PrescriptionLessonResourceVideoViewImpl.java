@@ -75,10 +75,9 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
     
 
     public void setVideoUrlWithOutExtension(String videoUrl) {
-        
-        setupViewForVideoViewing();
-        
         Log.debug("Showing video: " + videoUrl);
+
+        setupViewForVideoViewing();
         
         String mp4File = videoUrl + ".mp4";
         String oggFile = videoUrl + ".ogv";
