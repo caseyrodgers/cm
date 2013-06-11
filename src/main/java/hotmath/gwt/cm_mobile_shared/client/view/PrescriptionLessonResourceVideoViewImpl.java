@@ -2,6 +2,7 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
 
@@ -98,7 +99,7 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
         String msg="Your video is complete.<br/>";
         fp.add(new HTML(msg));
         
-        Button btnAgain = new Button("",new ClickHandler() {
+        Button btnAgain = new SexyButton("Reset Video",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 popup.hide();
@@ -106,17 +107,13 @@ public class PrescriptionLessonResourceVideoViewImpl extends AbstractPagePanel i
             }
         });
         btnAgain.getElement().setAttribute("style", "border-bottom: 10px");
-        btnAgain.getElement().setInnerHTML("<span><span>Reset Video</span></span>");
-        btnAgain.addStyleName("sexybutton");
-        Button btnReturn = new Button("",new ClickHandler() {
+        Button btnReturn = new SexyButton("Return to Lesson",new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 popup.hide();
                 presenter.getEventBus().fireEvent(new ShowPrescriptionLessonViewEvent());
             }
         });
-        btnReturn.getElement().setInnerHTML("<span><span>Return to Lesson</span></span>");
-        btnReturn.addStyleName("sexybutton");
         fp.add(btnAgain);
         fp.add(btnReturn);
         

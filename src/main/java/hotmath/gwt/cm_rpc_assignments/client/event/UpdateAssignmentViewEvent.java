@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_rpc_assignments.client.event;
 
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class UpdateAssignmentViewEvent extends GwtEvent<UpdateAssignmentViewHandler> {
@@ -13,7 +12,7 @@ public class UpdateAssignmentViewEvent extends GwtEvent<UpdateAssignmentViewHand
      *  
      */
     public UpdateAssignmentViewEvent() {
-        MessageBox.showMessage("Fired UpdateAssignmentViewEvent: " + System.currentTimeMillis());
+        Log.debug("Fired UpdateAssignmentViewEvent: " + System.currentTimeMillis());
     }
 
     @Override

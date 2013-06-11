@@ -220,6 +220,10 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
+                
+                AssignmentProblem p = AssignmentProblemViewImpl.this.problem;
+                p.setStatus("Submitted");
+                tutor.setProblemStatus(p);
                 presenter.processTutorWidgetComplete(inputValue, correct);
             }
 
