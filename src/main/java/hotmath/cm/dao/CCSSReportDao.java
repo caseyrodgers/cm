@@ -1,10 +1,5 @@
 package hotmath.cm.dao;
 
-import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.shared.client.model.CCSSCoverageData;
-import hotmath.gwt.shared.client.model.CCSSData;
-import hotmath.spring.SpringManager;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -15,6 +10,11 @@ import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+
+import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
+import hotmath.gwt.shared.client.model.CCSSData;
+import hotmath.spring.SpringManager;
 
 public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
@@ -109,19 +109,23 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
     	final CCSSData data = new CCSSData("Common Core State Standards");
     	try {
-    		getJdbcTemplate().query(sql, new RowMapper<CCSSData.Level.Domain.Standard>() {
+    		getJdbcTemplate().query(sql, new RowMapper<CCSSData.Level.Domain.Standard.Lesson>() {
     	    	List<CCSSData.Level> levels = data.getLevels();
     	    	List<CCSSData.Level.Domain> domains = null;
     	    	List<CCSSData.Level.Domain.Standard> standards = null;
+    	    	List<CCSSData.Level.Domain.Standard.Lesson> lessons = null;
     	    	CCSSData.Level level = null;
     	    	CCSSData.Level.Domain domain = null;
     	    	CCSSData.Level.Domain.Standard standard = null;
-    			@Override
-    			public CCSSData.Level.Domain.Standard mapRow(ResultSet rs, int rowNum) throws SQLException {
+    	    	CCSSData.Level.Domain.Standard.Lesson lesson = null;
+
+    	    	@Override
+    			public CCSSData.Level.Domain.Standard.Lesson mapRow(ResultSet rs, int rowNum) throws SQLException {
     				String levelName = rs.getString("level_name");
     				if (level == null || level.getName().equals(levelName) == false) {
     				    level = new CCSSData.Level();
     				    level.setName(levelName);
+    				    level.setParent(data);
     				    levels.add(level);
     				    domains = level.getDomains();
     				    domain = null;
@@ -130,13 +134,22 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     				if (domain == null || domain.getName().equals(domainName) == false) {
     					domain = new CCSSData.Level.Domain();
     					domain.setName(domainName);
+    					domain.setParent(level);
     					domains.add(domain);
     					standards = domain.getStandards();
     				}
-    				standard = new CCSSData.Level.Domain.Standard(rs.getString("name"), rs.getString("original_name"),
-    						rs.getString("summary"), rs.getString("description"));
-    				standards.add(standard);
-    				return standard;
+    				String standardName = rs.getString("name");
+    				if (standard == null || standard.getName().equals(standardName) == false) {
+        				standard = new CCSSData.Level.Domain.Standard(rs.getString("name"), rs.getString("original_name"),
+        						rs.getString("summary"), rs.getString("description"));
+        				standard.setParent(domain);
+        				standards.add(standard);
+        				lessons = standard.getLessons();
+    				}
+    				lesson = new CCSSData.Level.Domain.Standard.Lesson(rs.getString("lesson"), rs.getString("file"));
+    				lesson.setParent(standard);
+    				lessons.add(lesson);
+    				return lesson;
     			}
     		});
     	}
