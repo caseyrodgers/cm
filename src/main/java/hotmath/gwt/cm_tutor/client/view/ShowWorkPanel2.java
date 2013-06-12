@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
@@ -22,6 +23,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -191,6 +193,8 @@ public class ShowWorkPanel2 extends Composite {
     MultiActionRequestAction whiteboardActions = new MultiActionRequestAction();
     boolean eatNextWhiteboardOut = false;
 
+    private List<WhiteboardCommand> _lastCommands;
+
     protected void whiteboardOut_Gwt(String json, boolean boo) {
 
         if (eatNextWhiteboardOut) {
@@ -210,7 +214,37 @@ public class ShowWorkPanel2 extends Composite {
          * all chart data for this user/pid. Otherwise, it is a normal draw
          * command.
          */
-        CommandType commandType = json.equals("clear") ? CommandType.CLEAR : CommandType.DRAW;
+        CommandType commandType = null;
+        if(json.equals("clear")) {
+            if(_lastCommands != null) { 
+                _lastCommands.clear();
+            }
+            commandType = CommandType.CLEAR;
+        }
+        else if(json.equals("undo")) {
+            commandType = CommandType.UNDO;
+            
+            if(_lastCommands != null && _lastCommands.size() > 0) {
+                WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size()-1);
+                if(cmd.isAdmin()) {
+                    MessageBox.showMessage("Cannot undo teacher notes");
+                    return;
+                }
+                _lastCommands.remove(_lastCommands.size()-1); // remove last element
+                loadWhiteboard(_lastCommands);
+            }
+            else {
+                MessageBox.showMessage("Nothing to undo");
+                return;
+            }
+        }
+        else {
+            commandType = CommandType.DRAW;
+
+            /** So it can be redrawn on undo */
+            _lastCommands.add(new WhiteboardCommand("draw",  json,  false));
+        }
+        
         if (commandType == CommandType.CLEAR) {
             whiteboardActions.getActions().clear();
         }
@@ -233,6 +267,8 @@ public class ShowWorkPanel2 extends Composite {
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
+        
+        _lastCommands = commands;
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
         final String flashId = "";
         try {

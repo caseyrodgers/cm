@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
+import hotmath.gwt.cm_mobile_shared.client.view.AssignmentViewImpl;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
@@ -170,6 +171,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
                 __lastStudentAssignment=null;
             }
         });
+        
     }
 
 }

@@ -16,7 +16,7 @@ public class SaveWhiteboardDataAction implements Action<RpcData> {
     String pid;
     String commandData;
     
-    static public enum CommandType{DRAW,CLEAR};
+    static public enum CommandType{DRAW,CLEAR, UNDO};
     CommandType commandType;
     
     public SaveWhiteboardDataAction() {}

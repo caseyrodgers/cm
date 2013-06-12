@@ -13,8 +13,11 @@ import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewEvent;
+import hotmath.gwt.cm_rpc_assignments.client.event.UpdateAssignmentViewHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import java.util.List;
 
@@ -75,6 +78,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
         initWidget(flow);
 
         addStyleName("AssignmentViewImpl");
+
     }
 
     @Override

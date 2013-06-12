@@ -688,9 +688,9 @@ function viewport_testpage() {
                     $('#tools button').removeClass('small_tool_button').addClass("big_tool_button")
                     $('#button_clear').css('width', '45px');
                     $('#button_clear').css('height', '30px');
-                    // $('#button_clear').text("CL");
                     $('#button_clear').text("Clear");
                     $('#button_save').text("Save");
+                    $('#button_undo').text("Undo");
                 } else {
 
                     $('#tools').css('height', '25px');
@@ -699,6 +699,7 @@ function viewport_testpage() {
                     $('#button_clear').css('height', '25px');
                     $('#button_clear').text("CL");
                     $('#button_save').text("S");
+                    $('#button_undo').text("U");
 
                 }
                 // setTimeout(function(){
@@ -1090,11 +1091,19 @@ function viewport_testpage() {
                 renderText();
                 // check()
             }
+            
+            $get_Element("#button_undo").onclick = function (event) {
+            	wb.whiteboardOut('undo', true);
+            };
+
             if ($get_Element("#button_save")) {
                 $get_Element("#button_save").onclick = function (event) {
                     wb.saveWhiteboard();
                 };
             }
+            
+            
+            
             //
             function killMouseListeners() {
 

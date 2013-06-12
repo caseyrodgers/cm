@@ -1563,7 +1563,42 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     return ps;
                 }
             });
-        } else {
+        } else if(commandType == CommandType.UNDO) {
+            
+            /** Delete the newest command
+             * 
+             */
+            
+            String sql = "select max(whiteboard_id) as whiteboard_id " +
+                         " from CM_ASSIGNMENT_PID_WHITEBOARD " +
+                         " where user_id = ? " +
+                         " and assign_key = ?" +
+                         " and pid = ? ";
+                         
+            final Integer maxWhiteboardId = getJdbcTemplate().queryForObject(sql, new Object[] { uid, assignKey, pid }, new RowMapper<Integer>() {
+                @Override
+                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return rs.getInt(1);
+                }
+            });
+            
+            if(maxWhiteboardId != null) {
+                getJdbcTemplate().update(new PreparedStatementCreator() {
+                    @Override
+                    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                        String sql = "delete from CM_ASSIGNMENT_PID_WHITEBOARD where whiteboard_id = ?";
+                        PreparedStatement ps = con.prepareStatement(sql);
+                        ps.setInt(1, maxWhiteboardId);
+                        return ps;
+                    }
+                });
+            }
+            
+        }
+        
+        
+        
+        else {
 
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
