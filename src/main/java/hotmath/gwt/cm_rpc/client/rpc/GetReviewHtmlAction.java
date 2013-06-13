@@ -5,12 +5,17 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 public class GetReviewHtmlAction implements Action<LessonResult>{
     
     String file;
-    boolean isSpanish;
+    boolean spanish;
 
     public GetReviewHtmlAction() {}
     
     public GetReviewHtmlAction(String file) {
+        this(file, false);
+    }
+    
+    public GetReviewHtmlAction(String file, boolean spanish) {
         this.file = file;
+        this.spanish = spanish;
     }
 
     /** Return absolute path to file either Spanish or English ,
@@ -26,16 +31,16 @@ public class GetReviewHtmlAction implements Action<LessonResult>{
     }
 
     public boolean isSpanish() {
-        return isSpanish;
+        return spanish;
     }
 
     public void setSpanish(boolean isSpanish) {
-        this.isSpanish = isSpanish;
+        this.spanish = isSpanish;
     }
 
     @Override
     public String toString() {
-        return "GetReviewHtmlAction [file=" + file + ", isSpanish=" + isSpanish
+        return "GetReviewHtmlAction [file=" + file + ", isSpanish=" + spanish
                 + "]";
     }
 }

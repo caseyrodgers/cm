@@ -243,13 +243,13 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             } else if (uid > 0) {
                 SharedData.saveUidToLocalStorage(uid);
                 
-                SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
-                    @Override
-                    public void isComplete() {
-                        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
-                    }
-                });
-                handled = true;
+//                SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
+//                    @Override
+//                    public void isComplete() {
+//                        CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+//                    }
+//                });
+//                handled = true;
             }
 
         } catch (Exception e) {

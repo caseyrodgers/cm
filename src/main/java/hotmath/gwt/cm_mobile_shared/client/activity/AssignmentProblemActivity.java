@@ -130,13 +130,14 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         });
     }
 
+    static LessonView view = new LessonViewImpl();
     @Override
     public void showLesson(LessonModel lesson) {
         /** dont' put on history stack, on refresh
          *  go back to problem.
          */
         LessonActivity lessonActivity = new LessonActivity(lesson);
-        final LessonView view = new LessonViewImpl();
+        
         view.setPresenter(lessonActivity, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

@@ -19,11 +19,11 @@ public class LessonActivity implements LessonView.Presenter {
     }
     
     @Override
-    public void loadLesson(final LessonView view, final CallbackOnComplete callback) {
+    public void loadLesson(final LessonView view,boolean spanish, final CallbackOnComplete callback) {
         
         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(true));
         
-        GetReviewHtmlAction action = new GetReviewHtmlAction(lesson.getLessonFile());
+        GetReviewHtmlAction action = new GetReviewHtmlAction(lesson.getLessonFile(),spanish);
         
         CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<LessonResult>() {
             public void onSuccess(LessonResult lesRes) {

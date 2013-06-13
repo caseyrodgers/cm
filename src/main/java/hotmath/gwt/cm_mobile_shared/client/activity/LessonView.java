@@ -6,7 +6,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 public interface LessonView extends IPage {
     void setPresenter(Presenter pres, CallbackOnComplete callbackOnComplete);
     public interface Presenter {
-        void loadLesson(LessonView lessonViewImpl, CallbackOnComplete callback);
+        void loadLesson(LessonView lessonViewImpl, boolean spanish, CallbackOnComplete callback);
     }
     void loadLesson(String lessonName, String lessonHtml);
 }
