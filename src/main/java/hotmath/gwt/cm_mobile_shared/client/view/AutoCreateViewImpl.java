@@ -139,6 +139,11 @@ public class AutoCreateViewImpl extends Composite implements AutoCreateView {
             return false;
         }
         
+        if((firstName.getValue() + lastName.getValue() + birthDate.getValue()).contains(" ")) {
+            PopupMessageBox.showError("Spaces are not allowed");
+            return false;
+        }
+        
         String msg = isDateValid(birthDate.getValue());
         if(msg != null) {
             PopupMessageBox.showError(msg);
