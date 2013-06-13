@@ -76,7 +76,7 @@ public class AssignmentListActivity implements AssignmentListView.Presenter {
             }
         }
         ai.setChanged(changed);
-        CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(ai));
+        //CmRpcCore.EVENT_BUS.fireEvent(new AssignmentsUpdatedEvent(ai));
     }
 
 

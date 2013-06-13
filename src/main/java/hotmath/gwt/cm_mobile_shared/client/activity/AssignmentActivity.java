@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_mobile_shared.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentView;
-import hotmath.gwt.cm_mobile_shared.client.view.AssignmentViewImpl;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
@@ -72,6 +72,9 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     @Override
     public void loadAssignment(final AssignmentView view) {
+        
+        Log.debug("Updating AssignmentActivity, load assignment");
+
         __lastView = view;
         if(__lastStudentAssignment != null && __lastStudentAssignment.getAssignment().getAssignKey() == assignKey) {
             setAssignment(view, __lastStudentAssignment);
@@ -84,9 +87,8 @@ public class AssignmentActivity implements AssignmentView.Presenter {
             
             @Override
             public void isReady() {
-                
-                
-                GetStudentAssignmentAction action = new GetStudentAssignmentAction(AssignmentData.getUserData().getUid(),assignKey);
+                int uid = SharedData.getMobileUser().getUserId();
+                GetStudentAssignmentAction action = new GetStudentAssignmentAction(uid,assignKey);
                 CatchupMathMobileShared.getCmService().execute(action,new AsyncCallback<StudentAssignment>() {
                     @Override            
                     public void onSuccess(StudentAssignment result) {

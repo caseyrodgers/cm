@@ -5,6 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.CmMobileAssignmentUser;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemAnnotation;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentUserInfoAction;
@@ -106,8 +107,9 @@ public class AssignmentData {
      * @return
      */
     public static boolean doesPidHaveTeacherNote(int assignKey, String pid) {
-        if(SharedData.getMobileUser().getAssignmentInfo() != null) {
-            for(ProblemAnnotation pa: SharedData.getMobileUser().getAssignmentInfo().getUnreadAnnotations()) {
+        AssignmentUserInfo ai = SharedData.getMobileUser().getAssignmentInfo();
+        if(ai != null) {
+            for(ProblemAnnotation pa: ai.getUnreadAnnotations()) {
                 if(pa.getAssignKey() == assignKey) {
                     if(pa.getPid().equals(pid)) {
                         return true;
