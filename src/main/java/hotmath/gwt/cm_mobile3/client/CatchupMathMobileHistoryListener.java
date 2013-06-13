@@ -11,6 +11,7 @@ import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
 import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
+import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
@@ -40,6 +41,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -97,6 +99,21 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
     private void onValueChangeRequiresUserLoginData(final ClientFactory cf, final EventBus eb, final TokenParser token, final ValueChangeEvent<String> event ) throws Exception{
         
         String type = token.getType();
+        
+        if(type == null || type.length() == 0) {
+          /** if no location info passed in params, then go to default
+           *  place as determined by user's current program state
+           */
+          SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
+              @Override
+              public void isComplete() {
+                  CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+              }
+          });
+          return;
+        }
+          
+        
         // requires login
         if (type.equals("welcome")) {
             WelcomeActivity activity = new WelcomeActivity(cf,eb);
@@ -274,7 +291,7 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
     }
 
     
-    static final String DEFAULT_TYPE = "lesson";
+    static final String DEFAULT_TYPE = "";
 
 
     static public class TokenParser {
