@@ -19,6 +19,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 
 public class AutoCreateActivity implements AutoCreateView.Presenter{
@@ -158,11 +159,12 @@ public class AutoCreateActivity implements AutoCreateView.Presenter{
         });
         flowPanel.add(close);
         
-        MessageBox.showMessage(flowPanel,  new Callback() {
+        PopupPanel messageBox = MessageBox.showMessage(flowPanel,  new Callback() {
             @Override
             public void messageClosed() {
             }
         });
+        messageBox.setAutoHideEnabled(false);
     }
 
 }
