@@ -121,7 +121,7 @@ public class AssignmentActivity implements AssignmentView.Presenter {
 
     @Override
     public void showProblem(StudentProblemDto problem) {
-        History.newItem("assignment_problem:" + __lastStudentAssignment.getAssignment().getAssignKey() + ":" + problem.getPid() + ":" + System.currentTimeMillis());
+        History.newItem("assignment_problem:" + assignKey + ":" + problem.getPid() + ":" + System.currentTimeMillis());
     }
     
     

@@ -85,6 +85,9 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         if(__lastProblem != null && __lastProblem.getAssignKey() == assignKey && __lastProblem.getInfo().getPid().equals(pid)) {
             view.loadProblem(__lastProblem);
             callback.isComplete();
+            if(shouldShowWhiteboard) {
+                showWhiteboard(view);
+            }
             return;
         }
         
@@ -99,21 +102,9 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
                 view.loadProblem(problem);
       
                 callback.isComplete();
-                
-                
-                
-                /** do after dom rendered finished
-                 * 
-                 */
                 if(shouldShowWhiteboard) {
-                    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-                        @Override
-                        public void execute() {
-                            view.showWhiteboard();
-                        } 
-                    });
+                    showWhiteboard(view);
                 }
-                
             }
 
             @Override
@@ -124,7 +115,21 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
             }
         });
     }
-    
+
+
+    /** Show the whiteboard.
+     * 
+     *  (do after dom render)
+     */
+    protected void showWhiteboard(final AssignmentProblemView view) {
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+                view.showWhiteboard();
+            } 
+        });
+    }
+
     @Override
     public void showLesson(LessonModel lesson) {
         /** dont' put on history stack, on refresh
