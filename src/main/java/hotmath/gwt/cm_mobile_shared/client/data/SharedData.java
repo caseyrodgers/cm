@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -24,6 +24,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.HTML;
 
 /** centralized wrapper for shared global data structures
  * 
@@ -194,16 +195,18 @@ public class SharedData {
                     public void onSuccess(CmMobileUser result) {
                         SharedData.setData(result);
                         callback.isComplete();
+                        
+                        showWelcomePopup();
                     }
                     @Override
                     public void onFailure(Throwable caught) {
                         Log.error("Error logging in with saved uid: " + uid, caught);
-                        MessageBox.showError("Could not login with saved uid: " + caught.getMessage());
+                        PopupMessageBox.showError("Could not login with saved uid: " + caught.getMessage());
                     }
                 });
             }
             else {
-                MessageBox.showError("no user id saved");
+                PopupMessageBox.showError("no user id saved");
                 History.newItem("login");
             }
         }
@@ -211,11 +214,42 @@ public class SharedData {
             callback.isComplete();
         }
     }
+    
+    static private void showWelcomePopup() {
+        String testName = SharedData.getUserInfo().getTestName();
+        UserInfo ui =  SharedData.getUserInfo();
+        int runId = ui.getRunId();
+        int testId = ui.getTestId();
+        int segment = ui.getTestSegment();
+        int segmentsTotal = ui.getProgramSegmentCount();
+        int lessonNumber = ui.getSessionNumber();
+        int lessonsTotal = ui.getSessionCount(); 
+        boolean isCustom = ui.isCustomProgram();
+        boolean isCustomQuiz = ui.isCustomProgram() && ui.getRunId() == 0;
+        
+        String status = null;
+        if(!isCustomQuiz) {
+            String section="";
+            if(!isCustom) {
+                section = "section " + segment + " of " + segmentsTotal + " of ";
+            }
+            status = "<p>You are in " + section + " the <b>" + testName + " </b> program.</p>";
+            
+            if(runId > 0) {
+                status += "<p>You have " + lessonsTotal + " lesson" + (lessonsTotal>1?"s":"") +  " to study.";
+            }
+        }
+        else {
+            status = "<p>You are in the <b>" + testName + "</b> program.</p>";
+        }
+        
+        PopupMessageBox.showMessage("Welcome " + ui.getUserName(),  new HTML(status), null);
+    }
 
     public static void saveUidToLocalStorage(int uid) {
         Storage store = Storage.getLocalStorage();
         if(store == null) {
-            MessageBox.showError("Local Storage not supported");
+            PopupMessageBox.showError("Local Storage not supported");
         }
         
         try {
@@ -229,7 +263,7 @@ public class SharedData {
     public static int getUidFromLocalStorage() {
         Storage store = Storage.getLocalStorage();
         if(store == null) {
-            MessageBox.showError("Local Storage not supported");
+            PopupMessageBox.showError("Local Storage not supported");
             return 0;
         }
         

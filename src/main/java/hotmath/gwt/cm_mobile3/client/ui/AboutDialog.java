@@ -9,7 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.ui.TouchAnchor;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.SaveFeedbackAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -256,11 +256,11 @@ class FeedbackPanel extends FlowPanel {
         CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<RpcData>() {
             @Override
             public void onSuccess(RpcData result) {
-                MessageBox.showMessage("Feedback saved");
+                PopupMessageBox.showMessage("Feedback saved");
             }
             @Override
             public void onFailure(Throwable caught) {
-                MessageBox.showError("Feedback error");
+                PopupMessageBox.showError("Feedback error");
             }
         });
     }

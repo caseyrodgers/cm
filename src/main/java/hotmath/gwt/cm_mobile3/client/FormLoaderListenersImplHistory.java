@@ -26,7 +26,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewHandl
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCmProgramFlowAction.FlowType;
@@ -107,7 +107,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
         eb.addHandler(ShowFlashRequiredEvent.TYPE,new ShowFlashRequiredEventHandler() {
            @Override
             public void showFlashRequiredDialog() {
-               MessageBox.showError("The prescription assigned to the current quiz requires Flash and cannot be viewed on the IPad.");
+               PopupMessageBox.showError("The prescription assigned to the current quiz requires Flash and cannot be viewed on the IPad.");
             } 
         });
         
@@ -152,7 +152,7 @@ public class FormLoaderListenersImplHistory implements FormLoaderListeners {
                             @Override
                             public void onFailure(Throwable caught) {
                                 eb.fireEvent(new SystemIsBusyEvent(false));
-                                MessageBox.showError("Error loading active program flow: " + caught.getMessage());
+                                PopupMessageBox.showError("Error loading active program flow: " + caught.getMessage());
                                 Log.error("Error getting user information: " + caught.getMessage(), caught);
                             }
                         });

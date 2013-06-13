@@ -31,7 +31,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.UserLogoutHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.LoadingDialog;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
@@ -253,7 +253,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             }
 
         } catch (Exception e) {
-            MessageBox.showError("Error reading login information: " + e);
+            PopupMessageBox.showError("Error reading login information: " + e);
         }
         
         return handled;
@@ -453,7 +453,7 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             String cmStartType = o.get("type").isString().stringValue();
             if (cmStartType != null) {
                 if (cmStartType.equals("AUTO_CREATE")) {
-                    MessageBox.showError("Auto Create!");
+                    PopupMessageBox.showError("Auto Create!");
                 }
             }
         }

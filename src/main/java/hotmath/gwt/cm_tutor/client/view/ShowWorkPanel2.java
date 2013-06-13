@@ -1,6 +1,6 @@
 package hotmath.gwt.cm_tutor.client.view;
 
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
@@ -227,14 +227,14 @@ public class ShowWorkPanel2 extends Composite {
             if(_lastCommands != null && _lastCommands.size() > 0) {
                 WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size()-1);
                 if(cmd.isAdmin()) {
-                    MessageBox.showMessage("Cannot undo teacher notes");
+                    PopupMessageBox.showMessage("Cannot undo teacher notes");
                     return;
                 }
                 _lastCommands.remove(_lastCommands.size()-1); // remove last element
                 loadWhiteboard(_lastCommands);
             }
             else {
-                MessageBox.showMessage("Nothing to undo");
+                PopupMessageBox.showMessage("Nothing to undo");
                 return;
             }
         }

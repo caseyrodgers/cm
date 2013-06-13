@@ -2,7 +2,7 @@ package hotmath.gwt.cm_search.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.SearchTopicAction;
 import hotmath.gwt.cm_search.client.ClientFactory;
@@ -47,7 +47,7 @@ public class SearchActivity extends AbstractActivity implements SearchView.Prese
     @Override
     public void doSearch(String search, final CallBack callBack) {
         if(search == null || search.length() < 3) {
-            MessageBox.showError("Search string must be at least three letters.");
+            PopupMessageBox.showError("Search string must be at least three letters.");
             return;
         }
         

@@ -2,7 +2,7 @@ package hotmath.gwt.cm_mobile_shared.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.ParallelProgramView;
 import hotmath.gwt.cm_rpc.client.rpc.ParallelProgramLoginAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -60,7 +60,7 @@ public class ParallelProgramActivity implements ParallelProgramView.Presenter {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Log.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
-                MessageBox.showError("There was a problem logging into the Parallel Program: " + msg);
+                PopupMessageBox.showError("There was a problem logging into the Parallel Program: " + msg);
             }
         });        
         

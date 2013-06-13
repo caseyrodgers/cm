@@ -9,7 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.GetCmMobileLoginAction;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 
 import java.util.Date;
@@ -37,7 +37,7 @@ public class LoginActivity implements LoginView.Presenter {
     @Override
     public void doLogin(final int uid, final String userName, final String passWord) {
         if(uid == 0 && (userName == null || userName.length() == 0 || passWord == null)) {
-            MessageBox.showError("Enter username and password");
+            PopupMessageBox.showError("Enter username and password");
             return;
         }
         
@@ -77,7 +77,7 @@ public class LoginActivity implements LoginView.Presenter {
                 }
                 else {
                     eventBus.fireEvent(new SystemIsBusyEvent(false));
-                    MessageBox.showMessage("Could not log you in: " + caught.getMessage());
+                    PopupMessageBox.showMessage("Could not log you in: " + caught.getMessage());
                 }
             }
         });

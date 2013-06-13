@@ -6,7 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.HeaderTitleChangedEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
 import hotmath.gwt.cm_mobile_shared.client.view.LessonViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
@@ -111,7 +111,7 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
             public void onFailure(Throwable caught) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Log.error("Error loading solution: " + action, caught);
-                MessageBox.showError("There was a problem talking to the server: " + caught);
+                PopupMessageBox.showError("There was a problem talking to the server: " + caught);
             }
         });
     }
@@ -168,12 +168,12 @@ public class AssignmentProblemActivity implements AssignmentProblemView.Presente
         final AssignmentProblem assProblem = new AssignmentProblem();
         
         if(__lastProblem.isGraded()) {
-            MessageBox.showError("This input value will not be saved because the assignment has already been graded.");
+            PopupMessageBox.showError("This input value will not be saved because the assignment has already been graded.");
             return;
         }
 
         if(__lastProblem.isAssignmentClosed()) {
-            MessageBox.showError("This input value will not be saved because the assignment is closed.");
+            PopupMessageBox.showError("This input value will not be saved because the assignment is closed.");
             return;
         }
         

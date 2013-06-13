@@ -3,7 +3,7 @@ package hotmath.gwt.cm_search.client.activity;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.GetTopicPrescriptionAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionResponse;
@@ -60,7 +60,7 @@ public class TopicActivity extends AbstractActivity implements TopicView.Present
             public void onFailure(Throwable caught) {
                 Log.error("Error moving to lesson", caught);
                 clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
-                MessageBox.showError("Error moving to next lesson: " + caught.getMessage());
+                PopupMessageBox.showError("Error moving to next lesson: " + caught.getMessage());
             }
         });
 

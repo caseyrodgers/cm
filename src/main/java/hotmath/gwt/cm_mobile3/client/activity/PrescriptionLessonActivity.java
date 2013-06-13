@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -95,10 +95,10 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
     public void moveToLesson(final PrescriptionLessonView view, int sessionNumber) {
 
         if (sessionNumber < 0) {
-            MessageBox.showMessage("No previous lesson");
+            PopupMessageBox.showMessage("No previous lesson");
             return;
         } else if (sessionNumber > SharedData.getFlowAction().getPrescriptionResponse().getPrescriptionData().getSessionTopics().size()) {
-            MessageBox.showMessage("No more lessons"); // move to next segment?
+            PopupMessageBox.showMessage("No more lessons"); // move to next segment?
             return;
         }
 
@@ -123,7 +123,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
             public void onFailure(Throwable caught) {
                 Log.error("Error moving to lesson", caught);
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
-                MessageBox.showError("Error moving to next lesson: " + caught.getMessage());                
+                PopupMessageBox.showError("Error moving to next lesson: " + caught.getMessage());                
             }
         });
 
@@ -155,7 +155,7 @@ public class PrescriptionLessonActivity implements PrescriptionLessonView.Presen
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 Log.error("Error marking lesson as complete", caught);
-                MessageBox.showError("Error marking lesson as complete: " +  caught.getMessage());
+                PopupMessageBox.showError("Error marking lesson as complete: " +  caught.getMessage());
             }
         });
     }

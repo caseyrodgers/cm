@@ -1012,3 +1012,16 @@ span.group-item-dot {
 }	
 
 
+
+
+.popup-message .popup-title {
+    font-weight: bold;
+    background: #EF4200;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 320;
+    -moz-border-radius:5px 5px 0 0;
+    border-radius: 5px 5px 0 0;
+    text-align: center;
+}

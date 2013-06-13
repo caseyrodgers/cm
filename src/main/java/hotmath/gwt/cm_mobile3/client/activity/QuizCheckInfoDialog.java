@@ -6,7 +6,7 @@ import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
@@ -81,7 +81,7 @@ public class QuizCheckInfoDialog extends DialogBox {
                 break;
                 
                 default:
-                    MessageBox.showError("QuizCheckInfoDialog Unknown place: " + cpfa.getPlace());
+                    PopupMessageBox.showError("QuizCheckInfoDialog Unknown place: " + cpfa.getPlace());
         }
         
         whatToDo.setInnerHTML(toDo);

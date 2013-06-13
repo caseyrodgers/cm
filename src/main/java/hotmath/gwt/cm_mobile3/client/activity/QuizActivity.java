@@ -5,7 +5,7 @@ import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_rpc.client.UserInfo;
@@ -73,7 +73,7 @@ public class QuizActivity implements QuizView.Presenter {
                 @Override
                 public void onFailure(Throwable caught) {
                     Log.error("Error preparing quiz view", caught);
-                    MessageBox.showError(caught.getMessage());
+                    PopupMessageBox.showError(caught.getMessage());
                     eventBus.fireEvent(new SystemIsBusyEvent(false));
                 }
             });
@@ -144,7 +144,7 @@ public class QuizActivity implements QuizView.Presenter {
                     @Override
                     public void onFailure(Throwable caught) {
                         eventBus.fireEvent(new SystemIsBusyEvent(false));
-                        MessageBox.showError("Error checking quiz: " + caught.getMessage());
+                        PopupMessageBox.showError("Error checking quiz: " + caught.getMessage());
                         Log.error("Error checking quiz", caught);
                     }
                 });

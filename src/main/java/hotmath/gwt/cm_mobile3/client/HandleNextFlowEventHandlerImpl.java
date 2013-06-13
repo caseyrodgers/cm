@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile3.client.event.ShowWelcomeViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowFlashRequiredEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 
@@ -64,7 +64,7 @@ public class HandleNextFlowEventHandlerImpl implements HandleNextFlowEventHandle
             break;
 
         case AUTO_PLACEMENT:
-            MessageBox.showMessage("Auto Placement");
+            PopupMessageBox.showMessage("Auto Placement");
             break;
             
         case ERROR_FLASH_REQUIRED:
@@ -72,7 +72,7 @@ public class HandleNextFlowEventHandlerImpl implements HandleNextFlowEventHandle
             break;
 
         default:
-            MessageBox.showError("Unknown place: " + nextAction.getPlace());
+            PopupMessageBox.showError("Unknown place: " + nextAction.getPlace());
             break;
         }
     }

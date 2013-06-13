@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.Controller;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
@@ -177,7 +177,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         
         
         
-        pp = MessageBox.showMessage(flowPanel,null);
+        pp = PopupMessageBox.showMessage("Current Problem", flowPanel,null);
 	}
 	
 	
@@ -197,7 +197,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         btn.getElement().setInnerHTML("<span><span>" + btn.getText() + "</span></span>");
         btn.addStyleName("sexybutton");
 	    flowPanel.add(btn);
-        pp = MessageBox.showMessage(flowPanel,null);
+        pp = PopupMessageBox.showMessage("Problem Set Complete", flowPanel,null);
 	}
 	
 	private void resetTutor_Gwt() {

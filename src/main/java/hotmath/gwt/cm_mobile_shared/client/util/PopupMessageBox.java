@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.util;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -11,18 +13,20 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
-public class MessageBox {
+public class PopupMessageBox {
     
     static public void showMessage(String msg) {
-        showMessage(new HTML(msg),null);
+        showMessage("Important Information", new HTML(msg),null);
     }
-    static public PopupPanel showMessage(Widget widget,final Callback callback) {
+    static public PopupPanel showMessage(String title, Widget widget,final CallbackOnComplete callback) {
         final PopupPanel popup = new PopupPanel();
+        
         popup.setStyleName("popup-message");
         popup.setAutoHideEnabled(true);
         popup.setModal(true);
         
         FlowPanel mainPanel = new FlowPanel();
+        mainPanel.add(new HTML("<div class='popup-title'>" + title + "</div>"));
         Button btn = new Button("Close", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
@@ -33,24 +37,22 @@ public class MessageBox {
         btn.getElement().addClassName("sexy_cm_silver sexybutton");
         mainPanel.add(btn);
         
-        mainPanel.add(widget);
-
-        popup.add(mainPanel);
         
+        mainPanel.add(widget);
+        popup.setWidget(mainPanel);
 
-        popup.center();
         popup.setWidth("300px");
+        
+        popup.center();
         
         popup.addCloseHandler(new CloseHandler<PopupPanel>() {
             @Override
             public void onClose(CloseEvent<PopupPanel> event) {
                 if(callback != null) {
-                    callback.messageClosed();
+                    callback.isComplete();
                 }
             }
         });
-        
-        
         
         //int left=0;
         //int top=50 + Window.getScrollTop();
@@ -61,10 +63,6 @@ public class MessageBox {
     }
     
     static public void showError(String msg) {
-        showMessage(msg);
-    }
-    
-    static public interface Callback {
-        void messageClosed();
+        showMessage("Error", new HTML(msg), null);
     }
 }

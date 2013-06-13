@@ -5,7 +5,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
@@ -146,7 +146,7 @@ public class PrescriptionLessonListingViewImpl extends AbstractPagePanel impleme
             presenter.moveToNextSegment();
         }
         else {
-            MessageBox.showMessage("You will need to finish all required problems first.");
+            PopupMessageBox.showMessage("You will need to finish all required problems first.");
         }
         
     }

@@ -8,7 +8,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_mobile_shared.client.rpc.CmMobileUser;
 import hotmath.gwt.cm_mobile_shared.client.rpc.Topic;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.UserLoginResponse;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
@@ -37,7 +37,7 @@ public class SearchActivity implements SearchView.Presenter {
     public void doSearch(String search, final CallBack callBack) {
         
         if(search == null || search.length() < 3) {
-            MessageBox.showError("Search string must be at least three letters.");
+            PopupMessageBox.showError("Search string must be at least three letters.");
             return;
         }
         

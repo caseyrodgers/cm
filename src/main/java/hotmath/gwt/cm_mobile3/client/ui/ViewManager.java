@@ -17,7 +17,7 @@ import hotmath.gwt.cm_mobile_shared.client.activity.PrescriptionLessonResourceVi
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
@@ -134,7 +134,7 @@ public class ViewManager {
         }
         catch(Exception e) {
             Log.error("Error loading view", e);
-            MessageBox.showError(e.getMessage());
+            PopupMessageBox.showError(e.getMessage());
         }
     }
 

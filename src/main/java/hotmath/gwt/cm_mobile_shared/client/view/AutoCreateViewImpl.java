@@ -4,7 +4,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -129,19 +129,19 @@ public class AutoCreateViewImpl extends Composite implements AutoCreateView {
 
     private boolean isFormValid() {
         if (firstName.getValue().length() == 0) {
-            MessageBox.showError("First Name must be specified");
+            PopupMessageBox.showError("First Name must be specified");
             firstName.setFocus(true);
             return false;
         }
         if (lastName.getValue().length() == 0) {
-            MessageBox.showError("Last Name must be specified");
+            PopupMessageBox.showError("Last Name must be specified");
             lastName.setFocus(true);
             return false;
         }
         
         String msg = isDateValid(birthDate.getValue());
         if(msg != null) {
-            MessageBox.showError(msg);
+            PopupMessageBox.showError(msg);
             return false;
         }
         return true;
@@ -200,7 +200,7 @@ public class AutoCreateViewImpl extends Composite implements AutoCreateView {
         String html = "<p>If you have already registered, use your personal password, not the self-registration password "
                 + "when you log in. Perhaps your password was something like Smith-Susie-0705.";
 
-        MessageBox.showMessage(html);
+        PopupMessageBox.showMessage(html);
     }
 
 }

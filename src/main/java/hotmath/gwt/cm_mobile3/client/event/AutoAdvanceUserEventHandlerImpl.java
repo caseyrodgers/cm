@@ -4,7 +4,7 @@ import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.rpc.AutoAdvanceUserAction;
 import hotmath.gwt.cm_rpc.client.rpc.AutoUserAdvanced;
 
@@ -34,7 +34,7 @@ public class AutoAdvanceUserEventHandlerImpl implements AutoAdvanceUserEventHand
             
             public void onFailure(Throwable caught) {
                 CatchupMathMobile3.__clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
-                MessageBox.showError("Error auto advancing: " + caught.getMessage());
+                PopupMessageBox.showError("Error auto advancing: " + caught.getMessage());
                 Log.error("Error during auto advance", caught);
             }
         });

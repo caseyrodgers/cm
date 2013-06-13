@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 
@@ -79,7 +79,7 @@ public class ParallelProgramViewImpl extends AbstractIPageComposite  implements 
     protected void doLogin() {
         String msg = formIsValid();
         if(msg != null) {
-            MessageBox.showError(msg);
+            PopupMessageBox.showError(msg);
             return;
         }
         
@@ -93,7 +93,7 @@ public class ParallelProgramViewImpl extends AbstractIPageComposite  implements 
                 + ", is not available to the password you entered, " + password
                 + ". Perhaps your password is something like Smith-John-0304.";
 
-        MessageBox.showError(html);
+        PopupMessageBox.showError(html);
     }
 
     
@@ -119,7 +119,7 @@ public class ParallelProgramViewImpl extends AbstractIPageComposite  implements 
 
     protected void showForgotMessage() {
         String html = "<p>Perhaps your password is something like Smith-John-0304.</p>";
-        MessageBox.showMessage(html);
+        PopupMessageBox.showMessage(html);
     }
 
     @Override

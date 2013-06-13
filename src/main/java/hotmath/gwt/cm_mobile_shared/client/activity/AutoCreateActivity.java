@@ -3,9 +3,9 @@ package hotmath.gwt.cm_mobile_shared.client.activity;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox;
-import hotmath.gwt.cm_mobile_shared.client.util.MessageBox.Callback;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AutoCreateView;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.rpc.CheckUserAccountStatusAction;
 import hotmath.gwt.cm_rpc.client.rpc.LogUserInAction;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -20,7 +20,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 
 public class AutoCreateActivity implements AutoCreateView.Presenter{
 
@@ -72,7 +71,7 @@ public class AutoCreateActivity implements AutoCreateView.Presenter{
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Log.error(caught.getMessage(), caught);
                 String msg = caught.getMessage();
-                MessageBox.showError("There was a problem creating your new account: " + msg);
+                PopupMessageBox.showError("There was a problem creating your new account: " + msg);
             }
         });        
         
@@ -100,16 +99,15 @@ public class AutoCreateActivity implements AutoCreateView.Presenter{
                     public void onFailure(Throwable caught) {
                         CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                         Log.error("Error getting login info", caught);
-                        MessageBox.showError("There was a problem getting existing login information: " + caught.getMessage());
+                        PopupMessageBox.showError("There was a problem getting existing login information: " + caught.getMessage());
                     }
                 });
             }
         }));
         
-        MessageBox.showMessage(messagePanel, new Callback() {
+        PopupMessageBox.showMessage("Already Registered", messagePanel, new CallbackOnComplete() {
             @Override
-            public void messageClosed() {
-                
+            public void isComplete() {
             }
         });
         
@@ -128,7 +126,7 @@ public class AutoCreateActivity implements AutoCreateView.Presenter{
                     msg = "There is another registration with that name, so please add your middle name to the first-name box (e.g., Jim Bob).";
                     // this means the password including the date portion is
                     // unique
-                    MessageBox.showError(msg);
+                    PopupMessageBox.showError(msg);
                 }
             }
             public void onFailure(Throwable caught) {
@@ -159,9 +157,9 @@ public class AutoCreateActivity implements AutoCreateView.Presenter{
         });
         flowPanel.add(close);
         
-        PopupPanel messageBox = MessageBox.showMessage(flowPanel,  new Callback() {
+        PopupPanel messageBox = PopupMessageBox.showMessage("Your Personal Password",flowPanel,  new CallbackOnComplete() {
             @Override
-            public void messageClosed() {
+            public void isComplete() {
             }
         });
         messageBox.setAutoHideEnabled(false);
