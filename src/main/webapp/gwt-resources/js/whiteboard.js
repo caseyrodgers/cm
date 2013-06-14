@@ -49,6 +49,7 @@ var Whiteboard = (function () {
         //boolean whether calculator is enabled for this whiteboard
     var enable_calc = true;
 	var isReadOnly=false;
+	var lastGesture=null;
         //
     mq_holder.onload = function () {
 
