@@ -317,7 +317,49 @@ function viewport_testpage() {
      *
      * @param event
      */
+    function isMultitouch_gesture(event) {
+        var ev = event ? event : window.event;
+        //console.log(event)
+        //console.log(ev.type)
+        isTouchEnabled = ev.type.indexOf('touch') > -1;
+        var pinch_threshold = 0.01;
+        if (isTouchEnabled) {
+            var scal = Math.abs(1 - ev.scale);
+            var isPinchZoom = scal > pinch_threshold;
+            //console.log(ev.type+":"+ev.touches.length+":"+ev.scale+":"+scal+":"+isPinchZoom+"||"+ev.deltaTime+":"+ev.distance+":"+ev.timeStamp);
 
+            if (isPinchZoom) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function touchStartFunction(event) {
+
+
+        var ev = event ? event : window.event;
+
+        var boo = isMultitouch_gesture(event);
+        //console.log('BOO:: '+boo)
+        if (boo) {
+            return true
+        }
+
+        if (ev.touches.length == 2) {} else {
+
+            if (lastGesture && lastGesture.type == 'touchstart' && ev.touches.length === 1 && (ev.timeStamp - lastGesture.timeStamp) < 300) {
+                lastGesture = null;
+                //console.log("DOUBLE TAP")
+                event.preventDefault();
+            } else {
+                if (ev.touches.length === 1) {} else {
+                    event.preventDefault();
+                }
+            }
+        }
+        lastGesture = ev;
+    }
     function touchStartFunction(event) {
         event.preventDefault();
     }
@@ -1480,6 +1522,10 @@ function viewport_testpage() {
                         }
 
                     }
+                }
+				var bool = isMultitouch_gesture(_event);
+                if (bool) {
+                    return true
                 }
                 if (event.preventDefault) {
                     event.preventDefault()
