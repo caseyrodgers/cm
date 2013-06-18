@@ -25,27 +25,30 @@ public class AssignmentHeaderPanel extends Composite {
         
         dueDate.setInnerHTML(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate()));
         
+        String statusS = "";
+        if(assignment.getAssignment().isClosed()) {
+            statusS = "Closed, ";
+        }
         if(assignment.isGraded()) {
-            status.setInnerHTML("Graded, Score: " + assignment.getHomeworkGrade());
+            statusS += "Graded, Score: " + assignment.getHomeworkGrade();
             grade.setInnerHTML("");
             grade.setAttribute("style",  "display: none");
         }
         else if(assignment.isTurnedIn()) {
-            status.setInnerHTML("Turned In");
+            statusS += "Turned In";
             grade.setAttribute("style",  "display: none");
         }
         else {
-            if(assignment.getAssignment().isClosed()) {
-                status.setInnerHTML("Closed");
+            if(assignment.getAssignment().isExpired()) {
+                statusS += "Past Due";
             }
-            else if(assignment.getAssignment().isExpired()) {
-                status.setInnerHTML("Past Due");
-            }
-            else {
-                status.setInnerHTML(assignment.getStatus());
+            else if(!assignment.getStatus().equals("Closed")) {
+                statusS += assignment.getStatus();
             }
             grade.setAttribute("style",  "display: none");
         }
+        
+        status.setInnerHTML(statusS);
     }
     
     @UiField
