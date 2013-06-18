@@ -35,6 +35,9 @@ public class AssignmentHeaderPanel extends Composite {
             grade.setAttribute("style",  "display: none");
         }
         else {
+            if(assignment.getAssignment().isClosed()) {
+                status.setInnerHTML("Closed");
+            }
             if(assignment.getAssignment().isExpired()) {
                 status.setInnerHTML("Past Due");
             }

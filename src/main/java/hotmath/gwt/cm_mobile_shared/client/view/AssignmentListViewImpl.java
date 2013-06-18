@@ -167,7 +167,10 @@ class MyGenericTextTag extends GenericTextTag<String> {
             statuses.add("Graded, Score: " + studentAssignmentInfo.getScore());
         }
         else {
-            if(studentAssignmentInfo.getTurnInDate() != null) {
+            if(studentAssignmentInfo.getStatus().equals("Closed")) {
+                statuses.add("Closed");
+            }
+            else if(studentAssignmentInfo.getTurnInDate() != null) {
                 statuses.add("Turned In");
             }
             else if(studentAssignmentInfo.isOverdue()) {
