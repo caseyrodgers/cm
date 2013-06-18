@@ -314,6 +314,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     }
     
     private void setProblemStatus() {
+        _submitWhiteboard.setVisible(false);
         if (problem.getProblemType() == ProblemType.WHITEBOARD) {
             if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !problem.getStatus().equals(ProblemStatus.SUBMITTED.toString())) {
                 _submitWhiteboard.setVisible(true);
