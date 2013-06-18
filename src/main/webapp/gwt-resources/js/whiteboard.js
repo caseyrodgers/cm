@@ -1134,10 +1134,11 @@ function viewport_testpage() {
                 renderText();
                 // check()
             }
-            
+            if ($get_Element("#button_undo")) {
             $get_Element("#button_undo").onclick = function (event) {
             	wb.whiteboardOut('undo', true);
             };
+			}
 
             if ($get_Element("#button_save")) {
                 $get_Element("#button_save").onclick = function (event) {
