@@ -120,7 +120,9 @@ public class AssignmentData {
         return false;
     }
     
-    /** To prevent having to re-load from db and require a round-trip
+    /** Remove pid from list of pids with unread teacher notes.
+     * 
+     * To prevent having to re-load from db and require a round-trip
      * 
      * @param assignKey
      * @param pid

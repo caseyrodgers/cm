@@ -82,7 +82,7 @@ public class StudentProblemDto implements Response {
            // viewed, not viewed
            return "Not Answered";
        }
-       else if(assignmentGraded || assignmentClosed) {
+       else if(assignmentGraded) {
            return status;
        }
        else if(sl.equals("correct") || sl.equals("incorrect") || sl.equals("half credit")) {
