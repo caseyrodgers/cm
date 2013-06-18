@@ -38,7 +38,7 @@ public class AssignmentHeaderPanel extends Composite {
             if(assignment.getAssignment().isClosed()) {
                 status.setInnerHTML("Closed");
             }
-            if(assignment.getAssignment().isExpired()) {
+            else if(assignment.getAssignment().isExpired()) {
                 status.setInnerHTML("Past Due");
             }
             else {
