@@ -361,9 +361,9 @@ function viewport_testpage() {
         }
         lastGesture = ev;
     }
-    function touchStartFunction(event) {
+    /*function touchStartFunction(event) {
         event.preventDefault();
-    }
+    }*/
     var touchMoveFunction = touchStartFunction;
 
     var _imageBaseDir = '/gwt-resources/images/whiteboard/';
