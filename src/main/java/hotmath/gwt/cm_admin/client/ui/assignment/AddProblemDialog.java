@@ -78,6 +78,8 @@ public class AddProblemDialog extends GWindow {
     AssignmentLessonData _lessonData;
     ContentPanel _treePanelProgram;
     AssignmentTreeSubjectChapterListingPanel _treePanelSubjectChapter;
+    CCSSTreeLessonListPanel _treePanelCCSS;
+
     BorderLayoutContainer _mainContainer;
     
     TreeStore<BaseDto> _treeStore;
@@ -138,14 +140,27 @@ public class AddProblemDialog extends GWindow {
             }
         });
 
+        _treePanelCCSS = new CCSSTreeLessonListPanel(new CallbackOnSelectedLesson() {
+            @Override
+            public void lessonWasSelected() {
+                Window.alert("Lesson was selected");
+            }
+            
+            @Override
+            public void nodeWasChecked() {
+                setCheckMessageTask.delay(100);
+            }
+        });
+
         CenterLayoutContainer centered = new CenterLayoutContainer();
         centered.setWidget(new Label("Loading data ..."));
         _treePanelProgram.setWidget(centered);        
         
         _tabPanel = new TabPanel();
         _tabPanel.add(_treeFlatPanel, new TabItemConfig("All Lessons", false));
-        _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Chapter", false));
+        _tabPanel.add(_treePanelSubjectChapter, new TabItemConfig("By Subject", false));
         _tabPanel.add(_treePanelProgram, new TabItemConfig("By Program", false));
+        _tabPanel.add(_treePanelCCSS, new TabItemConfig("By CCSS", false));
         
         _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
             @Override
@@ -159,6 +174,11 @@ public class AddProblemDialog extends GWindow {
                 else if(_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
                     if(_treePanelSubjectChapter._tree == null) {
                         _treePanelSubjectChapter.refreshData();
+                    }
+                }
+                else if(_tabPanel.getActiveWidget() == _treePanelCCSS) {
+                    if(_treePanelCCSS._tree == null) {
+                        _treePanelCCSS.refreshData();
                     }
                 }
              
@@ -228,6 +248,9 @@ public class AddProblemDialog extends GWindow {
         }
         else if(_tabPanel.getActiveWidget() == _treePanelSubjectChapter) {
             activeTree = _treePanelSubjectChapter._tree;
+        }
+        else if(_tabPanel.getActiveWidget() == _treePanelCCSS) {
+            activeTree = _treePanelCCSS._tree;
         }
         else {
             activeTree = _treeFlatPanel._tree;
