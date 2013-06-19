@@ -3,6 +3,9 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -25,29 +28,36 @@ public class AssignmentHeaderPanel extends Composite {
         
         dueDate.setInnerHTML(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate()));
         
-        String statusS = "";
+        List<String> statuses = new ArrayList<String>();
         if(assignment.getAssignment().isClosed()) {
-            statusS = "Closed, ";
+            statuses.add("Closed");
         }
         if(assignment.isGraded()) {
-            statusS += "Graded, Score: " + assignment.getHomeworkGrade();
+            statuses.add("<span style='color: red'>Score: " + assignment.getHomeworkGrade() + "</span>");
             grade.setInnerHTML("");
             grade.setAttribute("style",  "display: none");
         }
         else if(assignment.isTurnedIn()) {
-            statusS += "Turned In";
+            statuses.add("Turned In");
             grade.setAttribute("style",  "display: none");
         }
         else {
             if(assignment.getAssignment().isExpired()) {
-                statusS += "Past Due";
+                statuses.add("Past Due");
             }
             else if(!assignment.getStatus().equals("Closed")) {
-                statusS += assignment.getStatus();
+                statuses.add(assignment.getStatus());
             }
             grade.setAttribute("style",  "display: none");
         }
         
+        String statusS="";
+        for(String s: statuses) {
+            if(statusS.length() > 0) {
+                statusS += ", ";
+            }
+            statusS += s;
+        }
         status.setInnerHTML(statusS);
     }
     

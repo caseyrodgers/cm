@@ -164,7 +164,7 @@ class MyGenericTextTag extends GenericTextTag<String> {
     private String getStatusString() {
         List<String> statuses = new ArrayList<String>();
         if(studentAssignmentInfo.isGraded()) {
-            statuses.add("Graded, Score: " + studentAssignmentInfo.getScore());
+            statuses.add("Score: " + studentAssignmentInfo.getScore());
         }
         else {
             if(studentAssignmentInfo.getStatus().equals("Closed")) {
