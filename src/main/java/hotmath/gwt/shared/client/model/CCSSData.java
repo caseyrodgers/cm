@@ -39,6 +39,7 @@ public class CCSSData extends FolderDto implements Response {
 		this.levels = levels;
 	}
 
+	@Override
 	public int getLevel() {
 		return ROOT;
 	}

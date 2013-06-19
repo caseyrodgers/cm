@@ -10,7 +10,7 @@ public class BaseDto implements Serializable {
 	private Integer id;
     private String name;
     private BaseDto parent;
-    private Integer level;
+    private int level;
     
     protected BaseDto() {
       
@@ -45,11 +45,11 @@ public class BaseDto implements Serializable {
       this.name = name;
     }
 
-    public Integer getLevel() {
+    public int getLevel() {
     	return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(int level) {
     	this.level = level;
     }
 

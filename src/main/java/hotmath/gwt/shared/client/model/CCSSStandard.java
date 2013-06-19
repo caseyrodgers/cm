@@ -59,6 +59,7 @@ public class CCSSStandard extends FolderDto implements IsSerializable {
 		this.description = description;
 	}
 
+	@Override
 	public int getLevel() {
 		return CCSSData.STANDARD;
 	}

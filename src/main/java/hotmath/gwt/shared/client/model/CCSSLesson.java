@@ -38,6 +38,7 @@ public class CCSSLesson extends FolderDto implements IsSerializable {
 		this.file = file;
 	}
 
+	@Override
 	public int getLevel() {
 		return CCSSData.LESSON;
 	}
