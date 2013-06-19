@@ -2112,7 +2112,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
     
     
-
+    /** Return the student problem associated with the named assignment and pid
+     * 
+     *  returns null if problem does not exist in assignment
+     *  
+     * @param uid
+     * @param assignKey
+     * @param pid
+     * @return
+     */
     public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) {
         String sql = "select a.status as assignment_status, p.ordinal_number, p.id, p.lesson, p.lesson_file, p.label, s.status as problem_status,s.is_graded " +
                      " from CM_ASSIGNMENT a " +
@@ -2121,7 +2129,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                      " where p.assign_key = ? " +
                      " and     p.pid = ? ";
         
-        StudentProblemDto problem = getJdbcTemplate().queryForObject(sql, new Object[] {uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
+        List<StudentProblemDto> problems = getJdbcTemplate().query(sql, new Object[] {uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
             @Override
             public StudentProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 ProblemDto prob = new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"),rs.getString("lesson_file")), rs.getString("label"), pid, 0);
@@ -2133,7 +2141,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return new StudentProblemDto(uid,prob,rs.getString("problem_status"),false,false,isClosed,rs. getInt("is_graded")!=0?true:false,rs.getInt("is_graded")!=0?true:false);            
             }
         });
-        return problem;
+        if(problems.size() > 0) {
+            return problems.get(0);
+        }
+        else {
+            return null;
+        }
     }
     
 

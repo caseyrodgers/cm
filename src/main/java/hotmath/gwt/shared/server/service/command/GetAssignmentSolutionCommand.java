@@ -5,7 +5,6 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignmentUserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;

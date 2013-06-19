@@ -42,6 +42,8 @@ public class AssignmentProblemListView extends ContentPanel {
     private TextButton _deleteButton;
 
     MyOrdinalProvider ordinalNumberValudProvider;
+    private TextButton _upButton;
+    private TextButton _downButton;
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
         
         this.assignment = assignment;
@@ -116,20 +118,76 @@ public class AssignmentProblemListView extends ContentPanel {
         
         addTool(createAddButton());
         _deleteButton = createDelButton();
-        if(store.size()==0) {
-            _deleteButton.setEnabled(false);
-        }
         addTool(_deleteButton);
+        _upButton = new TextButton("Up", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                moveSelectProblem(-1);
+            }
+        });
+        addTool(_upButton);
+
+        _downButton = new TextButton("Down", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                moveSelectProblem(1);
+            }
+        });
+        addTool(_downButton);
+        
+        if(store.size()==0) {
+            activateButtons(false);
+        }
     }
     
+    protected void moveSelectProblem(int i) {
+        ProblemDto selected = problemListGrid.getSelectionModel().getSelectedItem();
+        if(selected == null) {
+            CmMessageBox.showAlert("No selected problem");
+            return;
+        }
+        
+        List<ProblemDto> curr = problemListGrid.getStore().getAll();
+        int which=0;
+        for(ProblemDto p: curr) {
+            if(p.getPid().equals(selected.getPid())) {
+                break;
+            }
+            which++;
+        }
+        
+        
+        if(which + i < 0 || which + i > curr.size()-1) {
+            return;
+        }
+        
+        // make editable copy
+        List<ProblemDto> newList = new ArrayList<ProblemDto>();
+        newList.addAll(curr);
+        
+        newList.remove(selected);
+        newList.add(which + i, selected);
+        
+        problemListGrid.getStore().clear();
+        ordinalNumberValudProvider.resetOrdinalNumber();
+        problemListGrid.getStore().addAll(newList);
+        
+        problemListGrid.getSelectionModel().select(selected,false);
+    }
+
+    private void activateButtons(boolean b) {
+        _deleteButton.setEnabled(b);
+        _upButton.setEnabled(b);
+        _downButton.setEnabled(b);
+    }
+
     public void setProblemListing(CmList<ProblemDto> cmList) {
         setWidget(problemListContainer);
         ordinalNumberValudProvider.resetOrdinalNumber();
         problemListGrid.getStore().clear();
         problemListGrid.getStore().addAll(cmList);
         
-        _deleteButton.setEnabled(cmList.size()>0);
-        
+        activateButtons(cmList.size()>0);
         forceLayout();
     }
 
@@ -237,15 +295,36 @@ public class AssignmentProblemListView extends ContentPanel {
     
 
     private void addProblemsToAssignment(final List<ProblemDto> problemsAdded) {
-        problemListGrid.getStore().addAll(problemsAdded);
+        
+        /** make sure no duplicates
+         * 
+         */
+        List<ProblemDto> currList = problemListGrid.getStore().getAll();
+        for(ProblemDto pd: problemsAdded) {
+            
+            boolean found=false;
+            for(ProblemDto p: currList) {
+                if(p.getPid().equals(pd.getPid())) {
+                    found=true;
+                    break;
+                }
+            }
+            
+            if(!found) {
+                problemListGrid.getStore().add(pd);
+            }
+            else {
+               CmMessageBox.showAlert("Problem '" + pd.getLabel() + "' is already in assignment");
+            }
+        }
         
         if(problemListGrid.getStore().size() == 0) {
             setWidget(createDefaultNoProblemsMessge());
-            _deleteButton.setEnabled(false);
+            activateButtons(false);
         }
         else {
             setWidget(problemListContainer);
-            _deleteButton.setEnabled(true);
+            activateButtons(true);
         }
         forceLayout();
     }
