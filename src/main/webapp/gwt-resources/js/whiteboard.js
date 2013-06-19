@@ -50,6 +50,7 @@ var Whiteboard = (function () {
     var enable_calc = true;
 	var isReadOnly=false;
 	var lastGesture=null;
+	var useMQ=false;
         //
     mq_holder.onload = function () {
 
@@ -138,83 +139,159 @@ var Whiteboard = (function () {
             }
         //end of calc internal methods
     //
-        function renderText(xt, xp, yp, col) {
-            // var txt = xt ? xt : $get_Element("#editable-math").value;
-            var txt = xt ? xt : $('#editable-math').mathquill('latex');
+        function renderText_html(xt, xp, yp, col) {
 
-            // var str = txt.split("\n")
-            var x0 = xp ? xp : clickX
-            var y0 = yp ? yp : clickY
-            var colr = col ? col : wb.globalStrokeColor
-            var ht = 15;
-            var holder_x = x0
-            var holder_y = y0
-            // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
-
-            if (false) {
-                context.drawImage(mq_holder, holder_x, holder_y);
-                // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-                updateCanvas();
-            } else {
-                var _mq_holder = new Image();
-                _mq_holder.onload = function () {
-
-                    context.drawImage(this, holder_x, holder_y);
-                    // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-
-                    updateCanvas();
-                    _mq_holder = null;
-                    delete _mq_holder;
-                }
-               // _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
-			   var txtCol=String(colr).substring(1)
-                _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco="+txtCol+"&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
-                lastTxt = txt
-            }
-            // alert(mq_holder.src)
-            /*
-             * var holder if($get_Element('#mquill_hold')){
-             * console.log("mquill_hold exists") holder=$('mquill_hold'); }else{
-             * console.log("mquill_hold dont exists")
-             * holder=document.createElement('div')
-             * $(holder).attr('id','mquill_hold')
-             * $(holder).prependTo("#canvas-container"); var
-             * img=document.createElement('img'); $(img).appendTo($(holder));
-             * img.onload=function(){
-             *
-             * context.drawImage(this,xp,yp,this.width+5,this.height+5)
-             * $(this).remove(); alert(this.width+":"+this.height); }
-             *
-             *
-             *  }
-             */
-            /*
-             * var txtbox=document.createElement('span');
-             * txtbox.style.position='absolute'; txtbox.style.left=x0+"px";
-             * txtbox.style.top=y0+"px";
-             *
-             * $(txtbox).addClass('mathquill-embedded-latex');
-             * //$('.mathquill-embedded-latex').remove()
-             * $(txtbox).prependTo($('#mquill_hold')).mathquill();
-             * $(txtbox).mathquill('latex',txt); txtbox.style.display='none';
-             */
-            // context.drawImage(
-            /*
-             * context.fillStyle=col?col:wb.globalStrokeColor for (var i = 0; i <
-             * str.length; i++) { context.fillText(str[i], x0, y0) y0 += ht }
-             */
-
-            if (!xt) {
-                updateText(txt, x0, y0, colorToNumber(colr));
-                sendData();
-                // $get_Element("#editable-math").value = "";
-
-                $('#editable-math').mathquill('latex', "");
-                $get_Element("#inputBox").style.display = 'none';
-            }
-
-            // alert($get_Element("#inputBox").style.display)
+        var txt = xt ? xt : $get_Element("#content").value;
+        // alert(txt);
+        var determineFontHeight = function (fontStyle) {
+            var body = document.getElementsByTagName("body")[0];
+            var dummy = document.createElement("div");
+            var dummyText = document.createTextNode("M");
+            dummy.appendChild(dummyText);
+            dummy.setAttribute("style", fontStyle);
+            body.appendChild(dummy);
+            var result = dummy.offsetHeight;
+            body.removeChild(dummy);
+            return result;
+        };
+        var str = txt.split("\n")
+        var x0 = xp ? xp : clickX
+        var y0 = yp ? yp : clickY
+        var ht = determineFontHeight(str[0]);
+        var sy = y0
+        context.font = "20pt Arial";
+        context.textBaseline = 'top';
+        context.fillStyle = col ? col : wb.globalStrokeColor
+        for (var i = 0; i < str.length; i++) {
+            context.fillText(str[i], x0, y0)
+            y0 += ht + ht / 3
         }
+        var rect = {}
+        rect.x = rect.xmin = x0
+        rect.y = rect.ymin = sy
+        rect.w = context.measureText(txt).width
+        rect.h = (ht + ht / 3) * str.length
+        rect.xmax = rect.x + rect.w;
+        rect.ymax = rect.y + rect.h;
+        console.log('renderText')
+        // console.log(this)
+        var gd = graphicData
+        gd.brect = rect
+
+        //context.drawImage(this, holder_x, holder_y);
+        // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+        gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+        //graphicDataStore[graphicDataStore.length - 1] = gd
+        updateCanvas();
+        if (!xt) {
+            updateText(txt, x0, sy);
+            sendData();
+            $get_Element("#content").value = "";
+            $get_Element("#inputBox").style.display = 'none';
+        }
+        // alert($get_Element("#inputBox").style.display)
+    }
+
+    function renderText_mq(xt, xp, yp, col) {
+        // var txt = xt ? xt : $get_Element("#editable-math").value;
+        var txt = xt ? xt : $('#editable-math').mathquill('latex');
+
+        // var str = txt.split("\n")
+        var x0 = xp ? xp : clickX
+        var y0 = yp ? yp : clickY
+        var colr = col ? col : wb.globalStrokeColor
+        var ht = 15;
+        var holder_x = x0
+        var holder_y = y0
+        // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
+
+        if (false) {
+            context.drawImage(mq_holder, holder_x, holder_y);
+            // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+            updateCanvas();
+        } else {
+            var _mq_holder = new Image();
+            _mq_holder.onload = function () {
+                var rect = {}
+                rect.x = rect.xmin = x0
+                rect.y = rect.ymin = y0
+                rect.w = this.width
+                rect.h = this.height
+                rect.xmax = rect.x + rect.w;
+                rect.ymax = rect.y + rect.h;
+                console.log('renderText')
+                console.log(this)
+                var gd = graphicDataStore[graphicDataStore.length - 1]
+                gd.brect = rect
+
+                context.drawImage(this, holder_x, holder_y);
+                // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
+                gd.imageData = this;
+                graphicDataStore[graphicDataStore.length - 1] = gd
+                console.log(gd)
+                updateCanvas();
+                _mq_holder = null;
+                delete _mq_holder;
+            }
+            // _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+            var txtCol = String(colr).substring(1)
+            _mq_holder.src = "http://chart.apis.google.com/chart?cht=tx&chf=bg,s,ffffff00&chco=" + txtCol + "&chl=" + encodeURIComponent("\\fontsize{18} " + txt);
+            lastTxt = txt
+        }
+        // alert(mq_holder.src)
+        /*
+         * var holder if($get_Element('#mquill_hold')){
+         * console.log("mquill_hold exists") holder=$('mquill_hold'); }else{
+         * console.log("mquill_hold dont exists")
+         * holder=document.createElement('div')
+         * $(holder).attr('id','mquill_hold')
+         * $(holder).prependTo("#canvas-container"); var
+         * img=document.createElement('img'); $(img).appendTo($(holder));
+         * img.onload=function(){
+         *
+         * context.drawImage(this,xp,yp,this.width+5,this.height+5)
+         * $(this).remove(); alert(this.width+":"+this.height); }
+         *
+         *
+         *  }
+         */
+        /*
+         * var txtbox=document.createElement('span');
+         * txtbox.style.position='absolute'; txtbox.style.left=x0+"px";
+         * txtbox.style.top=y0+"px";
+         *
+         * $(txtbox).addClass('mathquill-embedded-latex');
+         * //$('.mathquill-embedded-latex').remove()
+         * $(txtbox).prependTo($('#mquill_hold')).mathquill();
+         * $(txtbox).mathquill('latex',txt); txtbox.style.display='none';
+         */
+        // context.drawImage(
+        /*
+         * context.fillStyle=col?col:wb.globalStrokeColor for (var i = 0; i <
+         * str.length; i++) { context.fillText(str[i], x0, y0) y0 += ht }
+         */
+
+        if (!xt) {
+            updateText(txt, x0, y0, colorToNumber(colr));
+            console.log('AfterUpdateText')
+            console.log(graphicData)
+            sendData();
+            // $get_Element("#editable-math").value = "";
+
+            $('#editable-math').mathquill('latex', "");
+            $get_Element("#inputBox").style.display = 'none';
+        }
+
+        // alert($get_Element("#inputBox").style.display)
+    }
+
+    function renderText(xt, xp, yp, col) {
+        if (useMQ) {
+            renderText_mq(xt, xp, yp, col)
+        } else {
+            renderText_html(xt, xp, yp, col)
+        }
+    }
 
         function onkeyupHandler() {
             //
@@ -1756,6 +1833,37 @@ function viewport_testpage() {
     }
 
     function showTextBox() {
+        if (useMQ) {
+            showTextBox_mq()
+        } else {
+            showTextBox_html()
+        }
+    }
+
+    function hideTextBox() {
+        if (useMQ) {
+            hideTextBox_mq()
+        } else {
+            hideTextBox_html()
+        }
+    }
+
+    function showTextBox_html() {
+        if (!$get_Element("#content")) {
+            $($("#inputBox div")[0]).html("<textarea id='content' cols=15 rows=1 style='font:20pt Arial' ></textarea>")
+        }
+        $get_Element("#inputBox").style.display = 'block';
+        $get_Element("#inputBox").style.top = clickY + "px";
+        $get_Element("#inputBox").style.left = clickX + "px";
+        $get_Element("#content").focus();
+    }
+
+    function hideTextBox_html() {
+        $get_Element("#content").value = "";
+        $get_Element("#inputBox").style.display = 'none';
+    }
+
+    function showTextBox_mq() {
         // $get_Element("#inputBox").css({"top":clickY, "left":clickX,
         // "position":"absolute"});
         $get_Element("#inputBox").style.display = 'block';
@@ -1764,11 +1872,11 @@ function viewport_testpage() {
         $get_Element("#inputBox").style.left = clickX + "px";
         // $('#editable-math').mathquill('latex', "");
         // $("#editable-math").focus();
-if(wb.mode=='student'){
-$("#editable-math").css('color','#000000')
-}else{
-$("#editable-math").css('color','#ff0000')
-}
+        if (wb.mode == 'student') {
+            $("#editable-math").css('color', '#000000')
+        } else {
+            $("#editable-math").css('color', '#ff0000')
+        }
         setTimeout(__focus);
         // alert($("textarea").value)
         // alert($get_Element("#inputBox").style.top+":"+$get_Element("#inputBox").style.left)
@@ -1780,7 +1888,7 @@ $("#editable-math").css('color','#ff0000')
         // $("#editable-math").focus();
 
         // alert(isIE);
-        if (isIE || isTouchEnabled||ieVer>8) {
+        if (isIE || isTouchEnabled || ieVer > 8) {
             $("#inputBox textarea").focus();
         } else {
             $('.mathquill-editable').focus();
@@ -1789,14 +1897,14 @@ $("#editable-math").css('color','#ff0000')
         // alert()
     }
 
-    function hideTextBox() {
+    function hideTextBox_mq() {
         // $get_Element("#editable-math").value = "";
-                var disp=$get_Element("#inputBox").style.display
-                if(disp=='block'){
-        //$("#editable-math").mathquill('redraw');
-                $('#editable-math').mathquill('latex', "");
-        $get_Element("#inputBox").style.display = 'none';
-                }
+        var disp = $get_Element("#inputBox").style.display
+        if (disp == 'block') {
+            //$("#editable-math").mathquill('redraw');
+            $('#editable-math').mathquill('latex', "");
+            $get_Element("#inputBox").style.display = 'none';
+        }
     }
 
     function resetWhiteBoard(boo) {
