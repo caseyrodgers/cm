@@ -125,6 +125,7 @@ public class AssignmentProblemListView extends ContentPanel {
                 moveSelectProblem(-1);
             }
         });
+        _upButton.setToolTip("Move selected problem up");
         addTool(_upButton);
 
         _downButton = new TextButton("Down", new SelectHandler() {
@@ -134,6 +135,7 @@ public class AssignmentProblemListView extends ContentPanel {
             }
         });
         addTool(_downButton);
+        _upButton.setToolTip("Move selected problem down");
         
         if(store.size()==0) {
             activateButtons(false);
