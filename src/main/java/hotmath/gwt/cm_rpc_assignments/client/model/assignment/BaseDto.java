@@ -5,9 +5,12 @@ import java.util.List;
 
 public class BaseDto implements Serializable {
 
-    private Integer id;
+	private static final long serialVersionUID = -5386056685165452829L;
+
+	private Integer id;
     private String name;
     private BaseDto parent;
+    private Integer level;
     
     protected BaseDto() {
       
@@ -40,6 +43,14 @@ public class BaseDto implements Serializable {
 
     public void setName(String name) {
       this.name = name;
+    }
+
+    public Integer getLevel() {
+    	return level;
+    }
+
+    public void setLevel(Integer level) {
+    	this.level = level;
     }
 
 //    @Override
