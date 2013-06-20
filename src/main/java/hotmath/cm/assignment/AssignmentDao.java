@@ -1894,10 +1894,24 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return assignmentCopy;
     }
 
-    public void activateAssignment(int assignmentKey) throws Exception {
-        Assignment assignment = getAssignment(assignmentKey);
+    public void activateAssignment(final int assignKey) throws Exception {
+        Assignment assignment = getAssignment(assignKey);
         assignment.setStatus("Open");
         saveAssignment(assignment);
+        
+        /** mark all students as not graded
+         */
+        int cntUngraded = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "update CM_ASSIGNMENT_USER set is_graded = 0 assign_key = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, assignKey);
+                return ps;
+            }
+        });
+        
+        __logger.info("Activated assignment: " + assignKey + ", students ungraded: " + cntUngraded);
     }
 
     private List<ProblemAnnotation> getUnreadAnnotatedProblems(final int uid) throws Exception {
@@ -1997,7 +2011,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         saveAssignment(ass);
 
         // for each student in assignment
-        String sql = "select uid from HA_USER where group_id = ? and is_active = 1 ";
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("RELEASE_ASSIGNMENT_GRADE");
         List<Integer> uids = getJdbcTemplate().query(sql, new Object[] { ass.getGroupId() }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {

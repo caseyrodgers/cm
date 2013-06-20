@@ -93,6 +93,13 @@ public class AssignmentsContentPanel extends ContentPanel {
 
         _adminId = UserInfoBase.getInstance().getUid();
         
+        
+        addTool(new TextButton("Refresh", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                refreshData();
+            }
+        }));
         addTool(createNewButton());
         addTool(createEditButton());
         // getHeader().addTool(createCloseButton());

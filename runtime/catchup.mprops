@@ -4028,6 +4028,14 @@ where s.uid = ?
 and a.assign_key = ?
 
 
+.key=RELEASE_ASSIGNMENT_GRADE
+
+select uid 
+from HA_USER 
+where group_id = ? 
+and is_active = 1
+and is_auto_create_template = 0
+
 
 
 .key=GET_COUNT_UNGRADED_WHITEBOARD_PROBLEMS
