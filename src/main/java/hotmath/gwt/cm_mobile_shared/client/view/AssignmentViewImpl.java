@@ -157,6 +157,7 @@ public class AssignmentViewImpl extends Composite implements AssignmentView {
             super("li");
             
             getElement().setAttribute("style", "position: relative");
+            getElement().setAttribute("pid", problem.getPid());
             
             this._problem = problem;
             

@@ -277,7 +277,7 @@ public class TutorWrapperPanel extends Composite {
      */
     public void tutorWidgetComplete(String inputValue, boolean correct) {
         
-        Log.debug("tutorWidgetComplete (in GWT) called: " + inputValue);
+        Log.debug("tutorWidgetComplete (in GWT) called with value: " + inputValue);
         
         if(_readOnly) {
             jsni_setTutorWidgetValue(_lastWidgetValue);
