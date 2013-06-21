@@ -1859,7 +1859,9 @@ function viewport_testpage() {
     }
 
     function hideTextBox_html() {
-        $get_Element("#content").value = "";
+    	if($get_Element("#content")) {
+    		$get_Element("#content").value = "";
+    	}
         $get_Element("#inputBox").style.display = 'none';
     }
 
