@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
+import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -169,7 +170,7 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
             public String getPath() {
                 return "name";
             }
-        });
+        },new CheckableMinLevelGxtTreeAppearance(2));
         _tree.setLoader(loader);
         _tree.setWidth(300);
         _tree.setCheckable(true);
