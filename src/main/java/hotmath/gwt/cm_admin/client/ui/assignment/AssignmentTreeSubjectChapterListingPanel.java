@@ -196,7 +196,8 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
         _tree.setCell(cell);
         
         
-        final DelayedTask task = new DelayedTask() {
+        @SuppressWarnings("unused")
+		final DelayedTask task = new DelayedTask() {
             @Override
             public void onExecute() {
                 Log.debug(_tree.getCheckedSelection().size() + " problem(s) selected");
@@ -214,19 +215,9 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
         forceLayout();
     }
 
-    private List<ProgramSubject> getSubjects(ProgramListing programLessons) {
-        for(ProgramType pt: programLessons.getProgramTypes()) {
-            if(pt.getType().equalsIgnoreCase("Chap")) {
-                List<ProgramSubject> subjects = pt.getProgramSubjects();
-                return subjects;
-            }
-        }
-        return null;
-    }
-
-
     RpcProxy<BaseDto, List<BaseDto>> proxy = new RpcProxy<BaseDto, List<BaseDto>>() {
-        @Override
+        @SuppressWarnings("unchecked")
+		@Override
         public void load(BaseDto loadConfig, AsyncCallback<List<BaseDto>> callback) {
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                 if (loadConfig instanceof LessonDto) {
@@ -323,11 +314,12 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
     }
 }
 
-
-
-
 class ChapterDto extends FolderDto {
-    int testDefId;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	int testDefId;
     private String subject;
     public ChapterDto(int id, int testDefId, String subject, String name) {
         super(id, name);
