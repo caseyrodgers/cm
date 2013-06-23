@@ -1,21 +1,29 @@
 package hotmath.gwt.cm_mobile3.client.view;
 
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.ShowPrescriptionLessonViewEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveTutorInputWidgetAnswerAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 
@@ -26,6 +34,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -38,6 +47,11 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
     TutorWrapperPanel tutorPanel;
     SolutionInfo lastResponse;
     String _title;
+    
+    ShowWorkPanel2 _showWork;
+    FlowPanel _contentPanel;
+    ShowWorkSubToolBar _subBar;
+
     
 	public PrescriptionLessonResourceTutorViewImpl() {
 	    tutorPanel = new TutorWrapperPanel(true,true,true,true,new TutorCallbackDefault(){
@@ -60,7 +74,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        
 	        @Override
 	        public void showWhiteboard() {
-	            presenter.showWhiteboard(getViewTitle());
+	            showWhiteboardPanel();
 	        }
 	        
 	        @Override
@@ -89,11 +103,86 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
 	        }
 	        
 	    });
-	    initWidget(tutorPanel);
+	    _contentPanel = new FlowPanel();
+	    _subBar = new ShowWorkSubToolBar(false, false, new Callback() {
+            @Override
+            public void whiteboardSubmitted() {
+            }
+            
+            @Override
+            public void showWhiteboard() {
+                showWhiteboardPanel();
+            }
+            
+            @Override
+            public void showProblem(boolean b) {
+                _showWork.setBackground(b);
+            }
+            
+            @Override
+            public void showLesson() {
+            }
+            
+            @Override
+            public void hideWhiteboard() {
+                PrescriptionLessonResourceTutorViewImpl.this.hideWhiteboard();
+            }
+        });
+	    
+	    _subBar.setupWhiteboardTools(false);
+	    
+	    _contentPanel.add(_subBar);
+	    _contentPanel.add(tutorPanel);
+	    tutorPanel.addStyleName("tutorPanel");
+	    initWidget(_contentPanel);
 	    setStyleName("prescriptionLessonResourceTutorViewImpl");
 	}
 
-	Presenter presenter;
+	protected void showWhiteboardPanel() {
+	    
+	    if(_showWork != null) {
+            hideWhiteboard();
+        }
+        _subBar.setupWhiteboardTools(true);
+        
+        _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+            @Override
+            public void windowResized() {
+            }
+
+            @Override
+            public void showWorkIsReady() {
+                presenter.showWhiteboard(_showWork);
+            }
+
+            @Override
+            public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+                return presenter.getWhiteboardSaveAction(pid, commandType, data);
+            }
+        });
+        _contentPanel.add(_showWork);
+        
+        _showWork.setBackground(_subBar.getShowProblem());
+        
+        CmGwtUtils.addDoubleTapRemoveEvent(_showWork.getElement());
+        
+        // position to top of document so toolbar is visible on open.
+        Window.scrollTo(0, 0);
+
+        _showWork.alignWhiteboard(tutorPanel.getElement());
+    }	    
+
+
+    private void hideWhiteboard() {
+        _subBar.setupWhiteboardTools(false);
+        
+        if(_showWork != null) {
+            _contentPanel.remove(_showWork);
+            _showWork = null;
+        }
+    }
+
+    Presenter presenter;
 
 	@Override
     public void setPresenter(Presenter p) {
@@ -250,7 +339,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         return new BackAction() {
             @Override
             public boolean goBack() {
-                //tutorNewProblem();
+                hideWhiteboard();
                 return true;
             }
         };

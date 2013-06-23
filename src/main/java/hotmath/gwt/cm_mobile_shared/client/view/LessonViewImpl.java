@@ -26,7 +26,7 @@ public class LessonViewImpl extends Composite implements LessonView {
     
     public LessonViewImpl() {
         
-        SubToolBar subTb = new SubToolBar(false);
+        SubToolBar subTb = new SubToolBar();
         
         if(_languageButton == null) {
             _languageButton = new SexyButton("Spanish", new ClickHandler() {

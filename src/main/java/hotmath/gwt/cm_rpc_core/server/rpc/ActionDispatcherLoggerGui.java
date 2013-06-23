@@ -59,6 +59,8 @@ public class ActionDispatcherLoggerGui extends JFrame {
     List<String> _fullLog = new ArrayList<String>();
     JToggleButton _disabled = new JToggleButton("Enable");
     JToggleButton _debugMode = new JToggleButton("Debug");
+    JToggleButton _debugActionCacheMode = new JToggleButton("Client Debug Mode");
+    
 
     private ActionDispatcherLoggerGui() {
 
@@ -99,7 +101,17 @@ public class ActionDispatcherLoggerGui extends JFrame {
         JPanel panel = new JPanel();
         panel.add(_disabled);
         panel.add(_debugMode);
+        panel.add(_debugActionCacheMode);
         footer.add("West", panel);
+        
+        _debugActionCacheMode.setToolTipText("Enable ActionDispatcher caching of all actions (to enable fast client development)");
+        _debugActionCacheMode.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean enableClientCacheMode =_debugActionCacheMode.isSelected()?true:false;
+                ActionDispatcher.getInstance().setDebuggingClientMode(enableClientCacheMode);
+            }
+        });
         
         
         

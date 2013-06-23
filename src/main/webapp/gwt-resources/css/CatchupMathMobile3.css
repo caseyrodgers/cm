@@ -600,7 +600,7 @@ table {
 
 .prescriptionLessonViewImpl,
 .prescriptionLessonResourceVideoImpl,
-.prescriptionLessonResourceTutorViewImpl,
+.prescriptionLessonResourceTutorViewImpl .tutorPanel,
 .prescriptionLessonResourceResultsViewImpl,
 .prescriptionLessonListingViewImpl,
 .endOfProgramViewImpl {

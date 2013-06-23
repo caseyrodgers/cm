@@ -7,20 +7,9 @@ import com.google.gwt.user.client.ui.FlowPanel;
 public class SubToolBar extends FlowPanel {
     private TouchButton _yourProgram;
 
-    public SubToolBar(boolean showReturnToProgram) {
+    public SubToolBar() {
         super();
         addStyleName("SubToolBar");
-        
-//        if(showReturnToProgram) {
-//            _yourProgram = new SexyButton("Exit Assignments", new ClickHandler() {
-//                @Override
-//                public void onClick(ClickEvent event) {
-//                    CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));                    
-//                }
-//            });
-//            _yourProgram.addStyleName("instruction-button");
-//            add(_yourProgram);
-//        }
     }
 
     public void showReturnTo(boolean b) {

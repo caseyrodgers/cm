@@ -23,14 +23,17 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
-/** TODO: replace ShowWorkPanel
+/**
+ * TODO: replace ShowWorkPanel
+ * 
+ * Provides an overlay over existing tutor panel.
+ * 
  * 
  * @author casey
- *
+ * 
  */
 public class ShowWorkPanel2 extends Composite {
     static public ShowWorkPanel2 __lastInstance;
@@ -68,13 +71,13 @@ public class ShowWorkPanel2 extends Composite {
         __lastInstance = this;
     }
 
-
     public void setBackground(boolean showIt) {
         removeStyleName("transparent");
-        if(showIt) {
+        if (showIt) {
             addStyleName("transparent");
         }
     }
+
     public void toggleBackground() {
 
         if (getStyleName().indexOf("transparent") > -1) {
@@ -215,36 +218,34 @@ public class ShowWorkPanel2 extends Composite {
          * command.
          */
         CommandType commandType = null;
-        if(json.equals("clear")) {
-            if(_lastCommands != null) { 
+        if (json.equals("clear")) {
+            if (_lastCommands != null) {
                 _lastCommands.clear();
             }
             commandType = CommandType.CLEAR;
-        }
-        else if(json.equals("undo")) {
+        } else if (json.equals("undo")) {
             commandType = CommandType.UNDO;
-            
-            if(_lastCommands != null && _lastCommands.size() > 0) {
-                WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size()-1);
-                if(cmd.isAdmin()) {
+
+            if (_lastCommands != null && _lastCommands.size() > 0) {
+                WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size() - 1);
+                if (cmd.isAdmin()) {
                     PopupMessageBox.showMessage("Cannot undo teacher notes");
                     return;
                 }
-                _lastCommands.remove(_lastCommands.size()-1); // remove last element
+                _lastCommands.remove(_lastCommands.size() - 1); // remove last
+                                                                // element
                 loadWhiteboard(_lastCommands);
-            }
-            else {
+            } else {
                 PopupMessageBox.showMessage("Nothing to undo");
                 return;
             }
-        }
-        else {
+        } else {
             commandType = CommandType.DRAW;
 
             /** So it can be redrawn on undo */
-            _lastCommands.add(new WhiteboardCommand("draw",  json,  false));
+            _lastCommands.add(new WhiteboardCommand("draw", json, false));
         }
-        
+
         if (commandType == CommandType.CLEAR) {
             whiteboardActions.getActions().clear();
         }
@@ -267,7 +268,7 @@ public class ShowWorkPanel2 extends Composite {
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
-        
+
         _lastCommands = commands;
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
         final String flashId = "";
@@ -435,4 +436,11 @@ public class ShowWorkPanel2 extends Composite {
 
     }
 
+    public void alignWhiteboard(Element tutorElement) {
+        int width = tutorElement.getParentElement().getClientWidth();
+        int height = tutorElement.getParentElement().getClientWidth();
+
+        // height is predetermined in whiteboard.js
+        getElement().setAttribute("style", "width: " + width + ";height: " + height);
+    }
 }

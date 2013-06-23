@@ -1,20 +1,27 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
-import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceTutorViewImpl;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveSolutionContextAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SetInmhItemAsViewedAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
@@ -23,6 +30,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLessonResourceTutorView.Presenter {
 	InmhItemData resourceItem;
 	com.google.gwt.event.shared.EventBus eventBus;
+    protected AssignmentWhiteboardData __lastWhiteboardData;
 	
 	public PrescriptionLessonResourceTutorActivity(com.google.gwt.event.shared.EventBus eventBus, InmhItemData resourceItem) {
 	    this.eventBus = eventBus;
@@ -92,9 +100,21 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     }-*/;
 
     @Override
-    public void showWhiteboard(String title) {
-        String pid = resourceItem.getFile();
-        eventBus.fireEvent(new ShowWorkViewEvent(pid, title));
+    public void showWhiteboard(final ShowWorkPanel2 showWorkPanel) {
+        // always use zero for run_id
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(SharedData.getMobileUser().getUserId(), resourceItem.getFile(), SharedData.getUserInfo().getRunId());
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
+            final String flashId="";
+            public void onSuccess(CmList<WhiteboardCommand> commands) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                showWorkPanel.loadWhiteboard(commands);
+            }
+            
+            public void onFailure(Throwable caught) {
+                Log.error("Error getting whiteboard data", caught);
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+            };
+        });        
     }
 
 
@@ -130,6 +150,13 @@ public class PrescriptionLessonResourceTutorActivity  implements PrescriptionLes
     @Override
     public InmhItemData getItemData() {
         return resourceItem;
+    }
+
+
+    @Override
+    public Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(SharedData.getMobileUser().getUserId(),SharedData.getUserInfo().getRunId(), resourceItem.getFile(), commandType, data);
+        return action;
     }
 
 

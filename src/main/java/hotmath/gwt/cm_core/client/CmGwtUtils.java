@@ -6,7 +6,6 @@ import hotmath.gwt.cm_rpc.client.UserInfo.AccountType;
 import hotmath.gwt.cm_rpc.client.UserInfo.UserProgramCompletionAction;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
-import hotmath.gwt.shared.client.util.CmException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
 
 public class CmGwtUtils {
@@ -227,7 +227,24 @@ public class CmGwtUtils {
         
         return new LoginInfoEmbedded(keyVal, userId, cmStartType, partner, email);
     }
+
+    /** Use the external Hammer.js library to watch for doubletap
+     *  Close the whiteboard once detected.
+     * 
+     * @param instance
+     * @param element
+     */
+    static native public void addDoubleTapRemoveEvent(Element element) /*-{
+            var that = this;
+            $wnd.Hammer(element).on("doubletap", function(event) {
+                that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
+            });
+            
+            //$wnd.Hammer(element).on("pinch", function(event) {
+                //that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
+            //});
+
+        }-*/;
+  
+    }
     
-    
-        
-}

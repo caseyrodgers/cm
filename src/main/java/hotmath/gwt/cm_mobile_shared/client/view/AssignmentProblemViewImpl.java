@@ -1,11 +1,12 @@
 package hotmath.gwt.cm_mobile_shared.client.view;
 
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
-import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
@@ -30,16 +31,11 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AssignmentProblemViewImpl extends Composite implements AssignmentProblemView {
@@ -49,74 +45,43 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     FlowPanel _contentPanel;
     private TutorWrapperPanel tutor;
     private AssignmentProblem problem;
-    FlowPanel whiteboardControlView, whiteboardControlHide;
-    SubToolBar _subBar;
-    SexyButton _submitWhiteboard;
-    private SexyButton _viewWhiteboardButton;
-    private SexyButton _toggleBackground;
+    ShowWorkSubToolBar _subBar;
     
     public AssignmentProblemViewImpl() {
         __lastInstance = this;
         FlowPanel mainPanel = new FlowPanel();
 
-        _subBar = new SubToolBar(true);
-        whiteboardControlView = new FlowPanel();
-        whiteboardControlHide = new FlowPanel();
-        _viewWhiteboardButton = new SexyButton("Whiteboard", new ClickHandler() {
+        _subBar = new ShowWorkSubToolBar(true,true, new Callback() {
+            
             @Override
-            public void onClick(ClickEvent event) {
-                showWhiteboard();
+            public void whiteboardSubmitted() {
+                 presenter.showWorkHasBeenSubmitted();
+                 problem.setStatus("Submitted");
+                 tutor.setProblemStatus(problem);
+                 hideWhiteboard();
             }
-        });
-        whiteboardControlView.add(_viewWhiteboardButton);
-        
-        whiteboardControlView.add(new SexyButton("Lesson", new ClickHandler() {
+            
             @Override
-            public void onClick(ClickEvent event) {
+            public void showWhiteboard() {
+                AssignmentProblemViewImpl.this.showWhiteboard();
+            }
+            
+            @Override
+            public void hideWhiteboard() {
+                AssignmentProblemViewImpl.this.hideWhiteboard();
+            }
+            
+            @Override
+            public void showProblem(boolean b) {
+                _showWork.setBackground(b);
+            }
+            
+            @Override
+            public void showLesson() {
                 LessonModel lesson = problem.getStudentProblem().getProblem().getLesson();
                 presenter.showLesson(lesson);
             }
-        }));
-        
-        whiteboardControlHide.add(new SexyButton("Close Whiteboard", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                hideWhiteboard();
-            }
-        }));
-        
-        
-        _toggleBackground = new SexyButton("Hide Problem");
-        _toggleBackground.addClickHandler(new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                if(_toggleBackground.getText().startsWith("Show")) {
-                    _showWork.setBackground(true);
-                    _toggleBackground.setButtonText("Hide Problem",null);
-                }
-                else {
-                    _showWork.setBackground(false);
-                    _toggleBackground.setButtonText("Show Problem",null);
-                }
-            }
         });
-        whiteboardControlHide.add(_toggleBackground);
-
-
-        
-        _submitWhiteboard = new SexyButton("Submit", new ClickHandler() {
-            @Override
-            public void onClick(ClickEvent event) {
-                presenter.showWorkHasBeenSubmitted();
-                _submitWhiteboard.setVisible(false);
-                problem.setStatus("Submitted");
-                tutor.setProblemStatus(problem);
-                hideWhiteboard();
-            }
-        });
-        whiteboardControlHide.add(_submitWhiteboard);
-
-        _subBar.add(whiteboardControlView);
         mainPanel.add(_subBar);
         
         _contentPanel = new FlowPanel();
@@ -125,22 +90,8 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         initWidget(mainPanel);
     }
 
-    protected void setupWhiteboardTools(boolean show) {
-        
-        if(show) {
-            _subBar.remove(whiteboardControlView);
-            _subBar.add(whiteboardControlHide);
-        }
-        else {
-            _subBar.remove(whiteboardControlHide);
-            _subBar.add(whiteboardControlView);
-        }
-        
-        _subBar.showReturnTo(!show);
-    }
-
     private void hideWhiteboard() {
-        setupWhiteboardTools(false);
+        _subBar.setupWhiteboardTools(false);
         
         if(_showWork != null) {
             _contentPanel.remove(_showWork);
@@ -203,7 +154,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     public void loadProblem(AssignmentProblem problem) {
         this.problem = problem;
         problem.getStudentProblem().setHasShowWorkAdmin(false); // turn off blink without server roundtrip.
-        setupWhiteboardTools(false);
+        _subBar.setupWhiteboardTools(false);
         _contentPanel.clear();
 
         tutor = new TutorWrapperPanel(true, true, false, false, new TutorCallbackDefault() {
@@ -314,13 +265,12 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     }
     
     private void setProblemStatus() {
-        _submitWhiteboard.setVisible(false);
+        _subBar.showSubmitWhiteboard(false);
         if (problem.getProblemType() == ProblemType.WHITEBOARD) {
             if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !problem.getStatus().equals(ProblemStatus.SUBMITTED.toString())) {
-                _submitWhiteboard.setVisible(true);
+                _subBar.showSubmitWhiteboard(true);
             }
         }    
-        
         tutor.setProblemStatus(problem);
     }
     
@@ -333,7 +283,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         if(_showWork != null) {
             hideWhiteboard();
         }
-        setupWhiteboardTools(true);
+        _subBar.setupWhiteboardTools(true);
         
         _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
             @Override
@@ -352,62 +302,19 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         });
         _contentPanel.add(_showWork);
         
-        _showWork.setBackground(_toggleBackground.getText().startsWith("Hide"));
+        _showWork.setBackground(_subBar.getShowProblem());
         
-        addDoubleTapRemoveEvent(this, _showWork.getElement());
+        CmGwtUtils.addDoubleTapRemoveEvent(_showWork.getElement());
         
         // position to top of document so toolbar is visible on open.
         Window.scrollTo(0, 0);
 
-        alignWhiteboard();
-        
+        _showWork.alignWhiteboard(tutor.getElement());
         
         AssignmentData.removePidFromUnReadTeacherNote(problem.getAssignKey(),problem.getInfo().getPid());
     }
+    
 
-    /** Use the external Hammer.js library to watch for doubletap
-     *  Close the whiteboard once detected.
-     * 
-     * @param instance
-     * @param element
-     */
-    native private void addDoubleTapRemoveEvent(AssignmentProblemViewImpl instance, Element element) /*-{
-        var that = this;
-        $wnd.Hammer(element).on("doubletap", function(event) {
-            that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
-        });
-        
-        //$wnd.Hammer(element).on("pinch", function(event) {
-            //that.@hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemViewImpl::hideWhiteboard()();
-        //});
-
-
-    }-*/;
-    private void alignWhiteboard() {
-        
-        if (_showWork != null) {
-            int width = tutor.getElement().getParentElement().getClientWidth();
-            int height = tutor.getElement().getParentElement().getClientWidth();
-            
-            // height is predetermined in whiteboard.js
-            _showWork.getElement().setAttribute("style", "width: " + width + ";height: " + height);  
-        }
-    }
-
-    static {
-        CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
-            @Override
-            public void onWindowResized(WindowHasBeenResizedEvent windowHasBeenResizedEvent) {
-                __lastInstance.alignWhiteboard();
-            }
-        });
-    }
-
-    class MyHorizontalPanel extends HorizontalPanel {
-        public MyHorizontalPanel() {
-            super.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-        }
-    }
 
     @Override
     public void isNowActive() {
@@ -419,9 +326,26 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         }.schedule(500);
     }
 
+    protected void alignWhiteboard() {
+        if(_showWork != null) {
+            _showWork.alignWhiteboard(tutor.getElement());
+        }
+    }
+
     @Override
     public ApplicationType getApplicationType() {
         return ApplicationType.ASSIGNMENT;        
+    }    
+
+
+    static {
+        CmRpcCore.EVENT_BUS.addHandler(WindowHasBeenResizedEvent.TYPE, new WindowHasBeenResizedHandler() {
+            @Override
+            public void onWindowResized(WindowHasBeenResizedEvent windowHasBeenResizedEvent) {
+                __lastInstance.alignWhiteboard();
+            }
+        });
     }
+
 
 }

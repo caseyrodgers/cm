@@ -78,6 +78,13 @@ public class ActionDispatcher {
 	Map<Class<? extends Action<? extends Response>>, Class> commands = new HashMap<Class<? extends Action<? extends Response>>, Class>();
 	List<ActionDispatcherListener> listeners = new ArrayList<ActionDispatcherListener>();
 
+    private Map<String, Response> oldResponses = new HashMap<String,Response>();
+
+
+    private boolean _debuggingClientMode;
+    
+
+
 	static Logger logger = Logger.getLogger(ActionDispatcher.class.getName());
 
 	/**
@@ -142,6 +149,13 @@ public class ActionDispatcher {
 			logger.error("Could not add command: " + command.getName(), e);
 		}
 	}
+	
+	public void setDebuggingClientMode(boolean yesNo) {
+	    _debuggingClientMode=yesNo;
+	    
+	    // always reset
+	    oldResponses.clear();
+	}
 
 	@SuppressWarnings("rawtypes")
 	public Map<Class<? extends Action<? extends Response>>, Class> getCommands() {
@@ -201,6 +215,16 @@ public class ActionDispatcher {
 	public <T extends Response> T execute(Action<T> action, Connection connectionToUse)
 			throws CmRpcException {
 
+	    if(_debuggingClientMode) {
+	        logger.info("DEBUGGING_CLIENT enabled!");
+	        // reuse action/response to avoid round-trip
+    	    Response oldResponse = oldResponses.get(action.getClass().getName());
+    	    if(oldResponse != null) {
+    	        logger.info("DEBUGGING_CLIENT: returning cached action (" + action.getClass().getName() + ")");
+    	        return (T)oldResponse;
+    	    }
+	    }
+	    
 		String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();
 
 		boolean failed = false;
@@ -303,6 +327,10 @@ public class ActionDispatcher {
 
 			incrementActionsCompleted(actionType);
 
+			if(_debuggingClientMode) {
+			    oldResponses.put(action.getClass().getName(),  response);
+			}
+			
 			return response;
 		} catch (Exception e) {
 			if ((e instanceof CmExceptionDoNotNotify) == false) {

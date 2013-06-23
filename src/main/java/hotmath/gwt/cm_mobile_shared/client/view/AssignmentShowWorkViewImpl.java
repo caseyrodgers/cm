@@ -3,15 +3,14 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.SexyButton;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_mobile_shared.client.page.IPage.ApplicationType;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentWhiteboardData;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 
 import java.util.List;
 
@@ -24,12 +23,12 @@ import com.google.gwt.user.client.ui.Widget;
 public class AssignmentShowWorkViewImpl extends Composite implements AssignmentShowWorkView {
 
     private Presenter presenter;
-    ShowWorkPanel _showWorkPanel;
+    ShowWorkPanel2 _showWorkPanel;
     SexyButton _submitBtn;
     SubToolBar _subBar;
     
     public AssignmentShowWorkViewImpl() {
-        _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
+        _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
             @Override
             public void showWorkIsReady() {
                 setPresenterAsync(presenter);
@@ -42,7 +41,7 @@ public class AssignmentShowWorkViewImpl extends Composite implements AssignmentS
         },false);
         
 
-        _subBar = new SubToolBar(true);
+        _subBar = new SubToolBar();
         _submitBtn = new SexyButton("Submit Whiteboard", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

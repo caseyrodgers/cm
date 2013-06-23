@@ -4,7 +4,11 @@ import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 
 public interface PrescriptionLessonResourceTutorView extends IPage,HasWhiteboard {
     void loadSolution(SolutionInfo solution);
@@ -15,8 +19,9 @@ public interface PrescriptionLessonResourceTutorView extends IPage,HasWhiteboard
     
     static public interface Presenter {
         void setupView(PrescriptionLessonResourceTutorView view);
-        void showWhiteboard(String title);
+        void showWhiteboard(ShowWorkPanel2 _showWork);
         void markSolutionAsComplete();
         InmhItemData getItemData();
+        Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String data);
     }
 }

@@ -37,7 +37,7 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
     public AssignmentListViewImpl() {
         DockPanel dockPanel = new DockPanel();
         
-        SubToolBar subToolBar = new SubToolBar(true);
+        SubToolBar subToolBar = new SubToolBar();
         subToolBar.add(new SexyButton("Check For Changes", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {

@@ -48,7 +48,7 @@ public class AutoCreateViewImpl extends Composite implements AutoCreateView {
 
         VerticalPanel holder = new VerticalPanel();
 
-        SubToolBar subBar = new SubToolBar(false);
+        SubToolBar subBar = new SubToolBar();
         subBar.add(new SexyButton("Return To Home Page", new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
