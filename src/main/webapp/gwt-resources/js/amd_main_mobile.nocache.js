@@ -1,5 +1,5 @@
 require.config({
-    urlArgs: "bust=20130516"
+    urlArgs: "bust=20130616"
 });
 
 
@@ -19,7 +19,7 @@ require(['CatchupMathMobile3_combined'], function(x) {
 function requireJsLoad_whiteboard(funcToCall) {
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
-        require(['whiteboard', 'mathquill/mathquill'], function(x) {
+        require(['whiteboard-min'], function(x) {
             funcToCall(x);
         });
     }

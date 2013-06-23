@@ -494,7 +494,7 @@ function viewport_testpage() {
                     topcontext = null;
                         }
                 }
-        setupMathQuill(); // defined in mathquill.js
+        //setupMathQuill(); // defined in mathquill.js
         mainDoc = mainDocIn;
                 //position calc button in toolbar
                 if($get_Element('#button_calc')){
