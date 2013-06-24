@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -191,14 +192,15 @@ public class AssignmentTreeAllLessonsListingPanel extends ContentPanel {
         _tree.setLoader(loader);
         _tree.setWidth(300);
         _tree.setCheckable(true);
-        _tree.setCheckStyle(CheckCascade.TRI);        
-        _tree.setWidth(300);
-        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(), "click") {
+        _tree.setCheckStyle(CheckCascade.CHILDREN);        
+
+        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),
+        		BrowserEvents.CLICK) {
             @Override
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
-                if ("click".equals(event.getType())) {
+                if (BrowserEvents.CLICK.equals(event.getType())) {
                     BaseDto base = _tree.getSelectionModel().getSelectedItem();
                     if (base instanceof ProblemDto) {
                         ProblemDto p = (ProblemDto)base;
