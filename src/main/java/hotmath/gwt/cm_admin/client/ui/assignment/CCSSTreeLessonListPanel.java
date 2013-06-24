@@ -32,6 +32,7 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
 
@@ -43,6 +44,7 @@ import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.dom.client.BrowserEvents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +117,6 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
                 else {
                     return dto.getName();
                 }
-
             }
 
             @Override
@@ -126,33 +127,41 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
             public String getPath() {
                 return "name";
             }
+
         }, new CheckableMinLevelGxtTreeAppearance(3));
         _tree.setLoader(loader);
-        _tree.setWidth(300);
+        _tree.setWidth(350);
         _tree.setCheckable(true);
-        _tree.setCheckStyle(CheckCascade.TRI);        
-        _tree.setWidth(300);
+        _tree.setCheckStyle(CheckCascade.CHILDREN);        
         
-        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(), "click") {
+        SimpleSafeHtmlCell<String> cell = new SimpleSafeHtmlCell<String>(SimpleSafeHtmlRenderer.getInstance(),
+        		BrowserEvents.CLICK) {
             @Override
             public void onBrowserEvent(Context context, Element parent, String value, NativeEvent event,
                     ValueUpdater<String> valueUpdater) {
                 super.onBrowserEvent(context, parent, value, event, valueUpdater);
-                if ("click".equals(event.getType())) {
-                    BaseDto dto = _tree.getSelectionModel().getSelectedItem();
+                BaseDto dto = _tree.getSelectionModel().getSelectedItem();
+                if (BrowserEvents.CLICK.equalsIgnoreCase(event.getType())) {
                     if (dto instanceof ProblemDto) {
                     	ProblemDto p = (ProblemDto)dto;
                         Log.debug("View Question", "Viewing " + p.getLabel());
 
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
+                    if (dto.getLevel() == CCSSData.STANDARD) {
+                    	CCSSStandard ccss = (CCSSStandard)dto;
+                    	MessageBox msgBox = new MessageBox(ccss.getName(), ccss.getSummary());
+                    	msgBox.show();
+                    }
                 }
             }
+            
         };
         _tree.setCell(cell);
         
         
-        final DelayedTask task = new DelayedTask() {
+        @SuppressWarnings("unused")
+		final DelayedTask task = new DelayedTask() {
             @Override
             public void onExecute() {
                 Log.debug(_tree.getCheckedSelection().size() + " problem(s) selected");
@@ -235,27 +244,26 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
         loader.addLoadHandler(new ChildTreeStoreBinding<BaseDto>(treeStore));
 
         _root = makeFolder("Root");
-        List<BaseDto> children = new ArrayList<BaseDto>();
-        for(CCSSGradeLevel l: levels) {
-            FolderDto level = makeFolder(l.getLabel());
-            
-            children.add(level);
+        List<BaseDto> base = new ArrayList<BaseDto>();
+        for(CCSSGradeLevel level: levels) {
+            initFolder(level);
+            base.add(level);
 
-            // create nodes for each domain/topic at this level
-            if (l.getDomains() == null) continue;
-            for(CCSSDomain d: l.getDomains()) {
-            	FolderDto domain = makeFolder(d.getLabel());
+            // init nodes for each domain/topic at this level
+            if (level.getDomains() == null) continue;
+            for(CCSSDomain domain: level.getDomains()) {
+            	initFolder(domain);
             	level.addChild(domain);
 
-            	// create nodes for each standard in this domain/topic
-            	if (d.getStandards() == null) continue;
-                for(CCSSStandard s: d.getStandards()) {
-                	FolderDto standard = makeFolder(s.getLabel());
+            	// init nodes for each standard in this domain/topic
+            	if (domain.getStandards() == null) continue;
+                for(CCSSStandard standard: domain.getStandards()) {
+                	initFolder(standard);
                 	domain.addChild(standard);
 
                 	// init nodes for each Lesson associated with this Standard (CCSS)
-                	if (s.getLessons() == null) continue;
-                    for(CCSSLesson lesson: s.getLessons()) {
+                	if (standard.getLessons() == null) continue;
+                    for(CCSSLesson lesson: standard.getLessons()) {
                     	initFolder(lesson);
                     	standard.addChild(lesson);
                     }
@@ -263,13 +271,13 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
             }
             
         }
-        _root.setChildren(children);
+        _root.setChildren(base);
         
         FolderDto root = _root;
-        for (BaseDto base : root.getChildren()) {
-          treeStore.add(base);
-          if (base instanceof FolderDto) {
-            addToStore(treeStore, (FolderDto) base);
+        for (BaseDto dto : root.getChildren()) {
+          treeStore.add(dto);
+          if (dto instanceof FolderDto) {
+            addToStore(treeStore, (FolderDto) dto);
           }
         }
         return treeStore;
@@ -292,16 +300,14 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
 
     private static FolderDto makeFolder(String name) {
         FolderDto theReturn = new FolderDto(++BaseDto.autoId, name);
-        Log.debug("makeFoder(): autoId: " + BaseDto.autoId);
         theReturn.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
         return theReturn;
     }
 
-    private static FolderDto initFolder(CCSSLesson lesson) {
-    	lesson.setId(++BaseDto.autoId);
-        Log.debug("initFolder(): autoId: " + BaseDto.autoId);
-        lesson.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
-        return lesson;
+    private static FolderDto initFolder(FolderDto dto) {
+    	dto.setId(++BaseDto.autoId);
+        dto.setChildren((List<BaseDto>) new ArrayList<BaseDto>());
+        return dto;
     }
 
     private void readDataAndBuildTree() {
