@@ -6,6 +6,7 @@ import java.util.List;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
+import hotmath.gwt.shared.client.model.CCSSGroupCoverageData;
 
 public class CCSSReportDao_Test extends CmDbTestCase {
 
@@ -61,5 +62,21 @@ public class CCSSReportDao_Test extends CmDbTestCase {
         CCSSData data = dao.getCCSSData();
 
         assertTrue(data.getLevels().size() > 0);
+    }
+
+    public void testGetCCSSGroupCoverageData() throws Exception {
+    	Date toDate = new Date();
+    	Date fromDate = new Date(toDate.getTime() - MSEC_IN_YEAR);
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        List<CCSSGroupCoverageData> list = dao.getCCSSGroupCoverageDate(2, 1976, "cm_test", fromDate, toDate, 0, 24);
+        list = dao.getCCSSGroupCoverageDate(2, 1976, "cm_test", fromDate, toDate, 25, 49);
+        assertTrue(list != null);
+        list = dao.getCCSSGroupCoverageDate(2, 1976, "cm_test", fromDate, toDate, 50, 74);
+        assertTrue(list != null);
+        list = dao.getCCSSGroupCoverageDate(2, 1976, "cm_test", fromDate, toDate, 75, 99);
+        assertTrue(list != null);
+        list = dao.getCCSSGroupCoverageDate(2, 1976, "cm_test", fromDate, toDate, 100, 100);
+        assertTrue(list != null);
+    	
     }
 }
