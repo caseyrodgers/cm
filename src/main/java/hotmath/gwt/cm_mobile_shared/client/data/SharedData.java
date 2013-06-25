@@ -12,6 +12,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.model.SessionTopic;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.PrescriptionSessionDataResource;
@@ -228,7 +229,10 @@ public class SharedData {
         boolean isCustomQuiz = ui.isCustomProgram() && ui.getRunId() == 0;
         
         String status = null;
-        if(!isCustomQuiz) {
+        if(SharedData.getFlowAction().getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
+            status = "Please choose an assignment to work on.";
+        }
+        else if(!isCustomQuiz) {
             String section="";
             if(!isCustom) {
                 section = "section " + segment + " of " + segmentsTotal + " of ";
