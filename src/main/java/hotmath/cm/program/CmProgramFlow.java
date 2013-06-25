@@ -14,6 +14,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.server.service.command.CreateTestRunCommand;
 import hotmath.gwt.shared.server.service.command.GetPrescriptionCommand;
 import hotmath.gwt.shared.server.service.command.GetQuizHtmlCommand;
+import hotmath.testset.ha.CmProgram;
 import hotmath.testset.ha.HaTest;
 import hotmath.testset.ha.HaTestDao;
 import hotmath.testset.ha.HaTestDef;
@@ -132,20 +133,30 @@ public class CmProgramFlow {
     				return new CmProgramFlowAction(CmPlace.AUTO_ADVANCED_PROGRAM);
     		}
 
-    		if (activeInfo.getActiveRunId() > 0) {
-    			// is in a prescription
-    			return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, new GetPrescriptionAction(
-    					activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true)));
-    		} else {
-    			/**
-    			 * If no quiz for current segment, then create a new one
-    			 */
-    			if (activeInfo.getActiveTestId() == 0) {
-    				activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
-    				newQuiz = true;
-    			}
-    			return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,
-    					new GetQuizHtmlAction(activeInfo.getActiveTestId())));
+    		
+    		if(userProgram.getTestDefId() == CmProgram.ASSIGNMENTS_ONLY.getDefId()) {
+    		    /** assignments only, not in a program
+    		     * 
+    		     */
+    		    
+    		    return new CmProgramFlowAction(CmPlace.ASSIGNMENTS_ONLY);
+    		}
+    		else {
+        		if (activeInfo.getActiveRunId() > 0) {
+        			// is in a prescription
+        			return new CmProgramFlowAction(new GetPrescriptionCommand().execute(conn, new GetPrescriptionAction(
+        					activeInfo.getActiveRunId(), activeInfo.getActiveRunSession(), true)));
+        		} else {
+        			/**
+        			 * If no quiz for current segment, then create a new one
+        			 */
+        			if (activeInfo.getActiveTestId() == 0) {
+        				activeInfo.setActiveTestId(createNewProgramSegment().getTestId());
+        				newQuiz = true;
+        			}
+        			return new CmProgramFlowAction(new GetQuizHtmlCommand().execute(conn,
+        					new GetQuizHtmlAction(activeInfo.getActiveTestId())));
+        		}
     		}
     	}
     	finally {
@@ -566,6 +577,13 @@ public class CmProgramFlow {
     @Override
     public String toString() {
         return "CmProgramFlow [userProgram=" + userProgram + ", activeInfo=" + activeInfo + "]";
+    }
+
+    public CmProgramFlowAction assignmentsOnlyAction() {
+        activeInfo.setActiveRunId(0);
+        activeInfo.setActiveTestId(0);
+        CmProgramFlowAction flowAction = new CmProgramFlowAction(CmPlace.ASSIGNMENTS_ONLY);
+        return flowAction;
     }
 }
 

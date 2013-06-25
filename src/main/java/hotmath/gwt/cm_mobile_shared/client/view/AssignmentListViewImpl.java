@@ -9,6 +9,7 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent.TouchClickHandler;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedHandler;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -69,7 +70,14 @@ public class AssignmentListViewImpl extends Composite implements AssignmentListV
 
     @Override
     public String getBackButtonText() {
-        return "Back";
+        if(SharedData.getMobileUser().getFlowAction().getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
+            // do not provide back if assignments only
+            return null;
+        }
+        else {
+            // provide back, which will lead to current program
+            return "Back";
+        }
     }
 
     @Override

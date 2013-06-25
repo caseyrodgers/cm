@@ -209,7 +209,10 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
          * Special cases
          * 
          */
-        if (programFlow.getUserProgram().isCustom()
+        if(programFlow.getUserProgram().getTestDefId() == CmProgram.ASSIGNMENTS_ONLY.getDefId()) {
+            destination.setPlace(CmPlace.ASSIGNMENTS_ONLY);
+        }
+        else if (programFlow.getUserProgram().isCustom()
                 && programFlow.getActiveFlowAction(conn).getPlace() == CmPlace.END_OF_PROGRAM) {
             /**
              * is a custom quiz, so we must check separately.

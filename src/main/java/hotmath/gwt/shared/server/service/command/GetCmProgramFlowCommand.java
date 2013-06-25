@@ -36,7 +36,7 @@ public class GetCmProgramFlowCommand implements ActionHandler<GetCmProgramFlowAc
 
             case RETAKE_SEGMENT:
                 return cmFlow.retakeActiveProgramSegment(conn);
-
+                
             case ACTIVE:
             default:
                 return cmFlow.getActiveFlowAction(conn);

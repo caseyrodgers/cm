@@ -9,6 +9,8 @@ public class CmDestination implements Response {
     CmPlace place;
     
     public CmDestination(String placeName) {
+        
+        place = CmPlace.valueOf(placeName);
         String v = CmPlace.END_OF_PROGRAM.toString();
         if(placeName.equals(CmPlace.QUIZ.toString())) {
             place = CmPlace.QUIZ;

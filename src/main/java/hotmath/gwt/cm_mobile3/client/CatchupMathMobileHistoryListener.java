@@ -40,6 +40,7 @@ import hotmath.gwt.cm_mobile_shared.client.view.PrescriptionLessonResourceVideoV
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkView;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkViewImpl;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 
@@ -48,6 +49,7 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
@@ -107,7 +109,22 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
           SharedData.makeSureUserHasBeenRead(new CallbackOnComplete() {
               @Override
               public void isComplete() {
-                  CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+                  
+                  /** default place.
+                   * 
+                   * If assignments only, then go only to assignments.  Otherwise
+                   * run user through their program.
+                   * 
+                   */
+                  
+                  if(SharedData.getMobileUser().getFlowAction().getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
+                      // only show the assignments
+                      History.newItem("assignment_list:" + System.currentTimeMillis());
+                  }
+                  else {
+                      // show the current program
+                      CmRpcCore.EVENT_BUS.fireEvent(new HandleNextFlowEvent(SharedData.getMobileUser().getFlowAction()));
+                  }
               }
           });
           return;

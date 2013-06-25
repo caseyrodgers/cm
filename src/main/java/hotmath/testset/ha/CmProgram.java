@@ -39,7 +39,8 @@ public enum CmProgram {
     OTHER_PREALG(48,"Pre-Algebra, Other", "Pre-Alg", "Other",false,1),
     OTHER_ALG1(49,"Algebra 1, Other", "Alg 1", "Other", false, 1),
     OTHER_GEOM(50,"Geometry, Other", "Geom", "Other", false, 1),
-    OTHER_ALG2(51,"Algebra 2, Other", "Alg 2", "Other", false, 1);
+    OTHER_ALG2(51,"Algebra 2, Other", "Alg 2", "Other", false, 1),
+    ASSIGNMENTS_ONLY(53,"Assignments Only", "Assignments Only", "Assignments Only", true, 0);
 
     private final int     defId;
     private final String  title;
