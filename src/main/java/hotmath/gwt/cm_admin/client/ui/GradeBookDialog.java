@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetGradeBookDataAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.AssignmentModel;
 import hotmath.gwt.cm_tools.client.model.GradeBookModel;
-import hotmath.gwt.cm_tools.client.ui.CmWindow.CmWindow;
+import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBoxGxt2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
@@ -16,17 +16,14 @@ import java.util.List;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.event.BaseEvent;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
@@ -34,9 +31,9 @@ import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
-import com.extjs.gxt.ui.client.widget.layout.FillLayout;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 
-public class GradeBookDialog extends CmWindow {
+public class GradeBookDialog extends GWindow {
     
     int uid;
     Grid<GradeBookModel> _grid;
@@ -44,16 +41,17 @@ public class GradeBookDialog extends CmWindow {
     GradeBookModel gradeBookMdl;
     
     public GradeBookDialog(int uid) {
+        super(false);
         this.uid = uid;
-        setHeading("Grade Book View");
+        setHeadingText("Grade Book View");
         setSize("640px", "480px");
-        setLayout(new FillLayout());
-        
         setMaximizable(true);
 
-        getButtonBar().setStyleAttribute("position", "relative");
+        getButtonBar().getElement().setAttribute("style", "position:relative");
         addHomeworkSelector();
         addDetailsButton();
+        
+        addButton(new TextButton("Add/Remove Students"));
         addCloseButton();
 
         readServerData();
@@ -114,7 +112,7 @@ public class GradeBookDialog extends CmWindow {
         xferAssignmentList(data);
         _grid.getStore().add(data);
         
-        layout(true);
+        //layout(true);
     }
     
     private void xferAssignmentList(CmList<GradeBookModel> gbList) {

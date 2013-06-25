@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
+import com.sencha.gxt.core.client.IdentityValueProvider;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.data.shared.ListStore;
@@ -36,6 +37,7 @@ import com.sencha.gxt.widget.core.client.event.HideEvent;
 import com.sencha.gxt.widget.core.client.event.HideEvent.HideHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.grid.CheckBoxSelectionModel;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -58,10 +60,11 @@ public class GradeBookPanel extends ContentPanel {
     
     public GradeBookPanel(){
         super.setHeadingText("Status");
-
+        
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
         initColumns();
         colMdl = new ColumnModel<StudentAssignment>(colConfList);
+
         
         _store = new ListStore<StudentAssignment>(saProps.uid());
         
@@ -250,4 +253,5 @@ interface StudentAssignmentProperties extends PropertyAccess<String> {
     ValueProvider<StudentAssignment, String> homeworkGrade();
     ValueProvider<StudentAssignment, String> studentDetailStatus();
     ValueProvider<StudentAssignment, Boolean> graded();
+    ValueProvider<StudentAssignment, Boolean> assigned();
 }

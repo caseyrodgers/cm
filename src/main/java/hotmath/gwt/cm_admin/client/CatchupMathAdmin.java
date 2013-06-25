@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
-import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
+import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
@@ -116,7 +116,13 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         if(CmShared.getQueryParameter("test") != null) {
-            new AssignmentManagerDialog2(566,2);
+            //new AssignmentManagerDialog2(566,2);
+            //return;
+            
+            Assignment ass = new Assignment();
+            ass.setAdminId(2);
+            ass.setAssignKey(35);
+            new AssignmentStatusDialog(ass);
             return;
         }
 

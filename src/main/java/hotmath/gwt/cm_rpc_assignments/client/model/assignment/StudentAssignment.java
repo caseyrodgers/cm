@@ -36,8 +36,10 @@ public class StudentAssignment implements Response {
     private boolean assignmentGraded;
     private Date turnInDate;
     
-    
-   StudentAssignmentStatuses studentStatuses;
+    boolean assigned; // is this user assigned to this assignment?
+
+
+StudentAssignmentStatuses studentStatuses;
 
     public StudentAssignment(){}
     
@@ -48,6 +50,15 @@ public class StudentAssignment implements Response {
         this.assignmentGraded = assignmentGraded;
     }
 
+    
+   public boolean isAssigned() {
+        return assigned;
+    }
+
+    public void setAssigned(boolean assigned) {
+        this.assigned = assigned;
+    }
+    
     public Date getTurnInDate() {
         return turnInDate;
     }
