@@ -1,11 +1,7 @@
 package hotmath.gwt.shared.client.rpc.action;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
-
-import java.util.Date;
 
 public class CCSSDataAction implements Action<CCSSData> {
     
@@ -16,7 +12,7 @@ public class CCSSDataAction implements Action<CCSSData> {
     
     @Override
     public String toString() {
-        return "CCSSCoverageDataAction";
+        return "CCSSDataAction";
     }
 
 }
