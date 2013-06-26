@@ -9,6 +9,8 @@ import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 
+import java.util.Date;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.Window;
@@ -75,8 +77,9 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
             public void attempt() {
                 CmBusyManager.setBusy(true);
                 
-                CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid,
-                        DateRangePanel.getInstance().getFromDate(), DateRangePanel.getInstance().getToDate());
+                Date fromDate = DateRangePanel.getInstance()!=null?DateRangePanel.getInstance().getFromDate():null;
+                Date toDate = DateRangePanel.getInstance()!=null?DateRangePanel.getInstance().getToDate():null;
+                CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid,fromDate, toDate);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }

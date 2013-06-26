@@ -58,6 +58,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
@@ -68,6 +69,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import sb.util.SbUtilities;
 
 public class AssignmentDao extends SimpleJdbcDaoSupport {
 
@@ -348,7 +351,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<AssignmentGradeDetailInfo> infos = getJdbcTemplate().query(sql, new Object[] { assignKey }, new RowMapper<AssignmentGradeDetailInfo>() {
             @Override
             public AssignmentGradeDetailInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new AssignmentGradeDetailInfo(rs.getInt("num_students_graded"), rs.getInt("num_students_in_assignment"));
+                
+                int inGroup = rs.getInt("num_students_in_group");
+                int specified = rs.getInt("num_students_specified");
+                int inAssignment;
+                if(specified > 0) {
+                    inAssignment = specified;
+                }
+                else {
+                    inAssignment = inGroup;
+                }
+                return new AssignmentGradeDetailInfo(rs.getInt("num_students_graded"), inAssignment);
             }
         });
 
@@ -426,8 +439,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         CmList<StudentAssignment> stuAssignments = new CmArrayList<StudentAssignment>();
         final Assignment assignment = getAssignment(assignKey);
 
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
 
+        /** assignments are either ALL students in group, or just the 
+         *  ones specified in CM_ASSIGNMENT_USERS_SPECIFIED.
+         *  
+         *  TODO: a way to specified directly in SQL
+         */
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
+        sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$", (hasAnySpecifiedUsers(assignKey)? " and u.uid in (select uid from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = " + assignKey + ")" : ""));
+        
         /**
          * get assignment problem status list for all users
          */
@@ -625,6 +645,26 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         
         return stuAssignments;
+    }
+
+    /** does this assignment have ANY specifically specified users?
+     * 
+     * If so, then only those users will have access to the assignment.
+     * If no specific users specified, then all users in group are assigned.
+     * 
+     *  
+     * @param assignKey
+     * @return
+     */
+    private boolean hasAnySpecifiedUsers(int assignKey) {
+        String sql = "select count(*) from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = ?";
+        int cnt = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
+            }
+        });
+        return cnt>0;
     }
 
     public List<Integer> getAssignmentsForGroup(int groupId, Date fromDate, Date toDate) {
@@ -879,6 +919,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int assignCount = 0, errorCount = 0;
         AssignmentInfo assignmentInfo = new AssignmentInfo();
         String messages = null;
+        
+        unassignStudentsFromAssignment(assignKey);
+        
         for (final StudentDto s : students) {
 
             try {
@@ -906,6 +949,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         assignmentInfo.setErrors(errorCount);
         assignmentInfo.setMessage(messages);
         return assignmentInfo;
+    }
+
+    private void unassignStudentsFromAssignment(final int assignKey) {
+        getJdbcTemplate().update("delete from CM_ASSIGNMENT_USER where assign_key = ?",new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setInt(1,  assignKey);
+            }
+        });
     }
 
     public void unassignStudents(final int assKey, final CmList<StudentAssignment> students) {
@@ -993,6 +1045,16 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public StudentAssignmentInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 
+                int assignKey = rs.getInt("assign_key");
+                if(hasAnySpecifiedUsers(assignKey)) {
+                    // then only include this assignment 
+                    // if this user has been specifically added
+                    // to CM_ASSIGNMENT_USERS_SPECIFIED
+                    if(!isUserSpecificallyAddedToAssignment(uid, assignKey)) {
+                        return null; // skip it.
+                    }
+                }
+                
                 int cntSubmitted = rs.getInt("cnt_submitted");
                 int cntProblems = rs.getInt("cnt_problems");
                 String status = rs.getString("status");
@@ -1002,9 +1064,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 if(status.equals("Open") && turnInDate != null) {
                     status = "Turned In";
                 }
-                
                 boolean isGraded = rs.getInt("is_graded") != 0 ? true : false;
-                int assignKey = rs.getInt("assign_key");
+                
                 String score = "";
                 if (isGraded) {
                     try {
@@ -1030,8 +1091,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         List<ProblemAnnotation> unreadAnnotations = getUnreadAnnotatedProblems(uid);
 
+        List<StudentAssignmentInfo> assInfosNoNull = new ArrayList<StudentAssignmentInfo>();
         // aggregate the number of unread annotations for each assignment
         for (StudentAssignmentInfo ass : assInfos) {
+            if(ass == null) {
+                continue;
+            }
+            assInfosNoNull.add(ass);
             for (ProblemAnnotation a : unreadAnnotations) {
                 int cnt = 0;
                 if (a.getAssignKey() == ass.getAssignKey()) {
@@ -1041,7 +1107,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         }
 
-        return assInfos;
+        return assInfosNoNull;
+    }
+
+    protected boolean isUserSpecificallyAddedToAssignment(int uid, int assignKey) {
+        String sql = "select count(*) " + " from    CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = ? and uid = ?";
+        int cnt = getJdbcTemplate().queryForObject(sql, new Object[] { assignKey, uid }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt(1);
+            }
+        });
+        return cnt > 0;
     }
 
     /**

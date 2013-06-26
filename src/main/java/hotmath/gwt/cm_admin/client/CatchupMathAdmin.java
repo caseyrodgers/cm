@@ -14,10 +14,12 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
+import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -116,13 +118,11 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     private void completeLoginProcess(final int uid) {
         
         if(CmShared.getQueryParameter("test") != null) {
-            //new AssignmentManagerDialog2(566,2);
-            //return;
-            
-            Assignment ass = new Assignment();
-            ass.setAdminId(2);
-            ass.setAssignKey(35);
-            new AssignmentStatusDialog(ass);
+            AssignmentStatusDialog.startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameter("test2") != null) {
+            CCSSCoverageWindow.startTest();
             return;
         }
 

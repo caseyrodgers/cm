@@ -34,6 +34,15 @@ public class AssignmentStatusDialog extends GWindow {
 
         setVisible(true);
     }
+    
+    public static void startTest() {
+        //new AssignmentManagerDialog2(566,2);
+        //return;
+        Assignment ass = new Assignment();
+        ass.setAdminId(2);
+        ass.setAssignKey(35);
+        new AssignmentStatusDialog(ass);
+    }
 
     
 }

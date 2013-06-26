@@ -3748,6 +3748,8 @@ left join CM_ASSIGNMENT_USER ua on ua.assign_key = a.assign_key and ua.uid = u.u
 where a.assign_key = ?
 and   (u.is_active = 1 and u.is_auto_create_template = 0)
 
+$$LIMIT_TO_SPECIFIED_USERS$$    
+
 order by u.user_name, problem_id
 
 
@@ -3992,10 +3994,12 @@ from CM_ASSIGNMENT a
      ON ca.assign_key = a.assign_key
 where ca.uid = ?
 
+$$LIMIT_TO_SPECIFIED_USERS$$
+
 
 .key=GET_ASSIGNMENTS_GRADED_INFO
 
-select  ai.num_students_graded, ag.num_students_in_assignment
+select  ai.num_students_graded, ag.num_students_in_group, us.num_students_specified
 FROM CM_ASSIGNMENT a
 left join (
                 select assign_key, count(*) as num_students_graded
@@ -4003,18 +4007,19 @@ left join (
                 where     is_graded = 1
                 group by assign_key
           ) ai on ai.assign_key = a.assign_key
-          
          left join(
-                select group_id, count(*) as num_students_in_assignment
+               select group_id, count(*) as num_students_in_group
                 from HA_USER u
                 where is_auto_create_template = 0
                 and   is_active = 1
                 group by group_id
-          ) ag on ag.group_id = a.group_id
-          
-     
+           ) ag on ag.group_id = a.group_id
+         left join(
+               select assign_key, count(*) as num_students_specified
+                from CM_ASSIGNMENT_USERS_SPECIFIED
+                group by assign_key
+           ) us on us.assign_key = a.assign_key
 where  a.assign_key = ?
-
 
 
 

@@ -1,13 +1,9 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
-
-import java.util.Arrays;
-import java.util.Date;
-
+import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindowWithNav;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -15,6 +11,9 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
+
+import java.util.Arrays;
+import java.util.Date;
 
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
@@ -38,8 +37,8 @@ public class CCSSCoverageWindow extends GWindow {
 
     Integer adminId;
 
-    private static final String TITLE="CCSS Coverage for ";
-    
+    private static final String TITLE = "CCSS Coverage for ";
+
     BorderLayoutData _westData;
     BorderLayoutData _centerData;
     CCSSCoverageListPanel _CCSSCoverageListPanel;
@@ -49,7 +48,7 @@ public class CCSSCoverageWindow extends GWindow {
     Label _dateRange = new Label();
 
     public CCSSCoverageWindow(StudentModelI stuModel, int groupId) {
-    	super(false);
+        super(false);
         __instance = this;
         _stuModel = stuModel;
         _groupId = groupId;
@@ -74,16 +73,16 @@ public class CCSSCoverageWindow extends GWindow {
         refreshDateRangeLabel();
 
         getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
-			@Override
-			public void onSelect(SelectEvent event) {
+            @Override
+            public void onSelect(SelectEvent event) {
                 reloadData();
-			}
+            }
         }));
 
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent ce) {
-            	printStudentCCSSCoverageReport();
+                printStudentCCSSCoverageReport();
             }
         }));
 
@@ -102,26 +101,29 @@ public class CCSSCoverageWindow extends GWindow {
         setVisible(true);
     }
 
-	private void showDefaultMsg() {
-		CenterLayoutContainer clc = new CenterLayoutContainer();
+    private void showDefaultMsg() {
+        CenterLayoutContainer clc = new CenterLayoutContainer();
         HTML defaultMsg = new HTML("<h1>Select a category</h1>");
         clc.add(defaultMsg);
         _container.setCenterWidget(clc);
         _container.forceLayout();
-	}
+    }
 
-	private void refreshDateRangeLabel() {
-		_dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
-	}
+    private void refreshDateRangeLabel() {
+        if (DateRangePanel.getInstance() != null) {
+            _dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
+        }
+    }
 
     int _currentSelection;
+
     private void reloadData() {
         _container.getCenterWidget().removeFromParent();
         _container.getWestWidget().removeFromParent();
 
         _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _stuModel.getUid(), 0);
         _container.setWestWidget(_CCSSCoverageListPanel, _westData);
-        
+
         refreshDateRangeLabel();
 
         showDefaultMsg();
@@ -133,27 +135,35 @@ public class CCSSCoverageWindow extends GWindow {
     }
 
     private void printStudentCCSSCoverageReport() {
-    	DateRangePanel dateRange = DateRangePanel.getInstance();
-    	Date fromDate=null, toDate=null;
-    	if (dateRange != null) {
-    		fromDate = dateRange.getFromDate();
-    		toDate = dateRange.getToDate();
-    	}
-    	new PdfWindowWithNav(_stuModel.getAdminUid(), "Catchup Math CCSS Report for: " + _stuModel.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
-    			_stuModel.getAdminUid(), Arrays.asList(_stuModel.getUid()), fromDate, toDate));
+        DateRangePanel dateRange = DateRangePanel.getInstance();
+        Date fromDate = null, toDate = null;
+        if (dateRange != null) {
+            fromDate = dateRange.getFromDate();
+            toDate = dateRange.getToDate();
+        }
+        new PdfWindowWithNav(_stuModel.getAdminUid(), "Catchup Math CCSS Report for: " + _stuModel.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
+                _stuModel.getAdminUid(), Arrays.asList(_stuModel.getUid()), fromDate, toDate));
     }
 
-static {
+    static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override
             public void handleEvent(CmEvent event) {
-                if(event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
-                    if(__instance != null && __instance.isVisible()) {
+                if (event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
+                    if (__instance != null && __instance.isVisible()) {
                         __instance.refreshDateRangeLabel();
                         __instance.reloadData();
                     }
                 }
             }
         });
+    }
+
+    public static void startTest() {
+        int groupId = 2298;
+        int uid=390;
+        StudentModelBase stuModel = new StudentModelBase();
+        stuModel.setUid(uid);
+        new CCSSCoverageWindow(stuModel, groupId);
     }
 }

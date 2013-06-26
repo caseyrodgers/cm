@@ -54,12 +54,35 @@ public class AssignmentAddRemoveStudents extends GWindow {
         addButton(new TextButton("Save", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                saveToServer();
             }
         }));
 
         addCloseButton();
 
         setVisible(true);
+    }
+
+    protected void saveToServer() {
+//        new RetryAction<RpcData>() {
+//            @Override
+//            public void attempt() {
+//                CmBusyManager.setBusy(true);
+//
+//                GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(assignment.getAssignKey());
+//                setAction(action);
+//                CmShared.getCmService().execute(action, this);
+//            }
+//
+//            @Override
+//            public void oncapture(CmList<StudentAssignment> saList) {
+//                _allStudents = saList;
+//                CmBusyManager.setBusy(false);
+//
+//                _listLeft.getStore().clear();
+//                _listLeft.getStore().addAll(saList);
+//            }
+//        }.register();
     }
 
     private void loadData() {
