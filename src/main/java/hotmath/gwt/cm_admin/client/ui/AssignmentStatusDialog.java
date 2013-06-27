@@ -36,6 +36,7 @@ public class AssignmentStatusDialog extends GWindow {
                 });
             }
         });
+        addRemove.setToolTip("Add or remove students assigned to this assignment (Draft mode only.)");
         if(asgn.getStatus().equals("Draft") || CmShared.getQueryParameter("debug") != null) {
             addRemove.setEnabled(true);
         } else {

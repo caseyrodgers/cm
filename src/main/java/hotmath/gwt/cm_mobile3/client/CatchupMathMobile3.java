@@ -109,7 +109,10 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
     LoadingDialog loadingDialog = null;
 
+    int _uid=0;
     private void onModuleLoadAux() {
+        
+        jsni_loadExternJs();
 
         long startTimeMillis = 0;
         /*
@@ -179,15 +182,15 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
             History.addValueChangeHandler(new CatchupMathMobileHistoryListener());
 
             String suid = CmGwtUtils.getQueryParameter("uid");
-            int uid = 0;
             if (suid != null) {
-                uid = Integer.parseInt(suid);
-                SharedData.saveUidToLocalStorage(uid);
+                _uid = Integer.parseInt(suid);
+                SharedData.saveUidToLocalStorage(_uid);
             }
 
-            if (!loadFirstPanelMaybe(uid)) {
-                History.fireCurrentHistoryState();
-            }
+
+            // once the external JS is loaded
+            // then startupApplication is called.
+            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -207,7 +210,34 @@ public class CatchupMathMobile3 implements EntryPoint, OrientationChangedHandler
 
         Log.info("Catchup Math Mobile Initialized");
     }
+    
+    
+    private void startupApplication() {
+        if (!loadFirstPanelMaybe(_uid)) {
+            History.fireCurrentHistoryState();
+        }        
+    }
+    
+    /** At this point we know all external JS has been
+     *  loaded the system is ready to go.
+     */
+    private void gwt_ExternalJsLoaded() {
+        startupApplication();        
+    }
 
+    native private void jsni_loadExternJs() /*-{
+        if($wnd.require == null) {
+            alert('requireJS not found');
+            return;
+        }
+        
+        var that=this;
+        $wnd.require(['CatchupMathMobile3_combined'], function(x) {
+             that.@hotmath.gwt.cm_mobile3.client.CatchupMathMobile3::gwt_ExternalJsLoaded()();
+            });
+    }-*/;
+    
+    
     private boolean loadFirstPanelMaybe(int uid) {
         boolean handled=false;
         try {
