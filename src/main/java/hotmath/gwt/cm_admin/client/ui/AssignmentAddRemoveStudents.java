@@ -15,15 +15,14 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.axis.encoding.CallbackTarget;
 
 import com.google.gwt.core.client.GWT;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -72,7 +71,8 @@ public class AssignmentAddRemoveStudents extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 if(_listLeft.getStore().size() == 0) {
-                    CatchupMathTools.showAlert("All Students Assigned",  "If no students are specifically assigned to an Assignment then ALL students in group will be assigned automatically.");
+                    CmMessageBox.showAlert("Please specify one or more students to be assigned.");
+                    return;
                 }
                 saveToServer();
             }
@@ -90,7 +90,16 @@ public class AssignmentAddRemoveStudents extends GWindow {
             @Override
             public void attempt() {
                 CmList<StudentDto> students= new CmArrayList<StudentDto>();
-                students.addAll(_listLeft.getStore().getAll());
+                if(_allStudents.size() == _listLeft.getStore().size()) {
+                    /** if all students are assigned, then put assignment
+                     *  in default/live population mode, meaning 'all students'
+                     *  currently in group at time of assignment use. 
+                     */
+                    students.clear(); // leave empty 
+                }
+                else {
+                    students.addAll(_listLeft.getStore().getAll());
+                }
                 AssignStudentsToAssignmentAction action = new AssignStudentsToAssignmentAction(assignment.getAssignKey(), students);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -138,12 +147,37 @@ public class AssignmentAddRemoveStudents extends GWindow {
                 
                _allStudents = (CmList<StudentDto>)respones.get(0);
                _assignedStudents = (CmList<StudentDto>)respones.get(1);
-                
+
+               List<StudentDto> unassignedStudents = new ArrayList<StudentDto>();
+               
+               if(_assignedStudents.size() == 0) {
+                   _assignedStudents.addAll(_allStudents);
+                   unassignedStudents.clear();
+               }
+               else {
+                   // there are specified students
+                   
+                   for(StudentDto s: _allStudents) {
+                       boolean found=false;
+                       for(StudentDto sa: _assignedStudents) {
+                           if(sa.getUid() == s.getUid()) {
+                               found=true;
+                               break;
+                           }
+                       }
+                       if(!found) {
+                           unassignedStudents.add(s);
+                       }
+                   }
+               }
+               
+               
                 _listLeft.getStore().clear();
                 _listLeft.getStore().addAll(_assignedStudents);
                 
                 _listRight.getStore().clear();
-                _listRight.getStore().addAll(_allStudents);
+                
+                _listRight.getStore().addAll(unassignedStudents);
             }
         }.register();
     }
