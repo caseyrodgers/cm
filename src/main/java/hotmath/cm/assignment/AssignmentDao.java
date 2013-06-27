@@ -930,7 +930,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 getJdbcTemplate().update(new PreparedStatementCreator() {
                     @Override
                     public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                        String sql = "insert into CM_ASSIGNMENT_USERS(assign_key, uid)values(?,?)";
+                        String sql = "insert into CM_ASSIGNMENT_USERS_SPECIFIED(assign_key, uid)values(?,?)";
                         PreparedStatement ps = con.prepareStatement(sql);
                         ps.setInt(1, assignKey);
                         ps.setInt(2, s.getUid());
@@ -954,7 +954,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private void unassignStudentsFromAssignment(final int assignKey) {
-        getJdbcTemplate().update("delete from CM_ASSIGNMENT_USER where assign_key = ?",new PreparedStatementSetter() {
+        getJdbcTemplate().update("delete from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = ?",new PreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps) throws SQLException {
                 ps.setInt(1,  assignKey);

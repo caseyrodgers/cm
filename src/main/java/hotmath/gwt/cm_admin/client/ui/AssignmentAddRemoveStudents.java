@@ -1,19 +1,29 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
+import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
+import hotmath.gwt.cm_rpc.client.rpc.AssignStudentsToAssignmentAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
+
+import org.apache.axis.encoding.CallbackTarget;
 
 import com.google.gwt.core.client.GWT;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -30,11 +40,13 @@ import com.sencha.gxt.dnd.core.client.ListViewDragSource;
 import com.sencha.gxt.dnd.core.client.ListViewDropTarget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.ListView;
+import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.HorizontalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
+import com.sencha.gxt.widget.core.client.info.Info;
 
 public class AssignmentAddRemoveStudents extends GWindow {
 
@@ -44,10 +56,12 @@ public class AssignmentAddRemoveStudents extends GWindow {
     private ListView<StudentDto, String> _listLeft;
     private ListView<StudentDto, String> _listRight;
     private CmList<StudentDto> _allStudents;
+    private CallbackOnComplete callBack;
     
-    public AssignmentAddRemoveStudents(Assignment assignment) {
+    public AssignmentAddRemoveStudents(Assignment assignment, CallbackOnComplete callBack) {
         super(false);
 
+        this.callBack = callBack;
         setHeadingHtml("Add and Remove Students from Assignment");
         this.assignment = assignment;
         drawGui();
@@ -57,6 +71,9 @@ public class AssignmentAddRemoveStudents extends GWindow {
         addButton(new TextButton("Save", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                if(_listLeft.getStore().size() == 0) {
+                    CatchupMathTools.showAlert("All Students Assigned",  "If no students are specifically assigned to an Assignment then ALL students in group will be assigned automatically.");
+                }
                 saveToServer();
             }
         }));
@@ -67,25 +84,36 @@ public class AssignmentAddRemoveStudents extends GWindow {
     }
 
     protected void saveToServer() {
-//        new RetryAction<RpcData>() {
-//            @Override
-//            public void attempt() {
-//                CmBusyManager.setBusy(true);
-//
-//                GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(assignment.getAssignKey());
-//                setAction(action);
-//                CmShared.getCmService().execute(action, this);
-//            }
-//
-//            @Override
-//            public void oncapture(CmList<StudentAssignment> saList) {
-//                _allStudents = saList;
-//                CmBusyManager.setBusy(false);
-//
-//                _listLeft.getStore().clear();
-//                _listLeft.getStore().addAll(saList);
-//            }
-//        }.register();
+        
+        CmBusyManager.setBusy(true);
+        new RetryAction<AssignmentInfo>() {
+            @Override
+            public void attempt() {
+                CmList<StudentDto> students= new CmArrayList<StudentDto>();
+                students.addAll(_listLeft.getStore().getAll());
+                AssignStudentsToAssignmentAction action = new AssignStudentsToAssignmentAction(assignment.getAssignKey(), students);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(AssignmentInfo info) {
+                CmBusyManager.setBusy(false);
+                if(info.getErrors()==0) {
+                    Info.display("Students Assigned", info.getAssigned() + " student(s) saved.");
+                }
+                else {
+                    MessageBox errorInfo = new MessageBox("Errors Assigning", "There were " + info.getErrors() + " error(s): \n\n" + info.getMessage());
+                    errorInfo.setPixelSize(400, 300);
+                    errorInfo.show();
+                }
+                hide();
+                CmRpcCore.EVENT_BUS.fireEvent(new DataBaseHasBeenUpdatedEvent(TypeOfUpdate.ASSIGNMENTS));
+                
+                callBack.isComplete();
+            }
+
+        }.register();                 
     }
 
     private void loadData() {
@@ -116,7 +144,6 @@ public class AssignmentAddRemoveStudents extends GWindow {
                 
                 _listRight.getStore().clear();
                 _listRight.getStore().addAll(_allStudents);
-                
             }
         }.register();
     }

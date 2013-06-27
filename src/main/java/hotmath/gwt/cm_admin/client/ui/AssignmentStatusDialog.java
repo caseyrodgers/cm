@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 
@@ -26,7 +27,12 @@ public class AssignmentStatusDialog extends GWindow {
         addButton(new TextButton("Add/Remove Students", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                new AssignmentAddRemoveStudents(asgn);
+                new AssignmentAddRemoveStudents(asgn, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        _gradingPanel.showGradeBookFor(asgn);
+                    }
+                });
             }
         }));
         addCloseButton();
