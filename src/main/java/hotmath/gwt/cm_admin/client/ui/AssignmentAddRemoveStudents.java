@@ -1,15 +1,18 @@
 package hotmath.gwt.cm_admin.client.ui;
 
-import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentGradeBookAction;
+
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
+import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -38,9 +41,9 @@ public class AssignmentAddRemoveStudents extends GWindow {
     private Assignment assignment;
     private ContentPanel _leftPanel;
     private ContentPanel _rightPanel;
-    private ListView<StudentAssignment, String> _listLeft;
-    private ListView<StudentAssignment, String> _listRight;
-    private CmList<StudentAssignment> _allStudents;
+    private ListView<StudentDto, String> _listLeft;
+    private ListView<StudentDto, String> _listRight;
+    private CmList<StudentDto> _allStudents;
     
     public AssignmentAddRemoveStudents(Assignment assignment) {
         super(false);
@@ -86,33 +89,41 @@ public class AssignmentAddRemoveStudents extends GWindow {
     }
 
     private void loadData() {
-        new RetryAction<CmList<StudentAssignment>>() {
-            
+        new RetryAction<CmList<Response>>() {
+
+            private CmList<StudentDto> _assignedStudents;
 
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
-
-                GetAssignmentGradeBookAction action = new GetAssignmentGradeBookAction(assignment.getAssignKey());
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
+                MultiActionRequestAction mAction = new MultiActionRequestAction();
+                mAction.getActions().add(new GetAssignmentStudentsAction(assignment.getAssignKey(),TYPE.ALL_IN_GROUP));
+                mAction.getActions().add(new GetAssignmentStudentsAction(assignment.getAssignKey(),TYPE.ASSIGNED));
+                setAction(mAction);
+                CmShared.getCmService().execute(mAction, this);
             }
 
             @Override
-            public void oncapture(CmList<StudentAssignment> saList) {
-                _allStudents = saList;
+            public void oncapture(CmList<Response> respones) {
+                
                 CmBusyManager.setBusy(false);
-
+                
+               _allStudents = (CmList<StudentDto>)respones.get(0);
+               _assignedStudents = (CmList<StudentDto>)respones.get(1);
+                
                 _listLeft.getStore().clear();
-                _listLeft.getStore().addAll(saList);
+                _listLeft.getStore().addAll(_assignedStudents);
+                
+                _listRight.getStore().clear();
+                _listRight.getStore().addAll(_allStudents);
+                
             }
         }.register();
     }
 
     interface StudentAssignmentProperties extends PropertyAccess<String> {
-        ModelKeyProvider<StudentAssignment> uid();
-
-        ValueProvider<StudentAssignment, String> studentName();
+        ModelKeyProvider<StudentDto> uid();
+        ValueProvider<StudentDto, String> name();
     }
 
     public void drawGui() {
@@ -120,32 +131,31 @@ public class AssignmentAddRemoveStudents extends GWindow {
 
         StudentAssignmentProperties props = GWT.create(StudentAssignmentProperties.class);
 
-        ListStore<StudentAssignment> store = new ListStore<StudentAssignment>(props.uid());
+        ListStore<StudentDto> store = new ListStore<StudentDto>(props.uid());
 
-        store.addSortInfo(new StoreSortInfo<StudentAssignment>(props.studentName(), SortDir.ASC));
-        store.add(new StudentAssignment(10, new Assignment(), new Date(), true));
+        store.addSortInfo(new StoreSortInfo<StudentDto>(props.name(), SortDir.ASC));
 
-        _listLeft = new ListView<StudentAssignment, String>(store, props.studentName());
+        _listLeft = new ListView<StudentDto, String>(store, props.name());
 
-        store = new ListStore<StudentAssignment>(props.uid());
-        store.addSortInfo(new StoreSortInfo<StudentAssignment>(props.studentName(), SortDir.ASC));
+        store = new ListStore<StudentDto>(props.uid());
+        store.addSortInfo(new StoreSortInfo<StudentDto>(props.name(), SortDir.ASC));
 
-        _listRight = new ListView<StudentAssignment, String>(store, props.studentName());
+        _listRight = new ListView<StudentDto, String>(store, props.name());
         _listRight.getSelectionModel().setSelectionMode(SelectionMode.MULTI);
 
-        ListViewDragSource<StudentAssignment> ds = new ListViewDragSource<StudentAssignment>(_listLeft);
+        ListViewDragSource<StudentDto> ds = new ListViewDragSource<StudentDto>(_listLeft);
         ds.addDragStartHandler(new DndDragStartHandler() {
             @Override
             public void onDragStart(DndDragStartEvent event) {
-                if (alreadyExists((List<StudentAssignment>)event.getData())) {
+                if (alreadyExists((List<StudentDto>)event.getData())) {
                     event.isCancelled();
                 }
             }
         });
-        new ListViewDragSource<StudentAssignment>(_listRight);
+        new ListViewDragSource<StudentDto>(_listRight);
 
-        new ListViewDropTarget<StudentAssignment>(_listLeft);
-        new ListViewDropTarget<StudentAssignment>(_listRight);
+        new ListViewDropTarget<StudentDto>(_listLeft);
+        new ListViewDropTarget<StudentDto>(_listRight);
 
         _leftPanel = new ContentPanel();
         _leftPanel.addTool(new TextButton("Unassign All", new SelectHandler() {
@@ -176,10 +186,10 @@ public class AssignmentAddRemoveStudents extends GWindow {
         setWidget(con);
     }
 
-    protected boolean alreadyExists(List<StudentAssignment> data) {
+    protected boolean alreadyExists(List<StudentDto> data) {
         if (data != null) {
-            for (StudentAssignment a : data) {
-                for (StudentAssignment a2 : _listRight.getStore().getAll()) {
+            for (StudentDto a : data) {
+                for (StudentDto a2 : _listRight.getStore().getAll()) {
                     if (a2.getUid() == a.getUid()) {
                         return true;
                     }

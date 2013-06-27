@@ -261,7 +261,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
                 filtered.add(sai);
             }
             else {
-                // CmMessageBox.showAlert("Unknown assignment type: " + sai);
+                filtered.add(sai);
             }
         }
         
@@ -280,12 +280,6 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.status(), 70, "Status"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.score(), 70, "Score"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.comments(), 235, "Comments"));
-        
-        //cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.complete(), 70, "Complete"));
-        //cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.turnInDate(), 70, "Turned In"));
-        // cols.add(new ColumnConfig<StudentAssignmentInfo, Boolean>(props.graded(), 70, "Graded"));
-        //cols.add(new ColumnConfig<StudentAssignmentInfo, Integer>(props.cntProblems(), 70, "Problems"));
-        //cols.add(new ColumnConfig<StudentAssignmentInfo, Integer>(props.cntSubmitted(), 70, "Submitted"));
         ColumnModel<StudentAssignmentInfo> colModel = new ColumnModel<StudentAssignmentInfo>(cols);
         return  colModel;
     }

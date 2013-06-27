@@ -10,6 +10,7 @@ import hotmath.gwt.cm_rpc.client.model.AssignmentLessonData;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
+import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
@@ -36,6 +37,7 @@ import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.SolutionDao;
+import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -1018,6 +1020,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             __logger.debug("Getting assignment statuses for '" + uid + "'");
         }
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_STATUS");
+        String assignKeyInList = createStudentAssignmentInList(uid);
+        sql = SbUtilities.replaceSubString(sql, "$$STUDENT_ASSIGN_KEYS$$", assignKeyInList);
+        
         getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
             @Override
             public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -1032,6 +1037,63 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return 0;
             }
         });
+    }
+
+    /** Create an SQL IN list that has all the assignments
+     *  this student has access it.
+     *  
+     *  This is all assignments in which this user has been 
+     *  specially added.   
+     *  
+     *  And all the assignments in this group that are 'default'.
+     *  Meaning they do not have ANY specific user specified.
+     *  
+     *  'default' assignments are assigned to all students in a group.
+     *  
+     *  
+     * @param uid
+     * @return
+     */
+    private String createStudentAssignmentInList(int uid) {
+        
+        /** Get list of assignments that have been specifically
+         *  assigned to me.
+         */
+        String sql = "select distinct assign_key from CM_ASSIGNMENT_USERS_SPECIFIED where uid = ?";
+        List<Integer> assignKeysSpecific = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("assign_key");
+            }
+        });
+        
+        /**  Get a list of assigments that do not have ANY specified users.  These
+         *   are the assignments that are assigned to ALL users.
+        */
+        sql = "select a.assign_key " +
+              "from    CM_ASSIGNMENT a " +
+              "   JOIN HA_USER u " + 
+              "     on u.group_id = a.group_id " +
+              "   LEFT JOIN CM_ASSIGNMENT_USERS_SPECIFIED us " + 
+              " on us.assign_key = a.assign_key " +
+              " where u.uid = ? " +
+              " and us.assign_key is null ";
+        List<Integer> assignKeysDefault = getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("assign_key");
+            }
+        });
+        
+        String inList="";
+        assignKeysSpecific.addAll(assignKeysDefault);
+        for(Integer ak: assignKeysSpecific) {
+            if(inList.length() > 0) {
+                inList += ",";
+            }
+            inList += ak;
+        }
+        return inList;
     }
 
     public List<StudentAssignmentInfo> getAssignmentsForUser(final int uid) throws Exception {
@@ -1072,9 +1134,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                         score = getUserScore(uid, assignKey);
                         if (score != null && score.equals("-")) {
                             String sl = status.toLowerCase();
-                            if (sl.equals("closed") || isGraded) {
-                                score = "0%";
-                            }
+                            score = "0%";
+                        }
+                        
+                        if(!status.equals("Closed")) {
+                            status = "Graded";
                         }
                     } catch (Exception e) {
                         __logger.error(String.format("Error getting score: uid: %d, assignKey: %d", uid, assignKey), e);
@@ -1083,8 +1147,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 boolean assignmentHasChanged = determineIfAssignmentHasChanged(assignKey, uid);
 
-                StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, uid, isGraded, turnInDate, status, dueDate, rs.getString("comments"),
-                        cntProblems, cntSubmitted, score, assignmentHasChanged);
+  
+                StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, uid, isGraded, turnInDate, status, dueDate, rs.getString("comments"),cntProblems, cntSubmitted, score, assignmentHasChanged);
                 return info;
             }
         });
@@ -2270,5 +2334,33 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         else {
             return ProblemStatus.UNANSWERED.toString();
         }
+    }
+
+    
+    /** Return either all the students that are assignable to the assignment
+     *  or the users that are specifically assigned.
+     *  
+     * @param assignKey
+     * @param type
+     * @return
+     */
+    public List<StudentDto> getStudentsInAssignment(int assignKey, TYPE type) {
+        String sql = null;
+        switch(type) {
+            case ALL_IN_GROUP:
+                sql = "select uid, user_name from HA_USER u join CM_ASSIGNMENT a on a.group_id = u.group_id and assign_key = ? order by lower(user_name)";
+                break;
+                
+            case ASSIGNED:
+                sql = "select u.uid, user_name from HA_USER u JOIN CM_ASSIGNMENT_USERS_SPECIFIED us on us.uid = u.uid where assign_key = ? order by lower(user_name)";
+                break;
+        }
+        List<StudentDto> students = getJdbcTemplate().query(sql, new Object[] { assignKey}, new RowMapper<StudentDto>() {
+            @Override
+            public StudentDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new StudentDto(rs.getInt("uid"), rs.getString("user_name"));                
+            }
+        });
+        return students;
     }
 }

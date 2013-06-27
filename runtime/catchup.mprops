@@ -3982,6 +3982,7 @@ where u.uid = ?
 and a.status != 'Draft'
 and  au.turn_in_date is null
 and (au.is_graded is null or au.is_graded = 0)
+and a.assign_key in ($$STUDENT_ASSIGN_KEYS$$)
 group by a.status
 
 
@@ -3993,8 +3994,6 @@ from CM_ASSIGNMENT a
   JOIN CM_ASSIGNMENT_USER ca
      ON ca.assign_key = a.assign_key
 where ca.uid = ?
-
-$$LIMIT_TO_SPECIFIED_USERS$$
 
 
 .key=GET_ASSIGNMENTS_GRADED_INFO
