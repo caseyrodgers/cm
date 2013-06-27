@@ -59,8 +59,6 @@ public class GradeBookPanel extends ContentPanel {
     ListStore<StudentAssignment> _store;
     
     public GradeBookPanel(){
-        super.setHeadingText("Status");
-        
         colConfList = new ArrayList<ColumnConfig<StudentAssignment, ?>>();
         initColumns();
         colMdl = new ColumnModel<StudentAssignment>(colConfList);

@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.ui.assignment.GradeBookPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.shared.client.CmShared;
 
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -17,14 +18,14 @@ public class AssignmentStatusDialog extends GWindow {
         super(false);
         setPixelSize(500,  400);
         setMaximizable(true);
-        setHeadingText("Assignment Status: Due: " + asgn.getDueDate() + " " + asgn.getComments());
+        setHeadingText("Student Status: Due: " + asgn.getDueDate() + " " + asgn.getComments());
         
         _gradingPanel = new GradeBookPanel();
         setWidget(_gradingPanel);
         _gradingPanel.showGradeBookFor(asgn);
         
 
-        addButton(new TextButton("Add/Remove Students", new SelectHandler() {
+        TextButton addRemove = new TextButton("Add/Remove Students", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new AssignmentAddRemoveStudents(asgn, new CallbackOnComplete() {
@@ -34,7 +35,13 @@ public class AssignmentStatusDialog extends GWindow {
                     }
                 });
             }
-        }));
+        });
+        if(asgn.getStatus().equals("Draft") || CmShared.getQueryParameter("debug") != null) {
+            addRemove.setEnabled(true);
+        } else {
+            addRemove.setEnabled(false);
+        }
+        addButton(addRemove);
         addCloseButton();
         
 
