@@ -189,6 +189,6 @@ public class CCSSCoverageWindow extends GWindow {
         int uid=390;
         StudentModelBase stuModel = new StudentModelBase();
         stuModel.setUid(uid);
-        new CCSSCoverageWindow(stuModel, groupId);
+        new CCSSCoverageWindow(stuModel, null);
     }
 }

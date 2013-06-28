@@ -9,7 +9,6 @@ import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
-import hotmath.gwt.shared.client.rpc.action.CCSSGroupCoverageDataAction;
 
 /**
  * CCSS Coverage by 25 to 49 percent of students in selected group
