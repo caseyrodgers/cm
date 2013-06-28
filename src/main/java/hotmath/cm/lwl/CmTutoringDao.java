@@ -318,7 +318,7 @@ public class CmTutoringDao {
                         }
                     }
                     finally {
-                        SqlUtilities.releaseResources(null,  ps2, conn);
+                        SqlUtilities.releaseResources(null,  ps2, null);
                     }
                 }
             }            
