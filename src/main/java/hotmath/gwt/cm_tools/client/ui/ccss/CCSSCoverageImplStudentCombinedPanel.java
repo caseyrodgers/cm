@@ -16,7 +16,7 @@ import hotmath.gwt.shared.client.rpc.action.CCSSCoverageDataAction;
 public class CCSSCoverageImplStudentCombinedPanel extends CCSSCoverageImplPanelBase {
 
     public CCSSCoverageImplStudentCombinedPanel(CCSSCoverageImplBase base, int userId) {
-        super(base, userId);
+        super(base, userId, 0);
     }
 
     @Override

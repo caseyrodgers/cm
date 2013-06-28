@@ -3,6 +3,7 @@ package hotmath.cm.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,7 +18,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
 import hotmath.gwt.shared.client.model.CCSSDomain;
-import hotmath.gwt.shared.client.model.CCSSGroupCoverageData;
 import hotmath.gwt.shared.client.model.CCSSLesson;
 import hotmath.gwt.shared.client.model.CCSSGradeLevel;
 import hotmath.gwt.shared.client.model.CCSSStandard;
@@ -236,24 +236,24 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	return standardNames;
     }
 
-    public List<CCSSGroupCoverageData> getCCSSGroupCoverageDate(int adminId, int groupId, String groupName, Date fromDate, Date toDate,
-    		int percentMin, int percentMax) throws Exception {
+    public List<CCSSCoverageData> getCCSSGroupCoverageData(int adminId, int groupId, Date fromDate, Date toDate, int percentMin,
+    		int percentMax) throws Exception {
 
-    	int studentCount = getNumberOfStudentsInGroup(adminId, groupName);
+    	int studentCount = getNumberOfStudentsInGroup(adminId, groupId);
 
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COUNTS_FOR_GROUP");
-    	List<CCSSGroupCoverageData> list = null;
+    	List<CCSSCoverageData> list = null;
     	try {
     		list = getJdbcTemplate().query(sql, new Object[] { adminId, groupId, fromDate, toDate, adminId, groupId, fromDate, toDate, adminId, groupId, fromDate, toDate },
-    				new RowMapper<CCSSGroupCoverageData>() {
+    				new RowMapper<CCSSCoverageData>() {
     			@Override
-    			public CCSSGroupCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
-    				return new CCSSGroupCoverageData(rs.getString("standard_name"), rs.getInt("student_count"));
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				return new CCSSCoverageData(rs.getString("standard_name"), rs.getInt("student_count"));
     			}
     		});
     	}
     	catch (DataAccessException e) {
-    		LOGGER.error(String.format("getNumberOfStudentsInGroup(): adminId: %d, groupId: %d sql: %s",
+    		LOGGER.error(String.format("getCCSSGroupCoverageData(): adminId: %d, groupId: %d sql: %s",
     				adminId, groupId, sql), e);
     		throw e;
     	}
@@ -261,8 +261,8 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	int minCount = Math.round(studentCount * percentMin / 100);
     	int maxCount = (int) Math.floor(studentCount * percentMax / 100);
 
-    	List<CCSSGroupCoverageData> returnList = new CmArrayList<CCSSGroupCoverageData>();
-    	for (CCSSGroupCoverageData data : list) {
+    	List<CCSSCoverageData> returnList = new ArrayList<CCSSCoverageData>();
+    	for (CCSSCoverageData data : list) {
     		if (minCount <= data.getCount() && maxCount >= data.getCount()) {
     			returnList.add(data);
     		}
@@ -278,22 +278,22 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
      * @param groupId
      * @return
      */
-    protected int getNumberOfStudentsInGroup(int adminId, String groupName) throws Exception {
-    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENTS_IN_GROUP");
-    	List<Integer> uids = null;
+    protected int getNumberOfStudentsInGroup(int adminId, int groupId) throws Exception {
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("COUNT_STUDENTS_IN_GROUP");
+    	List<Integer> count = null;
     	try {
-    		uids = getJdbcTemplate().query(sql, new Object[] { adminId, groupName }, new RowMapper<Integer>() {
+    		count = getJdbcTemplate().query(sql, new Object[] { adminId, groupId }, new RowMapper<Integer>() {
     			@Override
     			public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-    				return rs.getInt("uid");
+    				return rs.getInt("the_count");
     			}
     		});
     	}
     	catch (DataAccessException e) {
-    		LOGGER.error(String.format("getNumberOfStudentsInGroup(): adminId: %d, groupName: %s sql: %s",
-    				adminId, groupName, sql), e);
+    		LOGGER.error(String.format("getNumberOfStudentsInGroup(): adminId: %d, groupId: %d, sql: %s",
+    				adminId, groupId, sql), e);
     		throw e;
     	}
-    	return (uids != null) ? uids.size() : 0;
+    	return (count != null) ? count.get(0) : 0;
     }
 }

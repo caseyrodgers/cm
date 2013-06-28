@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_tools.client.model.StudentModelBase;
+import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -35,24 +36,35 @@ public class CCSSCoverageWindow extends GWindow {
 
     BorderLayoutContainer _container;
 
-    Integer adminId;
-
     private static final String TITLE = "CCSS Coverage for ";
 
     BorderLayoutData _westData;
     BorderLayoutData _centerData;
     CCSSCoverageListPanel _CCSSCoverageListPanel;
-    int _groupId;
+    GroupDto _groupDto;
     StudentModelI _stuModel;
+    int _uid;
+    int _adminId;
+    boolean _isGroupReport = false;
 
     Label _dateRange = new Label();
 
-    public CCSSCoverageWindow(StudentModelI stuModel, int groupId) {
+    public CCSSCoverageWindow(StudentModelI stuModel, GroupDto groupDto) {
         super(false);
         __instance = this;
         _stuModel = stuModel;
-        _groupId = groupId;
-        setHeadingText(TITLE + stuModel.getName());
+        _groupDto = groupDto;
+        if (_groupDto != null) {
+        	_uid = _groupDto.getGroupId();
+        	_adminId = _groupDto.getAdminId();
+        	_isGroupReport = true;
+        }
+        else {
+        	_uid = _stuModel.getUid();
+        	_adminId = _stuModel.getAdminUid();
+        }
+
+        setHeadingText(TITLE + ((_isGroupReport == false) ? stuModel.getName() : _groupDto.getName()));
         setWidth(540);
         setHeight(500);
 
@@ -60,14 +72,14 @@ public class CCSSCoverageWindow extends GWindow {
         _container.setBorders(true);
 
         _westData = new BorderLayoutData();
-        _westData.setSize(205);
+        _westData.setSize(250);
         _westData.setCollapsible(true);
         _westData.setFloatable(true);
 
         _centerData = new BorderLayoutData();
         _centerData.setSize(230);
 
-        _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _stuModel.getUid(), 0);
+        _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _uid, _adminId, _isGroupReport);
         _container.setWestWidget(_CCSSCoverageListPanel, _westData);
 
         refreshDateRangeLabel();
@@ -82,7 +94,12 @@ public class CCSSCoverageWindow extends GWindow {
         getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent ce) {
-                printStudentCCSSCoverageReport();
+            	if (_isGroupReport == false) {
+            		printStudentCCSSCoverageReport();
+            	}
+            	else {
+            		printGroupCCSSCoverageReport();
+            	}
             }
         }));
 
@@ -121,7 +138,7 @@ public class CCSSCoverageWindow extends GWindow {
         _container.getCenterWidget().removeFromParent();
         _container.getWestWidget().removeFromParent();
 
-        _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _stuModel.getUid(), 0);
+        _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _uid, _adminId, _isGroupReport);
         _container.setWestWidget(_CCSSCoverageListPanel, _westData);
 
         refreshDateRangeLabel();
@@ -130,19 +147,27 @@ public class CCSSCoverageWindow extends GWindow {
         _container.forceLayout();
     }
 
-    private void setAdminId(Integer aid) {
-        this.adminId = aid;
+    private void printStudentCCSSCoverageReport() {
+    	DateRangePanel dateRange = DateRangePanel.getInstance();
+    	Date fromDate=null, toDate=null;
+    	if (dateRange != null) {
+    		fromDate = dateRange.getFromDate();
+    		toDate = dateRange.getToDate();
+    	}
+    	new PdfWindowWithNav(_stuModel.getAdminUid(), "Catchup Math CCSS Report for: " + _stuModel.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
+    			_adminId, Arrays.asList(_stuModel.getUid()), fromDate, toDate));
     }
 
-    private void printStudentCCSSCoverageReport() {
-        DateRangePanel dateRange = DateRangePanel.getInstance();
-        Date fromDate = null, toDate = null;
-        if (dateRange != null) {
-            fromDate = dateRange.getFromDate();
-            toDate = dateRange.getToDate();
-        }
-        new PdfWindowWithNav(_stuModel.getAdminUid(), "Catchup Math CCSS Report for: " + _stuModel.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
-                _stuModel.getAdminUid(), Arrays.asList(_stuModel.getUid()), fromDate, toDate));
+    private void printGroupCCSSCoverageReport() {
+    	DateRangePanel dateRange = DateRangePanel.getInstance();
+    	Date fromDate=null, toDate=null;
+    	if (dateRange != null) {
+    		fromDate = dateRange.getFromDate();
+    		toDate = dateRange.getToDate();
+    	}
+    	// TODO
+    	new PdfWindowWithNav(0, "Catchup Math CCSS Report for: " + _groupDto.getName(), new GeneratePdfAction(PdfType.GROUP_CCSS,
+    			_adminId, Arrays.asList(_groupDto.getGroupId()), fromDate, toDate));
     }
 
     static {

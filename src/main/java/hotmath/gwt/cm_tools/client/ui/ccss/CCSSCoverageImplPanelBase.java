@@ -33,6 +33,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
     Grid<CCSSCoverageData> _grid;
     CCSSCoverageImplPanelBase __instance;
     int _uid;
+    int _adminId;
 
     interface GridProperties extends PropertyAccess<CCSSCoverageData> {
 
@@ -42,14 +43,18 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
 
         @Path("name")
         ValueProvider<CCSSCoverageData, String> ccssName();
+
+        @Path("countStr")
+        ValueProvider<CCSSCoverageData, String> count();
     }
 
     GridProperties _gridProps = GWT.create(GridProperties.class);
     
-    public CCSSCoverageImplPanelBase(CCSSCoverageImplBase base, int uid) {
+    public CCSSCoverageImplPanelBase(CCSSCoverageImplBase base, int uid, int adminId) {
         __instance = this;
         this.base = base;
         this._uid = uid;
+        this._adminId = adminId;
         getDataFromServer();
     }
 
@@ -80,6 +85,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
                 Date fromDate = DateRangePanel.getInstance()!=null?DateRangePanel.getInstance().getFromDate():null;
                 Date toDate = DateRangePanel.getInstance()!=null?DateRangePanel.getInstance().getToDate():null;
                 CCSSCoverageDataAction action = new CCSSCoverageDataAction(getReportType(), _uid,fromDate, toDate);
+                action.setAdminId(_adminId);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -110,10 +116,14 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         ListStore<CCSSCoverageData> store = new ListStore<CCSSCoverageData>(_gridProps.id());
         _grid = defineGrid(store, getColumns());
         if(data == null || data.size() == 0) {
+        	base.setCount(0);
+        	base.isComplete();
             add(new NoRowsFoundPanel(getNoDataMessage()));
         }
         else {
-            
+            base.setCount(data.size());
+            base.isComplete();
+
             for (int i = 0, t = data.size(); i < t; i++) {
                 store.add(data.get(i));
             }
@@ -135,7 +145,6 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
             });
 
         }
-        
     }
 
     protected String getGridToolTip() {
@@ -147,7 +156,7 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         grid.setBorders(true);
 
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
+        grid.getView().setAutoExpandColumn(cm.findColumnConfig("ccssName"));
         
         /** set to default to allow IE to render table correctly
          * 

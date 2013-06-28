@@ -20,7 +20,7 @@ import java.util.List;
  *
  */
 
-public class CCSSCoverageDataCommand implements ActionHandler< CCSSCoverageDataAction, CmList<CCSSCoverageData>>{
+public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAction, CmList<CCSSCoverageData>>{
 
     @Override
     public CmList<CCSSCoverageData> execute(Connection conn, CCSSCoverageDataAction action) throws Exception {
@@ -35,6 +35,8 @@ public class CCSSCoverageDataCommand implements ActionHandler< CCSSCoverageDataA
             if(toDate == null) {
                 toDate = new GregorianCalendar(2050,0,0).getTime();
             }
+            int adminId = action.getAdminId();
+            int groupId = action.getUID();
 
             CCSSReportDao crDao = CCSSReportDao.getInstance();
             switch(action.getType()) {
@@ -53,9 +55,24 @@ public class CCSSCoverageDataCommand implements ActionHandler< CCSSCoverageDataA
                 case STUDENT_COMBINED:
                     list = toCmList(crDao.getStudentCombinedStandardNames(action.getUID(), fromDate, toDate));
                     break;
+                case GROUP_ALL_STUDENTS:
+                    list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 100, 100));
+                    break;
 
-                case GROUP:
-                    //list = crDao.getGroupStandardNames(conn, action.getGroupId(), fromDate, toDate);
+                case GROUP_75_TO_99_PERCENT:
+                    list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 75, 99));
+                    break;
+
+                case GROUP_50_TO_74_PERCENT:
+                    list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 50, 74));
+                    break;
+
+                case GROUP_25_TO_49_PERCENT:
+                    list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 25, 49));
+                    break;
+
+                case GROUP_LT_25_PERCENT:
+                	list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 0, 24));
                     break;
 
                 default:

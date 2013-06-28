@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -12,9 +13,9 @@ import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.data.CmAsyncRequest;
 import hotmath.gwt.shared.client.data.CmAsyncRequestImplDefault;
@@ -261,6 +262,22 @@ public class ManageGroupsWindow extends GWindow {
                             CmAdminDataReader.getInstance().fireRefreshData();
                         }
                     });
+                }
+            }
+        }));
+
+        vertButtons.add(new MyButton("CCSS Coverage", "View CCSS Coverage for selected group.", new SelectHandler() {
+
+            @Override
+            public void onSelect(SelectEvent event) {
+                final GroupInfoModel gim = getGroupInfo();
+                if (gim != null) {
+
+                    if (gim.getAdminId() == 0)
+                        gim.setAdminId(adminModel.getUid());
+
+                    GroupDto groupDto = new GroupDto(gim.getId(), gim.getGroupName(), gim.getDescription(), gim.getAdminId());
+                    new CCSSCoverageWindow(null, groupDto);
                 }
             }
         }));

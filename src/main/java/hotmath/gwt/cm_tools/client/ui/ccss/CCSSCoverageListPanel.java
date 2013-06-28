@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -14,6 +15,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
@@ -49,20 +51,23 @@ public class CCSSCoverageListPanel extends BorderLayoutContainer {
 	private static final CCSSCoverageDataAccess dataAccess = GWT.create(CCSSCoverageDataAccess.class);
 
     static CCSSCoverageListPanel __instance;
+    
     BorderLayoutContainer _parent;
     BorderLayoutData _layoutData;
-    int _userId;
-    int _groupId;
+    int _uid;   // either student or group UID
+    int _adminId;
+    boolean _isGroupReport;
 
-    ListView<CCSSCoverageReport, CCSSCoverageReport> _listReports;
+    static ListView<CCSSCoverageReport, CCSSCoverageReport> _listReports;
 
     public CCSSCoverageListPanel(BorderLayoutContainer parent, BorderLayoutData layoutData,
-    		int userId, int groupId) {
+    		int uid, int adminId, boolean isGroupReport) {
         __instance = this;
         _parent = parent;
         _layoutData = layoutData;
-        _userId = userId;
-        _groupId = groupId;
+        _uid = uid;
+        _adminId = adminId;
+        _isGroupReport = isGroupReport;
 
         _listReports =
             new ListView<CCSSCoverageReport, CCSSCoverageReport>(createListStore(), new IdentityValueProvider<CCSSCoverageReport>() {
@@ -77,17 +82,26 @@ public class CCSSCoverageListPanel extends BorderLayoutContainer {
 
         this.setNorthWidget(northContainer, new BorderLayoutData(30));
         this.setCenterWidget(createListOfAvailableReports());
-        
+
         this.forceLayout();
     }
+
+    int countdown;
     
+    public void refreshReportList() {
+    	countdown--;
+    	if (countdown <= 0) {
+    		_listReports.refresh();
+    	}
+    }
+
     private void printCurrentReport() {
         CCSSCoverageReport report = _listReports.getSelectionModel().getSelectedItem();
         if(report == null) {
             CmMessageBox.showAlert("Nothing to print");
             return;
         }
-        
+
         String reportName = report.getText();
         //TODO: 
         //GeneratePdfStudentCCSSReportAction action = new GeneratePdfStudentCCSSReportAction(StudentGridPanel.instance.getCmAdminMdl().getUid(), reportName,reportLayout, StudentGridPanel.instance.getPageAction());
@@ -161,17 +175,27 @@ public class CCSSCoverageListPanel extends BorderLayoutContainer {
 
 	private ListStore<CCSSCoverageReport> createListStore() {
         ListStore<CCSSCoverageReport> s = new ListStore<CCSSCoverageReport>(dataAccess.key());
-        s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentQuizzedPassed(_userId)));
-        s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentReviewed(_userId)));
-        s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentAssignedCompleted(_userId)));
-        s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentCombined(_userId)));
-
-        //s.add(new CCSSCoverageReport(new CCSSCoverageImplGroup()));
-        
-        //CCSSCoverageReport rm = new CCSSCoverageReport(new CCSSCoverageImplGroup());
-        //rm.setDecorationClass("highlight-report-uses-summary");
-        //rm.setGroupReport(true);
-        //s.add(rm);
+        CallbackOnComplete callback = new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+            	refreshReportList();
+            }
+        };
+        if (_isGroupReport == false) {
+        	countdown = 4;
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentQuizzedPassed(_uid, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentReviewed(_uid, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentAssignedCompleted(_uid, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentCombined(_uid, callback)));
+        }
+        else {
+        	countdown = 5;
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupByAllStudents(_uid, _adminId, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy75to99Percent(_uid, _adminId, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy50to74Percent(_uid, _adminId, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy25to49Percent(_uid, _adminId, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy00to24Percent(_uid, _adminId, callback)));
+        }
         
         return s;
     }    
