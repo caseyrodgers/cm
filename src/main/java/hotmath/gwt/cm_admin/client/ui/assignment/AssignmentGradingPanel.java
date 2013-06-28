@@ -228,7 +228,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
             @Override
             public ProblemStatus convertModelValue(String object) {
-                return ProblemStatus.valueOf(object.toUpperCase());
+                return ProblemStatus.valueOf(object.toUpperCase().replace(" ", "_"));
             }
 
         }, combo);
