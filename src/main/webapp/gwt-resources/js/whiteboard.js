@@ -182,7 +182,7 @@ var Whiteboard = (function () {
 
         //context.drawImage(this, holder_x, holder_y);
         // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-        gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+        //gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
         //graphicDataStore[graphicDataStore.length - 1] = gd
         updateCanvas();
         if (!xt) {
@@ -223,14 +223,14 @@ var Whiteboard = (function () {
                 rect.ymax = rect.y + rect.h;
                 console.log('renderText')
                 console.log(this)
-                var gd = graphicDataStore[graphicDataStore.length - 1]
+                var gd = graphicDataStore[graphicDataStore.length - 1];
                 gd.brect = rect
 
                 context.drawImage(this, holder_x, holder_y);
                 // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-                gd.imageData = this;
-                graphicDataStore[graphicDataStore.length - 1] = gd
-                console.log(gd)
+               // gd.imageData = this;
+               // graphicDataStore[graphicDataStore.length - 1] = gd
+                //console.log(gd)
                 updateCanvas();
                 _mq_holder = null;
                 delete _mq_holder;
@@ -1857,6 +1857,7 @@ function viewport_testpage() {
         $get_Element("#inputBox").style.display = 'block';
         $get_Element("#inputBox").style.top = clickY + "px";
         $get_Element("#inputBox").style.left = clickX + "px";
+		$get_Element("#inputBox").style.color = wb.globalStrokeColor;
         $get_Element("#content").focus();
     }
 
