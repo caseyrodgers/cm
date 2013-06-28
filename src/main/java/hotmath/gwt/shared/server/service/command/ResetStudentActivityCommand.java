@@ -54,10 +54,7 @@ public class ResetStudentActivityCommand implements ActionHandler<ResetStudentAc
             SqlUtilities.releaseResources(null, ps, null);
         }
         
-        
         CmStudentDao.getInstance().assignProgramToStudent(conn, action.getUserId(), resetToTest.getProgramInfo());
-
-        
         
         HaUserExtendedDao.getInstance().resyncUserExtendedLessonStatusForUid(action.getUserId());
         

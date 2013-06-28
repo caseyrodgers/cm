@@ -356,8 +356,8 @@ public class PrescriptionCmGuiDefinition implements CmGuiDefinition {
                     __instance.showHelpPanel();
                 } else if (event.getEventType() == EventType.EVENT_TYPE_SOLUTION_FIF_CORRECT) {
                     /**
-                     * an Solution FIF was entered correct, so we want to mark
-                     * this (current) solution as having been complicated
+                     * a Solution FIF was entered correct, so we want to mark
+                     * this (current) solution as having been completed
                      */
                     ResourceViewerImplTutor.solutionHasBeenViewed_Gwt(null);
                 }

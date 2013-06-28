@@ -63,7 +63,7 @@ public class UpdateStudentCommand implements ActionHandler<UpdateStudentAction, 
         	     *  what is continuePar for?  (is false correct here?)
         	     *  
         	     */
-        		ppDao.updateProgramAssign(userId, cmProg,false);
+        		ppDao.updateProgramAssign(userId, cmProg, false);
 
         	    // passing false marks Program as incomplete
         	    pDao.setProgramAsComplete(conn, cmProg.getUserProgId(), false);

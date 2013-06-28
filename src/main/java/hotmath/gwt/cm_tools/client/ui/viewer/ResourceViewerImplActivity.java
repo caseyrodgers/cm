@@ -86,7 +86,7 @@ public class ResourceViewerImplActivity extends ResourceViewerImplFlash {
     }
     
     
-    /** Call when the completion rule has been satisified
+    /** Call when the completion rule has been satisfied
      * 
      */
     static public void flash_RppComplete() {

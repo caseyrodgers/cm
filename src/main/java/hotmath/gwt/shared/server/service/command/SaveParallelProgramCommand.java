@@ -77,8 +77,6 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
 
             ParallelProgramDao ppDao = ParallelProgramDao.getInstance();
 
-            
-            
             if (action.getParallelProgId() == null) {
                 ppDao.addProgram(prog);
                 CmParallelProgram pp = new CmParallelProgram();
@@ -89,8 +87,7 @@ public class SaveParallelProgramCommand implements ActionHandler<SaveParallelPro
                 pp.setName(student.getName());
                 
                 ppDao.addParallelProgram(pp);
-                
-                
+
             } else {
                 ppDao.updateProgram(prog, parallelProgId);
 
