@@ -68,7 +68,7 @@ public class GroupAssessmentReport {
         PdfWriter.getInstance(document, baos);
 
         int count = (studentUids != null) ? studentUids.size() : 0;
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, count, filterDescription);
+        HeaderFooter header = ReportUtils.getGroupReportHeader("Group Assessment", info, count, filterDescription);
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
