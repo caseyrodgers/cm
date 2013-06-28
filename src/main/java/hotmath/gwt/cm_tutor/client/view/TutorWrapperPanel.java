@@ -804,9 +804,13 @@ public class TutorWrapperPanel extends Composite {
                 if(problem.getLastUserWidgetValue() != null || s.equals("submitted") || s.equals("correct") || s.equals("incorrect") || s.equals("half credit")) {
                     msg = "Submitted";
                 }
-                // msg = problem.getStudentProblem().getStatusForStudent();
             }
-            //String html = "<div class='ass-prob-status'>" + msg + "</div>";
+            
+            if(msg.equals("Viewed")) {
+                msg = "Unanswered";
+            }
+            
+            
             setProblemStatusControl(msg);
         }
 }

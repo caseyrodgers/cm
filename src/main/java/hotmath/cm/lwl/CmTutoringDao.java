@@ -4,6 +4,7 @@ import hotmath.cm.signup.HotmathSubscriberServiceTutoringSchoolStudent;
 import hotmath.cm.util.CompressHelper;
 import hotmath.gwt.cm_admin.server.model.CmAdminDao;
 import hotmath.gwt.cm_admin.server.model.CmStudentDao;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException;
 import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -21,10 +22,13 @@ import hotmath.util.sql.SqlUtilities;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
 
 public class CmTutoringDao {
 
@@ -268,28 +272,77 @@ public class CmTutoringDao {
         }
     }
 
-    public void saveWhiteboardData(final Connection conn, int uid, int rid, String pid, String commandData)
+    public void saveWhiteboardData(final Connection conn, int uid, int rid, String pid, String commandData, CommandType commandType)
             throws Exception {
         PreparedStatement pstat = null;
         try {
-            String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
-                    + " values(?,?,?,?,?,?) ";
-            pstat = conn.prepareStatement(sql);
-
-            pstat.setInt(1, uid);
-            pstat.setString(2, pid);
-            pstat.setString(3, "draw");
-            pstat.setLong(5, System.currentTimeMillis());
-            pstat.setInt(6, rid);
-
-            byte[] inBytes = commandData.getBytes("UTF-8");
-			byte[] outBytes = CompressHelper.compress(inBytes);
-			pstat.setBytes(4, outBytes);
-
-			if (logger.isDebugEnabled()) logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
-
-            if (pstat.executeUpdate() != 1)
-                throw new Exception("Could not save whiteboard data (why?)");
+            
+            if(commandType == CommandType.UNDO) {
+                /** Delete the newest command
+                 * 
+                 */
+                
+                String sql = "select max(whiteboard_id) as whiteboard_id " +
+                             " from HA_TEST_RUN_WHITEBOARD " +
+                             " where user_id = ? " +
+                             " and run_id = ? " +
+                             " and pid = ? ";
+                
+                int maxWbId=0;
+                PreparedStatement ps1=null;
+                try {
+                    ps1 = conn.prepareStatement(sql);
+                    
+                    ps1.setInt(1,  uid);
+                    ps1.setInt(2, rid);
+                    ps1.setString(3, pid);
+                    ResultSet rs = ps1.executeQuery();
+                    rs.next();
+                    maxWbId = rs.getInt("whiteboard_id"); 
+                }
+                finally {
+                    SqlUtilities.releaseResources(null, ps1, null);
+                }
+                
+                if(maxWbId > 0) {
+                    PreparedStatement ps2=null;
+                    try {
+                        String sql2 = "delete from HA_TEST_RUN_WHITEBOARD where whiteboard_id = ?";
+                        
+                        ps2 = conn.prepareStatement(sql2);
+                        ps2.setInt(1,  maxWbId);
+                        
+                        int cnt = ps2.executeUpdate();
+                        if(cnt != 1) {
+                            logger.error("Could not delete undo record: " + uid + ", " + rid + ", " + pid);
+                        }
+                    }
+                    finally {
+                        SqlUtilities.releaseResources(null,  ps2, conn);
+                    }
+                }
+            }            
+            else {
+                
+                String sql = "insert into HA_TEST_RUN_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, run_id) "
+                        + " values(?,?,?,?,?,?) ";
+                pstat = conn.prepareStatement(sql);
+    
+                pstat.setInt(1, uid);
+                pstat.setString(2, pid);
+                pstat.setString(3, "draw");
+                pstat.setLong(5, System.currentTimeMillis());
+                pstat.setInt(6, rid);
+    
+                byte[] inBytes = commandData.getBytes("UTF-8");
+    			byte[] outBytes = CompressHelper.compress(inBytes);
+    			pstat.setBytes(4, outBytes);
+    
+    			if (logger.isDebugEnabled()) logger.debug("in len: " + inBytes.length +", out len: " + outBytes.length);
+    
+                if (pstat.executeUpdate() != 1)
+                    throw new Exception("Could not save whiteboard data (why?)");
+            }
         } catch (Exception e) {
         	logger.error(String.format("*** Error saving whiteboard for userId: %d, rid: %d, pid: %s",
 						uid, rid, pid), e);

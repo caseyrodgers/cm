@@ -32,7 +32,7 @@ public class SaveWhiteboardDataCommand implements ActionHandler<SaveWhiteboardDa
             rData = new ClearWhiteboardDataCommand().execute(conn,new ClearWhiteboardDataAction(action.getUid(), action.getRid(),action.getPid()));
         }
         else {
-            new CmTutoringDao().saveWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getCommandData());
+            new CmTutoringDao().saveWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getCommandData(), action.getCommandType());
         }
         return rData;
     }

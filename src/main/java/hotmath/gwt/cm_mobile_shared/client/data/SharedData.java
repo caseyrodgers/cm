@@ -230,7 +230,7 @@ public class SharedData {
         
         String status = null;
         if(SharedData.getFlowAction().getPlace() == CmPlace.ASSIGNMENTS_ONLY) {
-            status = "Please choose an assignment to work on.";
+            status = "Welcome to Catchup Math Assignments.";
         }
         else if(!isCustomQuiz) {
             String section="";
