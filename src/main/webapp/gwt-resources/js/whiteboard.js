@@ -161,7 +161,9 @@ var Whiteboard = (function () {
         var sy = y0
         context.font = "20pt Arial";
         context.textBaseline = 'top';
-        context.fillStyle = col ? col : wb.globalStrokeColor
+        //context.fillStyle = col ? col : wb.globalStrokeColor
+		var colr = col ? col : wb.globalStrokeColor;
+        context.fillStyle = colr;
         for (var i = 0; i < str.length; i++) {
             context.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
@@ -184,7 +186,7 @@ var Whiteboard = (function () {
         //graphicDataStore[graphicDataStore.length - 1] = gd
         updateCanvas();
         if (!xt) {
-            updateText(txt, x0, sy);
+            updateText(txt, x0, sy,colorToNumber(colr));
             sendData();
             $get_Element("#content").value = "";
             $get_Element("#inputBox").style.display = 'none';
