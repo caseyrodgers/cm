@@ -148,7 +148,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
 
                         QuestionViewerPanel.getInstance().viewQuestion(p, false);
                     }
-                    if (dto.getLevel() == CCSSData.STANDARD) {
+                    if (dto != null && dto.getLevel() == CCSSData.STANDARD) {
                     	CCSSStandard ccss = (CCSSStandard)dto;
                     	MessageBox msgBox = new MessageBox(ccss.getName(), ccss.getSummary());
                     	msgBox.show();
