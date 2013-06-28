@@ -143,7 +143,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     private Widget createActivateButton() {
         TextButton changeStatus =  new TextButton("Action");
         Menu menu = new Menu();
-        MenuItem btnActive = new MenuItem("Open", new SelectionHandler<MenuItem>() {
+        MenuItem btnActive = new MenuItem("Activate", new SelectionHandler<MenuItem>() {
             
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
