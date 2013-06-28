@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
+import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
@@ -9,6 +10,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
@@ -146,6 +148,11 @@ public class QuizActivity implements QuizView.Presenter {
                         eventBus.fireEvent(new SystemIsBusyEvent(false));
                         PopupMessageBox.showError("Error checking quiz: " + caught.getMessage());
                         Log.error("Error checking quiz", caught);
+                        
+                        
+                        if(caught.getMessage().indexOf("already been checked") > -1) {
+                            CmRpcCore.EVENT_BUS.fireEvent(new LoadActiveProgramFlowEvent());
+                        }
                     }
                 });
             }

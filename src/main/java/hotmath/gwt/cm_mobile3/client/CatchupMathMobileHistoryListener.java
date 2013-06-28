@@ -12,6 +12,7 @@ import hotmath.gwt.cm_mobile3.client.activity.SearchActivity;
 import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
+import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
 import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
@@ -31,6 +32,7 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentListView;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
@@ -86,7 +88,8 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
                         }
                         catch(Exception e) {
                             Log.error("Error processing history", e);
-                            Window.alert("Error handing event requiring login: " + e.getMessage());
+                            PopupMessageBox.showError("Request could not be completed due to error: " + e);
+                            CmRpcCore.EVENT_BUS.fireEvent(new LoadActiveProgramFlowEvent());
                         }
                     }
                 });

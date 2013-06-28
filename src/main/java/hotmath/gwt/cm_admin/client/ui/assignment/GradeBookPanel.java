@@ -127,6 +127,9 @@ public class GradeBookPanel extends ContentPanel {
                 scrollWrapper.setScrollMode(ScrollMode.AUTO);
                 scrollWrapper.add(_gradebookGrid);
                 setWidget(_gradebookGrid);
+                
+                
+                _gradebookGrid.setToolTip("Double Click the student record to see or grade their work");
                 forceLayout();
             }
         }.register();                
