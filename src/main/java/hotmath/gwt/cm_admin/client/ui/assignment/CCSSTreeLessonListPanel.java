@@ -320,6 +320,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
                 CmShared.getCmService().execute(action, this);
             }
 
+            @Override
             public void oncapture(CCSSData data) {
                 CatchupMathTools.setBusy(false);
                 _ccssData = data;
