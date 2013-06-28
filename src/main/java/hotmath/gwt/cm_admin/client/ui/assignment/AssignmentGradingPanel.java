@@ -160,7 +160,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
             @Override
             public ProblemStatus parse(CharSequence text) throws ParseException {
-                return ProblemStatus.valueOf(text.toString());
+                return ProblemStatus.valueOf(text.toString().toUpperCase());
             }
 
             @Override
@@ -180,7 +180,7 @@ public class AssignmentGradingPanel extends ContentPanel {
         combo.setPropertyEditor(new PropertyEditor<ProblemStatus>() {
             @Override
             public ProblemStatus parse(CharSequence text) throws ParseException {
-                return ProblemStatus.valueOf(text.toString());
+                return ProblemStatus.valueOf(text.toString().toUpperCase().replace(" ", "_"));
             }
 
             @Override
@@ -228,7 +228,7 @@ public class AssignmentGradingPanel extends ContentPanel {
 
             @Override
             public ProblemStatus convertModelValue(String object) {
-                return ProblemStatus.valueOf(object);
+                return ProblemStatus.valueOf(object.toUpperCase());
             }
 
         }, combo);
