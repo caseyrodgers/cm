@@ -445,7 +445,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 new PdfWindowWithNav(sm.getAdminUid(), "Catchup Math CCSS Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
                         sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
 */
-            	new CCSSCoverageWindow(sm, 0);
+            	new CCSSCoverageWindow(sm, null);
             }
         });
         // ti.setIconStyle("printer-icon");
