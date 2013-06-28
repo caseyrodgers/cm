@@ -2,6 +2,7 @@ package hotmath.cm.assignment;
 
 import hotmath.cm.server.model.StudentAssignmentStatus;
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.CompressHelper;
 import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_admin.client.model.GroupCopyModel;
@@ -37,10 +38,10 @@ import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.SolutionDao;
-import hotmath.util.sql.SqlUtilities;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -979,7 +980,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     }
 
-    public List<GroupDto> getAssignmentGroups(int aid) {
+    public List<GroupDto> getAssignmentGroups(final int aid) {
         List<GroupDto> groups = new ArrayList<GroupDto>();
         try {
             List<GroupInfoModel> groupModels = CmAdminDao.getInstance().getActiveGroups(aid);
@@ -995,7 +996,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 @Override
                 public GroupDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                     String info = "students: " + rs.getInt("student_count") + ", assignments: " + rs.getInt("assignment_count");
-                    return new GroupDto(rs.getInt("group_id"), rs.getString("name"), info);
+                    return new GroupDto(rs.getInt("group_id"), rs.getString("name"), info, aid);
                 }
             }));
 
@@ -1127,7 +1128,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     status = "Turned In";
                 }
                 boolean isGraded = rs.getInt("is_graded") != 0 ? true : false;
-                
+
                 String score = "";
                 if (isGraded) {
                     try {
@@ -1147,8 +1148,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
                 boolean assignmentHasChanged = determineIfAssignmentHasChanged(assignKey, uid);
 
-  
-                StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, uid, isGraded, turnInDate, status, dueDate, rs.getString("comments"),cntProblems, cntSubmitted, score, assignmentHasChanged);
+                StudentAssignmentInfo info = new StudentAssignmentInfo(assignKey, uid, isGraded, turnInDate, status, dueDate, rs.getString("comments"),
+                        cntProblems, cntSubmitted, score, assignmentHasChanged);
                 return info;
             }
         });
@@ -1644,7 +1645,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return getJdbcTemplate().query(sql, new Object[] { uid, assignId, pid }, new RowMapper<WhiteboardCommand>() {
             @Override
             public WhiteboardCommand mapRow(ResultSet rs, int rowNum) throws SQLException {
-                WhiteboardCommand wCommand = new WhiteboardCommand(rs.getString("command"), rs.getString("command_data"), rs.getInt("is_admin") != 0 ? true
+                WhiteboardCommand wCommand = new WhiteboardCommand(rs.getString("command"), loadCommandData(rs), rs.getInt("is_admin") != 0 ? true
                         : false);
                 return wCommand;
             }
@@ -1691,20 +1692,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public void saveWhiteboardData(final Integer uid, final int assignKey, final String pid, CommandType commandType, final String commandData,
-            final boolean isAdmin) {
-        if (commandType == CommandType.CLEAR) {
-            getJdbcTemplate().update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "delete from CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ?";
-                    PreparedStatement ps = con.prepareStatement(sql);
-                    ps.setInt(1, uid);
-                    ps.setInt(2, assignKey);
-                    ps.setString(3, pid);
-                    return ps;
-                }
-            });
-        } else if(commandType == CommandType.UNDO) {
+    		final boolean isAdmin) {
+    	if (commandType == CommandType.CLEAR) {
+    		getJdbcTemplate().update(new PreparedStatementCreator() {
+    			@Override
+    			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    				String sql = "delete from CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ?";
+    				PreparedStatement ps = con.prepareStatement(sql);
+    				ps.setInt(1, uid);
+    				ps.setInt(2, assignKey);
+    				ps.setString(3, pid);
+    				return ps;
+    			}
+    		});
+    	} else if(commandType == CommandType.UNDO) {
             
             /** Delete the newest command
              * 
@@ -1736,29 +1737,37 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
             
         }
-        
-        
-        
-        else {
+    	
+    	else {
+    		try {
+    			byte[] inBytes = commandData.getBytes("UTF-8");
+    			final byte[] outBytes = CompressHelper.compress(inBytes);
 
-            getJdbcTemplate().update(new PreparedStatementCreator() {
-                @Override
-                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin, write_datetime) "
-                            + " values(?,?,?,?,?,?, ?, now()) ";
-                    PreparedStatement ps = con.prepareStatement(sql);
-                    ps.setInt(1, uid);
-                    ps.setString(2, pid);
-                    ps.setString(3, "draw");
-                    ps.setString(4, commandData);
-                    ps.setLong(5, System.currentTimeMillis());
-                    ps.setInt(6, assignKey);
-                    ps.setInt(7, isAdmin ? 1 : 0);
+    			getJdbcTemplate().update(new PreparedStatementCreator() {
+    				@Override
+    				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+    					String sql = "insert into CM_ASSIGNMENT_PID_WHITEBOARD(user_id, pid, command, command_data, insert_time_mills, assign_key, is_admin, write_datetime) "
+    							+ " values(?,?,?,?,?,?,?, now()) ";
+    					PreparedStatement ps = con.prepareStatement(sql);
+    					ps.setInt(1, uid);
+    					ps.setString(2, pid);
+    					ps.setString(3, "draw");
 
-                    return ps;
-                }
-            });
-        }
+    					ps.setBytes(4, outBytes);
+
+    					ps.setLong(5, System.currentTimeMillis());
+    					ps.setInt(6, assignKey);
+    					ps.setInt(7, isAdmin ? 1 : 0);
+
+    					return ps;
+    				}
+    			});
+    		}
+    		catch (UnsupportedEncodingException e) {
+    			__logger.error(String.format("Error creating Assignment Whiteboard Data: userId: %d, pid: %s", uid, pid), e);
+    			throw new RuntimeException(e.getMessage());
+    		}
+    	}
     }
 
     /**
@@ -2336,7 +2345,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
     }
 
-    
+
     /** Return either all the students that are assignable to the assignment
      *  or the users that are specifically assigned.
      *  
@@ -2363,4 +2372,20 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         });
         return students;
     }
+
+    private String loadCommandData(ResultSet rs) throws SQLException {
+    	byte[] compressed = rs.getBytes("command_data");
+    	try {
+    		if (compressed != null && compressed[0] != "{".getBytes("UTF-8")[0]) {
+    			return CompressHelper.decompress(compressed);
+    		}
+    		else {
+    			return rs.getString("command_data");
+    		}
+    	}
+    	catch (Exception e) {
+    		throw new SQLException(e.getLocalizedMessage());
+    	}
+    }
+
 }
