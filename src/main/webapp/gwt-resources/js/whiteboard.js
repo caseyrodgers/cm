@@ -2362,8 +2362,11 @@ if(isIE){updateCanvas();}
 					context.beginPath();
                     x0 = x1
                     y0 = y1
-					}
 					context.moveTo(x1, y1);
+					}else{
+					context.moveTo(x0 + x1, y0 + y1);
+					}
+					
                 } else {
                     context.lineTo(x0 + x1, y0 + y1);
                 }
