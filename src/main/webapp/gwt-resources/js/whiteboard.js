@@ -2356,10 +2356,14 @@ if(isIE){updateCanvas();}
                 x1 = graphic_data[i].x;
                 y1 = graphic_data[i].y;
                 if (graphic_data[i].id == "move") {
-                    context.beginPath();
-                    context.moveTo(x1, y1);
+                    
+                    
+					if(i===0){
+					context.beginPath();
                     x0 = x1
                     y0 = y1
+					}
+					context.moveTo(x1, y1);
                 } else {
                     context.lineTo(x0 + x1, y0 + y1);
                 }
