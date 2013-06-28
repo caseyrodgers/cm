@@ -84,7 +84,7 @@ public class LoginService extends HttpServlet {
 		
 		boolean isMobileOverride = SbUtilities.getBoolean(req.getParameter("mobile"));
 
-		boolean isDebug=false;
+		boolean isDebug   =false;
 		
 		/** real_login passed as hidden input from login.html
 		 *   

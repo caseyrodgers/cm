@@ -3,6 +3,8 @@ require.config({
 });
 
 
+require(['CatchupMathMobile3_combined'], function(x) {
+});
 
 /** define high level, externalized from GWT requirejs load helper methods
  * 
