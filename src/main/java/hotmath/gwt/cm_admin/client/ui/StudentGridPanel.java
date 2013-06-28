@@ -100,6 +100,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
 
     public StudentGridPanel(CmAdminModel cmAdminMdl) {
         this._cmAdminMdl = cmAdminMdl;
+
         ColumnModel<StudentModelI> cm = defineColumns();
 
         dateRangePanel = new DateRangePanel(new DateRangeCallback() {
@@ -107,7 +108,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 loadAndResetStudentLoader();
             }
         });
-
     
         /**
          * Create proxy to handle the paged RPC calls
@@ -119,8 +119,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
          * Create a loader to do the actual loading
          * 
          */
-        // loader
-
         _studentLoader = new PagingLoader<PagingLoadConfigBean, CmStudentPagingLoadResult<StudentModelI>>(rpcProxy);
 
         _studentLoader.setRemoteSort(true);
@@ -256,12 +254,11 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         if (CmShared.getQueryParameter("show_quiz") != null) {
             new CustomProgramAddQuizDialog(null, null, false);
         }
-        
-        
+
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
             @Override
             public void execute() {
-                // DEGBUG
+                // DEBUG
 //                new RegisterStudent(null, _cmAdminMdl).showWindow();
                 //new BulkStudentRegistrationWindow(null, _cmAdminMdl);
                 //new AutoRegisterStudentSetup(null, _cmAdminMdl);
@@ -329,7 +326,7 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
      * 
      * @TODO: Combine these into one request
      * 
-     * @param uid
+     * @param uid2Select
      *            The uid to select, or null to select current row
      * 
      */
