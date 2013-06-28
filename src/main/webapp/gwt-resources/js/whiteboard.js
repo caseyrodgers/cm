@@ -1851,13 +1851,14 @@ function viewport_testpage() {
     }
 
     function showTextBox_html() {
+	//alert("A")
         if (!$get_Element("#content")) {
-            $($("#inputBox div")[0]).html("<textarea id='content' cols=15 rows=1 style='font:20pt Arial' ></textarea>")
+            $($("#inputBox div")[0]).html("<textarea id='content' cols=15 rows=1 style='font:20pt Arial;color:"+wb.globalStrokeColor+"' ></textarea>")
         }
         $get_Element("#inputBox").style.display = 'block';
         $get_Element("#inputBox").style.top = clickY + "px";
         $get_Element("#inputBox").style.left = clickX + "px";
-		$get_Element("#inputBox").style.color = wb.globalStrokeColor;
+		//$get_Element("#inputBox").style.color = wb.globalStrokeColor;
         $get_Element("#content").focus();
     }
 
