@@ -20,6 +20,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SectionDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -492,11 +493,10 @@ public class AddProblemDialog extends GWindow {
             }
         }, new CheckableMinLevelGxtTreeAppearance(2));
         _tree.setLoader(loader);
-        _tree.setWidth(300);
+        _tree.setWidth(350);
         _tree.setCheckable(true);
         _tree.setCheckStyle(CheckCascade.TRI);
         //_tree.setAutoSelect(true);
-        
 
         _tree.addCheckChangedHandler(new CheckChangedHandler<BaseDto>() {
             @Override
@@ -579,6 +579,7 @@ public class AddProblemDialog extends GWindow {
         new RetryAction<CmList<ProblemDto>>() {
             @Override
             public void attempt() {
+                CatchupMathTools.setBusy(true);
                 GetProgramLessonProblemsAction action = new GetProgramLessonProblemsAction(lesson, file, subject);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
@@ -599,6 +600,7 @@ public class AddProblemDialog extends GWindow {
                      */
                     callbackOnComplete.isComplete();
                 }
+            	CatchupMathTools.setBusy(false);
             }
 
         }.register();
