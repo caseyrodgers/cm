@@ -2386,8 +2386,8 @@ if(isIE){updateCanvas();}
             for (i = 0; i < dLength; i++) {
                 var xd = graphic_data[i].xs < 0 ? -1 : 1
                 var yd = graphic_data[i].ys < 0 ? -1 : 1
-                x0 = graphic_data[i].x
-                y0 = graphic_data[i].y
+                x0 = xd < 0 ? graphic_data[i].x + graphic_data[i].w : graphic_data[i].x
+                y0 = yd < 0 ? graphic_data[i].y + graphic_data[i].h : graphic_data[i].y
                 w0 = graphic_data[i].w * xd
                 h0 = graphic_data[i].h * yd
                 fName(x0, y0, w0, h0, col);
