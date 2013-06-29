@@ -63,8 +63,16 @@ public class CCSSCoverageDataCommand implements ActionHandler<CCSSCoverageDataAc
                     list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 75, 99));
                     break;
 
+                case GROUP_50_TO_99_PERCENT:
+                    list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 50, 99));
+                    break;
+
                 case GROUP_50_TO_74_PERCENT:
                     list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 50, 74));
+                    break;
+
+                case GROUP_LT_50_PERCENT:
+                	list = toCmList(crDao.getCCSSGroupCoverageData(adminId, groupId, fromDate, toDate, 0, 49));
                     break;
 
                 case GROUP_25_TO_49_PERCENT:

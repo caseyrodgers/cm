@@ -8,10 +8,10 @@ public class CCSSCoverageImplGroupByAllStudents extends CCSSCoverageImplBase {
 
     CCSSCoverageImplGroupByAllStudentsPanel panel;
 
-    static String title = "All Students";
+    static String title = "Standards covered by all students";
 
     public CCSSCoverageImplGroupByAllStudents(int groupId, int adminId, CallbackOnComplete callback) {
-        super(title, "Displays CCSS coverage by all students in group.", groupId, callback);
+        super(title, "Displays standards covered by all students.", groupId, callback);
         panel = new CCSSCoverageImplGroupByAllStudentsPanel(this, groupId, adminId);
     }
     

@@ -189,12 +189,14 @@ public class CCSSCoverageListPanel extends BorderLayoutContainer {
             s.add(new CCSSCoverageReport(new CCSSCoverageImplStudentCombined(_uid, callback)));
         }
         else {
-        	countdown = 5;
+        	countdown = 3;
             s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupByAllStudents(_uid, _adminId, callback)));
-            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy75to99Percent(_uid, _adminId, callback)));
-            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy50to74Percent(_uid, _adminId, callback)));
-            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy25to49Percent(_uid, _adminId, callback)));
-            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy00to24Percent(_uid, _adminId, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy50to99Percent(_uid, _adminId, callback)));
+            //s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy75to99Percent(_uid, _adminId, callback)));
+            //s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy50to74Percent(_uid, _adminId, callback)));
+            //s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy25to49Percent(_uid, _adminId, callback)));
+            s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy00to49Percent(_uid, _adminId, callback)));
+            //s.add(new CCSSCoverageReport(new CCSSCoverageImplGroupBy00to24Percent(_uid, _adminId, callback)));
         }
         
         return s;
