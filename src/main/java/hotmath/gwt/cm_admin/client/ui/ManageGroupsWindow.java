@@ -266,6 +266,8 @@ public class ManageGroupsWindow extends GWindow {
             }
         }));
 
+        // deactivating for now...
+        if (false)
         vertButtons.add(new MyButton("CCSS Coverage", "View CCSS Coverage for selected group.", new SelectHandler() {
 
             @Override
