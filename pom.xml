@@ -679,7 +679,7 @@
 			</plugin>
 
 			<!-- Minimize JS/CSS for CM and CM_MOBILE. All HM resources come from 
-				HM dir, not CM. Note use of executions/execution block to allow -->
+		        -->
 			<plugin>
 				<groupId>com.samaxes.maven</groupId>
 				<artifactId>maven-minify-plugin</artifactId>
@@ -696,10 +696,11 @@
 
 						<param>tutor_layout_tablet.css</param>
 						<param>CatchupMath.css</param>
-                        <param>CatchupMath-resource_container.css</param>						
+                                                <param>CatchupMath-resource_container.css</param>						
 						<param>loading_image.css</param>
 					</cssSourceFiles>
 					<jsSourceFiles>
+                                              <!--
 						<param>hm_events.js</param>
 						<param>tutor_tablet.js</param>
 
@@ -711,6 +712,7 @@
 						<param>CatchupMath.js</param>
 						<param>swfobject/swfobject.js</param>
 						<param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
+                                             -->
 					</jsSourceFiles>
 				</configuration>
 			</plugin>

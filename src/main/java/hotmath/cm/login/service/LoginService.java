@@ -233,8 +233,8 @@ public class LoginService extends HttpServlet {
 					clientInfo.setUserType(UserType.ADMIN);
 
 					req.getSession().setAttribute("loginInfo", loginInfo);
-					
-					req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
+                    String isMobileStr = isIpadOrIPhone(loginAction.getBrowserInfo())?"?is_mobile=true":"";
+					req.getRequestDispatcher("/cm_admin/launch.jsp" + isMobileStr).forward(req, resp);
 				}
 				else {
 				    
@@ -262,10 +262,6 @@ public class LoginService extends HttpServlet {
     					response.setNextAction(dest);
     					String jsonizedUserInfo = Jsonizer.toJson(response);			
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
-    					
-
-                        
-
                         
                         if(isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
                             String props = "&type=PARALLEL_PROGRAM";

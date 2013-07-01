@@ -35,7 +35,6 @@
         <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
   
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/whiteboard.css" />
-        <link rel="stylesheet" type="text/css" href="/gwt-resources/css/mathquill/mathquill.css" />
         <link rel="stylesheet" type="text/css" href="/gwt-resources/js/calculator/jquery.calculator.css" />
     </head>
     <body>
@@ -59,6 +58,7 @@
         </script>
         <!-- OPTIONAL: include this if you want history support -->
         <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe>
+        <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
         <script type="text/javascript" language="javascript" src="/cm_student/cm_student.nocache.js"></script>
     
         <!--[if lt IE 9]><script type="text/javascript" src='/gwt-resources/js/excanvas.js'></script><![endif]-->

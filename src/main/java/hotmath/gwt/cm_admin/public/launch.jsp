@@ -21,8 +21,8 @@
     </script>
 
 
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <title>Catchup Math Admin</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Catchup Math Admin</title>
 
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/gxt-reset.css" />
 
@@ -34,10 +34,7 @@
   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
   <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/whiteboard.css" />
-  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/mathquill/mathquill.css" />
 
-
-    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
   </head>
 
   <body>
@@ -61,7 +58,13 @@
        }
    </script>
     
+   <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
+   <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMathAdmin.js"></script>
+   
+   <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
+    
    <script src="/gwt-resources/jlibs/requirejs-1.2.1/require_jquery.js" data-main="/gwt-resources/js/amd_main.nocache"></script>
+    
     
     <!-- 
     <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
@@ -72,7 +75,6 @@
     <!-- 
         <script src='http://code.jquery.com/jquery-1.8.1.min.js'></script>
         <script src='/gwt-resources/js/whiteboard.js'></script>
-        <script src='/gwt-resources/js/mathquill/mathquill.js'></script>
      -->
 
      <script>

@@ -3,11 +3,6 @@ require.config({
 });
 
 
-require(['CatchupMath_combined'], function(x) {
-        console.log('catchup math js loaded');
-    });
-
-
 /** define highlevel, externalized from GWT requirejs load helper methods
  */
 // load all code required to run the whiteboard

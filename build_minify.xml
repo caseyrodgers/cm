@@ -12,7 +12,26 @@
     </path>
 
         
-    <target name='doCombines' depends='combine-js_CatchupMathMobile3, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
+    <target name='doCombines' depends='combine-js_CatchupMath, combine-js_CatchupMathMobile3, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
+
+    <target name="combine-js_CatchupMath" depends="javascript-minify">
+        <!-- Combine CM JS into a single download
+        -->
+        <delete file="${web.dir}/gwt-resources/js/CatchupMath_combined.js" />
+        <concat destfile="${web.dir}/gwt-resources/js/CatchupMath_combined.js" append="true">
+            <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
+                hm_events-min.js
+	        tutor_tablet-min.js
+                ../../../../../../hotmath2/web/js/tutor_widget_combined.js
+                dom_utils-min.js
+		cm_core-min.js
+	        quiz-min.js
+		CatchupMath-min.js
+		swfobject/swfobject.js
+        	../../../../../../hotmath2/web/js/hm_mathjax-min.js
+              " />
+        </concat>
+    </target>
 
 
     <target name="combine-js_CatchupMathMobile3" depends="javascript-minify">
@@ -29,15 +48,12 @@
             	   quiz-min.js
 
                    ../../../../../../hotmath2/web/js/tutor_widget_combined.js
-
                    
                    viewport-min.js
-
 
             	   ../../jlibs/hammer/hammer.min.js
 
                    cm_core-min.js
-
                                      
                    CatchupMathMobile3-min.js
               " />

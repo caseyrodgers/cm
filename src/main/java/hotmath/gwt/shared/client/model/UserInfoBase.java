@@ -30,12 +30,32 @@ public class UserInfoBase implements IsSerializable {
 	
 	Mode mode = Mode.STUDENT_MODE;
 
+    private boolean mobile;
+
 	static public UserInfoBase getInstance() {
 	    if (__instance == null) {
 	    	__instance = new UserInfoBase();
 	    }
 	    return __instance;
 	}
+	
+
+    /** Set is this is a mobile browser
+     * 
+     * @param b
+     */
+    public void setMobile(boolean b) {
+        mobile = true;
+    }
+    
+    /** Is this a mobile browser
+     * 
+     * @return
+     */
+    public boolean isMobile() {
+        return mobile;
+    }
+
 	
 	public String getCmStartType() {
 		return cmStartType;

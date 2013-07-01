@@ -9,12 +9,10 @@ import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.CmAdminDataReader;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_tools.client.ui.CallbackGeneric;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
@@ -31,6 +29,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -83,7 +82,6 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //            }
 //        }
 
-        
         BorderLayoutContainer borderMain = new BorderLayoutContainer();
         
         BorderLayoutData bdata = new BorderLayoutData(40);
@@ -116,6 +114,13 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
 
     private void completeLoginProcess(final int uid) {
+        
+        
+        if(CmShared.getQueryParameter("is_mobile") != null) {
+            UserInfoBase.getInstance().setMobile(true);
+        }
+
+        Window.alert("Is Mobile : " + UserInfoBase.getInstance().isMobile());
         
         if(CmShared.getQueryParameter("test") != null) {
             AssignmentStatusDialog.startTest();
