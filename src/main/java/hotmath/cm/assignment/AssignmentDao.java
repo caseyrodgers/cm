@@ -2054,7 +2054,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         int cntUngraded = getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "update CM_ASSIGNMENT_USER set is_graded = 0 assign_key = ?";
+                String sql = "update CM_ASSIGNMENT_USER set is_graded = 0 where assign_key = ?";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, assignKey);
                 return ps;
