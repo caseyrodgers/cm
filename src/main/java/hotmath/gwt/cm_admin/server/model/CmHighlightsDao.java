@@ -540,13 +540,39 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     	return report;
     }
 
-    private class WidgetAnswer {
-    	int    uid;
-    	String name;
-    	String pid;
-    	int    correct;
+    public CmList<HighlightReportData> getReportCCSSCoverage(final List<String> uids, final Date from, final Date to) throws Exception {
+        String[] vals = QueryHelper.getDateTimeRange(from, to);
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("HIGHLIGHT_REPORT_CCSS_COVERAGE", createInListMap(createInList(uids)));
+
+        List<StudentCCSSItem> items = getJdbcTemplate().query(sql, new Object[] {vals[0], vals[1], vals[0], vals[1], vals[0], vals[1]}, new RowMapper<StudentCCSSItem>() {
+            @Override
+            public StudentCCSSItem mapRow(ResultSet rs, int rowNum) throws SQLException {
+            	return new StudentCCSSItem(rs.getString("standard_name_new"), rs.getInt("user_id"));
+            }
+        });
+
+        HighlightReportData data = null;
+        String standardName = null;
+        CmList<Integer> uidList = null;
+        final CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+
+        for (StudentCCSSItem item : items) {
+        	if (standardName == null || standardName.equals(item.standardName) == false) {
+        		// a new standard
+        		standardName = item.standardName;
+        		uidList = new CmArrayList<Integer>();
+        		data = new HighlightReportData();
+        		data.setName(standardName);
+        		data.setUidList(uidList);
+        		list.add(data);
+        	}
+        	uidList.add(item.userId);
+        	data.setDbCount(data.getDbCount() + 1);
+        }
+    	return list;
     }
-    
+
     public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
 
         Map<String,String> tokenMap = new HashMap<String,String>()
@@ -724,6 +750,23 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
             inList += uid;
         }
         return inList;
+    }
+
+    private class WidgetAnswer {
+    	int    uid;
+    	String name;
+    	String pid;
+    	int    correct;
+    }
+
+    private class StudentCCSSItem {
+    	String standardName;
+    	int    userId;
+
+    	StudentCCSSItem(String standardName, int userId) {
+    		this.standardName = standardName;
+    		this.userId = userId;
+    	}
     }
 }
 

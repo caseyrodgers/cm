@@ -7,7 +7,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction.ReportType
 
 public class HighlightReportData implements Response {
     
-    int uid;
+	int uid;
     String data;
     String name;
     String label;
@@ -16,6 +16,7 @@ public class HighlightReportData implements Response {
     
     int groupCount;
     int schoolCount;
+    int studentCount;
     int dbCount;
     
     int activeCount;
@@ -32,7 +33,9 @@ public class HighlightReportData implements Response {
     int gamesViewed;
     int activitiesViewed;
     int flashCardsViewed;
-    
+
+    CmList<Integer> uidList;
+
     CmList<String> columnLabels = new CmArrayList<String>();
 
     public HighlightReportData(){}
@@ -72,6 +75,9 @@ public class HighlightReportData implements Response {
             case ASSIGNMENTS:
             	assignmentCount = value[0];
             	assignmentAverage = value[1];
+            	break;
+            case CCSS_COVERAGE:
+            	this.studentCount = value[0];
             	break;
             case GROUP_PERFORMANCE:
             	activeCount = value[0];
@@ -277,7 +283,15 @@ public class HighlightReportData implements Response {
         this.flashCardsViewed = flashCardsViewed;
     }
 
-    public int getQuizzesTaken() {
+    public CmList<Integer> getUidList() {
+		return uidList;
+	}
+
+	public void setUidList(CmList<Integer> uidList) {
+		this.uidList = uidList;
+	}
+
+	public int getQuizzesTaken() {
         return quizzesTaken;
     }
 
