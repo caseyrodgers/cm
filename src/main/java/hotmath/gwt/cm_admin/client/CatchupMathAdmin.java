@@ -115,7 +115,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     private void completeLoginProcess(final int uid) {
         
-        Window.alert("is Mobile: " + UserInfoBase.getInstance().isMobile());
+        Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
         
         if(CmShared.getQueryParameter("test") != null) {
             AssignmentStatusDialog.startTest();
