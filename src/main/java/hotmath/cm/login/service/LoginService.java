@@ -75,6 +75,8 @@ public class LoginService extends HttpServlet {
         else
             startDate = sdf.format(System.currentTimeMillis());
     }
+    
+    boolean _isMobileOverride;
 
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String user = req.getParameter("user");
@@ -82,7 +84,7 @@ public class LoginService extends HttpServlet {
 		String action = req.getParameter("action");
 		String key = req.getParameter("key");
 		
-		boolean isMobileOverride = SbUtilities.getBoolean(req.getParameter("mobile"));
+		_isMobileOverride = SbUtilities.getBoolean(req.getParameter("mobile"));
 
 		boolean isDebug   =false;
 		
@@ -222,7 +224,9 @@ public class LoginService extends HttpServlet {
 				sb.append("',  loginName: '").append((cmUser.getLoginName() != null)?cmUser.getLoginName():"");
 				sb.append("',  email: '").append((cmUser.getEmail() != null)?cmUser.getEmail():"");
 				sb.append("',  partner: '").append(cmUser.getPartner() != null?cmUser.getPartner():"");
-				sb.append("' }");
+				sb.append("',  is_mobile: ").append( (_isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo()))?"true":"false");
+				sb.append(" }");
+				
 				req.getSession().setAttribute("jsonizedLoginInfo", sb.toString());
 
 				req.getSession().setAttribute("securityKey", loginInfo.getKey());
@@ -233,8 +237,7 @@ public class LoginService extends HttpServlet {
 					clientInfo.setUserType(UserType.ADMIN);
 
 					req.getSession().setAttribute("loginInfo", loginInfo);
-                    String isMobileStr = isIpadOrIPhone(loginAction.getBrowserInfo())?"?is_mobile=true":"";
-					req.getRequestDispatcher("/cm_admin/launch.jsp" + isMobileStr).forward(req, resp);
+					req.getRequestDispatcher("/cm_admin/launch.jsp").forward(req, resp);
 				}
 				else {
 				    
@@ -263,7 +266,7 @@ public class LoginService extends HttpServlet {
     					String jsonizedUserInfo = Jsonizer.toJson(response);			
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
                         
-                        if(isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
+                        if(_isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
                             String props = "&type=PARALLEL_PROGRAM";
                             resp.sendRedirect("/cm_mobile3/?uid=" + loginInfo.getUserId() + props);
                         }
@@ -286,7 +289,7 @@ public class LoginService extends HttpServlet {
     					String jsonizedUserInfo = Jsonizer.toJson(response);
     					req.getSession().setAttribute("jsonizedUserInfo", jsonizedUserInfo);
     
-                        if(isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
+                        if(_isMobileOverride || isIpadOrIPhone(loginAction.getBrowserInfo())) {
                             
                             String props="";
                             if(loginInfo.getType().equals("AUTO_CREATE")) {

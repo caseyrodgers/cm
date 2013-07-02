@@ -258,6 +258,10 @@ public class CmShared implements EntryPoint {
                             CmLogger.error("Invalid partner setup for user: " + loginInfo.getPartner());
                         }
                     }
+                    
+                    
+                    UserInfoBase.getInstance().setMobile(loginInfo.isMobile());
+                    
                 }
 
                 UserInfoBase.getInstance().setEmail(loginInfo.getEmail());

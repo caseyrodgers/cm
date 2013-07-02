@@ -115,12 +115,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 
     private void completeLoginProcess(final int uid) {
         
-        
-        if(CmShared.getQueryParameter("is_mobile") != null) {
-            UserInfoBase.getInstance().setMobile(true);
-        }
-
-        Window.alert("Is Mobile : " + UserInfoBase.getInstance().isMobile());
+        Window.alert("is Mobile: " + UserInfoBase.getInstance().isMobile());
         
         if(CmShared.getQueryParameter("test") != null) {
             AssignmentStatusDialog.startTest();
@@ -232,7 +227,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
     }
 
 
-    private void launchOnlyStudentRegistration(final int studentUid) {
+//    private void launchOnlyStudentRegistration(final int studentUid) {
 //        GWT.runAsync(new CmRunAsyncCallback() {
 //            @Override
 //            public void onSuccess() {
@@ -273,9 +268,9 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //                }.register();
 //            }
 //        });
-    }    
+//    }    
     
-    private void launchOnlyStudentDetails(final int studentUid) {
+//    private void launchOnlyStudentDetails(final int studentUid) {
 //      GWT.runAsync(new CmRunAsyncCallback() {
 //
 //          @Override
@@ -298,7 +293,7 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
 //              }.register();
 //          }
 //      });
-    }
+//    }
     
     
 

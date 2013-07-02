@@ -45,7 +45,7 @@ public class UserInfoBase implements IsSerializable {
      * @param b
      */
     public void setMobile(boolean b) {
-        mobile = true;
+        mobile = b;
     }
     
     /** Is this a mobile browser

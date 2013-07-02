@@ -5,6 +5,7 @@ import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.UserInfoBase;
 
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
@@ -28,6 +29,12 @@ public class AssignmentStatusDialog extends GWindow {
         TextButton addRemove = new TextButton("Add/Remove Students", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                
+                if(UserInfoBase.getInstance().isMobile()) {
+                    new FeatureNotAvailableToMobile();
+                    return;
+                }
+                
                 new AssignmentAddRemoveStudents(asgn, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {

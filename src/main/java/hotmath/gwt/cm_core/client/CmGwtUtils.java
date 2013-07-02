@@ -225,7 +225,12 @@ public class CmGwtUtils {
         }
         String email = o.get("email").isString().stringValue();
         
-        return new LoginInfoEmbedded(keyVal, userId, cmStartType, partner, email);
+        boolean isMobile=false;
+        if(o.containsKey("is_mobile")) {
+            isMobile = o.get("is_mobile").isBoolean().booleanValue();
+        }
+        
+        return new LoginInfoEmbedded(keyVal, userId, cmStartType, partner, email, isMobile);
     }
 
     /** Use the external Hammer.js library to watch for doubletap

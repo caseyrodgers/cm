@@ -12,13 +12,23 @@ public class LoginInfoEmbedded {
     private String partner;
     private String startType;
     private String email;
+    private boolean mobile;
 
-    public LoginInfoEmbedded(String keyVal, int userId, String cmStartType, String partner, String email) {
+    public LoginInfoEmbedded(String keyVal, int userId, String cmStartType, String partner, String email, boolean isMobile) {
         this.securityKeyVal = keyVal;
         this.uid = userId;
         this.startType = cmStartType;
         this.partner = partner;
         this.email = email;
+        this.mobile = isMobile;
+    }
+    
+    public boolean isMobile() {
+        return mobile;
+    }
+
+    public void setMobile(boolean mobile) {
+        this.mobile = mobile;
     }
 
     public String getEmail() {

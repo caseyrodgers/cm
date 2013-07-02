@@ -382,7 +382,6 @@ public class AssignmentsContentPanel extends ContentPanel {
     
 
     private void createNewAssignment() {
-        
         if(_currentGroup == null) {
             CmMessageBox.showAlert("You need to select a group first.");
             return;

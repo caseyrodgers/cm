@@ -414,6 +414,13 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         TextButton customButton = new StudentPanelButton("Custom", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                
+                if(UserInfoBase.getInstance().isMobile()) {
+                    new FeatureNotAvailableToMobile();
+                    return;
+                }
+                
+                
                 GWT.runAsync(new CmRunAsyncCallback() {
                     @Override
                     public void onSuccess() {

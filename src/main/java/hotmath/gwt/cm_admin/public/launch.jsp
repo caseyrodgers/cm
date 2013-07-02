@@ -12,6 +12,8 @@
   if(jsonizedLoginInfo == null) {
       throw new Exception("'loginInfo' could not be found in session");
   }  
+  
+  throw new Exception("Is Mobile: " + request.getAttribute("is_mobile"));
 %>
 <html>
   <head>
@@ -59,7 +61,6 @@
    </script>
     
    <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMath_combined.js"></script>
-   <script type="text/javascript" language="javascript" src="/gwt-resources/js/CatchupMathAdmin.js"></script>
    
    <script type="text/javascript" language="javascript" src="/cm_admin/cm_admin.nocache.js"></script>
     

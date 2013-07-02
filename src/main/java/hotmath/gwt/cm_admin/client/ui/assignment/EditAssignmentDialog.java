@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.FeatureNotAvailableToMobile;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
@@ -71,6 +72,13 @@ public class EditAssignmentDialog {
     AssignmentDesigner _assignmentDesigner;
 
     public EditAssignmentDialog(Assignment assignment) {
+        
+        if(UserInfoBase.getInstance().isMobile()) {
+            new FeatureNotAvailableToMobile();
+            return;
+        }
+        
+        
         this._assignment = assignment;
         _isDraftMode = _assignment.getStatus().equals("Draft");
         
