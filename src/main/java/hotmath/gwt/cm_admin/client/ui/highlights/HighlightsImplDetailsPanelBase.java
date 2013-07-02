@@ -78,6 +78,9 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         @Path("schoolCount")
         ValueProvider<HighlightReportData, Integer> school();
 
+        @Path("dbCount")
+        ValueProvider<HighlightReportData, Integer> studentCount();
+
         ValueProvider<HighlightReportData, Integer> timeOnTask();
 
         @Path("videosViewed")
@@ -175,15 +178,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
             if(tip != null)
                 _grid.setToolTip(tip);
 
-            _grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
-                @Override
-                public void onCellClick(CellDoubleClickEvent event) {
-                    if (_grid.getSelectionModel().getSelectedItems().size() > 0) {
-                        CmLogger.debug("click handler: Showing StudentDetails");
-                        showSelectedStudentDetail();
-                    }
-                }
-            });
+            _grid.addCellDoubleClickHandler(getDoubleClickHandler());
 
         }
         
@@ -192,6 +187,18 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     
     protected String getGridToolTip() {
         return "Double click for detailed history";
+    }
+
+    protected CellDoubleClickHandler getDoubleClickHandler() {
+    	return new CellDoubleClickHandler() {
+            @Override
+            public void onCellClick(CellDoubleClickEvent event) {
+                if (_grid.getSelectionModel().getSelectedItems().size() > 0) {
+                    CmLogger.debug("click handler: Showing StudentDetails");
+                    showSelectedStudentDetail();
+                }
+            }
+        };
     }
 
     private Grid<HighlightReportData> defineGrid(final ListStore<HighlightReportData> store, ColumnModel<HighlightReportData> cm) {

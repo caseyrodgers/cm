@@ -6,7 +6,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
@@ -91,25 +90,29 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                 case GROUP_USAGE:
                     list = dao.getReportGroupUsage(conn, action.getAdminId(), uids, fromDate, toDate);
                     break;
-                              
+
                 case ZERO_LOGINS:
                     list = dao.getReportZeroLogins(conn, uids, fromDate, toDate);
                     break;
-                    
+
                 case TIME_ON_TASK:
                     list = dao.getReportTimeOnTask(conn, uids, fromDate, toDate);
-                    break;             
-                    
+                    break;
+
                 case FIRST_TIME_CORRECT:
                     list = dao.getReportWidgetAnswersPercent(uids, fromDate, toDate);
-                    break;             
-                    
+                    break;
+
                 case ASSIGNMENTS:
                     list = toCmList(dao.getReportAssignments(uids, fromDate, toDate));
-                    break;             
-                    
+                    break;
+
+                case CCSS_COVERAGE:
+                    list = toCmList(dao.getReportCCSSCoverage(uids, fromDate, toDate));
+                    break;
+
                     default:
-                        throw new Exception("Unknown report type: " + action);
+                        throw new Exception("Unknown report type: " + action.getType());
             }
             
             return list;

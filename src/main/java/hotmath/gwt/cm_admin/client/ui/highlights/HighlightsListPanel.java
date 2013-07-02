@@ -99,7 +99,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
     '<div class="x-view-item {decorationClass}" qtip="{toolTip}">{text}</div>', 
     '</tpl>' 
     ].join(""); 
-  }-*/;  
+    }-*/;  
     
     ListViewCustomAppearance<HighlightsReport> appearance = new ListViewCustomAppearance<HighlightsReport>("") {
  	   
@@ -173,6 +173,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         s.add(new HighlightsReport(new HighlightsImplTimeOnTask()));
         s.add(new HighlightsReport(new HighlightsImplFirstAnswersPercent()));
         s.add(new HighlightsReport(new HighlightsImplAssignments()));
+        s.add(new HighlightsReport(new HighlightsImplCCSSCoverage()));
         // s.add(new HighlightsReport(new HighlightImplComparePerformance()));
         
         /** mark these two reports as not using the summary page selection */

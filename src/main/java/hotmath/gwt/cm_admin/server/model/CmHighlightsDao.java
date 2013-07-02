@@ -570,6 +570,20 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         	uidList.add(item.userId);
         	data.setDbCount(data.getDbCount() + 1);
         }
+        Collections.sort(list, new Comparator<HighlightReportData>() {
+            @Override
+            public int compare(HighlightReportData o1, HighlightReportData o2) {
+            	int c1 = o1.getDbCount();
+            	int c2 = o2.getDbCount();
+            	if (c1 != c2)
+            		return (c1 > c2) ? -1 : 1;
+
+                String n1 = o1.getName();
+            	String n2 = o2.getName();
+            	return n1.compareTo(n2);
+            }
+        });
+
     	return list;
     }
 
