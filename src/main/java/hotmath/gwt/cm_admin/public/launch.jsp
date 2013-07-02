@@ -12,8 +12,6 @@
   if(jsonizedLoginInfo == null) {
       throw new Exception("'loginInfo' could not be found in session");
   }  
-  
-  throw new Exception("Is Mobile: " + request.getAttribute("is_mobile"));
 %>
 <html>
   <head>
