@@ -2357,7 +2357,13 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         String sql = null;
         switch(type) {
             case ALL_IN_GROUP:
-                sql = "select uid, user_name from HA_USER u join CM_ASSIGNMENT a on a.group_id = u.group_id and assign_key = ? and is_auto_create_template = 0 order by lower(user_name)";
+                sql = " select uid,user_name " +
+                " from   HA_USER u " +
+                " join CM_ASSIGNMENT a on (a.group_id = u.group_id and a.aid = u.admin_id) " +
+                " where a.assign_key = ? "+
+                " and is_auto_create_template = 0 " +
+                " and is_active = 1 " +
+                " order  by Lower(user_name)  ";
                 break;
                 
             case ASSIGNED:

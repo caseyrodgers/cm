@@ -3682,7 +3682,6 @@ from CM_GROUP g
         group by a.group_id
   ) ac on ac.group_id = g.id
 where id in ($$UID_LIST$$)
-and   admin_id > 0
 and   (is_self_reg is null or is_self_reg = 0)
 group by group_id
 order by g.name
@@ -3757,7 +3756,7 @@ select u.uid, u.user_name, a.assign_key, a.name, p.id as problem_id, p.label, p.
        s.is_graded as is_problem_graded, ua.is_graded as is_student_graded
 
 from CM_ASSIGNMENT a 
-join HA_USER u on u.group_id = a.group_id
+join HA_USER u on (u.group_id = a.group_id and u.admin_id = a.aid)
 join CM_ASSIGNMENT_PIDS p on p.assign_key=a.assign_key
 
 left join CM_ASSIGNMENT_PID_STATUS s on s.assign_key=a.assign_key and s.pid=p.pid and s.uid=u.uid
@@ -4057,12 +4056,12 @@ left join (
                 group by assign_key
           ) ai on ai.assign_key = a.assign_key
          left join(
-               select group_id, count(*) as num_students_in_group
+               select admin_id, group_id, count(*) as num_students_in_group
                 from HA_USER u
                 where is_auto_create_template = 0
                 and   is_active = 1
-                group by group_id
-           ) ag on ag.group_id = a.group_id
+                group by admin_id, group_id
+           ) ag on (ag.group_id = a.group_id and ag.admin_id = a.aid)
          left join(
                select assign_key, count(*) as num_students_specified
                 from CM_ASSIGNMENT_USERS_SPECIFIED
