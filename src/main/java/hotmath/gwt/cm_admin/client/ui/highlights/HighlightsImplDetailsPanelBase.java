@@ -87,11 +87,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         ValueProvider<HighlightReportData, Integer> videos();
 
     }
-/*
-    int groupCount;
-    int schoolCount;
-    int dbCount;
- */
+
     GridProperties _gridProps = GWT.create(GridProperties.class);
     
     public HighlightsImplDetailsPanelBase(HighlightsImplBase base) {
@@ -175,7 +171,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
             add(_grid);
             
             String tip = getGridToolTip();
-            if(tip != null)
+            if (tip != null)
                 _grid.setToolTip(tip);
 
             _grid.addCellDoubleClickHandler(getDoubleClickHandler());

@@ -1,15 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
-import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.CmShared;
-import hotmath.gwt.shared.client.rpc.RetryAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -46,7 +39,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
     	return new ColumnModel<HighlightReportData>(cols);
 
     }
-/*
+
     @Override
     protected CellDoubleClickHandler getDoubleClickHandler() {
     	return new CellDoubleClickHandler() {
@@ -59,7 +52,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
             }
         };
     }
-*/
+
     private void showCCSSCoverageDetails() {
         final HighlightReportData item = _grid.getSelectionModel().getSelectedItem();
         CmMessageBox.showAlert(item.getName(), "Names of " + item.getUidList().size() + " students");

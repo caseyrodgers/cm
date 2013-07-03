@@ -556,6 +556,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         String standardName = null;
         CmList<Integer> uidList = null;
         final CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+        int uid = 0;
 
         for (StudentCCSSItem item : items) {
         	if (standardName == null || standardName.equals(item.standardName) == false) {
@@ -565,6 +566,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         		data = new HighlightReportData();
         		data.setName(standardName);
         		data.setUidList(uidList);
+        		data.setUid(uid++);  // needed for grid row selection
         		list.add(data);
         	}
         	uidList.add(item.userId);
