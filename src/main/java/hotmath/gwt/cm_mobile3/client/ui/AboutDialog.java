@@ -132,7 +132,7 @@ public class AboutDialog extends DialogBox  {
             discloseProgram.setVisible(false);
             discloseAssignment.setVisible(false);
             
-            discloseMoreInfo.setOpen(true);
+            discloseAccount.setOpen(true);
         }
 		
 		loggedInAs.setInnerHTML(loggedIn);
@@ -218,7 +218,7 @@ public class AboutDialog extends DialogBox  {
 	Element loggedInAs,programInfo,programName;
 	
 	@UiField
-	DisclosurePanel discloseProgram,discloseAssignment, discloseMoreInfo;
+	DisclosurePanel discloseProgram,discloseAssignment, discloseAccount;
 }
 
 

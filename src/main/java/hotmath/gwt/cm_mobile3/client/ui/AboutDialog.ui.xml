@@ -27,6 +27,8 @@
 
 	<g:HTMLPanel styleName="{style.main}">
 	   <p ui:field="loggedInAs"></p>
+
+
 	   
 	   <g:DisclosurePanel ui:field="discloseProgram">
            <g:header>Program Info</g:header>
@@ -42,16 +44,15 @@
           <g:header>Assignments</g:header>
           <g:HTMLPanel styleName="{style.infoPanel}" ui:field="assignmentInfo"/>            
     </g:DisclosurePanel>
-    <g:DisclosurePanel ui:field="discloseMoreInfo">
-        <g:header>More Information</g:header>
-        <g:HTMLPanel styleName="{style.infoPanel}">
-		<p>
-            For more detailed information about Catchup Math, 
-            please visit on a desktop computer.
-        </p>
-		<p>Email feedback or questions to support@hotmath.com.</p>
-		</g:HTMLPanel>
-    </g:DisclosurePanel>
+    
+    	   
+	   <g:DisclosurePanel ui:field="discloseAccount">
+           <g:header>Account Details</g:header>
+               <g:HTMLPanel styleName="{style.infoPanel}">
+                   Log in on a desktop computer for details about
+                   your account.               
+              </g:HTMLPanel>
+      </g:DisclosurePanel>
     		
 	</g:HTMLPanel>
 </ui:UiBinder> 

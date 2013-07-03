@@ -13,13 +13,13 @@
 	       }
 	    .main ul {
 	        margin-top: 10px;
-	        list-style-type: disc;
+	        list-style-type: decimal;
 	    }
 	    
 	    .main ul li {
 	        line-height: 1.5em;
 	        margin-left: 10px;
-	        list-style-type: disc;
+	        list-style-type: decimal;
 	    }
 	    .main h1 {
 	        margin-bottom: 10px;
