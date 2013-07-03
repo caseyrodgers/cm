@@ -88,7 +88,7 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     }
 
     enum StudentSqlType {
-        SINGLE_STUDENT, ALL_STUDENTS_FOR_ADMIN, SELECTED_STUDENTS_FOR_ADMIN
+        SINGLE_STUDENT, ALL_STUDENTS_FOR_ADMIN, SELECTED_STUDENTS_FOR_ADMIN, SELECTED_STUDENTS
     };
 
     /**
@@ -114,6 +114,9 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 break;
         case SELECTED_STUDENTS_FOR_ADMIN:
                 studentSql += " WHERE a.aid = ? AND h.uid in (XXX) ";
+                break;
+        case SELECTED_STUDENTS:
+                studentSql += " WHERE h.uid in (XXX) ";
         }
 
         // to filter the Self Registration Setup records
@@ -1911,6 +1914,55 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
             __logger.debug(String.format("End getStudentModelBase(), UID: %d, elapsed msecs: %d", uid, (System.currentTimeMillis() - timeStart)));
         }
     }
+
+    /** Return student models identified by uids
+    *
+    * @param conn
+    * @param uids
+    * @param includeSelfRegTemplate  If false, then records with is_auto_create_template=1 will be excluded
+    * @return
+    *
+    *
+    * @throws Exception
+    */
+   static String BASE_SQL = "SELECT h.uid, admin_id as admin_uid, upper(h.user_name) as name, user_passcode as passcode from HA_USER h where h.uid in ( XXX )";
+   public List<StudentModelI> getStudentModelBase(final Connection conn, List<Integer> uids) throws Exception {
+
+       long timeStart = System.currentTimeMillis();
+       PreparedStatement ps = null;
+       ResultSet rs = null;
+       String uidStr = getUidString(uids);
+
+       String sqlWithUids = BASE_SQL.replaceAll("XXX", uidStr);
+
+       try {
+           ps = conn.prepareStatement(sqlWithUids);
+
+           rs = ps.executeQuery();
+
+           List<StudentModelI> l = new ArrayList<StudentModelI>();
+           while (rs.next()) {
+               StudentModelI sm = new StudentModelBase();
+
+               sm.setUid(rs.getInt("uid"));
+               sm.setAdminUid(rs.getInt("admin_uid"));
+               sm.setName(rs.getString("name"));
+               sm.setPasscode(rs.getString("passcode"));
+               l.add(sm);
+           }
+
+           if (l.size() != uids.size())
+               __logger.warn(String.format("One or more students not found", uids));
+
+           return l;
+       } catch (Exception e) {
+           __logger.error(String.format("*** Error obtaining data for student UIDs: %s", uids), e);
+           throw new Exception("*** Error obtaining data for students");
+       } finally {
+           SqlUtilities.releaseResources(rs, ps, null);
+           __logger.debug(String.format("End getStudentModelBase(), #UIDs: %d, elapsed msecs: %d", uids.size(), (System.currentTimeMillis() - timeStart)));
+       }
+   }
 
     /** Return student model for template named by uid
     *
