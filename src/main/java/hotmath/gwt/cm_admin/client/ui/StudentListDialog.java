@@ -36,12 +36,12 @@ import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
 /* Provide standard display of student lists
  * 
  */
-public class TrendingDataStudentListDialog extends GWindow {
+public class StudentListDialog extends GWindow {
 
     Grid<StudentModelI> _grid;
     FlowLayoutContainer _container;
     
-    public TrendingDataStudentListDialog(String title, List<StudentModelI> students) {
+    public StudentListDialog(String title, List<StudentModelI> students) {
     	super(false);
 
         setWidth(300);
