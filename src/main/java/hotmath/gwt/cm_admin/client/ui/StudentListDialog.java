@@ -94,7 +94,7 @@ public class TrendingDataStudentListDialog extends GWindow {
         super.addCloseButton();
         
         TextButton print = new StudentPanelButton("Print List");
-        print.setToolTip("Show selected student's history detail.");
+        print.setToolTip("Display a printable report.");
         print.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
