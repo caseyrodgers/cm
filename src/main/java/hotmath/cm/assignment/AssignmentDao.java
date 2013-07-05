@@ -1022,7 +1022,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("STUDENT_ASSIGNMENT_STATUS");
         String assignKeyInList = createStudentAssignmentInList(uid);
-        sql = SbUtilities.replaceSubString(sql, "$$STUDENT_ASSIGN_KEYS$$", assignKeyInList);
+        String assignmentsSql="";
+        if(assignKeyInList.length() > 0) {
+            assignmentsSql = " and a.assign_key in (" + assignKeyInList + ")";
+        }
+        sql = SbUtilities.replaceSubString(sql, "$$STUDENT_ASSIGN_KEYS$$", assignmentsSql);
         
         getJdbcTemplate().query(sql, new Object[] { uid }, new RowMapper<Integer>() {
             @Override
@@ -1050,6 +1054,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      *  Meaning they do not have ANY specific user specified.
      *  
      *  'default' assignments are assigned to all students in a group.
+     *  
+     *  If no assignments are available to student, then empty string is returned.
      *  
      *  
      * @param uid
