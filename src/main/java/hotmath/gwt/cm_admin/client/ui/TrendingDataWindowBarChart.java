@@ -210,7 +210,7 @@ public class TrendingDataWindowBarChart implements IsWidget {
 		service.execute(action,
 				new CmAsyncCallback<CmList<StudentModelI>>() {
 			public void onSuccess(CmList<StudentModelI> students) {
-				new StudentListDialog("Students assigned lesson '" +lessonName + "'",students);
+				new StudentListDialog("Students assigned lesson '" +lessonName + "'").addStudents(students);
 				CmBusyManager.setBusy(false);
 			}
 

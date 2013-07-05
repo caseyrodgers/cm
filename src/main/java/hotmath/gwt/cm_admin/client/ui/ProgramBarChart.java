@@ -218,7 +218,7 @@ public class ProgramBarChart implements IsWidget {
 		        service.execute(action,
 				    new CmAsyncCallback<CmList<StudentModelI>>() {
 			            public void onSuccess(CmList<StudentModelI> students) {
-				            new StudentListDialog("Students in " + title + " Segment " + segmentNo, students);
+				            new StudentListDialog("Students in " + title + " Segment " + segmentNo).addStudents(students);
 				                CmBusyManager.setBusy(false);
 			            }
 
