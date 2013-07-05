@@ -14,7 +14,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -121,6 +121,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
      * after whiteboard has been fully loaded. 
      */
     private void setupShowWorkIfRequired() {
+        
         if(_showWork == null) {
             _showWork = new ShowWorkPanel(new ShowWorkPanelCallbackDefault(){
                 @Override
@@ -142,6 +143,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
             forceLayout();
         }
         else {
+            _showWork.loadWhiteboard(new CmArrayList<WhiteboardCommand>());
             loadShowWork();
         }
     }
@@ -149,14 +151,18 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
     private void loadShowWork() {
         Log.info("Loading Show Work");
 
+        CmBusyManager.setBusy(true);
+        
         // always use zero for run_id
         GetAssignmentWhiteboardDataAction action = new GetAssignmentWhiteboardDataAction(_assignmentProblem.getUserId(), _assignmentProblem.getInfo().getPid(), _assignmentProblem.getAssignKey());
         CmTutor.getCmService().execute(action, new AsyncCallback<AssignmentWhiteboardData>() {
             public void onSuccess(AssignmentWhiteboardData data) {
+                CmBusyManager.setBusy(false);
                 _showWork.loadWhiteboard(data.getCommands());
             }
 
             public void onFailure(Throwable caught) {
+                CmBusyManager.setBusy(false);
                 Log.error("Error getting whiteboard data: " + caught.toString(), caught);
             };
         });
