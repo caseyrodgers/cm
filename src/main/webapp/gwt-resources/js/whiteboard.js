@@ -2383,6 +2383,7 @@ if(isIE){updateCanvas();}
                     // context.fillText(graphic_data[i].text, x0, y0);
                     xt = graphic_data[i].text;
                     xt = unescape(decodeURI(xt));
+					xt = String(xt).split("\:").join(" ");
                     renderText(xt, x0, y0, col)
                 }
             }
