@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui;
 
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
@@ -13,6 +14,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
+import hotmath.gwt.shared.client.rpc.action.GetStudentModelsAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +22,15 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.Style.SelectionMode;
+import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -39,24 +44,68 @@ import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
 public class StudentListDialog extends GWindow {
 
     Grid<StudentModelI> _grid;
-    FlowLayoutContainer _container;
-    
-    public StudentListDialog(String title, List<StudentModelI> students) {
-    	super(false);
+    VerticalLayoutContainer _container = new VerticalLayoutContainer();
+    //FlowLayoutContainer _container = new FlowLayoutContainer();
+    ListStore<StudentModelI> _store = new ListStore<StudentModelI>(_dataAccess.nameKey());
 
-        setWidth(300);
+    int _height = 400;
+    int _width = 270;
+
+    public StudentListDialog(String title, int height) {
+    	super(false);
+    	_height = height;
+    }
+    
+    public StudentListDialog(String title) {
+    	super(false);
+    	buildUI(title);
+    }
+
+    public void loadStudents(final List<Integer> studentUids) {
+        new RetryAction<CmList<StudentModelI>>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+
+                GetStudentModelsAction action = new GetStudentModelsAction(studentUids);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            @Override
+            public void oncapture(CmList<StudentModelI> models) {
+                CmBusyManager.setBusy(false);
+                addStudents(models);
+            }
+            
+            @Override
+            public void onFailure(Throwable error) {
+                super.onFailure(error);
+                CmBusyManager.setBusy(false);
+            }
+        }.register();
+
+    }
+
+    protected void addStudents(List<StudentModelI> students) {
+    	if (isVisible()) setVisible(false);
+    	_store.clear();
+        _store.addAll(students);
+        setVisible(true);
+        forceLayout();
+    }
+
+    protected void buildUI(String title) {
+        setWidth(_width);
         setHeight(400);
 
         setHeadingText(title);
-        
-        _container = new FlowLayoutContainer();
 
-        ListStore<StudentModelI> store = new ListStore<StudentModelI>(_dataAccess.nameKey());
-        store.addAll(students);
+        _grid = defineGrid(_store, defineColumns());
+        _container.setScrollMode(ScrollMode.AUTO);
+        _container.add(_grid);  // new VerticalLayoutData(1, 1);
+        add(_container);
         
-        _grid = defineGrid(store, defineColumns());
-        add(_grid);
-
         TextButton edit = new StudentPanelButton("Edit");
         edit.setToolTip("Edit selected student's registration.");
         edit.addSelectHandler(new SelectHandler() {
@@ -93,7 +142,7 @@ public class StudentListDialog extends GWindow {
 
         super.addCloseButton();
         
-        TextButton print = new StudentPanelButton("Print List");
+        TextButton print = new StudentPanelButton("Print-3");
         print.setToolTip("Display a printable report.");
         print.addSelectHandler(new SelectHandler() {
             @Override
@@ -113,7 +162,6 @@ public class StudentListDialog extends GWindow {
         getHeader().addTool(print);
 
         setModal(true);
-        setVisible(true);
     }
     
     enum StudentEventType {REGISTER,DETAILS}
@@ -157,8 +205,8 @@ public class StudentListDialog extends GWindow {
         //grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         //grid.getSelectionModel().setFiresEvents(true);
-        grid.setWidth("410px");
-        grid.setHeight("300px");
+        grid.setWidth(255);
+        grid.setHeight(300);
         grid.setStateful(true);
         grid.setLoadMask(true);
         return grid;

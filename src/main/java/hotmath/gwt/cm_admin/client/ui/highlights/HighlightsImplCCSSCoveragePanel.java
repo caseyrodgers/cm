@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.cm_admin.client.ui.StudentListDialog;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
@@ -55,7 +55,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
 
     private void showCCSSCoverageDetails() {
         final HighlightReportData item = _grid.getSelectionModel().getSelectedItem();
-        CmMessageBox.showAlert(item.getName(), "Names of " + item.getUidList().size() + " students");
+        new StudentListDialog(item.getName()).loadStudents(item.getUidList());
     }
 
     @Override
