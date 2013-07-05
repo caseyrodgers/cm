@@ -9,7 +9,6 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
-import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
 
@@ -219,14 +218,14 @@ public class ShowWorkPanel extends Composite {
             if (_lastCommands != null && _lastCommands.size() > 0) {
                 WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size() - 1);
                 if (cmd.isAdmin()) {
-                    CmMessageBox.showAlert("Cannot undo teacher notes");
+                    Window.alert("Cannot undo teacher notes");
                     return;
                 }
                 _lastCommands.remove(_lastCommands.size() - 1); // remove last
                                                                 // element
                 loadWhiteboard(_lastCommands);
             } else {
-                CmMessageBox.showAlert("Nothing to undo");
+                //Window.alert("Nothing to undo");
                 return;
             }
         } else {
