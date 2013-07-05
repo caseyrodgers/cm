@@ -2093,7 +2093,10 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
     private void setupProgramStatus(StudentModelI student, String programName, int currentLesson,int lessonCount, int countLessonsCompleted, int activeTestId, boolean isCompleted) {
 
         StudentProgramModel program = student.getProgram();
-        if (program.isCustom() == false) {
+        if(program.getProgramType() == CmProgramType.ASSIGNMMENTS_ONLY) {
+            student.setStatus("");
+        }
+        else if (program.isCustom() == false) {
             program.setProgramDescription(programName);
             student.setStatus(getStatus(program.getProgramId(), student.getSectionNum(), student.getSectionCount()));
         }
