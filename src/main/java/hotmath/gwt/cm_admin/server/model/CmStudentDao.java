@@ -2260,7 +2260,8 @@ public class CmStudentDao extends SimpleJdbcDaoSupport {
                 // identify incomplete topics
                 Set <String> assignedTopics = new HashSet<String>();
                 do {
-                        if (!"correct".equalsIgnoreCase(rs.getString("answer_status"))) {
+                    String stat=rs.getString("answer_status");
+                        if (!"correct".equalsIgnoreCase(stat)) {
                             assignedTopics.add(rs.getString("file"));
                         }
                 } while (rs.next());
