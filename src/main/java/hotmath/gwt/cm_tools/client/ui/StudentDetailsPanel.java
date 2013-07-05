@@ -332,6 +332,11 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             CatchupMathTools.showAlert("Select a Quiz or Review from the list first");
             return;
         }
+        
+        if(sam.isCustomQuiz()) {
+            CatchupMathTools.showAlert("Custom Quizzes do have assigned topics");
+            return;
+        }
 
         /**
          * only show list if a Review is selected, quizzes do not have lessons
