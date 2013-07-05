@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
+import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
@@ -8,6 +9,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
+import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
@@ -325,7 +327,11 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
                 
                 @Override
                 public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                    return new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),UserInfo.getInstance().getRunId(), pid, commandType, data);
+                    int rid=UserInfo.getInstance().getRunId();
+                    if(isQuiz()) {
+                        rid=0;
+                    }
+                    return new SaveWhiteboardDataAction(UserInfo.getInstance().getUid(),rid, pid, commandType, data);
                 }
                 
                 @Override

@@ -9,6 +9,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.ShowWorkModifiedEvent;
 
@@ -184,6 +185,8 @@ public class ShowWorkPanel extends Composite {
     MultiActionRequestAction whiteboardActions = new MultiActionRequestAction();
     boolean eatNextWhiteboardOut = false;
 
+    private List<WhiteboardCommand> _lastCommands;
+    
     protected void whiteboardOut_Gwt(String json, boolean boo) {
 
         if (eatNextWhiteboardOut) {
@@ -205,9 +208,30 @@ public class ShowWorkPanel extends Composite {
          */
         CommandType commandType = json.equals("clear") ? CommandType.CLEAR : CommandType.DRAW;
         if (commandType == CommandType.CLEAR) {
+            if (_lastCommands != null) {
+                _lastCommands.clear();
+            }
             whiteboardActions.getActions().clear();
         }
+        else if (json.equals("undo")) {
+            commandType = CommandType.UNDO;
 
+            if (_lastCommands != null && _lastCommands.size() > 0) {
+                WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size() - 1);
+                if (cmd.isAdmin()) {
+                    CmMessageBox.showAlert("Cannot undo teacher notes");
+                    return;
+                }
+                _lastCommands.remove(_lastCommands.size() - 1); // remove last
+                                                                // element
+                loadWhiteboard(_lastCommands);
+            } else {
+                CmMessageBox.showAlert("Nothing to undo");
+                return;
+            }
+        } else {
+            _lastCommands.add(new WhiteboardCommand("draw", json, false));
+        }
         Action<? extends Response> action = _whiteboardOutCallback.createWhiteboardSaveAction(pid, commandType, json);
         if (action != null) {
             whiteboardActions.getActions().add(action);
@@ -225,6 +249,8 @@ public class ShowWorkPanel extends Composite {
      * @param commands
      */
     public void loadWhiteboard(List<WhiteboardCommand> commands) {
+        _lastCommands = commands;
+        
         Log.debug("Loading whiteboard with " + commands.size() + " commands");
         final String flashId = "";
         try {
