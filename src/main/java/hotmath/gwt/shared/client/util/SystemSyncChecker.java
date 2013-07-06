@@ -97,8 +97,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          * to keep errors silent in case of temp offline
          * 
          */
-        UserInfo ui=UserInfo.getInstance();
-         GetUserSyncAction action = new GetUserSyncAction(UserInfoBase.getInstance().getUid());
+         GetUserSyncAction action = new GetUserSyncAction(UserInfo.getInstance().getUid());
          CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
