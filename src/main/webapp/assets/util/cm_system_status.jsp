@@ -1,6 +1,8 @@
 <%@ page import="hotmath.util.*" %>
-<%@ page import="hotmath.gwt.cm_rpc.server.rpc.ContextListener" %>
+<%@ page import="hotmath.gwt.cm_rpc_core.server.rpc.ContextListener" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@page import="hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher"%>
+
 <%
     String dbPoolStatus = HMConnectionPool.getInstance().getStatus();
     boolean dbPoolOK = HMConnectionPool.getInstance().getIsOK();
@@ -15,7 +17,7 @@
     String memory = "f=" +lFree + ":t=" + lTotal + ":u=" + lUsed;
 %>
 
-<%@page import="hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher"%><html>
+<html>
   <body>
     <h1>
       System Check
