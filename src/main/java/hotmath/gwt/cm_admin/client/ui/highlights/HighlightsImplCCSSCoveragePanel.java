@@ -3,10 +3,15 @@ package hotmath.gwt.cm_admin.client.ui.highlights;
 import hotmath.gwt.cm_admin.client.ui.StudentListDialog;
 import hotmath.gwt.cm_admin.client.ui.StudentListWithCCSSDetailDialog;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.CCSSDetail;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.CCSSDetailAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
-import hotmath.gwt.shared.client.rpc.action.CCSSDetailAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,5 +88,29 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
         }
         return vals;
     }
-   
+
+    public void getCCSSDetailRPC(String standardName) {
+
+        CmBusyManager.setBusy(true);
+
+        new RetryAction<CCSSDetail>() {
+            public void oncapture(CCSSDetail detail) {
+                try {
+                	CCSSDetail ccssDetail = detail;
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
+            }
+
+            @Override
+            public void attempt() {
+                CmServiceAsync s = CmShared.getCmService();
+
+                CCSSDetailAction action = new CCSSDetailAction("X.X.X.X");
+                setAction(action);
+                s.execute(action, this);
+            }
+        }.register();
+    }
+
 }

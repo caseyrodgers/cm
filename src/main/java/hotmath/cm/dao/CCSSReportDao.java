@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
+import hotmath.gwt.shared.client.model.CCSSDetail;
 import hotmath.gwt.shared.client.model.CCSSDomain;
 import hotmath.gwt.shared.client.model.CCSSLesson;
 import hotmath.gwt.shared.client.model.CCSSGradeLevel;
@@ -270,7 +271,29 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	
     	return returnList;
     }
-    
+
+    public CCSSDetail getCCSSDetail(String name) throws Exception {
+
+    	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_DETAIL");
+    	List<CCSSDetail> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { name },
+    				new RowMapper<CCSSDetail>() {
+    			@Override
+    			public CCSSDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				return new CCSSDetail(rs.getString("name"), rs.getString("original_name"),
+    						rs.getString("level_name"), rs.getString("domain_name"),
+    						rs.getString("summary"), rs.getString("description"));
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getCCSSDetail(): namde: %s", name), e);
+    		throw e;
+    	}
+    	return list.get(0);
+    }
+
     /**
      * Get student count for specified group
      * 
