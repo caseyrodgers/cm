@@ -15,7 +15,7 @@
 	      }
 	  }
 	  fld = $get('fld_school');
-	  if(fld.value == "") {
+	  if(fld.value == "" || fld.value.split(' ').join('') == "") {
 	      if(showError(fld, "Please specify your school or district.")) {
 	          haveError = true;
 	      }
