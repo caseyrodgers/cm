@@ -1,25 +1,75 @@
-<!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
 <%@page import="hotmath.gwt.cm_rpc_core.client.rpc.CmRpcException"%>
-<html>
+<%
+     String reason = (String)request.getSession().getAttribute("error-msg");
+     if(reason == null) {
+      reason = "Invalid Login Name and/or Password";
+     }
+
+     boolean showMoreInfo=false; // request.getParameter("debug") != null;
+%>
+<!DOCTYPE HTML PUBLIC"-// W3C//DTD HTML 4.01//EN"" http://www.w3.org/TR/html4/strict.dtd">
+<html><!-- InstanceBegin template="/Templates/main.dwt" codeOutsideHTMLIsLocked="false" -->
+    <head>
+        <!-- InstanceBeginEditable name="doctitle" -->
+  <meta name="description" content="Catchup Math login for school and personal accounts.">
+  <meta name="keywords" content="Catchup Math, login, school, school account, personal, personal account, account, student, math" >
+<title>Catchup Math Login Error Page</title>
+<!-- InstanceEndEditable -->
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssreset/reset-min.css">
+        <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.2.0/build/cssgrids/grids-min.css">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Cantarell">
         <link rel="stylesheet" type="text/css" href="/assets/css/SexyButtons/sexybuttons.css">
         <link rel="stylesheet" type="text/css" href="/assets/css/core.css">
 <!--[if IE]>
         <link rel="stylesheet" type="text/css" href="/assets/css/core-ie.css" />
 <![endif]-->
-        <link rel="stylesheet" type="text/css" href="/assets/css/gxt-all.css">
-        <link rel="stylesheet" type="text/css" href="/assets/css/gxt-gray.css">
-        <link rel="stylesheet" type="text/css" href="/assets/css/tutor_widget.css">
-        <link rel="stylesheet" type="text/css" href="/assets/css/CatchupMath_combined.min.css">
-<%
-   String reason = (String)request.getSession().getAttribute("error-msg");
-   if(reason == null) {
-	   reason = "Invalid Login Name and/or Password";
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-634757-3");
+pageTracker._trackPageview();
+} catch(err) {}</script>      
+<script>
+   /** specify which main menu item is selected
+   */
+   var _mainMenuItem=-1;
+</script>
+        <!-- InstanceBeginEditable name="head" -->
+<link rel="stylesheet" type="text/css" href="/assets/css/login.css" />
+<style>
+   #main-content {
+     margin-top: 40px;
+     height: 400px;
+     
+   }
+
+   #system_check {
+	   position: absolute;
+	   left: 10px;
+	   top: 210px;	   
    }
    
-   boolean showMoreInfo=false; // request.getParameter("debug") != null;
-%>
+   #system_check a {
+	   color: black;
+	   text-decoration: underline;
+   }
+   
+   #new-info {
+       font-size: 1.4em;
+       margin-top: 15px;
+       width: 585px;
+       float: right;
+   }
+
+</style>
+
+    
 <link rel="stylesheet" type="text/css" href="/assets/css/login.css" />
 <link rel="stylesheet" type="text/css" href="/assets/css/login_error.css" />
+
 <!-- InstanceEndEditable -->
     </head>
     <body class='yui3-skin-sam'>
@@ -97,27 +147,30 @@
                 <div id='main-content' class='yui3-g'>
                     <div class='yui3-u-1'>
                         <!-- InstanceBeginEditable name="main-content" -->
-        <div id='login-wrapper' class='round-corners'>
-          <h1>Login Help</h1>
-          <p class='reason'><%= reason %></p>
- 
-          <button onclick='doLoginAgain();' class="sexybutton sexysimple sexyblue">
-                <div style='display: inline;font-size: 120%'>Try Again</div>
-          </button>
-          <% if(showMoreInfo)  {
-              %>    	   
-              <div style='margin-top: 20x;'>
-	              <br/>
-		          <a onclick="document.getElementById('more-info').style.display = 'block';this.style.display = 'none'">More Info</a>
-		          <div id='more-info' style='display: none'>
-		             <%= reason != null?reason:"No more info" %>
-		          </div>
-	          </div>
-	          <%
-	          }
-	      %>
-        </div>
-<!-- InstanceEndEditable -->
+                        
+                        
+				        <div id='login-wrapper' class='round-corners'>
+				          <h1>Login Help</h1>
+				          <p class='reason'><%= reason %></p>
+				 
+				          <button onclick='doLoginAgain();' class="sexybutton sexysimple sexyblue">
+				                <div style='display: inline;font-size: 120%'>Try Again</div>
+				          </button>
+				          <% if(showMoreInfo)  {
+				              %>    	   
+				              <div style='margin-top: 20x;'>
+					              <br/>
+						          <a onclick="document.getElementById('more-info').style.display = 'block';this.style.display = 'none'">More Info</a>
+						          <div id='more-info' style='display: none'>
+						             <%= reason != null?reason:"No more info" %>
+						          </div>
+					          </div>
+					          <%
+					          }
+					      %>
+				        </div>                            
+
+                        <!-- InstanceEndEditable -->
                     </div>
                 </div>
             </div>
@@ -158,7 +211,8 @@
                             </li>
                         </ul>
                         <h2>
-                            <img src='/assets/images/arrow_right_small_white.png'/>                            <a href='/educators.html'>Educators Page
+                            <img src='/assets/images/arrow_right_small_white.png'/>
+							<a href='/educators.html'>Educators Page
                             </a>
                         </h2>
                         <ul>
@@ -169,7 +223,7 @@
                             </li>
                             <li>
                                 <img src='/assets/images/arrow_right_small.png'/>
-                                <a href='/faculty_friendly.html'>Teacher Reports
+                                <a href='/faculty_friendly.html'>Teacher Convenience
                                 </a>
                             </li>
                             <li>
@@ -177,7 +231,7 @@
                                 <a href='/administrator-getting-started.html'>Getting Started Guide
                                 </a>
                             </li>
-                            <li>
+                            <li id='training_videos_link'>
                                 <img src='/assets/images/arrow_right_small.png'/>
                                 <a href='/training-videos'>Teacher Training Videos
                                 </a>
@@ -186,11 +240,12 @@
                     </div>
                     <div class='yui3-u-1-3'>
                         <h2>
-                            <img src='/assets/images/arrow_right_small_white.png'/>                            <a href='/students.html'>Students
+                            <img src='/assets/images/arrow_right_small_white.png'/>
+							<a href='/students.html'>Students
                             </a>
                         </h2>
                         <ul>
-                            <li>
+                            <li id='student_video_link'>
                                 <img src='/assets/images/arrow_right_small.png'/>
                                 <a href='#' onclick='showMonaMotivationalVideo();return false;'>Student Video
                                 </a>
@@ -202,7 +257,8 @@
                             </li>
                         </ul>
                         <h2>
-                            <img src='/assets/images/arrow_right_small_white.png'/>                            <a href='/catchup-math-intervention/'>Intervention
+                            <img src='/assets/images/arrow_right_small_white.png'/>
+							<a href='/catchup-math-intervention/'>Intervention
                             </a>
                         </h2>
                         <ul>
@@ -266,7 +322,7 @@
                                 </a>
                             </li>  
                         </ul>
-                        <h2>
+                        <h2 id='webinar_link'>
                             <img src='/assets/images/arrow_right_small_white.png'/>
                             <a href='/webinar'>Webinar
                             </a>
@@ -279,18 +335,20 @@
         <!-- Footer -->
       <div class='yui3-g' id='footer'>
             <div class='yui3-u-1'>
-                <div class='copyright'>Copyright &copy; 2012 Hotmath, Inc.                </div>
+                <div class='copyright'>Copyright &copy; 2012 Hotmath, Inc.</div>
             </div>
         </div>          
         
 <script src="http://yui.yahooapis.com/3.5.1/build/yui/yui-min.js" type="text/javascript"></script>
 <script src='/assets/js/core.js'></script>
-        <!-- InstanceBeginEditable name="AfterJavascriptLoad" --><!-- AfterJavascriptLoad -->
-		<script>
-		  function doLoginAgain() {
-       	     document.location = '/login.html';
+        <!-- InstanceBeginEditable name="AfterJavascriptLoad" -->
+<script>CmPage.menuItem = 6;</script>
+                <script>
+                  function doLoginAgain() {
+             document.location = '/login.html';
           }
-		</script>
-		<!-- InstanceEndEditable -->
+                </script>
+
+<!-- InstanceEndEditable -->
     </body>
 <!-- InstanceEnd --></html>
