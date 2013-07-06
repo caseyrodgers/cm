@@ -97,7 +97,7 @@ public class StudentListDialog extends GWindow {
 
     protected void buildUI(String title) {
         setWidth(_width);
-        setHeight(400);
+        setHeight(_height);
 
         setHeadingText(title);
 
@@ -142,7 +142,7 @@ public class StudentListDialog extends GWindow {
 
         super.addCloseButton();
         
-        TextButton print = new StudentPanelButton("Print-3");
+        TextButton print = new StudentPanelButton("Print");
         print.setToolTip("Display a printable report.");
         print.addSelectHandler(new SelectHandler() {
             @Override
