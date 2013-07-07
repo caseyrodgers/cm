@@ -1,4 +1,4 @@
-<%@page import="hotmath.gwt.cm_rpc.server.rpc.ActionDispatcher"%><%@ page import="hotmath.util.*" %><%String typeData = request.getParameter("data");
+<%@page import="hotmath.gwt.cm_rpc_core.server.rpc.ActionDispatcher"%><%@ page import="hotmath.util.*" %><%String typeData = request.getParameter("data");
     if(typeData == null)
         throw new Exception("'data' must be specified");
 
