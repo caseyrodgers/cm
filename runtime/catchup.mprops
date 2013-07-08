@@ -4227,6 +4227,7 @@ SELECT distinct ccs.standard_name as original_name, ccs.standard_name_new as nam
     ON upper(ins.standard_state) = 'COMMON' AND ins.standard_name_new = ccs.standard_name_new
   JOIN HA_PROGRAM_LESSONS pl
     ON pl.file = concat('topics/', ins.topic)
+ORDER BY ccs.standard_name ASC    
     
 .key=GET_CCSS_DETAIL
 SELECT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description

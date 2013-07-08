@@ -2,6 +2,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
@@ -185,9 +186,15 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
 		@Override
         public void load(BaseDto node, AsyncCallback<List<BaseDto>> callback) {
             if (node.getLevel() == CCSSData.LESSON) {
-                CCSSLesson l = (CCSSLesson) node;
+                final CCSSLesson l = (CCSSLesson) node;
                 Log.debug("Loading problems for lesson: " + l);
-                AddProblemDialog.getLessonProblemItemsRPC(l.getName(), l.getFile(), null, callback, null);
+                AddProblemDialog.getLessonProblemItemsRPC(l.getName(), l.getFile(), null, callback, new CallbackOnComplete() {
+                    
+                    @Override
+                    public void isComplete() {
+                        _tree.scrollIntoView(l);
+                    }
+                });
             }
             else {
                 callback.onSuccess(node.getChildren());
