@@ -31,7 +31,7 @@ public class UserProgramStatusPanel extends Composite {
         this.viewCount = viewCount;
         this.tutorInputWidgetStats = tutorInputWidgetStats;
 
-        gradedRppCount.setInnerHTML(tutorInputWidgetStats.getCountWidgets() + "");
+        gradedRppCount.setInnerHTML(viewCount + "");
         gradedRppPercent.setInnerHTML(tutorInputWidgetStats.getCorrectPercent() + "");
     }
 
