@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramChapter;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramLesson;
 import hotmath.gwt.cm_rpc.client.model.program_listing.ProgramListing;
@@ -223,8 +224,14 @@ public class AssignmentTreeSubjectChapterListingPanel extends ContentPanel {
             if (loadConfig.getChildren() == null || loadConfig.getChildren().size() == 0) {
                 if (loadConfig instanceof LessonDto) {
                     Log.debug("Loading lesson problems: " + loadConfig);
-                    LessonDto l = (LessonDto) loadConfig;
-                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, null);
+                    final LessonDto l = (LessonDto) loadConfig;
+                    AddProblemDialog.getLessonProblemItemsRPC(l.getLessonName(),l.getLessonFile(), l.getSubject(), callback, new CallbackOnComplete() {
+                        
+                        @Override
+                        public void isComplete() {
+                            _tree.scrollIntoView(l);
+                        }
+                    });
                 }
                 else if (loadConfig instanceof SubjectDto) {
                      Log.debug("Loading lesson problems: " + loadConfig);
