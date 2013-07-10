@@ -45,7 +45,6 @@ public class StudentListDialog extends GWindow {
 
     Grid<StudentModelI> _grid;
     VerticalLayoutContainer _container = new VerticalLayoutContainer();
-    //FlowLayoutContainer _container = new FlowLayoutContainer();
     ListStore<StudentModelI> _store = new ListStore<StudentModelI>(_dataAccess.nameKey());
 
     int _height = 400;
@@ -53,7 +52,8 @@ public class StudentListDialog extends GWindow {
 
     public StudentListDialog(String title, int height) {
     	super(false);
-    	_height = height;
+    	_height += height;
+    	buildUI(title);
     }
     
     public StudentListDialog(String title) {
