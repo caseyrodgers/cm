@@ -12,6 +12,8 @@ public class CCSSDetail implements Response {
     String topic;
     String summary;
     String description;
+
+    public CCSSDetail() {}
     
     public CCSSDetail(String ccssName, String ccssOriginalName, String gradeLevel, String topic, String summary, String description) {
         this.ccssName = ccssName;

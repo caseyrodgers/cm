@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentListDialog;
+import hotmath.gwt.cm_admin.client.ui.StudentListWithCCSSDetailDialog;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -15,6 +16,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -60,11 +62,34 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
     }
 
     private void showCCSSCoverageDetails() {
+
+        CmBusyManager.setBusy(true);
         final HighlightReportData item = _grid.getSelectionModel().getSelectedItem();
-        //StudentListWithCCSSDetailDialog dialog = new StudentListWithCCSSDetailDialog(item.getName());
-        //dialog.loadStudents(item.getUidList());
-        new StudentListDialog(item.getName()).loadStudents(item.getUidList());
-        //dialog.addCCSSDetail(item.getName());
+
+        new RetryAction<CCSSDetail>() {
+            public void oncapture(CCSSDetail detail) {
+                try {
+                	StringBuilder sb = new StringBuilder("<div style='padding-top:10px; padding-bottom:10px; margin-left:10px; margin-right:10px; font-weight:500'>");
+                	sb.append(detail.getDescription());
+                	sb.append("</div>");
+                	int height = (sb.length() / 40) * 12;
+                    StudentListWithCCSSDetailDialog dialog = new StudentListWithCCSSDetailDialog(item.getName(), height);
+                    dialog.loadStudents(item.getUidList());
+                    dialog.addCCSSDetail(sb.toString());
+                } finally {
+                    CmBusyManager.setBusy(false);
+                }
+            }
+
+            @Override
+            public void attempt() {
+                CmServiceAsync s = CmShared.getCmService();
+
+                CCSSDetailAction action = new CCSSDetailAction(item.getName());
+                setAction(action);
+                s.execute(action, this);
+            }
+        }.register();
     }
 
     @Override
@@ -86,30 +111,6 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
             vals[i][1] = hd.get(i).getDbCount() + "";
         }
         return vals;
-    }
-
-    public void getCCSSDetailRPC(String standardName) {
-
-        CmBusyManager.setBusy(true);
-
-        new RetryAction<CCSSDetail>() {
-            public void oncapture(CCSSDetail detail) {
-                try {
-                	CCSSDetail ccssDetail = detail;
-                } finally {
-                    CmBusyManager.setBusy(false);
-                }
-            }
-
-            @Override
-            public void attempt() {
-                CmServiceAsync s = CmShared.getCmService();
-
-                CCSSDetailAction action = new CCSSDetailAction("X.X.X.X");
-                setAction(action);
-                s.execute(action, this);
-            }
-        }.register();
     }
 
 }
