@@ -70,7 +70,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
             public void oncapture(CCSSDetail detail) {
                 try {
                 	StringBuilder sb = new StringBuilder("<div style='padding-top:10px; padding-bottom:10px; margin-left:10px; margin-right:10px; font-weight:500'>");
-                	sb.append(detail.getDescription());
+                	sb.append(detail.getSummary());
                 	sb.append("</div>");
                 	int height = (sb.length() / 40) * 12;
                     StudentListWithCCSSDetailDialog dialog = new StudentListWithCCSSDetailDialog(item.getName(), height);
