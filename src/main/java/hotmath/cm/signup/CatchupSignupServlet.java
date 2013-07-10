@@ -159,7 +159,7 @@ public class CatchupSignupServlet extends HttpServlet {
              Connection conn=null;
              try {
                  conn = HMConnectionPool.getConnection();
-                 userInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, user,null,true);
+                 userInfo = HaLoginInfoDao.getInstance().getLoginInfo(conn, user,null,null,true);
              }
              finally {
                  SqlUtilities.releaseResources(null, null, conn);

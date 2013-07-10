@@ -40,10 +40,10 @@ public class HaLoginInfoDao extends SimpleJdbcDaoSupport {
     private HaLoginInfoDao(){}
 
     
-    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, ClientEnvironment clientEnv, boolean isRealLogin) throws Exception {
+    public HaLoginInfo getLoginInfo(final Connection conn, HaBasicUser user, String key, ClientEnvironment clientEnv, boolean isRealLogin) throws Exception {
         
         HaLoginInfo loginInfo = new HaLoginInfo();
-        loginInfo.setKey(addLoginInfo(conn, user, clientEnv,isRealLogin));
+        loginInfo.setKey(key == null ? addLoginInfo(conn, user, clientEnv,isRealLogin): key);
         loginInfo.setUserId(user.getUserKey());
         loginInfo.setType(user.getUserType().toString());
         loginInfo.setLoginName(user.getLoginName());

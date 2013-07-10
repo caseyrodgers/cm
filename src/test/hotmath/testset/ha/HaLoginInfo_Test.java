@@ -15,7 +15,7 @@ public class HaLoginInfo_Test extends CmDbTestCase {
     public void testCreate() throws Exception {
         
         HaBasicUser user = HaUserFactory.loginToCatchup("casey","casey");
-        HaLoginInfo info = HaLoginInfoDao.getInstance().getLoginInfo(conn, user, new ClientEnvironment(),false);
+        HaLoginInfo info = HaLoginInfoDao.getInstance().getLoginInfo(conn, user, null,new ClientEnvironment(),false);
         
         assertTrue(info != null);
     }

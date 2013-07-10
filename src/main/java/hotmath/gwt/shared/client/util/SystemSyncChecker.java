@@ -112,17 +112,20 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                  }
                  else if(!"ADMIN".equals(startType) && !"AUTO_CREATE".equals(startType) && CmShared.getQueryParameter("debug") == null) {
                      
-//                	 /** only for CM Student not in debug mode */
-//                	 if(info.getCurrentUserLoginKey() != null && !info.getCurrentUserLoginKey().equals(CmShared.getSecurityKey())) {
-//	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
-//	                             
-//	                             new TextButton("Logout", new SelectHandler() {
-//	                                 @Override
-//	                                public void onSelect(SelectEvent event) {
-//	                                     Window.Location.assign("/login.html");
-//	                                 }
-//	                             }));
-//                	 }
+                	 /** only for CM Student not in debug mode */
+                     String k1=info.getCurrentUserLoginKey();
+                     String k2=CmShared.getSecurityKey();
+                	 if(k1 != null && !k1.equals(k2)) {
+                	     Log.debug("key1: " + k1 + ", key2: " + k2);
+	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
+	                             
+	                             new TextButton("Logout", new SelectHandler() {
+	                                 @Override
+	                                public void onSelect(SelectEvent event) {
+	                                     Window.Location.assign("/login.html");
+	                                 }
+	                             }));
+                	 }
                  }
                  if(info.getAssignmentInfo().isAdminUsingAssignments()) {
                      fireAppropriateEvent(info.getAssignmentInfo());

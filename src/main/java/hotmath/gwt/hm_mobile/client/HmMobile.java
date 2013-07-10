@@ -19,9 +19,12 @@ import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.hm_mobile.client.activity.LoginActivity;
 import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEventHandler;
@@ -169,7 +172,17 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             }
             else {
                 _rootPanel.add(createApplicationPanel());
-                History.fireCurrentHistoryState();
+                
+                /** already logged in? */
+                
+                LoginActivity loginActivity = new LoginActivity();
+                __clientFactory.getLoginView().setPresenter(loginActivity, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(__clientFactory.getLoginView()));
+                    }
+                });
+                // History.fireCurrentHistoryState();
             }
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));

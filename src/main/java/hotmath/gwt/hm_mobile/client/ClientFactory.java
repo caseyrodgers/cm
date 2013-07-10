@@ -7,6 +7,7 @@ import hotmath.gwt.hm_mobile.client.view.BookView;
 import hotmath.gwt.hm_mobile.client.view.CategoryListView;
 import hotmath.gwt.hm_mobile.client.view.HelpView;
 import hotmath.gwt.hm_mobile.client.view.HomeView;
+import hotmath.gwt.hm_mobile.client.view.LoginView;
 import hotmath.gwt.hm_mobile.client.view.MainMobileView;
 import hotmath.gwt.hm_mobile.client.view.TutorView;
 
@@ -24,5 +25,6 @@ public interface ClientFactory {
     TutorView getTutorView();
     BookSearchView getBookSearchView();
     HelpView getHelpView();
+    LoginView getLoginView();
     PagesContainerPanel getPagesContainer();
 }
