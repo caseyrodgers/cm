@@ -88,6 +88,8 @@
             	gwt-resources/css/mobile_question_box.css
                 gwt-resources/css/page_layout.css
 
+            	gwt-resources/css/mobile_core.css
+
                 gwt-resources/css/CatchupMathMobile3.css
                 gwt-resources/css/CmMobileAssignments.css
 
@@ -122,7 +124,7 @@
                 ../../../../hotmath2/web/css/tutor_widget.css
                 assets/css/local_sexybuttons.css
                 gwt-resources/css/tutor_layout_tablet.css
-
+            	gwt-resources/css/mobile_core.css
                 gwt-resources/css/HmMobile.css
              " />
         </concat>

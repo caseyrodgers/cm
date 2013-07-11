@@ -1,6 +1,7 @@
 package hotmath.gwt.hm_mobile.client.persist;
 
 import hotmath.gwt.hm_mobile.client.model.BookModel;
+import hotmath.gwt.hm_mobile.client.model.HmMobileLoginInfo;
 
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Window;
@@ -46,6 +47,15 @@ public class HmMobilePersistedPropertiesManager {
 						}
 					}
 				}
+				
+				
+				String loginInfo = Storage.getLocalStorage().getItem("login_info");
+				if(loginInfo != null && loginInfo.length() > 0) {
+				    __instance.setLoginInfo(new HmMobileLoginInfo(loginInfo));
+				}
+				else {
+				    __instance.setLoginInfo(null);
+				}
 
 			}
 
@@ -67,6 +77,11 @@ public class HmMobilePersistedPropertiesManager {
         }
         
         save();
+	}
+	
+	static public void setLoginInfo(HmMobileLoginInfo loginInfo) {
+	    getInstance().setLoginInfo(loginInfo);
+	    save();
 	}
 
 	/** Convenience method to set search term and persist.
@@ -117,6 +132,10 @@ public class HmMobilePersistedPropertiesManager {
 				bookViews += book+"="+page;
 			}
 			Storage.getLocalStorage().setItem("book_views", bookViews);
+			
+			
+			String loginInfo = p.getLoginInfoTokenized();
+			Storage.getLocalStorage().setItem("login_info",  loginInfo);
 		}
 	}
 }

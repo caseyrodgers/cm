@@ -309,6 +309,16 @@ li {
     top: 7px;
 }
 
+
+.logout-button {
+    position: absolute;
+    right: 40px;
+    color: #EDFEAB;
+}
+
+
+
+
 /** global CSS loading styles
 *
 */

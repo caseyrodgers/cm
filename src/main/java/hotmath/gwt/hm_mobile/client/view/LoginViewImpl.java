@@ -42,8 +42,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
             
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                System.out.println("code: " + event.getNativeEvent().getKeyCode());
-                
+                //System.out.println("code: " + event.getNativeEvent().getKeyCode());
                 if( (event.isShiftKeyDown() && event.getNativeEvent().getKeyCode() == 50) || usernameBox.getText().indexOf("@") > -1) {
                     passwordWrapper.setAttribute("style",  "visibility: visible");            
                 }

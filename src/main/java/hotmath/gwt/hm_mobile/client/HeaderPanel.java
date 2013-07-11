@@ -1,6 +1,10 @@
 package hotmath.gwt.hm_mobile.client;
 
+
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.Controller;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
+import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.GenericTextTag;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
@@ -8,6 +12,11 @@ import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPopEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStackPushEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.TouchClickEvent;
 import hotmath.gwt.cm_mobile_shared.client.util.ViewSettings;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.hm_mobile.client.event.HmLogoutEvent;
+import hotmath.gwt.hm_mobile.client.event.ShowLoginViewEvent;
+import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
+import hotmath.gwt.hm_mobile.client.view.LoginView;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.dom.client.Element;
@@ -69,12 +78,36 @@ public class HeaderPanel extends Composite {
 				new AboutDialog().showCentered();
 			}
 		});
+        
+        final Anchor logout = new Anchor("logout");
+        logout.addStyleName("logout-button");
+        logout.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                CmRpcCore.EVENT_BUS.fireEvent(new HmLogoutEvent());
+            }
+        });
+        
+        basePanel.add(logout);
         basePanel.add(about);
         
         registerDomTransitionEndedEvent(mActiveTitle.getElement());
         registerDomTransitionEndedEvent(mInactiveTitle.getElement());
 
         initWidget(basePanel);
+        
+        
+        CmRpcCore.EVENT_BUS.addHandler(LoadNewPageEvent.TYPE, new LoadNewPageEventHandler() {
+            @Override
+            public void loadPage(IPage page) {
+                if(page instanceof LoginView) {
+                    logout.setVisible(false);
+                }
+                else {
+                    logout.setVisible(true);
+                }
+            }
+        });
     }
 
     private native void registerDomTransitionEndedEvent(Element element) /*-{

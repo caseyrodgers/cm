@@ -161,29 +161,6 @@ background-color: black;
 }
    
 
-.popup-message {
-    background: white;
-    -moz-border-radius:10px;
-    border-radius: 10px;
-    border: 2px solid #6E84A2;
-    padding: 10px;
-    font-size: 1.2em;
-    -moz-box-shadow: 3px 3px 3px #666;
-    -webkit-box-shadow: 3px 3px 3px #666;
-    box-shadow: 3px 3px 3px #666;
-}
-
-.popup-message button {
-	margin-top: 15px;
-	margin-bottom: 15px;
-}
-
-.popup-message.error {
-    color: red;
-}
-
-
-
 
 /** busy/loading indicator */
 .loadingDialog {
@@ -1010,18 +987,3 @@ span.group-item-dot {
     width: 320px;
     color:  black;
 }	
-
-
-
-
-.popup-message .popup-title {
-    font-weight: bold;
-    background: #EF4200;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 320;
-    -moz-border-radius:5px 5px 0 0;
-    border-radius: 5px 5px 0 0;
-    text-align: center;
-}

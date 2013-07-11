@@ -1,6 +1,9 @@
 package hotmath.gwt.hm_mobile.client.model;
 
+
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+
+import com.allen_sauer.gwt.log.client.Log;
 
 public class HmMobileLoginInfo implements Response {
     private String user;
@@ -9,6 +12,17 @@ public class HmMobileLoginInfo implements Response {
 
     public HmMobileLoginInfo() {}
     
+    public HmMobileLoginInfo(String tokenized) {
+        String p[] = tokenized.split("\\|");
+        if(p.length != 3) {
+            Log.info("Could not parse loginInfo: " + tokenized);
+        }
+        else {
+            this.user = p[0];
+            this.password = p[1];
+            this.accountType = p[2];
+        }
+    }
     public HmMobileLoginInfo(String user, String password, String accountType) {
         this.user = user;
         this.password = password;

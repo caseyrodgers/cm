@@ -26,6 +26,10 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.hm_mobile.client.activity.LoginActivity;
 import hotmath.gwt.hm_mobile.client.event.EnableDisplayZoomEvent;
+import hotmath.gwt.hm_mobile.client.event.HmLoginEvent;
+import hotmath.gwt.hm_mobile.client.event.HmLoginHandler;
+import hotmath.gwt.hm_mobile.client.event.HmLogoutEvent;
+import hotmath.gwt.hm_mobile.client.event.HmLogoutHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowBookListEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowBookSearchEvent;
@@ -38,10 +42,14 @@ import hotmath.gwt.hm_mobile.client.event.ShowHelpEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowHelpEventHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowHomeViewEventHandler;
+import hotmath.gwt.hm_mobile.client.event.ShowLoginViewEvent;
+import hotmath.gwt.hm_mobile.client.event.ShowLoginViewHandler;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEvent;
 import hotmath.gwt.hm_mobile.client.event.ShowTutorViewEventHandler;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.CategoryModel;
+import hotmath.gwt.hm_mobile.client.model.HmMobileLoginInfo;
+import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import hotmath.gwt.hm_mobile.client.view.BookListView;
 import hotmath.gwt.hm_mobile.client.view.BookListViewImpl;
 import hotmath.gwt.hm_mobile.client.view.BookView;
@@ -91,6 +99,8 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
     final static public ClientFactory __clientFactory = GWT.create(ClientFactory.class);
 
     public static HmMobile __instance;
+    
+    HmMobileLoginInfo _loginInfo;
     
     public void onModuleLoad() {
         
@@ -174,15 +184,14 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 _rootPanel.add(createApplicationPanel());
                 
                 /** already logged in? */
-                
-                LoginActivity loginActivity = new LoginActivity();
-                __clientFactory.getLoginView().setPresenter(loginActivity, new CallbackOnComplete() {
-                    @Override
-                    public void isComplete() {
-                        CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(__clientFactory.getLoginView()));
-                    }
-                });
-                // History.fireCurrentHistoryState();
+                HmMobileLoginInfo loginInfo = HmMobilePersistedPropertiesManager.getInstance().getLoginInfo();
+                if(loginInfo == null) {
+                    showLoginPanel();
+                }
+                else {
+                    _loginInfo = loginInfo;
+                    History.fireCurrentHistoryState();
+                }
             }
             
             __clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(false));
@@ -199,6 +208,15 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     }
     
+    private void showLoginPanel() {
+        LoginActivity loginActivity = new LoginActivity();
+        __clientFactory.getLoginView().setPresenter(loginActivity, new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                CmRpcCore.EVENT_BUS.fireEvent(new LoadNewPageEvent(__clientFactory.getLoginView()));
+            }
+        });
+    }
 
     private Widget createApplicationPanel() {
         /**
@@ -223,12 +241,35 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         return fp;
     }
 
+    public HmMobileLoginInfo getLoginInfo() {
+        return _loginInfo;
+    }
 
     /** TODO: Move to a central Controller 
      * 
      */
     private void setupGlobalEventHandlers() {
         final EventBus eb = __clientFactory.getEventBus();
+        
+        eb.addHandler(HmLoginEvent.TYPE,  new HmLoginHandler() {
+            @Override
+            public void userLogin(HmMobileLoginInfo loginInfo) {
+                _loginInfo = loginInfo;
+                HmMobilePersistedPropertiesManager.setLoginInfo(loginInfo);
+                History.newItem(":" + System.currentTimeMillis());
+            }
+        });
+        
+        
+        eb.addHandler(HmLogoutEvent.TYPE,  new HmLogoutHandler() {
+            @Override
+            public void userLogOut() {
+                _loginInfo = null;
+                HmMobilePersistedPropertiesManager.setLoginInfo(null);
+                showLoginPanel();
+            }
+        });
+        
 
         /** Event to provide UI info about server activity
          * 
@@ -376,8 +417,21 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
             		
             	}
             }
-        });        
+        });
         
+        
+        boolean yes = eb == CmRpcCore.EVENT_BUS;
+        eb.addHandler(ShowLoginViewEvent.TYPE, new ShowLoginViewHandler() {
+            @Override
+            public void showLoginView() {
+                __clientFactory.getLoginView().setPresenter(new LoginActivity(),new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        eb.fireEvent(new LoadNewPageEvent(__clientFactory.getLoginView()));
+                    }
+                });
+            }
+        });
     }
     
     

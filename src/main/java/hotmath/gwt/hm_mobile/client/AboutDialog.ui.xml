@@ -13,6 +13,7 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
+	    <h2 ui:field="welcome"></h2>
         <p>
         For more information, visit Hotmath.com. For support, email support@hotmath.com.
         </p>
