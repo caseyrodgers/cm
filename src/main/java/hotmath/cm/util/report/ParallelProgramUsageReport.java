@@ -75,7 +75,7 @@ public class ParallelProgramUsageReport {
         int rowCount = list.size();
         String countLabel = "Student Count: ";
 
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, countLabel, rowCount, null);
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, countLabel, rowCount, null, "Parallel Program Usage");
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);

@@ -91,7 +91,7 @@ public class HighlightsReport {
     		return baos;
         }
 
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, countLabel, rowCount, filterDescription);
+        HeaderFooter header = ReportUtils.getGroupReportHeader(info, countLabel, rowCount, filterDescription, reportLayout.getTitle());
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
