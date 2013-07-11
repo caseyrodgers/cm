@@ -62,7 +62,9 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
 		passwordBox.addKeyUpHandler(new KeyUpHandler() {
             @Override
             public void onKeyUp(KeyUpEvent event) {
-                handleLoginButton(null);
+                if(event.getNativeKeyCode() == 13) {
+                    handleLoginButton(null);
+                }
             }
         });
 	}
