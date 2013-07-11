@@ -22,7 +22,6 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
-import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -77,8 +76,6 @@ public class StudentDetailReport {
             String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
 			Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
 
-			//TODO: add display of fromDate - toDate 
-			
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-DetailReport");
 			if (sm.getName() != null)
@@ -91,18 +88,7 @@ public class StudentDetailReport {
 			PdfPTable pdfTbl = new PdfPTable(3);
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-	        Image cmLogo = ReportUtils.getCatchupMathLogo();
-	        Paragraph title = ReportUtils.buildTitle("Student Details");
-
-	        pdfTbl.addCell(cmLogo);
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
-
-	        pdfTbl.addCell(title);
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
-
-	        pdfTbl.addCell(school);
+			pdfTbl.addCell(school);
 			pdfTbl.addCell(admin);
 			pdfTbl.addCell(expires);
 			
@@ -114,10 +100,6 @@ public class StudentDetailReport {
 			pdfTbl.addCell(new Phrase(" "));
 			pdfTbl.addCell(date);
 
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
-
 			pdfTbl.setTotalWidth(600.0f);
 
 			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
@@ -128,17 +110,14 @@ public class StudentDetailReport {
 
 			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 			document.open();
-
 			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);
+			document.add(Chunk.NEWLINE);			
 
 			Table tbl = new Table(6);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
-
+			
 			addHeader("Date", "10%", tbl);
 			addHeader("Program", "15%", tbl);
 			addHeader("Prog-Type", "15%", tbl);
