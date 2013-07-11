@@ -22,6 +22,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -76,6 +77,8 @@ public class StudentDetailReport {
             String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
 			Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
 
+			//TODO: add display of fromDate - toDate 
+			
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-DetailReport");
 			if (sm.getName() != null)
@@ -110,7 +113,13 @@ public class StudentDetailReport {
 
 			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 			document.open();
-			document.add(Chunk.NEWLINE);
+
+	        Image cmLogo = ReportUtils.getCatchupMathLogo();
+	        document.add(cmLogo);
+	        document.add(Chunk.NEWLINE);
+	        Paragraph p = ReportUtils.buildTitle("Student Details");
+	        document.add(p);
+
 			document.add(Chunk.NEWLINE);			
 
 			Table tbl = new Table(6);

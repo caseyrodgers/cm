@@ -132,6 +132,8 @@ public class StudentReportCard {
         Image cmLogo = ReportUtils.getCatchupMathLogo();
         document.add(cmLogo);
         document.add(Chunk.NEWLINE);
+        Paragraph p = ReportUtils.buildTitle("Report Card");
+        document.add(p);
 
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DATE, 1);
