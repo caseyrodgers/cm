@@ -28,6 +28,7 @@ public class HighlightsImplGroupProgress extends HighlightsImplBase {
     public HighlightReportLayout getReportLayout() {
         HighlightReportLayout rl = super.getReportLayout();
         rl.setCountLabel("Group count: ");
+        rl.setTitle(title);
         return rl;
     }
 }
