@@ -5,7 +5,6 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.ui.TouchButton;
-import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 
 import java.util.List;
@@ -37,11 +36,18 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
 	public LoginViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
 		
+		
 		passwordWrapper.setAttribute("style",  "visibility: hidden");
 		usernameBox.addKeyUpHandler(new KeyUpHandler() {
             
             @Override
             public void onKeyUp(KeyUpEvent event) {
+                int nc = event.getNativeKeyCode();
+                if(nc == 13) {
+                    handleLoginButton(null);
+                    return;
+                }
+                
                 //System.out.println("code: " + event.getNativeEvent().getKeyCode());
                 if( (event.isShiftKeyDown() && event.getNativeEvent().getKeyCode() == 50) || usernameBox.getText().indexOf("@") > -1) {
                     passwordWrapper.setAttribute("style",  "visibility: visible");            
@@ -49,6 +55,14 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
                 else {
                     passwordWrapper.setAttribute("style",  "visibility: hidden");
                 }
+            }
+            
+        });
+		
+		passwordBox.addKeyUpHandler(new KeyUpHandler() {
+            @Override
+            public void onKeyUp(KeyUpEvent event) {
+                handleLoginButton(null);
             }
         });
 	}
