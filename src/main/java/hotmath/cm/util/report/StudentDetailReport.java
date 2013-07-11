@@ -114,6 +114,10 @@ public class StudentDetailReport {
 			pdfTbl.addCell(new Phrase(" "));
 			pdfTbl.addCell(date);
 
+			pdfTbl.addCell(new Phrase(" "));
+			pdfTbl.addCell(new Phrase(" "));
+			pdfTbl.addCell(new Phrase(" "));
+
 			pdfTbl.setTotalWidth(600.0f);
 
 			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
@@ -122,9 +126,12 @@ public class StudentDetailReport {
 			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
 			document.setFooter(footer);
 
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+100, document.bottomMargin());
+			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 			document.open();
 
+			document.add(Chunk.NEWLINE);
+			document.add(Chunk.NEWLINE);
+			document.add(Chunk.NEWLINE);
 			document.add(Chunk.NEWLINE);
 
 			Table tbl = new Table(6);
