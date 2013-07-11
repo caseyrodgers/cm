@@ -91,7 +91,18 @@ public class StudentDetailReport {
 			PdfPTable pdfTbl = new PdfPTable(3);
 			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
 
-			pdfTbl.addCell(school);
+	        Image cmLogo = ReportUtils.getCatchupMathLogo();
+	        Paragraph title = ReportUtils.buildTitle("Student Details");
+
+	        pdfTbl.addCell(cmLogo);
+			pdfTbl.addCell(new Phrase(" "));
+			pdfTbl.addCell(new Phrase(" "));
+
+	        pdfTbl.addCell(title);
+			pdfTbl.addCell(new Phrase(" "));
+			pdfTbl.addCell(new Phrase(" "));
+
+	        pdfTbl.addCell(school);
 			pdfTbl.addCell(admin);
 			pdfTbl.addCell(expires);
 			
@@ -114,11 +125,6 @@ public class StudentDetailReport {
 			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 			document.open();
 
-	        Image cmLogo = ReportUtils.getCatchupMathLogo();
-	        document.add(cmLogo);
-	        document.add(Chunk.NEWLINE);
-	        Paragraph p = ReportUtils.buildTitle("Student Details");
-	        document.add(p);
 
 			document.add(Chunk.NEWLINE);			
 
