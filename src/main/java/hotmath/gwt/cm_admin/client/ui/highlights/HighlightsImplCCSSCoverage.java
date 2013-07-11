@@ -24,4 +24,12 @@ public class HighlightsImplCCSSCoverage extends HighlightsImplBase {
     String[][] getReportValues() {
         return panel.getReportValues();
     }
+
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+    	HighlightReportLayout rl = super.getReportLayout();
+    	rl.setTitle(title);
+    	return rl;
+    }
+    
 }

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
+
 import com.google.gwt.user.client.ui.Widget;
 
 public class HighlightsImplGreatestEffort extends HighlightsImplBase {
@@ -25,4 +27,12 @@ public class HighlightsImplGreatestEffort extends HighlightsImplBase {
     String[] getReportCols() {
         return panel.getReportColumns();
     }
+
+    @Override
+    protected HighlightReportLayout getReportLayout() {
+    	HighlightReportLayout rl = super.getReportLayout();
+    	rl.setTitle(title);
+    	return rl;
+    }
+    
 }
