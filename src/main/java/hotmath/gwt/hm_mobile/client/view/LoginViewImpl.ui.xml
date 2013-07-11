@@ -1,0 +1,106 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:cm="urn:import:hotmath.gwt.cm_mobile_shared.client.ui">
+
+
+<ui:style>
+		.formLayout {
+		margin: 20px;
+		color: black;
+		height: 200px;
+		}
+
+		.heading {
+		color: #738AA6;
+		font-weight: bold;
+		font-size: 1.1em;
+		margin-top: 10px;
+		}
+
+		.heading p {
+		font-weight: normal;
+		font-size: 1em;
+		color: #666;
+		}
+
+		.tableLayout {
+		    margin: 20px 0 15px 10px;
+		}
+
+		.fieldLabel {
+		   width: 85px;
+		}
+
+		.formLayout button {
+		margin-left: 100px;
+		}
+
+		button.demoButton {
+		margin-left: 10px;
+		display: none;
+		}
+		
+	    button.searchButton {
+           margin-left: 10px;
+        }
+
+		.errorMessage {
+		color: red;
+		font-weight: bold;
+		margin-left: 40px;
+		}
+		
+		.videoDisclose{
+		    margin-top: 15px;
+		    color: #666;
+		}
+		
+		.passwordLable {
+	        margin-top: 5px;
+	    }
+	
+	</ui:style>
+
+	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
+		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
+		<g:HTMLPanel styleName="{style.heading}">
+			<h1>Hotmath Member Login</h1>
+            <p>Personal subscribers enter email address; others enter school password.</p>
+			<table class='{style.tableLayout}'>
+				<tr>
+					<td class='{style.fieldLabel}'>User Name:</td>
+					<td>
+						<g:TextBox ui:field='usernameBox' />
+					</td>
+				</tr>
+				<tr ui:field="passwordWrapper" class='{style.passwordLable}'>
+					<td>Password:</td>
+					<td>
+						<g:PasswordTextBox ui:field='passwordBox' />
+					</td>
+				</tr>
+				<tr>
+					<td class='{style.errorMessage}' colspan="2">
+						<g:Label ui:field='errorMessage' />
+					</td>
+				</tr>
+			</table>
+			<cm:TouchButton styleName="sexybutton sexy_cm_silver" ui:field='loginButton'>
+				<span>
+					<span>Log In</span>
+				</span>
+			</cm:TouchButton>
+			<cm:TouchButton styleName='sexybutton sexy_cm_silver {style.demoButton}'
+				ui:field='demoButton'>
+				<span>
+					<span>Demo</span>
+				</span>
+			</cm:TouchButton>
+
+		</g:HTMLPanel>
+	</g:DialogBox>
+
+
+
+</ui:UiBinder> 
