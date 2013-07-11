@@ -122,17 +122,16 @@ public class StudentDetailReport {
 			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
 			document.setFooter(footer);
 
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
+			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+100, document.bottomMargin());
 			document.open();
 
-
-			document.add(Chunk.NEWLINE);			
+			document.add(Chunk.NEWLINE);
 
 			Table tbl = new Table(6);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
-			
+
 			addHeader("Date", "10%", tbl);
 			addHeader("Program", "15%", tbl);
 			addHeader("Prog-Type", "15%", tbl);
