@@ -15,12 +15,12 @@ public class HmMobilePersistedPropertiesManager {
 
 	static public HmMobilePersistedProperties getInstance() {
 		if (__instance == null) {
+            __instance = new HmMobilePersistedProperties();
 			if (Storage.isSupported()) {
 				String config = Storage.getLocalStorage().getItem("config");
 				if (config != null) {
 					String p[] = config.split("\\|");
 					if (p.length == 10) {
-						__instance = new HmMobilePersistedProperties();
 						__instance.setSearchTerm(p[SEARCH_TERM]);
 						__instance.setLastBook(new BookModel(p[TEXTCODE], p[TITLE], ifn(p[IMAGE]), ifn(p[PUBLISHER]),
 						        ifn(p[COPYRIGHT]), ifn(p[AUTHOR]), p[PUBDATE], p[CATEGORY]));
