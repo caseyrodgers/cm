@@ -6,6 +6,7 @@ import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.hm_mobile.client.HmMobile;
 import hotmath.gwt.hm_mobile.client.event.HmLoginEvent;
 import hotmath.gwt.hm_mobile.client.model.HmMobileLoginInfo;
+import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import hotmath.gwt.hm_mobile.client.rpc.HmMobileLoginAction;
 import hotmath.gwt.hm_mobile.client.view.LoginView;
 
@@ -39,7 +40,17 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
             public void onSuccess(HmMobileLoginInfo loginInfo) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Log.info("User logged in: " + loginInfo);
-                CmRpcCore.EVENT_BUS.fireEvent(new HmLoginEvent(loginInfo));
+                
+
+                if(loginInfo.getDateExpired() == null) {
+                    PopupMessageBox.showError("This Account does not include Hotmath Solutions.");
+                }
+                else if(loginInfo.isExpired()) {
+                    PopupMessageBox.showMessage("Login Error", new HTML("This Solutions Account expired as of <div style='font-weight: bold'> " + HmMobilePersistedPropertiesManager._expiredDateFormat.format(loginInfo.getDateExpired()) + "</div>"), null);
+                }
+                else {
+                    CmRpcCore.EVENT_BUS.fireEvent(new HmLoginEvent(loginInfo));
+                }
             }
 
             @Override

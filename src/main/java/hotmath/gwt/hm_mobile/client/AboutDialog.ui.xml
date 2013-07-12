@@ -10,10 +10,16 @@
 	        padding-left: 10px;
 	        padding-bottom: 5px;
 	    }
+	    
+	    .welcome {
+	        font-weight: bold;
+	        margin-bottom: 10px;
+	        text-align: center;
+	    }
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
-	    <h2 ui:field="welcome"></h2>
+	    <p class="{style.welcome}" ui:field="welcome"></p>
         <p>
         For more information, visit Hotmath.com. For support, email support@hotmath.com.
         </p>

@@ -4,6 +4,7 @@ import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.HmMobileLoginInfo;
 
 import com.google.code.gwt.storage.client.Storage;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 
 public class HmMobilePersistedPropertiesManager {
@@ -12,7 +13,10 @@ public class HmMobilePersistedPropertiesManager {
 
 	static final int SEARCH_TERM = 0, TEXTCODE = 1, TITLE = 2, PUBLISHER = 3, COPYRIGHT = 4, IMAGE = 5, PAGENUM = 6,
 	        AUTHOR = 7, PUBDATE = 8,CATEGORY = 9;
+	
 
+    public static DateTimeFormat _expiredDateFormat = DateTimeFormat.getFormat("dd-MMM-yyyy");
+    
 	static public HmMobilePersistedProperties getInstance() {
 		if (__instance == null) {
             __instance = new HmMobilePersistedProperties();

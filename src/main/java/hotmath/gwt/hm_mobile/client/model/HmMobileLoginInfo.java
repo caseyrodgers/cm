@@ -2,6 +2,9 @@ package hotmath.gwt.hm_mobile.client.model;
 
 
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
+
+import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 
@@ -9,24 +12,46 @@ public class HmMobileLoginInfo implements Response {
     private String user;
     private String password;
     private String accountType;
+    private Date dateExpired;
+    private boolean expired;
 
     public HmMobileLoginInfo() {}
     
     public HmMobileLoginInfo(String tokenized) {
         String p[] = tokenized.split("\\|");
-        if(p.length != 3) {
+        if(p.length != 4) {
             Log.info("Could not parse loginInfo: " + tokenized);
         }
         else {
             this.user = p[0];
             this.password = p[1];
             this.accountType = p[2];
+            try {
+                this.dateExpired = HmMobilePersistedPropertiesManager._expiredDateFormat.parse(p[3]);
+            }
+            catch(Exception e) {
+                Log.error("Error setting date expired", e);
+            }
         }
     }
-    public HmMobileLoginInfo(String user, String password, String accountType) {
+    public HmMobileLoginInfo(String user, String password, String accountType, boolean isExpired, Date dateExpired) {
         this.user = user;
         this.password = password;
         this.accountType = accountType;
+        this.expired = isExpired;
+        this.dateExpired = dateExpired;
+    }
+
+    public void setExpired(boolean expired) {
+        this.expired = expired;
+    }
+
+    public Date getDateExpired() {
+        return dateExpired;
+    }
+
+    public void setDateExpired(Date dateExpired) {
+        this.dateExpired = dateExpired;
     }
 
     public String getUser() {
@@ -57,4 +82,9 @@ public class HmMobileLoginInfo implements Response {
     public String toString() {
         return "HmMobileLoginInfo [user=" + user + ", password=" + password + ", accountType=" + accountType + "]";
     }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
 }

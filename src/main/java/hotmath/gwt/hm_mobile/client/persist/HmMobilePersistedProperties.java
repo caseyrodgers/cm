@@ -59,7 +59,7 @@ public class HmMobilePersistedProperties {
             return "";
         }
         else {
-            return loginInfo.getUser() + "|" + loginInfo.getPassword() + "|" + loginInfo.getAccountType();
+            return loginInfo.getUser() + "|" + loginInfo.getPassword() + "|" + loginInfo.getAccountType() + "|" + HmMobilePersistedPropertiesManager._expiredDateFormat.format(loginInfo.getDateExpired());
         }
     }
 }

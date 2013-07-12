@@ -2,7 +2,9 @@ package hotmath.gwt.hm_mobile.client;
 
 
 import hotmath.gwt.hm_mobile.client.model.HmMobileLoginInfo;
+import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -34,7 +36,14 @@ public class AboutDialog extends DialogBox  {
 		HmMobileLoginInfo li = HmMobile.__instance.getLoginInfo();
 		String userName = li!=null?li.getUser():null;
 		if(userName != null) {
-		    welcome.setInnerHTML("Welcome " + userName);
+		    String expired = null;
+		    try {
+		        expired = HmMobilePersistedPropertiesManager._expiredDateFormat.format(li.getDateExpired());
+		    }
+		    catch(Exception e) {
+		        Log.error("Could not format date expired", e);
+		    }
+		    welcome.setInnerHTML("Welcome " + userName + "<br/>Your account expires: " + expired);
 		}
 		else {
 	          welcome.setInnerHTML("You are not logged in");
