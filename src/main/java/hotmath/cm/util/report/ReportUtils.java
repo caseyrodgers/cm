@@ -111,6 +111,10 @@ public class ReportUtils {
         heading.add(Chunk.NEWLINE);
 		heading.add(titleP);
 
+		/*
+		 * School: Casey Test School Group: a_test_group
+Date range: 2009-02-01 to 2013-07-13 Date: 2013-07-12
+		 */
         Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
         Phrase admin = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
         Phrase expires = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
@@ -134,6 +138,42 @@ public class ReportUtils {
 
         return header;
     }
+
+    public static HeaderFooter getBriefGroupReportHeader(AccountInfoModel info, String groupName, String filterDescription, String title)
+            throws Exception {
+            Paragraph heading = new Paragraph();
+
+    		Image cmLogo = ReportUtils.getCatchupMathLogo();
+    		Paragraph titleP = ReportUtils.buildTitle((title != null) ? title : " ");
+
+    		heading.add(cmLogo);
+            heading.add(Chunk.NEWLINE);
+    		heading.add(titleP);
+
+            if (groupName != null) {
+            	Phrase group = buildPhraseLabel("Group: ", groupName);
+        		heading.add(group);
+                heading.add(Chunk.NEWLINE);
+            }
+            Phrase school = buildPhraseLabel("School: ", nz(info.getSchoolName()));
+    		heading.add(school);
+            heading.add(Chunk.NEWLINE);
+            if (filterDescription != null && filterDescription.length() > 0) {
+                Phrase filterDescr = buildPhraseLabel("Filter: ", filterDescription);
+                heading.add(filterDescr);
+                heading.add(Chunk.NEWLINE);
+            }
+    		String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
+    		Phrase date = buildPhraseLabel("Date: ", printDate);
+    		heading.add(date);
+            heading.add(Chunk.NEWLINE);
+
+
+            HeaderFooter header = new HeaderFooter(heading, false);
+            header.setBorder(Rectangle.NO_BORDER);
+
+            return header;
+        }
 
     public static HeaderFooter getBasicReportHeader(AccountInfoModel info, String label) {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

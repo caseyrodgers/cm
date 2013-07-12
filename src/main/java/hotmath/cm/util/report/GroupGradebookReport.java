@@ -31,6 +31,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -62,7 +63,7 @@ public class GroupGradebookReport {
 		this.title = title;
 	}
 	
-	public ByteArrayOutputStream makePdf(int adminId,int groupId, Date fromDate, Date toDate) throws Exception {
+	public ByteArrayOutputStream makePdf(int adminId, int groupId, Date fromDate, Date toDate) throws Exception {
 		ByteArrayOutputStream baos = null;
 		try {
 			
@@ -123,50 +124,24 @@ public class GroupGradebookReport {
             pivotOnStudent(assignmentList, saMap, stuNameMap, stuAsgnMap, asgnSet);
 
 			Document document = new Document();
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
 
 			baos = new ByteArrayOutputStream();
 			PdfWriter writer = PdfWriter.getInstance(document, baos);
-			document.open();
-
-			String schoolName = info.getSchoolName();
-			//if (schoolName.length() > 12) schoolName = schoolName.substring(0, 12);
-			Phrase school   = buildLabelContent("School: ", schoolName);
-			Phrase group    = (groupName != null) ? buildLabelContent("Group: ", groupName) : null;
-			String printDate = String.format("%1$tY-%1$tm-%1$td", Calendar.getInstance());
-			Phrase date     = buildLabelContent("Date: ", printDate);
-			Phrase dateRange = null;
+			String dateRange = null;
 			if (fromDate != null && toDate != null) {
-				dateRange = buildLabelContent("Date range: ", String.format("%1$tY-%1$tm-%1$td to %2$tY-%2$tm-%2$td", fromDate, toDate));
+				dateRange = String.format("Date range: %1$tY-%1$tm-%1$td to %2$tY-%2$tm-%2$td", fromDate, toDate);
 			}
 		    
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-GroupGradebookReport");
 
-			PdfPTable pdfTbl = new PdfPTable(2);
-			pdfTbl.setTotalWidth(600.0f);
-			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
-
-			pdfTbl.addCell(school);
-			if (group != null) pdfTbl.addCell(group);
-			if (dateRange != null) {
-				pdfTbl.addCell(dateRange);
-				if (LOGGER.isDebugEnabled())
-					LOGGER.debug("added date range");
-			}
-			else {
-				pdfTbl.addCell(new Phrase(" "));
-			}
-			pdfTbl.addCell(date);
-			
-			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
-
-			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
+			title = String.format("Group Gradebook Report for %s", groupName);
+			HeaderFooter header = ReportUtils.getBriefGroupReportHeader(info, null, dateRange, title);
+			HeaderFooter footer = ReportUtils.getFooter();
+			document.setHeader(header);
 			document.setFooter(footer);
 
-			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);			
+			document.open();
 
 			int assignmentCount = assignmentList.size();
 			int numberOfAssignmentColumns = (assignmentCount <= MAX_ASSIGNMENT_COLS) ? assignmentCount : MAX_ASSIGNMENT_COLS;
@@ -437,6 +412,10 @@ public class GroupGradebookReport {
     		Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
     		for (Assignment a : assignmentList) {
     			StudentAssignment sa = asgnMap.get(a.getAssignKey());
+    			if (sa == null) {
+    				LOGGER.warn("No Assignment for key: " + a.getAssignKey());
+    				continue;
+    			}
     			String homeworkGrade = sa.getHomeworkGrade();
     			int offset = homeworkGrade.indexOf("%");
     			if (offset > 0) {
