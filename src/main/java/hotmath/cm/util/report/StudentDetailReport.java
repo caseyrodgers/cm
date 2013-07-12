@@ -22,6 +22,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.Font;
 import com.lowagie.text.FontFactory;
 import com.lowagie.text.HeaderFooter;
+import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
@@ -64,60 +65,27 @@ public class StudentDetailReport {
 			baos = new ByteArrayOutputStream();
 			PdfWriter writer = PdfWriter.getInstance(document, baos);
 
-			Phrase school   = buildLabelContent("School: ", info.getSchoolName());
-			Phrase admin    = buildLabelContent("Administrator: ", info.getSchoolUserName());
-			String printDate = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
-			Phrase date     = buildLabelContent("Date: ", printDate);
-		    
-			Phrase expires  = buildLabelContent("Expires: ", info.getExpirationDate());
-			Phrase student  = buildLabelContent("Student: ", String.valueOf(sm.getName()));
-            //String tutoringState = (sm.getSettings().getTutoringAvailable()) ? "ON" : "OFF";
-			//Phrase tutoring = buildLabelContent("Tutoring: ", tutoringState);
-            String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
-			Phrase showWork = buildLabelContent("Show Work: ", showWorkState);
-
 			StringBuilder sb = new StringBuilder();
 			sb.append("CM-DetailReport");
 			if (sm.getName() != null)
 				sb.append("-").append(sm.getName().replaceAll(" ", ""));
 			reportName = sb.toString();
-			
-			//Chunk c = new Chunk(new Jpeg(new URL("http://localhost:8081/gwt-resources/images/logo_1.jpg")), 3.5f, 1.0f);
-			//heading.add(c);
 
-			PdfPTable pdfTbl = new PdfPTable(3);
-			pdfTbl.getDefaultCell().setBorder(PdfPCell.NO_BORDER);
+	        HeaderFooter header = ReportUtils.getStudentReportHeader("Student Details", sm, info, null);
+	        HeaderFooter footer = ReportUtils.getFooter();
 
-			pdfTbl.addCell(school);
-			pdfTbl.addCell(admin);
-			pdfTbl.addCell(expires);
-			
-			pdfTbl.addCell(student);
-			pdfTbl.addCell(showWork);
-			pdfTbl.addCell(new Phrase(" "));
+	        document.setHeader(header);
+	        document.setFooter(footer);
 
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(new Phrase(" "));
-			pdfTbl.addCell(date);
+	        document.open();
 
-			pdfTbl.setTotalWidth(600.0f);
-
-			writer.setPageEvent(new HeaderTable(writer, pdfTbl));
-
-			HeaderFooter footer = new HeaderFooter(new Phrase("Page "), new Phrase("."));
-			footer.setAlignment(HeaderFooter.ALIGN_RIGHT);
-			document.setFooter(footer);
-
-			document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin()+50, document.bottomMargin());
-			document.open();
 			document.add(Chunk.NEWLINE);
-			document.add(Chunk.NEWLINE);			
 
 			Table tbl = new Table(6);
 			tbl.setWidth(100.0f);
 			tbl.setBorder(Table.BOTTOM);
 			tbl.setBorder(Table.TOP);
-			
+
 			addHeader("Date", "10%", tbl);
 			addHeader("Program", "15%", tbl);
 			addHeader("Prog-Type", "15%", tbl);

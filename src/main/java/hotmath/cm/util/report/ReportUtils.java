@@ -10,6 +10,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentGridPageAction.FilterType;
 import java.awt.Color;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import com.lowagie.text.Image;
 import com.lowagie.text.Paragraph;
 import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 
 
@@ -155,8 +157,45 @@ public class ReportUtils {
         return s == null?"":s;
     }
     
-    public static PdfPTable getStudentReportHeader(StudentModelI sm, AccountInfoModel info) {
-    	return null;
+    public static HeaderFooter getStudentReportHeader(String title, StudentModelI sm, AccountInfoModel info, String filterDescription) 
+        throws Exception {
+        Paragraph heading = new Paragraph();
+
+		Image cmLogo = ReportUtils.getCatchupMathLogo();
+		Paragraph titleP = ReportUtils.buildTitle((title != null) ? title : " ");
+
+		heading.add(cmLogo);
+        heading.add(Chunk.NEWLINE);
+		heading.add(titleP);
+
+        Phrase school        = buildPhraseLabel("School: ", nz(info.getSchoolName()));
+        Phrase admin         = buildPhraseLabel("Administrator: ", nz(info.getSchoolUserName()));
+        // Phrase expires       = buildPhraseLabel("Expires: ", nz(info.getExpirationDate()));
+		Phrase student       = buildPhraseLabel("Student: ", nz(sm.getName()));
+        String showWorkState = (sm.getSettings().getShowWorkRequired()) ? "REQUIRED" : "OPTIONAL";
+		Phrase showWork      = buildPhraseLabel("Show Work: ", showWorkState);
+		String printDate     = String.format("%1$tY-%1$tm-%1$td %1$tI:%1$tM %1$Tp", Calendar.getInstance());
+		Phrase date          = buildPhraseLabel("Date: ", printDate);
+
+		heading.add(student);
+        heading.add(Chunk.NEWLINE);
+		heading.add(showWork);
+        heading.add(Chunk.NEWLINE);
+		heading.add(school);
+        heading.add(Chunk.NEWLINE);
+        heading.add(admin);
+        if (filterDescription != null && filterDescription.length() > 0) {
+            Phrase filterDescr = buildPhraseLabel("Filter: ", filterDescription);
+            heading.add(Chunk.NEWLINE);
+            heading.add(filterDescr);
+        }
+        heading.add(Chunk.NEWLINE);
+        heading.add(date);
+
+        HeaderFooter header = new HeaderFooter(heading, false);
+        header.setBorder(Rectangle.NO_BORDER);
+
+        return header;
     }
 
     public static String getFilterDescription(final Connection conn, Integer adminId, CmAdminDao dao,
@@ -206,8 +245,4 @@ public class ReportUtils {
 		return cmLogo;
     }
 
-    public static HeaderFooter getGroupReportHeader(AccountInfoModel info, int count, String filterDescription) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }
