@@ -58,7 +58,7 @@ public class StudentListReport {
 
         int count = (studentUids != null) ? studentUids.size() : 0;
         filterDescription = ReportUtils.getFilterDescription(conn, adminId, adminDao, filterMap);
-        HeaderFooter header = ReportUtils.getGroupReportHeader(info, uids.size(), filterDescription); 
+        HeaderFooter header = ReportUtils.getGroupReportHeader(getReportName(), info, uids.size(), filterDescription); 
         HeaderFooter footer = ReportUtils.getFooter();
 
         document.setHeader(header);
@@ -92,7 +92,7 @@ public class StudentListReport {
     }
 
     private void setReportName(String reportName) {
-        this.reportName = reportName;
+        this.reportName = reportName.replaceAll(" ", "");
     }
 
     public String getReportName() {

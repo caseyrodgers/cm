@@ -95,7 +95,7 @@ public class ReportUtils {
 
     public static HeaderFooter getGroupReportHeader(String title, AccountInfoModel info, int studentCount, String filterDescription)
         throws Exception {
-    	return getGroupReportHeader(info, "Student Count: ", studentCount, filterDescription, " ");
+    	return getGroupReportHeader(info, "Student Count: ", studentCount, filterDescription, title);
     }
     
     public static HeaderFooter getGroupReportHeader(AccountInfoModel info, String countLabel, int count, String filterDescription, String title)
