@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+
 public class HighlightsReport {
 
 	HighlightsImplBase report;
@@ -41,6 +42,4 @@ public class HighlightsReport {
 		public void setGroupReport(boolean isGroupReport) {
 			this.isGroupReport = isGroupReport;
 		}
-
-
 }

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModelExt;
@@ -93,14 +94,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
     public HighlightsImplDetailsPanelBase(HighlightsImplBase base) {
         __instance = this;
         this.base = base;
-        getDataFromServer();
     }
-
-//    @Override
-//    protected void onRender(Element parent, int index) {
-//        super.onRender(parent, index);
-//        getDataFromServer();
-//    }
 
     abstract public HighlightsGetReportAction.ReportType getReportType();
     
@@ -118,7 +112,14 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
         return new String[0];
     }
     
-    protected void getDataFromServer() {
+    boolean dataRead=false;
+    public void getDataFromServer(final CallbackOnComplete callbackOnComplete) {
+        
+        if(_grid != null) {
+            callbackOnComplete.isComplete();
+            return;
+        }
+        
         new RetryAction<CmList<HighlightReportData>>() {
             @Override
             public void attempt() {
@@ -136,6 +137,8 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
             public void oncapture(CmList<HighlightReportData> allData) {
                 CmBusyManager.setBusy(false);
                 drawTable(allData);
+                
+                callbackOnComplete.isComplete();
             }
             
             @Override
@@ -143,6 +146,8 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
                 super.onFailure(error);
                 CmBusyManager.setBusy(false);
                 drawTable(null);
+                
+                callbackOnComplete.isComplete();
             }
         }.register();
     }

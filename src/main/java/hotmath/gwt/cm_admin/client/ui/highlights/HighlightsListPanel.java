@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -128,12 +129,17 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 			public void onSelection(SelectionEvent<HighlightsReport> event) {
 				
 				HighlightsReport hlReport = event.getSelectedItem();
-				HighlightsImplBase report = hlReport.getReport();
-				Widget widget = report.prepareWidget();
-				if (_parent.getCenterWidget() != null) _parent.getCenterWidget().removeFromParent();
-		        _parent.setCenterWidget(widget, _layoutData);
-		        _parent.forceLayout();
-
+				final HighlightsImplBase report = hlReport.getReport();
+				HighlightsImplDetailsPanelBase pb = (HighlightsImplDetailsPanelBase)report.prepareWidget();
+				pb.getDataFromServer(new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        Widget widget = report.prepareWidget();
+                        if (_parent.getCenterWidget() != null) _parent.getCenterWidget().removeFromParent();
+                        _parent.setCenterWidget(widget, _layoutData);
+                        _parent.forceLayout();
+                    }
+                });
 			}
 		});
 

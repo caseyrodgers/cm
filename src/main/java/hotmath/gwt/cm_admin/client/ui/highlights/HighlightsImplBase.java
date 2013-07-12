@@ -34,7 +34,6 @@ abstract class HighlightsImplBase  {
      */
     abstract Widget prepareWidget();
     
-    
     /** return the column labels used
      *  to print the report.
      *  
