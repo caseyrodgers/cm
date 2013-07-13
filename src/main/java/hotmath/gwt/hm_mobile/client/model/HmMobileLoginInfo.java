@@ -16,6 +16,7 @@ public class HmMobileLoginInfo implements Response {
     private boolean expired;
     private int solutionCount;
 
+    public HmMobileLoginInfo() {}
     
     public HmMobileLoginInfo(String tokenized) {
         String p[] = tokenized.split("\\|");
