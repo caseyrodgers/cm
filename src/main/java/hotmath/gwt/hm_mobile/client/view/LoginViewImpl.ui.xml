@@ -65,7 +65,19 @@
 	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
-			<h1>Hotmath Member Login</h1>
+ 		<img src='/images/hm_logo-179x33.gif'/>
+		 <h1 style='text-align: center'> What is Hotmath?</h1>
+		 <p>
+           Hotmath Mobile explains the odd numbered
+           problems in over 300 math textbooks, with hint-step solutions. 
+           To learn more about Hotmath, see if we cover your textbook,  
+           and purchase a membership, visit <a href='http://hotmath.com'>Hotmath.com</a> 
+           on a desktop computer.
+         </p>
+		
+		
+		
+			<h2>Hotmath Member Login</h2>
             <p>Personal subscribers enter email address; others enter school password.</p>
 			<table class='{style.tableLayout}'>
 				<tr>
