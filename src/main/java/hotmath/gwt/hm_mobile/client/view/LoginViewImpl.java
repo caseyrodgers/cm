@@ -74,7 +74,7 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
 
     @Override
     public String getViewTitle() {
-        return "Hotmath Member Login";
+        return "Welcome to Hotmath Mobile";
     }
 
     @Override

@@ -19,16 +19,18 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
+	    <div ui:field='wrapperLoggedIn'>
 	    <p class="{style.welcome}" ui:field="welcome"></p>
-        <p>
-        For more information, visit Hotmath.com. For support, email support@hotmath.com.
-        </p>
-        <p>
-         Visit your App Store for Hotmath coverage of other subjects: 
-         we have step-by-step explanations for the odd-numbered homework problems
-         for over 300 math textbooks.
-         </p>
-         <p>Also, please visit Catchupmath.com for math instruction.</p>
+	        <p>
+	        For more information, visit Hotmath.com. For support, email support@hotmath.com.
+	        </p>
+	        <p>
+	         Visit your App Store for Hotmath coverage of other subjects: 
+	         we have step-by-step explanations for the odd-numbered homework problems
+	         for over 300 math textbooks.
+	         </p>
+	         <p>Also, please visit Catchupmath.com for math instruction.</p>
+         </div>
 	    <div class='{style.footer}'> 
 	       <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
 	    </div>
