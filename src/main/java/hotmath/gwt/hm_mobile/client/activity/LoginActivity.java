@@ -58,7 +58,7 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
                 Log.error("Error logging in", e);
                 
-                PopupMessageBox.showMessage("Login Error", new HTML(_standardLoginError), null);
+                PopupMessageBox.showMessage("Login Failed", new HTML(_standardLoginError), null);
             }
         });
         
