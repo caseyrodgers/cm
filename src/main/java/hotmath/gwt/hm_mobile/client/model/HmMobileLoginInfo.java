@@ -14,8 +14,8 @@ public class HmMobileLoginInfo implements Response {
     private String accountType;
     private Date dateExpired;
     private boolean expired;
+    private int solutionCount;
 
-    public HmMobileLoginInfo() {}
     
     public HmMobileLoginInfo(String tokenized) {
         String p[] = tokenized.split("\\|");
@@ -34,14 +34,21 @@ public class HmMobileLoginInfo implements Response {
             }
         }
     }
-    public HmMobileLoginInfo(String user, String password, String accountType, boolean isExpired, Date dateExpired) {
+    public HmMobileLoginInfo(String user, String password, String accountType, boolean isExpired, Date dateExpired, int solutionCount) {
         this.user = user;
         this.password = password;
         this.accountType = accountType;
         this.expired = isExpired;
         this.dateExpired = dateExpired;
+        this.solutionCount = solutionCount;
     }
 
+    public int getSolutionCount() {
+        return solutionCount;
+    }
+    public void setSolutionCount(int solutionCount) {
+        this.solutionCount = solutionCount;
+    }
     public void setExpired(boolean expired) {
         this.expired = expired;
     }
@@ -80,11 +87,11 @@ public class HmMobileLoginInfo implements Response {
 
     @Override
     public String toString() {
-        return "HmMobileLoginInfo [user=" + user + ", password=" + password + ", accountType=" + accountType + "]";
+        return "HmMobileLoginInfo [user=" + user + ", password=" + password + ", accountType=" + accountType + ", dateExpired=" + dateExpired + ", expired="
+                + expired + ", solutionCount=" + solutionCount + "]";
     }
 
     public boolean isExpired() {
         return expired;
     }
-
 }

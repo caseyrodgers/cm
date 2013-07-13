@@ -43,10 +43,10 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
                 
 
                 if(loginInfo.getDateExpired() == null) {
-                    PopupMessageBox.showError("This Account does not include Hotmath Solutions.");
+                    PopupMessageBox.showMessage("Login Failed", new HTML("This Account does not include Hotmath Solutions."), null);
                 }
                 else if(loginInfo.isExpired()) {
-                    PopupMessageBox.showMessage("Login Error", new HTML("This Solutions Account expired as of <div style='font-weight: bold'> " + HmMobilePersistedPropertiesManager._expiredDateFormat.format(loginInfo.getDateExpired()) + "</div>"), null);
+                    PopupMessageBox.showMessage("Login Failed", new HTML("This Solutions Account expired as of <div style='font-weight: bold'> " + HmMobilePersistedPropertiesManager._expiredDateFormat.format(loginInfo.getDateExpired()) + "</div>"), null);
                 }
                 else {
                     CmRpcCore.EVENT_BUS.fireEvent(new HmLoginEvent(loginInfo));

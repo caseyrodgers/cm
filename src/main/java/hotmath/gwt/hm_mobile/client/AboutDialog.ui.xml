@@ -3,36 +3,53 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:style>
-	    .main {
-	    	padding: 10px;
-	    }
-	    .main .footer {
-	        padding-left: 10px;
-	        padding-bottom: 5px;
-	    }
-	    
-	    .welcome {
-	        font-weight: bold;
-	        margin-bottom: 10px;
-	        text-align: center;
-	    }
+		.main {
+			padding: 10px;
+		}
+		
+		.body {
+	       height: 140px;
+		}
+		
+		.main .footer {
+			padding-left: 10px;
+			padding-bottom: 5px;
+		}
+		
+		.stickout {
+			font-weight: bold;
+			margin-bottom: 10px;
+			text-align: center;
+		}
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}">
-	    <div ui:field='wrapperLoggedIn'>
-	    <p class="{style.welcome}" ui:field="welcome"></p>
-	        <p>
-	        For more information, visit Hotmath.com. For support, email support@hotmath.com.
-	        </p>
-	        <p>
-	         Visit your App Store for Hotmath coverage of other subjects: 
-	         we have step-by-step explanations for the odd-numbered homework problems
-	         for over 300 math textbooks.
-	         </p>
-	         <p>Also, please visit Catchupmath.com for math instruction.</p>
-         </div>
-	    <div class='{style.footer}'> 
-	       <g:Button styleName='sexybutton sexysimple' ui:field="closeButton"><span class='ok'>Close</span></g:Button>
-	    </div>
+		<div class='{style.body}' ui:field='wrapperLoggedIn'>
+			<ul>
+				<li>You are logged in as <span class="{style.stickout}" ui:field="loggedInAs"></span>.</li>
+			    <li>Your Solutions service expires on <span class="{style.stickout}" ui:field='expires'></span>.</li>
+			    <li>Your account has viewed <span ui:field="solutionsViewed" class="{style.stickout}">---</span> since July 1.</li>
+			</ul>
+			<p>
+                Thank you for using Hotmath Mobile!
+			</p>
+		</div>
+		<div class='{style.body}' ui:field='wrapperNotLoggedIn'>
+			<p>Hotmath has served millions of middle school, high school, and college
+				students since 2000 via school licenses and individual subscriptions.
+				Hotmath explains how to do the homework problems where the answers are
+				(usually) in the back of the book.
+			</p>
+			<p>
+				Learn more by visiting
+				<a href='http://hotmath.com'>Hotmath.com</a>
+				on a desktop computer.
+			</p>
+		</div>
+		<div class='{style.footer}'>
+			<g:Button styleName='sexybutton sexysimple' ui:field="closeButton">
+				<span class='ok'>Close</span>
+			</g:Button>
+		</div>
 	</g:HTMLPanel>
 </ui:UiBinder> 

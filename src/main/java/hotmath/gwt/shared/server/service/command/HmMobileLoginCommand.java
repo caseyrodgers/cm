@@ -45,13 +45,15 @@ public class HmMobileLoginCommand implements ActionHandler<HmMobileLoginAction, 
         
         boolean isExpired = false;
         Date dateExpire = null;
+        int solutionCount=0;
         HotMathSubscriberService service = sub.getService("solution");
         if(service != null) {
             isExpired = service.isExpired();
             dateExpire= service.getDateExpire();
+            solutionCount = service.getUsage();
         }
         
-	    return new HmMobileLoginInfo(action.getUser(), action.getPassword(), sub.getSubscriberType(), isExpired, dateExpire);
+	    return new HmMobileLoginInfo(action.getUser(), action.getPassword(), sub.getSubscriberType(), isExpired, dateExpire, solutionCount);
 	}
 
     public Class<? extends Action<? extends Response>> getActionType() {
