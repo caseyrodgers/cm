@@ -59,6 +59,10 @@
 		.passwordLable {
 	        margin-top: 5px;
 	    }
+	    
+	    .heading a {
+	       text-decoration: underline;
+	    }
 	
 	</ui:style>
 
