@@ -28,9 +28,7 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -44,7 +42,7 @@ import com.sencha.gxt.widget.core.client.grid.GridSelectionModel;
 public class StudentListDialog extends GWindow {
 
     Grid<StudentModelI> _grid;
-    VerticalLayoutContainer _container = new VerticalLayoutContainer();
+    BorderLayoutContainer _container = new BorderLayoutContainer();
     ListStore<StudentModelI> _store = new ListStore<StudentModelI>(_dataAccess.nameKey());
 
     int _height = 400;
@@ -52,7 +50,7 @@ public class StudentListDialog extends GWindow {
 
     public StudentListDialog(String title, int height) {
     	super(false);
-    	_height += height;
+    	_height += (height < 70) ? height : 70;
     	buildUI(title);
     }
     
@@ -102,8 +100,8 @@ public class StudentListDialog extends GWindow {
         setHeadingText(title);
 
         _grid = defineGrid(_store, defineColumns());
-        _container.setScrollMode(ScrollMode.AUTO);
-        _container.add(_grid);  // new VerticalLayoutData(1, 1);
+        //_container.setScrollMode(ScrollMode.AUTO);
+        _container.setCenterWidget(_grid);
         add(_container);
         
         TextButton edit = new StudentPanelButton("Edit");
@@ -205,6 +203,7 @@ public class StudentListDialog extends GWindow {
         //grid.setStripeRows(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         //grid.getSelectionModel().setFiresEvents(true);
+        grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
         grid.setWidth(255);
         grid.setHeight(300);
         grid.setStateful(true);
