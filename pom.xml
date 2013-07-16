@@ -190,6 +190,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.4</version>
@@ -211,7 +217,14 @@
 			<artifactId>iText</artifactId>
 			<version>2.1.6</version>
 		</dependency>
-
+<!--
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.4.1</version>
+            <type>jar</type>
+        </dependency>
+ -->
 		<dependency>
 			<groupId>nekohtml</groupId>
 			<artifactId>nekohtml</artifactId>
@@ -678,7 +691,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- Minimize JS/CSS for CM and CM_MOBILE. All HM resources come from 
+			<!-- Minimize JS/CSS for CM and CM_MOBILE. All HM resources come from HM
 		        -->
 			<plugin>
 				<groupId>com.samaxes.maven</groupId>
@@ -696,7 +709,7 @@
 
 						<param>tutor_layout_tablet.css</param>
 						<param>CatchupMath.css</param>
-                                                <param>CatchupMath-resource_container.css</param>						
+                        <param>CatchupMath-resource_container.css</param>						
 						<param>loading_image.css</param>
 					</cssSourceFiles>
 					<jsSourceFiles>

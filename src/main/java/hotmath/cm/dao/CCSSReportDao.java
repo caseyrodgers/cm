@@ -4,15 +4,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
@@ -174,16 +179,68 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     				lessons.add(lesson);
     				return lesson;
     			}
+
     		});
     	}
     	catch (DataAccessException e) {
     		LOGGER.error(String.format("getCCSSData(): sal: %s", sql), e);
     		throw e;
     	}
+
+    	// sort standards within each category/domain
+    	if (ccssData != null) {
+    		for (CCSSGradeLevel level : ccssData.getLevels()) {
+    			for (CCSSDomain domain : level.getDomains()) {
+    				sortStandards(domain.getStandards());    				
+    			}
+    		}
+    	}
+
     	return ccssData;
     }
 
     /**
+     * 
+     * @param standardList
+     */
+	private void sortStandards(CmList<CCSSStandard> standardList) {
+        Collections.sort(standardList, new Comparator<CCSSStandard>() {
+            @Override
+            public int compare(CCSSStandard o1, CCSSStandard o2) {
+                String name1 = o1.getName().replace(".", "-");
+                String name2 = o2.getName().replace(".", "-");
+
+                String[] t1 = name1.split("-");
+                String[] t2 = name2.split("-");
+
+                int count;
+                if (t1.length == t2.length){
+                	count = t1.length;
+                }
+                else {
+                	count = (t2.length > t1.length) ? t1.length : t2.length;
+                }
+            	for (int idx=0; idx<count; idx++) {
+            		if (t1[idx].equalsIgnoreCase(t2[idx]) == false) {
+            			boolean isNum1 = NumberUtils.isDigits(t1[idx]);
+            			boolean isNum2 = NumberUtils.isDigits(t2[idx]);
+            			if (isNum1 == false || isNum2 == false) {
+            			    return t1[idx].compareToIgnoreCase(t2[idx]);
+            			}
+            			else {
+            				int n1 = Integer.parseInt(t1[idx]);
+            				int n2 = Integer.parseInt(t2[idx]);
+            				return n1 - n2;
+            			}
+            		}
+            	}
+            	return (t1.length > count) ? 1 : -1;
+            }
+        });
+
+	}
+
+	/**
      * Get CCSS standard names for student
      * 
      * @param userId
@@ -281,15 +338,19 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     				new RowMapper<CCSSDetail>() {
     			@Override
     			public CCSSDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
-    				return new CCSSDetail(rs.getString("name"), rs.getString("original_name"),
+    				CCSSDetail detail = new CCSSDetail(rs.getString("name"), rs.getString("original_name"),
     						rs.getString("level_name"), rs.getString("domain_name"),
-    						rs.getString("summary"), rs.getString("description"));
+    						rs.getString("summary"), rs.getString("description")); 
+    				return detail;
     			}
     		});
     	}
     	catch (DataAccessException e) {
-    		LOGGER.error(String.format("getCCSSDetail(): namde: %s", name), e);
+    		LOGGER.error(String.format("getCCSSDetail(): name: %s", name), e);
     		throw e;
+    	}
+    	if (list.isEmpty()) {
+    		list.add(new CCSSDetail(name, "Not Found", "Not Found", "Not Found", "Not Found", "Not Found"));
     	}
     	return list.get(0);
     }
