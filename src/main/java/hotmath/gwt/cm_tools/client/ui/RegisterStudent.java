@@ -805,7 +805,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                 /** When set, the student will only have access to the assignments.
                  * 
                  */
-                StudyProgramModel spma = new StudyProgramModel(-1, CmProgramType.ASSIGNMMENTS_ONLY.getType(), CmProgramType.ASSIGNMMENTS_ONLY.getType(), CmProgramType.ASSIGNMMENTS_ONLY.getType(), 0, " ", 0, " ",false, false, false,false, 0);
+                StudyProgramModel spma = new StudyProgramModel(-1, CmProgramType.ASSIGNMENTS_ONLY.getType(), CmProgramType.ASSIGNMENTS_ONLY.getType(), CmProgramType.ASSIGNMENTS_ONLY.getType(), 0, " ", 0, " ",false, false, false,false, 0);
                 progList.add(new StudyProgramExt(spma,spma.getTitle(), spma.getShortTitle(), spma.getDescr(), false, false, false, 0, null));
 
                 
