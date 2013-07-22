@@ -54,6 +54,7 @@
             	   ../../jlibs/hammer/hammer.min.js
 
                    cm_core-min.js
+                   mobile_core.js
                                      
                    CatchupMathMobile3-min.js
               " />
