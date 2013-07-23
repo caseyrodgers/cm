@@ -18,6 +18,11 @@ public class PopupMessageBox {
     static public void showMessage(String msg) {
         showMessage("Important Information", new HTML(msg),null);
     }
+    
+    static public PopupPanel showMessage(String title, String msg) {
+        return showMessage(title, new HTML(msg), null);
+    }
+    
     static public PopupPanel showMessage(String title, Widget widget,final CallbackOnComplete callback) {
         final PopupPanel popup = new PopupPanel();
         

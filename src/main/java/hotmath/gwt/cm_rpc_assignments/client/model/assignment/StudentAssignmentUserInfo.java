@@ -19,6 +19,7 @@ public class StudentAssignmentUserInfo implements Response {
     private boolean graded;
     private boolean editable;
     private Date dueDate;
+    private boolean pastDueSubmitable;
 
     public StudentAssignmentUserInfo(){}
 
@@ -27,13 +28,14 @@ public class StudentAssignmentUserInfo implements Response {
         this.assignKey = assignKey;
     }
 
-    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate) {
+    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable) {
         this(uid, assignKey);
         this.turnInDate = turnInDate;
         this.graded = graded;
         this.editable = isEditable;
         this.viewDateTime = viewDateTime;
         this.dueDate = dueDate;
+        this.pastDueSubmitable = pastDueSubmitable;
     }
 
     public Date getViewDateTime() {
@@ -82,6 +84,10 @@ public class StudentAssignmentUserInfo implements Response {
     
     public Date getDueDate() {
         return dueDate;
+    }
+
+    public boolean isPastDueSubmitable() {
+        return pastDueSubmitable;
     }
     
 }

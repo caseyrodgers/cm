@@ -29,7 +29,6 @@ public class Assignment implements Response{
     Date dueDate;
     CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
     String status;
-    boolean closePastDue;
     boolean graded;
     Date modifiedTime;
     
@@ -40,10 +39,11 @@ public class Assignment implements Response{
     // TODO: does this belong here?
     AssignmentGradeDetailInfo gradedInfo;
     boolean autoRelease;
+    private boolean allowPastDueSubmits;
 
     public Assignment() {}
     
-    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean closePastDue, boolean graded, Date modifiedTime,boolean autoRelease) {
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean allowPastDueSubmits, boolean graded, Date modifiedTime,boolean autoRelease) {
         this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
@@ -52,12 +52,20 @@ public class Assignment implements Response{
         this.dueDate = dueDate;
         this.pids = pids;
         this.status = status;
-        this.closePastDue = closePastDue;
+        this.allowPastDueSubmits = allowPastDueSubmits;
         this.graded = graded;
         this.modifiedTime = modifiedTime;
         this.autoRelease = autoRelease;
     }
 
+
+    public boolean isAllowPastDueSubmits() {
+        return allowPastDueSubmits;
+    }
+
+    public void setAllowPastDueSubmits(boolean allowPastDueSubmits) {
+        this.allowPastDueSubmits = allowPastDueSubmits;
+    }
 
     public boolean isAutoRelease() {
         return autoRelease;
@@ -90,14 +98,7 @@ public class Assignment implements Response{
     public String getStatusLabel() {
         return getStatus();
     }
-    
-    public boolean isClosePastDue() {
-        return closePastDue;
-    }
 
-    public void setClosePastDue(boolean closePastDue) {
-        this.closePastDue = closePastDue;
-    }
 
     public String getAssignmentLabel() {
         String label = getComments();
@@ -125,6 +126,10 @@ public class Assignment implements Response{
      */
     public boolean isEditable() {
         return !getStatus().equals("Closed");
+    }
+    
+    private boolean isPastDue() {
+        return isExpired() && !allowPastDueSubmits;
     }
     
     /** Determine, based on data
@@ -197,21 +202,8 @@ public class Assignment implements Response{
     public void setProblemCount(Integer problemCount) {
         this.problemCount = problemCount;
     }
-
-
-    /** If closedPastDue and isExpired then force 
-     *  status to be closed.
-     *  Otherwise, return 'real' status.
-     *  
-     * @return
-     */
     public String getStatus() {
-        if(closePastDue && isExpired()) {
-            return "Closed";
-        }
-        else {
-            return status;
-        }
+        return status;
     }
 
     public void setStatus(String status) {
@@ -238,8 +230,9 @@ public class Assignment implements Response{
     @Override
     public String toString() {
         return "Assignment [adminId=" + adminId + ", assignmentName=" + assignmentName + ", assignKey=" + assignKey + ", groupId=" + groupId + ", comments="
-                + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", status=" + status + ", closePastDue=" + closePastDue + ", graded=" + graded
-                + ", problemCount=" + problemCount + "]";
+                + comments + ", dueDate=" + dueDate + ", pids=" + pids + ", status=" + status + ", graded=" + graded + ", modifiedTime=" + modifiedTime
+                + ", problemCount=" + problemCount + ", gradedInfo=" + gradedInfo + ", autoRelease=" + autoRelease + ", allowPastDueSubmits="
+                + allowPastDueSubmits + "]";
     }
 
 }

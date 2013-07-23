@@ -122,7 +122,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setString(5, ass.getComments());
                     ps.setDate(6, new java.sql.Date(System.currentTimeMillis()));
                     ps.setString(7, ass.getStatus());
-                    ps.setInt(8, ass.isClosePastDue() ? 1 : 0);
+                    ps.setInt(8, ass.isAllowPastDueSubmits() ? 0 : 1);
                     ps.setInt(9, ass.isGraded() ? 1 : 0);
                     ps.setInt(10, ass.isAutoRelease()? 1: 0);
                     return ps;
@@ -144,7 +144,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setDate(3, new java.sql.Date(ass.getDueDate().getTime()));
                     ps.setString(4, ass.getComments());
                     ps.setString(5, ass.getStatus());
-                    ps.setInt(6, ass.isClosePastDue() ? 1 : 0);
+                    ps.setInt(6, ass.isAllowPastDueSubmits() ? 0 : 1);
                     ps.setInt(7, ass.isGraded() ? 1 : 0);
                     ps.setInt(8, ass.isAutoRelease() ? 1 : 0);
                     ps.setInt(9, ass.getAssignKey());
@@ -397,8 +397,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     private Assignment extractAssignmentFromRs(ResultSet rs) throws SQLException {
+        
+        boolean allowPastDueSubmits = rs.getInt("close_past_due") == 0;
+        
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"),
-                rs.getDate("due_date"), null, rs.getString("status"), rs.getInt("close_past_due") != 0, rs.getInt("is_graded") != 0,
+                rs.getDate("due_date"), null, rs.getString("status"), allowPastDueSubmits, rs.getInt("is_graded") != 0,
                 rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0);
     }
 
@@ -1526,7 +1529,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     public StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) {
         StudentAssignmentUserInfo studentInfo = null;
 
-        String sql = "select a.status, a.due_date, u.is_graded,u.turn_in_date,u.last_access " +
+        String sql = "select a.status, a.due_date, a.close_past_due, u.is_graded,u.turn_in_date,u.last_access " +
                      "from  CM_ASSIGNMENT a  JOIN CM_ASSIGNMENT_USER u ON u.assign_key = a.assign_key " +
                      " where u.uid = ? and a.assign_key = ?";
         List<StudentAssignmentUserInfo> assInfos = getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<StudentAssignmentUserInfo>() {
@@ -1535,7 +1538,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 boolean isGraded =  rs.getInt("is_graded") != 0 ? true : false;
                 boolean isEditable = rs.getString("status").equals("Open") ? true : false;
                 return new StudentAssignmentUserInfo(uid, assignKey, rs.getDate("turn_in_date"),isGraded, isEditable,rs
-                        .getTimestamp("last_access"), rs.getTimestamp("due_date"));
+                        .getTimestamp("last_access"), rs.getTimestamp("due_date"), rs.getInt("close_past_due")==0);
             }
         });
 

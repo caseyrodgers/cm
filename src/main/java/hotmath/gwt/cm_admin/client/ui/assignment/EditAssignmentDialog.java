@@ -113,7 +113,7 @@ public class EditAssignmentDialog {
         
         
         _submitOptions = createSubmitOptionsCombo();
-        if(assignment.isClosePastDue()) {
+        if(!assignment.isAllowPastDueSubmits()) {
             _submitOptions.setValue(_submitOptions.getStore().get(0));
         }
         else {
@@ -369,10 +369,10 @@ public class EditAssignmentDialog {
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
         if(_submitOptions.getValue().getOption().startsWith("Allow")) {
-            _assignment.setClosePastDue(true);
+            _assignment.setAllowPastDueSubmits(true);
         }
         else {
-            _assignment.setClosePastDue(false);
+            _assignment.setAllowPastDueSubmits(false);
         }
         
         if(asDraft) {

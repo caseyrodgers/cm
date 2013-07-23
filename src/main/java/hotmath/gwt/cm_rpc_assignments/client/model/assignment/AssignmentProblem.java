@@ -24,10 +24,11 @@ public class AssignmentProblem implements Response{
     private String status;
     private boolean assignmentClosed;
     private Date assignmentDueDate;
+    private boolean allowPastDueSubmits;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem,  String lastUserWidgetValue, String status, Date assignmentDueDate) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem,  String lastUserWidgetValue, String status, Date assignmentDueDate, boolean allowPastDueSubmits) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
@@ -38,6 +39,32 @@ public class AssignmentProblem implements Response{
         this.lastUserWidgetValue = lastUserWidgetValue;
         this.status = status;
         this.assignmentDueDate = assignmentDueDate;
+        this.allowPastDueSubmits = allowPastDueSubmits;
+    }
+    
+    
+    /** Is this assignment pastdue.  This takes into 
+     * account if the allowPastDueSubmits is enabled.
+     * 
+     * if allowPastDueSubmits is true, then the assignment 
+     * will never be pastDue.
+     *  
+     * 
+     * @return
+     */
+    public boolean isPastDue() {
+        if(assignmentDueDate == null) {
+            return false;
+        }
+        else {
+            boolean pastDue = assignmentDueDate.getTime() <  System.currentTimeMillis();
+            if(pastDue && !allowPastDueSubmits) {
+                return true;   // assignment is past due
+            }
+            else {
+                return false;  // assignment submits allowed
+            }
+        }
     }
 
     public String getStatus() {
@@ -115,6 +142,29 @@ public class AssignmentProblem implements Response{
 
     public Date getAssignmentDueDate() {
         return assignmentDueDate;
+    }
+
+    /** Can input values be saved to named assignment?
+     * 
+     * Returns error string if value cannot be saved. Otherwise, null is returned.
+     * 
+     * @param assProblem
+     * @return
+     */
+    public static String canInputValueBeSaved(AssignmentProblem assProblem) {
+        if(assProblem.isGraded()) {
+            return "This input value will not be saved because the assignment has already been graded.";
+        }
+
+        if(assProblem.isAssignmentClosed()) {
+            return "This input value will not be saved because the assignment is closed.";
+        }
+        
+        if(assProblem.isPastDue()) {
+            return "This input value will not be saved because the assignment is past due.";
+        }
+        
+        return null;
     }
     
 }

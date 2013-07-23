@@ -83,7 +83,7 @@ public class AssignmentTutorPanel extends Composite {
             
             @Override
             public WidgetStatusIndication indicateWidgetStatus() {
-                return !isGraded?WidgetStatusIndication.INDICATE_SUBMIT_ONLY:WidgetStatusIndication.DEFAULT;
+                return !isGraded?WidgetStatusIndication.NONE:WidgetStatusIndication.DEFAULT;
             }
             
             @Override
@@ -194,17 +194,13 @@ public class AssignmentTutorPanel extends Composite {
      */
     private void processTutorWidgetComplete(final String inputValue, boolean yesNo) {
 
-        
-        if(_isGraded) {
-            CmMessageBox.showAlert("Assignment Already Graded", "This input value will not be saved because the assignment has already been graded.");
+        String errorMessage = AssignmentProblem.canInputValueBeSaved(_assProblem);
+        if(errorMessage != null) {
+            CmMessageBox.showAlert("Input Value Not Submitted", errorMessage);
             return;
         }
 
-        if(!_isEditable) {
-            CmMessageBox.showAlert("Assignment Closed", "This input value will not be saved because the assignment is closed.");
-            return;
-        }
-
+        _tutorPanel.setProblemStatus(_assProblem);
         
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {

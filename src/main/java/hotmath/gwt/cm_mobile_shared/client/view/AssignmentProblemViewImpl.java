@@ -6,6 +6,7 @@ import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
@@ -55,10 +56,16 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
             
             @Override
             public void whiteboardSubmitted() {
-                 presenter.showWorkHasBeenSubmitted();
-                 problem.setStatus("Submitted");
-                 tutor.setProblemStatus(problem);
-                 hideWhiteboard();
+                String errorMessage = AssignmentProblem.canInputValueBeSaved(problem);
+                if(errorMessage != null) {
+                    PopupMessageBox.showMessage("Whiteboard Not Submitted", errorMessage);
+                }
+                else {
+                     presenter.showWorkHasBeenSubmitted();
+                     problem.setStatus("Submitted");
+                     tutor.setProblemStatus(problem);
+                     hideWhiteboard();
+                }
             }
             
             @Override
@@ -171,11 +178,16 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
             @Override
             public void tutorWidgetComplete(String inputValue, boolean correct) {
-                
                 AssignmentProblem p = AssignmentProblemViewImpl.this.problem;
-                p.setStatus("Submitted");
-                tutor.setProblemStatus(p);
-                presenter.processTutorWidgetComplete(inputValue, correct);
+                String errorMessage = AssignmentProblem.canInputValueBeSaved(p);
+                if(errorMessage != null) {
+                    PopupMessageBox.showMessage("Input Not Saved", errorMessage);
+                }
+                else {
+                    p.setStatus("Submitted");
+                    tutor.setProblemStatus(p);
+                    presenter.processTutorWidgetComplete(inputValue, correct);
+                }
             }
 
             @Override
@@ -267,7 +279,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
     private void setProblemStatus() {
         _subBar.showSubmitWhiteboard(false);
         if (problem.getProblemType() == ProblemType.WHITEBOARD) {
-            if ((!problem.isAssignmentClosed() && !problem.isGraded()) && !problem.getStatus().equals(ProblemStatus.SUBMITTED.toString())) {
+            if (!problem.isPastDue() && (!problem.isAssignmentClosed() && !problem.isGraded()) && !problem.getStatus().equals(ProblemStatus.SUBMITTED.toString())) {
                 _subBar.showSubmitWhiteboard(true);
             }
         }    
