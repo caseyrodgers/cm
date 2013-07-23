@@ -113,7 +113,7 @@ public class EditAssignmentDialog {
         
         
         _submitOptions = createSubmitOptionsCombo();
-        if(!assignment.isAllowPastDueSubmits()) {
+        if(assignment.isAllowPastDueSubmits()) {
             _submitOptions.setValue(_submitOptions.getStore().get(0));
         }
         else {
