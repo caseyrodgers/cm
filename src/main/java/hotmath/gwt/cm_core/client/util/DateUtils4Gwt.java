@@ -15,6 +15,10 @@ public class DateUtils4Gwt {
         return getPrettyDateString(dueDate, true);
     }
     public static String getPrettyDateString(Date dueDate, boolean useRelative) {
+        
+        if(dueDate == null) {
+            return "";
+        }
 
         long due = dueDate.getTime();
         int oneDay = (60 * 1000) * 60 * 24;
