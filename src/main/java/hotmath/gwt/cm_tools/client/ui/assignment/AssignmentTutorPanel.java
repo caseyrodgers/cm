@@ -196,16 +196,17 @@ public class AssignmentTutorPanel extends Composite {
 
         String errorMessage = AssignmentProblem.canInputValueBeSaved(_assProblem);
         if(errorMessage != null) {
+            _tutorPanel.setTutorWidgetValue(_assProblem.getLastUserWidgetValue());
             CmMessageBox.showAlert("Input Value Not Submitted", errorMessage);
             return;
         }
 
-        _tutorPanel.setProblemStatus(_assProblem);
         
         SaveAssignmentTutorInputWidgetAnswerAction action = new SaveAssignmentTutorInputWidgetAnswerAction(_uid, _assignKey,_assProblem.getInfo().getPid(),inputValue,yesNo);
         CmTutor.getCmService().execute(action, new AsyncCallback<RpcData>() {
             public void onSuccess(RpcData result) {
                 _assProblem.setLastUserWidgetValue(inputValue);
+                _tutorPanel.setProblemStatus(_assProblem);
                 //loadSolutionIntoGui(_uid, _assignKey, _assProblem);  // to show readonly state
                 Log.debug("Tutor Widget Answer saved to server.");
             }
