@@ -57,7 +57,7 @@ public class AssignmentProblem implements Response{
             return false;
         }
         else {
-            boolean pastDue = assignmentDueDate.getTime() <  System.currentTimeMillis();
+            boolean pastDue = Assignment.isExpired(assignmentDueDate);
             if(pastDue && !allowPastDueSubmits) {
                 return true;   // assignment is past due
             }

@@ -86,7 +86,7 @@ public class GetQuizHtmlCommand implements ActionHandler<GetQuizHtmlAction, Quiz
             String cacheKey = testDef.getTestDefId() + "_" + testDef.getTestInitJson(haTest) + "_" + haTest.getSegment() + "_" + haTest.getSegmentSlot();
             QuizCacheInfo cacheInfo = (QuizCacheInfo)CmCacheManager.getInstance().retrieveFromCache(CacheName.TEST_HTML, cacheKey);
             if(cacheInfo == null) {
-                logger.info("Create quiz HTML and add to cache");
+                logger.debug("Create quiz HTML and add to cache");
                 
                 HaTestSet testSet = new HaTestSet(conn,haTest.getPids());
                 

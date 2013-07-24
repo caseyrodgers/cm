@@ -127,11 +127,7 @@ public class Assignment implements Response{
     public boolean isEditable() {
         return !getStatus().equals("Closed");
     }
-    
-    private boolean isPastDue() {
-        return isExpired() && !allowPastDueSubmits;
-    }
-    
+
     /** Determine, based on data
      * in object if this assignment 
      * has expired.
@@ -140,10 +136,14 @@ public class Assignment implements Response{
      * 
      * @return
      */
-    private static final int MILLS_IN_DAY = 24 * 60 * 60 * 1000;
+    public static final int MILLS_IN_DAY = 24 * 60 * 60 * 1000;
 
+    static public boolean isExpired(Date date) {
+        return date.getTime() < (System.currentTimeMillis() - MILLS_IN_DAY);
+    }
+    
     public boolean isExpired() {
-        return dueDate.getTime() < (System.currentTimeMillis() - MILLS_IN_DAY);
+        return isExpired(dueDate);
     }
 
     public int getGroupId() {

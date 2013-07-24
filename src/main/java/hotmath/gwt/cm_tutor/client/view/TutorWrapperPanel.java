@@ -225,8 +225,6 @@ public class TutorWrapperPanel extends Composite {
 
     public void loadSolution(final String pid, final String title, final boolean hasShowWork, final boolean shouldExpandSolution, final String jsonConfig, 
             final CallbackAfterSolutionLoaded callback) {
-        
-        
         Log.debug("TutorWrapperPanel->loadSolution: " + pid);
         
         GetSolutionAction action = new GetSolutionAction(UserInfo.getInstance().getUid(), UserInfo.getInstance().getRunId(), pid);

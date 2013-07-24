@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.TurnInAssignmentAction;
@@ -39,7 +40,6 @@ import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer.Hor
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
 import com.sencha.gxt.widget.core.client.form.TextArea;
 import com.sencha.gxt.widget.core.client.form.TextField;
@@ -162,12 +162,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         return _tutorArea;
     }
     
-    DateField _dueDate;
+    TextField _dueDate;
     TextArea _comments;
     TextField _grade;
     FieldLabel _gradeField;
     TextButton _turnInButton, _nextAnnotation;
-    DateField _dateTurnedIn;
+    TextField _dateTurnedIn;
     
     private IsWidget createHeaderPanel() {
         
@@ -178,12 +178,12 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
         _comments = new TextArea();
         _comments.setReadOnly(true);
 
-        _dueDate = new DateField();
+        _dueDate = new TextField();
         _dueDate.setReadOnly(true);
 
         headerLeft.add(new MyFieldLabel(_dueDate,"Due Date",75,100));
         
-        _dateTurnedIn = new DateField();
+        _dateTurnedIn = new TextField();
         _dateTurnedIn.setReadOnly(true);
         headerLeft.add(new MyFieldLabel(_dateTurnedIn, "Turned In",75,100));
 
@@ -275,7 +275,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
     StudentAssignment _studentAssignment;
     boolean assignmentAreaDrawn=false;
     private void loadAssignment(StudentAssignment assignment, String pidToLoad) {
-        _dueDate.setValue(assignment.getAssignment().getDueDate());
+        _dueDate.setValue(DateUtils4Gwt.getPrettyDateString(assignment.getAssignment().getDueDate(), true));
         _studentAssignment = assignment;
         if(!assignmentAreaDrawn) {
             BorderLayoutData bd = new BorderLayoutData();
@@ -301,7 +301,7 @@ public class StudentAssignmentViewerPanel extends ContentPanel {
             _turnInButton.setEnabled(false);
         }
         
-        _dateTurnedIn.setValue(assignment.getTurnInDate());
+        _dateTurnedIn.setValue(DateUtils4Gwt.getPrettyDateString(assignment.getTurnInDate()));
     }
 
     public void readAssignmentFromServer(final int assignKey, final String pidToLoad) {

@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_core.client.util;
 
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
+
 import java.util.Date;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -19,7 +21,7 @@ public class DateUtils4Gwt {
         long now = new Date().getTime();
 
         String formatedString;
-        if(!useRelative || due < now ) {
+        if(!useRelative || (due + Assignment.MILLS_IN_DAY) < now ) {
             // past due
             formatedString = formatNormal.format(dueDate);
         }

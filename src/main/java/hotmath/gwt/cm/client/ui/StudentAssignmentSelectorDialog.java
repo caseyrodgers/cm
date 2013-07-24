@@ -276,7 +276,7 @@ public class StudentAssignmentSelectorDialog extends GWindow {
     
     private ColumnModel<StudentAssignmentInfo> createColumnModel() {
         List<ColumnConfig<StudentAssignmentInfo, ?>> cols = new ArrayList<ColumnConfig<StudentAssignmentInfo, ?>>();
-        cols.add(new ColumnConfig<StudentAssignmentInfo, Date>(props.dueDate(), 80, "Due Date"));
+        cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.dueDate(), 80, "Due Date"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.status(), 70, "Status"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.score(), 70, "Score"));
         cols.add(new ColumnConfig<StudentAssignmentInfo, String>(props.comments(), 235, "Comments"));
@@ -296,7 +296,9 @@ public class StudentAssignmentSelectorDialog extends GWindow {
         ValueProvider<StudentAssignmentInfo, Boolean> complete();
         ValueProvider<StudentAssignmentInfo, String> status();
         ValueProvider<StudentAssignmentInfo, String> comments();
-        ValueProvider<StudentAssignmentInfo, Date> dueDate();
+        
+        @Path("dueDateFormatted")
+        ValueProvider<StudentAssignmentInfo, String> dueDate();
     }
     
     

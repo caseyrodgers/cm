@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_rpc_assignments.client.model.assignment;
 
+import hotmath.gwt.cm_core.client.util.DateUtils4Gwt;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 import java.util.Date;
@@ -107,6 +108,11 @@ public class StudentAssignmentInfo implements Response {
         this.dueDate = dueDate;
     }
 
+    
+    public String getDueDateFormatted() {
+        return DateUtils4Gwt.getPrettyDateString(dueDate,  true);
+    }
+    
     public String getComments() {
         return comments;
     }
