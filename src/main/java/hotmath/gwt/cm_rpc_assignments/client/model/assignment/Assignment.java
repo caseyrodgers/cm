@@ -139,7 +139,12 @@ public class Assignment implements Response{
     public static final int MILLS_IN_DAY = 24 * 60 * 60 * 1000;
 
     static public boolean isExpired(Date date) {
-        return date.getTime() < (System.currentTimeMillis() - MILLS_IN_DAY);
+        if(date != null) {
+            return date.getTime() < (System.currentTimeMillis() - MILLS_IN_DAY);
+        }
+        else {
+            return false;
+        }
     }
     
     public boolean isExpired() {
