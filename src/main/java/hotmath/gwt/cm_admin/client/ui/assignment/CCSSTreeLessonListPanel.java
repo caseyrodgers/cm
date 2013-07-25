@@ -1,23 +1,34 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentTreeAllLessonsListingPanel.CallbackOnSelectedLesson;
-
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.BaseDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.FolderDto;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CheckableMinLevelGxtTreeAppearance;
+import hotmath.gwt.cm_tools.client.ui.ccss.StandardWindowForCCSS;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.DefaultGxtLoadingPanel;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSData;
 import hotmath.gwt.shared.client.model.CCSSDomain;
-import hotmath.gwt.shared.client.model.CCSSLesson;
 import hotmath.gwt.shared.client.model.CCSSGradeLevel;
+import hotmath.gwt.shared.client.model.CCSSLesson;
 import hotmath.gwt.shared.client.model.CCSSStandard;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSDataAction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.core.client.dom.ScrollSupport.ScrollMode;
@@ -33,22 +44,8 @@ import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent;
 import com.sencha.gxt.widget.core.client.event.CheckChangedEvent.CheckChangedHandler;
 import com.sencha.gxt.widget.core.client.grid.Grid;
-import com.sencha.gxt.widget.core.client.box.MessageBox;
 import com.sencha.gxt.widget.core.client.tree.Tree;
 import com.sencha.gxt.widget.core.client.tree.Tree.CheckCascade;
-
-import com.allen_sauer.gwt.log.client.Log;
-
-import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.dom.client.BrowserEvents;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * display selectable Tree of CCSS Grade Level -> Topic/Domain -> Standard -> Lesson -> Problem
@@ -68,7 +65,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
     public CCSSTreeLessonListPanel(CallbackOnSelectedLesson callBack) {
         _callBack = callBack;
         
-        setWidget(new HTML("<h1>Loading ...</h1>"));
+        setWidget(new DefaultGxtLoadingPanel("Loading ..."));
     }
 
     public interface GridProperties extends PropertyAccess<String> {
@@ -151,8 +148,7 @@ public class CCSSTreeLessonListPanel extends ContentPanel {
                     }
                     if (dto != null && dto.getLevel() == CCSSData.STANDARD) {
                     	CCSSStandard ccss = (CCSSStandard)dto;
-                    	MessageBox msgBox = new MessageBox(ccss.getName(), ccss.getSummary());
-                    	msgBox.show();
+                    	new StandardWindowForCCSS(ccss.getName(),ccss.getSummary());
                     }
                 }
             }
