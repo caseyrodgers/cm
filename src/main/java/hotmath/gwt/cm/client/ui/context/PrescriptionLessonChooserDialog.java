@@ -132,6 +132,8 @@ public class PrescriptionLessonChooserDialog extends GWindow {
         ColumnModel<LessonChoice> cm = new ColumnModel<LessonChoice>(cols);
         ListStore<LessonChoice> store = new ListStore<LessonChoice>(props.id());
         Grid<LessonChoice> grid = new Grid<LessonChoice>(store, cm);
+        
+        grid.getColumnModel().getColumn(0).setSortable(false);
 
         grid.getView().setAutoExpandColumn(cols.get(0));
         grid.getView().setStripeRows(true);
@@ -151,7 +153,6 @@ public class PrescriptionLessonChooserDialog extends GWindow {
                 loadSelectedLesson();
             }
         }, DoubleClickEvent.getType());
-
         return grid;
     }
 
