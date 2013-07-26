@@ -518,8 +518,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 try {
                     Window.alert("TEST 1");
                     store.clear();
+                    Window.alert("TEST 1a");
                     store.addAll(list);
-
                     Window.alert("TEST 2");
                     
                     _studentCount.setText("count: " + list.size());
