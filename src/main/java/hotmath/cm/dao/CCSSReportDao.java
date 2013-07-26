@@ -386,6 +386,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(Integer userId,
 			Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT");
+        List<CCSSCoverageBar> barList = new ArrayList<CCSSCoverageBar>();
     	List<CCSSCoverageData> list = null;
     	try {
     		list = getJdbcTemplate().query(sql,
@@ -406,10 +407,11 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     				userId, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), sql), e);
     		throw e;
     	}
+
+    	if (list == null || list.isEmpty()) return barList;
     	
     	List<Date> weeks = getWeeks(list);
         
-        List<CCSSCoverageBar> barList = new ArrayList<CCSSCoverageBar>();
     	for (Date week : weeks) {
     		String date = dateFormat.format(week);
     		CCSSCoverageBar bar = new CCSSCoverageBar();
