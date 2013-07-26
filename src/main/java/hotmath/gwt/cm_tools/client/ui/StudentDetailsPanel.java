@@ -24,8 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-import org.jfree.util.Log;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
