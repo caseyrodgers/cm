@@ -475,14 +475,15 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void render(Context context, Object value, SafeHtmlBuilder sb) {
                 StudentActivityModel sam = samGrid.getStore().get(context.getIndex());
-                String html = "";
-//                if(sam != null) {
-//                    if (sam.isArchived()) {
-//                        html = sam.getProgramDescr() + " [archived]";
-//                    } else {
-//                        html = sam.getProgramDescr();
-//                    }
-//                }
+                String html = null;
+                if (sam.isArchived()) {
+                    html = sam.getProgramDescr() + " [archived]";
+                } else {
+                    html = sam.getProgramDescr();
+                }
+                if(html == null) {
+                    html = "---";
+                }
                 sb.appendEscaped(html);
             }
         });
