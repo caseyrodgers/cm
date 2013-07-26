@@ -744,13 +744,13 @@
 					<compileReport>false</compileReport>
 					<outputDirectory>${basedir}/src/main/webapp/</outputDirectory>
 					<logLevel>ERROR</logLevel>
-					<style>OBF</style>
+					<style>PRETTY</style>
 					<modules>
 						<module>hotmath.gwt.cm.CatchupMath</module>
 						<module>hotmath.gwt.cm_admin.CatchupMathAdmin</module>
 						<module>hotmath.gwt.solution_editor.SolutionEditor</module>
 						<module>hotmath.gwt.hm_mobile.HmMobile</module>
-						<module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
+   						   <module>hotmath.gwt.cm_mobile3.CatchupMathMobile3</module>
 						<module>hotmath.gwt.tutor_viewer.TutorViewer</module>
 						<module>hotmath.gwt.cm_search.CatchupMathSearch</module>
 						<!--
