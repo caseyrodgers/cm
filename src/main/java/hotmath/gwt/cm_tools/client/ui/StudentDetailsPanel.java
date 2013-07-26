@@ -8,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
@@ -115,6 +116,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
         toolBar.add(displayCCSSCoverageToolItem(studentModel));
+        toolBar.add(displayCCSSChartToolItem(studentModel));
 
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
@@ -440,26 +442,29 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         TextButton ti = new TextButton("CCSS Coverage", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-/*
-                DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate=null, toDate=null;
-                if (dateRange != null) {
-                    fromDate = dateRange.getFromDate();
-                    toDate = dateRange.getToDate();
-                }
-                new PdfWindowWithNav(sm.getAdminUid(), "Catchup Math CCSS Report for: " + sm.getName(), new GeneratePdfAction(PdfType.STUDENT_CCSS,
-                        sm.getAdminUid(), Arrays.asList(sm.getUid()), fromDate, toDate));
-*/
             	new CCSSCoverageWindow(sm, null);
             }
         });
-        // ti.setIconStyle("printer-icon");
         ti.setToolTip("View CCSS coverage");
         ti.addStyleName("student-details-panel-sw-btn");
 
         return ti;
     }
 
+
+    private TextButton displayCCSSChartToolItem(final StudentModelI sm) {
+        TextButton ti = new TextButton("CCSS Chart", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+            	new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false);
+            }
+        });
+        ti.setToolTip("View CCSS coverage bar chart");
+        ti.addStyleName("student-details-panel-sw-btn");
+
+        return ti;
+    }
+    
     private ColumnModel<StudentActivityModel> defineColumns() {
 
         ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
