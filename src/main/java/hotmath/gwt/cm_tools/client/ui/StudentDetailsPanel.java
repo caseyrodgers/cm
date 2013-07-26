@@ -518,7 +518,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 try {
                     Window.alert("TEST 1");
                     store.clear();
-                    Window.alert("TEST 1a");
+                    Window.alert("TEST 1a: " + list);
                     store.addAll(list);
                     Window.alert("TEST 2");
                     
