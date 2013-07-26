@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -16,10 +17,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
 import hotmath.gwt.shared.client.model.CCSSDetail;
@@ -380,4 +380,154 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	}
     	return (count != null) ? count.get(0) : 0;
     }
+
+	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(Integer userId,
+			Date fromDate, Date toDate) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT");
+    	List<CCSSCoverageData> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql,
+    				new Object[] { userId, fromDate, toDate, userId, fromDate, toDate, userId, fromDate, toDate },
+    				new RowMapper<CCSSCoverageData>() {
+    			@Override
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSCoverageData item = new CCSSCoverageData(rs.getString("lesson_name"), rs.getString("standard_name_new"));
+    				item.getColumnLabels().add(rs.getString("usage_date"));
+    				item.getColumnLabels().add(rs.getString("usage_type"));
+    				item.setCount(1);
+    				return item;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getStudentAllByWeekStandardNames(): userId: %d, fromDate: %s, toDate: %s, sql: %s",
+    				userId, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), sql), e);
+    		throw e;
+    	}
+    	
+    	List<Date> weeks = getWeeks(list);
+        
+        List<CCSSCoverageBar> barList = new ArrayList<CCSSCoverageBar>();
+    	for (Date week : weeks) {
+    		String date = dateFormat.format(week);
+    		CCSSCoverageBar bar = new CCSSCoverageBar();
+    		bar.setLabel(date);
+    		barList.add(bar);
+    	}
+
+    	for (CCSSCoverageData data : list) {
+    		addDataToBarList(data, barList);
+    	}
+ 
+    	return barList;
+	}
+
+	/**
+	 * 
+	 * @param data
+	 * @param list
+	 */
+	private void addDataToBarList(CCSSCoverageData data, List<CCSSCoverageBar> list) throws Exception {
+        String date = data.getColumnLabels().get(0);
+		GregorianCalendar cal = new GregorianCalendar();
+    	cal.setFirstDayOfWeek(GregorianCalendar.SUNDAY);
+    	Date ccssDate = dateFormat.parse(date);
+        for (CCSSCoverageBar bar : list) {
+        	Date barDate = dateFormat.parse(bar.getLabel());
+        	if (weekMatch(ccssDate, barDate, cal)) {
+        		assignData(bar, data);
+        		break;
+        	}
+        }		
+	}
+
+    private boolean weekMatch(Date ccssDate, Date barDate, GregorianCalendar cal) {
+    	cal.setTime(ccssDate);
+        int dataWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+        int dataYear = cal.get(GregorianCalendar.YEAR);
+        
+        cal.setTime(barDate);
+        int barWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+        int barYear = cal.get(GregorianCalendar.YEAR);
+        
+        return (dataWeek == barWeek && dataYear == barYear);
+	}
+
+	/**
+     * 
+     * @param bar
+     * @param data
+     */
+	private void assignData(CCSSCoverageBar bar, CCSSCoverageData data) {
+		if ("ASSIGNMENT".equalsIgnoreCase(data.getColumnLabels().get(1))) {
+		    bar.setAssignmentCount(bar.getAssignmentCount() + 1);
+		    bar.getAssignmentStdNames().add(data.getLabel());
+    		return;
+		}
+		if ("LESSON".equalsIgnoreCase(data.getColumnLabels().get(1))) {
+		    bar.setLessonCount(bar.getLessonCount() + 1);
+		    bar.getLessonStdNames().add(data.getLabel());
+    		return;
+		}
+		if ("QUIZ".equalsIgnoreCase(data.getColumnLabels().get(1))) {
+		    bar.setQuizCount(bar.getQuizCount() + 1);
+		    bar.getQuizStdNames().add(data.getLabel());
+		}
+	}
+
+	/**
+	 * find min/max dates
+	 * 
+	 * @param list
+	 * @return
+	 */
+	private List<Date> getWeeks(List<CCSSCoverageData> list) throws Exception {
+		Date minDate = null;
+		Date maxDate = null;
+		for (CCSSCoverageData data : list) {
+			Date date = dateFormat.parse(data.getColumnLabels().get(0));
+			if (minDate == null || minDate.after(date)) minDate = date;
+			if (maxDate == null || maxDate.before(date)) maxDate = date;
+		}
+		return getWeeks(minDate, maxDate);
+	}
+	
+    /**
+     * 
+     * @param minDate
+     * @param maxDate
+     * @return
+     */
+    private List<Date> getWeeks(Date minDate, Date maxDate) {
+		GregorianCalendar cal = new GregorianCalendar();
+    	cal.setFirstDayOfWeek(GregorianCalendar.SUNDAY);
+    	cal.setTime(minDate);
+    	int minWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+    	int minYear = cal.get(GregorianCalendar.YEAR);
+
+    	cal.setTime(maxDate);
+    	int maxWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+    	int maxYear = cal.get(GregorianCalendar.YEAR);
+
+    	cal.set(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.SATURDAY);
+    	cal.set(GregorianCalendar.WEEK_OF_YEAR, maxWeek);
+    	cal.set(GregorianCalendar.YEAR, maxYear);
+    	Date endDate = cal.getTime();
+
+    	cal.set(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.SUNDAY);
+    	cal.set(GregorianCalendar.WEEK_OF_YEAR, minWeek);
+    	cal.set(GregorianCalendar.YEAR, minYear);
+    	Date beginDate = cal.getTime();
+
+    	List<Date> weeks = new ArrayList<Date>();
+    	Date date = beginDate;
+    	while (date.before(endDate)) {
+        	weeks.add(date);
+    		cal.add(GregorianCalendar.WEEK_OF_YEAR, 1);
+    		date = cal.getTime();
+    	}
+    	return weeks;
+	}
 }

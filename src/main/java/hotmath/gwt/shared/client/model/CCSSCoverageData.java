@@ -8,7 +8,7 @@ public class CCSSCoverageData implements Response {
 
 	private static final long serialVersionUID = -8162142054866769276L;
 
-	Integer    count;
+	int    count;
 	
     String lessonName;
     String ccssName;
@@ -29,6 +29,10 @@ public class CCSSCoverageData implements Response {
 
     public CmList<String> getColumnLabels() {
         return columnLabels;
+    }
+
+    public String getLabel() {
+    	return columnLabels.get(0);
     }
 
     public void setColumnLabels(CmList<String> columnLabels) {
@@ -59,11 +63,11 @@ public class CCSSCoverageData implements Response {
     	return String.valueOf(count);
     }
 
-	public Integer getCount() {
+	public int getCount() {
 		return count;
 	}
 
-	public void setCount(Integer count) {
+	public void setCount(int count) {
 		this.count = count;
 	}
 
