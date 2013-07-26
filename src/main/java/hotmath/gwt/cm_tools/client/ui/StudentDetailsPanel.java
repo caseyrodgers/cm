@@ -514,20 +514,12 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         new RetryAction<CmList<StudentActivityModel>>() {
             public void oncapture(CmList<StudentActivityModel> list) {
                 try {
-                    Window.alert("TEST 1");
                     store.clear();
-                    Window.alert("TEST 1a: " + list);
                     store.addAll(list);
-                    Window.alert("TEST 2");
-
                     _studentCount.setText("count: " + list.size());
-
                     if (list.size() > 0) {
-                        Window.alert("TEST 3");
                         enableDisableButtons();
                     }
-
-                    Window.alert("TEST 4");
                 } catch (Exception e) {
                     Log.error("Error: " + list.size(), e);
                 } finally {
