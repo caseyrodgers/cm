@@ -1,8 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
-import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
@@ -30,6 +30,7 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -515,14 +516,20 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         new RetryAction<CmList<StudentActivityModel>>() {
             public void oncapture(CmList<StudentActivityModel> list) {
                 try {
+                    Window.alert("TEST 1");
                     store.clear();
                     store.addAll(list);
 
+                    Window.alert("TEST 2");
+                    
                     _studentCount.setText("count: " + list.size());
 
                     if (list.size() > 0) {
+                        Window.alert("TEST 3");
                         enableDisableButtons();
                     }
+                    
+                    Window.alert("TEST 4");
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
