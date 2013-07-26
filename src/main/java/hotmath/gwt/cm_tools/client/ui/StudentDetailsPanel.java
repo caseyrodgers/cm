@@ -471,19 +471,19 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         configs.get(configs.size() - 1).setMenuDisabled(true);
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.program(), 120, "Program"));
-        configs.get(configs.size() - 1).setCell(new AbstractCell() {
-            @Override
-            public void render(Context context, Object value, SafeHtmlBuilder sb) {
-                StudentActivityModel sam = samGrid.getStore().get(context.getIndex());
-                String html = "";
-                if (sam.isArchived()) {
-                    html = sam.getProgramDescr() + " [archived]";
-                } else {
-                    html = sam.getProgramDescr();
-                }
-                sb.appendEscaped(html);
-            }
-        });
+//        configs.get(configs.size() - 1).setCell(new AbstractCell() {
+//            @Override
+//            public void render(Context context, Object value, SafeHtmlBuilder sb) {
+//                StudentActivityModel sam = samGrid.getStore().get(context.getIndex());
+//                String html = "";
+//                if (sam.isArchived()) {
+//                    html = sam.getProgramDescr() + " [archived]";
+//                } else {
+//                    html = sam.getProgramDescr();
+//                }
+//                sb.appendEscaped(html);
+//            }
+//        });
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.programType(), 115, "Prog-Type"));
         configs.get(configs.size() - 1).setSortable(false);
