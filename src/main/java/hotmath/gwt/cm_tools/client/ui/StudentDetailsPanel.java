@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.jfree.util.Log;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.editor.client.Editor.Path;
@@ -84,14 +86,12 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     public StudentDetailsPanel(final StudentModelI studentModel) {
         this.studentModel = studentModel;
 
-        
-        if(studentModel.getSettings().getShowWorkRequired()) {
+        if (studentModel.getSettings().getShowWorkRequired()) {
             studentModel.setShowWorkState("REQUIRED");
-        }
-        else {
+        } else {
             studentModel.setShowWorkState("OPTIONAL");
         }
-        
+
         ListStore<StudentActivityModel> store = new ListStore<StudentActivityModel>(detailsProps.key());
 
         ColumnModel<StudentActivityModel> cm = defineColumns();
@@ -101,14 +101,12 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         // samGrid.getSelectionModel().setFiresEvents(true);
         samGrid.getView().setStripeRows(true);
 
-
         samGrid.getSelectionModel().addSelectionChangedHandler(new SelectionChangedHandler<StudentActivityModel>() {
             @Override
             public void onSelectionChanged(SelectionChangedEvent<StudentActivityModel> event) {
                 enableDisableButtons();
             }
         });
-        
 
         ToolBar toolBar = new ToolBar();
         toolBar.add(showWorkBtn());
@@ -130,7 +128,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         infoPanel.setHeight(60);
         northContainer.add(infoPanel);
         northContainer.add(toolBar);
-        
+
         setNorthWidget(northContainer, new BorderLayoutData(100));
 
         SimpleContainer simpContainer = new SimpleContainer();
@@ -151,7 +149,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         refreshDateRangeLabel();
         dateRange.addStyleName("date-range-label");
     }
-    
+
     class TestData {
         String name, value;
 
@@ -159,7 +157,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             this.name = name;
             this.value = value;
         }
-        
+
         public String getName() {
             return name;
         }
@@ -176,6 +174,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             this.value = value;
         }
     }
+
     interface DataProperties extends PropertyAccess<String> {
 
         ValueProvider<TestData, String> name();
@@ -184,10 +183,9 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         @Path("name")
         ModelKeyProvider<TestData> key();
-        
+
     }
 
-    
     private Menu buildDebugMenu() {
         MenuItem detailDebug = new MenuItem("Debug Info");
         detailDebug.addSelectionHandler(new SelectionHandler<Item>() {
@@ -335,8 +333,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             CatchupMathTools.showAlert("Select a Quiz or Review from the list first");
             return;
         }
-        
-        if(sam.isCustomQuiz()) {
+
+        if (sam.isCustomQuiz()) {
             CatchupMathTools.showAlert("Custom Quizzes do have assigned topics");
             return;
         }
@@ -396,9 +394,9 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void onSelect(SelectEvent event) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate=null;
-                Date toDate=null;
-                if(dateRange != null) {
+                Date fromDate = null;
+                Date toDate = null;
+                if (dateRange != null) {
                     if (dateRange.isDefault()) {
                         fromDate = null;
                         toDate = null;
@@ -423,7 +421,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             @Override
             public void onSelect(SelectEvent event) {
                 DateRangePanel dateRange = DateRangePanel.getInstance();
-                Date fromDate=null, toDate=null;
+                Date fromDate = null, toDate = null;
                 if (dateRange != null) {
                     fromDate = dateRange.getFromDate();
                     toDate = dateRange.getToDate();
@@ -443,7 +441,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         TextButton ti = new TextButton("CCSS Coverage", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-            	new CCSSCoverageWindow(sm, null);
+                new CCSSCoverageWindow(sm, null);
             }
         });
         ti.setToolTip("View CCSS coverage");
@@ -452,12 +450,11 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         return ti;
     }
 
-
     private TextButton displayCCSSChartToolItem(final StudentModelI sm) {
         TextButton ti = new TextButton("CCSS Chart", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-            	new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false);
+                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false);
             }
         });
         ti.setToolTip("View CCSS coverage bar chart");
@@ -465,7 +462,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         return ti;
     }
-    
+
     private ColumnModel<StudentActivityModel> defineColumns() {
 
         ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
@@ -521,15 +518,17 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                     Window.alert("TEST 1a: " + list);
                     store.addAll(list);
                     Window.alert("TEST 2");
-                    
+
                     _studentCount.setText("count: " + list.size());
 
                     if (list.size() > 0) {
                         Window.alert("TEST 3");
                         enableDisableButtons();
                     }
-                    
+
                     Window.alert("TEST 4");
+                } catch (Exception e) {
+                    Log.error("Error: " + list.size(), e);
                 } finally {
                     CmBusyManager.setBusy(false);
                 }
