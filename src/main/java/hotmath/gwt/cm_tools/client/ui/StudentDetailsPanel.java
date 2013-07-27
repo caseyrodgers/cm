@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
@@ -114,7 +116,10 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
         toolBar.add(displayCCSSCoverageToolItem(studentModel));
-        toolBar.add(displayCCSSChartToolItem(studentModel));
+        
+        if(CmGwtUtils.getQueryParameter("debug") != null) {
+            toolBar.add(displayCCSSChartToolItem(studentModel));
+        }
 
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
