@@ -56,7 +56,7 @@ public class CCSSCoverageChartWindow extends GWindow {
     TabPanel _tabPanel;
     CheckBox _onlyActiveCheckBox;
 
-    public CCSSCoverageChartWindow(int adminId, int uid, boolean isGroup) {
+    public CCSSCoverageChartWindow(int adminId, int uid, boolean isGroup, String name) {
         super(false);
 
         __instance = this;
@@ -65,7 +65,7 @@ public class CCSSCoverageChartWindow extends GWindow {
         this._uid = uid;
         this._isGroup = isGroup;
 
-        setHeadingText("CCSS Coverage Bar Chart");
+        setHeadingText("CCSS Coverage Bar Chart" + ((name!=null)?" for" + name:""));
         setWidth(600);
         setHeight(600);
 
@@ -141,7 +141,7 @@ public class CCSSCoverageChartWindow extends GWindow {
             public void oncapture(CmList<CCSSCoverageBar> allData) {
                 CmBusyManager.setBusy(false);
                 drawGui();
-                addChart(allData);
+                addCharts(allData);
                 setVisible(true);
             }
             
@@ -150,7 +150,7 @@ public class CCSSCoverageChartWindow extends GWindow {
                 super.onFailure(error);
                 CmBusyManager.setBusy(false);
                 drawGui();
-                addChart(null);
+                addCharts(null);
                 setVisible(true);
             }
         }.register();
@@ -174,18 +174,26 @@ public class CCSSCoverageChartWindow extends GWindow {
     }
 
     Widget _chartWidget;
+    static final int BARS_PER_CHART = 15;
 
-    private void addChart(CmList<CCSSCoverageBar> data) {
+    private void addCharts(List<CCSSCoverageBar> data) {
     	if (_chartWidget != null) {
     		_chartWidget.setVisible(false);
     		_chartWidget.removeFromParent();
     		_tabPanel.remove(_chartWidget);
     	}
-    	//CCSSCoverageChartData ccssData = new CCSSCoverageChartData(data);
-    	//List<CCSSCoverageBar> list = ccssData.getData();
-        CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart("CCSS Coverage", data);
-        _chartWidget = _barChart.asWidget();
-        _tabPanel.add(_chartWidget, "CCSS Coverage by Week");
+        List<CCSSCoverageBar> dataSubset = new ArrayList<CCSSCoverageBar>();
+        for (int idx=0; idx < data.size(); idx+=BARS_PER_CHART) {
+        	int upperLimit = ((idx+BARS_PER_CHART) <= data.size()) ? idx+BARS_PER_CHART : data.size();
+        	dataSubset.clear();
+        	for (int i=idx; i<upperLimit; i++) {
+        		dataSubset.add(data.get(i));
+        	}
+        	String label = dataSubset.get(0).getLabel() + " to " + dataSubset.get(dataSubset.size()-1).getLabel();
+            CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart("CCSS Coverage", dataSubset);
+            _chartWidget = _barChart.asWidget();
+            _tabPanel.add(_chartWidget, label);
+        }
     }
 
     List<Widget> _programChartWidgetList = new ArrayList<Widget>();
