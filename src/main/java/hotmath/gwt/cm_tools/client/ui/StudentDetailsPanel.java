@@ -458,7 +458,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         TextButton ti = new TextButton("CCSS Chart", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false);
+                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
             }
         });
         ti.setToolTip("View CCSS coverage bar chart");
