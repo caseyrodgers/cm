@@ -422,8 +422,21 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	for (CCSSCoverageData data : list) {
     		addDataToBarList(data, barList);
     	}
+    	
+    	makeBarListCumulative(barList);
  
     	return barList;
+	}
+
+	private void makeBarListCumulative(List<CCSSCoverageBar> barList) {
+		CCSSCoverageBar barPrev = barList.get(0);
+		for (int idx=1; idx<barList.size(); idx++) {
+			CCSSCoverageBar barCurr = barList.get(idx);
+			barCurr.setAssignmentCount(barCurr.getAssignmentCount() + barPrev.getAssignmentCount());
+			barCurr.setLessonCount(barCurr.getLessonCount() + barPrev.getLessonCount());
+			barCurr.setQuizCount(barCurr.getQuizCount() + barPrev.getQuizCount());
+			barPrev = barCurr;
+		}
 	}
 
 	/**
