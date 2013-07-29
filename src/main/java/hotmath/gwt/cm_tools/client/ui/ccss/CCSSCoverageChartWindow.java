@@ -65,7 +65,7 @@ public class CCSSCoverageChartWindow extends GWindow {
         this._uid = uid;
         this._isGroup = isGroup;
 
-        setHeadingText("CCSS Coverage Bar Chart" + ((name!=null)?" for" + name:""));
+        setHeadingText("CCSS Coverage Bar Chart" + ((name!=null)?" for " + name:""));
         setWidth(600);
         setHeight(600);
 
