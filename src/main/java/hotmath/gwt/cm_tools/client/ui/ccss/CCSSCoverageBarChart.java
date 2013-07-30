@@ -94,7 +94,10 @@ public class CCSSCoverageBarChart implements IsWidget {
 		axis.setInterval(max/10);
 		axis.setMaximum(max);
 		axis.setMinimum(0);
-		//axis.setWidth(50);
+		axis.setDisplayGrid(true);
+	    TextSprite title = new TextSprite("Standards");
+	    title.setFontSize(18);
+	    axis.setTitleConfig(title);
 		chart.addAxis(axis);
 
 		CategoryAxis<CCSSCoverageBar, String> catAxis = new CategoryAxis<CCSSCoverageBar, String>();
@@ -107,7 +110,6 @@ public class CCSSCoverageBarChart implements IsWidget {
 	    catAxis.setLabelConfig(sprite);
 	    catAxis.setLabelPadding(-10);
 	    catAxis.setLabelTolerance(20);
-
 		chart.addAxis(catAxis);
 	    
 		final BarSeries<CCSSCoverageBar> column = new BarSeries<CCSSCoverageBar>();
@@ -156,7 +158,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 		chart.addSeries(column);
 
 	    final Legend<CCSSCoverageBar> legend = new Legend<CCSSCoverageBar>();
-	    legend.setPosition(Position.TOP);
+	    legend.setPosition(Position.BOTTOM);
 	    legend.setItemHiding(true);
 	    legend.setItemHighlighting(true);
 	    chart.setLegend(legend);

@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.model;
 
+import java.util.Date;
+
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -17,6 +19,8 @@ public class CCSSCoverageBar implements Response {
 	int assignmentCount;
 	int lessonCount;
 	int quizCount;
+	int numberOfDays;
+	Date beginDate;
 	CmList<String> assignmentStdNames = new CmArrayList<String>();
 	CmList<String> lessonStdNames = new CmArrayList<String>();
 	CmList<String> quizStdNames = new CmArrayList<String>();
@@ -63,6 +67,22 @@ public class CCSSCoverageBar implements Response {
 
 	public void setQuizCount(int quizCount) {
 		this.quizCount = quizCount;
+	}
+
+	public int getNumberOfDays() {
+		return numberOfDays;
+	}
+
+	public void setNumberOfDays(int numberOfDays) {
+		this.numberOfDays = numberOfDays;
+	}
+
+	public Date getBeginDate() {
+		return beginDate;
+	}
+
+	public void setBeginDate(Date beginDate) {
+		this.beginDate = beginDate;
 	}
 
 	public int getQuizzes() {
