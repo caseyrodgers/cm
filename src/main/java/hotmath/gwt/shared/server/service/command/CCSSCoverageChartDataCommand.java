@@ -41,11 +41,11 @@ public class CCSSCoverageChartDataCommand implements ActionHandler<CCSSCoverageC
 
             CCSSReportDao crDao = CCSSReportDao.getInstance();
             switch(action.getType()) {
-                case STUDENT_WEEKLY_CHART:
+                case STUDENT_CUMULATIVE_CHART:
                     list = toCmList(crDao.getStudentAllByWeekStandardNames(action.getUID(), fromDate, toDate));
                     break;
 
-                case GROUP_WEEKLY_CHART:
+                case GROUP_CUMULATIVE_CHART:
                     //list = toCmList(crDao.getGroupAllByNameStandardNames(adminId, groupId, fromDate, toDate));
                     break;
 
