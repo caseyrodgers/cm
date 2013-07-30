@@ -141,7 +141,10 @@ public class CCSSCoverageChartWindow extends GWindow {
             public void oncapture(CmList<CCSSCoverageBar> allData) {
                 CmBusyManager.setBusy(false);
                 drawGui();
-                addCharts(allData);
+                if (allData != null && allData.size() > 0)
+                    addCharts(allData);
+                else
+                	showNoData();
                 setVisible(true);
             }
             
@@ -150,7 +153,7 @@ public class CCSSCoverageChartWindow extends GWindow {
                 super.onFailure(error);
                 CmBusyManager.setBusy(false);
                 drawGui();
-                addCharts(null);
+                showNoData();
                 setVisible(true);
             }
         }.register();
@@ -159,7 +162,7 @@ public class CCSSCoverageChartWindow extends GWindow {
     CmAdminTrendingDataI _trendingData;
 
     private ReportType getReportType() {
-		return (_isGroup == true) ? ReportType.GROUP_WEEKLY_CHART : ReportType.STUDENT_WEEKLY_CHART;
+		return (_isGroup == true) ? ReportType.GROUP_CUMULATIVE_CHART : ReportType.STUDENT_CUMULATIVE_CHART;
 	}
 
     private void showNoData() {
@@ -171,10 +174,10 @@ public class CCSSCoverageChartWindow extends GWindow {
     	fp.add(new HTML("<h2 style='color:red'>No data found</h2>"));
         clContainer.add(fp);
     	container.add(clContainer);
+    	container.forceLayout();
     }
 
     Widget _chartWidget;
-    static final int BARS_PER_CHART = 15;
 
     private void addCharts(List<CCSSCoverageBar> data) {
     	if (_chartWidget != null) {
@@ -182,22 +185,11 @@ public class CCSSCoverageChartWindow extends GWindow {
     		_chartWidget.removeFromParent();
     		_tabPanel.remove(_chartWidget);
     	}
-        List<CCSSCoverageBar> dataSubset = new ArrayList<CCSSCoverageBar>();
-        for (int idx=0; idx < data.size(); idx+=BARS_PER_CHART) {
-        	int upperLimit = ((idx+BARS_PER_CHART) <= data.size()) ? idx+BARS_PER_CHART : data.size();
-        	dataSubset.clear();
-        	for (int i=idx; i<upperLimit; i++) {
-        		dataSubset.add(data.get(i));
-        	}
-        	String label = dataSubset.get(0).getLabel() + " to " + dataSubset.get(dataSubset.size()-1).getLabel();
-            CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart("CCSS Coverage", dataSubset);
-            _chartWidget = _barChart.asWidget();
-            _tabPanel.add(_chartWidget, label);
-        }
+        CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart("CCSS Coverage", data);
+        _chartWidget = _barChart.asWidget();
+        _tabPanel.add(_chartWidget, "Cumulative Coverage");
     }
 
-    List<Widget> _programChartWidgetList = new ArrayList<Widget>();
-    
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override

@@ -383,6 +383,8 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
 	static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
+	private static final int MAX_BAR_COUNT = 8;
+
 	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(Integer userId,
 			Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT");
@@ -409,23 +411,76 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	}
 
     	if (list == null || list.isEmpty()) return barList;
-    	
-    	List<Date> weeks = getWeeks(list);
-        
-    	for (Date week : weeks) {
-    		String date = dateFormat.format(week);
-    		CCSSCoverageBar bar = new CCSSCoverageBar();
-    		bar.setLabel(date);
-    		barList.add(bar);
-    	}
+
+    	defineBars(list, barList);
 
     	for (CCSSCoverageData data : list) {
     		addDataToBarList(data, barList);
     	}
-    	
+
     	makeBarListCumulative(barList);
- 
+
     	return barList;
+	}
+
+	private void defineBars(List<CCSSCoverageData> list,
+			List<CCSSCoverageBar> barList) throws Exception {
+		Date minDate = null;
+		Date maxDate = null;
+		for (CCSSCoverageData data : list) {
+			Date date = dateFormat.parse(data.getColumnLabels().get(0));
+			if (minDate == null || minDate.after(date)) minDate = date;
+			if (maxDate == null || maxDate.before(date)) maxDate = date;
+		}
+
+		GregorianCalendar cal = new GregorianCalendar();
+    	cal.setTime(minDate);
+    	int minDay = cal.get(GregorianCalendar.DAY_OF_YEAR);
+    	int minYear = cal.get(GregorianCalendar.YEAR);
+
+    	cal.setTime(maxDate);
+    	int maxDay = cal.get(GregorianCalendar.DAY_OF_YEAR);
+    	int maxYear = cal.get(GregorianCalendar.YEAR);
+
+    	int numberOfDays = maxDay - minDay + 1 + (maxYear - minYear) * 365;
+    	for (int year=minYear; year<=maxYear; year++) {
+    		numberOfDays += cal.isLeapYear(year)?1:0;
+    	}
+
+    	int numberOfBars = (numberOfDays >= MAX_BAR_COUNT) ? MAX_BAR_COUNT : numberOfDays;
+
+        int numberOfDaysPerBar = numberOfDays / numberOfBars;
+        int additionalDaysLastBar = numberOfDays % numberOfBars;
+
+        // adjust maxDay to beginning of last period
+        if (maxDay > (numberOfDaysPerBar + additionalDaysLastBar - 1))
+            maxDay -= (numberOfDaysPerBar + additionalDaysLastBar - 1);
+        else {
+        	maxYear--;
+            maxDay = 365 - (maxDay - (numberOfDaysPerBar + additionalDaysLastBar - 1));
+            maxDay += cal.isLeapYear(maxYear)?1:0;
+        }
+    	cal.set(GregorianCalendar.DAY_OF_YEAR, maxDay);
+    	cal.set(GregorianCalendar.YEAR, maxYear);
+    	Date endDate = cal.getTime();
+
+    	cal.set(GregorianCalendar.DAY_OF_YEAR, minDay);
+    	cal.set(GregorianCalendar.YEAR, minYear);
+    	Date beginDate = cal.getTime();
+
+    	Date date = beginDate;
+    	while (date.before(endDate) || date.compareTo(endDate)==0) {
+    		CCSSCoverageBar bar = new CCSSCoverageBar();
+    		bar.setBeginDate(date);
+    		bar.setNumberOfDays(numberOfDaysPerBar);
+    		bar.setLabel(dateFormat.format(date));
+    		barList.add(bar);
+    		cal.add(GregorianCalendar.DAY_OF_YEAR, numberOfDaysPerBar);
+    		date = cal.getTime();
+    	}
+
+    	CCSSCoverageBar bar = barList.get(barList.size()-1);
+    	bar.setNumberOfDays(bar.getNumberOfDays() + additionalDaysLastBar);
 	}
 
 	private void makeBarListCumulative(List<CCSSCoverageBar> barList) {
@@ -447,27 +502,26 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 	private void addDataToBarList(CCSSCoverageData data, List<CCSSCoverageBar> list) throws Exception {
         String date = data.getColumnLabels().get(0);
 		GregorianCalendar cal = new GregorianCalendar();
-    	cal.setFirstDayOfWeek(GregorianCalendar.SUNDAY);
     	Date ccssDate = dateFormat.parse(date);
         for (CCSSCoverageBar bar : list) {
         	Date barDate = dateFormat.parse(bar.getLabel());
-        	if (weekMatch(ccssDate, barDate, cal)) {
+        	if (datesMatch(ccssDate, barDate, bar.getNumberOfDays(), cal)) {
         		assignData(bar, data);
         		break;
         	}
         }		
 	}
 
-    private boolean weekMatch(Date ccssDate, Date barDate, GregorianCalendar cal) {
+    private boolean datesMatch(Date ccssDate, Date barDate, int numberOfDays, GregorianCalendar cal) {
     	cal.setTime(ccssDate);
-        int dataWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+        int dataDay = cal.get(GregorianCalendar.DAY_OF_YEAR);
         int dataYear = cal.get(GregorianCalendar.YEAR);
         
         cal.setTime(barDate);
-        int barWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
+        int barDay = cal.get(GregorianCalendar.DAY_OF_YEAR);
         int barYear = cal.get(GregorianCalendar.YEAR);
         
-        return (dataWeek == barWeek && dataYear == barYear);
+        return (dataDay >= barDay && dataDay <= (barDay + numberOfDays - 1) && dataYear == barYear);
 	}
 
 	/**
@@ -492,57 +546,4 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 		}
 	}
 
-	/**
-	 * find min/max dates
-	 * 
-	 * @param list
-	 * @return
-	 */
-	private List<Date> getWeeks(List<CCSSCoverageData> list) throws Exception {
-		Date minDate = null;
-		Date maxDate = null;
-		for (CCSSCoverageData data : list) {
-			Date date = dateFormat.parse(data.getColumnLabels().get(0));
-			if (minDate == null || minDate.after(date)) minDate = date;
-			if (maxDate == null || maxDate.before(date)) maxDate = date;
-		}
-		return getWeeks(minDate, maxDate);
-	}
-	
-    /**
-     * 
-     * @param minDate
-     * @param maxDate
-     * @return
-     */
-    private List<Date> getWeeks(Date minDate, Date maxDate) {
-		GregorianCalendar cal = new GregorianCalendar();
-    	cal.setFirstDayOfWeek(GregorianCalendar.SUNDAY);
-    	cal.setTime(minDate);
-    	int minWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
-    	int minYear = cal.get(GregorianCalendar.YEAR);
-
-    	cal.setTime(maxDate);
-    	int maxWeek = cal.get(GregorianCalendar.WEEK_OF_YEAR);
-    	int maxYear = cal.get(GregorianCalendar.YEAR);
-
-    	cal.set(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.SATURDAY);
-    	cal.set(GregorianCalendar.WEEK_OF_YEAR, maxWeek);
-    	cal.set(GregorianCalendar.YEAR, maxYear);
-    	Date endDate = cal.getTime();
-
-    	cal.set(GregorianCalendar.DAY_OF_WEEK, GregorianCalendar.SUNDAY);
-    	cal.set(GregorianCalendar.WEEK_OF_YEAR, minWeek);
-    	cal.set(GregorianCalendar.YEAR, minYear);
-    	Date beginDate = cal.getTime();
-
-    	List<Date> weeks = new ArrayList<Date>();
-    	Date date = beginDate;
-    	while (date.before(endDate)) {
-        	weeks.add(date);
-    		cal.add(GregorianCalendar.WEEK_OF_YEAR, 1);
-    		date = cal.getTime();
-    	}
-    	return weeks;
-	}
 }

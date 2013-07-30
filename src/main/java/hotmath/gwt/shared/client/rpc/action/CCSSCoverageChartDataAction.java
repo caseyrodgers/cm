@@ -77,6 +77,6 @@ public class CCSSCoverageChartDataAction implements Action<CmList<CCSSCoverageBa
         return "CCSSCoverageChartDataAction [type=" + type + ", from=" + from + ", to=" + to +"]";
     }
 
-    public enum ReportType {STUDENT_WEEKLY_CHART, GROUP_WEEKLY_CHART};
+    public enum ReportType {STUDENT_CUMULATIVE_CHART, GROUP_CUMULATIVE_CHART};
 
 }
