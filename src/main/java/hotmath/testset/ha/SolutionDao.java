@@ -1,5 +1,6 @@
 package hotmath.testset.ha;
 
+import hotmath.HotMathExceptionSolutionNotFound;
 import hotmath.ProblemID;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
@@ -374,5 +375,23 @@ public class SolutionDao extends SimpleJdbcDaoSupport {
             }
         });
         return pids;
+    }
+
+    public void deleteSolution(final String pid) throws Exception {
+        
+        int deleted = getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = null;
+                String sql = "delete from SOLUTIONS where problemindex = ?";
+                ps = con.prepareStatement(sql);
+                ps.setString(1, pid);
+                return ps;
+            }
+        });
+        
+        if(deleted == 0) {
+            throw new CmException("Solution not found: " + pid);
+        }
     }
 }

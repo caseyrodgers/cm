@@ -5,8 +5,12 @@ import hotmath.gwt.cm_core.client.CmEventListener;
 import hotmath.gwt.cm_core.client.EventBus;
 import hotmath.gwt.cm_core.client.EventTypes;
 import hotmath.gwt.cm_rpc.client.UserInfo;
+import hotmath.gwt.cm_rpc.client.rpc.DeleteSolutionAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.shared.client.rpc.RetryActionManager;
 import hotmath.gwt.solution_editor.client.SolutionSearcherDialog.Callback;
 import hotmath.gwt.solution_editor.client.rpc.GetSolutionAdminAction;
@@ -18,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
 import com.extjs.gxt.ui.client.data.BaseModel;
@@ -118,6 +123,13 @@ public class SolutionEditor implements EntryPoint {
             }
         }),td);
         
+        tb.add(new Button("Delete",new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                deleteThisSolution();
+            }
+        }),td);
+        
         tb.add(new Button("Refresh",new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -196,6 +208,35 @@ public class SolutionEditor implements EntryPoint {
         return tb;
     }
     
+
+    protected void deleteThisSolution() {
+        if(__pidToLoad == null) {
+            CmMessageBox.showAlert("No solution loaded");
+            return;
+        }
+        CmMessageBox.confirm("Delete Solution",  "Are you sure you want to delete this problem?", new ConfirmCallback() {
+            @Override
+            public void confirmed(boolean yesNo) {
+                if(yesNo) {
+                    deleteSolutionOnServer();
+                }
+            }
+        });
+    }
+
+    protected void deleteSolutionOnServer() {
+        DeleteSolutionAction action = new DeleteSolutionAction(__pidToLoad);
+        SolutionEditor.getCmService().execute(action, new AsyncCallback<RpcData>() {
+            public void onSuccess(RpcData data) {
+                CmMessageBox.showAlert("Solution was deleted successfully");
+            }
+            @Override
+            public void onFailure(Throwable arg0) {
+                Log.error("Error deleting solution: " + arg0);
+                CmMessageBox.showAlert(arg0.getLocalizedMessage());
+            }
+        });        
+    }
 
     private Widget createGenerateContextButton() {
         Button Button = new Button("Variable Contexts", new SelectionListener<ButtonEvent>() {
