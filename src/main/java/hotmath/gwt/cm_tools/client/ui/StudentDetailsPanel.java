@@ -442,7 +442,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     }
 
     private TextButton displayCCSSCoverageToolItem(final StudentModelI sm) {
-        TextButton ti = new TextButton("CCSS Coverage", new SelectHandler() {
+        TextButton ti = new TextButton("CCSS Table", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new CCSSCoverageWindow(sm, null);
@@ -455,7 +455,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
     }
 
     private TextButton displayCCSSChartToolItem(final StudentModelI sm) {
-        TextButton ti = new TextButton("CCSS Chart", new SelectHandler() {
+        TextButton ti = new TextButton("CCSS Charts", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
