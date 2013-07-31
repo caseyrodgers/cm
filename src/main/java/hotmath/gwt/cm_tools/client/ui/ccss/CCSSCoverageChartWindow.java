@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -65,7 +66,7 @@ public class CCSSCoverageChartWindow extends GWindow {
         this._uid = uid;
         this._isGroup = isGroup;
 
-        setHeadingText("CCSS Coverage Bar Chart" + ((name!=null)?" for " + name:""));
+        setHeadingText("CCSS Charts" + ((name!=null)?" for " + name:""));
         setWidth(600);
         setHeight(600);
 
@@ -80,12 +81,13 @@ public class CCSSCoverageChartWindow extends GWindow {
             }
         }));
 
-        getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                reportButton();
-            }
-        }));
+        if(CmGwtUtils.getQueryParameter("debug") != null)
+            getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    reportButton();
+                }
+            }));
 
         getDataFromServer();
         
@@ -187,7 +189,12 @@ public class CCSSCoverageChartWindow extends GWindow {
     	}
         CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart("CCSS Coverage", data);
         _chartWidget = _barChart.asWidget();
-        _tabPanel.add(_chartWidget, "Cumulative Coverage");
+        _tabPanel.add(_chartWidget, "Activity");
+
+        CCSSCoverageUniqueBarChart _uniqueBarChart = new CCSSCoverageUniqueBarChart("CCSS Unique Coverage", data);
+        _chartWidget = _uniqueBarChart.asWidget();
+        _tabPanel.add(_chartWidget, "Unique");
+
     }
 
     static {

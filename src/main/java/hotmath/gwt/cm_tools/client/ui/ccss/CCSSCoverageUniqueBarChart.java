@@ -36,19 +36,16 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
-public class CCSSCoverageBarChart implements IsWidget {
+public class CCSSCoverageUniqueBarChart implements IsWidget {
 
     static final RGB[] rgbColors = {
-            new RGB(213, 70, 121), new RGB(44, 153, 201), new RGB(146, 6, 157), new RGB(49, 149, 0), new RGB(249, 153, 0)};
+            new RGB(49, 149, 0), new RGB(249, 153, 0)};
     
 	public interface DataPropertyAccess extends PropertyAccess<CCSSCoverageBar> {
+		@Path("standards")
 		ValueProvider<CCSSCoverageBar, Integer> count();
 
-		ValueProvider<CCSSCoverageBar, Integer> assignments();
-
-		ValueProvider<CCSSCoverageBar, Integer> quizzes();
-
-		ValueProvider<CCSSCoverageBar, Integer> lessons();
+		ValueProvider<CCSSCoverageBar, Integer> uniqueCount();
 
 		ValueProvider<CCSSCoverageBar, String> label();
 
@@ -62,7 +59,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 	String title;
 
 
-	public CCSSCoverageBarChart(String title, List<CCSSCoverageBar> data) {
+	public CCSSCoverageUniqueBarChart(String title, List<CCSSCoverageBar> data) {
 		this.ccssData = data;
 		this.title = title;
 	}
@@ -112,13 +109,9 @@ public class CCSSCoverageBarChart implements IsWidget {
 	    
 		final BarSeries<CCSSCoverageBar> column = new BarSeries<CCSSCoverageBar>();
 		column.setYAxisPosition(Position.LEFT);
-		column.addYField(dataAccess.assignments());
-		column.addYField(dataAccess.lessons());
-		column.addYField(dataAccess.quizzes());
+		column.addYField(dataAccess.uniqueCount());
 		column.setColumn(true);
 		column.addColor(rgbColors[0]);
-	    column.addColor(rgbColors[1]);
-	    column.addColor(rgbColors[2]);
 	    column.setStacked(true);
 
 	    final SeriesToolTipConfig<CCSSCoverageBar> config = new SeriesToolTipConfig<CCSSCoverageBar>();
@@ -157,7 +150,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 
 	    final Legend<CCSSCoverageBar> legend = new Legend<CCSSCoverageBar>();
 	    legend.setPosition(Position.BOTTOM);
-	    legend.setItemHiding(true);
+	    legend.setItemHiding(false);
 	    legend.setItemHighlighting(true);
 	    chart.setLegend(legend);
 
@@ -176,6 +169,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 		layout.add(chart);
 
 		_widget = panel;
+		panel.forceLayout();
 		return panel;
 	}
 

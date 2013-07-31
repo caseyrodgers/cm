@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
@@ -418,9 +420,28 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     		addDataToBarList(data, barList);
     	}
 
+        Set<String> uniqueStds = new HashSet<String>();
+        for (CCSSCoverageBar bar : barList) {
+            addUniqueStds(bar, bar.getAssignmentStdNames(), uniqueStds);
+            addUniqueStds(bar, bar.getLessonStdNames(), uniqueStds);
+            addUniqueStds(bar, bar.getQuizStdNames(), uniqueStds);
+        }
+
     	makeBarListCumulative(barList);
 
     	return barList;
+	}
+
+	private void addUniqueStds(CCSSCoverageBar uniqueBar,
+			CmList<String> stdNames, Set<String> uniqueStds) {
+		int count = 0;
+		for(String stdName : stdNames) {
+			if (uniqueStds.contains(stdName) == true) continue;
+			uniqueStds.add(stdName);
+			uniqueBar.getUniqueStdNames().add(stdName);
+			count++;
+		}
+		uniqueBar.setUniqueCount(uniqueBar.getUniqueCount() + count);
 	}
 
 	private void defineBars(List<CCSSCoverageData> list,
@@ -490,6 +511,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 			barCurr.setAssignmentCount(barCurr.getAssignmentCount() + barPrev.getAssignmentCount());
 			barCurr.setLessonCount(barCurr.getLessonCount() + barPrev.getLessonCount());
 			barCurr.setQuizCount(barCurr.getQuizCount() + barPrev.getQuizCount());
+			barCurr.setUniqueCount(barCurr.getUniqueCount() + barPrev.getUniqueCount());
 			barPrev = barCurr;
 		}
 	}
@@ -532,17 +554,17 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 	private void assignData(CCSSCoverageBar bar, CCSSCoverageData data) {
 		if ("ASSIGNMENT".equalsIgnoreCase(data.getColumnLabels().get(1))) {
 		    bar.setAssignmentCount(bar.getAssignmentCount() + 1);
-		    bar.getAssignmentStdNames().add(data.getLabel());
+		    bar.getAssignmentStdNames().add(data.getName());
     		return;
 		}
 		if ("LESSON".equalsIgnoreCase(data.getColumnLabels().get(1))) {
 		    bar.setLessonCount(bar.getLessonCount() + 1);
-		    bar.getLessonStdNames().add(data.getLabel());
+		    bar.getLessonStdNames().add(data.getName());
     		return;
 		}
 		if ("QUIZ".equalsIgnoreCase(data.getColumnLabels().get(1))) {
 		    bar.setQuizCount(bar.getQuizCount() + 1);
-		    bar.getQuizStdNames().add(data.getLabel());
+		    bar.getQuizStdNames().add(data.getName());
 		}
 	}
 

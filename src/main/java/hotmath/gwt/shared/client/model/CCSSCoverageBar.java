@@ -19,11 +19,13 @@ public class CCSSCoverageBar implements Response {
 	int assignmentCount;
 	int lessonCount;
 	int quizCount;
+	int uniqueCount;
 	int numberOfDays;
 	Date beginDate;
 	CmList<String> assignmentStdNames = new CmArrayList<String>();
 	CmList<String> lessonStdNames = new CmArrayList<String>();
 	CmList<String> quizStdNames = new CmArrayList<String>();
+	CmList<String> uniqueStdNames = new CmArrayList<String>();
 
 	public String getLabel() {
 		return label;
@@ -69,6 +71,18 @@ public class CCSSCoverageBar implements Response {
 		this.quizCount = quizCount;
 	}
 
+	public int getUniqueCount() {
+		return uniqueCount;
+	}
+
+	public void setUniqueCount(int uniqueCount) {
+		this.uniqueCount = uniqueCount;
+	}
+
+	public int getStandards() {
+		return uniqueCount;
+	}
+
 	public int getNumberOfDays() {
 		return numberOfDays;
 	}
@@ -111,5 +125,13 @@ public class CCSSCoverageBar implements Response {
 
 	public void setQuizStdNames(CmList<String> quizStdNames) {
 		this.quizStdNames = quizStdNames;
+	}
+
+	public CmList<String> getUniqueStdNames() {
+		return uniqueStdNames;
+	}
+
+	public void setUniqueStdNames(CmList<String> uniqueStdNames) {
+		this.uniqueStdNames = uniqueStdNames;
 	}
 }
