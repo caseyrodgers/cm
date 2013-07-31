@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.FramedPanel;
@@ -106,9 +108,15 @@ public class CCSSCoverageChartWindow extends GWindow {
         _tabPanel = new TabPanel();
         _tabPanel.setAnimScroll(true);
         _tabPanel.setTabScroll(true);
+        _tabPanel.addSelectionHandler(new SelectionHandler<Widget>() {
 
+			@Override
+			public void onSelection(SelectionEvent<Widget> event) {
+				container.forceLayout();
+			}
+        	
+        });
         container.setCenterWidget(_tabPanel);
-        _tabPanel.forceLayout();
     }
 
     private void reportButton() {
