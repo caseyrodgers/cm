@@ -108,6 +108,7 @@ public class CCSSCoverageChartWindow extends GWindow {
         _tabPanel.setTabScroll(true);
 
         container.setCenterWidget(_tabPanel);
+        _tabPanel.forceLayout();
     }
 
     private void reportButton() {

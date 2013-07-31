@@ -42,10 +42,7 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
             new RGB(49, 149, 0), new RGB(249, 153, 0)};
     
 	public interface DataPropertyAccess extends PropertyAccess<CCSSCoverageBar> {
-		@Path("standards")
-		ValueProvider<CCSSCoverageBar, Integer> count();
-
-		ValueProvider<CCSSCoverageBar, Integer> uniqueCount();
+		ValueProvider<CCSSCoverageBar, Integer> standards();
 
 		ValueProvider<CCSSCoverageBar, String> label();
 
@@ -83,7 +80,7 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 
 		NumericAxis<CCSSCoverageBar> axis = new NumericAxis<CCSSCoverageBar>();
 		axis.setPosition(Position.LEFT);
-		axis.addField(dataAccess.count());
+		axis.addField(dataAccess.standards());
 		axis.setDisplayGrid(true);
 		int max = getMaximum();
 		axis.setInterval(max/10);
@@ -109,7 +106,7 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 	    
 		final BarSeries<CCSSCoverageBar> column = new BarSeries<CCSSCoverageBar>();
 		column.setYAxisPosition(Position.LEFT);
-		column.addYField(dataAccess.uniqueCount());
+		column.addYField(dataAccess.standards());
 		column.setColumn(true);
 		column.addColor(rgbColors[0]);
 	    column.setStacked(true);
@@ -169,7 +166,6 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 		layout.add(chart);
 
 		_widget = panel;
-		panel.forceLayout();
 		return panel;
 	}
 
