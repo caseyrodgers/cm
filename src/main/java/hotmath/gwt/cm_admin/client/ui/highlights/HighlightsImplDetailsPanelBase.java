@@ -30,7 +30,7 @@ import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleCl
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
-abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer {
+abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer implements HighlightPanel{
     
     HighlightsImplBase base;
     Grid<HighlightReportData> _grid;

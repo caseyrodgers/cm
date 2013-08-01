@@ -311,42 +311,55 @@ public class ShowWorkPanel2 extends Composite {
             }
         });
     }
+    
+    
+    private void whiteboardDelete_Gwt(int index) {
+        Window.alert("Need to delete whitebaord command: " + index);
+    }
+    
 
     private native void jsni_initializeWhiteboard(Element ele)/*-{
-                                                              // load all Whiteboard external dependencies
-                                                              //
-                                                              var that = this;
-                                                              $wnd.requireJsLoad_whiteboard(function(wb) {
-                                                              // overide methods in the Whiteboard instance
-                                                              $wnd.Whiteboard.whiteboardOut = function (data, boo) {
-                                                              that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
-                                                              }
-                                                              $wnd.Whiteboard.saveWhiteboard = function () {
-                                                              that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardSave_Gwt()();
-                                                              }
+        // load all Whiteboard external dependencies
+        //
+        $wnd.requireJsLoad_whiteboard(function(wb) {
+        
+            // overide methods in the Whiteboard instance
+            $wnd.Whiteboard.whiteboardOut = function (data, boo) {
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
+            }
+            
+            $wnd.Whiteboard.whiteboardDelete = function (wbIndex) {
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(data, boo);
+            }
+            
+            $wnd.Whiteboard.saveWhiteboard = function () {
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardSave_Gwt()();
+            }
                                                               
-                                                              $wnd.Whiteboard.whiteboardIsReady = function() {
-                                                              // callback into Java 
-                                                              that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
-                                                              }
-                                                              try {
-                                                              if (typeof $wnd.Whiteboard == 'undefined') {
-                                                              alert('Whiteboard JS is not loaded');
-                                                              return;
-                                                              }
+            $wnd.Whiteboard.whiteboardIsReady = function() {
+                // callback into Java 
+                that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
+            }
+            
+            try {
+                if (typeof $wnd.Whiteboard == 'undefined') {
+                    alert('Whiteboard JS is not loaded');
+                    return;
+                }
                                                               
-                                                              // tell the Whiteboard object the size of the parent container
-                                                              var height = Number($wnd.grabComputedHeight(ele)) + 15;
-                                                              var width = Number($wnd.grabComputedWidth(ele)) + 15;
-                                                              
-                                                              //alert('setting whiteboard size: ' + height + ', ' + width);
-                                                              $wnd.Whiteboard.setWhiteboardViewPort(width, height);
-                                                              $wnd.Whiteboard.initWhiteboard($doc);
-                                                              } catch (e) {
-                                                              alert('error initializing whiteboard: ' + e);
-                                                              return;
-                                                              }
-                                                              });
+                // tell the Whiteboard object the size of the parent container
+                var height = Number($wnd.grabComputedHeight(ele)) + 15;
+                var width = Number($wnd.grabComputedWidth(ele)) + 15;
+                 
+                //alert('setting whiteboard size: ' + height + ', ' + width);
+                $wnd.Whiteboard.setWhiteboardViewPort(width, height);
+                $wnd.Whiteboard.initWhiteboard($doc);
+            } catch (e) {
+                alert('error initializing whiteboard: ' + e);
+                return;
+            }
+        }
+    );
                                                               
                                                               }-*/;
 

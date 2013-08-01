@@ -130,12 +130,14 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 				
 				HighlightsReport hlReport = event.getSelectedItem();
 				final HighlightsImplBase report = hlReport.getReport();
-				HighlightsImplDetailsPanelBase pb = (HighlightsImplDetailsPanelBase)report.prepareWidget();
+				HighlightPanel pb = (HighlightPanel)report.prepareWidget();
 				pb.getDataFromServer(new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
                         Widget widget = report.prepareWidget();
-                        if (_parent.getCenterWidget() != null) _parent.getCenterWidget().removeFromParent();
+                        if (    _parent.getCenterWidget() != null) {
+                            _parent.getCenterWidget().removeFromParent();
+                        }
                         _parent.setCenterWidget(widget, _layoutData);
                         _parent.forceLayout();
                     }
@@ -180,6 +182,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         s.add(new HighlightsReport(new HighlightsImplFirstAnswersPercent()));
         s.add(new HighlightsReport(new HighlightsImplAssignments()));
         s.add(new HighlightsReport(new HighlightsImplCCSSCoverage()));
+        s.add(new HighlightsReport(new HighlightsImplCCSSGroupCoverage()));
         // s.add(new HighlightsReport(new HighlightImplComparePerformance()));
         
         /** mark these two reports as not using the summary page selection */

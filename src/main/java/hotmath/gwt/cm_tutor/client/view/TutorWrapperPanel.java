@@ -8,19 +8,22 @@ import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.model.SolutionContext;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentProblem;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tools.client.ui.viewer.ShowWorkPanel;
 import hotmath.gwt.cm_tutor.client.CmTutor;
 import hotmath.gwt.cm_tutor.client.event.SolutionHasBeenLoadedEvent;
 import hotmath.gwt.cm_tutor.client.event.TutorWidgetInputCompleteEvent;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
 import hotmath.gwt.cm_tutor.client.view.TutorCallback.WidgetStatusIndication;
 
 import java.util.HashMap;
@@ -32,6 +35,7 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.dom.client.Style.Display;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -43,6 +47,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.paypal.soap.api.DoMobileCheckoutPaymentReq;
 
 /** Provides a standard tutor viewer that handles the complications
  *  of providing a tutor viewer, such as:
@@ -244,8 +249,6 @@ public class TutorWrapperPanel extends Composite {
     
                     initializeTutor(TutorWrapperPanel.this, pid, jsonConfig, result.getJs(), result.getHtml(), title,
                             hasShowWork, shouldExpandSolution, variableContext);
-
-                    callback.solutionLoaded(result);
                 }
                 finally {
                     callback.solutionLoaded(result);
@@ -388,9 +391,18 @@ public class TutorWrapperPanel extends Composite {
             _wasWidgetAnswered = true;
         }
         
+        
+        addAnyReadonlyWhiteboards(getElement());
+        
+        
+        
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     
+    private native void addAnyReadonlyWhiteboards(Element e) /*-{
+        $wnd.setupStaticWhiteboards(e);
+    }-*/;
+
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
