@@ -182,14 +182,11 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         s.add(new HighlightsReport(new HighlightsImplFirstAnswersPercent()));
         s.add(new HighlightsReport(new HighlightsImplAssignments()));
         s.add(new HighlightsReport(new HighlightsImplCCSSCoverage()));
+        s.add(new HighlightsReport(new HighlightsImplCCSSCoverageChart()));
         // s.add(new HighlightsReport(new HighlightImplComparePerformance()));
 
-        HighlightsReport rm = new HighlightsReport(new HighlightsImplCCSSGroupCoverage());
-        rm.setGroupReport(true);
-        s.add(rm);
-        
         /** mark these two reports as not using the summary page selection */
-        rm = new HighlightsReport(new HighlightsImplGroupProgress());
+        HighlightsReport rm = new HighlightsReport(new HighlightsImplGroupProgress());
         //rm.setDecorationClass("highlight-report-uses-summary");
         rm.setGroupReport(true);
         s.add(rm);
