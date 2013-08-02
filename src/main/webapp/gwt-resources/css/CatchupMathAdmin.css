@@ -580,3 +580,9 @@ program-details-panel .x-ftree2-node-over {
 .trending-data-checkbox {
 	margin: 0px; top: 8px; left: 10px !important;
 }
+
+.bar-chart-title {
+	font-weight: bold;
+	background-color: white;
+}
+}
