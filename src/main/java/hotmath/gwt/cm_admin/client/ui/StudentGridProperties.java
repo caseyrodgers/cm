@@ -13,22 +13,23 @@ public interface StudentGridProperties extends PropertyAccess<String> {
     @Path("uid")
     ModelKeyProvider<StudentModelI> id();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> name();
+    ValueProvider<StudentModelI, String> name();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> passcode();
+    ValueProvider<StudentModelI, String> passcode();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> group();
+    ValueProvider<StudentModelI, String> group();
 
     @Path("program.programDescription")
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> programDescription();
+    ValueProvider<StudentModelI, String> programDescription();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> status();
+    ValueProvider<StudentModelI, String> status();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> quizzes();
+    @Path("status")
+    ValueProvider<StudentModelI, String> quizzes();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, Integer> passingCount();
+    ValueProvider<StudentModelI, Integer> passingCount();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> lastQuiz();
+    ValueProvider<StudentModelI, String> lastQuiz();
 
-    ValueProvider<hotmath.gwt.cm_tools.client.model.StudentModelI, String> lastLogin();
+    ValueProvider<StudentModelI, String> lastLogin();
 }
