@@ -196,16 +196,31 @@ public class CCSSCoverageChartWindow extends GWindow {
     		_chartWidget.removeFromParent();
     		_tabPanel.remove(_chartWidget);
     	}
-        CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart("CCSS Coverage", data);
+
+    	String title = createTitle(data);
+    	
+        CCSSCoverageBarChart _barChart = new CCSSCoverageBarChart(title, data);
         _chartWidget = _barChart.asWidget();
         _tabPanel.add(_chartWidget, "Activity");
 
-        CCSSCoverageUniqueBarChart _uniqueBarChart = new CCSSCoverageUniqueBarChart("CCSS Unique Coverage", data);
+        CCSSCoverageUniqueBarChart _uniqueBarChart = new CCSSCoverageUniqueBarChart(title, data);
         _chartWidget = _uniqueBarChart.asWidget();
         _tabPanel.add(_chartWidget, "Unique");
 
     }
 
+    private String createTitle(List<CCSSCoverageBar> data) {
+    	String title = "";
+    	if (data != null && data.size() > 0) {
+    		CCSSCoverageBar bar = data.get(0);
+    		title = bar.getLabel();
+    		if (data.size() > 1) {
+    			title += " to " + data.get(data.size()-1).getLabel();
+    		}
+    	}
+    	return title;
+
+    }
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override

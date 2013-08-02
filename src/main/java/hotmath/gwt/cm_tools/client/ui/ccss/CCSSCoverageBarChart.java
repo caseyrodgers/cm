@@ -8,6 +8,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.chart.client.chart.Chart;
@@ -33,7 +34,11 @@ import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.ContentPanel;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
+
+//import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
 public class CCSSCoverageBarChart implements IsWidget {
@@ -59,12 +64,12 @@ public class CCSSCoverageBarChart implements IsWidget {
 	private static final DataPropertyAccess dataAccess = GWT.create(DataPropertyAccess.class);
 
 	List<CCSSCoverageBar> ccssData;
-	String title;
+	String _title;
 
 
 	public CCSSCoverageBarChart(String title, List<CCSSCoverageBar> data) {
 		this.ccssData = data;
-		this.title = title;
+		this._title = title;
 	}
 
 	private Widget _widget;
@@ -169,11 +174,17 @@ public class CCSSCoverageBarChart implements IsWidget {
 		panel.setBodyBorder(false);
 		panel.setBorders(false);
 
-		VerticalLayoutContainer layout = new VerticalLayoutContainer();
-		panel.add(layout);
+		BorderLayoutContainer container = new BorderLayoutContainer();
+		
+        CenterLayoutContainer northContainer = new CenterLayoutContainer();
+        northContainer.add(new HTML(_title));
+        northContainer.setStyleName("bar-chart-title");
+        container.setNorthWidget(northContainer, new BorderLayoutData(15));
 
 		chart.setLayoutData(new VerticalLayoutData(1, 1));
-		layout.add(chart);
+		container.setCenterWidget(chart);
+
+		panel.add(container);
 
 		_widget = panel;
 		return panel;
@@ -232,7 +243,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 */
 	protected void setModelData(String title, List<CCSSCoverageBar> data) {
 		this.ccssData = data;
-		this.title = title;
+		this._title = title;
 	}
 
 }
