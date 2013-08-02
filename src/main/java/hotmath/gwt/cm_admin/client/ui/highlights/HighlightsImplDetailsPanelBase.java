@@ -15,6 +15,7 @@ import hotmath.gwt.shared.client.rpc.action.GetStudentModelAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
+import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.user.client.ui.HTML;
@@ -210,6 +211,10 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
 
         grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        for (ColumnConfig<HighlightReportData, ?> colmConfig : cm.getColumns()) {
+        	colmConfig.setSortable(true);
+        	colmConfig.setMenuDisabled(true);
+        }
         //grid.getSelectionModel().setFiresEvents(true);
         
         /** set to default to allow IE to render table correctly
