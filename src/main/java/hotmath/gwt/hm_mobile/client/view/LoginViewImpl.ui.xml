@@ -108,7 +108,7 @@
 			<cm:TouchButton styleName='sexybutton sexy_cm_silver {style.demoButton}'
 				ui:field='demoButton'>
 				<span>
-					<span>Free Books</span>
+					<span>Free Textbooks Only</span>
 				</span>
 			</cm:TouchButton>
 
