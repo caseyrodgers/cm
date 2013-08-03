@@ -84,6 +84,10 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 				author = bm.getAuthor();
 			}
 			
+			String comments="";
+			if(bm.isFree()) {
+			    comments = "Is Free";
+			}
 			String html = 
 				"<div class='book-item'>" +
 			    image + 
@@ -95,6 +99,9 @@ public class BookListViewImpl extends AbstractPagePanel implements BookListView,
 				"      <div class='author'>" + 
   		                   author + 
 	            "      </div>" +
+	            "      <div class='author' style='color: black'>" + 
+                         comments + 
+                "      </div>" +  		                   
 			    
 			    "  </div>" +
 			    "</div>";

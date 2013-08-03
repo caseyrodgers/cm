@@ -190,9 +190,11 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
                 /** already logged in? */
                 HmMobileLoginInfo loginInfo = HmMobilePersistedPropertiesManager.getInstance().getLoginInfo();
                 if(loginInfo == null) {
+                    /** not logged in, so force the login panel */
                     showLoginPanel();
                 }
                 else {
+                    /** already logged in, so use existing URL */
                     _loginInfo = loginInfo;
                     History.fireCurrentHistoryState();
                 }

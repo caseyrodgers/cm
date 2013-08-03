@@ -13,7 +13,7 @@ public interface LoginView extends ResettablePage, IsWidget, IPage {
 	void setPresenter(Presenter presenter, CallbackOnComplete callbackOnComplete);
 	public interface Presenter {
 		void goTo(Place place);
-
         void doLogin(String userName, String password);
+        void setupDemoMode();
 	}	
 }

@@ -18,6 +18,7 @@ public class HmMobileLoginInfo implements Response {
 
     public HmMobileLoginInfo() {}
     
+    static public final String DEMO_STUDENT = "Demo Student";
     public HmMobileLoginInfo(String tokenized) {
         String p[] = tokenized.split("\\|");
         if(p.length != 4) {
@@ -42,6 +43,10 @@ public class HmMobileLoginInfo implements Response {
         this.expired = isExpired;
         this.dateExpired = dateExpired;
         this.solutionCount = solutionCount;
+    }
+    
+    public boolean isDemoAccount() {
+        return this.user.equals(DEMO_STUDENT);
     }
 
     public int getSolutionCount() {

@@ -122,6 +122,11 @@ public class LoginViewImpl extends AbstractPagePanel implements LoginView, IPage
         presenter.doLogin(userName, password);
     }
     
+    @UiHandler("demoButton")
+    protected void handleDemoButton(ClickEvent ce) {
+        presenter.setupDemoMode();
+    }
+    
     private void showMessage(String msg) {
         errorMessage.setText(msg);
     }

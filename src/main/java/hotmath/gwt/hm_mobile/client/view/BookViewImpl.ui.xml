@@ -12,6 +12,7 @@
 				<div ui:field='title'>&nbsp;</div>
 				<div class='pub' ui:field="publisher">&nbsp;</div>				
 				<div class='author' ui:field="author" >&nbsp;</div>
+				<div class='comments' ui:field="comments" >&nbsp;</div>
 				<div class='field' style='display: none'>
 					<span>Pages: </span>
 					<span ui:field="minPage" />

@@ -44,7 +44,8 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 			"       b.PUBLISHER, " +
 			"       b.COPYRIGHT, " +
 			"       b.AUTHOR, " +
-			"       b.PUBDATE, " +			
+			"       b.PUBDATE, " +
+            "       b.is_controlled, " +
 			"       c.category " +
 			"from   BOOKINFO b " +
 			"  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
@@ -59,9 +60,12 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 				new RowMapper<BookModel>() {
 					@Override
 					public BookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
+					    
+					    boolean isFree = rs.getInt("is_controlled")==0;
+					    
 					    return new BookModel(rs.getString("textcode"), rs.getString("textname"), 
 					    		rs.getString("imagefile"), rs.getString("publisher"), 
-					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
+					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"),isFree);
 					}
 				});
 		
@@ -118,6 +122,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
             "       b.COPYRIGHT, " +
             "       b.AUTHOR, " +
             "       b.PUBDATE, " +
+            "       b.is_controlled, " +
             "       c.category " +
             "from   BOOKINFO b " +
             "  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
@@ -132,7 +137,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
                     public BookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
                         return new BookModel(rs.getString("textcode"), rs.getString("textname"), 
                                 rs.getString("imagefile"), rs.getString("publisher"), 
-                                rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
+                                rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"),rs.getInt("is_controlled")==0);
                     }
                 });
         
@@ -191,6 +196,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 			"       b.COPYRIGHT, " +
 			"       b.AUTHOR, " +
 			"       b.PUBDATE, " +			
+            "       b.is_controlled " +
 			"       c.category " +
 			"from   BOOKINFO b " +
 			"  JOIN BOOKINFO_CATEGORIES c on c.textcode = b.textcode " +
@@ -217,7 +223,7 @@ public class BooksDao extends SimpleJdbcDaoSupport {
 					public BookModel mapRow(ResultSet rs, int rowNum) throws SQLException {
 					    return new BookModel(rs.getString("textcode"), rs.getString("textname"), 
 					    		rs.getString("imagefile"), rs.getString("publisher"), 
-					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"));
+					    		rs.getString("copyright"),rs.getString("author"),rs.getString("pubdate"),rs.getString("category"),rs.getInt("is_controlled")==0);
 					}
 				});
 		return list;

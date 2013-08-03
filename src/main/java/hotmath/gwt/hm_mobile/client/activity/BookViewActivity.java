@@ -1,6 +1,7 @@
 package hotmath.gwt.hm_mobile.client.activity;
 
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -97,8 +98,11 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 		});
     }
 
+	
+	BookModel _lastBookModel;
 	@Override
     public void getProblemNumbers(BookModel book, int page) {
+	    this._lastBookModel = book;
 		clientFactory.getEventBus().fireEvent(new SystemIsBusyEvent(true));
 
 		GetProblemNumbersAction action = new GetProblemNumbersAction(book, page);
@@ -120,6 +124,16 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 
 	@Override
     public void loadSolution(final ProblemNumber problem) {
+	    
+	    /** Only allow is is not a free book and user is logged 
+	     *  into a non demo account
+	     *  
+	     */
+	    if(!this._lastBookModel.isFree() && HmMobile.__instance.getLoginInfo().isDemoAccount()) {
+	        PopupMessageBox.showMessage("Hotmath Account Needed",  "This book requires a valid hotmath login.");
+	        return;
+	    }
+	    
 	    HmMobile.__clientFactory.getEventBus().fireEvent(new ShowTutorViewEvent(problem));
     }
 }

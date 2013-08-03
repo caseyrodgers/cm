@@ -37,8 +37,7 @@
 		}
 
 		button.demoButton {
-		margin-left: 10px;
-		display: none;
+		    margin-left: 10px;
 		}
 		
 	    button.searchButton {
@@ -79,18 +78,18 @@
 	<g:DialogBox ui:field="loginBox" autoHide="false" modal="true"
 		glassEnabled="true" animationEnabled="true" styleName="{style.formLayout}">
 		<g:HTMLPanel styleName="{style.heading}">
-		 <h1 style='text-align: center'> What is Hotmath?</h1>
-		 <p>
-           Hotmath Mobile explains the odd numbered
-           problems in over 300 math textbooks, with hint-step solutions. 
-           To learn more about Hotmath, see if we cover your textbook,  
-           and purchase a membership, visit <a href='http://hotmath.com'>Hotmath.com</a> 
-           on a desktop computer.
-         </p>
+			<h1 style='text-align: center'> What is Hotmath?</h1>
+			<p>
+				Hotmath Mobile explains the odd numbered
+		        problems in over 300 math textbooks, with hint-step solutions. 
+		        To learn more about Hotmath, see if we cover your textbook,  
+		        and purchase a membership, visit <a href='http://hotmath.com'>Hotmath.com</a> 
+		        on a desktop computer.
+			</p>
 		
 		   
 			<h2>Login</h2>
-            <p>Personal subscribers enter email address;<br/> others enter school password.</p>
+			<p>Personal subscribers enter email address;<br/> others enter school password.</p>
 			<div>
 				<g:TextBox styleName="{style.userName}" ui:field='usernameBox' />
 				<div ui:field="passwordWrapper" class='{style.passwordLable}'>
@@ -109,7 +108,7 @@
 			<cm:TouchButton styleName='sexybutton sexy_cm_silver {style.demoButton}'
 				ui:field='demoButton'>
 				<span>
-					<span>Demo</span>
+					<span>Free Books</span>
 				</span>
 			</cm:TouchButton>
 

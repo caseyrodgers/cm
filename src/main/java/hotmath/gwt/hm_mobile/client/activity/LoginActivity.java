@@ -10,6 +10,8 @@ import hotmath.gwt.hm_mobile.client.persist.HmMobilePersistedPropertiesManager;
 import hotmath.gwt.hm_mobile.client.rpc.HmMobileLoginAction;
 import hotmath.gwt.hm_mobile.client.view.LoginView;
 
+import java.util.Date;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -39,18 +41,8 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
             @Override
             public void onSuccess(HmMobileLoginInfo loginInfo) {
                 CmRpcCore.EVENT_BUS.fireEvent(new SystemIsBusyEvent(false));
-                Log.info("User logged in: " + loginInfo);
-                
-
-                if(loginInfo.getDateExpired() == null) {
-                    PopupMessageBox.showMessage("Login Failed", new HTML("This Account does not include Hotmath Solutions."), null);
-                }
-                else if(loginInfo.isExpired()) {
-                    PopupMessageBox.showMessage("Login Failed", new HTML("This Solutions Account expired as of <div style='font-weight: bold'> " + HmMobilePersistedPropertiesManager._expiredDateFormat.format(loginInfo.getDateExpired()) + "</div>"), null);
-                }
-                else {
-                    CmRpcCore.EVENT_BUS.fireEvent(new HmLoginEvent(loginInfo));
-                }
+               
+                handleLogin(loginInfo);
             }
 
             @Override
@@ -62,6 +54,25 @@ public class LoginActivity extends AbstractActivity implements LoginView.Present
             }
         });
         
+    }
+    
+    protected void handleLogin(HmMobileLoginInfo loginInfo) {
+        Log.info("User logged in: " + loginInfo);
+        if(loginInfo.getDateExpired() == null) {
+            PopupMessageBox.showMessage("Login Failed", new HTML("This Account does not include Hotmath Solutions."), null);
+        }
+        else if(loginInfo.isExpired()) {
+            PopupMessageBox.showMessage("Login Failed", new HTML("This Solutions Account expired as of <div style='font-weight: bold'> " + HmMobilePersistedPropertiesManager._expiredDateFormat.format(loginInfo.getDateExpired()) + "</div>"), null);
+        }
+        else {
+            CmRpcCore.EVENT_BUS.fireEvent(new HmLoginEvent(loginInfo));
+        }        
+    }
+
+    @Override
+    public void setupDemoMode() {
+        HmMobileLoginInfo loginInfo = new HmMobileLoginInfo(HmMobileLoginInfo.DEMO_STUDENT,null,"ST",false,new Date(System.currentTimeMillis()),0);
+        handleLogin(loginInfo);
     }
 
 }

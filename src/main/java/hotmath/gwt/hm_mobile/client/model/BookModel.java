@@ -4,11 +4,12 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 
 public class BookModel implements Response {
 
-	String textCode, title, image, publisher,copyRight,author,pubDate,subject;;
+	String textCode, title, image, publisher,copyRight,author,pubDate,subject;
+	boolean free;
 	int page=0;
 	
 	public BookModel() {}
-	public BookModel(String textCode, String title, String image, String publisher, String copyRight,String author,String pubDate,String subject) {
+	public BookModel(String textCode, String title, String image, String publisher, String copyRight,String author,String pubDate,String subject, boolean isFree) {
 		this.textCode = textCode;
 		this.title = title;
 		this.image = image;
@@ -17,9 +18,16 @@ public class BookModel implements Response {
 		this.author = author;
 		this.pubDate = pubDate;
 		this.subject = subject;
+		this.free = isFree;
 	}
 	
-	public String getPubDate() {
+	public boolean isFree() {
+        return free;
+    }
+    public void setFree(boolean free) {
+        this.free = free;
+    }
+    public String getPubDate() {
     	return pubDate;
     }
 	public void setPubDate(String pubDate) {
@@ -79,11 +87,9 @@ public class BookModel implements Response {
 		this.subject = subject;
 	}
 	@Override
-	public String toString() {
-		return "BookModel [textCode=" + textCode + ", title=" + title
-				+ ", image=" + image + ", publisher=" + publisher
-				+ ", copyRight=" + copyRight + ", author=" + author
-				+ ", pubDate=" + pubDate + ", subject=" + subject + ", page="
-				+ page + "]";
-	}
+    public String toString() {
+        return "BookModel [textCode=" + textCode + ", title=" + title + ", image=" + image + ", publisher=" + publisher + ", copyRight=" + copyRight
+                + ", author=" + author + ", pubDate=" + pubDate + ", subject=" + subject + ", free=" + free + ", page=" + page + "]";
+    }
+
 }

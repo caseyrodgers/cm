@@ -3,6 +3,7 @@ package hotmath.gwt.hm_mobile.client.persist;
 import hotmath.gwt.hm_mobile.client.model.BookModel;
 import hotmath.gwt.hm_mobile.client.model.HmMobileLoginInfo;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.code.gwt.storage.client.Storage;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
@@ -12,7 +13,7 @@ public class HmMobilePersistedPropertiesManager {
 	static private HmMobilePersistedProperties __instance;
 
 	static final int SEARCH_TERM = 0, TEXTCODE = 1, TITLE = 2, PUBLISHER = 3, COPYRIGHT = 4, IMAGE = 5, PAGENUM = 6,
-	        AUTHOR = 7, PUBDATE = 8,CATEGORY = 9;
+	        AUTHOR = 7, PUBDATE = 8,CATEGORY = 9,IS_FREE = 10;
 	
 
     public static DateTimeFormat _expiredDateFormat = DateTimeFormat.getFormat("dd-MMM-yyyy");
@@ -24,11 +25,16 @@ public class HmMobilePersistedPropertiesManager {
 				String config = Storage.getLocalStorage().getItem("config");
 				if (config != null) {
 					String p[] = config.split("\\|");
-					if (p.length == 10) {
-						__instance.setSearchTerm(p[SEARCH_TERM]);
-						__instance.setLastBook(new BookModel(p[TEXTCODE], p[TITLE], ifn(p[IMAGE]), ifn(p[PUBLISHER]),
-						        ifn(p[COPYRIGHT]), ifn(p[AUTHOR]), p[PUBDATE], p[CATEGORY]));
-						__instance.getLastBook().setPage(Integer.parseInt(p[PAGENUM]));
+					if (p.length > 9) {
+					    try {
+    						__instance.setSearchTerm(p[SEARCH_TERM]);
+    						__instance.setLastBook(new BookModel(p[TEXTCODE], p[TITLE], ifn(p[IMAGE]), ifn(p[PUBLISHER]),
+    						        ifn(p[COPYRIGHT]), ifn(p[AUTHOR]), p[PUBDATE], p[CATEGORY],p[IS_FREE]=="0"));
+    						__instance.getLastBook().setPage(Integer.parseInt(p[PAGENUM]));
+					    }
+					    catch(Exception e) {
+					        Log.error("Error parsing book info", e);
+					    }
 					}
 				}
 				
@@ -122,7 +128,7 @@ public class HmMobilePersistedPropertiesManager {
 			BookModel b = p.getLastBook();
 			String config = p.getSearchTerm() + "|" + b.getTextCode() + "|" + b.getTitle() + "|" + b.getPublisher()
 			        + "|" + b.getCopyRight() + "|" + b.getImage() + "|" + b.getPage() + "|" + b.getAuthor() + "|"
-			        + b.getPubDate() + "|" + b.getSubject();
+			        + b.getPubDate() + "|" + b.getSubject() + "|" + (b.isFree()?"1":"0");
 			Storage.getLocalStorage().setItem("config", config);
 			
 			
