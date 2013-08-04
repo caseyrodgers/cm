@@ -392,15 +392,17 @@ public class TutorWrapperPanel extends Composite {
         }
         
         
-        addAnyReadonlyWhiteboards(getElement());
+        loadStaticWhiteboards(getElement());
         
         
         
         CmRpcCore.EVENT_BUS.fireEvent(new SolutionHasBeenLoadedEvent(_solutionInfo));
     }
     
-    private native void addAnyReadonlyWhiteboards(Element e) /*-{
-        $wnd.setupStaticWhiteboards(e);
+    private native void loadStaticWhiteboards(Element e) /*-{
+        if(typeof($wnd.setupStaticWhiteboards) == typeof(Function)) {
+            $wnd.setupStaticWhiteboards(e);
+        }
     }-*/;
 
     @Override
