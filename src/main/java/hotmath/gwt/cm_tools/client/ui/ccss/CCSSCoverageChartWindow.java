@@ -1,11 +1,11 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.shared.client.CmShared;
@@ -49,7 +49,9 @@ import com.sencha.gxt.widget.core.client.form.CheckBox;
 public class CCSSCoverageChartWindow extends GWindow {
     
     static CCSSCoverageChartWindow __instance;
-    
+
+    DateRangeWidget _dateRange = DateRangeWidget.getInstance();
+
     int _adminId;
     int _uid;
     boolean _isGroup;
@@ -92,7 +94,8 @@ public class CCSSCoverageChartWindow extends GWindow {
             }));
 
         getDataFromServer();
-        
+
+        getButtonBar().add(_dateRange);
         super.addCloseButton();
 
         /**
@@ -152,6 +155,7 @@ public class CCSSCoverageChartWindow extends GWindow {
             public void oncapture(CmList<CCSSCoverageBar> allData) {
                 CmBusyManager.setBusy(false);
                 drawGui();
+                _dateRange.refresh();
                 if (allData != null && allData.size() > 0)
                     addCharts(allData);
                 else

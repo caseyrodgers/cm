@@ -4,6 +4,7 @@ import hotmath.gwt.cm_tools.client.model.StudentModelBase;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.PdfWindowWithNav;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -34,6 +35,8 @@ public class CCSSCoverageWindow extends GWindow {
 
     private static CCSSCoverageWindow __instance;
 
+    DateRangeWidget _dateRange = DateRangeWidget.getInstance();
+
     BorderLayoutContainer _container;
 
     private static final String TITLE = "CCSS Coverage for ";
@@ -46,8 +49,6 @@ public class CCSSCoverageWindow extends GWindow {
     int _uid;
     int _adminId;
     boolean _isGroupReport = false;
-
-    Label _dateRange = new Label();
 
     public CCSSCoverageWindow(StudentModelI stuModel, GroupDto groupDto) {
         super(false);
@@ -82,7 +83,7 @@ public class CCSSCoverageWindow extends GWindow {
         _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _uid, _adminId, _isGroupReport);
         _container.setWestWidget(_CCSSCoverageListPanel, _westData);
 
-        refreshDateRangeLabel();
+        _dateRange.refresh();
 
         getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
             @Override
@@ -103,7 +104,6 @@ public class CCSSCoverageWindow extends GWindow {
             }
         }));
 
-        _dateRange.addStyleName("date-range-label");
         getButtonBar().add(_dateRange);
         super.addCloseButton();
 
@@ -126,12 +126,6 @@ public class CCSSCoverageWindow extends GWindow {
         _container.forceLayout();
     }
 
-    private void refreshDateRangeLabel() {
-        if (DateRangePanel.getInstance() != null) {
-            _dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
-        }
-    }
-
     int _currentSelection;
 
     private void reloadData() {
@@ -141,7 +135,7 @@ public class CCSSCoverageWindow extends GWindow {
         _CCSSCoverageListPanel = new CCSSCoverageListPanel(_container, _centerData, _uid, _adminId, _isGroupReport);
         _container.setWestWidget(_CCSSCoverageListPanel, _westData);
 
-        refreshDateRangeLabel();
+        _dateRange.refresh();
 
         showDefaultMsg();
         _container.forceLayout();
@@ -176,7 +170,7 @@ public class CCSSCoverageWindow extends GWindow {
             public void handleEvent(CmEvent event) {
                 if (event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
                     if (__instance != null && __instance.isVisible()) {
-                        __instance.refreshDateRangeLabel();
+                        __instance._dateRange.refresh();
                         __instance.reloadData();
                     }
                 }
