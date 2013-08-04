@@ -19,6 +19,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
@@ -389,12 +390,24 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
 	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(Integer userId,
 			Date fromDate, Date toDate) throws Exception {
+		List<Integer>userIds = new ArrayList<Integer>();
+		userIds.add(userId);
+		return getStudentAllByWeekStandardNames(userIds, fromDate, toDate);
+	}
+
+	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(List<Integer> userIds,
+			Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT");
+
+        sql = QueryHelper.createInListSQL(sql, userIds);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStudentAllByWeekStandardNames(): sql: " + sql);
+
         List<CCSSCoverageBar> barList = new ArrayList<CCSSCoverageBar>();
     	List<CCSSCoverageData> list = null;
     	try {
     		list = getJdbcTemplate().query(sql,
-    				new Object[] { userId, fromDate, toDate, userId, fromDate, toDate, userId, fromDate, toDate },
+    				new Object[] { fromDate, toDate, fromDate, toDate, fromDate, toDate },
     				new RowMapper<CCSSCoverageData>() {
     			@Override
     			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -407,8 +420,8 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     		});
     	}
     	catch (DataAccessException e) {
-    		LOGGER.error(String.format("getStudentAllByWeekStandardNames(): userId: %d, fromDate: %s, toDate: %s, sql: %s",
-    				userId, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), sql), e);
+    		LOGGER.error(String.format("getStudentAllByWeekStandardNames(): userIds: %d, fromDate: %s, toDate: %s, sql: %s",
+    				userIds, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), sql), e);
     		throw e;
     	}
 
