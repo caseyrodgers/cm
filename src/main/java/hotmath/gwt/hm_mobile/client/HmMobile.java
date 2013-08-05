@@ -17,7 +17,6 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
-import hotmath.gwt.cm_mobile_shared.client.util.PageLayoutTest;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
