@@ -18,7 +18,7 @@ public class HmMobileLoginInfo implements Response {
 
     public HmMobileLoginInfo() {}
     
-    static public final String DEMO_STUDENT = "Demo Student";
+    static public final String DEMO_STUDENT = "FreeTextbooks";
     public HmMobileLoginInfo(String tokenized) {
         String p[] = tokenized.split("\\|");
         if(p.length != 4) {

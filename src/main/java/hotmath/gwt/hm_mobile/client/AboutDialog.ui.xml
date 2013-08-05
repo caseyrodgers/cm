@@ -27,8 +27,10 @@
 		<div class='{style.body}' ui:field='wrapperLoggedIn'>
 			<ul>
 				<li>You are logged in as <span class="{style.stickout}" ui:field="loggedInAs"></span>.</li>
-			    <li>Your Solutions service expires on <span class="{style.stickout}" ui:field='expires'></span>.</li>
-			    <li>Your account has viewed <span ui:field="solutionsViewed" class="{style.stickout}">---</span> since July 1.</li>
+				<div ui:field="accountInfo">
+			        <li>Your Solutions service expires on <span class="{style.stickout}" ui:field='expires'></span>.</li>
+			        <li>Your account has viewed <span ui:field="solutionsViewed" class="{style.stickout}">---</span> since July 1.</li>
+			    </div>
 			</ul>
 			<p>
                 Thank you for using Hotmath Mobile!

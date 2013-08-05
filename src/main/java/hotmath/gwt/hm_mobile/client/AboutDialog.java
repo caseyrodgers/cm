@@ -30,7 +30,7 @@ public class AboutDialog extends DialogBox {
     Element loggedInAs, expires, solutionsViewed;
 
     @UiField
-    Element wrapperLoggedIn, wrapperNotLoggedIn;
+    Element wrapperLoggedIn, wrapperNotLoggedIn, accountInfo;
 
     public AboutDialog() {
         super(true);
@@ -43,16 +43,22 @@ public class AboutDialog extends DialogBox {
         HmMobileLoginInfo li = HmMobile.__instance.getLoginInfo();
         String userName = li != null ? li.getUser() : null;
         if (userName != null) {
-            String dateExpired = null;
-            try {
-                dateExpired = HmMobilePersistedPropertiesManager._expiredDateFormat.format(li.getDateExpired());
-            } catch (Exception e) {
-                Log.error("Could not format date expired", e);
+            
+            if(!li.isDemoAccount()) {
+                String dateExpired = null;
+                try {
+                    dateExpired = HmMobilePersistedPropertiesManager._expiredDateFormat.format(li.getDateExpired());
+                } catch (Exception e) {
+                    Log.error("Could not format date expired", e);
+                }
+                expires.setInnerHTML(dateExpired);
+                solutionsViewed.setInnerHTML(li.getSolutionCount() + (li.getSolutionCount()==1?" solution":" solutions"));
             }
-            expires.setInnerHTML(dateExpired);
+            else {
+                accountInfo.setAttribute("style",  "display: none");
+            }
+            
             loggedInAs.setInnerHTML(userName);
-            solutionsViewed.setInnerHTML(li.getSolutionCount() + (li.getSolutionCount()==1?" solution":" solutions"));
-    
             showLoggedInPanel(true);
         } else {
             loggedInAs.setInnerHTML("You are not logged in");

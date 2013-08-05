@@ -130,7 +130,7 @@ public class BookViewActivity extends AbstractActivity implements BookView.Prese
 	     *  
 	     */
 	    if(!this._lastBookModel.isFree() && HmMobile.__instance.getLoginInfo().isDemoAccount()) {
-	        PopupMessageBox.showMessage("Hotmath Account Needed",  "This book requires a valid hotmath login.");
+	        PopupMessageBox.showMessage("Hotmath Account Needed",  "This book requires a paid password. Please visit Hotmath.com for more information.");
 	        return;
 	    }
 	    

@@ -17,6 +17,7 @@ import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEventHandler;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.page.PagesContainerPanel;
 import hotmath.gwt.cm_mobile_shared.client.util.ObservableStack;
+import hotmath.gwt.cm_mobile_shared.client.util.PageLayoutTest;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen;
 import hotmath.gwt.cm_mobile_shared.client.util.Screen.OrientationChangedHandler;
@@ -146,7 +147,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
         __instance = this;
         _loadingDiv = RootPanel.get("loading");
         _rootPanel = RootPanel.get("main-content");
-        
         
         showInfoIfNotMobile();
         
@@ -504,10 +504,6 @@ public class HmMobile implements EntryPoint, OrientationChangedHandler {
 
     @Override
     public void orientationChanged(ScreenOrientation newOrientation) {
-        if(true) {
-            return;
-        }
-        
         if (newOrientation == ScreenOrientation.Portrait) {
             _rootPanel.removeStyleName("landscape");
             _rootPanel.addStyleName("portrait");
