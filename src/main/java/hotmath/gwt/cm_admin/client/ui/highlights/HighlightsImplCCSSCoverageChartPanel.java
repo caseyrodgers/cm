@@ -36,7 +36,7 @@ public class HighlightsImplCCSSCoverageChartPanel extends Composite implements H
     
     HighlightsImplBase base;
 
-    private static final DateTimeFormat _dateFormat = DateTimeFormat.getFormat("yyyy-mm-dd"); 
+    private static final DateTimeFormat _dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd"); 
 
     TabPanel _tabPanel = new TabPanel();
 
