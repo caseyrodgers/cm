@@ -6,12 +6,14 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import java.util.Date;
 
 public class HighlightsGetReportAction implements Action<CmList<HighlightReportData>> {
-    
-    ReportType type;
+
+	private static final long serialVersionUID = 2016824323867088592L;
+
+	ReportType type;
     Integer adminId;
     Date from;
     Date to;
-    
+
     GetStudentGridPageAction studentGridPageAction;
 
     public HighlightsGetReportAction() {
@@ -24,7 +26,7 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
         this.from = from;
         this.to = to;
     }
-    
+
     public ReportType getType() {
         return type;
     }
@@ -57,7 +59,6 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
         this.to = to;
     }
 
-
     public GetStudentGridPageAction getStudentGridPageAction() {
         return studentGridPageAction;
     }
@@ -72,9 +73,8 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
                 + ", _studentGridPageAction=" + studentGridPageAction + "]";
     }
 
-
     public enum ReportType{GREATEST_EFFORT,LEAST_EFFORT,MOST_GAMES,NATIONWIDE_COMPARE,SCHOOL_COMPARE,
                            MOST_QUIZZES_PASSED,AVERAGE_QUIZ_SCORES,FAILED_QUIZZES,FAILED_CURRENT_QUIZZES,
                            COMPARE_PERFORMANCE,LOGINS_PER_WEEK,GROUP_PERFORMANCE,GROUP_USAGE,ZERO_LOGINS,
-                           TIME_ON_TASK, FIRST_TIME_CORRECT, ASSIGNMENTS,CCSS_COVERAGE, CCSS_GROUP_COVERAGE};
+                           TIME_ON_TASK, FIRST_TIME_CORRECT, ASSIGNMENTS,CCSS_COVERAGE, CCSS_COVERAGE_CHART};
 }

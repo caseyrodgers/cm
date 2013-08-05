@@ -388,14 +388,14 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
 	private static final int MAX_BAR_COUNT = 8;
 
-	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(Integer userId,
+	public List<CCSSCoverageBar> getStudentAllByPeriodStandardNames(Integer userId,
 			Date fromDate, Date toDate) throws Exception {
 		List<Integer>userIds = new ArrayList<Integer>();
 		userIds.add(userId);
-		return getStudentAllByWeekStandardNames(userIds, fromDate, toDate);
+		return getStudentAllByPeriodStandardNames(userIds, fromDate, toDate);
 	}
 
-	public List<CCSSCoverageBar> getStudentAllByWeekStandardNames(List<Integer> userIds,
+	public List<CCSSCoverageBar> getStudentAllByPeriodStandardNames(List<Integer> userIds,
 			Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT");
 
@@ -508,8 +508,11 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     		bar.setBeginDate(date);
     		bar.setNumberOfDays(numberOfDaysPerBar);
     		bar.setLabel(dateFormat.format(date));
+    		cal.add(GregorianCalendar.DAY_OF_YEAR, numberOfDaysPerBar-1);
+    		date = cal.getTime();
+    		bar.setEndDate(date);
     		barList.add(bar);
-    		cal.add(GregorianCalendar.DAY_OF_YEAR, numberOfDaysPerBar);
+    		cal.add(GregorianCalendar.DAY_OF_YEAR, 1);
     		date = cal.getTime();
     	}
 

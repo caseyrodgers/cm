@@ -5,7 +5,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
 import com.google.gwt.user.client.ui.Widget;
 
 public class HighlightsImplCCSSCoverageChart extends HighlightsImplBase {
-    HighlightsImplCCSSGroupCoveragePanel panel = new HighlightsImplCCSSGroupCoveragePanel(this);
+    HighlightsImplCCSSCoverageChartPanel panel = new HighlightsImplCCSSCoverageChartPanel(this);
     static String title = "CCSS Coverage Chart";
     
     public HighlightsImplCCSSCoverageChart() {

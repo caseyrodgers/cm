@@ -22,6 +22,7 @@ public class CCSSCoverageBar implements Response {
 	int uniqueCount;
 	int numberOfDays;
 	Date beginDate;
+	Date endDate;
 	CmList<String> assignmentStdNames = new CmArrayList<String>();
 	CmList<String> lessonStdNames = new CmArrayList<String>();
 	CmList<String> quizStdNames = new CmArrayList<String>();
@@ -97,6 +98,14 @@ public class CCSSCoverageBar implements Response {
 
 	public void setBeginDate(Date beginDate) {
 		this.beginDate = beginDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public int getQuizzes() {

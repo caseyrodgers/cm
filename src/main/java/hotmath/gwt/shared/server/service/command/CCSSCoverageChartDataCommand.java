@@ -6,10 +6,12 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
+import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageChartDataAction;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -36,17 +38,23 @@ public class CCSSCoverageChartDataCommand implements ActionHandler<CCSSCoverageC
                 toDate = new GregorianCalendar(2050,0,0).getTime();
             }
 
-            int adminId = action.getAdminId();
-            int groupId = action.getUID();
-
             CCSSReportDao crDao = CCSSReportDao.getInstance();
             switch(action.getType()) {
                 case STUDENT_CUMULATIVE_CHART:
-                    list = toCmList(crDao.getStudentAllByWeekStandardNames(action.getUID(), fromDate, toDate));
+                    list = toCmList(crDao.getStudentAllByPeriodStandardNames(action.getUID(), fromDate, toDate));
                     break;
 
-                case GROUP_CUMULATIVE_CHART:
-                    //list = toCmList(crDao.getGroupAllByNameStandardNames(adminId, groupId, fromDate, toDate));
+                case MULTI_STUDENT_CUMULATIVE_CHART:
+                    List<StudentModelI> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridPageAction());
+                    if(studentPool.size() == 0)
+                        return list;
+
+                    List<Integer> uids = new ArrayList<Integer>();
+                    for(StudentModelI student: studentPool) {
+                        uids.add(student.getUid());
+                    }
+
+                    list = toCmList(crDao.getStudentAllByPeriodStandardNames(uids, fromDate, toDate));
                     break;
 
                 default:

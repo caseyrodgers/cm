@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -37,14 +38,15 @@ import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
-import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 
 public class CCSSCoverageUniqueBarChart implements IsWidget {
 
     static final RGB[] rgbColors = {
             new RGB(49, 149, 0), new RGB(249, 153, 0)};
-    
+
+	static final DateTimeFormat dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
+
 	public interface DataPropertyAccess extends PropertyAccess<CCSSCoverageBar> {
 		ValueProvider<CCSSCoverageBar, Integer> standards();
 
@@ -201,7 +203,10 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 			fudge = 100;
 		}
 		else { 
-			fudge = 1000;
+			fudge = 100;
+			while (fudge < max) {
+				fudge += 100;
+			}
 		}
 
 		int add = (max % fudge);

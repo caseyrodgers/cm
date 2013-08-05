@@ -27,6 +27,7 @@ import java.util.List;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.FramedPanel;
@@ -49,6 +50,8 @@ import com.sencha.gxt.widget.core.client.form.CheckBox;
 public class CCSSCoverageChartWindow extends GWindow {
     
     static CCSSCoverageChartWindow __instance;
+
+	static final DateTimeFormat _dateFormat = DateTimeFormat.getFormat("yyyy-MM-dd");
 
     DateRangeWidget _dateRange = DateRangeWidget.getInstance();
 
@@ -177,7 +180,7 @@ public class CCSSCoverageChartWindow extends GWindow {
     CmAdminTrendingDataI _trendingData;
 
     private ReportType getReportType() {
-		return (_isGroup == true) ? ReportType.GROUP_CUMULATIVE_CHART : ReportType.STUDENT_CUMULATIVE_CHART;
+		return (_isGroup == true) ? ReportType.MULTI_STUDENT_CUMULATIVE_CHART : ReportType.STUDENT_CUMULATIVE_CHART;
 	}
 
     private void showNoData() {
@@ -217,14 +220,14 @@ public class CCSSCoverageChartWindow extends GWindow {
     	String title = "";
     	if (data != null && data.size() > 0) {
     		CCSSCoverageBar bar = data.get(0);
-    		title = bar.getLabel();
+    		title = _dateFormat.format(bar.getBeginDate());
     		if (data.size() > 1) {
-    			title += " to " + data.get(data.size()-1).getLabel();
+    			title += " to " + _dateFormat.format(data.get(data.size()-1).getEndDate());
     		}
     	}
     	return title;
-
     }
+
     static {
         EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
             @Override

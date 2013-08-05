@@ -21,6 +21,7 @@ public class CCSSCoverageChartDataAction implements Action<CmList<CCSSCoverageBa
     Integer adminId;
     Date from;
     Date to;
+    GetStudentGridPageAction studentGridPageAction;
     
     public CCSSCoverageChartDataAction() {
     }
@@ -72,11 +73,20 @@ public class CCSSCoverageChartDataAction implements Action<CmList<CCSSCoverageBa
         this.to = to;
     }
 
-    @Override
+    public GetStudentGridPageAction getStudentGridPageAction() {
+		return studentGridPageAction;
+	}
+
+	public void setStudentGridPageAction(
+			GetStudentGridPageAction studentGridPageAction) {
+		this.studentGridPageAction = studentGridPageAction;
+	}
+
+	@Override
     public String toString() {
         return "CCSSCoverageChartDataAction [type=" + type + ", from=" + from + ", to=" + to +"]";
     }
 
-    public enum ReportType {STUDENT_CUMULATIVE_CHART, GROUP_CUMULATIVE_CHART};
+    public enum ReportType {STUDENT_CUMULATIVE_CHART, MULTI_STUDENT_CUMULATIVE_CHART};
 
 }

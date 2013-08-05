@@ -4168,7 +4168,7 @@ JOIN inmh_map im
   ON im.guid = trr.pid
 JOIN inmh_standard ins
   ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = im.file
-WHERE t.user_id = ?
+WHERE t.user_id in ( $$UID_LIST$$ )
   AND tr.run_time BETWEEN ? AND ?
 UNION
 SELECT distinct user_id, rl.lesson_name, ins.standard_name_new, 'LESSON' as usage_type,
@@ -4180,11 +4180,52 @@ JOIN HA_TEST_RUN_LESSON rl
   ON rl.run_id = tr.run_id AND rl.date_completed is not null
 JOIN inmh_standard ins
   ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = rl.lesson_file
-WHERE t.user_id = ?
+WHERE t.user_id in ( $$UID_LIST$$ )
   AND rl.date_completed BETWEEN ? AND ?
 UNION
 SELECT distinct uid as user_id, ap.lesson as lesson_name, ins.standard_name_new, 'ASSIGNMENT' as usage_type,
        date_format(a.due_date,'%Y-%m-%d') as usage_date
+FROM CM_ASSIGNMENT_USER au
+JOIN CM_ASSIGNMENT a
+  ON au.assign_key = a.assign_key
+JOIN CM_ASSIGNMENT_PID_ANSWERS pa
+  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.answer IS NOT null
+JOIN CM_ASSIGNMENT_PIDS ap
+  ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
+JOIN inmh_standard ins
+  ON upper(standard_state) = 'COMMON' AND ap.lesson_file = concat('topics/', ins.topic)
+WHERE au.uid in ( $$UID_LIST$$ )
+  AND au.is_graded = 1
+  AND a.due_date BETWEEN ? AND ?
+ORDER BY usage_date, usage_type
+
+.key=GET_UNIQUE_CCSS_NAMES_FOR_STUDENT
+
+SELECT distinct user_id, ins.standard_name_new, date_format(tr.run_time,'%Y-%m-%d') as usage_date
+FROM HA_TEST t
+JOIN HA_TEST_RUN tr
+  ON tr.test_id = t.test_id
+JOIN HA_TEST_RUN_RESULTS trr
+  ON trr.run_id = tr.run_id AND upper(trr.answer_status)='CORRECT'
+JOIN inmh_map im
+  ON im.guid = trr.pid
+JOIN inmh_standard ins
+  ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = im.file
+WHERE t.user_id = ?
+  AND tr.run_time BETWEEN ? AND ?
+UNION
+SELECT distinct user_id, ins.standard_name_new, date_format(rl.date_completed,'%Y-%m-%d') as usage_date
+FROM HA_TEST t
+JOIN HA_TEST_RUN tr
+  ON tr.test_id = t.test_id
+JOIN HA_TEST_RUN_LESSON rl
+  ON rl.run_id = tr.run_id AND rl.date_completed is not null
+JOIN inmh_standard ins
+  ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = rl.lesson_file
+WHERE t.user_id = ?
+  AND rl.date_completed BETWEEN ? AND ?
+UNION
+SELECT distinct uid as user_id, ins.standard_name_new, date_format(a.due_date,'%Y-%m-%d') as usage_date
 FROM CM_ASSIGNMENT_USER au
 JOIN CM_ASSIGNMENT a
   ON au.assign_key = a.assign_key
@@ -4272,10 +4313,9 @@ SELECT distinct ccs.standard_name as original_name, ccs.standard_name_new as nam
     ON upper(ins.standard_state) = 'COMMON' AND ins.standard_name_new = ccs.standard_name_new
   JOIN HA_PROGRAM_LESSONS pl
     ON pl.file = concat('topics/', ins.topic)
-ORDER BY ccs.standard_name ASC    
+ORDER BY ccs.standard_name_new ASC    
     
 .key=GET_CCSS_DETAIL
 SELECT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
 FROM   common_core_standards ccs
 WHERE  ccs.standard_name_new = ?
-ORDER BY ccs.standard_name ASC
