@@ -19,6 +19,13 @@ var MobileCheck = {
 	    }
 };
 
+function isMobileSmallScreen() {
+    if(window.innerWidth <= 800 && window.innerHeight <= 600) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 function isIPadOrIPhone() {
 	var check = MobileCheck.any();
@@ -33,7 +40,6 @@ function redirectIfMobile() {
 
 
 
-alert('install mobile core js');
 if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i)) { 
    var viewportmeta = document.querySelector('meta[name="viewport"]'); 
    if (viewportmeta) {
