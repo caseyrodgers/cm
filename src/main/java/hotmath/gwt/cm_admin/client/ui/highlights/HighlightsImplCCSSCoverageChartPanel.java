@@ -13,7 +13,6 @@ import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSCoverageChartDataAction;
-import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -154,6 +153,11 @@ public class HighlightsImplCCSSCoverageChartPanel extends Composite implements H
     		title = _dateFormat.format(bar.getBeginDate());
     		if (data.size() > 1) {
     			title += " to " + _dateFormat.format(data.get(data.size()-1).getEndDate());
+    		}
+    		else {
+    			if (bar.getBeginDate().before(bar.getEndDate())) {
+    				title += " to " + _dateFormat.format(bar.getEndDate());
+    			}
     		}
     	}
     	return title;

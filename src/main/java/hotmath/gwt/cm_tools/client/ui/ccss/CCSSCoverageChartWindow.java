@@ -224,6 +224,11 @@ public class CCSSCoverageChartWindow extends GWindow {
     		if (data.size() > 1) {
     			title += " to " + _dateFormat.format(data.get(data.size()-1).getEndDate());
     		}
+    		else {
+    			if (bar.getBeginDate().before(bar.getEndDate())) {
+    				title += " to " + _dateFormat.format(bar.getEndDate());
+    			}
+    		}
     	}
     	return title;
     }
