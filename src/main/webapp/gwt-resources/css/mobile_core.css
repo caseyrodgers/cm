@@ -25,6 +25,7 @@
     -moz-box-shadow: 3px 3px 3px #666;
     -webkit-box-shadow: 3px 3px 3px #666;
     box-shadow: 3px 3px 3px #666;
+    z-index: 100;
 }
 
 .popup-message button {
