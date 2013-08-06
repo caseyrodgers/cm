@@ -12,7 +12,7 @@
     </path>
 
         
-    <target name='doCombines' depends='combine-js_CatchupMath, combine-js_CatchupMathMobile3, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
+    <target name='doCombines' depends='combine-js_CatchupMath, combine-js_CatchupMathMobile3, combine-js_HmMobile, combine-js_CatchupMathSearch, combine-css_CatchupMathMobile3, combine-css_HmMobile, combine-css_CatchupMathSearch'/>
 
     <target name="combine-js_CatchupMath" depends="javascript-minify">
         <!-- Combine CM JS into a single download
@@ -60,6 +60,19 @@
               " />
         </concat>
     </target>
+	
+    <target name="combine-js_HmMobile" depends="javascript-minify">
+        <!-- Combine HM Mobile JS into a single download
+        -->
+        <delete file="${web.dir}/gwt-resources/js/HmMobile_combined.js" />
+        <concat destfile="${web.dir}/gwt-resources/js/HmMobile_combined.js" append="true">
+            <filelist id="jsfiles" dir="src/main/webapp/gwt-resources/js" files="
+            	   CatchupMathMobile3_combined.js
+                   HmMobile.js
+              " />
+        </concat>
+    </target>
+
 
     <target name="combine-js_CatchupMathSearch" depends="javascript-minify">
         <delete file="${web.dir}/gwt-resources/js/CatchupMathSearch_combined.js" />
