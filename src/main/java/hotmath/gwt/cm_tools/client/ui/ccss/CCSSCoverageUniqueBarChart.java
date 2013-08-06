@@ -192,20 +192,16 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 			if (max < cd.getCount()) max = cd.getCount();
 		}
 
-		int fudge=0;
-		if(max < 10) {
-			fudge = 10;
-		}
-		else if(max < 50) {
-			fudge = 50;
-		}
-		else if(max < 100) {
-			fudge = 100;
-		}
-		else { 
-			fudge = 100;
-			while (fudge < max) {
-				fudge += 100;
+		int fudge = 1;
+		
+		do {
+			fudge *= 10;
+		} while (fudge < max);
+
+		if (fudge > 10) {
+			int adjust = fudge/10;
+			 while (fudge > (max+adjust)) {
+				fudge -= adjust;
 			}
 		}
 
