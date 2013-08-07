@@ -4325,12 +4325,12 @@ SELECT distinct ccs.standard_name as original_name, ccs.standard_name_new as nam
 ORDER BY ccs.standard_name_new ASC
 
 ####
-GET_CCSS_LEVEL_NAMES
+.key=GET_CCSS_LEVEL_NAMES
 
 SELECT DISTINCT level_name FROM common_core_standards
 
 ####
-GET_CCSS_NAMES_FOR_LEVEL
+.key=GET_CCSS_NAMES_FOR_LEVEL
 
 SELECT DISTINCT standard_name_new
 FROM common_core_standards
@@ -4339,7 +4339,7 @@ ORDER BY standard_name_new ASC
 
  
 ####
-GET_CCSS_NAMES_FOR_LEVEL_WITH_COVERAGE
+.key=GET_CCSS_NAMES_FOR_LEVEL_WITH_COVERAGE
 
 SELECT DISTINCT ccs.standard_name_new
 FROM common_core_standards ccs

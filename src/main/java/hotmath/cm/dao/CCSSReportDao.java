@@ -204,6 +204,65 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
     /**
      * 
+     * @return list of CCSS level names
+     * @throws Exception
+     */
+	public List<String> getStandardLevelNames() throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_LEVEL_NAMES");
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStandardLevelNames(): sql: " + sql);
+    	List<String> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new RowMapper<String>() {
+    			@Override
+    			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				String levelName = rs.getString("lesson_name");
+    				return levelName;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getStandardLevelNames(): sql: %s", sql), e);
+    		throw e;
+    	}
+    	
+    	return list;
+	}
+
+    /**
+     * 
+     * @param levelName
+     * @return list of standard names for specified levelName
+     * @throws Exception
+     */
+	public List<String> getStandardNamesForLevel(String levelName, boolean hasCoverage) throws Exception {
+        String sql = (hasCoverage != true) ?
+        		CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_LEVEL") :
+        		CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_LEVEL_WITH_COVERAGE");
+
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStandardNamesForLevel(): sql: " + sql);
+
+        List<String> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { levelName }, new RowMapper<String>() {
+    			@Override
+    			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				String name = rs.getString("standard_name_new");
+    				return name;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getStandardNamesForLevel(): levelName: %s, hasCoverage: %s, sql: %s", levelName, hasCoverage, sql), e);
+    		throw e;
+    	}
+    	
+    	return list;
+	}
+
+    /**
+     * 
      * @param standardList
      */
 	private void sortStandards(CmList<CCSSStandard> standardList) {
@@ -395,13 +454,44 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 		return getStudentAllByPeriodStandardNamesWithDate(userIds, fromDate, toDate);
 	}
 
+	public List<CCSSCoverageData> getStandardNamesForStudentAndLevel(List<Integer> userIds,
+			String levelName, Date fromDate, Date toDate) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_STUDENT_AND_LEVEL");
+        sql = QueryHelper.createInListSQL(sql, userIds);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStandardNamesForStudentAndLevel(): sql: " + sql);
+
+    	List<CCSSCoverageData> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql,
+    				new Object[] { fromDate, toDate, levelName, fromDate, toDate, levelName, fromDate, toDate, levelName },
+    				new RowMapper<CCSSCoverageData>() {
+    			@Override
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSCoverageData item = new CCSSCoverageData(rs.getString("lesson_name"), rs.getString("standard_name_new"));
+    				item.getColumnLabels().add(rs.getString("usage_type"));
+    				item.setUserId((rs.getInt("user_id)")));
+    				item.setCount(1);
+    				return item;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getStandardNamesForStudentAndLevel(): userIds: %d, fromDate: %s, toDate: %s, levelName: %s, sql: %s",
+    				userIds, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), levelName, sql), e);
+    		throw e;
+    	}
+
+        return list;
+	}
+
 	public List<CCSSCoverageBar> getStudentAllByPeriodStandardNamesWithDate(List<Integer> userIds,
 			Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT_WITH_DATE");
 
         sql = QueryHelper.createInListSQL(sql, userIds);
         if (LOGGER.isDebugEnabled())
-            LOGGER.debug("+++ getStudentAllByWeekStandardNames(): sql: " + sql);
+            LOGGER.debug("+++ getStudentAllByWeekStandardNamesWithDate(): sql: " + sql);
 
         List<CCSSCoverageBar> barList = new ArrayList<CCSSCoverageBar>();
     	List<CCSSCoverageData> list = null;
@@ -584,4 +674,5 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 		}
 	}
 
+	
 }
