@@ -1171,4 +1171,6 @@ html>body .gwt-DecoratedTabBar {
 
 #leaderboard {
    background: black;
+   text-align: center;
+   padding: 3px;
 }
