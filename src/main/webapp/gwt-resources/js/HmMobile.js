@@ -1,4 +1,15 @@
 function setupEducationWorldAdServer() {
+	selectEducationWorldAdToShow();
+	
+	
+	HmEvents.eventTutorInitialized.subscribe(function(e) {
+		selectEducationWorldAdToShow();
+	});
+}
+
+
+function selectEducationWorldAdToShow() {
+	console.log('setting up ew ad');
 	var lb = document.getElementById("leaderboard");
 	if(lb) {
 		lb.innerHTML = getEwAdFrame();

@@ -2584,5 +2584,3 @@ function setupMathQuill() {
         $('.mathquill-embedded-latex').mathquill();
     });
 }
-
-
