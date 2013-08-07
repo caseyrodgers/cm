@@ -1167,3 +1167,8 @@ html>body .gwt-DecoratedTabBar {
 .popup-message a {
    text-decoration: underline;
 }
+
+
+#leaderboard {
+   background: black;
+}
