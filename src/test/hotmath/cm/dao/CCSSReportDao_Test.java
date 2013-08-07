@@ -6,6 +6,7 @@ import java.util.List;
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
+import hotmath.gwt.shared.client.model.CCSSDetail;
 
 public class CCSSReportDao_Test extends CmDbTestCase {
 
@@ -76,6 +77,20 @@ public class CCSSReportDao_Test extends CmDbTestCase {
         assertTrue(list != null);
         list = dao.getCCSSGroupCoverageData(2, 1976, fromDate, toDate, 100, 100);
         assertTrue(list != null);
-    	
     }
+
+    public void testGetCCSSDetail() throws Exception {
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        CCSSDetail detail = dao.getCCSSDetail("6.G.A.4");
+        assertTrue(detail != null);
+    }
+
+    public void testGetCCSSNamesForLevel() throws Exception {
+        CCSSReportDao dao = CCSSReportDao.getInstance();
+        List<String> names = dao.getStandardNamesForLevel("Grade 7", false);
+        assertTrue(names != null && names.size()>0);
+        names = dao.getStandardNamesForLevel("Grade 7", true);
+        assertTrue(names != null && names.size()>0);
+    }
+
 }
