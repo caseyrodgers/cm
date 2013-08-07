@@ -9,6 +9,7 @@ public class CCSSCoverageData implements Response {
 	private static final long serialVersionUID = -8162142054866769276L;
 
 	int    count;
+	int    userId;
 	
     String lessonName;
     String ccssName;
@@ -69,6 +70,14 @@ public class CCSSCoverageData implements Response {
 
 	public void setCount(int count) {
 		this.count = count;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 }
