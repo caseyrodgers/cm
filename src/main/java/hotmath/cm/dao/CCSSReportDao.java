@@ -392,12 +392,12 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 			Date fromDate, Date toDate) throws Exception {
 		List<Integer>userIds = new ArrayList<Integer>();
 		userIds.add(userId);
-		return getStudentAllByPeriodStandardNames(userIds, fromDate, toDate);
+		return getStudentAllByPeriodStandardNamesWithDate(userIds, fromDate, toDate);
 	}
 
-	public List<CCSSCoverageBar> getStudentAllByPeriodStandardNames(List<Integer> userIds,
+	public List<CCSSCoverageBar> getStudentAllByPeriodStandardNamesWithDate(List<Integer> userIds,
 			Date fromDate, Date toDate) throws Exception {
-        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT");
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_ALL_CCSS_NAMES_FOR_STUDENT_WITH_DATE");
 
         sql = QueryHelper.createInListSQL(sql, userIds);
         if (LOGGER.isDebugEnabled())

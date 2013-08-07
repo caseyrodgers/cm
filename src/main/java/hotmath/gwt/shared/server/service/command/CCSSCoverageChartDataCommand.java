@@ -54,7 +54,7 @@ public class CCSSCoverageChartDataCommand implements ActionHandler<CCSSCoverageC
                         uids.add(student.getUid());
                     }
 
-                    list = toCmList(crDao.getStudentAllByPeriodStandardNames(uids, fromDate, toDate));
+                    list = toCmList(crDao.getStudentAllByPeriodStandardNamesWithDate(uids, fromDate, toDate));
                     break;
 
                 default:
