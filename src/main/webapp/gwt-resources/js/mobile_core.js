@@ -49,3 +49,4 @@ if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i)) 
        document.body.addEventListener('gesturestart', function() {viewportmeta.content = 'width=device-width, minimum-scale=0.25, maximum-scale=1.6'; }, false); 
    }
 }
+

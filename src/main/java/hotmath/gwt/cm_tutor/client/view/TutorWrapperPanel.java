@@ -392,7 +392,7 @@ public class TutorWrapperPanel extends Composite {
         }
         
         
-        loadStaticWhiteboards(getElement());
+        //loadStaticWhiteboards(getElement());
         
         
         
@@ -400,9 +400,12 @@ public class TutorWrapperPanel extends Composite {
     }
     
     private native void loadStaticWhiteboards(Element e) /*-{
+        alert('attempt setting wb up');
         if(typeof($wnd.setupStaticWhiteboards) == typeof(Function)) {
+            alert('setting wb up');
             $wnd.setupStaticWhiteboards(e);
         }
+        alert('done');
     }-*/;
 
     @Override

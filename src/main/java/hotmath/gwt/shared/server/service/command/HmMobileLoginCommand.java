@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.gwt.cm_rpc_core.client.CmExceptionDoNotNotify;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * @author bob
  *
  */
-public class HmMobileLoginCommand implements ActionHandler<HmMobileLoginAction, HmMobileLoginInfo>{
+public class HmMobileLoginCommand implements ActionHandler<HmMobileLoginAction, HmMobileLoginInfo>,CmExceptionDoNotNotify {
 
 	private static final Logger LOGGER = Logger.getLogger(HmMobileLoginCommand.class);
 
