@@ -166,6 +166,7 @@ public class StudentShowWorkWindow extends GWindow {
                         public void oncapture(CmList<WhiteboardCommand> whiteboardCommands) {
                             try {
                                 _showWorkPanel.loadWhiteboard(whiteboardCommands);
+                                _showWorkPanel.setAsTeacherMode(true);
                             } finally {
                                 CmBusyManager.setBusy(false);
                             }
