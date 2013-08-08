@@ -691,6 +691,7 @@
 				</configuration>
 			</plugin>
 
+
 			<!-- Minimize JS/CSS for CM and CM_MOBILE. All HM resources come from HM
 		        -->
 			<plugin>
@@ -708,27 +709,15 @@
 						<param>../../../../../../hotmath2/web/css/hotmath_review.css</param>
 
 						<param>tutor_layout_tablet.css</param>
-						<param>CatchupMath.css</param>
-                        <param>CatchupMath-resource_container.css</param>						
+   						<param>CatchupMath.css</param>
+                                                <param>CatchupMath-resource_container.css</param>						
 						<param>loading_image.css</param>
+						<param>whiteboard_v2.css</param>
 					</cssSourceFiles>
-					<jsSourceFiles>
-                                              <!--
-						<param>hm_events.js</param>
-						<param>tutor_tablet.js</param>
-
-						<param>../../../../../../hotmath2/web/js/tutor_widget_combined.js</param>
-
-						<param>dom_utils.js</param>
-						<param>cm_core.js</param>
-						<param>quiz.js</param>
-						<param>CatchupMath.js</param>
-						<param>swfobject/swfobject.js</param>
-						<param>../../../../../../hotmath2/web/js/hm_mathjax.js</param>
-                                             -->
-					</jsSourceFiles>
 				</configuration>
 			</plugin>
+
+
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

@@ -1,0 +1,253 @@
+.wb-container {
+    position: relative;
+    background: white;
+}
+
+.scroll_track {
+	position: relative;
+	background: #efefef;
+	border: 1px solid #999999;
+}
+
+.scroll_thumb {
+	position: absolute;
+	background: #333333;
+	border: 1px solid #666666;
+	top: 0px;
+	left: 0px;
+	border: 1px solid #333333;
+}
+
+.vscroller {
+	position: absolute;
+}
+
+.vscroll_track {
+	width: 15px;
+}
+
+.vscroll_thumb {
+	width: 15px;
+	height: 30px;
+}
+
+.hscroller {
+	position: absolute;
+}
+
+.hscroll_track {
+	height: 15px;
+}
+
+.hscroll_thumb {
+	width: 30px;
+	height: 15px;
+}
+
+.canvas-container {
+	position: relative;
+}
+
+.drawsection {
+	position: relative;
+	border: 1px solid #000000;
+	width: 800px;
+	height: 600px;
+	overflow: hidden;
+}
+
+.ocanvas {
+	
+}
+
+.canvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.gcanvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.tcanvas {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+.inputBox {
+	position: absolute;
+	border: 1px solid #333333;
+	display: none;
+}
+
+.tools {
+	height: 35px;
+	padding-left: 5px;
+	padding-top: 3px;
+	background: #eeeeee;
+	border-bottom: 1px solid #000000;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
+}
+
+.keypad button {
+	width: 30px;
+	height: 30px;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+	cursor: hand;
+	font-family: Arial, Tahoma, Verdana, Calibri;
+	text-align: center;
+	border: 1px solid #000000;
+	background: #ececec;
+}
+
+.small_tool_button {
+	width: 25px;
+	height: 25px;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+	cursor: hand;
+	font-family: Arial, Tahoma, Verdana, Calibri;
+	text-align: center;
+	border: 1px solid #000000;
+	background: #ececec;
+	-webkit-background-size: 100%; /*for webKit*/
+	-moz-background-size: 100%; /*Mozilla*/
+	-o-background-size: 100%; /*opera*/
+	background-size: 100%; /*generic*/
+	-webkit-box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
+	-moz-box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
+	box-shadow: 2px 2px 2px rgba(51, 51, 51, 0.7);
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#ffffff' );*/
+}
+
+.big_tool_button {
+	width: 45px;
+	height: 30px;
+	vertical-align: middle;
+	margin: 0px;
+	padding: 0px;
+	cursor: pointer;
+	cursor: hand;
+	font-family: Arial, Tahoma, Verdana, Calibri;
+	text-align: center;
+	border: 1px solid #000000;
+	background: #ececec;
+	-webkit-background-size: 30px; /*for webKit*/
+	-moz-background-size: 30px; /*Mozilla*/
+	-o-background-size: 30px; /*opera*/
+	background-size: 30px; /*generic*/
+	-webkit-box-shadow: 1px 2px 4px rgba(51, 51, 51, 0.7);
+	-moz-box-shadow: 1px 2px 4px rgba(51, 51, 51, 0.7);
+	box-shadow: 1px 2px 4px rgba(51, 51, 51, 0.7);
+	/*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#ffffff' );*/
+}
+
+.btnType1 {
+	width: 45px;
+	height: 25px;
+}
+
+.button_clear {
+	width: 45px;
+	height: 30px;
+}
+
+.done_btn {
+	width: 60px;
+	height: 25px;
+}
+
+.button_text {
+	background-image: url(/gwt-resources/images/whiteboard/txt.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_pencil {
+	background-image: url(/gwt-resources/images/whiteboard/pencil.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_line {
+	background-image: url(/gwt-resources/images/whiteboard/line.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_rect {
+	background-image: url(/gwt-resources/images/whiteboard/rect.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_oval {
+	background-image: url(/gwt-resources/images/whiteboard/oval.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_eraser {
+	background-image: url(/gwt-resources/images/whiteboard/eraser.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_gr2D {
+	background-image: url(/gwt-resources/images/whiteboard/gr_2d.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.button_nL {
+	background-image: url(/gwt-resources/images/whiteboard/gr_nL.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.button_calc {
+	background-image: url(/gwt-resources/images/whiteboard/calculator.png);
+	background-repeat: no-repeat;
+	background-position: center;
+	right:10px;
+}
+.button_calc_disabled {
+	background-image: url(/gwt-resources/images/whiteboard/calculator-no.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.button_move {
+	background-image: url(/gwt-resources/images/whiteboard/move.png);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+
+.static_whiteboard {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    margin-top: 10px;
+}
+        
+.show_problem {
+    margin-left: 25px;
+}
+
+.problemStatement {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
