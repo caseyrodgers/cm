@@ -1,10 +1,10 @@
 package hotmath.gwt.cm.client.ui.context;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmGuiDefinition;
@@ -14,7 +14,7 @@ import hotmath.gwt.cm_tools.client.ui.QuizPage;
 import hotmath.gwt.cm_tools.client.ui.context.CmContext;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
 import hotmath.gwt.cm_tools.client.ui.viewer.CmResourcePanelImplWithWhiteboard;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.model.UserInfoBase.Mode;
@@ -153,12 +153,12 @@ public class QuizCmGuiDefinition implements CmGuiDefinition  {
             }
 
             @Override
-            public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
-                whiteboardPanel.setupForPid(ShowWorkPanel.QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
+            public void setupShowWorkPanel(ShowWorkPanel2 whiteboardPanel) {
+                whiteboardPanel.setupForPid(ShowWorkPanel2.QUIZ_PREFIX + CmMainPanel.getLastQuestionPid());
             }
             
             @Override
-            public void loadWhiteboardData(final ShowWorkPanel showWorkPanel) {
+            public void loadWhiteboardData(final ShowWorkPanel2 showWorkPanel) {
                 new RetryAction<CmList<WhiteboardCommand>>() {
                     
                     @Override

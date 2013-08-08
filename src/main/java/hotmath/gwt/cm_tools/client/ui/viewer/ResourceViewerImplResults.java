@@ -1,16 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -112,7 +111,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
     }
     
     @Override
-    public void loadWhiteboardData(final ShowWorkPanel showWorkPanel) {
+    public void loadWhiteboardData(final ShowWorkPanel2 showWorkPanel) {
 
         new RetryAction<CmList<WhiteboardCommand>>() {
             
@@ -178,7 +177,7 @@ public class ResourceViewerImplResults extends CmResourcePanelImplWithWhiteboard
     }
 
     @Override
-    public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
+    public void setupShowWorkPanel(ShowWorkPanel2 whiteboardPanel) {
         String pid = "";
         if (CmMainPanel.getLastQuestionPid() != null) {
             /** use the currently active quiz */

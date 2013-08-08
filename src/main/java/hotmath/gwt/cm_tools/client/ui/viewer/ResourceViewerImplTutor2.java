@@ -20,7 +20,7 @@ import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.event.UserTutorWidgetStatusUpdatedEvent;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel.CallbackAfterSolutionLoaded;
@@ -171,7 +171,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
     
     
     @Override
-    public void loadWhiteboardData(final ShowWorkPanel showWorkPanel) {
+    public void loadWhiteboardData(final ShowWorkPanel2 showWorkPanel) {
 
         new RetryAction<CmList<WhiteboardCommand>>() {
             
@@ -338,7 +338,7 @@ public class ResourceViewerImplTutor2 extends CmResourcePanelImplWithWhiteboard 
     }
 
     @Override
-    public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel) {
+    public void setupShowWorkPanel(ShowWorkPanel2 whiteboardPanel) {
         whiteboardPanel.setupForPid(getPid());
     }
 

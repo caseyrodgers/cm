@@ -34,7 +34,6 @@
         <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
         <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
   
-        <link rel="stylesheet" type="text/css" href="/gwt-resources/css/whiteboard.css" />
         <link rel="stylesheet" type="text/css" href="/gwt-resources/js/calculator/jquery.calculator.css" />
     </head>
     <body>

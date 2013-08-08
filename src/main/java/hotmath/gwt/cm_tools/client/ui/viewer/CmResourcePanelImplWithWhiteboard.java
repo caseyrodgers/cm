@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui.viewer;
 
-import hotmath.gwt.cm.client.ui.context.QuizContext;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
@@ -9,11 +8,10 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.CmMainPanel;
-import hotmath.gwt.cm_tools.client.ui.ContextController;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourceContentPanel.ResourceViewerState;
 import hotmath.gwt.cm_tools.client.ui.resource_viewer.CmResourcePanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallback;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
@@ -253,14 +251,14 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
      *  
      * @param p
      */
-    abstract public void setupShowWorkPanel(ShowWorkPanel whiteboardPanel);
+    abstract public void setupShowWorkPanel(ShowWorkPanel2 whiteboardPanel);
     
     
     /** Allow for sub classes to load data in custom way
      * 
      * @param showWorkPanel
      */
-    public void loadWhiteboardData(ShowWorkPanel showWorkPanel) {
+    public void loadWhiteboardData(ShowWorkPanel2 showWorkPanel) {
         CmLogger.debug("Load whiteboard data, default null implmentation");
     }
     
@@ -271,7 +269,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
         loadWhiteboardData(_showWorkPanel);
     }
     
-    ShowWorkPanel _showWorkPanel;
+    ShowWorkPanel2 _showWorkPanel;
     
     
     
@@ -319,7 +317,7 @@ public abstract class CmResourcePanelImplWithWhiteboard extends SimpleContainer 
             /** show whiteboard panel
              * 
              */
-            _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallback() {
+            _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
                 @Override
                 public void showWorkIsReady() {
                     whiteboardIsReady();

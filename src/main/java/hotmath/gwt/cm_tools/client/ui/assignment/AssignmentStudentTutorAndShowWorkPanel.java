@@ -11,8 +11,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_tools.client.ui.assignment.AssignmentTutorPanel.AssignmentTutorPanelCallback;
 import hotmath.gwt.cm_tutor.client.CmTutor;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.Scheduler;
@@ -36,7 +36,7 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
  */
 public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
 
-    ShowWorkPanel _showWork;
+    ShowWorkPanel2 _showWork;
     AssignmentTutorPanel _tutorPanel;
     AssignmentStudentTutorAndShowWorkPanelCallback _callBack;
     StudentProblemDto _problem;
@@ -102,7 +102,7 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
     ContentPanel _showWorkWrapper;
     private void showWhiteboard() {
         
-        _showWork = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
+        _showWork = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
                 return createWhiteBoardSaveAction(pid, commandType, data);

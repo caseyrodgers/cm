@@ -160,6 +160,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
                 return presenter.getWhiteboardSaveAction(pid, commandType, data);
             }
         });
+        _showWork.addStyleName("static_whiteboard");
         _contentPanel.add(_showWork);
         
         _showWork.setBackground(_subBar.getShowProblem());

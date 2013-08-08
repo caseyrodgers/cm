@@ -30,11 +30,8 @@
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMath_combined.min.css" />
   <link rel="stylesheet" type="text/css" href="/gwt-resources/css/CatchupMathAdmin.css" />
 
-
   <link rel="stylesheet" type="text/css" href="/css/tutor_widget.css" />
   <link rel="stylesheet" type="text/css" href="/css/SexyButtons/sexybuttons.css" />
-  <link rel="stylesheet" type="text/css" href="/gwt-resources/css/whiteboard.css" />
-
   </head>
 
   <body>
