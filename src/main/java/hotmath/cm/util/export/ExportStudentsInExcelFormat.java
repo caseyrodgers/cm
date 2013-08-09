@@ -1,21 +1,16 @@
 package hotmath.cm.util.export;
 
 import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelExt;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 
 import org.apache.log4j.Logger;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.PrintSetup;
@@ -52,11 +47,17 @@ public class ExportStudentsInExcelFormat {
 	
 	private Map<Integer, Integer> timeOnTaskMap;
 
+	private Map<Integer, List<CCSSCoverageData>> standardsMap;
+
+	private Map<Integer, List<String>> standardsNotCoveredMap;
+
 	private String filterDescr;
 
 	private String title;
 	
 	private Integer adminId;
+
+	private String ccssLevelName;
 	
 	public ExportStudentsInExcelFormat() {
 	}
@@ -89,6 +90,14 @@ public class ExportStudentsInExcelFormat {
 		this.timeOnTaskMap = timeOnTaskMap;
 	}
 
+	public void setStandardsMap(Map<Integer, List<CCSSCoverageData>> standardsMap) {
+		this.standardsMap = standardsMap;
+	}
+
+	public void setStandardsNotCoveredMap(Map<Integer, List<String>> standardsNotCoveredMap) {
+		this.standardsNotCoveredMap = standardsNotCoveredMap;
+	}
+
 	public String getFilterDescr() {
 		return filterDescr;
 	}
@@ -113,6 +122,14 @@ public class ExportStudentsInExcelFormat {
 		this.title = title;
 	}
 
+	public String getCcssLevelName() {
+		return ccssLevelName;
+	}
+
+	public void setCcssLevelName(String ccssLevelName) {
+		this.ccssLevelName = ccssLevelName;
+	}
+
 	public Map<Integer, List<StudentActivitySummaryModel>> getStudentActivitySummaryMap() {
 		return sasMap;
 	}
@@ -133,12 +150,18 @@ public class ExportStudentsInExcelFormat {
 		"Quiz 3", "Quiz 4", "Quiz 5", "Quiz 6", "Quiz 7", "Quiz 8", "Quiz 9", "Quiz 10"
 	};
 	
+	private static String[] headingsSheet3 = {
+		"Student", "Group"
+	};
+	
 	public ByteArrayOutputStream export() throws Exception {
 
 		Workbook wb = new HSSFWorkbook();
 
 		buildStudentSheet(wb);
 		buildStudentProgramSheet(wb);
+		if (standardsMap != null)
+		    buildStudentStandardsSheet(wb);
 	    
 	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	    wb.write(bos);
@@ -444,7 +467,115 @@ public class ExportStudentsInExcelFormat {
 	    addStudentProgramLegend(idx, sheet, styles);
 	}
 
-    private void addLegend(int idx, Sheet sheet, Map<String, CellStyle> styles) {
+	private void buildStudentStandardsSheet(Workbook wb) {
+		Sheet sheet = wb.createSheet("Standards");
+
+	    sheet.setDisplayGridlines(false);
+	    sheet.setPrintGridlines(false);
+	    sheet.setFitToPage(true);
+	    sheet.setHorizontallyCenter(true);
+	    PrintSetup printSetup = sheet.getPrintSetup();
+	    printSetup.setLandscape(true);
+
+	    //the following three statements are required only for HSSF
+	    sheet.setAutobreaks(true);
+	    printSetup.setFitHeight((short)1);
+	    printSetup.setFitWidth((short)1);
+
+	    Map<String, CellStyle> styles = createStyles(wb);
+		
+	    int idx = 1;
+
+	    sheet.createRow(0);
+	    Row titleRow = sheet.createRow(idx++);
+	    Cell titleCell = titleRow.createCell(0);
+	    StringBuilder sb = new StringBuilder();
+	    sb.append(title).append(" ").append(filterDescr);
+	    titleCell.setCellValue(sb.toString());
+        titleCell.setCellStyle(styles.get("title"));
+        
+	    //the header row: centered text in 48pt font
+	    Row headerRow = sheet.createRow(idx++);
+	    headerRow.setHeightInPoints(12.75f);
+	    int[] charCount = new int[headingsSheet3.length];
+
+	    for (int i = 0; i < headingsSheet3.length; i++) {
+	        Cell cell = headerRow.createCell(i);
+	        cell.setCellValue(headingsSheet3[i]);
+	        cell.setCellStyle(styles.get("header"));
+	        charCount[i] = headingsSheet3[i].length();
+	    }
+		
+	    for (StudentModelI sm : studentList) {
+
+    		Row row = sheet.createRow(idx++);
+
+    		Cell cell = row.createCell(0);
+    		cell.setCellValue(sm.getName());
+    		cell.setCellStyle(styles.get("data"));
+    		cell = row.createCell(1);
+    		cell.setCellValue(sm.getGroup());
+    		cell.setCellStyle(styles.get("data"));
+
+    		List<CCSSCoverageData> list = standardsMap.get(sm.getUid());
+
+    		row = sheet.createRow(idx++);
+    		addLessonCoverage(row, list, styles);
+    		
+    		row = sheet.createRow(idx++);
+    		addStandardsCoverage(row, list, styles);
+
+    		row = sheet.createRow(idx++);
+    		addStandardsNotCovered(row, standardsNotCoveredMap.get(sm.getUid()), styles);
+    		
+	    }
+
+	    // add legend
+	    addStandardsLegend(idx, sheet, styles);
+	}
+
+	private void addLessonCoverage(Row row, List<CCSSCoverageData> list, Map<String, CellStyle> styles) {
+		Cell cell = row.createCell(0);
+		cell.setCellValue("Covered Topics: ");
+		cell.setCellStyle(styles.get("data"));
+
+		int idx = 1;
+		for (CCSSCoverageData data : list) {
+			cell = row.createCell(idx++);
+			cell.setCellValue(data.getLessonName());
+			cell.setCellStyle(styles.get("data"));
+			
+		}
+	}
+
+	private void addStandardsCoverage(Row row, List<CCSSCoverageData> list, Map<String, CellStyle> styles) {
+		Cell cell = row.createCell(0);
+		cell.setCellValue("Covered Standards: ");
+		cell.setCellStyle(styles.get("data"));
+
+		int idx = 1;
+		for (CCSSCoverageData data : list) {
+			cell = row.createCell(idx++);
+			cell.setCellValue(data.getName());
+			cell.setCellStyle(styles.get("data"));
+		}
+	}
+
+	private void addStandardsNotCovered(Row row, List<String> list,
+			Map<String, CellStyle> styles) {
+		Cell cell = row.createCell(0);
+		cell.setCellValue("Remaining Standards: ");
+		cell.setCellStyle(styles.get("data"));
+
+		int idx = 1;
+		for (String data : list) {
+			cell = row.createCell(idx++);
+			cell.setCellValue(data);
+			cell.setCellStyle(styles.get("data"));
+		}
+	}
+
+	private void addLegend(int idx, Sheet sheet, Map<String, CellStyle> styles) {
     	idx = idx + 3;
 	    int col = 0;
 
@@ -488,6 +619,12 @@ public class ExportStudentsInExcelFormat {
         cell.setCellValue("Quiz 1-10 - scores are shown in reverse chronological order (i.e., Quiz 1 is the most recent)");
         cell.setCellStyle(styles.get("data"));
     }
+
+    private void addStandardsLegend(int idx, Sheet sheet,
+			Map<String, CellStyle> styles) {
+		// TODO Auto-generated method stub
+		
+	}
 
     private Map<String, CellStyle> createStyles(Workbook wb) {
 
@@ -592,4 +729,5 @@ public class ExportStudentsInExcelFormat {
 	private String getPercentWithZero(int percent) {
         return String.format("%d%s", percent, "%");
 	}
+
 }

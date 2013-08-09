@@ -32,6 +32,14 @@ import hotmath.gwt.shared.client.model.CCSSGradeLevel;
 import hotmath.gwt.shared.client.model.CCSSStandard;
 import hotmath.spring.SpringManager;
 
+/**
+ * <code>CCSSReportDao</code> provides access to Common Core State Standards (CCSS) data
+ * and student coverage of those standards.
+ *  
+ * @author bob
+ *
+ */
+
 public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
     private static final Logger LOGGER = Logger.getLogger(CCSSReportDao.class);
@@ -461,16 +469,22 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
         if (LOGGER.isDebugEnabled())
             LOGGER.debug("+++ getStandardNamesForStudentAndLevel(): sql: " + sql);
 
+        //TODO : change this...
+    	if ( toDate == null) toDate = new Date();
+    	if ( fromDate == null ) fromDate = new Date(toDate.getTime() - 10L*365L*24L*60L*60L*1000L);
+
     	List<CCSSCoverageData> list = null;
     	try {
     		list = getJdbcTemplate().query(sql,
-    				new Object[] { fromDate, toDate, levelName, fromDate, toDate, levelName, fromDate, toDate, levelName },
+    				new Object[] { levelName, fromDate, toDate, levelName, fromDate, toDate, levelName, fromDate, toDate },
     				new RowMapper<CCSSCoverageData>() {
     			@Override
     			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
     				CCSSCoverageData item = new CCSSCoverageData(rs.getString("lesson_name"), rs.getString("standard_name_new"));
     				item.getColumnLabels().add(rs.getString("usage_type"));
-    				item.setUserId((rs.getInt("user_id)")));
+    				String uid = rs.getString("user_id");
+					int userId = Integer.parseInt(uid);
+    				item.setUserId(userId);
     				item.setCount(1);
     				return item;
     			}
@@ -478,7 +492,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	}
     	catch (DataAccessException e) {
     		LOGGER.error(String.format("getStandardNamesForStudentAndLevel(): userIds: %d, fromDate: %s, toDate: %s, levelName: %s, sql: %s",
-    				userIds, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), levelName, sql), e);
+    				userIds.get(0), DATE_FMT.format(fromDate), DATE_FMT.format(toDate), levelName, sql), e);
     		throw e;
     	}
 

@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.dao.CCSSReportDao;
 import hotmath.cm.server.model.CmReportCardDao;
 import hotmath.cm.util.CmWebResourceManager;
 import hotmath.cm.util.FileUtil;
@@ -16,6 +17,7 @@ import hotmath.gwt.cm_tools.client.model.AccountInfoModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
+import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
 import hotmath.testset.ha.HaAdmin;
 import hotmath.util.HMConnectionPool;
@@ -30,8 +32,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -83,7 +88,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
 	    ExportStudentDataRunnable exportRunnable =
 	    	new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress(), filterDescr,
-	    			action.getFromDate(), action.getToDate());
+	    			"Grade 6", action.getFromDate(), action.getToDate());
 
 	    if (runInSeparateThread) {
             Thread t = new Thread(exportRunnable);
@@ -115,15 +120,17 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	private List<StudentModelI> studentList;
     	private String emailAddr;
     	private String filterDescr;
+    	private String levelName;
     	private Date fromDate;
     	private Date toDate;
 
     	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelI> studentList,
-    			final String emailAddr, final String filterDescr, Date fromDate, Date toDate) {
+    			final String emailAddr, final String filterDescr, String levelName, Date fromDate, Date toDate) {
     		this.adminUid = adminUid;
     		this.studentList = studentList;
     		this.emailAddr = emailAddr;
     		this.filterDescr = filterDescr;
+    		this.levelName = levelName;
     		this.fromDate = fromDate;
     	    this.toDate = toDate;
     	}
@@ -131,18 +138,22 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	public void run() {
     		List<StudentReportCardModelI> rcList = new ArrayList<StudentReportCardModelI>();
     		Map<Integer,List<StudentActivitySummaryModel>> sasMap = new HashMap<Integer,List<StudentActivitySummaryModel>> ();
+    		Map<Integer,List<CCSSCoverageData>> ccssMap = new HashMap<Integer,List<CCSSCoverageData>>();
+    		Map<Integer,List<String>> ccssNotCoveredMap = new HashMap<Integer,List<String>>();
     		Connection conn = null;
     		try {
     			conn = HMConnectionPool.getConnection();
 
     			CmReportCardDao rcDao = CmReportCardDao.getInstance();
     			List<String> uidList = new ArrayList<String> ();
+    			List<Integer> userList = new ArrayList<Integer>();
 
     			for (StudentModelI sm : studentList) {
     				StudentReportCardModelI rc = rcDao.getStudentReportCard(sm.getUid(), fromDate, toDate);
     				rc.setStudentUid(sm.getUid());
     				rcList.add(rc);
     				uidList.add(String.valueOf(sm.getUid()));
+    				userList.add(sm.getUid());
     			}
 
     			StudentActivityDao saDao = StudentActivityDao.getInstance();
@@ -150,6 +161,11 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     				List<StudentActivitySummaryModel> list = saDao.getStudentActivitySummary(sm.getUid(), fromDate, toDate);
     				if (list != null && list.size() > 0) sasMap.put(sm.getUid(), list);
     			}
+
+    			CCSSReportDao ccssDao = CCSSReportDao.getInstance();
+    			List<CCSSCoverageData> ccssList = ccssDao.getStandardNamesForStudentAndLevel(userList, levelName, fromDate, toDate);
+    			List<String> levelList = ccssDao.getStandardNamesForLevel(levelName, true);
+    			buildStandardsMap(ccssMap, ccssNotCoveredMap, ccssList, levelList);
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
@@ -183,6 +199,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			exporter.setReportCardList(rcList);
     			exporter.setStudentActivitySummaryMap(sasMap);
     			exporter.setTimeOnTaskMap(totMap);
+    			exporter.setStandardsMap(ccssMap);
+    			exporter.setStandardsNotCoveredMap(ccssNotCoveredMap);
     			exporter.setTitle(titleBuff.toString());
     			exporter.setFilterDescr(sb.toString());
 
@@ -231,6 +249,139 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			SqlUtilities.releaseResources(null, null, conn);
     		}
     	}
-    }
-}
 
+    }
+
+	private void buildStandardsMap(
+			Map<Integer, List<CCSSCoverageData>> ccssMap, Map<Integer, List<String>> ccssNotCoveredMap,
+			List<CCSSCoverageData> ccssList, List<String> levelList) {
+		int userId = 0;
+		List<CCSSCoverageData> list = null;
+		for (CCSSCoverageData data : ccssList) {
+			if (userId != data.getUserId()) {
+				list = new ArrayList<CCSSCoverageData>();
+				userId = data.getUserId();
+				ccssMap.put(userId, list);
+			}
+			list.add(data);
+		}
+		Set<Integer> keys = ccssMap.keySet();
+		Iterator<Integer> iter = keys.iterator();
+		while (iter.hasNext()) {
+			Integer uid = iter.next();
+			List<CCSSCoverageData> cList = consolidateStandards(ccssMap.get(uid));
+			ccssMap.put(uid, cList);
+			List<String> ncList = getStandardsNotCovered(cList, levelList);
+			ccssNotCoveredMap.put(uid,  ncList);
+		}
+
+		
+	}
+
+	private List<String> getStandardsNotCovered(List<CCSSCoverageData> cList,
+			List<String> levelList) {
+		List<String> retList = new ArrayList<String>();
+		Set<String> coveredSet = getCoveredSet(cList);
+
+		for (String std : levelList) {
+			if (coveredSet.contains(std) == false) {
+				retList.add(std);
+			}
+		}
+		return retList;
+	}
+
+	private Set<String> getCoveredSet(List<CCSSCoverageData> cList) {
+		Set<String> set = new HashSet<String>();
+		for (CCSSCoverageData data : cList) {
+			String name = data.getName();
+			if (name == null) continue;
+			int offset = name.indexOf(" - ");
+			if (offset < 0) continue;
+			set.add(name.substring(0, offset));
+		}
+		return set;
+	}
+
+	private List<CCSSCoverageData> consolidateStandards(
+			List<CCSSCoverageData> list) {
+		
+		List<CCSSCoverageData> lessonList = new ArrayList<CCSSCoverageData>();
+		List<CCSSCoverageData> standardList = new ArrayList<CCSSCoverageData>();
+		Map<String, StringBuilder> lessonMap = new HashMap<String,StringBuilder>();
+		Map<String, StringBuilder> standardMap = new HashMap<String,StringBuilder>();
+
+		CCSSCoverageData lData = null;
+		CCSSCoverageData sData = null;
+		for (CCSSCoverageData data : list) {
+			String lessonName = data.getLessonName();
+			if (lessonMap.containsKey(lessonName) == false) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(getActivityCode(data.getColumnLabels().get(0)));
+				lessonMap.put(lessonName, sb);
+				lData = new CCSSCoverageData();
+				lData.setUserId(data.getUserId());
+				lessonList.add(lData);
+				lData.setLessonName(String.format("%s - %s", lessonName, sb.toString()));
+			}
+			else {
+    			StringBuilder sb = lessonMap.get(lessonName);
+	    		if (sb.toString().indexOf(getActivityCode(data.getColumnLabels().get(0))) < 0) {
+	    			sb.append(getActivityCode(data.getColumnLabels().get(0)));
+					lData.setLessonName(String.format("%s - %s", lessonName, sb.toString()));
+	    		}
+			}
+			String standardName = data.getName();
+			if (standardMap.containsKey(standardName) == false) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(getActivityCode(data.getColumnLabels().get(0)));
+				standardMap.put(standardName, sb);
+				sData = new CCSSCoverageData();
+				sData.setUserId(data.getUserId());
+				standardList.add(sData);
+				sData.setName(String.format("%s - %s", standardName, sb.toString()));
+			}
+			else {
+    			StringBuilder sb = standardMap.get(standardName);
+	    		if (sb.toString().indexOf(getActivityCode(data.getColumnLabels().get(0))) < 0) {
+	    			sb.append(getActivityCode(data.getColumnLabels().get(0)));
+					sData.setName(String.format("%s - %s", standardName, sb.toString()));
+	    		}
+			}
+		}
+
+		List<CCSSCoverageData> retList = new ArrayList<CCSSCoverageData>();
+		int minSize = (lessonList.size() > standardList.size()) ? standardList.size() : lessonList.size();
+		for (int idx=0; idx < minSize; idx++) {
+			CCSSCoverageData data = new CCSSCoverageData();
+			data.setUserId(lessonList.get(idx).getUserId());
+			data.setLessonName(lessonList.get(idx).getLessonName());
+			data.setName(standardList.get(idx).getName());
+			retList.add(data);
+		}
+		if (minSize < lessonList.size()) {
+			for (int idx=minSize; idx < lessonList.size(); idx++) {
+				CCSSCoverageData data = new CCSSCoverageData();
+				data.setUserId(lessonList.get(idx).getUserId());
+				data.setLessonName(lessonList.get(idx).getLessonName());
+				data.setName("");
+				retList.add(data);
+			}
+		}
+		else if (minSize < standardList.size()) {
+			for (int idx=minSize; idx < standardList.size(); idx++) {
+				CCSSCoverageData data = new CCSSCoverageData();
+				data.setUserId(standardList.get(idx).getUserId());
+				data.setName(standardList.get(idx).getName());
+				data.setLessonName("");
+				retList.add(data);
+			}
+		}
+		
+		return retList;
+	}
+
+	private String getActivityCode(String activity) {
+		return activity.substring(0, 1);
+	}
+}
