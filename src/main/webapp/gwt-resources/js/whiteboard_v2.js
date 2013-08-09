@@ -2287,8 +2287,9 @@ var Whiteboard = function (cont, isStatic) {
         $get_Element("#button_gr2D").style.border = '1px solid #000000';
         $get_Element("#button_nL").style.border = '1px solid #000000';
         $('.mathquill-embedded-latex').remove();
-		graphicDataStore=[];
+		
         if (boo) {
+		graphicDataStore=[];
             wb.clearWhiteboard(true);
         }
     }
