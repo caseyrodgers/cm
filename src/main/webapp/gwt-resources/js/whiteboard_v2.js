@@ -754,14 +754,14 @@ var Whiteboard = function (cont, isStatic) {
             if (docWidth > 600) {
                 // alert($get_jqElement('#tools button').css('width'));
                 $get_jqElement('#tools').css('height', '35px');
-                $("div#" + contDiv + "[name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button")
+                $("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button")
                 $get_jqElement('#button_clear').text("Clear");
                 $get_jqElement('#button_save').text("Save");
                 $get_jqElement('#button_undo').text("Undo");
                 // $get_jqElement('#button_clear').text("CL");
             } else {
                 $get_jqElement('#tools').css('height', '28px');
-                $("div#" + contDiv + "[name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button")
+                $("div#" + contDiv + " [name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button")
                 $get_jqElement('#button_clear').text("CL");
                 $get_jqElement('#button_save').text("S");
                 $get_jqElement('#button_undo').text("U");
@@ -977,14 +977,14 @@ var Whiteboard = function (cont, isStatic) {
                 if (docWidth > 600) {
                     // alert($('#tools button').css('width'));
                     $get_jqElement('#tools').css('height', '35px');
-                    $("div#" + contDiv + "[name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button")
+                    $("div#" + contDiv + " [name='tools'] button").removeClass('small_tool_button').addClass("big_tool_button")
                     $get_jqElement('#button_clear').text("Clear");
                     $get_jqElement('#button_save').text("Save");
                     $get_jqElement('#button_undo').text("Undo");
                 } else {
 
                     $get_jqElement('#tools').css('height', '25px');
-                    $("div#" + contDiv + "[name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button")
+                    $("div#" + contDiv + " [name='tools'] button").removeClass('big_tool_button').addClass("small_tool_button")
                     $get_jqElement('#button_clear').text("CL");
                     $get_jqElement('#button_save').text("S");
                     $get_jqElement('#button_undo').text("U");
@@ -2279,8 +2279,9 @@ var Whiteboard = function (cont, isStatic) {
         $get_Element("#button_gr2D").style.border = '1px solid #000000';
         $get_Element("#button_nL").style.border = '1px solid #000000';
         $('.mathquill-embedded-latex').remove();
+		graphicDataStore=[];
         if (boo) {
-            clearWhiteboard(true);
+            wb.clearWhiteboard(true);
         }
     }
 
@@ -2992,7 +2993,7 @@ source: https://gist.github.com/754454
         return Number(n);
     }
 
-    clearWhiteboard = function (boo) {
+    wb.clearWhiteboard = function (boo) {
         if (!boo) {
             resetWhiteBoard(false)
         }
