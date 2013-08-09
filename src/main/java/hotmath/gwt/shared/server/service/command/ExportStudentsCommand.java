@@ -166,6 +166,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			List<CCSSCoverageData> ccssList = ccssDao.getStandardNamesForStudentAndLevel(userList, levelName, fromDate, toDate);
     			List<String> levelList = ccssDao.getStandardNamesForLevel(levelName, true);
     			buildStandardsMap(ccssMap, ccssNotCoveredMap, ccssList, levelList);
+    			fillNotCoveredMap(userList, ccssNotCoveredMap, levelList);
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
@@ -249,6 +250,16 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			SqlUtilities.releaseResources(null, null, conn);
     		}
     	}
+
+		private void fillNotCoveredMap(List<Integer> userList,
+				Map<Integer, List<String>> ccssNotCoveredMap,
+				List<String> levelList) {
+			for (Integer uid : userList) {
+				if (ccssNotCoveredMap.containsKey(uid) == false) {
+					ccssNotCoveredMap.put(uid, levelList);
+				}
+			}
+		}
 
     }
 
