@@ -539,6 +539,8 @@ public class ExportStudentsInExcelFormat {
 		cell.setCellValue("Covered Topics: ");
 		cell.setCellStyle(styles.get("data"));
 
+		if (list == null) return;
+
 		int idx = 1;
 		for (CCSSCoverageData data : list) {
 			cell = row.createCell(idx++);
@@ -552,6 +554,8 @@ public class ExportStudentsInExcelFormat {
 		Cell cell = row.createCell(0);
 		cell.setCellValue("Covered Standards: ");
 		cell.setCellStyle(styles.get("data"));
+
+		if (list == null) return;
 
 		int idx = 1;
 		for (CCSSCoverageData data : list) {
