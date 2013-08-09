@@ -293,6 +293,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
 	private Set<String> getCoveredSet(List<CCSSCoverageData> cList) {
 		Set<String> set = new HashSet<String>();
+		if (cList == null) return set;
 		for (CCSSCoverageData data : cList) {
 			String name = data.getName();
 			if (name == null) continue;
