@@ -14,6 +14,7 @@ public class ExportStudentsAction implements Action<StringHolder>{
     GetStudentGridPageAction pageAction;
     String  emailAddress;
 	Map<FilterType,String> filterMap;
+	String  levelName;
 	Date fromDate;
 	Date toDate;
     
@@ -56,6 +57,14 @@ public class ExportStudentsAction implements Action<StringHolder>{
 
 	public void setFilterMap(Map<FilterType,String> filterMap) {
 		this.filterMap = filterMap;
+	}
+
+	public String getLevelName() {
+		return levelName;
+	}
+
+	public void setLevelName(String levelName) {
+		this.levelName = levelName;
 	}
 
 	public Date getFromDate() {

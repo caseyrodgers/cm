@@ -15,6 +15,10 @@ public class CCSSGradeLevel extends FolderDto implements IsSerializable {
 
 	public CCSSGradeLevel() {}
 
+	public CCSSGradeLevel(String name) {
+		this.name = name;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
