@@ -118,6 +118,8 @@ public class FinalExamCreationManager extends GWindow {
                 CmBusyManager.setBusy(false);
                 Log.info("Final Exam Created: " + result);
                 new EditAssignmentDialog(result);
+                
+                hide();
             }
         }.register();
         
@@ -135,7 +137,7 @@ public class FinalExamCreationManager extends GWindow {
         combo.add("Algebra 2 Final Exam");
 
         combo.setAllowTextSelection(false);
-        combo.setEmptyText("Select Predefined Quiz Type");
+        combo.setEmptyText("Select Proficiency Program");
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
         

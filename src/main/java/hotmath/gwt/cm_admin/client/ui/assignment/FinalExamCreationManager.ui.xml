@@ -8,6 +8,9 @@
 	</ui:style>
 
 	<g:HTMLPanel styleName="{style.main}" ui:field="mainPanel">
+	   <p>
+	       Create a new exam based on the problems from the selected proficiency program.
+	   </p>
 	</g:HTMLPanel>
 
 </ui:UiBinder> 
