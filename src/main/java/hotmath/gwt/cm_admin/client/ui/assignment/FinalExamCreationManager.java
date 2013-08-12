@@ -136,9 +136,10 @@ public class FinalExamCreationManager extends GWindow {
         combo.add("Algebra 1");
         combo.add("Geometry");
         combo.add("Algebra 2");
+        combo.add("Grad Prep (National)");
 
         combo.setAllowTextSelection(false);
-        combo.setEmptyText("Select a Course");
+        combo.setEmptyText("Select a program");
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
         

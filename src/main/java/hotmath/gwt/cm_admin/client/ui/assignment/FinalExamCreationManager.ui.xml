@@ -9,7 +9,7 @@
 
 	<g:HTMLPanel styleName="{style.main}" ui:field="mainPanel">
 	   <p>
-	       Create a new course test based on the problems from the selected course.
+	       Create a new course test based on the problems from the selected program.
 	   </p>
 	</g:HTMLPanel>
 

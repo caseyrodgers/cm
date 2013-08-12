@@ -1,6 +1,5 @@
 package hotmath.gwt.shared.server.service.command;
 
-import hotmath.cm.assignment.AssignmentDao;
 import hotmath.cm.exam.FinalExam;
 import hotmath.cm.exam.FinalExam.QuizSize;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
@@ -40,6 +39,10 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
         }
         else if(type.contains("Geometry")) {
             program = CmProgram.GEOM_PROF;
+        }
+        
+        else if(type.contains("Grad Prep")) {
+            program = CmProgram.NATIONAL;
         }
         
         
