@@ -160,7 +160,7 @@ public class ExportStudentsInExcelFormat {
 
 		buildStudentSheet(wb);
 		buildStudentProgramSheet(wb);
-		if (standardsMap != null)
+		if (ccssLevelName != null)
 		    buildStudentStandardsSheet(wb);
 	    
 	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -570,6 +570,8 @@ public class ExportStudentsInExcelFormat {
 		Cell cell = row.createCell(0);
 		cell.setCellValue("Remaining Standards: ");
 		cell.setCellStyle(styles.get("data"));
+
+		if (list == null) return;
 
 		int idx = 1;
 		for (String data : list) {

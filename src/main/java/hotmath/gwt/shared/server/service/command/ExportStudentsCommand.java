@@ -163,10 +163,14 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			}
 
     			CCSSReportDao ccssDao = CCSSReportDao.getInstance();
-    			List<CCSSCoverageData> ccssList = ccssDao.getStandardNamesForStudentAndLevel(userList, levelName, fromDate, toDate);
-    			List<String> levelList = ccssDao.getStandardNamesForLevel(levelName, true);
-    			buildStandardsMap(ccssMap, ccssNotCoveredMap, ccssList, levelList);
-    			fillNotCoveredMap(userList, ccssNotCoveredMap, levelList);
+    			List<CCSSCoverageData> ccssList = null;
+    			List<String> levelList = null;
+    			if (levelName != null) {
+    			    ccssList = ccssDao.getStandardNamesForStudentAndLevel(userList, levelName, fromDate, toDate);
+    			    levelList = ccssDao.getStandardNamesForLevel(levelName, true);
+        			buildStandardsMap(ccssMap, ccssNotCoveredMap, ccssList, levelList);
+        			fillNotCoveredMap(userList, ccssNotCoveredMap, levelList);
+    			}
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
@@ -204,6 +208,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			exporter.setStandardsNotCoveredMap(ccssNotCoveredMap);
     			exporter.setTitle(titleBuff.toString());
     			exporter.setFilterDescr(sb.toString());
+    			exporter.setCcssLevelName(levelName);
 
     			baos = exporter.export();
 
