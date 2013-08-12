@@ -124,6 +124,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	private Date fromDate;
     	private Date toDate;
 
+    	private static final String TWO_SHEET_MSG = "Note that the spreadsheet has two sheets, one for Summary and one for Details.";
+    	private static final String THREE_SHEET_MSG = "Note that the spreadsheet has three sheets, one for Summary, one for Details, and one for Standards.";
+
     	public ExportStudentDataRunnable(final Integer adminUid, final List<StudentModelI> studentList,
     			final String emailAddr, final String filterDescr, String levelName, Date fromDate, Date toDate) {
     		this.adminUid = adminUid;
@@ -237,7 +240,10 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 				msgBuff.append(" is attached.");
 				msgBuff.append(NEW_LINE).append(NEW_LINE);
 
-				msgBuff.append("Note that the spreadsheet has two sheets, one for Summary and one for Details.");				
+				if (levelName == null)
+    				msgBuff.append(TWO_SHEET_MSG);
+				else
+					msgBuff.append(THREE_SHEET_MSG);
 
     			String[] toEmailAddrs = new String[2];
     			toEmailAddrs[0] = emailAddr;
