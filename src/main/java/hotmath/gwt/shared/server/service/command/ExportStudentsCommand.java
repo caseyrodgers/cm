@@ -88,7 +88,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 
 	    ExportStudentDataRunnable exportRunnable =
 	    	new ExportStudentDataRunnable(action.getPageAction().getAdminId(), studentList, action.getEmailAddress(), filterDescr,
-	    			"Grade 6", action.getFromDate(), action.getToDate());
+	    			action.getLevelName(), action.getFromDate(), action.getToDate());
 
 	    if (runInSeparateThread) {
             Thread t = new Thread(exportRunnable);

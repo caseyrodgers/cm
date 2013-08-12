@@ -224,7 +224,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     		list = getJdbcTemplate().query(sql, new RowMapper<String>() {
     			@Override
     			public String mapRow(ResultSet rs, int rowNum) throws SQLException {
-    				String levelName = rs.getString("lesson_name");
+    				String levelName = rs.getString("level_name");
     				return levelName;
     			}
     		});
