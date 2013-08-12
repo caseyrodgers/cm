@@ -75,7 +75,7 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
     private Assignment createNewAssignmentForFinalExam(String name, int adminId, int groupId, FinalExam finalExam) throws Exception {
         
         Assignment ass = new Assignment();
-        ass.setComments(name + " (" + new Date() + ")");
+        ass.setComments(name + " Course Test (" + new Date() + ")");
         ass.setAssignmentName(name);
         ass.setAdminId(adminId);
         ass.setGroupId(groupId);
