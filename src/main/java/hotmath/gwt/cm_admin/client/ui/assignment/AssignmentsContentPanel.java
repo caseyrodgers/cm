@@ -382,10 +382,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     
 
     private void createNewAssignment() {
-        if(_currentGroup == null) {
-            CmMessageBox.showAlert("You need to select a group first.");
-            return;
-        }
+      
         
         Assignment newAss = new Assignment();
         newAss.setStatus("Draft");
@@ -629,7 +626,7 @@ public class AssignmentsContentPanel extends ContentPanel {
 
     private Widget createNewButton() {
         TextButton btn = new TextButton("Create");
-        btn.setToolTip("Create new assignment or final exam");
+        btn.setToolTip("Create new assignment or course test");
         
         Menu menu = new Menu();
         btn.setMenu(menu);
@@ -639,18 +636,26 @@ public class AssignmentsContentPanel extends ContentPanel {
         MenuItem btnC = new MenuItem("New Assignment", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
+                if(_currentGroup == null) {
+                    CmMessageBox.showAlert("You need to select a group first.");
+                    return;
+                }                
                 createNewAssignment();
             }
         });
         menu.add(btnC);
         
-        MenuItem btnF = new MenuItem("Final Exam", new SelectionHandler<MenuItem>() {
+        MenuItem btnF = new MenuItem("Course Test", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
+                if(_currentGroup == null) {
+                    CmMessageBox.showAlert("You need to select a group first.");
+                    return;
+                }
                 new FinalExamCreationManager(_adminId, _currentGroup);
             }
         });
-        btnF.setToolTip("Create a Final Exam");
+        btnF.setToolTip("Create a Course Test");
         menu.add(btnF);
 
         

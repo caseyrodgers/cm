@@ -2,12 +2,9 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 
 
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
-import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.GroupDto;
 import hotmath.gwt.cm_rpc.client.rpc.CreateFinalExamAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
@@ -19,7 +16,6 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
@@ -48,7 +44,7 @@ public class FinalExamCreationManager extends GWindow {
     public FinalExamCreationManager(int adminId, GroupDto currentGroup) {
         super(false);
 
-        setHeadingHtml("Final Exam Creator");
+        setHeadingHtml("Course Tests");
         setPixelSize(400, 200);
 
         this.adminId = adminId;
@@ -70,17 +66,22 @@ public class FinalExamCreationManager extends GWindow {
         _quizTypeCombo = createQuizCombo();
         _quizSize = createQuizSizeCombo();
         
-        flow.add(new MyFieldLabel(_quizTypeCombo, "Subject", 60, 200));
+        flow.add(new MyFieldLabel(_quizTypeCombo, "Course", 60, 200));
         flow.add(new MyFieldLabel(_quizSize, "Problems", 60, 120));
         mainPanel.add(flow);
         
-        addButton(new TextButton("Create Final Exam", new SelectHandler() {
+        addButton(new TextButton("Continue", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 createFinalExam();
             }
         }));
-        addCloseButton();
+        addButton(new TextButton("Cancel", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                hide();
+            }
+        }));
     }
 
     protected void createFinalExam() {
@@ -130,18 +131,18 @@ public class FinalExamCreationManager extends GWindow {
     private SimpleComboBox<String> createQuizCombo() {
         SimpleComboBox<String> combo = new SimpleComboBox<String>(new StringLabelProvider<String>());
 
-        combo.add("Essentials Final Exam");
-        combo.add("Pre-Algebra Final Exam");
-        combo.add("Algebra 1 Final Exam");
-        combo.add("Geometry Final Exam");
-        combo.add("Algebra 2 Final Exam");
+        combo.add("Essentials");
+        combo.add("Pre-Algebra");
+        combo.add("Algebra 1");
+        combo.add("Geometry");
+        combo.add("Algebra 2");
 
         combo.setAllowTextSelection(false);
-        combo.setEmptyText("Select Proficiency Program");
+        combo.setEmptyText("Select a Course");
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
         
-        combo.setToolTip("Select the type of final exam you would like to create.");
+        combo.setToolTip("Select the type of course test you would like to create.");
         return combo;
     }
     
@@ -159,7 +160,7 @@ public class FinalExamCreationManager extends GWindow {
         combo.setForceSelection(true);
         combo.setTriggerAction(TriggerAction.ALL);
         
-        combo.setToolTip("Select the number of problems in the final exam.");
+        combo.setToolTip("Select the number of problems in the course test.");
         return combo;
     }
 
