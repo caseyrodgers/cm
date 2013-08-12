@@ -7,6 +7,7 @@ import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -29,7 +30,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -118,10 +118,14 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
         
         if(CmShared.getQueryParameter("test") != null) {
+            FinalExamCreationManager.startTest();
+            return;
+        }
+        if(CmShared.getQueryParameter("test2") != null) {
             AssignmentStatusDialog.startTest();
             return;
         }
-        else if(CmShared.getQueryParameter("test2") != null) {
+        else if(CmShared.getQueryParameter("test3") != null) {
             CCSSCoverageWindow.startTest();
             return;
         }

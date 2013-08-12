@@ -448,6 +448,10 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
         toolbar.add(createRefreshButton());
         
         toolbar.add(createEditAssignmentButton());
+        
+        if(CmShared.getQueryParameter("dev") != null) {
+            toolbar.add(createManageCustomProblemsButton());
+        }
         toolbar.add(new FillToolItem());
 
         toolbar.add(displayPrintableReportToolItem(_grid));
@@ -786,6 +790,19 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 });                
             }});
         return createEdit;
+    }
+    
+    private Widget createManageCustomProblemsButton() {
+        return new TextButton("Problems",new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                GWT.runAsync(new CmRunAsyncCallback() {
+                    @Override
+                    public void onSuccess() {
+                        new CustomProblemManagerDialog(_cmAdminMdl.getUid());
+                    }
+                });                
+            }});
     }
 
     private TextButton displayPrintableReportToolItem(final Grid<StudentModelI> grid) {

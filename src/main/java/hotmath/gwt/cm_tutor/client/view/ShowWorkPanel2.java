@@ -232,8 +232,13 @@ public class ShowWorkPanel2 extends Composite {
         } else {
             commandType = CommandType.DRAW;
 
-            /** So it can be redrawn on undo */
-            _lastCommands.add(new WhiteboardCommand("draw", json, false));
+            if(_lastCommands == null) {
+                Log.error("Whiteboard has not been loaded!");
+            }
+            else {
+                /** So it can be redrawn on undo */
+                _lastCommands.add(new WhiteboardCommand("draw", json, false));
+            }
         }
 
         if (commandType == CommandType.CLEAR) {
@@ -279,10 +284,10 @@ public class ShowWorkPanel2 extends Composite {
 
     private void saveWhiteboardToServer() {
 
+        Log.debug("saveWhiteboardToServer: actions=" + whiteboardActions.getActions().size());
+        
         if (whiteboardActions.getActions().size() == 0)
             return;
-
-        Log.debug("saveWhiteboardToServer: actions=" + whiteboardActions.getActions().size());
 
         CmTutor.getCmService().execute(whiteboardActions, new AsyncCallback<CmList<Response>>() {
             @Override

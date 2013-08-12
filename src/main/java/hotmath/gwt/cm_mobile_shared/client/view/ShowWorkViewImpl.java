@@ -3,18 +3,19 @@ package hotmath.gwt.cm_mobile_shared.client.view;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
-import hotmath.gwt.cm_rpc_core.client.rpc.Action;
-import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel;
-import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel.ShowWorkPanelCallbackDefault;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Widget;
 
 public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView {
     
@@ -22,10 +23,10 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
     Presenter presenter;
     
     String title;
-    ShowWorkPanel _showWorkPanel;
+    ShowWorkPanel2 _showWorkPanel;
    
     public ShowWorkViewImpl() {
-        _showWorkPanel = new ShowWorkPanel(new ShowWorkPanelCallbackDefault() {
+        _showWorkPanel = new ShowWorkPanel2(new ShowWorkPanelCallbackDefault() {
             @Override
             public void showWorkIsReady() {
                 setPresenterAsync(presenter);
@@ -39,18 +40,10 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
         },false);
         initWidget(_showWorkPanel);
     }
-
     
     @Override
-    public void setPresenter(final Presenter presenter) {
+    public void setPresenter(final Presenter presenter) {        
         this.presenter = presenter;
-        
-        // showProblem.setValue(false);  // turn off showork as default
-        
-        /** make sure the whiteboard is initialized
-         * 
-         */
-        Widget w = getParent();
         _showWorkPanel.setupWhiteboard();
     }
 
@@ -112,5 +105,10 @@ public class ShowWorkViewImpl extends AbstractPagePanel implements ShowWorkView 
 
     private void setProblemStatement() {
        _showWorkPanel.setProblemStatement(presenter.getProblemStatementHtml());
+    }
+
+    @Override
+    public void loadWhiteboard(CmList<WhiteboardCommand> commands) {
+        _showWorkPanel.loadWhiteboard(commands);
     }
 }

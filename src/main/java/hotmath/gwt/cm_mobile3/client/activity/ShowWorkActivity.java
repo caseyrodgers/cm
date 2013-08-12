@@ -39,8 +39,8 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     }
 
     @Override
-    public void prepareShowWorkView(ShowWorkView view) {
-        setExternalJsniHooks(this);
+    public void prepareShowWorkView(final ShowWorkView view) {
+        //setExternalJsniHooks(this);
         view.setHeaderTitle(title);
 
         eventBus.fireEvent(new SystemIsBusyEvent(true));
@@ -52,15 +52,17 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
             public void onSuccess(CmList<WhiteboardCommand> commands) {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
                 
-                updateWhiteboard(flashId,"clear","");
-                for(int i=0,t=commands.size(); i < t; i++) {
-                    try {
-                        updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
-                    }
-                    catch(Exception e) {
-                        Log.error("Error processing whitebaord command: " + e.getMessage());
-                    }
-                }
+                view.loadWhiteboard(commands);
+//                
+//                updateWhiteboard(flashId,"clear","");
+//                for(int i=0,t=commands.size(); i < t; i++) {
+//                    try {
+//                        updateWhiteboard(flashId, commands.get(i).getCommand(), commands.get(i).getData());
+//                    }
+//                    catch(Exception e) {
+//                        Log.error("Error processing whitebaord command: " + e.getMessage());
+//                    }
+//                }
             }
             
             public void onFailure(Throwable caught) {
@@ -68,15 +70,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
                 eventBus.fireEvent(new SystemIsBusyEvent(false));
             };
         });
-            
-        
-//        /** execute initialize only after HTML is loaded */
-//        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-//            @Override
-//            public void execute() {
-//                initializeWhiteboard();
-//            }
-//        });
+
     }
 
     @Override
@@ -143,7 +137,6 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
         draw', but a bunch of draw requests.
     */
     static public native void updateWhiteboard(String flashId, String command, String commandData) /*-{
-
        var cmdArray = [];
        if(command == 'draw') {
            cmdArray = [['draw',[commandData]]];
@@ -159,25 +152,22 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
             ele[1] = cmdArray[i][1];
             realArray[i] = ele;
         }
-       $wnd.Whiteboard.updateWhiteboard(realArray);
+       $wnd._theWhitebaord.updateWhiteboard(realArray);
     }-*/;
     
-    
-//    private native void initializeWhiteboard()/*-{
-//        $wnd.Whiteboard.initWhiteboard($doc);
-//    }-*/;
+
     
     static public native void disconnectWhiteboard()/*-{
-        $wnd.Whiteboard.disconnectWhiteboard($doc);
+        $wnd._theWhitebaord.disconnectWhiteboard($doc);
     }-*/;
     
     
     private native void setExternalJsniHooks(ShowWorkActivity x) /*-{
-        $wnd.Whiteboard.whiteboardOut = function(data, boo) {
+        $wnd._theWhiteboard.whiteboardOut = function(data, boo) {
             x.@hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
         }
         
-        $wnd.Whiteboard.saveWhiteboard = function() {
+        $wnd._theWhiteboard.saveWhiteboard = function() {
             x.@hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity::whiteboardSave_Gwt()();
         }
     }-*/;

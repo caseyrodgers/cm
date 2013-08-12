@@ -629,14 +629,31 @@ public class AssignmentsContentPanel extends ContentPanel {
 
     private Widget createNewButton() {
         TextButton btn = new TextButton("Create");
-        btn.setToolTip("Create new assignment");
-        btn.addSelectHandler(new SelectHandler() {
+        btn.setToolTip("Create new assignment or final exam");
+        
+        Menu menu = new Menu();
+        btn.setMenu(menu);
+        
+        
+        
+        MenuItem btnC = new MenuItem("New Assignment", new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
+            public void onSelection(SelectionEvent<MenuItem> event) {
                 createNewAssignment();
             }
-
         });
+        menu.add(btnC);
+        
+        MenuItem btnF = new MenuItem("Final Exam", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                new FinalExamCreationManager(_adminId, _currentGroup);
+            }
+        });
+        btnF.setToolTip("Create a Final Exam");
+        menu.add(btnF);
+
+        
         return btn;
     }
     
