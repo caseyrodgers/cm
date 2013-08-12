@@ -72,6 +72,8 @@ public class ExportStudentData extends SimpleContainer {
 	private int formHeight = 190;
 	private int formWidth  = 400;
 
+	private static final String EMPTY_TEXT = "-- select a strand --";
+
 	private TextField emailAddr;
 
 	interface LevelProperties extends PropertyAccess<CCSSGradeLevel> {
@@ -198,7 +200,7 @@ public class ExportStudentData extends SimpleContainer {
         combo.setAllowBlank(false);
         combo.setTriggerAction(TriggerAction.ALL);
         combo.setStore(store);
-        combo.setTitle("Select a Strand");
+        combo.setTitle(EMPTY_TEXT);
         combo.setId("level-combo");
         combo.setTypeAhead(true);
         combo.setSelectOnFocus(true);
@@ -210,6 +212,7 @@ public class ExportStudentData extends SimpleContainer {
             public void onSelection(SelectionEvent<CCSSGradeLevel> event) {
                 CCSSGradeLevel level = event.getSelectedItem();
                 _levelName = level.getName();
+                if (EMPTY_TEXT.equals(_levelName)) _levelName = null;
             }
         });
 
