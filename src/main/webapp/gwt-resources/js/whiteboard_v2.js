@@ -131,7 +131,14 @@ var Whiteboard = function (cont, isStatic) {
         }
 
         function buildGUI() {
-            var parentDiv = $("#" + contDiv)
+            var parentDiv = $("#" + contDiv);
+            
+            // only create if HTML structure not already exists
+            if(parentDiv.children().length > 0) {
+            	console.log('this whitebaord already created: ' + contDiv);
+            	return;
+            }
+            
             var wbc = $('<div></div>').attr('name', 'wb-container').addClass("wb-container").appendTo(parentDiv);
             var toolCont = buildTools(toolArr).appendTo(wbc);
             var canvasCont = buildCanvasLayers().appendTo(wbc);
