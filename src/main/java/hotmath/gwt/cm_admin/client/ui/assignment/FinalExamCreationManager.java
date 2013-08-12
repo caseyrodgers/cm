@@ -86,7 +86,7 @@ public class FinalExamCreationManager extends GWindow {
 
     protected void createFinalExam() {
         if(_quizTypeCombo.getValue() == null) {
-            CmMessageBox.showAlert("Info", "Select a type of final exam to create.",new CallbackOnComplete() {
+            CmMessageBox.showAlert("Info", "Select a type of course test to create.",new CallbackOnComplete() {
                 @Override
                 public void isComplete() {
                     _quizTypeCombo.expand();                    
@@ -96,7 +96,7 @@ public class FinalExamCreationManager extends GWindow {
         }
         
         if(_quizSize.getValue() == null) {
-            CmMessageBox.showAlert("Info", "Select the number of problems to include in the final exam",new CallbackOnComplete() {
+            CmMessageBox.showAlert("Info", "Select the number of problems to include in the course test",new CallbackOnComplete() {
                 @Override
                 public void isComplete() {
                     _quizSize.expand();
@@ -117,7 +117,7 @@ public class FinalExamCreationManager extends GWindow {
             @Override
             public void oncapture(Assignment result) {
                 CmBusyManager.setBusy(false);
-                Log.info("Final Exam Created: " + result);
+                Log.info("Course Test Created: " + result);
                 new EditAssignmentDialog(result);
                 
                 hide();
