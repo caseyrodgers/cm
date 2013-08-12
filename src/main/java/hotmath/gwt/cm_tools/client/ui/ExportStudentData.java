@@ -1,30 +1,21 @@
 package hotmath.gwt.cm_tools.client.ui;
 
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
-import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
-import hotmath.gwt.cm_tools.client.model.ChapterModel;
 import hotmath.gwt.cm_tools.client.model.StringHolder;
-import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
-import hotmath.gwt.cm_tools.client.model.StudentModelI;
-import hotmath.gwt.cm_tools.client.model.StudyProgramExt;
-import hotmath.gwt.cm_tools.client.model.SubjectModel;
-import hotmath.gwt.cm_tools.client.model.SubjectModelProperties;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.CCSSGradeLevel;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.CCSSLevelsAction;
 import hotmath.gwt.shared.client.rpc.action.ExportStudentsAction;
-import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
 
 import java.util.Date;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
-import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -72,7 +63,7 @@ public class ExportStudentData extends SimpleContainer {
 	private int formHeight = 190;
 	private int formWidth  = 400;
 
-	private static final String EMPTY_TEXT = "-- select a strand --";
+	private static final String EMPTY_TEXT = "-- Do not include standards --";
 
 	private TextField emailAddr;
 
@@ -120,15 +111,15 @@ public class ExportStudentData extends SimpleContainer {
 		//emailAddr.setMaxLength(300);
 		exportFlds.addThing(new MyFieldLabel(emailAddr, "Email", 100,250));
 
-        levelField = new MyFieldSet("Strand");
+        levelField = new MyFieldSet("Core Standards");
         levelStore = new ListStore<CCSSGradeLevel>(_levelProps.name());
         getStandardLevelsRPC(levelStore);
         levelCombo = levelCombo(levelStore);
         levelField.addThing(new MyFieldLabel(levelCombo, "Strand", 100, 250));
 
 		exportWindow.setHeadingText("Export Student Data");
-		exportWindow.setWidth(formWidth+10);
-		exportWindow.setHeight(formHeight+110);
+		exportWindow.setWidth(formWidth + 10);
+		exportWindow.setHeight(formHeight + 160);
 		exportWindow.setResizable(false);
 		exportWindow.setDraggable(true);
 		exportWindow.setModal(true);
@@ -182,9 +173,13 @@ public class ExportStudentData extends SimpleContainer {
 	    });
 		return exportBtn;
 	}
-	
+
+	String description1 = "An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide.";
+	String description2 = "<br/><br/> If a standards strand is selected the spreadsheet will include 'Standards' data on a third sheet";
+	String description = description1 + description2;
+
 	private Widget getDescription() {
-        return new HTML("An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide.");
+        return new HTML(description);
 	}
 
 	private ComboBox<CCSSGradeLevel> levelCombo(ListStore<CCSSGradeLevel> store) {
@@ -197,14 +192,14 @@ public class ExportStudentData extends SimpleContainer {
         ComboBox<CCSSGradeLevel> combo = new ComboBox<CCSSGradeLevel>(new ComboBoxCell<CCSSGradeLevel>(store, _levelProps.label(), renderer));
         combo.setForceSelection(false);
         combo.setEditable(false);
-        combo.setAllowBlank(false);
+        combo.setAllowBlank(true);
         combo.setTriggerAction(TriggerAction.ALL);
         combo.setStore(store);
-        combo.setTitle(EMPTY_TEXT);
+        combo.setTitle("Select a Strand");
         combo.setId("level-combo");
         combo.setTypeAhead(true);
         combo.setSelectOnFocus(true);
-        combo.setEmptyText("-- select a strand --");
+        combo.setEmptyText(EMPTY_TEXT);
         combo.setWidth(280);
         combo.addSelectionHandler(new SelectionHandler<CCSSGradeLevel>() {
 
