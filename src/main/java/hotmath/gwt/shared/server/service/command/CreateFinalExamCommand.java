@@ -7,6 +7,7 @@ import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.CreateFinalExamAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
@@ -89,6 +90,7 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
             String label = "Problem " +  (++ordinal);
             
             ProblemDto pd = new ProblemDto(ordinal, ordinal, lesson, label, pid, 0);
+            pd.setProblemType(ProblemType.MULTI_CHOICE);
             pids.add(pd);
         }
         ass.setPids(pids);
