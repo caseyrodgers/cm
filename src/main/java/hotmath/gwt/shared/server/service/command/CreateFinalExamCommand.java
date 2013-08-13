@@ -1,5 +1,6 @@
 package hotmath.gwt.shared.server.service.command;
 
+import hotmath.cm.exam.ExamDao;
 import hotmath.cm.exam.FinalExam;
 import hotmath.cm.exam.FinalExam.QuizSize;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
@@ -16,6 +17,7 @@ import hotmath.testset.ha.CmProgram;
 
 import java.sql.Connection;
 import java.util.Date;
+import java.util.List;
 
 public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamAction, Assignment> {
 
@@ -88,10 +90,13 @@ public class CreateFinalExamCommand implements ActionHandler<CreateFinalExamActi
         
         int ordinal=0;
         for(String pid: finalExam.getPids()) {
-            LessonModel lesson = new LessonModel("","");
+            
+            List<LessonModel> lessons = ExamDao.getInstance().getLessonsForProblem(pid);
+            
             
             String label = "Problem " +  (++ordinal);
             
+            LessonModel lesson = lessons.size() > 0?lessons.get(0):new LessonModel("","");
             ProblemDto pd = new ProblemDto(ordinal, ordinal, lesson, label, pid, 0);
             pd.setProblemType(ProblemType.MULTI_CHOICE);
             pids.add(pd);
