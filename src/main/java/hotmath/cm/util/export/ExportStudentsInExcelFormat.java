@@ -160,8 +160,7 @@ public class ExportStudentsInExcelFormat {
 
 		buildStudentSheet(wb);
 		buildStudentProgramSheet(wb);
-		if (ccssLevelName != null)
-		    buildStudentStandardsSheet(wb);
+		buildStudentStandardsSheet(wb);
 	    
 	    ByteArrayOutputStream bos = new ByteArrayOutputStream();
 	    wb.write(bos);
@@ -525,6 +524,7 @@ public class ExportStudentsInExcelFormat {
     		row = sheet.createRow(idx++);
     		addStandardsCoverage(row, list, styles);
 
+    		if (ccssLevelName == null) continue;
     		row = sheet.createRow(idx++);
     		addStandardsNotCovered(row, standardsNotCoveredMap.get(sm.getUid()), styles);
     		

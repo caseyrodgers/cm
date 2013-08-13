@@ -63,7 +63,7 @@ public class ExportStudentData extends SimpleContainer {
 	private int formHeight = 190;
 	private int formWidth  = 400;
 
-	private static final String EMPTY_TEXT = "-- Do not include standards --";
+	private static final String EMPTY_TEXT = "-- Optional selection (see below) --";
 
 	private TextField emailAddr;
 
@@ -174,8 +174,8 @@ public class ExportStudentData extends SimpleContainer {
 		return exportBtn;
 	}
 
-	String description1 = "An Excel spreadsheet containing student details and selected report card data for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide.";
-	String description2 = "<br/><br/> If a standards strand is selected the spreadsheet will include 'Standards' data on a third sheet";
+	String description1 = "An Excel spreadsheet containing student details, selected report card data, and topics and standards covered for your currently displayed students will be generated and sent from 'registration@hotmath.com' to the email address you provide.";
+	String description2 = "<br/><br/>If a strand is selected above, the standards not yet covered for that strand will also be listed.";
 	String description = description1 + description2;
 
 	private Widget getDescription() {
