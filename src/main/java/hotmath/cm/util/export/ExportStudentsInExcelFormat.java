@@ -4,7 +4,6 @@ import hotmath.gwt.cm_admin.server.model.activity.StudentActivitySummaryModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.cm_tools.client.model.CustomProgramComposite.Type;
 import hotmath.gwt.cm_tools.client.model.StudentReportCardModelI;
-import hotmath.gwt.shared.client.model.CCSSCoverageData;
 
 import org.apache.log4j.Logger;
 
@@ -47,7 +46,9 @@ public class ExportStudentsInExcelFormat {
 	
 	private Map<Integer, Integer> timeOnTaskMap;
 
-	private Map<Integer, List<CCSSCoverageData>> standardsMap;
+	private Map<Integer, List<String>> topicsMap;
+
+	private Map<Integer, List<String>> standardsMap;
 
 	private Map<Integer, List<String>> standardsNotCoveredMap;
 
@@ -90,7 +91,11 @@ public class ExportStudentsInExcelFormat {
 		this.timeOnTaskMap = timeOnTaskMap;
 	}
 
-	public void setStandardsMap(Map<Integer, List<CCSSCoverageData>> standardsMap) {
+	public void setTopicsMap(Map<Integer, List<String>> topicsMap) {
+		this.topicsMap = topicsMap;
+	}
+
+	public void setStandardsMap(Map<Integer, List<String>> standardsMap) {
 		this.standardsMap = standardsMap;
 	}
 
@@ -516,13 +521,14 @@ public class ExportStudentsInExcelFormat {
     		cell.setCellValue(sm.getGroup());
     		cell.setCellStyle(styles.get("data"));
 
-    		List<CCSSCoverageData> list = standardsMap.get(sm.getUid());
+    		List<String> stdList = standardsMap.get(sm.getUid());
+    		List<String> topicList = topicsMap.get(sm.getUid());
 
     		row = sheet.createRow(idx++);
-    		addLessonCoverage(row, list, styles);
+    		addLessonCoverage(row, topicList, styles);
     		
     		row = sheet.createRow(idx++);
-    		addStandardsCoverage(row, list, styles);
+    		addStandardsCoverage(row, stdList, styles);
 
     		if (ccssLevelName == null) continue;
     		row = sheet.createRow(idx++);
@@ -534,7 +540,7 @@ public class ExportStudentsInExcelFormat {
 	    addStandardsLegend(idx, sheet, styles);
 	}
 
-	private void addLessonCoverage(Row row, List<CCSSCoverageData> list, Map<String, CellStyle> styles) {
+	private void addLessonCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
 		Cell cell = row.createCell(0);
 		cell.setCellValue("Covered Topics: ");
 		cell.setCellStyle(styles.get("data"));
@@ -542,15 +548,14 @@ public class ExportStudentsInExcelFormat {
 		if (list == null) return;
 
 		int idx = 1;
-		for (CCSSCoverageData data : list) {
+		for (String data : list) {
 			cell = row.createCell(idx++);
-			cell.setCellValue(data.getLessonName());
+			cell.setCellValue(data);
 			cell.setCellStyle(styles.get("data"));
-			
 		}
 	}
 
-	private void addStandardsCoverage(Row row, List<CCSSCoverageData> list, Map<String, CellStyle> styles) {
+	private void addStandardsCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
 		Cell cell = row.createCell(0);
 		cell.setCellValue("Covered Standards: ");
 		cell.setCellStyle(styles.get("data"));
@@ -558,9 +563,9 @@ public class ExportStudentsInExcelFormat {
 		if (list == null) return;
 
 		int idx = 1;
-		for (CCSSCoverageData data : list) {
+		for (String data : list) {
 			cell = row.createCell(idx++);
-			cell.setCellValue(data.getName());
+			cell.setCellValue(data);
 			cell.setCellStyle(styles.get("data"));
 		}
 	}

@@ -30,6 +30,8 @@ import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -173,6 +176,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
         	    if (levelName != null) {
         			fillNotCoveredMap(userList, ccssNotCoveredMap, levelList);
     			}
+        	    Map<Integer,List<String>> topicMap = extractTopics(ccssMap);
+        	    Map<Integer,List<String>> stdMap = extractStandards(ccssMap);
 
     			HaAdmin haAdmin = CmAdminDao.getInstance().getAdmin(adminUid);
 
@@ -206,7 +211,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			exporter.setReportCardList(rcList);
     			exporter.setStudentActivitySummaryMap(sasMap);
     			exporter.setTimeOnTaskMap(totMap);
-    			exporter.setStandardsMap(ccssMap);
+    			exporter.setTopicsMap(topicMap);
+    			exporter.setStandardsMap(stdMap);
     			exporter.setStandardsNotCoveredMap(ccssNotCoveredMap);
     			exporter.setTitle(titleBuff.toString());
     			exporter.setFilterDescr(sb.toString());
@@ -256,6 +262,41 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			SqlUtilities.releaseResources(null, null, conn);
     		}
     	}
+
+		private Map<Integer, List<String>> extractStandards(
+				Map<Integer, List<CCSSCoverageData>> ccssMap) {
+			Map<Integer, List<String>> stdMap = new HashMap<Integer, List<String>>();
+
+			Set<Integer> keys = ccssMap.keySet();
+			Iterator<Integer> iter = keys.iterator();
+			while (iter.hasNext()) {
+				Integer uid = iter.next();
+				List<String> list = new ArrayList<String>();
+				for (CCSSCoverageData data : ccssMap.get(uid)) {
+					list.add(data.getName());
+				}
+				sortStandards(list);
+				stdMap.put(uid, list);
+			}
+			return stdMap;
+		}
+
+		private Map<Integer, List<String>> extractTopics(
+				Map<Integer, List<CCSSCoverageData>> ccssMap) {
+			Map<Integer, List<String>> topicMap = new HashMap<Integer, List<String>>();
+
+			Set<Integer> keys = ccssMap.keySet();
+			Iterator<Integer> iter = keys.iterator();
+			while (iter.hasNext()) {
+				Integer uid = iter.next();
+				List<String> list = new ArrayList<String>();
+				topicMap.put(uid, list);
+				for (CCSSCoverageData data : ccssMap.get(uid)) {
+					list.add(data.getLessonName());
+				}
+			}
+			return topicMap;
+		}
 
 		private void fillNotCoveredMap(List<Integer> userList,
 				Map<Integer, List<String>> ccssNotCoveredMap,
@@ -397,6 +438,48 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 		}
 		
 		return retList;
+	}
+	
+    /**
+     * 
+     * @param standardList
+     */
+	private void sortStandards(List<String> standardList) {
+        Collections.sort(standardList, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+            	String name1 = o1.substring(0, o1.indexOf(" - "));
+                name1 = name1.replace(".", "-");
+            	String name2 = o2.substring(0, o2.indexOf(" - "));
+                name2 = name2.replace(".", "-");
+
+                String[] t1 = name1.split("-");
+                String[] t2 = name2.split("-");
+
+                int count;
+                if (t1.length == t2.length){
+                	count = t1.length;
+                }
+                else {
+                	count = (t2.length > t1.length) ? t1.length : t2.length;
+                }
+            	for (int idx=0; idx<count; idx++) {
+            		if (t1[idx].equalsIgnoreCase(t2[idx]) == false) {
+            			boolean isNum1 = NumberUtils.isDigits(t1[idx]);
+            			boolean isNum2 = NumberUtils.isDigits(t2[idx]);
+            			if (isNum1 == false || isNum2 == false) {
+            			    return t1[idx].compareToIgnoreCase(t2[idx]);
+            			}
+            			else {
+            				int n1 = Integer.parseInt(t1[idx]);
+            				int n2 = Integer.parseInt(t2[idx]);
+            				return n1 - n2;
+            			}
+            		}
+            	}
+            	return (t1.length > count) ? 1 : -1;
+            }
+        });
 	}
 
 	private String getActivityCode(String activity) {
