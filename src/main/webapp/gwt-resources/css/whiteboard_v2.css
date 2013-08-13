@@ -85,9 +85,9 @@
 }
 
 .tools {
-	height: 35px;
 	padding-left: 5px;
 	padding-top: 3px;
+	padding-bottom: 2px;
 	background: #eeeeee;
 	border-bottom: 1px solid #000000;
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
@@ -113,7 +113,7 @@
 	width: 25px;
 	height: 25px;
 	vertical-align: middle;
-	margin: 0px;
+	margin: 0px 2px 0px 0px;
 	padding: 0px;
 	cursor: pointer;
 	cursor: hand;
@@ -136,7 +136,7 @@
 	width: 45px;
 	height: 30px;
 	vertical-align: middle;
-	margin: 0px;
+	margin: 0px 2px 0px 0px;
 	padding: 0px;
 	cursor: pointer;
 	cursor: hand;
