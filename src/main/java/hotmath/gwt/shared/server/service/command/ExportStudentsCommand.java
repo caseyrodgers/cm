@@ -452,10 +452,10 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
             	int index2 = o2.indexOf(" - ");
 
             	if (index1 < 0) {
-            		return (index2<0) ? 0 : -1;
+            		return (index2<0) ? 0 : 1;
             	}
             	if (index2 < 0) {
-            		return (index1<0) ? 0 : 1;
+            		return (index1<0) ? 0 : -1;
             	}
             	String name1 = o1.substring(0, index1);
                 name1 = name1.replace(".", "-");
