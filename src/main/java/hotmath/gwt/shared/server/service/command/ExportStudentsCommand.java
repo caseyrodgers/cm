@@ -169,7 +169,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			List<CCSSCoverageData> ccssList = null;
     			List<String> levelList = null;
     			if (levelName != null) {
-    			    ccssList = ccssDao.getStandardNamesForStudentAndLevel(userList, levelName, fromDate, toDate);
+    			    ccssList = ccssDao.getStandardNamesForStudent(userList, fromDate, toDate);
     			    levelList = ccssDao.getStandardNamesForLevel(levelName, true);
         			buildStandardsMap(ccssMap, ccssNotCoveredMap, ccssList, levelList);
         			fillNotCoveredMap(userList, ccssNotCoveredMap, levelList);

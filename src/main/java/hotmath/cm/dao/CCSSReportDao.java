@@ -462,6 +462,43 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 		return getStudentAllByPeriodStandardNamesWithDate(userIds, fromDate, toDate);
 	}
 
+	public List<CCSSCoverageData> getStandardNamesForStudent(List<Integer> userIds,
+			Date fromDate, Date toDate) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_STUDENT");
+        sql = QueryHelper.createInListSQL(sql, userIds);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStandardNamesForStudentAndLevel(): sql: " + sql);
+
+        //TODO : change this...
+    	if ( toDate == null) toDate = new Date();
+    	if ( fromDate == null ) fromDate = new Date(toDate.getTime() - 10L*365L*24L*60L*60L*1000L);
+
+    	List<CCSSCoverageData> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql,
+    				new Object[] { fromDate, toDate, fromDate, toDate, fromDate, toDate },
+    				new RowMapper<CCSSCoverageData>() {
+    			@Override
+    			public CCSSCoverageData mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSCoverageData item = new CCSSCoverageData(rs.getString("lesson_name"), rs.getString("standard_name_new"));
+    				item.getColumnLabels().add(rs.getString("usage_type"));
+    				String uid = rs.getString("user_id");
+					int userId = Integer.parseInt(uid);
+    				item.setUserId(userId);
+    				item.setCount(1);
+    				return item;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getStandardNamesForStudentAndLevel(): userIds: %d, fromDate: %s, toDate: %s, sql: %s",
+    				userIds.get(0), DATE_FMT.format(fromDate), DATE_FMT.format(toDate), sql), e);
+    		throw e;
+    	}
+
+        return list;
+	}
+
 	public List<CCSSCoverageData> getStandardNamesForStudentAndLevel(List<Integer> userIds,
 			String levelName, Date fromDate, Date toDate) throws Exception {
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_STUDENT_AND_LEVEL");
