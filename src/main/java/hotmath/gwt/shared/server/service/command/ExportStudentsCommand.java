@@ -448,9 +448,18 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
         Collections.sort(standardList, new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-            	String name1 = o1.substring(0, o1.indexOf(" - "));
+            	int index1 = o1.indexOf(" - ");
+            	int index2 = o2.indexOf(" - ");
+
+            	if (index1 < 0) {
+            		return (index2<0) ? 0 : -1;
+            	}
+            	if (index2 < 0) {
+            		return (index1<0) ? 0 : 1;
+            	}
+            	String name1 = o1.substring(0, index1);
                 name1 = name1.replace(".", "-");
-            	String name2 = o2.substring(0, o2.indexOf(" - "));
+            	String name2 = o2.substring(0, index2);
                 name2 = name2.replace(".", "-");
 
                 String[] t1 = name1.split("-");
