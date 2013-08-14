@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class HighlightsImplCCSSCoverageChart extends HighlightsImplBase {
     HighlightsImplCCSSCoverageChartPanel panel = new HighlightsImplCCSSCoverageChartPanel(this);
-    static String title = "CCSS Coverage Chart";
+    static String title = "CCSS Coverage Charts";
     
     public HighlightsImplCCSSCoverageChart() {
         super(title,"Displays the number of CCSS standards covered over time.");
