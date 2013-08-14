@@ -20,8 +20,10 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.ByteArrayOutputStream;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Export Student detail and report card data in Excel format
@@ -59,6 +61,8 @@ public class ExportStudentsInExcelFormat {
 	private Integer adminId;
 
 	private String ccssLevelName;
+
+	private int ccssColumnCount;
 	
 	public ExportStudentsInExcelFormat() {
 	}
@@ -490,6 +494,8 @@ public class ExportStudentsInExcelFormat {
 		
 	    int idx = 1;
 
+	    ccssColumnCount = calcColumnCount();
+
 	    sheet.createRow(0);
 	    Row titleRow = sheet.createRow(idx++);
 	    Cell titleCell = titleRow.createCell(0);
@@ -512,14 +518,16 @@ public class ExportStudentsInExcelFormat {
 		
 	    for (StudentModelI sm : studentList) {
 
+	    	// leave blank row between each student's records
     		Row row = sheet.createRow(idx++);
+    		row = sheet.createRow(idx++);;
 
     		Cell cell = row.createCell(0);
     		cell.setCellValue(sm.getName());
-    		cell.setCellStyle(styles.get("data"));
+    		cell.setCellStyle(styles.get("header"));
     		cell = row.createCell(1);
     		cell.setCellValue(sm.getGroup());
-    		cell.setCellStyle(styles.get("data"));
+    		cell.setCellStyle(styles.get("header"));
 
     		List<String> stdList = standardsMap.get(sm.getUid());
     		List<String> topicList = topicsMap.get(sm.getUid());
@@ -540,48 +548,65 @@ public class ExportStudentsInExcelFormat {
 	    addStandardsLegend(idx, sheet, styles);
 	}
 
-	private void addLessonCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
-		Cell cell = row.createCell(0);
-		cell.setCellValue("Covered Topics: ");
-		cell.setCellStyle(styles.get("data"));
+	private int calcColumnCount() {
+		int maxCount;
 
-		if (list == null) return;
+		maxCount = getMaxColumns(topicsMap);
+		int count = getMaxColumns(standardsMap);
+		if (count > maxCount) maxCount = count;
+		count = getMaxColumns(standardsNotCoveredMap);
+		if (count > maxCount) maxCount = count;
+		return maxCount;
+	}
 
-		int idx = 1;
-		for (String data : list) {
-			cell = row.createCell(idx++);
-			cell.setCellValue(data);
-			cell.setCellStyle(styles.get("data"));
+	private int getMaxColumns(Map<Integer, List<String>> map) {
+		Set<Integer> keys = map.keySet();
+		Iterator<Integer> iter = keys.iterator();
+		int count = 0;
+		while (iter.hasNext()) {
+			Integer uid = iter.next();
+			List<String> items = map.get(uid);
+			if (count < items.size())
+				count = items.size();
 		}
+		return count;
+	}
+
+	private void addLessonCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
+        addCells("Covered Topics: ", row, list, styles);
 	}
 
 	private void addStandardsCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
-		Cell cell = row.createCell(0);
-		cell.setCellValue("Covered Standards: ");
-		cell.setCellStyle(styles.get("data"));
-
-		if (list == null) return;
-
-		int idx = 1;
-		for (String data : list) {
-			cell = row.createCell(idx++);
-			cell.setCellValue(data);
-			cell.setCellStyle(styles.get("data"));
-		}
+        addCells("Covered Standards: ", row, list, styles);
 	}
 
-	private void addStandardsNotCovered(Row row, List<String> list,
-			Map<String, CellStyle> styles) {
+	private void addStandardsNotCovered(Row row, List<String> list, Map<String, CellStyle> styles) {
+        addCells("Remaining Standards: ", row, list, styles);
+	}
+
+	private void addCells(String title, Row row, List<String> list, Map<String, CellStyle> styles) {
 		Cell cell = row.createCell(0);
-		cell.setCellValue("Remaining Standards: ");
+		cell.setCellValue(title);
 		cell.setCellStyle(styles.get("data"));
 
-		if (list == null) return;
-
 		int idx = 1;
-		for (String data : list) {
+
+		if (list != null) {
+			for (String data : list) {
+				cell = row.createCell(idx++);
+				cell.setCellValue(data);
+				cell.setCellStyle(styles.get("data"));
+			}
+		}
+		if (idx <= ccssColumnCount)
+			addEmptyCells(row, idx, styles);
+	}
+
+	private void addEmptyCells(Row row, int idx, Map<String, CellStyle> styles) {
+		Cell cell;
+		while (idx <= ccssColumnCount) {
 			cell = row.createCell(idx++);
-			cell.setCellValue(data);
+			cell.setCellValue("");
 			cell.setCellStyle(styles.get("data"));
 		}
 	}
