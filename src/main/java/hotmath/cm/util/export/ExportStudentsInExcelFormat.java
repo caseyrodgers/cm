@@ -475,6 +475,9 @@ public class ExportStudentsInExcelFormat {
 	    addStudentProgramLegend(idx, sheet, styles);
 	}
 
+	int firstColmWidth;
+	int colmWidth;
+
 	private void buildStudentStandardsSheet(Workbook wb) {
 		Sheet sheet = wb.createSheet("Standards");
 
@@ -524,6 +527,9 @@ public class ExportStudentsInExcelFormat {
 
     		Cell cell = row.createCell(0);
     		cell.setCellValue(sm.getName());
+    		int width = sm.getName().length();
+    		if (firstColmWidth < width)
+    			firstColmWidth = width;
     		cell.setCellStyle(styles.get("header"));
     		cell = row.createCell(1);
     		cell.setCellValue(sm.getGroup());
@@ -542,6 +548,11 @@ public class ExportStudentsInExcelFormat {
     		row = sheet.createRow(idx++);
     		addStandardsNotCovered(row, standardsNotCoveredMap.get(sm.getUid()), styles);
     		
+	    }
+
+	    sheet.setColumnWidth(0, 320*firstColmWidth);
+	    for (int i = 1; i <= ccssColumnCount; i++) {
+	    	sheet.setColumnWidth(i, 256 * colmWidth);
 	    }
 
 	    // add legend
@@ -573,18 +584,18 @@ public class ExportStudentsInExcelFormat {
 	}
 
 	private void addLessonCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
-        addCells("Covered Topics: ", row, list, styles);
+        addCells("Covered Topics: ", row, list, styles, false);
 	}
 
 	private void addStandardsCoverage(Row row, List<String> list, Map<String, CellStyle> styles) {
-        addCells("Covered Standards: ", row, list, styles);
+        addCells("Covered Standards: ", row, list, styles, true);
 	}
 
 	private void addStandardsNotCovered(Row row, List<String> list, Map<String, CellStyle> styles) {
-        addCells("Remaining Standards: ", row, list, styles);
+        addCells("Remaining Standards: ", row, list, styles, true);
 	}
 
-	private void addCells(String title, Row row, List<String> list, Map<String, CellStyle> styles) {
+	private void addCells(String title, Row row, List<String> list, Map<String, CellStyle> styles, boolean calcWidth) {
 		Cell cell = row.createCell(0);
 		cell.setCellValue(title);
 		cell.setCellStyle(styles.get("data"));
@@ -595,6 +606,9 @@ public class ExportStudentsInExcelFormat {
 			for (String data : list) {
 				cell = row.createCell(idx++);
 				cell.setCellValue(data);
+				int width = data.length();
+				if (calcWidth && colmWidth < width)
+					colmWidth = width;
 				cell.setCellStyle(styles.get("data"));
 			}
 		}
