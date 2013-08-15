@@ -250,6 +250,8 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 				msgBuff.append(" is attached.");
 				msgBuff.append(NEW_LINE).append(NEW_LINE);
 			    msgBuff.append(THREE_SHEET_MSG);
+			    msgBuff.append(NEW_LINE).append(NEW_LINE);
+			    msgBuff.append("The CatchupMath Team");
 
     			if(emailAddr != null) {
 	    			SbMailManager.getInstance().sendFile(filePath.getPath(), "Your Catchup Math Export File",
@@ -260,8 +262,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			LOG.error("*** Exception generating / mailing student data export ***", e);
     			if(emailAddr != null) {
     				try {
-	    			SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
-	    					"Sorry, there was a problem generating your export file.  We will identify and fix the problem as soon as possible.",
+	    			    SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
+	    					"Sorry, there was a problem generating your export file.  We will identify and fix the problem as soon as possible." +
+	    			        NEW_LINE + NEW_LINE + "The CatchupMath Team",
 	    					toEmailAddrs, "registration@hotmath.com");
     				}
     				catch (Exception sbe) {
