@@ -122,6 +122,7 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     	private Integer adminUid;
     	private List<StudentModelI> studentList;
     	private String emailAddr;
+    	private String[] toEmailAddrs;
     	private String filterDescr;
     	private String levelName;
     	private Date fromDate;
@@ -138,6 +139,10 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     		this.levelName = levelName;
     		this.fromDate = fromDate;
     	    this.toDate = toDate;
+			this.toEmailAddrs = new String[2];
+			toEmailAddrs[0] = emailAddr;
+			toEmailAddrs[1] = "admin@hotmath.com";
+
     	}
 
     	public void run() {
@@ -246,10 +251,6 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
 				msgBuff.append(NEW_LINE).append(NEW_LINE);
 			    msgBuff.append(THREE_SHEET_MSG);
 
-    			String[] toEmailAddrs = new String[2];
-    			toEmailAddrs[0] = emailAddr;
-    			toEmailAddrs[1] = "admin@hotmath.com";
-    			
     			if(emailAddr != null) {
 	    			SbMailManager.getInstance().sendFile(filePath.getPath(), "Your Catchup Math Export File",
 	    					msgBuff.toString(), toEmailAddrs, "registration@hotmath.com");
@@ -257,6 +258,16 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     		}
     		catch (Exception e) {
     			LOG.error("*** Exception generating / mailing student data export ***", e);
+    			if(emailAddr != null) {
+    				try {
+	    			SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
+	    					"Sorry, there was a problem generating your export file.  We will identify and fix the problem as soon as possible.",
+	    					toEmailAddrs, "registration@hotmath.com");
+    				}
+    				catch (Exception sbe) {
+    	    			LOG.error("*** Exception mailing student data export error email ***", sbe);    					
+    				}
+    			}
     		}
     		finally {
     			SqlUtilities.releaseResources(null, null, conn);
