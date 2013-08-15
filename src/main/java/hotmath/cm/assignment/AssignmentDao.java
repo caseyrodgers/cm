@@ -1613,7 +1613,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     private List<ProblemDto> getStudentAssignmentProblems(final int assignKey, final int uid) throws Exception {
 
         
-        String sql = "select apu.pid, ap.id, ap.label, ap.lesson, ap.lesson_file, ap.ordinal_number " +
+        String sql = "select apu.assign_key, apu.pid, ap.id, ap.label, ap.lesson, ap.lesson_file, ap.ordinal_number " +
                      " from CM_ASSIGNMENT_PIDS_USER apu " +
                      " JOIN CM_ASSIGNMENT_PIDS ap on ap.id = apu.apid_id " +
                      " where ap.assign_key = ? " +    
