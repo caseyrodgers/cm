@@ -672,9 +672,27 @@ public class ExportStudentsInExcelFormat {
 
     private void addStandardsLegend(int idx, Sheet sheet,
 			Map<String, CellStyle> styles) {
-		// TODO Auto-generated method stub
+    	idx = idx + 3;
+	    int col = 0;
+
+        Row row = sheet.createRow(idx++);
+	    Cell cell = row.createCell(col);
 		
-	}
+        cell.setCellValue("Covered Topics - topic name followed by A (Assignment), L (Lesson), Q (Quiz) to indicate how the topic was covered.");
+        cell.setCellStyle(styles.get("data"));
+    	
+        row = sheet.createRow(idx++);
+	    cell = row.createCell(col);
+        cell.setCellValue("Covered Standards - standard name followed by A (Assignment), L (Lesson), Q (Quiz) to indicate how the standard was covered.");
+        cell.setCellStyle(styles.get("data"));
+
+        if (this.ccssLevelName == null) return;
+
+        row = sheet.createRow(idx++);
+	    cell = row.createCell(col);
+        cell.setCellValue("Remaining Standards - standard names from strand '" + ccssLevelName + "' that have not been covered.");
+        cell.setCellStyle(styles.get("data"));
+    }
 
     private Map<String, CellStyle> createStyles(Workbook wb) {
 
