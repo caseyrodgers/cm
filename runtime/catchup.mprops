@@ -4103,14 +4103,13 @@ and ps.status = 'Submitted'
 # # # # # # # # # # # # #
 # Common Core Standards
 
+###
 .key=STUDENT_CCSS_ORDER_BY
 
 ORDER BY lesson_name ASC, standard_name_new ASC
 
-
+###
 .key=GET_CORRECT_QUIZ_CCSS_NAMES_FOR_STUDENT
-
-## TODO: add CQs?
 
 SELECT distinct user_id, im.title as lesson_name, ins.standard_name_new
 FROM HA_TEST t
@@ -4125,6 +4124,7 @@ JOIN inmh_standard ins
 WHERE t.user_id = ?
   AND tr.run_time BETWEEN ? AND ?
 
+###
 .key=GET_REVIEW_CCSS_NAMES_FOR_STUDENT
 
 SELECT distinct user_id, rl.lesson_name, ins.standard_name_new
@@ -4138,6 +4138,7 @@ JOIN inmh_standard ins
 WHERE t.user_id = ?
   AND rl.date_completed BETWEEN ? AND ?
 
+###
 .key=GET_ASSIGNMENT_CCSS_NAMES_FOR_STUDENT
 
 SELECT distinct uid as user_id, ap.lesson as lesson_name, ins.standard_name_new
