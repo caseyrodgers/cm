@@ -284,6 +284,7 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
 
                 if (progName == null) {
                 	LOGGER.warn("Skipping NULL progName for UID: " + uid);
+                	progName = "";
                 	continue;
                 }
                 model.setProgramName(progName);
