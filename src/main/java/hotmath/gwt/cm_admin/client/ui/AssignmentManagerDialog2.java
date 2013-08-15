@@ -250,6 +250,10 @@ public class AssignmentManagerDialog2  {
 
 
     }
+
+    public static void startTest() {
+        new AssignmentManagerDialog2(2298, 2);
+    }
     
 }
 

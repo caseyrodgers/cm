@@ -62,6 +62,7 @@ public class AssignmentStatusDialog extends GWindow {
         Assignment ass = new Assignment();
         ass.setAdminId(2);
         ass.setAssignKey(23);
+        ass.setStatus("Open");
         new AssignmentStatusDialog(ass);
     }
 

@@ -21,7 +21,7 @@ public class Assignment_Test extends TestCase {
     public void testCreate() throws Exception {
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
         pids.add(new ProblemDto(0,0, new LessonModel("Lesson", "File"), "Label", "Pid",  0));
-        Assignment as = new Assignment(2, 0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,"New", false, false,new Date(), true);
+        Assignment as = new Assignment(2, 0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,"New", false, false,new Date(), true, true);
         int assKey = AssignmentDao.getInstance().saveAssignment(as);
         assertTrue(assKey > 0);
         Assignment assGet = AssignmentDao.getInstance().getAssignment(assKey);
@@ -45,7 +45,7 @@ public class Assignment_Test extends TestCase {
     public void testGetAssignmentWorkForStudent() throws Exception {
     	List<StudentAssignment> list = AssignmentDao.getInstance().getAssignmentWorkForStudent(27554);
     	
-    	assertTrue(list.size() > 0);
+    	assertNotNull(list);
     }
 
 }

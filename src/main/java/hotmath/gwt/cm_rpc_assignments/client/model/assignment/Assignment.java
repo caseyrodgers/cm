@@ -38,12 +38,14 @@ public class Assignment implements Response{
     // piggy back along with RPC data.  
     // TODO: does this belong here?
     AssignmentGradeDetailInfo gradedInfo;
+    
     boolean autoRelease;
     private boolean allowPastDueSubmits;
+    boolean personalized;
 
     public Assignment() {}
     
-    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean allowPastDueSubmits, boolean graded, Date modifiedTime,boolean autoRelease) {
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean allowPastDueSubmits, boolean graded, Date modifiedTime,boolean autoRelease, boolean isPersonalized) {
         this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
@@ -56,8 +58,17 @@ public class Assignment implements Response{
         this.graded = graded;
         this.modifiedTime = modifiedTime;
         this.autoRelease = autoRelease;
+        this.personalized = isPersonalized;
     }
 
+
+    public boolean isPersonalized() {
+        return personalized;
+    }
+
+    public void setPersonalized(boolean personalized) {
+        this.personalized = personalized;
+    }
 
     public boolean isAllowPastDueSubmits() {
         return allowPastDueSubmits;

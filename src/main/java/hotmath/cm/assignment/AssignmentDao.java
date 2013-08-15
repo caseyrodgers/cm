@@ -1,5 +1,7 @@
 package hotmath.cm.assignment;
 
+import hotmath.ProblemID;
+import hotmath.cm.exam.ExamDao;
 import hotmath.cm.server.model.StudentAssignmentStatus;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.CompressHelper;
@@ -37,6 +39,8 @@ import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
+import hotmath.testset.ha.HaTestDef;
+import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.SolutionDao;
 
 import java.io.IOException;
@@ -113,7 +117,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_release_grades)values(?,?,?,?,?,?,?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_release_grades, is_personalized)values(?,?,?,?,?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, ass.getAdminId());
                     ps.setInt(2, ass.getGroupId());
@@ -125,6 +129,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setInt(8, ass.isAllowPastDueSubmits() ? 0 : 1);
                     ps.setInt(9, ass.isGraded() ? 1 : 0);
                     ps.setInt(10, ass.isAutoRelease()? 1: 0);
+                    ps.setInt(11, ass.isPersonalized()? 1: 0);
                     return ps;
                 }
             }, keyHolder);
@@ -137,7 +142,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ?, is_graded = ?, auto_release_grades = ? where assign_key = ?";
+                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ?, is_graded = ?, auto_release_grades = ?, is_personalized = ? where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, ass.getAdminId());
                     ps.setString(2, ass.getAssignmentName());
@@ -147,7 +152,10 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setInt(6, ass.isAllowPastDueSubmits() ? 0 : 1);
                     ps.setInt(7, ass.isGraded() ? 1 : 0);
                     ps.setInt(8, ass.isAutoRelease() ? 1 : 0);
-                    ps.setInt(9, ass.getAssignKey());
+                    ps.setInt(9, ass.isPersonalized() ? 1 : 0);
+
+                    ps.setInt(10, ass.getAssignKey());
+
 
                     return ps;
                 }
@@ -230,7 +238,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
                 String pid = rs.getString("pid");
                 LessonModel lesson = new LessonModel(rs.getString("lesson"), rs.getString("lesson_file"));
-                return new ProblemDto(rs.getInt("ordinal_number"), 0, lesson, rs.getString("label"), pid, 0);
+                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), lesson, rs.getString("label"), pid, 0);
             }
         });
         CmList<ProblemDto> cmPids = new CmArrayList<ProblemDto>();
@@ -402,7 +410,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"),
                 rs.getDate("due_date"), null, rs.getString("status"), allowPastDueSubmits, rs.getInt("is_graded") != 0,
-                rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0);
+                rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0, rs.getInt("is_personalized")!=0);
     }
 
     /**
@@ -1403,11 +1411,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         final Assignment assignment = getAssignment(assignKey);
         studentAssignment.setAssignment(assignment);
+        
+        
+        if(assignment.isPersonalized()) {
+            CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
+            pids.addAll(getStudentAssignmentProblems(assignKey, uid));
+            assignment.setPids(pids);
+        }
 
         StudentAssignmentUserInfo studentInfo = getStudentAssignmentUserInfo(uid, assignKey);
 
         /**
-         * Read list of assignment problems that have statues for this user
+         * Read list of assignment problems that have statuses for this user
          * 
          * 
          */
@@ -1526,7 +1541,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param assignKey
      * @return
      */
-    public StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) {
+    public StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) throws Exception {
         StudentAssignmentUserInfo studentInfo = null;
 
         String sql = "select a.status, a.due_date, a.close_past_due, u.is_graded,u.turn_in_date,u.last_access " +
@@ -1546,7 +1561,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             studentInfo = assInfos.get(0);
         } else {
             /**
-             * Create a record
+             * Create a user record for this assignment
              * 
              */
 
@@ -1563,9 +1578,157 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             if (cnt != 1) {
                 __logger.error("Did not add new CM_ASSIGNMENT_USER record");
             }
+            
+            /** make sure there are no problems currently defined for this user/assignment
+             * 
+             */
+            int count = getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    String sql = "delete from CM_ASSIGNMENT_PIDS_USER where uid = ? and assign_key = ?";
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1,  uid);
+                    ps.setInt(2,  assignKey);
+                    return ps;
+                }
+            });
+            
             studentInfo = new StudentAssignmentUserInfo(assignKey, uid);
         }
         return studentInfo;
+    }
+    
+    /** This retrieve the problems for the named assignment user.
+     * 
+     * If this assignment is not personalized, then use the main table
+     * of solutions (shared).  Otherwise, we need to read from the personalization
+     * table of pids for this user.
+     * 
+     * If the list of personalized pids have not been created then create and persist
+     * 
+     * @param assignKey
+     * @param uid
+     * @throws Exception
+     */
+    private List<ProblemDto> getStudentAssignmentProblems(final int assignKey, final int uid) throws Exception {
+
+        
+        String sql = "select apu.pid, ap.id, ap.label, ap.lesson, ap.lesson_file, ap.ordinal_number " +
+                     " from CM_ASSIGNMENT_PIDS_USER apu " +
+                     " JOIN CM_ASSIGNMENT_PIDS ap on ap.id = apu.apid_id " +
+                     " where ap.assign_key = ? " +    
+                     " and apu.uid = ? ";
+        List<ProblemDto> studentProblems = getJdbcTemplate().query(sql, new Object[] { assignKey, uid }, new RowMapper<ProblemDto>() {
+            @Override
+            public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new ProblemDto(rs.getInt("ordinal_number"), rs.getInt("id"), new LessonModel(rs.getString("lesson"), rs.getString("lesson_file")), rs.getString("label"), rs.getString("pid"), rs.getInt("assign_key"));
+            }
+        });
+        if(studentProblems.size() > 0) {
+            return studentProblems;  // already created, just return
+        }
+        
+        
+        
+        /** create the set of assignment pids to be used by this user
+         * 
+         */
+        
+        Assignment ass = getAssignment(assignKey);
+        final List<ProblemDto> personalPids = new ArrayList<ProblemDto>();
+        for(ProblemDto problem: ass.getPids()) {
+            ProblemDto problemToUse = null;
+            if(ass.isPersonalized()) {
+                problemToUse = lookupPersonalizedAlternateProblem(problem);
+            }
+            else {
+                problemToUse = problem;
+            }
+            personalPids.add(problemToUse);
+        }
+        
+        
+        /** Store these as the Pids to use for this student/assignment
+         * 
+         */
+        String sqlPids = "insert into CM_ASSIGNMENT_PIDS_USER(uid, apid_id, assign_key, pid)values(?,?,?,?)";
+        getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
+            @Override
+            public int getBatchSize() {
+                return personalPids.size();
+            }
+            
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1,  uid);
+                ps.setInt(2,  personalPids.get(i).getId());
+                ps.setInt(3,  assignKey);
+                ps.setString(4,  personalPids.get(i).getPid());
+            }
+        });
+        
+        
+        return personalPids;
+    }
+
+    /** Given a PID figure out what testdef references this pid
+     * 
+     * @param testDef
+     * @param pid
+     * @return
+     * @throws Exception
+     */
+    private ProblemDto lookupPersonalizedAlternateProblem(ProblemDto problem) throws Exception {
+        if(problem.getProblemType() == ProblemType.MULTI_CHOICE) {
+            // use info about how stored in quiz to extract alternate problem
+            HaTestDef testDef = figureOutAssociatedTestDef(problem);
+            if(testDef != null) {
+                String newPid = ExamDao.getInstance().getAlternateProblem(testDef, problem.getPid());
+                __logger.info("Personalized pid: " + problem.getPid() + " with " + newPid);
+                problem.setPid(newPid);
+            }
+        }
+        return problem;
+    }
+
+    /** Find out which CM program is associated with a given pid
+     * 
+     * Return null if no CM program found.
+     * 
+     * Returns the subject of FIRST program found with PID.
+     * 
+     * 
+     * @param parent
+     * @return
+     */
+    private HaTestDef figureOutAssociatedTestDef(ProblemDto problem) throws Exception {
+        
+        /** get all records from HA_PROGRAM_LESSONS
+         * 
+         */
+        String textCode = new ProblemID(problem.getPid()).getBook();
+        String sql = "select test_def_id from HA_TEST_DEF where textcode = ? and is_active = 1";
+        List<Integer> testDefs = getJdbcTemplate().query(sql, new Object[] { textCode }, new RowMapper<Integer>() {
+            @Override
+            public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("test_def_id");
+            }
+        });
+        if(testDefs.size() == 0) {
+            return null;
+        }
+        else {
+            if(testDefs.size() > 1) {
+                __logger.warn("More than one test_def found for: " + problem);
+            }
+            Integer testDefId = testDefs.get(testDefs.size()-1);
+            
+            if(testDefId != null) {
+                return HaTestDefDao.getInstance().getTestDef(testDefId);
+            }
+        }
+                    
+        return null;
     }
 
     private void updateStudentAssignmentLastView(final int assignKey, final int uid) throws Exception {
@@ -2334,7 +2497,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return problem;
     }
 
-    public boolean isAssignmentGraded(int uid, int assignKey) {
+    public boolean isAssignmentGraded(int uid, int assignKey) throws Exception {
         return getStudentAssignmentUserInfo(uid, assignKey).isGraded();
     }
 

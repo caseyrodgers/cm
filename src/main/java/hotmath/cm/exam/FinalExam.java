@@ -107,7 +107,7 @@ public class FinalExam {
 
         @Override
         public List<Integer> getBalancedKeys() {
-            List<Integer> l=new ArrayList<>();
+            List<Integer> l=new ArrayList<Integer>();
             for(int i=0;i<60;i++) {
                 l.add(i);
             }

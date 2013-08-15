@@ -3711,7 +3711,8 @@ select a.aid, a.assign_key,
        a.close_past_due,
        a.is_graded,
        a.last_modified,
-       a.auto_release_grades
+       a.auto_release_grades,
+       a.is_personalized
        
 from   CM_ASSIGNMENT a
        left join (select assign_key,
@@ -3735,7 +3736,8 @@ select a.aid, a.assign_key,
        a.close_past_due,
        a.is_graded,
        a.last_modified,
-       a.auto_release_grades
+       a.auto_release_grades,
+       a.is_personalized
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count

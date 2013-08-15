@@ -1,5 +1,6 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.FeatureNotAvailableToMobile;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
@@ -18,6 +19,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
+import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -31,6 +33,8 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -63,6 +67,7 @@ public class EditAssignmentDialog {
     ComboBox<AssignmentStatusDto> _assignmentStatus;
     ComboBox<SubmitOptions> _submitOptions;
     CheckBox _autoReleaseGrades;
+    CheckBox _personalizeAssignment;
     
     TextButton saveDraftMode, saveAssign;
     
@@ -149,21 +154,45 @@ public class EditAssignmentDialog {
         }
         header.add(hCon, new VerticalLayoutData(100.0,  30));
         
-        HorizontalLayoutContainer hCon2 = new HorizontalLayoutContainer();
-        hCon2.add(new MyFieldLabel(_submitOptions, "Submit", 70, 200));
+        HorizontalLayoutContainer hCon1 = new HorizontalLayoutContainer();
+        hCon1.add(new MyFieldLabel(_submitOptions, "Submit", 70, 200));
         
+        //header.add(hCon1,new VerticalLayoutData(270,  30));
+        
+        
+        HorizontalLayoutContainer hCon2 = new HorizontalLayoutContainer();
         _autoReleaseGrades = new CheckBox();
         _autoReleaseGrades.setToolTip("Release grades automatically when students turn in an assignment.");
         _autoReleaseGrades.setValue(assignment.isAutoRelease());
         HorizontalLayoutData hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,0,0,10));
         hCon2.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20),hd);
-        header.add(hCon2,new VerticalLayoutData(270,  30));
-        
 
+        _personalizeAssignment = new CheckBox();
+        _personalizeAssignment.setToolTip("Each student will get a personalized assignment.");
+        _personalizeAssignment.setValue(assignment.isPersonalized());
+
+        hd = new HorizontalLayoutData();
+        hd.setMargins(new Margins(0,0,0,10));
+        hCon2.add(new MyFieldLabel(_personalizeAssignment, "Personalize", 90, 20),hd);
         
+        
+        MyFieldSet options = new MyFieldSet("Options");
+        hd = new HorizontalLayoutData();
+        hd.setMargins(new Margins(0,0,0,10));
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add(new MyFieldLabel(_submitOptions, "Submit", 55, 200));
+        hp.add(new HTML("<div style='width: 30px;'>&nbsp;</div>"));
+        hp.add(new MyFieldLabel(_personalizeAssignment, "Personalize", 50, 60));
+        hp.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
+        //options.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
+        options.addThing(hp);
+
+        header.add(options);
+
         BorderLayoutData bd = new BorderLayoutData();
         bd.setMargins(new Margins(20));
+        bd.setSize(130);
         mainBorderPanel.setNorthWidget(header,bd);
 
         _assignmentDesigner = new AssignmentDesigner(_assignment, new AssignmentDesignerCallback() {
@@ -364,6 +393,7 @@ public class EditAssignmentDialog {
         }
         
         _assignment.setAutoRelease(_autoReleaseGrades.getValue());
+        _assignment.setPersonalized(_personalizeAssignment.getValue());
         
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
@@ -430,6 +460,16 @@ public class EditAssignmentDialog {
         return false;
     }
 
+    
+    static public void startTest() {
+        Assignment ass = new Assignment();
+        ass.setAdminId(2);
+        ass.setAssignKey(23);
+        ass.setStatus("Open");
+        new AssignmentStatusDialog(ass);
+        
+        new EditAssignmentDialog(ass);
+    }
 }
 
 

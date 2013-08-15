@@ -2,24 +2,22 @@ package hotmath.cm.exam;
 
 import hotmath.cm.exam.FinalExam.QuizSize;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
-import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
 import hotmath.testset.ha.StudentUserProgramModel;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+
+import sb.util.SbUtilities;
 
 public class ExamDao extends SimpleJdbcDaoSupport {
 
@@ -38,10 +36,6 @@ public class ExamDao extends SimpleJdbcDaoSupport {
     }
 
     public List<List<String>> getTestIdsForAllAlternates(HaTestDef testDef, QuizSize quizSize) throws Exception {
-
-        StudentUserProgramModel up = new StudentUserProgramModel();
-        up.setTestDef(testDef);
-
         List<List<String>> ids = new ArrayList<List<String>>();
 
         int alternates = testDef.getNumAlternateTests();
@@ -49,6 +43,7 @@ public class ExamDao extends SimpleJdbcDaoSupport {
             ids.add(HaTestDefDao.getInstance().getTestIdsBasic(testDef.getTextCode(), "coursetest", a, 0, 60, new HaTestConfig()));
         }
 
+        
         return ids;
     }
     
@@ -62,5 +57,21 @@ public class ExamDao extends SimpleJdbcDaoSupport {
             }
         });
         return models;
+    }
+
+    public String getAlternateProblem(HaTestDef testDef, String pid) throws Exception {
+        List<List<String>> idLists = ExamDao.getInstance().getTestIdsForAllAlternates(testDef,QuizSize.SIXTY);
+        
+        for(List<String> ids: idLists) {
+            for(int i=0;i<ids.size();i++) {
+                String p = ids.get(i);
+                if(p.equals(pid)) {
+                    int rand = SbUtilities.getRandomNumber(idLists.size());
+                    String newPid = idLists.get(rand).get(i);
+                    return newPid;
+                }
+            }
+        }
+        return null;
     }
 }

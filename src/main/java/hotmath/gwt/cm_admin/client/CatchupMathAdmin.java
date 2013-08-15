@@ -1,12 +1,14 @@
 package hotmath.gwt.cm_admin.client;
 
 import hotmath.gwt.cm_admin.client.ui.AccountInfoPanel;
+import hotmath.gwt.cm_admin.client.ui.AssignmentManagerDialog2;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.FooterPanel;
 import hotmath.gwt.cm_admin.client.ui.HeaderPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_admin.client.ui.StudentShowWorkPanel;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentQuestionViewerPanel;
+import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentDialog;
 import hotmath.gwt.cm_admin.client.ui.assignment.FinalExamCreationManager;
 import hotmath.gwt.cm_admin.client.ui.highlights.HighlightsDataWindow;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
@@ -117,48 +119,31 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         
         Log.debug("CatchupMathAdmin: login complete, is Mobile: " + UserInfoBase.getInstance().isMobile());
         
-        if(CmShared.getQueryParameter("test") != null) {
+        if(CmShared.getQueryParameterValue("test").equals("final")) {
             FinalExamCreationManager.startTest();
             return;
         }
-        if(CmShared.getQueryParameter("test2") != null) {
+        else if(CmShared.getQueryParameterValue("test").equals("assignments")) {
+            AssignmentManagerDialog2.startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("assignment_status")) {
             AssignmentStatusDialog.startTest();
             return;
         }
-        else if(CmShared.getQueryParameter("test3") != null) {
+        else if(CmShared.getQueryParameterValue("test").equals("assignment_edit")) {
+            EditAssignmentDialog.startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("ccss")) {
             CCSSCoverageWindow.startTest();
             return;
         }
-
-        
-        if(false) {
+        else if(CmShared.getQueryParameterValue("test").equals("highlights")) {
             HighlightsDataWindow.getSharedInstance(2).setVisible(true);
             return;
         }
-        
-        
-//        StudentDetailsWindow.showStudentDetails(31456);
-//        if(true) {
-//            return;
-//        }
-        
-//        if(true) {
-//            GroupInfoModel gim = new GroupInfoModel(2,  1, "test", 1033333, true,  false);
-//            CmShared.getCmService().execute(new GroupManagerAssignAction(ActionType.GET_STUDENTS, gim), new AsyncCallback<GroupManagerAssignResponse>() {
-//                public void onSuccess(GroupManagerAssignResponse result) {
-//                    Window.alert("COMPLETE");
-//                }
-//                @Override
-//                public void onFailure(Throwable caught) {
-//                    caught.printStackTrace();
-//                    Window.alert("ERROR");
-//                }
-//            });
-//            
-//            
-//        }
-        
-        
+
         new MessageOfTheDayDialog(new CallbackGeneric() {
             @Override
             public void callbackReady() {
