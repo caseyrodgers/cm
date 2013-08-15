@@ -281,6 +281,11 @@ public class StudentActivityDao extends SimpleJdbcDaoSupport {
                 }
                 model = new StudentActivitySummaryModel();
                 progName = sam.getProgramDescr();
+
+                if (progName == null) {
+                	LOGGER.warn("Skipping NULL progName for UID: " + uid);
+                	continue;
+                }
                 model.setProgramName(progName);
                 model.setProgramType(sam.getProgramType());
                 int sectionCount = sam.getSectionCount();
