@@ -2452,18 +2452,52 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * 
      *  returns null if problem does not exist in assignment
      *  
+     *  This is complicated due to a student's assignment problems 
+     *  might be from either the shared table CM_ASSIGNMENT_PIDS or
+     *  if they are personalized they are in the CM_ASSIGNMENT_PIDS_USER.
+     *  
      * @param uid
      * @param assignKey
      * @param pid
      * @return
      */
     public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) {
-        String sql = "select a.status as assignment_status, p.ordinal_number, p.id, p.lesson, p.lesson_file, p.label, s.status as problem_status,s.is_graded " +
+        
+
+        Boolean isPersonalized = getJdbcTemplate().queryForObject("select is_personalized from CM_ASSIGNMENT where assign_key = ? ",  new Object[]{assignKey}, new RowMapper<Boolean>() {
+            @Override
+            public Boolean mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return rs.getInt("is_personalized") != 0 ? true: false;
+            }
+        });
+        
+        String sql = null;
+        if(isPersonalized) {
+            sql = "select a.status as assignment_status, " +
+                  "p.ordinal_number, p.id, p.lesson,p.lesson_file,p.label,s.status as problem_status,s.is_graded " +
+                  "from   CM_ASSIGNMENT a " +
+            " join CM_ASSIGNMENT_PIDS p " +
+            " on p.assign_key = a.assign_key " +
+            " join CM_ASSIGNMENT_PIDS_USER pu " +
+            "               on pu.apid_id = p.id " +
+            " left join CM_ASSIGNMENT_PID_STATUS s " +
+            " on s.assign_key = p.assign_key " +
+            " and s.uid = pu.uid " +
+            " and s.pid = pu.pid " +
+            " where   pu.uid = ? " +
+            " and p.assign_key = ? " +
+            " and pu.pid = ? ";
+            
+        }
+        else {
+                
+                sql = "select a.status as assignment_status, p.ordinal_number, p.id, p.lesson, p.lesson_file, p.label, s.status as problem_status,s.is_graded " +
                      " from CM_ASSIGNMENT a " +
                      " JOIN  CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key" +
                      " LEFT JOIN CM_ASSIGNMENT_PID_STATUS s on s.assign_key = p.assign_key and s.uid = ? and s.pid = p.pid " +
                      " where p.assign_key = ? " +
                      " and     p.pid = ? ";
+        }
         
         List<StudentProblemDto> problems = getJdbcTemplate().query(sql, new Object[] {uid, assignKey, pid }, new RowMapper<StudentProblemDto>() {
             @Override
