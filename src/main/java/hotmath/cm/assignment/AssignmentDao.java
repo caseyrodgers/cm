@@ -1617,7 +1617,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                      " from CM_ASSIGNMENT_PIDS_USER apu " +
                      " JOIN CM_ASSIGNMENT_PIDS ap on ap.id = apu.apid_id " +
                      " where ap.assign_key = ? " +    
-                     " and apu.uid = ? ";
+                     " and apu.uid = ?" +
+                     " order by ap.ordinal_number ";
         List<ProblemDto> studentProblems = getJdbcTemplate().query(sql, new Object[] { assignKey, uid }, new RowMapper<ProblemDto>() {
             @Override
             public ProblemDto mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -2487,7 +2488,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             " where   pu.uid = ? " +
             " and p.assign_key = ? " +
             " and pu.pid = ? ";
-            
         }
         else {
                 
