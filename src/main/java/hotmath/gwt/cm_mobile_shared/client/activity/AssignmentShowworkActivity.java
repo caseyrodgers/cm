@@ -89,21 +89,6 @@ public class AssignmentShowworkActivity implements AssignmentShowWorkView.Presen
         return new SaveAssignmentWhiteboardDataAction(AssignmentData.getUserData().getUid(),this.assignKey, this.pid,commandType, commandData, false);
     }
 
-    @Override
-    public String getProblemStatementHtml() {
-        
-        String html = __lastWhiteboardData.getProblemStatement();
-        //String html = jsni_getProblemStatementFromDocument();
-        
-        // we have to remove hm_flash_widget otherwise we will
-        // have duplicate ids and cause problems when we change the submitted 
-        // message .. 
-        if(html == null) {
-            html = "NO PROBLEM STATEMENT";
-        }
-        html = html.replace("hm_flash_widget", "_hm_flash_widget");
-        return html;
-    }
     
     @Override
     public void showWorkSubmitted() {

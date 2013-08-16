@@ -13,7 +13,6 @@ public interface AssignmentShowWorkView extends IPage, IsWidget {
     public interface Presenter {
         String getShowWorkTitle();
         void gotoTutorView();
-        String getProblemStatementHtml();
         Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String commandData);
         void prepareShowWorkView(AssignmentShowWorkView showWorkView);
         void showWorkSubmitted();

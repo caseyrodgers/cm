@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.rpc.GetSolutionAction;
 import hotmath.gwt.cm_rpc.client.rpc.SolutionInfo;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto.ProblemType;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorWrapperPanel;
@@ -93,6 +94,11 @@ public class QuestionViewerPanel extends ContentPanel {
                         variableContext = result.getContext().getContextJson();
                     }
                     tutorPanel.externallyLoadedTutor(result, getWidget(), problem.getPid(), null, result.getJs(), result.getHtml(), problem.getLabel(), false, false, variableContext);
+                    
+                    if(problem.getProblemType() != ProblemType.WHITEBOARD) {
+                        TutorWrapperPanel.jsni_hideWhiteboardStatus();
+                    }
+                    
                     tutorPanel.setVisible(true);
                     
                     forceLayout();

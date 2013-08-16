@@ -788,6 +788,10 @@ public class TutorWrapperPanel extends Composite {
         }
     }-*/;    
     
+    
+    /** Remove the entire whiteboard message area
+     * 
+     */
     static native public void jsni_hideWhiteboardStatus() /*-{
     var widgetHolder = $doc.getElementById("hm_flash_widget");
     if(widgetHolder) {
@@ -828,4 +832,5 @@ public class TutorWrapperPanel extends Composite {
             
             setProblemStatusControl(msg);
         }
+
 }
