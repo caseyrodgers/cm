@@ -1,7 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
+import org.jfree.util.Log;
+
 import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
@@ -86,6 +89,12 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         
         String reportName = report.getText();
         HighlightReportLayout reportLayout = report.getReport().getReportLayout();
+        
+        if(reportLayout == null || reportLayout.getColumnLabels() == null) {
+            InfoPopupBox.display("No Report", "No printalbe report has been defined for this highlight.");
+            return;
+        }
+        
         GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance.getCmAdminMdl().getUid(),reportName,reportLayout,StudentGridPanel.instance.getPageAction());
         action.setFilterMap(StudentGridPanel.instance.getPageAction().getFilterMap());
         new PdfWindow(0, "Catchup Math Highlight Report", action);
