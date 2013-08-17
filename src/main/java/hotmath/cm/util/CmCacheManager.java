@@ -100,7 +100,12 @@ public class CmCacheManager  {
 		/** Temporary look up information for admins
 		 * 
 		 */
-		ADMIN_INFO 
+		ADMIN_INFO, 
+
+		/** List of lists of quiz alternate test ids 
+		 * 
+		 */
+		QUIZ_ALTERNATES 
 	};
 
 	final static public String KEY_ALL="all";

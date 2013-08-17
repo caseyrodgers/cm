@@ -1,6 +1,8 @@
 package hotmath.cm.exam;
 
 import hotmath.cm.exam.FinalExam.QuizSize;
+import hotmath.cm.util.CmCacheManager;
+import hotmath.cm.util.CmCacheManager.CacheName;
 import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTestConfig;
@@ -35,15 +37,28 @@ public class ExamDao extends SimpleJdbcDaoSupport {
     private ExamDao() {/* empty */
     }
 
+    
+    /** Return a list of lists where each list represents an alternate quiz
+     * 
+     * @param testDef
+     * @param quizSize
+     * @return
+     * @throws Exception
+     */
     public List<List<String>> getTestIdsForAllAlternates(HaTestDef testDef, QuizSize quizSize) throws Exception {
         List<List<String>> ids = new ArrayList<List<String>>();
 
+        String cacheKey = testDef.getTestDefId() + "_" + quizSize.toString();
+        List<List<String>> lists = (List<List<String>>)CmCacheManager.getInstance().retrieveFromCache(CacheName.QUIZ_ALTERNATES, cacheKey);
+        if(lists != null) {
+            return lists;
+        }
+        
         int alternates = testDef.getNumAlternateTests();
         for (int a = 0; a < alternates; a++) {
             ids.add(HaTestDefDao.getInstance().getTestIdsBasic(testDef.getTextCode(), "coursetest", a, 0, 60, new HaTestConfig()));
         }
-
-        
+        CmCacheManager.getInstance().addToCache(CacheName.QUIZ_ALTERNATES,cacheKey,ids);
         return ids;
     }
     

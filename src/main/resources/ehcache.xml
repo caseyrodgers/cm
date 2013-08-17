@@ -185,5 +185,11 @@
        timeToLiveSeconds="7200">
 </cache>
 
+<cache name="QUIZ_ALTERNATES"
+      maxElementsInMemory="10"
+      overflowToDisk="false"
+      timeToLiveSeconds="7200">
+</cache>
+
 
 </ehcache>
