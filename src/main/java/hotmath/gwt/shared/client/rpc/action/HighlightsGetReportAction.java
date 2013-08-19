@@ -20,10 +20,11 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
     public HighlightsGetReportAction() {
     }
 
-    public HighlightsGetReportAction(GetStudentGridPageAction studentGridAction, ReportType type, Integer adminId, Date from, Date to) {
+    public HighlightsGetReportAction(GetStudentGridPageAction studentGridAction, ReportType type, Integer adminId, String ccssLevel, Date from, Date to) {
         this.studentGridPageAction = studentGridAction;
         this.type = type;
         this.adminId = adminId;
+        this.ccssLevel = ccssLevel;
         this.from = from;
         this.to = to;
     }

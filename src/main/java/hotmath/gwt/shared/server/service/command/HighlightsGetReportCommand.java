@@ -22,7 +22,6 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
     @Override
     public CmList<HighlightReportData> execute(Connection conn, HighlightsGetReportAction action) throws Exception {
         try {
-
             
             CmList<HighlightReportData> list=null;
             
@@ -109,6 +108,11 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
 
                 case CCSS_COVERAGE:
                     list = toCmList(dao.getReportCCSSCoverage(uids, fromDate, toDate));
+                    break;
+
+                case CCSS_STRAND_NOT_COVERED:
+                	String levelName = action.getCcssLevel();
+                    list = toCmList(dao.getReportCCSSLevelNotCovered(uids, levelName, fromDate, toDate));
                     break;
 
                     default:

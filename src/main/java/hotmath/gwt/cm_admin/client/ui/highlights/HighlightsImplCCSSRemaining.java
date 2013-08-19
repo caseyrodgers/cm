@@ -12,8 +12,9 @@ public class HighlightsImplCCSSRemaining extends HighlightsImplBase {
         super(title,"Displays CCSS standards for the selected strand and the number of students that have <b>not</b> covered them.");
     }
 
+    @Override
     public Widget prepareWidget() {
-        return panel;
+        return panel.getPanel();
     }
     
     @Override

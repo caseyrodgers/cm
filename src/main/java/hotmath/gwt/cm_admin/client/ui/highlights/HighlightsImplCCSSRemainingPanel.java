@@ -22,6 +22,7 @@ import java.util.List;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
@@ -51,6 +52,10 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
 	
     public HighlightsImplCCSSRemainingPanel(HighlightsImplBase base) {
         _detailsPanel = new CCSSRemainingDetailsPanel(base);
+    }
+
+    public Widget getPanel() {
+        return _detailsPanel;
     }
    
     @Override
