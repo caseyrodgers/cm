@@ -192,6 +192,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
         s.add(new HighlightsReport(new HighlightsImplAssignments()));
         s.add(new HighlightsReport(new HighlightsImplCCSSCoverage()));
         s.add(new HighlightsReport(new HighlightsImplCCSSCoverageChart()));
+        s.add(new HighlightsReport(new HighlightsImplCCSSRemaining()));
         // s.add(new HighlightsReport(new HighlightImplComparePerformance()));
 
         /** mark these two reports as not using the summary page selection */
