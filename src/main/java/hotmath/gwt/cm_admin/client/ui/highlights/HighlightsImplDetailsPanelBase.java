@@ -31,7 +31,7 @@ import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleCl
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
 
-abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer implements HighlightPanel{
+abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer implements HighlightPanel {
     
     HighlightsImplBase base;
     Grid<HighlightReportData> _grid;
@@ -98,9 +98,13 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
     }
 
     abstract public HighlightsGetReportAction.ReportType getReportType();
-    
+
     abstract protected ColumnModel<HighlightReportData> getColumns();
 
+    protected String getLevel() {
+    	return null;
+    }
+    
     protected String getReportTitle() {
     	return "Highlights Report";
     }
@@ -127,7 +131,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
                 CmBusyManager.setBusy(true);
                 
                 HighlightsGetReportAction action = new HighlightsGetReportAction(StudentGridPanel.instance.getPageAction(), getReportType(),
-                        StudentGridPanel.instance.getCmAdminMdl().getUid(),
+                        StudentGridPanel.instance.getCmAdminMdl().getUid(), getLevel(),
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate());
                 setAction(action);
@@ -157,7 +161,8 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
     public CmList<HighlightReportData> getHighLightData() {
         return highLightData;
     }
-    private void drawTable(CmList<HighlightReportData> data) {
+
+    protected void drawTable(CmList<HighlightReportData> data) {
         highLightData = data;
         
         //removeAll();

@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.server.model;
 
 import hotmath.cm.assignment.AssignmentDao;
+import hotmath.cm.dao.CCSSReportDao;
 import hotmath.cm.server.model.StudentAssignmentStatus;
 import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
@@ -566,7 +567,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         		data = new HighlightReportData();
         		data.setName(standardName);
         		data.setUidList(uidList);
-        		data.setUid(uid++);  // needed for grid row selection
+        		data.setUid(uid++);  // needed for grid row selection in Highlights
         		list.add(data);
         	}
         	uidList.add(item.userId);
@@ -589,7 +590,72 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     	return list;
     }
 
-    public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
+    /**
+     * get CCSS standards and students (UIDs) that have not covered them for specified CCSS level/strand and date range
+     * 
+     * @param uids
+     * @param levelName
+     * @param from
+     * @param to
+     * @return
+     * @throws Exception
+     */
+    public CmList<HighlightReportData> getReportCCSSLevelNotCovered(final List<String> uids, String levelName, final Date from, final Date to) throws Exception {
+
+    	CmList<HighlightReportData> ccssNotCoveredList = new CmArrayList<HighlightReportData>();
+
+    	if (uids == null || uids.size() == 0) return ccssNotCoveredList;
+
+    	CmList<HighlightReportData> ccssCoverageList = getReportCCSSCoverage(uids, from, to);
+
+    	Map<String, HighlightReportData> coverageMap = new HashMap<String, HighlightReportData>();
+    	for (HighlightReportData data : ccssCoverageList) {
+    		coverageMap.put(data.getName(), data);
+    	}
+
+    	List<String> stdList = CCSSReportDao.getInstance().getStandardNamesForLevel(levelName, true);
+
+    	HighlightReportData data;
+    	CmList<Integer> uidList = new CmArrayList<Integer>();
+    	for (String uid : uids) {
+    		uidList.add(Integer.parseInt(uid));
+    	}
+
+        int uid = 0;
+
+        for (String stdName : stdList) {
+        	if (coverageMap.containsKey(stdName)) {
+        		data = removeStudentsThatCoveredStandard(coverageMap.get(stdName), uidList);
+        	}
+        	else {
+        		data = new HighlightReportData();
+        		data.setDbCount(uidList.size());
+        		data.setUidList(uidList);
+        	}
+    		data.setName(stdName);
+    		data.setUid(uid++);      // needed for grid row selection in Highlights
+    		ccssNotCoveredList.add(data);
+        }
+
+    	return ccssNotCoveredList;
+    }
+
+    private HighlightReportData removeStudentsThatCoveredStandard(
+			HighlightReportData highlightReportData, List<Integer> uidList) {
+    	HighlightReportData data = new HighlightReportData();
+    	CmList<Integer> uids = highlightReportData.getUidList();
+        CmList<Integer> theUids = new CmArrayList<Integer>();
+        for (Integer uid : uidList) {
+        	if (uids.contains(uid)) continue;
+        	theUids.add(uid);
+        }
+        data.setUidList(theUids);
+        data.setDbCount(theUids.size());
+        return data;
+	}
+
+
+	public CmList<HighlightReportData> getReportGroupProgress(final Connection conn, final int adminId,final List<String> uids, final Date from, final Date to) throws Exception {
 
         Map<String,String> tokenMap = new HashMap<String,String>()
         {
