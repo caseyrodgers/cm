@@ -169,12 +169,12 @@ public class EditAssignmentDialog {
         hCon2.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20),hd);
 
         _personalizeAssignment = new CheckBox();
-        _personalizeAssignment.setToolTip("Each student will get a personalized assignment.");
+        _personalizeAssignment.setToolTip("Multiple choice questions will be randomly selected for each student.");
         _personalizeAssignment.setValue(assignment.isPersonalized());
 
-        hd = new HorizontalLayoutData();
-        hd.setMargins(new Margins(0,0,0,10));
-        hCon2.add(new MyFieldLabel(_personalizeAssignment, "Personalize", 90, 20),hd);
+        //hd = new HorizontalLayoutData();
+        //hd.setMargins(new Margins(0,0,0,10));
+        //hCon2.add(new MyFieldLabel(_personalizeAssignment, "Individualize", 90, 20),hd);
         
         
         MyFieldSet options = new MyFieldSet("Options");
@@ -183,7 +183,7 @@ public class EditAssignmentDialog {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add(new MyFieldLabel(_submitOptions, "Submit", 55, 200));
         hp.add(new HTML("<div style='width: 30px;'>&nbsp;</div>"));
-        hp.add(new MyFieldLabel(_personalizeAssignment, "Personalize", 50, 60));
+        hp.add(new MyFieldLabel(_personalizeAssignment, "Individualize", 50, 60));
         hp.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
         //options.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
         options.addThing(hp);
