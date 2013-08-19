@@ -3,6 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.FeatureNotAvailableToMobile;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
+import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
@@ -178,6 +179,12 @@ public class EditAssignmentDialog {
         
         
         MyFieldSet options = new MyFieldSet("Options");
+        
+        if(CmShared.getQueryParameter("debug") == null && !isDraftMode()) {
+            // only allow setting options when in draft mode
+            options.setEnabled(false);
+        }
+            
         hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,0,0,10));
         HorizontalPanel hp = new HorizontalPanel();
@@ -250,6 +257,9 @@ public class EditAssignmentDialog {
         window.show();
     }
 
+    private boolean isDraftMode() {
+        return _isDraftMode;
+    }
     protected boolean  checkStatusIsValidChange(AssignmentStatusDto assignmentStatusDto) {
         String statusTo = assignmentStatusDto.getStatus();
 
