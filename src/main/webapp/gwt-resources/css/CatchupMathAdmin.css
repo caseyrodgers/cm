@@ -586,8 +586,6 @@ program-details-panel .x-ftree2-node-over {
 	background-color: white;
 }
 
-/* display: block; */
-
 .level-combo-label  {
 	float: left;
 	font-weight: bold;
@@ -598,5 +596,4 @@ program-details-panel .x-ftree2-node-over {
 
 .level-combo {
 	margin-top: 3px !important;
-}
 }
