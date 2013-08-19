@@ -312,6 +312,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
                 return presenter.getWhiteboardSaveAction(pid, commandType, data);
             }
         });
+        _showWork.addStyleName("static_whiteboard");
         _contentPanel.add(_showWork);
         
         _showWork.setBackground(_subBar.getShowProblem());
