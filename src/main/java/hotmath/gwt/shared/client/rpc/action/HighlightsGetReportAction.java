@@ -11,6 +11,7 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
 
 	ReportType type;
     Integer adminId;
+    String ccssLevel;
     Date from;
     Date to;
 
@@ -43,7 +44,15 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
         this.adminId = adminId;
     }
 
-    public Date getFrom() {
+    public String getCcssLevel() {
+		return ccssLevel;
+	}
+
+	public void setCcssLevel(String ccssLevel) {
+		this.ccssLevel = ccssLevel;
+	}
+
+	public Date getFrom() {
         return from;
     }
 
@@ -69,12 +78,13 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
 
     @Override
     public String toString() {
-        return "HighlightsGetReportAction [type=" + type + ", adminId=" + adminId + ", from=" + from + ", to=" + to
-                + ", _studentGridPageAction=" + studentGridPageAction + "]";
+        return "HighlightsGetReportAction [type=" + type + ", adminId=" + adminId + ", ccssLevel=" + ccssLevel + 
+        	   ", from=" + from + ", to=" + to + ", _studentGridPageAction=" + studentGridPageAction + "]";
     }
 
-    public enum ReportType{GREATEST_EFFORT,LEAST_EFFORT,MOST_GAMES,NATIONWIDE_COMPARE,SCHOOL_COMPARE,
-                           MOST_QUIZZES_PASSED,AVERAGE_QUIZ_SCORES,FAILED_QUIZZES,FAILED_CURRENT_QUIZZES,
-                           COMPARE_PERFORMANCE,LOGINS_PER_WEEK,GROUP_PERFORMANCE,GROUP_USAGE,ZERO_LOGINS,
-                           TIME_ON_TASK, FIRST_TIME_CORRECT, ASSIGNMENTS,CCSS_COVERAGE, CCSS_COVERAGE_CHART};
+    public enum ReportType { GREATEST_EFFORT,LEAST_EFFORT,MOST_GAMES,NATIONWIDE_COMPARE,SCHOOL_COMPARE,
+                             MOST_QUIZZES_PASSED,AVERAGE_QUIZ_SCORES,FAILED_QUIZZES,FAILED_CURRENT_QUIZZES,
+                             COMPARE_PERFORMANCE,LOGINS_PER_WEEK,GROUP_PERFORMANCE,GROUP_USAGE,ZERO_LOGINS,
+                             TIME_ON_TASK, FIRST_TIME_CORRECT, ASSIGNMENTS,CCSS_COVERAGE, CCSS_COVERAGE_CHART,
+                             CCSS_STRAND_NOT_COVERED };
 }
