@@ -14,7 +14,7 @@ public class HighlightsImplCCSSRemaining extends HighlightsImplBase {
 
     @Override
     public Widget prepareWidget() {
-        return panel.getPanel();
+        return panel; //.getPanel();
     }
     
     @Override
