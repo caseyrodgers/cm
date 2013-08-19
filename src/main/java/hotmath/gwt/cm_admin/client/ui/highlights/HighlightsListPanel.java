@@ -140,7 +140,7 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 				HighlightsReport hlReport = event.getSelectedItem();
 				final HighlightsImplBase report = hlReport.getReport();
 				HighlightPanel pb = (HighlightPanel)report.prepareWidget();
-				pb.getDataFromServer(new CallbackOnComplete() {
+				pb.getDataFromServer(false, new CallbackOnComplete() {
                     @Override
                     public void isComplete() {
                         Widget widget = report.prepareWidget();

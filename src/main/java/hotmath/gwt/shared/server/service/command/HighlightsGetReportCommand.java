@@ -111,7 +111,7 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     break;
 
                 case CCSS_STRAND_NOT_COVERED:
-                	String levelName = action.getCcssLevel();
+                	String levelName = action.getUserData().get("ccssLevel");
                     list = toCmList(dao.getReportCCSSLevelNotCovered(uids, levelName, fromDate, toDate));
                     break;
 

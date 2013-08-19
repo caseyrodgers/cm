@@ -70,9 +70,9 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
     }
 
 	@Override
-	public void getDataFromServer(final CallbackOnComplete callbackOnComplete) {
+	public void getDataFromServer(boolean force, final CallbackOnComplete callbackOnComplete) {
 
-        if(_comboBox != null) {
+        if(!force && _comboBox != null) {
             callbackOnComplete.isComplete();
             return;
         }
@@ -93,18 +93,19 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
 		    	    	setCenterWidget(_detailsPanel);
 		    	    	_detailsPanel.setVisible(true);
 		    	    	_detailsPanel.drawTable(null);
-		    	    	forceLayout();
 		                callbackOnComplete.isComplete();
+		                forceLayout();
 			        }
       	        },
     			new CallbackOnSelection() {
 			        @Override
 			        public void setSelection(String levelName) {
 			        	_levelName = levelName;
-			        	_detailsPanel.getDataFromServer(new CallbackOnComplete() {
+			        	_detailsPanel.getDataFromServer(true, new CallbackOnComplete() {
 
 							@Override
 							public void isComplete() {
+		                        forceLayout();
 							}
 			        		
 			        	});

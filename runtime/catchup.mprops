@@ -4405,3 +4405,42 @@ ORDER BY ccs.standard_name_new ASC
 SELECT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
 FROM   common_core_standards ccs
 WHERE  ccs.standard_name_new = ?
+
+
+
+##
+## Delete a single command in a whiteboard
+.key=DELETE_WHITEBOARD_ROW
+
+delete from HA_TEST_RUN_WHITEBOARD 
+where whiteboard_id in (
+    select whiteboard_id
+    from (
+        select whiteboard_id
+        from HA_TEST_RUN_WHITEBOARD
+       where user_id = ? 
+       and run_id = ? 
+       and pid = ?
+       order by whiteboard_id
+       limit ?, 1
+    ) x1
+);   
+
+
+
+.key=DELETE_WHITEBOARD_ROW_ASSIGNMENT
+
+delete 
+from CM_ASSIGNMENT_PID_WHITEBOARD
+where  whiteboard_id in (
+       select whiteboard_id
+       from (
+           select whiteboard_id
+           from  CM_ASSIGNMENT_PID_WHITEBOARD
+           where user_id = ?
+           and assign_key = ?
+          and pid = ?
+          order by whiteboard_id 
+          limit ?,1
+        ) x1
+);     

@@ -118,9 +118,9 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
     }
     
     boolean dataRead=false;
-    public void getDataFromServer(final CallbackOnComplete callbackOnComplete) {
+    public void getDataFromServer(boolean force, final CallbackOnComplete callbackOnComplete) {
         
-        if(_grid != null) {
+        if(!force && _grid != null) {
             callbackOnComplete.isComplete();
             return;
         }
@@ -134,6 +134,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
                         StudentGridPanel.instance.getCmAdminMdl().getUid(),
                         DateRangePanel.getInstance().getFromDate(),
                         DateRangePanel.getInstance().getToDate());
+                action.getUserData().put("ccssLevel",  getLevel());
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
@@ -188,7 +189,6 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
             _grid.addCellDoubleClickHandler(getDoubleClickHandler());
 
         }
-        
         //layout();
     }
     

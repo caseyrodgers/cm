@@ -4,6 +4,7 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -308,7 +309,13 @@ public class ShowWorkPanel2 extends Composite {
     
     
     private void whiteboardDelete_Gwt(int index) {
-        Window.alert("Need to delete whitebaord command: " + index);
+        _lastCommands.remove(index);
+        
+        /** callback to get needed indexing information 
+         * (ie, each app will have different needs)
+         */
+        whiteboardActions.getActions().add(_whiteboardOutCallback.createWhiteboardSaveAction(pid,  CommandType.DELETE, index + ""));
+        saveWhiteboardToServer();
     }
     
 
@@ -341,8 +348,8 @@ public class ShowWorkPanel2 extends Composite {
                    that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardOut_Gwt(Ljava/lang/String;Z)(data, boo);
                 }
             
-                $wnd._theWhiteboard.whiteboardDelete = function (wbIndex) {
-                   that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(data, boo);
+                $wnd._theWhiteboard.whiteboardDelete = function (indexToDelete) {
+                   that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardDelete_Gwt(I)(indexToDelete);
                 }
             
                 $wnd._theWhiteboard.saveWhiteboard = function () {

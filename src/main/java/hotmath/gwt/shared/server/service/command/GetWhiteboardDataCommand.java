@@ -52,7 +52,7 @@ public class GetWhiteboardDataCommand implements ActionHandler<GetWhiteboardData
     
     private String loadCommandData(ResultSet rs) throws Exception {
     	byte[] compressed = rs.getBytes("command_data");
-    	if (compressed != null && compressed[0] != "{".getBytes("UTF-8")[0]) {
+    	if (compressed != null && compressed.length > 0 && compressed[0] != "{".getBytes("UTF-8")[0]) {
     		return CompressHelper.decompress(compressed);
     	}
     	else {

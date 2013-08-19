@@ -15,8 +15,9 @@ public class SaveWhiteboardDataAction implements Action<RpcData> {
     Integer rid;
     String pid;
     String commandData;
+    int index;
     
-    static public enum CommandType{DRAW,CLEAR, UNDO};
+    static public enum CommandType{DRAW,CLEAR, UNDO, DELETE};
     CommandType commandType;
     
     public SaveWhiteboardDataAction() {}
@@ -29,6 +30,16 @@ public class SaveWhiteboardDataAction implements Action<RpcData> {
         this.commandType = commandType;
         this.commandData = commandData;
     }
+
+    public int getIndex() {
+        return index;
+    }
+
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
 
     public Integer getUid() {
         return uid;

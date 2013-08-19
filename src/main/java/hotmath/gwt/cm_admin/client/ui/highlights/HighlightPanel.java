@@ -5,7 +5,7 @@ import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 public interface HighlightPanel {
     HighlightsGetReportAction.ReportType getReportType();
-    void getDataFromServer(CallbackOnComplete callbackOnComplete);
+    void getDataFromServer(boolean force, CallbackOnComplete callbackOnComplete);
     
     String[] getReportColumns();
     String[][] getReportValues();

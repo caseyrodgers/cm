@@ -50,8 +50,9 @@ public class HighlightsImplCCSSCoverageChartPanel extends Composite implements H
     }
 
     @Override
-    public void getDataFromServer(final CallbackOnComplete callbackOnComplete) {
-        if(_chartWidget1 != null) {
+    public void getDataFromServer(boolean force, final CallbackOnComplete callbackOnComplete) {
+        
+        if(!force && _chartWidget1 != null) {
             callbackOnComplete.isComplete();
             return;
         }

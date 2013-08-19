@@ -1865,8 +1865,25 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     public void saveWhiteboardData(final Integer uid, final int assignKey, final String pid, CommandType commandType, final String commandData,
-    		final boolean isAdmin) {
-    	if (commandType == CommandType.CLEAR) {
+    		final boolean isAdmin) throws Exception {
+        
+        if(commandType == CommandType.DELETE) {
+            final String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_WHITEBOARD_ROW_ASSIGNMENT");
+            final int rowToDelete = Integer.parseInt(commandData);
+            getJdbcTemplate().update(new PreparedStatementCreator() {
+                @Override
+                public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                    
+                    PreparedStatement ps = con.prepareStatement(sql);
+                    ps.setInt(1, uid);
+                    ps.setInt(2, assignKey);
+                    ps.setString(3, pid);
+                    ps.setInt(4, rowToDelete);
+                    return ps;
+                }
+            });            
+        }
+        else if (commandType == CommandType.CLEAR) {
     		getJdbcTemplate().update(new PreparedStatementCreator() {
     			@Override
     			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {

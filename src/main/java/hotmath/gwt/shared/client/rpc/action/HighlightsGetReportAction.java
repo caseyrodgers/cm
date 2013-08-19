@@ -4,6 +4,8 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HighlightsGetReportAction implements Action<CmList<HighlightReportData>> {
 
@@ -13,6 +15,8 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
     Integer adminId;
     Date from;
     Date to;
+    Map<String,String> userData;
+    
 
     GetStudentGridPageAction studentGridPageAction;
 
@@ -25,6 +29,17 @@ public class HighlightsGetReportAction implements Action<CmList<HighlightReportD
         this.adminId = adminId;
         this.from = from;
         this.to = to;
+    }
+
+    public Map<String, String> getUserData() {
+        if(userData == null) {
+            userData = new HashMap<String, String>();
+        }
+        return userData;
+    }
+
+    public void setUserData(Map<String, String> userData) {
+        this.userData = userData;
     }
 
     public ReportType getType() {

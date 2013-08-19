@@ -1,11 +1,11 @@
 package hotmath.gwt.shared.server.service.command;
 
 import hotmath.cm.lwl.CmTutoringDao;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.shared.client.rpc.action.ClearWhiteboardDataAction;
 
@@ -31,8 +31,11 @@ public class SaveWhiteboardDataCommand implements ActionHandler<SaveWhiteboardDa
         if(action.getCommandType() == CommandType.CLEAR) {
             rData = new ClearWhiteboardDataCommand().execute(conn,new ClearWhiteboardDataAction(action.getUid(), action.getRid(),action.getPid()));
         }
+        else if(action.getCommandType() == CommandType.DELETE) {
+            CmTutoringDao.deleteWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getIndex());
+        }
         else {
-            new CmTutoringDao().saveWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getCommandData(), action.getCommandType());
+            CmTutoringDao.saveWhiteboardData(conn,action.getUid(),action.getRid(),action.getPid(),action.getCommandData(), action.getCommandType());
         }
         return rData;
     }
