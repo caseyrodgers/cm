@@ -54,10 +54,6 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
         _detailsPanel = new CCSSRemainingDetailsPanel(base);
     }
 
-    public Widget getPanel() {
-        return _detailsPanel;
-    }
-   
     @Override
     public ReportType getReportType() {
         return _detailsPanel.getReportType();
