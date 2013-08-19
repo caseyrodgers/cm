@@ -486,7 +486,7 @@ program-details-panel .x-ftree2-node-over {
 
 .date-range-label {
     color: blue;
-    margin-right: 50px;
+    margin-right: 50px !important;
 }
 
 
@@ -584,5 +584,19 @@ program-details-panel .x-ftree2-node-over {
 .bar-chart-title {
 	font-weight: bold;
 	background-color: white;
+}
+
+/* display: block; */
+
+.level-combo-label  {
+	float: left;
+	font-weight: bold;
+	margin-top: 5px !important;
+	text-align: center;
+	width: 105px;
+}
+
+.level-combo {
+	margin-top: 3px !important;
 }
 }
