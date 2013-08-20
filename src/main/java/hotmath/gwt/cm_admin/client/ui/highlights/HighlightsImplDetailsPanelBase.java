@@ -172,7 +172,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
         ListStore<HighlightReportData> store = new ListStore<HighlightReportData>(_gridProps.id());
         _grid = defineGrid(store, getColumns());
         if(data == null || data.size() == 0) {
-            add(new NoRowsFoundPanel());
+            add(new NoRowsFoundPanel(getNoRowsFoundMsg()));
         }
         else {
             
@@ -255,6 +255,9 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
         }.register();
     }
 
+    protected String getNoRowsFoundMsg() {
+    	return "<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>";
+    }
 }
 
 /** Shown when no students meet criteria
@@ -263,7 +266,7 @@ abstract public class HighlightsImplDetailsPanelBase extends SimpleContainer imp
  *
  */
 class NoRowsFoundPanel extends CenterLayoutContainer {
-    public NoRowsFoundPanel() {
-        add(new HTML("<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>No students meet the criteria for this display.<br/>Please 'mouseover' the menu item for details.</h1>"));
+    public NoRowsFoundPanel(String msg) {
+        add(new HTML(msg));
     }
 }

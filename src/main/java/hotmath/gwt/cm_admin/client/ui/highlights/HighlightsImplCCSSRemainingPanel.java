@@ -155,6 +155,11 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
 	        return "Double click for details.";
 	    }
 
+		@Override
+	    protected String getNoRowsFoundMsg() {
+	    	return "<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>Please select a Strand above.</h1>";
+	    }
+
 	    @Override
 	    protected CellDoubleClickHandler getDoubleClickHandler() {
 	    	return new CellDoubleClickHandler() {
