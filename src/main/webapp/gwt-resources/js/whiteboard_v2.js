@@ -59,6 +59,7 @@ var Whiteboard = function (cont, isStatic) {
     var selectedObjIndex = -1;
     var lineBound = {};
     var useMQ = false;
+	var selectionDragged=false;
     //
     var toolArr = [{
         name: 'button_text',
@@ -1653,6 +1654,7 @@ var Whiteboard = function (cont, isStatic) {
                             //remove selected object from data array and store it temp variable
                             //rerender object on drawing canvas...
                             selectionDragMode = true;
+							selectionDragged=false;
                             graphicDataStore.splice(i, 1);
                             resetWhiteBoard(false);
                             //updateWhiteboard(graphicDataStore);
@@ -1734,14 +1736,19 @@ var Whiteboard = function (cont, isStatic) {
                     if (selectedObj) {
                         var dx = x - clickX;
                         var dy = y - clickY;
-                        selectionDragMode = false;
+                        selectionDragMode = false;						
                         removeBoundRect();
                         drawTempObj(selectedObj, dx, dy);
                         updateCanvas();
                         drawBoundRect(selectedObj);
                         transformObj(selectedObj, dx, dy);
                         //graphicDataStore.push(cloneObject(selectedObj))
-                        updateDataToSERVER(selectedObjIndex, selectedObj)
+						if(selectionDragged){
+						    selectionDragged=false;
+                            updateDataToSERVER(selectedObjIndex, selectedObj);
+						}else{
+						    graphicDataStore.splice(selectedObjIndex, 0,selectedObj);
+						}
                     }
                     penDown = false;
                     rendering = false;
@@ -1869,6 +1876,7 @@ var Whiteboard = function (cont, isStatic) {
                     }
                     if (selectionMode) {
                         if (selectedObj && selectionDragMode) {
+						    selectionDragged=true;
                             var dx = x - clickX;
                             var dy = y - clickY;
                             drawTempObj(selectedObj, dx, dy)
