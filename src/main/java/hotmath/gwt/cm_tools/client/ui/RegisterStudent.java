@@ -175,6 +175,15 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         if (addSaveButton) {
             addButton(saveButton(_fsProgram));
         }
+        
+        
+        
+        if(sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL) {
+            stdAdvOptionsBtn.setEnabled(false);
+        }
+        else {
+            stdAdvOptionsBtn.setEnabled(true);
+        }
 
     }
 
@@ -1011,8 +1020,14 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             }
             passPercentReqd = sp.isNeedsPassPercent();
 
+            
             if (stdAdvOptionsBtn.isVisible()) {
-                stdAdvOptionsBtn.enable();
+                if(stuMdl.getProgram().getProgramType() == CmProgramType.AUTOENROLL) {
+                    stdAdvOptionsBtn.setEnabled(false);
+                }
+                else {
+                    stdAdvOptionsBtn.setEnabled(true);
+                }
             }
 
             if (customAdvOptionsBtn.isVisible()) {
