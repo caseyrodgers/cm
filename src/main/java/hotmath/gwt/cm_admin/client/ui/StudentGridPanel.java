@@ -15,9 +15,11 @@ import hotmath.gwt.cm_tools.client.ui.DateRangeCallback;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.ExportStudentData;
 import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_tools.client.ui.MyMenuItem;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
+import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
 import hotmath.gwt.cm_tools.client.util.ProcessTracker;
@@ -575,13 +577,6 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
                 });
             }
         });
-    }
-
-    static class MyMenuItem extends MenuItem {
-        public MyMenuItem(String test, String tip, SelectionHandler<MenuItem> handler) {
-            super(test, handler);
-            setToolTip(tip);
-        }
     }
 
     private TextButton createRefreshButton() {
@@ -1191,27 +1186,4 @@ public class StudentGridPanel extends BorderLayoutContainer implements CmAdminDa
     // }
     // }
     // }
-}
-
-/**
- * Provides standard button sizing
- * 
- * @author casey
- * 
- */
-class StudentPanelButton extends TextButton {
-    public StudentPanelButton(String name) {
-        this(name, new SelectHandler() {
-            
-            @Override
-            public void onSelect(SelectEvent event) {
-            }
-        });
-    }
-
-    public StudentPanelButton(String name, SelectHandler handler) {
-        super(name, handler);
-        addStyleName("student-grid-panel-button");
-        // setWidth(115);
-    }
 }

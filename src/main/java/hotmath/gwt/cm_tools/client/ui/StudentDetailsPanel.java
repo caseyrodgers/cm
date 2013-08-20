@@ -21,6 +21,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
+import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,12 +116,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(displayReportCardToolItem(studentModel));
 
         toolBar.add(displayAssignmentReportToolItem(studentModel));
-        toolBar.add(displayCCSSCoverageToolItem(studentModel));
+        toolBar.add(createCCSSButton(studentModel));
         
-        if(CmGwtUtils.getQueryParameter("debug") != null) {
-            toolBar.add(displayCCSSChartToolItem(studentModel));
-        }
-
         toolBar.add(showQuizResultsBtn());
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
@@ -441,11 +438,40 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         return ti;
     }
 
-    private TextButton displayCCSSCoverageToolItem(final StudentModelI sm) {
+    private TextButton createCCSSButton(StudentModelI sm) {
+        TextButton btn = new StudentPanelButton("CCSS");
+        btn.setToolTip("View CCSS Coverage table and charts");
+
+        Menu menu = new Menu();
+        menu.add(defineCCSSCoverageTableItem(sm));
+        menu.add(defineCCSSCoverageChartsItem(sm));
+        btn.setMenu(menu);
+        return btn;
+    }
+
+    private MyMenuItem defineCCSSCoverageTableItem(final StudentModelI sm) {
+        return new MyMenuItem("Coverage Table", "View a CCSS coverage table.", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                new CCSSCoverageWindow(sm, null);
+            }
+        });
+    }
+
+    private MyMenuItem defineCCSSCoverageChartsItem(final StudentModelI sm) {
+        return new MyMenuItem("Coverage Charts", "View CCSS coverage charts.", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
+            }
+        });
+    }
+/*
+    private TextButton displayCCSSCoverageToolItemXXX(final StudentModelI sm) {
         TextButton ti = new TextButton("CCSS Table", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                new CCSSCoverageWindow(sm, null);
+                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
             }
         });
         ti.setToolTip("View CCSS coverage");
@@ -466,7 +492,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         return ti;
     }
-
+*/
     private ColumnModel<StudentActivityModel> defineColumns() {
 
         ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();
