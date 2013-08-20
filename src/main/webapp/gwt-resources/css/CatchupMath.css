@@ -676,6 +676,7 @@ img.resource-item-complete {
 .student-details-panel-sw-btn {
         padding-bottom: 10px;
         padding-left: 10px;
+        margin-top: 7px !important;
 }
 .student-details-panel-pr-btn {
         padding-bottom: 10px;
