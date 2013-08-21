@@ -1669,6 +1669,11 @@ var Whiteboard = function (cont, isStatic) {
                             //alert(wb.removeSelectionMode);
                             wb.removeSelectionMode();
                         }
+						if (event.preventDefault) {
+                            event.preventDefault()
+                        } else {
+                            event.returnValue = false
+                        };
 
 
                         return
