@@ -8,7 +8,6 @@ import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
 import hotmath.testset.ha.HaTestDefDao;
-import hotmath.testset.ha.StudentUserProgramModel;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,7 +73,7 @@ public class ExamDao extends SimpleJdbcDaoSupport {
         return models;
     }
 
-    public String getAlternateProblem(HaTestDef testDef, String pid) throws Exception {
+    public String getAlternateProblem_MultiChoice(HaTestDef testDef, String pid) throws Exception {
         List<List<String>> idLists = ExamDao.getInstance().getTestIdsForAllAlternates(testDef,QuizSize.SIXTY);
         
         for(List<String> ids: idLists) {

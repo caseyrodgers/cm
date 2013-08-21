@@ -12,9 +12,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+
+import sb.util.SbUtilities;
 
 
 /**
@@ -132,6 +135,10 @@ public class InmhItemData {
                     }
                     
                 } else {
+                    List<String> rangePids = null;
+                    if(range.getRange().contains("[")) {
+                        rangePids.addAll(findSolutionsInRandomRange(conn, range.getRange()));
+                    } 
                     /** is a normal RPP range */
                 	logger.debug("find solutions in range " + logTag);
                     List<String> related = findSolutionsMatchingRange(conn, range.getRange());
@@ -161,6 +168,90 @@ public class InmhItemData {
         
         CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, cacheKey, widgets);
         return widgets;
+    }
+
+    private Collection<? extends String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
+        try {
+            range="test,+,1.1,[1-30-2]";
+            List<String> pids = new ArrayList<String>();
+            if(!range.contains("[")) {
+                pids.add(range);
+            }
+            else {
+                String pieces[] = range.split(",");
+                
+                String s = range.substring(range.indexOf("[")+1,range.indexOf("]"));
+                String spieces[] = s.split("-");
+                int start = SbUtilities.getInt(spieces[0]);
+                int end = SbUtilities.getInt(spieces[1]);
+                int numToCreate = SbUtilities.getInt(spieces[2]);
+                
+                
+                
+                int maxAttempts=numToCreate * 5;
+                
+                while(maxAttempts-- > -1) {
+                    // get random selection
+                    int use = SbUtilities.getRandomNumber(end-start);
+                    
+                    use += start;
+                    
+                    // get the active associated pid
+                    String book = pieces[0];
+                    String chapter = pieces[1];
+                    String section = pieces[2].split("\\.")[0];
+                    String problemSet = pieces[2].split("\\.")[0];
+                    
+                    String activePid = lookupActivePid(conn,book, chapter, section, problemSet);
+                    
+                    if(activePid != null) {
+                        numToCreate--;
+                    }
+                }
+                
+                
+                
+                
+                RandomRange rr = new RandomRange(conn, start, end, numToCreate);
+                
+                
+                
+                String lookup = pieces[0]+","+pieces[1]+"," + pieces[2] + "," + pieces[3];
+            
+                ConcordanceEntry ce = new ConcordanceEntry(conn, lookup);
+            }
+            
+            return pids;
+        }
+        catch(Exception e) {
+            logger.error("Error", e);
+            throw e;
+        }
+    }
+
+    private String lookupActivePid(Connection conn, String book, String chapter, String section, String problemSet) throws Exception  {
+        String sql = "select problemindex from SOLUTIONS where booktitle = ? and sectiontitle = ? and problemset = ? and is_active = 1 ";
+        PreparedStatement ps = null;
+        try {
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, book);
+            ps.setString(2, section);
+            ps.setString(3,  problemSet);
+            
+            
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                String pid = rs.getString("problemindex");
+                System.out.println(pid);
+            }
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        finally {
+            SqlUtilities.releaseResources(null,ps, null);
+        }
+        return null;
     }
 
     /**

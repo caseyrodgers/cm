@@ -1629,8 +1629,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             return studentProblems;  // already created, just return
         }
         
-        
-        
         /** create the set of assignment pids to be used by this user
          * 
          */
@@ -1684,10 +1682,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             // use info about how stored in quiz to extract alternate problem
             HaTestDef testDef = figureOutAssociatedTestDef(problem);
             if(testDef != null) {
-                String newPid = ExamDao.getInstance().getAlternateProblem(testDef, problem.getPid());
+                String newPid = ExamDao.getInstance().getAlternateProblem_MultiChoice(testDef, problem.getPid());
                 __logger.info("Personalized pid: " + problem.getPid() + " with " + newPid);
                 problem.setPid(newPid);
             }
+        }
+        else if(problem.getProblemType() == ProblemType.INPUT_WIDGET) {
+            String pid = problem.getPid();
+            //String newPid = ExamDao.getInstance().get
         }
         return problem;
     }

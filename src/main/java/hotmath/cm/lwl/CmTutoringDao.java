@@ -272,7 +272,39 @@ public class CmTutoringDao {
         }
     }
 
+    
     static public void deleteWhiteboardData(final Connection conn, int uid, int rid, String pid, int rowIndex) throws Exception {
+
+        String sql = "select whiteboard_id from HA_TEST_RUN_WHITEBOARD where user_id = ? and run_id = ? and pid = ? order by whiteboard_id limit " + rowIndex + ", 1";
+        PreparedStatement psSel = null;
+        try {
+            psSel = conn.prepareStatement(sql);
+
+            psSel.setInt(1, uid);
+            psSel.setInt(2, rid);
+            psSel.setString(3, pid);
+            ResultSet rs = psSel.executeQuery();
+            if(rs.first()) {
+                int wbIdToDel = rs.getInt("whiteboard_id");
+                sql = "delete from HA_TEST_RUN_WHITEBOARD where whiteboard_id = ?";
+                PreparedStatement psD = conn.prepareStatement(sql);
+                try {
+                    psD.setInt(1, wbIdToDel);
+                    int count = psD.executeUpdate();
+                    if(count != 1) {
+                        logger.info("Could not delete whiteboard row: " + psD);
+                    }
+                }
+                finally {
+                    SqlUtilities.releaseResources(null,  psD,  null);
+                }
+            }
+        } finally {
+            SqlUtilities.releaseResources(null, psSel, null);
+        }
+    }
+
+    static public void deleteWhiteboardData2(final Connection conn, int uid, int rid, String pid, int rowIndex) throws Exception {
 
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_WHITEBOARD_ROW");
         PreparedStatement ps1 = null;
