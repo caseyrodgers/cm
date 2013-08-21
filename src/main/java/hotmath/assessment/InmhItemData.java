@@ -137,6 +137,8 @@ public class InmhItemData {
                 } else {
                     List<String> rangePids = null;
                     if(range.getRange().contains("[")) {
+                        
+                        logger.info("Using range: " + range);
                         rangePids.addAll(findSolutionsInRandomRange(conn, range.getRange()));
                     } 
                     /** is a normal RPP range */
@@ -172,12 +174,15 @@ public class InmhItemData {
 
     private Collection<? extends String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
         try {
-            range="test,+,1.1,[1-30-2]";
+            //range="test,casey,1.1,[1-5-2]";
             List<String> pids = new ArrayList<String>();
             if(!range.contains("[")) {
                 pids.add(range);
             }
             else {
+                
+                logger.info("Parsing random range: " + range);
+                
                 String pieces[] = range.split(",");
                 
                 String s = range.substring(range.indexOf("[")+1,range.indexOf("]"));
@@ -189,36 +194,41 @@ public class InmhItemData {
                 
                 
                 int maxAttempts=numToCreate * 5;
-                
+                List<Integer> added=new ArrayList<Integer>();
                 while(maxAttempts-- > -1) {
-                    // get random selection
-                    int use = SbUtilities.getRandomNumber(end-start);
                     
-                    use += start;
+                    // get random selection
+                    int problemNumberToTry = SbUtilities.getRandomNumber(end-(start-1));
+                    
                     
                     // get the active associated pid
                     String book = pieces[0];
                     String chapter = pieces[1];
                     String section = pieces[2].split("\\.")[0];
                     String problemSet = pieces[2].split("\\.")[0];
-                    
-                    String activePid = lookupActivePid(conn,book, chapter, section, problemSet);
-                    
-                    if(activePid != null) {
-                        numToCreate--;
+
+                    problemNumberToTry += start;
+
+                    logger.info("trying random problem: " + problemNumberToTry);
+
+                    // only if not already read
+                    if(!added.contains(problemNumberToTry)) {
+                        added.add(problemNumberToTry);
+                        String activePid = lookupActivePid(conn,book, chapter, section, problemSet, problemNumberToTry);
+                        
+                        logger.info("Read random pid: " + activePid);
+                        
+
+                        if(activePid != null) {
+                            pids.add(activePid);
+                            numToCreate--;
+                            
+                            if(numToCreate == 0) {
+                                break;
+                            }
+                        }
                     }
                 }
-                
-                
-                
-                
-                RandomRange rr = new RandomRange(conn, start, end, numToCreate);
-                
-                
-                
-                String lookup = pieces[0]+","+pieces[1]+"," + pieces[2] + "," + pieces[3];
-            
-                ConcordanceEntry ce = new ConcordanceEntry(conn, lookup);
             }
             
             return pids;
@@ -229,20 +239,30 @@ public class InmhItemData {
         }
     }
 
-    private String lookupActivePid(Connection conn, String book, String chapter, String section, String problemSet) throws Exception  {
-        String sql = "select problemindex from SOLUTIONS where booktitle = ? and sectiontitle = ? and problemset = ? and is_active = 1 ";
+    private String lookupActivePid(Connection conn, String book, String chapter, String section, String problemSet, int problemNumber) throws Exception  {
+        String sql = 
+                "select problemnumber, problemindex " + 
+                "from SOLUTIONS " +
+                "where booktitle = ?" + 
+                "and chaptertitle = ? " +
+                "and sectiontitle = ?" +
+                "and problemset = ? " +
+                "and problemnumber = ? " +
+                "and active = 1"; 
         PreparedStatement ps = null;
         try {
             ps = conn.prepareStatement(sql);
             ps.setString(1, book);
-            ps.setString(2, section);
-            ps.setString(3,  problemSet);
+            ps.setString(2, chapter);
+            ps.setString(3, section);
+            ps.setString(4,  problemSet);
+            ps.setString(5, problemNumber + "");
             
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 String pid = rs.getString("problemindex");
-                System.out.println(pid);
+                return pid;
             }
         }
         catch(Exception e) {
