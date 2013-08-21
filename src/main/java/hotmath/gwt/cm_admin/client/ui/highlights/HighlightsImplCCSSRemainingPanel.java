@@ -4,6 +4,7 @@ import hotmath.gwt.cm_admin.client.ui.CCSSLevelComboBoxWidget;
 import hotmath.gwt.cm_admin.client.ui.CCSSLevelComboBoxWidget.CallbackOnSelection;
 import hotmath.gwt.cm_admin.client.ui.StudentListWithCCSSDetailDialog;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
@@ -155,6 +156,17 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
 	        return "Double click for details.";
 	    }
 
+	    @Override
+	    public String[][] getReportValues() {
+	        CmList<HighlightReportData> hd = getHighLightData();
+	        String[][] vals = new String[hd.size()][2];
+	        for(int i=0;i<hd.size();i++) {
+	            vals[i][0] = hd.get(i).getName();
+	            vals[i][1] = hd.get(i).getDbCount() + "";
+	        }
+	        return vals;
+	    }
+	    
 		@Override
 	    protected String getNoRowsFoundMsg() {
 	    	return "<h1 style='color:#1C97D1; font-size:1.2em; margin:10px; padding:10px'>Please select a Strand above.</h1>";
