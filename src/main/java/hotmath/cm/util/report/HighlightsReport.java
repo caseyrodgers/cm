@@ -120,9 +120,9 @@ public class HighlightsReport {
         int rowNum = 1;
         
         if (reportLayout.getColumnValues() != null) {
-            for (String[] row : reportLayout.getColumnValues()) {
-                for(String labelData: row) {
-                    addCell(labelData, tbl, rowNum );
+            for (String[] columnValues : reportLayout.getColumnValues()) {
+                for(String value: columnValues) {
+                    addCell(value, tbl, rowNum );
                 }
                 ++rowNum;
 
