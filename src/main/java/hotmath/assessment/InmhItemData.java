@@ -222,9 +222,9 @@ public class InmhItemData {
                     
                     // get the active associated pid
                     String book = pieces[0];
-                    String chapter = pieces[1];
-                    String section = pieces[2].split("\\.")[0];
-                    String problemSet = pieces[2].split("\\.")[1];
+                    String problemSet = pieces[1];
+                    String chapter = pieces[2].split("\\.")[0];
+                    String section = pieces[2].split("\\.")[1];
 
                     problemNumberToTry += start;
 
