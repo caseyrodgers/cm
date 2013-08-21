@@ -159,6 +159,9 @@ public class HighlightsImplCCSSRemainingPanel extends BorderLayoutContainer impl
 	    @Override
 	    public String[][] getReportValues() {
 	        CmList<HighlightReportData> hd = getHighLightData();
+	        if (hd == null) {
+	        	return null;
+	        }
 	        String[][] vals = new String[hd.size()][2];
 	        for(int i=0;i<hd.size();i++) {
 	            vals[i][0] = hd.get(i).getName();

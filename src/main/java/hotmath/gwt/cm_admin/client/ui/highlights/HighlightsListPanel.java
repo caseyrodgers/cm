@@ -82,7 +82,8 @@ public class HighlightsListPanel extends BorderLayoutContainer {
     
     private void printCurrentReport() {
         HighlightsReport report = _listReports.getSelectionModel().getSelectedItem();
-        if(report == null) {
+        
+        if(report == null || report.getReport().getReportValues() == null) {
             CmMessageBox.showAlert("Nothing to print");
             return;
         }
