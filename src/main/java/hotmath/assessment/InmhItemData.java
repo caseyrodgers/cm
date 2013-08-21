@@ -102,6 +102,9 @@ public class InmhItemData {
     	if(widgets != null)
     		return widgets;
     	
+    	// if random range specified, then we cannot 
+    	boolean canCache=true;
+    	
         // SQL to get list of ranges that match each INMH item
         String sql = "select `range` from inmh_assessment i where i.file = ? order by id";
         PreparedStatement ps = null;
@@ -136,14 +139,28 @@ public class InmhItemData {
                     
                 } else {
                     List<String> rangePids = null;
+                    
+                    // contains a random range
                     if(range.getRange().contains("[")) {
                         
-                        logger.info("Using range: " + range);
-                        rangePids.addAll(findSolutionsInRandomRange(conn, range.getRange()));
-                    } 
-                    /** is a normal RPP range */
+                        logger.info("Generating random range: " + range);
+                        rangePids = findSolutionsInRandomRange(conn, range.getRange());
+                        if(rangePids.size() == 0) {
+                            logger.warn("No random problems found: " + this + ", " + range.getRange());
+                        }
+                        
+                        canCache=false;
+                    }
+                    
                 	logger.debug("find solutions in range " + logTag);
-                    List<String> related = findSolutionsMatchingRange(conn, range.getRange());
+                	
+                	List<String> related=null;
+                	if(rangePids != null) {
+                	    related = rangePids;
+                	}
+                	else {
+                	    related = findSolutionsMatchingRange(conn, range.getRange());
+                	}
                     logger.debug("finished finding solutions in range " + logTag);
                     for (String s : related) {
                         RppWidget widget = new RppWidget(s);
@@ -168,11 +185,13 @@ public class InmhItemData {
             logger.debug("finished getting solution pool " + logTag);
         }
         
-        CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, cacheKey, widgets);
+        if(canCache) {
+            CmCacheManager.getInstance().addToCache(CacheName.WOOKBOOK_POOL, cacheKey, widgets);
+        }
         return widgets;
     }
 
-    private Collection<? extends String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
+    private List<String> findSolutionsInRandomRange(final Connection conn, String range) throws Exception {
         try {
             //range="test,casey,1.1,[1-5-2]";
             List<String> pids = new ArrayList<String>();

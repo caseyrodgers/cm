@@ -25,7 +25,7 @@ public class RppWidget {
     static Logger __logger = Logger.getLogger(RppWidget.class);
     
 
-    String widetKey;
+    String widgetKey;
     String widgetJsonArgs;
     String title;
     int numProblems;
@@ -36,7 +36,7 @@ public class RppWidget {
     }
     
     public boolean isFlashRequired() {
-        return widetKey.indexOf("swf") > -1?true:false;
+        return widgetKey.indexOf("swf") > -1?true:false;
     }
     
     
@@ -57,7 +57,7 @@ public class RppWidget {
             setJsonRecord(pid);
         }
         else {
-            this.widetKey = pid;
+            this.widgetKey = pid;
         }
     }
 
@@ -75,7 +75,7 @@ public class RppWidget {
         final JSONValue value = parser.nextValue();
         if(value.isComplex()) {
             JSONObject complex = (JSONObject)value;
-            widetKey = ((JSONString)complex.get("widget")).getValue();
+            widgetKey = ((JSONString)complex.get("widget")).getValue();
             numProblems = ((JSONInteger)complex.get("limit")).getValue().intValue();
             widgetJsonArgs = jsonRecord;
             
@@ -86,7 +86,7 @@ public class RppWidget {
                 gradeLevels.addAll(Range.parseGradeLevels(gradeLevelsRange));
             }
         }
-        if(widetKey == null)
+        if(widgetKey == null)
             throw new CmException("JSON string did not contain a 'widget' element");
     }
     
@@ -122,11 +122,11 @@ public class RppWidget {
     }
 
     public String getFile() {
-        return widetKey;
+        return widgetKey;
     }
 
     public void setFile(String file) {
-        this.widetKey = file;
+        this.widgetKey = file;
     }
 
     public String getTitle() {
@@ -161,7 +161,7 @@ public class RppWidget {
 
     @Override
     public String toString() {
-        return "RppWidget [widetKey=" + widetKey + ", widgetJsonArgs=" + widgetJsonArgs + ", title=" + title
+        return "RppWidget [widgetKey=" + widgetKey + ", widgetJsonArgs=" + widgetJsonArgs + ", title=" + title
                 + ", numProblems=" + numProblems + "]";
     }
     
