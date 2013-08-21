@@ -277,6 +277,7 @@ public class InmhItemData {
             ps.setString(4,  problemSet);
             ps.setString(5, problemNumber + "");
             
+            logger.info("lookupActivePid: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
