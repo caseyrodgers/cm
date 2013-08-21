@@ -224,7 +224,7 @@ public class InmhItemData {
                     String book = pieces[0];
                     String chapter = pieces[1];
                     String section = pieces[2].split("\\.")[0];
-                    String problemSet = pieces[2].split("\\.")[0];
+                    String problemSet = pieces[2].split("\\.")[1];
 
                     problemNumberToTry += start;
 
@@ -277,7 +277,7 @@ public class InmhItemData {
             ps.setString(4,  problemSet);
             ps.setString(5, problemNumber + "");
             
-            logger.info("lookupActivePid: " + ps);
+            logger.debug("lookupActivePid: " + ps);
             
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
