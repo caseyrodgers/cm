@@ -402,7 +402,7 @@ var Whiteboard = function (cont, isStatic) {
         dummy.appendChild(dummyText);
         dummy.setAttribute("style", fontStyle);
         body.appendChild(dummy);
-        var result = dummy.offsetHeight;
+        var result = dummy.offsetHeight+4;
         body.removeChild(dummy);
         return result;
     };
