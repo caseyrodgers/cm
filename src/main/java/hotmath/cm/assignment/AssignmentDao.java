@@ -1897,7 +1897,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         if(commandType == CommandType.DELETE) {
            
-            final int rowToDelete = Integer.parseInt(commandData);
+            final int rowToDelete = Integer.parseInt(commandData)-1;
 
             String sqlD = "select whiteboard_id from  CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ? order by whiteboard_id limit ?,1";
             final Integer whiteboardId = getJdbcTemplate().queryForObject(sqlD, new Object[] { uid, assignKey, pid, rowToDelete}, new RowMapper<Integer>() {
