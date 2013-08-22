@@ -4,7 +4,6 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
-import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
@@ -115,7 +114,7 @@ public class ShowWorkPanel2 extends Composite {
 
     private void whiteboardIsReady() {
         Log.debug("whiteboardIsReady called from external JS");
-        _whiteboardOutCallback.showWorkIsReady();
+       _whiteboardOutCallback.showWorkIsReady();
     }
 
     public boolean isReady() {
@@ -333,9 +332,15 @@ public class ShowWorkPanel2 extends Composite {
                                                               
 
                 // create a single global object for now.
-                // TODO: add support for mulitple whiteboards
+                // TODO: add support for multiple whiteboards
                 //
-                $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
+                
+                if($wnd._theWhiteboard) {
+                   $wnd._theWhiteboard.releaseResources();
+                }
+                else {
+                    $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
+                }
                 
                 // tell the Whiteboard object the size of the parent container
                 var height = Number($wnd.grabComputedHeight(ele)) + 15;

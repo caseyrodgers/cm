@@ -63,6 +63,16 @@ public class AssignmentProblemListPanel extends ContentPanel {
 
         setHeadingHtml("Problems in Assignment");
         addTool(createNextProblemButton());
+        
+        
+//        addTool(new TextButton("Test", new SelectHandler() {
+//            @Override
+//            public void onSelect(SelectEvent event) {
+//                runTests();
+//            }
+//        }));
+        
+        
         getButtonBar().add(createAnnotationLedgend());
 
         ProblemListPanelProperties props = GWT.create(ProblemListPanelProperties.class);
@@ -150,6 +160,39 @@ public class AssignmentProblemListPanel extends ContentPanel {
             }
         });
         return b;
+    }
+    
+    private void runTests() {
+        StudentProblemDto gotoThisOne=null;
+
+        
+        StudentProblemDto selected = _studentProblemGrid.getSelectionModel().getSelectedItem();
+        if(selected == null) {
+            return;
+        }
+        
+        
+        List<StudentProblemDto> a = _studentProblemGrid.getStore().getAll();
+        for (int which=0,count=a.size();which < count;which++) {
+            StudentProblemDto p = a.get(which);
+            if(selected == null || p == selected) {
+                // search from here to end
+                for(int i=which+1;i<count;i++) {
+                    StudentProblemDto p2 = a.get(i);
+                    if(p2 != null) {
+                        gotoThisOne=p2;
+                        break;
+                    }
+                }
+                if(gotoThisOne!=null) {
+                    break;
+                }
+            }
+        }
+        if(gotoThisOne == null) {
+            gotoThisOne = _studentProblemGrid.getStore().get(0);
+        }
+        _studentProblemGrid.getSelectionModel().select(true,  gotoThisOne);
     }
 
     // search from current position to end, then 
