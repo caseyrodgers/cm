@@ -1896,20 +1896,27 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		final boolean isAdmin) throws Exception {
         
         if(commandType == CommandType.DELETE) {
-            final String sql = CmMultiLinePropertyReader.getInstance().getProperty("DELETE_WHITEBOARD_ROW_ASSIGNMENT");
+           
             final int rowToDelete = Integer.parseInt(commandData);
-            getJdbcTemplate().update(new PreparedStatementCreator() {
+
+            String sqlD = "select whiteboard_id from  CM_ASSIGNMENT_PID_WHITEBOARD where user_id = ? and assign_key = ? and pid = ? order by whiteboard_id limit ?,1";
+            final Integer whiteboardId = getJdbcTemplate().queryForObject(sqlD, new Object[] { uid, assignKey, pid, rowToDelete}, new RowMapper<Integer>() {
+                @Override
+                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return rs.getInt("whiteboard_id");
+                }
+            });
+            
+            
+            int countDeleted = getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    
-                    PreparedStatement ps = con.prepareStatement(sql);
-                    ps.setInt(1, uid);
-                    ps.setInt(2, assignKey);
-                    ps.setString(3, pid);
-                    ps.setInt(4, rowToDelete);
+                    String sqlD = "delete from  CM_ASSIGNMENT_PID_WHITEBOARD where whiteboard_id = ?";
+                    PreparedStatement ps = con.prepareStatement(sqlD);
+                    ps.setInt(1,whiteboardId);
                     return ps;
                 }
-            });            
+            });
         }
         else if (commandType == CommandType.CLEAR) {
     		getJdbcTemplate().update(new PreparedStatementCreator() {
