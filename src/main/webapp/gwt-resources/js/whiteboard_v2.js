@@ -426,7 +426,7 @@ var Whiteboard = function (cont, isStatic) {
             y0 += ht + ht / 3
         }
         if (!boo) {
-            updateCanvas();
+            //updateCanvas();
         }
         if (!xt) {
             var rect = {}
@@ -445,6 +445,7 @@ var Whiteboard = function (cont, isStatic) {
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
             gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
+			updateCanvas();
             updateText(txt, x0, sy, colorToNumber(colr));
             sendData();
             $get_Element("#content").value = "";
@@ -3001,7 +3002,7 @@ source: https://gist.github.com/754454
     wb.renderFromStorage = function () {
         if (supports_localStorage()) {
             var str = localStorage['jstr'];
-            updateWhiteboard([
+            wb.updateWhiteboard([
                 ["draw", [str]]
             ])
         } else {
