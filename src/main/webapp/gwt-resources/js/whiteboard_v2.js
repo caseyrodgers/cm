@@ -1428,6 +1428,9 @@ var Whiteboard = function (cont, isStatic) {
             }
             if ($get_Element("#button_undo")) {
                 $get_Element("#button_undo").onclick = function (event) {
+				if(graphicDataStore.length){
+				graphicDataStore.pop()
+				}
                     wb.whiteboardOut('undo', true);
                 };
             }
