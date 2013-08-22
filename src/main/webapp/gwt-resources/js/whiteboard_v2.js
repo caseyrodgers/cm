@@ -3109,6 +3109,42 @@ source: https://gist.github.com/754454
     wb.whiteboardDelete = function (n) {
 
     }
+	wb.clearMemory=function(){
+	var _width = 0;
+            origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = _width;
+            origcanvas.height = graphcanvas.height = topcanvas.height = canvas.width = _width;
+            if (isIE) {
+                $(canvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(canvas).empty();
+                $(origcanvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(origcanvas).empty();
+                $(graphcanvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(graphcanvas).empty();
+                $(topcanvas).css({
+                    'width': '0px',
+                    'height': '0px'
+                })
+                $(topcanvas).empty();
+            } else {
+                canvas = null;
+                origcanvas = null;
+                graphcanvas = null;
+                topcanvas = null;
+                context = null;
+                origcontext = null;
+                graphcontext = null;
+                topcontext = null;
+            }
+	}
     //
 
     function updateDataToSERVER(index, jsdata) {
