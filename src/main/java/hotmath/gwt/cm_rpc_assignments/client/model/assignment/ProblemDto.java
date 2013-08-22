@@ -130,5 +130,16 @@ public class ProblemDto extends BaseDto implements Response {
     public String toString() {
         return "ProblemDto [label=" + label + ", pid=" + pid + ", lesson=" + lesson + ", problemType=" + problemType + ", assignKey=" + assignKey
                 + ", ordinalNumber=" + ordinalNumber + "]";
-    }    
-}
+    }
+    
+
+    public boolean equals(Object obj) {
+        
+        if(obj instanceof ProblemDto) {
+            return ((ProblemDto)obj).getPid().equals(getPid());
+        }
+        else {
+            return super.equals(obj);
+        }
+    }
+    }

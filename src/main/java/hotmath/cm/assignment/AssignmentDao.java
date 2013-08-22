@@ -1629,23 +1629,48 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             return studentProblems;  // already created, just return
         }
         
-        /** create the set of assignment pids to be used by this user
+        
+        /** Otherwise, create and persist
          * 
          */
         
+        
+        /** create the set of assignment pids to be used by this user
+         * 
+         */
         Assignment ass = getAssignment(assignKey);
         final List<ProblemDto> personalPids = new ArrayList<ProblemDto>();
         for(ProblemDto problem: ass.getPids()) {
             ProblemDto problemToUse = null;
             if(ass.isPersonalized()) {
-                problemToUse = lookupPersonalizedAlternateProblem(problem);
+                boolean foundOneToUse=false;
+                int maxAttempts=10;
+                while(maxAttempts-- > 0) {
+                    problemToUse = lookupPersonalizedAlternateProblem(problem);
+                    if(!personalPids.contains(problemToUse)) {
+                        foundOneToUse=true;
+                        break;
+                    }
+                    else {
+                        // try again
+                        logger.debug("Found duplicate: " + problemToUse);
+                    }
+                }
+                
+                if(!foundOneToUse) {
+                    logger.error("Could not find alternate problem for: " + problem);
+                }
+                else {
+                    personalPids.add(problemToUse);
+                }
             }
             else {
-                problemToUse = problem;
+                personalPids.add(problem);
             }
-            personalPids.add(problemToUse);
         }
         
+        
+        logger.info("Adding pids to CM_ASSIGNMENT_PIDS_USER: " + personalPids);
         
         /** Store these as the Pids to use for this student/assignment
          * 
@@ -1671,6 +1696,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /** Given a PID figure out what testdef references this pid
+     * and return an alternate/similar problem pid
      * 
      * @param testDef
      * @param pid
