@@ -1,5 +1,8 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import hotmath.gwt.cm_admin.client.ui.ccss.StandardListDialog;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 
 import java.util.List;
@@ -57,6 +60,12 @@ public class CCSSCoverageBarChart implements IsWidget {
 		ValueProvider<CCSSCoverageBar, Integer> lessons();
 
 		ValueProvider<CCSSCoverageBar, String> label();
+
+		ValueProvider<CCSSCoverageBar, CmList<String>> assignmentStdNames();
+
+		ValueProvider<CCSSCoverageBar, CmList<String>> lessonStdNames();
+
+		ValueProvider<CCSSCoverageBar, CmList<String>> quizStdNames();
 
 		@Path("label")
 		ModelKeyProvider<CCSSCoverageBar> labelKey();
@@ -136,27 +145,35 @@ public class CCSSCoverageBarChart implements IsWidget {
 	    });
 	    config.setDismissDelay(2000);
 		column.setToolTipConfig(config);
-/*
- 		column.addSeriesItemOverHandler(new SeriesItemOverHandler<CCSSCoverageBar>() {
-			@Override
-			public void onSeriesOverItem(SeriesItemOverEvent<CCSSCoverageBar> event) {
-				if (true) {
-					int index = event.getIndex();
-					String msg = ccssData.get(index).getCount() + " standards (click for details)";
-					config.setBodyHtml(SafeHtmlUtils.htmlEscape(msg));
-					column.setToolTipConfig(config);
-				}
-			}
-		});
- */
+
 		column.addSeriesSelectionHandler(new SeriesSelectionHandler<CCSSCoverageBar>() {
+
 			@Override
-			public void onSeriesSelection(SeriesSelectionEvent<CCSSCoverageBar> event) {
-				if (true) {
-					int index = event.getIndex();
-					//showUsersWhoHaveBeenAssignedLesson(index);
-				}
+			public void onSeriesSelection(
+					SeriesSelectionEvent<CCSSCoverageBar> event) {
+
+				int index = event.getIndex()/3;
+	            ValueProvider<? super CCSSCoverageBar, ? extends Number> valueProvider = event.getValueProvider();
+	            CCSSCoverageBar ccssBar = store.get(index);
+	            int value = valueProvider.getValue(ccssBar).intValue();
+	            List<String> stdNames = null;
+	            String label = "";
+	            if (value == ccssBar.getAssignments()) {
+	            	label = "Assignments - ";
+	            	stdNames = ccssBar.getAssignmentStdNames();
+	            }
+	            else if (value == ccssBar.getLessons()) {
+	            	label = "Lessons - ";
+	            	stdNames = ccssBar.getLessonStdNames();
+	            }
+	            else if (value == ccssBar.getQuizzes()) {
+	            	label = "Quizzes - ";
+	            	stdNames = ccssBar.getQuizStdNames();
+	            }
+	            StandardListDialog dialog = new StandardListDialog(label + ccssBar.getLabel());
+	            dialog.loadStandards(stdNames);
 			}
+			
 		});
 
 		chart.addSeries(column);
