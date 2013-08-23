@@ -82,6 +82,37 @@ public class QueryHelper {
     }
 
 	/**
+	 * @param sqlTemplate A string containing token which will be replaced.
+	 * @param vals a List of Strings
+	 * @return SQL with vals in one or more comma separated lists
+	 * @throws Exception
+	 */
+    static public String createInListSQL(String sqlTemplate, String token, List<String> vals) throws Exception {
+        
+        StringBuilder sb = new StringBuilder();
+        
+        int count = vals.size(); 
+        if(count == 0) {
+            /** handle empty list with valid SQL 
+             * 
+             */
+            sb.append("NULL");
+        }
+        else {
+            int cnt=0;
+            for(String v: vals) {
+                if(++cnt > 1) 
+                    sb.append(", ");
+                sb.append("'").append(v).append("'");
+            }
+        }
+        
+        String sql = sqlTemplate.replace(token, sb.toString());
+        
+        return sql;
+    }
+
+	/**
 	 * @param sqlTemplate A string containing token $$UID_LIST$$ which will be replaced. (using named token to help document SQL)
 	 * @param vals
 	 * @param name  the column name
