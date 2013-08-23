@@ -3139,6 +3139,10 @@ source: https://gist.github.com/754454
                 })
                 $(topcanvas).empty();
             } else {
+			$(canvas).remove();
+			$(origcanvas).remove();
+			$(graphcanvas).remove();
+			$(topcanvas).remove();
                 canvas = null;
                 origcanvas = null;
                 graphcanvas = null;
