@@ -134,7 +134,7 @@ public class ProblemDto extends BaseDto implements Response {
     
 
     public boolean equals(Object obj) {
-        if(obj instanceof ProblemDto && ((ProblemDto)obj).getPid() != null && getPid() != null) {
+        if(obj instanceof ProblemDto && getPid() != null) {
             return ((ProblemDto)obj).getPid().equals(getPid());
         }
         else {

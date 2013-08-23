@@ -1712,8 +1712,14 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             HaTestDef testDef = figureOutAssociatedTestDef(problem);
             if(testDef != null) {
                 String newPid = ExamDao.getInstance().getAlternateProblem_MultiChoice(testDef, problem.getPid());
-                __logger.info("Personalized pid: " + problem.getPid() + " with " + newPid);
-                problem.setPid(newPid);
+                
+                if(newPid == null) {
+                    __logger.info("Personalized pid: could not find alternate for '" + problem + "'");
+                }
+                else {
+                    __logger.info("Personalized pid: " + problem.getPid() + " with " + newPid);
+                    problem.setPid(newPid);
+                }
             }
         }
         else if(problem.getProblemType() == ProblemType.INPUT_WIDGET) {
