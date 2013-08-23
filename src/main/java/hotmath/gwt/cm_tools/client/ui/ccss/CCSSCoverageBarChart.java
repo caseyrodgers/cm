@@ -3,6 +3,7 @@ package hotmath.gwt.cm_tools.client.ui.ccss;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -64,6 +65,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 
 	private static final DataPropertyAccess dataAccess = GWT.create(DataPropertyAccess.class);
 
+	ListStore<CCSSCoverageBar> store;
 	List<CCSSCoverageBar> ccssData;
 	String _title;
 
@@ -79,7 +81,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 	public Widget asWidget() {
 		if (_widget != null) return _widget;
 
-		final ListStore<CCSSCoverageBar> store = new ListStore<CCSSCoverageBar>(dataAccess.labelKey());
+		store = new ListStore<CCSSCoverageBar>(dataAccess.labelKey());
 		store.addAll(this.ccssData);
 
 		final Chart<CCSSCoverageBar> chart = new Chart<CCSSCoverageBar>();
@@ -151,17 +153,18 @@ public class CCSSCoverageBarChart implements IsWidget {
 	            String label = "";
 	            if (value == ccssBar.getAssignments()) {
 	            	label = "Assignments - ";
-	            	stdNames = ccssBar.getAssignmentStdNames();
+	            	stdNames = getCumulativeStandards(index, Activity.ASSIGNMENT);
 	            }
 	            else if (value == ccssBar.getLessons()) {
 	            	label = "Lessons - ";
-	            	stdNames = ccssBar.getLessonStdNames();
+	            	stdNames = getCumulativeStandards(index, Activity.LESSON);
 	            }
 	            else if (value == ccssBar.getQuizzes()) {
 	            	label = "Quizzes - ";
-	            	stdNames = ccssBar.getQuizStdNames();
+	            	stdNames = getCumulativeStandards(index, Activity.QUIZ);
 	            }
-	            StandardListDialog dialog = new StandardListDialog(label + ccssBar.getLabel());
+	            label += ccssBar.getLabel() + " - [" + stdNames.size() + "]";
+	            StandardListDialog dialog = new StandardListDialog(label);
 	            dialog.loadStandards(stdNames);
 			}
 			
@@ -197,6 +200,24 @@ public class CCSSCoverageBarChart implements IsWidget {
 
 		_widget = panel;
 		return panel;
+	}
+
+	protected List<String> getCumulativeStandards(int index, Activity activityType) {
+		List<String> stdNames = new ArrayList<String>();
+		for (int i=0; i<=index; i++) {
+			switch(activityType) {
+			case ASSIGNMENT:
+				stdNames.addAll(store.get(i).getAssignmentStdNames());
+				break;
+			case LESSON:
+				stdNames.addAll(store.get(i).getLessonStdNames());
+				break;
+			case QUIZ:
+				stdNames.addAll(store.get(i).getQuizStdNames());
+				break;
+			}
+		}
+		return stdNames;
 	}
 
 	/** determine the max value shown by chart.
@@ -253,5 +274,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 		this.ccssData = data;
 		this._title = title;
 	}
+	
+	private enum Activity {ASSIGNMENT, LESSON, QUIZ};
 
 }
