@@ -4404,8 +4404,8 @@ ORDER BY ccs.standard_name_new ASC
 .key=GET_CCSS_DETAIL
 SELECT ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description
 FROM   common_core_standards ccs
-WHERE  ccs.standard_name_new = ?
-
+WHERE  ccs.standard_name_new in ( $$NAME_LIST$$ )
+order by ccs.standard_name_new
 
 
 ##
