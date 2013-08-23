@@ -95,7 +95,7 @@ public class QuestionViewerPanel extends ContentPanel {
                     }
                     tutorPanel.externallyLoadedTutor(result, getWidget(), problem.getPid(), null, result.getJs(), result.getHtml(), problem.getLabel(), false, false, variableContext);
                     
-                    if(problem.getProblemType() != ProblemType.WHITEBOARD) {
+                    if(problem.getProblemType() == ProblemType.MULTI_CHOICE) {
                         TutorWrapperPanel.jsni_hideWhiteboardStatus();
                     }
                     

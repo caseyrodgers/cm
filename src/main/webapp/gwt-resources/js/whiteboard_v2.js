@@ -3161,11 +3161,7 @@ source: https://gist.github.com/754454
             $("div#" + contDiv + " [name='tools'] button").show()
         }
     }
-
-    wb.releaseResources = function () {
-    	console.log('release resources for whiteboard');
-        graphicDataStore = [];
-    }
+    
     return wb;
 
 };
