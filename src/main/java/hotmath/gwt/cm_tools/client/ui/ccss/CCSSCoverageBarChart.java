@@ -248,28 +248,7 @@ public class CCSSCoverageBarChart implements IsWidget {
 		max += (fudge - add);
 		return max;
 	}
-/*
-	private void showUsersWhoHaveBeenAssignedLesson(int lessonNumber) {
-		CmBusyManager.setBusy(true);
 
-		final String lessonName = trendingData.get(lessonNumber).getLessonName();
-		CmServiceAsync service = CmShared.getCmService();
-		GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName);
-		service.execute(action,
-				new CmAsyncCallback<CmList<StudentModelI>>() {
-			public void onSuccess(CmList<StudentModelI> students) {
-				new StudentListDialog("Students assigned lesson '" +lessonName + "'").addStudents(students);
-				CmBusyManager.setBusy(false);
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				CmBusyManager.setBusy(false);
-				super.onFailure(caught);
-			}
-		});
-	}
-*/
 	protected void setModelData(String title, List<CCSSCoverageBar> data) {
 		this.ccssData = data;
 		this._title = title;

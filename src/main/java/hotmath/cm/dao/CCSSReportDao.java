@@ -8,8 +8,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang3.math.NumberUtils;
@@ -399,13 +401,13 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	return returnList;
     }
 
-    public CCSSDetail getCCSSDetail(String name) throws Exception {
+    public List<CCSSDetail> getCCSSDetail(List<String> names) throws Exception {
 
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_DETAIL");
+        sql = QueryHelper.createInListSQL(sql, "$$NAME_LIST$$", names);
     	List<CCSSDetail> list = null;
     	try {
-    		list = getJdbcTemplate().query(sql, new Object[] { name },
-    				new RowMapper<CCSSDetail>() {
+    		list = getJdbcTemplate().query(sql, new RowMapper<CCSSDetail>() {
     			@Override
     			public CCSSDetail mapRow(ResultSet rs, int rowNum) throws SQLException {
     				CCSSDetail detail = new CCSSDetail(rs.getString("name"), rs.getString("original_name"),
@@ -416,13 +418,39 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     		});
     	}
     	catch (DataAccessException e) {
-    		LOGGER.error(String.format("getCCSSDetail(): name: %s", name), e);
+    		LOGGER.error(String.format("getCCSSDetail(): names: %s", names), e);
     		throw e;
     	}
     	if (list.isEmpty()) {
-    		list.add(new CCSSDetail(name, "Not Found", "Not Found", "Not Found", "Not Found", "Not Found"));
+    		list.add(new CCSSDetail(names.get(0), "Not Found", "Not Found", "Not Found", "Not Found", "Not Found"));
     	}
-    	return list.get(0);
+    	//TODO: back fill list entries to match duplicates in incoming list
+    	Map<String, Integer> stdCountMap = new HashMap<String,Integer>();
+    	boolean needBackfill = false;
+    	for (String name : names) {
+    		if (stdCountMap.containsKey(name) == false) {
+    			stdCountMap.put(name, 1);
+    		}
+    		else {
+    			int count = stdCountMap.get(name) + 1;
+    			needBackfill = true;
+    			stdCountMap.put(name,  count);
+    		}
+    	}
+    	if (needBackfill == true) {
+    		List<CCSSDetail> bfList = new ArrayList<CCSSDetail>();
+    		for (CCSSDetail item : list) {
+    			int count = stdCountMap.get(item.getCcssName());
+    			for (int idx=0; idx<count; idx++) {
+    				bfList.add(item);
+    			}
+    		}
+    		return bfList;
+    	}
+    	else {
+        	return list;
+    	}
+    	
     }
 
     /**
