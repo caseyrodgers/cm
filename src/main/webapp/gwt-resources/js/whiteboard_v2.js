@@ -3175,6 +3175,10 @@ source: https://gist.github.com/754454
         }
     }
     
+    wb.releaseResources = function() {
+    	graphicDataStore = [];
+    }
+    
     return wb;
 
 };

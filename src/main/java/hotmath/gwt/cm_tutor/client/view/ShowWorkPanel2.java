@@ -336,13 +336,11 @@ public class ShowWorkPanel2 extends Composite {
                 //
                 
                 if($wnd._theWhiteboard) {
-                   $wnd._theWhiteboard.clearMemory();
-                   $wnd._theWhiteboard = null;
+                   $wnd._theWhiteboard.releaseResources();
                 }
-                
-               
-               $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
-               
+                else {
+                    $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
+                }
                 
                 // tell the Whiteboard object the size of the parent container
                 var height = Number($wnd.grabComputedHeight(ele)) + 15;
