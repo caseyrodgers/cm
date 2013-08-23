@@ -2963,6 +2963,7 @@ source: https://gist.github.com/754454
                 // make unique to whiteboard, otherwise
                 // other code can override.
                 if (command == 'clear') {
+				graphicDataStore=[];
                     resetWhiteBoard(false);
                 } else {
                     this[command].apply(scope, arg);
