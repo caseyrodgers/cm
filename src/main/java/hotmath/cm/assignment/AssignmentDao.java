@@ -2660,5 +2660,21 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     		throw new SQLException(e.getLocalizedMessage());
     	}
     }
+    
+    
+    
+    static public void main(String as[]) {
+        try {
+            AssignmentDao ad = AssignmentDao.getInstance();
+            ProblemDto problem = new ProblemDto(0,0,new LessonModel("test","test"), "test", "prealgptests_1_2_chapter1practicetest_2_1", 0);
+            problem.setProblemType(ProblemType.MULTI_CHOICE);
+            ProblemDto res = ad.lookupPersonalizedAlternateProblem(problem);
+            
+            System.out.println(res);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
