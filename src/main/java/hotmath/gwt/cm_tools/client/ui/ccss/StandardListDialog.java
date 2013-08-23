@@ -1,10 +1,14 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
-import hotmath.gwt.cm_admin.client.ui.StudentGridPanel;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
-import hotmath.gwt.shared.client.model.CCSSStandard;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.model.CCSSDetail;
+import hotmath.gwt.shared.client.rpc.RetryAction;
+import hotmath.gwt.shared.client.rpc.action.CCSSDetailAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +33,10 @@ import com.sencha.gxt.widget.core.client.grid.Grid;
  */
 public class StandardListDialog extends GWindow {
 
-    Grid<CCSSStandard> _grid;
+    Grid<CCSSDetail> _grid;
     BorderLayoutContainer _container = new BorderLayoutContainer();
 
-    ListStore<CCSSStandard> _store = new ListStore<CCSSStandard>(_dataAccess.nameKey());
+    ListStore<CCSSDetail> _store = new ListStore<CCSSDetail>(_dataAccess.nameKey());
 
     int _height = 400;
     int _width = 270;
@@ -49,28 +53,18 @@ public class StandardListDialog extends GWindow {
     }
 
     public void loadStandards(final List<String> stdNames) {
-    	List<CCSSStandard> standards = new ArrayList<CCSSStandard>();
-    	for (String stdName : stdNames) {
-    		CCSSStandard standard = new CCSSStandard();
-    		standard.setName(stdName);
-    		standards.add(standard);
-    	}
-        addStandards(standards);
-
-        // TODO: RPC for CCSS info
-    	/*
-        new RetryAction<CmList<CCSSStandard>>() {
+        new RetryAction<CmList<CCSSDetail>>() {
             @Override
             public void attempt() {
                 CmBusyManager.setBusy(true);
 
-                StandardsByNameAction action = new StandardsByNameAction(stdNames);
+                CCSSDetailAction action = new CCSSDetailAction(stdNames);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
             @Override
-            public void oncapture(CmList<CCSSStandard> standards) {
+            public void oncapture(CmList<CCSSDetail> standards) {
                 CmBusyManager.setBusy(false);
                 addStandards(standards);
             }
@@ -81,11 +75,11 @@ public class StandardListDialog extends GWindow {
                 CmBusyManager.setBusy(false);
             }
         }.register();
-        */
+
 
     }
 
-    protected void addStandards(List<CCSSStandard> standards) {
+    protected void addStandards(List<CCSSDetail> standards) {
     	if (isVisible()) setVisible(false);
     	_store.clear();
         _store.addAll(standards);
@@ -112,10 +106,10 @@ public class StandardListDialog extends GWindow {
             @Override
             public void onSelect(SelectEvent event) {
                 List<String> stdNames = new ArrayList<String>();
-                List<CCSSStandard> standards = _grid.getStore().getAll();
-                int adminId = StudentGridPanel.instance.getCmAdminMdl().getUid();
+                List<CCSSDetail> standards = _grid.getStore().getAll();
+                //int adminId = StudentGridPanel.instance.getCmAdminMdl().getUid();
                 for(int i=0,t=standards.size();i<t;i++) {
-                    stdNames.add(standards.get(i).getName());
+                    stdNames.add(standards.get(i).getCcssName());
                 }
                 CmMessageBox.showAlert("Sorry, print not available.");
                 /*
@@ -132,8 +126,8 @@ public class StandardListDialog extends GWindow {
     }
     
     
-    private Grid<CCSSStandard> defineGrid(final ListStore<CCSSStandard> store, ColumnModel<CCSSStandard> cm) {
-        final Grid<CCSSStandard> grid = new Grid<CCSSStandard>(store, cm);
+    private Grid<CCSSDetail> defineGrid(final ListStore<CCSSDetail> store, ColumnModel<CCSSDetail> cm) {
+        final Grid<CCSSDetail> grid = new Grid<CCSSDetail>(store, cm);
         grid.setBorders(true);
         grid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         grid.getView().setAutoExpandColumn(cm.findColumnConfig("name"));
@@ -144,20 +138,21 @@ public class StandardListDialog extends GWindow {
         return grid;
     }
 
-    private ColumnModel<CCSSStandard> defineColumns() {
-        List<ColumnConfig<CCSSStandard, ?>> cols = new ArrayList<ColumnConfig<CCSSStandard, ?>>();
+    private ColumnModel<CCSSDetail> defineColumns() {
+        List<ColumnConfig<CCSSDetail, ?>> cols = new ArrayList<ColumnConfig<CCSSDetail, ?>>();
 
-        cols.add(new ColumnConfig<CCSSStandard, String>(_dataAccess.name(), 235, "Standard Name"));
+        cols.add(new ColumnConfig<CCSSDetail, String>(_dataAccess.name(), 235, "Standard Name"));
         // column.setSortable(true);
 
-        return new ColumnModel<CCSSStandard>(cols);
+        return new ColumnModel<CCSSDetail>(cols);
     }
 
-	public interface DataPropertyAccess extends PropertyAccess<CCSSStandard> {
-		ValueProvider<CCSSStandard, String> name();
+	public interface DataPropertyAccess extends PropertyAccess<CCSSDetail> {
+		@Path("ccssName")
+		ValueProvider<CCSSDetail, String> name();
 
-		@Path("name")
-		ModelKeyProvider<CCSSStandard> nameKey();
+		@Path("ccssName")
+		ModelKeyProvider<CCSSDetail> nameKey();
 	}
 
 	private static final DataPropertyAccess _dataAccess = GWT.create(DataPropertyAccess.class);

@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
-import hotmath.gwt.cm_admin.client.ui.StudentListDialog;
 import hotmath.gwt.cm_admin.client.ui.StudentListWithCCSSDetailDialog;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
@@ -14,9 +13,9 @@ import hotmath.gwt.shared.client.rpc.action.HighlightReportData;
 import hotmath.gwt.shared.client.rpc.action.HighlightsGetReportAction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -66,11 +65,11 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
         CmBusyManager.setBusy(true);
         final HighlightReportData item = _grid.getSelectionModel().getSelectedItem();
 
-        new RetryAction<CCSSDetail>() {
-            public void oncapture(CCSSDetail detail) {
+        new RetryAction<CmList<CCSSDetail>>() {
+            public void oncapture(CmList<CCSSDetail> detail) {
                 try {
                 	StringBuilder sb = new StringBuilder("<div style='padding-top:10px; padding-bottom:10px; margin-left:10px; margin-right:10px; font-weight:500'>");
-                	sb.append(detail.getSummary());
+                	sb.append(detail.get(0).getSummary());
                 	sb.append("</div>");
                 	int height = (sb.length() / 40) * 12;
                     StudentListWithCCSSDetailDialog dialog = new StudentListWithCCSSDetailDialog(item.getName(), height);
@@ -85,7 +84,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
             public void attempt() {
                 CmServiceAsync s = CmShared.getCmService();
 
-                CCSSDetailAction action = new CCSSDetailAction(item.getName());
+                CCSSDetailAction action = new CCSSDetailAction(Arrays.asList(item.getName()));
                 setAction(action);
                 s.execute(action, this);
             }

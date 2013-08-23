@@ -1,27 +1,30 @@
 package hotmath.gwt.shared.client.rpc.action;
 
+import java.util.List;
+
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSDetail;
 
-public class CCSSDetailAction implements Action<CCSSDetail> {
+public class CCSSDetailAction implements Action<CmList<CCSSDetail>> {
     
 	private static final long serialVersionUID = -1241219926825147218L;
 
-	String standardName;
+	List<String> standardNames;
     
     public CCSSDetailAction() {
     }
 
-    public CCSSDetailAction(String standardName) {
-        this.standardName = standardName;
+    public CCSSDetailAction(List<String> standardNames) {
+        this.standardNames = standardNames;
     }
 
-    public String getStandardName() {
-    	return standardName;
+    public List<String> getStandardNames() {
+    	return standardNames;
     }
     
     @Override
     public String toString() {
-        return "CCSSDetailAction [standardName=" + standardName + "]";
+        return "CCSSDetailAction [standardName=" + standardNames + "]";
     }
 }
