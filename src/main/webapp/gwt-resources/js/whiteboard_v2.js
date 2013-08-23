@@ -3110,6 +3110,10 @@ source: https://gist.github.com/754454
 
     }
 	wb.clearMemory=function(){
+	graphicData=null;
+	graphicDataStore=null;
+	selectedObj=null;
+	
 	var _width = 0;
             origcanvas.width = graphcanvas.width = topcanvas.width = canvas.width = _width;
             origcanvas.height = graphcanvas.height = topcanvas.height = canvas.width = _width;
@@ -3144,6 +3148,11 @@ source: https://gist.github.com/754454
                 graphcontext = null;
                 topcontext = null;
             }
+			gr2D=null;
+			nL=null;
+			scope=null;
+			wb=null;
+			
 	}
     //
 
