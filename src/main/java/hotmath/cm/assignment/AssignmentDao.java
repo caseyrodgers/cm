@@ -1647,6 +1647,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 int maxAttempts=10;
                 while(maxAttempts-- > 0) {
                     problemToUse = lookupPersonalizedAlternateProblem(problem);
+                    
+                    System.out.println("Checking problem touse: " + problemToUse);
+                    
                     if(!personalPids.contains(problemToUse)) {
                         foundOneToUse=true;
                         break;
