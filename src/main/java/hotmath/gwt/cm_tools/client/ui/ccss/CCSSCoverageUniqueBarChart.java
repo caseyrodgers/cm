@@ -1,14 +1,15 @@
 package hotmath.gwt.cm_tools.client.ui.ccss;
 
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -17,18 +18,12 @@ import com.sencha.gxt.chart.client.chart.Chart.Position;
 import com.sencha.gxt.chart.client.chart.Legend;
 import com.sencha.gxt.chart.client.chart.axis.CategoryAxis;
 import com.sencha.gxt.chart.client.chart.axis.NumericAxis;
-import com.sencha.gxt.chart.client.chart.event.SeriesItemOverEvent;
-import com.sencha.gxt.chart.client.chart.event.SeriesItemOverEvent.SeriesItemOverHandler;
 import com.sencha.gxt.chart.client.chart.event.SeriesSelectionEvent;
 import com.sencha.gxt.chart.client.chart.event.SeriesSelectionEvent.SeriesSelectionHandler;
 import com.sencha.gxt.chart.client.chart.series.BarSeries;
-import com.sencha.gxt.chart.client.chart.series.Series.LabelPosition;
-import com.sencha.gxt.chart.client.chart.series.SeriesLabelConfig;
 import com.sencha.gxt.chart.client.chart.series.SeriesLabelProvider;
-import com.sencha.gxt.chart.client.chart.series.SeriesRenderer;
 import com.sencha.gxt.chart.client.chart.series.SeriesToolTipConfig;
 import com.sencha.gxt.chart.client.draw.RGB;
-import com.sencha.gxt.chart.client.draw.sprite.Sprite;
 import com.sencha.gxt.chart.client.draw.sprite.TextSprite;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
@@ -52,6 +47,8 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 
 		ValueProvider<CCSSCoverageBar, String> label();
 
+		ValueProvider<CCSSCoverageBar, CmList<String>> uniqueStdNames();
+
 		@Path("label")
 		ModelKeyProvider<CCSSCoverageBar> labelKey();
     }
@@ -59,6 +56,7 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 	private static final DataPropertyAccess dataAccess = GWT.create(DataPropertyAccess.class);
 
 	List<CCSSCoverageBar> ccssData;
+	ListStore<CCSSCoverageBar> store;
 	String _title;
 
 
@@ -73,7 +71,7 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 	public Widget asWidget() {
 		if (_widget != null) return _widget;
 
-		final ListStore<CCSSCoverageBar> store = new ListStore<CCSSCoverageBar>(dataAccess.labelKey());
+		store = new ListStore<CCSSCoverageBar>(dataAccess.labelKey());
 		store.addAll(this.ccssData);
 
 		final Chart<CCSSCoverageBar> chart = new Chart<CCSSCoverageBar>();
@@ -126,29 +124,22 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 	    });
 	    config.setDismissDelay(2000);
 		column.setToolTipConfig(config);
-/*
- 		column.addSeriesItemOverHandler(new SeriesItemOverHandler<CCSSCoverageBar>() {
-			@Override
-			public void onSeriesOverItem(SeriesItemOverEvent<CCSSCoverageBar> event) {
-				if (true) {
-					int index = event.getIndex();
-					String msg = ccssData.get(index).getCount() + " standards (click for details)";
-					config.setBodyHtml(SafeHtmlUtils.htmlEscape(msg));
-					column.setToolTipConfig(config);
-				}
-			}
-		});
- */
-		column.addSeriesSelectionHandler(new SeriesSelectionHandler<CCSSCoverageBar>() {
-			@Override
-			public void onSeriesSelection(SeriesSelectionEvent<CCSSCoverageBar> event) {
-				if (true) {
-					int index = event.getIndex();
-					//showUsersWhoHaveBeenAssignedLesson(index);
-				}
-			}
-		});
 
+		column.addSeriesSelectionHandler(new SeriesSelectionHandler<CCSSCoverageBar>() {
+
+			@Override
+			public void onSeriesSelection(
+					SeriesSelectionEvent<CCSSCoverageBar> event) {
+
+				int index = event.getIndex();
+	            CCSSCoverageBar ccssBar = store.get(index);
+	            List<String> stdNames = getCumulativeStandards(index);
+	            String label = "Unique - " + ccssBar.getLabel() + " - [" + stdNames.size() + "]";
+	            StandardListDialog dialog = new StandardListDialog(label);
+	            dialog.loadStandards(stdNames);
+			}
+			
+		});
 		chart.addSeries(column);
 
 	    final Legend<CCSSCoverageBar> legend = new Legend<CCSSCoverageBar>();
@@ -209,28 +200,15 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 		max += (fudge - add);
 		return max;
 	}
-/*
-	private void showUsersWhoHaveBeenAssignedLesson(int lessonNumber) {
-		CmBusyManager.setBusy(true);
 
-		final String lessonName = trendingData.get(lessonNumber).getLessonName();
-		CmServiceAsync service = CmShared.getCmService();
-		GetAdminTrendingDataDetailAction action = new GetAdminTrendingDataDetailAction(StudentGridPanel.instance._pageAction, lessonName);
-		service.execute(action,
-				new CmAsyncCallback<CmList<StudentModelI>>() {
-			public void onSuccess(CmList<StudentModelI> students) {
-				new StudentListDialog("Students assigned lesson '" +lessonName + "'").addStudents(students);
-				CmBusyManager.setBusy(false);
-			}
-
-			@Override
-			public void onFailure(Throwable caught) {
-				CmBusyManager.setBusy(false);
-				super.onFailure(caught);
-			}
-		});
+	protected List<String> getCumulativeStandards(int index) {
+		List<String> stdNames = new ArrayList<String>();
+		for (int i=0; i<=index; i++) {
+			stdNames.addAll(store.get(i).getUniqueStdNames());
+		}
+		return stdNames;
 	}
-*/
+
 	protected void setModelData(String title, List<CCSSCoverageBar> data) {
 		this.ccssData = data;
 		this._title = title;
