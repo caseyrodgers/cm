@@ -232,7 +232,7 @@ public class AssignmentManagerDialog2  {
         btn.setToolTip("View Assignments webinars");
 
         Menu menu = new Menu();
-        menu.add(new MyMenuItem("Assignments Basic", "View the Assignments Basic webinar", new SelectionHandler<MenuItem>() {
+        menu.add(new MyMenuItem("Assignments Basics", "View the Assignments Basics webinar", new SelectionHandler<MenuItem>() {
             @Override
             public void onSelection(SelectionEvent<MenuItem> event) {
                 showAssignmentsWebinarPage();
