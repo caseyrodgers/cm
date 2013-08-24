@@ -60,6 +60,9 @@ var Whiteboard = function (cont, isStatic) {
     var lineBound = {};
     var useMQ = false;
 	var selectionDragged=false;
+	//
+	var cwi=200;
+	var cht=262;
     //
     var toolArr = [{
         name: 'button_text',
@@ -804,8 +807,8 @@ var Whiteboard = function (cont, isStatic) {
             origcanvas = $get_Element("#ocanvas");
             graphcanvas = $get_Element("#gcanvas");
             topcanvas = $get_Element("#tcanvas");
-            var vWidth = IS_IOS ? docWidth - leftOff : 2000;
-            var vHeight = IS_IOS ? docHeight - topOff : 2620;
+            var vWidth = IS_IOS ? docWidth - leftOff : cwi;
+            var vHeight = IS_IOS ? docHeight - topOff : cht;
             canvas.width = vWidth;
             canvas.height = vHeight;
             origcanvas.width = vWidth;
