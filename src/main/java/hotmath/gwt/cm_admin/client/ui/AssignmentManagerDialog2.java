@@ -15,6 +15,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
+import hotmath.gwt.cm_tools.client.ui.MyMenuItem;
 import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -40,6 +41,8 @@ import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
+import com.sencha.gxt.widget.core.client.menu.Menu;
+import com.sencha.gxt.widget.core.client.menu.MenuItem;
 
 /**
  * Provide dialog to allow Admins ability to define and manage Assignments.
@@ -80,7 +83,7 @@ public class AssignmentManagerDialog2  {
         header.add(new FieldLabel(_groupCombo, "Group"));
 
         HorizontalLayoutData hd = new HorizontalLayoutData();
-        hd.setMargins(new Margins(0,10,0,20));
+        hd.setMargins(new Margins(0,0,0,20));
         _gradeBookButton = createGradeBookButton();
         header.add(_gradeBookButton, hd);
 
@@ -91,12 +94,7 @@ public class AssignmentManagerDialog2  {
             }
         }), hd);
         
-        header.add(new TextButton("Assignments Webinar", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                showAssignmentsWebinarPage();
-            }
-        }), hd);
+        header.add(createWebinarButton(), hd);
 
         _mainContainer.setNorthWidget(header, northData);
         
@@ -229,11 +227,38 @@ public class AssignmentManagerDialog2  {
         return gradeBookBtn;
     }
 
+    private TextButton createWebinarButton() {
+    	TextButton btn = new TextButton("Assignments Webinars");
+        btn.setToolTip("View Assignments webinars");
+
+        Menu menu = new Menu();
+        menu.add(new MyMenuItem("Assignments Basic", "View the Assignments Basic webinar", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                showAssignmentsWebinarPage();
+            }
+        }));
+        menu.add(new MyMenuItem("Assignments Update", "View the Assignments Update webinar", new SelectionHandler<MenuItem>() {
+            @Override
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                showAssignmentsUpdateWebinarPage();
+            }
+        }));
+
+        btn.setMenu(menu);
+        return btn;
+    }
+
     private native void showAssignmentsWebinarPage() /*-{
         var aw = window.open('/webinar_assignments');
         aw.focus();
     }-*/;
     
+    private native void showAssignmentsUpdateWebinarPage() /*-{
+        var aw = window.open('/webinar_assignments/updates.html');
+        aw.focus();
+    }-*/;
+
     protected void refreshData() {
         _assignmentsPanel.refreshData();
     }
