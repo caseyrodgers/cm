@@ -336,13 +336,14 @@ public class ShowWorkPanel2 extends Composite {
                 //
                 
                 if($wnd._theWhiteboard) {
-                   $wnd._theWhiteboard.clearMemory();
-                   $wnd._theWhiteboard = null;
+                   $wnd._theWhiteboard.releaseResources();
+                }
+                else {
+                   $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
                 }
                 
-                $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
-                
-                
+                $wnd._theWhiteboard.initWhiteboard($doc);
+
                 // tell the Whiteboard object the size of the parent container
                 var height = Number($wnd.grabComputedHeight(ele)) + 15;
                 var width = Number($wnd.grabComputedWidth(ele)) + 15;
@@ -367,7 +368,6 @@ public class ShowWorkPanel2 extends Composite {
                    that.@hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2::whiteboardIsReady()();
                 }
 
-                $wnd._theWhiteboard.initWhiteboard($doc);
             } catch (e) {
                 alert('error initializing whiteboard: ' + e);
                 return;

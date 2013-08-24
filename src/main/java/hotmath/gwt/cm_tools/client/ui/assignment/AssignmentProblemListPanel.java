@@ -13,6 +13,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentProblemDto;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
+import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedEvent;
 import hotmath.gwt.cm_tools.client.ui.assignment.event.AssignmentProblemLoadedHandler;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -22,6 +23,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
@@ -65,12 +67,12 @@ public class AssignmentProblemListPanel extends ContentPanel {
         addTool(createNextProblemButton());
         
         
-//        addTool(new TextButton("Test", new SelectHandler() {
-//            @Override
-//            public void onSelect(SelectEvent event) {
-//                runTests();
-//            }
-//        }));
+        addTool(new TextButton("Test", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                runTests();
+            }
+        }));
         
         
         getButtonBar().add(createAnnotationLedgend());
@@ -162,7 +164,13 @@ public class AssignmentProblemListPanel extends ContentPanel {
         return b;
     }
     
+    int testCount;
     private void runTests() {
+        testCount=100;
+        runTestsDoIt();
+    }
+    
+    private void runTestsDoIt() {
         StudentProblemDto gotoThisOne=null;
 
         
@@ -192,7 +200,18 @@ public class AssignmentProblemListPanel extends ContentPanel {
         if(gotoThisOne == null) {
             gotoThisOne = _studentProblemGrid.getStore().get(0);
         }
+        
+        InfoPopupBox.display("Info",  "Test: " + testCount);
+        
         _studentProblemGrid.getSelectionModel().select(true,  gotoThisOne);
+        if(testCount-- > 0) {
+            new com.google.gwt.user.client.Timer() {
+                @Override
+                public void run() {
+                    runTestsDoIt();                    
+                }
+            }.schedule(5000);
+        }
     }
 
     // search from current position to end, then 
