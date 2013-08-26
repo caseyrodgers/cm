@@ -1,12 +1,13 @@
 package hotmath.cm.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import hotmath.gwt.cm.server.CmDbTestCase;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
 import hotmath.gwt.shared.client.model.CCSSDetail;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class CCSSReportDao_Test extends CmDbTestCase {
 
@@ -81,7 +82,8 @@ public class CCSSReportDao_Test extends CmDbTestCase {
 
     public void testGetCCSSDetail() throws Exception {
         CCSSReportDao dao = CCSSReportDao.getInstance();
-        CCSSDetail detail = dao.getCCSSDetail("6.G.A.4");
+        List<String> names = new ArrayList<String>();
+        List<CCSSDetail> detail = dao.getCCSSDetail(names);
         assertTrue(detail != null);
     }
 
