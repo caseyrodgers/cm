@@ -44,17 +44,18 @@ public class CatchupMathTest implements EntryPoint {
      docPanel.add(_mainPanel, DockPanel.CENTER);
      
       _textArea = new TextArea();
-      _textArea.getElement().setAttribute("style", "margin-top: 100px");
+      _textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 20px;");
       _textArea.setSize("500px",  "200px");
+      docPanel.add(new Button("Stop", new ClickHandler() {
+          
+          @Override
+          public void onClick(ClickEvent event) {
+              _forceStop=true;
+          }
+      }), DockPanel.SOUTH);
+
       docPanel.add(_textArea, DockPanel.SOUTH);
       
-      docPanel.add(new Button("Stop", new ClickHandler() {
-        
-        @Override
-        public void onClick(ClickEvent event) {
-            _forceStop=true;
-        }
-    }), DockPanel.SOUTH);
      
      RootPanel.get().add(docPanel);
      
@@ -139,6 +140,8 @@ protected void showNewWhiteboard(final CmList<WhiteboardCommand> result) {
         @Override
         public void showWorkIsReady() {
             _showWork.loadWhiteboard(result);
+            
+            logMessage(getWhiteboardSize());
         }
         
         @Override
@@ -148,6 +151,11 @@ protected void showNewWhiteboard(final CmList<WhiteboardCommand> result) {
     });
      _mainPanel.setWidget(_showWork);    
 }
+
+native protected String getWhiteboardSize() /*-{
+    var res = $wnd._theWhiteboard.getSizeOfWhiteboard();
+    return "Whiteboard size: " + res; 
+}-*/;
 
 static CmServiceAsync _serviceInstance;
  static public CmServiceAsync getCmService() {
