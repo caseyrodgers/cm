@@ -129,13 +129,16 @@ public class CCSSCoverageBarChart implements IsWidget {
 	    column.addColor(rgbColors[2]);
 	    column.setStacked(true);
 
-	    final SeriesToolTipConfig<CCSSCoverageBar> config = new SeriesToolTipConfig<CCSSCoverageBar>();
-	    config.setLabelProvider(new SeriesLabelProvider<CCSSCoverageBar>() {
-	      @Override
-	      public String getLabel(CCSSCoverageBar item, ValueProvider<? super CCSSCoverageBar, ? extends Number> valueProvider) {
-	        return String.valueOf(valueProvider.getValue(item).intValue());
-	      }
-	    });
+		final SeriesToolTipConfig<CCSSCoverageBar> config = new SeriesToolTipConfig<CCSSCoverageBar>();
+		config.setLabelProvider(new SeriesLabelProvider<CCSSCoverageBar>() {
+			@Override
+			public String getLabel(
+					CCSSCoverageBar item,
+					ValueProvider<? super CCSSCoverageBar, ? extends Number> valueProvider) {
+				return String.valueOf(valueProvider.getValue(item).intValue())
+						+ " standards covered, click to view list.";
+			}
+		});
 	    config.setDismissDelay(2000);
 		column.setToolTipConfig(config);
 

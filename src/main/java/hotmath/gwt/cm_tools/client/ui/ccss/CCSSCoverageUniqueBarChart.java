@@ -115,14 +115,17 @@ public class CCSSCoverageUniqueBarChart implements IsWidget {
 		column.addColor(rgbColors[0]);
 	    column.setStacked(true);
 
-	    final SeriesToolTipConfig<CCSSCoverageBar> config = new SeriesToolTipConfig<CCSSCoverageBar>();
-	    config.setLabelProvider(new SeriesLabelProvider<CCSSCoverageBar>() {
-	      @Override
-	      public String getLabel(CCSSCoverageBar item, ValueProvider<? super CCSSCoverageBar, ? extends Number> valueProvider) {
-	        return String.valueOf(valueProvider.getValue(item).intValue());
-	      }
-	    });
-	    config.setDismissDelay(2000);
+		final SeriesToolTipConfig<CCSSCoverageBar> config = new SeriesToolTipConfig<CCSSCoverageBar>();
+		config.setLabelProvider(new SeriesLabelProvider<CCSSCoverageBar>() {
+			@Override
+			public String getLabel(
+					CCSSCoverageBar item,
+					ValueProvider<? super CCSSCoverageBar, ? extends Number> valueProvider) {
+				return String.valueOf(valueProvider.getValue(item).intValue())
+						+ " standards covered, click to view list.";
+			}
+		});
+		config.setDismissDelay(2000);
 		column.setToolTipConfig(config);
 
 		column.addSeriesSelectionHandler(new SeriesSelectionHandler<CCSSCoverageBar>() {
