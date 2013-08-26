@@ -1,56 +1,159 @@
 package hotmath.gwt.cm_test.client;
 
-import com.extjs.gxt.ui.client.Style.Scroll;
-import com.extjs.gxt.ui.client.data.BaseModel;
-import com.extjs.gxt.ui.client.store.ListStore;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
-import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.TabPanel;
-import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction.DebugAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanel2Callback;
+
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.ServiceDefTarget;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DockPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextArea;
 
 public class CatchupMathTest implements EntryPoint {
     
     
- public void onModuleLoad() {
-        
-        LayoutContainer main = new LayoutContainer();
-        main.setLayout(new FitLayout());
-        
-        TabPanel tabPanel = new TabPanel();
-        
-        TabItem tabItem = new TabItem("TEST");
-        tabItem.setLayout(new FitLayout());        
-        ListView<MyModel> listView = new ListView<MyModel>();
-        listView.setStore(createListStore());
-
-        tabItem.add(listView);
-        tabPanel.add(tabItem);
-        
-        Viewport viewPort = new Viewport();
-        viewPort.setLayout(new FitLayout());
-        viewPort.add(tabPanel);
-        
-        RootPanel.get().add(viewPort);
-    }
-
+    TextArea _textArea;
+    ShowWorkPanel2 _showWork;
     
-    private ListStore<MyModel> createListStore() {
-        ListStore<MyModel> myStore = new ListStore<MyModel>();
-        for(int i=0;i<100;i++) {
-            myStore.add(new MyModel("Test: " + i));
+ public void onModuleLoad() {
+     SimplePanel sp = new SimplePanel();
+     
+     DockPanel docPanel = new DockPanel();
+     _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+        
+        @Override
+        public void windowResized() {
         }
-        return myStore;
+        
+        @Override
+        public void showWorkIsReady() {
+            startTests();
+        }
+        
+        @Override
+        public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+            return null;
+        }
+    });
+     sp.setWidget(_showWork);
+     docPanel.add(sp, DockPanel.CENTER);
+     
+      _textArea = new TextArea();
+      _textArea.getElement().setAttribute("style", "margin-top: 100px");
+      _textArea.setSize("500px",  "200px");
+      docPanel.add(_textArea, DockPanel.SOUTH);
+      
+      docPanel.add(new Button("Stop", new ClickHandler() {
+        
+        @Override
+        public void onClick(ClickEvent event) {
+            _forceStop=true;
+        }
+    }), DockPanel.SOUTH);
+     
+     RootPanel.get().add(docPanel);
     }
+ 
+ private void logMessage(String msg) {
+     _textArea.setValue(_textArea.getValue() + "\n" + msg);
+ }
+ 
+ boolean _forceStop;
+ int _count;
+ int MAX_TESTS=100;
+ private void startTests() {
+     _count=0;
+     _forceStop=false;
+     doTests();
+ }
+ 
+ 
+ private void doTests() {
+     if(_forceStop) {
+         logMessage("Force stop!!!");
+         return;
+     }
+     
+     if(_count++ > MAX_TESTS) {
+         logMessage("Max tests reached: " + MAX_TESTS);
+     }
+     
+     logMessage("Running test: " + _count);
+     
+     GetCatchupMathDebugAction action = new GetCatchupMathDebugAction(DebugAction.GET_NEXT);
+     getCmService().execute(action,  new AsyncCallback<RpcData>() {
+         public void onSuccess(RpcData result) {
+             readWhiteboardFromServer(result.getDataAsInt("uid"), result.getDataAsInt("rid"), result.getDataAsString("pid"));
+         }
+         @Override
+        public void onFailure(Throwable caught) {
+             Window.alert("Error: " + caught);
+             Log.error("Error", caught);
+        }
+    });
+ }
+ 
+ protected void readWhiteboardFromServer(int uid, int rid, String pid) {
+     final GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
+     getCmService().execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
+         @Override
+        public void onSuccess(CmList<WhiteboardCommand> result) {
+             logMessage("Read whiteboard for: " + action + ", " + result.size());
+             
+             _showWork.loadWhiteboard(result);
+             
+             // now wait ... and do the next one
+             new Timer() {
+                
+                @Override
+                public void run() {
+                    doTests();
+                }
+            }.schedule(5000);
+             
+        }
+         
+         @Override
+        public void onFailure(Throwable caught) {
+             Log.error("Error", caught);
+        }
+    });
 }
 
+static CmServiceAsync _serviceInstance;
+ static public CmServiceAsync getCmService() {
+     return _serviceInstance;
+ }
 
-class MyModel extends BaseModel {
-    public MyModel(String data) {
-        set("text", data);
-    }
+ static private void setupServices() {
+     final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
+     String url = "/cm/services/cmService";
+     ((ServiceDefTarget) cmService).setServiceEntryPoint(url);
+     _serviceInstance = cmService;
+ }
+ 
+ static {
+     setupServices();
+ }
+
 }
-

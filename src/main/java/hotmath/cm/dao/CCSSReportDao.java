@@ -424,6 +424,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	if (list.isEmpty()) {
     		list.add(new CCSSDetail(names.get(0), "Not Found", "Not Found", "Not Found", "Not Found", "Not Found"));
     	}
+    	
     	//TODO: back fill list entries to match duplicates in incoming list
     	Map<String, Integer> stdCountMap = new HashMap<String,Integer>();
     	boolean needBackfill = false;
