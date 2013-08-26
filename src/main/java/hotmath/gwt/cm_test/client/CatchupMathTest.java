@@ -147,7 +147,7 @@ static CmServiceAsync _serviceInstance;
 
  static private void setupServices() {
      final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
-     String url = "/cm/services/cmService";
+     String url = "/cm_admin/services/cmService";
      ((ServiceDefTarget) cmService).setServiceEntryPoint(url);
      _serviceInstance = cmService;
  }
