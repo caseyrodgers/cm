@@ -2,6 +2,7 @@ package hotmath.gwt.cm_tools.client.ui.ccss;
 
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.StudentPanelButton;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -22,7 +23,11 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.event.CellClickEvent;
+import com.sencha.gxt.widget.core.client.event.CellClickEvent.CellClickHandler;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.CellDoubleClickEvent.CellDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
@@ -94,6 +99,11 @@ public class StandardListDialog extends GWindow {
         setHeadingText(title);
 
         _grid = defineGrid(_store, defineColumns());
+
+        _grid.setToolTip("Click for description.");
+
+        _grid.addCellClickHandler(getClickHandler());
+
         //_container.setScrollMode(ScrollMode.AUTO);
         _container.setCenterWidget(_grid);
         add(_container);
@@ -145,6 +155,19 @@ public class StandardListDialog extends GWindow {
         // column.setSortable(true);
 
         return new ColumnModel<CCSSDetail>(cols);
+    }
+
+    protected CellClickHandler getClickHandler() {
+    	return new CellClickHandler() {
+            @Override
+            public void onCellClick(CellClickEvent event) {
+                if (_grid.getSelectionModel().getSelectedItems().size() > 0) {
+                    CmLogger.debug("click handler: Showing standard description");
+                    CCSSDetail detail = _grid.getSelectionModel().getSelectedItems().get(0);
+                    CmMessageBox.showMessage(detail.getCcssName(), detail.getDescription());
+                }
+            }
+        };
     }
 
 	public interface DataPropertyAccess extends PropertyAccess<CCSSDetail> {
