@@ -4203,6 +4203,56 @@ WHERE au.uid in ( $$UID_LIST$$ )
 ORDER BY usage_date, usage_type
 
 ###
+.key=GET_CCSS_COUNTS_FOR_STUDENT
+
+SELECT s.user_id, u.user_name, s.usage_count, s.usage_type
+FROM (
+SELECT user_id, count(*) as usage_count, 'QUIZ' as usage_type
+FROM HA_TEST t
+JOIN HA_TEST_RUN tr
+  ON tr.test_id = t.test_id
+JOIN HA_TEST_RUN_RESULTS trr
+  ON trr.run_id = tr.run_id AND upper(trr.answer_status)='CORRECT'
+JOIN inmh_map im
+  ON im.guid = trr.pid
+JOIN inmh_standard ins
+  ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = im.file
+WHERE t.user_id in ( $$UID_LIST$$ )
+  AND tr.run_time BETWEEN ? AND ?
+GROUP BY user_id
+UNION
+SELECT user_id, count(*) as usage_count, 'LESSON' as usage_type
+FROM HA_TEST t
+JOIN HA_TEST_RUN tr
+  ON tr.test_id = t.test_id
+JOIN HA_TEST_RUN_LESSON rl
+  ON rl.run_id = tr.run_id AND rl.date_completed is not null
+JOIN inmh_standard ins
+  ON upper(standard_state) = 'COMMON' AND concat('topics/',ins.topic) = rl.lesson_file
+WHERE t.user_id in ( $$UID_LIST$$ )
+  AND rl.date_completed BETWEEN ? AND ?
+GROUP BY user_id
+UNION
+SELECT uid as user_id, count(*) as usage_count, 'ASSIGNMENT' as usage_type
+FROM CM_ASSIGNMENT_USER au
+JOIN CM_ASSIGNMENT a
+  ON au.assign_key = a.assign_key
+JOIN CM_ASSIGNMENT_PID_ANSWERS pa
+  ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.answer IS NOT null
+JOIN CM_ASSIGNMENT_PIDS ap
+  ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
+JOIN inmh_standard ins
+  ON upper(standard_state) = 'COMMON' AND ap.lesson_file = concat('topics/', ins.topic)
+WHERE au.uid in ( $$UID_LIST$$ )
+  AND au.is_graded = 1
+  AND a.due_date BETWEEN ? AND ?
+GROUP BY user_id
+  ) s,
+HA_USER u
+WHERE u.uid = s.user_id
+ORDER BY u.uid, s.usage_type
+
+###
 .key=GET_CCSS_NAMES_FOR_STUDENT
 
 SELECT distinct s.user_id, s.lesson_name, s.standard_name_new, s.usage_type
