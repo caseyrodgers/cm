@@ -34,29 +34,14 @@ public class CatchupMathTest implements EntryPoint {
     
     TextArea _textArea;
     ShowWorkPanel2 _showWork;
+    SimplePanel _mainPanel;
     
  public void onModuleLoad() {
-     SimplePanel sp = new SimplePanel();
+     _mainPanel = new SimplePanel();
      
      DockPanel docPanel = new DockPanel();
-     _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
-        
-        @Override
-        public void windowResized() {
-        }
-        
-        @Override
-        public void showWorkIsReady() {
-            startTests();
-        }
-        
-        @Override
-        public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-            return null;
-        }
-    });
-     sp.setWidget(_showWork);
-     docPanel.add(sp, DockPanel.CENTER);
+
+     docPanel.add(_mainPanel, DockPanel.CENTER);
      
       _textArea = new TextArea();
       _textArea.getElement().setAttribute("style", "margin-top: 100px");
@@ -72,6 +57,10 @@ public class CatchupMathTest implements EntryPoint {
     }), DockPanel.SOUTH);
      
      RootPanel.get().add(docPanel);
+     
+     
+     startTests();
+
     }
  
  private void logMessage(String msg) {
@@ -120,7 +109,8 @@ public class CatchupMathTest implements EntryPoint {
         public void onSuccess(CmList<WhiteboardCommand> result) {
              logMessage("Read whiteboard for: " + action + ", " + result.size());
              
-             _showWork.loadWhiteboard(result);
+             showNewWhiteboard(result);
+             //_showWork.loadWhiteboard(result);
              
              // now wait ... and do the next one
              new Timer() {
@@ -138,6 +128,25 @@ public class CatchupMathTest implements EntryPoint {
              Log.error("Error", caught);
         }
     });
+}
+
+protected void showNewWhiteboard(final CmList<WhiteboardCommand> result) {
+     _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+        @Override
+        public void windowResized() {
+        }
+        
+        @Override
+        public void showWorkIsReady() {
+            _showWork.loadWhiteboard(result);
+        }
+        
+        @Override
+        public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+            return null;
+        }
+    });
+     _mainPanel.setWidget(_showWork);    
 }
 
 static CmServiceAsync _serviceInstance;
