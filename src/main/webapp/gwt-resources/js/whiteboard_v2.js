@@ -2386,6 +2386,7 @@ var Whiteboard = function (cont, isStatic) {
             name: "graphImage",
             addImage: addGraph
         });
+		graphicData.brect=getBoundRect(xs, ys, 300, (flag=='gr2D'?300:150))
         sendData();
         if (currentTool == 'gr2D' || currentTool == 'nL') {
             currentTool = 'pencil';
@@ -2947,6 +2948,7 @@ source: https://gist.github.com/754454
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
             showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage);
+			rect = getBoundRect(graphic_data[0].x, graphic_data[0].y, 300, (idName=='gr2D'?300:150))
         }
         if (!boo) {
 
