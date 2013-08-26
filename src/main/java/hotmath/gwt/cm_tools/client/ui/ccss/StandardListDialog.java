@@ -164,7 +164,7 @@ public class StandardListDialog extends GWindow {
                 if (_grid.getSelectionModel().getSelectedItems().size() > 0) {
                     CmLogger.debug("click handler: Showing standard description");
                     CCSSDetail detail = _grid.getSelectionModel().getSelectedItems().get(0);
-                    CmMessageBox.showMessage(detail.getCcssName(), detail.getDescription());
+                    CmMessageBox.showMessage(detail.getCcssName(), detail.getSummary());
                 }
             }
         };
