@@ -63,6 +63,7 @@ var Whiteboard = function (cont, isStatic) {
 	//
 	var cwi=200;
 	var cht=262;
+	var canvas_drawing_width=0,canvas_drawing_height=0;
     //
     var toolArr = [{
         name: 'button_text',
@@ -2606,7 +2607,9 @@ var Whiteboard = function (cont, isStatic) {
         var nobj = cloneObject(jsdata)
         nobj.imageData = undefined;
         var jsonStr = convertObjToString(nobj);
-
+var rect=nobj.brect;
+canvas_drawing_width=rect.xmax>canvas_drawing_width?rect.xmax:canvas_drawing_width;
+		canvas_drawing_height=rect.ymax>canvas_drawing_height?rect.ymax:canvas_drawing_height;
         console_log("Sending json string: " + jsonStr);
 
         graphicDataStore.push(cloneObject(jsdata));
@@ -2950,6 +2953,8 @@ source: https://gist.github.com/754454
             obj.brect = rect
             graphicDataStore.push(obj);
         }
+		canvas_drawing_width=rect.xmax>canvas_drawing_width?rect.xmax:canvas_drawing_width;
+		canvas_drawing_height=rect.ymax>canvas_drawing_height?rect.ymax:canvas_drawing_height;
     }
     wb.updateWhiteboard_local = function (cmdArray) {
         var oaL = cmdArray.length;
@@ -3182,6 +3187,9 @@ source: https://gist.github.com/754454
     wb.releaseResources = function() {
     	graphicDataStore = [];
     }
+	wb.getSizeOfWhiteboard=function(){
+	return canvas_drawing_width+", "+canvas_drawing_height;
+	}
     
     return wb;
 
