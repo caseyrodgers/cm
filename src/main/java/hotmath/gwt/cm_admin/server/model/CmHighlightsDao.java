@@ -541,6 +541,56 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     	return report;
     }
 
+    public CmList<HighlightReportData> getReportMostCCSSCoverage(final List<String> uids, final Date from, final Date to) throws Exception {
+        String[] vals = QueryHelper.getDateTimeRange(from, to);
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_COUNTS_FOR_STUDENT", createInListMap(createInList(uids)));
+
+        List<StudentCCSSCount> items = getJdbcTemplate().query(sql, new Object[] {vals[0], vals[1], vals[0], vals[1], vals[0], vals[1]}, new RowMapper<StudentCCSSCount>() {
+            @Override
+            public StudentCCSSCount mapRow(ResultSet rs, int rowNum) throws SQLException {
+            	return new StudentCCSSCount(rs.getString("student_name"), rs.getInt("user_id"), rs.getString("usage_type"), rs.getInt("usage_count"));
+            }
+        });
+
+        HighlightReportData data = null;
+        int userId = -1;
+        final CmList<HighlightReportData> list = new CmArrayList<HighlightReportData>();
+
+        for (StudentCCSSCount item : items) {
+        	if (userId == -1 || userId != item.userId) {
+        		// a new student
+        		userId = item.userId;
+        		data = new HighlightReportData();
+        		data.setName(item.studentName);
+        		data.setUid(userId);
+        		list.add(data);
+        	}
+        	if ("ASSIGNMENT".equalsIgnoreCase(item.activityName))
+        		data.setAssignmentCount(item.standardCount);
+        	else if ("LESSON".equalsIgnoreCase(item.activityName))
+        		data.setLessonCount(item.standardCount);
+        	else if ("QUIZ".equalsIgnoreCase(item.activityName))
+        		data.setQuizCount(item.standardCount);
+        	data.setDbCount(data.getDbCount() + item.standardCount);
+        }
+        Collections.sort(list, new Comparator<HighlightReportData>() {
+            @Override
+            public int compare(HighlightReportData o1, HighlightReportData o2) {
+            	int c1 = o1.getDbCount();
+            	int c2 = o2.getDbCount();
+            	if (c1 != c2)
+            		return (c1 > c2) ? -1 : 1;
+
+                String n1 = o1.getName();
+            	String n2 = o2.getName();
+            	return n1.compareTo(n2);
+            }
+        });
+
+    	return list;
+    }
+
     public CmList<HighlightReportData> getReportCCSSCoverage(final List<String> uids, final Date from, final Date to) throws Exception {
         String[] vals = QueryHelper.getDateTimeRange(from, to);
 
@@ -848,6 +898,20 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
     	StudentCCSSItem(String standardName, int userId) {
     		this.standardName = standardName;
     		this.userId = userId;
+    	}
+    }
+
+    private class StudentCCSSCount {
+    	String studentName;
+    	int    userId;
+    	String activityName;
+    	int    standardCount;
+
+    	StudentCCSSCount(String studentName, int userId, String activity, int count) {
+    		this.studentName = studentName;
+    		this.userId = userId;
+    		this.activityName = activity;
+    		this.standardCount        = count;
     	}
     }
 }
