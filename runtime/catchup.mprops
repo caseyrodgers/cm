@@ -4494,3 +4494,19 @@ where  whiteboard_id in (
           limit ?,1
         ) x1
 );     
+
+
+
+
+.key=DEBUG_GET_WHITEBOARD_TEST
+
+#select whiteboard_id, user_id, run_id, pid 
+#from junk 
+#where is_tested = 0 
+#order by whiteboard_id 
+#limit 1
+
+select whiteboard_id, user_id, run_id, pid 
+from junk 
+order by rand() 
+limit 1

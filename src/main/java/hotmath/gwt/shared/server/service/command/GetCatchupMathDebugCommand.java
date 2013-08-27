@@ -1,6 +1,7 @@
 package hotmath.gwt.shared.server.service.command;
 
 
+import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -28,7 +29,8 @@ public class GetCatchupMathDebugCommand implements ActionHandler<GetCatchupMathD
 
     private RData getRData(final Connection conn) throws Exception {
         
-        ResultSet rs = conn.createStatement().executeQuery("select * from junk where is_tested = 0 limit 1");
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("DEBUG_GET_WHITEBOARD_TEST");
+        ResultSet rs = conn.createStatement().executeQuery(sql);
         if(!rs.next()) {
             throw new Exception("No more test ids");
         }
