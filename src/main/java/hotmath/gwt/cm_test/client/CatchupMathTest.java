@@ -25,6 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -46,15 +47,25 @@ public class CatchupMathTest implements EntryPoint {
       _textArea = new TextArea();
       _textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 20px;");
       _textArea.setSize("500px",  "200px");
-      docPanel.add(new Button("Stop", new ClickHandler() {
-          
+      
+      HorizontalPanel toolBar = new HorizontalPanel();
+      toolBar.add(new Button("Stop", new ClickHandler() {
           @Override
           public void onClick(ClickEvent event) {
               _forceStop=true;
           }
-      }), DockPanel.SOUTH);
-
+      }));
+      toolBar.add(new Button("Start", new ClickHandler() {
+          @Override
+          public void onClick(ClickEvent event) {
+              startTests();
+          }
+      }));
+      
       docPanel.add(_textArea, DockPanel.SOUTH);
+      docPanel.add(toolBar,DockPanel.SOUTH);
+
+      
       
      
      RootPanel.get().add(docPanel);
