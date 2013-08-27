@@ -33,6 +33,24 @@ public class HighlightReportData implements Response {
     int gamesViewed;
     int activitiesViewed;
     int flashCardsViewed;
+    
+    int lessonCount, quizCount;
+
+    public int getLessonCount() {
+        return lessonCount;
+    }
+
+    public void setLessonCount(int lessonCount) {
+        this.lessonCount = lessonCount;
+    }
+
+    public int getQuizCount() {
+        return quizCount;
+    }
+
+    public void setQuizCount(int quizCount) {
+        this.quizCount = quizCount;
+    }
 
     CmList<Integer> uidList;
 
