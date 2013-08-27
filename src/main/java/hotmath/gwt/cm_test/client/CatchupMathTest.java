@@ -44,10 +44,6 @@ public class CatchupMathTest implements EntryPoint {
 
      docPanel.add(_mainPanel, DockPanel.CENTER);
      
-      _textArea = new TextArea();
-      _textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 20px;");
-      _textArea.setSize("500px",  "200px");
-      
       HorizontalPanel toolBar = new HorizontalPanel();
       toolBar.add(new Button("Stop", new ClickHandler() {
           @Override
@@ -61,13 +57,14 @@ public class CatchupMathTest implements EntryPoint {
               startTests();
           }
       }));
-      
-      docPanel.add(_textArea, DockPanel.SOUTH);
-      docPanel.add(toolBar,DockPanel.SOUTH);
 
+      docPanel.add(toolBar,DockPanel.NORTH);
       
-      
-     
+      _textArea = new TextArea();
+      _textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 10px;");
+      _textArea.setSize("500px",  "200px");
+
+      docPanel.add(_textArea, DockPanel.SOUTH);
      RootPanel.get().add(docPanel);
      
      
