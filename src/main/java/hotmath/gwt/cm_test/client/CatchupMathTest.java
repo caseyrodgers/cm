@@ -1,10 +1,12 @@
 package hotmath.gwt.cm_test.client;
 
+import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
-import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction.DebugAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmService;
@@ -19,6 +21,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -29,11 +33,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 
 public class CatchupMathTest implements EntryPoint {
     
     
     TextArea _textArea;
+    TextBox _gotoInfo;
     ShowWorkPanel2 _showWork;
     SimplePanel _mainPanel;
     
@@ -42,8 +48,6 @@ public class CatchupMathTest implements EntryPoint {
      
      DockPanel docPanel = new DockPanel();
 
-     docPanel.add(_mainPanel, DockPanel.CENTER);
-     
       HorizontalPanel toolBar = new HorizontalPanel();
       toolBar.add(new Button("Stop", new ClickHandler() {
           @Override
@@ -58,21 +62,64 @@ public class CatchupMathTest implements EntryPoint {
           }
       }));
 
+      _gotoInfo = new TextBox();
+      _gotoInfo.setWidth("100%");
+      _gotoInfo.addKeyDownHandler(new KeyDownHandler() {
+        @Override
+        public void onKeyDown(KeyDownEvent event) {
+            if(event.getNativeKeyCode() == 13) {
+                loadGotoInfo(_gotoInfo.getValue());
+            }
+        }
+    });
+      
+      
+      _mainPanel.setPixelSize(600, 480);
+      docPanel.add(_mainPanel, DockPanel.SOUTH);
+
       docPanel.add(toolBar,DockPanel.NORTH);
       
+      docPanel.add(_gotoInfo, DockPanel.NORTH);
+      
+
+      
       _textArea = new TextArea();
-      _textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 10px;");
+      //_textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 10px;");
       _textArea.setSize("500px",  "200px");
 
       docPanel.add(_textArea, DockPanel.SOUTH);
-     RootPanel.get().add(docPanel);
+      RootPanel.get().add(docPanel);
      
+      
+      String gotoWhiteboard = CmGwtUtils.getQueryParameter("goto");
+      if(gotoWhiteboard != null) {
+          String p[] = gotoWhiteboard.split(",");
+          _forceStop=true;
+          readWhiteboardFromServer(Integer.parseInt(p[0]), Integer.parseInt(p[1]), p[2]);
+      }
+      
      
-     startTests();
+     //startTests();
 
     }
  
- private void logMessage(String msg) {
+ /** parse: [pid=quiz:quiz, runId=0, uid=31181]
+  * 
+  * @param value
+  */
+ protected void loadGotoInfo(String value) {
+     
+     _forceStop = true;
+     
+     String p[] = value.split(",");
+     String pid = p[0].split("=")[1];
+     String rid = p[1].split("=")[1];
+     String uid = p[2].split("=")[1].split("]")[0];
+     
+     readWhiteboardFromServer(Integer.parseInt(uid), Integer.parseInt(rid), pid);
+ }
+
+private void logMessage(String msg) {
      _textArea.setValue(_textArea.getValue() + "\n" + msg);
  }
  
@@ -112,12 +159,16 @@ public class CatchupMathTest implements EntryPoint {
  }
  
  protected void readWhiteboardFromServer(int uid, int rid, String pid) {
+
+     _gotoInfo.setValue("pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid);
+     
      final GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
      getCmService().execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
          @Override
         public void onSuccess(CmList<WhiteboardCommand> result) {
-             logMessage("Read whiteboard for: " + action + ", " + result.size());
              
+             logMessage("Read whiteboard for: " + action + ", " + result.size());
+
              showNewWhiteboard(result);
              //_showWork.loadWhiteboard(result);
              
