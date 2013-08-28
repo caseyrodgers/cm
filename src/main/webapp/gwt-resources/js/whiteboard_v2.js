@@ -237,10 +237,10 @@ var Whiteboard = function (cont, isStatic) {
             //console.log(selectedObj)
             context.clearRect(0, 0, canvas.width, canvas.height);
             if (selectedObj.id === 2 && useMQ) {
-               // context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                //context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
             } else {
                 try {
-                   // context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                    context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
                 } catch (ex) {
                     alert(ex)
                 }
@@ -447,7 +447,7 @@ var Whiteboard = function (cont, isStatic) {
 
             //context.drawImage(this, holder_x, holder_y);
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
-           // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+            gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
 			updateCanvas();
             updateText(txt, x0, sy, colorToNumber(colr));
@@ -1832,8 +1832,8 @@ var Whiteboard = function (cont, isStatic) {
                             }
                         }
                     }
-                    //graphicData.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
-                    graphicData.brect = rect;
+                    graphicData.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                    graphicData.brect = rect
                     if (currentTool != 'eraser') {
                         updateCanvas();
                         context.beginPath();
@@ -2379,7 +2379,7 @@ var Whiteboard = function (cont, isStatic) {
             drawingLayer = isIE ? '1' : '3';
             addGraph = true;
             // graphcontext.drawImage(gr,xp,yp);
-           // graphcontext.drawImage(gr, xp, yp);
+            //graphcontext.drawImage(gr, xp, yp);
         }
 
         graphicData.dataArr.push({
@@ -2420,7 +2420,6 @@ var Whiteboard = function (cont, isStatic) {
     }
 
     function updateCanvas() {
-	return
         var cntxt = drawingLayer == '1' ? origcontext : topcontext;
         var cnvs = drawingLayer == '1' ? origcanvas : topcanvas;
         if (currentTool == 'eraser') {
@@ -2434,7 +2433,7 @@ var Whiteboard = function (cont, isStatic) {
             var el = '<div style="position:absolute;">' + $($(canvas).html()).html() + '</div><div style="position: absolute; filter: alpha(opacity=0); BACKGROUND-COLOR: red; overflow: hidden;"></div>'
             cn.append(el);
         } else {
-            cntxt.drawImage(canvas, 0, 0);
+           // cntxt.drawImage(canvas, 0, 0);
         }
         //cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -2890,7 +2889,7 @@ source: https://gist.github.com/754454
             }
             context.stroke()
             if (!boo) {
-                //obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
             updateCanvas()
         }
@@ -2925,7 +2924,7 @@ source: https://gist.github.com/754454
             }
             if (!boo) {
 
-                //obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
                 //context.strokeRect(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
             updateCanvas()
@@ -2943,7 +2942,7 @@ source: https://gist.github.com/754454
             }
             rect = getBoundRect(x0, y0, w0, h0)
             if (!boo) {
-                //obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
 
             }
             updateCanvas()
