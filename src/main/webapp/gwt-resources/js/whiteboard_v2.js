@@ -61,8 +61,8 @@ var Whiteboard = function (cont, isStatic) {
     var useMQ = false;
 	var selectionDragged=false;
 	//
-	var cwi=1000;
-	var cht=1000;
+	var cwi=2000;
+	var cht=2620;
 	var canvas_drawing_width=0,canvas_drawing_height=0;
     //
     var toolArr = [{
@@ -3192,9 +3192,17 @@ source: https://gist.github.com/754454
     	graphicDataStore = [];
     }
 	wb.getSizeOfWhiteboard=function(){
+	if(canvas_drawing_width>=1000||canvas_drawing_height>=1000){
+	if($('.canvas_size_info')[0]){
+	$('.canvas_size_info').append(canvas_drawing_width+", "+canvas_drawing_height+"\n");
+	}
+	}
 	return canvas_drawing_width+", "+canvas_drawing_height;
 	}
-    
+    wb.setSizeOfWhiteboard=function(w,h){
+	cwi=w;
+	cht=h;
+	}
     return wb;
 
 };
