@@ -2748,6 +2748,7 @@ source: https://gist.github.com/754454
     }
 
     function renderObjAux(obj, boo) {
+	graphicData=obj
         var graphic_id = obj.id;
         var graphic_data = obj.dataArr;
         var line_rgb = obj.lineColor;
