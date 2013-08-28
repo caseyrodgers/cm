@@ -3167,8 +3167,8 @@ source: https://gist.github.com/754454
             }
 			gr2D=null;
 			nL=null;
-			scope=null;
-			wb=null;
+			//scope=null;
+			//wb=null;
 			
 	}
     //
