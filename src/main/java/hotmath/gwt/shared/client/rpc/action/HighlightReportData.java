@@ -22,10 +22,12 @@ public class HighlightReportData implements Response {
     int activeCount;
     int assignmentAverage;
     int assignmentCount;
-    int loginCount;
+    int lessonCount;
     int lessonsViewed;
+    int loginCount;
     int quizzesPassed;
     int quizAverage;
+    int quizCount;
     int timeOnTask;
     int firstTimeCorrectPercent;
     
@@ -33,24 +35,6 @@ public class HighlightReportData implements Response {
     int gamesViewed;
     int activitiesViewed;
     int flashCardsViewed;
-    
-    int lessonCount, quizCount;
-
-    public int getLessonCount() {
-        return lessonCount;
-    }
-
-    public void setLessonCount(int lessonCount) {
-        this.lessonCount = lessonCount;
-    }
-
-    public int getQuizCount() {
-        return quizCount;
-    }
-
-    public void setQuizCount(int quizCount) {
-        this.quizCount = quizCount;
-    }
 
     CmList<Integer> uidList;
 
@@ -110,14 +94,23 @@ public class HighlightReportData implements Response {
             	activitiesViewed = value[3];
             	flashCardsViewed = value[4];
             	break;
-
+            case MOST_CCSS_COVERAGE:
+            	assignmentCount = value[0];
+            	lessonCount = value[1];
+            	quizCount = value[2];
+                dbCount = assignmentCount + lessonCount + quizCount;
+            	break;
             case SCHOOL_COMPARE:
             case NATIONWIDE_COMPARE:
             case COMPARE_PERFORMANCE:
             case FAILED_QUIZZES:
             case LOGINS_PER_WEEK:
+    		case CCSS_COVERAGE_CHART:
+    		case CCSS_STRAND_NOT_COVERED:
             	// not implemented
             	break;
+    		default:
+	    		break;
         }
     }    
 
@@ -220,7 +213,15 @@ public class HighlightReportData implements Response {
         this.loginCount = loginCount;
     }
 
-    public int getLessonsViewed() {
+    public int getLessonCount() {
+		return lessonCount;
+	}
+
+	public void setLessonCount(int lessonCount) {
+		this.lessonCount = lessonCount;
+	}
+
+	public int getLessonsViewed() {
     	//return 99;
         return lessonsViewed;
     }
@@ -243,6 +244,14 @@ public class HighlightReportData implements Response {
 
 	public void setQuizAverage(int quizAverage) {
 		this.quizAverage = quizAverage;
+	}
+
+    public int getQuizCount() {
+		return quizCount;
+	}
+
+	public void setQuizCount(int quizCount) {
+		this.quizCount = quizCount;
 	}
 
 	public int getTimeOnTask() {
