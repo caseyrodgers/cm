@@ -3155,7 +3155,7 @@ source: https://gist.github.com/754454
 			/*$(canvas).remove();
 			$(origcanvas).remove();
 			$(graphcanvas).remove();
-			$(topcanvas).remove();*/
+			$(topcanvas).remove();
                 canvas = null;
                 origcanvas = null;
                 graphcanvas = null;
@@ -3163,7 +3163,7 @@ source: https://gist.github.com/754454
                 context = null;
                 origcontext = null;
                 graphcontext = null;
-                topcontext = null;
+                topcontext = null;*/
             }
 			gr2D=null;
 			nL=null;
