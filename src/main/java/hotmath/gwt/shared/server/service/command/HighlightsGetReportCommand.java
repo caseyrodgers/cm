@@ -34,11 +34,9 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                 toDate = new GregorianCalendar(2050,0,0).getTime();
             }
             
-            
             List<StudentModelI> studentPool = new GetStudentGridPageCommand().getStudentPool(action.getStudentGridPageAction());
             if(studentPool.size() == 0)
                 return list;
-            
             
             List<String> uids = new ArrayList<String>();
             for(StudentModelI student: studentPool) {
@@ -106,13 +104,17 @@ public class HighlightsGetReportCommand implements ActionHandler< HighlightsGetR
                     list = toCmList(dao.getReportAssignments(uids, fromDate, toDate));
                     break;
 
+                case MOST_CCSS_COVERAGE:
+                    list = dao.getReportMostCCSSCoverage(uids, fromDate, toDate);
+                    break;
+
                 case CCSS_COVERAGE:
-                    list = toCmList(dao.getReportCCSSCoverage(uids, fromDate, toDate));
+                    list = dao.getReportCCSSCoverage(uids, fromDate, toDate);
                     break;
 
                 case CCSS_STRAND_NOT_COVERED:
                 	String levelName = action.getUserData().get("ccssLevel");
-                    list = toCmList(dao.getReportCCSSLevelNotCovered(uids, levelName, fromDate, toDate));
+                    list = dao.getReportCCSSLevelNotCovered(uids, levelName, fromDate, toDate);
                     break;
 
                     default:
