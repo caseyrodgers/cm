@@ -117,7 +117,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_release_grades, is_personalized)values(?,?,?,?,?,?,?,?,?,?,?)";
+                    String sql = "insert into CM_ASSIGNMENT(aid,group_id,name,due_date,comments,last_modified,status,close_past_due,is_graded, auto_release_grades, is_personalized, is_prevent_lesson)values(?,?,?,?,?,?,?,?,?,?,?,?)";
                     PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setInt(1, ass.getAdminId());
                     ps.setInt(2, ass.getGroupId());
@@ -130,6 +130,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setInt(9, ass.isGraded() ? 1 : 0);
                     ps.setInt(10, ass.isAutoRelease()? 1: 0);
                     ps.setInt(11, ass.isPersonalized()? 1: 0);
+                    ps.setInt(12, ass.isPreventLessonAccess() ? 1: 0);
                     return ps;
                 }
             }, keyHolder);
@@ -142,7 +143,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             getJdbcTemplate().update(new PreparedStatementCreator() {
                 @Override
                 public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ?, is_graded = ?, auto_release_grades = ?, is_personalized = ? where assign_key = ?";
+                    String sql = "update CM_ASSIGNMENT set aid = ?, name = ?, due_date = ?, comments = ?, last_modified = now(), status = ?, close_past_due = ?, is_graded = ?, auto_release_grades = ?, is_personalized = ?, is_prevent_lesson = ? where assign_key = ?";
                     PreparedStatement ps = con.prepareStatement(sql);
                     ps.setInt(1, ass.getAdminId());
                     ps.setString(2, ass.getAssignmentName());
@@ -153,8 +154,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setInt(7, ass.isGraded() ? 1 : 0);
                     ps.setInt(8, ass.isAutoRelease() ? 1 : 0);
                     ps.setInt(9, ass.isPersonalized() ? 1 : 0);
+                    ps.setInt(10, ass.isPreventLessonAccess() ? 1 : 0);
 
-                    ps.setInt(10, ass.getAssignKey());
+                    ps.setInt(11, ass.getAssignKey());
 
 
                     return ps;
@@ -410,7 +412,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         return new Assignment(rs.getInt("aid"), rs.getInt("assign_key"), rs.getInt("group_id"), rs.getString("name"), rs.getString("comments"),
                 rs.getDate("due_date"), null, rs.getString("status"), allowPastDueSubmits, rs.getInt("is_graded") != 0,
-                rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0, rs.getInt("is_personalized")!=0);
+                rs.getTimestamp("last_modified"), rs.getInt("auto_release_grades")!=0, rs.getInt("is_personalized")!=0,rs.getInt("is_prevent_lesson")!=0);
     }
 
     /**

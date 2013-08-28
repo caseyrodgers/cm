@@ -86,7 +86,13 @@ public class AssignmentStudentTutorAndShowWorkPanel extends ContentPanel {
         
         _showWhiteboardButton = createShowWhiteboardButton();
         addTool(_showWhiteboardButton);
-        addTool(createShowLessonButton());
+        
+        if(!assignment.getAssignment().isPreventLessonAccess()) {
+            addTool(createShowLessonButton());
+        }
+        else {
+            Log.info("Lesson access prevented on assignment!");
+        }
         
         if(_whiteboardShown || problem.getProblem().getProblemType() == ProblemType.WHITEBOARD) {
             _showWhiteboardButton.setValue(true);

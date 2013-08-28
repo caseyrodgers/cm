@@ -3,7 +3,7 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_admin.client.ui.AssignmentStatusDialog;
 import hotmath.gwt.cm_admin.client.ui.FeatureNotAvailableToMobile;
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.AssignmentDesignerCallback;
-import hotmath.gwt.cm_core.client.CmCore;
+import hotmath.gwt.cm_admin.client.ui.assignment.EditAssignmentOptionsDialog.Callback;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedEvent;
 import hotmath.gwt.cm_rpc.client.event.DataBaseHasBeenUpdatedHandler.TypeOfUpdate;
 import hotmath.gwt.cm_rpc.client.model.AssignmentStatus;
@@ -51,7 +51,6 @@ import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
-import com.sencha.gxt.widget.core.client.form.CheckBox;
 import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.form.DateField;
 import com.sencha.gxt.widget.core.client.form.FieldLabel;
@@ -66,9 +65,8 @@ public class EditAssignmentDialog {
     Assignment _assignment;
     DateField _dueDate;
     ComboBox<AssignmentStatusDto> _assignmentStatus;
-    ComboBox<SubmitOptions> _submitOptions;
-    CheckBox _autoReleaseGrades;
-    CheckBox _personalizeAssignment;
+    
+    
     
     TextButton saveDraftMode, saveAssign;
     
@@ -118,14 +116,6 @@ public class EditAssignmentDialog {
         header.add(commentsLabel, new VerticalLayoutData(1.0, 50));;
         
         
-        _submitOptions = createSubmitOptionsCombo();
-        if(assignment.isAllowPastDueSubmits()) {
-            _submitOptions.setValue(_submitOptions.getStore().get(0));
-        }
-        else {
-            _submitOptions.setValue(_submitOptions.getStore().get(1));
-        }
-        
         HorizontalLayoutData hData1 = new HorizontalLayoutData(100.0,30);
         HorizontalLayoutContainer hCon = new HorizontalLayoutContainer();
         hData1.setMargins(new Margins(0, 20, 0, 20));
@@ -156,22 +146,16 @@ public class EditAssignmentDialog {
         header.add(hCon, new VerticalLayoutData(100.0,  30));
         
         HorizontalLayoutContainer hCon1 = new HorizontalLayoutContainer();
-        hCon1.add(new MyFieldLabel(_submitOptions, "Submit", 70, 200));
         
         //header.add(hCon1,new VerticalLayoutData(270,  30));
         
         
         HorizontalLayoutContainer hCon2 = new HorizontalLayoutContainer();
-        _autoReleaseGrades = new CheckBox();
-        _autoReleaseGrades.setToolTip("Release grades automatically when students turn in an assignment.");
-        _autoReleaseGrades.setValue(assignment.isAutoRelease());
+
         HorizontalLayoutData hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,0,0,10));
-        hCon2.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20),hd);
+        
 
-        _personalizeAssignment = new CheckBox();
-        _personalizeAssignment.setToolTip("Multiple choice questions will be randomly selected for each student.");
-        _personalizeAssignment.setValue(assignment.isPersonalized());
 
         //hd = new HorizontalLayoutData();
         //hd.setMargins(new Margins(0,0,0,10));
@@ -188,18 +172,51 @@ public class EditAssignmentDialog {
         hd = new HorizontalLayoutData();
         hd.setMargins(new Margins(0,0,0,10));
         HorizontalPanel hp = new HorizontalPanel();
-        hp.add(new MyFieldLabel(_submitOptions, "Submit", 55, 200));
         hp.add(new HTML("<div style='width: 30px;'>&nbsp;</div>"));
-        hp.add(new MyFieldLabel(_personalizeAssignment, "Individualize", 50, 60));
-        hp.add(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
+        
+        
+        
         //options.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
         options.addThing(hp);
+        //header.add(options);
+        
+        header.add(new TextButton("Advanced Options >>", new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new EditAssignmentOptionsDialog(_assignment, new Callback() {
+                    
+                    @Override
+                    public void optionsSaved(String submitOption, boolean autoReleaseGrades, boolean isPersonalized, boolean isPreventLesson) {
+                        
+                        if(submitOption.startsWith("Allow")) {
+                            _assignment.setAllowPastDueSubmits(true);
+                        }
+                        else {
+                           _assignment.setAllowPastDueSubmits(false);
+                        }
+                        
 
-        header.add(options);
+                        _assignment.setPersonalized(isPersonalized);
+                        
+                        _assignment.setPreventLessonAccess(isPreventLesson);
+                        
+                        _assignment.setAutoRelease(false);
+                        if(autoReleaseGrades) {
+                            if(thereAreWbProbelms()) {
+                                CmMessageBox.showAlert("Warning", "You cannot auto release grades with assignments containing whiteboard problems.");
+                            }
+                            else {
+                                _assignment.setAutoRelease(true);                                
+                            }
+                        }
+                    }
+                });
+            }
+        }));
 
         BorderLayoutData bd = new BorderLayoutData();
         bd.setMargins(new Margins(20));
-        bd.setSize(130);
+        bd.setSize(100);
         mainBorderPanel.setNorthWidget(header,bd);
 
         _assignmentDesigner = new AssignmentDesigner(_assignment, new AssignmentDesignerCallback() {
@@ -359,29 +376,6 @@ public class EditAssignmentDialog {
         return combo;
     }
     
-    private ComboBox<SubmitOptions> createSubmitOptionsCombo() {
-
-        SubmitOptionsProperties props = GWT.create(SubmitOptionsProperties.class);
-
-        ListStore<SubmitOptions> store = new ListStore<SubmitOptions>(props.key());
-        store.add(new SubmitOptions("Allow submits after due date"));
-        store.add(new SubmitOptions("No submits after due date"));
-
-        ComboBox<SubmitOptions> combo = new ComboBox<SubmitOptions>(store, props.option());
-
-        combo.setToolTip("Should the student be allowed to submit answers after the due date?");
-        combo.setWidth(120);
-        combo.setTypeAhead(true);
-        combo.setTriggerAction(TriggerAction.ALL);
-        combo.setEditable(false);
-
-        combo.setAllowBlank(false);
-        combo.setEmptyText("--Select Submit Option--");
-        combo.setForceSelection(true);
-
-        return combo;
-    }
-
     /** Save the assignment and return if
      *  the save is actually happening.
      *  
@@ -395,25 +389,10 @@ public class EditAssignmentDialog {
             return false;
         }
         
-        if(_autoReleaseGrades.getValue()) {
-            if(thereAreWbProbelms()) {
-                CmMessageBox.showAlert("You cannot auto release grades with assignments containing whiteboard problems.");
-                return false;
-            }
-        }
-        
-        _assignment.setAutoRelease(_autoReleaseGrades.getValue());
-        _assignment.setPersonalized(_personalizeAssignment.getValue());
-        
         _assignment.setAssignmentName(_assignmentName.getValue());
         _assignment.setDueDate(_dueDate.getValue());
         _assignment.setComments(_comments.getValue());
-        if(_submitOptions.getValue().getOption().startsWith("Allow")) {
-            _assignment.setAllowPastDueSubmits(true);
-        }
-        else {
-            _assignment.setAllowPastDueSubmits(false);
-        }
+        
         
         if(asDraft) {
             _assignment.setStatus("Draft");

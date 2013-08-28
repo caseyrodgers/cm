@@ -3712,7 +3712,8 @@ select a.aid, a.assign_key,
        a.is_graded,
        a.last_modified,
        a.auto_release_grades,
-       a.is_personalized
+       a.is_personalized,
+       a.is_prevent_lesson
        
 from   CM_ASSIGNMENT a
        left join (select assign_key,
@@ -3737,7 +3738,8 @@ select a.aid, a.assign_key,
        a.is_graded,
        a.last_modified,
        a.auto_release_grades,
-       a.is_personalized
+       a.is_personalized,
+       a.is_prevent_lesson
 from   CM_ASSIGNMENT a
        left join (select assign_key,
                          Count(*) as problem_count

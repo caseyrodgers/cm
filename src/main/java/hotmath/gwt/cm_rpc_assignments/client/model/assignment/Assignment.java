@@ -42,10 +42,11 @@ public class Assignment implements Response{
     boolean autoRelease;
     private boolean allowPastDueSubmits;
     boolean personalized;
+    boolean preventLessonAccess;
 
     public Assignment() {}
     
-    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean allowPastDueSubmits, boolean graded, Date modifiedTime,boolean autoRelease, boolean isPersonalized) {
+    public Assignment(int adminId, int assignKey, int groupId, String name, String comments, Date dueDate, CmList<ProblemDto> pids, String status, boolean allowPastDueSubmits, boolean graded, Date modifiedTime,boolean autoRelease, boolean isPersonalized,boolean preventLessonAccess) {
         this.adminId = adminId;
         this.assignKey = assignKey;
         this.groupId = groupId;
@@ -59,8 +60,17 @@ public class Assignment implements Response{
         this.modifiedTime = modifiedTime;
         this.autoRelease = autoRelease;
         this.personalized = isPersonalized;
+        this.preventLessonAccess = preventLessonAccess;
     }
 
+
+    public boolean isPreventLessonAccess() {
+        return preventLessonAccess;
+    }
+
+    public void setPreventLessonAccess(boolean preventLessonAccess) {
+        this.preventLessonAccess = preventLessonAccess;
+    }
 
     public boolean isPersonalized() {
         return personalized;
@@ -250,5 +260,4 @@ public class Assignment implements Response{
                 + ", problemCount=" + problemCount + ", gradedInfo=" + gradedInfo + ", autoRelease=" + autoRelease + ", allowPastDueSubmits="
                 + allowPastDueSubmits + "]";
     }
-
 }
