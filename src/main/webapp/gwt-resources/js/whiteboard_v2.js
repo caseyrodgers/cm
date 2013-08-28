@@ -2434,7 +2434,7 @@ var cntxt=ctx?ctx:context;
             cn.append(el);
         } else {
             //cntxt.drawImage(canvas, 0, 0);
-			renderToDisplay()
+			renderToDisplay(cntxt)
         }
         //cntxt.drawImage(canvas, 0, 0);
         context.clearRect(0, 0, canvas.width, canvas.height);
