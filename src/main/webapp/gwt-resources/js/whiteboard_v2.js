@@ -61,8 +61,8 @@ var Whiteboard = function (cont, isStatic) {
     var useMQ = false;
 	var selectionDragged=false;
 	//
-	var cwi=253;
-	var cht=260;
+	var cwi=1000;
+	var cht=1000;
 	var canvas_drawing_width=0,canvas_drawing_height=0;
     //
     var toolArr = [{
@@ -2420,6 +2420,7 @@ var Whiteboard = function (cont, isStatic) {
     }
 
     function updateCanvas() {
+	return
         var cntxt = drawingLayer == '1' ? origcontext : topcontext;
         var cnvs = drawingLayer == '1' ? origcanvas : topcanvas;
         if (currentTool == 'eraser') {
