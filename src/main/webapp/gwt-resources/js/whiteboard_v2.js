@@ -61,7 +61,7 @@ var Whiteboard = function (cont, isStatic) {
     var useMQ = false;
 	var selectionDragged=false;
 	//
-	var cwi=252;
+	var cwi=255;
 	var cht=260;
 	var canvas_drawing_width=0,canvas_drawing_height=0;
     //
