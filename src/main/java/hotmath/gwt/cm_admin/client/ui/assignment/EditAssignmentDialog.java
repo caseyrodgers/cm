@@ -144,43 +144,9 @@ public class EditAssignmentDialog {
             hCon.add(statusLabel, hData);
         }
         header.add(hCon, new VerticalLayoutData(100.0,  30));
-        
-        HorizontalLayoutContainer hCon1 = new HorizontalLayoutContainer();
-        
-        //header.add(hCon1,new VerticalLayoutData(270,  30));
-        
-        
-        HorizontalLayoutContainer hCon2 = new HorizontalLayoutContainer();
 
-        HorizontalLayoutData hd = new HorizontalLayoutData();
-        hd.setMargins(new Margins(0,0,0,10));
         
-
-
-        //hd = new HorizontalLayoutData();
-        //hd.setMargins(new Margins(0,0,0,10));
-        //hCon2.add(new MyFieldLabel(_personalizeAssignment, "Individualize", 90, 20),hd);
-        
-        
-        MyFieldSet options = new MyFieldSet("Options");
-        
-        if(CmShared.getQueryParameter("debug") == null && !isDraftMode()) {
-            // only allow setting options when in draft mode
-            options.setEnabled(false);
-        }
-            
-        hd = new HorizontalLayoutData();
-        hd.setMargins(new Margins(0,0,0,10));
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add(new HTML("<div style='width: 30px;'>&nbsp;</div>"));
-        
-        
-        
-        //options.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 120, 20));
-        options.addThing(hp);
-        //header.add(options);
-        
-        header.add(new TextButton("Advanced Options >>", new SelectHandler() {
+        header.add(new TextButton("Options", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new EditAssignmentOptionsDialog(_assignment, new Callback() {
