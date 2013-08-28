@@ -2889,7 +2889,7 @@ source: https://gist.github.com/754454
             }
             context.stroke()
             if (!boo) {
-                obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+                //obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
             updateCanvas()
         }
@@ -2924,7 +2924,7 @@ source: https://gist.github.com/754454
             }
             if (!boo) {
 
-                obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+               // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
                 //context.strokeRect(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
             updateCanvas()
@@ -2942,7 +2942,7 @@ source: https://gist.github.com/754454
             }
             rect = getBoundRect(x0, y0, w0, h0)
             if (!boo) {
-                obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
+               // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
 
             }
             updateCanvas()
