@@ -549,7 +549,7 @@ public class CmHighlightsDao extends SimpleJdbcDaoSupport{
         List<StudentCCSSCount> items = getJdbcTemplate().query(sql, new Object[] {vals[0], vals[1], vals[0], vals[1], vals[0], vals[1]}, new RowMapper<StudentCCSSCount>() {
             @Override
             public StudentCCSSCount mapRow(ResultSet rs, int rowNum) throws SQLException {
-            	return new StudentCCSSCount(rs.getString("student_name"), rs.getInt("user_id"), rs.getString("usage_type"), rs.getInt("usage_count"));
+            	return new StudentCCSSCount(rs.getString("user_name"), rs.getInt("user_id"), rs.getString("usage_type"), rs.getInt("usage_count"));
             }
         });
 
