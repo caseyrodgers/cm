@@ -2890,7 +2890,7 @@ source: https://gist.github.com/754454
             if (!boo) {
                // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
-            updateCanvas()
+           // updateCanvas()
         }
         if (graphic_id === 2) {
             for (i = 0; i < dLength; i++) {
@@ -2926,7 +2926,7 @@ source: https://gist.github.com/754454
                 //obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
                 //context.strokeRect(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             }
-            updateCanvas()
+           // updateCanvas()
         }
         if (graphic_id === 4 || graphic_id === 5) {
             var fName = graphic_id == 4 ? drawRect : drawOval;
@@ -2944,7 +2944,7 @@ source: https://gist.github.com/754454
                // obj.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
 
             }
-            updateCanvas()
+           // updateCanvas()
         }
         if (graphic_id === 11 || graphic_id === 12) {
             idName = graphic_id == 11 ? "gr2D" : "nL";
