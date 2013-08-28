@@ -237,7 +237,7 @@ var Whiteboard = function (cont, isStatic) {
             //console.log(selectedObj)
             context.clearRect(0, 0, canvas.width, canvas.height);
             if (selectedObj.id === 2 && useMQ) {
-                context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
+                //context.drawImage(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
             } else {
                 try {
                    // context.putImageData(selectedObj.imageData, selectedObj.brect.xmin + dx, selectedObj.brect.ymin + dy)
@@ -311,7 +311,7 @@ var Whiteboard = function (cont, isStatic) {
         //
     mq_holder.onload = function () {
 
-        context.drawImage(this, holder_x, holder_y);
+       // context.drawImage(this, holder_x, holder_y);
         // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
         updateCanvas();
     }
@@ -472,7 +472,7 @@ var Whiteboard = function (cont, isStatic) {
         // mq_holder.src="http://latex.codecogs.com/png.latex?"+txt;
 
         if (false) {
-            context.drawImage(mq_holder, holder_x, holder_y);
+           // context.drawImage(mq_holder, holder_x, holder_y);
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
             updateCanvas();
         } else {
@@ -490,7 +490,7 @@ var Whiteboard = function (cont, isStatic) {
                 var gd = graphicDataStore[graphicDataStore.length - 1];
                 gd.brect = rect
 
-                context.drawImage(this, holder_x, holder_y);
+               // context.drawImage(this, holder_x, holder_y);
                 // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
                 // gd.imageData = this;
                 // graphicDataStore[graphicDataStore.length - 1] = gd
@@ -2379,7 +2379,7 @@ var Whiteboard = function (cont, isStatic) {
             drawingLayer = isIE ? '1' : '3';
             addGraph = true;
             // graphcontext.drawImage(gr,xp,yp);
-            graphcontext.drawImage(gr, xp, yp);
+            //graphcontext.drawImage(gr, xp, yp);
         }
 
         graphicData.dataArr.push({
@@ -2433,10 +2433,10 @@ var Whiteboard = function (cont, isStatic) {
             var el = '<div style="position:absolute;">' + $($(canvas).html()).html() + '</div><div style="position: absolute; filter: alpha(opacity=0); BACKGROUND-COLOR: red; overflow: hidden;"></div>'
             cn.append(el);
         } else {
-            cntxt.drawImage(canvas, 0, 0);
+            //cntxt.drawImage(canvas, 0, 0);
         }
         //cntxt.drawImage(canvas, 0, 0);
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        //context.clearRect(0, 0, canvas.width, canvas.height);
         /*
          * context.save() context.fillStyle='rgba(255,255,255,255)'
          * context.fillRect(0, 0, canvas.width, canvas.height);
