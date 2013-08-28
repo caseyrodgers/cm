@@ -61,8 +61,8 @@ var Whiteboard = function (cont, isStatic) {
     var useMQ = false;
 	var selectionDragged=false;
 	//
-	var cwi=2000;
-	var cht=2620;
+	var cwi=300;
+	var cht=300;
 	var canvas_drawing_width=0,canvas_drawing_height=0;
     //
     var toolArr = [{
@@ -3152,10 +3152,10 @@ source: https://gist.github.com/754454
                 })
                 $(topcanvas).empty();
             } else {
-			$(canvas).remove();
+			/*$(canvas).remove();
 			$(origcanvas).remove();
 			$(graphcanvas).remove();
-			$(topcanvas).remove();
+			$(topcanvas).remove();*/
                 canvas = null;
                 origcanvas = null;
                 graphcanvas = null;
@@ -3190,6 +3190,7 @@ source: https://gist.github.com/754454
     
     wb.releaseResources = function() {
     	graphicDataStore = [];
+		wb.clearMemory();
     }
 	wb.getSizeOfWhiteboard=function(){
 	if(canvas_drawing_width>=1000||canvas_drawing_height>=1000){
