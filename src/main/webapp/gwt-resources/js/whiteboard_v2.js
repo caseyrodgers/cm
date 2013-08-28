@@ -17,7 +17,7 @@ if (typeof console == "undefined") {
     };
 }
 var console_log = function (txt) {
-    console.log(txt)
+    //console.log(txt)
 }
 var Whiteboard = function (cont, isStatic) {
     var wb = this;
@@ -411,22 +411,22 @@ var Whiteboard = function (cont, isStatic) {
         return result;
     };
 
-    function renderText_html(xt, xp, yp, col, boo) {
+    function renderText_html(xt, xp, yp, col, ctx) {
 
         var txt = xt ? xt : $get_Element("#content").value;
         // alert(txt);
-
+var cntxt=ctx?ctx:context;
         var str = txt.split("\n")
         var x0 = xp ? xp : clickX
         var y0 = yp ? yp : clickY
         var ht = determineFontHeight(str[0]);
         var sy = y0
-        context.font = "20pt Arial";
-        context.textBaseline = 'top';
+        cntxt.font = "20pt Arial";
+        cntxt.textBaseline = 'top';
         var colr = col ? col : wb.globalStrokeColor;
-        context.fillStyle = colr;
+        cntxt.fillStyle = colr;
         for (var i = 0; i < str.length; i++) {
-            context.fillText(str[i], x0, y0)
+            cntxt.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
         }
         if (!boo) {
@@ -436,7 +436,7 @@ var Whiteboard = function (cont, isStatic) {
             var rect = {}
             rect.x = rect.xmin = x0
             rect.y = rect.ymin = sy
-            rect.w = context.measureText(txt).width
+            rect.w = cntxt.measureText(txt).width
             rect.h = (ht + ht / 3) * str.length
             rect.xmax = rect.x + rect.w;
             rect.ymax = rect.y + rect.h;
@@ -449,7 +449,7 @@ var Whiteboard = function (cont, isStatic) {
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
            // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
-			updateCanvas();
+			//updateCanvas();
             updateText(txt, x0, sy, colorToNumber(colr));
             sendData();
             $get_Element("#content").value = "";
@@ -2433,10 +2433,11 @@ var Whiteboard = function (cont, isStatic) {
             var el = '<div style="position:absolute;">' + $($(canvas).html()).html() + '</div><div style="position: absolute; filter: alpha(opacity=0); BACKGROUND-COLOR: red; overflow: hidden;"></div>'
             cn.append(el);
         } else {
-            cntxt.drawImage(canvas, 0, 0);
+            //cntxt.drawImage(canvas, 0, 0);
+			renderToDisplay()
         }
         //cntxt.drawImage(canvas, 0, 0);
-       // context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, canvas.width, canvas.height);
         /*
          * context.save() context.fillStyle='rgba(255,255,255,255)'
          * context.fillRect(0, 0, canvas.width, canvas.height);
@@ -2445,18 +2446,19 @@ var Whiteboard = function (cont, isStatic) {
         context.beginPath();
     }
 
-    function erase(x, y) {
+    function erase(x, y,ctx) {
         var ew = 30
         var ep = ew;
+		var cntx=ctx?ctx:context
         if (isIE) {
             var x0 = x;
             var y0 = y;
-            var graphics = context;
+            var graphics = cntx;
             var eR = ep / 2;
-            context.save();
-            context.beginPath();
-            context.fillStyle = 'white';
-            context.lineWidth = 0;
+            cntx.save();
+            cntx.beginPath();
+            cntx.fillStyle = 'white';
+            cntx.lineWidth = 0;
             // context.fillRect(x - ep / 2, y - ep / 2, ew, ew);
             graphics.moveTo(x0 - eR, y0 - eR);
             graphics.lineTo(x0 + eR, y0 - eR);
@@ -2464,9 +2466,9 @@ var Whiteboard = function (cont, isStatic) {
             graphics.lineTo(x0 - eR, y0 + eR);
             graphics.lineTo(x0 - eR, y0 - eR);
 
-            context.closePath();
-            context.fill();
-            context.restore();
+            cntx.closePath();
+            cntx.fill();
+            cntx.restore();
             // updateCanvas();
             //
             /*
@@ -2482,21 +2484,24 @@ var Whiteboard = function (cont, isStatic) {
     }
 
 
-    function drawLine() {
-        context.lineTo(x, y)
-        context.stroke();
+    function drawLine(ctx) {
+	var cntx=ctx?ctx:context
+        cntx.lineTo(x, y)
+        cntx.stroke();
     }
 
-    function drawRect(x, y, w, h, color) {
+    function drawRect(x, y, w, h, color,ctx) {
+	var cntx=ctx?ctx:context;
         if (color != undefined) {
-            context.strokeStyle = color;
+            cntx.strokeStyle = color;
         }
-        context.strokeRect(x, y, w, h);
+        cntx.strokeRect(x, y, w, h);
     }
 
-    function drawOval(x, y, w, h, color) {
+    function drawOval(x, y, w, h, color,ctx) {
+	var cntx=ctx?ctx:context;
         if (color != undefined) {
-            context.strokeStyle = color;
+            cntx.strokeStyle = color;
         }
         var kappa = 0.5522848;
         var ox = (w / 2) * kappa;
@@ -2505,14 +2510,14 @@ var Whiteboard = function (cont, isStatic) {
         var ye = y + h;
         var xm = x + w / 2;
         var ym = y + h / 2;
-        context.beginPath();
-        context.moveTo(x, ym);
-        context.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
-        context.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
-        context.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
-        context.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
-        context.closePath();
-        context.stroke();
+        cntx.beginPath();
+        cntx.moveTo(x, ym);
+        cntx.bezierCurveTo(x, ym - oy, xm - ox, y, xm, y);
+        cntx.bezierCurveTo(xm + ox, y, xe, ym - oy, xe, ym);
+        cntx.bezierCurveTo(xe, ym + oy, xm + ox, ye, xm, ye);
+        cntx.bezierCurveTo(xm - ox, ye, x, ym + oy, x, ym);
+        cntx.closePath();
+        cntx.stroke();
     }
 
     function sendData() {
@@ -2958,6 +2963,105 @@ source: https://gist.github.com/754454
         }
 		canvas_drawing_width=rect.xmax>canvas_drawing_width?rect.xmax:canvas_drawing_width;
 		canvas_drawing_height=rect.ymax>canvas_drawing_height?rect.ymax:canvas_drawing_height;
+    }
+	function renderToDisplay(ctx) {
+	var obj=graphicData
+        var graphic_id = obj.id;
+        var graphic_data = obj.dataArr;
+        var line_rgb = obj.lineColor;
+        var dLength = graphic_data.length;
+        var dep, x0, y0, x1, y1;
+        var textF;
+        var idName;
+        
+        var rect, lineBound;
+        
+        if (ctx.lineWidth != 2) {
+            ctx.lineWidth = 2.0;
+        }
+        if (graphic_data[0].color !== undefined) {
+            var cstr = String(graphic_data[0].color).indexOf("#") > -1 ? graphic_data[0].color.substr(1) : graphic_data[0].color.toString(16)
+            var col = "#" + (cstr == '0' ? '000000' : cstr);
+            ctx.strokeStyle = col;
+        }
+        var deb = ""
+        console_log("RENDER_DATA_FOR: " + graphic_id)
+        if (graphic_id === 0) {
+            for (var i = 0; i < dLength; i++) {
+
+                x1 = graphic_data[i].x;
+                y1 = graphic_data[i].y;
+                deb += x1 + ":" + y1 + "||"
+                erase(x1, y1,ctx);
+                if (isIE) {
+                    updateCanvas();
+                }
+
+            }
+        }
+        // alert(deb)
+        if (graphic_id === 3 || graphic_id === 1) {
+            if (graphic_data[0].name == 'graphImage') {
+                return
+            }
+            
+            for (i = 0; i < dLength; i++) {
+                x1 = graphic_data[i].x;
+                y1 = graphic_data[i].y;
+                if (graphic_data[i].id == "move") {
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    x0 = x1;
+                    y0 = y1;
+                    
+                } else {
+                    ctx.lineTo(x0 + x1, y0 + y1);
+                    
+                }
+            }
+            
+            context.stroke()
+            
+        }
+        if (graphic_id === 2) {
+            for (i = 0; i < dLength; i++) {
+
+                if (graphic_data[i].text != "" || graphic_data[i].text != undefined) {
+                    x0 = graphic_data[i].x;
+                    y0 = graphic_data[i].y;
+                    // context.fillText(graphic_data[i].text, x0, y0);
+                    xt = graphic_data[i].text;
+                    xt = unescape(decodeURI(xt));
+                    xt = String(xt).split("\\:").join(" ");
+                    if (xt.indexOf('\\frac') > -1) {
+                        xt = xt.split('\\frac').join("");
+                        xt = xt.split('}{').join("/");
+                        xt = xt.split('{').join("");
+                        xt = xt.split('}').join("")
+                    }
+                    renderText(xt, x0, y0, col);
+                   
+                }
+            }
+            
+        }
+        if (graphic_id === 4 || graphic_id === 5) {
+            var fName = graphic_id == 4 ? drawRect : drawOval;
+            for (i = 0; i < dLength; i++) {
+                var xd = graphic_data[i].xs < 0 ? -1 : 1
+                var yd = graphic_data[i].ys < 0 ? -1 : 1
+                x0 = xd < 0 ? graphic_data[i].x + graphic_data[i].w : graphic_data[i].x
+                y0 = yd < 0 ? graphic_data[i].y + graphic_data[i].h : graphic_data[i].y
+                w0 = graphic_data[i].w * xd
+                h0 = graphic_data[i].h * yd
+                fName(x0, y0, w0, h0, col,ctx);
+            }
+            
+        }
+        if (graphic_id === 11 || graphic_id === 12) {
+            idName = graphic_id == 11 ? "gr2D" : "nL";
+            showHideGraph(idName, graphic_data[0].x, graphic_data[0].y, graphic_data[0].addImage,ctx);
+        }
     }
     wb.updateWhiteboard_local = function (cmdArray) {
         var oaL = cmdArray.length;
