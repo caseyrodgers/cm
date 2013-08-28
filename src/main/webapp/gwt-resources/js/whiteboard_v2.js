@@ -3021,7 +3021,7 @@ source: https://gist.github.com/754454
                 }
             }
             
-            context.stroke()
+            ctx.stroke()
             
         }
         if (graphic_id === 2) {
