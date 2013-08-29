@@ -450,8 +450,9 @@ var cntxt=ctx?ctx:context;
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
            // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
-			updateCanvas();
+			//updateCanvas();
             updateText(txt, x0, sy, colorToNumber(colr));
+			updateCanvas();
             sendData();
             $get_Element("#content").value = "";
             $get_Element("#inputBox").style.display = 'none';
