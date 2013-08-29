@@ -523,11 +523,11 @@ var cntxt=ctx?ctx:context;
         // alert($get_Element("#inputBox").style.display)
     }
 
-    function renderText(xt, xp, yp, col) {
+    function renderText(xt, xp, yp, col,ctx) {
         if (useMQ) {
-            renderText_mq(xt, xp, yp, col)
+            renderText_mq(xt, xp, yp, col,ctx)
         } else {
-            renderText_html(xt, xp, yp, col)
+            renderText_html(xt, xp, yp, col,ctx)
         }
     }
 
@@ -3043,7 +3043,7 @@ source: https://gist.github.com/754454
                         xt = xt.split('{').join("");
                         xt = xt.split('}').join("")
                     }
-                    renderText(xt, x0, y0, col);
+                    renderText(xt, x0, y0, col,ctx);
                    
                 }
             }
