@@ -13,6 +13,8 @@ import hotmath.gwt.cm_tools.client.ui.GroupManagerRegisterStudent;
 import hotmath.gwt.cm_tools.client.ui.GroupWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
+import hotmath.gwt.cm_tools.client.ui.PassPercent;
+import hotmath.gwt.cm_tools.client.ui.PassPercentCombo;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox.ConfirmCallback;
@@ -49,6 +51,7 @@ import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent.RowDoubleClic
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
+import com.sencha.gxt.widget.core.client.form.ComboBox;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -470,6 +473,7 @@ class GroupManagerGlobalSettings extends GWindow {
     CheckBox stopAtProgramEnd;
     CheckBox disableCalcAlways;
     CheckBox disableCalcQuizzes;
+    ComboBox <PassPercent> passCombo;
 
     CmAdminModel cm;
 
@@ -516,6 +520,12 @@ class GroupManagerGlobalSettings extends GWindow {
         disableCalcQuizzes = new CheckBox();
         disableCalcQuizzes.setBoxLabel("");
         fs.addThing(new MyFieldLabel(disableCalcQuizzes,"Disable whiteboard calculator for quizzes", 290));
+
+        passCombo = new PassPercentCombo(false);
+        passCombo.enable();
+        passCombo.setEmptyText("--");
+        passCombo.setWidth(55);
+		fs.addThing(new MyFieldLabel(passCombo,  "Pass Percent", 290));
         
         vertMain.add(fs);
         
@@ -561,7 +571,15 @@ class GroupManagerGlobalSettings extends GWindow {
                 action.setLimitGames(limitGames.getValue());
                 action.setDisableCalcAlways(disableCalcAlways.getValue());
                 action.setDisableCalcQuizzes(disableCalcQuizzes.getValue());
-                action.setPassPercent(null);
+                PassPercent passPercent = passCombo.getValue();
+                if (passPercent != null) {
+                	String percentStr = passPercent.getPercent();
+                	int percent = Integer.parseInt(percentStr.substring(0, percentStr.length() - 1));
+                    action.setPassPercent(percent);
+                }
+                else {
+                    action.setPassPercent(null);
+                }
                 CmShared.getCmService().execute(action, this);
             }
 
