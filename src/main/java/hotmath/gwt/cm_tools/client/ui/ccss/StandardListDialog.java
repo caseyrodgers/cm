@@ -162,9 +162,9 @@ public class StandardListDialog extends GWindow {
             @Override
             public void onCellClick(CellClickEvent event) {
                 if (_grid.getSelectionModel().getSelectedItems().size() > 0) {
-                    CmLogger.debug("click handler: Showing standard description");
+                    CmLogger.debug("click handler: Showing CCSS summary");
                     CCSSDetail detail = _grid.getSelectionModel().getSelectedItems().get(0);
-                    CmMessageBox.showMessage(detail.getCcssName(), detail.getSummary());
+                    new StandardWindowForCCSS(detail.getCcssName(), detail.getSummary());
                 }
             }
         };
