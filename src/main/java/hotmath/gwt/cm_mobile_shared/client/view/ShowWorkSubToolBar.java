@@ -16,6 +16,7 @@ public class ShowWorkSubToolBar extends SubToolBar {
     private SexyButton _toggleBackground;
     private boolean showSubmitButtom;
     private boolean showLessonButton;
+    private SexyButton lessonButton;
 
     static public interface Callback {
         void showWhiteboard();
@@ -49,12 +50,13 @@ public class ShowWorkSubToolBar extends SubToolBar {
         whiteboardControlView.add(_viewWhiteboardButton);
 
         if(showLessonButton) {
-            whiteboardControlView.add(new SexyButton("Lesson", new ClickHandler() {
+            lessonButton = new SexyButton("Lesson", new ClickHandler() {
                 @Override
                 public void onClick(ClickEvent event) {
                     callback.showLesson();
                 }
-            }));
+            });
+            whiteboardControlView.add(lessonButton);
         }
 
         whiteboardControlHide.add(new SexyButton("Close Whiteboard", new ClickHandler() {
@@ -89,6 +91,12 @@ public class ShowWorkSubToolBar extends SubToolBar {
                 }
             });
             whiteboardControlHide.add(_submitWhiteboard);
+        }
+    }
+    
+    public void preventLessonButton(boolean preventIt) {
+        if(showLessonButton) {
+            lessonButton.setVisible( !preventIt );
         }
     }
 

@@ -162,6 +162,14 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         this.problem = problem;
         problem.getStudentProblem().setHasShowWorkAdmin(false); // turn off blink without server roundtrip.
         _subBar.setupWhiteboardTools(false);
+        
+        LessonModel l = problem.getStudentProblem().getProblem().getLesson();
+        if(l == null || l.getLessonFile().length() == 0) {
+            _subBar.preventLessonButton(true);  // override
+        }
+        else {
+            _subBar.preventLessonButton(problem.isPreventLessonAccess()); // use setting on assignment
+        }
         _contentPanel.clear();
 
         tutor = new TutorWrapperPanel(true, true, false, false, new TutorCallbackDefault() {

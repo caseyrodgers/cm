@@ -25,10 +25,11 @@ public class AssignmentProblem implements Response{
     private boolean assignmentClosed;
     private Date assignmentDueDate;
     private boolean allowPastDueSubmits;
+    private boolean preventLessonAccess;
 
     public AssignmentProblem(){}
     
-    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem,  String lastUserWidgetValue, String status, Date assignmentDueDate, boolean allowPastDueSubmits) {
+    public AssignmentProblem(int userId, int assignKey, boolean isAssignmentGraded,boolean isAssignmentClosed, SolutionInfo info, StudentProblemDto stuProblem,  String lastUserWidgetValue, String status, Date assignmentDueDate, boolean allowPastDueSubmits, boolean preventLessonAccess) {
         this.userId = userId;
         this.assignKey = assignKey;
         this.isGraded = isAssignmentGraded;
@@ -40,6 +41,7 @@ public class AssignmentProblem implements Response{
         this.status = status;
         this.assignmentDueDate = assignmentDueDate;
         this.allowPastDueSubmits = allowPastDueSubmits;
+        this.preventLessonAccess = preventLessonAccess;
     }
     
     
@@ -65,6 +67,14 @@ public class AssignmentProblem implements Response{
                 return false;  // assignment submits allowed
             }
         }
+    }
+
+    public boolean isPreventLessonAccess() {
+        return preventLessonAccess;
+    }
+
+    public void setPreventLessonAccess(boolean preventLessonAccess) {
+        this.preventLessonAccess = preventLessonAccess;
     }
 
     public String getStatus() {

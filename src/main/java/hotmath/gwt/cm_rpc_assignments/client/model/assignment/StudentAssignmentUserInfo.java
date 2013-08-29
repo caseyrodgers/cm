@@ -20,6 +20,7 @@ public class StudentAssignmentUserInfo implements Response {
     private boolean editable;
     private Date dueDate;
     private boolean pastDueSubmitable;
+    private boolean preventLessonAccess;
 
     public StudentAssignmentUserInfo(){}
 
@@ -28,7 +29,7 @@ public class StudentAssignmentUserInfo implements Response {
         this.assignKey = assignKey;
     }
 
-    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable) {
+    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable, boolean isPreventLessonAccess) {
         this(uid, assignKey);
         this.turnInDate = turnInDate;
         this.graded = graded;
@@ -36,6 +37,7 @@ public class StudentAssignmentUserInfo implements Response {
         this.viewDateTime = viewDateTime;
         this.dueDate = dueDate;
         this.pastDueSubmitable = pastDueSubmitable;
+        this.preventLessonAccess = isPreventLessonAccess;
     }
 
     public Date getViewDateTime() {
@@ -88,6 +90,11 @@ public class StudentAssignmentUserInfo implements Response {
 
     public boolean isPastDueSubmitable() {
         return pastDueSubmitable;
+    }
+
+    public boolean isPreventLessonAccess() {
+        // TODO Auto-generated method stub
+        return preventLessonAccess;
     }
     
 }

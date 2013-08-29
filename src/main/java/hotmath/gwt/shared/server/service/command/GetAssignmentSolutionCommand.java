@@ -49,7 +49,7 @@ public class GetAssignmentSolutionCommand implements ActionHandler<GetAssignment
         
         StudentAssignmentUserInfo assInfo = AssignmentDao.getInstance().getStudentAssignmentUserInfo(action.getUid(),action.getAssignKey());
         
-        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),assInfo.isGraded(),!assInfo.isEditable(),info, stuProblem, lastUserWidgetValue, problemStatus, assInfo.getDueDate(), assInfo.isPastDueSubmitable());
+        AssignmentProblem assProb = new AssignmentProblem(action.getUid(),action.getAssignKey(),assInfo.isGraded(),!assInfo.isEditable(),info, stuProblem, lastUserWidgetValue, problemStatus, assInfo.getDueDate(), assInfo.isPastDueSubmitable(), assInfo.isPreventLessonAccess());
 
         AssignmentDao.getInstance().makeSurePidStatusExists(action.getAssignKey(),action.getUid(),action.getPid());
         
