@@ -106,11 +106,6 @@ var Whiteboard = function (cont, isStatic) {
         classes: 'big_tool_button button_nL',
         text: ""
     }, {
-        name: 'button_move',
-        title: 'Move',
-        classes: 'big_tool_button button_move',
-        text: ""
-    }, {
         name: 'button_clear',
         title: 'Clear Whiteboard',
         classes: 'big_tool_button button_clear',
@@ -121,6 +116,14 @@ var Whiteboard = function (cont, isStatic) {
         classes: 'big_tool_button button_undo',
         text: "Undo"
     }]
+	/*
+	{
+        name: 'button_move',
+        title: 'Move',
+        classes: 'big_tool_button button_move',
+        text: ""
+    },
+	*/
     //
 	/**
 	 * methods to create whiteboard gui
