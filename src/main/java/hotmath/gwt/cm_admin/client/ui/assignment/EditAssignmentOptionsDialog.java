@@ -39,7 +39,7 @@ public class EditAssignmentOptionsDialog extends GWindow {
         setModal(true);
         setHeadingText("Assignment Advanced Options");
         
-        setPixelSize(450,200);
+        setWidth(450);
         setResizable(false);
         buildUi();
 
@@ -68,8 +68,6 @@ public class EditAssignmentOptionsDialog extends GWindow {
         FramedPanel framed = new FramedPanel();
         framed.setHeaderVisible(false);
         
-        FlowLayoutContainer flowPanel = new FlowLayoutContainer();
-        
         MyFieldSet fieldSet = new MyFieldSet("",400);
         fieldSet.setBorders(false);
         
@@ -80,6 +78,7 @@ public class EditAssignmentOptionsDialog extends GWindow {
         else {
             _submitOptions.setValue(_submitOptions.getStore().get(1));
         }
+        //fieldSet.addThing(_submitOptions.getToolTip().get)
         fieldSet.addThing(new MyFieldLabel(_submitOptions, "Submit", 170, 200));
         
         

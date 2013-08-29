@@ -134,7 +134,9 @@ public class PrescriptionResourcePanel extends FlowLayoutContainer {
         }
         else {
             resourceButtons.get("practice").updateCheckMarks();
-            resourceButtons.get("practice").showMenu();
+            if(resourceButtons.get("practice").getMenu() != null) {
+                resourceButtons.get("practice").showMenu();
+            }
         }
     }
     

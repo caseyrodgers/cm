@@ -146,7 +146,7 @@ public class EditAssignmentDialog {
         header.add(hCon, new VerticalLayoutData(100.0,  30));
 
         
-        header.add(new TextButton("Options", new SelectHandler() {
+        header.add(new TextButton("Options >>", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
                 new EditAssignmentOptionsDialog(_assignment, new Callback() {

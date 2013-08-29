@@ -1,5 +1,6 @@
 function setupEducationWorldAdServer() {
 	
+	/** disabled for now */
 	if(true) {
 		return;
 	}
