@@ -1,7 +1,10 @@
 function setupEducationWorldAdServer() {
+	
+	if(true) {
+		return;
+	}
+	
 	selectEducationWorldAdToShow();
-	
-	
 	HmEvents.eventTutorInitialized.subscribe(function(e) {
 		selectEducationWorldAdToShow();
 	});

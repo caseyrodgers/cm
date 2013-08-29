@@ -1170,6 +1170,8 @@ html>body .gwt-DecoratedTabBar {
 
 
 #leaderboard {
+   display: none;
+   
    background: black;
    text-align: center;
    padding-top: 4px;
