@@ -7,7 +7,6 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.FramedPanel;

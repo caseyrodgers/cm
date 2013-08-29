@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui.assignment;
 
 import hotmath.gwt.cm.client.ui.StudentAssignmentButton;
+import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.SaveAssignmentProblemStatusAction;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
@@ -67,12 +68,14 @@ public class AssignmentProblemListPanel extends ContentPanel {
         addTool(createNextProblemButton());
         
         
-        addTool(new TextButton("Test", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                runTests();
-            }
-        }));
+        if(CmGwtUtils.getQueryParameter("debug") != null) {
+            addTool(new TextButton("Test", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    runTests();
+                }
+            }));
+        }
         
         
         getButtonBar().add(createAnnotationLedgend());
