@@ -265,7 +265,6 @@ public class InmhItemData {
                 "where booktitle = ?" + 
                 "and chaptertitle = ? " +
                 "and sectiontitle = ?" +
-                "and problemset = ? " +
                 "and problemnumber = ? " +
                 "and active = 1"; 
         PreparedStatement ps = null;
@@ -274,8 +273,7 @@ public class InmhItemData {
             ps.setString(1, book);
             ps.setString(2, chapter);
             ps.setString(3, section);
-            ps.setString(4,  problemSet);
-            ps.setString(5, problemNumber + "");
+            ps.setString(4, problemNumber + "");
             
             logger.debug("lookupActivePid: " + ps);
             
