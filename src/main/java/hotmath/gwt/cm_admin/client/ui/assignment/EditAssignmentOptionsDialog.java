@@ -7,11 +7,11 @@ import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
-import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.form.CheckBox;
@@ -37,9 +37,9 @@ public class EditAssignmentOptionsDialog extends GWindow {
         this.assignment = assignment;
         this.callback = callbackOnSave;
         setModal(true);
-        setHeadingText("Assignment Advanced Options");
+        setHeadingText("Assignment Options");
         
-        setWidth(450);
+        setPixelSize(430,220);
         setResizable(false);
         buildUi();
 
@@ -78,28 +78,27 @@ public class EditAssignmentOptionsDialog extends GWindow {
         else {
             _submitOptions.setValue(_submitOptions.getStore().get(1));
         }
-        //fieldSet.addThing(_submitOptions.getToolTip().get)
-        fieldSet.addThing(new MyFieldLabel(_submitOptions, "Submit", 170, 200));
+        fieldSet.addThing(new MyFieldLabel(_submitOptions, "Submit After Due Date", 140, 200));
         
         
         _autoReleaseGrades = new CheckBox();
         _autoReleaseGrades.setToolTip("Release grades automatically when students turn in an assignment.");
         _autoReleaseGrades.setValue(assignment.isAutoRelease());        
-        fieldSet.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 170, 20));
+        fieldSet.addThing(new MyFieldLabel(_autoReleaseGrades, "Auto Release Grades", 140, 20));
         
         
         _personalizeAssignment = new CheckBox();
         _personalizeAssignment.setToolTip("Multiple choice questions will be randomly selected for each student.");
         _personalizeAssignment.setValue(assignment.isPersonalized());
 
-        fieldSet.addThing(new MyFieldLabel(_personalizeAssignment, "Individualize", 170, 20));
+        fieldSet.addThing(new MyFieldLabel(_personalizeAssignment, "Individualize Problems", 140, 20));
         
         
         _preventLessonAccess = new CheckBox();
         _preventLessonAccess.setToolTip("Do not allow access to assignment problem's lesson");
         _preventLessonAccess.setValue(assignment.isPreventLessonAccess());
 
-        fieldSet.addThing(new MyFieldLabel(_preventLessonAccess, "Prevent Lesson Access", 170, 20));
+        fieldSet.addThing(new MyFieldLabel(_preventLessonAccess, "Prevent Lesson Access", 140, 20));
         
         
         
