@@ -432,9 +432,7 @@ var cntxt=ctx?ctx:context;
             cntxt.fillText(str[i], x0, y0)
             y0 += ht + ht / 3
         }
-        if (!boo) {
-            //updateCanvas();
-        }
+        
         if (!xt) {
             var rect = {}
             rect.x = rect.xmin = x0
