@@ -3297,8 +3297,9 @@ source: https://gist.github.com/754454
     }
     
     wb.releaseResources = function() {
+	wb.clearMemory();
     	graphicDataStore = [];
-		wb.clearMemory();
+		
     }
 	wb.getSizeOfWhiteboard=function(){
 	if(canvas_drawing_width>=1000||canvas_drawing_height>=1000){
