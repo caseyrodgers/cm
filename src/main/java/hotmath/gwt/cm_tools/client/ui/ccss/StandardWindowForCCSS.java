@@ -17,7 +17,7 @@ public class StandardWindowForCCSS extends GWindow {
         setMaximizable(true);
         setResizable(true);
       
-        setHeadingHtml("CCSS Standard Definition: " + title);
+        setHeadingHtml("CCSS Definition: " + title);
         
         String html = "<p style='padding: 10px;'>" + desc + "</p>";
         
