@@ -452,7 +452,7 @@ var cntxt=ctx?ctx:context;
             // alert(this.width+":"+this.height+":"+holder_x+":"+holder_y);
            // gd.imageData = context.getImageData(rect.xmin - 1, rect.ymin - 1, rect.w + 2, rect.h + 2)
             //graphicDataStore[graphicDataStore.length - 1] = gd
-			//updateCanvas();
+			updateCanvas();
             updateText(txt, x0, sy, colorToNumber(colr));
             sendData();
             $get_Element("#content").value = "";
@@ -557,7 +557,9 @@ var cntxt=ctx?ctx:context;
         $get_Element("#button_rect").style.border = '1px solid #000000';
         $get_Element("#button_oval").style.border = '1px solid #000000';
         $get_Element("#button_eraser").style.border = '1px solid #000000';
+		if($get_Element("#button_move")){
 		$get_Element("#button_move").style.border = '1px solid #000000';
+		}
         //
     }
 
