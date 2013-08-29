@@ -523,8 +523,9 @@ class GroupManagerGlobalSettings extends GWindow {
 
         passCombo = new PassPercentCombo(false);
         passCombo.enable();
-        passCombo.setEmptyText("--");
+        passCombo.setEmptyText("---");
         passCombo.setWidth(55);
+        passCombo.setAllowBlank(true);
 		fs.addThing(new MyFieldLabel(passCombo,  "Pass Percent", 290));
         
         vertMain.add(fs);
