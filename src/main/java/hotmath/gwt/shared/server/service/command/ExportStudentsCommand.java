@@ -26,6 +26,8 @@ import hotmath.util.sql.SqlUtilities;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -259,17 +261,42 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			}
     		}
     		catch (Exception e) {
-    			LOG.error("*** Exception generating / mailing student data export ***", e);
+    			LOG.error("*** Exception generating / mailing student data export for admin UID: " + adminUid, e);
     			if(emailAddr != null) {
     				try {
 	    			    SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
 	    					"Sorry, there was a problem generating your export file.  We will identify and fix the problem as soon as possible." +
-	    			        NEW_LINE + NEW_LINE + "The CatchupMath Team",
+	    			        "\n\n The CatchupMath Team",
 	    					toEmailAddrs, "registration@hotmath.com");
     				}
     				catch (Exception sbe) {
     	    			LOG.error("*** Exception mailing student data export error email ***", sbe);    					
     				}
+    				try {
+    					toEmailAddrs[0] = "admin@hotmath.com";
+    					toEmailAddrs[1] = "bobhall@hotmath.com";
+	    			    SbMailManager.getInstance().sendMessage("Catchup Math Export File ERROR",
+	    					"There was a problem generating an export file for Admin UID: " + adminUid,
+	    					toEmailAddrs, "errors@hotmath.com");
+    				}
+    				catch (Exception sbe) {
+    	    			LOG.error("*** Exception mailing internal student data export error email ***", sbe);    					
+    				}
+    				StringWriter sw = new StringWriter();
+    				PrintWriter pw = new PrintWriter(sw, true);
+    				e.printStackTrace(pw);
+    				pw.flush();
+    				sw.flush();
+    				String message = "There was a problem generating an export file for Admin UID: " + adminUid 
+    						+ "\n\n" + sw.toString();
+    				try {
+    					SbMailManager.getInstance().sendMessage("CM Export File ERROR details", message,
+    							"errors@hotmath.com", "errors@hotmath.com",
+    							"text/plain");
+    				} catch (Exception ex) {
+    					LOG.error("Could not send error notification email", ex);
+    				}
+
     			}
     		}
     		finally {
