@@ -4425,6 +4425,8 @@ GROUP BY t.standard_name_new
 ORDER BY student_count desc, standard_name asc
 
 ####
+## NOTE: make sure there is an index on HA_PROGRAM_LESSONS_static(file)
+##
 .key=GET_CCSS_DATA
 
 SELECT distinct ccs.standard_name as original_name, ccs.standard_name_new as name, ccs.level_name, ccs.domain_name, ccs.summary, ccs.description,
@@ -4432,7 +4434,7 @@ SELECT distinct ccs.standard_name as original_name, ccs.standard_name_new as nam
   FROM common_core_standards ccs
   JOIN inmh_standard_TEMP ins
     ON upper(ins.standard_state) = 'COMMON' AND ins.standard_name_new = ccs.standard_name_new
-  JOIN HA_PROGRAM_LESSONS pl
+  JOIN HA_PROGRAM_LESSONS_static pl
     ON pl.file = ins.topic
 ORDER BY ccs.standard_name_new ASC
 
