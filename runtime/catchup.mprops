@@ -4519,7 +4519,15 @@ where  whiteboard_id in (
 #order by whiteboard_id 
 #limit 1
 
+## random testing
+#select whiteboard_id, user_id, run_id, pid 
+#from junk 
+#order by rand() 
+#limit 1
+
+## repeatable test
+##
 select whiteboard_id, user_id, run_id, pid 
 from junk 
-order by rand() 
+order by whiteboard_id  
 limit 1

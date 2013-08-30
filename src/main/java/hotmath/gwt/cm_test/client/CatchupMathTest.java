@@ -160,16 +160,14 @@ private void logMessage(String msg) {
  
  protected void readWhiteboardFromServer(int uid, int rid, String pid) {
 
-     _gotoInfo.setValue("pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid);
+     final String message = "pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid;
+     _gotoInfo.setValue(message);
      
      final GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
      getCmService().execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
          @Override
         public void onSuccess(CmList<WhiteboardCommand> result) {
-             
-             logMessage("Read whiteboard for: " + action + ", " + result.size());
-
-             showNewWhiteboard(result);
+             showNewWhiteboard(result, message);
              //_showWork.loadWhiteboard(result);
              
              // now wait ... and do the next one
@@ -190,7 +188,7 @@ private void logMessage(String msg) {
     });
 }
 
-protected void showNewWhiteboard(final CmList<WhiteboardCommand> result) {
+protected void showNewWhiteboard(final CmList<WhiteboardCommand> result, final String message) {
      _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
         @Override
         public void windowResized() {
@@ -200,7 +198,7 @@ protected void showNewWhiteboard(final CmList<WhiteboardCommand> result) {
         public void showWorkIsReady() {
             _showWork.loadWhiteboard(result);
             
-            logMessage(getWhiteboardSize());
+            logMessage(getWhiteboardSize() + "\t" + message);
         }
         
         @Override
@@ -213,7 +211,7 @@ protected void showNewWhiteboard(final CmList<WhiteboardCommand> result) {
 
 native protected String getWhiteboardSize() /*-{
     var res = $wnd._theWhiteboard.getSizeOfWhiteboard();
-    return "Whiteboard size: " + res; 
+    return "" + res; 
 }-*/;
 
 static CmServiceAsync _serviceInstance;
