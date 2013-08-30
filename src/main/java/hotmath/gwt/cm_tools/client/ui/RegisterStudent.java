@@ -178,7 +178,7 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         
         
         
-        if(sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL) {
+        if(sm != null && sm.getProgram().getProgramType() == CmProgramType.AUTOENROLL) {
             stdAdvOptionsBtn.setEnabled(false);
         }
         else {
