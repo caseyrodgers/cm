@@ -160,7 +160,7 @@ private void logMessage(String msg) {
  
  protected void readWhiteboardFromServer(int uid, int rid, String pid) {
 
-     final String message = "pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid;
+     final String message = "[pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid + "]";
      _gotoInfo.setValue(message);
      
      final GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
