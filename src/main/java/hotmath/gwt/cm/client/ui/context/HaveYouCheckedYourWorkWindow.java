@@ -18,7 +18,7 @@ public class HaveYouCheckedYourWorkWindow extends GWindow {
 
         setModal(true);
         setHeadingHtml("Ready to Check Quiz?");
-        add(new HTML("<p style='padding: 15px 10px;'>Did you work out your answers carefully?</p>"));
+        add(new HTML("<p style='padding: 15px 10px;'>Did you work out your answer to all the questions carefully?</p>"));
 
         addButton(new TextButton("Yes", new SelectHandler() {
             @Override
