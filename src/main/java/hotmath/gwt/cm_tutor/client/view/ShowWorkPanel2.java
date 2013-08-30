@@ -340,7 +340,7 @@ public class ShowWorkPanel2 extends Composite {
                    $wnd._theWhiteboard = null;
                 }
                 
-                new $wnd.Whiteboard();
+                //new $wnd.Whiteboard();
                 $wnd._wbCount = new Date().getUTCMilliseconds();
                 
                 if($wnd._theWhiteboardDiv && $wnd._theWhiteboardDiv.parentNode) {
