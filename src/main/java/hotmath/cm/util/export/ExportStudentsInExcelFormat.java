@@ -263,6 +263,10 @@ public class ExportStudentsInExcelFormat {
 
 		    cell = row.createCell(++col);
 		    String lastQuiz = defineLastQuizColumn(sm);
+		    if(lastQuiz == null) {
+		        lastQuiz = "";
+		    }
+		    
 	        cell.setCellValue(lastQuiz);
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < lastQuiz.length()) charCount[col] = lastQuiz.length();
