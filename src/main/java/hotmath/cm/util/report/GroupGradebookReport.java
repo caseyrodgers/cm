@@ -170,6 +170,7 @@ public class GroupGradebookReport {
 		} catch (Exception e) {
 			LOGGER.error(String.format("*** Error generating gradebook report for adminId: %d, groupId: %d",
 				adminId, groupId), e);
+			e.printStackTrace();
 			if (e instanceof InformationOnlyException) throw e;
 		}
 		return baos;
@@ -208,6 +209,12 @@ public class GroupGradebookReport {
 					addCell("   ", 1, tbl, isGray);
 				}
 				StudentAssignment sa = asgnMap.get(a.getAssignKey());
+				if(sa == null) {
+				    sa = new StudentAssignment();
+				    sa.setAssignment(new Assignment());
+				    sa.getAssignment().setStatus("");
+				    sa.setHomeworkStatus("");
+				}
 				String homeworkGrade = sa.getHomeworkGrade();
 				if (sa == null || sa.getHomeworkStatus().equalsIgnoreCase("not started")) {
 					addCell("N/A", 1, tbl, isGray);
@@ -220,7 +227,7 @@ public class GroupGradebookReport {
 					addCell(homeworkGrade, 1, tbl, isGray, BLUE);						
 				}
 				else {
-					homeworkGrade = ("-".equals(homeworkGrade.trim())) ? "N/A" : homeworkGrade;
+					homeworkGrade = (homeworkGrade == null || "-".equals(homeworkGrade.trim())) ? "N/A" : homeworkGrade;
 					addCell(homeworkGrade, 1, tbl, isGray, BLACK);						
 				}
 			}
@@ -411,6 +418,7 @@ public class GroupGradebookReport {
     		int totalPercent = 0;
     		Map<Integer, StudentAssignment> asgnMap = stuAsgnMap.get(stuId);
     		for (Assignment a : assignmentList) {
+    		    try {
     			StudentAssignment sa = asgnMap.get(a.getAssignKey());
     			if (sa == null) {
     				LOGGER.warn("No Assignment for key: " + a.getAssignKey());
@@ -428,9 +436,13 @@ public class GroupGradebookReport {
     				}
     			}
     			asgCount++;
+    		    }
+    		    catch(Exception e) {
+    		        e.printStackTrace();
+    		    }
     		}
     		String average;
-    		if (asgCount > 0)
+    		if (asgCount > 0 && totalPercent > 0)
     			average = String.format("  %d%s", Math.round((float)totalPercent / (float)asgCount), "%");
     		else
     			average = "  0%";
