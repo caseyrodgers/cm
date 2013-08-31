@@ -34,6 +34,7 @@ public class LoadingSpinner {
     
     public native void startSpinner() /*-{
         if(_loadingSpinner) {
+            _loadingDiv.style.display = 'block';   // was hidden to not intercept events
             _loadingSpinner.spin(_loadingDiv);
         }
         else {
@@ -44,6 +45,7 @@ public class LoadingSpinner {
     public native void stopSpinner() /*-{
         if(_loadingSpinner) {
             _loadingSpinner.stop();
+            _loadingDiv.style.display = 'none';   // hide contain to not intercept events
         }
         else {
            alert('loading spinner not initialized');
