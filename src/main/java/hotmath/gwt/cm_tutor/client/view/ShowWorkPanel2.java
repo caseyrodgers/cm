@@ -341,17 +341,11 @@ public class ShowWorkPanel2 extends Composite {
                 }
                 
                 //new $wnd.Whiteboard();
-                $wnd._wbCount = new Date().getUTCMilliseconds();
-                
-                if($wnd._theWhiteboardDiv && $wnd._theWhiteboardDiv.parentNode) {
-                    $wnd._theWhiteboardDiv.parentNode.removeChild($wnd._theWhiteboardDiv);
+                $wnd._theWhiteboardDiv = $doc.getElementById("whiteboard-1");
+                if($wnd._theWhiteboardDiv == null) {
+                    alert('no whiteboard-1 div');
+                    return;
                 }
-                $wnd._theWhiteboardDiv = $doc.createElement("div");
-                $wnd._theWhiteboardDiv.setAttribute("id", "whiteboard-1");
-                
-                var parent = $doc.getElementById("main-content");
-                parent.appendChild($wnd._theWhiteboardDiv);
-                
                 
                 $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
                 
