@@ -25,7 +25,8 @@ public class DateRangeWidget extends Label {
 	}
 
 	public void refresh() {
-		setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
+		DateRangePanel dateRangePanel = DateRangePanel.getInstance();
+		setText((dateRangePanel != null) ? "Date range: " + DateRangePanel.getInstance().formatDateRange():"");
 	}
 
 }
