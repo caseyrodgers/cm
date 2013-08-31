@@ -4529,5 +4529,6 @@ where  whiteboard_id in (
 ##
 select whiteboard_id, user_id, run_id, pid 
 from junk 
+where is_tested = 0
 order by whiteboard_id  
 limit 1
