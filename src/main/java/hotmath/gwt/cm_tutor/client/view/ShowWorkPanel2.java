@@ -47,6 +47,8 @@ public class ShowWorkPanel2 extends Composite {
 
     private boolean _interactive;
 
+    private boolean _teacherMode;
+
     interface MyUiBinder extends UiBinder<Widget, ShowWorkPanel2> {
     }
 
@@ -141,6 +143,7 @@ public class ShowWorkPanel2 extends Composite {
     }
 
     public void setAsTeacherMode(boolean yesNo) {
+        _teacherMode=yesNo;
         jsni_setAsTeacherMode(yesNo);
     }
 
@@ -218,7 +221,7 @@ public class ShowWorkPanel2 extends Composite {
 
             if (_lastCommands != null && _lastCommands.size() > 0) {
                 WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size() - 1);
-                if (cmd.isAdmin()) {
+                if (!_teacherMode && cmd.isAdmin()) {
                     PopupMessageBox.showMessage("Cannot undo teacher notes");
                     return;
                 }
