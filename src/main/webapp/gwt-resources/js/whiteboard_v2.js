@@ -2232,6 +2232,10 @@ var cntxt=ctx?ctx:context;
 
     function updateText(txt, x, y, c) {
         // alert("UT:"+txt)
+		if(graphicData.dataArr.length){
+		var data=graphicData.dataArr[0]
+		graphicData.dataArr=[data];
+		}
         graphicData.dataArr[0].text = escape(txt);
         graphicData.dataArr[0].x = x;
         graphicData.dataArr[0].y = y;
@@ -3096,6 +3100,7 @@ source: https://gist.github.com/754454
             }
         }
         // updateScroller();
+		resetArrays()
     }
 
     /**
