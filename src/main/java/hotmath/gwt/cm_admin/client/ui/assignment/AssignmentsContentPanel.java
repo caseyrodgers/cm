@@ -268,7 +268,7 @@ public class AssignmentsContentPanel extends ContentPanel {
             return;
         }
         
-        final ConfirmMessageBox cm = new ConfirmMessageBox("Activate Assignment", "Once activated an assignment's problems cannot be changed.  Are you sure you want to activate this assignment?.");
+        final ConfirmMessageBox cm = new ConfirmMessageBox("Activate Assignment", "Once activated an assignment's problems cannot be changed.  Are you sure you want to activate this assignment?");
         cm.addHideHandler(new HideHandler() {
             @Override
             public void onHide(HideEvent event) {
