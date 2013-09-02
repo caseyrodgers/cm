@@ -207,7 +207,6 @@ public enum EventType{
     EVENT_TYPE_QUESTION_VIEWER_CLOSED,
 
     
-    
     /** Fired when the current resource should be maximized
      * 
      */
@@ -216,6 +215,16 @@ public enum EventType{
     /** Fired when current resource should be optimized
      * 
      */
-    
-    EVENT_TYPE_OPTIMIZE_RESOURCE;
+    EVENT_TYPE_OPTIMIZE_RESOURCE,    
+
+
+    /**
+     * Fired when Highlight Print button should be disabled
+     */
+    EVENT_TYPE_DISABLE_HIGHLIGHT_PRINT,
+
+    /**
+     * Fired when Highlight Print button should be enabled
+     */
+    EVENT_TYPE_ENABLE_HIGHLIGHT_PRINT;
 }
