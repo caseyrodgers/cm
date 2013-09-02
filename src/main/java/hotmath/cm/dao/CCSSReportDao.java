@@ -488,7 +488,6 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 			Date fromDate, Date toDate) throws Exception {
 		List<Integer>userIds = new ArrayList<Integer>();
 		userIds.add(userId);
-		logger.info("+++ getStudentAllByPeriosStandardNames(): uid: " + userId);
 		return getStudentAllByPeriodStandardNamesWithDate(userIds, fromDate, toDate);
 	}
 
