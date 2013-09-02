@@ -11,6 +11,7 @@ public class HighlightsImplCCSSCoverage extends HighlightsImplBase {
     public HighlightsImplCCSSCoverage() {
         super(title,"Displays CCSS standards and the number of students that have covered them.");
     }
+
     public Widget prepareWidget() {
         return panel;
     }

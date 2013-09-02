@@ -11,6 +11,7 @@ public class HighlightsImplCCSSCoverageChart extends HighlightsImplBase {
     public HighlightsImplCCSSCoverageChart() {
         super(title,"Displays the number of CCSS standards covered over time.");
     }
+
     public Widget prepareWidget() {
         return panel;
     }
@@ -30,6 +31,11 @@ public class HighlightsImplCCSSCoverageChart extends HighlightsImplBase {
     	HighlightReportLayout rl = super.getReportLayout();
     	rl.setTitle(title);
     	return rl;
+    }
+
+    @Override
+    protected boolean hasPrintAbility() {
+    	return false;
     }
     
 }

@@ -9,6 +9,7 @@ import hotmath.gwt.cm_tools.client.ui.PdfWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
+import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfHighlightsReportAction;
 import hotmath.gwt.shared.client.rpc.action.HighlightReportLayout;
@@ -82,19 +83,19 @@ public class HighlightsListPanel extends BorderLayoutContainer {
     
     private void printCurrentReport() {
         HighlightsReport report = _listReports.getSelectionModel().getSelectedItem();
-        
-        if(report == null || report.getReport().getReportValues() == null) {
+
+        if(report == null  || report.getReport().isEmpty() == true) {
             CmMessageBox.showAlert("Nothing to print");
+            return;
+        }
+        
+        if(report.getReport().hasPrintAbility() == false) {
+            InfoPopupBox.display("No Report", "A printable report has not been defined for this highlight.");
             return;
         }
         
         String reportName = report.getText();
         HighlightReportLayout reportLayout = report.getReport().getReportLayout();
-        
-        if(reportLayout == null || reportLayout.getColumnLabels() == null) {
-            InfoPopupBox.display("No Report", "No printalbe report has been defined for this highlight.");
-            return;
-        }
         
         GeneratePdfHighlightsReportAction action = new GeneratePdfHighlightsReportAction(StudentGridPanel.instance.getCmAdminMdl().getUid(),reportName,reportLayout,StudentGridPanel.instance.getPageAction());
         action.setFilterMap(StudentGridPanel.instance.getPageAction().getFilterMap());
@@ -140,6 +141,12 @@ public class HighlightsListPanel extends BorderLayoutContainer {
 				
 				HighlightsReport hlReport = event.getSelectedItem();
 				final HighlightsImplBase report = hlReport.getReport();
+				if (report.hasPrintAbility() == true) {
+			        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_ENABLE_HIGHLIGHT_PRINT));
+				}
+				else {
+			        EventBus.getInstance().fireEvent(new CmEvent(EventType.EVENT_TYPE_DISABLE_HIGHLIGHT_PRINT));
+				}
 				HighlightPanel pb = (HighlightPanel)report.prepareWidget();
 				pb.getDataFromServer(false, new CallbackOnComplete() {
                     @Override

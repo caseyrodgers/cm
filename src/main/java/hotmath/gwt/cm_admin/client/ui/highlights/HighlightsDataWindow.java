@@ -1,7 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.highlights;
 
 
-import hotmath.gwt.cm_tools.client.ui.DateRangePanel;
+import hotmath.gwt.cm_tools.client.ui.DateRangeWidget;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
@@ -9,7 +9,6 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
@@ -28,6 +27,7 @@ public class HighlightsDataWindow extends GWindow {
     private static HighlightsDataWindow __instance;
 
     BorderLayoutContainer _container;
+    TextButton printButton;
 
     public static HighlightsDataWindow getSharedInstance(Integer aid) {
         //TODO: reuse __instance
@@ -51,7 +51,7 @@ public class HighlightsDataWindow extends GWindow {
     BorderLayoutData _centerData;
     HighlightsListPanel _highlightsListPanel;
 
-    Label _dateRange = new Label();
+    DateRangeWidget _dateRange = DateRangeWidget.getInstance();
 
     private HighlightsDataWindow() {
     	super(false);
@@ -75,7 +75,7 @@ public class HighlightsDataWindow extends GWindow {
         _highlightsListPanel = new HighlightsListPanel(_container, _centerData);
         _container.setWestWidget(_highlightsListPanel, _westData);
 
-        refreshDateRangeLabel();
+        _dateRange.refresh();
 
         getHeader().addTool(new TextButton("Refresh", new SelectHandler() {
 			@Override
@@ -84,14 +84,14 @@ public class HighlightsDataWindow extends GWindow {
 			}
         }));
 
-        getHeader().addTool(new TextButton("Print Report", new SelectHandler() {
+        printButton = new TextButton("Print Report", new SelectHandler() {
             @Override
             public void onSelect(SelectEvent ce) {
                 reportButton();
             }
-        }));
+        });
+        getHeader().addTool(printButton);
 
-        _dateRange.addStyleName("date-range-label");
         getButtonBar().add(_dateRange);
         super.addCloseButton();
 
@@ -106,6 +106,16 @@ public class HighlightsDataWindow extends GWindow {
         setVisible(true);
     }
 
+    private void enablePrint() {
+        printButton.enable();
+        printButton.removeToolTip();
+    }
+
+    private void disablePrint() {
+        printButton.disable();
+        printButton.setToolTip("A printable report is not defined for this highlight.");
+    }
+
 	private void showDefaultMsg() {
 		CenterLayoutContainer clc = new CenterLayoutContainer();
         HTML defaultMsg = new HTML("<h1>Select a report</h1>");
@@ -114,17 +124,14 @@ public class HighlightsDataWindow extends GWindow {
         _container.forceLayout();
 	}
 
-	private void refreshDateRangeLabel() {
-		_dateRange.setText("Date range: " + DateRangePanel.getInstance().formatDateRange());
-	}
-
     int _currentSelection;
     private void reloadAllReports() {
         _container.getCenterWidget().removeFromParent();
         _container.getWestWidget().removeFromParent();
     	_highlightsListPanel = new HighlightsListPanel(_container, _centerData);
+    	
         _container.setWestWidget(_highlightsListPanel, _westData);
-        refreshDateRangeLabel();
+        _dateRange.refresh();
         
         showDefaultMsg();
         _container.forceLayout();
@@ -145,8 +152,27 @@ public class HighlightsDataWindow extends GWindow {
             public void handleEvent(CmEvent event) {
                 if(event.getEventType() == EventType.EVENT_TYPE_STUDENT_GRID_FILTERED) {
                     if(__instance != null && __instance.isVisible()) {
-                        __instance.refreshDateRangeLabel();
                         __instance.reloadAllReports();
+                    }
+                }
+            }
+        });
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_DISABLE_HIGHLIGHT_PRINT) {
+                    if(__instance != null && __instance.isVisible()) {
+                        __instance.disablePrint();
+                    }
+                }
+            }
+        });
+        EventBus.getInstance().addEventListener(new CmEventListenerImplDefault() {
+            @Override
+            public void handleEvent(CmEvent event) {
+                if(event.getEventType() == EventType.EVENT_TYPE_ENABLE_HIGHLIGHT_PRINT) {
+                    if(__instance != null && __instance.isVisible()) {
+                        __instance.enablePrint();
                     }
                 }
             }

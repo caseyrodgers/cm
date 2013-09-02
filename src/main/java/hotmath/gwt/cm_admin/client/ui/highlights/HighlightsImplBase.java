@@ -45,8 +45,22 @@ abstract class HighlightsImplBase  {
         rl.setCountLabel("Student Count: ");
         return rl;
     }
-    
+
+    /**
+     * return true of printing is supported for selected report
+     *  
+     * @return
+     */
+    protected boolean hasPrintAbility() {
+    	return true;
+    }
+
+	protected boolean isEmpty() {
+	    return getReportValues() != null;
+	}
+
     abstract String[] getReportCols();
     abstract String[][] getReportValues();
+
 }
 

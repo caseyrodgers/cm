@@ -165,7 +165,6 @@ public class HighlightsImplCCSSCoverageChartPanel extends Composite implements H
     }
 
     private void showNoData() {
-        //removeAll();
     	CenterLayoutContainer clContainer = new CenterLayoutContainer();
     	FramedPanel fp = new FramedPanel();
     	fp.setHeaderVisible(false);
