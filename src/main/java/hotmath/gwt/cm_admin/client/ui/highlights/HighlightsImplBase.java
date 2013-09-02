@@ -56,7 +56,7 @@ abstract class HighlightsImplBase  {
     }
 
 	protected boolean isEmpty() {
-	    return getReportValues() != null;
+	    return getReportValues() == null;
 	}
 
     abstract String[] getReportCols();
