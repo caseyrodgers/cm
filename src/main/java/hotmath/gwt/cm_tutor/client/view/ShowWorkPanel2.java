@@ -217,15 +217,21 @@ public class ShowWorkPanel2 extends Composite {
             }
             commandType = CommandType.CLEAR;
         } else if (json.equals("undo")) {
+            
+            Log.debug("Whiteboard Undo: fired!");
+            
             commandType = CommandType.UNDO;
 
             if (_lastCommands != null && _lastCommands.size() > 0) {
+                Log.debug("Whiteboard Undo: removing from _lastCommands");
                 WhiteboardCommand cmd = _lastCommands.get(_lastCommands.size() - 1);
                 if (!_teacherMode && cmd.isAdmin()) {
                     PopupMessageBox.showMessage("Cannot undo teacher notes");
                     return;
                 }
                 _lastCommands.remove(_lastCommands.size() - 1); // remove last
+                
+                Log.debug("Whiteboard Undo: _lastCommands size == " + _lastCommands.size());
                                                                 // element
                 loadWhiteboard(_lastCommands);
             } else {
