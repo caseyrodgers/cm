@@ -218,7 +218,9 @@ public class ShowWorkPanel2 extends Composite {
             commandType = CommandType.CLEAR;
         } else if (json.equals("undo")) {
             
-            Log.debug("Whiteboard Undo: fired!");
+            jsni_enableWhiteboardUndo(false);
+            
+            Log.debug("Whiteboard Undo: disabling undo button");
             
             commandType = CommandType.UNDO;
 
@@ -262,9 +264,18 @@ public class ShowWorkPanel2 extends Composite {
         // do every time...
         saveWhiteboardToServer();
 
-        Log.error("NOT FIRING MODIFIED EVENT");
+        // Log.error("NOT FIRING MODIFIED EVENT");
         // CmRpcCore.EVENT_BUS.fireEvent(new ShowWorkModifiedEvent(this));
     }
+
+    native private void jsni_enableWhiteboardUndo(boolean b) /*-{
+        if(b) {
+            $wnd._theWhiteboard.enableUndo();
+        }
+        else {
+            $wnd._theWhiteboard.disableUndo();
+        }    
+    }-*/;
 
     /**
      * Provide generate way to load data externally
@@ -304,6 +315,8 @@ public class ShowWorkPanel2 extends Composite {
 
                 Log.debug("saveWhiteboardToServer: complete");
                 whiteboardActions.getActions().clear();
+                
+                jsni_enableWhiteboardUndo(true);
             }
 
             @Override
