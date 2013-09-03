@@ -237,7 +237,7 @@ public class ShowWorkPanel2 extends Composite {
                                                                 // element
                 loadWhiteboard(_lastCommands);
             } else {
-                PopupMessageBox.showMessage("Nothing to undo");
+                Log.debug("Whiteboard: Nothing to undo");
                 return;
             }
         } else {
