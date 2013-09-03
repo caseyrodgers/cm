@@ -3318,6 +3318,14 @@ source: https://gist.github.com/754454
 	cwi=w;
 	cht=h;
 	}
+	wb.enableUndo=function(){
+	$get_jqElement('#button_undo').prop("disabled",!true);
+	$get_jqElement('#button_undo').css({ opacity: 1.0 });
+	}
+	wb.disableUndo=function(){
+	$get_jqElement('#button_undo').prop("disabled",true);
+	$get_jqElement('#button_undo').css({ opacity: 0.3 });
+	}
     return wb;
 
 };
