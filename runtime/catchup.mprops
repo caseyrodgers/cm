@@ -4425,6 +4425,58 @@ GROUP BY t.standard_name_new
 ORDER BY student_count desc, standard_name asc
 
 ####
+.key=GET_CCSS_LEVEL_COUNTS_FOR_STUDENT
+
+SELECT s.user_id, s.level_name, count(*)
+FROM (
+    SELECT distinct user_id, c.level_name, ins.standard_name_new
+    FROM HA_TEST t
+    JOIN HA_TEST_RUN tr
+      ON tr.test_id = t.test_id
+    JOIN HA_TEST_RUN_RESULTS trr
+      ON trr.run_id = tr.run_id AND trr.answer_status='CORRECT'
+    JOIN inmh_map im
+      ON im.guid = trr.pid
+    JOIN inmh_standard_TEMP ins
+      ON standard_state = 'COMMON' AND ins.topic = im.file
+    JOIN common_core_standards c
+      ON c.standard_name_new = ins.standard_name_new
+   WHERE t.user_id in ( $$USER_ID$$ )
+     AND tr.run_time BETWEEN ? AND ?
+  UNION
+    SELECT distinct user_id, c.level_name, ins.standard_name_new
+    FROM HA_TEST t
+    JOIN HA_TEST_RUN tr
+      ON tr.test_id = t.test_id
+    JOIN HA_TEST_RUN_LESSON rl
+      ON rl.run_id = tr.run_id AND rl.date_completed is not null
+    JOIN inmh_standard_TEMP ins
+      ON standard_state = 'COMMON' AND ins.topic = rl.lesson_file
+   JOIN common_core_standards c
+     ON c.standard_name_new = ins.standard_name_new
+   WHERE t.user_id in ( $$USER_ID$$ )
+     AND rl.date_completed BETWEEN ? AND ?
+  UNION
+    SELECT distinct uid as user_id, c.level_name, ins.standard_name_new
+    FROM CM_ASSIGNMENT_USER au
+    JOIN CM_ASSIGNMENT a
+      ON au.assign_key = a.assign_key
+    JOIN CM_ASSIGNMENT_PID_ANSWERS pa
+      ON pa.assign_key = au.assign_key AND pa.user_id = au.uid AND pa.answer IS NOT null
+    JOIN CM_ASSIGNMENT_PIDS ap
+      ON ap.assign_key = a.assign_key AND ap.pid = pa.pid
+    JOIN inmh_standard_TEMP ins
+      ON standard_state = 'COMMON' AND ap.lesson_file = ins.topic
+   JOIN common_core_standards c
+     ON c.standard_name_new = ins.standard_name_new
+   WHERE au.uid in ( $$USER_ID$$ )
+     AND au.is_graded = 1
+     AND a.due_date BETWEEN ? AND ?
+ ) s
+GROUP BY s.user_id, s.level_name
+ORDER BY s.user_id, s.level_name
+
+####
 ## NOTE: make sure there is an index on HA_PROGRAM_LESSONS_static(file)
 ##
 .key=GET_CCSS_DATA
