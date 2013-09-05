@@ -194,9 +194,10 @@ var Whiteboard = function (cont, isStatic) {
             }).addClass('inputBox');
             var mqbox = $('<div><span class="mathquill-editable" id="editable-math"></span></div>');
             var dbtn = $("<button/>", {
+                type: 'button',
                 name: 'done_btn',
-                text: 'DONE',
-                type: 'button'
+                text: 'DONE'
+
             }).addClass('done_btn');
             mqbox.appendTo(itxt);
             dbtn.appendTo(itxt);
