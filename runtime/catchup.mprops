@@ -2423,9 +2423,10 @@ from   v_HA_USER_ACTIVE u
                from   HA_USER_LOGIN l
                       join HA_USER u2
                         on u2.uid = l.user_id
-               where    u2.admin_id = $$AID$$
-               and   l.login_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
-               and   u2.is_auto_create_template = 0
+               where   u2.admin_id = $$AID$$
+                 and   l.login_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                 and   u2.is_auto_create_template = 0
+                 and   u2.is_active != 0
                group  by u2.group_id
                
           ) lc on lc.group_id = u.group_id
@@ -2445,8 +2446,9 @@ from   v_HA_USER_ACTIVE u
                        where  user_id = u3.uid
                        and   login_time between '$$DATE_FROM$$' and '$$DATE_TO$$'                            
                 )
-                and    u3.admin_id = $$AID$$
-                and    u3 .is_auto_create_template = 0
+                and   u3.admin_id = $$AID$$
+                and   u3 .is_auto_create_template = 0
+                and   u3.is_active != 0
                 group by group_id
                 
           ) la on la.group_id = u.group_id
@@ -2462,8 +2464,9 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_LESSON l on l.run_id = r.run_id
               where u.admin_id = $$AID$$
-              and   u.is_auto_create_template = 0
-              and  l.lesson_viewed between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                and u.is_auto_create_template = 0
+                and u.is_active != 0
+                and l.lesson_viewed between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id
               
           ) lv on lv.group_id = u.group_id
@@ -2524,6 +2527,7 @@ from   v_HA_USER_ACTIVE u
                 )
                 and    u3.admin_id = $$AID$$
                 and    u3.is_auto_create_template = 0
+                and    u3.is_active != 0
                 group by group_id
                 
           ) la on la.group_id = u.group_id
@@ -2538,9 +2542,10 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
-              and   u.is_auto_create_template = 0
-              and  i.item_type = 'video'
-              and  i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                and u.is_auto_create_template = 0
+                and u.is_active != 0
+                and i.item_type = 'video'
+                and i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id
               
           ) vv on vv.group_id = u.group_id
@@ -2557,9 +2562,10 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
-              and   u.is_auto_create_template = 0
-              and  i.item_type = 'activity_standard'
-              and  i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                and u.is_auto_create_template = 0
+                and u.is_active != 0
+                and i.item_type = 'activity_standard'
+                and i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) gv  on gv.group_id = u.group_id
@@ -2574,9 +2580,10 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
-              and   u.is_auto_create_template = 0
-              and  i.item_type = 'activity'
-              and  i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                and u.is_auto_create_template = 0
+                and u.is_active != 0
+                and i.item_type = 'activity'
+                and i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) av  on av.group_id = u.group_id
@@ -2592,9 +2599,10 @@ from   v_HA_USER_ACTIVE u
                    JOIN HA_TEST_RUN r on r.test_id = t.test_id
                    JOIN HA_TEST_RUN_INMH_USE i on i.run_id = r.run_id
               where u.admin_id = $$AID$$
-              and   u.is_auto_create_template = 0
-              and  i.item_type in ('flashcard', 'flashcard_es')
-              and i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
+                and u.is_auto_create_template = 0
+                and u.is_active != 0
+                and i.item_type in ('flashcard', 'flashcard_es')
+                and i.view_time between '$$DATE_FROM$$' and '$$DATE_TO$$'
               group by group_id 
               
           ) fc  on fc.group_id = u.group_id                              
