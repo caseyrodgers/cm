@@ -9,7 +9,7 @@ require.config({
 function requireJsLoad_whiteboard(funcToCall) {
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
-        require(['whiteboard_v2','mathquill/mathquill'], function(x) {
+        require(['whiteboard_v2'], function(x) {
             funcToCall(x);
         });
     }
