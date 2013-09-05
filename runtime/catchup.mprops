@@ -4435,7 +4435,7 @@ ORDER BY student_count desc, standard_name asc
 ####
 .key=GET_CCSS_LEVEL_COUNTS_FOR_STUDENT
 
-SELECT s.user_id, s.level_name, count(*)
+SELECT s.user_id, s.level_name, count(*) as level_count
 FROM (
     SELECT distinct user_id, c.level_name, ins.standard_name_new
     FROM HA_TEST t
@@ -4449,7 +4449,7 @@ FROM (
       ON standard_state = 'COMMON' AND ins.topic = im.file
     JOIN common_core_standards c
       ON c.standard_name_new = ins.standard_name_new
-   WHERE t.user_id in ( $$USER_ID$$ )
+   WHERE t.user_id in ( $$UID_LIST$$ )
      AND tr.run_time BETWEEN ? AND ?
   UNION
     SELECT distinct user_id, c.level_name, ins.standard_name_new
@@ -4462,7 +4462,7 @@ FROM (
       ON standard_state = 'COMMON' AND ins.topic = rl.lesson_file
    JOIN common_core_standards c
      ON c.standard_name_new = ins.standard_name_new
-   WHERE t.user_id in ( $$USER_ID$$ )
+   WHERE t.user_id in ( $$UID_LIST$$ )
      AND rl.date_completed BETWEEN ? AND ?
   UNION
     SELECT distinct uid as user_id, c.level_name, ins.standard_name_new
@@ -4477,7 +4477,7 @@ FROM (
       ON standard_state = 'COMMON' AND ap.lesson_file = ins.topic
    JOIN common_core_standards c
      ON c.standard_name_new = ins.standard_name_new
-   WHERE au.uid in ( $$USER_ID$$ )
+   WHERE au.uid in ( $$UID_LIST$$ )
      AND au.is_graded = 1
      AND a.due_date BETWEEN ? AND ?
  ) s
