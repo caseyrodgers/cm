@@ -24,6 +24,7 @@ import hotmath.cm.util.CmMultiLinePropertyReader;
 import hotmath.cm.util.QueryHelper;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSStrandCoverage;
 import hotmath.gwt.shared.client.model.CCSSCoverageBar;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSData;
@@ -613,6 +614,76 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     	makeBarListCumulative(barList);
 
     	return barList;
+	}
+
+	public Map<Integer, List<CCSSStrandCoverage>> getCCSSStrandCoverageForStudent(List<Integer> userIds,
+			Date fromDate, Date toDate) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_LEVEL_COUNTS_FOR_STUDENT");
+
+        sql = QueryHelper.createInListSQL(sql, userIds);
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getCCSSStrandCoverageForStudent(): sql: " + sql);
+
+        final Map<Integer, List<CCSSStrandCoverage>> map = new HashMap<Integer, List<CCSSStrandCoverage>>();
+
+    	try {
+    		getJdbcTemplate().query(sql,
+    				new Object[] { fromDate, toDate, fromDate, toDate, fromDate, toDate },
+    				new RowMapper<CCSSStrandCoverage>() {
+    			@Override
+    			public CCSSStrandCoverage mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSStrandCoverage item = new CCSSStrandCoverage();
+    				int userId = rs.getInt("user_id");
+    				int count  = rs.getInt("level_count");
+    				String levelName = rs.getString("level_name");
+    				item.setCount(count);
+    				item.setLabel(levelName);
+    				List<CCSSStrandCoverage> cList = map.get(userId);
+    				if (map.containsKey(userId) == false) {
+    					cList = new ArrayList<CCSSStrandCoverage>();
+    					map.put(userId, cList);
+    				}
+    				cList.add(item);
+    				return item;
+    			}
+    		});
+
+    	}
+        catch(Exception e) {
+    		LOGGER.error(String.format("getCCSSStrandCoverageForStudent(): userIds: %s, fromDate: %s, toDate: %s, sql: %s",
+    				userIds, DATE_FMT.format(fromDate), DATE_FMT.format(toDate), sql), e);
+    		throw e;
+    	}
+    	return map;
+	}
+
+	public List<CCSSStrandCoverage> getCCSSStrandCoverage() throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_LEVEL_COUNTS");
+
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getCCSSStrandCoverage(): sql: " + sql);
+
+        List<CCSSStrandCoverage> list = null;
+
+    	try {
+    		list = getJdbcTemplate().query(sql, new RowMapper<CCSSStrandCoverage>() {
+    			@Override
+    			public CCSSStrandCoverage mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSStrandCoverage item = new CCSSStrandCoverage();
+    				int count  = rs.getInt("level_count");
+    				String levelName = rs.getString("level_name");
+    				item.setCount(count);
+    				item.setLabel(levelName);
+    				return item;
+    			}
+    		});
+
+    	}
+        catch(Exception e) {
+    		LOGGER.error(String.format("getCCSSStrandCoverage(): sql: %s", sql), e);
+    		throw e;
+    	}
+    	return list;
 	}
 
 	private void addUniqueStds(CCSSCoverageBar uniqueBar,
