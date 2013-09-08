@@ -61,13 +61,16 @@ public class CCSSStrandCoverageCommand implements ActionHandler<CCSSStrandCovera
 	private void calculatePercentComplete(List<CCSSStrandCoverage> sList,
 			List<CCSSStrandCoverage> list) {
 		for (CCSSStrandCoverage stdCov : sList) {
-			String name = stdCov.getLabel();
+			String name = stdCov.getLevelName();
+			stdCov.setPercentComplete(String.format("%d%s", 0, "%"));
+			stdCov.setLabel(String.format("%s  (%s)", name, stdCov.getPercentComplete()));
 			float stdCount = stdCov.getCount();
 			for (CCSSStrandCoverage cov : list) {
-				if (name.equals(cov.getLabel())) {
+				if (name.equals(cov.getLevelName())) {
 					// calculate % complete
 					int percentComplete = Math.round(((float)cov.getCount()*100f)/stdCount);
 					stdCov.setPercentComplete(String.format("%d%s", percentComplete, "%"));
+					stdCov.setLabel(String.format("%s  (%s)", name, stdCov.getPercentComplete()));
 					break;
 				}
 			}
