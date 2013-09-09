@@ -274,6 +274,40 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 
     /**
      * 
+     * @param levelName
+     * @return list of standard names for specified levelName
+     * @throws Exception
+     */
+	public List<CCSSStandard> getStandardsForLevel(String levelName, boolean hasCoverage) throws Exception {
+        String sql = (hasCoverage != true) ?
+        		CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_LEVEL") :
+        		CmMultiLinePropertyReader.getInstance().getProperty("GET_CCSS_NAMES_FOR_LEVEL_WITH_COVERAGE");
+
+        if (LOGGER.isDebugEnabled())
+            LOGGER.debug("+++ getStandardNamesForLevel(): sql: " + sql);
+
+        List<CCSSStandard> list = null;
+    	try {
+    		list = getJdbcTemplate().query(sql, new Object[] { levelName }, new RowMapper<CCSSStandard>() {
+    			@Override
+    			public CCSSStandard mapRow(ResultSet rs, int rowNum) throws SQLException {
+    				CCSSStandard std = new CCSSStandard();
+    				std.setName(rs.getString("standard_name_new"));
+    				std.setSequenceNum(rs.getInt("sequence_num"));
+    				return std;
+    			}
+    		});
+    	}
+    	catch (DataAccessException e) {
+    		LOGGER.error(String.format("getStandardNamesForLevel(): levelName: %s, hasCoverage: %s, sql: %s", levelName, hasCoverage, sql), e);
+    		throw e;
+    	}
+    	
+    	return list;
+	}
+
+    /**
+     * 
      * @param standardList
      */
 	private void sortStandards(CmList<CCSSStandard> standardList) {
@@ -553,6 +587,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
 					int userId = Integer.parseInt(uid);
     				item.setUserId(userId);
     				item.setCount(1);
+    				item.setSequenceNum(rs.getInt("sequence_num"));
     				return item;
     			}
     		});
@@ -637,7 +672,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     				int count  = rs.getInt("level_count");
     				String levelName = rs.getString("level_name");
     				item.setCount(count);
-    				item.setLabel(levelName);
+    				item.setLevelName(levelName);
     				List<CCSSStrandCoverage> cList = map.get(userId);
     				if (map.containsKey(userId) == false) {
     					cList = new ArrayList<CCSSStrandCoverage>();
@@ -673,7 +708,7 @@ public class CCSSReportDao extends SimpleJdbcDaoSupport {
     				int count  = rs.getInt("level_count");
     				String levelName = rs.getString("level_name");
     				item.setCount(count);
-    				item.setLabel(levelName);
+    				item.setLevelName(levelName);
     				return item;
     			}
     		});

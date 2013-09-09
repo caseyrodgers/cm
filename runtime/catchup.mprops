@@ -4321,7 +4321,7 @@ ORDER BY user_id, lesson_name, standard_name_new, usage_type
 
 SELECT distinct s.user_id, s.lesson_name, s.standard_name_new, s.sequence_num, s.usage_type
 FROM (
-SELECT user_id, im.title as lesson_name, ins.standard_name_new, 'QUIZ' as usage_type
+SELECT user_id, im.title as lesson_name, ins.standard_name_new, ccs.sequence_num, 'QUIZ' as usage_type
 FROM HA_TEST t
 JOIN HA_TEST_RUN tr
   ON tr.test_id = t.test_id
@@ -4336,7 +4336,7 @@ JOIN common_core_standards ccs
 WHERE t.user_id in ( $$UID_LIST$$ )
   AND tr.run_time BETWEEN ? AND ?
 UNION
-SELECT user_id, rl.lesson_name, ins.standard_name_new, 'LESSON' as usage_type
+SELECT user_id, rl.lesson_name, ins.standard_name_new, ccs.sequence_num, 'LESSON' as usage_type
 FROM HA_TEST t
 JOIN HA_TEST_RUN tr
   ON tr.test_id = t.test_id
@@ -4349,7 +4349,7 @@ JOIN common_core_standards ccs
 WHERE t.user_id in ( $$UID_LIST$$ )
   AND rl.date_completed BETWEEN ? AND ?
 UNION
-SELECT uid as user_id, ap.lesson as lesson_name, ins.standard_name_new, 'ASSIGNMENT' as usage_type
+SELECT uid as user_id, ap.lesson as lesson_name, ins.standard_name_new, ccs.sequence_num, 'ASSIGNMENT' as usage_type
 FROM CM_ASSIGNMENT_USER au
 JOIN CM_ASSIGNMENT a
   ON au.assign_key = a.assign_key
