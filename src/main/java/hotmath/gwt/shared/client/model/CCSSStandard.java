@@ -14,6 +14,7 @@ public class CCSSStandard extends FolderDto implements IsSerializable {
 	protected String summary;
 	protected String description;
 	protected boolean hasChildren;
+	protected int sequenceNum;
 	protected CCSSDomain parent;
 
 	protected CmList<CCSSLesson> lessons;
@@ -57,6 +58,14 @@ public class CCSSStandard extends FolderDto implements IsSerializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getSequenceNum() {
+		return sequenceNum;
+	}
+
+	public void setSequenceNum(int sequenceNum) {
+		this.sequenceNum = sequenceNum;
 	}
 
 	@Override

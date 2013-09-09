@@ -10,6 +10,7 @@ public class CCSSCoverageData implements Response {
 
 	int    count;
 	int    userId;
+	int    sequenceNum;
 	
     String lessonName;
     String ccssName;
@@ -78,6 +79,14 @@ public class CCSSCoverageData implements Response {
 
 	public void setUserId(int userId) {
 		this.userId = userId;
+	}
+
+	public int getSequenceNum() {
+		return sequenceNum;
+	}
+
+	public void setSequenceNum(int sequenceNum) {
+		this.sequenceNum = sequenceNum;
 	}
 
 }
