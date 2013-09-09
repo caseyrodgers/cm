@@ -4319,7 +4319,7 @@ ORDER BY user_id, lesson_name, standard_name_new, usage_type
 ###
 .key=GET_CCSS_NAMES_FOR_STUDENT_AND_LEVEL
 
-SELECT distinct s.user_id, s.lesson_name, s.standard_name_new, s.usage_type
+SELECT distinct s.user_id, s.lesson_name, s.standard_name_new, s.sequence_num, s.usage_type
 FROM (
 SELECT user_id, im.title as lesson_name, ins.standard_name_new, 'QUIZ' as usage_type
 FROM HA_TEST t
@@ -4365,7 +4365,7 @@ WHERE au.uid in ( $$UID_LIST$$ )
   AND au.is_graded = 1
   AND a.due_date BETWEEN ? AND ?
   ) s
-ORDER BY user_id, lesson_name, standard_name_new, usage_type
+ORDER BY user_id, sequence_num, standard_name_new, usage_type
 
 
 ###
@@ -4487,7 +4487,7 @@ ORDER BY s.user_id, s.level_name
 ####
 .key=GET_CCSS_LEVEL_COUNTS
 
-SELECT c.level_name, count(*)
+SELECT c.level_name, count(*) as level_count
 FROM   common_core_standards c
 JOIN   inmh_standard ins
   ON   ins.standard_name_new = c.standard_name_new
@@ -4515,7 +4515,7 @@ SELECT DISTINCT level_name FROM common_core_standards
 ####
 .key=GET_CCSS_NAMES_FOR_LEVEL
 
-SELECT DISTINCT standard_name_new
+SELECT DISTINCT standard_name_new, sequence_num
 FROM common_core_standards
 WHERE level_name = ?
 ORDER BY standard_name_new ASC
@@ -4524,7 +4524,7 @@ ORDER BY standard_name_new ASC
 ####
 .key=GET_CCSS_NAMES_FOR_LEVEL_WITH_COVERAGE
 
-SELECT DISTINCT ccs.standard_name_new
+SELECT DISTINCT ccs.standard_name_new, ccs.sequence_num
 FROM common_core_standards ccs
 JOIN inmh_standard_TEMP ins
   ON ins.standard_name_new = ccs.standard_name_new
