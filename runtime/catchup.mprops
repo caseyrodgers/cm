@@ -1049,13 +1049,14 @@ select   d.id,
          0 as custom_quiz_id,
          null as custom_quiz_name,         
          d.load_order,
-         ifnull(td.segment_count, 0) as segment_count,
+         0 as segment_count,
          0 as is_template, 0 as load_order2,
          0 as is_archived, null as archive_date
-from     HA_PROG_DEF d, HA_TEST_DEF td
+from     HA_PROG_DEF d
 where    d.is_active = 1
-  and    td.is_active = 1
-  and    d.id = td.prog_id
+and      d.id in (select prog_id
+                  from   HA_TEST_DEF
+                  where  is_active = 1)
   and    d.load_order < 100
                             
 UNION

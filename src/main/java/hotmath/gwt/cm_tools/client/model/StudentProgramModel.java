@@ -84,7 +84,7 @@ public class StudentProgramModel implements Response {
     }
 
     public void setProgramType(String programType) {
-        this.programType = CmProgramType.lookup(programType);
+        this.programType = programType!=null?CmProgramType.lookup(programType):null;
     }
 
     public Integer getSectionCount() {

@@ -1,6 +1,7 @@
 package hotmath.cm.server.model;
 
 import hotmath.cm.util.CmMultiLinePropertyReader;
+import hotmath.gwt.cm_rpc.client.model.CmProgramType;
 import hotmath.spring.SpringManager;
 import hotmath.testset.ha.HaTestConfig;
 import hotmath.testset.ha.HaTestDef;
@@ -342,6 +343,6 @@ public class CmUserProgramDao extends SimpleJdbcDaoSupport {
                 throw new SQLException(e.getMessage());
             }
         }
-    }    
+    }
 
 }

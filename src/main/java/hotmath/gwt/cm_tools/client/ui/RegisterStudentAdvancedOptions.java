@@ -1,12 +1,18 @@
 package hotmath.gwt.cm_tools.client.ui;
 
+import hotmath.gwt.cm_rpc.client.rpc.GetProgramMetaInfoAction;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.model.AdvancedOptionsModel;
 import hotmath.gwt.cm_tools.client.model.CmAdminModel;
 import hotmath.gwt.cm_tools.client.model.SectionNumber;
+import hotmath.gwt.cm_tools.client.model.StudentProgramModel;
 import hotmath.gwt.cm_tools.client.model.StudentSettingsModel;
+import hotmath.gwt.shared.client.CmShared;
+import hotmath.gwt.shared.client.rpc.RetryAction;
 
 import java.util.List;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.widget.core.client.ContentPanel;
 import com.sencha.gxt.widget.core.client.FramedPanel;
 import com.sencha.gxt.widget.core.client.button.TextButton;
@@ -39,7 +45,7 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private CheckBox isDisableCalcQuizzes;
 
 	private ComboBox <PassPercent> passCombo;
-	private ComboBox <SectionNumber> sectionCombo;
+	private SectionNumberCombo sectionCombo;
 
 	private CmAdminModel cmAdminMdl;
     int FIELD_LEN = 200;
@@ -56,9 +62,11 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 	private int currentSection;
 	private boolean sectionIsSettable;
 	private boolean progStopIsSettable;
+
+    private StudentProgramModel program;
 	
 	public RegisterStudentAdvancedOptions(AdvOptCallback callback, CmAdminModel cm, AdvancedOptionsModel options, boolean isNew,
-		boolean passPercentReqd) {
+		boolean passPercentReqd, StudentProgramModel selectedProgram) {
 
 		this.callback = callback;
 		this.cmAdminMdl = cm;
@@ -66,9 +74,14 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 		this.passPercentReqd = passPercentReqd;
 		this.currentSection = options.getSectionNum();
 		this.sectionCount = options.getSectionCount();
-		this.sectionIsSettable = options.isSectionIsSettable();
+        this.sectionIsSettable = options.isSectionIsSettable();
+
 		this.progStopIsSettable = options.isProgStopIsSettable();
-		this.setHeadingText("Advanced Options");
+		this.program = selectedProgram;
+		
+		
+		
+		setHeadingText("Advanced Options");
 
 		advOptWindow = new GWindow(false);
 		advOptWindow.setResizable(false);
@@ -135,10 +148,10 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
 		isDisableCalcQuizzes.setValue(options.getSettings().getDisableCalcQuizzes());
         advOptions.addThing(new MyFieldLabel(isDisableCalcQuizzes, "Disable whiteboard calculator for quizzes", LABEL_LEN, 10));
 
-		sectionCombo = new SectionNumberCombo(sectionCount);
         if (sectionIsSettable) {
-            setSectionNumberSelection();
-		    advOptions.addThing(new MyFieldLabel(sectionCombo, "Select Section", LABEL_LEN));
+            sectionCombo = new SectionNumberCombo(0);
+            advOptions.addThing(new MyFieldLabel(sectionCombo, "Select Section", LABEL_LEN));
+            setupSectionComboAsync();
         }
 
 		advOptWindow.setHeadingText((isNew)?"Set Options":"Edit Options");
@@ -161,7 +174,28 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
         return mainFramed;
 	}
 
-	private void setForm() {
+	/** Lookup from server the number of 
+	 * sections in the program.
+	 *  
+	 */
+	private void setupSectionComboAsync() {
+	    
+	    new RetryAction<RpcData>() {
+            @Override
+            public void attempt() {
+                GetProgramMetaInfoAction action = new GetProgramMetaInfoAction(program);
+                setAction(action);
+                CmShared.getCmService().execute(action, this);
+            }
+
+            public void oncapture(RpcData data) {
+                sectionCombo.updateList(data.getDataAsInt("section_count"));
+            }
+        }.register();	    
+	}
+	
+
+    private void setForm() {
 		advOptWindow.show();
 
  		if (passPercentReqd)
@@ -277,10 +311,10 @@ public class RegisterStudentAdvancedOptions extends FramedPanel {
                  * 
                  */
                 Integer sectionNum = 0;
-                if(sectionIsSettable) {
+                if(sectionIsSettable && sectionCombo != null) {
 	                SectionNumber sn = sectionCombo.getValue();
 	                sectionNum = sn.getSectionNumber();
-	                if (sectionNum == 1 && currentSection == 0) {
+	                if (sectionNum != null && sectionNum == 1 && currentSection == 0) {
 	                	sectionNum = 0;
 	                }
                 }

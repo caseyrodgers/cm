@@ -46,6 +46,11 @@ public class SectionNumberCombo extends ComboBox<SectionNumber> {
         setWidth(100);
     }
 
+    public void updateList(int count) {
+        getStore().clear();
+        getStore().addAll(getSectionNumberList(count));
+    }
+    
     private List<SectionNumber> getSectionNumberList(int count) {
         List<SectionNumber> list = new ArrayList<SectionNumber>();
         for (int i = 1; i <= count; i++) {

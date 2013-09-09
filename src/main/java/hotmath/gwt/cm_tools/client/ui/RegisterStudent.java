@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -93,7 +94,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     private boolean skipComboSet;
     private boolean loading;
     private boolean passPercentReqd;
-    private Boolean sectionSelectAvail = false;
     private Integer sectionCount = 0;
     private Integer activeSection = 0;
 
@@ -163,7 +163,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             stuSettingsMdl = stuMdl.getSettings();
             activeSection = stuMdl.getSectionNum();
             sectionCount = stuMdl.getSectionCount();
-            sectionSelectAvail = isSectionSelectAvail(stuMdl.getProgram().getProgramType());
         }
 
         cmAdminMdl = cm;
@@ -402,63 +401,79 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         _fsCustomProg.addThing(new MyFieldLabel(customAdvOptionsBtn, "Options",LABEL_WIDTH, FIELD_WIDTH));
     }
 
-    private SelectHandler selectionHandler = new SelectHandler() {
+    private SelectHandler advancedOptionsSelectionHandler = new SelectHandler() {
         @Override
-        public void onSelect(SelectEvent event) {
-            AdvOptCallback callback = new AdvOptCallback() {
-                @Override
-                void setAdvancedOptions(AdvancedOptionsModel options) {
-                    stuSettingsMdl = options.getSettings();
-                    passPercent = options.getPassPercent();
-                    activeSection = options.getSectionNum();
-                }
-            };
-
-            AdvancedOptionsModel options = new AdvancedOptionsModel();
+        public void onSelect(final SelectEvent event) {
             
-            final StudentSettingsModel ssm = new StudentSettingsModel();
-
-            /** only set options if not null */
-            if (stuSettingsMdl != null) {
-                ssm.setLimitGames(stuSettingsMdl.getLimitGames());
-                ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
-                ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
-                ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
-                ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
-                ssm.setDisableCalcQuizzes(stuSettingsMdl.getDisableCalcQuizzes());
-            } else {
-                /** use account data to set tutoring available */
-                if (acctInfoMdl != null) {
-                    ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
-                }
+            try {
+                doSubmitAction(new AfterValidation() {
+                    @Override
+                    public void afterValidation(StudentModel student) {
+                        showAdvancedOptions(((TextButton)event.getSource()).getId(), student);
+                    }
+                }, false);
             }
-
-            options.setPassPercent(passPercent);
-            options.setSettings(ssm);
-
-            options.setSectionCount(sectionCount);
-            if (activeSection == null)
-                activeSection = 0;
-            options.setActiveSection(activeSection);
-            options.setSectionNum(activeSection);
-            options.setSectionIsSettable(sectionSelectAvail);
-
-            if ("custom-adv-opt-btn".equals(((TextButton)event.getSource()).getId())) {
-                ssm.setStopAtProgramEnd(true);
-                options.setProgStopIsSettable(false);
-            } else {
-                options.setProgStopIsSettable(true);
+            catch(Exception e) {
+                Log.error("Error collection program info", e);
             }
-
-            new RegisterStudentAdvancedOptions(callback, cmAdminMdl, options, isNew, passPercentReqd).setVisible(true);
         }
     };
 
+    private void showAdvancedOptions(String typeOfAdvanced, StudentModel student) {
+        
+        AdvOptCallback callback = new AdvOptCallback() {
+            @Override
+            void setAdvancedOptions(AdvancedOptionsModel options) {
+                stuSettingsMdl = options.getSettings();
+                passPercent = options.getPassPercent();
+                activeSection = options.getSectionNum();
+            }
+        };
+
+        AdvancedOptionsModel options = new AdvancedOptionsModel();
+        
+        final StudentSettingsModel ssm = new StudentSettingsModel();
+
+        /** only set options if not null */
+        if (stuSettingsMdl != null) {
+            ssm.setLimitGames(stuSettingsMdl.getLimitGames());
+            ssm.setShowWorkRequired(stuSettingsMdl.getShowWorkRequired());
+            ssm.setStopAtProgramEnd(stuSettingsMdl.getStopAtProgramEnd());
+            ssm.setTutoringAvailable(stuSettingsMdl.getTutoringAvailable());
+            ssm.setDisableCalcAlways(stuSettingsMdl.getDisableCalcAlways());
+            ssm.setDisableCalcQuizzes(stuSettingsMdl.getDisableCalcQuizzes());
+        } else {
+            /** use account data to set tutoring available */
+            if (acctInfoMdl != null) {
+                ssm.setTutoringAvailable(acctInfoMdl.getIsTutoringEnabled());
+            }
+        }
+
+        options.setPassPercent(passPercent);
+        options.setSettings(ssm);
+
+        options.setSectionCount(sectionCount);
+        if (activeSection == null)
+            activeSection = 0;
+        options.setActiveSection(activeSection);
+        options.setSectionNum(activeSection);
+        options.setSectionIsSettable(isSectionSelectAvail(student.getProgram().getProgramType()));
+
+        if ("custom-adv-opt-btn".equals(typeOfAdvanced)) {
+            ssm.setStopAtProgramEnd(true);
+            options.setProgStopIsSettable(false);
+        } else {
+            options.setProgStopIsSettable(true);
+        }
+
+        new RegisterStudentAdvancedOptions(callback, cmAdminMdl, options, isNew, passPercentReqd, student.getProgram()).setVisible(true);
+    }
+    
     private TextButton stdAdvancedOptionsBtn() {
         TextButton btn = new TextButton("Advanced Options");
         btn.setToolTip("Disallow games, Change pass percentage, etc.");
         btn.setWidth("110px");
-        btn.addSelectHandler(selectionHandler);
+        btn.addSelectHandler(advancedOptionsSelectionHandler);
         // btn.addStyleName("register-student-advanced-options-btn");
         btn.setId("std-adv-opt-btn");
         return btn;
@@ -468,14 +483,23 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         TextButton btn = new TextButton("Advanced Options");
         btn.setToolTip("Disallow games, Change pass percentage, etc.");
         btn.setWidth("110px");
-        btn.addSelectHandler(selectionHandler);
+        btn.addSelectHandler(advancedOptionsSelectionHandler);
         btn.addStyleName("register-student-advanced-options-btn");
         btn.setId("custom-adv-opt-btn");
         return btn;
     }
 
     private boolean isSectionSelectAvail(CmProgramType type) {
-        return (type == CmProgramType.PROF || type == CmProgramType.GRADPREP || type == CmProgramType.GRADPREPNATIONAL || type == CmProgramType.GRADPREPTX);
+        if(type == CmProgramType.PROF) {
+            // make sure the subject has been selected
+            return subjCombo.getCurrentValue() != null;
+        }
+        else if (type == CmProgramType.GRADPREP || type == CmProgramType.GRADPREPNATIONAL || type == CmProgramType.GRADPREPTX) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     private ComboBox<StudyProgramExt> createProgramCombo(ListStore<StudyProgramExt> store) {
@@ -524,9 +548,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     if (!cardPanel.getActiveWidget().equals(_fsStdProg)) {
                         cardPanel.setActiveWidget(_fsStdProg);
                     }
-                    sectionSelectAvail = isSectionSelectAvail(progType); // sp.isGradPrep()
-                                                                         // ||
-                                                                         // sp.isProficiency();
                     sectionCount = sp.getSectionCount();
                     activeSection = 0;
 
@@ -569,7 +590,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
                     cardPanel.setActiveWidget(_fsCustomProg);
                     skipComboSet = true;
                     subjectId = null;
-                    sectionSelectAvail = false;
                     activeSection = 0;
                 }
 
@@ -631,7 +651,6 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
 
                 StudyProgramExt sp = event.getSelectedItem();
                 passPercentReqd = sp.isNeedsPassPercent();
-                sectionSelectAvail = false;
                 customAdvOptionsBtn.enable();
             }
         });
@@ -1257,19 +1276,24 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
      * @param fp
      */
     protected void doSubmitAction(AfterValidation callback) throws CmException {
+        doSubmitAction(callback, true);
+    }
+    protected void doSubmitAction(AfterValidation callback, boolean validate) throws CmException {
 
         try {
-            if(userName.isVisible()) {
-                checkValid(userName);
-            }
-            if(passCode.isVisible()) {
-                checkValid(passCode);
-            }
-            if(groupCombo.isVisible()) {
-                checkValid(groupCombo);
-            }
-            if(progCombo.isVisible()) {
-                checkValid(progCombo);
+            if(validate) {
+                if(userName.isVisible()) {
+                    checkValid(userName);
+                }
+                if(passCode.isVisible()) {
+                    checkValid(passCode);
+                }
+                if(groupCombo.isVisible()) {
+                    checkValid(groupCombo);
+                }
+                if(progCombo.isVisible()) {
+                    checkValid(progCombo);
+                }
             }
         }
         catch(Exception e) {
@@ -1278,56 +1302,62 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         }
         
         String name = "";
-        if(userName.isVisible()) {
-            TextField tf = userName;
-            if (tf != null) {
-                
-                tf.clearInvalid();
-                name = tf.getValue();
-                if (name == null) {
-                    tf.focus();
-                    tf.forceInvalid(ENTRY_REQUIRED_MSG);
-                    throw new CmExceptionValidationFailed();
+        if(validate) {
+            if(userName.isVisible()) {
+                TextField tf = userName;
+                if (tf != null) {
+                    
+                    tf.clearInvalid();
+                    name = tf.getValue();
+                    if (name == null) {
+                        tf.focus();
+                        tf.forceInvalid(ENTRY_REQUIRED_MSG);
+                        throw new CmExceptionValidationFailed();
+                    }
                 }
             }
         }
 
         String passcode = null;
-        if(passCode.isVisible()) {
-            TextField tf = passCode;
-            if (tf != null) {
-                tf.clearInvalid();
-                passcode = tf.getValue();
-                if (passcode == null) {
-                    tf.focus();
-                    tf.forceInvalid(ENTRY_REQUIRED_MSG);
-                    throw new CmExceptionValidationFailed();
-                } else {
-                    if (passcode.contains(" ")) {
+        if(validate) {
+            if(passCode.isVisible()) {
+                TextField tf = passCode;
+                if (tf != null) {
+                    tf.clearInvalid();
+                    passcode = tf.getValue();
+                    if (passcode == null) {
                         tf.focus();
-                        tf.forceInvalid("Password cannot contain spaces");
+                        tf.forceInvalid(ENTRY_REQUIRED_MSG);
                         throw new CmExceptionValidationFailed();
+                    } else {
+                        if (passcode.contains(" ")) {
+                            tf.focus();
+                            tf.forceInvalid("Password cannot contain spaces");
+                            throw new CmExceptionValidationFailed();
+                        }
+        
                     }
-    
                 }
             }
         }
 
         int  groupId = 0;
         String group = null;
-        if(groupCombo.isVisible()) {
-            ComboBox<GroupInfoModel> cg = groupCombo;
-            if (cg != null) {
-                cg.clearInvalid();
-                GroupInfoModel g = cg.getValue();
-                if (g == null) {
-                    cg.focus();
-                    cg.forceInvalid(ENTRY_REQUIRED_MSG);
-                    cg.expand();
-                    throw new CmExceptionValidationFailed();
+        if(validate) {
+            if(groupCombo.isVisible()) {
+                ComboBox<GroupInfoModel> cg = groupCombo;
+                if (cg != null) {
+                    cg.clearInvalid();
+                    GroupInfoModel g = cg.getValue();
+                    if (g == null) {
+                        cg.focus();
+                        cg.forceInvalid(ENTRY_REQUIRED_MSG);
+                        cg.expand();
+                        throw new CmExceptionValidationFailed();
+                    }
+                    groupId = g.getId();
+                    group = g.getGroupName();
                 }
-                groupId = g.getId();
-                group = g.getGroupName();
             }
         }
 
@@ -1350,13 +1380,16 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             ComboBox<StudyProgramExt> cb = progCombo;
             studyProgExt = cb.getValue();
             cb.clearInvalid();
-            if (studyProgExt == null) {
-                cb.focus();
-                cb.forceInvalid(ENTRY_REQUIRED_MSG);
-                cb.expand();
-                throw new CmExceptionValidationFailed();
+            
+            if(validate) {
+                if (studyProgExt == null) {
+                    cb.focus();
+                    cb.forceInvalid(ENTRY_REQUIRED_MSG);
+                    cb.expand();
+                    throw new CmExceptionValidationFailed();
+                }
+                prog = studyProgExt.getShortTitle();
             }
-            prog = studyProgExt.getShortTitle();
 
             ComboBox<SubjectModel> cs = subjCombo;
             sub = cs.getValue();
@@ -1364,11 +1397,14 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             if (sub != null) {
                 prog = sub.getAbbrev() + " " + prog;
             }
-            if (studyProgExt.isNeedsSubject() && sub == null) {
-                cs.focus();
-                cs.forceInvalid(ENTRY_REQUIRED_MSG);
-                cs.expand();
-                throw new CmExceptionValidationFailed();
+            
+            if(validate) {
+                if (studyProgExt.isNeedsSubject() && sub == null) {
+                    cs.focus();
+                    cs.forceInvalid(ENTRY_REQUIRED_MSG);
+                    cs.expand();
+                    throw new CmExceptionValidationFailed();
+                }
             }
 
             ComboBox<ChapterModel> cc = chapCombo;
@@ -1377,23 +1413,28 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
             if (chap != null) {
                 prog = prog + " " + chap.getNumber();
             }
-            if (studyProgExt.isNeedsChapters() && chap == null) {
-                cc.focus();
-                cc.forceInvalid(ENTRY_REQUIRED_MSG);
-                cc.expand();
-                throw new CmExceptionValidationFailed();
+            
+            if(validate) {
+                if (studyProgExt.isNeedsChapters() && chap == null) {
+                    cc.focus();
+                    cc.forceInvalid(ENTRY_REQUIRED_MSG);
+                    cc.expand();
+                    throw new CmExceptionValidationFailed();
+                }
             }
         } else {
             ComboBox<StudyProgramExt> cb = cstmCombo;
             studyProgExt = cb.getValue();
             cb.clearInvalid();
-            if (studyProgExt == null) {
-                cb.focus();
-                cb.forceInvalid(ENTRY_REQUIRED_MSG);
-                cb.expand();
-                throw new CmExceptionValidationFailed();
+            if(validate) {
+                if (studyProgExt == null) {
+                    cb.focus();
+                    cb.forceInvalid(ENTRY_REQUIRED_MSG);
+                    cb.expand();
+                    throw new CmExceptionValidationFailed();
+                }
+                prog = studyProgExt.getShortTitle();
             }
-            prog = studyProgExt.getShortTitle();
         }
 
         if (passPercentReqd && (passPercent == null || Integer.parseInt(passPercent.substring(0, passPercent.length() - 1)) == 0)) {
@@ -1440,8 +1481,10 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
         program.setProgramType(progId);
         program.setSubjectId(subjId);
 
-        program.setCustom(new CustomProgramComposite(studyProgExt.getCustomProgramId(), studyProgExt.getCustomProgramName(), studyProgExt.getCustomQuizId(),
-                studyProgExt.getCustomQuizName()));
+        if(studyProgExt != null) {
+            program.setCustom(new CustomProgramComposite(studyProgExt.getCustomProgramId(), studyProgExt.getCustomProgramName(), studyProgExt.getCustomQuizId(),
+                    studyProgExt.getCustomQuizName()));
+        }
 
         /**
          * Validation complete
@@ -1610,6 +1653,13 @@ public class RegisterStudent extends FramedPanel implements ProcessTracker {
     @Override
     public void finish() {
         setComboBoxSelections();
+    }
+
+    public static void startTest() {
+        StudentModel cm = null;new StudentModel();
+        CmAdminModel adminM = new CmAdminModel();
+        adminM.setUid(2);
+        new RegisterStudent(cm,  adminM).showWindow();
     }
     
 }
