@@ -16,6 +16,8 @@ import hotmath.gwt.cm_rpc.client.model.LessonModel;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
+import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentGradeDetailInfo;
@@ -2664,7 +2666,18 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
     
     
-    
+
+    public AssignmentRealTimeStats getAssignmentStats(int assignKey) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_PID_ANSWER_STATUS");
+        List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey}, new RowMapper<PidStats>() {
+            @Override
+            public PidStats mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new PidStats(rs.getString("pid"), rs.getInt("cnt_correct"), rs.getInt("cnt_incorrect"), rs.getInt("cnt_unanswered"),  rs.getInt("cnt_pending"));                
+            }
+        });
+        return new AssignmentRealTimeStats(pidStats);
+    }
+
     static public void main(String as[]) {
         try {
             AssignmentDao ad = AssignmentDao.getInstance();

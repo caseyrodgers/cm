@@ -92,7 +92,7 @@ public class AssignmentsContentPanel extends ContentPanel {
         _gbCallback = gbCallback;
 
         _adminId = UserInfoBase.getInstance().getUid();
-        
+    
         
         addTool(new TextButton("Refresh", new SelectHandler() {
             @Override
@@ -589,8 +589,8 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private Widget createEditButton() {
-        TextButton btn = new TextButton("Edit");
-        btn.setToolTip("Edit selected assignment");
+        TextButton btn = new TextButton("View");
+        btn.setToolTip("View/Edit selected assignment and see realtime statistics.");
         btn.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {

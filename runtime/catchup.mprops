@@ -4602,3 +4602,53 @@ from junk
 where is_tested = 0
 order by whiteboard_id  
 limit 1
+
+
+
+
+
+
+
+
+.key=ASSIGNMENT_PID_ANSWER_STATUS
+## all pids in assignment and count of correct/incorrect
+
+select p.pid, a.cnt_correct, b.cnt_incorrect, c.cnt_unanswered, d.cnt_pending
+from CM_ASSIGNMENT_PIDS p
+   LEFT JOIN (
+      select assign_key, pid, count(*) as cnt_correct
+      from CM_ASSIGNMENT_PID_STATUS s1 
+      where assign_key = ?
+      and status = 'Correct'
+      group by assign_key, pid
+   ) a on a.assign_key = p.assign_key and a.pid = p.pid
+
+   LEFT JOIN (
+      select assign_key, pid, count(*) as cnt_incorrect
+      from CM_ASSIGNMENT_PID_STATUS s1 
+      where assign_key = ?
+      and status = 'Incorrect'
+      group by assign_key, pid
+   ) b on b.assign_key = p.assign_key and b.pid = p.pid
+
+   
+   LEFT JOIN (
+      select assign_key, pid, count(*) as cnt_unanswered
+      from CM_ASSIGNMENT_PID_STATUS s1 
+      where assign_key = ?
+      and status not in ('Correct', 'Incorrect')
+      group by assign_key, pid
+   ) c on c.assign_key = p.assign_key and c.pid = p.pid
+   
+      
+   LEFT JOIN (
+      select assign_key, pid, count(*) as cnt_pending
+      from CM_ASSIGNMENT_PID_STATUS s1 
+      where assign_key = ?
+      and status = 'Pending'
+      group by assign_key, pid
+   ) d on d.assign_key = p.assign_key and d.pid = p.pid   
+   
+where p.assign_key = ?   
+order by p.ordinal_number
+

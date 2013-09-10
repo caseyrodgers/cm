@@ -20,7 +20,6 @@ import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MyFieldLabel;
-import hotmath.gwt.cm_tools.client.ui.MyFieldSet;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.model.UserInfoBase;
@@ -34,8 +33,6 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.sencha.gxt.cell.core.client.form.ComboBoxCell.TriggerAction;
 import com.sencha.gxt.core.client.util.Margins;
 import com.sencha.gxt.data.shared.LabelProvider;
@@ -87,7 +84,7 @@ public class EditAssignmentDialog {
         _isDraftMode = _assignment.getStatus().equals("Draft");
         
         final GWindow window = new GWindow(false);
-        window.setPixelSize(700, 480);
+        window.setPixelSize(800, 600);
         window.setMaximizable(true);
 
         if (assignment.getAssignKey() == 0) {
@@ -419,7 +416,7 @@ public class EditAssignmentDialog {
     static public void startTest() {
         Assignment ass = new Assignment();
         ass.setAdminId(2);
-        ass.setAssignKey(23);
+        ass.setAssignKey(76);
         ass.setStatus("Open");
         new AssignmentStatusDialog(ass);
         

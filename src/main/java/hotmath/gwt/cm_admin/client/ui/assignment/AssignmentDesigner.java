@@ -90,7 +90,7 @@ public class AssignmentDesigner extends BorderLayoutContainer {
             }
         });
         BorderLayoutData data = new BorderLayoutData();
-        data.setSize(300.0);
+        data.setSize(450.0);
         _listView.setLayoutData(data);
         return _listView;
     }

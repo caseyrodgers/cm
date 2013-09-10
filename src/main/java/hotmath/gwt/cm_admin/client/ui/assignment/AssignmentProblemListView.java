@@ -1,8 +1,11 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
+import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
+import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
@@ -14,6 +17,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -34,7 +40,7 @@ import com.sencha.gxt.widget.core.client.tips.QuickTip;
 
 public class AssignmentProblemListView extends ContentPanel {
     
-    final Grid<ProblemDto> problemListGrid;
+    final Grid<ProblemDtoLocal> problemListGrid;
     Assignment assignment;
     Callback callback;
     
@@ -52,30 +58,42 @@ public class AssignmentProblemListView extends ContentPanel {
         AssignmentProblemListPanelProperties props = GWT.create(AssignmentProblemListPanelProperties.class);
         
         ordinalNumberValudProvider = new MyOrdinalProvider();
-        ColumnConfig<ProblemDto, Integer> problemNumber = new ColumnConfig<ProblemDto, Integer>(ordinalNumberValudProvider, 25, "");
-        ColumnConfig<ProblemDto, String> nameCol = new ColumnConfig<ProblemDto, String>(props.labelWithType(), 50, "Problems Assigned");
+        List<ColumnConfig<ProblemDtoLocal, ?>> cols = new ArrayList<ColumnConfig<ProblemDtoLocal, ?>>();
+        cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(ordinalNumberValudProvider, 25, ""));
+        cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 250, "Problems Assigned"));
+        cols.get(cols.size()-1).setSortable(false);
         
-        nameCol.setSortable(false);
-     
-        List<ColumnConfig<ProblemDto, ?>> cols = new ArrayList<ColumnConfig<ProblemDto, ?>>();
-        cols.add(problemNumber);
-        cols.add(nameCol);
-        ColumnModel<ProblemDto> cm = new ColumnModel<ProblemDto>(cols);
+        /** If active assignment, then provide real time stats
+         * 
+         */
+        if(!assignment.getStatus().equals("Draft")) {
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 55, "Correct"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 55, "Incorrect"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 55, "Pending"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have a pending answer"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 55, "Unanswered"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
+        }
         
-        ModelKeyProvider<ProblemDto> kp = new ModelKeyProvider<ProblemDto>() {
+        
+        ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
+        
+        ModelKeyProvider<ProblemDtoLocal> kp = new ModelKeyProvider<ProblemDtoLocal>() {
             @Override
-            public String getKey(ProblemDto item) {
+            public String getKey(ProblemDtoLocal item) {
                 return item.getPid();
             }
         };
         
 
         
-        ListStore<ProblemDto> store = new ListStore<ProblemDto>(kp);
+        ListStore<ProblemDtoLocal> store = new ListStore<ProblemDtoLocal>(kp);
 
         if(assignment.getPids() != null) {
             for(ProblemDto prob: assignment.getPids()) {
-                store.add(prob);    
+                store.add(new ProblemDtoLocal(prob));    
             }
         }
         
@@ -84,18 +102,18 @@ public class AssignmentProblemListView extends ContentPanel {
         // root.getHeader().setIcon(ExampleImages.INSTANCE.table());
         root.addStyleName("margin-10");
          
-        problemListGrid = new Grid<ProblemDto>(store, cm);
-        problemListGrid.getView().setAutoExpandColumn(nameCol);
+        problemListGrid = new Grid<ProblemDtoLocal>(store, probColModel);
+        problemListGrid.getView().setAutoExpandColumn(cols.get(1));
         problemListGrid.getView().setStripeRows(true);
         problemListGrid.getView().setColumnLines(true);
         problemListGrid.setBorders(false);
-        problemListGrid.setHideHeaders(true);
+        problemListGrid.setHideHeaders(false);
         
         problemListGrid.setColumnReordering(true);
         
-        problemListGrid.getSelectionModel().addSelectionHandler(new SelectionHandler<ProblemDto>() {
+        problemListGrid.getSelectionModel().addSelectionHandler(new SelectionHandler<ProblemDtoLocal>() {
             @Override
-            public void onSelection(SelectionEvent<ProblemDto> event) {
+            public void onSelection(SelectionEvent<ProblemDtoLocal> event) {
                 showSelectedProblemHtml(callback);                
             }
         });
@@ -140,18 +158,58 @@ public class AssignmentProblemListView extends ContentPanel {
         if(store.size()==0) {
             activateButtons(false);
         }
+
     }
     
+    
+    private void startCheckingRealTimeStats() {
+        GetAssignmentRealTimeStatsAction action = new GetAssignmentRealTimeStatsAction(this.assignment.getAssignKey());
+        CmShared.getCmService().execute(action, new AsyncCallback<AssignmentRealTimeStats>() {
+            @Override
+            public void onSuccess(AssignmentRealTimeStats result) {
+                updateRealTimeStats(result);
+            }
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error: " + caught);
+            }
+        });
+        
+    }
+
+
+
+    protected void updateRealTimeStats(AssignmentRealTimeStats pidStats) {
+        List<ProblemDtoLocal> storePids = problemListGrid.getStore().getAll();
+        
+        for(ProblemDtoLocal pl: storePids) {
+            // look up stats
+            for(PidStats ps: pidStats.getPidStats()) {
+                if(ps.getPid().equals(pl.getPid())) {
+                    pl.setAnsweredCorrect(ps.getCntCorrect());
+                    pl.setAnsweredIncorrect(ps.getCntIncorrect());
+                    pl.setUnanswered(ps.getCntUnanswered());
+                    pl.setPending(ps.getCntPending());
+                    problemListGrid.getStore().update(pl);
+                    break;
+                }
+            }
+        }
+        
+        
+    }
+
+
     protected void moveSelectProblem(int i) {
-        ProblemDto selected = problemListGrid.getSelectionModel().getSelectedItem();
+        ProblemDtoLocal selected = problemListGrid.getSelectionModel().getSelectedItem();
         if(selected == null) {
             CmMessageBox.showAlert("No selected problem");
             return;
         }
         
-        List<ProblemDto> curr = problemListGrid.getStore().getAll();
+        List<ProblemDtoLocal> curr = problemListGrid.getStore().getAll();
         int which=0;
-        for(ProblemDto p: curr) {
+        for(ProblemDtoLocal p: curr) {
             if(p.getPid().equals(selected.getPid())) {
                 break;
             }
@@ -164,7 +222,7 @@ public class AssignmentProblemListView extends ContentPanel {
         }
         
         // make editable copy
-        List<ProblemDto> newList = new ArrayList<ProblemDto>();
+        List<ProblemDtoLocal> newList = new ArrayList<ProblemDtoLocal>();
         newList.addAll(curr);
         
         newList.remove(selected);
@@ -187,10 +245,17 @@ public class AssignmentProblemListView extends ContentPanel {
         setWidget(problemListContainer);
         ordinalNumberValudProvider.resetOrdinalNumber();
         problemListGrid.getStore().clear();
-        problemListGrid.getStore().addAll(cmList);
+        
+        problemListGrid.getStore().addAll(createActiveList(cmList));
         
         activateButtons(cmList.size()>0);
         forceLayout();
+        
+        
+        
+        if(!assignment.getStatus().equals("Draft")) {
+            startCheckingRealTimeStats();
+        }
     }
 
     private Widget createDefaultNoProblemsMessge() {
@@ -220,30 +285,30 @@ public class AssignmentProblemListView extends ContentPanel {
                 
                 callback.clearTutorView();
                 
-                List<ProblemDto> newList = new ArrayList<ProblemDto>();
+                List<ProblemDtoLocal> newList = new ArrayList<ProblemDtoLocal>();
                 
                 
                 
-                ProblemDto nextSelect=null;
+                ProblemDtoLocal nextSelect=null;
                 for(int j=0, jt=problemListGrid.getStore().getAll().size();j<jt;j++) {
-                    ProblemDto pd = (ProblemDto)problemListGrid.getStore().getAll().get(j);
+                    ProblemDtoLocal pd = (ProblemDtoLocal)problemListGrid.getStore().getAll().get(j);
                 
                     boolean found=false;
                     for(int i=0, t=problemListGrid.getSelectionModel().getSelectedItems().size();i<t;i++) {
-                        ProblemDto pto = (ProblemDto)problemListGrid.getSelectionModel().getSelectedItems().get(i);
+                        ProblemDtoLocal pto = (ProblemDtoLocal)problemListGrid.getSelectionModel().getSelectedItems().get(i);
                         if(pto == pd) {
                             // remove it
                             found=true;
                             
                             int tot=problemListGrid.getStore().getAll().size();
                             if(j<tot-1) {
-                                nextSelect = (ProblemDto)problemListGrid.getStore().get(j+1);
+                                nextSelect = (ProblemDtoLocal)problemListGrid.getStore().get(j+1);
                             }
                             else if(j>1){
-                                nextSelect = (ProblemDto)problemListGrid.getStore().get(j-1);
+                                nextSelect = (ProblemDtoLocal)problemListGrid.getStore().get(j-1);
                             }
                             else if(j==1){
-                                nextSelect = (ProblemDto)problemListGrid.getStore().get(0);
+                                nextSelect = (ProblemDtoLocal)problemListGrid.getStore().get(0);
                             } 
                             break;
                         }
@@ -285,8 +350,9 @@ public class AssignmentProblemListView extends ContentPanel {
                 AddProblemDialog.showDialog(new AddProblemDialog.AddProblemsCallback() {
                     @Override
                     public void problemsAdded(List<ProblemDto> problemsAdded) {
-                        addProblemsToAssignment(problemsAdded);
+                        addProblemsToAssignment(createActiveList(problemsAdded));
                     }
+
 
                 });
             }
@@ -296,16 +362,24 @@ public class AssignmentProblemListView extends ContentPanel {
     }
     
 
-    private void addProblemsToAssignment(final List<ProblemDto> problemsAdded) {
+    private List<ProblemDtoLocal> createActiveList(List<ProblemDto> problemsAdded) {
+        List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
+        for(ProblemDto p: problemsAdded) {
+            la.add(new ProblemDtoLocal(p));
+        }
+        return la;
+    }
+
+    private void addProblemsToAssignment(final List<ProblemDtoLocal> problemsAdded) {
         
         /** make sure no duplicates
          * 
          */
-        List<ProblemDto> currList = problemListGrid.getStore().getAll();
-        for(ProblemDto pd: problemsAdded) {
+        List<ProblemDtoLocal> currList = problemListGrid.getStore().getAll();
+        for(ProblemDtoLocal pd: problemsAdded) {
             
             boolean found=false;
-            for(ProblemDto p: currList) {
+            for(ProblemDtoLocal p: currList) {
                 if(p.getPid().equals(pd.getPid())) {
                     found=true;
                     break;
@@ -332,9 +406,9 @@ public class AssignmentProblemListView extends ContentPanel {
     }
     
     private void showSelectedProblemHtml(Callback callbackOnComplete) {
-        ProblemDto data = problemListGrid.getSelectionModel().getSelectedItem();
+        ProblemDtoLocal data = problemListGrid.getSelectionModel().getSelectedItem();
         if(data != null) {
-            callbackOnComplete.problemHasBeenSelected(data);
+            callbackOnComplete.problemHasBeenSelected(data.getProblem());
         }
     }
 
@@ -358,30 +432,39 @@ public class AssignmentProblemListView extends ContentPanel {
     };
 
     public List<ProblemDto> getAssignmentPids() {
-        return problemListGrid.getStore().getAll();
+        List<ProblemDto> problems = new ArrayList<ProblemDto>();
+        for(ProblemDtoLocal a: problemListGrid.getStore().getAll()) {
+            problems.add(a.getProblem());
+        }
+        return problems;
     }
     
     public interface AssignmentProblemListPanelProperties extends PropertyAccess<String> {
         @Path("pid")
-        ModelKeyProvider<ProblemDto> id();
-        ValueProvider<ProblemDto, String> labelWithType();
-        ValueProvider<ProblemDto, Integer> ordinalNumber();
+        ModelKeyProvider<ProblemDtoLocal> id();
+        ValueProvider<ProblemDtoLocal, Integer> answeredIncorrect();
+        ValueProvider<ProblemDtoLocal, Integer> answeredCorrect();
+        ValueProvider<ProblemDtoLocal, Integer> unanswered();
+        ValueProvider<ProblemDtoLocal, Integer> pending();
+
+        ValueProvider<ProblemDtoLocal, String> labelWithType();
+        ValueProvider<ProblemDtoLocal, Integer> ordinalNumber();
     }
 
     
-    class MyOrdinalProvider implements ValueProvider<ProblemDto, Integer> {
+    class MyOrdinalProvider implements ValueProvider<ProblemDtoLocal, Integer> {
 
         int orderPosition=0;
         public void resetOrdinalNumber() {
             orderPosition = 0;
         }
         @Override
-        public Integer getValue(ProblemDto object) {
+        public Integer getValue(ProblemDtoLocal object) {
             return ++orderPosition;
         }
 
         @Override
-        public void setValue(ProblemDto object, Integer value) {
+        public void setValue(ProblemDtoLocal object, Integer value) {
             object.setOrdinalNumber(value);
         }
 
@@ -391,5 +474,75 @@ public class AssignmentProblemListView extends ContentPanel {
         }
     };
 
-    
+
+    /** Composite of ProblemDTo and real time active info 
+     * 
+     * @author casey
+     *
+     */
+    class ProblemDtoLocal {
+
+        ProblemDto problem;
+        int answeredCorrect, answeredIncorrect, unanswered, pending;
+        public int getUnanswered() {
+            return unanswered;
+        }
+
+        public void setUnanswered(int unanswered) {
+            this.unanswered = unanswered;
+        }
+
+        public int getPending() {
+            return pending;
+        }
+
+        public void setPending(int pending) {
+            this.pending = pending;
+        }
+
+        public ProblemDtoLocal(ProblemDto problem) {
+            this.problem = problem;
+        }
+        
+        public ProblemDto getProblem() {
+            return this.problem;
+        }
+
+        public String getLabel() {
+            return this.problem.getLabel();
+        }
+        
+        public String getLabelWithType() {
+            return problem.getLabelWithType();
+        }
+
+        public void setOrdinalNumber(Integer value) {
+            problem.setOrdinalNumber(value);    
+        }
+        
+        public Integer getOrdinalNumber() {
+            return problem.getOrdinalNumber();
+        }
+        
+        public String getPid() {
+            return problem.getPid();
+        }
+
+        public int getAnsweredCorrect() {
+            return answeredCorrect;
+        }
+
+        public void setAnsweredCorrect(int answeredCorrect) {
+            this.answeredCorrect = answeredCorrect;
+        }
+
+        public int getAnsweredIncorrect() {
+            return answeredIncorrect;
+        }
+
+        public void setAnsweredIncorrect(int answeredIncorrect) {
+            this.answeredIncorrect = answeredIncorrect;
+        }
+
+    }
 }
