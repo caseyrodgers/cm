@@ -1,7 +1,10 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
+import hotmath.gwt.cm_rpc_assignments.client.model.assignment.StudentAssignment;
 import hotmath.gwt.cm_rpc_assignments.client.rpc.GetAssignmentRealTimeStatsUsersAction;
+import hotmath.gwt.cm_rpc_assignments.client.rpc.GetStudentAssignmentAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
@@ -13,6 +16,7 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -21,9 +25,12 @@ import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
+import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent;
+import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent.RowDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
+
 
 public class AssignmentProblemStatsDialog extends GWindow {
     
@@ -58,6 +65,12 @@ public class AssignmentProblemStatsDialog extends GWindow {
         gridSubmitted = new Grid<StudentModel>(new ListStore<StudentModel>(props.id()), probColModel);
         tabPanel.add(gridSubmitted,  new TabItemConfig("Submitted", false));        
         gridUnanswered = new Grid<StudentModel>(new ListStore<StudentModel>(props.id()), probColModel);
+        gridUnanswered.addRowDoubleClickHandler(new RowDoubleClickHandler() {
+            @Override
+            public void onRowDoubleClick(RowDoubleClickEvent event) {
+                loadSelectedStudentGrading();
+            }
+        });
         tabPanel.add(gridUnanswered,  new TabItemConfig("Unanswered", false));        
         
         setWidget(tabPanel);
@@ -65,6 +78,37 @@ public class AssignmentProblemStatsDialog extends GWindow {
         readDataFromServer();
         
         setVisible(true);
+    }
+
+    protected void loadSelectedStudentGrading() {
+        
+        final StudentModel sm = gridUnanswered.getSelectionModel().getSelectedItem();
+        if(sm == null) {
+            return;
+        }
+        
+        new RetryAction<StudentAssignment>() {
+            @Override
+            public void attempt() {
+                CmBusyManager.setBusy(true);
+                CmServiceAsync s = CmShared.getCmService();
+                GetStudentAssignmentAction action = new GetStudentAssignmentAction(sm.getUid(), assignKey);
+                setAction(action);
+                CmLogger.info("AccountInfoPanel: reading admin info RPC");
+                s.execute(action,this);
+            }
+
+            public void oncapture(StudentAssignment ai) {
+                new GradeBookDialog(ai,  new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        Log.info("Grading of user complete");
+                    }
+                });
+                CmBusyManager.setBusy(false);
+            }
+        }.register();            
+        
     }
 
     private void readDataFromServer() {

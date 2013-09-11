@@ -433,6 +433,17 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });
+        
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "delete from CM_ASSIGNMENT_PIDS_USER where assign_key = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, assKey);
+                return ps;
+            }
+        });
+
     }
 
     public void deleteAssignment(final int assKey) {
