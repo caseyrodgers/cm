@@ -49,7 +49,7 @@ public class AssignmentProblemListView extends ContentPanel {
     VerticalLayoutContainer problemListContainer;
     private TextButton _deleteButton;
 
-    MyOrdinalProvider ordinalNumberValudProvider;
+    MyOrdinalProvider ordinalNumberValueProvider;
     private TextButton _upButton;
     private TextButton _downButton;
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
@@ -59,9 +59,9 @@ public class AssignmentProblemListView extends ContentPanel {
 
         AssignmentProblemListPanelProperties props = GWT.create(AssignmentProblemListPanelProperties.class);
         
-        ordinalNumberValudProvider = new MyOrdinalProvider();
+        ordinalNumberValueProvider = new MyOrdinalProvider();
         List<ColumnConfig<ProblemDtoLocal, ?>> cols = new ArrayList<ColumnConfig<ProblemDtoLocal, ?>>();
-        cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(ordinalNumberValudProvider, 25, ""));
+        cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(ordinalNumberValueProvider, 25, ""));
         cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 250, "Problems Assigned"));
         cols.get(cols.size()-1).setSortable(false);
         
@@ -192,6 +192,7 @@ public class AssignmentProblemListView extends ContentPanel {
     protected void updateRealTimeStats(AssignmentRealTimeStats pidStats) {
         List<ProblemDtoLocal> storePids = problemListGrid.getStore().getAll();
         
+        ordinalNumberValueProvider.resetOrdinalNumber();
         for(ProblemDtoLocal pl: storePids) {
             // look up stats
             for(PidStats ps: pidStats.getPidStats()) {
@@ -239,7 +240,7 @@ public class AssignmentProblemListView extends ContentPanel {
         newList.add(which + i, selected);
         
         problemListGrid.getStore().clear();
-        ordinalNumberValudProvider.resetOrdinalNumber();
+        ordinalNumberValueProvider.resetOrdinalNumber();
         problemListGrid.getStore().addAll(newList);
         
         problemListGrid.getSelectionModel().select(selected,false);
@@ -253,7 +254,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
     public void setProblemListing(CmList<ProblemDto> cmList) {
         setWidget(problemListContainer);
-        ordinalNumberValudProvider.resetOrdinalNumber();
+        ordinalNumberValueProvider.resetOrdinalNumber();
         problemListGrid.getStore().clear();
         
         problemListGrid.getStore().addAll(createActiveList(cmList));
@@ -327,7 +328,7 @@ public class AssignmentProblemListView extends ContentPanel {
                         newList.add(pd);
                     }
                 }
-                ordinalNumberValudProvider.resetOrdinalNumber();
+                ordinalNumberValueProvider.resetOrdinalNumber();
                 problemListGrid.getStore().clear();
                 problemListGrid.getStore().addAll(newList);
                 
