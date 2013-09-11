@@ -4633,11 +4633,17 @@ from CM_ASSIGNMENT_PIDS p
 
    
    LEFT JOIN (
-      select assign_key, pid, count(*) as cnt_unanswered
-      from CM_ASSIGNMENT_PID_STATUS s1 
-      where assign_key = ?
-      and status not in ('Correct', 'Incorrect')
-      group by assign_key, pid
+      select a.assign_key, p.pid, count(*) as cnt_unanswered
+      from HA_USER u
+         join CM_ASSIGNMENT a on a.group_id = u.group_id
+         join CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key
+         left join CM_ASSIGNMENT_PID_STATUS s1 on s1.assign_key = a.assign_key and s1.uid = u.uid and s1.pid = p.pid
+      where a.assign_key = ?
+      and (
+               s1.status is null
+               or s1.status not in ('Correct', 'Incorrect', 'Pending')
+             )
+      group by a.assign_key, p.pid 
    ) c on c.assign_key = p.assign_key and c.pid = p.pid
    
       
