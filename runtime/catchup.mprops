@@ -4613,7 +4613,7 @@ limit 1
 .key=ASSIGNMENT_PID_ANSWER_STATUS
 ## all pids in assignment and count of correct/incorrect
 
-select p.pid, a.cnt_correct, b.cnt_incorrect, c.cnt_unanswered, d.cnt_pending
+select p.pid, a.cnt_correct, b.cnt_incorrect, c.cnt_unanswered, d.cnt_submitted
 from CM_ASSIGNMENT_PIDS p
    LEFT JOIN (
       select assign_key, pid, count(*) as cnt_correct
@@ -4641,17 +4641,17 @@ from CM_ASSIGNMENT_PIDS p
       where a.assign_key = ?
       and (
                s1.status is null
-               or s1.status not in ('Correct', 'Incorrect', 'Pending')
+               or s1.status not in ('Correct', 'Incorrect', 'Submitted')
              )
       group by a.assign_key, p.pid 
    ) c on c.assign_key = p.assign_key and c.pid = p.pid
    
       
    LEFT JOIN (
-      select assign_key, pid, count(*) as cnt_pending
+      select assign_key, pid, count(*) as cnt_submitted
       from CM_ASSIGNMENT_PID_STATUS s1 
       where assign_key = ?
-      and status = 'Pending'
+      and status = 'Submitted'
       group by assign_key, pid
    ) d on d.assign_key = p.assign_key and d.pid = p.pid   
    

@@ -2679,7 +2679,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         List<PidStats> pidStats = getJdbcTemplate().query(sql, new Object[] { assignKey, assignKey, assignKey, assignKey, assignKey}, new RowMapper<PidStats>() {
             @Override
             public PidStats mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new PidStats(rs.getString("pid"), rs.getInt("cnt_correct"), rs.getInt("cnt_incorrect"), rs.getInt("cnt_unanswered"),  rs.getInt("cnt_pending"));                
+                return new PidStats(rs.getString("pid"), rs.getInt("cnt_correct"), rs.getInt("cnt_incorrect"), rs.getInt("cnt_unanswered"),  rs.getInt("cnt_submitted"));                
             }
         });
         return new AssignmentRealTimeStats(pidStats);
