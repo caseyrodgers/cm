@@ -17,6 +17,7 @@ import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentStudentsAction.TYPE;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
+import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStatsUsers;
 import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.ProblemStatus;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -38,6 +39,7 @@ import hotmath.gwt.cm_rpc_assignments.client.model.assignment.SubjectDto;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_tools.client.model.GroupInfoModel;
+import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.assignment.GradeBookUtils;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.spring.SpringManager;
@@ -464,7 +466,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          *  TODO: a way to specified directly in SQL
          */
         String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_GRADE_BOOK_DATA_3");
-        sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$", (hasAnySpecifiedUsers(assignKey)? " and u.uid in (select uid from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = " + assignKey + ")" : ""));
+        sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
         
         /**
          * get assignment problem status list for all users
@@ -663,6 +665,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         
         return stuAssignments;
+    }
+
+    private String getStudentsInAssignmentSqlRestriction(int assignKey, String sql) {
+        sql = SbUtilities.replaceSubString(sql, "$$LIMIT_TO_SPECIFIED_USERS$$", (hasAnySpecifiedUsers(assignKey)? " and u.uid in (select uid from CM_ASSIGNMENT_USERS_SPECIFIED where assign_key = " + assignKey + ")" : ""));
+        return sql;
     }
 
     /** does this assignment have ANY specifically specified users?
@@ -2690,6 +2697,59 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         catch(Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public AssignmentRealTimeStatsUsers getAssignmentProblemStatsUsers(int assignKey, String pid) throws Exception {
+
+        class StudentStat {
+            public StudentStat(int uid, String name, String status) {
+                this.uid = uid;
+                this.name = name;
+                this.status = status!=null?status:"";
+            }
+            int uid;
+            String status;
+            String name;
+        }
+
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("ASSIGNMENT_STUDENT_STATS");
+        sql = getStudentsInAssignmentSqlRestriction(assignKey, sql);
+        
+        
+        List<StudentStat> studentStatus = getJdbcTemplate().query(sql, new Object[] { assignKey, pid}, new RowMapper<StudentStat>() {
+            @Override
+            public StudentStat mapRow(ResultSet rs, int rowNum) throws SQLException {
+                return new StudentStat(rs.getInt("uid"), rs.getString("user_name"), rs.getString("status"));                
+            }
+        });
+        
+        List<StudentModel> correct = new ArrayList<StudentModel>();
+        List<StudentModel> incorrect = new ArrayList<StudentModel>();
+        List<StudentModel> submitted = new ArrayList<StudentModel>();
+        List<StudentModel> unanswered = new ArrayList<StudentModel>();
+        
+        for(StudentStat ss: studentStatus) {
+            StudentModel sm = new StudentModel();
+            sm.setUid(ss.uid);
+            sm.setName(ss.name);
+            sm.setStatus(ss.status);
+
+            if(ss.status.equals("Correct")) {
+                correct.add(sm);
+            }
+            else if(ss.status.equals("Incorrect")) {
+                incorrect.add(sm);
+            }
+            else if(ss.status.equals("Submitted")) {
+                submitted.add(sm);
+            }
+            else {
+                unanswered.add(sm);
+            }
+        }
+        
+        
+        return new AssignmentRealTimeStatsUsers(correct,incorrect,submitted,unanswered);
     }
 
 }

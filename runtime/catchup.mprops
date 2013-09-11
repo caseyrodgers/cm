@@ -4652,3 +4652,20 @@ from CM_ASSIGNMENT_PIDS p
 where p.assign_key = ?   
 order by p.ordinal_number
 
+
+.key=ASSIGNMENT_STUDENT_STATS
+
+select u.uid, u.user_name, s1.status
+from HA_USER u
+    JOIN CM_ASSIGNMENT a  
+        on a.group_id = u.group_id
+    JOIN CM_ASSIGNMENT_PIDS p 
+        on p.assign_key = a.assign_key
+    LEFT JOIN CM_ASSIGNMENT_PID_STATUS s1  
+        on s1.assign_key = p.assign_key and s1.uid = u.uid and s1.pid = p.pid
+where a.assign_key = ?
+and  p.pid = ?
+
+$$LIMIT_TO_SPECIFIED_USERS$$
+
+order by user_name

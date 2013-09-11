@@ -31,6 +31,8 @@ import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.CenterLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer.VerticalLayoutData;
+import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent;
+import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent.RowDoubleClickHandler;
 import com.sencha.gxt.widget.core.client.event.SelectEvent;
 import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
@@ -71,8 +73,8 @@ public class AssignmentProblemListView extends ContentPanel {
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
             cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 55, "Incorrect"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 55, "Pending"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have a pending answer"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 55, "Submitted"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have an ungraded submitted answer"));
             cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 55, "Unanswered"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
         }
@@ -115,6 +117,14 @@ public class AssignmentProblemListView extends ContentPanel {
             @Override
             public void onSelection(SelectionEvent<ProblemDtoLocal> event) {
                 showSelectedProblemHtml(callback);                
+            }
+        });
+        
+        problemListGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
+            @Override
+            public void onRowDoubleClick(RowDoubleClickEvent event) {
+                ProblemDtoLocal s = problemListGrid.getSelectionModel().getSelectedItem();
+                new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), s.getPid(), s.getLabel());
             }
         });
      
