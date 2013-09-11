@@ -19,14 +19,17 @@ import java.util.List;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
 import com.sencha.gxt.widget.core.client.TabItemConfig;
 import com.sencha.gxt.widget.core.client.TabPanel;
-import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent;
-import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent.RowDoubleClickHandler;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
+import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
+import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -37,19 +40,21 @@ public class AssignmentProblemStatsDialog extends GWindow {
     private int assignKey;
     private String pid;
     TabPanel tabPanel = new TabPanel();
+    BorderLayoutContainer borderContainer = new BorderLayoutContainer();
+    Label userName = new Label();
 
-    private Grid<StudentModel> gridCorrect;
-    private Grid<StudentModel> gridIncorrect;
-    private Grid<StudentModel> gridSubmitted;
-    private Grid<StudentModel> gridUnanswered;
-
+    private MyGrid gridCorrect, gridIncorrect, gridSubmitted, gridUnanswered;
+    
     public AssignmentProblemStatsDialog(int assignKey, String pid, String label) {
         super(true);
+        setResizable(false);
         this.assignKey = assignKey;
         this.pid = pid;
-        setHeadingHtml("Assignment Problem Use: " + label);
+        setPixelSize(340,  400);
+        setHeadingHtml("Assignment Problem Status");
+        userName.setText(label);
         
-        setPixelSize(400,  500);
+        
         tabPanel.setCloseContextMenu(false);
         
         StudentGridLocalProperties props = GWT.create(StudentGridLocalProperties.class);
@@ -58,22 +63,24 @@ public class AssignmentProblemStatsDialog extends GWindow {
         cols.add(new ColumnConfig<StudentModel, String>(props.name(), 250, "Student Name"));
         ColumnModel<StudentModel> probColModel = new ColumnModel<StudentModel>(cols);
         
-        gridCorrect = new Grid<StudentModel>(new ListStore<StudentModel>(props.id()), probColModel);
-        tabPanel.add(gridCorrect,  new TabItemConfig("Answered Correct", false));
-        gridIncorrect = new Grid<StudentModel>(new ListStore<StudentModel>(props.id()), probColModel);
-        tabPanel.add(gridIncorrect,  new TabItemConfig("Answered Incorrect", false));        
-        gridSubmitted = new Grid<StudentModel>(new ListStore<StudentModel>(props.id()), probColModel);
+        gridCorrect = new MyGrid(new ListStore<StudentModel>(props.id()), probColModel);
+        tabPanel.add(gridCorrect,  new TabItemConfig("Correct", false));
+        gridIncorrect = new MyGrid(new ListStore<StudentModel>(props.id()), probColModel);
+        tabPanel.add(gridIncorrect,  new TabItemConfig("Incorrect", false));        
+        gridSubmitted = new MyGrid(new ListStore<StudentModel>(props.id()), probColModel);
         tabPanel.add(gridSubmitted,  new TabItemConfig("Submitted", false));        
-        gridUnanswered = new Grid<StudentModel>(new ListStore<StudentModel>(props.id()), probColModel);
-        gridUnanswered.addRowDoubleClickHandler(new RowDoubleClickHandler() {
-            @Override
-            public void onRowDoubleClick(RowDoubleClickEvent event) {
-                loadSelectedStudentGrading();
-            }
-        });
+        gridUnanswered = new MyGrid(new ListStore<StudentModel>(props.id()), probColModel);
         tabPanel.add(gridUnanswered,  new TabItemConfig("Unanswered", false));        
         
-        setWidget(tabPanel);
+        FlowLayoutContainer flow = new FlowLayoutContainer();
+        
+        String html = "<div style='margin: 10px;'><b>Problem:</b> <span>" + label + "</span></div>";
+        flow.add(new HTML(html));
+        
+        borderContainer.setNorthWidget(flow, new BorderLayoutData(50));
+        borderContainer.setCenterWidget(tabPanel);
+        
+        setWidget(borderContainer);
         
         readDataFromServer();
         
@@ -105,6 +112,8 @@ public class AssignmentProblemStatsDialog extends GWindow {
                         Log.info("Grading of user complete");
                     }
                 });
+                
+                forceLayout();
                 CmBusyManager.setBusy(false);
             }
         }.register();            
@@ -147,4 +156,13 @@ public class AssignmentProblemStatsDialog extends GWindow {
         ValueProvider<StudentModel, String> name();
     }    
 
+}
+
+
+class MyGrid extends Grid<StudentModel> {
+
+    public MyGrid(ListStore<StudentModel> listStore, ColumnModel<StudentModel> probColModel) {
+        super(listStore, probColModel);
+    }
+    
 }

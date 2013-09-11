@@ -1539,6 +1539,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
         studentAssignment.setTurnInDate(studentInfo.getTurnInDate());
         studentAssignment.setStudentStatuses(new StudentAssignmentStatuses(studentAssignment,allStatus,null));
+        studentAssignment.setStudentName(studentInfo.getName());
+        studentAssignment.setUid(studentInfo.getUid());
 
         studentAssignment.setGraded(studentInfo.isGraded());
         if(studentInfo.isGraded()) {
@@ -1566,15 +1568,15 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     public StudentAssignmentUserInfo getStudentAssignmentUserInfo(final int uid, final int assignKey) throws Exception {
         StudentAssignmentUserInfo studentInfo = null;
 
-        String sql = "select a.status, a.due_date, a.close_past_due, u.is_graded,u.turn_in_date,u.last_access, a.is_prevent_lesson " +
-                     "from  CM_ASSIGNMENT a  JOIN CM_ASSIGNMENT_USER u ON u.assign_key = a.assign_key " +
+        String sql = "select u.user_name, a.status, a.due_date, a.close_past_due, ua.is_graded,ua.turn_in_date,ua.last_access, a.is_prevent_lesson " +
+                     "from  HA_USER u JOIN CM_ASSIGNMENT a  on a.group_id = u.group_id JOIN CM_ASSIGNMENT_USER ua ON ua.assign_key = a.assign_key " +
                      " where u.uid = ? and a.assign_key = ?";
         List<StudentAssignmentUserInfo> assInfos = getJdbcTemplate().query(sql, new Object[] { uid, assignKey }, new RowMapper<StudentAssignmentUserInfo>() {
             @Override
             public StudentAssignmentUserInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
                 boolean isGraded =  rs.getInt("is_graded") != 0 ? true : false;
                 boolean isEditable = rs.getString("status").equals("Open") ? true : false;
-                return new StudentAssignmentUserInfo(uid, assignKey, rs.getDate("turn_in_date"),isGraded, isEditable,rs
+                return new StudentAssignmentUserInfo(uid, rs.getString("user_name"),assignKey, rs.getDate("turn_in_date"),isGraded, isEditable,rs
                         .getTimestamp("last_access"), rs.getTimestamp("due_date"), rs.getInt("close_past_due")==0, rs.getInt("is_prevent_lesson")!=0);
             }
         });

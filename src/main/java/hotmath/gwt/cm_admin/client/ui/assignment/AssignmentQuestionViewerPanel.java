@@ -194,6 +194,7 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
                     if (solInfo.getContext() != null) {
                         variableContext = solInfo.getContext().getContextJson();
                     }
+                    
                     _tutorPanel.externallyLoadedTutor(solInfo, getWidget(), problem.getPid(), null, solInfo.getJs(), solInfo.getHtml(), problem.getProblem().getLabel(), false, false, variableContext);
                     _tutorPanel.setVisible(true);
                     

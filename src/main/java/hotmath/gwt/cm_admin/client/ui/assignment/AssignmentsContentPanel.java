@@ -589,7 +589,7 @@ public class AssignmentsContentPanel extends ContentPanel {
     }
     
     private Widget createEditButton() {
-        TextButton btn = new TextButton("View");
+        TextButton btn = new TextButton("View/Edit");
         btn.setToolTip("View/Edit selected assignment and see realtime statistics.");
         btn.addSelectHandler(new SelectHandler() {
             @Override

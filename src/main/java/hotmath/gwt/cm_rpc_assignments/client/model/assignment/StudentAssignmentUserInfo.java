@@ -13,6 +13,7 @@ import java.util.Date;
 public class StudentAssignmentUserInfo implements Response {
     
     private int uid;
+    private String name;
     private int assignKey;
     private Date turnInDate;
     private Date viewDateTime;
@@ -29,8 +30,9 @@ public class StudentAssignmentUserInfo implements Response {
         this.assignKey = assignKey;
     }
 
-    public StudentAssignmentUserInfo(int uid, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable, boolean isPreventLessonAccess) {
+    public StudentAssignmentUserInfo(int uid, String name, int assignKey, Date turnInDate, boolean graded, boolean isEditable,Date viewDateTime, Date dueDate, boolean pastDueSubmitable, boolean isPreventLessonAccess) {
         this(uid, assignKey);
+        this.name = name;
         this.turnInDate = turnInDate;
         this.graded = graded;
         this.editable = isEditable;
@@ -38,6 +40,14 @@ public class StudentAssignmentUserInfo implements Response {
         this.dueDate = dueDate;
         this.pastDueSubmitable = pastDueSubmitable;
         this.preventLessonAccess = isPreventLessonAccess;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Date getViewDateTime() {
