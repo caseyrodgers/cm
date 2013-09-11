@@ -6,19 +6,16 @@ import hotmath.gwt.cm_rpc_core.client.rpc.CmArrayList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
-import hotmath.gwt.cm_tools.client.ui.ccss.CCSSStrandCoverage;
 import hotmath.gwt.shared.client.model.CCSSCoverageData;
 import hotmath.gwt.shared.client.model.CCSSStandard;
 import hotmath.gwt.shared.client.model.CCSSStrandCoverageData;
 import hotmath.gwt.shared.client.rpc.action.CCSSStrandCoverageDataAction;
-import hotmath.gwt.shared.client.rpc.action.CCSSStrandCoverageAction;
 
 import java.sql.Connection;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 
@@ -31,8 +28,6 @@ public class CCSSStrandCoverageDataCommand implements ActionHandler<CCSSStrandCo
     @Override
     public CmList<CCSSStrandCoverageData> execute(Connection conn, CCSSStrandCoverageDataAction action) throws Exception {
         try {
-            List<CCSSStrandCoverage> sList = null;
-
             Date fromDate = action.getFrom();
             if(fromDate == null) {
                 fromDate = new GregorianCalendar(2010,0,0).getTime();
@@ -57,7 +52,8 @@ public class CCSSStrandCoverageDataCommand implements ActionHandler<CCSSStrandCo
             	String stdName = std.getName();
             	CCSSStrandCoverageData scData = new CCSSStrandCoverageData();
             	covData.add(scData);
-            	scData.setLevelName(stdName);
+            	scData.setCcssName(stdName);
+            	scData.setLevelName(action.getLevelName());
             	scData.setSequenceNum(std.getSequenceNum());
             	for (CCSSCoverageData data : list) {
             		if (stdName.equalsIgnoreCase(data.getName())) {
@@ -88,6 +84,6 @@ public class CCSSStrandCoverageDataCommand implements ActionHandler<CCSSStrandCo
 
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
-        return  CCSSStrandCoverageAction.class;
+        return  CCSSStrandCoverageDataAction.class;
     }
 }
