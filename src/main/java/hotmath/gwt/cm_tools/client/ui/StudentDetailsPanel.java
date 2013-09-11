@@ -1,7 +1,5 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_core.client.CmCore;
-import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.ResetStudentActivityAction;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc_core.client.rpc.CmServiceAsync;
@@ -10,6 +8,7 @@ import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentActivityModel;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
+import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageByStrandWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageChartWindow;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
@@ -21,7 +20,6 @@ import hotmath.gwt.shared.client.rpc.RetryAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction;
 import hotmath.gwt.shared.client.rpc.action.GeneratePdfAction.PdfType;
 import hotmath.gwt.shared.client.rpc.action.GetStudentActivityAction;
-import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +32,6 @@ import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -290,7 +287,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 new ShowQuizResultsDialog(sam.getRunId());
             }
         });
-        _showQuizResults.addStyleName("student-details-panel-sw-btn");
+        _showQuizResults.addStyleName("student-grid-panel-button");
         _showQuizResults.disable();
 
         return _showQuizResults;
@@ -307,7 +304,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 showTopicsForSelected();
             }
         });
-        _showTopicsBtn.addStyleName("student-details-panel-sw-btn");
+        _showTopicsBtn.addStyleName("student-grid-panel-button");
         return _showTopicsBtn;
     }
 
@@ -320,7 +317,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
                 showWorkForSelected();
             }
         });
-        _showWorkButton.addStyleName("student-details-panel-sw-btn");
+        _showWorkButton.addStyleName("student-grid-panel-button");
         return _showWorkButton;
     }
 
@@ -413,7 +410,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         // ti.setIconStyle("printer-icon");
         ti.setText("Report Card");
         ti.setToolTip("Display a printable report card");
-        ti.addStyleName("student-details-panel-sw-btn");
+        ti.addStyleName("student-grid-panel-button");
         return ti;
     }
 
@@ -433,7 +430,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         });
         // ti.setIconStyle("printer-icon");
         ti.setToolTip("Display a printable assignment report");
-        ti.addStyleName("student-details-panel-sw-btn");
+        ti.addStyleName("student-grid-panel-button");
 
         return ti;
     }
@@ -445,6 +442,8 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         Menu menu = new Menu();
         menu.add(defineCCSSCoverageTableItem(sm));
         menu.add(defineCCSSCoverageChartsItem(sm));
+        menu.add(defineCCSSStrandCoverageItem(sm));
+        
         btn.setMenu(menu);
         return btn;
     }
@@ -466,33 +465,16 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
             }
         });
     }
-/*
-    private TextButton displayCCSSCoverageToolItemXXX(final StudentModelI sm) {
-        TextButton ti = new TextButton("CCSS Table", new SelectHandler() {
+
+    private MyMenuItem defineCCSSStrandCoverageItem(final StudentModelI sm) {
+        return new MyMenuItem("Strand Coverage Table", "View CCSS Strand coverage tables.", new SelectionHandler<MenuItem>() {
             @Override
-            public void onSelect(SelectEvent event) {
-                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
+            public void onSelection(SelectionEvent<MenuItem> event) {
+                new CCSSCoverageByStrandWindow(sm, null);
             }
         });
-        ti.setToolTip("View CCSS coverage");
-        ti.addStyleName("student-details-panel-sw-btn");
-
-        return ti;
     }
 
-    private TextButton displayCCSSChartToolItem(final StudentModelI sm) {
-        TextButton ti = new TextButton("CCSS Charts", new SelectHandler() {
-            @Override
-            public void onSelect(SelectEvent event) {
-                new CCSSCoverageChartWindow(sm.getAdminUid(), sm.getUid(), false, sm.getName());
-            }
-        });
-        ti.setToolTip("View CCSS coverage bar chart");
-        ti.addStyleName("student-details-panel-sw-btn");
-
-        return ti;
-    }
-*/
     private ColumnModel<StudentActivityModel> defineColumns() {
 
         ArrayList<ColumnConfig<StudentActivityModel, ?>> configs = new ArrayList<ColumnConfig<StudentActivityModel, ?>>();

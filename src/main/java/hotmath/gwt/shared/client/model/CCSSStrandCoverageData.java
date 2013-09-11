@@ -11,6 +11,7 @@ public class CCSSStrandCoverageData implements Response {
 	boolean asAssignment;
 	boolean asLesson;
 	boolean asQuiz;
+	String ccssName;
 	String levelName;
 
 	public CCSSStrandCoverageData() {
@@ -32,7 +33,7 @@ public class CCSSStrandCoverageData implements Response {
 		this.sequenceNum = sequenceNum;
 	}
 
-	public boolean isAsAssignment() {
+	public boolean getAsAssignment() {
 		return asAssignment;
 	}
 
@@ -40,7 +41,7 @@ public class CCSSStrandCoverageData implements Response {
 		this.asAssignment = asAssignment;
 	}
 
-	public boolean isAsLesson() {
+	public boolean getAsLesson() {
 		return asLesson;
 	}
 
@@ -48,12 +49,20 @@ public class CCSSStrandCoverageData implements Response {
 		this.asLesson = asLesson;
 	}
 
-	public boolean isAsQuiz() {
+	public boolean getAsQuiz() {
 		return asQuiz;
 	}
 
 	public void setAsQuiz(boolean asQuiz) {
 		this.asQuiz = asQuiz;
+	}
+
+	public String getCcssName() {
+		return ccssName;
+	}
+
+	public void setCcssName(String ccssName) {
+		this.ccssName = ccssName;
 	}
 
 	public String getLevelName() {
