@@ -140,7 +140,7 @@ public class CCSSCoverageByStrandListPanel extends BorderLayoutContainer {
 		
         _grid = defineGrid(_store, defineColumn());
 
-        _grid.setToolTip("Display standard names and Catchup Math activties for this strand.");
+        _grid.setToolTip("Display standard codes and Catchup Math activties for this strand.");
 
         _grid.addCellClickHandler(getClickHandler());
 

@@ -144,9 +144,7 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
             
             add(_grid);
             
-            String tip = getGridToolTip();
-            if(tip != null)
-                _grid.setToolTip(tip);
+            _grid.setToolTip("Double click for CCSS details");
 
             _grid.addCellDoubleClickHandler(new CellDoubleClickHandler() {
                 @Override
@@ -160,10 +158,6 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
 
         }
         forceLayout();
-    }
-
-    protected String getGridToolTip() {
-        return "Double click for CCSS details";
     }
 
     private Grid<CCSSStrandCoverageData> defineGrid(final ListStore<CCSSStrandCoverageData> store, ColumnModel<CCSSStrandCoverageData> cm) {
