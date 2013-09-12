@@ -116,19 +116,19 @@ public class AssignmentProblemListView extends ContentPanel {
          * 
          */
         if(!assignment.getStatus().equals("Draft")) {
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 25, "C"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 35, "C"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
             cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 25, "I"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 35, "I"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
             cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredHalfCredit(), 25, "H"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredHalfCredit(), 35, "H"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered half correct"));
             cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 25, "S"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 35, "S"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have an ungraded submitted answer"));
             cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 25, "U"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 35, "U"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
             cols.get(cols.size()-1).setMenuDisabled(true);
             problemListGrid.setToolTip("Double click for student answer analysis");
