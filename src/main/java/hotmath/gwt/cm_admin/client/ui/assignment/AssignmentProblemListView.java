@@ -62,8 +62,7 @@ public class AssignmentProblemListView extends ContentPanel {
         ordinalNumberValueProvider = new MyOrdinalProvider();
         List<ColumnConfig<ProblemDtoLocal, ?>> cols = new ArrayList<ColumnConfig<ProblemDtoLocal, ?>>();
         cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(ordinalNumberValueProvider, 25, ""));
-        cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 250, "Problems Assigned"));
-        cols.get(cols.size()-1).setSortable(false);
+        cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 200, "Problems Assigned"));
         ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
         
         ModelKeyProvider<ProblemDtoLocal> kp = new ModelKeyProvider<ProblemDtoLocal>() {
@@ -119,17 +118,21 @@ public class AssignmentProblemListView extends ContentPanel {
         if(!assignment.getStatus().equals("Draft")) {
             cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 25, "C"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
+            cols.get(cols.size()-1).setMenuDisabled(true);
             cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 25, "I"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
+            cols.get(cols.size()-1).setMenuDisabled(true);
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredHalfCredit(), 25, "H"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered half correct"));
+            cols.get(cols.size()-1).setMenuDisabled(true);
             cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 25, "S"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have an ungraded submitted answer"));
+            cols.get(cols.size()-1).setMenuDisabled(true);
             cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 25, "U"));
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
+            cols.get(cols.size()-1).setMenuDisabled(true);
             problemListGrid.setToolTip("Double click for student answer analysis");
         }
-        
-        
-        
      
         problemListContainer = new VerticalLayoutContainer();
         
@@ -204,6 +207,7 @@ public class AssignmentProblemListView extends ContentPanel {
                     pl.setAnsweredIncorrect(ps.getCntIncorrect());
                     pl.setUnanswered(ps.getCntUnanswered());
                     pl.setPending(ps.getCntPending());
+                    pl.setAnsweredHalfCredit(ps.getCntHalfCredit());
                     problemListGrid.getStore().update(pl);
                     break;
                 }
@@ -456,6 +460,7 @@ public class AssignmentProblemListView extends ContentPanel {
     public interface AssignmentProblemListPanelProperties extends PropertyAccess<String> {
         @Path("pid")
         ModelKeyProvider<ProblemDtoLocal> id();
+        ValueProvider<ProblemDtoLocal, Integer> answeredHalfCredit();
         ValueProvider<ProblemDtoLocal, Integer> answeredIncorrect();
         ValueProvider<ProblemDtoLocal, Integer> answeredCorrect();
         ValueProvider<ProblemDtoLocal, Integer> unanswered();
@@ -497,9 +502,23 @@ public class AssignmentProblemListView extends ContentPanel {
     class ProblemDtoLocal {
 
         ProblemDto problem;
-        int answeredCorrect, answeredIncorrect, unanswered, pending;
+        int answeredCorrect, answeredIncorrect, unanswered, pending, answeredHalfCredit;
+        
+
+        public ProblemDtoLocal(ProblemDto problem) {
+            this.problem = problem;
+        }
+        
         public int getUnanswered() {
             return unanswered;
+        }
+
+        public int getAnsweredHalfCredit() {
+            return answeredHalfCredit;
+        }
+
+        public void setAnsweredHalfCredit(int answeredHalfCredit) {
+            this.answeredHalfCredit = answeredHalfCredit;
         }
 
         public void setUnanswered(int unanswered) {
@@ -514,10 +533,6 @@ public class AssignmentProblemListView extends ContentPanel {
             this.pending = pending;
         }
 
-        public ProblemDtoLocal(ProblemDto problem) {
-            this.problem = problem;
-        }
-        
         public ProblemDto getProblem() {
             return this.problem;
         }

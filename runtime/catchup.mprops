@@ -4613,7 +4613,7 @@ limit 1
 .key=ASSIGNMENT_PID_ANSWER_STATUS
 ## all pids in assignment and count of correct/incorrect
 
-select p.pid, a.cnt_correct, b.cnt_incorrect, c.cnt_unanswered, d.cnt_submitted
+select p.pid, a.cnt_correct, b.cnt_incorrect, c.cnt_unanswered, d.cnt_submitted, e.cnt_half_credit
 from CM_ASSIGNMENT_PIDS p
    LEFT JOIN (
       select assign_key, pid, count(*) as cnt_correct
@@ -4630,6 +4630,14 @@ from CM_ASSIGNMENT_PIDS p
       and status = 'Incorrect'
       group by assign_key, pid
    ) b on b.assign_key = p.assign_key and b.pid = p.pid
+
+   LEFT JOIN (
+      select assign_key, pid, count(*) as cnt_half_credit
+      from CM_ASSIGNMENT_PID_STATUS s1 
+      where assign_key = ?
+      and status = 'Half Credit'
+      group by assign_key, pid
+   ) e on b.assign_key = p.assign_key and e.pid = p.pid
 
    
    LEFT JOIN (

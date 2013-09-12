@@ -9,15 +9,21 @@ public class PidStats implements Response {
     private int cntIncorrect;
     private int cntPending;
     private int cntUnanswered;
+    private int cntHalfCredit;
 
     public PidStats() {}
     
-    public PidStats(String pid, int cntCorrect, int cntIncorrect, int cntUnanswered, int cntPending) {
+    public PidStats(String pid, int cntCorrect, int cntIncorrect, int cntUnanswered, int cntPending, int cntHalfCredit) {
         this.pid = pid;
         this.cntCorrect = cntCorrect;
         this.cntIncorrect = cntIncorrect;
         this.cntUnanswered = cntUnanswered;
         this.cntPending = cntPending;
+        this.cntHalfCredit = cntHalfCredit;
+    }
+
+    public void setCntHalfCredit(int cntHalfCredit) {
+        this.cntHalfCredit = cntHalfCredit;
     }
 
     public int getCntPending() {
@@ -58,6 +64,10 @@ public class PidStats implements Response {
 
     public void setCntIncorrect(int cntIncorrect) {
         this.cntIncorrect = cntIncorrect;
+    }
+
+    public int getCntHalfCredit() {
+        return this.cntHalfCredit;
     }
     
 }
