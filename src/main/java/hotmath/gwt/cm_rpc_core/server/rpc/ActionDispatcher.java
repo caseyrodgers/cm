@@ -96,6 +96,7 @@ public class ActionDispatcher {
 		__instance = null;
 	}
 
+	boolean isGuiDisplayed;
 	private ActionDispatcher() {
 		logger.info("Creating new ActionDispatcher");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
@@ -119,8 +120,10 @@ public class ActionDispatcher {
 		/** startup GUI log watcher if possible
 		 * 
 		 */
+		
 		try {
 		    ActionDispatcherLoggerGui.getInstance();
+		    isGuiDisplayed=true;
 		}
 		catch(Throwable th) {
 		    logger.debug("Cannot start logger GUI", th);
@@ -217,12 +220,19 @@ public class ActionDispatcher {
 
 	    if(_debuggingClientMode) {
 	        logger.info("DEBUGGING_CLIENT enabled!");
-	        // reuse action/response to avoid round-trip
-    	    Response oldResponse = oldResponses.get(action.getClass().getName());
-    	    if(oldResponse != null) {
-    	        logger.info("DEBUGGING_CLIENT: returning cached action (" + action.getClass().getName() + ")");
-    	        return (T)oldResponse;
-    	    }
+	        
+	        String actionName = action.getClass().getName();
+	        if(ActionDispatcherLoggerGui.getInstance().shouldActionBeCached(actionName)) {
+    	        // reuse action/response to avoid round-trip
+        	    Response oldResponse = oldResponses.get(actionName);
+        	    if(oldResponse != null) {
+        	        logger.info("DEBUGGING_CLIENT: returning cached action (" + actionName + ")");
+        	        return (T)oldResponse;
+        	    }
+	        }
+	        else {
+	            logger.info("DEBUGGING_CLIENT: not caching action: " + actionName);
+	        }
 	    }
 	    
 		String actionId = new StringBuilder().append(startDate).append(".").append(++counter).toString();

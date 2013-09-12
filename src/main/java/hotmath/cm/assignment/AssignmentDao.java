@@ -2736,33 +2736,25 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
         
-        List<StudentModel> correct = new ArrayList<StudentModel>();
-        List<StudentModel> incorrect = new ArrayList<StudentModel>();
-        List<StudentModel> submitted = new ArrayList<StudentModel>();
-        List<StudentModel> unanswered = new ArrayList<StudentModel>();
+        List<StudentModel> students = new ArrayList<StudentModel>();
         
         for(StudentStat ss: studentStatus) {
             StudentModel sm = new StudentModel();
             sm.setUid(ss.uid);
             sm.setName(ss.name);
-            sm.setStatus(ss.status);
-
-            if(ss.status.equals("Correct")) {
-                correct.add(sm);
-            }
-            else if(ss.status.equals("Incorrect")) {
-                incorrect.add(sm);
-            }
-            else if(ss.status.equals("Submitted")) {
-                submitted.add(sm);
+            String sl = ss.status != null?ss.status.toLowerCase():"";
+            if(sl.contains("correct") || sl.contains("half") || sl.contains("submitted")) {
+                sm.setStatus(ss.status);
             }
             else {
-                unanswered.add(sm);
+                sm.setStatus("Unanswered");
             }
+
+            students.add(sm);
         }
         
         
-        return new AssignmentRealTimeStatsUsers(correct,incorrect,submitted,unanswered);
+        return new AssignmentRealTimeStatsUsers(students);
     }
 
 }

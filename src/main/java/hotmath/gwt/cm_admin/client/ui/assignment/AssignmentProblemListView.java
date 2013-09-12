@@ -64,22 +64,6 @@ public class AssignmentProblemListView extends ContentPanel {
         cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(ordinalNumberValueProvider, 25, ""));
         cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 250, "Problems Assigned"));
         cols.get(cols.size()-1).setSortable(false);
-        
-        /** If active assignment, then provide real time stats
-         * 
-         */
-        if(!assignment.getStatus().equals("Draft")) {
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 55, "Correct"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 55, "Incorrect"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 55, "Submitted"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have an ungraded submitted answer"));
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 55, "Unanswered"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
-        }
-        
-        
         ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
         
         ModelKeyProvider<ProblemDtoLocal> kp = new ModelKeyProvider<ProblemDtoLocal>() {
@@ -127,6 +111,25 @@ public class AssignmentProblemListView extends ContentPanel {
                 new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), s.getPid(), s.getLabel());
             }
         });
+        
+        
+        /** If active assignment, then provide real time stats
+         * 
+         */
+        if(!assignment.getStatus().equals("Draft")) {
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 25, "C"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 25, "I"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 25, "S"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have an ungraded submitted answer"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 25, "U"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
+            problemListGrid.setToolTip("Double click for student answer analysis");
+        }
+        
+        
+        
      
         problemListContainer = new VerticalLayoutContainer();
         

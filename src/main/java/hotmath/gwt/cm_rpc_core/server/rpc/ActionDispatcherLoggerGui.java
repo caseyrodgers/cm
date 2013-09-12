@@ -60,6 +60,7 @@ public class ActionDispatcherLoggerGui extends JFrame {
     JToggleButton _disabled = new JToggleButton("Enable");
     JToggleButton _debugMode = new JToggleButton("Debug");
     JToggleButton _debugActionCacheMode = new JToggleButton("Client Debug Mode");
+    JTextField _actionPass = new JTextField(15);
     
 
     private ActionDispatcherLoggerGui() {
@@ -102,6 +103,10 @@ public class ActionDispatcherLoggerGui extends JFrame {
         panel.add(_disabled);
         panel.add(_debugMode);
         panel.add(_debugActionCacheMode);
+        
+        _actionPass.setToolTipText("Actions that contain this string will not be cached in Client Debug Mode");
+        panel.add(_actionPass);
+
         footer.add("West", panel);
         
         _debugActionCacheMode.setToolTipText("Enable ActionDispatcher caching of all actions (to enable fast client development)");
@@ -134,6 +139,21 @@ public class ActionDispatcherLoggerGui extends JFrame {
         setVisible(true);
     }
     
+    /** return true if this action should be cached
+     * 
+     * @param actionName
+     * @return
+     */
+    public boolean shouldActionBeCached(String actionName) {
+        String cacheFilter = _actionPass.getText();
+        if(cacheFilter.length() == 0) {
+            return true;
+        }
+        else {
+            return !actionName.contains(cacheFilter);
+        }
+        
+    }
     private void enableDebugMode(boolean yesNo) {
         if(yesNo) {
             Level level = Level.DEBUG;
