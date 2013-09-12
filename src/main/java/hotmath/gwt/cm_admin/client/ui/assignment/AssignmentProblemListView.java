@@ -11,6 +11,7 @@ import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.shared.client.CmShared;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -61,8 +62,10 @@ public class AssignmentProblemListView extends ContentPanel {
         
         ordinalNumberValueProvider = new MyOrdinalProvider();
         List<ColumnConfig<ProblemDtoLocal, ?>> cols = new ArrayList<ColumnConfig<ProblemDtoLocal, ?>>();
-        cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(ordinalNumberValueProvider, 25, ""));
+        cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.ordinal(), 25, ""));
+        cols.get(cols.size()-1).setMenuDisabled(true);
         cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 200, "Problems Assigned"));
+        cols.get(cols.size()-1).setMenuDisabled(true);
         ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
         
         ModelKeyProvider<ProblemDtoLocal> kp = new ModelKeyProvider<ProblemDtoLocal>() {
@@ -77,8 +80,9 @@ public class AssignmentProblemListView extends ContentPanel {
         ListStore<ProblemDtoLocal> store = new ListStore<ProblemDtoLocal>(kp);
 
         if(assignment.getPids() != null) {
+            int ordinal=0;
             for(ProblemDto prob: assignment.getPids()) {
-                store.add(new ProblemDtoLocal(prob));    
+                store.add(new ProblemDtoLocal(prob, ++ordinal));    
             }
         }
         
@@ -174,7 +178,6 @@ public class AssignmentProblemListView extends ContentPanel {
         if(store.size()==0) {
             activateButtons(false);
         }
-
     }
     
     
@@ -196,6 +199,8 @@ public class AssignmentProblemListView extends ContentPanel {
 
 
     protected void updateRealTimeStats(AssignmentRealTimeStats pidStats) {
+        ordinalNumberValueProvider.doIncreaseOnEachOrdinal(false);
+
         List<ProblemDtoLocal> storePids = problemListGrid.getStore().getAll();
         
         ordinalNumberValueProvider.resetOrdinalNumber();
@@ -382,8 +387,9 @@ public class AssignmentProblemListView extends ContentPanel {
 
     private List<ProblemDtoLocal> createActiveList(List<ProblemDto> problemsAdded) {
         List<ProblemDtoLocal> la = new ArrayList<ProblemDtoLocal>();
+        int ordinal=0;
         for(ProblemDto p: problemsAdded) {
-            la.add(new ProblemDtoLocal(p));
+            la.add(new ProblemDtoLocal(p, ++ordinal));
         }
         return la;
     }
@@ -460,6 +466,7 @@ public class AssignmentProblemListView extends ContentPanel {
     public interface AssignmentProblemListPanelProperties extends PropertyAccess<String> {
         @Path("pid")
         ModelKeyProvider<ProblemDtoLocal> id();
+        ValueProvider<ProblemDtoLocal, Integer> ordinal();
         ValueProvider<ProblemDtoLocal, Integer> answeredHalfCredit();
         ValueProvider<ProblemDtoLocal, Integer> answeredIncorrect();
         ValueProvider<ProblemDtoLocal, Integer> answeredCorrect();
@@ -474,12 +481,21 @@ public class AssignmentProblemListView extends ContentPanel {
     class MyOrdinalProvider implements ValueProvider<ProblemDtoLocal, Integer> {
 
         int orderPosition=0;
+        boolean increase=true;
+        
+        public void doIncreaseOnEachOrdinal(boolean yesNo) {
+            increase = yesNo;
+        }
+        
         public void resetOrdinalNumber() {
             orderPosition = 0;
         }
         @Override
         public Integer getValue(ProblemDtoLocal object) {
-            return ++orderPosition;
+            if(this.increase) {
+                ++orderPosition;
+            }
+            return orderPosition;
         }
 
         @Override
@@ -502,13 +518,27 @@ public class AssignmentProblemListView extends ContentPanel {
     class ProblemDtoLocal {
 
         ProblemDto problem;
+        int ordinal;
         int answeredCorrect, answeredIncorrect, unanswered, pending, answeredHalfCredit;
         
 
-        public ProblemDtoLocal(ProblemDto problem) {
+        public ProblemDtoLocal(ProblemDto problem, int ordinal) {
             this.problem = problem;
+            this.ordinal = ordinal;
         }
         
+        public int getOrdinal() {
+            return ordinal;
+        }
+
+        public void setOrdinal(int ordinal) {
+            this.ordinal = ordinal;
+        }
+
+        public void setProblem(ProblemDto problem) {
+            this.problem = problem;
+        }
+
         public int getUnanswered() {
             return unanswered;
         }
