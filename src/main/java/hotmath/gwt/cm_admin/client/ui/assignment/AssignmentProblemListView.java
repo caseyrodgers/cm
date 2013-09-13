@@ -120,20 +120,8 @@ public class AssignmentProblemListView extends ContentPanel {
          * 
          */
         if(!assignment.getStatus().equals("Draft")) {
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 35, "C"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered correctly"));
-            cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredIncorrect(), 35, "I"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered incorrectly"));
-            cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredHalfCredit(), 35, "H"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who answered half correct"));
-            cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.pending(), 35, "S"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have an ungraded submitted answer"));
-            cols.get(cols.size()-1).setMenuDisabled(true);
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.unanswered(), 35, "U"));
-            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Number of students who have not answered"));
+            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 35, "Correct"));
+            cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
             cols.get(cols.size()-1).setMenuDisabled(true);
             problemListGrid.setToolTip("Double click for student answer analysis");
         }
