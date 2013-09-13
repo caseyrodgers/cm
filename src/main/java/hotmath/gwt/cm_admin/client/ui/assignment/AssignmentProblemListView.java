@@ -117,13 +117,7 @@ public class AssignmentProblemListView extends ContentPanel {
             problemListGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
                 @Override
                 public void onRowDoubleClick(RowDoubleClickEvent event) {
-                    _selectedRecord  = problemListGrid.getSelectionModel().getSelectedItem();
-                    new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
-                        @Override
-                        public void isComplete() {
-                            showSelectedProblemHtml(callback);
-                        }
-                    });
+                    showUserProblemStats();
                 }
             });
             
@@ -147,6 +141,13 @@ public class AssignmentProblemListView extends ContentPanel {
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
             cols.get(cols.size()-1).setMenuDisabled(true);
             problemListGrid.setToolTip("Double click for student answer analysis");
+            TextButton answers = new TextButton("Answer Analysis", new SelectHandler() {
+                @Override
+                public void onSelect(SelectEvent event) {
+                    showUserProblemStats();              
+                }
+            });
+            addTool(answers);
         }
      
         problemListContainer = new VerticalLayoutContainer();
@@ -192,6 +193,17 @@ public class AssignmentProblemListView extends ContentPanel {
     }
     
     
+    protected void showUserProblemStats() {
+        _selectedRecord  = problemListGrid.getSelectionModel().getSelectedItem();
+        new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
+            @Override
+            public void isComplete() {
+                showSelectedProblemHtml(callback);
+            }
+        });
+    }
+
+
     private void startCheckingRealTimeStats() {
         GetAssignmentRealTimeStatsAction action = new GetAssignmentRealTimeStatsAction(this.assignment.getAssignKey());
         CmShared.getCmService().execute(action, new AsyncCallback<AssignmentRealTimeStats>() {

@@ -10,7 +10,6 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.model.StudentModel;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
-import hotmath.gwt.cm_tools.client.ui.StudentDetailsWindow;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.rpc.RetryAction;
 
@@ -26,11 +25,14 @@ import com.sencha.gxt.core.client.ValueProvider;
 import com.sencha.gxt.data.shared.ListStore;
 import com.sencha.gxt.data.shared.ModelKeyProvider;
 import com.sencha.gxt.data.shared.PropertyAccess;
+import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.BorderLayoutContainer.BorderLayoutData;
 import com.sencha.gxt.widget.core.client.container.FlowLayoutContainer;
 import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent;
 import com.sencha.gxt.widget.core.client.event.RowDoubleClickEvent.RowDoubleClickHandler;
+import com.sencha.gxt.widget.core.client.event.SelectEvent;
+import com.sencha.gxt.widget.core.client.event.SelectEvent.SelectHandler;
 import com.sencha.gxt.widget.core.client.grid.ColumnConfig;
 import com.sencha.gxt.widget.core.client.grid.ColumnModel;
 import com.sencha.gxt.widget.core.client.grid.Grid;
@@ -63,7 +65,15 @@ public class AssignmentProblemStatsDialog extends GWindow {
         cols.add(new ColumnConfig<StudentModel, String>(props.status(), 75, "Status"));
         ColumnModel<StudentModel> probColModel = new ColumnModel<StudentModel>(cols);
         
-        
+       TextButton grade = new TextButton("Grade Student", new SelectHandler() {
+        @Override
+        public void onSelect(SelectEvent event) {
+            loadSelectedStudentGrading();
+        }});
+       grade.setToolTip("Open the selected student's grading panel for this assignment");
+       addTool(grade);
+       
+     
         
         theGrid = new MyGrid(new ListStore<StudentModel>(props.id()), probColModel);
         theGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
