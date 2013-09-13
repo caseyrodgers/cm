@@ -196,7 +196,7 @@ public class AssignmentProblemListView extends ContentPanel {
             // look up stats
             for(PidStats ps: pidStats.getPidStats()) {
                 if(ps.getPid().equals(pl.getPid())) {
-                    pl.setAnsweredCorrect(ps.getCntCorrect());
+                   // pl.setCorrectPresent(ps.getCntCorrect());
                     pl.setAnsweredIncorrect(ps.getCntIncorrect());
                     pl.setUnanswered(ps.getCntUnanswered());
                     pl.setPending(ps.getCntPending());
