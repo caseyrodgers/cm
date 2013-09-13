@@ -44,12 +44,14 @@ public class AssignmentProblemStatsDialog extends GWindow {
     Label userName = new Label();
 
     private MyGrid theGrid;
+    private CallbackOnComplete callbackOnComplete;
     
-    public AssignmentProblemStatsDialog(int assignKey, String pid, String label) {
+    public AssignmentProblemStatsDialog(int assignKey, String pid, String label, CallbackOnComplete callbackOnComplete) {
         super(true);
         setResizable(false);
         this.assignKey = assignKey;
         this.pid = pid;
+        this.callbackOnComplete = callbackOnComplete;
         setPixelSize(300,  400);
         setHeadingHtml("Assignment Problem Status");
         userName.setText(label);
@@ -67,7 +69,7 @@ public class AssignmentProblemStatsDialog extends GWindow {
         theGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
             @Override
             public void onRowDoubleClick(RowDoubleClickEvent event) {
-                new StudentDetailsWindow(theGrid.getSelectionModel().getSelectedItem());                
+                loadSelectedStudentGrading();                
             }
         });
         theGrid.setToolTip("Double click for detailed student history");
@@ -85,6 +87,12 @@ public class AssignmentProblemStatsDialog extends GWindow {
         readDataFromServer();
         
         setVisible(true);
+    }
+    
+    @Override
+    protected void onHide() {
+        super.onHide();
+        callbackOnComplete.isComplete();        
     }
 
     protected void loadSelectedStudentGrading() {

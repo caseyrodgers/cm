@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_admin.client.ui.assignment;
 
 import hotmath.gwt.cm_admin.client.ui.assignment.AssignmentDesigner.Callback;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc_assignments.client.model.AssignmentRealTimeStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.PidStats;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
@@ -53,6 +54,7 @@ public class AssignmentProblemListView extends ContentPanel {
     MyOrdinalProvider ordinalNumberValueProvider;
     private TextButton _upButton;
     private TextButton _downButton;
+    ProblemDtoLocal _selectedRecord;
     public AssignmentProblemListView(Assignment assignment, final Callback callback) {
         
         this.assignment = assignment;
@@ -64,7 +66,7 @@ public class AssignmentProblemListView extends ContentPanel {
         List<ColumnConfig<ProblemDtoLocal, ?>> cols = new ArrayList<ColumnConfig<ProblemDtoLocal, ?>>();
         cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.ordinal(), 25, ""));
         cols.get(cols.size()-1).setMenuDisabled(true);
-        cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 200, "Problems Assigned"));
+        cols.add(new ColumnConfig<ProblemDtoLocal, String>(props.labelWithType(), 150, "Problems Assigned"));
         cols.get(cols.size()-1).setMenuDisabled(true);
         ColumnModel<ProblemDtoLocal> probColModel = new ColumnModel<ProblemDtoLocal>(cols);
         
@@ -107,20 +109,41 @@ public class AssignmentProblemListView extends ContentPanel {
             }
         });
         
-        problemListGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
-            @Override
-            public void onRowDoubleClick(RowDoubleClickEvent event) {
-                ProblemDtoLocal s = problemListGrid.getSelectionModel().getSelectedItem();
-                new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), s.getPid(), s.getLabel());
-            }
-        });
-        
-        
         /** If active assignment, then provide real time stats
          * 
          */
         if(!assignment.getStatus().equals("Draft")) {
-            cols.add(new ColumnConfig<ProblemDtoLocal, Integer>(props.answeredCorrect(), 35, "Correct"));
+            
+            problemListGrid.addRowDoubleClickHandler(new RowDoubleClickHandler() {
+                @Override
+                public void onRowDoubleClick(RowDoubleClickEvent event) {
+                    _selectedRecord  = problemListGrid.getSelectionModel().getSelectedItem();
+                    new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
+                        @Override
+                        public void isComplete() {
+                            showSelectedProblemHtml(callback);
+                        }
+                    });
+                }
+            });
+            
+            
+            ColumnConfig<ProblemDtoLocal, String> percentCol = new ColumnConfig<ProblemDtoLocal, String>(props.percentCorrect(), 55, "Correct");
+            percentCol.setComparator(new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    /** strip of percent and treat as number */
+                    if(o1 == null || o2 == null) {
+                        return 0;
+                    }
+                    int i1 = Integer.parseInt(o1.split("%")[0].trim());
+                    int i2 = Integer.parseInt(o2.split("%")[0].trim());
+                    return i1 - 12;
+                }
+            });
+            percentCol.setMenuDisabled(true);
+            cols.add(percentCol);
+            
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
             cols.get(cols.size()-1).setMenuDisabled(true);
             problemListGrid.setToolTip("Double click for student answer analysis");
@@ -196,11 +219,7 @@ public class AssignmentProblemListView extends ContentPanel {
             // look up stats
             for(PidStats ps: pidStats.getPidStats()) {
                 if(ps.getPid().equals(pl.getPid())) {
-                   // pl.setCorrectPresent(ps.getCntCorrect());
-                    pl.setAnsweredIncorrect(ps.getCntIncorrect());
-                    pl.setUnanswered(ps.getCntUnanswered());
-                    pl.setPending(ps.getCntPending());
-                    pl.setAnsweredHalfCredit(ps.getCntHalfCredit());
+                    pl.setPidStats(ps);
                     problemListGrid.getStore().update(pl);
                     break;
                 }
@@ -293,8 +312,6 @@ public class AssignmentProblemListView extends ContentPanel {
                     CmMessageBox.showAlert("Assignments can only be edited in draft mode.");
                     return;
                 }
-                
-                callback.clearTutorView();
                 
                 List<ProblemDtoLocal> newList = new ArrayList<ProblemDtoLocal>();
                 
@@ -454,13 +471,8 @@ public class AssignmentProblemListView extends ContentPanel {
     public interface AssignmentProblemListPanelProperties extends PropertyAccess<String> {
         @Path("pid")
         ModelKeyProvider<ProblemDtoLocal> id();
+        ValueProvider<ProblemDtoLocal, String> percentCorrect();
         ValueProvider<ProblemDtoLocal, Integer> ordinal();
-        ValueProvider<ProblemDtoLocal, Integer> answeredHalfCredit();
-        ValueProvider<ProblemDtoLocal, Integer> answeredIncorrect();
-        ValueProvider<ProblemDtoLocal, Integer> answeredCorrect();
-        ValueProvider<ProblemDtoLocal, Integer> unanswered();
-        ValueProvider<ProblemDtoLocal, Integer> pending();
-
         ValueProvider<ProblemDtoLocal, String> labelWithType();
         ValueProvider<ProblemDtoLocal, Integer> ordinalNumber();
     }
@@ -507,7 +519,7 @@ public class AssignmentProblemListView extends ContentPanel {
 
         ProblemDto problem;
         int ordinal;
-        int answeredCorrect, answeredIncorrect, unanswered, pending, answeredHalfCredit;
+        PidStats pidStats;
         
 
         public ProblemDtoLocal(ProblemDto problem, int ordinal) {
@@ -515,6 +527,10 @@ public class AssignmentProblemListView extends ContentPanel {
             this.ordinal = ordinal;
         }
         
+        public void setPidStats(PidStats ps) {
+            this.pidStats = ps;
+        }
+
         public int getOrdinal() {
             return ordinal;
         }
@@ -526,31 +542,6 @@ public class AssignmentProblemListView extends ContentPanel {
         public void setProblem(ProblemDto problem) {
             this.problem = problem;
         }
-
-        public int getUnanswered() {
-            return unanswered;
-        }
-
-        public int getAnsweredHalfCredit() {
-            return answeredHalfCredit;
-        }
-
-        public void setAnsweredHalfCredit(int answeredHalfCredit) {
-            this.answeredHalfCredit = answeredHalfCredit;
-        }
-
-        public void setUnanswered(int unanswered) {
-            this.unanswered = unanswered;
-        }
-
-        public int getPending() {
-            return pending;
-        }
-
-        public void setPending(int pending) {
-            this.pending = pending;
-        }
-
         public ProblemDto getProblem() {
             return this.problem;
         }
@@ -574,21 +565,10 @@ public class AssignmentProblemListView extends ContentPanel {
         public String getPid() {
             return problem.getPid();
         }
-
-        public int getAnsweredCorrect() {
-            return answeredCorrect;
-        }
-
-        public void setAnsweredCorrect(int answeredCorrect) {
-            this.answeredCorrect = answeredCorrect;
-        }
-
-        public int getAnsweredIncorrect() {
-            return answeredIncorrect;
-        }
-
-        public void setAnsweredIncorrect(int answeredIncorrect) {
-            this.answeredIncorrect = answeredIncorrect;
+        
+        public String getPercentCorrect() {
+            int percent = pidStats!=null?pidStats.getCorrectPercent():0;
+            return (percent<10?" ":"") + percent + "%";  
         }
 
     }

@@ -4613,58 +4613,33 @@ limit 1
 .key=ASSIGNMENT_PID_ANSWER_STATUS
 ## all pids in assignment and count of correct/incorrect
 
-select p.pid, a.cnt_correct, b.cnt_incorrect, c.cnt_unanswered, d.cnt_submitted, e.cnt_half_credit
-from CM_ASSIGNMENT_PIDS p
-   LEFT JOIN (
-      select assign_key, pid, count(*) as cnt_correct
-      from CM_ASSIGNMENT_PID_STATUS s1 
-      where assign_key = ?
-      and status = 'Correct'
-      group by assign_key, pid
-   ) a on a.assign_key = p.assign_key and a.pid = p.pid
-
-   LEFT JOIN (
-      select assign_key, pid, count(*) as cnt_incorrect
-      from CM_ASSIGNMENT_PID_STATUS s1 
-      where assign_key = ?
-      and status = 'Incorrect'
-      group by assign_key, pid
-   ) b on b.assign_key = p.assign_key and b.pid = p.pid
-
-   LEFT JOIN (
-      select assign_key, pid, count(*) as cnt_half_credit
-      from CM_ASSIGNMENT_PID_STATUS s1 
-      where assign_key = ?
-      and status = 'Half Credit'
-      group by assign_key, pid
-   ) e on b.assign_key = p.assign_key and e.pid = p.pid
-
-   
-   LEFT JOIN (
-      select a.assign_key, p.pid, count(*) as cnt_unanswered
-      from HA_USER u
-         join CM_ASSIGNMENT a on a.group_id = u.group_id
-         join CM_ASSIGNMENT_PIDS p on p.assign_key = a.assign_key
-         left join CM_ASSIGNMENT_PID_STATUS s1 on s1.assign_key = a.assign_key and s1.uid = u.uid and s1.pid = p.pid
-      where a.assign_key = ?
-      and (
-               s1.status is null
-               or s1.status not in ('Correct', 'Incorrect', 'Submitted')
-             )
-      group by a.assign_key, p.pid 
-   ) c on c.assign_key = p.assign_key and c.pid = p.pid
-   
-      
-   LEFT JOIN (
-      select assign_key, pid, count(*) as cnt_submitted
-      from CM_ASSIGNMENT_PID_STATUS s1 
-      where assign_key = ?
-      and status = 'Submitted'
-      group by assign_key, pid
-   ) d on d.assign_key = p.assign_key and d.pid = p.pid   
-   
+select p.pid, count(*) as cnt_students, cp.cnt_correct, hp.cnt_half_credit, 
+       concat(FLOOR(((cp.cnt_correct + hp.cnt_half_credit) / count(*)) * 100), '%') as correct_percent
+from HA_USER u
+   JOIN CM_ASSIGNMENT a
+       on a.group_id = u.group_id
+   JOIN CM_ASSIGNMENT_PIDS p
+       on p.assign_key = a.assign_key
+   LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps
+       on ps.assign_key = a.assign_key and ps.pid = p.pid
+   JOIN (
+        select ps2.assign_key, pid, count(*) as cnt_correct
+        from   CM_ASSIGNMENT_PID_STATUS ps2
+        where ps2.status = 'Correct'
+        and ps2.assign_key = ? 
+        group by pid
+   )  cp on cp.assign_key = a.assign_key
+   JOIN (
+        select assign_key, pid, count(*) / 2 as cnt_half_credit
+        from   CM_ASSIGNMENT_PID_STATUS
+        where status = 'Half Credit'
+        and assign_key = ?
+        group by pid
+   )  hp on hp.assign_key = a.assign_key   
 where p.assign_key = ?   
+group by p.assign_key, p.pid
 order by p.ordinal_number
+
 
 
 .key=ASSIGNMENT_STUDENT_STATS

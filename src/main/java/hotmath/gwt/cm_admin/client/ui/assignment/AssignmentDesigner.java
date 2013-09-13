@@ -3,7 +3,10 @@ package hotmath.gwt.cm_admin.client.ui.assignment;
 import hotmath.gwt.cm_rpc.client.rpc.GetAssignmentAction;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.Assignment;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.ProblemDto;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
 import hotmath.gwt.cm_tools.client.CmBusyManager;
+import hotmath.gwt.cm_tutor.client.event.TutorPanelExclusiveEvent;
+import hotmath.gwt.cm_tutor.client.event.TutorPanelExclusiveHandler;
 import hotmath.gwt.shared.client.CmShared;
 import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListener;
@@ -46,6 +49,18 @@ public class AssignmentDesigner extends BorderLayoutContainer {
                 }
             }
         });
+        
+        
+        
+        
+        
+        CmRpcCore.EVENT_BUS.addHandler(TutorPanelExclusiveEvent.TYPE, new TutorPanelExclusiveHandler() {
+            @Override
+            public void tutorNeedsExclusiveAccess() {
+                QuestionViewerPanel.getInstance().removeQuestion();
+            }
+        });
+
     }   
 
     BorderLayoutData _viewerData;

@@ -21,6 +21,7 @@ import hotmath.gwt.cm_tools.client.CmBusyManager;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 import hotmath.gwt.cm_tutor.client.CmTutor;
+import hotmath.gwt.cm_tutor.client.event.TutorPanelExclusiveEvent;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2.ShowWorkPanelCallbackDefault;
 import hotmath.gwt.cm_tutor.client.view.TutorCallbackDefault;
@@ -59,6 +60,9 @@ public class AssignmentQuestionViewerPanel extends ContentPanel {
     SimpleContainer _showWorkWrapper;
 
     public AssignmentQuestionViewerPanel() {
+        
+        CmRpcCore.EVENT_BUS.fireEvent(new  TutorPanelExclusiveEvent());
+        
         _tutorPanel = new TutorWrapperPanel(false, false,false,false,new TutorCallbackDefault(){
             @Override
             public void tutorWidgetCompleteDenied(String inputValue, boolean correct) {
