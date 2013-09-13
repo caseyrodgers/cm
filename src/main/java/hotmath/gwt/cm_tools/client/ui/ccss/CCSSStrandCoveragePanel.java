@@ -19,8 +19,11 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.text.shared.SafeHtmlRenderer;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.text.shared.AbstractSafeHtmlRenderer;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.cell.core.client.SimpleSafeHtmlCell;
 import com.sencha.gxt.core.client.Style.SelectionMode;
@@ -75,11 +78,27 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
         cols.add(new ColumnConfig<CCSSStrandCoverageData, String>(_dataAccess.name(), 100, "Standard"));
         // column.setSortable(true);
 
-        cols.add(new ColumnConfig<CCSSStrandCoverageData, Boolean>(_dataAccess.asAssignment(), 70, "Assignment"));
+        SimpleSafeHtmlCell<Boolean> cell =
+        		new SimpleSafeHtmlCell<Boolean>(new AbstractSafeHtmlRenderer<Boolean>() {
+        		      @Override
+        		      public SafeHtml render(Boolean value) {
+        		    	  String html = (value == true) ?
+        		    		  html = "<div><img src='/gwt-resources/images/green_checkmark_small.png'/></div>" : "";
+    		    		  return new SafeHtmlBuilder().appendHtmlConstant(html).toSafeHtml();
+        		      }
+        		}, BrowserEvents.CLICK);
 
-        cols.add(new ColumnConfig<CCSSStrandCoverageData, Boolean>(_dataAccess.asLesson(), 70, "Lesson"));
+        ColumnConfig<CCSSStrandCoverageData, Boolean> assignCol = new ColumnConfig<CCSSStrandCoverageData, Boolean>(_dataAccess.asAssignment(), 70, "Assignment");
+        cols.add(assignCol);
+        assignCol.setCell(cell);
 
-        cols.add(new ColumnConfig<CCSSStrandCoverageData, Boolean>(_dataAccess.asQuiz(), 70, "Quiz"));
+        ColumnConfig<CCSSStrandCoverageData, Boolean> lessonCol = new ColumnConfig<CCSSStrandCoverageData, Boolean>(_dataAccess.asLesson(), 70, "Lesson");
+        cols.add(lessonCol);
+        lessonCol.setCell(cell);
+
+        ColumnConfig<CCSSStrandCoverageData, Boolean> quizCol = new ColumnConfig<CCSSStrandCoverageData, Boolean>(_dataAccess.asQuiz(), 70, "Quiz");
+        cols.add(quizCol);
+        quizCol.setCell(cell);
 
         return new ColumnModel<CCSSStrandCoverageData>(cols);
 
