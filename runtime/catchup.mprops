@@ -4622,14 +4622,14 @@ from HA_USER u
        on p.assign_key = a.assign_key
    LEFT JOIN CM_ASSIGNMENT_PID_STATUS ps
        on ps.assign_key = a.assign_key and ps.pid = p.pid
-   JOIN (
+   LEFT JOIN (
         select ps2.assign_key, pid, count(*) as cnt_correct
         from   CM_ASSIGNMENT_PID_STATUS ps2
         where ps2.status = 'Correct'
         and ps2.assign_key = ? 
         group by pid
    )  cp on cp.assign_key = a.assign_key
-   JOIN (
+   LEFT JOIN (
         select assign_key, pid, count(*) / 2 as cnt_half_credit
         from   CM_ASSIGNMENT_PID_STATUS
         where status = 'Half Credit'
