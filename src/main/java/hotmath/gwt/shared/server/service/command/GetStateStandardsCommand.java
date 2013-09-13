@@ -24,8 +24,8 @@ public class GetStateStandardsCommand implements ActionHandler<GetStateStandards
     public CmList<StateStandard> execute(Connection conn, GetStateStandardsAction action) throws Exception {
 
         String topic = action.getTopic();
-        if(topic.startsWith("topics/"))
-            topic = topic.substring(7);
+        if(topic.startsWith("topics/") == false)
+            topic = "topics/" + topic;
         
         String sql = "select * from inmh_standard where topic = ? and standard_state = ? order by standard_name";
         PreparedStatement ps = null;
