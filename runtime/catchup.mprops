@@ -4614,7 +4614,7 @@ limit 1
 ## all pids in assignment and count of correct/incorrect
 
 select p.pid, count(*) as cnt_students, cp.cnt_correct, hp.cnt_half_credit, 
-       concat(FLOOR(((cp.cnt_correct + hp.cnt_half_credit) / count(*)) * 100), '%') as correct_percent
+concat(CAST( (ifnull(hp.cnt_half_credit, 0) + ifnull(cp.cnt_correct, 0)) / count(*) * 100 as unsigned), '%') as correct_percent
 from HA_USER u
    JOIN CM_ASSIGNMENT a
        on a.group_id = u.group_id
