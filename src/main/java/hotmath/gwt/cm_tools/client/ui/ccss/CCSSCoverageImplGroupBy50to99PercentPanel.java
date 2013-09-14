@@ -22,7 +22,7 @@ public class CCSSCoverageImplGroupBy50to99PercentPanel extends CCSSCoverageImplP
     protected ColumnModel<CCSSCoverageData> getColumns() { 
         List<ColumnConfig<CCSSCoverageData, ?>> cols = new ArrayList<ColumnConfig<CCSSCoverageData, ?>>();
 
-        ColumnConfig<CCSSCoverageData, String> column = new ColumnConfig<CCSSCoverageData, String>(_gridProps.ccssName(), 170, "CCSS Name");
+        ColumnConfig<CCSSCoverageData, String> column = new ColumnConfig<CCSSCoverageData, String>(_gridProps.ccssName(), 170, "CCSS Code");
         column.setSortable(false);
         cols.add(column);
 
@@ -35,7 +35,7 @@ public class CCSSCoverageImplGroupBy50to99PercentPanel extends CCSSCoverageImplP
     
     @Override
     public String[] getPanelColumns() {
-        return new String[] { "CCSS Name", "# Students" };
+        return new String[] { "CCSS Code", "# Students" };
     }
 
     @Override

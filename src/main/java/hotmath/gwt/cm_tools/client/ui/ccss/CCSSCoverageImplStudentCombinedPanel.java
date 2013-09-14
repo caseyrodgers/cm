@@ -27,7 +27,7 @@ public class CCSSCoverageImplStudentCombinedPanel extends CCSSCoverageImplPanelB
         column.setWidth(200);
         cols.add(column);
         
-        column = new ColumnConfig<CCSSCoverageData, String>(_gridProps.ccssName(), 100, "CCSS name");
+        column = new ColumnConfig<CCSSCoverageData, String>(_gridProps.ccssName(), 100, "CCSS Code");
         column.setWidth(100);
         cols.add(column);
 
@@ -36,7 +36,7 @@ public class CCSSCoverageImplStudentCombinedPanel extends CCSSCoverageImplPanelB
     
     @Override
     public String[] getPanelColumns() {
-        return new String[]{"CCSS Name"};
+        return new String[]{"CCSS Code"};
     }
 
     @Override

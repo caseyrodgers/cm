@@ -35,7 +35,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
     protected ColumnModel<HighlightReportData> getColumns() {
     	List<ColumnConfig<HighlightReportData, ?>> cols = new ArrayList<ColumnConfig<HighlightReportData, ?>>();
 
-    	ColumnConfig<HighlightReportData, ?> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 200, "CCSS Name");
+    	ColumnConfig<HighlightReportData, ?> column = new ColumnConfig<HighlightReportData, String>(_gridProps.name(), 200, "CCSS Code");
     	column.setSortable(false);
     	cols.add(column);
 
@@ -98,7 +98,7 @@ public class HighlightsImplCCSSCoveragePanel extends HighlightsImplDetailsPanelB
 
     @Override
     public String[] getReportColumns() {
-        return new String[] {"CCSS Name", "# Students"};
+        return new String[] {"CCSS Code", "# Students"};
     }
     
     @Override
