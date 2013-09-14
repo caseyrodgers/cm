@@ -21,7 +21,6 @@ import hotmath.gwt.shared.client.rpc.action.ResetUserAction;
 import hotmath.gwt.shared.client.util.CmAsyncCallback;
 import hotmath.gwt.shared.client.util.CmException;
 import hotmath.gwt.shared.client.util.CmExceptionLoginInvalid;
-import hotmath.gwt.shared.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 
 import java.util.Date;
@@ -396,12 +395,6 @@ public class CmShared implements EntryPoint {
     static CmServiceAsync _serviceInstance;
 
     static public CmServiceAsync getCmService() {
-        return getCmService(true);
-    }
-    static public CmServiceAsync getCmService(boolean trackAccess) {
-        if(trackAccess) {
-            CmIdleTimeWatcher.getInstance().didServerAccess();
-        }
         return _serviceInstance;
     }
 
