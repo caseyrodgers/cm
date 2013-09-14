@@ -1336,3 +1336,9 @@ SolutionSetCompleteDialog .results{
 .lesson-resource-view  #hm_content{
 	padding: 5px 15px;
 }
+
+/** CCSS */
+
+.ccss-strand-coverage-grid img {
+	text-align: center;
+}
