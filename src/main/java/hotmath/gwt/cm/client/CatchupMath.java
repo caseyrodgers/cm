@@ -172,6 +172,7 @@ public class CatchupMath implements EntryPoint {
                 CmIdleTimeWatcher.getInstance().didKeyBoardActivity();
             }
         }, MouseDownEvent.getType());
+        CmIdleTimeWatcher.getInstance();
         
         // CmNotifyManager.getInstance().notify("This is a test notification");
     }

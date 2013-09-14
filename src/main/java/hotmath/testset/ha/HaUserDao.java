@@ -398,5 +398,17 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
     	return new UserTutorWidgetStats(uid, percentage, (int)totals[TOTAL_WIDGETS], (int)totals[COUNT_CORRECT]);
     }
 
+    public void addUserHasBeenActiveRecord(final int uid) {
+        getJdbcTemplate().update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                String sql = "insert into CM_USER_BUSY(uid, busy_time) values(?, now())";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setInt(1, uid);
+                return ps;
+            }
+        });        
+    }
+
 
 }

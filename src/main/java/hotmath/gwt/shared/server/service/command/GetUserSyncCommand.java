@@ -11,6 +11,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.server.rpc.ActionHandler;
 import hotmath.gwt.cm_rpc_core.server.service.ActionHandlerManualConnectionManagement;
+import hotmath.testset.ha.HaUserDao;
 
 import java.sql.Connection;
 
@@ -26,6 +27,14 @@ public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, User
     public UserSyncInfo execute(Connection conn, GetUserSyncAction action) throws Exception {
       
       AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
+      
+      
+      /** if this user has been busy during this "sync cycle", then add a record
+       * to track that block of time
+       */
+      if(action.isUserActive()) {
+          HaUserDao.getInstance().addUserHasBeenActiveRecord(action.getUid());
+      }
         
        return new UserSyncInfo(
                 new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()),

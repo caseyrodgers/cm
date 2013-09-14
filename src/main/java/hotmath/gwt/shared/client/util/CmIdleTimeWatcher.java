@@ -1,6 +1,6 @@
 package hotmath.gwt.shared.client.util;
 
-import hotmath.gwt.cm_tools.client.ui.InfoPopupBox;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
 import com.google.gwt.user.client.Timer;
@@ -23,6 +23,7 @@ public class CmIdleTimeWatcher {
     Timer _timer;
     
     private CmIdleTimeWatcher() {
+        _lastKeyBoardActivity = System.currentTimeMillis();
         _timer = new Timer() {
             
             @Override
@@ -33,20 +34,33 @@ public class CmIdleTimeWatcher {
         _timer.schedule(CHECK_IDLE_EVERY);
     }
 
+    boolean idle=false;
     private void checkIfIdle() {
         long timeNow = System.currentTimeMillis();
         long diffKeyboard = timeNow - _lastKeyBoardActivity;
         
         
         if(diffKeyboard > MAX_IDLE_TIME) {
-            CmMessageBox.showAlert("System Is Idle", "System is idle: last activity=" + diffKeyboard);
+            idle=true;
+            CmMessageBox.showAlert("System Is Idle", "System is idle: last activity=" + diffKeyboard, new CallbackOnComplete() {
+                @Override
+                public void isComplete() {
+                    idle=false;
+                    _timer.schedule(CHECK_IDLE_EVERY);
+                }
+            });
         }
-
-        _timer.schedule(CHECK_IDLE_EVERY);
+        else {
+            _timer.schedule(CHECK_IDLE_EVERY);
+        }
     }
 
     public void didKeyBoardActivity() {
         _lastKeyBoardActivity = System.currentTimeMillis();
+    }
+
+    public boolean isIdle() {
+        return idle;
     }
 
 }
