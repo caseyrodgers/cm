@@ -20,10 +20,14 @@ import hotmath.gwt.shared.client.eventbus.CmEvent;
 import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
+import hotmath.gwt.shared.client.util.CmIdleTimeWatcher;
 
 import java.util.List;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Widget;
 import com.sencha.gxt.core.client.Style.LayoutRegion;
@@ -104,7 +108,10 @@ public class CmMainPanel extends BorderLayoutContainer {
 		if(cmGuiDef.getCenterWidget() != null) {
 		    _mainContentWrapper.getResourceWrapper().add(cmGuiDef.getCenterWidget());
 		}
+
 	}
+	
+	
 	
 	@Override
 	public void forceLayout() {

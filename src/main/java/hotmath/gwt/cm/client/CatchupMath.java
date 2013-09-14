@@ -44,6 +44,7 @@ import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.eventbus.EventType;
 import hotmath.gwt.shared.client.model.UserInfoBase;
 import hotmath.gwt.shared.client.rpc.action.RunNetTestAction.TestApplication;
+import hotmath.gwt.shared.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.NetTestWindow;
 import hotmath.gwt.shared.client.util.SystemSyncChecker;
@@ -53,6 +54,8 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.event.dom.client.MouseDownEvent;
+import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -157,6 +160,19 @@ public class CatchupMath implements EntryPoint {
             showAssignment(1, null);
         }
 
+        
+        
+        
+        /** add a low level down handler to catch any mouse down event
+         *  
+         */
+        _mainContainer.addDomHandler(new MouseDownHandler() {
+            @Override
+            public void onMouseDown(MouseDownEvent event) {
+                CmIdleTimeWatcher.getInstance().didKeyBoardActivity();
+            }
+        }, MouseDownEvent.getType());
+        
         // CmNotifyManager.getInstance().notify("This is a test notification");
     }
 

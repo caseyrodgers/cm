@@ -98,7 +98,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          * 
          */
          GetUserSyncAction action = new GetUserSyncAction(UserInfo.getInstance().getUid());
-         CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
+         CmShared.getCmService(false).execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
                  CatchupMathVersion version = info.getVersionInfo();
