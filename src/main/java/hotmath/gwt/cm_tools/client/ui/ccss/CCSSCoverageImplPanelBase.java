@@ -13,7 +13,6 @@ import java.util.Date;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import com.sencha.gxt.core.client.Style.SelectionMode;
 import com.sencha.gxt.core.client.ValueProvider;
@@ -167,22 +166,10 @@ abstract public class CCSSCoverageImplPanelBase extends SimpleContainer {
         return grid;
     }
 
-    private static final String FEATURES = "resizable=yes,scrollbars=yes,status=yes,height=900,width=700";
-
     protected void showCCSSDetails() {
-
         final CCSSCoverageData model = _grid.getSelectionModel().getSelectedItem();
-        String stdName = model.getName();
-        String url = convertStandardNameToURL(stdName);
-        Window.open(url, "_blank", FEATURES);
+        new StandardWindowForCCSS(model.getName(), null);
     }
-
-    private static final String CCSS_SITE = "http://www.corestandards.org/Math/Content/";
-
-	private String convertStandardNameToURL(String stdName) {
-		String uri = stdName.replace("-", "/").replace(".", "/");
-		return CCSS_SITE + uri;
-	}
 
 }
 

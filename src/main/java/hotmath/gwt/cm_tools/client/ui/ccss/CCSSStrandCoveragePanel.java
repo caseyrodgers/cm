@@ -192,37 +192,13 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
         grid.setWidth("310");
         grid.setHeight("100%");
         grid.setLoadMask(true);
+        grid.addStyleName("ccss-strand-coverage-grid");
         return grid;
     }
 
     protected void showCCSSDetails() {
-
         final CCSSStrandCoverageData model = _grid.getSelectionModel().getSelectedItem();
-        final String stdName = model.getCcssName();
-        CmLogger.debug("showCCSSDetails(): for " + stdName);
-        new RetryAction<CmList<CCSSDetail>>() {
-            @Override
-            public void attempt() {
-                CmBusyManager.setBusy(true);
-                CCSSDetailAction action = new CCSSDetailAction(Arrays.asList(stdName));
-                setAction(action);
-                CmShared.getCmService().execute(action, this);
-            }
-
-            @Override
-            public void oncapture(CmList<CCSSDetail> ccssDetail) {
-                CmBusyManager.setBusy(false);
-                CmLogger.debug("showCCSSDetails(): got details for " + stdName);
-            	new StandardWindowForCCSS(ccssDetail.get(0).getCcssName(), ccssDetail.get(0).getSummary());
-            }
-            
-            @Override
-            public void onFailure(Throwable error) {
-                super.onFailure(error);
-                CmBusyManager.setBusy(false);
-                drawTable(null);
-            }
-        }.register();
+        new StandardWindowForCCSS(model.getCcssName(), null);
     }
 
 
