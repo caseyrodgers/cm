@@ -31,7 +31,7 @@
              </tr>
              <tr class='{style.bottom}'>
                  <td width='50%'><span class='{style.field}'>First-time Answers: </span> <span ui:field='widgetPercent'/></td>
-                 <td width='50%'></td>
+                 <td width='50%'><span class='{style.field}'>Active Time:</span> <span ui:field='activeMinutes'/></td>
              </tr>
         </tbody>
     </table>

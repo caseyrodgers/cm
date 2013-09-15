@@ -156,7 +156,7 @@ public class GetUserInfoCommand implements ActionHandler<GetUserInfoAction, User
             userInfo.setViewCount(sdao.getTotalInmHViewCount(conn,action.getUserId()));
             
             
-            userInfo.setTutorInputWidgetStats(HaUserDao.getInstance().getUserTutorInputWidgetAnswerPercentCorrect(sm.getUid()));
+            userInfo.setTutorInputWidgetStats(HaUserDao.getInstance().getUserInfoTutorStats(sm.getUid()));
             
             UserLoginResponse userLoginResponse = new UserLoginResponse(userInfo, HaUserDao.getInstance().determineFirstDestination(conn, userInfo,cmProgram));
             return userLoginResponse;

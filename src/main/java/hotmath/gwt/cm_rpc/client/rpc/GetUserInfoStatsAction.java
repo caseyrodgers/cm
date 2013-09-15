@@ -8,13 +8,13 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
  * @author casey
  *
  */
-public class GetUserWidgetStatsAction implements Action<UserTutorWidgetStats>{
+public class GetUserInfoStatsAction implements Action<UserInfoStats>{
     
     private int uid;
 
-    public GetUserWidgetStatsAction(){}
+    public GetUserInfoStatsAction(){}
     
-    public GetUserWidgetStatsAction(int uid) {
+    public GetUserInfoStatsAction(int uid) {
         this.uid = uid;
     }
 
@@ -25,6 +25,9 @@ public class GetUserWidgetStatsAction implements Action<UserTutorWidgetStats>{
     public void setUid(int uid) {
         this.uid = uid;
     }
-    
 
+    @Override
+    public String toString() {
+        return "GetUserInfoStatsAction [uid=" + uid + "]";
+    }
 }

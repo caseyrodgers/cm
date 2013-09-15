@@ -1,6 +1,7 @@
 package hotmath.gwt.cm_tools.client.ui;
 
-import hotmath.gwt.cm_rpc.client.rpc.GetUserWidgetStatsAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetUserInfoStatsAction;
+import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_tools.client.model.StudentModelI;
 import hotmath.gwt.shared.client.CmShared;
@@ -16,7 +17,7 @@ import com.sencha.gxt.widget.core.client.Composite;
 public class StudentInfoPanel extends Composite{
     
     @UiField
-    SpanElement password, showWork, widgetPercent;
+    SpanElement password, showWork, widgetPercent, activeMinutes;
 
     interface MyUiBinder extends UiBinder<Widget, StudentInfoPanel> {}
     private static MyUiBinder uiBinder = GWT.create(MyUiBinder.class);
@@ -34,22 +35,25 @@ public class StudentInfoPanel extends Composite{
     }
     private void getTutorWidgetStatsFromServer(final int uid) {
 
-        new RetryAction<UserTutorWidgetStats>() {
+        new RetryAction<UserInfoStats>() {
             @Override
             public void attempt() {
-                GetUserWidgetStatsAction action = new GetUserWidgetStatsAction(uid);
+                GetUserInfoStatsAction action = new GetUserInfoStatsAction(uid);
                 setAction(action);
                 CmShared.getCmService().execute(action, this);
             }
 
             @Override
-            public void oncapture(UserTutorWidgetStats stats) {
-                if(stats.getCountWidgets() < 1) {
+            public void oncapture(UserInfoStats stats) {
+                UserTutorWidgetStats ts = stats.getTutorStats();
+                if(ts.getCountWidgets() < 1) {
                     widgetPercent.setInnerHTML("n/a");
                 }
                 else {
-                    widgetPercent.setInnerHTML(stats.getCorrectPercent() + "%");
+                    widgetPercent.setInnerHTML(ts.getCorrectPercent() + "%");
                 }
+                
+                activeMinutes.setInnerHTML(stats.getActiveMinutes() + " minutes");
             }
 
         }.register();

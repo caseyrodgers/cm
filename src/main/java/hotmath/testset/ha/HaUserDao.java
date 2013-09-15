@@ -10,6 +10,7 @@ import hotmath.cm.util.PropertyLoadFileException;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
+import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
@@ -18,7 +19,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -362,7 +362,25 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
             }
         });
         
-        return getUserTutorInputWidgetAnswerPercentCorrect(uid);
+        return getUserInfoTutorStats(uid);
+    }
+    
+    
+    
+    public UserInfoStats getUserInfoStats(int uid) throws Exception {
+        UserInfoStats uStats=null;
+        
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_INFO_STATS");
+        Integer activeMinutes = getJdbcTemplate().queryForObject(sql, new Object[] { uid },
+                new RowMapper<Integer>() {
+                    @Override
+                    public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return 0;
+                    }
+                });
+        
+        uStats = new UserInfoStats(uid,  getUserInfoTutorStats(uid), activeMinutes);
+        return uStats;
     }
     
     
@@ -372,7 +390,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
      * @param uid
      * @return
      */
-    public UserTutorWidgetStats getUserTutorInputWidgetAnswerPercentCorrect(int uid) throws Exception {
+    public UserTutorWidgetStats getUserInfoTutorStats(int uid) throws Exception {
     	String sql = CmMultiLinePropertyReader.getInstance().getProperty("TUTOR_WIDGET_ANSWER_PERCENT");
 
     	final double totals[] = new double[2];
