@@ -375,7 +375,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 new RowMapper<Integer>() {
                     @Override
                     public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return 0;
+                        return rs.getInt("active_minutes");
                     }
                 });
         

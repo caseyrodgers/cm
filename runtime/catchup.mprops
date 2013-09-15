@@ -4664,7 +4664,7 @@ order by user_name
 .key=GET_USER_INFO_STATS
 
 
-select count(busy_time) * 15 / 60 as active_minutes
+select count(busy_time) * 15 as active_minutes
 from CM_USER_BUSY
 where uid = ?
 
