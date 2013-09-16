@@ -116,6 +116,9 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         toolBar.add(createCCSSButton(studentModel));
         
         toolBar.add(showQuizResultsBtn());
+        
+        toolBar.add(createActivityLogButton());
+        
         toolBar.add(new FillToolItem());
         toolBar.add(displayPrintableReportToolItem(studentModel));
 
@@ -146,6 +149,18 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
 
         refreshDateRangeLabel();
         dateRange.addStyleName("date-range-label");
+    }
+
+    private Widget createActivityLogButton() {
+        TextButton txt = new TextButton("Activity");
+        txt.setToolTip("Show student activity log");
+        txt.addSelectHandler(new SelectHandler() {
+            @Override
+            public void onSelect(SelectEvent event) {
+                new UserActivityLogDialog(studentModel);
+            }
+        });
+        return txt;
     }
 
     class TestData {

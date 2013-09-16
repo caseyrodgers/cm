@@ -12,6 +12,7 @@ import hotmath.gwt.cm_rpc.client.rpc.CmDestination;
 import hotmath.gwt.cm_rpc.client.rpc.CmPlace;
 import hotmath.gwt.cm_rpc.client.rpc.UserInfoStats;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
+import hotmath.gwt.cm_tools.client.model.ActivityLogRecord;
 import hotmath.spring.SpringManager;
 import hotmath.util.sql.SqlUtilities;
 
@@ -19,6 +20,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -426,6 +428,19 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 return ps;
             }
         });        
+    }
+
+    public Collection< ActivityLogRecord> getUserActivityLog(final int uid) throws Exception {
+        String sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_USER_ACTIVITY_LOG");
+        final int key[] = new int[1];
+        List<ActivityLogRecord> list = getJdbcTemplate().query(sql, new Object[] { uid },
+                new RowMapper<ActivityLogRecord>() {
+                    @Override
+                    public ActivityLogRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        return new ActivityLogRecord(key[0]++, uid, rs.getDate("activity_date"),  rs.getInt("activity_time"));
+                    }
+                });       
+        return list;
     }
 
 

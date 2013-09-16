@@ -21,6 +21,7 @@ import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.cm_tools.client.ui.GWindow;
 import hotmath.gwt.cm_tools.client.ui.MessageOfTheDayDialog;
 import hotmath.gwt.cm_tools.client.ui.RegisterStudent;
+import hotmath.gwt.cm_tools.client.ui.UserActivityLogDialog;
 import hotmath.gwt.cm_tools.client.ui.ccss.CCSSCoverageWindow;
 import hotmath.gwt.shared.client.CmLoginAsync;
 import hotmath.gwt.shared.client.CmShared;
@@ -146,6 +147,10 @@ public class CatchupMathAdmin implements EntryPoint, ValueChangeHandler<String> 
         }
         else if(CmShared.getQueryParameterValue("test").equals("register")) {
             RegisterStudent.startTest();
+            return;
+        }
+        else if(CmShared.getQueryParameterValue("test").equals("activity")) {
+            UserActivityLogDialog.startTest();
             return;
         }
 

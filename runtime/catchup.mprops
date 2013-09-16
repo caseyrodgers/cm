@@ -4670,3 +4670,10 @@ where uid = ?
 
 
 
+.key=GET_USER_ACTIVITY_LOG
+
+select date(busy_time) as activity_date, count(*) * 15 as activity_time
+from CM_USER_BUSY 
+where uid = ?
+group by date(busy_time)
+
