@@ -6,7 +6,9 @@ import hotmath.gwt.shared.client.model.StateStandard;
 
 public class GetStateStandardsAction implements Action<CmList<StateStandard>> {
     
-    String topic;
+	private static final long serialVersionUID = -5294602391567385045L;
+
+	String topic;
     String state;
     
     public GetStateStandardsAction() {}
