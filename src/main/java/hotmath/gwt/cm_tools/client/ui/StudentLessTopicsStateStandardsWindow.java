@@ -43,16 +43,22 @@ public class StudentLessTopicsStateStandardsWindow extends GWindow {
         ListStore<UiStandardsModel> store = new ListStore<UiStandardsModel>(__props.id());
         ListView<UiStandardsModel, String> _listView = new ListView<UiStandardsModel, String>(store, __props.standard());
         for (StateStandard standard : standards) {
-            if(standard.getStandardName() != null) {
+            if(isNullOrBlank(standard.getStandardNameNew()) == false) {
+                store.add(new UiStandardsModel(standard.getTopic(),standard.getStandardNameNew(), Type.NEW_STANDARD));
+                continue;
+            }
+
+            if(isNullOrBlank(standard.getStandardName()) == false) {
                 store.add(new UiStandardsModel(standard.getTopic(),standard.getStandardName(), Type.OLD_STANDARD));
             }
             
-            if(standard.getStandardNameNew() != null){
-                store.add(new UiStandardsModel(standard.getTopic(),standard.getStandardName(), Type.NEW_STANDARD));
-            }
         }
         setWidget(_listView);
         forceLayout();
+    }
+
+    private boolean isNullOrBlank(String name) {
+    	return (name == null || name.trim().length() == 0);
     }
 
     /**
