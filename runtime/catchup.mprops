@@ -4677,3 +4677,28 @@ from CM_USER_BUSY
 where uid = ?
 group by date(busy_time)
 
+
+
+.key=GET_STUDENT_ASSIGNMENT_PROBLEM
+
+select a.status as assignment_status,
+       p.ordinal_number,
+       p.id,
+       p.lesson,
+       p.lesson_file,
+       p.label,
+       s.status as problem_status,
+       s.is_graded
+from   CM_ASSIGNMENT a
+       join CM_ASSIGNMENT_PIDS p
+         on p.assign_key = a.assign_key
+       join CM_ASSIGNMENT_PIDS_USER pu  on (pu.assign_key = a.assign_key and pu.pid = p.pid)
+       left join CM_ASSIGNMENT_PID_STATUS s
+              on s.assign_key = p.assign_key
+                 and s.uid = pu.uid
+                 and s.pid = pu.pid
+where  pu.uid = ?
+       and p.assign_key = ?
+       and pu.pid = ?
+       
+        

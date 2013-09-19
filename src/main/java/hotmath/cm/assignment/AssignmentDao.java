@@ -1622,7 +1622,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         return studentInfo;
     }
     
-    /** This retrieve the problems for the named assignment user.
+    /** This reads the problems for the named assignment user.
      * 
      * If this assignment is not personalized, then use the main table
      * of solutions (shared).  Otherwise, we need to read from the personalization
@@ -1639,7 +1639,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         String sql = "select apu.assign_key, apu.pid, ap.id, ap.label, ap.lesson, ap.lesson_file, ap.ordinal_number " +
                      " from CM_ASSIGNMENT_PIDS_USER apu " +
-                     " JOIN CM_ASSIGNMENT_PIDS ap on ap.id = apu.apid_id " +
+                     " JOIN CM_ASSIGNMENT_PIDS ap on ap.pid = apu.pid " +
                      " where ap.assign_key = ? " +    
                      " and apu.uid = ?" +
                      " order by ap.ordinal_number ";
@@ -1702,7 +1702,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /** Store these as the Pids to use for this student/assignment
          * 
          */
-        String sqlPids = "insert into CM_ASSIGNMENT_PIDS_USER(uid, apid_id, assign_key, pid)values(?,?,?,?)";
+        String sqlPids = "insert into CM_ASSIGNMENT_PIDS_USER(uid, assign_key, pid)values(?,?,?)";
         getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
             @Override
             public int getBatchSize() {
@@ -1712,9 +1712,8 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
                 ps.setInt(1,  uid);
-                ps.setInt(2,  personalPids.get(i).getId());
-                ps.setInt(3,  assignKey);
-                ps.setString(4,  personalPids.get(i).getPid());
+                ps.setInt(2,  assignKey);
+                ps.setString(3,  personalPids.get(i).getPid());
             }
         });
         
@@ -2547,7 +2546,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
      * @param pid
      * @return
      */
-    public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) {
+    public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) throws Exception {
         
 
         Boolean isPersonalized = getJdbcTemplate().queryForObject("select is_personalized from CM_ASSIGNMENT where assign_key = ? ",  new Object[]{assignKey}, new RowMapper<Boolean>() {
@@ -2559,20 +2558,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         
         String sql = null;
         if(isPersonalized) {
-            sql = "select a.status as assignment_status, " +
-                  "p.ordinal_number, p.id, p.lesson,p.lesson_file,p.label,s.status as problem_status,s.is_graded " +
-                  "from   CM_ASSIGNMENT a " +
-            " join CM_ASSIGNMENT_PIDS p " +
-            " on p.assign_key = a.assign_key " +
-            " join CM_ASSIGNMENT_PIDS_USER pu " +
-            "               on pu.apid_id = p.id " +
-            " left join CM_ASSIGNMENT_PID_STATUS s " +
-            " on s.assign_key = p.assign_key " +
-            " and s.uid = pu.uid " +
-            " and s.pid = pu.pid " +
-            " where   pu.uid = ? " +
-            " and p.assign_key = ? " +
-            " and pu.pid = ? ";
+            sql = CmMultiLinePropertyReader.getInstance().getProperty("GET_STUDENT_ASSIGNMENT_PROBLEM");
         }
         else {
                 
