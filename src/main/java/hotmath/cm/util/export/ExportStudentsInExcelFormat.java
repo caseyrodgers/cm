@@ -307,7 +307,7 @@ public class ExportStudentsInExcelFormat {
 		    cell = row.createCell(++col);
 		    Integer tot = timeOnTaskMap.get(rc.getStudentUid());
 		    String timeOnTask = (tot != null) ? String.format("%d", tot) : "0";
-	        cell.setCellValue(timeOnTask);
+	        cell.setCellValue(Integer.parseInt(timeOnTask));
 	        cell.setCellStyle(styles.get("data"));
 	        if (charCount[col] < timeOnTask.length()) charCount[col] = timeOnTask.length();
 
