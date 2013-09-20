@@ -499,6 +499,7 @@ public class StudentDetailsPanel extends BorderLayoutContainer {
         configs.get(configs.size() - 1).setMenuDisabled(true);
 
         configs.add(new ColumnConfig<StudentActivityModel, String>(detailsProps.program(), 120, "Program"));
+        configs.get(configs.size() - 1).setMenuDisabled(true);
         configs.get(configs.size() - 1).setCell(new AbstractCell() {
             @Override
             public void render(Context context, Object value, SafeHtmlBuilder sb) {
