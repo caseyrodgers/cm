@@ -4692,7 +4692,8 @@ select a.status as assignment_status,
 from   CM_ASSIGNMENT a
        join CM_ASSIGNMENT_PIDS p
          on p.assign_key = a.assign_key
-       join CM_ASSIGNMENT_PIDS_USER pu  on (pu.assign_key = a.assign_key and pu.pid = p.pid)
+       join CM_ASSIGNMENT_PIDS_USER pu 
+         on pu.apid_id = p.id         
        left join CM_ASSIGNMENT_PID_STATUS s
               on s.assign_key = p.assign_key
                  and s.uid = pu.uid

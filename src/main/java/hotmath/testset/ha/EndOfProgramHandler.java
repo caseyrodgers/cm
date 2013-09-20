@@ -83,7 +83,13 @@ public class EndOfProgramHandler {
     	        || programCurr.getTestDefId() == CmProgram.CAHSEEHM_V1.getDefId() ) {
     		// reset/repeat
     		updateProgram(conn, CmProgram.CAHSEEHM.getSubject(), CmProgram.CAHSEEHM.getProgramType(),null);
-    	}  
+    	}
+        else if( programCurr.getTestDefId() == CmProgram.ELEMALG.getDefId() 
+                || programCurr.getTestDefId() == CmProgram.ELEMALG.getDefId() ) {
+            // reset/repeat
+            updateProgram(conn, CmProgram.ELEMALG.getSubject(), CmProgram.ELEMALG.getProgramType(),null);
+        }  
+    	
     	
     	else if(programCurr.getTestDefId() == CmProgram.TAKS.getDefId()) {
     		// reset/repeat
@@ -108,7 +114,7 @@ public class EndOfProgramHandler {
     		}
     		else if(programCurr.getTestDefId() == CmProgram.GEOM_CHAP.getDefId()) {
     			setupChapterTest(conn, programCurr,CmProgram.GEOM_CHAP.getSubject());
-    		}                
+    		} 
     		else {
     			throw new Exception("Unknown program: " + 
     					programCurr);
