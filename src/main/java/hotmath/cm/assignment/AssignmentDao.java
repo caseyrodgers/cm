@@ -101,6 +101,12 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         /** empty */
     }
 
+    /** Only assignments in draft mode will have 
+     *  their problems saved.
+     * 
+     * @param ass
+     * @return
+     */
     public int saveAssignment(final Assignment ass) {
         /**
          * insert or update the new Assignment record and save the key
@@ -162,8 +168,6 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                     ps.setInt(10, ass.isPreventLessonAccess() ? 1 : 0);
 
                     ps.setInt(11, ass.getAssignKey());
-
-
                     return ps;
                 }
             });
@@ -171,13 +175,33 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         }
         final int assKey = assignKey[0];
 
-        deleteAssignmentPids(assKey, false);
 
+        if(ass.getStatus().equals("Draft")) {
+            saveAssignmentPids(assKey, ass);
+        }
+
+        
+        return assKey;
+
+    }
+
+    
+    /** Remove existing and recreate the entire PID set
+     * 
+     * @param assKey
+     * @param ass
+     */
+    private void saveAssignmentPids(final int assKey, final Assignment ass) {
+        
+        __logger.debug("Saving assignment pids for: " + ass.getAssignKey());
         /**
          * save the PIDS contained in this Assignment
          * 
          */
         if (ass.getPids() != null && ass.getPids().size() > 0) {
+            
+            deleteAssignmentPids(assKey);
+
             String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, lesson_file, ordinal_number)values(?,?,?,?,?,?)";
             final int counter[] = new int[1];
             getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
@@ -210,11 +234,9 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
                 }
             });
         }
-
-        return assKey;
-
     }
-
+    
+    
     /**
      * Fetch a persisted Assignment from DB
      * 
@@ -421,10 +443,11 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     }
 
     /**
-     * delete the PIDS contained in this Assignment
+     * delete the PIDS contained in this Assignment and any 
+     * already assigned PIDS in CM_ASSIGNMENT_PIDS_USER
      * 
      */
-    private void deleteAssignmentPids(final int assKey, boolean deleteAlreadyAssigned) {
+    private void deleteAssignmentPids(final int assKey) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -435,7 +458,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
             }
         });
         
-        
+        boolean deleteAlreadyAssigned = true;
         if(deleteAlreadyAssigned) {
             /** delete existing, already assigned to user pids
              * 
@@ -455,7 +478,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
 
     public void deleteAssignment(final int assKey) {
 
-        deleteAssignmentPids(assKey, true);
+        deleteAssignmentPids(assKey);
 
         /**
          * Delete the assignment record
@@ -2557,7 +2580,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
     public StudentProblemDto getStudentProblem(final int uid, final int assignKey, final String pid) throws Exception {
         
 
-        List<ProblemDto> p = getStudentAssignmentProblems(assignKey,  uid);
+        //List<ProblemDto> p = getStudentAssignmentProblems(assignKey,  uid);
         
         Boolean isPersonalized = getJdbcTemplate().queryForObject("select is_personalized from CM_ASSIGNMENT where assign_key = ? ",  new Object[]{assignKey}, new RowMapper<Boolean>() {
             @Override

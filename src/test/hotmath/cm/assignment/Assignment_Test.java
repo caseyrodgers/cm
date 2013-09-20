@@ -22,6 +22,7 @@ public class Assignment_Test extends TestCase {
         CmList<ProblemDto> pids = new CmArrayList<ProblemDto>();
         pids.add(new ProblemDto(0,0, new LessonModel("Lesson", "File"), "Label", "Pid",  0));
         Assignment as = new Assignment(2, 0,0, "Ass-Name-" + System.currentTimeMillis(),"Comments",new Date(),pids,"New", false, false,new Date(), true, true, false);
+        as.setStatus("Draft");
         int assKey = AssignmentDao.getInstance().saveAssignment(as);
         assertTrue(assKey > 0);
         Assignment assGet = AssignmentDao.getInstance().getAssignment(assKey);
