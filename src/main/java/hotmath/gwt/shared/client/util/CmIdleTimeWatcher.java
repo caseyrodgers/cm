@@ -3,6 +3,7 @@ package hotmath.gwt.shared.client.util;
 import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_tools.client.util.CmMessageBox;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 
 public class CmIdleTimeWatcher {
@@ -16,7 +17,7 @@ public class CmIdleTimeWatcher {
         return __instance;
     }
 
-    static final int MAX_IDLE_TIME = 3600000;   // one HOUR
+    static final int MAX_IDLE_TIME = 3600000 * 8;   // 8 HOURs
     static final int CHECK_IDLE_EVERY = 5000;
 
     long _lastKeyBoardActivity;
@@ -42,7 +43,8 @@ public class CmIdleTimeWatcher {
         
         if(diffKeyboard > MAX_IDLE_TIME) {
             idle=true;
-            CmMessageBox.showAlert("System Is Idle", "System is idle: last activity=" + diffKeyboard, new CallbackOnComplete() {
+            Log.info("System is idle");
+            CmMessageBox.showAlert("System Is Idle", "Catchup Math is not in use.  Click OK to continue" + diffKeyboard, new CallbackOnComplete() {
                 @Override
                 public void isComplete() {
                     idle=false;
