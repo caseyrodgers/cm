@@ -176,10 +176,7 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
         final int assKey = assignKey[0];
 
 
-        if(ass.getStatus().equals("Draft")) {
-            saveAssignmentPids(assKey, ass);
-        }
-
+        saveAssignmentPids(assKey, ass);
         
         return assKey;
 
@@ -200,39 +197,52 @@ public class AssignmentDao extends SimpleJdbcDaoSupport {
          */
         if (ass.getPids() != null && ass.getPids().size() > 0) {
             
-            deleteAssignmentPids(assKey);
 
-            String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, lesson_file, ordinal_number)values(?,?,?,?,?,?)";
-            final int counter[] = new int[1];
-            getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
-
+            /** Only save pids if there are currently ZERO 
+             * 
+             */
+            String sql = "select count(*) as count_pids from CM_ASSIGNMENT_PIDS where assign_key = ?";
+            Integer cnt = getJdbcTemplate().queryForObject(sql, new Object[] { assKey }, new RowMapper<Integer>() {
                 @Override
-                public void setValues(PreparedStatement ps, int i) throws SQLException {
-                    ps.setInt(1, assKey);
-                    ProblemDto p = ass.getPids().get(i);
-
-                    String pidParts[] = p.getPid().split("\\$");
-                    String fullPid = pidParts[0];
-                    if (pidParts.length > 1) {
-                        try {
-                            fullPid = SolutionDao.getInstance().getGlobalSolutionContext(pidParts[0] + "$" + pidParts[1]).getPid();
-
-                        } catch (Exception e) {
-                            __logger.error("Error getting global context name", e);
-                        }
-                    }
-                    ps.setString(2, fullPid);
-                    ps.setString(3, p.getLabel());
-                    ps.setString(4, p.getLesson().getLessonName());
-                    ps.setString(5, p.getLesson().getLessonFile());
-                    ps.setInt(6, ++counter[0]);
-                }
-
-                @Override
-                public int getBatchSize() {
-                    return ass.getPids().size();
+                public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    return rs.getInt("count_pids");
                 }
             });
+            if(cnt == 0) {
+                deleteAssignmentPids(assKey);
+    
+                String sqlPids = "insert into CM_ASSIGNMENT_PIDS(assign_key, pid, label, lesson, lesson_file, ordinal_number)values(?,?,?,?,?,?)";
+                final int counter[] = new int[1];
+                getJdbcTemplate().batchUpdate(sqlPids, new BatchPreparedStatementSetter() {
+    
+                    @Override
+                    public void setValues(PreparedStatement ps, int i) throws SQLException {
+                        ps.setInt(1, assKey);
+                        ProblemDto p = ass.getPids().get(i);
+    
+                        String pidParts[] = p.getPid().split("\\$");
+                        String fullPid = pidParts[0];
+                        if (pidParts.length > 1) {
+                            try {
+                                fullPid = SolutionDao.getInstance().getGlobalSolutionContext(pidParts[0] + "$" + pidParts[1]).getPid();
+    
+                            } catch (Exception e) {
+                                __logger.error("Error getting global context name", e);
+                            }
+                        }
+                        ps.setString(2, fullPid);
+                        ps.setString(3, p.getLabel());
+                        ps.setString(4, p.getLesson().getLessonName());
+                        ps.setString(5, p.getLesson().getLessonFile());
+                        ps.setInt(6, ++counter[0]);
+                    }
+    
+                    @Override
+                    public int getBatchSize() {
+                        return ass.getPids().size();
+                    }
+                });
+            }
         }
     }
     
