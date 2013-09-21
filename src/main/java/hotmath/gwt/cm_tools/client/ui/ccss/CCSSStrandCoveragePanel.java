@@ -83,7 +83,7 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
         		      @Override
         		      public SafeHtml render(Boolean value) {
         		    	  String html = (value == true) ?
-        		    		  html = "<div><img src='/gwt-resources/images/green_checkmark_small.png'/></div>" : "";
+        		    		  html = "<div class='ccss-strand-coverage-grid'><img src='/gwt-resources/images/green_checkmark_small.png'/></div>" : "";
     		    		  return new SafeHtmlBuilder().appendHtmlConstant(html).toSafeHtml();
         		      }
         		}, BrowserEvents.CLICK);
@@ -192,7 +192,6 @@ public class CCSSStrandCoveragePanel extends SimpleContainer {
         grid.setWidth("310");
         grid.setHeight("100%");
         grid.setLoadMask(true);
-        grid.addStyleName("ccss-strand-coverage-grid");
         return grid;
     }
 
