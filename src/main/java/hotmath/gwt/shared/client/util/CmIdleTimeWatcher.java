@@ -1,5 +1,7 @@
 package hotmath.gwt.shared.client.util;
 
+import java.util.Date;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Timer;
 
@@ -19,6 +21,7 @@ public class CmIdleTimeWatcher {
 
     long _lastKeyBoardActivity;
     Timer _timer;
+    boolean activeMinutes[] = new boolean[60];
     
     private CmIdleTimeWatcher() {
         _lastKeyBoardActivity = System.currentTimeMillis();
@@ -32,7 +35,7 @@ public class CmIdleTimeWatcher {
         _timer.schedule(CHECK_IDLE_EVERY);
     }
 
-    boolean idle=false;
+    boolean idle=true;
     private void checkIfIdle() {
         long timeNow = System.currentTimeMillis();
         long diffKeyboard = timeNow - _lastKeyBoardActivity;
@@ -52,7 +55,44 @@ public class CmIdleTimeWatcher {
     }
 
     public void didKeyBoardActivity() {
+        idle = false;
+        
         _lastKeyBoardActivity = System.currentTimeMillis();
+        
+        @SuppressWarnings("deprecation")
+        int min = new Date().getMinutes();
+        activeMinutes[min] = true;
+    }
+    
+    public int getActiveMinutes() {
+        try {
+            int low=-1,high=-1;
+            // find low number
+            for(int i=0;i<activeMinutes.length;i++) {
+                if(activeMinutes[i]) {
+                    low=i;
+                    break;
+                }
+            }
+            if(low==-1) {
+                return 0; // not busy
+            }
+            else {
+                // find high number
+                for(int i=activeMinutes.length;i >-1;i--) {
+                    if(activeMinutes[i-1]) {
+                        high=i;
+                        break;
+                    }
+                }
+                return high-low;
+            }
+        }
+        finally {
+            // reset
+            activeMinutes = new boolean[activeMinutes.length];
+            idle = true;
+        }
     }
 
     public boolean isIdle() {

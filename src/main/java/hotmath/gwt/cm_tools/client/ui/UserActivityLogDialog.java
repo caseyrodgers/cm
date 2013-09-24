@@ -59,7 +59,7 @@ public class UserActivityLogDialog extends GWindow {
         props = GWT.create(GridProperties.class);
         ArrayList<ColumnConfig<ActivityLogRecord, ?>> columns = new ArrayList<ColumnConfig<ActivityLogRecord, ?>>();
         columns.add(new ColumnConfig<ActivityLogRecord, String>(props.activityDay(), 75, "Date"));
-        columns.add(new ColumnConfig<ActivityLogRecord, Integer>(props.activityTime(), 100, "Active Minutes"));
+        columns.add(new ColumnConfig<ActivityLogRecord, Integer>(props.activeMinutes(), 100, "Active Minutes"));
         ColumnModel<ActivityLogRecord> cols = new ColumnModel<ActivityLogRecord>(columns);
         ListStore<ActivityLogRecord> store = new ListStore<ActivityLogRecord>(props.key());
         grid = new Grid<ActivityLogRecord>(store, cols);
@@ -72,7 +72,7 @@ public class UserActivityLogDialog extends GWindow {
     interface GridProperties extends PropertyAccess<String> {
         @Path("id")
         ModelKeyProvider<ActivityLogRecord> key();
-        ValueProvider<ActivityLogRecord, Integer> activityTime();
+        ValueProvider<ActivityLogRecord, Integer> activeMinutes();
         ValueProvider<ActivityLogRecord, String> activityDay();
     }
 

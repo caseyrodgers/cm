@@ -418,13 +418,14 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
     	return new UserTutorWidgetStats(uid, percentage, (int)totals[TOTAL_WIDGETS], (int)totals[COUNT_CORRECT]);
     }
 
-    public void addUserHasBeenActiveRecord(final int uid) {
+    public void addUserHasBeenActiveRecord(final int uid, final int activeMinutes) {
         getJdbcTemplate().update(new PreparedStatementCreator() {
             @Override
             public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                String sql = "insert into CM_USER_BUSY(uid, busy_time) values(?, now())";
+                String sql = "insert into CM_USER_BUSY(uid, busy_time, active_minutes) values(?, now(), ?)";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setInt(1, uid);
+                ps.setInt(2, activeMinutes);
                 return ps;
             }
         });        
@@ -437,7 +438,7 @@ public class HaUserDao extends SimpleJdbcDaoSupport {
                 new RowMapper<ActivityLogRecord>() {
                     @Override
                     public ActivityLogRecord mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        return new ActivityLogRecord(key[0]++, uid, rs.getDate("activity_date"),  rs.getInt("activity_time"));
+                        return new ActivityLogRecord(key[0]++, uid, rs.getDate("activity_date"),  rs.getInt("active_minutes"));
                     }
                 });       
         return list;

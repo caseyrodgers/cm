@@ -10,13 +10,13 @@ public class ActivityLogRecord implements Response {
     private int uid;
     private int key;
     private Date activityDate;
-    private int activityTime;
+    private int activeMinutes;
     public ActivityLogRecord() {}
-    public ActivityLogRecord(int key, int uid, Date activityDate, int activityTime) {
+    public ActivityLogRecord(int key, int uid, Date activityDate, int activeMinutes) {
         this.key = key;
         this.uid = uid;
         this.activityDate = activityDate;
-        this.activityTime = activityTime;
+        this.activeMinutes = activeMinutes;
     }
     public int getUid() {
         return uid;
@@ -37,15 +37,19 @@ public class ActivityLogRecord implements Response {
         this.key = key;
     }
 
-    public int getActivityTime() {
-        return activityTime;
-    }
-    public void setActivityTime(int activityTime) {
-        this.activityTime = activityTime;
-    }
     
+    public int getActiveMinutes() {
+        return activeMinutes;
+    }
+    public void setActiveMinutes(int activeMinutes) {
+        this.activeMinutes = activeMinutes;
+    }
     public String getActivityDay() {
         return DateUtils4Gwt.getPrettyDateString(activityDate,  true);
+    }
+    @Override
+    public String toString() {
+        return "ActivityLogRecord [uid=" + uid + ", key=" + key + ", activityDate=" + activityDate + ", activeMinutes=" + activeMinutes + "]";
     }
 
 }

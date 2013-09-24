@@ -5,7 +5,7 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 
 public class GetUserSyncAction implements Action<UserSyncInfo> {
     int uid;
-    private boolean userActive;
+    private int userActiveMinutes;
     public GetUserSyncAction() {}
     
     public GetUserSyncAction(int uid) {
@@ -19,21 +19,17 @@ public class GetUserSyncAction implements Action<UserSyncInfo> {
     public void setUid(int uid) {
         this.uid = uid;
     }
-    
-    public void setUserIsActive(boolean isUserActive) {
-        this.userActive = isUserActive;
+
+    public int getUserActiveMinutes() {
+        return userActiveMinutes;
     }
 
-    public boolean isUserActive() {
-        return userActive;
-    }
-
-    public void setUserActive(boolean userActive) {
-        this.userActive = userActive;
+    public void setUserActiveMinutes(int userActiveMinutes) {
+        this.userActiveMinutes = userActiveMinutes;
     }
 
     @Override
     public String toString() {
-        return "GetUserSyncAction [uid=" + uid + ", userActive=" + userActive + "]";
+        return "GetUserSyncAction [uid=" + uid + ", userActiveMinutes=" + userActiveMinutes + "]";
     }
 }

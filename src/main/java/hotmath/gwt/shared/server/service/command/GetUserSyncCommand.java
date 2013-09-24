@@ -32,8 +32,8 @@ public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, User
       /** if this user has been busy during this "sync cycle", then add a record
        * to track that block of time
        */
-      if(action.isUserActive()) {
-          HaUserDao.getInstance().addUserHasBeenActiveRecord(action.getUid());
+      if(action.getUserActiveMinutes() > 0) {
+          HaUserDao.getInstance().addUserHasBeenActiveRecord(action.getUid(), action.getUserActiveMinutes());
       }
         
        return new UserSyncInfo(
