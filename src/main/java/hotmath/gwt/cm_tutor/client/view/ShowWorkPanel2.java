@@ -372,12 +372,17 @@ public class ShowWorkPanel2 extends Composite {
                 $wnd._theWhiteboard = new $wnd.Whiteboard('whiteboard-1', isStatic);
                 
                 $wnd._theWhiteboard.initWhiteboard($doc);
+                alert('after initWhiteboard');
 
                 // tell the Whiteboard object the size of the parent container
                 var height = Number($wnd.grabComputedHeight(ele)) + 15;
+                alert('test a');
                 var width = Number($wnd.grabComputedWidth(ele)) + 15;
+                alert('test b');
                 console.log('setting whiteboard size: ' + height + ', ' + width);
+                alert('test c');
                 $wnd._theWhiteboard.setWhiteboardViewPort(width, height);
+                alert('test d');
                 
                 // overide methods in the Whiteboard instance
                 $wnd._theWhiteboard.whiteboardOut = function (data, boo) {
