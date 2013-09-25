@@ -6,6 +6,16 @@ import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 public class GetUserSyncAction implements Action<UserSyncInfo> {
     int uid;
     private int userActiveMinutes;
+    boolean fullSyncCheck;
+    
+    public boolean isFullSyncCheck() {
+        return fullSyncCheck;
+    }
+
+    public void setFullSyncCheck(boolean fullSyncCheck) {
+        this.fullSyncCheck = fullSyncCheck;
+    }
+
     public GetUserSyncAction() {}
     
     public GetUserSyncAction(int uid) {
@@ -30,6 +40,6 @@ public class GetUserSyncAction implements Action<UserSyncInfo> {
 
     @Override
     public String toString() {
-        return "GetUserSyncAction [uid=" + uid + ", userActiveMinutes=" + userActiveMinutes + "]";
+        return "GetUserSyncAction [uid=" + uid + ", userActiveMinutes=" + userActiveMinutes + ", fullSyncCheck=" + fullSyncCheck + "]";
     }
 }

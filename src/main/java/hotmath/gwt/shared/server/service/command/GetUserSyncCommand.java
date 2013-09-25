@@ -15,32 +15,40 @@ import hotmath.testset.ha.HaUserDao;
 
 import java.sql.Connection;
 
-/** Check users' current local state information looking
- *  for out of sync data.
- *  
+/**
+ * Check users' current local state information looking for out of sync data.
+ * 
+ * (If logout or window close)
+ * If fullCheck is not requested, then only save any activeMinute data associated
+ * ith logout/window close.
+ * 
  * 
  * @author casey
- *
+ * 
  */
-public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, UserSyncInfo>, ActionHandlerManualConnectionManagement{
+public class GetUserSyncCommand implements ActionHandler<GetUserSyncAction, UserSyncInfo>, ActionHandlerManualConnectionManagement {
     @Override
     public UserSyncInfo execute(Connection conn, GetUserSyncAction action) throws Exception {
-      
-      AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
-      
-      
-      /** if this user has been busy during this "sync cycle", then add a record
-       * to track that block of time
-       */
-      if(action.getUserActiveMinutes() > 0) {
-          HaUserDao.getInstance().addUserHasBeenActiveRecord(action.getUid(), action.getUserActiveMinutes());
-      }
-        
-       return new UserSyncInfo(
-                new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()),
-                HaLoginInfoDao.getInstance().getLatestLoginKey(action.getUid()),assignmentInfo);
-    }
+
+        /**
+         * if this user has been busy during this "sync cycle", then add a
+         * record to track that block of time
+         */
+        if (action.getUserActiveMinutes() > 0) {
+            HaUserDao.getInstance().addUserHasBeenActiveRecord(action.getUid(), action.getUserActiveMinutes());
+        }
+
+        if(action.isFullSyncCheck()) {
+            AssignmentUserInfo assignmentInfo = AssignmentDao.getInstance().getStudentAssignmentMetaInfo(action.getUid());
     
+            return new UserSyncInfo(new CatchupMathVersion(CatchupMathProperties.getInstance().getClientVersionNumber()), HaLoginInfoDao.getInstance()
+                    .getLatestLoginKey(action.getUid()), assignmentInfo);
+        }
+        else {
+            return new UserSyncInfo();
+        }
+    }
+
     @Override
     public Class<? extends Action<? extends Response>> getActionType() {
         return GetUserSyncAction.class;

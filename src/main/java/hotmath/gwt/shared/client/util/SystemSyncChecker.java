@@ -12,7 +12,6 @@ import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
 import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_tools.client.CatchupMathTools;
 import hotmath.gwt.cm_tools.client.ui.CmLogger;
 import hotmath.gwt.shared.client.CatchupMathVersionInfo;
 import hotmath.gwt.shared.client.CmShared;
@@ -75,22 +74,26 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         Timer timer = new Timer() {
             @Override
             public void run() {
-                checkForUpdate();
+                checkForUpdate(true);
             }
         };
         timer.scheduleRepeating(CHECK_EVERY);
         
         
         /** do it first */
-        checkForUpdate();
+        checkForUpdate(true);
     }
     
     
     /** Call server and look for new messages.
      * 
      * Only call server if window is not currently being displayed.
+     * 
+     * If doFUllCheck is false, then full check is not performed
+     * only activeMinutes is transfered.
+     * 
      */
-    static public void checkForUpdate() {
+    static public void checkForUpdate(final boolean doFullCheck) {
         
         if(_theWindow != null)
             return;
@@ -100,6 +103,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          * 
          */
          GetUserSyncAction action = new GetUserSyncAction(UserInfo.getInstance().getUid());
+         action.setFullSyncCheck(doFullCheck);
          if(!CmIdleTimeWatcher.getInstance().isIdle()) {
              action.setUserActiveMinutes(CmIdleTimeWatcher.getInstance().getActiveMinutes());
          }
@@ -108,6 +112,11 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
          CmShared.getCmService().execute(action, new AsyncCallback<UserSyncInfo>() {
              @Override
             public void onSuccess(UserSyncInfo info) {
+                 
+                 if(!doFullCheck) {
+                     return;
+                 }
+                 
                  CatchupMathVersion version = info.getVersionInfo();
                  
      	    	String startType = UserInfoBase.getInstance().getCmStartType();
@@ -141,7 +150,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
              @Override
             public void onFailure(Throwable arg0) {
                  /** fail silent */
-                 CatchupMathTools.showAlert(arg0.getMessage());
+                 Log.error("Error during sync check: " + arg0.getMessage());
             }
         });
     }
@@ -165,13 +174,13 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
     static {
         CmRpcCore.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
             public void forceSyncCheck() {
-                checkForUpdate();
+                checkForUpdate(true);
             }
         });
         CmRpcCore.EVENT_BUS.addHandler(CmLogoutEvent.TYPE, new CmLogoutHandler() {
             @Override
             public void userLogOut() {
-                checkForUpdate();
+                checkForUpdate(false);
             }
         });
         
