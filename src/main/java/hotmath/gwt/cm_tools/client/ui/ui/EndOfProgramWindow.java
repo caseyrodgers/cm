@@ -56,7 +56,7 @@ public class EndOfProgramWindow extends GWindow {
         btn.addSelectHandler(new SelectHandler() {
             public void onSelect(SelectEvent event) {
                 InfoPopupBox.display("Check for program assignment", "Checking for new program assignment...");
-                SystemSyncChecker.checkForUpdate(true);
+                SystemSyncChecker.checkForUpdate(true, null);
             }
             
         });

@@ -2,6 +2,7 @@ package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
 import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
@@ -24,9 +25,12 @@ import hotmath.gwt.shared.client.eventbus.CmEventListenerImplDefault;
 import hotmath.gwt.shared.client.eventbus.EventBus;
 import hotmath.gwt.shared.client.model.CmPartner;
 import hotmath.gwt.shared.client.model.UserInfoBase;
+import hotmath.gwt.shared.client.util.CmIdleTimeWatcher;
 import hotmath.gwt.shared.client.util.CmInfoConfig;
 import hotmath.gwt.shared.client.util.CmRunAsyncCallback;
 import hotmath.gwt.shared.client.util.MyResources;
+import hotmath.gwt.shared.client.util.SystemSyncChecker;
+import hotmath.system.SystemCheck;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -178,18 +182,21 @@ public class HeaderPanel extends FlowLayoutContainer {
         logoutButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
-                CmRpcCore.EVENT_BUS.fireEvent(new CmLogoutEvent());
-                
-                if (partner != null) {
-                    CmLogger.info("Doing custom thing: " + partner.onCloseLink);
-                    try {
-                        Window.Location.assign(partner.onCloseLink);
-                    } catch (Exception e) {
-                        CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+                SystemSyncChecker.checkForUpdate(false, new CallbackOnComplete() {
+                    @Override
+                    public void isComplete() {
+                        if (partner != null) {
+                            CmLogger.info("Doing custom thing: " + partner.onCloseLink);
+                            try {
+                                Window.Location.assign(partner.onCloseLink);
+                            } catch (Exception e) {
+                                CatchupMathTools.showAlert("Error returning to our partner page: " + e.getMessage());
+                            }
+                        } else {
+                            Window.Location.assign(CmShared.CM_HOME_URL);
+                        }
                     }
-                } else {
-                    Window.Location.assign(CmShared.CM_HOME_URL);
-                }
+                });
             }
         });
 

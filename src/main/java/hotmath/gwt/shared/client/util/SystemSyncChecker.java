@@ -8,6 +8,7 @@ import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
 import hotmath.gwt.cm_core.client.model.UserSyncInfo;
 import hotmath.gwt.cm_core.client.rpc.GetUserSyncAction;
+import hotmath.gwt.cm_rpc.client.CallbackOnComplete;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
 import hotmath.gwt.cm_rpc_assignments.client.model.assignment.AssignmentUserInfo;
@@ -74,14 +75,14 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
         Timer timer = new Timer() {
             @Override
             public void run() {
-                checkForUpdate(true);
+                checkForUpdate(true, null);
             }
         };
         timer.scheduleRepeating(CHECK_EVERY);
         
         
         /** do it first */
-        checkForUpdate(true);
+        checkForUpdate(true, null);
     }
     
     
@@ -93,7 +94,7 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
      * only activeMinutes is transfered.
      * 
      */
-    static public void checkForUpdate(final boolean doFullCheck) {
+    static public void checkForUpdate(final boolean doFullCheck, final CallbackOnComplete callbackAfterServerCall) {
         
         if(_theWindow != null)
             return;
@@ -113,38 +114,45 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
              @Override
             public void onSuccess(UserSyncInfo info) {
                  
-                 if(!doFullCheck) {
-                     return;
-                 }
-                 
-                 CatchupMathVersion version = info.getVersionInfo();
-                 
-     	    	String startType = UserInfoBase.getInstance().getCmStartType();
-    	    	if(startType == null)startType = "";
-
-    	    	CmLogger.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
-                 if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
-                     new SystemSyncChecker(version);
-                 }
-                 else if(!"ADMIN".equals(startType) && !"AUTO_CREATE".equals(startType) && CmShared.getQueryParameter("debug") == null) {
+                 try {
+                     if(!doFullCheck) {
+                         return;
+                     }
                      
-                	 /** only for CM Student not in debug mode */
-                     String k1=info.getCurrentUserLoginKey();
-                     String k2=CmShared.getSecurityKey();
-                	 if(k1 != null && !k1.equals(k2)) {
-                	     Log.debug("key1: " + k1 + ", key2: " + k2);
-	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
-	                             
-	                             new TextButton("Logout", new SelectHandler() {
-	                                 @Override
-	                                public void onSelect(SelectEvent event) {
-	                                     Window.Location.assign("/login.html");
-	                                 }
-	                             }));
-                	 }
+                     CatchupMathVersion version = info.getVersionInfo();
+                     
+         	    	String startType = UserInfoBase.getInstance().getCmStartType();
+        	    	if(startType == null)startType = "";
+    
+        	    	CmLogger.debug("GetCatchupMathVersionAction: " + version.getVersion() + " current: " + CatchupMathVersionInfo.getBuildVersion());
+                     if(version.getVersion() != CatchupMathVersionInfo.getBuildVersion()) {
+                         new SystemSyncChecker(version);
+                     }
+                     else if(!"ADMIN".equals(startType) && !"AUTO_CREATE".equals(startType) && CmShared.getQueryParameter("debug") == null) {
+                         
+                    	 /** only for CM Student not in debug mode */
+                         String k1=info.getCurrentUserLoginKey();
+                         String k2=CmShared.getSecurityKey();
+                    	 if(k1 != null && !k1.equals(k2)) {
+                    	     Log.debug("key1: " + k1 + ", key2: " + k2);
+    	                     new SystemSyncChecker("Auto Log Out", "You have been automatically logged out due to multiple logins. Please log back in to continue.",
+    	                             
+    	                             new TextButton("Logout", new SelectHandler() {
+    	                                 @Override
+    	                                public void onSelect(SelectEvent event) {
+    	                                     Window.Location.assign("/login.html");
+    	                                 }
+    	                             }));
+                    	 }
+                     }
+                     if(info.getAssignmentInfo().isAdminUsingAssignments()) {
+                         fireAppropriateEvent(info.getAssignmentInfo());
+                     }
                  }
-                 if(info.getAssignmentInfo().isAdminUsingAssignments()) {
-                     fireAppropriateEvent(info.getAssignmentInfo());
+                 finally {
+                     if(callbackAfterServerCall != null) {
+                         callbackAfterServerCall.isComplete();
+                     }
                  }
             }
              @Override
@@ -174,13 +182,13 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
     static {
         CmRpcCore.EVENT_BUS.addHandler(ForceSystemSyncCheckEvent.TYPE, new ForceSystemSyncCheckHandler() {
             public void forceSyncCheck() {
-                checkForUpdate(true);
+                checkForUpdate(true, null);
             }
         });
         CmRpcCore.EVENT_BUS.addHandler(CmLogoutEvent.TYPE, new CmLogoutHandler() {
             @Override
             public void userLogOut() {
-                checkForUpdate(false);
+                checkForUpdate(false, null);
             }
         });
         
