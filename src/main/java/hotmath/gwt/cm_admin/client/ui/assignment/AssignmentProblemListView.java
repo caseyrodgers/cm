@@ -140,8 +140,8 @@ public class AssignmentProblemListView extends ContentPanel {
             
             cols.get(cols.size()-1).setToolTip(SafeHtmlUtils.fromString("Percentage of correct answers"));
             cols.get(cols.size()-1).setMenuDisabled(true);
-            problemListGrid.setToolTip("Double click for student answer analysis");
-            TextButton answers = new TextButton("Answer Analysis", new SelectHandler() {
+            problemListGrid.setToolTip("Display percentage of correct answers");
+            TextButton answers = new TextButton("Answer Stats", new SelectHandler() {
                 @Override
                 public void onSelect(SelectEvent event) {
                     showUserProblemStats();              
@@ -175,7 +175,7 @@ public class AssignmentProblemListView extends ContentPanel {
                 moveSelectProblem(-1);
             }
         });
-        _upButton.setToolTip("Move selected problem up");
+        _upButton.setToolTip("Move problem selection up");
         addTool(_upButton);
 
         _downButton = new TextButton("Down", new SelectHandler() {
@@ -185,7 +185,7 @@ public class AssignmentProblemListView extends ContentPanel {
             }
         });
         addTool(_downButton);
-        _upButton.setToolTip("Move selected problem down");
+        _upButton.setToolTip("Move problem selection down");
         
         if(store.size()==0) {
             activateButtons(false);
@@ -195,6 +195,10 @@ public class AssignmentProblemListView extends ContentPanel {
     
     protected void showUserProblemStats() {
         _selectedRecord  = problemListGrid.getSelectionModel().getSelectedItem();
+        if(_selectedRecord == null) {
+            CmMessageBox.showAlert("Please select a student first");
+            return;
+        }
         new AssignmentProblemStatsDialog(AssignmentProblemListView.this.assignment.getAssignKey(), _selectedRecord.getPid(), _selectedRecord.getLabel(), new CallbackOnComplete() {
             @Override
             public void isComplete() {
