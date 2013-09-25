@@ -1,6 +1,7 @@
 package hotmath.gwt.cm.client.ui;
 
 import hotmath.gwt.cm.client.history.CmHistoryQueue;
+import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
 import hotmath.gwt.cm_rpc.client.UserInfo;
 import hotmath.gwt.cm_rpc.client.rpc.UserTutorWidgetStats;
 import hotmath.gwt.cm_rpc_assignments.client.event.AssignmentsUpdatedEvent;
@@ -177,6 +178,8 @@ public class HeaderPanel extends FlowLayoutContainer {
         logoutButton.addSelectHandler(new SelectHandler() {
             @Override
             public void onSelect(SelectEvent event) {
+                CmRpcCore.EVENT_BUS.fireEvent(new CmLogoutEvent());
+                
                 if (partner != null) {
                     CmLogger.info("Doing custom thing: " + partner.onCloseLink);
                     try {

@@ -75,6 +75,7 @@ public class CmIdleTimeWatcher {
                 }
             }
             if(low==-1) {
+                Log.warn("Idle low value not found!");
                 return 0; // not busy
             }
             else {
@@ -85,7 +86,7 @@ public class CmIdleTimeWatcher {
                         break;
                     }
                 }
-                return high-low;
+                return (high-low)+1;
             }
         }
         finally {

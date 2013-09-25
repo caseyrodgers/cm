@@ -765,7 +765,6 @@ var cntxt=ctx?ctx:context;
         }
         //
         setTimeout(function () {
-
             canvas = $get_Element("#canvas");
             var siz = viewport()
             var docWidth = siz.width;

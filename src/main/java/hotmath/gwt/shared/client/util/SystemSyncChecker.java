@@ -1,6 +1,8 @@
 package hotmath.gwt.shared.client.util;
 
 
+import hotmath.gwt.cm_core.client.event.CmLogoutEvent;
+import hotmath.gwt.cm_core.client.event.CmLogoutHandler;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckEvent;
 import hotmath.gwt.cm_core.client.event.ForceSystemSyncCheckHandler;
 import hotmath.gwt.cm_core.client.model.CatchupMathVersion;
@@ -166,5 +168,12 @@ public class SystemSyncChecker extends StandardSystemRefreshWindow {
                 checkForUpdate();
             }
         });
+        CmRpcCore.EVENT_BUS.addHandler(CmLogoutEvent.TYPE, new CmLogoutHandler() {
+            @Override
+            public void userLogOut() {
+                checkForUpdate();
+            }
+        });
+        
     }
 }
