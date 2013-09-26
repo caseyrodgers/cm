@@ -14,8 +14,7 @@ public enum CmProgramType {
     PROF("Prof", "PROF"),
     OTHER("Other", "Other"),
     ASSIGNMENTS_ONLY("Assignments Only", "ASSIGNMENTSONLY"),
-    UNKNOWN("UnknownType", "UKNOWN"),
-    ELEMALG("ELEMALG", "ELEMALG");
+    UNKNOWN("UnknownType", "UKNOWN");
 
     private final String type;
     private final String name;

@@ -114,7 +114,11 @@ public class EndOfProgramHandler {
     		}
     		else if(programCurr.getTestDefId() == CmProgram.GEOM_CHAP.getDefId()) {
     			setupChapterTest(conn, programCurr,CmProgram.GEOM_CHAP.getSubject());
-    		} 
+    		}
+            else if(programCurr.getTestDefId() == CmProgram.ELEMALG_CHAP.getDefId()) {
+                setupChapterTest(conn, programCurr,CmProgram.ELEMALG_CHAP.getSubject());
+            } 
+    		
     		else {
     			throw new Exception("Unknown program: " + 
     					programCurr);
