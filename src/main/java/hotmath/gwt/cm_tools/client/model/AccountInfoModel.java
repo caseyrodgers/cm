@@ -68,5 +68,9 @@ public interface AccountInfoModel extends Response {
 
     public void setAccountCreateDate(Date date);
     
-    public String getIsFreeMessage(); 
+    public String getIsFreeMessage();
+
+    public void setAccountRepEmail(String emaail);
+
+    public String getAccountRepEmail();
 }

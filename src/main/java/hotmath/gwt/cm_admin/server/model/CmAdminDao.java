@@ -429,6 +429,7 @@ public class CmAdminDao extends SimpleJdbcDaoSupport {
                             ai.setAccountCreateDate(rs.getDate("account_create_date"));
                             ai.setIsFreeAccount(rs.getInt("is_free")==0?Boolean.FALSE:Boolean.TRUE);
                             ai.setCountFreeStudents(rs.getInt("student_count_free"));
+                            ai.setAccountRepEmail(rs.getString("account_rep_email"));
                             /** if account create is null (test account), use default
                              * 
                              */

@@ -978,7 +978,9 @@ select s.id,
        Ifnull(cc.max_students, 1000)                  as max_students,
        l.login_time,
        Date_format(l.login_time, '%Y-%m-%d %h:%i %p') as login_date_time,
-       h.is_free
+       h.is_free,
+       ifnull(ifnull(sr.email, sr2.email), 'admin@hotmath.com') as account_rep_email
+       
 from   SUBSCRIBERS s
        inner join HA_ADMIN h
                on h.subscriber_id = s.id
@@ -1028,9 +1030,12 @@ from   SUBSCRIBERS s
                          and u.user_id = ?
                   group  by u.user_id) l
               on l.user_id = h.aid
+       left join SALES_ZONE_REP sr
+         on sr.rep_id = s.sales_zone 
+       left join SALES_ZONE_REP sr2
+         on sr2.rep_id = 'tina'
+
 where  h.aid = ? 
-           
-           
            
            
 .key=ADMIN_PROGRAM_DEFINITIONS

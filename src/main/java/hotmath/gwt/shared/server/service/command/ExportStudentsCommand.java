@@ -191,6 +191,9 @@ public class ExportStudentsCommand implements ActionHandler<ExportStudentsAction
     			AccountInfoModel acctInfo = CmAdminDao.getInstance().getAccountInfo(adminUid);
     			String acctCreateDate = sdf.format(acctInfo.getAccountCreateDate());
     			String todaysDate = sdf.format(new Date());
+    			if (acctInfo.getAccountRepEmail() != null) {
+    				toEmailAddrs[1] = acctInfo.getAccountRepEmail();;    				
+    			}
 
     			StringBuilder titleBuff = new StringBuilder();
     			titleBuff.append(acctInfo.getSchoolName()).append(" (");

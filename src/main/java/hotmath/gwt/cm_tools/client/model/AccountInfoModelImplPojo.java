@@ -4,7 +4,9 @@ import java.util.Date;
 
 public class AccountInfoModelImplPojo implements AccountInfoModel {
     
-    String schoolName;
+	private static final long serialVersionUID = 1816274210633870397L;
+
+	String schoolName;
     boolean isFreeAccount;
     String schoolUserName;
     String adminUserName;
@@ -19,6 +21,7 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     private String subscriberId;
     private String studentCountStyle;
     private Date accountCreateDate;
+    private String accountRepEmail;
     
 
     public AccountInfoModelImplPojo() {}
@@ -151,4 +154,14 @@ public class AccountInfoModelImplPojo implements AccountInfoModel {
     public String getIsFreeMessage() {
         return isFreeAccount?"Free Account for Essentials":"";
     }
+
+	@Override
+	public void setAccountRepEmail(String email) {
+		this.accountRepEmail = email;
+	}
+
+	@Override
+	public String getAccountRepEmail() {
+		return accountRepEmail;
+	}
 }
