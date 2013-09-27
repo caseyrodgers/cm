@@ -1,5 +1,5 @@
 require.config({
-    urlArgs: "bust=ver_20130223"
+    urlArgs: "bust=ver_20130930"
 });
 
 
@@ -9,7 +9,7 @@ require.config({
 function requireJsLoad_whiteboard(funcToCall) {
     console.log('REQUIREJS loading whiteboard dependencies');
     try {
-        require(['whiteboard_v2'], function(x) {
+        require(['whiteboard_v3'], function(x) {
             funcToCall(x);
         });
     }
