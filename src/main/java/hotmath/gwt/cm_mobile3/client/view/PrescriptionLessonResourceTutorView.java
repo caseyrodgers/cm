@@ -19,9 +19,9 @@ public interface PrescriptionLessonResourceTutorView extends IPage,HasWhiteboard
     
     static public interface Presenter {
         void setupView(PrescriptionLessonResourceTutorView view);
-        void showWhiteboard(ShowWorkPanel2 _showWork);
         void markSolutionAsComplete();
         InmhItemData getItemData();
+        void showWhiteboard(ShowWorkPanel2 _showWork);
         Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String data);
     }
 }

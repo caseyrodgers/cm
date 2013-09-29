@@ -1,7 +1,6 @@
 package hotmath.gwt.cm_mobile3.client.activity;
 
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
-import hotmath.gwt.cm_mobile3.client.event.ShowWorkViewEvent;
 import hotmath.gwt.cm_mobile3.client.view.QuizView;
 import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
@@ -10,16 +9,23 @@ import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox;
 import hotmath.gwt.cm_mobile_shared.client.util.QuestionBox.CallBack;
 import hotmath.gwt.cm_rpc.client.UserInfo;
-import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
-import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
 import hotmath.gwt.cm_rpc.client.rpc.CmProgramFlowAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunAction;
 import hotmath.gwt.cm_rpc.client.rpc.CreateTestRunResponse;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.MultiActionRequestAction;
 import hotmath.gwt.cm_rpc.client.rpc.QuizHtmlResult;
-import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_rpc.client.rpc.SaveQuizCurrentResultAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc_core.client.CmRpcCore;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
+import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
+import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 
 import java.util.List;
 
@@ -41,9 +47,11 @@ public class QuizActivity implements QuizView.Presenter {
         this.eventBus = eventBus;
     }
 
+    QuizView _quizView;
     @Override
     public void prepareQuizView(final QuizView quizView) {
 
+        _quizView = quizView;
         eventBus.fireEvent(new SystemIsBusyEvent(true));
         
         quizView.clearQuizHtml();
@@ -159,11 +167,31 @@ public class QuizActivity implements QuizView.Presenter {
         });
     }
 
+    
     @Override
-    public void showWork() {
-        eventBus.fireEvent(new ShowWorkViewEvent());
+    public void loadWhiteboard(final ShowWorkPanel2 showWorkPanel, final String pid) {
+        // always use zero for run_id
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(SharedData.getMobileUser().getUserId(), pid, SharedData.getUserInfo().getRunId());
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
+            final String flashId="";
+            public void onSuccess(CmList<WhiteboardCommand> commands) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                showWorkPanel.loadWhiteboard(commands);
+            }
+            
+            public void onFailure(Throwable caught) {
+                Log.error("Error getting whiteboard data", caught);
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+            };
+        });                
     }
     
+    @Override
+    public Action<? extends Response> getWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+        SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(SharedData.getMobileUser().getUserId(),SharedData.getUserInfo().getRunId(), pid, commandType, data);
+        return action;
+
+    }
     
     /** Setup method that will call a global method that will set the selected
      *  guess for the given question.
@@ -223,7 +251,8 @@ public class QuizActivity implements QuizView.Presenter {
     }
     
     private void showWhiteboard_Gwt(String pid) {
-        eventBus.fireEvent(new ShowWorkViewEvent(pid, "Quiz"));
+        _quizView.showWhiteboard(pid);
+        //eventBus.fireEvent(new ShowWorkViewEvent(pid, "Quiz"));
     }
     
     String _activePid;

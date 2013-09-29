@@ -170,7 +170,7 @@ public class PrescriptionLessonResourceTutorViewImpl extends AbstractPagePanel i
         // position to top of document so toolbar is visible on open.
         Window.scrollTo(0, 0);
 
-        _showWork.alignWhiteboard(tutorPanel.getElement());
+        CmGwtUtils.resizeElement(_showWork.getElement());
     }	    
 
 

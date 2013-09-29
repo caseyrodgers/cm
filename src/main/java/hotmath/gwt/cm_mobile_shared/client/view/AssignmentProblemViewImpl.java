@@ -330,7 +330,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
         // position to top of document so toolbar is visible on open.
         Window.scrollTo(0, 0);
 
-        _showWork.alignWhiteboard(tutor.getElement());
+        CmGwtUtils.resizeElement(tutor.getElement());
         
         AssignmentData.removePidFromUnReadTeacherNote(problem.getAssignKey(),problem.getInfo().getPid());
     }
@@ -349,7 +349,7 @@ public class AssignmentProblemViewImpl extends Composite implements AssignmentPr
 
     protected void alignWhiteboard() {
         if(_showWork != null) {
-            _showWork.alignWhiteboard(tutor.getElement());
+            CmGwtUtils.resizeElement(tutor.getElement());
         }
     }
 

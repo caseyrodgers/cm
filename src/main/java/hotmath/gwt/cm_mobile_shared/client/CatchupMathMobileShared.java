@@ -162,7 +162,26 @@ public class CatchupMathMobileShared implements EntryPoint, Screen.OrientationCh
        }
     }-*/;
 
+
+    static public native int getScrollHeight() /*-{
+    var scrollHeight=0;
+    try {
+        if($wnd.f_scrollTop) {
+           scrollHeight = $wnd.f_scrollTop();
+           return scrollHeight;
+        }
+        return scrollHeight;
+    }
+    catch(e) {
+        alert('error resetting view: ' + e);
+        return 0;
+    }
+ }-*/;
     
+    static public native int setScrollHeight(int height) /*-{
+        window.scrollTo(height, 1);
+ }-*/;
+
 
     
     static private native void scrollToTop()  /*-{

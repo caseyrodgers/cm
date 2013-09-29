@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_test.client;
 
-import hotmath.gwt.cm_core.client.CmCore;
 import hotmath.gwt.cm_core.client.CmGwtUtils;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction;
 import hotmath.gwt.cm_rpc.client.rpc.GetCatchupMathDebugAction.DebugAction;
@@ -36,198 +35,196 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class CatchupMathTest implements EntryPoint {
-    
-    
+
     TextArea _textArea;
     TextBox _gotoInfo;
     ShowWorkPanel2 _showWork;
     SimplePanel _mainPanel;
-    
- public void onModuleLoad() {
-     _mainPanel = new SimplePanel();
-     
-     DockPanel docPanel = new DockPanel();
 
-      HorizontalPanel toolBar = new HorizontalPanel();
-      toolBar.add(new Button("Stop", new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-              _forceStop=true;
-          }
-      }));
-      toolBar.add(new Button("Start", new ClickHandler() {
-          @Override
-          public void onClick(ClickEvent event) {
-              startTests();
-          }
-      }));
+    public void onModuleLoad() {
+        _mainPanel = new SimplePanel();
 
-      _gotoInfo = new TextBox();
-      _gotoInfo.setWidth("100%");
-      _gotoInfo.addKeyDownHandler(new KeyDownHandler() {
-        @Override
-        public void onKeyDown(KeyDownEvent event) {
-            if(event.getNativeKeyCode() == 13) {
-                loadGotoInfo(_gotoInfo.getValue());
+        DockPanel docPanel = new DockPanel();
+
+        HorizontalPanel toolBar = new HorizontalPanel();
+        toolBar.add(new Button("Stop", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                _forceStop = true;
             }
+        }));
+        toolBar.add(new Button("Start", new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent event) {
+                startTests();
+            }
+        }));
+
+        _gotoInfo = new TextBox();
+        _gotoInfo.setWidth("100%");
+        _gotoInfo.addKeyDownHandler(new KeyDownHandler() {
+            @Override
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == 13) {
+                    loadGotoInfo(_gotoInfo.getValue());
+                }
+            }
+        });
+
+        _mainPanel.setPixelSize(600, 480);
+        docPanel.add(_mainPanel, DockPanel.SOUTH);
+
+        docPanel.add(toolBar, DockPanel.NORTH);
+
+        docPanel.add(_gotoInfo, DockPanel.NORTH);
+
+        _textArea = new TextArea();
+        // _textArea.getElement().setAttribute("style",
+        // "margin-top: 100px;margin-bottom: 10px;");
+        _textArea.setSize("500px", "200px");
+
+        docPanel.add(_textArea, DockPanel.SOUTH);
+        RootPanel.get().add(docPanel);
+
+        String gotoWhiteboard = CmGwtUtils.getQueryParameter("goto");
+        if (gotoWhiteboard != null) {
+            String p[] = gotoWhiteboard.split(",");
+            _forceStop = true;
+            readWhiteboardFromServer(Integer.parseInt(p[0]), Integer.parseInt(p[1]), p[2]);
         }
-    });
-      
-      
-      _mainPanel.setPixelSize(600, 480);
-      docPanel.add(_mainPanel, DockPanel.SOUTH);
 
-      docPanel.add(toolBar,DockPanel.NORTH);
-      
-      docPanel.add(_gotoInfo, DockPanel.NORTH);
-      
-
-      
-      _textArea = new TextArea();
-      //_textArea.getElement().setAttribute("style", "margin-top: 100px;margin-bottom: 10px;");
-      _textArea.setSize("500px",  "200px");
-
-      docPanel.add(_textArea, DockPanel.SOUTH);
-      RootPanel.get().add(docPanel);
-     
-      
-      String gotoWhiteboard = CmGwtUtils.getQueryParameter("goto");
-      if(gotoWhiteboard != null) {
-          String p[] = gotoWhiteboard.split(",");
-          _forceStop=true;
-          readWhiteboardFromServer(Integer.parseInt(p[0]), Integer.parseInt(p[1]), p[2]);
-      }
-      
-     
-     //startTests();
+        // startTests();
 
     }
- 
- /** parse: [pid=quiz:quiz, runId=0, uid=31181]
-  * 
-  * @param value
-  */
- protected void loadGotoInfo(String value) {
-     
-     _forceStop = true;
-     
-     String p[] = value.split(",");
-     String pid = p[0].split("=")[1];
-     String rid = p[1].split("=")[1];
-     String uid = p[2].split("=")[1].split("]")[0];
-     
-     readWhiteboardFromServer(Integer.parseInt(uid), Integer.parseInt(rid), pid);
- }
 
-private void logMessage(String msg) {
-     _textArea.setValue(_textArea.getValue() + "\n" + msg);
- }
- 
- boolean _forceStop;
- int _count;
- int MAX_TESTS=100;
- private void startTests() {
-     _count=0;
-     _forceStop=false;
-     doTests();
- }
- 
- 
- private void doTests() {
-     if(_forceStop) {
-         logMessage("Force stop!!!");
-         return;
-     }
-     
-     if(_count++ > MAX_TESTS) {
-         logMessage("Max tests reached: " + MAX_TESTS);
-     }
-     
-     logMessage("Running test: " + _count);
-     
-     GetCatchupMathDebugAction action = new GetCatchupMathDebugAction(DebugAction.GET_NEXT);
-     getCmService().execute(action,  new AsyncCallback<RpcData>() {
-         public void onSuccess(RpcData result) {
-             readWhiteboardFromServer(result.getDataAsInt("uid"), result.getDataAsInt("rid"), result.getDataAsString("pid"));
-         }
-         @Override
-        public void onFailure(Throwable caught) {
-             Window.alert("Error: " + caught);
-             Log.error("Error", caught);
-        }
-    });
- }
- 
- protected void readWhiteboardFromServer(int uid, int rid, String pid) {
+    /**
+     * parse: [pid=quiz:quiz, runId=0, uid=31181]
+     * 
+     * @param value
+     */
+    protected void loadGotoInfo(String value) {
 
-     final String message = "[pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid + "]";
-     _gotoInfo.setValue(message);
-     
-     final GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
-     getCmService().execute(action,new AsyncCallback<CmList<WhiteboardCommand>>() {
-         @Override
-        public void onSuccess(CmList<WhiteboardCommand> result) {
-             showNewWhiteboard(result, message);
-             //_showWork.loadWhiteboard(result);
-             
-             // now wait ... and do the next one
-             new Timer() {
-                
-                @Override
-                public void run() {
-                    doTests();
-                }
-            }.schedule(5000);
-             
-        }
-         
-         @Override
-        public void onFailure(Throwable caught) {
-             Log.error("Error", caught);
-        }
-    });
-}
+        _forceStop = true;
 
-protected void showNewWhiteboard(final CmList<WhiteboardCommand> result, final String message) {
-     _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
-        @Override
-        public void windowResized() {
-        }
-        
-        @Override
-        public void showWorkIsReady() {
-            _showWork.loadWhiteboard(result);
-            
-            logMessage(getWhiteboardSize() + "\t" + message);
-        }
-        
-        @Override
-        public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-            return null;
-        }
-    });
-     _mainPanel.setWidget(_showWork);    
-}
+        String p[] = value.split(",");
+        String pid = p[0].split("=")[1];
+        String rid = p[1].split("=")[1];
+        String uid = p[2].split("=")[1].split("]")[0];
 
-native protected String getWhiteboardSize() /*-{
-    var res = $wnd._theWhiteboard.getSizeOfWhiteboard();
-    return "" + res; 
-}-*/;
+        readWhiteboardFromServer(Integer.parseInt(uid), Integer.parseInt(rid), pid);
+    }
 
-static CmServiceAsync _serviceInstance;
- static public CmServiceAsync getCmService() {
-     return _serviceInstance;
- }
+    private void logMessage(String msg) {
+        _textArea.setValue(_textArea.getValue() + "\n" + msg);
+    }
 
- static private void setupServices() {
-     final CmServiceAsync cmService = (CmServiceAsync)GWT.create(CmService.class);
-     String url = "/cm_admin/services/cmService";
-     ((ServiceDefTarget) cmService).setServiceEntryPoint(url);
-     _serviceInstance = cmService;
- }
- 
- static {
-     setupServices();
- }
+    boolean _forceStop;
+    int _count;
+    int MAX_TESTS = 100;
+
+    private void startTests() {
+        _count = 0;
+        _forceStop = false;
+        doTests();
+    }
+
+    private void doTests() {
+        if (_forceStop) {
+            logMessage("Force stop!!!");
+            return;
+        }
+
+        if (_count++ > MAX_TESTS) {
+            logMessage("Max tests reached: " + MAX_TESTS);
+        }
+
+        logMessage("Running test: " + _count);
+
+        GetCatchupMathDebugAction action = new GetCatchupMathDebugAction(DebugAction.GET_NEXT);
+        getCmService().execute(action, new AsyncCallback<RpcData>() {
+            public void onSuccess(RpcData result) {
+                readWhiteboardFromServer(result.getDataAsInt("uid"), result.getDataAsInt("rid"), result.getDataAsString("pid"));
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Window.alert("Error: " + caught);
+                Log.error("Error", caught);
+            }
+        });
+    }
+
+    protected void readWhiteboardFromServer(int uid, int rid, String pid) {
+
+        final String message = "[pid=" + pid + ", " + "rid=" + rid + ", uid=" + uid + "]";
+        _gotoInfo.setValue(message);
+
+        final GetWhiteboardDataAction action = new GetWhiteboardDataAction(uid, pid, rid);
+        getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
+            @Override
+            public void onSuccess(CmList<WhiteboardCommand> result) {
+                showNewWhiteboard(result, message);
+                // _showWork.loadWhiteboard(result);
+
+                // now wait ... and do the next one
+                new Timer() {
+
+                    @Override
+                    public void run() {
+                        doTests();
+                    }
+                }.schedule(5000);
+
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                Log.error("Error", caught);
+            }
+        });
+    }
+
+    protected void showNewWhiteboard(final CmList<WhiteboardCommand> result, final String message) {
+        _showWork = new ShowWorkPanel2(new ShowWorkPanel2Callback() {
+            @Override
+            public void windowResized() {
+            }
+
+            @Override
+            public void showWorkIsReady() {
+                _showWork.loadWhiteboard(result);
+
+                logMessage(getWhiteboardSize() + "\t" + message);
+            }
+
+            @Override
+            public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
+                return null;
+            }
+        });
+        _mainPanel.setWidget(_showWork);
+    }
+
+    native protected String getWhiteboardSize() /*-{
+                                                var res = $wnd._theWhiteboard.getSizeOfWhiteboard();
+                                                return "" + res; 
+                                                }-*/;
+
+    static CmServiceAsync _serviceInstance;
+
+    static public CmServiceAsync getCmService() {
+        return _serviceInstance;
+    }
+
+    static private void setupServices() {
+        final CmServiceAsync cmService = (CmServiceAsync) GWT.create(CmService.class);
+        String url = "/cm_admin/services/cmService";
+        ((ServiceDefTarget) cmService).setServiceEntryPoint(url);
+        _serviceInstance = cmService;
+    }
+
+    static {
+        setupServices();
+    }
 
 }

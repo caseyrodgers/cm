@@ -1,5 +1,7 @@
 package hotmath.gwt.cm_tutor.client.view;
 
+import hotmath.gwt.cm_mobile3.client.CatchupMathMobile3;
+import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedEvent;
 import hotmath.gwt.cm_rpc.client.event.WindowHasBeenResizedHandler;
@@ -151,8 +153,12 @@ public class ShowWorkPanel2 extends Composite {
                                                             $wnd._theWhiteboard.setAsTeacherMode(yesNo);
                                                             }-*/;
 
-    public void setProblemStatement(String problemStatement) {
-    }
+    native public void setProblemStatement(String theProbStmt) /*-{
+        var ps = $wnd.$('.problemStatement');
+        if(ps.length > 0) {
+            ps.html(theProbStmt);
+        }
+    }-*/;
 
     native private void initializeWidgets() /*-{
                                             $wnd.AuthorApi.initializeWidgets();
@@ -491,11 +497,4 @@ public class ShowWorkPanel2 extends Composite {
 
     }
 
-    public void alignWhiteboard(Element tutorElement) {
-        int width = tutorElement.getParentElement().getClientWidth();
-        int height = tutorElement.getParentElement().getClientWidth();
-
-        // height is predetermined in whiteboard.js
-        getElement().setAttribute("style", "width: " + width + ";height: " + height);
-    }
 }

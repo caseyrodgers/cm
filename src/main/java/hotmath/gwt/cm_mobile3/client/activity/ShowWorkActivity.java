@@ -174,7 +174,9 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
 
     @Override
     public String getProblemStatementHtml() {
-        return getProblemStatementFromDocument(this.pid); 
+        String ps = getProblemStatementFromDocument(this.pid);
+        ps = "THIS IS a<b>TEST</b>";
+        return ps;
     }
     
     /** replace all ID tags with ID_NOT */
@@ -186,6 +188,7 @@ public class ShowWorkActivity implements ShowWorkView.Presenter {
     static private native String getProblemStatementFromDocument(String pid) /*-{
         var quizEle = $doc.getElementById('testset_div');
         var ps = $doc.getElementById('problem_statement');
+        alert(ps);
         if(!ps) {
             if(quizEle) {
                 var divs = quizEle.getElementsByTagName('div');
