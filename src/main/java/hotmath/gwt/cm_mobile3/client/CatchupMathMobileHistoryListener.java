@@ -1,6 +1,5 @@
 package hotmath.gwt.cm_mobile3.client;
 
-import hotmath.gwt.cm_mobile3.client.activity.LoginActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonListingActivity;
 import hotmath.gwt.cm_mobile3.client.activity.PrescriptionLessonResourceActivity;
@@ -13,7 +12,6 @@ import hotmath.gwt.cm_mobile3.client.activity.ShowWorkActivity;
 import hotmath.gwt.cm_mobile3.client.activity.WelcomeActivity;
 import hotmath.gwt.cm_mobile3.client.event.HandleNextFlowEvent;
 import hotmath.gwt.cm_mobile3.client.event.LoadActiveProgramFlowEvent;
-import hotmath.gwt.cm_mobile3.client.view.LoginView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonListingView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceResultsView;
 import hotmath.gwt.cm_mobile3.client.view.PrescriptionLessonResourceReviewView;
@@ -32,8 +30,8 @@ import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.LoadNewPageEvent;
 import hotmath.gwt.cm_mobile_shared.client.page.IPage;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData;
-import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.util.AssignmentData.CallbackWhenDataReady;
+import hotmath.gwt.cm_mobile_shared.client.util.PopupMessageBox;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentListView;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentProblemView;
 import hotmath.gwt.cm_mobile_shared.client.view.AssignmentShowWorkView;
@@ -53,6 +51,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HTML;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
 
@@ -72,11 +71,8 @@ public class CatchupMathMobileHistoryListener implements ValueChangeHandler<Stri
 
             
             if (type.equals("login")) {
-                LoginActivity activity = new LoginActivity(eb);
-                LoginView view = cf.getLoginView();
-                view.setPresenter(activity);
-                activity.prepareLogin(view);
-                eb.fireEvent(new LoadNewPageEvent((IPage) view));
+                Window.Location.replace("/login.html");
+                return;
             }
             else {
                 
