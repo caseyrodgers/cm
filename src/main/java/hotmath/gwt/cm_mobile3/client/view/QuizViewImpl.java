@@ -114,7 +114,7 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
 
             @Override
             public void showWorkIsReady() {
-                //presenter.showWhiteboard(_showWork);
+                presenter.loadWhiteboard(_showWork, _lastPid);                
             }
 
             @Override
@@ -122,8 +122,6 @@ public class QuizViewImpl extends AbstractPagePanel implements QuizView {
                 return presenter.getWhiteboardSaveAction(_lastPid, commandType, data);
             }
         });
-        presenter.loadWhiteboard(_showWork, _lastPid);
-        
         _whiteboardWrapper.addStyleName("static_whiteboard");
         _whiteboardWrapper.add(_showWork);
         _contentPanel.add(_whiteboardWrapper);
