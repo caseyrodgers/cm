@@ -51,7 +51,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HTML;
 
 public class CatchupMathMobileHistoryListener implements ValueChangeHandler<String> {
 
