@@ -2293,6 +2293,10 @@ var cntxt=ctx?ctx:context;
     }
 
     function resetWhiteBoard(boo) {
+    	
+    	if(!canvas) {
+    		return;
+    	}
 
         penDown = false;
         graphMode = '';
