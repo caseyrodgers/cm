@@ -168,7 +168,7 @@ public class QuizActivity implements QuizView.Presenter {
     }
 
     
-    @Override
+    
     public void loadWhiteboard(final ShowWorkPanel2 showWorkPanel, final String pid) {
         // always use zero for run_id
         GetWhiteboardDataAction action = new GetWhiteboardDataAction(SharedData.getMobileUser().getUserId(), pid, SharedData.getUserInfo().getRunId());

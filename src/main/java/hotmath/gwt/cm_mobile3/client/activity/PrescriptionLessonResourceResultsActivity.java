@@ -5,11 +5,19 @@ import hotmath.gwt.cm_mobile_shared.client.CatchupMathMobileShared;
 import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.event.SystemIsBusyEvent;
 import hotmath.gwt.cm_rpc.client.rpc.GetQuizResultsHtmlAction;
+import hotmath.gwt.cm_rpc.client.rpc.GetWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.InmhItemData;
 import hotmath.gwt.cm_rpc.client.rpc.QuizResultsMetaInfo;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
+import hotmath.gwt.cm_rpc.client.rpc.WhiteboardCommand;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
+import hotmath.gwt.cm_rpc_core.client.rpc.Action;
+import hotmath.gwt.cm_rpc_core.client.rpc.CmList;
+import hotmath.gwt.cm_rpc_core.client.rpc.Response;
 import hotmath.gwt.cm_rpc_core.client.rpc.RpcData;
 import hotmath.gwt.cm_tutor.client.view.ShowWorkPanel2;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -55,9 +63,23 @@ public class PrescriptionLessonResourceResultsActivity  implements PrescriptionL
 
 
     @Override
-    public void loadWhiteboard(ShowWorkPanel2 showWork, String pid) {
+    public void loadWhiteboard(final ShowWorkPanel2 showWorkPanel, String pid) {
+        // always use zero for run_id
+        GetWhiteboardDataAction action = new GetWhiteboardDataAction(SharedData.getMobileUser().getUserId(), pid, 0);
+        CatchupMathMobileShared.getCmService().execute(action, new AsyncCallback<CmList<WhiteboardCommand>>() {
+            final String flashId="";
+            public void onSuccess(CmList<WhiteboardCommand> commands) {
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+                showWorkPanel.loadWhiteboard(commands);
+            }
+            
+            public void onFailure(Throwable caught) {
+                Log.error("Error getting whiteboard data", caught);
+                eventBus.fireEvent(new SystemIsBusyEvent(false));
+            };
+        });                
     }
-    
+
     private void showWhiteboard_Gwt(String pid) {
         _lastView.showWhiteboard(pid);
     }

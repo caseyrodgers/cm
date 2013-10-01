@@ -2,13 +2,16 @@ package hotmath.gwt.cm_mobile3.client.view;
 
 
 import hotmath.gwt.cm_core.client.CmGwtUtils;
+import hotmath.gwt.cm_mobile3.client.activity.QuizActivity;
 import hotmath.gwt.cm_mobile_shared.client.AbstractPagePanel;
 import hotmath.gwt.cm_mobile_shared.client.ControlAction;
 import hotmath.gwt.cm_mobile_shared.client.HasWhiteboard;
 import hotmath.gwt.cm_mobile_shared.client.TokenParser;
+import hotmath.gwt.cm_mobile_shared.client.data.SharedData;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar;
 import hotmath.gwt.cm_mobile_shared.client.view.ShowWorkSubToolBar.Callback;
 import hotmath.gwt.cm_rpc.client.model.ProblemNumber;
+import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction;
 import hotmath.gwt.cm_rpc.client.rpc.SaveWhiteboardDataAction.CommandType;
 import hotmath.gwt.cm_rpc_core.client.rpc.Action;
 import hotmath.gwt.cm_rpc_core.client.rpc.Response;
@@ -22,7 +25,6 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 
@@ -168,7 +170,8 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
 
             @Override
             public Action<? extends Response> createWhiteboardSaveAction(String pid, CommandType commandType, String data) {
-                return null; // return presenter.getWhiteboardSaveAction(_lastPid, commandType, data);
+                SaveWhiteboardDataAction action = new SaveWhiteboardDataAction(SharedData.getMobileUser().getUserId(),0, _lastPid, commandType, data);
+                return action;
             }
         });
         _whiteboardWrapper.addStyleName("static_whiteboard");
@@ -188,7 +191,8 @@ public class PrescriptionLessonResourceResultsViewImpl extends AbstractPagePanel
     }
 
     private void hideWhiteboard() {
-        // TODO Auto-generated method stub
-        
+        if(_whiteboardWrapper != null) {
+            _mainContainer.remove(_whiteboardWrapper);
+        }
     }    
 }
