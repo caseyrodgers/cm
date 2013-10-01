@@ -49,7 +49,14 @@ pageTracker._trackPageview();
         text-align: center;
 }
 
+.slider_wrapper {
+	  margin-bottom: 30px;
+}
+
 </style>
+<script src='/assets/js/sliderman/sliderman-1.3.7.js'></script>
+<link rel="stylesheet" type="text/css" href="/assets/js/sliderman/sliderman.css">
+
 <!-- InstanceEndEditable -->
     </head>
     <body class='yui3-skin-sam'>
@@ -132,7 +139,37 @@ pageTracker._trackPageview();
           <a class='assignments_text' href='/assignments.html'>
               <img src='/assets/images/blank-25x25.png'>
           </a>
-          <img class='top-image' src='/assets/images/index_content_top.png'/>
+
+				<div id="SliderName_2" class="SliderName_2 slider_wrapper">
+					<img src="/assets/images/slides/slide-1.png" width="962" height="267" alt="first" title="irst" />
+					<img src="/assets/images/slides/slide-2.png" width="962" height="267" alt="second" title="second" />
+					<img src="/assets/images/slides/slide-3.png" width="962" height="267"  alt="third" title="third" />
+					<img src="/assets/images/slides/slide-4.png" width="962" height="267" alt="fourth" title="fourth" />
+					<img src="/assets/images/slides/slide-5.png" width="962" height="267" alt="five" title="five" />                    
+				</div>
+				<div class="c"></div>
+				<div id="SliderNameNavigation_2"></div>
+				<div class="c"></div>          
+          
+          
+          <script type="text/javascript">
+					var effectsDemo2 = 'rain,stairs,fade';
+					var demoSlider_2 = Sliderman.slider({container: 'SliderName_2', width: 962, height: 267, effects: effectsDemo2,
+						display: {
+							autoplay: 3000,
+							loading: {background: '#000000', opacity: 0.5, image: '/assets/js/sliderman/loading.gif'},
+							buttons: {hide: true, opacity: 1, prev: {className: 'SliderNamePrev_2', label: ''}, next: {className: 'SliderNameNext_2', label: ''}},
+							description: {hide: true, background: '#000000', opacity: 0.4, height: 50, position: 'bottom'},
+							navigation: {container: 'SliderNameNavigation_2', label: '<img src="/assets/js/sliderman/clear.gif" />'}
+						}
+					});
+				</script>
+          
+          
+
+
+
+          
             <!-- Content Area  (middle) -->
             <div class='yui3-g' id='content-middle'>
                 <div class="yui3-u-2-3">
@@ -188,10 +225,8 @@ pageTracker._trackPageview();
             <div id='bottom-content' class='doc'>
                 <!-- InstanceBeginEditable name="bottom-content" -->
 		<div id="content-bottom" class="yui3-g">
-<div style="background-image: url(/assets/images/index-body_background-divider.png);background-repeat: repeat-x;margin: 0px -30px 0 -30px;">&nbsp;</div>
-                <h1 class="yui3-u-1">Grades 6-7 Math, Algebra Readiness, Pre-Algebra, Algebra 1, Geometry, Algebra 2</h1>
-                
-                </div>
+            <h1 class="yui3-u-1">Grades 6-7 Math, Algebra Readiness, Pre-Algebra, Algebra 1, Geometry, Algebra 2</h1>
+        </div>
                 
             </div>
 		<!-- InstanceEndEditable -->
